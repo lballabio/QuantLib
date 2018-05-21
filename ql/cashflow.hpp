@@ -70,7 +70,7 @@ namespace QuantLib {
     };
 
     //! Sequence of cash-flows
-    typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
+    typedef std::vector<ext::shared_ptr<CashFlow> > Leg;
 
     template <>
     struct earlier_than<CashFlow>

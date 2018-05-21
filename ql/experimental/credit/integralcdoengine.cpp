@@ -59,7 +59,7 @@ namespace QuantLib {
                 continue;
             }
 
-            const boost::shared_ptr<Coupon> coupon =
+            const ext::shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(
                     arguments_.normalizedLeg[i]);
 

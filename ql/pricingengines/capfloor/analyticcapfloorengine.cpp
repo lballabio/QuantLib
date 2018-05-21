@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     AnalyticCapFloorEngine::AnalyticCapFloorEngine(
-                              const boost::shared_ptr<AffineModel>& model,
+                              const ext::shared_ptr<AffineModel>& model,
                               const Handle<YieldTermStructure>& termStructure)
     : GenericModelEngine<AffineModel,
                          CapFloor::arguments,
@@ -38,7 +38,7 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
+        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
             boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();

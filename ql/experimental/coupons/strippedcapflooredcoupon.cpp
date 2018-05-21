@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     StrippedCappedFlooredCoupon::StrippedCappedFlooredCoupon(
-        const boost::shared_ptr<CappedFlooredCoupon> &underlying)
+        const ext::shared_ptr<CappedFlooredCoupon> &underlying)
         : FloatingRateCoupon(
               underlying->date(), underlying->nominal(),
               underlying->accrualStartDate(), underlying->accrualEndDate(),
@@ -98,7 +98,7 @@ namespace QuantLib {
     }
 
     void StrippedCappedFlooredCoupon::setPricer(
-        const boost::shared_ptr<FloatingRateCouponPricer> &pricer) {
+        const ext::shared_ptr<FloatingRateCouponPricer> &pricer) {
         FloatingRateCoupon::setPricer(pricer);
         underlying_->setPricer(pricer);
     }
@@ -110,7 +110,7 @@ namespace QuantLib {
     StrippedCappedFlooredCouponLeg::operator Leg() const {
         Leg resultLeg;
         resultLeg.reserve(underlyingLeg_.size());
-        boost::shared_ptr<CappedFlooredCoupon> c;
+        ext::shared_ptr<CappedFlooredCoupon> c;
         for (Leg::const_iterator i = underlyingLeg_.begin();
              i != underlyingLeg_.end(); ++i) {
             if ((c = boost::dynamic_pointer_cast<CappedFlooredCoupon>(*i)) !=

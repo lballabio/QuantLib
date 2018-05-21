@@ -40,7 +40,7 @@ namespace QuantLib {
 
 
     void FdmHullWhiteSolver::performCalculations() const {
-        const boost::shared_ptr<FdmHullWhiteOp> op(
+        const ext::shared_ptr<FdmHullWhiteOp> op(
 			boost::make_shared<FdmHullWhiteOp>(solverDesc_.mesher, model_.currentLink(), 0));
 
         solver_ = boost::make_shared<Fdm1DimSolver>(solverDesc_, schemeDesc_, op);

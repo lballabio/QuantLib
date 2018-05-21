@@ -108,7 +108,7 @@ template <typename Evaluation> struct ZabrSpecs {
         return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0);
     }
     typedef ZabrSmileSection<Evaluation> type;
-    boost::shared_ptr<type> instance(const Time t, const Real &forward,
+    ext::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &addParams) {
         return boost::make_shared<type>(t, forward, params);
@@ -129,13 +129,13 @@ template <class Evaluation> class ZabrInterpolation : public Interpolation {
         const Real &forward, Real alpha, Real beta, Real nu, Real rho,
         Real gamma, bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed,
         bool rhoIsFixed, bool gammaIsFixed, bool vegaWeighted = true,
-        const boost::shared_ptr<EndCriteria> &endCriteria =
-            boost::shared_ptr<EndCriteria>(),
-        const boost::shared_ptr<OptimizationMethod> &optMethod =
-            boost::shared_ptr<OptimizationMethod>(),
+        const ext::shared_ptr<EndCriteria> &endCriteria =
+            ext::shared_ptr<EndCriteria>(),
+        const ext::shared_ptr<OptimizationMethod> &optMethod =
+            ext::shared_ptr<OptimizationMethod>(),
         const Real errorAccept = 0.0020, const bool useMaxError = false,
         const Size maxGuesses = 50) {
-            impl_ = boost::shared_ptr<
+            impl_ = ext::shared_ptr<
                 Interpolation::Impl>(new detail::XABRInterpolationImpl<
                 I1, I2,
                 detail::ZabrSpecs<Evaluation> >(
@@ -163,7 +163,7 @@ template <class Evaluation> class ZabrInterpolation : public Interpolation {
     EndCriteria::Type endCriteria() { return coeffs_->XABREndCriteria_; }
 
   private:
-    boost::shared_ptr<detail::XABRCoeffHolder<detail::ZabrSpecs<Evaluation> > > coeffs_;
+    ext::shared_ptr<detail::XABRCoeffHolder<detail::ZabrSpecs<Evaluation> > > coeffs_;
 };
 
 //! no arbtrage sabr interpolation factory and traits
@@ -172,10 +172,10 @@ template<class Evaluation> class Zabr {
     Zabr(Time t, Real forward, Real alpha, Real beta, Real nu, Real rho,
          Real gamma, bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed,
          bool rhoIsFixed, bool gammaIsFixed, bool vegaWeighted = false,
-         const boost::shared_ptr<EndCriteria> endCriteria =
-             boost::shared_ptr<EndCriteria>(),
-         const boost::shared_ptr<OptimizationMethod> optMethod =
-             boost::shared_ptr<OptimizationMethod>(),
+         const ext::shared_ptr<EndCriteria> endCriteria =
+             ext::shared_ptr<EndCriteria>(),
+         const ext::shared_ptr<OptimizationMethod> optMethod =
+             ext::shared_ptr<OptimizationMethod>(),
          const Real errorAccept = 0.0020, const bool useMaxError = false,
          const Size maxGuesses = 50)
         : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu),
@@ -202,8 +202,8 @@ template<class Evaluation> class Zabr {
     Real alpha_, beta_, nu_, rho_, gamma_;
     bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_, gammaIsFixed_;
     bool vegaWeighted_;
-    const boost::shared_ptr<EndCriteria> endCriteria_;
-    const boost::shared_ptr<OptimizationMethod> optMethod_;
+    const ext::shared_ptr<EndCriteria> endCriteria_;
+    const ext::shared_ptr<OptimizationMethod> optMethod_;
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

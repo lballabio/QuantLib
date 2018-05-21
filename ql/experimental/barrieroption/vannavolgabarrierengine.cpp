@@ -83,18 +83,18 @@ namespace QuantLib {
         Handle<Quote> atmVolQuote(
             boost::make_shared<SimpleQuote>(atmVol_->value())); //used for shift
 
-        boost::shared_ptr<BlackVolTermStructure> blackVolTS =
+        ext::shared_ptr<BlackVolTermStructure> blackVolTS =
             boost::make_shared<BlackConstantVol>(
                 Settings::instance().evaluationDate(),
                 NullCalendar(), atmVolQuote, Actual365Fixed());
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
             boost::make_shared<BlackScholesMertonProcess>(
                                  x0Quote,
                                  foreignTS_,
                                  domesticTS_,
                                  Handle<BlackVolTermStructure>(blackVolTS));
 
-        boost::shared_ptr<PricingEngine> engineBS =
+        ext::shared_ptr<PricingEngine> engineBS =
             boost::make_shared<AnalyticBarrierEngine>(stochProcess);
 
         BlackDeltaCalculator blackDeltaCalculatorAtm(
@@ -128,7 +128,7 @@ namespace QuantLib {
         VannaVolga vannaVolga(x0Quote->value(), domesticTS_->discount(T_), foreignTS_->discount(T_), T_);
         Interpolation interpolation = vannaVolga.interpolate(strikes.begin(), strikes.end(), vols.begin());
         interpolation.enableExtrapolation();
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
                                         boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         Real strikeVol = interpolation(payoff->strike());
 

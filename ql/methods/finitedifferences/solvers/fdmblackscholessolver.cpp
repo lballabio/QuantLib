@@ -44,7 +44,7 @@ namespace QuantLib {
     }
 
     void FdmBlackScholesSolver::performCalculations() const {
-        const boost::shared_ptr<FdmBlackScholesOp> op(boost::make_shared<FdmBlackScholesOp>(
+        const ext::shared_ptr<FdmBlackScholesOp> op(boost::make_shared<FdmBlackScholesOp>(
                 solverDesc_.mesher, process_.currentLink(), strike_,
                 localVol_, illegalLocalVolOverwrite_));
 

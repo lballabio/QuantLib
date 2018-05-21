@@ -43,7 +43,7 @@ namespace QuantLib {
       vols_(volsHandles.size()),
       actualVols_(volsHandles.size()),
       inclusionInInterpolation_(inclusionInInterpolationFlag),
-      interpolation_(boost::shared_ptr<AbcdInterpolation>()) // do not initialize with nOptionTenors_
+      interpolation_(ext::shared_ptr<AbcdInterpolation>()) // do not initialize with nOptionTenors_
     {
         checkInputs();
         initializeOptionDatesAndTimes();
@@ -87,7 +87,7 @@ namespace QuantLib {
 
     void AbcdAtmVolCurve::interpolate()
     {
-        interpolation_ = boost::shared_ptr<AbcdInterpolation>(new
+        interpolation_ = ext::shared_ptr<AbcdInterpolation>(new
                             AbcdInterpolation(actualOptionTimes_.begin(),
                                               actualOptionTimes_.end(),
                                               actualVols_.begin()));

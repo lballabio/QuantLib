@@ -59,7 +59,7 @@ namespace QuantLib {
 
       protected:
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
 
         struct Data {
             std::string name, code;
@@ -69,7 +69,7 @@ namespace QuantLib {
             : name(name), code(code) {}
         };
 
-        static std::map<std::string, boost::shared_ptr<Data> > commodityTypes_;
+        static std::map<std::string, ext::shared_ptr<Data> > commodityTypes_;
     };
 
     /*! \relates CommodityType */

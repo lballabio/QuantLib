@@ -67,9 +67,9 @@ namespace QuantLib {
         //@}
       protected:
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
       private:
-        static std::map<std::string, boost::shared_ptr<UnitOfMeasure::Data> >
+        static std::map<std::string, ext::shared_ptr<UnitOfMeasure::Data> >
         unitsOfMeasure_;
     };
 
@@ -140,7 +140,7 @@ namespace QuantLib {
     class LotUnitOfMeasure : public UnitOfMeasure {
       public:
         LotUnitOfMeasure() {
-            static boost::shared_ptr<Data> data(
+            static ext::shared_ptr<Data> data(
                 new Data("Lot", "Lot", UnitOfMeasure::Quantity));
             data_ = data;
         }

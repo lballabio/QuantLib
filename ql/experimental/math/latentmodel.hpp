@@ -143,7 +143,7 @@ namespace QuantLib {
         public MultidimIntegral, public LMIntegration {
     public:
         IntegrationBase(
-            const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+            const std::vector<ext::shared_ptr<Integrator> >& integrators, 
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
@@ -459,7 +459,7 @@ namespace QuantLib {
         */
         class IntegrationFactory {
         public:
-            static boost::shared_ptr<LMIntegration> createLMIntegration(
+            static ext::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
                 LatentModelIntegrationType::LatentModelIntegrationType type = 
                     #ifndef QL_PATCH_SOLARIS
@@ -478,7 +478,7 @@ namespace QuantLib {
                     #endif
                     case LatentModelIntegrationType::Trapezoid:
                         {
-                        std::vector<boost::shared_ptr<Integrator> > integrals;
+                        std::vector<ext::shared_ptr<Integrator> > integrals;
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
                             boost::make_shared<TrapezoidIntegral<Default> >(
@@ -619,7 +619,7 @@ namespace QuantLib {
         // Integrable models must provide their integrator.
         // Arguable, not having the integration in the LM class saves that 
         //   memory but have an entry in the VT... 
-        virtual const boost::shared_ptr<LMIntegration>& integration() const {
+        virtual const ext::shared_ptr<LMIntegration>& integration() const {
             QL_FAIL("Integration non implemented in Latent model.");
         }
         //@}

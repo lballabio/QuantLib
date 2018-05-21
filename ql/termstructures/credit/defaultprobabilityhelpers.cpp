@@ -83,7 +83,7 @@ namespace QuantLib {
         RelativeDateDefaultProbabilityHelper::setTermStructure(ts);
 
         probability_.linkTo(
-            boost::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
+            ext::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
             false);
 
         resetEngine();
@@ -179,10 +179,10 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
@@ -264,11 +264,11 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
             paymentConvention_, dayCounter_, settlesAccrual_,
             paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
         switch (model_) {
           case CreditDefaultSwap::ISDA:
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(

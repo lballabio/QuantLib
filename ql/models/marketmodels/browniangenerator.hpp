@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         virtual ~BrownianGeneratorFactory() {}
 
-        virtual boost::shared_ptr<BrownianGenerator> create(Size factors,
+        virtual ext::shared_ptr<BrownianGenerator> create(Size factors,
                                                             Size steps) const = 0;
     };
 

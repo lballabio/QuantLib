@@ -37,8 +37,8 @@
 namespace QuantLib {
 
     NormalCLVModel::NormalCLVModel(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        const ext::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
         const std::vector<Date>& maturityDates,
         Size lagrangeOrder, Real pMax, Real pMin)
     : x_(M_SQRT2*GaussHermiteIntegration(lagrangeOrder).x()),

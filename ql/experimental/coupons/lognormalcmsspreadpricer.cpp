@@ -32,7 +32,7 @@ using std::sqrt;
 namespace QuantLib {
 
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(
-        const boost::shared_ptr<CmsCouponPricer> cmsPricer,
+        const ext::shared_ptr<CmsCouponPricer> cmsPricer,
         const Handle<Quote> &correlation,
         const Handle<YieldTermStructure> &couponDiscountCurve,
         const Size integrationPoints,
@@ -163,14 +163,14 @@ namespace QuantLib {
                                 << ") should be positive while gearing2 ("
                                 << gearing2_ << ") should be negative");
 
-        c1_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c1_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
             coupon_->accrualEndDate(), coupon_->fixingDays(),
             index_->swapIndex1(), 1.0, 0.0, coupon_->referencePeriodStart(),
             coupon_->referencePeriodEnd(), coupon_->dayCounter(),
             coupon_->isInArrears()));
 
-        c2_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c2_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
             coupon_->accrualEndDate(), coupon_->fixingDays(),
             index_->swapIndex2(), 1.0, 0.0, coupon_->referencePeriodStart(),
@@ -202,9 +202,9 @@ namespace QuantLib {
                     key, std::make_pair(adjustedRate1_, adjustedRate2_)));
             }
 
-            boost::shared_ptr<SwaptionVolatilityStructure> swvol =
+            ext::shared_ptr<SwaptionVolatilityStructure> swvol =
                 *cmsPricer_->swaptionVolatility();
-            boost::shared_ptr<SwaptionVolatilityCube> swcub =
+            ext::shared_ptr<SwaptionVolatilityCube> swcub =
                 boost::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
 
             if(inheritedVolatilityType_ && volType_ == ShiftedLognormal) {

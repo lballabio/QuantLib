@@ -60,9 +60,9 @@ namespace QuantLib {
     MTBrownianGeneratorFactory::MTBrownianGeneratorFactory(unsigned long seed)
     : seed_(seed) {}
 
-    boost::shared_ptr<BrownianGenerator>
+    ext::shared_ptr<BrownianGenerator>
     MTBrownianGeneratorFactory::create(Size factors, Size steps) const {
-        return boost::shared_ptr<BrownianGenerator>(
+        return ext::shared_ptr<BrownianGenerator>(
                               new MTBrownianGenerator(factors, steps, seed_));
     }
 

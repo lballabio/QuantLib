@@ -34,7 +34,7 @@ namespace QuantLib {
         MultiStepOptionlets(const std::vector<Time>& rateTimes,
                             const std::vector<Real>& accruals,
                             const std::vector<Time>& paymentTimes,
-                            const std::vector<boost::shared_ptr<Payoff> >&);
+                            const std::vector<ext::shared_ptr<Payoff> >&);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
@@ -50,7 +50,7 @@ namespace QuantLib {
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
-        std::vector<boost::shared_ptr<Payoff> > payoffs_;
+        std::vector<ext::shared_ptr<Payoff> > payoffs_;
         // things that vary in a path
         Size currentIndex_;
     };

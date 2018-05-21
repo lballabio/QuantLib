@@ -32,7 +32,7 @@ using boost::bind;
 namespace QuantLib {
 
     AmericanPathPricer::AmericanPathPricer(
-        const boost::shared_ptr<Payoff>& payoff,
+        const ext::shared_ptr<Payoff>& payoff,
         Size polynomOrder,
         LsmBasisSystem::PolynomType polynomType)
     : scalingValue_(1.0),
@@ -50,7 +50,7 @@ namespace QuantLib {
         // the payoff gives an additional value
         v_.push_back(boost::bind(&AmericanPathPricer::payoff, this, _1));
 
-        const boost::shared_ptr<StrikedTypePayoff> strikePayoff
+        const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
         if (strikePayoff) {

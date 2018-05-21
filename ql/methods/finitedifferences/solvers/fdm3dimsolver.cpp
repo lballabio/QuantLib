@@ -32,7 +32,7 @@ namespace QuantLib {
     Fdm3DimSolver::Fdm3DimSolver(
                         const FdmSolverDesc& solverDesc,
                         const FdmSchemeDesc& schemeDesc,
-                        const boost::shared_ptr<FdmLinearOpComposite>& op)
+                        const ext::shared_ptr<FdmLinearOpComposite>& op)
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
@@ -49,8 +49,8 @@ namespace QuantLib {
                             solverDesc.mesher->layout()->dim()[0])),
       interpolation_(solverDesc.mesher->layout()->dim()[2]) {
 
-        const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         x_.reserve(layout->dim()[0]);
         y_.reserve(layout->dim()[1]);

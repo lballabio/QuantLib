@@ -31,7 +31,7 @@ namespace QuantLib {
     Fdm2DimSolver::Fdm2DimSolver(
                              const FdmSolverDesc& solverDesc,
                              const FdmSchemeDesc& schemeDesc,
-                             const boost::shared_ptr<FdmLinearOpComposite>& op)
+                             const ext::shared_ptr<FdmLinearOpComposite>& op)
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
@@ -46,8 +46,8 @@ namespace QuantLib {
       resultValues_ (solverDesc.mesher->layout()->dim()[1],
                      solverDesc.mesher->layout()->dim()[0]) {
 
-        const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         x_.reserve(layout->dim()[0]);
         y_.reserve(layout->dim()[1]);

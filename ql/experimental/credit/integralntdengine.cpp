@@ -46,7 +46,7 @@ namespace QuantLib {
         bool basketIsHomogeneous = true;// hardcoded by now
 
         for (Size i = 0; i < arguments_.premiumLeg.size(); i++) {
-            boost::shared_ptr<FixedRateCoupon> coupon =
+            ext::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(
                     arguments_.premiumLeg[i]);
             Date d = arguments_.premiumLeg[i]->date();

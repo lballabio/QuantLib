@@ -34,8 +34,8 @@
 
 namespace QuantLib {
     SquareRootCLVModel::SquareRootCLVModel(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-        const boost::shared_ptr<SquareRootProcess>& sqrtProcess,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        const ext::shared_ptr<SquareRootProcess>& sqrtProcess,
         const std::vector<Date>& maturityDates,
         Size lagrangeOrder, Real pMax, Real pMin)
     : pMax_         (pMax),
@@ -141,7 +141,7 @@ namespace QuantLib {
         std::vector<Date> maturityDates = model.maturityDates_;
         std::sort(maturityDates.begin(), maturityDates.end());
 
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>&
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>&
             bsProcess = model.bsProcess_;
 
         for (Size i=0, n = maturityDates.size(); i < n; ++i) {

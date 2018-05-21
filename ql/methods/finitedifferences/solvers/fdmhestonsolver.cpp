@@ -32,7 +32,7 @@ namespace QuantLib {
         const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
         const Handle<FdmQuantoHelper>& quantoHelper,
-        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
     : process_(process),
       solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
@@ -44,11 +44,11 @@ namespace QuantLib {
     }
 
     void FdmHestonSolver::performCalculations() const {
-        boost::shared_ptr<FdmLinearOpComposite> op(
+        ext::shared_ptr<FdmLinearOpComposite> op(
 			boost::make_shared<FdmHestonOp>(
                 solverDesc_.mesher, process_.currentLink(),
                 (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
-                             : boost::shared_ptr<FdmQuantoHelper>(),
+                             : ext::shared_ptr<FdmQuantoHelper>(),
                 leverageFct_));
 
         solver_ = boost::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);

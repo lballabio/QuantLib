@@ -42,7 +42,7 @@ namespace QuantLib {
         const Date& referenceDate,
         const std::vector<Date>& dates,
         const std::vector<Real>& strikes,
-        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const ext::shared_ptr<Matrix>& localVolMatrix,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
@@ -70,7 +70,7 @@ namespace QuantLib {
         const Date& referenceDate,
         const std::vector<Time>& times,
         const std::vector<Real>& strikes,
-        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const ext::shared_ptr<Matrix>& localVolMatrix,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
@@ -93,8 +93,8 @@ namespace QuantLib {
     FixedLocalVolSurface::FixedLocalVolSurface(
         const Date& referenceDate,
         const std::vector<Time>& times,
-        const std::vector<boost::shared_ptr<std::vector<Real> > > & strikes,
-        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const std::vector<ext::shared_ptr<std::vector<Real> > > & strikes,
+        const ext::shared_ptr<Matrix>& localVolMatrix,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)

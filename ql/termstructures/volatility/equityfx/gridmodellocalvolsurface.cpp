@@ -32,7 +32,7 @@ namespace QuantLib {
     GridModelLocalVolSurface::GridModelLocalVolSurface(
         const Date& referenceDate,
         const std::vector<Date>& dates,
-        const std::vector<boost::shared_ptr<std::vector<Real> > >& strikes,
+        const std::vector<ext::shared_ptr<std::vector<Real> > >& strikes,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
@@ -85,7 +85,7 @@ namespace QuantLib {
     }
 
     void GridModelLocalVolSurface::generateArguments() {
-        const boost::shared_ptr<Matrix> localVolMatrix(
+        const ext::shared_ptr<Matrix> localVolMatrix(
             new Matrix(strikes_.front()->size(), times_.size()));
 
         std::transform(arguments_.begin(), arguments_.end(),

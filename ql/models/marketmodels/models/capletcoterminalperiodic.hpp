@@ -38,11 +38,11 @@ namespace QuantLib {
 
      Integer capletSwaptionPeriodicCalibration(
         const EvolutionDescription& evolution,
-        const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+        const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
         VolatilityInterpolationSpecifier&
         displacedSwapVariances,
         const std::vector<Volatility>& capletVols,
-        const boost::shared_ptr<CurveState>& cs,
+        const ext::shared_ptr<CurveState>& cs,
         const Spread displacement,
         Real caplet0Swaption1Priority, 
         Size numberOfFactors,

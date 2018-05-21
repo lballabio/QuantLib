@@ -21,7 +21,6 @@
 #include <ql/experimental/commodities/unitofmeasureconversion.hpp>
 #include <ql/errors.hpp>
 
-using boost::shared_ptr;
 using std::string;
 
 namespace QuantLib {
@@ -31,7 +30,7 @@ namespace QuantLib {
                                            const UnitOfMeasure& source,
                                            const UnitOfMeasure& target,
                                            Real conversionFactor) {
-        data_ = shared_ptr<UnitOfMeasureConversion::Data>(
+        data_ = ext::shared_ptr<UnitOfMeasureConversion::Data>(
               new UnitOfMeasureConversion::Data(commodityType, source, target,
                                                 conversionFactor, Direct));
     }
@@ -39,7 +38,7 @@ namespace QuantLib {
     UnitOfMeasureConversion::UnitOfMeasureConversion(
                                             const UnitOfMeasureConversion& r1,
                                             const UnitOfMeasureConversion& r2) {
-        data_ = shared_ptr<UnitOfMeasureConversion::Data>(
+        data_ = ext::shared_ptr<UnitOfMeasureConversion::Data>(
                                    new UnitOfMeasureConversion::Data(r1, r2));
     }
 
@@ -55,8 +54,8 @@ namespace QuantLib {
     UnitOfMeasureConversion::Data::Data(const UnitOfMeasureConversion& r1,
                                         const UnitOfMeasureConversion& r2) {
         conversionFactorChain = std::make_pair(
-            shared_ptr<UnitOfMeasureConversion>(new UnitOfMeasureConversion(r1)),
-            shared_ptr<UnitOfMeasureConversion>(new UnitOfMeasureConversion(r2)));
+            ext::shared_ptr<UnitOfMeasureConversion>(new UnitOfMeasureConversion(r1)),
+            ext::shared_ptr<UnitOfMeasureConversion>(new UnitOfMeasureConversion(r2)));
     }
 
     Quantity UnitOfMeasureConversion::convert(const Quantity& quantity) const {

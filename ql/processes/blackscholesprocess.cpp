@@ -54,7 +54,7 @@ namespace QuantLib {
              const Handle<YieldTermStructure>& dividendTS,
              const Handle<YieldTermStructure>& riskFreeTS,
              const Handle<BlackVolTermStructure>& blackVolTS,
-             const boost::shared_ptr<discretization>& disc,
+             const ext::shared_ptr<discretization>& disc,
              bool forceDiscretization)
     : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
@@ -184,7 +184,7 @@ namespace QuantLib {
             isStrikeIndependent_=true;
 
             // constant Black vol?
-            boost::shared_ptr<BlackConstantVol> constVol =
+            ext::shared_ptr<BlackConstantVol> constVol =
                 boost::dynamic_pointer_cast<BlackConstantVol>(
                                                           *blackVolatility());
             if (constVol) {
@@ -198,7 +198,7 @@ namespace QuantLib {
             }
 
             // ok, so it's not constant. Maybe it's strike-independent?
-            boost::shared_ptr<BlackVarianceCurve> volCurve =
+            ext::shared_ptr<BlackVarianceCurve> volCurve =
                 boost::dynamic_pointer_cast<BlackVarianceCurve>(
                                                           *blackVolatility());
             if (volCurve) {
@@ -229,12 +229,12 @@ namespace QuantLib {
                               const Handle<Quote>& x0,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
-                              const boost::shared_ptr<discretization>& d,
+                              const ext::shared_ptr<discretization>& d,
                               bool forceDiscretization)
     : GeneralizedBlackScholesProcess(
              x0,
              // no dividend yield
-             Handle<YieldTermStructure>(boost::shared_ptr<YieldTermStructure>(
+             Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
                   new FlatForward(0, NullCalendar(), 0.0, Actual365Fixed()))),
              riskFreeTS,
              blackVolTS,
@@ -246,7 +246,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& dividendTS,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
-                              const boost::shared_ptr<discretization>& d,
+                              const ext::shared_ptr<discretization>& d,
                               bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,dividendTS,riskFreeTS,blackVolTS,d,
                                      forceDiscretization) {}
@@ -255,7 +255,7 @@ namespace QuantLib {
     BlackProcess::BlackProcess(const Handle<Quote>& x0,
                                const Handle<YieldTermStructure>& riskFreeTS,
                                const Handle<BlackVolTermStructure>& blackVolTS,
-                               const boost::shared_ptr<discretization>& d,
+                               const ext::shared_ptr<discretization>& d,
                                bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,riskFreeTS,riskFreeTS,blackVolTS,d,
                                      forceDiscretization) {}
@@ -266,7 +266,7 @@ namespace QuantLib {
                           const Handle<YieldTermStructure>& foreignRiskFreeTS,
                           const Handle<YieldTermStructure>& domesticRiskFreeTS,
                           const Handle<BlackVolTermStructure>& blackVolTS,
-                          const boost::shared_ptr<discretization>& d,
+                          const ext::shared_ptr<discretization>& d,
                           bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,foreignRiskFreeTS,domesticRiskFreeTS,
                                      blackVolTS,d,forceDiscretization) {}

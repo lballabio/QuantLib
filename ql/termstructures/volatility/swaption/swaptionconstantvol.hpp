@@ -84,9 +84,9 @@ namespace QuantLib {
         //! volatility type
         VolatilityType volatilityType() const;
       protected:
-        boost::shared_ptr<SmileSection> smileSectionImpl(const Date&,
+        ext::shared_ptr<SmileSection> smileSectionImpl(const Date&,
                                                          const Period&) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time,
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time,
                                                          Time) const;
         Volatility volatilityImpl(const Date&,
                                   const Period&,

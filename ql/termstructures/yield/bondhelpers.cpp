@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     BondHelper::BondHelper(const Handle<Quote>& price,
-                           const boost::shared_ptr<Bond>& bond,
+                           const ext::shared_ptr<Bond>& bond,
                            const bool useCleanPrice)
     : RateHelper(price), bond_(boost::make_shared<Bond>(*bond)) {
 
@@ -47,7 +47,7 @@ namespace QuantLib {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
-            boost::shared_ptr<YieldTermStructure>(t, null_deleter()), false);
+            ext::shared_ptr<YieldTermStructure>(t, null_deleter()), false);
 
         BootstrapHelper<YieldTermStructure>::setTermStructure(t);
     }
@@ -85,7 +85,7 @@ namespace QuantLib {
                                     bool exCouponEndOfMonth,
                                     const bool useCleanPrice)
     : BondHelper(price,
-                 boost::shared_ptr<Bond>(
+                 ext::shared_ptr<Bond>(
                      new FixedRateBond(settlementDays, faceAmount, schedule,
                                        coupons, dayCounter, paymentConvention,
                                        redemption, issueDate, paymentCalendar,
@@ -111,7 +111,7 @@ namespace QuantLib {
                             const bool growthOnly,
                             Real baseCPI,
                             const Period& observationLag,
-                            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                            const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
                             CPI::InterpolationType observationInterpolation,
                             const Schedule& schedule,
                             const std::vector<Rate>& fixedRate,
@@ -125,7 +125,7 @@ namespace QuantLib {
                             bool exCouponEndOfMonth,
                             const bool useCleanPrice)
     : BondHelper(price,
-                 boost::shared_ptr<Bond>(
+                 ext::shared_ptr<Bond>(
                      new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI, 
                                        observationLag, cpiIndex, observationInterpolation,
                                        schedule, fixedRate, accrualDayCounter, paymentConvention,

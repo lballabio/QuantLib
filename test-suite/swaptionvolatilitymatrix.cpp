@@ -54,7 +54,7 @@ namespace {
             Settings::instance().evaluationDate() =
                 conventions.calendar.adjust(Date::todaysDate());
             atmVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
-                boost::shared_ptr<SwaptionVolatilityStructure>(new
+                ext::shared_ptr<SwaptionVolatilityStructure>(new
                     SwaptionVolatilityMatrix(conventions.calendar,
                                              conventions.optionBdc,
                                              atm.tenors.options,
@@ -62,7 +62,7 @@ namespace {
                                              atm.volsHandle,
                                              conventions.dayCounter)));
             termStructure.linkTo(
-                boost::shared_ptr<YieldTermStructure>(new
+                ext::shared_ptr<YieldTermStructure>(new
                     FlatForward(0, conventions.calendar,
                                 0.05, Actual365Fixed())));
         }
@@ -70,7 +70,7 @@ namespace {
         // utilities
         void makeObservabilityTest(
                 const std::string& description,
-                const boost::shared_ptr<SwaptionVolatilityStructure>& vol,
+                const ext::shared_ptr<SwaptionVolatilityStructure>& vol,
                 bool mktDataFloating,
                 bool referenceDateFloating) {
             Rate dummyStrike = .02;
@@ -111,7 +111,7 @@ namespace {
 
         void makeCoherenceTest(
                 const std::string& description,
-                const boost::shared_ptr<SwaptionVolatilityDiscrete>& vol) {
+                const ext::shared_ptr<SwaptionVolatilityDiscrete>& vol) {
 
             for (Size i=0; i<atm.tenors.options.size(); ++i) {
                 Date optionDate =
@@ -134,7 +134,7 @@ namespace {
                          "\n  exp. option time : " << vol->optionTimes()[i]);
             }
 
-            boost::shared_ptr<BlackSwaptionEngine> engine(new
+            ext::shared_ptr<BlackSwaptionEngine> engine(new
                 BlackSwaptionEngine(termStructure,
                                     Handle<SwaptionVolatilityStructure>(vol)));
 
@@ -147,7 +147,7 @@ namespace {
                                "\n actual swap length: " << swapLength <<
                                "\n   exp. swap length: " << years(atm.tenors.swaps[j]));
 
-                boost::shared_ptr<SwapIndex> swapIndex(new
+                ext::shared_ptr<SwapIndex> swapIndex(new
                     EuriborSwapIsdaFixA(atm.tenors.swaps[j], termStructure));
 
                 for (Size i=0; i<atm.tenors.options.size(); ++i) {
@@ -264,12 +264,12 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SwaptionVolatilityMatrix> vol;
+    ext::shared_ptr<SwaptionVolatilityMatrix> vol;
     std::string description;
 
     //floating reference date, floating market data
     description = "floating reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
@@ -280,7 +280,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
@@ -292,7 +292,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     // floating reference date, fixed market data
     description = "floating reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
@@ -303,7 +303,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
@@ -328,12 +328,12 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SwaptionVolatilityMatrix> vol;
+    ext::shared_ptr<SwaptionVolatilityMatrix> vol;
     std::string description;
 
     //floating reference date, floating market data
     description = "floating reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
@@ -344,7 +344,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
@@ -356,7 +356,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     // floating reference date, fixed market data
     description = "floating reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
@@ -367,7 +367,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
+    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
         SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,

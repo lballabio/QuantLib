@@ -41,7 +41,7 @@ namespace QuantLib {
 
     std::vector<Real> coterminalSwapPseudoRoots(
             const PiecewiseConstantCorrelation&,
-            const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >&,
+            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&,
             const std::vector<Time>&);
 }
 

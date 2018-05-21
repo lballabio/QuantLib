@@ -60,7 +60,7 @@ Integer sessionId() { return 0; }
 // helper function that prints a basket of calibrating swaptions to std::cout
 
 void printBasket(
-    const std::vector<boost::shared_ptr<CalibrationHelper> > &basket) {
+    const std::vector<ext::shared_ptr<CalibrationHelper> > &basket) {
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(20)
               << "Maturity" << std::setw(20) << "Nominal" << std::setw(14)
               << "Rate" << std::setw(12) << "Pay/Rec" << std::setw(14)
@@ -72,7 +72,7 @@ void printBasket(
                  "===================="
                  "==================" << std::endl;
     for (Size j = 0; j < basket.size(); ++j) {
-        boost::shared_ptr<SwaptionHelper> helper =
+        ext::shared_ptr<SwaptionHelper> helper =
             boost::dynamic_pointer_cast<SwaptionHelper>(basket[j]);
         Date endDate = helper->underlyingSwap()->fixedSchedule().dates().back();
         Real nominal = helper->underlyingSwap()->nominal();
@@ -94,7 +94,7 @@ void printBasket(
 // helper function that prints the result of a model calibraiton to std::cout
 
 void printModelCalibration(
-    const std::vector<boost::shared_ptr<CalibrationHelper> > &basket,
+    const std::vector<ext::shared_ptr<CalibrationHelper> > &basket,
     const Array &volatility) {
 
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(14)
@@ -109,7 +109,7 @@ void printModelCalibration(
                  "====================" << std::endl;
 
     for (Size j = 0; j < basket.size(); ++j) {
-        boost::shared_ptr<SwaptionHelper> helper =
+        ext::shared_ptr<SwaptionHelper> helper =
             boost::dynamic_pointer_cast<SwaptionHelper>(basket[j]);
         Date expiry = helper->swaption()->exercise()->date(0);
         std::ostringstream expiryString;
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
         Handle<YieldTermStructure> ytsOis(boost::make_shared<FlatForward>(
             0, TARGET(), oisQuote, Actual365Fixed()));
 
-        boost::shared_ptr<IborIndex> euribor6m =
+        ext::shared_ptr<IborIndex> euribor6m =
             boost::make_shared<Euribor>(6 * Months, yts6m);
 
         std::cout
@@ -212,7 +212,7 @@ int main(int argc, char *argv[]) {
                                   ModifiedFollowing, DateGeneration::Forward,
                                   false);
 
-        boost::shared_ptr<NonstandardSwap> underlying =
+        ext::shared_ptr<NonstandardSwap> underlying =
             boost::make_shared<NonstandardSwap>(VanillaSwap(
                 VanillaSwap::Payer, 1.0, fixedSchedule, strike, Thirty360(),
                 floatingSchedule, euribor6m, 0.00, Actual360()));
@@ -222,9 +222,9 @@ int main(int argc, char *argv[]) {
             exerciseDates.push_back(
                 TARGET().advance(fixedSchedule[i], -2 * Days));
 
-        boost::shared_ptr<Exercise> exercise =
+        ext::shared_ptr<Exercise> exercise =
             boost::make_shared<BermudanExercise>(exerciseDates, false);
-        boost::shared_ptr<NonstandardSwaption> swaption =
+        ext::shared_ptr<NonstandardSwaption> swaption =
             boost::make_shared<NonstandardSwaption>(underlying, exercise);
 
         std::cout
@@ -247,13 +247,13 @@ int main(int argc, char *argv[]) {
                "\nwhere explicitly specified (e.g. in a swaption pricing "
                "engine)." << std::endl;
 
-        boost::shared_ptr<Gsr> gsr = boost::make_shared<Gsr>(
+        ext::shared_ptr<Gsr> gsr = boost::make_shared<Gsr>(
             yts6m, stepDates, sigmas, reversion);
 
-        boost::shared_ptr<PricingEngine> swaptionEngine =
+        ext::shared_ptr<PricingEngine> swaptionEngine =
             boost::make_shared<Gaussian1dSwaptionEngine>(gsr, 64, 7.0, true,
                                                          false, ytsOis);
-        boost::shared_ptr<PricingEngine> nonstandardSwaptionEngine =
+        ext::shared_ptr<PricingEngine> nonstandardSwaptionEngine =
             boost::make_shared<Gaussian1dNonstandardSwaptionEngine>(
                 gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis);
 
@@ -268,11 +268,11 @@ int main(int argc, char *argv[]) {
 
         std::cout << "\nThe resulting basket looks as follows:" << std::endl;
 
-        boost::shared_ptr<SwapIndex> swapBase =
+        ext::shared_ptr<SwapIndex> swapBase =
             boost::make_shared<EuriborSwapIsdaFixA>(10 * Years, yts6m, ytsOis);
 
         timer.start();
-        std::vector<boost::shared_ptr<CalibrationHelper> > basket =
+        std::vector<ext::shared_ptr<CalibrationHelper> > basket =
             swaption->calibrationBasket(swapBase, *swaptionVol,
                                         BasketGeneratingEngine::Naive);
         timer.stop();
@@ -377,11 +377,11 @@ int main(int argc, char *argv[]) {
         }
         std::vector<Real> strikes(nominalFixed.size(), strike);
 
-        boost::shared_ptr<NonstandardSwap> underlying2(new NonstandardSwap(
+        ext::shared_ptr<NonstandardSwap> underlying2(new NonstandardSwap(
             VanillaSwap::Payer, nominalFixed, nominalFloating, fixedSchedule,
             strikes, Thirty360(), floatingSchedule, euribor6m, 1.0, 0.0,
             Actual360()));
-        boost::shared_ptr<NonstandardSwaption> swaption2 =
+        ext::shared_ptr<NonstandardSwaption> swaption2 =
             boost::make_shared<NonstandardSwaption>(underlying2, exercise);
 
         swaption2->setPricingEngine(nonstandardSwaptionEngine);
@@ -413,25 +413,25 @@ int main(int argc, char *argv[]) {
         std::vector<Real> nominalFloating2(nominalFloating.size(),
                                            0.0); // null the second leg
 
-        boost::shared_ptr<NonstandardSwap> underlying3(new NonstandardSwap(
+        ext::shared_ptr<NonstandardSwap> underlying3(new NonstandardSwap(
             VanillaSwap::Receiver, nominalFixed2, nominalFloating2,
             fixedSchedule, strikes, Thirty360(), floatingSchedule, euribor6m,
             1.0, 0.0, Actual360(), false,
             true)); // final capital exchange
 
-        boost::shared_ptr<RebatedExercise> exercise2 =
+        ext::shared_ptr<RebatedExercise> exercise2 =
             boost::make_shared<RebatedExercise>(*exercise, -1.0, 2, TARGET());
 
-        boost::shared_ptr<NonstandardSwaption> swaption3 =
+        ext::shared_ptr<NonstandardSwaption> swaption3 =
             boost::make_shared<NonstandardSwaption>(underlying3, exercise2);
 
-        boost::shared_ptr<SimpleQuote> oas0 =
+        ext::shared_ptr<SimpleQuote> oas0 =
             boost::make_shared<SimpleQuote>(0.0);
-        boost::shared_ptr<SimpleQuote> oas100 =
+        ext::shared_ptr<SimpleQuote> oas100 =
             boost::make_shared<SimpleQuote>(0.01);
         RelinkableHandle<Quote> oas(oas0);
 
-        boost::shared_ptr<PricingEngine> nonstandardSwaptionEngine2 =
+        ext::shared_ptr<PricingEngine> nonstandardSwaptionEngine2 =
             boost::make_shared<Gaussian1dNonstandardSwaptionEngine>(
                 gsr, 64, 7.0, true, false, oas); // change discounting to 6m
 
@@ -508,15 +508,15 @@ int main(int argc, char *argv[]) {
                "\n6M swaption. The maturity is again 10 years and the option"
                "\nis exercisable on a yearly basis" << std::endl;
 
-        boost::shared_ptr<FloatFloatSwap> underlying4(new FloatFloatSwap(
+        ext::shared_ptr<FloatFloatSwap> underlying4(new FloatFloatSwap(
                 VanillaSwap::Payer, 1.0, 1.0, fixedSchedule, swapBase,
                 Thirty360(), floatingSchedule, euribor6m, Actual360(), false,
                 false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010));
 
-        boost::shared_ptr<FloatFloatSwaption> swaption4 =
+        ext::shared_ptr<FloatFloatSwaption> swaption4 =
             boost::make_shared<FloatFloatSwaption>(underlying4, exercise);
 
-        boost::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
+        ext::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
             floatSwaptionEngine(new Gaussian1dFloatFloatSwaptionEngine(
                     gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true));
 
@@ -532,14 +532,14 @@ int main(int argc, char *argv[]) {
 
         const Leg &leg0 = underlying4->leg(0);
         const Leg &leg1 = underlying4->leg(1);
-        boost::shared_ptr<CmsCouponPricer> cmsPricer =
+        ext::shared_ptr<CmsCouponPricer> cmsPricer =
             boost::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
-        boost::shared_ptr<IborCouponPricer> iborPricer(new BlackIborCouponPricer);
+        ext::shared_ptr<IborCouponPricer> iborPricer(new BlackIborCouponPricer);
 
         setCouponPricer(leg0, cmsPricer);
         setCouponPricer(leg1, iborPricer);
 
-        boost::shared_ptr<PricingEngine> swapPricer =
+        ext::shared_ptr<PricingEngine> swapPricer =
             boost::make_shared<DiscountingSwapEngine>(ytsOis);
 
         underlying4->setPricingEngine(swapPricer);
@@ -605,16 +605,16 @@ int main(int argc, char *argv[]) {
         std::vector<Date> cmsFixingDates(markovStepDates);
         std::vector<Real> markovSigmas(markovStepDates.size() + 1, 0.01);
         std::vector<Period> tenors(cmsFixingDates.size(), 10 * Years);
-        boost::shared_ptr<MarkovFunctional> markov =
+        ext::shared_ptr<MarkovFunctional> markov =
             boost::make_shared<MarkovFunctional>(
                 yts6m, reversion, markovStepDates, markovSigmas, swaptionVol,
                 cmsFixingDates, tenors, swapBase,
                 MarkovFunctional::ModelSettings().withYGridPoints(16));
 
-        boost::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngineMarkov =
+        ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngineMarkov =
             boost::make_shared<Gaussian1dSwaptionEngine>(markov, 8, 5.0, true,
                                                          false, ytsOis);
-        boost::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
+        ext::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
             floatEngineMarkov =
                 boost::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
                     markov, 16, 7.0, true, false, Handle<Quote>(), ytsOis,

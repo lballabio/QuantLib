@@ -70,7 +70,7 @@ namespace QuantLib {
                      case the <b>performCalculation</b> method
                      was overridden in a derived class.
         */
-        void setPricingEngine(const boost::shared_ptr<PricingEngine>&);
+        void setPricingEngine(const ext::shared_ptr<PricingEngine>&);
         //@}
         /*! When a derived argument structure is defined for an
             instrument, this method should be overridden to fill
@@ -107,7 +107,7 @@ namespace QuantLib {
         mutable Date valuationDate_;
         mutable std::map<std::string,boost::any> additionalResults_;
         //@}
-        boost::shared_ptr<PricingEngine> engine_;
+        ext::shared_ptr<PricingEngine> engine_;
     };
 
     class Instrument::results : public virtual PricingEngine::results {
@@ -131,7 +131,7 @@ namespace QuantLib {
       valuationDate_(Date()) {}
 
     inline void Instrument::setPricingEngine(
-                                  const boost::shared_ptr<PricingEngine>& e) {
+                                  const ext::shared_ptr<PricingEngine>& e) {
         if (engine_)
             unregisterWith(engine_);
         engine_ = e;

@@ -42,7 +42,7 @@ namespace QuantLib {
       protected:
         Region() {}
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
     };
 
     struct Region::Data {

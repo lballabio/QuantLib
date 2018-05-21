@@ -65,7 +65,7 @@ namespace QuantLib {
                                       Real leftConditionValue,
                                       CubicInterpolation::BoundaryCondition rightC,
                                       Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::MixedInterpolationImpl<I1, I2, Linear, Cubic>(
                     xBegin, xEnd, yBegin, n, behavior,
                     Linear(),

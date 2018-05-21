@@ -26,7 +26,7 @@ namespace QuantLib {
                            Option::Type type,
                            Real strike1,
                            Real strike2,
-                           const boost::shared_ptr<Exercise>& exercise)
+                           const ext::shared_ptr<Exercise>& exercise)
     : MultiAssetOption(boost::make_shared<PlainVanillaPayoff>(type, strike1),
                        exercise), X2_(strike2) {}
 

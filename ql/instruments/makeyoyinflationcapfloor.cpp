@@ -27,7 +27,7 @@ namespace QuantLib {
 
     MakeYoYInflationCapFloor::MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
                                 const Size& length, const Calendar& cal,
-                                const boost::shared_ptr<YoYInflationIndex>& index,
+                                const ext::shared_ptr<YoYInflationIndex>& index,
                                 const Period& observationLag, Rate strike,
                                 const Period& forwardStart)
     : capFloorType_(capFloorType), length_(length),
@@ -39,11 +39,11 @@ namespace QuantLib {
      {}
 
     MakeYoYInflationCapFloor::operator YoYInflationCapFloor() const {
-        boost::shared_ptr<YoYInflationCapFloor> capfloor = *this;
+        ext::shared_ptr<YoYInflationCapFloor> capfloor = *this;
         return *capfloor;
     }
 
-    MakeYoYInflationCapFloor::operator boost::shared_ptr<YoYInflationCapFloor>() const {
+    MakeYoYInflationCapFloor::operator ext::shared_ptr<YoYInflationCapFloor>() const {
 
         Date startDate;
         if (effectiveDate_ != Date()) {
@@ -87,7 +87,7 @@ namespace QuantLib {
                                                  false, fc->referenceDate());
         }
 
-        boost::shared_ptr<YoYInflationCapFloor> capFloor(new
+        ext::shared_ptr<YoYInflationCapFloor> capFloor(new
                     YoYInflationCapFloor(capFloorType_, leg, strikeVector));
         capFloor->setPricingEngine(engine_);
         return capFloor;
@@ -128,7 +128,7 @@ namespace QuantLib {
     }
 
     MakeYoYInflationCapFloor& MakeYoYInflationCapFloor::withPricingEngine(
-        const boost::shared_ptr<PricingEngine>& engine) {
+        const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }

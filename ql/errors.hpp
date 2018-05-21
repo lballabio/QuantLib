@@ -52,7 +52,7 @@ namespace QuantLib {
         //! returns the error message.
         const char* what() const throw ();
       private:
-        boost::shared_ptr<std::string> message_;
+        ext::shared_ptr<std::string> message_;
     };
 
 }

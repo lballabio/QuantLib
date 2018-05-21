@@ -40,7 +40,7 @@ void TwoAssetCorrelationOptionTest::testAnalyticEngine() {
     Real strike2 = 70.0;
     Date exDate = today + 180;
 
-    boost::shared_ptr<Exercise> exercise =
+    ext::shared_ptr<Exercise> exercise =
         boost::make_shared<EuropeanExercise>(exDate);
 
     TwoAssetCorrelationOption option(type, strike1, strike2, exercise);
@@ -54,13 +54,13 @@ void TwoAssetCorrelationOptionTest::testAnalyticEngine() {
     Handle<BlackVolTermStructure> blackVolTS2(flatVol(today, 0.3, dc));
     Handle<Quote> correlation(boost::make_shared<SimpleQuote>(0.75));
 
-    boost::shared_ptr<BlackScholesMertonProcess> process1 =
+    ext::shared_ptr<BlackScholesMertonProcess> process1 =
         boost::make_shared<BlackScholesMertonProcess>(underlying1,
                                                       dividendTS1,
                                                       riskFreeTS,
                                                       blackVolTS1);
 
-    boost::shared_ptr<BlackScholesMertonProcess> process2 =
+    ext::shared_ptr<BlackScholesMertonProcess> process2 =
         boost::make_shared<BlackScholesMertonProcess>(underlying2,
                                                       dividendTS2,
                                                       riskFreeTS,

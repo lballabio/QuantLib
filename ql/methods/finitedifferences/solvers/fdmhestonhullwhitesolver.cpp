@@ -41,7 +41,7 @@ namespace QuantLib {
     }
 
     void FdmHestonHullWhiteSolver::performCalculations() const {
-        const boost::shared_ptr<FdmLinearOpComposite> op(
+        const ext::shared_ptr<FdmLinearOpComposite> op(
 			boost::make_shared<FdmHestonHullWhiteOp>(solverDesc_.mesher,
                                      hestonProcess_.currentLink(),
                                      hwProcess_.currentLink(), 

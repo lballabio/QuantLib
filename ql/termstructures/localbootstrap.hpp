@@ -41,7 +41,7 @@ namespace QuantLib {
         typedef typename Curve::traits_type Traits;
         typedef typename Traits::helper helper;
         typedef
-          typename std::vector< boost::shared_ptr<helper> >::const_iterator
+          typename std::vector< ext::shared_ptr<helper> >::const_iterator
                                                               helper_iterator;
       public:
         PenaltyFunction(Curve* curve,

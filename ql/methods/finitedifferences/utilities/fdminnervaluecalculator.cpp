@@ -36,8 +36,8 @@
 namespace QuantLib {
 
     FdmLogInnerValue::FdmLogInnerValue(
-        const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<Payoff>& payoff,
+        const ext::shared_ptr<FdmMesher>& mesher,
         Size direction)
     : payoff_(payoff), 
       mesher_(mesher),
@@ -56,7 +56,7 @@ namespace QuantLib {
             avgInnerValues_.resize(mesher_->layout()->dim()[direction_]);
             std::deque<bool> initialized(avgInnerValues_.size(), false);
 
-            const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
             for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
                  ++iter) {
@@ -103,8 +103,8 @@ namespace QuantLib {
     }
     
     FdmLogBasketInnerValue::FdmLogBasketInnerValue(
-                                const boost::shared_ptr<BasketPayoff>& payoff,
-                                const boost::shared_ptr<FdmMesher>& mesher)
+                                const ext::shared_ptr<BasketPayoff>& payoff,
+                                const ext::shared_ptr<FdmMesher>& mesher)
     : payoff_(payoff),
       mesher_(mesher) { }
 

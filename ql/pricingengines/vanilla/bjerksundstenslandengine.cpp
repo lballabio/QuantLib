@@ -78,7 +78,7 @@ namespace QuantLib {
 
     BjerksundStenslandApproximationEngine::
     BjerksundStenslandApproximationEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -88,13 +88,13 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex =
+        ext::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "payoff at expiry not handled");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
@@ -113,7 +113,7 @@ namespace QuantLib {
             // use put-call simmetry
             std::swap(spot, strike);
             std::swap(riskFreeDiscount, dividendDiscount);
-            payoff = boost::shared_ptr<PlainVanillaPayoff>(
+            payoff = ext::shared_ptr<PlainVanillaPayoff>(
                                 new PlainVanillaPayoff(Option::Call, strike));
         }
 

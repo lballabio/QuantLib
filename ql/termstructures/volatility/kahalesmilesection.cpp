@@ -24,7 +24,7 @@ using std::sqrt;
 namespace QuantLib {
 
     KahaleSmileSection::KahaleSmileSection(
-        const boost::shared_ptr<SmileSection> source, const Real atm,
+        const ext::shared_ptr<SmileSection> source, const Real atm,
         const bool interpolate, const bool exponentialExtrapolation,
         const bool deleteArbitragePoints,
         const std::vector<Real> &moneynessGrid, const Real gap,
@@ -40,7 +40,7 @@ namespace QuantLib {
                    "KahaleSmileSection only supports shifted lognormal source "
                    "sections");
 
-        ssutils_ = boost::shared_ptr<SmileSectionUtils>(new SmileSectionUtils(
+        ssutils_ = ext::shared_ptr<SmileSectionUtils>(new SmileSectionUtils(
             *source, moneynessGrid, atm, deleteArbitragePoints));
 
         moneynessGrid_ = ssutils_->moneyGrid();
@@ -66,7 +66,7 @@ namespace QuantLib {
         leftIndex_ = afIdx.first;
         rightIndex_ = afIdx.second;
 
-        cFunctions_ = std::vector<boost::shared_ptr<cFunction> >(
+        cFunctions_ = std::vector<ext::shared_ptr<cFunction> >(
             rightIndex_ - leftIndex_ + 2);
 
         // extrapolation in the leftmost interval
@@ -99,7 +99,7 @@ namespace QuantLib {
                                      QL_KAHALE_SMAX); // numerical parameters
                                                       // hardcoded here
                 sh1(s);
-                boost::shared_ptr<cFunction> cFct1(
+                ext::shared_ptr<cFunction> cFct1(
                     new cFunction(sh1.f_, s, 0.0, sh1.b_));
                 cFunctions_[0] = cFct1;
                 // sanity check - in rare cases we can get digitials
@@ -167,7 +167,7 @@ namespace QuantLib {
                 }
                 if (valid) {
                     ah(a);
-                    boost::shared_ptr<cFunction> cFct(
+                    ext::shared_ptr<cFunction> cFct(
                         new cFunction(ah.f_, ah.s_, a, ah.b_));
                     cFunctions_[leftIndex_ > 0 ? i - leftIndex_ + 1 : 0] = cFct;
                     cp0 = cp1;
@@ -190,11 +190,11 @@ namespace QuantLib {
                     cp0 = -source_->digitalOptionPrice(
                         k0 - shift() - gap_ / 2.0, Option::Call, 1.0, gap_);
                 }
-                boost::shared_ptr<cFunction> cFct;
+                ext::shared_ptr<cFunction> cFct;
                 if (exponentialExtrapolation_) {
                     QL_REQUIRE(-cp0 / c0 > 0.0, "dummy"); // this is caught
                                                           // below
-                    cFct = boost::shared_ptr<cFunction>(
+                    cFct = ext::shared_ptr<cFunction>(
                         new cFunction(-cp0 / c0, std::log(c0) - cp0 / c0 * k0));
                 } else {
                     sHelper sh(k0, c0, cp0);
@@ -203,7 +203,7 @@ namespace QuantLib {
                                     QL_KAHALE_SMAX); // numerical parameters
                                                      // hardcoded here
                     sh(s);
-                    cFct = boost::shared_ptr<cFunction>(
+                    cFct = ext::shared_ptr<cFunction>(
                         new cFunction(sh.f_, s, 0.0, 0.0));
                 }
                 cFunctions_[rightIndex_ - leftIndex_ + 1] = cFct;

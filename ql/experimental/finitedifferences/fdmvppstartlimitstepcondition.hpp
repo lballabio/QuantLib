@@ -37,8 +37,8 @@ namespace QuantLib {
             const FdmVPPStepConditionParams& params,
             Size nStarts,
             const FdmVPPStepConditionMesher& mesh,
-            const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-            const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
+            const ext::shared_ptr<FdmInnerValueCalculator>& gasPrice,
+            const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
 
         static Size nStates(Size tMinUp, Size tMinDown, Size nStarts);
         Real maxValue(const Array& states) const;

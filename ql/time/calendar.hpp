@@ -67,7 +67,7 @@ namespace QuantLib {
             virtual bool isWeekend(Weekday) const = 0;
             std::set<Date> addedHolidays, removedHolidays;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
       public:
         /*! The default constructor returns a calendar with a null
             implementation, which is therefore unusable except as a

@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     StrippedOptionletAdapter::StrippedOptionletAdapter(
-                const boost::shared_ptr<StrippedOptionletBase>& s)
+                const ext::shared_ptr<StrippedOptionletBase>& s)
     : OptionletVolatilityStructure(s->settlementDays(),
                                    s->calendar(),
                                    s->businessDayConvention(),
@@ -41,7 +41,7 @@ namespace QuantLib {
         registerWith(optionletStripper_);
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     StrippedOptionletAdapter::smileSectionImpl(Time t) const {
         std::vector< Rate > optionletStrikes =
             optionletStripper_->optionletStrikes(
@@ -73,7 +73,7 @@ namespace QuantLib {
 
         const std::vector<Time>& optionletTimes =
                                     optionletStripper_->optionletFixingTimes();
-        boost::shared_ptr<LinearInterpolation> timeInterpolator(new
+        ext::shared_ptr<LinearInterpolation> timeInterpolator(new
             LinearInterpolation(optionletTimes.begin(), optionletTimes.end(),
                                 vol.begin()));
         return timeInterpolator->operator()(length, true);
@@ -89,7 +89,7 @@ namespace QuantLib {
                 optionletStripper_->optionletStrikes(i);
             const std::vector<Volatility>& optionletVolatilities =
                 optionletStripper_->optionletVolatilities(i);
-            //strikeInterpolations_[i] = boost::shared_ptr<SABRInterpolation>(new
+            //strikeInterpolations_[i] = ext::shared_ptr<SABRInterpolation>(new
             //            SABRInterpolation(optionletStrikes.begin(), optionletStrikes.end(),
             //                              optionletVolatilities.begin(),
             //                              optionletTimes[i], atmForward[i],
@@ -106,7 +106,7 @@ namespace QuantLib {
             //                              //endCriteria_,
             //                              //optMethod_
             //                              ));
-            strikeInterpolations_[i] = boost::shared_ptr<LinearInterpolation>(new
+            strikeInterpolations_[i] = ext::shared_ptr<LinearInterpolation>(new
                 LinearInterpolation(optionletStrikes.begin(),
                                     optionletStrikes.end(),
                                     optionletVolatilities.begin()));

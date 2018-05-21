@@ -46,8 +46,8 @@ namespace QuantLib {
 
     class TwoDimensionalIntegral {
       public:
-        TwoDimensionalIntegral(const boost::shared_ptr<Integrator>& integratorX,
-                               const boost::shared_ptr<Integrator>& integratorY)
+        TwoDimensionalIntegral(const ext::shared_ptr<Integrator>& integratorX,
+                               const ext::shared_ptr<Integrator>& integratorY)
         : integratorX_(integratorX),
           integratorY_(integratorY) {
         }
@@ -66,7 +66,7 @@ namespace QuantLib {
             return (*integratorY_)(boost::bind(f, x, _1), a, b);
         }
 
-        const boost::shared_ptr<Integrator> integratorX_, integratorY_;
+        const ext::shared_ptr<Integrator> integratorX_, integratorY_;
     };
 }
 #endif

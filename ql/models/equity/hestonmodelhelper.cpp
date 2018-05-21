@@ -69,9 +69,9 @@ namespace QuantLib {
                         s0_->value() * dividendYield_->discount(tau_)
                     ? Option::Call
                     : Option::Put;
-        boost::shared_ptr<StrikedTypePayoff> payoff(
+        ext::shared_ptr<StrikedTypePayoff> payoff(
             new PlainVanillaPayoff(type_, strikePrice_));
-        boost::shared_ptr<Exercise> exercise =
+        ext::shared_ptr<Exercise> exercise =
             boost::make_shared<EuropeanExercise>(exerciseDate_);
         option_ = boost::make_shared<VanillaOption>(payoff, exercise);
         CalibrationHelper::performCalculations();

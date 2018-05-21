@@ -121,7 +121,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     const Handle<BlackVolTermStructure> volTS(flatVol(todaysDate, vol, dc));
     const Real fwd = s0*qTS->discount(maturity)/rTS->discount(maturity);
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, volTS));
 
@@ -130,7 +130,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     const Volatility sigma = 0.2;
     const Real x0          = 0.09;
 
-    const boost::shared_ptr<SquareRootProcess> sqrtProcess(
+    const ext::shared_ptr<SquareRootProcess> sqrtProcess(
         boost::make_shared<SquareRootProcess>(theta, kappa, sigma, x0));
 
     const std::vector<Date> maturityDates(1, maturityDate);
@@ -216,7 +216,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
         boost::make_shared<SABRVolTermStructure>(
             alpha, beta, gamma, rho, s0, r, todaysDate, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, sabrVol));
 
@@ -231,7 +231,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
     const Volatility sigma = 0.2;
     const Real x0          = 0.09;
 
-    const boost::shared_ptr<SquareRootProcess> sqrtProcess(
+    const ext::shared_ptr<SquareRootProcess> sqrtProcess(
         boost::make_shared<SquareRootProcess>(theta, kappa, sigma, x0));
 
     const SquareRootCLVModel model(
@@ -300,7 +300,7 @@ namespace {
             const Array& strikes,
             const std::vector<Date>& resetDates,
             const std::vector<Date>& maturityDates,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
             const Array& refVols,
             Size nScenarios = 10000)
       : strikes_      (strikes),
@@ -331,7 +331,7 @@ namespace {
             const Real sigma = params[2];
             const Real x0    = params[3];
 
-            const boost::shared_ptr<SimpleQuote> vol(
+            const ext::shared_ptr<SimpleQuote> vol(
                 boost::make_shared<SimpleQuote>(0.1));
 
             const Handle<YieldTermStructure> rTS(bsProcess_->riskFreeRate());
@@ -339,7 +339,7 @@ namespace {
             const Handle<Quote> spot(boost::make_shared<SimpleQuote>(
                 bsProcess_->x0()));
 
-            const boost::shared_ptr<PricingEngine> fwdEngine(
+            const ext::shared_ptr<PricingEngine> fwdEngine(
                 boost::make_shared<ForwardVanillaEngine<AnalyticEuropeanEngine> >(
                     boost::make_shared<GeneralizedBlackScholesProcess>(
                         spot, qTS, rTS,
@@ -347,7 +347,7 @@ namespace {
                             flatVol(rTS->referenceDate(), vol,
                                     rTS->dayCounter())))));
 
-            const boost::shared_ptr<SquareRootProcess> sqrtProcess(
+            const ext::shared_ptr<SquareRootProcess> sqrtProcess(
                 boost::make_shared<SquareRootProcess>(theta, kappa, sigma, x0));
 
             const SquareRootCLVModel clvSqrtModel(
@@ -410,7 +410,7 @@ namespace {
                     }
                 }
 
-                const boost::shared_ptr<Exercise> exercise(
+                const ext::shared_ptr<Exercise> exercise(
                     boost::make_shared<EuropeanExercise>(maturityDate));
 
                 const DiscountFactor dF(
@@ -420,11 +420,11 @@ namespace {
                     const Real strike = strikes_[k];
                     const Real npv = stats[k].mean() * dF;
 
-                    const boost::shared_ptr<StrikedTypePayoff> payoff(
+                    const ext::shared_ptr<StrikedTypePayoff> payoff(
                         boost::make_shared<PlainVanillaPayoff>(
                             (strike < 1.0) ? Option::Put : Option::Call, strike));
 
-                    const boost::shared_ptr<ForwardVanillaOption> fwdOption(
+                    const ext::shared_ptr<ForwardVanillaOption> fwdOption(
                         boost::make_shared<ForwardVanillaOption>(
                             strike, resetDate, payoff, exercise));
 
@@ -448,7 +448,7 @@ namespace {
       private:
         const Array strikes_;
         const std::vector<Date> resetDates_, maturityDates_;
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
         const Array refVols_;
         const Size nScenarios_;
 
@@ -514,7 +514,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    const boost::shared_ptr<HestonModel> hestonModel(
+    const ext::shared_ptr<HestonModel> hestonModel(
         boost::make_shared<HestonModel>(
             boost::make_shared<HestonProcess>(
                 rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
@@ -532,11 +532,11 @@ void SquareRootCLVModelTest::testForwardSkew() {
     const Real sSigma = 0.275368;
     const Real sX0    = 0.466809;
 
-    const boost::shared_ptr<SquareRootProcess> sqrtProcess(
+    const ext::shared_ptr<SquareRootProcess> sqrtProcess(
         boost::make_shared<SquareRootProcess>(
             sTheta, sKappa, sSigma, sX0));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, blackVol));
 
@@ -562,10 +562,10 @@ void SquareRootCLVModelTest::testForwardSkew() {
 
     const boost::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
 
-    const boost::shared_ptr<SimpleQuote> vol(
+    const ext::shared_ptr<SimpleQuote> vol(
         boost::make_shared<SimpleQuote>(0.1));
 
-    const boost::shared_ptr<PricingEngine> fwdEngine(
+    const ext::shared_ptr<PricingEngine> fwdEngine(
         boost::make_shared<ForwardVanillaEngine<AnalyticEuropeanEngine> >(
             boost::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS,
@@ -608,7 +608,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
     const Real eta = 0.25;
     const Real corr = -0.0;
 
-    const boost::shared_ptr<HestonProcess> hestonProcess4slv(
+    const ext::shared_ptr<HestonProcess> hestonProcess4slv(
         boost::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, eta*sigma, corr));
 
@@ -624,13 +624,13 @@ void SquareRootCLVModelTest::testForwardSkew() {
         FdmSchemeDesc::ModifiedCraigSneyd()
     };
 
-    const boost::shared_ptr<LocalVolTermStructure> leverageFctFDM =
+    const ext::shared_ptr<LocalVolTermStructure> leverageFctFDM =
         HestonSLVFDMModel(localVol, hestonModel4slv, endDate, logParams).
             leverageFunction();
 
     //  calibrating to forward volatility dynamics
 
-    const boost::shared_ptr<HestonSLVProcess> fdmSlvProcess(
+    const ext::shared_ptr<HestonSLVProcess> fdmSlvProcess(
         boost::make_shared<HestonSLVProcess>(
             hestonProcess4slv, leverageFctFDM));
 
@@ -643,7 +643,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
 
     const Size factors = fdmSlvProcess->factors();
 
-    const boost::shared_ptr<MultiPathGenerator<rsg_type> > pathGen(
+    const ext::shared_ptr<MultiPathGenerator<rsg_type> > pathGen(
         boost::make_shared<MultiPathGenerator<rsg_type> >(
             fdmSlvProcess, grid, rsg_type(factors, grid.size()-1), false));
 
@@ -669,18 +669,18 @@ void SquareRootCLVModelTest::testForwardSkew() {
         const Date maturityDate(calibrationDates[i+2]);
         const DiscountFactor df = rTS->discount(maturityDate);
 
-        const boost::shared_ptr<Exercise> exercise(
+        const ext::shared_ptr<Exercise> exercise(
             boost::make_shared<EuropeanExercise>(maturityDate));
 
         for (Size j=0; j < LENGTH(strikes); ++j) {
             const Real strike = strikes[j];
             const Real npv = slvStats[i][j].mean()*df;
 
-            const boost::shared_ptr<StrikedTypePayoff> payoff(
+            const ext::shared_ptr<StrikedTypePayoff> payoff(
                 boost::make_shared<PlainVanillaPayoff>(
                     (strike < 1.0) ? Option::Put : Option::Call, strike));
 
-            const boost::shared_ptr<ForwardVanillaOption> fwdOption(
+            const ext::shared_ptr<ForwardVanillaOption> fwdOption(
                 boost::make_shared<ForwardVanillaOption>(
                     strike, resetDate, payoff, exercise));
 
@@ -731,7 +731,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
     const Date maturityDate = todaysDate + Period(1, Years);
     const Time maturityTime = bsProcess->time(maturityDate);
 
-    const boost::shared_ptr<Exercise> europeanExercise(
+    const ext::shared_ptr<Exercise> europeanExercise(
         boost::make_shared<EuropeanExercise>(maturityDate));
 
     VanillaOption vanillaATMOption(
@@ -747,13 +747,13 @@ void SquareRootCLVModelTest::testForwardSkew() {
         boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
             Handle<BlackVolTermStructure>(flatVol(std::sqrt(theta), dc))));
 
-    const boost::shared_ptr<PricingEngine> analyticEngine(
+    const ext::shared_ptr<PricingEngine> analyticEngine(
         boost::make_shared<AnalyticDoubleBarrierBinaryEngine>(
             boost::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS,
                 Handle<BlackVolTermStructure>(flatVol(atmVol, dc)))));
 
-    const boost::shared_ptr<PricingEngine> fdSLVEngine(
+    const ext::shared_ptr<PricingEngine> fdSLVEngine(
         boost::make_shared<FdHestonDoubleBarrierEngine>(
             hestonModel4slv.currentLink(),
             51, 201, 51, 1,
@@ -762,7 +762,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
     const Size n = 16;
     Array barrier_lo(n), barrier_hi(n), bsNPV(n), slvNPV(n);
 
-    const boost::shared_ptr<CashOrNothingPayoff> payoff =
+    const ext::shared_ptr<CashOrNothingPayoff> payoff =
         boost::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
 
     for (Size i=0; i < n; ++i) {

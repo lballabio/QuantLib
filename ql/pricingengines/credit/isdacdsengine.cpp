@@ -103,36 +103,36 @@ namespace QuantLib {
         // collect nodes from both curves and sort them
         std::vector<Date> yDates, cDates;
 
-        if(boost::shared_ptr<InterpolatedDiscountCurve<LogLinear> > castY1 =
+        if(ext::shared_ptr<InterpolatedDiscountCurve<LogLinear> > castY1 =
             boost::dynamic_pointer_cast<
                 InterpolatedDiscountCurve<LogLinear> >(*discountCurve_)) {
             yDates = castY1->dates();
-        } else if(boost::shared_ptr<InterpolatedForwardCurve<BackwardFlat> >
+        } else if(ext::shared_ptr<InterpolatedForwardCurve<BackwardFlat> >
         castY2 = boost::dynamic_pointer_cast<
             InterpolatedForwardCurve<BackwardFlat> >(*discountCurve_)) {
             yDates = castY2->dates();
-        } else if(boost::shared_ptr<InterpolatedForwardCurve<ForwardFlat> >
+        } else if(ext::shared_ptr<InterpolatedForwardCurve<ForwardFlat> >
         castY3 = boost::dynamic_pointer_cast<
             InterpolatedForwardCurve<ForwardFlat> >(*discountCurve_)) {
             yDates = castY3->dates();
-        } else if(boost::shared_ptr<FlatForward> castY4 =
+        } else if(ext::shared_ptr<FlatForward> castY4 =
             boost::dynamic_pointer_cast<FlatForward>(*discountCurve_)) {
         } else {
             QL_FAIL("Yield curve must be flat forward interpolated");
         }
 
-        if(boost::shared_ptr<InterpolatedSurvivalProbabilityCurve<LogLinear> >
+        if(ext::shared_ptr<InterpolatedSurvivalProbabilityCurve<LogLinear> >
         castC1 = boost::dynamic_pointer_cast<
             InterpolatedSurvivalProbabilityCurve<LogLinear> >(
             *probability_)) {
             cDates = castC1->dates();
         } else if(
-        boost::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat> > castC2 =
+        ext::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat> > castC2 =
             boost::dynamic_pointer_cast<
             InterpolatedHazardRateCurve<BackwardFlat> >(*probability_)) {
             cDates = castC2->dates();
         } else if(
-        boost::shared_ptr<FlatHazardRate> castC3 =
+        ext::shared_ptr<FlatHazardRate> castC3 =
             boost::dynamic_pointer_cast<FlatHazardRate>(*probability_)) {
         } else{
             QL_FAIL("Credit curve must be flat forward interpolated");
@@ -193,7 +193,7 @@ namespace QuantLib {
 
         Real premiumNpv = 0.0, defaultAccrualNpv = 0.0;
         for (Size i = 0; i < arguments_.leg.size(); ++i) {
-            boost::shared_ptr<FixedRateCoupon> coupon =
+            ext::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
 
             QL_REQUIRE(coupon->dayCounter() == dc ||

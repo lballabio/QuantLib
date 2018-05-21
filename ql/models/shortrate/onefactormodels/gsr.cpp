@@ -163,7 +163,7 @@ void Gsr::initialize(Real T) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
 
-    stateProcess_ = boost::shared_ptr<GsrProcess>(new GsrProcess(
+    stateProcess_ = ext::shared_ptr<GsrProcess>(new GsrProcess(
         volsteptimesArray_, sigma_.params(), reversion_.params(), T));
 
     registerWith(termStructure());
@@ -189,7 +189,7 @@ Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
         return yts.empty() ? this->termStructure()->discount(T, true)
                            : yts->discount(T, true);
 
-    boost::shared_ptr<GsrProcess> p =
+    ext::shared_ptr<GsrProcess> p =
         boost::dynamic_pointer_cast<GsrProcess>(stateProcess_);
 
     Real x = y * stateProcess_->stdDeviation(0.0, 0.0, t) +
@@ -209,7 +209,7 @@ Real Gsr::numeraireImpl(const Time t, const Real y,
 
     calculate();
 
-    boost::shared_ptr<GsrProcess> p =
+    ext::shared_ptr<GsrProcess> p =
         boost::dynamic_pointer_cast<GsrProcess>(stateProcess_);
 
     if (t == 0)

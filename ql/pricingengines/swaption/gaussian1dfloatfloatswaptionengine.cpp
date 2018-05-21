@@ -168,17 +168,17 @@ namespace QuantLib {
 
         bool isExercise, isLeg1Fixing, isLeg2Fixing;
 
-        boost::shared_ptr<IborIndex> ibor1 =
+        ext::shared_ptr<IborIndex> ibor1 =
             boost::dynamic_pointer_cast<IborIndex>(arguments_.index1);
-        boost::shared_ptr<SwapIndex> cms1 =
+        ext::shared_ptr<SwapIndex> cms1 =
             boost::dynamic_pointer_cast<SwapIndex>(arguments_.index1);
-        boost::shared_ptr<SwapSpreadIndex> cmsspread1 =
+        ext::shared_ptr<SwapSpreadIndex> cmsspread1 =
             boost::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index1);
-        boost::shared_ptr<IborIndex> ibor2 =
+        ext::shared_ptr<IborIndex> ibor2 =
             boost::dynamic_pointer_cast<IborIndex>(arguments_.index2);
-        boost::shared_ptr<SwapIndex> cms2 =
+        ext::shared_ptr<SwapIndex> cms2 =
             boost::dynamic_pointer_cast<SwapIndex>(arguments_.index2);
-        boost::shared_ptr<SwapSpreadIndex> cmsspread2 =
+        ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
             boost::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
 
         QL_REQUIRE(ibor1 != NULL || cms1 != NULL || cmsspread1 != NULL,

@@ -35,7 +35,7 @@
 namespace QuantLib {
 
     ImplicitEulerScheme::ImplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const bc_set& bcSet,
         Real relTol,
         SolverType solverType)

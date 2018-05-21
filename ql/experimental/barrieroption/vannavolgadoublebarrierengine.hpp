@@ -102,18 +102,18 @@ namespace QuantLib {
                Handle<Quote> atmVolQuote( //used for shift
                    boost::make_shared<SimpleQuote>(atmVol_->value()));
 
-               boost::shared_ptr<BlackVolTermStructure> blackVolTS =
+               ext::shared_ptr<BlackVolTermStructure> blackVolTS =
                    boost::make_shared<BlackConstantVol>(
                                      Settings::instance().evaluationDate(),
                                      NullCalendar(), atmVolQuote, Actual365Fixed());
-               boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
+               ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
                    boost::make_shared<BlackScholesMertonProcess>(
                                        x0Quote,
                                        foreignTS_,
                                        domesticTS_,
                                        Handle<BlackVolTermStructure>(blackVolTS));
 
-               boost::shared_ptr<PricingEngine> engineBS =
+               ext::shared_ptr<PricingEngine> engineBS =
                    boost::make_shared<DoubleBarrierEngine>(stochProcess,
                                                                     series_);
 
@@ -148,7 +148,7 @@ namespace QuantLib {
                VannaVolga vannaVolga(x0Quote->value(), foreignTS_->discount(T_), foreignTS_->discount(T_), T_);
                Interpolation interpolation = vannaVolga.interpolate(strikes.begin(), strikes.end(), vols.begin());
                interpolation.enableExtrapolation();
-               const boost::shared_ptr<StrikedTypePayoff> payoff =
+               const ext::shared_ptr<StrikedTypePayoff> payoff =
                   boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
                Real strikeVol = interpolation(payoff->strike());
                //vanilla option price
@@ -178,7 +178,7 @@ namespace QuantLib {
                        //set up BS barrier option pricing
                        //only calculate out barrier option price
                        // in barrier price = vanilla - out barrier
-                       boost::shared_ptr<StrikedTypePayoff> payoff
+                       ext::shared_ptr<StrikedTypePayoff> payoff
                            = boost::static_pointer_cast<StrikedTypePayoff> (arguments_.payoff);
                        DoubleBarrierOption doubleBarrierOption(DoubleBarrier::KnockOut,
                                                    arguments_.barrier_lo,

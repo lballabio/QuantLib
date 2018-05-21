@@ -39,7 +39,7 @@ namespace QuantLib {
     HestonSLVMCModel::HestonSLVMCModel(
         const Handle<LocalVolTermStructure>& localVol,
         const Handle<HestonModel>& hestonModel,
-        const boost::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
+        const ext::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
         const Date& endDate,
         Size timeStepsPerYear,
         Size nBins,
@@ -70,15 +70,15 @@ namespace QuantLib {
                 std::max(Size(2), Size(gridTimes.back()*timeStepsPerYear)));
     }
 
-    boost::shared_ptr<HestonProcess> HestonSLVMCModel::hestonProcess() const {
+    ext::shared_ptr<HestonProcess> HestonSLVMCModel::hestonProcess() const {
         return hestonModel_->process();
     }
 
-    boost::shared_ptr<LocalVolTermStructure> HestonSLVMCModel::localVol() const {
+    ext::shared_ptr<LocalVolTermStructure> HestonSLVMCModel::localVol() const {
         return localVol_.currentLink();
     }
 
-    boost::shared_ptr<LocalVolTermStructure>
+    ext::shared_ptr<LocalVolTermStructure>
     HestonSLVMCModel::leverageFunction() const {
         calculate();
 
@@ -86,13 +86,13 @@ namespace QuantLib {
     }
 
     void HestonSLVMCModel::performCalculations() const {
-        const boost::shared_ptr<HestonProcess> hestonProcess
+        const ext::shared_ptr<HestonProcess> hestonProcess
             = hestonModel_->process();
-        const boost::shared_ptr<Quote> spot
+        const ext::shared_ptr<Quote> spot
             = hestonProcess->s0().currentLink();
-        const boost::shared_ptr<YieldTermStructure> rTS
+        const ext::shared_ptr<YieldTermStructure> rTS
             = hestonProcess->riskFreeRate().currentLink();
-        const boost::shared_ptr<YieldTermStructure> qTS
+        const ext::shared_ptr<YieldTermStructure> qTS
             = hestonProcess->dividendYield().currentLink();
 
         const Real v0            = hestonProcess->v0();
@@ -102,9 +102,9 @@ namespace QuantLib {
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
-        const boost::shared_ptr<Matrix> L(new Matrix(nBins_, timeGrid_->size()));
+        const ext::shared_ptr<Matrix> L(new Matrix(nBins_, timeGrid_->size()));
 
-        std::vector<boost::shared_ptr<std::vector<Real> > >
+        std::vector<ext::shared_ptr<std::vector<Real> > >
             vStrikes(timeGrid_->size());
         for (Size i=0; i < timeGrid_->size(); ++i) {
             const Integer u = nBins_/2;
@@ -123,7 +123,7 @@ namespace QuantLib {
             std::vector<Time>(timeGrid_->begin(), timeGrid_->end()),
             vStrikes, L, dc);
 
-        const boost::shared_ptr<HestonSLVProcess> slvProcess
+        const ext::shared_ptr<HestonSLVProcess> slvProcess
             = boost::make_shared<HestonSLVProcess>(hestonProcess, leverageFunction_);
 
         std::vector<std::pair<Real, Real> > pairs(
@@ -137,7 +137,7 @@ namespace QuantLib {
         typedef boost::multi_array<Real, 3> path_type;
         path_type paths(boost::extents[calibrationPaths_][timeSteps][2]);
 
-        const boost::shared_ptr<BrownianGenerator> brownianGenerator =
+        const ext::shared_ptr<BrownianGenerator> brownianGenerator =
             brownianGeneratorFactory_->create(2, timeSteps);
 
         for (Size i=0; i < calibrationPaths_; ++i) {

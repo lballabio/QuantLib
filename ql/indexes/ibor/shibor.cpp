@@ -47,8 +47,8 @@ namespace QuantLib {
                 China(China::IB), shiborConvention(tenor), false,
                 Actual360(), h) {}
     
-    boost::shared_ptr<IborIndex> Shibor::clone(
+    ext::shared_ptr<IborIndex> Shibor::clone(
                                   const Handle<YieldTermStructure>& h) const {
-        return boost::shared_ptr<IborIndex>(new Shibor(tenor(), h));
+        return ext::shared_ptr<IborIndex>(new Shibor(tenor(), h));
     }
 }

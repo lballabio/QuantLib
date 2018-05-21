@@ -35,16 +35,16 @@ namespace QuantLib {
       public:
           FdmSimpleStorageCondition(
                   const std::vector<Time> & exerciseTimes,
-                  const boost::shared_ptr<FdmMesher>& mesher,
-                  const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+                  const ext::shared_ptr<FdmMesher>& mesher,
+                  const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
                   Real changeRate);
 
         void applyTo(Array& a, Time t) const;
 
       private:
         const std::vector<Time> exerciseTimes_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator_;
         const Real changeRate_;
 
         std::vector<Real> x_, y_;

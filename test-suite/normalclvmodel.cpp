@@ -83,10 +83,10 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, volTS));
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
 
     const NormalCLVModel m(
         bsProcess, ouProcess, std::vector<Date>(), 5);
@@ -130,7 +130,7 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
-    const boost::shared_ptr<HestonProcess> process(
+    const ext::shared_ptr<HestonProcess> process(
         boost::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
@@ -141,7 +141,7 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
     const NormalCLVModel m(
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, hestonVolTS),
-        boost::shared_ptr<OrnsteinUhlenbeckProcess>(),
+        ext::shared_ptr<OrnsteinUhlenbeckProcess>(),
         std::vector<Date>(), 5);
 
     const HestonRNDCalculator rndCalculator(process);
@@ -201,11 +201,11 @@ void NormalCLVModelTest::testIllustrative1DExample() {
         boost::make_shared<SABRVolTermStructure>(
             alpha, beta, gamma, rho, s0, rRate, today, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, sabrVol));
 
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
         boost::make_shared<OrnsteinUhlenbeckProcess>(
             speed, vol, x0, level));
 
@@ -306,9 +306,9 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     const Time t = dc.yearFraction(today, maturity);
 
     const Real strike = 110;
-    const boost::shared_ptr<StrikedTypePayoff> payoff =
+    const ext::shared_ptr<StrikedTypePayoff> payoff =
         boost::make_shared<PlainVanillaPayoff>(Option::Call, strike);
-    const boost::shared_ptr<Exercise> exercise =
+    const ext::shared_ptr<Exercise> exercise =
         boost::make_shared<EuropeanExercise>(maturity);
 
     // Ornstein-Uhlenbeck
@@ -327,11 +327,11 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> vTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, vTS));
 
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
         boost::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigma, x0, level));
 
@@ -425,7 +425,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    const boost::shared_ptr<HestonModel> hestonModel(
+    const ext::shared_ptr<HestonModel> hestonModel(
         boost::make_shared<HestonModel>(
             boost::make_shared<HestonProcess>(
                 rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
@@ -434,7 +434,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
         boost::make_shared<HestonBlackVolSurface>(
             Handle<HestonModel>(hestonModel)));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
         boost::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, vTS);
 
@@ -444,11 +444,11 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Real sigmaOU = 0.15;
     const Real x0      = 100;
 
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
         boost::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigmaOU, x0, level));
 
-    const boost::shared_ptr<Exercise> europeanExercise(
+    const ext::shared_ptr<Exercise> europeanExercise(
         boost::make_shared<EuropeanExercise>(maturityDate));
 
     VanillaOption vanillaOption(
@@ -463,7 +463,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
         boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
             Handle<BlackVolTermStructure>(flatVol(std::sqrt(theta), dc))));
 
-    const boost::shared_ptr<PricingEngine> analyticEngine(
+    const ext::shared_ptr<PricingEngine> analyticEngine(
         boost::make_shared<AnalyticDoubleBarrierBinaryEngine>(
             boost::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS,
@@ -480,7 +480,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Size n = 18;
     Array barrier_lo(n), barrier_hi(n), bsNPV(n);
 
-    const boost::shared_ptr<CashOrNothingPayoff> payoff =
+    const ext::shared_ptr<CashOrNothingPayoff> payoff =
         boost::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
 
     for (Size i=0; i < n; ++i) {
@@ -504,7 +504,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Size tSteps = 200;
     const TimeGrid grid(maturityTime, tSteps);
 
-    const boost::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
+    const ext::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
         boost::make_shared<PathGenerator<rsg_type> >(
             ouProcess, grid, rsg_type(factors, tSteps), false);
 

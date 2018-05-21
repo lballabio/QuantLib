@@ -42,7 +42,7 @@ namespace QuantLib {
                                          bool settlesAccrual,
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
-                                         const boost::shared_ptr<Claim>& claim,
+                                         const ext::shared_ptr<Claim>& claim,
                                          const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual)
     : side_(side), notional_(notional), upfront_(boost::none),
@@ -69,7 +69,7 @@ namespace QuantLib {
         if(rebatesAccrual) {
             Size i = 0;
             while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
-            boost::shared_ptr<FixedRateCoupon> coupon =
+            ext::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
                        "contract cannot start before accrual");
@@ -99,7 +99,7 @@ namespace QuantLib {
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
                                          const Date& upfrontDate,
-                                         const boost::shared_ptr<Claim>& claim,
+                                         const ext::shared_ptr<Claim>& claim,
                                          const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual)
     : side_(side), notional_(notional), upfront_(upfront),
@@ -133,7 +133,7 @@ namespace QuantLib {
         if(rebatesAccrual) {
             Size i = 0;
             while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
-            boost::shared_ptr<FixedRateCoupon> coupon =
+            ext::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
                        "contract cannot start before accrual");
@@ -323,14 +323,14 @@ namespace QuantLib {
                                Real accuracy,
                                PricingModel model) const {
 
-        boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
+        ext::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
                 boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
-        boost::shared_ptr<PricingEngine> engine;
+        ext::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
             engine = boost::make_shared<MidPointCdsEngine>(
@@ -366,14 +366,14 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               PricingModel model) const {
 
-        boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
+        ext::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
                 boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
-        boost::shared_ptr<PricingEngine> engine;
+        ext::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
             engine = boost::make_shared<MidPointCdsEngine>(

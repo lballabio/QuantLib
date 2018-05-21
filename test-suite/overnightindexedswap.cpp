@@ -49,7 +49,7 @@ using namespace boost::unit_test_framework;
 
 using std::exp;
 
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
 

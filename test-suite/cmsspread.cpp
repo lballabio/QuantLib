@@ -87,8 +87,8 @@ struct TestData {
     Handle<YieldTermStructure> yts2;
     Handle<SwaptionVolatilityStructure> swLn, swSln, swN;
     Handle<Quote> reversion, correlation;
-    boost::shared_ptr<CmsCouponPricer> cmsPricerLn, cmsPricerSln, cmsPricerN;
-    boost::shared_ptr<CmsSpreadCouponPricer> cmsspPricerLn, cmsspPricerSln,
+    ext::shared_ptr<CmsCouponPricer> cmsPricerLn, cmsPricerSln, cmsPricerN;
+    ext::shared_ptr<CmsSpreadCouponPricer> cmsspPricerLn, cmsspPricerSln,
         cmsspPricerN;
 };
 } // namespace
@@ -98,11 +98,11 @@ void CmsSpreadTest::testFixings() {
 
     TestData d;
 
-    boost::shared_ptr<SwapIndex> cms10y =
+    ext::shared_ptr<SwapIndex> cms10y =
         boost::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
-    boost::shared_ptr<SwapIndex> cms2y =
+    ext::shared_ptr<SwapIndex> cms2y =
         boost::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
-    boost::shared_ptr<SwapSpreadIndex> cms10y2y =
+    ext::shared_ptr<SwapSpreadIndex> cms10y2y =
         boost::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Settings::instance().enforcesTodaysHistoricFixings() = false;
@@ -134,8 +134,8 @@ void CmsSpreadTest::testFixings() {
 }
 
 namespace {
-Real mcReferenceValue(const boost::shared_ptr<CmsCoupon>& cpn1,
-                      const boost::shared_ptr<CmsCoupon>& cpn2, const Real cap,
+Real mcReferenceValue(const ext::shared_ptr<CmsCoupon>& cpn1,
+                      const ext::shared_ptr<CmsCoupon>& cpn2, const Real cap,
                       const Real floor,
                       const Handle<SwaptionVolatilityStructure>& vol,
                       const Real correlation) {
@@ -193,24 +193,24 @@ void CmsSpreadTest::testCouponPricing() {
     TestData d;
     Real tol = 1E-6; // abs tolerance coupon rate
 
-    boost::shared_ptr<SwapIndex> cms10y =
+    ext::shared_ptr<SwapIndex> cms10y =
         boost::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
-    boost::shared_ptr<SwapIndex> cms2y =
+    ext::shared_ptr<SwapIndex> cms2y =
         boost::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
-    boost::shared_ptr<SwapSpreadIndex> cms10y2y =
+    ext::shared_ptr<SwapSpreadIndex> cms10y2y =
         boost::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Date valueDate = cms10y2y->valueDate(d.refDate);
     Date payDate = valueDate + 1 * Years;
-    boost::shared_ptr<CmsCoupon> cpn1a =
-        boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+    ext::shared_ptr<CmsCoupon> cpn1a =
+        ext::shared_ptr<CmsCoupon>(new CmsCoupon(
             payDate, 10000.0, valueDate, payDate, cms10y->fixingDays(), cms10y,
             1.0, 0.0, Date(), Date(), Actual360(), false));
-    boost::shared_ptr<CmsCoupon> cpn1b = boost::shared_ptr<CmsCoupon>(
+    ext::shared_ptr<CmsCoupon> cpn1b = ext::shared_ptr<CmsCoupon>(
         new CmsCoupon(payDate, 10000.0, valueDate, payDate, cms2y->fixingDays(),
                       cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
-    boost::shared_ptr<CmsSpreadCoupon> cpn1 =
-        boost::shared_ptr<CmsSpreadCoupon>(new CmsSpreadCoupon(
+    ext::shared_ptr<CmsSpreadCoupon> cpn1 =
+        ext::shared_ptr<CmsSpreadCoupon>(new CmsSpreadCoupon(
             payDate, 10000.0, valueDate, payDate, cms10y2y->fixingDays(),
             cms10y2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
     BOOST_CHECK(cpn1->fixingDate() == d.refDate);
@@ -224,35 +224,35 @@ void CmsSpreadTest::testCouponPricing() {
     BOOST_CHECK_EQUAL(cpn1->rate(), cpn1a->rate() - cpn1b->rate());
     IndexManager::instance().clearHistories();
 
-    boost::shared_ptr<CmsCoupon> cpn2a = boost::shared_ptr<CmsCoupon>(
+    ext::shared_ptr<CmsCoupon> cpn2a = ext::shared_ptr<CmsCoupon>(
         new CmsCoupon(Date(23, February, 2029), 10000.0,
                       Date(23, February, 2028), Date(23, February, 2029), 2,
                       cms10y, 1.0, 0.0, Date(), Date(), Actual360(), false));
-    boost::shared_ptr<CmsCoupon> cpn2b = boost::shared_ptr<CmsCoupon>(
+    ext::shared_ptr<CmsCoupon> cpn2b = ext::shared_ptr<CmsCoupon>(
         new CmsCoupon(Date(23, February, 2029), 10000.0,
                       Date(23, February, 2028), Date(23, February, 2029), 2,
                       cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
 
-    boost::shared_ptr<CappedFlooredCmsSpreadCoupon> plainCpn =
-        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> plainCpn =
+        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
                 Null<Rate>(), Date(), Date(), Actual360(), false));
-    boost::shared_ptr<CappedFlooredCmsSpreadCoupon> cappedCpn =
-        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> cappedCpn =
+        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03,
                 Null<Rate>(), Date(), Date(), Actual360(), false));
-    boost::shared_ptr<CappedFlooredCmsSpreadCoupon> flooredCpn =
-        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> flooredCpn =
+        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
                 0.01, Date(), Date(), Actual360(), false));
-    boost::shared_ptr<CappedFlooredCmsSpreadCoupon> collaredCpn =
-        boost::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> collaredCpn =
+        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03, 0.01,

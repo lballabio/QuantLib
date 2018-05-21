@@ -60,7 +60,7 @@ namespace QuantLib {
                 results_.expectedTrancheLoss.push_back(0.);
                 continue;
             }
-            boost::shared_ptr<Coupon> coupon =
+            ext::shared_ptr<Coupon> coupon =
               boost::dynamic_pointer_cast<Coupon>(arguments_.normalizedLeg[i]);
             Date paymentDate = coupon->date();
             Date startDate = std::max(coupon->accrualStartDate(),

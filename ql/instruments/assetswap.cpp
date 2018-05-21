@@ -28,18 +28,17 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
-using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
 using std::vector;
 
 namespace QuantLib {
 
     AssetSwap::AssetSwap(bool parSwap,
-                         const boost::shared_ptr<Bond>& bond,
+                         const ext::shared_ptr<Bond>& bond,
                          Real bondCleanPrice,
                          Real nonParRepayment,
                          Real gearing,
-                         const boost::shared_ptr<IborIndex>& iborIndex,
+                         const ext::shared_ptr<IborIndex>& iborIndex,
                          Spread spread,
                          const DayCounter& floatingDayCounter,
                          Date dealMaturity,
@@ -116,15 +115,15 @@ namespace QuantLib {
         // if the first skipped cashflow is not the redemption
         // and it is a coupon then add the accrued coupon
         if (i<bondLeg.end()-1) {
-            shared_ptr<Coupon> c = boost::dynamic_pointer_cast<Coupon>(*i);
+            ext::shared_ptr<Coupon> c = boost::dynamic_pointer_cast<Coupon>(*i);
             if (c) {
-                shared_ptr<CashFlow> accruedCoupon(new
+                ext::shared_ptr<CashFlow> accruedCoupon(new
                     SimpleCashFlow(c->accruedAmount(dealMaturity), finalDate));
                 legs_[0].push_back(accruedCoupon);
             }
         }
         // add the nonParRepayment_
-        shared_ptr<CashFlow> nonParRepaymentFlow(new
+        ext::shared_ptr<CashFlow> nonParRepaymentFlow(new
             SimpleCashFlow(nonParRepayment_, finalDate));
         legs_[0].push_back(nonParRepaymentFlow);
 
@@ -135,18 +134,18 @@ namespace QuantLib {
         if (parSwap_) {
             // upfront on the floating leg
             Real upfront = (dirtyPrice-100.0)/100.0*notional;
-            shared_ptr<CashFlow> upfrontCashFlow(new
+            ext::shared_ptr<CashFlow> upfrontCashFlow(new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
             Real backPayment = notional;
-            shared_ptr<CashFlow> backPaymentCashFlow(new
+            ext::shared_ptr<CashFlow> backPaymentCashFlow(new
                 SimpleCashFlow(backPayment, finalDate));
             legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final notional exchange
-            shared_ptr<CashFlow> finalCashFlow (new
+            ext::shared_ptr<CashFlow> finalCashFlow (new
                 SimpleCashFlow(notional, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
@@ -165,9 +164,9 @@ namespace QuantLib {
     }
 
     AssetSwap::AssetSwap(bool payBondCoupon,
-                         const shared_ptr<Bond>& bond,
+                         const ext::shared_ptr<Bond>& bond,
                          Real bondCleanPrice,
-                         const shared_ptr<IborIndex>& iborIndex,
+                         const ext::shared_ptr<IborIndex>& iborIndex,
                          Spread spread,
                          const Schedule& floatSchedule,
                          const DayCounter& floatingDayCounter,
@@ -244,18 +243,18 @@ namespace QuantLib {
         if (parSwap_) {
             // upfront on the floating leg
             Real upfront = (dirtyPrice-100.0)/100.0*notional;
-            shared_ptr<CashFlow> upfrontCashFlow(new
+            ext::shared_ptr<CashFlow> upfrontCashFlow(new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
             Real backPayment = notional;
-            shared_ptr<CashFlow> backPaymentCashFlow(new
+            ext::shared_ptr<CashFlow> backPaymentCashFlow(new
                 SimpleCashFlow(backPayment, finalDate));
             legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final notional exchange
-            shared_ptr<CashFlow> finalCashFlow(new
+            ext::shared_ptr<CashFlow> finalCashFlow(new
                 SimpleCashFlow(notional, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
@@ -290,7 +289,7 @@ namespace QuantLib {
         arguments->fixedCoupons = vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
-            shared_ptr<FixedRateCoupon> coupon =
+            ext::shared_ptr<FixedRateCoupon> coupon =
                 dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             arguments->fixedPayDates[i] = coupon->date();
@@ -309,7 +308,7 @@ namespace QuantLib {
             vector<Spread>(floatingCoupons.size());
 
         for (Size i=0; i<floatingCoupons.size(); ++i) {
-            shared_ptr<FloatingRateCoupon> coupon =
+            ext::shared_ptr<FloatingRateCoupon> coupon =
                 dynamic_pointer_cast<FloatingRateCoupon>(floatingCoupons[i]);
 
             arguments->floatingResetDates[i] = coupon->accrualStartDate();

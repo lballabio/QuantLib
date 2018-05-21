@@ -38,10 +38,10 @@ using std::exp;
 namespace QuantLib {
 
     FdmHestonFwdOp::FdmHestonFwdOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HestonProcess>& process,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<HestonProcess>& process,
             FdmSquareRootFwdOp::TransformationType type,
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
     : type_(type),
       kappa_(process->kappa()),
       theta_(process->theta()),
@@ -70,7 +70,7 @@ namespace QuantLib {
 	   leverageFct_(leverageFct),
 	   mesher_(mesher)
     {
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         // zero flux boundary condition
         const Size n = layout->dim()[1];
         const Real lowerBoundaryFactor = mapY_->lowerBoundaryFactor(type);
@@ -207,7 +207,7 @@ namespace QuantLib {
 
     Disposable<Array> FdmHestonFwdOp::getLeverageFctSlice(Time t1, Time t2)
     const {
-        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
         Array v(layout->size(), 1.0);
 
         if (!leverageFct_)

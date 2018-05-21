@@ -45,7 +45,7 @@ namespace QuantLib {
         template <class I1, class I2>
         LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
                                const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::LogInterpolationImpl<I1, I2, Linear>(xBegin, xEnd,
                                                              yBegin));
             impl_->update();
@@ -79,7 +79,7 @@ namespace QuantLib {
                               Real leftConditionValue,
                               CubicInterpolation::BoundaryCondition rightC,
                               Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::LogInterpolationImpl<I1, I2, Cubic>(
                     xBegin, xEnd, yBegin,
                     Cubic(da, monotonic,
@@ -229,7 +229,7 @@ namespace QuantLib {
                                          Real leftConditionValue,
                                          CubicInterpolation::BoundaryCondition rightC,
                                          Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::LogInterpolationImpl<I1, I2, MixedLinearCubic>(
                     xBegin, xEnd, yBegin,
                     MixedLinearCubic(n, behavior, da, monotonic,

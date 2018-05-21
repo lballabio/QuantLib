@@ -32,7 +32,7 @@ namespace QuantLib {
 
     FdmHestonVarianceMesher::FdmHestonVarianceMesher(
         Size size,
-        const boost::shared_ptr<HestonProcess> & process,
+        const ext::shared_ptr<HestonProcess> & process,
         Time maturity, Size tAvgSteps, Real epsilon)
         : Fdm1dMesher(size) {
 

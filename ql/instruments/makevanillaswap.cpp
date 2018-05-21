@@ -32,12 +32,10 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/oceania.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
-                                     const shared_ptr<IborIndex>& index,
+                                     const ext::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
     : swapTenor_(swapTenor), iborIndex_(index),
@@ -59,11 +57,11 @@ namespace QuantLib {
       floatDayCount_(index->dayCounter()) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
-        shared_ptr<VanillaSwap> swap = *this;
+        ext::shared_ptr<VanillaSwap> swap = *this;
         return *swap;
     }
 
-    MakeVanillaSwap::operator shared_ptr<VanillaSwap>() const {
+    MakeVanillaSwap::operator ext::shared_ptr<VanillaSwap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -162,7 +160,7 @@ namespace QuantLib {
                            "null term structure set to this instance of " <<
                            iborIndex_->name());
                 bool includeSettlementDateFlows = false;
-                shared_ptr<PricingEngine> engine(new
+                ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
             } else
@@ -171,7 +169,7 @@ namespace QuantLib {
             usedFixedRate = temp.fairRate();
         }
 
-        shared_ptr<VanillaSwap> swap(new
+        ext::shared_ptr<VanillaSwap> swap(new
             VanillaSwap(type_, nominal_,
                         fixedSchedule,
                         usedFixedRate, fixedDayCount,
@@ -182,7 +180,7 @@ namespace QuantLib {
             Handle<YieldTermStructure> disc =
                                     iborIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
-            shared_ptr<PricingEngine> engine(new
+            ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             swap->setPricingEngine(engine);
         } else
@@ -234,13 +232,13 @@ namespace QuantLib {
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
                                         const Handle<YieldTermStructure>& d) {
         bool includeSettlementDateFlows = false;
-        engine_ = shared_ptr<PricingEngine>(new
+        engine_ = ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(d, includeSettlementDateFlows));
         return *this;
     }
 
     MakeVanillaSwap& MakeVanillaSwap::withPricingEngine(
-                             const shared_ptr<PricingEngine>& engine) {
+                             const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }

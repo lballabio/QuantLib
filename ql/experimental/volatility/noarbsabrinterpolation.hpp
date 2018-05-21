@@ -183,7 +183,7 @@ struct NoArbSabrSpecs {
         return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0);
     }
     typedef NoArbSabrWrapper type;
-    boost::shared_ptr<type> instance(const Time t, const Real &forward,
+    ext::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &) {
         return boost::make_shared<type>(t, forward, params);
@@ -203,15 +203,15 @@ class NoArbSabrInterpolation : public Interpolation {
         const Real &forward, Real alpha, Real beta, Real nu, Real rho,
         bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed, bool rhoIsFixed,
         bool vegaWeighted = true,
-        const boost::shared_ptr<EndCriteria> &endCriteria =
-            boost::shared_ptr<EndCriteria>(),
-        const boost::shared_ptr<OptimizationMethod> &optMethod =
-            boost::shared_ptr<OptimizationMethod>(),
+        const ext::shared_ptr<EndCriteria> &endCriteria =
+            ext::shared_ptr<EndCriteria>(),
+        const ext::shared_ptr<OptimizationMethod> &optMethod =
+            ext::shared_ptr<OptimizationMethod>(),
         const Real errorAccept = 0.0020, const bool useMaxError = false,
         const Size maxGuesses = 50, const Real shift = 0.0) {
 
         QL_REQUIRE(shift==0.0,"NoArbSabrInterpolation for non zero shift not implemented");
-        impl_ = boost::shared_ptr<Interpolation::Impl>(
+        impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::NoArbSabrSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
                 boost::assign::list_of(alpha)(beta)(nu)(rho),
@@ -236,7 +236,7 @@ class NoArbSabrInterpolation : public Interpolation {
     EndCriteria::Type endCriteria() { return coeffs_->XABREndCriteria_; }
 
   private:
-    boost::shared_ptr<detail::XABRCoeffHolder<detail::NoArbSabrSpecs> > coeffs_;
+    ext::shared_ptr<detail::XABRCoeffHolder<detail::NoArbSabrSpecs> > coeffs_;
 };
 
 //! no arbtrage sabr interpolation factory and traits
@@ -245,10 +245,10 @@ class NoArbSabr {
     NoArbSabr(Time t, Real forward, Real alpha, Real beta, Real nu, Real rho,
               bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed,
               bool rhoIsFixed, bool vegaWeighted = false,
-              const boost::shared_ptr<EndCriteria> endCriteria =
-                  boost::shared_ptr<EndCriteria>(),
-              const boost::shared_ptr<OptimizationMethod> optMethod =
-                  boost::shared_ptr<OptimizationMethod>(),
+              const ext::shared_ptr<EndCriteria> endCriteria =
+                  ext::shared_ptr<EndCriteria>(),
+              const ext::shared_ptr<OptimizationMethod> optMethod =
+                  ext::shared_ptr<OptimizationMethod>(),
               const Real errorAccept = 0.0020, const bool useMaxError = false,
               const Size maxGuesses = 50)
         : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu),
@@ -273,8 +273,8 @@ class NoArbSabr {
     Real alpha_, beta_, nu_, rho_;
     bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
     bool vegaWeighted_;
-    const boost::shared_ptr<EndCriteria> endCriteria_;
-    const boost::shared_ptr<OptimizationMethod> optMethod_;
+    const ext::shared_ptr<EndCriteria> endCriteria_;
+    const ext::shared_ptr<OptimizationMethod> optMethod_;
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

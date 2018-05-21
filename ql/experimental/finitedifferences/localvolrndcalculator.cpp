@@ -49,10 +49,10 @@
 
 namespace QuantLib {
     LocalVolRNDCalculator::LocalVolRNDCalculator(
-        const boost::shared_ptr<Quote>& spot,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& qTS,
-        const boost::shared_ptr<LocalVolTermStructure>& localVol,
+        const ext::shared_ptr<Quote>& spot,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<YieldTermStructure>& qTS,
+        const ext::shared_ptr<LocalVolTermStructure>& localVol,
         Size xGrid, Size tGrid,
         Real x0Density,
         Real eps,
@@ -78,11 +78,11 @@ namespace QuantLib {
     }
 
     LocalVolRNDCalculator::LocalVolRNDCalculator(
-        const boost::shared_ptr<Quote>& spot,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& qTS,
-        const boost::shared_ptr<LocalVolTermStructure>& localVol,
-        const boost::shared_ptr<TimeGrid>& timeGrid,
+        const ext::shared_ptr<Quote>& spot,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<YieldTermStructure>& qTS,
+        const ext::shared_ptr<LocalVolTermStructure>& localVol,
+        const ext::shared_ptr<TimeGrid>& timeGrid,
         Size xGrid,
         Real x0Density,
         Real eps,
@@ -203,7 +203,7 @@ namespace QuantLib {
         }
     }
 
-    boost::shared_ptr<Fdm1dMesher>
+    ext::shared_ptr<Fdm1dMesher>
     LocalVolRNDCalculator::mesher(Time t) const {
         calculate();
 
@@ -219,7 +219,7 @@ namespace QuantLib {
         }
     }
 
-    boost::shared_ptr<TimeGrid> LocalVolRNDCalculator::timeGrid() const {
+    ext::shared_ptr<TimeGrid> LocalVolRNDCalculator::timeGrid() const {
         return timeGrid_;
     }
 
@@ -240,7 +240,7 @@ namespace QuantLib {
         Real sLowerBound = xm - normInvEps * stdDevOfFirstStep;
         Real sUpperBound = xm + normInvEps * stdDevOfFirstStep;
 
-        boost::shared_ptr<Fdm1dMesher> mesher(
+        ext::shared_ptr<Fdm1dMesher> mesher(
             new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
                 std::make_pair(xm, x0Density_), true));
 
@@ -259,7 +259,7 @@ namespace QuantLib {
 
         const Size b = std::max(Size(1), Size(x.size()*0.04));
 
-        boost::shared_ptr<DouglasScheme> evolver(
+        ext::shared_ptr<DouglasScheme> evolver(
             new DouglasScheme(0.5,
                 boost::make_shared<FdmLocalVolFwdOp>(
                     boost::make_shared<FdmMesherComposite>(mesher),
@@ -306,7 +306,7 @@ namespace QuantLib {
                 if (maxRightValue > localVolProbEps_)
                     sUpperBound += scalingFactor*xm;
 
-                mesher = boost::shared_ptr<Fdm1dMesher>(
+                mesher = ext::shared_ptr<Fdm1dMesher>(
                     new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
                         std::make_pair(xm, 0.1), false));
 

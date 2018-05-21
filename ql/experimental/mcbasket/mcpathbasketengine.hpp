@@ -47,7 +47,7 @@ namespace QuantLib {
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
                                                                    stats_type;
         // constructor
-        MCPathBasketEngine(const boost::shared_ptr<StochasticProcessArray>&,
+        MCPathBasketEngine(const ext::shared_ptr<StochasticProcessArray>&,
                            Size timeSteps,
                            Size timeStepsPerYear,
                            bool brownianBridge,
@@ -72,11 +72,11 @@ namespace QuantLib {
 
         // McSimulation implementation
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_generator_type> pathGenerator() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const;
 
         // data members
-        boost::shared_ptr<StochasticProcessArray> process_;
+        ext::shared_ptr<StochasticProcessArray> process_;
         Size timeSteps_;
         Size timeStepsPerYear_;
         Size requiredSamples_;
@@ -89,13 +89,13 @@ namespace QuantLib {
 
     class EuropeanPathMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        EuropeanPathMultiPathPricer(boost::shared_ptr<PathPayoff> & payoff,
+        EuropeanPathMultiPathPricer(ext::shared_ptr<PathPayoff> & payoff,
                                     const std::vector<Size> & timePositions,
                                     const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                                     const Array & discounts);
         Real operator()(const MultiPath& multiPath) const;
       private:
-        boost::shared_ptr<PathPayoff> payoff_;
+        ext::shared_ptr<PathPayoff> payoff_;
         std::vector<Size> timePositions_;
         std::vector<Handle<YieldTermStructure> > forwardTermStructures_;
         Array discounts_;
@@ -106,7 +106,7 @@ namespace QuantLib {
 
     template<class RNG, class S>
     inline MCPathBasketEngine<RNG,S>::MCPathBasketEngine(
-             const boost::shared_ptr<StochasticProcessArray>& process,
+             const ext::shared_ptr<StochasticProcessArray>& process,
              Size timeSteps,
              Size timeStepsPerYear,
              bool brownianBridge,
@@ -139,10 +139,10 @@ namespace QuantLib {
 
     template<class RNG, class S>
     inline
-    boost::shared_ptr<typename MCPathBasketEngine<RNG,S>::path_generator_type>
+    ext::shared_ptr<typename MCPathBasketEngine<RNG,S>::path_generator_type>
     MCPathBasketEngine<RNG,S>::pathGenerator() const {
 
-        boost::shared_ptr<PathPayoff> payoff = arguments_.payoff;
+        ext::shared_ptr<PathPayoff> payoff = arguments_.payoff;
         QL_REQUIRE(payoff, "non-basket payoff given");
 
         Size numAssets = process_->size();
@@ -152,7 +152,7 @@ namespace QuantLib {
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets * (grid.size() - 1), seed_);
 
-        return boost::shared_ptr<path_generator_type>(
+        return ext::shared_ptr<path_generator_type>(
                          new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
     }
@@ -175,13 +175,13 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<typename MCPathBasketEngine<RNG,S>::path_pricer_type>
+    ext::shared_ptr<typename MCPathBasketEngine<RNG,S>::path_pricer_type>
     MCPathBasketEngine<RNG,S>::pathPricer() const {
 
-        boost::shared_ptr<PathPayoff> payoff = arguments_.payoff;
+        ext::shared_ptr<PathPayoff> payoff = arguments_.payoff;
         QL_REQUIRE(payoff, "non-basket payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                        process_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
@@ -209,7 +209,7 @@ namespace QuantLib {
                                                          fixings[i]));
         }
 
-        return boost::shared_ptr<
+        return ext::shared_ptr<
             typename MCPathBasketEngine<RNG,S>::path_pricer_type>(
                         new EuropeanPathMultiPathPricer(payoff, timePositions,
                                                         forwardTermStructures,
@@ -222,7 +222,7 @@ namespace QuantLib {
     class MakeMCPathBasketEngine {
       public:
         explicit MakeMCPathBasketEngine(
-                            const boost::shared_ptr<StochasticProcessArray>&);
+                            const ext::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCPathBasketEngine& withSteps(Size steps);
         MakeMCPathBasketEngine& withStepsPerYear(Size steps);
@@ -234,9 +234,9 @@ namespace QuantLib {
         MakeMCPathBasketEngine& withAntitheticVariate(bool b = true);
         MakeMCPathBasketEngine& withControlVariate(bool b = true);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<StochasticProcessArray> process_;
+        ext::shared_ptr<StochasticProcessArray> process_;
         bool antithetic_, controlVariate_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -246,7 +246,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCPathBasketEngine<RNG,S>::MakeMCPathBasketEngine(
-        const boost::shared_ptr<StochasticProcessArray>& process)
+        const ext::shared_ptr<StochasticProcessArray>& process)
     : process_(process),
       antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
@@ -325,9 +325,9 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCPathBasketEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+    MakeMCPathBasketEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
                                                                        const {
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCPathBasketEngine<RNG,S>(process_,
                                       steps_,
                                       stepsPerYear_,

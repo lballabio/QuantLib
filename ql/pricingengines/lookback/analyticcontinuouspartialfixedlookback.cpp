@@ -25,14 +25,14 @@ namespace QuantLib {
 
     AnalyticContinuousPartialFixedLookbackEngine::
     AnalyticContinuousPartialFixedLookbackEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
 
     void AnalyticContinuousPartialFixedLookbackEngine::calculate() const {
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-plain payoff given");
 
@@ -60,7 +60,7 @@ namespace QuantLib {
     }
 
     Real AnalyticContinuousPartialFixedLookbackEngine::strike() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-plain payoff given");
         return payoff->strike();

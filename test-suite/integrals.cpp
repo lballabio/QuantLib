@@ -145,9 +145,9 @@ void IntegralTest::testTwoDimensionalIntegration() {
 
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
-        boost::shared_ptr<Integrator>(
+        ext::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
-        boost::shared_ptr<Integrator>(
+        ext::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
         std::multiplies<Real>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
@@ -296,9 +296,9 @@ void IntegralTest::testPiecewiseIntegral() {
     BOOST_TEST_MESSAGE("Testing piecewise integral...");
     x += 1.0, 2.0, 3.0, 4.0, 5.0;
     y += 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
-    boost::shared_ptr<Integrator> segment =
+    ext::shared_ptr<Integrator> segment =
         boost::make_shared<SegmentIntegral>(1);
-    boost::shared_ptr<Integrator> piecewise =
+    ext::shared_ptr<Integrator> piecewise =
         boost::make_shared<PiecewiseIntegral>(segment, x);
     pw_check(*piecewise, -1.0, 0.0, 1.0);
     pw_check(*piecewise, 0.0, 1.0, 1.0);

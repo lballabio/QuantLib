@@ -35,8 +35,8 @@ namespace QuantLib {
           MultiStepPeriodCapletSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& forwardOptionPaymentTimes,
                                      const std::vector<Time>& swaptionPaymentTimes,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
                                      Size period,
                                      Size offset);
         //! \name MarketModelMultiProduct interface
@@ -56,8 +56,8 @@ namespace QuantLib {
         std::vector<Time> paymentTimes_;
         std::vector<Time> forwardOptionPaymentTimes_;
         std::vector<Time> swaptionPaymentTimes_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > forwardPayOffs_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > swapPayOffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > forwardPayOffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > swapPayOffs_;
         Size lastIndex_;
         Size period_;
         Size offset_;

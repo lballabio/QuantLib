@@ -131,7 +131,7 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
@@ -180,7 +180,7 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
@@ -227,7 +227,7 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
@@ -303,23 +303,23 @@ namespace QuantLib {
         }
     }
 
-    //boost::shared_ptr<SmileSection>
+    //ext::shared_ptr<SmileSection>
     //SwaptionVolatilityMatrix::smileSectionImpl(const Date& d,
     //                                           const Period& swapTenor) const {
     //    Time optionTime = timeFromReference(d);
     //    Time swapLength = convertSwapTenor(swapTenor);
     //    // dummy strike
     //    Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-    //    return boost::shared_ptr<SmileSection>(new
+    //    return ext::shared_ptr<SmileSection>(new
     //        FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
     //}
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SwaptionVolatilityMatrix::smileSectionImpl(Time optionTime,
                                                Time swapLength) const {
         // dummy strike
         Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-        return boost::shared_ptr<SmileSection>(new FlatSmileSection(
+        return ext::shared_ptr<SmileSection>(new FlatSmileSection(
             optionTime, atmVol, dayCounter(), Null<Real>(), volatilityType(),
             shift(optionTime, swapLength, true)));
     }

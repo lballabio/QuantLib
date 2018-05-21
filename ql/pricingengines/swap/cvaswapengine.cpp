@@ -137,7 +137,7 @@ namespace QuantLib {
 
     baseSwapEngine_->calculate();
 
-    boost::shared_ptr<FixedRateCoupon> coupon = boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.legs[0][0]);
+    ext::shared_ptr<FixedRateCoupon> coupon = boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.legs[0][0]);
     QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
     Rate baseSwapRate = coupon->rate();
 
@@ -155,9 +155,9 @@ namespace QuantLib {
     // Swaplet options summatory:
     while(nextFD != arguments_.fixedPayDates.end()) {
       // iFD coupon not fixed, create swaptionlet:
-      boost::shared_ptr<FloatingRateCoupon> floatCoupon = boost::dynamic_pointer_cast<FloatingRateCoupon>(arguments_.legs[1][0]);
+      ext::shared_ptr<FloatingRateCoupon> floatCoupon = boost::dynamic_pointer_cast<FloatingRateCoupon>(arguments_.legs[1][0]);
       QL_REQUIRE(floatCoupon,"dynamic cast of floating leg coupon failed.");
-      boost::shared_ptr<IborIndex> swapIndex = boost::dynamic_pointer_cast<IborIndex>(floatCoupon->index());
+      ext::shared_ptr<IborIndex> swapIndex = boost::dynamic_pointer_cast<IborIndex>(floatCoupon->index());
       QL_REQUIRE(swapIndex,"dynamic cast of floating leg index failed.");
 
       // Alternatively one could cap this period to, say, 1M 
@@ -166,7 +166,7 @@ namespace QuantLib {
 
       Period baseSwapsTenor(arguments_.fixedPayDates.back().serialNumber() 
 	    - swapletStart.serialNumber(), Days);
-      boost::shared_ptr<VanillaSwap> swaplet = MakeVanillaSwap(
+      ext::shared_ptr<VanillaSwap> swaplet = MakeVanillaSwap(
         baseSwapsTenor,
         swapIndex, 
         baseSwapFairRate // strike
@@ -176,7 +176,7 @@ namespace QuantLib {
           ////////	    .withSettlementDays(2)
         .withEffectiveDate(swapletStart)
         .withTerminationDate(arguments_.fixedPayDates.back());
-      boost::shared_ptr<VanillaSwap> revSwaplet = MakeVanillaSwap(
+      ext::shared_ptr<VanillaSwap> revSwaplet = MakeVanillaSwap(
         baseSwapsTenor,
         swapIndex, 
         baseSwapFairRate // strike

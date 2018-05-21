@@ -42,7 +42,7 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 namespace {
 

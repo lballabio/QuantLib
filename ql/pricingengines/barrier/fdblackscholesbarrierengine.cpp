@@ -36,7 +36,7 @@
 namespace QuantLib {
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Size tGrid, Size xGrid, Size dampingSteps, 
             const FdmSchemeDesc& schemeDesc,
             bool localVol, Real illegalLocalVolOverwrite)
@@ -50,7 +50,7 @@ namespace QuantLib {
     void FdBlackScholesBarrierEngine::calculate() const {
 
         // 1. Mesher
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
 
@@ -65,26 +65,26 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const boost::shared_ptr<Fdm1dMesher> equityMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
                 arguments_.cashFlow));
         
-        const boost::shared_ptr<FdmMesher> mesher (
+        const ext::shared_ptr<FdmMesher> mesher (
             boost::make_shared<FdmMesherComposite>(equityMesher));
 
         // 2. Calculator
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        ext::shared_ptr<FdmInnerValueCalculator> calculator(
             boost::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
 
         // 3. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Step condition if discrete dividends
-        boost::shared_ptr<FdmDividendHandler> dividendCondition(
+        ext::shared_ptr<FdmDividendHandler> dividendCondition(
             boost::make_shared<FdmDividendHandler>(arguments_.cashFlow, mesher,
                                    process_->riskFreeRate()->referenceDate(),
                                    process_->riskFreeRate()->dayCounter(), 0));
@@ -97,7 +97,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "only european style option are supported");
 
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
+        ext::shared_ptr<FdmStepConditionComposite> conditions(
             boost::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
 
         // 4. Boundary conditions
@@ -121,7 +121,7 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        boost::shared_ptr<FdmBlackScholesSolver> solver(
+        ext::shared_ptr<FdmBlackScholesSolver> solver(
             boost::make_shared<FdmBlackScholesSolver>(
                                Handle<GeneralizedBlackScholesProcess>(process_),
                                payoff->strike(), solverDesc, schemeDesc_,
@@ -137,12 +137,12 @@ namespace QuantLib {
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::UpIn) {
             // Cast the payoff
-            boost::shared_ptr<StrikedTypePayoff> payoff =
+            ext::shared_ptr<StrikedTypePayoff> payoff =
                     boost::dynamic_pointer_cast<StrikedTypePayoff>(
                                                             arguments_.payoff);
             // Calculate the vanilla option
             
-            boost::shared_ptr<DividendVanillaOption> vanillaOption(
+            ext::shared_ptr<DividendVanillaOption> vanillaOption(
                 boost::make_shared<DividendVanillaOption>(payoff,arguments_.exercise,
                                           dividendCondition->dividendDates(), 
                                           dividendCondition->dividends()));
@@ -154,7 +154,7 @@ namespace QuantLib {
                         schemeDesc_, localVol_, illegalLocalVolOverwrite_));
 
             // Calculate the rebate value
-            boost::shared_ptr<DividendBarrierOption> rebateOption(
+            ext::shared_ptr<DividendBarrierOption> rebateOption(
                 boost::make_shared<DividendBarrierOption>(arguments_.barrierType,
                                           arguments_.barrier,
                                           arguments_.rebate,

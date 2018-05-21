@@ -44,7 +44,7 @@ namespace QuantLib {
         const Handle<Quote> &meanReversion,
         const Handle<YieldTermStructure> &couponDiscountCurve,
         const Settings &settings,
-        const boost::shared_ptr<Integrator> &integrator)
+        const ext::shared_ptr<Integrator> &integrator)
         : CmsCouponPricer(swaptionVol), meanReversion_(meanReversion),
           couponDiscountCurve_(couponDiscountCurve), settings_(settings),
           volDayCounter_(swaptionVol->dayCounter()), integrator_(integrator) {
@@ -131,7 +131,7 @@ namespace QuantLib {
             swapRateValue_ = swap_->fairRate();
             annuity_ = 1.0E4 * std::fabs(swap_->fixedLegBPS());
 
-            boost::shared_ptr<SmileSection> sectionTmp =
+            ext::shared_ptr<SmileSection> sectionTmp =
                 swaptionVolatility()->smileSection(fixingDate_, swapTenor_);
 
             adjustedLowerBound_ = settings_.lowerRateBound_;
@@ -160,7 +160,7 @@ namespace QuantLib {
 
             Real gx = 0.0, gy = 0.0;
             for (Size i = 0; i < swap_->fixedLeg().size(); i++) {
-                boost::shared_ptr<Coupon> c =
+                ext::shared_ptr<Coupon> c =
                     boost::dynamic_pointer_cast<Coupon>(swap_->fixedLeg()[i]);
                 Real yf = c->accrualPeriod();
                 Date d = c->date();

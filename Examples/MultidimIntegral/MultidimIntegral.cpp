@@ -78,7 +78,7 @@ int main() {
     Real secondsQuad = timer.elapsed();
     #endif
 
-    std::vector<boost::shared_ptr<Integrator> > integrals;
+    std::vector<ext::shared_ptr<Integrator> > integrals;
     for(Size i=0; i<dimension; i++)
         integrals.push_back(
         boost::make_shared<TrapezoidIntegral<Default> >(1.e-4, 20));

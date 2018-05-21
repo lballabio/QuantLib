@@ -29,7 +29,7 @@ using std::sqrt;
 namespace QuantLib {
 
     AnalyticComplexChooserEngine::AnalyticComplexChooserEngine(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -83,7 +83,7 @@ namespace QuantLib {
         DiscountFactor discount;
 
         //payoff
-        boost::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
+        ext::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
         if (optionType == Option::Call){
             //TC-T
             Time t=callMaturity()-choosingTime()-choosingTime();

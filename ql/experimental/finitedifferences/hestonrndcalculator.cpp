@@ -47,7 +47,7 @@ namespace {
         };
 
         HestonParams getHestonParams(
-            const boost::shared_ptr<HestonProcess>& process) {
+            const ext::shared_ptr<HestonProcess>& process) {
             const HestonParams p = { process->v0(),    process->kappa(),
                                      process->theta(), process->sigma(),
                                      process->rho() };
@@ -119,7 +119,7 @@ namespace {
 
 
     HestonRNDCalculator::HestonRNDCalculator(
-        const boost::shared_ptr<HestonProcess>& hestonProcess,
+        const ext::shared_ptr<HestonProcess>& hestonProcess,
         Real integrationEps, Size maxIntegrationIterations)
     : hestonProcess_(hestonProcess),
       x0_(std::log(hestonProcess_->s0()->value())),
@@ -156,7 +156,7 @@ namespace {
         const Volatility expVol
             = std::sqrt(theta + (v0-theta)*(1-std::exp(-kappa*t))/(t*kappa));
 
-        const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+        const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
             boost::make_shared<BlackScholesMertonProcess>(
                 hestonProcess_->s0(),
                 hestonProcess_->dividendYield(),

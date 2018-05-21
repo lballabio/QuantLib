@@ -84,7 +84,7 @@ namespace QuantLib {
             Event::accept(v);
     }
 
-    typedef std::vector<boost::shared_ptr<Callability> > CallabilitySchedule;
+    typedef std::vector<ext::shared_ptr<Callability> > CallabilitySchedule;
 
 }
 

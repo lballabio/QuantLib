@@ -43,17 +43,17 @@ namespace QuantLib {
         class ShortRateTree;
 
         //! returns the short-rate dynamics
-        virtual boost::shared_ptr<ShortRateDynamics> dynamics() const = 0;
+        virtual ext::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Return by default a trinomial recombining tree
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
     };
 
     //! Base class describing the short-rate dynamics
     class OneFactorModel::ShortRateDynamics {
       public:
         explicit ShortRateDynamics(
-                        const boost::shared_ptr<StochasticProcess1D>& process)
+                        const ext::shared_ptr<StochasticProcess1D>& process)
         : process_(process) {}
         virtual ~ShortRateDynamics() {}
 
@@ -64,11 +64,11 @@ namespace QuantLib {
         virtual Rate shortRate(Time t, Real variable) const = 0;
 
         //! Returns the risk-neutral dynamics of the state variable
-        const boost::shared_ptr<StochasticProcess1D>& process() {
+        const ext::shared_ptr<StochasticProcess1D>& process() {
             return process_;
         }
       private:
-        boost::shared_ptr<StochasticProcess1D> process_;
+        ext::shared_ptr<StochasticProcess1D> process_;
     };
 
     //! Recombining trinomial tree discretizing the state variable
@@ -76,13 +76,13 @@ namespace QuantLib {
         : public TreeLattice1D<OneFactorModel::ShortRateTree> {
       public:
         //! Plain tree build-up from short-rate dynamics
-        ShortRateTree(const boost::shared_ptr<TrinomialTree>& tree,
-                      const boost::shared_ptr<ShortRateDynamics>& dynamics,
+        ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
+                      const ext::shared_ptr<ShortRateDynamics>& dynamics,
                       const TimeGrid& timeGrid);
         //! Tree build-up + numerical fitting to term-structure
-        ShortRateTree(const boost::shared_ptr<TrinomialTree>& tree,
-                      const boost::shared_ptr<ShortRateDynamics>& dynamics,
-                      const boost::shared_ptr
+        ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
+                      const ext::shared_ptr<ShortRateDynamics>& dynamics,
+                      const ext::shared_ptr
                           <TermStructureFittingParameter::NumericalImpl>& phi,
                       const TimeGrid& timeGrid);
 
@@ -108,8 +108,8 @@ namespace QuantLib {
             spread_=spread;
         }
       private:
-        boost::shared_ptr<TrinomialTree> tree_;
-        boost::shared_ptr<ShortRateDynamics> dynamics_;
+        ext::shared_ptr<TrinomialTree> tree_;
+        ext::shared_ptr<ShortRateDynamics> dynamics_;
         class Helper;
         Spread spread_;
     };

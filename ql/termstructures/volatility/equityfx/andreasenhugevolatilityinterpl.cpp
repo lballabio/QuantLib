@@ -52,7 +52,7 @@ namespace QuantLib {
             const Array& marketVegas,
             const Array& lnMarketStrikes,
             const Array& previousNPVs,
-            const boost::shared_ptr<FdmMesherComposite> mesher,
+            const ext::shared_ptr<FdmMesherComposite> mesher,
             Time dT,
             AndreasenHugeVolatilityInterpl::InterpolationType interpolationType)
         : marketNPVs_(marketNPVs),
@@ -106,7 +106,7 @@ namespace QuantLib {
                 QL_FAIL("unknown interpolation type");
             }
 
-            const boost::shared_ptr<FdmLinearOpLayout> layout =
+            const ext::shared_ptr<FdmLinearOpLayout> layout =
                 mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
@@ -162,7 +162,7 @@ namespace QuantLib {
       private:
         const Array marketNPVs_, marketVegas_;
         const Array lnMarketStrikes_, previousNPVs_;
-        const boost::shared_ptr<FdmMesherComposite> mesher_;
+        const ext::shared_ptr<FdmMesherComposite> mesher_;
         const Size nGridPoints_;
         const Time dT_;
         const AndreasenHugeVolatilityInterpl::InterpolationType
@@ -177,8 +177,8 @@ namespace QuantLib {
     class CombinedCostFunction : public CostFunction {
       public:
         CombinedCostFunction(
-            const boost::shared_ptr<AndreasenHugeCostFunction>& putCostFct,
-            const boost::shared_ptr<AndreasenHugeCostFunction>& callCostFct)
+            const ext::shared_ptr<AndreasenHugeCostFunction>& putCostFct,
+            const ext::shared_ptr<AndreasenHugeCostFunction>& callCostFct)
       : putCostFct_(putCostFct),
         callCostFct_(callCostFct) { }
 
@@ -214,8 +214,8 @@ namespace QuantLib {
         }
 
       private:
-        const boost::shared_ptr<AndreasenHugeCostFunction> putCostFct_;
-        const boost::shared_ptr<AndreasenHugeCostFunction> callCostFct_;
+        const ext::shared_ptr<AndreasenHugeCostFunction> putCostFct_;
+        const ext::shared_ptr<AndreasenHugeCostFunction> callCostFct_;
     };
 
 
@@ -230,7 +230,7 @@ namespace QuantLib {
         Size nGridPoints,
         Real _minStrike,
         Real _maxStrike,
-        const boost::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
         const EndCriteria& endCriteria)
     : spot_(spot),
       rTS_(rTS),
@@ -251,7 +251,7 @@ namespace QuantLib {
         calibrationSet_.reserve(calibrationSet.size());
         for (Size i=0; i < calibrationSet.size(); ++i) {
 
-            const boost::shared_ptr<Exercise> exercise =
+            const ext::shared_ptr<Exercise> exercise =
                 calibrationSet[i].first->exercise();
 
             QL_REQUIRE(exercise->type() == Exercise::European,
@@ -260,7 +260,7 @@ namespace QuantLib {
             const Date expiry = exercise->lastDate();
             expiries.insert(expiry);
 
-            const boost::shared_ptr<PlainVanillaPayoff> payoff =
+            const ext::shared_ptr<PlainVanillaPayoff> payoff =
                 boost::dynamic_pointer_cast<PlainVanillaPayoff>(
                     calibrationSet[i].first->payoff());
 
@@ -310,7 +310,7 @@ namespace QuantLib {
         registerWith(qTS_);
     }
 
-    boost::shared_ptr<AndreasenHugeCostFunction>
+    ext::shared_ptr<AndreasenHugeCostFunction>
         AndreasenHugeVolatilityInterpl::buildCostFunction(
         Size iExpiry, Option::Type optionType,
         const Array& previousNPVs) const {
@@ -318,7 +318,7 @@ namespace QuantLib {
         if (calibrationType_ != CallPut
             && (   (calibrationType_ == Call && optionType ==Option::Put)
                 || (calibrationType_ == Put  && optionType ==Option::Call)))
-            return boost::shared_ptr<AndreasenHugeCostFunction>();
+            return ext::shared_ptr<AndreasenHugeCostFunction>();
 
         const Time expiryTime = expiryTimes_[iExpiry];
 
@@ -406,9 +406,9 @@ namespace QuantLib {
         }
 
         for (Size i=0; i < expiries_.size(); ++i) {
-            const boost::shared_ptr<AndreasenHugeCostFunction> putCostFct =
+            const ext::shared_ptr<AndreasenHugeCostFunction> putCostFct =
                 buildCostFunction(i, Option::Put, npvPuts);
-            const boost::shared_ptr<AndreasenHugeCostFunction> callCostFct =
+            const ext::shared_ptr<AndreasenHugeCostFunction> callCostFct =
                 buildCostFunction(i, Option::Call, npvCalls);
 
             CombinedCostFunction costFunction(putCostFct, callCostFct);
@@ -556,7 +556,7 @@ namespace QuantLib {
         calculate();
 
 
-        const boost::shared_ptr<Array> prices(
+        const ext::shared_ptr<Array> prices(
             boost::make_shared<Array>(gridPoints_));
 
         switch (calibrationType_) {
@@ -575,8 +575,8 @@ namespace QuantLib {
 
         priceCache_[t] = boost::make_tuple<
             Real,
-            boost::shared_ptr<Array>,
-            boost::shared_ptr<Interpolation> >(
+            ext::shared_ptr<Array>,
+            ext::shared_ptr<Interpolation> >(
                 fwd, prices,
                 boost::make_shared<CubicNaturalSpline>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
@@ -594,7 +594,7 @@ namespace QuantLib {
             (optionType == Option::Call)? calibrationResults_[iu].callNPVs
                                         : calibrationResults_[iu].putNPVs;
 
-        const boost::shared_ptr<AndreasenHugeCostFunction> costFunction
+        const ext::shared_ptr<AndreasenHugeCostFunction> costFunction
             = calibrationResults_[iu].costFunction;
 
         const Time dt = (iu == 0) ? t : t-expiryTimes_[iu-1];
@@ -627,7 +627,7 @@ namespace QuantLib {
 
         calculate();
 
-        const boost::shared_ptr<Array> localVol(
+        const ext::shared_ptr<Array> localVol(
             boost::make_shared<Array>(gridPoints_.size()));
 
         switch (calibrationType_) {
@@ -654,8 +654,8 @@ namespace QuantLib {
 
         localVolCache_[t] = boost::make_tuple<
             Real,
-            boost::shared_ptr<Array>,
-            boost::shared_ptr<Interpolation> >(
+            ext::shared_ptr<Array>,
+            ext::shared_ptr<Interpolation> >(
                 fwd, localVol,
                 boost::make_shared<LinearInterpolation>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,

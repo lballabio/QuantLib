@@ -23,18 +23,18 @@
 
 namespace QuantLib {
 
-    BatesEngine::BatesEngine(const boost::shared_ptr<BatesModel> & model,
+    BatesEngine::BatesEngine(const ext::shared_ptr<BatesModel> & model,
                              Size integrationOrder)
     : AnalyticHestonEngine(model, integrationOrder) { }
 
-    BatesEngine::BatesEngine(const boost::shared_ptr<BatesModel>& model,
+    BatesEngine::BatesEngine(const ext::shared_ptr<BatesModel>& model,
                              Real relTolerance, Size maxEvaluations)
     : AnalyticHestonEngine(model, relTolerance, maxEvaluations) { }
 
     std::complex<Real> BatesEngine::addOnTerm(
                                             Real phi, Time t, Size j) const {
         
-        boost::shared_ptr<BatesModel> batesModel =
+        ext::shared_ptr<BatesModel> batesModel =
                             boost::dynamic_pointer_cast<BatesModel>(*model_);
 
         const Real nu_     = batesModel->nu();
@@ -50,12 +50,12 @@ namespace QuantLib {
 
 
     BatesDetJumpEngine::BatesDetJumpEngine(
-        const boost::shared_ptr<BatesDetJumpModel>& model,
+        const ext::shared_ptr<BatesDetJumpModel>& model,
         Size integrationOrder)
     : BatesEngine(model, integrationOrder) { }
 
     BatesDetJumpEngine::BatesDetJumpEngine(
-        const boost::shared_ptr<BatesDetJumpModel>& model,
+        const ext::shared_ptr<BatesDetJumpModel>& model,
         Real relTolerance, Size maxEvaluations)
     : BatesEngine(model, relTolerance, maxEvaluations) { }
 
@@ -65,7 +65,7 @@ namespace QuantLib {
         const std::complex<Real> l =
             BatesEngine::addOnTerm(phi, t, j);
 
-        boost::shared_ptr<BatesDetJumpModel> batesDetJumpModel =
+        ext::shared_ptr<BatesDetJumpModel> batesDetJumpModel =
             boost::dynamic_pointer_cast<BatesDetJumpModel>(*model_);
 
         const Real lambda      = batesDetJumpModel->lambda();
@@ -79,18 +79,18 @@ namespace QuantLib {
 
 
     BatesDoubleExpEngine::BatesDoubleExpEngine(
-        const boost::shared_ptr<BatesDoubleExpModel> & model,
+        const ext::shared_ptr<BatesDoubleExpModel> & model,
         Size integrationOrder)
     : AnalyticHestonEngine(model, integrationOrder) { }
 
     BatesDoubleExpEngine::BatesDoubleExpEngine(
-        const boost::shared_ptr<BatesDoubleExpModel>& model,
+        const ext::shared_ptr<BatesDoubleExpModel>& model,
         Real relTolerance, Size maxEvaluations)
     : AnalyticHestonEngine(model, relTolerance, maxEvaluations) { }
 
     std::complex<Real> BatesDoubleExpEngine::addOnTerm(
         Real phi, Time t, Size j) const {
-        boost::shared_ptr<BatesDoubleExpModel> batesDoubleExpModel =
+        ext::shared_ptr<BatesDoubleExpModel> batesDoubleExpModel =
             boost::dynamic_pointer_cast<BatesDoubleExpModel>(*model_);
 
         const Real p_     = batesDoubleExpModel->p();
@@ -106,12 +106,12 @@ namespace QuantLib {
     }
 
     BatesDoubleExpDetJumpEngine::BatesDoubleExpDetJumpEngine(
-        const boost::shared_ptr<BatesDoubleExpDetJumpModel> & model,
+        const ext::shared_ptr<BatesDoubleExpDetJumpModel> & model,
         Size integrationOrder)
     : BatesDoubleExpEngine(model, integrationOrder) { }
 
     BatesDoubleExpDetJumpEngine::BatesDoubleExpDetJumpEngine(
-        const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
+        const ext::shared_ptr<BatesDoubleExpDetJumpModel>& model,
         Real relTolerance, Size maxEvaluations)
     : BatesDoubleExpEngine(model, relTolerance, maxEvaluations) { }
 
@@ -120,7 +120,7 @@ namespace QuantLib {
         const std::complex<Real> l =
             BatesDoubleExpEngine::addOnTerm(phi, t, j);
 
-        boost::shared_ptr<BatesDoubleExpDetJumpModel> doubleExpDetJumpModel
+        ext::shared_ptr<BatesDoubleExpDetJumpModel> doubleExpDetJumpModel
             = boost::dynamic_pointer_cast<BatesDoubleExpDetJumpModel>(*model_);
 
         const Real lambda      = doubleExpDetJumpModel->lambda();
