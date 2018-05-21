@@ -57,15 +57,13 @@ namespace QuantLib {
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
             const Integer ix = Integer(iter.coordinates()[direction]);
-            const Integer offset =
-                std::max(0, hPoints - ix) - std::max(0, hPoints - (nx-1 - ix));
+            const Integer offset = std::max(0, hPoints - ix)
+                - std::max(0, hPoints - (nx-((isEven)? 0 : 1) - ix));
 
-            const Integer ilx = ix - hPoints + offset
-                + ((isEven && offset < 0)? 1 : 0);
+            const Integer ilx = ix - hPoints + offset;
 
             for (Integer j=0; j < nPoints; ++j) {
-                const Integer idx = ilx + j
-                        + ((isEven && !offset && j >= hPoints)? 1 : 0);
+                const Integer idx = ilx + j;
                 xOffsets[j] = xValues[idx] - xValues[ix];
             }
 
@@ -74,8 +72,7 @@ namespace QuantLib {
 
             const Size i = iter.index();
             for (Integer j=0; j < nPoints; ++j) {
-                const Size k = layout->neighbourhood(iter, direction,
-                    ilx - ix + j + ((isEven && !offset && j >= hPoints)? 1 : 0));
+                const Size k = layout->neighbourhood(iter, direction, ilx - ix + j);
 
                 m_(i, k) = weights[j];
             }

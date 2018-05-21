@@ -23,8 +23,10 @@
 
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/initializers.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
@@ -48,9 +50,6 @@
 #include <boost/function.hpp>
 #include <boost/make_shared.hpp>
 #include <numeric>
-
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -149,20 +148,20 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOnUniformGrid() {
             boost::make_shared<FdmMesherComposite>(
                 boost::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
 
-    BOOST_CHECK(close_enough(m(2,0), 0.0));
-    BOOST_CHECK(close_enough(m(2,1), -0.5*ddx));
-    BOOST_CHECK(m(2,2) < 42*QL_EPSILON);
-    BOOST_CHECK(close_enough(m(2,3), 0.5*ddx));
-
-    BOOST_CHECK(close_enough(m(1,0), -0.5*ddx));
-    BOOST_CHECK(m(1,1) < 42*QL_EPSILON);
-    BOOST_CHECK(close_enough(m(1,2), 0.5*ddx));
-    BOOST_CHECK(close_enough(m(1,3), 0.0));
-
     BOOST_CHECK(close_enough(m(0,0), -ddx));
     BOOST_CHECK(close_enough(m(0,1), ddx));
     BOOST_CHECK(close_enough(m(0,2), 0.0));
     BOOST_CHECK(close_enough(m(0,3), 0.0));
+
+    BOOST_CHECK(close_enough(m(1,0), -ddx));
+    BOOST_CHECK(close_enough(m(1,1), ddx));
+    BOOST_CHECK(close_enough(m(1,2), 0.0));
+    BOOST_CHECK(close_enough(m(1,3), 0.0));
+
+    BOOST_CHECK(close_enough(m(2,0), 0.0));
+    BOOST_CHECK(close_enough(m(2,1), -ddx));
+    BOOST_CHECK(close_enough(m(2,2), ddx));
+    BOOST_CHECK(close_enough(m(2,3), 0.0));
 
     BOOST_CHECK(close_enough(m(3,0), 0.0));
     BOOST_CHECK(close_enough(m(3,1), 0.0));
@@ -230,9 +229,9 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOn2DimUniformGrid() {
             BOOST_CHECK(close_enough(m(i, i+2*xGrid), 0.0));
             break;
           case 1:
-            BOOST_CHECK(close_enough(m(i, i-xGrid),-0.5*ddx));
-            BOOST_CHECK(m(i, i) < 42*QL_EPSILON);
-            BOOST_CHECK(close_enough(m(i, i+xGrid), 0.5*ddx));
+            BOOST_CHECK(close_enough(m(i, i-  xGrid),-ddx));
+            BOOST_CHECK(close_enough(m(i, i        ), ddx));
+            BOOST_CHECK(close_enough(m(i, i+2*xGrid), 0.0));
             break;
           case 2:
             BOOST_CHECK(close_enough(m(i, i-2*xGrid), 0.0));
@@ -281,6 +280,53 @@ void NthOrderDerivativeOpTest::testSecondOrder3PointsNonUniformGrid() {
     BOOST_CHECK(close_enough(m(3,3), 1.0/3.0));
 }
 
+void NthOrderDerivativeOpTest::testSecondOrder4PointsNonUniformGrid() {
+    BOOST_TEST_MESSAGE("Testing four points second order "
+            "derivative operator on a non-uniform grid...");
+
+    std::vector<Real> xValues(5);
+    xValues[0] = 0.5;
+    xValues[1] = 1.0;
+    xValues[2] = 2.0;
+    xValues[3] = 4.0;
+    xValues[4] = 8.0;
+
+    const SparseMatrix m =
+        NthOrderDerivativeOp(0, 2, 4,
+            boost::make_shared<FdmMesherComposite>(
+                boost::make_shared<Predefined1dMesher>(xValues))).toMatrix();
+
+    BOOST_CHECK(close_enough(m(0,0), 88.0/21.0));
+    BOOST_CHECK(close_enough(m(0,1), -140.0/21.0));
+    BOOST_CHECK(close_enough(m(0,2), 56.0/21.0));
+    BOOST_CHECK(close_enough(m(0,3), -4.0/21.0));
+    BOOST_CHECK(close_enough(m(0,4), 0.0));
+
+    BOOST_CHECK(close_enough(m(1,0), 64.0/21.0));
+    BOOST_CHECK(close_enough(m(1,1), -98.0/21.0));
+    BOOST_CHECK(close_enough(m(1,2), 35.0/21.0));
+    BOOST_CHECK(close_enough(m(1,3), -1.0/21.0));
+    BOOST_CHECK(close_enough(m(1,4), 0.0));
+
+    BOOST_CHECK(close_enough(m(2,0), 16.0/21.0));
+    BOOST_CHECK(close_enough(m(2,1), -2.0/3.0));
+    BOOST_CHECK(close_enough(m(2,2), -1.0/3.0));
+    BOOST_CHECK(close_enough(m(2,3), 5.0/21.0));
+    BOOST_CHECK(close_enough(m(2,4), 0.0));
+
+    BOOST_CHECK(close_enough(m(3,0), 0.0));
+    BOOST_CHECK(close_enough(m(3,1), 4.0/21.0));
+    BOOST_CHECK(close_enough(m(3,2), -1.0/6.0));
+    BOOST_CHECK(close_enough(m(3,3), -1.0/12.0));
+    BOOST_CHECK(close_enough(m(3,4), 5.0/84.0));
+
+    BOOST_CHECK(close_enough(m(4,0), 0.0));
+    BOOST_CHECK(close_enough(m(4,1), -20.0/21.0));
+    BOOST_CHECK(close_enough(m(4,2), 11.0/6.0));
+    BOOST_CHECK(close_enough(m(4,3), -13.0/12.0));
+    BOOST_CHECK(close_enough(m(4,4), 17.0/84.0));
+}
+
 void NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid() {
     BOOST_TEST_MESSAGE("Testing four points third order "
             "derivative operator on a uniform grid...");
@@ -304,9 +350,11 @@ namespace {
         Real alpha;
         Real density;
         bool cellAvg;
+        bool midPoint;
         Size nPoints;
         Size tGrid;
         Size yGrid;
+        FdmSchemeDesc scheme;
     };
 
     class FdmHeatEquationOp : public FdmLinearOpComposite {
@@ -351,7 +399,8 @@ namespace {
                     QuantLib::BiCGstab(
                         boost::function<Disposable<Array>(const Array&)>(
                             boost::bind(
-                                &FdmHeatEquationOp::solve_apply, this, _1, -dt)),
+                                &FdmHeatEquationOp::solve_apply,
+                                this, _1, -dt)),
                         std::max(Size(10), r.size()), 1e-14,
                         boost::function<Disposable<Array>(const Array&)>(
                             boost::bind(&FdmLinearOpComposite::preconditioner,
@@ -429,22 +478,38 @@ namespace {
 
         const Size yGrid = setup.yGrid;
 
-        Array diffs(strikes.size());
+        Array diffs(strikes.size()), fdmPrices(strikes.size());
         for (Size k=0; k < strikes.size(); ++k) {
             const Real strike = strikes[k];
+            const Real specialPoint = std::log(strike/df) + 0.5*vol*vol*T;
+
+            const boost::shared_ptr<Fdm1dMesher> mesher1d =
+                boost::make_shared<Concentrating1dMesher>(
+                    ymin, ymax, yGrid,
+                    std::pair<Real, Real>(specialPoint, setup.density));
+
+            std::vector<Real> loc = mesher1d->locations();
+            for (Size i = 0; setup.midPoint && i < loc.size()-1; ++i)
+                if (loc[i] < specialPoint && loc[i+1]>= specialPoint) {
+                    const Real d = loc[i+1] - loc[i];
+
+                    const Real offset = (specialPoint - 0.5*d) - loc[i];
+
+                    for (Size l = 0; l < loc.size(); ++l)
+                        loc[l] += offset;
+
+                    break;
+                }
 
             const boost::shared_ptr<FdmMesher> mesher =
                 boost::make_shared<FdmMesherComposite>(
-                    boost::make_shared<Concentrating1dMesher>(
-                        ymin, ymax, yGrid,
-                        std::pair<Real, Real>(std::log(strike), setup.density)));
+                    boost::make_shared<Predefined1dMesher>(loc));
 
             const boost::shared_ptr<FdmLinearOpLayout> layout =
                 mesher->layout();
 
             const Array g = mesher->locations(0);
-            const Array sT = Exp(g - 0.5*vol*vol*T)
-                * qTS->discount(maturity)/rTS->discount(maturity);
+            const Array sT = Exp(g - 0.5*vol*vol*T)*df;
 
             Array rhs(setup.yGrid);
 
@@ -478,7 +543,7 @@ namespace {
               heatEqn,
               FdmBoundaryConditionSet(),
               boost::shared_ptr<FdmStepConditionComposite>(),
-              FdmSchemeDesc::Douglas());
+              setup.scheme);
 
             solver.rollback(rhs, T, 0.0, setup.tGrid, 0);
 
@@ -505,31 +570,17 @@ namespace {
         Disposable<Array> values(const Array& x) const {
             const GridSetup g = {
                 x[0], x[1],
-                setup_.cellAvg, setup_.nPoints, setup_.tGrid, setup_.yGrid
+                setup_.cellAvg, setup_.midPoint,
+                setup_.nPoints, setup_.tGrid, setup_.yGrid, setup_.scheme
             };
 
-            std::cout << x[0] << " " << x[1];
-            std::cout.flush();
-
-            Array q;
             try {
-                q = priceReport(g, strikes_);
+                return priceReport(g, strikes_);
             }
             catch (std::exception const& e) {
-                q = Array(2, 1000);
+                Array q(2, 1000);
+                return q;
             }
-
-            const Array r = Abs(q);
-            std::cout
-                    << " "
-                    << std::accumulate(r.begin(), r.end(),0.0)/r.size()
-                    << " "
-                    << *std::max_element(r.begin(),r.end())
-                    << " "
-                    << std::sqrt(DotProduct(r,r)/r.size())
-                    << std::endl;
-
-            return q;
         }
 
       private:
@@ -539,45 +590,86 @@ namespace {
 }
 
 void NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing() {
-    BOOST_TEST_MESSAGE("Testing Black-Scholes option pricing with "
+    BOOST_TEST_MESSAGE("Testing Black-Scholes option pricing convergence with "
             "higher order finite difference operators...");
 
     SavedSettings backup;
 
     Array strikes(8);
-    strikes << 50, 75, 90, 100.0, 110, 125, 150, 200;
+    strikes << 50, 75, 90, 100, 110, 125, 150, 200;
 
-//    const GridSetup initSetup = { 4.1, 10.0, true, 3, 400, 401 };
-//
-//    Array initialValues(2);
-//    initialValues << initSetup.alpha, initSetup.density;
-//
-//    FdmMispricingCostFunction costFct(initSetup, strikes);
-//    NoConstraint noConstraint;
-//
-//    Problem p(costFct, noConstraint, initialValues);
-//
-//    LevenbergMarquardt().minimize(
-//        p, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
-//
-//    exit(-1);
-//
-    for (Size i = 51; i < 401; i+=10) {
-        GridSetup setup = { 4.09, 0.201364,
-            true, std::min(i, Size(5)), 400, i };
+    const GridSetup initSetup = {
+        5.2, 0.1, true, false, 5, 31, 51, FdmSchemeDesc::Douglas()
+    };
 
-        const Array r = Abs(priceReport(setup, strikes));
+    Array initialValues(2);
+    initialValues << initSetup.alpha, initSetup.density;
 
-        std::cout << i << " "
-                << std::accumulate(r.begin(), r.end(),0.0)/r.size()
-                << " "
-                << *std::max_element(r.begin(),r.end())
-                << " "
-                << std::sqrt(DotProduct(r,r)/r.size())
-                << std::endl;
+    FdmMispricingCostFunction costFct(initSetup, strikes);
+    NoConstraint noConstraint;
+
+    Problem p(costFct, noConstraint, initialValues);
+
+    LevenbergMarquardt().minimize(
+        p, EndCriteria(400, 40, 1.0e-6, 1.0e-6, 1.0e-6));
+
+    const GridSetup optimalSetup = {
+        p.currentValue()[0], p.currentValue()[1],
+        initSetup.cellAvg, initSetup.midPoint,
+        initSetup.nPoints,
+        initSetup.tGrid, initSetup.yGrid/2,
+        initSetup.scheme
+    };
+
+    const Array q = priceReport(optimalSetup, strikes);
+    const Real ac = std::sqrt(DotProduct(q,q)/q.size());
+
+    const Real convergence = std::log(ac/p.functionValue())*M_LOG2E;
+
+    if (convergence < 3.6) {
+        BOOST_ERROR("convergence order is too low"
+                << "\n expected convergence: 4.0"
+                << "\n measured convergence: " << convergence
+                << "\n tolerance           : 0.4");
     }
 }
 
+
+namespace {
+    Real priceQuality(Real h) {
+
+        Array strikes(1);
+        strikes << 100;
+
+        const Size yGrid = Size(1/h);
+        const GridSetup setup = {
+             5.20966, 0.00130581,
+             true, false, 5, 801, yGrid, FdmSchemeDesc::Douglas()
+        };
+
+        return  std::fabs(priceReport(setup, strikes)[0]);
+    }
+}
+
+void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
+    BOOST_TEST_MESSAGE(
+            "Testing Black-Scholes option pricing convergence with "
+            "higher order FDM operators and Richardson Extrapolation...");
+
+    SavedSettings backup;
+
+    const Real n1 = priceQuality(1.0/50);
+    const Real n3 = RichardsonExtrapolation(priceQuality, 1.0/50, 4.0)(2.0);
+
+    const Real r2 = std::log(n1/n3)*M_LOG2E;
+
+    if (r2 < 4.9) {
+        BOOST_ERROR("convergence order is too low using Richardson extrapolation"
+                << "\n expected convergence: 5.0"
+                << "\n measured convergence: " << r2
+                << "\n tolerance           : 0.1");
+    }
+}
 
 
 test_suite* NthOrderDerivativeOpTest::suite() {
@@ -596,9 +688,13 @@ test_suite* NthOrderDerivativeOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testSecondOrder3PointsNonUniformGrid));
     suite->add(QUANTLIB_TEST_CASE(
+        &NthOrderDerivativeOpTest::testSecondOrder4PointsNonUniformGrid));
+    suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid));
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing));
+    suite->add(QUANTLIB_TEST_CASE(
+        &NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg));
 
     return suite;
 }

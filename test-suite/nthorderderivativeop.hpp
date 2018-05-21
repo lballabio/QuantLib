@@ -30,8 +30,10 @@ class NthOrderDerivativeOpTest {
     static void testFirstOrder4PointsOnUniformGrid();
     static void testFirstOrder2PointsOn2DimUniformGrid();
     static void testSecondOrder3PointsNonUniformGrid();
+    static void testSecondOrder4PointsNonUniformGrid();
     static void testThirdOrder4PointsUniformGrid();
     static void testHigerOrderBSOptionPricing();
+    static void testHigerOrderAndRichardsonExtrapolationg();
 
     static boost::unit_test_framework::test_suite* suite();
 };
