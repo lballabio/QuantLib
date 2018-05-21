@@ -373,6 +373,22 @@ if test "$ql_use_intraday" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_intraday])
 
+AC_MSG_CHECKING([whether to enable the deprecated std::auto_ptr])
+AC_ARG_ENABLE([auto-ptr],
+              AC_HELP_STRING([--enable-auto-ptr],
+                             [If enabled (the default), the deprecated
+                              std::auto_ptr will still be used in a few
+                              places.  If disabled, std::unique_ptr will
+                              be used; this requires you to set your
+                              compiler's standard to at least C++11.]),
+              [ql_use_auto_ptr=$enableval],
+              [ql_use_auto_ptr=yes])
+if test "$ql_use_auto_ptr" = "no" ; then
+   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
+             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
+fi
+AC_MSG_RESULT([$ql_use_auto_ptr])
+
 # manual configurations for specific hosts
 case $host in
   powerpc-apple-darwin*)

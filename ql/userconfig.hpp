@@ -86,6 +86,12 @@
 //#    define QL_HIGH_RESOLUTION_DATE
 #endif
 
+/* Define this to replace std::auto_ptr with std::unique_ptr.
+   This requires you to set your compiler's standard to at least C++11. */
+#ifndef QL_USE_STD_UNIQUE_PTR
+//#    define QL_USE_STD_UNIQUE_PTR
+#endif
+
 /* Define this to enable the parallel unit test runner */
 #ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 //#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
