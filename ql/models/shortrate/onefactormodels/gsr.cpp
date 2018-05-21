@@ -93,7 +93,7 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
 
 void Gsr::update() { 
 	if (stateProcess_ != NULL)
-        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
 	LazyObject::update();
 }
 
@@ -114,7 +114,7 @@ void Gsr::updateTimes() const {
                            << volsteptimes_[j] << "@" << j << ")");
     }
     if (stateProcess_ != NULL)
-        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
 }
 
 void Gsr::updateVolatility() {

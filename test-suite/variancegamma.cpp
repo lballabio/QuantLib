@@ -188,7 +188,7 @@ void VarianceGammaTest::testVarianceGamma() {
         fftEngine->precalculate(optionList);
         for (Size j=0; j<LENGTH(options); j++)
         {
-            ext::shared_ptr<VanillaOption> option = boost::static_pointer_cast<VanillaOption>(optionList[j]);
+            ext::shared_ptr<VanillaOption> option = ext::static_pointer_cast<VanillaOption>(optionList[j]);
             option->setPricingEngine(fftEngine);
 
             Real calculated = option->NPV();

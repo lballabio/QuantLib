@@ -140,7 +140,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
                       const Handle<YieldTermStructure> &yts) const;
 
     void generateArguments() {
-        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
         notifyObservers();
     }
 
