@@ -21,6 +21,7 @@
     \brief n-th order derivative linear operator
 */
 
+#include <ql/qldefines.hpp>
 #ifndef QL_NO_UBLAS_SUPPORT
 
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>

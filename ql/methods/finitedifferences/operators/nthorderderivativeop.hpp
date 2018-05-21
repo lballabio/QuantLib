@@ -24,6 +24,7 @@
 #ifndef quantlib_nth_order_derivative_op_hpp
 #define quantlib_nth_order_derivative_op_hpp
 
+#include <ql/qldefines.hpp>
 #ifndef QL_NO_UBLAS_SUPPORT
 
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>

@@ -17,13 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-#ifndef QL_NO_UBLAS_SUPPORT
-
 #include "utilities.hpp"
 #include "nthorderderivativeop.hpp"
-#include <ql/math/comparison.hpp>
 
+#include <ql/math/comparison.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/initializers.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
@@ -56,6 +53,8 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+#ifndef QL_NO_UBLAS_SUPPORT
 
 void NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid() {
     BOOST_TEST_MESSAGE("Testing three points first order "
@@ -674,9 +673,12 @@ void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
     }
 }
 
+#endif
 
 test_suite* NthOrderDerivativeOpTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
+
+#ifndef QL_NO_UBLAS_SUPPORT
 
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid));
@@ -699,7 +701,8 @@ test_suite* NthOrderDerivativeOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg));
 
+#endif
+
     return suite;
 }
 
-#endif
