@@ -1109,6 +1109,22 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\numericaldifferentiation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\numericaldifferentiation.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\nthorderderivativeop.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\methods\finitedifferences\operators\nthorderderivativeop.hpp"
+						>
+					</File>					
+					<File
 						RelativePath=".\ql\methods\finitedifferences\operators\ninepointlinearop.cpp"
 						>
 					</File>
@@ -9603,14 +9619,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\experimental\math\multidimquadrature.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\math\numericaldifferentiation.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\experimental\math\numericaldifferentiation.hpp"
 					>
 				</File>
 				<File

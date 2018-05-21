@@ -1244,6 +1244,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\nthorderderivativeop.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\observable.cpp"
 				>
 			</File>
@@ -1818,6 +1822,10 @@
 			</File>
 			<File
 				RelativePath=".\numericaldifferentiation.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\nthorderderivativeop.hpp"
 				>
 			</File>
 			<File
