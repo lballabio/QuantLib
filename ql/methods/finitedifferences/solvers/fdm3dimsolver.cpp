@@ -26,7 +26,6 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

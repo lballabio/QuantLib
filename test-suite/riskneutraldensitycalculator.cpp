@@ -52,7 +52,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

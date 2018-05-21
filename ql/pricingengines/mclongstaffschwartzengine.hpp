@@ -31,7 +31,6 @@
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/methods/montecarlo/longstaffschwartzpathpricer.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

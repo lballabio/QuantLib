@@ -25,7 +25,7 @@
 #define quantlib_comparison_hpp
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 

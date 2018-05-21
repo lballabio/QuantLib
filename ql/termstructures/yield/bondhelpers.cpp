@@ -24,7 +24,6 @@
 #include <ql/time/schedule.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/null_deleter.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

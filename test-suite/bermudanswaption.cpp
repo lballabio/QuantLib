@@ -32,7 +32,6 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/schedule.hpp>
 
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

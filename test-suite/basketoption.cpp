@@ -38,9 +38,7 @@
 #include <ql/utilities/dataformatters.hpp>
 
 #include <boost/progress.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;

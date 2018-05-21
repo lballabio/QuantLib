@@ -31,7 +31,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 

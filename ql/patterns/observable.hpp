@@ -33,7 +33,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/types.hpp>
 #include <ql/patterns/singleton.hpp>
 
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <boost/unordered_set.hpp>
 
 

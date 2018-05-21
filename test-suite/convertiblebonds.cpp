@@ -41,7 +41,6 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

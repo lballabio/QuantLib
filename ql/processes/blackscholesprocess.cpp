@@ -28,7 +28,6 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

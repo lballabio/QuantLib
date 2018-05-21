@@ -27,7 +27,7 @@
 #define quantlib_fdm_inner_value_calculator_hpp
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {

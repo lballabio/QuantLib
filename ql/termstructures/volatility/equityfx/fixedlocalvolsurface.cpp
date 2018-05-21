@@ -22,7 +22,6 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

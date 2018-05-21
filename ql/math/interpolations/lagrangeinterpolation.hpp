@@ -22,7 +22,6 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/interpolation.hpp>
-#include <boost/make_shared.hpp>
 #if defined(QL_EXTRA_SAFETY_CHECKS)
 #include <set>
 #endif

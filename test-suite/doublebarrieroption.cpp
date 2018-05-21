@@ -41,7 +41,6 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

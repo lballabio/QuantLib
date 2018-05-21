@@ -25,7 +25,6 @@
 #include <ql/methods/finitedifferences/solvers/fdmhullwhitesolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

@@ -26,7 +26,6 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/math/interpolations/all.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

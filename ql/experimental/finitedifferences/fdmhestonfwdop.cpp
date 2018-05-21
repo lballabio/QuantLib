@@ -31,7 +31,6 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
 #include <boost/unordered/unordered_map.hpp>
-#include <boost/make_shared.hpp>
 #include <cmath>
 
 using std::exp;

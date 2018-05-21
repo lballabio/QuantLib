@@ -23,7 +23,6 @@
 
 #include "optimizers.hpp"
 #include "utilities.hpp"
-#include <boost/make_shared.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>

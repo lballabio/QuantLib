@@ -24,7 +24,6 @@
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <boost/make_shared.hpp>
 
 using std::exp;
 using std::fabs;

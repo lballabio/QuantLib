@@ -33,7 +33,6 @@
 #include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/list_of.hpp>
 
 namespace QuantLib {

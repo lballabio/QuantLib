@@ -26,7 +26,7 @@
 #define quantlib_fdm_mesher_hpp
 
 #include <ql/math/array.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {

@@ -30,7 +30,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/make_shared.hpp>
 
 #include <limits>
 

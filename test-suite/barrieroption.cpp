@@ -44,7 +44,6 @@
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

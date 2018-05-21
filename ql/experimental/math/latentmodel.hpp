@@ -36,7 +36,6 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp

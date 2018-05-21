@@ -21,7 +21,6 @@
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

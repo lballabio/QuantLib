@@ -25,9 +25,8 @@
 #define quantlib_fdm_vpp_step_condition_hpp
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
-
+#include <ql/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {

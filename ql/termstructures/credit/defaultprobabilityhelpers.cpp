@@ -24,7 +24,6 @@
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/pricingengines/credit/isdacdsengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

@@ -21,7 +21,6 @@
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <boost/make_shared.hpp>
 
 using std::fabs;
 using std::sqrt;

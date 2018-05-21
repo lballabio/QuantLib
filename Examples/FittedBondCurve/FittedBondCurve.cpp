@@ -42,7 +42,6 @@
 #include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
-#include <boost/make_shared.hpp>
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 

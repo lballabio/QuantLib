@@ -27,7 +27,7 @@
 #define quantlib_heston_risk_neutral_density_calculator_hpp
 
 #include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
     class HestonProcess;

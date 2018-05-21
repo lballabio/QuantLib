@@ -33,7 +33,6 @@
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

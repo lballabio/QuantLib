@@ -24,7 +24,6 @@
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;

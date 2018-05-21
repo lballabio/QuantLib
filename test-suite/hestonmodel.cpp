@@ -56,7 +56,6 @@
 #include <ql/experimental/math/numericaldifferentiation.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;

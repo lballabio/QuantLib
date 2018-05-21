@@ -28,7 +28,6 @@
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

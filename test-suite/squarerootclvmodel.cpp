@@ -60,7 +60,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
 #if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300

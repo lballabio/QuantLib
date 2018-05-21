@@ -28,7 +28,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/make_shared.hpp>
 #include <map>
 
 using namespace QuantLib;

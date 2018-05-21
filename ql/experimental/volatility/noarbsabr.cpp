@@ -22,7 +22,6 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/modifiedbessel.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>

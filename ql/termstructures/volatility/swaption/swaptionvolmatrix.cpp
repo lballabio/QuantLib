@@ -29,7 +29,6 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

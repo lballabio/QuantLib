@@ -28,7 +28,7 @@
 #include <ql/event.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <boost/optional.hpp>
 #include <vector>
 

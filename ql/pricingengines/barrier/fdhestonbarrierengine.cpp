@@ -30,7 +30,6 @@
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/pricingengines/barrier/fdhestonrebateengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

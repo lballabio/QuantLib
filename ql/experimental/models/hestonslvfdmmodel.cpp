@@ -45,7 +45,6 @@
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 
 #include <boost/scoped_ptr.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
 #include <functional>

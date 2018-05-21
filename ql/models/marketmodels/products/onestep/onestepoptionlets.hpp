@@ -23,7 +23,7 @@
 #define quantlib_onestep_optionlets_hpp
 
 #include <ql/models/marketmodels/products/multiproductonestep.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 

@@ -27,7 +27,6 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 namespace QuantLib {

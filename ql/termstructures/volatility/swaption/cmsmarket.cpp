@@ -27,7 +27,6 @@
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/swap.hpp>
 
-#include <boost/make_shared.hpp>
 
 using std::vector;
 using boost::shared_ptr;

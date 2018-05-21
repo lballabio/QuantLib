@@ -24,7 +24,7 @@
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {

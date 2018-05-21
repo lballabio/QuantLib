@@ -43,7 +43,6 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 
-#include <boost/make_shared.hpp>
 
 using boost::unit_test_framework::test_suite;
 

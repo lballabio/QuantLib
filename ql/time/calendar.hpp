@@ -29,7 +29,7 @@
 #include <ql/errors.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/businessdayconvention.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <set>
 #include <vector>
 #include <string>

@@ -19,7 +19,6 @@
 
 #include <ql/experimental/coupons/strippedcapflooredcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

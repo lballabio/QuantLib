@@ -32,7 +32,7 @@
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/instruments/bond.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 

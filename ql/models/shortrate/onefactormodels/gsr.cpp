@@ -19,7 +19,6 @@
 
 #include <ql/models/shortrate/onefactormodels/gsr.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

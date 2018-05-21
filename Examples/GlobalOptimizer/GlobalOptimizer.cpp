@@ -27,7 +27,6 @@
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>

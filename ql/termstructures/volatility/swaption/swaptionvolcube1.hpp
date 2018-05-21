@@ -38,7 +38,6 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/quote.hpp>
 
-#include <boost/make_shared.hpp>
 
 #ifndef SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL
     #define SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL 15.0e-4

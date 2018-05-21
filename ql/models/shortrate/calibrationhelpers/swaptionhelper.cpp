@@ -27,7 +27,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/iborindex.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

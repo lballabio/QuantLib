@@ -22,7 +22,7 @@
 #define quantlib_multistep_period_caplets_swaptions_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 namespace QuantLib {
 

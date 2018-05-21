@@ -21,7 +21,6 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

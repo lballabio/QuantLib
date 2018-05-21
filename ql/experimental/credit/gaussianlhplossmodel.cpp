@@ -22,7 +22,6 @@
 
 #ifndef QL_PATCH_SOLARIS
 
-#include <boost/make_shared.hpp>
 
 using std::sqrt;
 

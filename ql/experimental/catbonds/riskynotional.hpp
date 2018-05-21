@@ -26,7 +26,7 @@
 
 #include <ql/time/date.hpp>
 #include <ql/errors.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 #include <algorithm>
 

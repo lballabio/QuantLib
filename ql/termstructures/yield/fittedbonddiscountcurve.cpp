@@ -26,7 +26,6 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
-#include <boost/make_shared.hpp>
 
 using boost::shared_ptr;
 using std::vector;

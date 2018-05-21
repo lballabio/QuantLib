@@ -38,7 +38,6 @@
 #include <ql/currencies/america.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <boost/make_shared.hpp>
 
 #include <iomanip>
 #include <iostream>

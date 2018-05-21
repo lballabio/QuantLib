@@ -29,7 +29,6 @@
 #include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
 
 #include <boost/math/distributions/non_central_chi_squared.hpp>
-#include <boost/make_shared.hpp>
 
 #include <utility>
 

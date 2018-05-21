@@ -44,7 +44,6 @@
 #include <ql/time/daycounters/thirty360.hpp>
 
 #include <boost/timer.hpp>
-#include <boost/make_shared.hpp>
 
 #include <iostream>
 #include <iomanip>

@@ -26,7 +26,6 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

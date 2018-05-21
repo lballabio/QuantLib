@@ -57,7 +57,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;

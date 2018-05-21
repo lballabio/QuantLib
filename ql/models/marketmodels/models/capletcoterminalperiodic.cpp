@@ -30,7 +30,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
 #include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib

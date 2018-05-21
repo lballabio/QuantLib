@@ -27,7 +27,6 @@
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/list_of.hpp>
 
 namespace QuantLib {

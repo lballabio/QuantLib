@@ -34,7 +34,6 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
-#include <boost/make_shared.hpp>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)

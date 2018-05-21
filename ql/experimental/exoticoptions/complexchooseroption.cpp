@@ -20,7 +20,6 @@
 #include <ql/experimental/exoticoptions/complexchooseroption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

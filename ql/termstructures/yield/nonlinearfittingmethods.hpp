@@ -27,7 +27,7 @@
 
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/math/bspline.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 

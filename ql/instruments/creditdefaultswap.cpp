@@ -30,7 +30,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

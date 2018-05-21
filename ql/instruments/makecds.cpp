@@ -22,7 +22,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

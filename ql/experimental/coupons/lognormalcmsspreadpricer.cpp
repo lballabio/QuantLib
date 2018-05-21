@@ -26,7 +26,6 @@
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
-#include <boost/make_shared.hpp>
 
 using std::sqrt;
 

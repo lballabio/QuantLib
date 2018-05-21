@@ -56,7 +56,7 @@
 #endif
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #if defined(QL_PATCH_MSVC)
     #pragma managed(push, off)
 #endif

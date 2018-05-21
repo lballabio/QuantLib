@@ -26,7 +26,7 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <iostream>
 #include <sstream>
 

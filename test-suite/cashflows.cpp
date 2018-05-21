@@ -33,7 +33,6 @@
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/settings.hpp>
 
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

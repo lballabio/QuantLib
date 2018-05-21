@@ -31,7 +31,6 @@
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/timegrid.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

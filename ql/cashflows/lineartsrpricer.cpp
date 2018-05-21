@@ -33,7 +33,6 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/atmsmilesection.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

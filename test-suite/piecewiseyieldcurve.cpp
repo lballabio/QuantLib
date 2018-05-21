@@ -48,7 +48,6 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <boost/make_shared.hpp>
 #include <iomanip>
 
 using namespace QuantLib;

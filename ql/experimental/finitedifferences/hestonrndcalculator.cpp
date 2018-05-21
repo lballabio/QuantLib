@@ -27,7 +27,6 @@
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 
-#include <boost/make_shared.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push

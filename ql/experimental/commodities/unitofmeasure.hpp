@@ -26,7 +26,7 @@
 
 #include <ql/types.hpp>
 #include <ql/math/rounding.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <string>
 #include <map>
 #include <iosfwd>

@@ -19,7 +19,6 @@
 
 #include <ql/experimental/exoticoptions/twoassetcorrelationoption.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

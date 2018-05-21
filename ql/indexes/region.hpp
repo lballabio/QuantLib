@@ -26,7 +26,7 @@
 #define quantlib_region_hpp
 
 #include <ql/qldefines.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <string>
 
 namespace QuantLib {

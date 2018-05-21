@@ -27,7 +27,6 @@
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
   

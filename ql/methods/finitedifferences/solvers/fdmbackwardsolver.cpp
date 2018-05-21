@@ -33,7 +33,6 @@
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
     

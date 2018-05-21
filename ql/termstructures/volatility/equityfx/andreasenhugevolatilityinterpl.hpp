@@ -34,7 +34,6 @@
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 #include <boost/tuple/tuple.hpp>
-#include <boost/make_shared.hpp>
 #include <utility>
 
 namespace QuantLib {

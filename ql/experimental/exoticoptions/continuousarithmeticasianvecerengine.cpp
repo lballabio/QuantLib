@@ -28,7 +28,6 @@
 #include <ql/methods/finitedifferences/dplusdminus.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

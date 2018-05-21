@@ -46,7 +46,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
     LocalVolRNDCalculator::LocalVolRNDCalculator(

@@ -20,7 +20,6 @@
 #include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 using std::pow;
 using std::log;

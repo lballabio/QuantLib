@@ -21,7 +21,6 @@
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdm2dblackscholesop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dblackscholessolver.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

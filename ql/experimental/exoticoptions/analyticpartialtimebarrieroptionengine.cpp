@@ -21,7 +21,6 @@
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

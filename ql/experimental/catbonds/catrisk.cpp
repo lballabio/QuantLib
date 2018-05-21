@@ -19,7 +19,6 @@
 
 #include <ql/experimental/catbonds/catrisk.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

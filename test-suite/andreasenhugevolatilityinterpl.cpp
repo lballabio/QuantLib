@@ -41,7 +41,6 @@
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityadapter.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 

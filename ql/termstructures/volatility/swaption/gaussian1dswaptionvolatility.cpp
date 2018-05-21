@@ -20,7 +20,6 @@
 #include <ql/termstructures/volatility/swaption/gaussian1dswaptionvolatility.hpp>
 #include <ql/termstructures/volatility/gaussian1dsmilesection.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

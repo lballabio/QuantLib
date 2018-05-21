@@ -25,7 +25,6 @@
 #include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>
 
 #include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 
 #include <algorithm>
 

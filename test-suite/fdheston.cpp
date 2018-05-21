@@ -40,9 +40,7 @@
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::assign;
