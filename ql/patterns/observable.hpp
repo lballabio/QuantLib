@@ -318,7 +318,7 @@ namespace QuantLib {
             void update() const {
                 boost::lock_guard<boost::recursive_mutex> lock(mutex_);
                 if (active_) {
-                    const boost::weak_ptr<Observer> o
+                    const ext::weak_ptr<Observer> o
                         = observer_->weak_from_this();
                     if (!o._empty()) {
                         const ext::shared_ptr<Observer> obs(o.lock());
@@ -399,8 +399,8 @@ namespace QuantLib {
       private:
         ObservableSettings() : updatesType_(UpdatesEnabled) {}
 
-        typedef std::set<boost::weak_ptr<Observer::Proxy>,
-                         boost::owner_less<boost::weak_ptr<Observer::Proxy> > >
+        typedef std::set<ext::weak_ptr<Observer::Proxy>,
+                         boost::owner_less<ext::weak_ptr<Observer::Proxy> > >
             set_type;
         typedef set_type::iterator iterator;
 
