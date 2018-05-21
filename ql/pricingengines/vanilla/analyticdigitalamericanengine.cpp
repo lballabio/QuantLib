@@ -35,14 +35,14 @@ namespace QuantLib {
     void AnalyticDigitalAmericanEngine::calculate() const {
 
         ext::shared_ptr<AmericanExercise> ex =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->dates()[0] <=
                    process_->blackVolatility()->referenceDate(),
                    "American option with window exercise not handled yet");
 
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real spot = process_->stateVariable()->value();

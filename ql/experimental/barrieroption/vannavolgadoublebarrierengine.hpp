@@ -149,7 +149,7 @@ namespace QuantLib {
                Interpolation interpolation = vannaVolga.interpolate(strikes.begin(), strikes.end(), vols.begin());
                interpolation.enableExtrapolation();
                const ext::shared_ptr<StrikedTypePayoff> payoff =
-                  boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+                  ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
                Real strikeVol = interpolation(payoff->strike());
                //vanilla option price
                Real vanillaOption = blackFormula(payoff->optionType(), payoff->strike(),

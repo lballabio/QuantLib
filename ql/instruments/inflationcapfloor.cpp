@@ -109,7 +109,7 @@ namespace QuantLib {
     YoYInflationCapFloor::lastYoYInflationCoupon() const {
         ext::shared_ptr<CashFlow> lastCF(yoyLeg_.back());
         ext::shared_ptr<YoYInflationCoupon> lastYoYInflationCoupon =
-        boost::dynamic_pointer_cast<YoYInflationCoupon>(lastCF);
+        ext::dynamic_pointer_cast<YoYInflationCoupon>(lastCF);
         return lastYoYInflationCoupon;
     }
 
@@ -150,7 +150,7 @@ namespace QuantLib {
 
         for (Size i=0; i<n; ++i) {
             ext::shared_ptr<YoYInflationCoupon> coupon =
-            boost::dynamic_pointer_cast<YoYInflationCoupon>(
+            ext::dynamic_pointer_cast<YoYInflationCoupon>(
                                                             yoyLeg_[i]);
             QL_REQUIRE(coupon, "non-YoYInflationCoupon given");
             arguments->startDates[i] = coupon->accrualStartDate();

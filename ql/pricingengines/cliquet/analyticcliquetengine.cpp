@@ -44,7 +44,7 @@ namespace QuantLib {
                    "not an European option");
 
         ext::shared_ptr<PercentageStrikePayoff> moneyness =
-            boost::dynamic_pointer_cast<PercentageStrikePayoff>(
+            ext::dynamic_pointer_cast<PercentageStrikePayoff>(
                                                            arguments_.payoff);
         QL_REQUIRE(moneyness, "wrong payoff given");
 

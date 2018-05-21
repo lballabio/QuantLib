@@ -22,8 +22,6 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 
-using boost::dynamic_pointer_cast;
-
 namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
@@ -64,7 +62,7 @@ namespace QuantLib {
             // temporary patch...
             // should be fixed for every CapFloor::Engine
             ext::shared_ptr<BlackCapFloorEngine> temp = 
-                dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
+                ext::dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
             QL_REQUIRE(temp,
                        "cannot calculate ATM without a BlackCapFloorEngine");
             Handle<YieldTermStructure> discountCurve = temp->termStructure();

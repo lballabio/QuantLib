@@ -169,24 +169,24 @@ namespace QuantLib {
         }
         
         Real derivativeX(Real x, Real y) const {
-            return boost::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
+            return ext::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
                     (impl_)->derivativeX(x, y);
         }
         Real derivativeY(Real x, Real y) const {
-            return boost::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
+            return ext::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
                     (impl_)->derivativeY(x, y);
         }
         Real secondDerivativeX(Real x, Real y) const {
-            return boost::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
+            return ext::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
                     (impl_)->secondDerivativeX(x, y);
         }
         Real secondDerivativeY(Real x, Real y) const {
-            return boost::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
+            return ext::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
                     (impl_)->secondDerivativeY(x, y);
         }
         
         Real derivativeXY(Real x, Real y) const {
-            return boost::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
+            return ext::dynamic_pointer_cast<detail::BicubicSplineDerivatives>
                     (impl_)->derivativeXY(x, y);            
         }
     };

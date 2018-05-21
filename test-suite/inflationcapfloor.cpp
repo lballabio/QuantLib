@@ -183,7 +183,7 @@ namespace {
                         iir->frequency(),iir->interpolated(), baseYYRate,
                         Handle<YieldTermStructure>(nominalTS), helpers));
             pYYTS->recalculate();
-            yoyTS = boost::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
+            yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
 
             // make sure that the index has the latest yoy term structure
@@ -193,7 +193,7 @@ namespace {
         // utilities
         Leg makeYoYLeg(const Date& startDate, Integer length) {
             ext::shared_ptr<YoYInflationIndex> ii =
-                boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+                ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               Unadjusted,Unadjusted,// ref periods & acc periods
@@ -209,7 +209,7 @@ namespace {
                                                     Size which) {
 
             ext::shared_ptr<YoYInflationIndex>
-            yyii = boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+            yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
 
             Handle<YoYOptionletVolatilitySurface>
                 vol(ext::shared_ptr<ConstantYoYOptionletVolatility>(

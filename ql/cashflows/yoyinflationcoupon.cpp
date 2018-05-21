@@ -57,7 +57,7 @@ namespace QuantLib {
     bool YoYInflationCoupon::checkPricerImpl(
             const ext::shared_ptr<InflationCouponPricer>&pricer) const {
         return static_cast<bool>(
-               boost::dynamic_pointer_cast<YoYInflationCouponPricer>(pricer));
+               ext::dynamic_pointer_cast<YoYInflationCouponPricer>(pricer));
     }
 
 
@@ -209,7 +209,7 @@ namespace QuantLib {
                     ext::shared_ptr<YoYInflationCouponPricer> pricer(
                                             new YoYInflationCouponPricer);
                     coup->setPricer(pricer);
-                    leg.push_back(boost::dynamic_pointer_cast<CashFlow>(coup));
+                    leg.push_back(ext::dynamic_pointer_cast<CashFlow>(coup));
 
 
 

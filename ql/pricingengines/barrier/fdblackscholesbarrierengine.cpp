@@ -51,7 +51,7 @@ namespace QuantLib {
 
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
 
         Real xMin=Null<Real>();
@@ -138,7 +138,7 @@ namespace QuantLib {
             || arguments_.barrierType == Barrier::UpIn) {
             // Cast the payoff
             ext::shared_ptr<StrikedTypePayoff> payoff =
-                    boost::dynamic_pointer_cast<StrikedTypePayoff>(
+                    ext::dynamic_pointer_cast<StrikedTypePayoff>(
                                                             arguments_.payoff);
             // Calculate the vanilla option
             

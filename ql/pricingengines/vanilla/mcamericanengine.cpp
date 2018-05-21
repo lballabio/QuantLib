@@ -51,7 +51,7 @@ namespace QuantLib {
         v_.push_back(boost::bind(&AmericanPathPricer::payoff, this, _1));
 
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
-            = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
         if (strikePayoff) {
             // FLOATING_POINT_EXCEPTION

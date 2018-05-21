@@ -147,7 +147,7 @@ namespace QuantLib {
         }
 
         ext::shared_ptr<RebatedExercise> rebatedExercise =
-            boost::dynamic_pointer_cast<RebatedExercise>(arguments_.exercise);
+            ext::dynamic_pointer_cast<RebatedExercise>(arguments_.exercise);
 
         int idx = arguments_.exercise->dates().size() - 1;
         int minIdxAlive = static_cast<int>(

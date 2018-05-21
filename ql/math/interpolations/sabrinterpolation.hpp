@@ -174,7 +174,7 @@ class SABRInterpolation : public Interpolation {
                     rhoIsFixed),
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses, boost::assign::list_of(shift)));
-        coeffs_ = boost::dynamic_pointer_cast<
+        coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::SABRSpecs> >(impl_);
     }
     Real expiry() const { return coeffs_->t_; }

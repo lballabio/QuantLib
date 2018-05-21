@@ -99,7 +99,7 @@ namespace QuantLib {
     void FdSimpleKlugeExtOUVPPEngine::calculate() const {
 
         ext::shared_ptr<SwingExercise> swingExercise(
-            boost::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
+            ext::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
 
         QL_REQUIRE(swingExercise, "Swing exercise supported only");
 
@@ -153,7 +153,7 @@ namespace QuantLib {
 
         const ext::shared_ptr<FdmInnerValueCalculator> sparkSpread(
             new FdmSparkSpreadInnerValue(
-                boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff),
+                ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff),
                 fuelPrice, powerPrice));
 
         // 4. Step conditions

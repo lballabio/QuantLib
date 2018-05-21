@@ -70,7 +70,7 @@ namespace QuantLib {
             Size i = 0;
             while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
             ext::shared_ptr<FixedRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
+                ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
                        "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
@@ -134,7 +134,7 @@ namespace QuantLib {
             Size i = 0;
             while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
             ext::shared_ptr<FixedRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
+                ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
                        "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
@@ -410,7 +410,7 @@ namespace QuantLib {
     }
 
     const Date& CreditDefaultSwap::protectionEndDate() const {
-        return boost::dynamic_pointer_cast<Coupon>(leg_.back())
+        return ext::dynamic_pointer_cast<Coupon>(leg_.back())
             ->accrualEndDate();
     }
 

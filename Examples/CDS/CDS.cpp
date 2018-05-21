@@ -376,7 +376,7 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
                                   Date(22,October,2014), ext::shared_ptr<Claim>(),
                                   Actual360(true), true));
 
-    ext::shared_ptr<FixedRateCoupon> cp = boost::dynamic_pointer_cast<FixedRateCoupon>(trade->coupons()[0]);
+    ext::shared_ptr<FixedRateCoupon> cp = ext::dynamic_pointer_cast<FixedRateCoupon>(trade->coupons()[0]);
     std::cout << "first period = " << cp->accrualStartDate() << " to " << cp->accrualEndDate() <<
         " accrued amount = " << cp->accruedAmount(Date(24,October,2014)) << std::endl;
 

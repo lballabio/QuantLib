@@ -30,8 +30,6 @@
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 
-using boost::dynamic_pointer_cast;
-
 namespace QuantLib {
 
     Bond::Bond(Natural settlementDays,
@@ -357,7 +355,7 @@ namespace QuantLib {
     void Bond::deepUpdate() {
         for (Size k = 0; k < cashflows_.size(); ++k) {
             ext::shared_ptr<LazyObject> f =
-                boost::dynamic_pointer_cast<LazyObject>(cashflows_[k]);
+                ext::dynamic_pointer_cast<LazyObject>(cashflows_[k]);
             if (f)
                 f->update();
         }
@@ -372,7 +370,7 @@ namespace QuantLib {
         notionalSchedule_.push_back(Date());
         for (Size i=0; i<cashflows_.size(); ++i) {
             ext::shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
+                ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
             if (!coupon)
                 continue;
 

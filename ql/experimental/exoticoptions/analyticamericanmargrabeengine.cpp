@@ -42,11 +42,11 @@ namespace QuantLib {
                    "not an American option");
 
         ext::shared_ptr<AmericanExercise> exercise =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an American option");
 
         ext::shared_ptr<NullPayoff> payoff0 =
-            boost::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff0, "not a null payoff");
 
         // The option can be priced as an American single-asset option

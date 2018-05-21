@@ -327,8 +327,8 @@ void BasketOptionTest::testEuroTwoValues() {
                                    Handle<BlackVolTermStructure>(volTS2)));
               
               analyticEngine=ext::shared_ptr<PricingEngine>(
-                  new KirkEngine(boost::dynamic_pointer_cast<BlackProcess>(p1), 
-                                 boost::dynamic_pointer_cast<BlackProcess>(p2), 
+                  new KirkEngine(ext::dynamic_pointer_cast<BlackProcess>(p1), 
+                                 ext::dynamic_pointer_cast<BlackProcess>(p2), 
                                  values[i].rho));
             break;
           default:

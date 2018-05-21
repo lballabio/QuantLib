@@ -42,7 +42,7 @@ namespace QuantLib {
         Date exercise = arguments_.exercise->lastDate();
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Volatility volatility =

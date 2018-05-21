@@ -201,7 +201,7 @@ namespace QuantLib {
     ext::shared_ptr<PlainVanillaPayoff>
     AnalyticCompoundOptionEngine::payoffDaughter() const {
         ext::shared_ptr<PlainVanillaPayoff> dPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                    arguments_.daughterPayoff);
         QL_REQUIRE(dPayoff, "non-plain payoff given");
         return dPayoff;
@@ -210,7 +210,7 @@ namespace QuantLib {
     ext::shared_ptr<PlainVanillaPayoff>
     AnalyticCompoundOptionEngine::payoffMother() const {
         ext::shared_ptr<PlainVanillaPayoff> mPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(mPayoff, "non-plain payoff given");
         return mPayoff;
     }

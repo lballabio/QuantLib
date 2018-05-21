@@ -160,7 +160,7 @@ namespace QuantLib {
         for (Size j = 0; j < legs_.size(); ++j) {
             for (Size k = 0; k < legs_[j].size(); ++k) {
                 ext::shared_ptr<LazyObject> f =
-                    boost::dynamic_pointer_cast<LazyObject>(
+                    ext::dynamic_pointer_cast<LazyObject>(
                         legs_[j][k]);
                 if (f)
                     f->update();

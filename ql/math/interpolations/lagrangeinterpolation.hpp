@@ -147,7 +147,7 @@ namespace QuantLib {
 
         // interpolate with new set of y values for a new x value
         Real value(const Array& y, Real x) const {
-            return boost::dynamic_pointer_cast<detail::UpdatedYInterpolation>
+            return ext::dynamic_pointer_cast<detail::UpdatedYInterpolation>
                 (impl_)->value(y, x);
         }
     };

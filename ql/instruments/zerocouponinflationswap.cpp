@@ -139,7 +139,7 @@ namespace QuantLib {
         // _knowing_ the time from base to obs (etc).
 
         ext::shared_ptr<IndexedCashFlow> icf =
-        boost::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
+        ext::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
         QL_REQUIRE(icf,"failed to downcast to IndexedCashFlow in ::fairRate()");
 
         // +1 because the IndexedCashFlow has growthOnly=true

@@ -158,17 +158,17 @@ namespace QuantLib {
     MCDigitalEngine<RNG,S>::pathPricer() const {
 
         ext::shared_ptr<CashOrNothingPayoff> payoff =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "wrong payoff given");
 
         ext::shared_ptr<AmericanExercise> exercise =
-            boost::dynamic_pointer_cast<AmericanExercise>(
+            ext::dynamic_pointer_cast<AmericanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                               this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 

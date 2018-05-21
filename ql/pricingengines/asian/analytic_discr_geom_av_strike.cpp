@@ -46,7 +46,7 @@ namespace QuantLib {
         QL_REQUIRE(pastFixings == 0, "past fixings currently not managed");
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();

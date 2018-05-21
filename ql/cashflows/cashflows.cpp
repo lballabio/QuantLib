@@ -30,8 +30,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 
-using boost::dynamic_pointer_cast;
-
 namespace QuantLib {
 
     // Date inspectors
@@ -41,7 +39,7 @@ namespace QuantLib {
 
         Date d = Date::maxDate();
         for (Size i=0; i<leg.size(); ++i) {
-            ext::shared_ptr<Coupon> c = dynamic_pointer_cast<Coupon>(leg[i]);
+            ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(leg[i]);
             if (c)
                 d = std::min(d, c->accrualStartDate());
             else
@@ -55,7 +53,7 @@ namespace QuantLib {
 
         Date d = Date::minDate();
         for (Size i=0; i<leg.size(); ++i) {
-            ext::shared_ptr<Coupon> c = dynamic_pointer_cast<Coupon>(leg[i]);
+            ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(leg[i]);
             if (c)
                 d = std::max(d, c->accrualEndDate());
             else
@@ -189,7 +187,7 @@ namespace QuantLib {
             DayCounter dc;
             Rate result = 0.0;
             for (; first<last && (*first)->date()==paymentDate; ++first) {
-                ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*first);
+                ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*first);
                 if (cp) {
                     if (firstCouponFound) {
                         QL_REQUIRE(nominal       == cp->nominal() &&
@@ -240,7 +238,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->nominal();
         }
@@ -257,7 +255,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->accrualStartDate();
         }
@@ -274,7 +272,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->accrualEndDate();
         }
@@ -291,7 +289,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->referencePeriodStart();
         }
@@ -308,7 +306,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->referencePeriodEnd();
         }
@@ -325,7 +323,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->accrualPeriod();
         }
@@ -342,7 +340,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->accrualDays();
         }
@@ -362,7 +360,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->accruedPeriod(settlementDate);
         }
@@ -382,7 +380,7 @@ namespace QuantLib {
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 return cp->accruedDays(settlementDate);
         }
@@ -403,7 +401,7 @@ namespace QuantLib {
         Date paymentDate = (*cf)->date();
         Real result = 0.0;
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
-            ext::shared_ptr<Coupon> cp = dynamic_pointer_cast<Coupon>(*cf);
+            ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(*cf);
             if (cp)
                 result += cp->accruedAmount(settlementDate);
         }
@@ -510,7 +508,7 @@ namespace QuantLib {
                                 includeSettlementDateFlows) &&
                 !cf.tradingExCoupon(settlementDate)) {
                 ext::shared_ptr<Coupon> cp =
-                    boost::dynamic_pointer_cast<Coupon>(leg[i]);
+                    ext::dynamic_pointer_cast<Coupon>(leg[i]);
                 Real df = discountCurve.discount(cf.date());
                 npv += cf.amount() * df;
                 if(cp != NULL)
@@ -586,7 +584,7 @@ namespace QuantLib {
             Date cashFlowDate = cashFlow->date();
             Date refStartDate, refEndDate;
             ext::shared_ptr<Coupon> coupon =
-                    boost::dynamic_pointer_cast<Coupon>(cashFlow);
+                    ext::dynamic_pointer_cast<Coupon>(cashFlow);
             if (coupon) {
                 refStartDate = coupon->referencePeriodStart();
                 refEndDate = coupon->referencePeriodEnd();

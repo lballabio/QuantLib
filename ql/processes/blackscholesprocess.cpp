@@ -185,7 +185,7 @@ namespace QuantLib {
 
             // constant Black vol?
             ext::shared_ptr<BlackConstantVol> constVol =
-                boost::dynamic_pointer_cast<BlackConstantVol>(
+                ext::dynamic_pointer_cast<BlackConstantVol>(
                                                           *blackVolatility());
             if (constVol) {
                 // ok, the local vol is constant too.
@@ -199,7 +199,7 @@ namespace QuantLib {
 
             // ok, so it's not constant. Maybe it's strike-independent?
             ext::shared_ptr<BlackVarianceCurve> volCurve =
-                boost::dynamic_pointer_cast<BlackVarianceCurve>(
+                ext::dynamic_pointer_cast<BlackVarianceCurve>(
                                                           *blackVolatility());
             if (volCurve) {
                 // ok, we can use the optimized algorithm

@@ -210,7 +210,7 @@ namespace {
                 calibrationSet[i].first;
 
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                     option->payoff());
             const Real strike = payoff->strike();
             const Option::Type optionType = payoff->optionType();
@@ -491,7 +491,7 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
             calibrationSet[i].first;
 
         const ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(option->payoff());
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(option->payoff());
 
         const Real strike = payoff->strike();
         const Option::Type optionType = payoff->optionType();

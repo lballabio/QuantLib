@@ -369,7 +369,7 @@ namespace QuantLib {
                         forcedLeftIndex, forcedRightIndex));
 
                 arbitrageIndices_.push_back(
-                    boost::dynamic_pointer_cast<KahaleSmileSection>(
+                    ext::dynamic_pointer_cast<KahaleSmileSection>(
                         i->second.smileSection_)->coreIndices());
 
             } else {
@@ -420,7 +420,7 @@ namespace QuantLib {
                         forcedLeftIndex, forcedRightIndex));
 
                     arbitrageIndices_.push_back(
-                        boost::dynamic_pointer_cast<KahaleSmileSection>(
+                        ext::dynamic_pointer_cast<KahaleSmileSection>(
                             i->second.smileSection_)->coreIndices());
 
                 } else { // no smile pretreatment

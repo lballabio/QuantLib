@@ -58,7 +58,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex_->clone(termStructureHandle_);
         ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
@@ -126,7 +126,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex->clone(termStructureHandle_);
         ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here

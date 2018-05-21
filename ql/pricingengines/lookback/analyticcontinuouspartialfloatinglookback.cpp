@@ -33,7 +33,7 @@ namespace QuantLib {
     void AnalyticContinuousPartialFloatingLookbackEngine::calculate() const {
 
         ext::shared_ptr<FloatingTypePayoff> payoff =
-            boost::dynamic_pointer_cast<FloatingTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<FloatingTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-floating payoff given");
 
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying");

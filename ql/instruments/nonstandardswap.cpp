@@ -244,14 +244,14 @@ namespace QuantLib {
 
         for (Size i = 0; i < fixedCoupons.size(); ++i) {
             ext::shared_ptr<FixedRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
+                ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
             if (coupon) {
                 arguments->fixedPayDates[i] = coupon->date();
                 arguments->fixedResetDates[i] = coupon->accrualStartDate();
                 arguments->fixedCoupons[i] = coupon->amount();
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
-                    boost::dynamic_pointer_cast<CashFlow>(fixedCoupons[i]);
+                    ext::dynamic_pointer_cast<CashFlow>(fixedCoupons[i]);
                 std::vector<Date>::const_iterator j =
                     std::find(arguments->fixedPayDates.begin(),
                               arguments->fixedPayDates.end(), cashflow->date());
@@ -284,7 +284,7 @@ namespace QuantLib {
 
         for (Size i = 0; i < floatingCoupons.size(); ++i) {
             ext::shared_ptr<IborCoupon> coupon =
-                boost::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
+                ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
             if (coupon) {
                 arguments->floatingResetDates[i] = coupon->accrualStartDate();
                 arguments->floatingPayDates[i] = coupon->date();
@@ -300,7 +300,7 @@ namespace QuantLib {
                 }
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
-                    boost::dynamic_pointer_cast<CashFlow>(floatingCoupons[i]);
+                    ext::dynamic_pointer_cast<CashFlow>(floatingCoupons[i]);
                 std::vector<Date>::const_iterator j = std::find(
                     arguments->floatingPayDates.begin(),
                     arguments->floatingPayDates.end(), cashflow->date());

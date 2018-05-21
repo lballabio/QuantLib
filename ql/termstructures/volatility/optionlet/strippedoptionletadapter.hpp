@@ -92,7 +92,7 @@ namespace QuantLib {
 
     inline ext::shared_ptr< OptionletStripper >
     StrippedOptionletAdapter::optionletStripper() const {
-        return boost::dynamic_pointer_cast< OptionletStripper >(
+        return ext::dynamic_pointer_cast< OptionletStripper >(
             optionletStripper_);
     }
 }

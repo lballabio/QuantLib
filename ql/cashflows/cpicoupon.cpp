@@ -70,7 +70,7 @@ namespace QuantLib {
     bool CPICoupon::checkPricerImpl(
             const ext::shared_ptr<InflationCouponPricer>&pricer) const {
         return static_cast<bool>(
-                        boost::dynamic_pointer_cast<CPICouponPricer>(pricer));
+                        ext::dynamic_pointer_cast<CPICouponPricer>(pricer));
     }
 
 
@@ -324,7 +324,7 @@ namespace QuantLib {
                         ext::shared_ptr<CPICouponPricer> pricer
                             (new CPICouponPricer);
                         coup->setPricer(pricer);
-                        leg.push_back(boost::dynamic_pointer_cast<CashFlow>(coup));
+                        leg.push_back(ext::dynamic_pointer_cast<CashFlow>(coup));
 
                     } else  {     // cap/floorlet
                         QL_FAIL("caps/floors on CPI coupons not implemented.");

@@ -43,7 +43,7 @@ namespace QuantLib {
         OneAssetOption::arguments::validate();
 
         ext::shared_ptr<PercentageStrikePayoff> moneyness =
-            boost::dynamic_pointer_cast<PercentageStrikePayoff>(payoff);
+            ext::dynamic_pointer_cast<PercentageStrikePayoff>(payoff);
         QL_REQUIRE(moneyness,
                    "wrong payoff type");
         QL_REQUIRE(moneyness->strike() > 0.0,

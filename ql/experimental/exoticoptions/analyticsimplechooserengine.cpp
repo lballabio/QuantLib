@@ -43,7 +43,7 @@ namespace QuantLib {
                    "have the same day counter");
         Real spot = process_->stateVariable()->value();
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         Real strike = payoff->strike();
         Volatility volatility = process_->blackVolatility()->blackVol(

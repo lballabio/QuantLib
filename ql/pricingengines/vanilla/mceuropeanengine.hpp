@@ -135,12 +135,12 @@ namespace QuantLib {
     MCEuropeanEngine<RNG,S>::pathPricer() const {
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                 this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 

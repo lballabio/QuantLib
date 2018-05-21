@@ -1520,7 +1520,7 @@ namespace QuantLib {
                    "this engine does not manage non-null rebates");
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff && payoff->optionType() == Option::Put,
                    "this engine only manages put options");
 

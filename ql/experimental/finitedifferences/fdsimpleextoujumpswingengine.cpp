@@ -57,7 +57,7 @@ namespace QuantLib {
 
         // 1. Exercise
         ext::shared_ptr<SwingExercise> swingExercise(
-            boost::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
+            ext::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
 
         QL_REQUIRE(swingExercise, "Swing exercise supported only");
 

@@ -270,7 +270,7 @@ int main(int, char* []) {
             swap->fixedLeg();
         for (i=0; i<leg.size(); i++) {
             ext::shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(leg[i]);
+                ext::dynamic_pointer_cast<Coupon>(leg[i]);
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 

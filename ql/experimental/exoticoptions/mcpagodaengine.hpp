@@ -163,7 +163,7 @@ namespace QuantLib {
     MCPagodaEngine<RNG,S>::pathPricer() const {
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                       processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 

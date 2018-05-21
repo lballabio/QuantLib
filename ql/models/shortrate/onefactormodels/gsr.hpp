@@ -185,12 +185,12 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 };
 
 inline Real Gsr::numeraireTime() const {
-    return boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
+    return ext::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->getForwardMeasureTime();
 }
 
 inline void Gsr::numeraireTime(const Real T) {
-    boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
+    ext::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->setForwardMeasureTime(T);
 }
 }

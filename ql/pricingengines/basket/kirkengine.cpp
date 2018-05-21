@@ -40,15 +40,15 @@ namespace QuantLib {
                    "not an European Option");
 
         ext::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
         ext::shared_ptr<SpreadBasketPayoff> spreadPayoff =
-            boost::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(spreadPayoff," spread payoff expected");
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                    spreadPayoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain payoff given");
         const Real strike = payoff->strike();

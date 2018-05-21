@@ -76,7 +76,7 @@ namespace QuantLib {
 
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
         const DayCounter dc = rTS_->dayCounter();
         const Date referenceDate = rTS_->referenceDate();

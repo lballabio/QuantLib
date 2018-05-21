@@ -172,7 +172,7 @@ namespace QuantLib {
                                                       rightConditionValue));
             impl_->update();
             coeffs_ =
-                boost::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
+                ext::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
         }
         const std::vector<Real>& primitiveConstants() const {
             return coeffs_->primitiveConst_;

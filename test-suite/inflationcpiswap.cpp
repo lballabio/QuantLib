@@ -248,7 +248,7 @@ namespace {
                                     ii->frequency(),ii->interpolated(), baseZeroRate,
                                     Handle<YieldTermStructure>(nominalTS), helpers));
             pCPIts->recalculate();
-            cpiTS = boost::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
+            cpiTS = ext::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
 
 
             // make sure that the index has the latest zero inflation term structure
@@ -321,7 +321,7 @@ void CPISwapTest::consistency() {
         }
 
         ext::shared_ptr<CPICoupon>
-        zic = boost::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
+        zic = ext::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
         if (zic) {
             if (zic->fixingDate() < (common.evaluationDate - Period(1,Months))) {
                 fixedIndex->addFixing(zic->fixingDate(), cpiFix[i],true);
@@ -346,7 +346,7 @@ void CPISwapTest::consistency() {
         }
 
         ext::shared_ptr<CPICoupon>
-            zicV = boost::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
+            zicV = ext::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
         if (zicV) {
             Real diff = fabs( zicV->rate() - (fixedRate*(zicV->indexFixing()/baseCPI)) );
             QL_REQUIRE(diff<1e-8,"failed "<<i<<"th coupon reconstruction as "
@@ -487,7 +487,7 @@ void CPISwapTest::cpibondconsistency() {
         }
 
         ext::shared_ptr<CPICoupon>
-        zic = boost::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
+        zic = ext::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
         if (zic) {
             if (zic->fixingDate() < (common.evaluationDate - Period(1,Months))) {
                 fixedIndex->addFixing(zic->fixingDate(), cpiFix[i],true);

@@ -103,7 +103,7 @@ namespace QuantLib {
                 new BlackConstantVol(referenceDate, volcal, v, voldc)));
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Time maturity = rfdc.yearFraction(arguments_.settlementDate,

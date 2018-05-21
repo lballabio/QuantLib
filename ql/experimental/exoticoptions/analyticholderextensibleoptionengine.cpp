@@ -54,7 +54,7 @@ namespace QuantLib {
 
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
 
         //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
         Real vol = volatility();
@@ -262,7 +262,7 @@ namespace QuantLib {
 
     Real AnalyticHolderExtensibleOptionEngine::strike() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }

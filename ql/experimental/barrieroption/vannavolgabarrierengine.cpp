@@ -129,7 +129,7 @@ namespace QuantLib {
         Interpolation interpolation = vannaVolga.interpolate(strikes.begin(), strikes.end(), vols.begin());
         interpolation.enableExtrapolation();
         const ext::shared_ptr<StrikedTypePayoff> payoff =
-                                        boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+                                        ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         Real strikeVol = interpolation(payoff->strike());
 
         //vanilla option price
@@ -184,7 +184,7 @@ namespace QuantLib {
             BarrierOption barrierOption(barrierType,
                                         arguments_.barrier,
                                         arguments_.rebate,
-                                        boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff),
+                                        ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff),
                                         arguments_.exercise);
 
             barrierOption.setPricingEngine(engineBS);

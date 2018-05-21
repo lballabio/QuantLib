@@ -92,7 +92,7 @@ namespace QuantLib {
                                        exCouponPeriod, exCouponCalendar,
                                        exCouponConvention, exCouponEndOfMonth)),
                  useCleanPrice) {
-        fixedRateBond_ = boost::dynamic_pointer_cast<FixedRateBond>(bond_);
+        fixedRateBond_ = ext::dynamic_pointer_cast<FixedRateBond>(bond_);
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
@@ -132,7 +132,7 @@ namespace QuantLib {
                                        issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
                                        exCouponConvention, exCouponEndOfMonth)),
                  useCleanPrice) {
-        cpiBond_ = boost::dynamic_pointer_cast<CPIBond>(bond_);
+        cpiBond_ = ext::dynamic_pointer_cast<CPIBond>(bond_);
     }
 
     void CPIBondHelper::accept(AcyclicVisitor& v) {

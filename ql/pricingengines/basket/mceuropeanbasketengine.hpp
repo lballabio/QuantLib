@@ -74,7 +74,7 @@ namespace QuantLib {
         ext::shared_ptr<path_generator_type> pathGenerator() const {
 
             ext::shared_ptr<BasketPayoff> payoff =
-                boost::dynamic_pointer_cast<BasketPayoff>(
+                ext::dynamic_pointer_cast<BasketPayoff>(
                                                           arguments_.payoff);
             QL_REQUIRE(payoff, "non-basket payoff given");
 
@@ -192,11 +192,11 @@ namespace QuantLib {
     MCEuropeanBasketEngine<RNG,S>::pathPricer() const {
 
         ext::shared_ptr<BasketPayoff> payoff =
-            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-basket payoff given");
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                       processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 

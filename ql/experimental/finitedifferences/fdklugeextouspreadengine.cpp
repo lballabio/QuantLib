@@ -82,7 +82,7 @@ namespace QuantLib {
 
         // 2. Calculator
         ext::shared_ptr<BasketPayoff> basketPayoff =
-            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
         QL_REQUIRE(basketPayoff," basket payoff expected");
 
         const ext::shared_ptr<Payoff> zeroStrikeCall(

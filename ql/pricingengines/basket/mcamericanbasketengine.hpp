@@ -145,18 +145,18 @@ namespace QuantLib {
     MCAmericanBasketEngine<RNG>::lsmPathPricer() const {
 
         ext::shared_ptr<StochasticProcessArray> processArray =
-            boost::dynamic_pointer_cast<StochasticProcessArray>(
+            ext::dynamic_pointer_cast<StochasticProcessArray>(
                                                               this->process_);
         QL_REQUIRE(processArray && processArray->size()>0,
                    "Stochastic process array required");
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                processArray->process(0));
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 
         ext::shared_ptr<EarlyExercise> exercise =
-            boost::dynamic_pointer_cast<EarlyExercise>(
+            ext::dynamic_pointer_cast<EarlyExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
         QL_REQUIRE(!exercise->payoffAtExpiry(),

@@ -172,7 +172,7 @@ namespace QuantLib {
             pricers_[j]->setSwaptionVolatility(v);
             if (meanReversion != Null<Real>()) {
                 ext::shared_ptr<MeanRevertingPricer> p =
-                    boost::dynamic_pointer_cast<MeanRevertingPricer>(
+                    ext::dynamic_pointer_cast<MeanRevertingPricer>(
                         pricers_[j]);
                 QL_REQUIRE(p != NULL, "mean reverting pricer required at index "
                                           << j);

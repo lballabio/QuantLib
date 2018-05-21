@@ -146,7 +146,7 @@ namespace QuantLib {
         }
         //! Last protection date.
         const Date& maturity() const {
-            return boost::dynamic_pointer_cast<FixedRateCoupon>(
+            return ext::dynamic_pointer_cast<FixedRateCoupon>(
                 normalizedLeg_.back())->accrualEndDate();
         }
         /*! The Gaussian Copula LHP implied correlation that makes the 

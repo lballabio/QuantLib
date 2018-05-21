@@ -112,12 +112,12 @@ namespace QuantLib {
     MCEuropeanHestonEngine<RNG,S,P>::pathPricer() const {
 
         ext::shared_ptr<PlainVanillaPayoff> payoff(
-                  boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                  ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                     this->arguments_.payoff));
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         ext::shared_ptr<P> process =
-            boost::dynamic_pointer_cast<P>(this->process_);
+            ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
         return ext::shared_ptr<

@@ -77,7 +77,7 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
     sched = underlying->fixedSchedule();
 
     ext::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
-        boost::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
+        ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
     if (oisIdx != NULL) {
         floatSched = sched;
     } else {

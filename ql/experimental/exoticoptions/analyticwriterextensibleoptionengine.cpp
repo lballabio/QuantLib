@@ -35,11 +35,11 @@ namespace QuantLib {
         // We take all the arguments:
 
         ext::shared_ptr<PlainVanillaPayoff> payoff1 =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff1, "not a plain vanilla payoff");
 
         ext::shared_ptr<PlainVanillaPayoff> payoff2 =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff2);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff2);
         QL_REQUIRE(payoff2, "not a plain vanilla payoff");
 
         ext::shared_ptr<Exercise> exercise1 = arguments_.exercise;

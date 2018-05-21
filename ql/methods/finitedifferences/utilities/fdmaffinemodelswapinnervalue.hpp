@@ -123,9 +123,9 @@ namespace QuantLib {
 
         }
         else {
-            boost::dynamic_pointer_cast<FdmAffineModelTermStructure>(
+            ext::dynamic_pointer_cast<FdmAffineModelTermStructure>(
                 disTs_.currentLink())->setVariable(disRate);
-            boost::dynamic_pointer_cast<FdmAffineModelTermStructure>(
+            ext::dynamic_pointer_cast<FdmAffineModelTermStructure>(
                 fwdTs_.currentLink())->setVariable(fwdRate);
         }
 
@@ -133,7 +133,7 @@ namespace QuantLib {
         for (Size j = 0; j < 2; j++) {
             for (Leg::const_iterator i = swap_->leg(j).begin();
                  i != swap_->leg(j).end(); ++i) {
-                npv += boost::dynamic_pointer_cast<Coupon>(*i)
+                npv += ext::dynamic_pointer_cast<Coupon>(*i)
                                     ->accrualStartDate() >= iterExerciseDate
                             ? (*i)->amount() * disTs_->discount((*i)->date())
                             : 0.0;

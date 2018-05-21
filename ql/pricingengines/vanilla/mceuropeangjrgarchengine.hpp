@@ -109,12 +109,12 @@ namespace QuantLib {
     MCEuropeanGJRGARCHEngine<RNG,S>::pathPricer() const {
 
         ext::shared_ptr<PlainVanillaPayoff> payoff(
-                  boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                  ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                     this->arguments_.payoff));
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         ext::shared_ptr<GJRGARCHProcess> process =
-            boost::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
+            ext::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
         QL_REQUIRE(process, "GJRGARCH process required");
 
         return ext::shared_ptr<

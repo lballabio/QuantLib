@@ -112,7 +112,7 @@ namespace QuantLib {
         Date paymentDate = coupon_->date();
 
         ext::shared_ptr<IborIndex> index =
-            boost::dynamic_pointer_cast<IborIndex>(coupon_->index());
+            ext::dynamic_pointer_cast<IborIndex>(coupon_->index());
         const Handle<YieldTermStructure>& rateCurve =
             index->forwardingTermStructure();
         discount_ = rateCurve->discount(paymentDate);

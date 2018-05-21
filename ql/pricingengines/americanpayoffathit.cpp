@@ -136,7 +136,7 @@ namespace QuantLib {
 
         // Binary Cash-Or-Nothing payoff?
         ext::shared_ptr<CashOrNothingPayoff> coo =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
         if (coo) {
             K_ = coo->cashPayoff();
             DKDstrike_ = 0.0;
@@ -144,7 +144,7 @@ namespace QuantLib {
 
         // Binary Asset-Or-Nothing payoff?
         ext::shared_ptr<AssetOrNothingPayoff> aoo =
-            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+            ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
         if (aoo) {
             if (inTheMoney_) {
                 K_ = spot_;

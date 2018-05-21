@@ -88,7 +88,7 @@ namespace QuantLib {
 
         // determine strike from payoff
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
         Real strike = payoff->strike();

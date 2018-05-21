@@ -53,7 +53,7 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = helperEngine.getSolverDesc(2.0);
 
         const ext::shared_ptr<BatesProcess> process =
-                boost::dynamic_pointer_cast<BatesProcess>(model_->process());
+                ext::dynamic_pointer_cast<BatesProcess>(model_->process());
 
         ext::shared_ptr<FdmBatesSolver> solver(
             new FdmBatesSolver(Handle<BatesProcess>(process),

@@ -95,12 +95,12 @@ namespace {
             // test market data change...
             if (mktDataFloating){
                 Volatility initialVolatility = atm.volsHandle[0][0]->value();
-                boost::dynamic_pointer_cast<SimpleQuote>(
+                ext::dynamic_pointer_cast<SimpleQuote>(
                               atm.volsHandle[0][0].currentLink())->setValue(10);
                 newVol = vol->volatility(
                     referenceDate + atm.tenors.options[0],
                     atm.tenors.swaps[0], dummyStrike, false);
-                boost::dynamic_pointer_cast<SimpleQuote>(
+                ext::dynamic_pointer_cast<SimpleQuote>(
                     atm.volsHandle[0][0].currentLink())
                     ->setValue(initialVolatility);
                 if (initialVol == newVol)

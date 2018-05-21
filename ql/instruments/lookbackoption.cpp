@@ -104,12 +104,12 @@ namespace QuantLib {
         ContinuousFloatingLookbackOption::arguments::validate();
 
         ext::shared_ptr<EuropeanExercise> europeanExercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+            ext::dynamic_pointer_cast<EuropeanExercise>(exercise);
         QL_REQUIRE(lookbackPeriodEnd <= europeanExercise->lastDate(), 
             "lookback start date must be earlier than exercise date");
         
         ext::shared_ptr<FloatingTypePayoff> floatingTypePayoff =
-            boost::dynamic_pointer_cast<FloatingTypePayoff>(payoff);
+            ext::dynamic_pointer_cast<FloatingTypePayoff>(payoff);
         
         if (floatingTypePayoff->optionType() == Option::Call) {
             QL_REQUIRE(lambda >= 1.0,
@@ -144,7 +144,7 @@ namespace QuantLib {
         ContinuousFixedLookbackOption::arguments::validate();
 
         ext::shared_ptr<EuropeanExercise> europeanExercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+            ext::dynamic_pointer_cast<EuropeanExercise>(exercise);
         QL_REQUIRE(lookbackPeriodStart <= europeanExercise->lastDate(), 
             "lookback start date must be earlier than exercise date");
     }

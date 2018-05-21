@@ -85,7 +85,7 @@ namespace QuantLib {
                           bool brownianBridge)
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(length, timeSteps),
-      process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
+      process_(ext::dynamic_pointer_cast<StochasticProcess1D>(process)),
       next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeSteps,
                    "sequence generator dimensionality (" << dimension_
@@ -100,7 +100,7 @@ namespace QuantLib {
                           bool brownianBridge)
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(timeGrid),
-      process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
+      process_(ext::dynamic_pointer_cast<StochasticProcess1D>(process)),
       next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "sequence generator dimensionality (" << dimension_

@@ -182,7 +182,7 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-basket payoff given");
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                        process_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 

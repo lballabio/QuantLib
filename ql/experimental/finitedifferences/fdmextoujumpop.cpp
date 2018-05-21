@@ -192,7 +192,7 @@ namespace QuantLib {
         for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
             iter < bcSet_.end(); ++iter) {
             const ext::shared_ptr<FdmDirichletBoundary> dirichletBC =
-                 boost::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
+                 ext::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
 
             if (dirichletBC != 0) {
                 valueOfDerivative=

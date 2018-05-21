@@ -171,12 +171,12 @@ namespace QuantLib {
     inline ext::shared_ptr<LongstaffSchwartzPathPricer<Path> >
     MCAmericanEngine<RNG, S, RNG_Calibration>::lsmPathPricer() const {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                               this->process_);
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 
         ext::shared_ptr<EarlyExercise> exercise =
-            boost::dynamic_pointer_cast<EarlyExercise>(
+            ext::dynamic_pointer_cast<EarlyExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
         QL_REQUIRE(!exercise->payoffAtExpiry(),
@@ -197,12 +197,12 @@ namespace QuantLib {
     inline ext::shared_ptr<PathPricer<Path> >
     MCAmericanEngine<RNG, S, RNG_Calibration>::controlPathPricer() const {
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "StrikedTypePayoff needed for control variate");
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                               this->process_);
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 
@@ -218,7 +218,7 @@ namespace QuantLib {
     inline ext::shared_ptr<PricingEngine>
     MCAmericanEngine<RNG, S, RNG_Calibration>::controlPricingEngine() const {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                               this->process_);
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 

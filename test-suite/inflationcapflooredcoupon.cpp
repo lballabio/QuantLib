@@ -193,7 +193,7 @@ namespace {
                                 iir->frequency(),iir->interpolated(), baseYYRate,
                                 Handle<YieldTermStructure>(nominalTS), helpers));
             pYYTS->recalculate();
-            yoyTS = boost::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
+            yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
 
             // make sure that the index has the latest yoy term structure
@@ -205,7 +205,7 @@ namespace {
                        const Rate gearing = 1.0,
                        const Rate spread = 0.0) {
             ext::shared_ptr<YoYInflationIndex> ii =
-            boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+            ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               Unadjusted,Unadjusted,// ref periods & acc periods
@@ -281,7 +281,7 @@ namespace {
             std::vector<Spread> spreadVector(length, spread);
 
             ext::shared_ptr<YoYInflationIndex> ii =
-            boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+            ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               Unadjusted,Unadjusted,// ref periods & acc periods
@@ -297,7 +297,7 @@ namespace {
             .withFloors(floors);
 
             for(Size i=0; i<yoyLeg.size(); i++) {
-                boost::dynamic_pointer_cast<YoYInflationCoupon>(yoyLeg[i])->setPricer(pricer);
+                ext::dynamic_pointer_cast<YoYInflationCoupon>(yoyLeg[i])->setPricer(pricer);
             }
 
 
@@ -309,7 +309,7 @@ namespace {
         ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) {
 
             ext::shared_ptr<YoYInflationIndex>
-            yyii = boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+            yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
 
             Handle<YoYOptionletVolatilitySurface>
             vol(ext::shared_ptr<ConstantYoYOptionletVolatility>(

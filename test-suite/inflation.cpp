@@ -337,7 +337,7 @@ void InflationTest::testZeroTermStructure() {
         iiUKRPI->addFixing(rpiSchedule[i], fixData[i]);
     }
 
-    ext::shared_ptr<ZeroInflationIndex> ii = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPI);
+    ext::shared_ptr<ZeroInflationIndex> ii = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPI);
     ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the zero inflation curve
@@ -435,7 +435,7 @@ void InflationTest::testZeroTermStructure() {
     Date baseDate(1, January, 2006);
     Date fixDate(1, August, 2014);
     Date payDate=UnitedKingdom().adjust(fixDate+Period(3,Months),ModifiedFollowing);
-    ext::shared_ptr<Index> ind = boost::dynamic_pointer_cast<Index>(ii);
+    ext::shared_ptr<Index> ind = ext::dynamic_pointer_cast<Index>(ii);
     BOOST_REQUIRE_MESSAGE(ind,"dynamic_pointer_cast to Index from InflationIndex failed");
 
     Real notional = 1000000.0;//1m
@@ -452,7 +452,7 @@ void InflationTest::testZeroTermStructure() {
 
     // first make one ...
 
-    ext::shared_ptr<ZeroInflationIndex> zii = boost::dynamic_pointer_cast<ZeroInflationIndex>(ii);
+    ext::shared_ptr<ZeroInflationIndex> zii = ext::dynamic_pointer_cast<ZeroInflationIndex>(ii);
     BOOST_REQUIRE_MESSAGE(zii,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI failed");
     ZeroCouponInflationSwap nzcis(ZeroCouponInflationSwap::Payer,
                                      1000000.0,
@@ -491,7 +491,7 @@ void InflationTest::testZeroTermStructure() {
     }
 
     ext::shared_ptr<ZeroInflationIndex> iiyes
-        = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPIyes);
+        = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPIyes);
 
     // now build the zero inflation curve
     // same data, bigger lag or it will be a self-contradiction
@@ -563,7 +563,7 @@ void InflationTest::testZeroTermStructure() {
     //===========================================================================================
     // Test zero coupon swap
 
-    ext::shared_ptr<ZeroInflationIndex> ziiyes = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
+    ext::shared_ptr<ZeroInflationIndex> ziiyes = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
     BOOST_REQUIRE_MESSAGE(ziiyes,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI-I failed");
     ZeroCouponInflationSwap nzcisyes(ZeroCouponInflationSwap::Payer,
                                      1000000.0,

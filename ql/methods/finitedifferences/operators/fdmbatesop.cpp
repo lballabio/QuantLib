@@ -80,7 +80,7 @@ namespace QuantLib {
             iter < bcSet_.end(); ++iter) {
 
             const ext::shared_ptr<FdmDirichletBoundary> dirichlet
-                = boost::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
+                = ext::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
 
             QL_REQUIRE(dirichlet, "FdmBatesOp can only deal with Dirichlet "
                                   "boundary conditions.")

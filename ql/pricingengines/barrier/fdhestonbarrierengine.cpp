@@ -61,7 +61,7 @@ namespace QuantLib {
 
         // 1.2 The equity mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
         Real xMin=Null<Real>();
         Real xMax=Null<Real>();
@@ -149,7 +149,7 @@ namespace QuantLib {
             || arguments_.barrierType == Barrier::UpIn) {
             // Cast the payoff
             ext::shared_ptr<StrikedTypePayoff> payoff =
-                    boost::dynamic_pointer_cast<StrikedTypePayoff>(
+                    ext::dynamic_pointer_cast<StrikedTypePayoff>(
                                                             arguments_.payoff);
             // Calculate the vanilla option
             ext::shared_ptr<DividendVanillaOption> vanillaOption(

@@ -77,7 +77,7 @@ namespace QuantLib {
         std::map<Real, ext::shared_ptr<detail::SectionHelper> >
         getExistingHelpers() {
             ext::shared_ptr<detail::ConvexMonotoneImpl<I1,I2> > derived =
-                boost::dynamic_pointer_cast<detail::ConvexMonotoneImpl<I1,I2>,
+                ext::dynamic_pointer_cast<detail::ConvexMonotoneImpl<I1,I2>,
                                             Interpolation::Impl>(impl_);
             return derived->getExistingHelpers();
         }

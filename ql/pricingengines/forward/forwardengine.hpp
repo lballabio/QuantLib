@@ -76,7 +76,7 @@ namespace QuantLib {
     void ForwardVanillaEngine<Engine>::setup() const {
 
         ext::shared_ptr<StrikedTypePayoff> argumentsPayoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 

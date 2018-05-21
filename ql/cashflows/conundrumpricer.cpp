@@ -606,7 +606,7 @@ namespace QuantLib {
         accruals_.reserve(n);
         for (Size i=0; i<n; ++i) {
             ext::shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
+                ext::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(coupon->accrualPeriod());
         }
     }
@@ -709,7 +709,7 @@ namespace QuantLib {
         swapPaymentDiscounts_.reserve(n);
         for(Size i=0; i<n; ++i) {
             ext::shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
+                ext::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(coupon->accrualPeriod());
             const Date paymentDate(coupon->date());
             const double swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));

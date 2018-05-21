@@ -59,7 +59,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex_->clone(termStructureHandle_);
         ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
        swap_ = MakeArithmeticAverageOIS(tenor_, clonedOvernightIndex, 0.0)
                 .withDiscountingTermStructure(discountRelinkableHandle_)

@@ -52,11 +52,11 @@ namespace QuantLib {
 
         Date settlement = index_->forwardingTermStructure()->referenceDate();
         const Date startDate =
-            boost::dynamic_pointer_cast<IborCoupon>(flows[0])->fixingDate();
+            ext::dynamic_pointer_cast<IborCoupon>(flows[0])->fixingDate();
 
         for (Size i = 0; i < size_; ++i) {
             const ext::shared_ptr<IborCoupon> coupon =
-               boost::dynamic_pointer_cast<IborCoupon>(flows[i]);
+               ext::dynamic_pointer_cast<IborCoupon>(flows[i]);
 
             QL_REQUIRE(coupon->date() == coupon->accrualEndDate(),
                        "irregular coupon types are not suppported");

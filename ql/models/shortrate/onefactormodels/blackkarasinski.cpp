@@ -80,7 +80,7 @@ namespace QuantLib {
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
         ext::shared_ptr<NumericalImpl> impl =
-            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         Real value = 1.0;
         Real vMin = -50.0;

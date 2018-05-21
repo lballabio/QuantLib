@@ -90,7 +90,7 @@ namespace QuantLib {
 
         for (Size i = 0; i < legs_[1].size(); i++) {
             ext::shared_ptr<OvernightIndexedCoupon> 
-                c = boost::dynamic_pointer_cast<OvernightIndexedCoupon> (legs_[1][i]);
+                c = ext::dynamic_pointer_cast<OvernightIndexedCoupon> (legs_[1][i]);
             c->setPricer(arithmeticPricer);
         }
 

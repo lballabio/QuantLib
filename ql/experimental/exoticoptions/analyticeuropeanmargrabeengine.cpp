@@ -39,11 +39,11 @@ namespace QuantLib {
                    "not an European Option");
 
         ext::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
         ext::shared_ptr<NullPayoff> payoff =
-            boost::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non a Null Payoff type");
 
         Integer quantity1 = arguments_.Q1;

@@ -58,7 +58,7 @@ namespace QuantLib {
             for(Size i = 0; i < fixedLeg.size(); ++i)  
             {
                 //retrieve fixed rate coupon from fixed leg
-                ext::shared_ptr<FixedRateCoupon> coupon = boost::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
+                ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
                 QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
 
                 expiries_.push_back(coupon->date());
@@ -81,7 +81,7 @@ namespace QuantLib {
 
                 for(Size j = 0; j < floatLeg.size(); ++j){
                     //retrieve ibor coupon from floating leg
-                    ext::shared_ptr<IborCoupon> coupon = boost::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
+                    ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
                     QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
                     if( coupon->date() <= expiries_[i] ){
@@ -136,7 +136,7 @@ namespace QuantLib {
         for(Size r = 0; r < n; ++r)
         {
 
-            ext::shared_ptr<FixedRateCoupon> cpn_r = boost::dynamic_pointer_cast<FixedRateCoupon>(swap_->fixedLeg()[r]);
+            ext::shared_ptr<FixedRateCoupon> cpn_r = ext::dynamic_pointer_cast<FixedRateCoupon>(swap_->fixedLeg()[r]);
                         QL_REQUIRE(cpn_r,"Cast to fixed rate coupon failed.");
 
             //looping over columns
@@ -153,14 +153,14 @@ namespace QuantLib {
 
         for(Size r = 0; r < n; ++r)
         {
-            ext::shared_ptr<FixedRateCoupon> cpn_r = boost::dynamic_pointer_cast<FixedRateCoupon>(swap_->fixedLeg()[r]);
+            ext::shared_ptr<FixedRateCoupon> cpn_r = ext::dynamic_pointer_cast<FixedRateCoupon>(swap_->fixedLeg()[r]);
 
             // set inhomogenity of lse
             Real N_r = cpn_r->nominal();
 
             if(r < n - 1){
 
-                ext::shared_ptr<FixedRateCoupon> cpn_rp1 = boost::dynamic_pointer_cast<FixedRateCoupon>(swap_->fixedLeg()[r+1]);
+                ext::shared_ptr<FixedRateCoupon> cpn_rp1 = ext::dynamic_pointer_cast<FixedRateCoupon>(swap_->fixedLeg()[r+1]);
 
                 Real N_rp1 = cpn_rp1->nominal();
 
@@ -202,7 +202,7 @@ namespace QuantLib {
     //creates a standard swap by deducing its conventions from market data objects
     ext::shared_ptr<VanillaSwap> HaganIrregularSwaptionEngine::Basket::component(Size i) const {
 
-        ext::shared_ptr<IborCoupon> iborCpn   = boost::dynamic_pointer_cast<IborCoupon>(swap_->floatingLeg()[0]);
+        ext::shared_ptr<IborCoupon> iborCpn   = ext::dynamic_pointer_cast<IborCoupon>(swap_->floatingLeg()[0]);
         QL_REQUIRE(iborCpn,"dynamic cast of float leg coupon failed. Can't find index.");
         ext::shared_ptr<IborIndex>  iborIndex = iborCpn->iborIndex();
 
@@ -276,7 +276,7 @@ namespace QuantLib {
 
         for(Size j = 0; j < floatLeg.size(); ++j){
             //retrieve ibor coupon from floating leg
-            ext::shared_ptr<IborCoupon> coupon = boost::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
+            ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
             QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
             ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
@@ -313,7 +313,7 @@ namespace QuantLib {
         for(Size i = 0; i < fixedLeg.size(); ++i)  
         {
             //retrieve fixed rate coupon from fixed leg
-            ext::shared_ptr<FixedRateCoupon> coupon = boost::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
+            ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
             QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
 
             ext::shared_ptr<FixedRateCoupon> newCpn = ext::shared_ptr<FixedRateCoupon> (

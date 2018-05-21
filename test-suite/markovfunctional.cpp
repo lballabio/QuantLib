@@ -1573,19 +1573,19 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     std::vector<Real> calibrationHelperVols2;
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         1 * Years, 4 * Years,
-        boost::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(1 * Years, 4 * Years)));
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         2 * Years, 3 * Years,
-        boost::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(2 * Years, 3 * Years)));
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         3 * Years, 2 * Years,
-        boost::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(3 * Years, 2 * Years)));
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         4 * Years, 1 * Years,
-        boost::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(4 * Years, 1 * Years)));
 
     calibrationHelper2.push_back(ext::shared_ptr<CalibrationHelper>(

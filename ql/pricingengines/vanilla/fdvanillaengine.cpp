@@ -67,7 +67,7 @@ namespace QuantLib {
     void FDVanillaEngine::ensureStrikeInGrid() const {
         // ensure strike is included in the grid
         ext::shared_ptr<StrikedTypePayoff> striked_payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         if (!striked_payoff)
             return;
         Real requiredGridValue = striked_payoff->strike();

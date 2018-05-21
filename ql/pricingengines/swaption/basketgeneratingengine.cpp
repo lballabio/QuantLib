@@ -54,7 +54,7 @@ namespace QuantLib {
             exercise->dates().begin());
 
         ext::shared_ptr<RebatedExercise> rebEx =
-            boost::dynamic_pointer_cast<RebatedExercise>(exercise);
+            ext::dynamic_pointer_cast<RebatedExercise>(exercise);
 
         for (Size i = minIdxAlive; i < exercise->dates().size(); i++) {
 

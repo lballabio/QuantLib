@@ -94,7 +94,7 @@ namespace QuantLib {
                 continue;
 
             ext::shared_ptr<FixedRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
+                ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
 
             // In order to avoid a few switches, we calculate the NPV
             // of both legs as a positive quantity. We'll give them

@@ -213,7 +213,7 @@ namespace QuantLib {
         VanillaSwap swap = *arguments_.swap;
         const Leg& fixedLeg = swap.fixedLeg();
         ext::shared_ptr<FixedRateCoupon> firstCoupon =
-            boost::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
+            ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
         QL_REQUIRE(firstCoupon->accrualStartDate() >= exerciseDate,
                    "swap start (" << firstCoupon->accrualStartDate() << ") before exercise date ("
                                   << exerciseDate << ") not supported in Black swaption engine");

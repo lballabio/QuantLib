@@ -76,7 +76,7 @@ namespace QuantLib {
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying given");
 
         const ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         const ext::shared_ptr<Exercise> exercise = arguments_.exercise;

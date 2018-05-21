@@ -85,7 +85,7 @@ namespace QuantLib {
                    "null term structure set to Forward");
 
         ext::shared_ptr<ForwardTypePayoff> ftpayoff =
-            boost::dynamic_pointer_cast<ForwardTypePayoff>(payoff_);
+            ext::dynamic_pointer_cast<ForwardTypePayoff>(payoff_);
         Real fwdValue = forwardValue();
         NPV_ = (*ftpayoff)(fwdValue) * discountCurve_->discount(maturityDate_);
     }

@@ -205,7 +205,7 @@ namespace QuantLib {
             ext::shared_ptr<SwaptionVolatilityStructure> swvol =
                 *cmsPricer_->swaptionVolatility();
             ext::shared_ptr<SwaptionVolatilityCube> swcub =
-                boost::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
+                ext::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
 
             if(inheritedVolatilityType_ && volType_ == ShiftedLognormal) {
                 shift1_ =

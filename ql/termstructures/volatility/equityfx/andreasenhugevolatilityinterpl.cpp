@@ -261,7 +261,7 @@ namespace QuantLib {
             expiries.insert(expiry);
 
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                     calibrationSet[i].first->payoff());
 
             QL_REQUIRE(payoff, "plain vanilla payoff required");
@@ -295,7 +295,7 @@ namespace QuantLib {
                 std::lower_bound(expiries.begin(), expiries.end(), expiry));
 
             const Real strike =
-                boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                     calibrationSet[i].first->payoff())->strike();
 
             const Size k = std::distance(strikes_.begin(),

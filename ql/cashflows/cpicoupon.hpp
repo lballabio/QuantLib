@@ -257,7 +257,7 @@ namespace QuantLib {
     }
 
     inline ext::shared_ptr<ZeroInflationIndex> CPICoupon::cpiIndex() const {
-        return boost::dynamic_pointer_cast<ZeroInflationIndex>(index());
+        return ext::dynamic_pointer_cast<ZeroInflationIndex>(index());
     }
 
 }

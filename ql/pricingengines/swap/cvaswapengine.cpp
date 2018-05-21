@@ -137,7 +137,7 @@ namespace QuantLib {
 
     baseSwapEngine_->calculate();
 
-    ext::shared_ptr<FixedRateCoupon> coupon = boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.legs[0][0]);
+    ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.legs[0][0]);
     QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
     Rate baseSwapRate = coupon->rate();
 
@@ -155,13 +155,13 @@ namespace QuantLib {
     // Swaplet options summatory:
     while(nextFD != arguments_.fixedPayDates.end()) {
       // iFD coupon not fixed, create swaptionlet:
-      ext::shared_ptr<FloatingRateCoupon> floatCoupon = boost::dynamic_pointer_cast<FloatingRateCoupon>(arguments_.legs[1][0]);
+      ext::shared_ptr<FloatingRateCoupon> floatCoupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(arguments_.legs[1][0]);
       QL_REQUIRE(floatCoupon,"dynamic cast of floating leg coupon failed.");
-      ext::shared_ptr<IborIndex> swapIndex = boost::dynamic_pointer_cast<IborIndex>(floatCoupon->index());
+      ext::shared_ptr<IborIndex> swapIndex = ext::dynamic_pointer_cast<IborIndex>(floatCoupon->index());
       QL_REQUIRE(swapIndex,"dynamic cast of floating leg index failed.");
 
       // Alternatively one could cap this period to, say, 1M 
-      // Period swapPeriod = boost::dynamic_pointer_cast<FloatingRateCoupon>(
+      // Period swapPeriod = ext::dynamic_pointer_cast<FloatingRateCoupon>(
       //   arguments_.legs[1][0])->index()->tenor();
 
       Period baseSwapsTenor(arguments_.fixedPayDates.back().serialNumber() 

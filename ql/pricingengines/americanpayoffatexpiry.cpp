@@ -51,14 +51,14 @@ namespace QuantLib {
 
         // binary cash-or-nothing payoff?
         ext::shared_ptr<CashOrNothingPayoff> coo =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
         if (coo) {
             K_ = coo->cashPayoff();
         }
 
         // binary asset-or-nothing payoff?
         ext::shared_ptr<AssetOrNothingPayoff> aoo =
-            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+            ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
         if (aoo) {
             K_ = forward_;
             mu_ += 1.0;

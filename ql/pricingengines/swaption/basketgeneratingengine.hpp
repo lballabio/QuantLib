@@ -116,7 +116,7 @@ namespace QuantLib {
                 Real npv = 0.0;
                 for (Size i = 0; i < swap->fixedLeg().size(); i++) {
                     ext::shared_ptr<FixedRateCoupon> c =
-                        boost::dynamic_pointer_cast<FixedRateCoupon>(
+                        ext::dynamic_pointer_cast<FixedRateCoupon>(
                             swap->fixedLeg()[i]);
                     npv -=
                         fixedRate * c->accrualPeriod() * nominal *
@@ -125,7 +125,7 @@ namespace QuantLib {
                 }
                 for (Size i = 0; i < swap->floatingLeg().size(); i++) {
                     ext::shared_ptr<IborCoupon> c =
-                        boost::dynamic_pointer_cast<IborCoupon>(
+                        ext::dynamic_pointer_cast<IborCoupon>(
                             swap->floatingLeg()[i]);
                     npv +=
                         mdl_->forwardRate(c->fixingDate(), expiry_, y,

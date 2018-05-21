@@ -187,7 +187,7 @@ namespace QuantLib {
                                                      optMethod));
             impl_->update();
             coeffs_ =
-                boost::dynamic_pointer_cast<detail::AbcdCoeffHolder>(impl_);
+                ext::dynamic_pointer_cast<detail::AbcdCoeffHolder>(impl_);
         }
         //! \name Inspectors
         //@{

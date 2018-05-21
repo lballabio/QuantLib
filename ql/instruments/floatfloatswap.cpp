@@ -224,17 +224,17 @@ namespace QuantLib {
                 gearing2_[i] = QL_EPSILON;
 
         ext::shared_ptr<IborIndex> ibor1 =
-            boost::dynamic_pointer_cast<IborIndex>(index1_);
+            ext::dynamic_pointer_cast<IborIndex>(index1_);
         ext::shared_ptr<IborIndex> ibor2 =
-            boost::dynamic_pointer_cast<IborIndex>(index2_);
+            ext::dynamic_pointer_cast<IborIndex>(index2_);
         ext::shared_ptr<SwapIndex> cms1 =
-            boost::dynamic_pointer_cast<SwapIndex>(index1_);
+            ext::dynamic_pointer_cast<SwapIndex>(index1_);
         ext::shared_ptr<SwapIndex> cms2 =
-            boost::dynamic_pointer_cast<SwapIndex>(index2_);
+            ext::dynamic_pointer_cast<SwapIndex>(index2_);
         ext::shared_ptr<SwapSpreadIndex> cmsspread1 =
-            boost::dynamic_pointer_cast<SwapSpreadIndex>(index1_);
+            ext::dynamic_pointer_cast<SwapSpreadIndex>(index1_);
         ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
-            boost::dynamic_pointer_cast<SwapSpreadIndex>(index2_);
+            ext::dynamic_pointer_cast<SwapSpreadIndex>(index2_);
 
         QL_REQUIRE(ibor1 != NULL || cms1 != NULL || cmsspread1 != NULL,
                    "index1 must be ibor or cms or cms spread");
@@ -433,7 +433,7 @@ namespace QuantLib {
 
         for (Size i = 0; i < leg1Coupons.size(); ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(leg1Coupons[i]);
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(leg1Coupons[i]);
             if (coupon) {
                 arguments->leg1AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg1PayDates[i] = coupon->date();
@@ -448,7 +448,7 @@ namespace QuantLib {
                     arguments->leg1Coupons[i] = Null<Real>();
                 }
                 ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
-                    boost::dynamic_pointer_cast<CappedFlooredCoupon>(
+                    ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg1Coupons[i]);
                 if (cfcoupon) {
                     arguments->leg1CappedRates[i] = cfcoupon->cap();
@@ -456,7 +456,7 @@ namespace QuantLib {
                 }
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
-                    boost::dynamic_pointer_cast<CashFlow>(leg1Coupons[i]);
+                    ext::dynamic_pointer_cast<CashFlow>(leg1Coupons[i]);
                 std::vector<Date>::const_iterator j =
                     std::find(arguments->leg1PayDates.begin(),
                               arguments->leg1PayDates.end(), cashflow->date());
@@ -479,7 +479,7 @@ namespace QuantLib {
 
         for (Size i = 0; i < leg2Coupons.size(); ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(leg2Coupons[i]);
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(leg2Coupons[i]);
             if (coupon) {
                 arguments->leg2AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg2PayDates[i] = coupon->date();
@@ -494,7 +494,7 @@ namespace QuantLib {
                     arguments->leg2Coupons[i] = Null<Real>();
                 }
                 ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
-                    boost::dynamic_pointer_cast<CappedFlooredCoupon>(
+                    ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg2Coupons[i]);
                 if (cfcoupon) {
                     arguments->leg2CappedRates[i] = cfcoupon->cap();
@@ -502,7 +502,7 @@ namespace QuantLib {
                 }
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
-                    boost::dynamic_pointer_cast<CashFlow>(leg2Coupons[i]);
+                    ext::dynamic_pointer_cast<CashFlow>(leg2Coupons[i]);
                 std::vector<Date>::const_iterator j =
                     std::find(arguments->leg2PayDates.begin(),
                               arguments->leg2PayDates.end(), cashflow->date());

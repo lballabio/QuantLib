@@ -190,7 +190,7 @@ namespace QuantLib {
     CapFloor::lastFloatingRateCoupon() const {
         ext::shared_ptr<CashFlow> lastCF(floatingLeg_.back());
         ext::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
+            ext::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
         return lastFloatingCoupon;
     }
 
@@ -234,7 +234,7 @@ namespace QuantLib {
 
         for (Size i=0; i<n; ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
             QL_REQUIRE(coupon, "non-FloatingRateCoupon given");
             arguments->startDates[i] = coupon->accrualStartDate();
@@ -274,7 +274,7 @@ namespace QuantLib {
     void CapFloor::deepUpdate() {
         for (Size i = 0; i < floatingLeg_.size(); ++i) {
             ext::shared_ptr<LazyObject> f =
-                boost::dynamic_pointer_cast<LazyObject>(
+                ext::dynamic_pointer_cast<LazyObject>(
                     floatingLeg_[i]);
             if (f)
                 f->update();

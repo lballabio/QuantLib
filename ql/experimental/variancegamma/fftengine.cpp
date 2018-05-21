@@ -37,7 +37,7 @@ namespace QuantLib {
             "not an European Option");
 
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         ResultMap::const_iterator r1 = resultMap_.find(arguments_.exercise->lastDate());
@@ -89,13 +89,13 @@ namespace QuantLib {
         for (std::vector<ext::shared_ptr<Instrument> >::const_iterator optIt = optionList.begin();
             optIt != optionList.end(); ++optIt)
         {
-            ext::shared_ptr<VanillaOption> option = boost::dynamic_pointer_cast<VanillaOption>(*optIt);
+            ext::shared_ptr<VanillaOption> option = ext::dynamic_pointer_cast<VanillaOption>(*optIt);
             QL_REQUIRE(option, "instrument must be option");
             QL_REQUIRE(option->exercise()->type() == Exercise::European,
                 "not an European Option");
 
             ext::shared_ptr<StrikedTypePayoff> payoff =
-                boost::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
+                ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
             QL_REQUIRE(payoff, "non-striked payoff given");
 
             payoffMap[option->exercise()->lastDate()].push_back(payoff);

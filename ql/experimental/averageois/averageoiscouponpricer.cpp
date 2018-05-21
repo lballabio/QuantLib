@@ -24,7 +24,6 @@ using std::vector;
 using std::exp;
 using std::pow;
 using std::log;
-using boost::dynamic_pointer_cast;
 
 namespace QuantLib {
 
@@ -37,7 +36,7 @@ namespace QuantLib {
     Rate ArithmeticAveragedOvernightIndexedCouponPricer::swapletRate() const {
 
         ext::shared_ptr<OvernightIndex> index =
-            dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+            ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
 
         const vector<Date>& fixingDates = coupon_->fixingDates();
         const vector<Time>& dt = coupon_->dt();

@@ -168,7 +168,7 @@ class SviInterpolation : public Interpolation {
                     rhoIsFixed)(mIsFixed),
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
-        coeffs_ = boost::dynamic_pointer_cast<
+        coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::SviSpecs> >(impl_);
     }
     Real expiry() const { return coeffs_->t_; }

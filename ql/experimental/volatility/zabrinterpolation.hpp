@@ -145,7 +145,7 @@ template <class Evaluation> class ZabrInterpolation : public Interpolation {
                     rhoIsFixed)(gammaIsFixed),
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
-            coeffs_ = boost::dynamic_pointer_cast<detail::XABRCoeffHolder<
+            coeffs_ = ext::dynamic_pointer_cast<detail::XABRCoeffHolder<
                 detail::ZabrSpecs<Evaluation> > >(impl_);
     }
     Real expiry() const { return coeffs_->t_; }

@@ -52,7 +52,7 @@ namespace QuantLib {
     void Fd2dBlackScholesVanillaEngine::calculate() const {
         // 1. Payoff
         const ext::shared_ptr<BasketPayoff> payoff =
-            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
 
         // 2. Mesher
         const Time maturity = p1_->time(arguments_.exercise->lastDate());

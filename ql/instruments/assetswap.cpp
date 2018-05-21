@@ -20,7 +20,6 @@
 */
 
 #include <ql/instruments/assetswap.hpp>
-
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -28,7 +27,6 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
-using boost::dynamic_pointer_cast;
 using std::vector;
 
 namespace QuantLib {
@@ -115,7 +113,7 @@ namespace QuantLib {
         // if the first skipped cashflow is not the redemption
         // and it is a coupon then add the accrued coupon
         if (i<bondLeg.end()-1) {
-            ext::shared_ptr<Coupon> c = boost::dynamic_pointer_cast<Coupon>(*i);
+            ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(*i);
             if (c) {
                 ext::shared_ptr<CashFlow> accruedCoupon(new
                     SimpleCashFlow(c->accruedAmount(dealMaturity), finalDate));
@@ -290,7 +288,7 @@ namespace QuantLib {
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
             ext::shared_ptr<FixedRateCoupon> coupon =
-                dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
+                ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             arguments->fixedPayDates[i] = coupon->date();
             arguments->fixedResetDates[i] = coupon->accrualStartDate();
@@ -309,7 +307,7 @@ namespace QuantLib {
 
         for (Size i=0; i<floatingCoupons.size(); ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
-                dynamic_pointer_cast<FloatingRateCoupon>(floatingCoupons[i]);
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(floatingCoupons[i]);
 
             arguments->floatingResetDates[i] = coupon->accrualStartDate();
             arguments->floatingPayDates[i] = coupon->date();

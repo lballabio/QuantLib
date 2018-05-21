@@ -219,7 +219,7 @@ class NoArbSabrInterpolation : public Interpolation {
                     rhoIsFixed),
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
-        coeffs_ = boost::dynamic_pointer_cast<
+        coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::NoArbSabrSpecs> >(impl_);
     }
     Real expiry() const { return coeffs_->t_; }

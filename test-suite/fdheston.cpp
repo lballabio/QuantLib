@@ -216,7 +216,7 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
         Date exDate = todaysDate + Integer(values[i].t*365+0.5);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        boost::dynamic_pointer_cast<SimpleQuote>(spot .currentLink())
+        ext::dynamic_pointer_cast<SimpleQuote>(spot .currentLink())
                                                     ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);

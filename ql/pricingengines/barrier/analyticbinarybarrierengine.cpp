@@ -64,7 +64,7 @@ namespace QuantLib {
     void AnalyticBinaryBarrierEngine::calculate() const {
 
         ext::shared_ptr<AmericanExercise> ex =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->payoffAtExpiry(), "payoff must be at expiry");
         QL_REQUIRE(ex->dates()[0] <=
@@ -72,7 +72,7 @@ namespace QuantLib {
                    "American option with window exercise not handled yet");
 
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real spot = process_->stateVariable()->value();
@@ -162,14 +162,14 @@ namespace QuantLib {
 
         // binary cash-or-nothing payoff?
         ext::shared_ptr<CashOrNothingPayoff> coo =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
         if (coo) {
             K = coo->cashPayoff();
         }
 
         // binary asset-or-nothing payoff?
         ext::shared_ptr<AssetOrNothingPayoff> aoo =
-            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
+            ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
         if (aoo) {
             mu += 1.0; 
             K = spot * dividendDiscount / discount; // forward

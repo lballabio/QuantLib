@@ -66,7 +66,7 @@ namespace QuantLib {
 
         // plain vanilla
         ext::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
         const ext::shared_ptr<HestonProcess>& process = model_->process();

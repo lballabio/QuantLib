@@ -383,7 +383,7 @@ namespace QuantLib {
                                         Continuous);
 
         ext::shared_ptr<PlainVanillaPayoff> plainPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         if (plainPayoff && plainPayoff->optionType() == Option::Call) {
             // a specialization for Call options is available
             Real strike = plainPayoff->strike();

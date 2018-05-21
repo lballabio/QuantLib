@@ -181,7 +181,7 @@ namespace QuantLib {
         if (arguments_.barrierType == DoubleBarrier::KIKO ||
             arguments_.barrierType == DoubleBarrier::KOKI) {
             ext::shared_ptr<AmericanExercise> ex =
-                boost::dynamic_pointer_cast<AmericanExercise>(
+                ext::dynamic_pointer_cast<AmericanExercise>(
                                                    arguments_.exercise);
             QL_REQUIRE(ex, "KIKO/KOKI options must have American exercise");
             QL_REQUIRE(ex->dates()[0] <=
@@ -189,12 +189,12 @@ namespace QuantLib {
                        "American option with window exercise not handled yet");
         } else {
             ext::shared_ptr<EuropeanExercise> ex =
-                boost::dynamic_pointer_cast<EuropeanExercise>(
+                ext::dynamic_pointer_cast<EuropeanExercise>(
                                                    arguments_.exercise);
             QL_REQUIRE(ex, "non-European exercise given");
         }
         ext::shared_ptr<CashOrNothingPayoff> payoff =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "a cash-or-nothing payoff must be given");
 
         Real spot = process_->stateVariable()->value();

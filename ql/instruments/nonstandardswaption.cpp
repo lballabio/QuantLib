@@ -77,7 +77,7 @@ namespace QuantLib {
         const BasketGeneratingEngine::CalibrationBasketType basketType) const {
 
         ext::shared_ptr<BasketGeneratingEngine> engine =
-            boost::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
+            ext::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
         QL_REQUIRE(engine, "engine is not a basket generating engine");
         engine_->reset();
         setupArguments(engine_->getArguments());

@@ -616,7 +616,7 @@ int main(int, char* []) {
         // of the curve and a repricing of the swap.
 
         ext::shared_ptr<SimpleQuote> fiveYearsRate =
-            boost::dynamic_pointer_cast<SimpleQuote>(s5yRate);
+            ext::dynamic_pointer_cast<SimpleQuote>(s5yRate);
         fiveYearsRate->setValue(0.0460);
 
         std::cout << dblrule << std::endl;

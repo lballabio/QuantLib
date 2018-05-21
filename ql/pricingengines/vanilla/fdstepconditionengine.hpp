@@ -105,7 +105,7 @@ namespace QuantLib {
         controlPrices_.values() = arraySet[1];
 
         ext::shared_ptr<StrikedTypePayoff> striked_payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         QL_REQUIRE(striked_payoff, "non-striked payoff given");
 
         Real variance =

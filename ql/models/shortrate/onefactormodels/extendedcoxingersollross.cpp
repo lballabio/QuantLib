@@ -43,7 +43,7 @@ namespace QuantLib {
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
         ext::shared_ptr<NumericalImpl> impl =
-            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
         return ext::shared_ptr<Lattice>(
                    new ShortRateTree(trinomial, numericDynamics, impl, grid));

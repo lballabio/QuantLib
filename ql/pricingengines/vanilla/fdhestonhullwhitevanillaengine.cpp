@@ -62,10 +62,10 @@ namespace QuantLib {
                 && cachedArgs2results_[i].first.exercise->dates()
                         == arguments_.exercise->dates()) {
                 ext::shared_ptr<PlainVanillaPayoff> p1 =
-                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                    ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                             arguments_.payoff);
                 ext::shared_ptr<PlainVanillaPayoff> p2 =
-                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                    ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                           cachedArgs2results_[i].first.payoff);
 
                 if (p1 && p1->strike()     == p2->strike()
@@ -91,7 +91,7 @@ namespace QuantLib {
 
         // 2.2 The equity mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "wrong payoff type given");
 
         ext::shared_ptr<Fdm1dMesher> equityMesher;
