@@ -373,6 +373,25 @@ if test "$ql_use_intraday" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_intraday])
 
+AC_MSG_CHECKING([whether to enable standard smart pointers])
+AC_ARG_ENABLE([std-pointers],
+              AC_HELP_STRING([--enable-std-pointers],
+                             [If enabled, std::shared_ptr and related
+                              classes and functions will be used instead
+                              of boost::shared_ptr; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.
+                              Note that std::shared_ptr does not check
+                              access and can cause segmentation faults.]),
+              [ql_use_std_pointers=$enableval],
+              [ql_use_std_pointers=no])
+if test "$ql_use_std_pointers" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+fi
+AC_MSG_RESULT([$ql_use_std_pointers])
+
 # manual configurations for specific hosts
 case $host in
   powerpc-apple-darwin*)
