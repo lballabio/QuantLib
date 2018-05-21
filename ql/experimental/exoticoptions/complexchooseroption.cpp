@@ -29,7 +29,7 @@ namespace QuantLib {
         Real strikePut,
         const ext::shared_ptr<Exercise>& exerciseCall,
         const ext::shared_ptr<Exercise>& exercisePut)
-    : OneAssetOption(boost::make_shared<PlainVanillaPayoff>(Option::Call,
+    : OneAssetOption(ext::make_shared<PlainVanillaPayoff>(Option::Call,
                                                             strikeCall),
                      exerciseCall),
       choosingDate_(choosingDate),

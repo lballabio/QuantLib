@@ -213,7 +213,7 @@ namespace QuantLib {
         //workaround for backwards compatibility
         ext::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
         if(!optimization){
-            optimization = boost::make_shared<Simplex>(curve_->simplexLambda_);
+            optimization = ext::make_shared<Simplex>(curve_->simplexLambda_);
         }
         Problem problem(costFunction, constraint, x);
 

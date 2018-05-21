@@ -227,21 +227,21 @@ void VarianceGammaTest::testSingularityAtZero() {
     Settings::instance().evaluationDate() = valuation;
 
     ext::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(maturity);
+        ext::make_shared<EuropeanExercise>(maturity);
     ext::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
     VanillaOption option(payoff, exercise);
 
     Handle<YieldTermStructure> dividend(
-             boost::make_shared<FlatForward>(valuation,0.0,discountCounter));
+             ext::make_shared<FlatForward>(valuation,0.0,discountCounter));
     Handle<YieldTermStructure> disc(
-             boost::make_shared<FlatForward>(valuation,0.05,discountCounter));
-    Handle<Quote> S0(boost::make_shared<SimpleQuote>(stock));
+             ext::make_shared<FlatForward>(valuation,0.05,discountCounter));
+    Handle<Quote> S0(ext::make_shared<SimpleQuote>(stock));
     ext::shared_ptr<QuantLib::VarianceGammaProcess> process =
-        boost::make_shared<VarianceGammaProcess>(S0, dividend, disc,
+        ext::make_shared<VarianceGammaProcess>(S0, dividend, disc,
                                                  sigma, kappa, mu);
 
-    option.setPricingEngine(boost::make_shared<VarianceGammaEngine>(process));
+    option.setPricingEngine(ext::make_shared<VarianceGammaEngine>(process));
     // without the fix, the call below goes into an infinite loop,
     // which is hard to test for.  We're just happy to see the test
     // case finish, hence the lack of an assertion.

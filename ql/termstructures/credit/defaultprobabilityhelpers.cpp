@@ -186,13 +186,13 @@ namespace QuantLib {
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
-            swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
+            swap_->setPricingEngine(ext::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
                 IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise));
             break;
           case CreditDefaultSwap::Midpoint:
-            swap_->setPricingEngine(boost::make_shared<MidPointCdsEngine>(
+            swap_->setPricingEngine(ext::make_shared<MidPointCdsEngine>(
                 probability_, recoveryRate_, discountCurve_));
             break;
           default:
@@ -271,13 +271,13 @@ namespace QuantLib {
             ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
         switch (model_) {
           case CreditDefaultSwap::ISDA:
-            swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
+            swap_->setPricingEngine(ext::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
                 IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise));
             break;
           case CreditDefaultSwap::Midpoint:
-            swap_->setPricingEngine(boost::make_shared<MidPointCdsEngine>(
+            swap_->setPricingEngine(ext::make_shared<MidPointCdsEngine>(
                 probability_, recoveryRate_, discountCurve_));
             break;
           default:

@@ -140,7 +140,7 @@ namespace QuantLib {
         template <class I1, class I2>
         LagrangeInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin) {
-            impl_ = boost::make_shared<detail::LagrangeInterpolationImpl<I1,I2> >(
+            impl_ = ext::make_shared<detail::LagrangeInterpolationImpl<I1,I2> >(
                 xBegin, xEnd, yBegin);
             impl_->update();
         }

@@ -37,7 +37,7 @@ ext::shared_ptr<SmileSection>
 Gaussian1dSwaptionVolatility::smileSectionImpl(const Date &d,
                                                const Period &tenor) const {
     ext::shared_ptr<SmileSection> tmp =
-        boost::make_shared<Gaussian1dSmileSection>(
+        ext::make_shared<Gaussian1dSmileSection>(
             d, indexBase_->clone(tenor), model_, this->dayCounter(), engine_);
     return tmp;
 }

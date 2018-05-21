@@ -43,7 +43,7 @@ Gaussian1dSmileSection::Gaussian1dSmileSection(
                                    Null<Date>(), 0.0, swapIndex_);
 
     if (engine_ == NULL) {
-        engine_ = boost::make_shared<Gaussian1dSwaptionEngine>(
+        engine_ = ext::make_shared<Gaussian1dSwaptionEngine>(
             model_, 64, 7.0, true, false,
             swapIndex_->discountingTermStructure());
     }
@@ -67,7 +67,7 @@ Gaussian1dSmileSection::Gaussian1dSmileSection(
         model_->zerobond(c.maturityDate());
 
     if (engine_ == NULL) {
-        engine_ = boost::make_shared<Gaussian1dCapFloorEngine>(
+        engine_ = ext::make_shared<Gaussian1dCapFloorEngine>(
             model_, 64, 7.0, true,
             false); // use model curve as discounting curve
     }

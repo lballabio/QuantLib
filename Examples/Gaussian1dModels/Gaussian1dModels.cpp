@@ -168,16 +168,16 @@ int main(int argc, char *argv[]) {
         Real oisLevel = 0.02;
 
         Handle<Quote> forward6mQuote(
-            boost::make_shared<SimpleQuote>(forward6mLevel));
-        Handle<Quote> oisQuote(boost::make_shared<SimpleQuote>(oisLevel));
+            ext::make_shared<SimpleQuote>(forward6mLevel));
+        Handle<Quote> oisQuote(ext::make_shared<SimpleQuote>(oisLevel));
 
-        Handle<YieldTermStructure> yts6m(boost::make_shared<FlatForward>(
+        Handle<YieldTermStructure> yts6m(ext::make_shared<FlatForward>(
             0, TARGET(), forward6mQuote, Actual365Fixed()));
-        Handle<YieldTermStructure> ytsOis(boost::make_shared<FlatForward>(
+        Handle<YieldTermStructure> ytsOis(ext::make_shared<FlatForward>(
             0, TARGET(), oisQuote, Actual365Fixed()));
 
         ext::shared_ptr<IborIndex> euribor6m =
-            boost::make_shared<Euribor>(6 * Months, yts6m);
+            ext::make_shared<Euribor>(6 * Months, yts6m);
 
         std::cout
             << "\nWe assume a multicurve setup, for simplicity with flat yield "
@@ -187,9 +187,9 @@ int main(int argc, char *argv[]) {
             << "\nat a level of " << forward6mLevel << std::endl;
 
         Real volLevel = 0.20;
-        Handle<Quote> volQuote(boost::make_shared<SimpleQuote>(volLevel));
+        Handle<Quote> volQuote(ext::make_shared<SimpleQuote>(volLevel));
         Handle<SwaptionVolatilityStructure> swaptionVol(
-            boost::make_shared<ConstantSwaptionVolatility>(
+            ext::make_shared<ConstantSwaptionVolatility>(
                 0, TARGET(), ModifiedFollowing, volQuote, Actual365Fixed()));
 
         std::cout
@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
                                   false);
 
         ext::shared_ptr<NonstandardSwap> underlying =
-            boost::make_shared<NonstandardSwap>(VanillaSwap(
+            ext::make_shared<NonstandardSwap>(VanillaSwap(
                 VanillaSwap::Payer, 1.0, fixedSchedule, strike, Thirty360(),
                 floatingSchedule, euribor6m, 0.00, Actual360()));
 
@@ -223,9 +223,9 @@ int main(int argc, char *argv[]) {
                 TARGET().advance(fixedSchedule[i], -2 * Days));
 
         ext::shared_ptr<Exercise> exercise =
-            boost::make_shared<BermudanExercise>(exerciseDates, false);
+            ext::make_shared<BermudanExercise>(exerciseDates, false);
         ext::shared_ptr<NonstandardSwaption> swaption =
-            boost::make_shared<NonstandardSwaption>(underlying, exercise);
+            ext::make_shared<NonstandardSwaption>(underlying, exercise);
 
         std::cout
             << "\nThe model is a one factor Hull White model with piecewise "
@@ -247,14 +247,14 @@ int main(int argc, char *argv[]) {
                "\nwhere explicitly specified (e.g. in a swaption pricing "
                "engine)." << std::endl;
 
-        ext::shared_ptr<Gsr> gsr = boost::make_shared<Gsr>(
+        ext::shared_ptr<Gsr> gsr = ext::make_shared<Gsr>(
             yts6m, stepDates, sigmas, reversion);
 
         ext::shared_ptr<PricingEngine> swaptionEngine =
-            boost::make_shared<Gaussian1dSwaptionEngine>(gsr, 64, 7.0, true,
+            ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 64, 7.0, true,
                                                          false, ytsOis);
         ext::shared_ptr<PricingEngine> nonstandardSwaptionEngine =
-            boost::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
                 gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis);
 
         swaption->setPricingEngine(nonstandardSwaptionEngine);
@@ -269,7 +269,7 @@ int main(int argc, char *argv[]) {
         std::cout << "\nThe resulting basket looks as follows:" << std::endl;
 
         ext::shared_ptr<SwapIndex> swapBase =
-            boost::make_shared<EuriborSwapIsdaFixA>(10 * Years, yts6m, ytsOis);
+            ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, yts6m, ytsOis);
 
         timer.start();
         std::vector<ext::shared_ptr<CalibrationHelper> > basket =
@@ -382,7 +382,7 @@ int main(int argc, char *argv[]) {
             strikes, Thirty360(), floatingSchedule, euribor6m, 1.0, 0.0,
             Actual360()));
         ext::shared_ptr<NonstandardSwaption> swaption2 =
-            boost::make_shared<NonstandardSwaption>(underlying2, exercise);
+            ext::make_shared<NonstandardSwaption>(underlying2, exercise);
 
         swaption2->setPricingEngine(nonstandardSwaptionEngine);
 
@@ -420,19 +420,19 @@ int main(int argc, char *argv[]) {
             true)); // final capital exchange
 
         ext::shared_ptr<RebatedExercise> exercise2 =
-            boost::make_shared<RebatedExercise>(*exercise, -1.0, 2, TARGET());
+            ext::make_shared<RebatedExercise>(*exercise, -1.0, 2, TARGET());
 
         ext::shared_ptr<NonstandardSwaption> swaption3 =
-            boost::make_shared<NonstandardSwaption>(underlying3, exercise2);
+            ext::make_shared<NonstandardSwaption>(underlying3, exercise2);
 
         ext::shared_ptr<SimpleQuote> oas0 =
-            boost::make_shared<SimpleQuote>(0.0);
+            ext::make_shared<SimpleQuote>(0.0);
         ext::shared_ptr<SimpleQuote> oas100 =
-            boost::make_shared<SimpleQuote>(0.01);
+            ext::make_shared<SimpleQuote>(0.01);
         RelinkableHandle<Quote> oas(oas0);
 
         ext::shared_ptr<PricingEngine> nonstandardSwaptionEngine2 =
-            boost::make_shared<Gaussian1dNonstandardSwaptionEngine>(
+            ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
                 gsr, 64, 7.0, true, false, oas); // change discounting to 6m
 
         swaption3->setPricingEngine(nonstandardSwaptionEngine2);
@@ -514,7 +514,7 @@ int main(int argc, char *argv[]) {
                 false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010));
 
         ext::shared_ptr<FloatFloatSwaption> swaption4 =
-            boost::make_shared<FloatFloatSwaption>(underlying4, exercise);
+            ext::make_shared<FloatFloatSwaption>(underlying4, exercise);
 
         ext::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
             floatSwaptionEngine(new Gaussian1dFloatFloatSwaptionEngine(
@@ -528,19 +528,19 @@ int main(int argc, char *argv[]) {
                "estimation" << std::endl;
 
         Handle<Quote> reversionQuote(
-            boost::make_shared<SimpleQuote>(reversion));
+            ext::make_shared<SimpleQuote>(reversion));
 
         const Leg &leg0 = underlying4->leg(0);
         const Leg &leg1 = underlying4->leg(1);
         ext::shared_ptr<CmsCouponPricer> cmsPricer =
-            boost::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
+            ext::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
         ext::shared_ptr<IborCouponPricer> iborPricer(new BlackIborCouponPricer);
 
         setCouponPricer(leg0, cmsPricer);
         setCouponPricer(leg1, iborPricer);
 
         ext::shared_ptr<PricingEngine> swapPricer =
-            boost::make_shared<DiscountingSwapEngine>(ytsOis);
+            ext::make_shared<DiscountingSwapEngine>(ytsOis);
 
         underlying4->setPricingEngine(swapPricer);
 
@@ -606,17 +606,17 @@ int main(int argc, char *argv[]) {
         std::vector<Real> markovSigmas(markovStepDates.size() + 1, 0.01);
         std::vector<Period> tenors(cmsFixingDates.size(), 10 * Years);
         ext::shared_ptr<MarkovFunctional> markov =
-            boost::make_shared<MarkovFunctional>(
+            ext::make_shared<MarkovFunctional>(
                 yts6m, reversion, markovStepDates, markovSigmas, swaptionVol,
                 cmsFixingDates, tenors, swapBase,
                 MarkovFunctional::ModelSettings().withYGridPoints(16));
 
         ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngineMarkov =
-            boost::make_shared<Gaussian1dSwaptionEngine>(markov, 8, 5.0, true,
+            ext::make_shared<Gaussian1dSwaptionEngine>(markov, 8, 5.0, true,
                                                          false, ytsOis);
         ext::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
             floatEngineMarkov =
-                boost::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+                ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
                     markov, 16, 7.0, true, false, Handle<Quote>(), ytsOis,
                     true);
 

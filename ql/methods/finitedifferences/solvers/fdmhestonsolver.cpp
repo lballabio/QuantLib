@@ -45,13 +45,13 @@ namespace QuantLib {
 
     void FdmHestonSolver::performCalculations() const {
         ext::shared_ptr<FdmLinearOpComposite> op(
-			boost::make_shared<FdmHestonOp>(
+			ext::make_shared<FdmHestonOp>(
                 solverDesc_.mesher, process_.currentLink(),
                 (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
                              : ext::shared_ptr<FdmQuantoHelper>(),
                 leverageFct_));
 
-        solver_ = boost::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
+        solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHestonSolver::valueAt(Real s, Real v) const {

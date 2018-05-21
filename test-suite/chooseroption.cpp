@@ -60,29 +60,29 @@ void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>(50.0);
-    ext::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(50.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.08);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.08);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = boost::make_shared<SimpleQuote>(0.25);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-        boost::make_shared<BlackScholesMertonProcess>(
+        ext::make_shared<BlackScholesMertonProcess>(
                                   Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS));
 
     ext::shared_ptr<PricingEngine> engine =
-        boost::make_shared<AnalyticSimpleChooserEngine>(stochProcess);
+        ext::make_shared<AnalyticSimpleChooserEngine>(stochProcess);
 
     Real strike = 50.0;
 
     Date exerciseDate = today + 180;
     ext::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(exerciseDate);
+        ext::make_shared<EuropeanExercise>(exerciseDate);
 
     Date choosingDate = today + 90;
     SimpleChooserOption option(choosingDate,strike,exercise);
@@ -110,23 +110,23 @@ void ChooserOptionTest::testAnalyticComplexChooserEngine(){
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>(50.0);
-    ext::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.05);
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(50.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.05);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.10);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.10);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = boost::make_shared<SimpleQuote>(0.35);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.35);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-        boost::make_shared<BlackScholesMertonProcess>(
+        ext::make_shared<BlackScholesMertonProcess>(
                                   Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS));
 
     ext::shared_ptr<PricingEngine> engine =
-        boost::make_shared<AnalyticComplexChooserEngine>(stochProcess);
+        ext::make_shared<AnalyticComplexChooserEngine>(stochProcess);
 
     Real callStrike = 55.0;
     Real putStrike = 48.0;
@@ -135,9 +135,9 @@ void ChooserOptionTest::testAnalyticComplexChooserEngine(){
     Date callExerciseDate = choosingDate + 180;
     Date putExerciseDate = choosingDate + 210;
     ext::shared_ptr<Exercise> callExercise =
-        boost::make_shared<EuropeanExercise>(callExerciseDate);
+        ext::make_shared<EuropeanExercise>(callExerciseDate);
     ext::shared_ptr<Exercise> putExercise =
-        boost::make_shared<EuropeanExercise>(putExerciseDate);
+        ext::make_shared<EuropeanExercise>(putExerciseDate);
 
     ComplexChooserOption option(choosingDate,callStrike,putStrike,
                                 callExercise,putExercise);

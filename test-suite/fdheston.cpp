@@ -72,10 +72,10 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
     Settings::instance().evaluationDate() = today;
 
     const ext::shared_ptr<HestonProcess> process(
-        boost::make_shared<HestonProcess>(
+        ext::make_shared<HestonProcess>(
             Handle<YieldTermStructure>(flatRate(0.02, dc)),
             Handle<YieldTermStructure>(flatRate(0.02, dc)),
-            Handle<Quote>(boost::make_shared<SimpleQuote>(100.0)),
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
             0.09, 1.0, 0.09, 0.2, -0.5));
 
     const std::vector<Real> locations =
@@ -715,7 +715,7 @@ void FdHestonTest::testMethodOfLines() {
 
     Settings::instance().evaluationDate() = today;
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
     const Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.0, dc));
 
@@ -728,25 +728,25 @@ void FdHestonTest::testMethodOfLines() {
     const Date maturity = today + Period(3, Months);
 
     const ext::shared_ptr<HestonModel> model(
-        boost::make_shared<HestonModel>(
-            boost::make_shared<HestonProcess>(
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
                 rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
 
     const Size xGrid = 21;
     const Size vGrid = 7;
 
     const ext::shared_ptr<PricingEngine> fdmDefault(
-        boost::make_shared<FdHestonVanillaEngine>(model, 10, xGrid, vGrid, 0));
+        ext::make_shared<FdHestonVanillaEngine>(model, 10, xGrid, vGrid, 0));
 
     const ext::shared_ptr<PricingEngine> fdmMol(
-        boost::make_shared<FdHestonVanillaEngine>(
+        ext::make_shared<FdHestonVanillaEngine>(
             model, 10, xGrid, vGrid, 0, FdmSchemeDesc::MethodOfLines()));
 
     const ext::shared_ptr<PlainVanillaPayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Put, spot->value());
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, spot->value());
 
     VanillaOption option(
-        payoff, boost::make_shared<AmericanExercise>(maturity));
+        payoff, ext::make_shared<AmericanExercise>(maturity));
 
     option.setPricingEngine(fdmMol);
     const Real calculated = option.NPV();
@@ -767,15 +767,15 @@ void FdHestonTest::testMethodOfLines() {
 
     BarrierOption barrierOption(
         Barrier::DownOut, 85.0, 10.0,
-        payoff, boost::make_shared<EuropeanExercise>(maturity));
+        payoff, ext::make_shared<EuropeanExercise>(maturity));
 
     barrierOption.setPricingEngine(
-        boost::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11));
+        ext::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11));
 
     const Real expectedBarrier = barrierOption.NPV();
 
     barrierOption.setPricingEngine(
-        boost::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
+        ext::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
             FdmSchemeDesc::MethodOfLines()));
 
     const Real calculatedBarrier = barrierOption.NPV();

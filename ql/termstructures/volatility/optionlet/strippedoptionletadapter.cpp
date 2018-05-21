@@ -57,7 +57,7 @@ namespace QuantLib {
         CubicInterpolation::BoundaryCondition bc =
             optionletStrikes.size() >= 4 ? CubicInterpolation::Lagrange
                                          : CubicInterpolation::SecondDerivative;
-        return boost::make_shared< InterpolatedSmileSection< Cubic > >(
+        return ext::make_shared< InterpolatedSmileSection< Cubic > >(
             t, optionletStrikes, stddevs, Null< Real >(),
             Cubic(CubicInterpolation::Spline, false, bc, 0.0, bc, 0.0),
             Actual365Fixed(), volatilityType(), displacement());

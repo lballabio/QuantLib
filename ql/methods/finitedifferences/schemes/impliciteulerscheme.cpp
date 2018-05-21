@@ -40,7 +40,7 @@ namespace QuantLib {
         Real relTol,
         SolverType solverType)
     : dt_        (Null<Real>()),
-      iterations_(boost::make_shared<Size>(0u)),
+      iterations_(ext::make_shared<Size>(0u)),
       relTol_    (relTol),
       map_       (map),
       bcSet_     (bcSet),

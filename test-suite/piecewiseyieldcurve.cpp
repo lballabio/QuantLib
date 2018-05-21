@@ -247,7 +247,7 @@ namespace {
                 Handle<Quote> r(rates[i]);
                 instruments[i] = ext::shared_ptr<RateHelper>(new
                     DepositRateHelper(r,
-                                      boost::make_shared<Euribor>(
+                                      ext::make_shared<Euribor>(
                                           depositData[i].n*depositData[i].units)));
             }
             for (Size i=0; i<swaps; i++) {
@@ -1035,12 +1035,12 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     Date today = Settings::instance().evaluationDate();
 
     Handle<YieldTermStructure> flat3m(
-        boost::make_shared<FlatForward>(today, Handle<Quote>(boost::make_shared<SimpleQuote>(0.02)), Actual365Fixed()));
-    ext::shared_ptr<IborIndex> usdLibor3m = boost::make_shared<USDLibor>(3 * Months, flat3m);
+        ext::make_shared<FlatForward>(today, Handle<Quote>(ext::make_shared<SimpleQuote>(0.02)), Actual365Fixed()));
+    ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months, flat3m);
 
     // note that the calendar should be US+UK here actually, but technically it should also work with
     // the US calendar only
-    ext::shared_ptr<RateHelper> helper = boost::make_shared<SwapRateHelper>(
+    ext::shared_ptr<RateHelper> helper = ext::make_shared<SwapRateHelper>(
         0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
 
     PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<ext::shared_ptr<RateHelper> >(1, helper),
@@ -1066,7 +1066,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     ext::shared_ptr<Euribor> euribor1m(new Euribor1M);
     for (Size i=0; i<LENGTH(data); ++i) {
         helpers.push_back(
-           boost::make_shared<SwapRateHelper>(data[i].rate,
+           ext::make_shared<SwapRateHelper>(data[i].rate,
                                               Period(data[i].n, data[i].units),
                                               TARGET(), Monthly, Unadjusted,
                                               Thirty360(), euribor1m));
@@ -1078,7 +1078,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     Settings::instance().evaluationDate() = today;
 
     ext::shared_ptr<YieldTermStructure> curve =
-        boost::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(
+        ext::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(
                                             test_date, helpers, Actual360());
 
     // force bootstrap on today's date, so we have a previous curve...
@@ -1090,7 +1090,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     RelinkableHandle<YieldTermStructure> h;
     h.linkTo(curve);
 
-    ext::shared_ptr<Euribor1M> index = boost::make_shared<Euribor1M>(h);
+    ext::shared_ptr<Euribor1M> index = ext::make_shared<Euribor1M>(h);
     for (Size i=0; i<LENGTH(data); i++) {
         Period tenor = data[i].n*data[i].units;
 
@@ -1098,7 +1098,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
             .withFixedLegDayCount(Thirty360())
             .withFixedLegTenor(Period(1, Months))
             .withFixedLegConvention(Unadjusted);
-        swap.setPricingEngine(boost::make_shared<DiscountingSwapEngine>(h));
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(h));
 
         Rate expectedRate = data[i].rate,
              estimatedRate = swap.fairRate();

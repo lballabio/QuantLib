@@ -163,7 +163,7 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
 
     const BSMRNDCalculator bsm(bsmProcess);
     const HestonRNDCalculator heston(
-        boost::make_shared<HestonProcess>(
+        ext::make_shared<HestonProcess>(
             rTS, qTS, spot,
             v0, kappa, theta, sigma, rho), 1e-8);
 
@@ -316,7 +316,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     const Volatility v = 0.25;
 
     const ext::shared_ptr<Quote> spot(
-        boost::make_shared<SimpleQuote>(s0));
+        ext::make_shared<SimpleQuote>(s0));
     const ext::shared_ptr<YieldTermStructure> rTS(
         flatRate(todaysDate, r, dayCounter));
     const ext::shared_ptr<YieldTermStructure> qTS(
@@ -327,7 +327,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     const ext::shared_ptr<LocalVolRNDCalculator> constVolCalc(
         new LocalVolRNDCalculator(
             spot, rTS, qTS,
-            boost::make_shared<LocalConstantVol>(todaysDate, v, dayCounter),
+            ext::make_shared<LocalConstantVol>(todaysDate, v, dayCounter),
             timeGrid, 201));
 
     const Real rTol = 0.01, atol = 0.005;
@@ -413,7 +413,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
             Handle<BlackVolTermStructure>(dumasVolSurface)));
 
     const ext::shared_ptr<LocalVolTermStructure> localVolSurface
-        = boost::make_shared<NoExceptLocalVolSurface>(
+        = ext::make_shared<NoExceptLocalVolSurface>(
               Handle<BlackVolTermStructure>(dumasVolSurface),
               Handle<YieldTermStructure>(rTS),
               Handle<YieldTermStructure>(qTS),
@@ -606,22 +606,22 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
 
     const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dc));
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
 
     const ext::shared_ptr<HestonProcess> hestonProcess(
-        boost::make_shared<HestonProcess>(
+        ext::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<BlackVolTermStructure> hestonSurface(
-        boost::make_shared<HestonBlackVolSurface>(
-            Handle<HestonModel>(boost::make_shared<HestonModel>(hestonProcess)),
+        ext::make_shared<HestonBlackVolSurface>(
+            Handle<HestonModel>(ext::make_shared<HestonModel>(hestonProcess)),
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::discreteTrapezoid(32)));
 
     const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
 
     const ext::shared_ptr<LocalVolTermStructure> localVol(
-        boost::make_shared<NoExceptLocalVolSurface>(
+        ext::make_shared<NoExceptLocalVolSurface>(
             hestonSurface, rTS, qTS, spot, std::sqrt(theta)));
 
     const LocalVolRNDCalculator localVolCalc(
@@ -631,7 +631,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     const HestonRNDCalculator hestonCalc(hestonProcess);
 
     const GBSMRNDCalculator gbsmCalc(
-        boost::make_shared<BlackScholesMertonProcess>(
+        ext::make_shared<BlackScholesMertonProcess>(
             spot, qTS, rTS, hestonSurface));
 
     const Real strikes[] = { 85, 75, 90, 110, 125, 150 };

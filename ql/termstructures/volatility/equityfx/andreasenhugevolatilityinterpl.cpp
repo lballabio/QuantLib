@@ -271,7 +271,7 @@ namespace QuantLib {
 
             calibrationSet_.push_back(
                 std::make_pair(
-                    boost::make_shared<VanillaOption>(payoff, exercise),
+                    ext::make_shared<VanillaOption>(payoff, exercise),
                     calibrationSet[i].second)
             );
 
@@ -354,7 +354,7 @@ namespace QuantLib {
             }
         }
 
-        return boost::make_shared<AndreasenHugeCostFunction>(
+        return ext::make_shared<AndreasenHugeCostFunction>(
             marketNPVs,
             marketVegas,
             lnMarketStrikes,
@@ -377,8 +377,8 @@ namespace QuantLib {
         }
 
         mesher_ =
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Concentrating1dMesher>(
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Concentrating1dMesher>(
                     std::log(minStrike()/spot_->value()),
                     std::log(maxStrike()/spot_->value()),
                     nGridPoints_,
@@ -557,7 +557,7 @@ namespace QuantLib {
 
 
         const ext::shared_ptr<Array> prices(
-            boost::make_shared<Array>(gridPoints_));
+            ext::make_shared<Array>(gridPoints_));
 
         switch (calibrationType_) {
           case Put:
@@ -578,7 +578,7 @@ namespace QuantLib {
             ext::shared_ptr<Array>,
             ext::shared_ptr<Interpolation> >(
                 fwd, prices,
-                boost::make_shared<CubicNaturalSpline>(
+                ext::make_shared<CubicNaturalSpline>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
                     prices->begin()+1));
 
@@ -628,7 +628,7 @@ namespace QuantLib {
         calculate();
 
         const ext::shared_ptr<Array> localVol(
-            boost::make_shared<Array>(gridPoints_.size()));
+            ext::make_shared<Array>(gridPoints_.size()));
 
         switch (calibrationType_) {
           case CallPut: {
@@ -657,7 +657,7 @@ namespace QuantLib {
             ext::shared_ptr<Array>,
             ext::shared_ptr<Interpolation> >(
                 fwd, localVol,
-                boost::make_shared<LinearInterpolation>(
+                ext::make_shared<LinearInterpolation>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
                     localVol->begin()+1));
 

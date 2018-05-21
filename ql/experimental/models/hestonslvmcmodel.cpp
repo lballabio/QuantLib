@@ -66,7 +66,7 @@ namespace QuantLib {
         }
         gridTimes.push_back(dc.yearFraction(refDate, endDate));
 
-        timeGrid_ = boost::make_shared<TimeGrid>(gridTimes.begin(), gridTimes.end(),
+        timeGrid_ = ext::make_shared<TimeGrid>(gridTimes.begin(), gridTimes.end(),
                 std::max(Size(2), Size(gridTimes.back()*timeStepsPerYear)));
     }
 
@@ -110,7 +110,7 @@ namespace QuantLib {
             const Integer u = nBins_/2;
             const Real dx = spot->value()*std::sqrt(QL_EPSILON);
 
-            vStrikes[i] = boost::make_shared<std::vector<Real> >(nBins_);
+            vStrikes[i] = ext::make_shared<std::vector<Real> >(nBins_);
 
             for (Integer j=0; j < Integer(nBins_); ++j)
                 vStrikes[i]->at(j) = spot->value() + (j - u)*dx;
@@ -118,13 +118,13 @@ namespace QuantLib {
 
         std::fill(L->column_begin(0),L->column_end(0), lv0);
 
-        leverageFunction_ = boost::make_shared<FixedLocalVolSurface>(
+        leverageFunction_ = ext::make_shared<FixedLocalVolSurface>(
             referenceDate,
             std::vector<Time>(timeGrid_->begin(), timeGrid_->end()),
             vStrikes, L, dc);
 
         const ext::shared_ptr<HestonSLVProcess> slvProcess
-            = boost::make_shared<HestonSLVProcess>(hestonProcess, leverageFunction_);
+            = ext::make_shared<HestonSLVProcess>(hestonProcess, leverageFunction_);
 
         std::vector<std::pair<Real, Real> > pairs(
                 calibrationPaths_, std::make_pair(spot->value(), v0));

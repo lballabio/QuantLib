@@ -186,7 +186,7 @@ struct NoArbSabrSpecs {
     ext::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &) {
-        return boost::make_shared<type>(t, forward, params);
+        return ext::make_shared<type>(t, forward, params);
     }
 };
 }

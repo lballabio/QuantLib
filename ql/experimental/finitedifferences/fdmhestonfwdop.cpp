@@ -51,16 +51,16 @@ namespace QuantLib {
       rTS_  (process->riskFreeRate().currentLink()),
       qTS_  (process->dividendYield().currentLink()),
       varianceValues_(0.5*mesher->locations(1)),
-      dxMap_ (boost::make_shared<FirstDerivativeOp>(0, mesher)),
-      dxxMap_(boost::make_shared<ModTripleBandLinearOp>(TripleBandLinearOp(
+      dxMap_ (ext::make_shared<FirstDerivativeOp>(0, mesher)),
+      dxxMap_(ext::make_shared<ModTripleBandLinearOp>(TripleBandLinearOp(
           type == FdmSquareRootFwdOp::Log ?
             SecondDerivativeOp(0, mesher).mult(0.5*Exp(mesher->locations(1)))
           : SecondDerivativeOp(0, mesher).mult(0.5*mesher->locations(1))
           ))),
-      boundary_(boost::make_shared<ModTripleBandLinearOp>(TripleBandLinearOp(SecondDerivativeOp(0, mesher).mult(Array(mesher->locations(0).size(), 0.0))))),
-      mapX_  (boost::make_shared<TripleBandLinearOp>(0, mesher)),
-      mapY_  (boost::make_shared<FdmSquareRootFwdOp>(mesher,kappa_,theta_,sigma_, 1, type)),
-      correlation_(boost::make_shared<NinePointLinearOp>(
+      boundary_(ext::make_shared<ModTripleBandLinearOp>(TripleBandLinearOp(SecondDerivativeOp(0, mesher).mult(Array(mesher->locations(0).size(), 0.0))))),
+      mapX_  (ext::make_shared<TripleBandLinearOp>(0, mesher)),
+      mapY_  (ext::make_shared<FdmSquareRootFwdOp>(mesher,kappa_,theta_,sigma_, 1, type)),
+      correlation_(ext::make_shared<NinePointLinearOp>(
           type == FdmSquareRootFwdOp::Log ?
               SecondOrderMixedDerivativeOp(0, 1, mesher)
               .mult(Array(mesher->layout()->size(), rho_*sigma_))

@@ -300,12 +300,12 @@ void BarrierOptionTest::testHaugValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = boost::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -317,11 +317,11 @@ void BarrierOptionTest::testHaugValues() {
         vol  ->setValue(values[i].v);
 
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::make_shared<PlainVanillaPayoff>(values[i].type,
+            ext::make_shared<PlainVanillaPayoff>(values[i].type,
                                                    values[i].strike);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-            boost::make_shared<BlackScholesMertonProcess>(
+            ext::make_shared<BlackScholesMertonProcess>(
                                       Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
@@ -329,9 +329,9 @@ void BarrierOptionTest::testHaugValues() {
 
         ext::shared_ptr<Exercise> exercise;
         if (values[i].exType == Exercise::European)
-            exercise = boost::make_shared<EuropeanExercise>(exDate);
+            exercise = ext::make_shared<EuropeanExercise>(exDate);
         else
-            exercise = boost::make_shared<AmericanExercise>(exDate);
+            exercise = ext::make_shared<AmericanExercise>(exDate);
 
         BarrierOption barrierOption(
                 values[i].barrierType,
@@ -346,7 +346,7 @@ void BarrierOptionTest::testHaugValues() {
         Real error;
         if (values[i].exType == Exercise::European) {
            // these engines support only european options
-           engine = boost::make_shared<AnalyticBarrierEngine>(stochProcess);
+           engine = ext::make_shared<AnalyticBarrierEngine>(stochProcess);
 
            barrierOption.setPricingEngine(engine);
 
@@ -360,7 +360,7 @@ void BarrierOptionTest::testHaugValues() {
                               expected, calculated, error, values[i].tol);
            }
 
-           engine = boost::make_shared<FdBlackScholesBarrierEngine>(stochProcess, 200, 400);
+           engine = ext::make_shared<FdBlackScholesBarrierEngine>(stochProcess, 200, 400);
            barrierOption.setPricingEngine(engine);
 
            calculated = barrierOption.NPV();
@@ -374,7 +374,7 @@ void BarrierOptionTest::testHaugValues() {
            }
         }
 
-        engine = boost::make_shared<BinomialBarrierEngine<CoxRossRubinstein,DiscretizedBarrierOption> >(stochProcess, 400);
+        engine = ext::make_shared<BinomialBarrierEngine<CoxRossRubinstein,DiscretizedBarrierOption> >(stochProcess, 400);
         barrierOption.setPricingEngine(engine);
 
         calculated = barrierOption.NPV();
@@ -392,7 +392,7 @@ void BarrierOptionTest::testHaugValues() {
         // timeSteps, effectively disabling Boyle-Lau barrier adjustment.
         // Production code should always enable Boyle-Lau. In most cases it
         // gives very good convergence with only a modest timeStep increment.
-        engine = boost::make_shared<BinomialBarrierEngine<CoxRossRubinstein,DiscretizedDermanKaniBarrierOption> >(stochProcess, 400);
+        engine = ext::make_shared<BinomialBarrierEngine<CoxRossRubinstein,DiscretizedDermanKaniBarrierOption> >(stochProcess, 400);
         barrierOption.setPricingEngine(engine);
         calculated = barrierOption.NPV();
         expected = values[i].result;
@@ -438,32 +438,32 @@ void BarrierOptionTest::testBabsiriValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     ext::shared_ptr<SimpleQuote> underlying =
-        boost::make_shared<SimpleQuote>(underlyingPrice);
+        ext::make_shared<SimpleQuote>(underlyingPrice);
 
-    ext::shared_ptr<SimpleQuote> qH_SME = boost::make_shared<SimpleQuote>(q);
+    ext::shared_ptr<SimpleQuote> qH_SME = ext::make_shared<SimpleQuote>(q);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
 
-    ext::shared_ptr<SimpleQuote> rH_SME = boost::make_shared<SimpleQuote>(r);
+    ext::shared_ptr<SimpleQuote> rH_SME = ext::make_shared<SimpleQuote>(r);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
 
     ext::shared_ptr<SimpleQuote> volatility =
-        boost::make_shared<SimpleQuote>(0.10);
+        ext::make_shared<SimpleQuote>(0.10);
     ext::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
     Date exDate = today+360;
     ext::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(exDate);
+        ext::make_shared<EuropeanExercise>(exDate);
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
         ext::shared_ptr<StrikedTypePayoff> callPayoff =
-            boost::make_shared<PlainVanillaPayoff>(Option::Call,
+            ext::make_shared<PlainVanillaPayoff>(Option::Call,
                                                    values[i].strike);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-            boost::make_shared<BlackScholesMertonProcess>(
+            ext::make_shared<BlackScholesMertonProcess>(
                                       Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
@@ -471,7 +471,7 @@ void BarrierOptionTest::testBabsiriValues() {
 
 
         ext::shared_ptr<PricingEngine> engine =
-            boost::make_shared<AnalyticBarrierEngine>(stochProcess);
+            ext::make_shared<AnalyticBarrierEngine>(stochProcess);
 
         // analytic
         BarrierOption barrierCallOption(
@@ -541,40 +541,40 @@ void BarrierOptionTest::testBeagleholeValues() {
     Date today = Date::todaysDate();
 
     ext::shared_ptr<SimpleQuote> underlying =
-        boost::make_shared<SimpleQuote>(underlyingPrice);
+        ext::make_shared<SimpleQuote>(underlyingPrice);
 
-    ext::shared_ptr<SimpleQuote> qH_SME = boost::make_shared<SimpleQuote>(q);
+    ext::shared_ptr<SimpleQuote> qH_SME = ext::make_shared<SimpleQuote>(q);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
 
-    ext::shared_ptr<SimpleQuote> rH_SME = boost::make_shared<SimpleQuote>(r);
+    ext::shared_ptr<SimpleQuote> rH_SME = ext::make_shared<SimpleQuote>(r);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
 
     ext::shared_ptr<SimpleQuote> volatility =
-        boost::make_shared<SimpleQuote>(0.10);
+        ext::make_shared<SimpleQuote>(0.10);
     ext::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
 
     Date exDate = today+360;
     ext::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(exDate);
+        ext::make_shared<EuropeanExercise>(exDate);
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
         ext::shared_ptr<StrikedTypePayoff> callPayoff =
-            boost::make_shared<PlainVanillaPayoff>(Option::Call,
+            ext::make_shared<PlainVanillaPayoff>(Option::Call,
                                                    values[i].strike);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-            boost::make_shared<BlackScholesMertonProcess>(
+            ext::make_shared<BlackScholesMertonProcess>(
                                       Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS));
 
         ext::shared_ptr<PricingEngine> engine =
-            boost::make_shared<AnalyticBarrierEngine>(stochProcess);
+            ext::make_shared<AnalyticBarrierEngine>(stochProcess);
 
         BarrierOption barrierCallOption(
                 values[i].type,
@@ -628,7 +628,7 @@ void BarrierOptionTest::testPerturbative() {
     Date today = Date::todaysDate();
 
     ext::shared_ptr<SimpleQuote> underlying =
-        boost::make_shared<SimpleQuote>(S);
+        ext::make_shared<SimpleQuote>(S);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
 
@@ -639,10 +639,10 @@ void BarrierOptionTest::testPerturbative() {
     dates[1] = today + 180; vols[1] = 0.11;
 
     ext::shared_ptr<BlackVolTermStructure> volTS =
-        boost::make_shared<BlackVarianceCurve>(today, dates, vols, dc);
+        ext::make_shared<BlackVarianceCurve>(today, dates, vols, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-        boost::make_shared<BlackScholesMertonProcess>(
+        ext::make_shared<BlackScholesMertonProcess>(
                                       Handle<Quote>(underlying),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
@@ -653,16 +653,16 @@ void BarrierOptionTest::testPerturbative() {
     Date exDate = today+180;
 
     ext::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(exDate);
+        ext::make_shared<EuropeanExercise>(exDate);
     ext::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
     BarrierOption option(Barrier::UpOut, barrier, rebate, payoff, exercise);
 
     Natural order = 0;
     bool zeroGamma = false;
     ext::shared_ptr<PricingEngine> engine =
-        boost::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
+        ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
                                                             order, zeroGamma);
 
     option.setPricingEngine(engine);
@@ -677,7 +677,7 @@ void BarrierOptionTest::testPerturbative() {
     }
 
     order = 1;
-    engine = boost::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
+    engine = ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
                                                                  order,
                                                                  zeroGamma);
 
@@ -693,7 +693,7 @@ void BarrierOptionTest::testPerturbative() {
 
     /* Too slow, skip
     order = 2;
-    engine = boost::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
+    engine = ext::make_shared<PerturbativeBarrierOptionEngine>(stochProcess,
                                                                  order,
                                                                  zeroGamma);
 
@@ -731,11 +731,11 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
         rates.push_back(r[i]);
     }
     const Handle<YieldTermStructure> rTS(
-            boost::make_shared<ZeroCurve>(dates, rates, dayCounter));
+            ext::make_shared<ZeroCurve>(dates, rates, dayCounter));
     const Handle<YieldTermStructure> qTS(
                                    flatRate(settlementDate, 0.0, dayCounter));
 
-    const Handle<Quote> s0(boost::make_shared<SimpleQuote>(4500.00));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(4500.00));
     
     Real tmp[] = { 100 ,500 ,2000,3400,3600,3800,4000,4200,4400,4500,
                    4600,4800,5000,5200,5400,5600,7500,10000,20000,30000 };
@@ -770,14 +770,14 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
         }
     
     const ext::shared_ptr<BlackVarianceSurface> volTS =
-        boost::make_shared<BlackVarianceSurface>(
+        ext::make_shared<BlackVarianceSurface>(
                                  settlementDate, calendar,
                                  std::vector<Date>(dates.begin()+1,dates.end()),
                                  strikes, blackVolMatrix,
                                  dayCounter);
     volTS->setInterpolation<Bicubic>();
     const ext::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess =
-        boost::make_shared<BlackScholesMertonProcess>(
+        ext::make_shared<BlackScholesMertonProcess>(
                                       s0, qTS, rTS, 
                                       Handle<BlackVolTermStructure>(volTS));
     
@@ -788,17 +788,17 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
     const Real rho  =-0.511493;
 
     ext::shared_ptr<HestonProcess> hestonProcess =
-        boost::make_shared<HestonProcess>(rTS, qTS, s0, v0,
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0,
                                           kappa, theta, sigma, rho);
 
     ext::shared_ptr<HestonModel> hestonModel =
-        boost::make_shared<HestonModel>(hestonProcess);
+        ext::make_shared<HestonModel>(hestonProcess);
 
     ext::shared_ptr<PricingEngine> fdHestonEngine =
-        boost::make_shared<FdHestonBarrierEngine>(hestonModel, 100, 400, 50);
+        ext::make_shared<FdHestonBarrierEngine>(hestonModel, 100, 400, 50);
     
     ext::shared_ptr<PricingEngine> fdLocalVolEngine =
-        boost::make_shared<FdBlackScholesBarrierEngine>(localVolProcess,
+        ext::make_shared<FdBlackScholesBarrierEngine>(localVolProcess,
                                                         100, 400, 0,
                                                         FdmSchemeDesc::Douglas(), 
                                                         true, 0.35);
@@ -809,10 +809,10 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
     const Date exDate  = settlementDate + Period(20, Months);
     
     const ext::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
     const ext::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(exDate);
+        ext::make_shared<EuropeanExercise>(exDate);
 
     BarrierOption barrierOption(Barrier::DownOut, 
                                 barrier, rebate, payoff, exercise);
@@ -1006,14 +1006,14 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
     Date today(5, March, 2013);
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol25Put = boost::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> volAtm = boost::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> vol25Call = boost::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> vol25Put = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> volAtm = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> vol25Call = ext::make_shared<SimpleQuote>(0.0);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -1025,22 +1025,22 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
         vol25Call->setValue(values[i].vol25Call);
 
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::make_shared<PlainVanillaPayoff>(values[i].type,
+            ext::make_shared<PlainVanillaPayoff>(values[i].type,
                                                    values[i].strike);
 
         Date exDate = today + Integer(values[i].t*365+0.5);
         ext::shared_ptr<Exercise> exercise =
-            boost::make_shared<EuropeanExercise>(exDate);
+            ext::make_shared<EuropeanExercise>(exDate);
 
         Handle<DeltaVolQuote> volAtmQuote = Handle<DeltaVolQuote>(
-						boost::make_shared<DeltaVolQuote>(
+						ext::make_shared<DeltaVolQuote>(
 							Handle<Quote>(volAtm),
 							DeltaVolQuote::Fwd,
 							values[i].t,
 							DeltaVolQuote::AtmDeltaNeutral));
 
         Handle<DeltaVolQuote> vol25PutQuote(Handle<DeltaVolQuote>(
-						boost::make_shared<DeltaVolQuote>(
+						ext::make_shared<DeltaVolQuote>(
 							-0.25,
 							Handle<Quote>(vol25Put),
 							values[i].t,
@@ -1048,7 +1048,7 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
 							)));
 
         Handle<DeltaVolQuote> vol25CallQuote(Handle<DeltaVolQuote>(
-						boost::make_shared<DeltaVolQuote>(
+						ext::make_shared<DeltaVolQuote>(
 							0.25,
 							Handle<Quote>(vol25Call),
 							values[i].t,
@@ -1066,7 +1066,7 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
                          spot->value()*qTS->discount(values[i].t)/rTS->discount(values[i].t),
 						 values[i].v * sqrt(values[i].t), rTS->discount(values[i].t));
         ext::shared_ptr<PricingEngine> vannaVolgaEngine =
-            boost::make_shared<VannaVolgaBarrierEngine>(
+            ext::make_shared<VannaVolgaBarrierEngine>(
                             volAtmQuote,
 							vol25PutQuote,
 							vol25CallQuote,
@@ -1114,19 +1114,19 @@ void BarrierOptionTest::testDividendBarrierOption() {
     const Rate q = 0.0;
     const Volatility v = 0.02;
 
-    const Handle<Quote> s0(boost::make_shared<SimpleQuote>(spot));
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(spot));
     const Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, v, dc));
 
     const ext::shared_ptr<PricingEngine> bsEngine =
-        boost::make_shared<FdBlackScholesBarrierEngine>(
-            boost::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS));
+        ext::make_shared<FdBlackScholesBarrierEngine>(
+            ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS));
 
     const ext::shared_ptr<PricingEngine> hestonEngine =
-        boost::make_shared<FdHestonBarrierEngine>(
-            boost::make_shared<HestonModel>(
-                boost::make_shared<HestonProcess>(
+        ext::make_shared<FdHestonBarrierEngine>(
+            ext::make_shared<HestonModel>(
+                ext::make_shared<HestonProcess>(
                     rTS, qTS, s0, v*v, 1.0, v*v, 0.005, 0.0)), 50, 101, 3);
 
     const ext::shared_ptr<PricingEngine> engines[] = {
@@ -1135,10 +1135,10 @@ void BarrierOptionTest::testDividendBarrierOption() {
     };
 
     const ext::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
     const ext::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(maturity);
+        ext::make_shared<EuropeanExercise>(maturity);
 
     const Real divAmount = 30;
     const Date divDate = today + Period(6, Months);

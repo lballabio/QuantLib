@@ -79,23 +79,23 @@ namespace QuantLib {
         const Real sigmaShift_vanna = 0.0001;
 
         Handle<Quote> x0Quote(
-            boost::make_shared<SimpleQuote>(spotFX_->value())); //used for shift
+            ext::make_shared<SimpleQuote>(spotFX_->value())); //used for shift
         Handle<Quote> atmVolQuote(
-            boost::make_shared<SimpleQuote>(atmVol_->value())); //used for shift
+            ext::make_shared<SimpleQuote>(atmVol_->value())); //used for shift
 
         ext::shared_ptr<BlackVolTermStructure> blackVolTS =
-            boost::make_shared<BlackConstantVol>(
+            ext::make_shared<BlackConstantVol>(
                 Settings::instance().evaluationDate(),
                 NullCalendar(), atmVolQuote, Actual365Fixed());
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-            boost::make_shared<BlackScholesMertonProcess>(
+            ext::make_shared<BlackScholesMertonProcess>(
                                  x0Quote,
                                  foreignTS_,
                                  domesticTS_,
                                  Handle<BlackVolTermStructure>(blackVolTS));
 
         ext::shared_ptr<PricingEngine> engineBS =
-            boost::make_shared<AnalyticBarrierEngine>(stochProcess);
+            ext::make_shared<AnalyticBarrierEngine>(stochProcess);
 
         BlackDeltaCalculator blackDeltaCalculatorAtm(
                         Option::Call, atmVol_->deltaType(), x0Quote->value(),

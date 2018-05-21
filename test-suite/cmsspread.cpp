@@ -51,34 +51,34 @@ struct TestData {
         Settings::instance().evaluationDate() = refDate;
 
         yts2 = Handle<YieldTermStructure>(
-            boost::make_shared<FlatForward>(refDate, 0.02, Actual365Fixed()));
+            ext::make_shared<FlatForward>(refDate, 0.02, Actual365Fixed()));
 
         swLn = Handle<SwaptionVolatilityStructure>(
-            boost::make_shared<ConstantSwaptionVolatility>(
+            ext::make_shared<ConstantSwaptionVolatility>(
                 refDate, TARGET(), Following, 0.20, Actual365Fixed(),
                 ShiftedLognormal, 0.0));
         swSln = Handle<SwaptionVolatilityStructure>(
-            boost::make_shared<ConstantSwaptionVolatility>(
+            ext::make_shared<ConstantSwaptionVolatility>(
                 refDate, TARGET(), Following, 0.10, Actual365Fixed(),
                 ShiftedLognormal, 0.01));
         swN = Handle<SwaptionVolatilityStructure>(
-            boost::make_shared<ConstantSwaptionVolatility>(
+            ext::make_shared<ConstantSwaptionVolatility>(
                 refDate, TARGET(), Following, 0.0075, Actual365Fixed(), Normal,
                 0.01));
 
-        reversion = Handle<Quote>(boost::make_shared<SimpleQuote>(0.01));
+        reversion = Handle<Quote>(ext::make_shared<SimpleQuote>(0.01));
         cmsPricerLn =
-            boost::make_shared<LinearTsrPricer>(swLn, reversion, yts2);
+            ext::make_shared<LinearTsrPricer>(swLn, reversion, yts2);
         cmsPricerSln =
-            boost::make_shared<LinearTsrPricer>(swSln, reversion, yts2);
-        cmsPricerN = boost::make_shared<LinearTsrPricer>(swN, reversion, yts2);
+            ext::make_shared<LinearTsrPricer>(swSln, reversion, yts2);
+        cmsPricerN = ext::make_shared<LinearTsrPricer>(swN, reversion, yts2);
 
-        correlation = Handle<Quote>(boost::make_shared<SimpleQuote>(0.6));
-        cmsspPricerLn = boost::make_shared<LognormalCmsSpreadPricer>(
+        correlation = Handle<Quote>(ext::make_shared<SimpleQuote>(0.6));
+        cmsspPricerLn = ext::make_shared<LognormalCmsSpreadPricer>(
             cmsPricerLn, correlation, yts2, 32);
-        cmsspPricerSln = boost::make_shared<LognormalCmsSpreadPricer>(
+        cmsspPricerSln = ext::make_shared<LognormalCmsSpreadPricer>(
             cmsPricerSln, correlation, yts2, 32);
-        cmsspPricerN = boost::make_shared<LognormalCmsSpreadPricer>(
+        cmsspPricerN = ext::make_shared<LognormalCmsSpreadPricer>(
             cmsPricerN, correlation, yts2, 32);
     }
 
@@ -99,11 +99,11 @@ void CmsSpreadTest::testFixings() {
     TestData d;
 
     ext::shared_ptr<SwapIndex> cms10y =
-        boost::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
+        ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
     ext::shared_ptr<SwapIndex> cms2y =
-        boost::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
+        ext::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
     ext::shared_ptr<SwapSpreadIndex> cms10y2y =
-        boost::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
+        ext::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Settings::instance().enforcesTodaysHistoricFixings() = false;
 
@@ -194,11 +194,11 @@ void CmsSpreadTest::testCouponPricing() {
     Real tol = 1E-6; // abs tolerance coupon rate
 
     ext::shared_ptr<SwapIndex> cms10y =
-        boost::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
+        ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
     ext::shared_ptr<SwapIndex> cms2y =
-        boost::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
+        ext::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
     ext::shared_ptr<SwapSpreadIndex> cms10y2y =
-        boost::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
+        ext::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Date valueDate = cms10y2y->valueDate(d.refDate);
     Date payDate = valueDate + 1 * Years;

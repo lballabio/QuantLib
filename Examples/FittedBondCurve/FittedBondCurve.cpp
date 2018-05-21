@@ -261,10 +261,10 @@ int main(int, char* []) {
         printOutput("(e) Svensson", ts5);
 
         Handle<YieldTermStructure> discountCurve(
-            boost::make_shared<FlatForward>(
+            ext::make_shared<FlatForward>(
                                     curveSettlementDays, calendar, 0.01, dc));
         SpreadFittingMethod nelsonSiegelSpread(
-                                    boost::make_shared<NelsonSiegelFitting>(),
+                                    ext::make_shared<NelsonSiegelFitting>(),
                                     discountCurve);
 
         ext::shared_ptr<FittedBondDiscountCurve> ts6 (

@@ -214,7 +214,7 @@ namespace QuantLib {
             return xm_[idx-1];
         }
         else {
-            return boost::make_shared<Predefined1dMesher>(
+            return ext::make_shared<Predefined1dMesher>(
                 std::vector<Real>(xGrid_, std::log(spot_->value())));
         }
     }
@@ -261,8 +261,8 @@ namespace QuantLib {
 
         ext::shared_ptr<DouglasScheme> evolver(
             new DouglasScheme(0.5,
-                boost::make_shared<FdmLocalVolFwdOp>(
-                    boost::make_shared<FdmMesherComposite>(mesher),
+                ext::make_shared<FdmLocalVolFwdOp>(
+                    ext::make_shared<FdmMesherComposite>(mesher),
                     spot_, rTS_, qTS_, localVol_)));
 
         pFct_.resize(tGrid_);
@@ -323,9 +323,9 @@ namespace QuantLib {
                 x = xn;
                 p = rescalePDF(xn, pn);
 
-                evolver = boost::make_shared<DouglasScheme>(0.5,
-                    boost::make_shared<FdmLocalVolFwdOp>(
-                        boost::make_shared<FdmMesherComposite>(mesher),
+                evolver = ext::make_shared<DouglasScheme>(0.5,
+                    ext::make_shared<FdmLocalVolFwdOp>(
+                        ext::make_shared<FdmMesherComposite>(mesher),
                         spot_, rTS_, qTS_, localVol_));
             }
             evolver->setStep(dt);
@@ -338,7 +338,7 @@ namespace QuantLib {
 
             xm_[i-1] = mesher;
             std::copy(p.begin(), p.end(), pm_->row_begin(i-1));
-            pFct_[i-1] = boost::make_shared<CubicNaturalSpline>(
+            pFct_[i-1] = ext::make_shared<CubicNaturalSpline>(
                 xm_[i-1]->locations().begin(),
                 xm_[i-1]->locations().end(),
                 pm_->row_begin(i-1));

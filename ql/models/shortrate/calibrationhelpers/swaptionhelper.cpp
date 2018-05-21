@@ -118,11 +118,11 @@ namespace QuantLib {
         ext::shared_ptr<PricingEngine> engine;
         switch(volatilityType_) {
         case ShiftedLognormal:
-            engine = boost::make_shared<BlackSwaptionEngine>(
+            engine = ext::make_shared<BlackSwaptionEngine>(
                 termStructure_, vol, Actual365Fixed(), shift_);
             break;
         case Normal:
-            engine = boost::make_shared<BachelierSwaptionEngine>(
+            engine = ext::make_shared<BachelierSwaptionEngine>(
                 termStructure_, vol, Actual365Fixed());
             break;
         default:

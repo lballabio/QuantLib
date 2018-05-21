@@ -81,7 +81,7 @@ int main() {
     std::vector<ext::shared_ptr<Integrator> > integrals;
     for(Size i=0; i<dimension; i++)
         integrals.push_back(
-        boost::make_shared<TrapezoidIntegral<Default> >(1.e-4, 20));
+        ext::make_shared<TrapezoidIntegral<Default> >(1.e-4, 20));
     std::vector<Real> a_limits(integrals.size(), -4.);
     std::vector<Real> b_limits(integrals.size(), 4.);
     MultidimIntegral testIntg(integrals);

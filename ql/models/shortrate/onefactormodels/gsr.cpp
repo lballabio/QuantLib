@@ -35,9 +35,9 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     volatilities_.resize(volatilities.size());
     for (Size i = 0; i < volatilities.size(); ++i)
         volatilities_[i] =
-            Handle<Quote>(boost::make_shared<SimpleQuote>(volatilities[i]));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
     reversions_.resize(1);
-    reversions_[0] = Handle<Quote>(boost::make_shared<SimpleQuote>(reversion));
+    reversions_[0] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversion));
 
     initialize(T);
 }
@@ -55,11 +55,11 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     volatilities_.resize(volatilities.size());
     for (Size i = 0; i < volatilities.size(); ++i)
         volatilities_[i] =
-            Handle<Quote>(boost::make_shared<SimpleQuote>(volatilities[i]));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
     reversions_.resize(reversions.size());
     for (Size i = 0; i < reversions.size(); ++i)
         reversions_[i] =
-            Handle<Quote>(boost::make_shared<SimpleQuote>(reversions[i]));
+            Handle<Quote>(ext::make_shared<SimpleQuote>(reversions[i]));
 
     initialize(T);
 }
@@ -170,8 +170,8 @@ void Gsr::initialize(Real T) {
 
     registerWith(stateProcess_);
 
-    volatilityObserver_ = boost::make_shared<VolatilityObserver>(this);
-    reversionObserver_ = boost::make_shared<ReversionObserver>(this);
+    volatilityObserver_ = ext::make_shared<VolatilityObserver>(this);
+    reversionObserver_ = ext::make_shared<ReversionObserver>(this);
 
     for (Size i = 0; i < reversions_.size(); ++i)
         reversionObserver_->registerWith(reversions_[i]);

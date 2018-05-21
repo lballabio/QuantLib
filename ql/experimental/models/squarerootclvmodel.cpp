@@ -44,7 +44,7 @@ namespace QuantLib {
       sqrtProcess_  (sqrtProcess),
       maturityDates_(maturityDates),
       lagrangeOrder_(lagrangeOrder),
-      rndCalculator_(boost::make_shared<GBSMRNDCalculator>(bsProcess)) {
+      rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)) {
     }
 
     Real SquareRootCLVModel::cdf(const Date& d, Real k) const {
@@ -133,9 +133,9 @@ namespace QuantLib {
 
     SquareRootCLVModel::MappingFunction::MappingFunction(
         const SquareRootCLVModel& model)
-    : s_(boost::make_shared<Matrix>(
+    : s_(ext::make_shared<Matrix>(
          model.maturityDates_.size(), model.lagrangeOrder_)),
-      x_(boost::make_shared<Matrix>(
+      x_(ext::make_shared<Matrix>(
          model.maturityDates_.size(), model.lagrangeOrder_)) {
 
         std::vector<Date> maturityDates = model.maturityDates_;
@@ -157,7 +157,7 @@ namespace QuantLib {
 
             interpl.insert(
                 std::make_pair(maturity,
-                    boost::make_shared<LagrangeInterpolation>(
+                    ext::make_shared<LagrangeInterpolation>(
                         x_->row_begin(i), x_->row_end(i),
                         s_->row_begin(i))));
         }

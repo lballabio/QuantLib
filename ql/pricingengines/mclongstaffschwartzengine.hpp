@@ -189,7 +189,7 @@ namespace QuantLib {
                 dimensions * (grid.size() - 1), seedCalibration_);
         ext::shared_ptr<path_generator_type_calibration>
             pathGeneratorCalibration =
-                boost::make_shared<path_generator_type_calibration>(
+                ext::make_shared<path_generator_type_calibration>(
                     process_, grid, generator, brownianBridgeCalibration_);
         mcModelCalibration_ =
             ext::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >(

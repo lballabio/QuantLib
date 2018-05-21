@@ -146,7 +146,7 @@ void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
             const Option::Type type = types[j];
 
             const ext::shared_ptr<PlainVanillaPayoff> payoff(
-                boost::make_shared<PlainVanillaPayoff>(type, strike));
+                ext::make_shared<PlainVanillaPayoff>(type, strike));
 
             const Real marketValue = blackFormula(payoff, forward, stdDev, df);
 
@@ -248,7 +248,7 @@ void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
             const Option::Type type = types[j];
 
             const ext::shared_ptr<PlainVanillaPayoff> payoff(
-                boost::make_shared<PlainVanillaPayoff>(type, strike));
+                ext::make_shared<PlainVanillaPayoff>(type, strike));
 
             for (Size k=0; k < LENGTH(displacements); ++k) {
 

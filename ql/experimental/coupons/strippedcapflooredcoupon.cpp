@@ -116,7 +116,7 @@ namespace QuantLib {
             if ((c = boost::dynamic_pointer_cast<CappedFlooredCoupon>(*i)) !=
                 NULL) {
                 resultLeg.push_back(
-                    boost::make_shared<StrippedCappedFlooredCoupon>(c));
+                    ext::make_shared<StrippedCappedFlooredCoupon>(c));
             } else {
                 resultLeg.push_back(*i);
             }

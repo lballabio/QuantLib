@@ -375,7 +375,7 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
 
     // same check as above for a floating leg
     ext::shared_ptr<IborIndex> iborIndex =
-        boost::make_shared<USDLibor>(3 * Months);
+        ext::make_shared<USDLibor>(3 * Months);
     Leg legf = IborLeg(schedule, iborIndex)
                    .withNotionals(100.0)
                    .withPaymentDayCounter(ActualActual(ActualActual::ISMA));

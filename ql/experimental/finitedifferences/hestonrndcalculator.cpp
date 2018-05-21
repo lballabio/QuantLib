@@ -157,12 +157,12 @@ namespace {
             = std::sqrt(theta + (v0-theta)*(1-std::exp(-kappa*t))/(t*kappa));
 
         const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-            boost::make_shared<BlackScholesMertonProcess>(
+            ext::make_shared<BlackScholesMertonProcess>(
                 hestonProcess_->s0(),
                 hestonProcess_->dividendYield(),
                 hestonProcess_->riskFreeRate(),
                 Handle<BlackVolTermStructure>(
-                    boost::make_shared<BlackConstantVol>(
+                    ext::make_shared<BlackConstantVol>(
                             hestonProcess_->riskFreeRate()->referenceDate(),
                             NullCalendar(),
                             expVol,

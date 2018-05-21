@@ -95,7 +95,7 @@ namespace QuantLib {
             // its a vanilla option. Use vanilla engine
             VanillaOption europeanOption(payoff, arguments_.exercise);
             europeanOption.setPricingEngine(
-                        boost::make_shared<AnalyticEuropeanEngine>(process_));
+                        ext::make_shared<AnalyticEuropeanEngine>(process_));
             results_.value = europeanOption.NPV();
 
         } else {

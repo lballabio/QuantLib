@@ -472,7 +472,7 @@ namespace QuantLib {
                     #ifndef QL_PATCH_SOLARIS
                     case LatentModelIntegrationType::GaussianQuadrature:
                         return 
-                            boost::make_shared<
+                            ext::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
                     #endif
@@ -481,7 +481,7 @@ namespace QuantLib {
                         std::vector<ext::shared_ptr<Integrator> > integrals;
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
-                            boost::make_shared<TrapezoidIntegral<Default> >(
+                            ext::make_shared<TrapezoidIntegral<Default> >(
                                 1.e-4, 20));
                         /* This integration domain is tailored for the T 
                         distribution; it is too wide for normals or Ts of high
@@ -494,7 +494,7 @@ namespace QuantLib {
                         here in some cases.
                         */
                         return 
-                          boost::make_shared<IntegrationBase<MultidimIntegral> >
+                          ext::make_shared<IntegrationBase<MultidimIntegral> >
                                (integrals, -35., 35.);
                         }
                     default:

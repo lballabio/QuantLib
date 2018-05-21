@@ -111,7 +111,7 @@ template <typename Evaluation> struct ZabrSpecs {
     ext::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &addParams) {
-        return boost::make_shared<type>(t, forward, params);
+        return ext::make_shared<type>(t, forward, params);
     }
 };
 } // end namespace detail

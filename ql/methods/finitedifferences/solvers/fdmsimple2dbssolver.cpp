@@ -41,10 +41,10 @@ namespace QuantLib {
     }
 
     void FdmSimple2dBSSolver::performCalculations() const {
-        ext::shared_ptr<FdmBlackScholesOp> op(boost::make_shared<FdmBlackScholesOp>(
+        ext::shared_ptr<FdmBlackScholesOp> op(ext::make_shared<FdmBlackScholesOp>(
                 solverDesc_.mesher, process_.currentLink(), strike_));
 
-        solver_ = boost::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
+        solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmSimple2dBSSolver::valueAt(Real s, Real a) const {

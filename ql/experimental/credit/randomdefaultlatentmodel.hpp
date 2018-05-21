@@ -119,7 +119,7 @@ namespace QuantLib {
         void performCalculations() const {
             static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
                 this)->initDates();//in update?
-            copulasRng_ = boost::make_shared<copulaRNG_type>(copula_, seed_);
+            copulasRng_ = ext::make_shared<copulaRNG_type>(copula_, seed_);
             performSimulations();
         }
 

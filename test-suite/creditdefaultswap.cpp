@@ -587,7 +587,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                            0.015488};
 
     for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(boost::make_shared<DepositRateHelper>(
+        isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
                                      dep_quotes[i], dep_tenors[i] * Months, 2,
                                      WeekendsOnly(), ModifiedFollowing,
                                      false, Actual360()
@@ -610,11 +610,11 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                             0.037246,
                             0.037605};
 
-    ext::shared_ptr<IborIndex> isda_ibor = boost::make_shared<IborIndex>(
+    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
         "IsdaIbor", 3 * Months, 2, USDCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
     for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(boost::make_shared<SwapRateHelper>(
+        isdaRateHelpers.push_back(ext::make_shared<SwapRateHelper>(
                                       swap_quotes[i], swap_tenors[i] * Years,
                                       WeekendsOnly(),
                                       Semiannual,
@@ -625,7 +625,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
     RelinkableHandle<YieldTermStructure> discountCurve;
     discountCurve.linkTo(
-            boost::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+            ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                 0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
         );
 
@@ -686,11 +686,11 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                                                     CreditDefaultSwap::ISDA);
 
             probabilityCurve.linkTo(
-                boost::make_shared<FlatHazardRate>(
+                ext::make_shared<FlatHazardRate>(
                     0, WeekendsOnly(), h, Actual365Fixed())
                 );
 
-            ext::shared_ptr<IsdaCdsEngine> engine = boost::make_shared<IsdaCdsEngine>(
+            ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
                 probabilityCurve, recoveries[k], discountCurve,
                 boost::none, IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);

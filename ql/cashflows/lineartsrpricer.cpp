@@ -54,7 +54,7 @@ namespace QuantLib {
 
         if (integrator_ == NULL)
             integrator_ =
-                boost::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
+                ext::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
     }
 
     Real LinearTsrPricer::GsrG(const Date &d) const {
@@ -151,7 +151,7 @@ namespace QuantLib {
             // have one, no need to exit with an exception ...
 
             if (sectionTmp->atmLevel() == Null<Real>())
-                smileSection_ = boost::make_shared<AtmSmileSection>(
+                smileSection_ = ext::make_shared<AtmSmileSection>(
                     sectionTmp, swapRateValue_);
             else
                 smileSection_ = sectionTmp;

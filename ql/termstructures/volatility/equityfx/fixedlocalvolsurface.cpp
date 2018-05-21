@@ -50,7 +50,7 @@ namespace QuantLib {
           referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(dates.back()),
       localVolMatrix_(localVolMatrix),
-      strikes_(dates.size(),boost::make_shared<std::vector<Real> >(strikes)),
+      strikes_(dates.size(),ext::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(dates.size()),
       lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {
@@ -79,7 +79,7 @@ namespace QuantLib {
       maxDate_(time2Date(referenceDate, dayCounter, times.back())),
       times_(times),
       localVolMatrix_(localVolMatrix),
-      strikes_(times.size(),boost::make_shared<std::vector<Real> >(strikes)),
+      strikes_(times.size(),ext::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(times.size()),
       lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {

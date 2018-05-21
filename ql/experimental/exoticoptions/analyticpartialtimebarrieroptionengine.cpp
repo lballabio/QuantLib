@@ -179,7 +179,7 @@ namespace QuantLib {
         VanillaOption europeanOption(payoff, exercise);
 
         europeanOption.setPricingEngine(
-                        boost::make_shared<AnalyticEuropeanEngine>(process_));
+                        ext::make_shared<AnalyticEuropeanEngine>(process_));
 
         return europeanOption.NPV() - CA(eta);
     }

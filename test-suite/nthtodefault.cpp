@@ -165,7 +165,7 @@ void NthToDefaultTest::testGauss() {
     error tests
     */
     //ext::shared_ptr<GaussianDefProbLM> gLM(
-    //    boost::make_shared<GaussianDefProbLM>(correlationHandle, names,
+    //    ext::make_shared<GaussianDefProbLM>(correlationHandle, names,
     //    LatentModelIntegrationType::GaussianQuadrature,
     //    // g++ requires this when using make_shared
     //    GaussianCopulaPolicy::initTraits()));
@@ -197,7 +197,7 @@ void NthToDefaultTest::testGauss() {
         issuers.push_back(Issuer(curves));
     }
 
-    ext::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -329,7 +329,7 @@ void NthToDefaultTest::testGaussStudent() {
         issuers.push_back(Issuer(curves));
     }
 
-    ext::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));

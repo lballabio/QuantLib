@@ -258,7 +258,7 @@ namespace QuantLib {
             errorAccept_ = maxErrorTolerance_ / 5.0;
         }
 
-        privateObserver_ = boost::make_shared<PrivateObserver>(this);
+        privateObserver_ = ext::make_shared<PrivateObserver>(this);
         registerWithParametersGuess();
         setParameterGuess();
     }
@@ -915,13 +915,13 @@ namespace QuantLib {
             transposedPoints_.push_back(transpose(points[k]));
             if (k <= 4 && backwardFlat_)
                 interpolation =
-                    boost::make_shared<BackwardflatLinearInterpolation>(
+                    ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
             else
                 interpolation =
-                    boost::make_shared<BilinearInterpolation>(
+                    ext::make_shared<BilinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
@@ -945,13 +945,13 @@ namespace QuantLib {
             ext::shared_ptr<Interpolation2D> interpolation;
             if (k <= 4 && backwardFlat_)
                 interpolation =
-                    boost::make_shared<BackwardflatLinearInterpolation>(
+                    ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
             else
                 interpolation =
-                    boost::make_shared<BilinearInterpolation>(
+                    ext::make_shared<BilinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
@@ -976,13 +976,13 @@ namespace QuantLib {
             ext::shared_ptr<Interpolation2D> interpolation;
             if (k <= 4 && backwardFlat_)
                 interpolation =
-                    boost::make_shared<BackwardflatLinearInterpolation>(
+                    ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
             else
                 interpolation =
-                    boost::make_shared<BilinearInterpolation>(
+                    ext::make_shared<BilinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
@@ -1125,13 +1125,13 @@ namespace QuantLib {
             ext::shared_ptr<Interpolation2D> interpolation;
             if (k <= 4 && backwardFlat_)
                 interpolation =
-                    boost::make_shared<BackwardflatLinearInterpolation>(
+                    ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
             else
                 interpolation =
-                    boost::make_shared<BilinearInterpolation>(
+                    ext::make_shared<BilinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);

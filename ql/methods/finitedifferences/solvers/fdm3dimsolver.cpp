@@ -36,7 +36,7 @@ namespace QuantLib {
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
-      thetaCondition_(boost::make_shared<FdmSnapshotCondition>(
+      thetaCondition_(ext::make_shared<FdmSnapshotCondition>(
         0.99*std::min(1.0/365.0,
                 solverDesc.condition->stoppingTimes().empty()
                 ? solverDesc.maturity :
@@ -89,7 +89,7 @@ namespace QuantLib {
                       rhs.begin()+(i+1)*y_.size()*x_.size(),
                       resultValues_[i].begin());
 
-            interpolation_[i] = boost::make_shared<BicubicSpline>(x_.begin(), x_.end(),
+            interpolation_[i] = ext::make_shared<BicubicSpline>(x_.begin(), x_.end(),
                                   y_.begin(), y_.end(),
                                   resultValues_[i]);
         }

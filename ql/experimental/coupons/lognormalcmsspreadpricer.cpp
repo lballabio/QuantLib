@@ -49,11 +49,11 @@ namespace QuantLib {
                    "at least 4 integration points should be used ("
                        << integrationPoints << ")");
         integrator_ =
-            boost::make_shared<GaussHermiteIntegration>(integrationPoints);
+            ext::make_shared<GaussHermiteIntegration>(integrationPoints);
 
-        cnd_ = boost::make_shared<CumulativeNormalDistribution>(0.0, 1.0);
+        cnd_ = ext::make_shared<CumulativeNormalDistribution>(0.0, 1.0);
 
-        privateObserver_ = boost::make_shared<PrivateObserver>(this);
+        privateObserver_ = ext::make_shared<PrivateObserver>(this);
         privateObserver_->registerWith(cmsPricer_);
 
         if(volatilityType == boost::none) {

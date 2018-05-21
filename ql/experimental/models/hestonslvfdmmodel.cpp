@@ -89,7 +89,7 @@ namespace QuantLib {
                         boost::make_tuple(v0Center, v0Density, true),
                         boost::make_tuple(upperBound, upperBoundDensity, false);
 
-                    return boost::make_shared<Concentrating1dMesher>(
+                    return ext::make_shared<Concentrating1dMesher>(
                         lowerBound, upperBound, vGrid, cPoints, 1e-8);
                   }
                 break;
@@ -102,7 +102,7 @@ namespace QuantLib {
                           boost::make_tuple(v0Center, v0Density, true),
                           boost::make_tuple(upperBound, upperBoundDensity, false);
 
-                      return boost::make_shared<Concentrating1dMesher>(
+                      return ext::make_shared<Concentrating1dMesher>(
                           lowerBound, upperBound, vGrid, cPoints, 1e-8);
                   }
                 break;
@@ -115,7 +115,7 @@ namespace QuantLib {
                         boost::make_tuple(v0Center, v0Density, true),
                         boost::make_tuple(upperBound, upperBoundDensity, false);
 
-                    return boost::make_shared<Concentrating1dMesher>(
+                    return ext::make_shared<Concentrating1dMesher>(
                         lowerBound, upperBound, vGrid, cPoints, 1e-8);
                 }
                 break;
@@ -376,7 +376,7 @@ namespace QuantLib {
         vMesher.reserve(timeGrid->size());
 
         xMesher.push_back(localVolRND.mesher(0.0));
-        vMesher.push_back(boost::make_shared<Predefined1dMesher>(
+        vMesher.push_back(ext::make_shared<Predefined1dMesher>(
             std::vector<Real>(vGrid, v0)));
 
         Size rescaleIdx = 0;
@@ -398,7 +398,7 @@ namespace QuantLib {
 
         // start probability distribution
         ext::shared_ptr<FdmMesherComposite> mesher
-            = boost::make_shared<FdmMesherComposite>(
+            = ext::make_shared<FdmMesherComposite>(
                 xMesher.at(1), vMesher.at(1));
 
         const Volatility lv0
@@ -415,7 +415,7 @@ namespace QuantLib {
             timeGrid->size());
 
         for (Size i=0; i < timeGrid->size(); ++i) {
-            vStrikes[i] = boost::make_shared<std::vector<Real> >(xGrid);
+            vStrikes[i] = ext::make_shared<std::vector<Real> >(xGrid);
             std::transform(xMesher[i]->locations().begin(),
                            xMesher[i]->locations().end(),
                            vStrikes[i]->begin(),

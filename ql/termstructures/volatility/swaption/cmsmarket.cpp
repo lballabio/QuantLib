@@ -165,7 +165,7 @@ namespace QuantLib {
     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure> &v,
                             Real meanReversion) {
         Handle<Quote> meanReversionQuote(
-            boost::make_shared<SimpleQuote>(meanReversion));
+            ext::make_shared<SimpleQuote>(meanReversion));
         for (Size j = 0; j < nSwapIndexes_; ++j) {
             // ??
             // set new volatility structure and new mean reversion

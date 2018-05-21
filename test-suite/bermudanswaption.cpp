@@ -254,18 +254,18 @@ void BermudanSwaptionTest::testCachedG2Values() {
             exerciseDates.push_back(boost::dynamic_pointer_cast<Coupon>(
                 swap->fixedLeg()[i])->accrualStartDate());
         }
-        swaptions.push_back(boost::make_shared<Swaption>(swap,
-            boost::make_shared<BermudanExercise>(exerciseDates)));
+        swaptions.push_back(ext::make_shared<Swaption>(swap,
+            ext::make_shared<BermudanExercise>(exerciseDates)));
     }
 
     const Real a=0.1, sigma=0.01, b=0.2, eta=0.013, rho=-0.5;
 
-    const ext::shared_ptr<G2> g2Model(boost::make_shared<G2>(
+    const ext::shared_ptr<G2> g2Model(ext::make_shared<G2>(
         vars.termStructure, a, sigma, b, eta, rho));
     const ext::shared_ptr<PricingEngine> fdmEngine(
-        boost::make_shared<FdG2SwaptionEngine>(g2Model, 50, 75, 75, 0, 1e-3));
+        ext::make_shared<FdG2SwaptionEngine>(g2Model, 50, 75, 75, 0, 1e-3));
     const ext::shared_ptr<PricingEngine> treeEngine(
-        boost::make_shared<TreeSwaptionEngine>(g2Model, 50));
+        ext::make_shared<TreeSwaptionEngine>(g2Model, 50));
 
 #if defined(QL_USE_INDEXED_COUPON)
     const Real expectedFdm[] = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };

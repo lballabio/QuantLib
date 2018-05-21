@@ -82,7 +82,7 @@ int main(int, char* []) {
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
         for(Size i=0; i<hazardRates.size(); i++) {
             defTS.push_back(Handle<DefaultProbabilityTermStructure>(
-                boost::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
+                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
                     Actual365Fixed())));
             defTS.back()->enableExtrapolation();
         }
@@ -96,14 +96,14 @@ int main(int, char* []) {
             issuers.push_back(Issuer(curves));
         }
 
-        ext::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+        ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
         for(Size i=0; i<hazardRates.size(); i++)
             thePool->add(names[i], issuers[i], NorthAmericaCorpDefaultKey(
                     EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
 
         std::vector<DefaultProbKey> defaultKeys(hazardRates.size(), 
             NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
-        ext::shared_ptr<Basket> theBskt = boost::make_shared<Basket>(
+        ext::shared_ptr<Basket> theBskt = ext::make_shared<Basket>(
             todaysDate, 
             names, std::vector<Real>(hazardRates.size(), 100.), thePool,
          //   0.0, 0.78);
@@ -124,7 +124,7 @@ int main(int, char* []) {
         // --- LHP model --------------------------
         #ifndef QL_PATCH_SOLARIS
         ext::shared_ptr<DefaultLossModel> lmGLHP(
-            boost::make_shared<GaussianLHPLossModel>(
+            ext::make_shared<GaussianLHPLossModel>(
                 fctrsWeights[0][0] * fctrsWeights[0][0], recoveries));
         theBskt->setLossModel(lmGLHP);
 
@@ -133,11 +133,11 @@ int main(int, char* []) {
 
         // --- G Binomial model --------------------
         ext::shared_ptr<GaussianConstantLossLM> ktLossLM(
-            boost::make_shared<GaussianConstantLossLM>(fctrsWeights, 
+            ext::make_shared<GaussianConstantLossLM>(fctrsWeights, 
             recoveries, LatentModelIntegrationType::GaussianQuadrature, 
             GaussianCopulaPolicy::initTraits()));
         ext::shared_ptr<DefaultLossModel> lmBinomial(
-            boost::make_shared<GaussianBinomialLossModel>(ktLossLM));
+            ext::make_shared<GaussianBinomialLossModel>(ktLossLM));
         theBskt->setLossModel(lmBinomial);
 
         std::cout << "Gaussian Binomial Expected 10-Yr Losses: "  << std::endl;
@@ -149,13 +149,13 @@ int main(int, char* []) {
         TCopulaPolicy::initTraits initT;
         initT.tOrders = std::vector<Integer>(2, 3);
         ext::shared_ptr<TConstantLossLM> ktTLossLM(
-            boost::make_shared<TConstantLossLM>(fctrsWeights, 
+            ext::make_shared<TConstantLossLM>(fctrsWeights, 
             recoveries, 
             //LatentModelIntegrationType::GaussianQuadrature,
               LatentModelIntegrationType::Trapezoid,
             initT));
         ext::shared_ptr<DefaultLossModel> lmTBinomial(
-            boost::make_shared<TBinomialLossModel>(ktTLossLM));
+            ext::make_shared<TBinomialLossModel>(ktTLossLM));
         theBskt->setLossModel(lmTBinomial);
 
         std::cout << "T Binomial Expected 10-Yr Losses: "  << std::endl;
@@ -165,7 +165,7 @@ int main(int, char* []) {
         Size numSimulations = 100000;
         #ifndef QL_PATCH_SOLARIS
         ext::shared_ptr<GaussianConstantLossLM> gLM(
-            boost::make_shared<GaussianConstantLossLM>(fctrsWeights, 
+            ext::make_shared<GaussianConstantLossLM>(fctrsWeights, 
             recoveries,
             LatentModelIntegrationType::GaussianQuadrature,
             // g++ requires this when using make_shared
@@ -173,7 +173,7 @@ int main(int, char* []) {
 
         Size numBuckets = 100;
         ext::shared_ptr<DefaultLossModel> inhomogeneousLM(
-            boost::make_shared<IHGaussPoolLossModel>(gLM, numBuckets));
+            ext::make_shared<IHGaussPoolLossModel>(gLM, numBuckets));
         theBskt->setLossModel(inhomogeneousLM);
 
         std::cout << "G Inhomogeneous Expected 10-Yr Losses: "  << std::endl;
@@ -184,12 +184,12 @@ int main(int, char* []) {
         // Size numCoresUsed = 4;
         // Sobol, many cores
         ext::shared_ptr<DefaultLossModel> rdlmG(
-            boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy, 
+            ext::make_shared<RandomDefaultLM<GaussianCopulaPolicy, 
             RandomSequenceGenerator<
                 BoxMullerGaussianRng<MersenneTwisterUniformRng> > > >(gLM, 
                     recoveries, numSimulations, 1.e-6, 2863311530UL));
         //ext::shared_ptr<DefaultLossModel> rdlmG(
-        //    boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(gLM, 
+        //    ext::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(gLM, 
         //        recoveries, numSimulations, 1.e-6, 2863311530));
         theBskt->setLossModel(rdlmG);
 
@@ -200,12 +200,12 @@ int main(int, char* []) {
         // --- StudentT Random model ---------------------
         // Sobol, many cores
         ext::shared_ptr<DefaultLossModel> rdlmT(
-            boost::make_shared<RandomDefaultLM<TCopulaPolicy, 
+            ext::make_shared<RandomDefaultLM<TCopulaPolicy, 
             RandomSequenceGenerator<
                 PolarStudentTRng<MersenneTwisterUniformRng> > > >(ktTLossLM, 
                     recoveries, numSimulations, 1.e-6, 2863311530UL));
         //ext::shared_ptr<DefaultLossModel> rdlmT(
-        //    boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(ktTLossLM, 
+        //    ext::make_shared<RandomDefaultLM<TCopulaPolicy> >(ktTLossLM, 
         //        recoveries, numSimulations, 1.e-6, 2863311530));
         theBskt->setLossModel(rdlmT);
 
@@ -231,7 +231,7 @@ int main(int, char* []) {
         // Gaussian random joint default model:
         // Sobol, many cores
         ext::shared_ptr<DefaultLossModel> rdLlmG(
-            boost::make_shared<RandomLossLM<GaussianCopulaPolicy> >(sptLG, 
+            ext::make_shared<RandomLossLM<GaussianCopulaPolicy> >(sptLG, 
                 numSimulations, 1.e-6, 2863311530UL));
         theBskt->setLossModel(rdLlmG);
 
@@ -242,7 +242,7 @@ int main(int, char* []) {
         // Gaussian random joint default model:
         // Sobol, many cores
         ext::shared_ptr<DefaultLossModel> rdLlmT(
-            boost::make_shared<RandomLossLM<TCopulaPolicy> >(sptLT, 
+            ext::make_shared<RandomLossLM<TCopulaPolicy> >(sptLT, 
                 numSimulations, 1.e-6, 2863311530UL));
         theBskt->setLossModel(rdLlmT);
 
@@ -290,7 +290,7 @@ int main(int, char* []) {
         Handle<BaseCorrelationTermStructure<BilinearInterpolation> > 
             correlHandle(correlSurface);
         ext::shared_ptr<DefaultLossModel> bcLMG_LHP_Bilin(
-            boost::make_shared<GaussianLHPFlatBCLM>(correlHandle, recoveries,
+            ext::make_shared<GaussianLHPFlatBCLM>(correlHandle, recoveries,
                 GaussianCopulaPolicy::initTraits()));
 
         theBskt->setLossModel(bcLMG_LHP_Bilin);

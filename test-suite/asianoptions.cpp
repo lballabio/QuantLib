@@ -1405,7 +1405,7 @@ void AsianOptionTest::testVecerEngine() {
     Size assetSteps = 200;
 
     for (Size i=0; i<LENGTH(cases); ++i) {
-        Handle<Quote> u(boost::make_shared<SimpleQuote>(cases[i].spot));
+        Handle<Quote> u(ext::make_shared<SimpleQuote>(cases[i].spot));
         Handle<YieldTermStructure> r(flatRate(today,
                                               cases[i].riskFreeRate,
                                               dayCounter));
@@ -1413,19 +1413,19 @@ void AsianOptionTest::testVecerEngine() {
                                                     cases[i].volatility,
                                                     dayCounter));
         ext::shared_ptr<BlackScholesMertonProcess> process =
-            boost::make_shared<BlackScholesMertonProcess>(u, q, r, sigma);
+            ext::make_shared<BlackScholesMertonProcess>(u, q, r, sigma);
 
         Date maturity = today + cases[i].length*360;
         ext::shared_ptr<Exercise> exercise =
-            boost::make_shared<EuropeanExercise>(maturity);
+            ext::make_shared<EuropeanExercise>(maturity);
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            boost::make_shared<PlainVanillaPayoff>(type, cases[i].strike);
-        Handle<Quote> average(boost::make_shared<SimpleQuote>(0.0));
+            ext::make_shared<PlainVanillaPayoff>(type, cases[i].strike);
+        Handle<Quote> average(ext::make_shared<SimpleQuote>(0.0));
 
         ContinuousAveragingAsianOption option(Average::Arithmetic,
                                               payoff, exercise);
         option.setPricingEngine(
-            boost::make_shared<ContinuousArithmeticAsianVecerEngine>(
+            ext::make_shared<ContinuousArithmeticAsianVecerEngine>(
                 process,average,today,timeSteps,assetSteps,-1.0,1.0));
 
         Real calculated = option.NPV();

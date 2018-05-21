@@ -38,13 +38,13 @@ namespace QuantLib {
       const Handle<DefaultProbabilityTermStructure>& invstDTS,
       Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
-      boost::make_shared<DiscountingSwapEngine>(discountCurve))),
+      ext::make_shared<DiscountingSwapEngine>(discountCurve))),
     swaptionletEngine_(swaptionEngine),
     discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
+        ext::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -62,15 +62,15 @@ namespace QuantLib {
         const Handle<DefaultProbabilityTermStructure>& invstDTS,
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
-      boost::make_shared<DiscountingSwapEngine>(discountCurve))),
+      ext::make_shared<DiscountingSwapEngine>(discountCurve))),
     swaptionletEngine_(Handle<PricingEngine>(
-      boost::make_shared<BlackSwaptionEngine>(discountCurve,
+      ext::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
     discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
+        ext::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -87,15 +87,15 @@ namespace QuantLib {
         const Handle<DefaultProbabilityTermStructure>& invstDTS,
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
-      boost::make_shared<DiscountingSwapEngine>(discountCurve))),
+      ext::make_shared<DiscountingSwapEngine>(discountCurve))),
     swaptionletEngine_(Handle<PricingEngine>(
-      boost::make_shared<BlackSwaptionEngine>(discountCurve,
+      ext::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
     discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
+        ext::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -188,9 +188,9 @@ namespace QuantLib {
         .withTerminationDate(arguments_.fixedPayDates.back());
 
       Swaption swaptionlet(swaplet, 
-        boost::make_shared<EuropeanExercise>(swapletStart));
+        ext::make_shared<EuropeanExercise>(swapletStart));
       Swaption putSwaplet(revSwaplet, 
-        boost::make_shared<EuropeanExercise>(swapletStart));
+        ext::make_shared<EuropeanExercise>(swapletStart));
       swaptionlet.setPricingEngine(swaptionletEngine_.currentLink());
       putSwaplet.setPricingEngine(swaptionletEngine_.currentLink());
 

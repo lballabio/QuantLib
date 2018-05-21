@@ -201,9 +201,9 @@ void testFirefly() {
     Real vola = 1.5;
     Real intense = 1.0;
     ext::shared_ptr<FireflyAlgorithm::Intensity> intensity =
-        boost::make_shared<ExponentialIntensity>(10.0, 1e-8, intense);
+        ext::make_shared<ExponentialIntensity>(10.0, 1e-8, intense);
     ext::shared_ptr<FireflyAlgorithm::RandomWalk> randomWalk =
-        boost::make_shared<LevyFlightWalk>(vola, 0.5, 1.0, seed);
+        ext::make_shared<LevyFlightWalk>(vola, 0.5, 1.0, seed);
     std::cout << "Function eggholder, Agents: " << agents
             << ", Vola: " << vola << ", Intensity: " << intense << std::endl;
     TestFunction f(eggholder);
@@ -259,7 +259,7 @@ void testGaussianSA(Size dimension, Size maxSteps, Size staticSteps, Real initia
                     GaussianSimulatedAnnealing::ResetScheme resetScheme = GaussianSimulatedAnnealing::ResetToBestPoint,
                     Size resetSteps = 150,
                     GaussianSimulatedAnnealing::LocalOptimizeScheme optimizeScheme = GaussianSimulatedAnnealing::EveryBestPoint,
-                    ext::shared_ptr<OptimizationMethod> localOptimizer = boost::make_shared<LevenbergMarquardt>()){
+                    ext::shared_ptr<OptimizationMethod> localOptimizer = ext::make_shared<LevenbergMarquardt>()){
 
     /*The ackley function has a large amount of local minima, but the
      * structure is symmetric, so if one could simply just ignore the
@@ -312,9 +312,9 @@ void testPSO(Size n){
             << ", Agents: " << agents << ", K-neighbors: " << kneighbor
             << ", Threshold: " << threshold << std::endl;
     ext::shared_ptr<ParticleSwarmOptimization::Topology> topology =
-        boost::make_shared<KNeighbors>(kneighbor);
+        ext::make_shared<KNeighbors>(kneighbor);
     ext::shared_ptr<ParticleSwarmOptimization::Inertia> inertia =
-        boost::make_shared<LevyFlightInertia>(1.5, threshold, seed);
+        ext::make_shared<LevyFlightInertia>(1.5, threshold, seed);
     TestFunction f(rosenbrock);
     ParticleSwarmOptimization pso(agents, topology, inertia, 2.05, 2.05, seed);
     EndCriteria ec(10000, 1000, 1.0e-8, 1.0e-8, 1.0e-8);

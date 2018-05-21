@@ -98,23 +98,23 @@ namespace QuantLib {
                           "Only same type barrier supported");
 
                Handle<Quote> x0Quote(  //used for shift
-                   boost::make_shared<SimpleQuote>(spotFX_->value()));
+                   ext::make_shared<SimpleQuote>(spotFX_->value()));
                Handle<Quote> atmVolQuote( //used for shift
-                   boost::make_shared<SimpleQuote>(atmVol_->value()));
+                   ext::make_shared<SimpleQuote>(atmVol_->value()));
 
                ext::shared_ptr<BlackVolTermStructure> blackVolTS =
-                   boost::make_shared<BlackConstantVol>(
+                   ext::make_shared<BlackConstantVol>(
                                      Settings::instance().evaluationDate(),
                                      NullCalendar(), atmVolQuote, Actual365Fixed());
                ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-                   boost::make_shared<BlackScholesMertonProcess>(
+                   ext::make_shared<BlackScholesMertonProcess>(
                                        x0Quote,
                                        foreignTS_,
                                        domesticTS_,
                                        Handle<BlackVolTermStructure>(blackVolTS));
 
                ext::shared_ptr<PricingEngine> engineBS =
-                   boost::make_shared<DoubleBarrierEngine>(stochProcess,
+                   ext::make_shared<DoubleBarrierEngine>(stochProcess,
                                                                     series_);
 
                BlackDeltaCalculator blackDeltaCalculatorAtm(

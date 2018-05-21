@@ -961,42 +961,42 @@ void BasketOptionTest::testLocalVolatilitySpreadOption() {
     const Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.07, dc));
     const Handle<YieldTermStructure> dividendYield(flatRate(today, 0.03, dc));
 
-    const Handle<Quote> s1(boost::make_shared<SimpleQuote>(100));
-    const Handle<Quote> s2(boost::make_shared<SimpleQuote>(110));
+    const Handle<Quote> s1(ext::make_shared<SimpleQuote>(100));
+    const Handle<Quote> s2(ext::make_shared<SimpleQuote>(110));
 
     const ext::shared_ptr<HestonModel> hm1(
-        boost::make_shared<HestonModel>(
-            boost::make_shared<HestonProcess>(
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
                 riskFreeRate, dividendYield,
                 s1, 0.09, 1.0, 0.06, 0.6, -0.75)));
 
     const ext::shared_ptr<HestonModel> hm2(
-        boost::make_shared<HestonModel>(
-            boost::make_shared<HestonProcess>(
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
                 riskFreeRate, dividendYield,
                 s2, 0.1, 2.0, 0.07, 0.8, 0.85)));
 
     const Handle<BlackVolTermStructure> vol1(
-        boost::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm1)));
+        ext::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm1)));
 
     const Handle<BlackVolTermStructure> vol2(
-        boost::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm2)));
+        ext::make_shared<HestonBlackVolSurface>(Handle<HestonModel>(hm2)));
 
     BasketOption basketOption(
         basketTypeToPayoff(
             SpreadBasket,
-            boost::make_shared<PlainVanillaPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(
                     Option::Call, s2->value() - s1->value())),
-        boost::make_shared<EuropeanExercise>(maturity));
+        ext::make_shared<EuropeanExercise>(maturity));
 
     const Real rho = -0.6;
 
     const ext::shared_ptr<GeneralizedBlackScholesProcess> bs2(
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             s2, dividendYield, riskFreeRate, vol2));
 
     const ext::shared_ptr<GeneralizedBlackScholesProcess> bs1(
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             s1, dividendYield, riskFreeRate, vol1));
 
     basketOption.setPricingEngine(
@@ -1034,31 +1034,31 @@ void BasketOptionTest::test2DPDEGreeks() {
     const Date maturity = today + maturityInDays;
 
     const ext::shared_ptr<SimpleQuote> spot1(
-        boost::make_shared<SimpleQuote>(s1));
+        ext::make_shared<SimpleQuote>(s1));
     const ext::shared_ptr<SimpleQuote> spot2(
-        boost::make_shared<SimpleQuote>(s2));
+        ext::make_shared<SimpleQuote>(s2));
 
     const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
     const Handle<BlackVolTermStructure> vTS(flatVol(today, v, dc));
 
     const ext::shared_ptr<BlackProcess> p1(
-        boost::make_shared<BlackProcess>(Handle<Quote>(spot1), rTS, vTS));
+        ext::make_shared<BlackProcess>(Handle<Quote>(spot1), rTS, vTS));
 
     const ext::shared_ptr<BlackProcess> p2(
-        boost::make_shared<BlackProcess>(Handle<Quote>(spot2), rTS, vTS));
+        ext::make_shared<BlackProcess>(Handle<Quote>(spot2), rTS, vTS));
 
     BasketOption option(
-        boost::make_shared<SpreadBasketPayoff>(
-            boost::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
-        boost::make_shared<EuropeanExercise>(maturity));
+        ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+        ext::make_shared<EuropeanExercise>(maturity));
 
     option.setPricingEngine(
-        boost::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, rho));
+        ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, rho));
 
     const Real calculatedDelta = option.delta();
     const Real calculatedGamma = option.gamma();
 
-    option.setPricingEngine(boost::make_shared<KirkEngine>(p1, p2, rho));
+    option.setPricingEngine(ext::make_shared<KirkEngine>(p1, p2, rho));
 
     const Real eps = 1.0;
     const Real npv = option.NPV();

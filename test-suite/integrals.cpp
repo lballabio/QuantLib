@@ -297,9 +297,9 @@ void IntegralTest::testPiecewiseIntegral() {
     x += 1.0, 2.0, 3.0, 4.0, 5.0;
     y += 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
     ext::shared_ptr<Integrator> segment =
-        boost::make_shared<SegmentIntegral>(1);
+        ext::make_shared<SegmentIntegral>(1);
     ext::shared_ptr<Integrator> piecewise =
-        boost::make_shared<PiecewiseIntegral>(segment, x);
+        ext::make_shared<PiecewiseIntegral>(segment, x);
     pw_check(*piecewise, -1.0, 0.0, 1.0);
     pw_check(*piecewise, 0.0, 1.0, 1.0);
     pw_check(*piecewise, 0.0, 1.5, 2.0);

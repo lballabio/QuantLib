@@ -74,14 +74,14 @@ namespace QuantLib {
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
                        "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
-            accrualRebate_ = boost::make_shared<SimpleCashFlow>(
+            accrualRebate_ = ext::make_shared<SimpleCashFlow>(
                 coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 
-        upfrontPayment_ = boost::make_shared<SimpleCashFlow>(0.0, effectiveUpfrontDate);
+        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(0.0, effectiveUpfrontDate);
         if (!claim_)
-            claim_ = boost::make_shared<FaceValueClaim>();
+            claim_ = ext::make_shared<FaceValueClaim>();
         registerWith(claim_);
 
 
@@ -124,7 +124,7 @@ namespace QuantLib {
             schedule.calendar().advance(protectionStart_ -1 , 3, Days, convention) :
             upfrontDate;
         // protection start is assumed to be on trade_date + 1 (no calendar adjustment)
-        upfrontPayment_ = boost::make_shared<SimpleCashFlow>(notional*upfront,
+        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(notional*upfront,
             effectiveUpfrontDate);
 
         QL_REQUIRE(effectiveUpfrontDate >= protectionStart_,
@@ -138,13 +138,13 @@ namespace QuantLib {
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
                        "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
-            accrualRebate_ = boost::make_shared<SimpleCashFlow>(
+            accrualRebate_ = ext::make_shared<SimpleCashFlow>(
                 coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 
         if (!claim_)
-            claim_ = boost::make_shared<FaceValueClaim>();
+            claim_ = ext::make_shared<FaceValueClaim>();
         registerWith(claim_);
 
         maturity_ = schedule.dates().back();
@@ -323,21 +323,21 @@ namespace QuantLib {
                                Real accuracy,
                                PricingModel model) const {
 
-        ext::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
+        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
-                boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                ext::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
         ext::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
-            engine = boost::make_shared<MidPointCdsEngine>(
+            engine = ext::make_shared<MidPointCdsEngine>(
                 probability, recoveryRate, discountCurve);
             break;
           case ISDA:
-            engine = boost::make_shared<IsdaCdsEngine>(
+            engine = ext::make_shared<IsdaCdsEngine>(
                 probability, recoveryRate, discountCurve,
                 boost::none,
                 IsdaCdsEngine::Taylor,
@@ -366,21 +366,21 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               PricingModel model) const {
 
-        ext::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
+        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
-                boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                ext::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
         ext::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
-            engine = boost::make_shared<MidPointCdsEngine>(
+            engine = ext::make_shared<MidPointCdsEngine>(
                 probability, conventionalRecovery, discountCurve);
             break;
           case ISDA:
-            engine = boost::make_shared<IsdaCdsEngine>(
+            engine = ext::make_shared<IsdaCdsEngine>(
                 probability, conventionalRecovery, discountCurve,
                 boost::none,
                 IsdaCdsEngine::Taylor,

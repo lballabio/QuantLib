@@ -68,7 +68,7 @@ namespace QuantLib {
         //european option
         EuropeanOption europeanOption(payoff, arguments_.exercise);
         ext::shared_ptr<PricingEngine> analyticEuropeanEngine =
-            boost::make_shared<AnalyticEuropeanEngine>(process_);
+            ext::make_shared<AnalyticEuropeanEngine>(process_);
         europeanOption.setPricingEngine(analyticEuropeanEngine);
         Real european = europeanOption.NPV();
 

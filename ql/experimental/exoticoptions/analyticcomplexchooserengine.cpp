@@ -87,7 +87,7 @@ namespace QuantLib {
         if (optionType == Option::Call){
             //TC-T
             Time t=callMaturity()-choosingTime()-choosingTime();
-            vanillaPayoff = boost::make_shared<PlainVanillaPayoff>(
+            vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                           Option::Call, strike(Option::Call));
             //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
             vol = volatility(t) * std::sqrt(t);
@@ -95,7 +95,7 @@ namespace QuantLib {
             discount = riskFreeDiscount(t);
         } else{
             Time t=putMaturity()-choosingTime()-choosingTime();
-            vanillaPayoff = boost::make_shared<PlainVanillaPayoff>(
+            vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                             Option::Put, strike(Option::Put));
             vol = volatility(t) * std::sqrt(t);
             growth = dividendDiscount(t);

@@ -1621,8 +1621,8 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
     const Volatility v = 0.25;
 
     const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-        boost::make_shared<GeneralizedBlackScholesProcess>(
-            Handle<Quote>(boost::make_shared<SimpleQuote>(spot)),
+        ext::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
             Handle<YieldTermStructure>(flatRate(today, q, dc)),
             Handle<YieldTermStructure>(flatRate(today, r, dc)),
             Handle<BlackVolTermStructure>(flatVol(today, v, dc)));
@@ -1680,13 +1680,13 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(28, January, 2018);
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
     const Handle<YieldTermStructure> qTS(flatRate(today, 0.07, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.16, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.0, dc));
 
     const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, volTS);
 
     const Date firstDivDate = today + Period(7, Months);
@@ -1696,9 +1696,9 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
 
     DividendSchedule divSchedule;
     divSchedule.push_back(
-        boost::make_shared<FixedDividend>(firstDivAmount, firstDivDate));
+        ext::make_shared<FixedDividend>(firstDivAmount, firstDivDate));
     divSchedule.push_back(
-        boost::make_shared<FixedDividend>(secondDivAmount, secondDivDate));
+        ext::make_shared<FixedDividend>(secondDivAmount, secondDivDate));
 
     const Size size = 5;
     const Time maturity = 1.0;

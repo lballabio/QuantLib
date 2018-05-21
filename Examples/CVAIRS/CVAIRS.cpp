@@ -78,7 +78,7 @@ int main(int, char* []) {
 
         vector<ext::shared_ptr<RateHelper> > swapHelpers;
         for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++)
-            swapHelpers.push_back(boost::make_shared<SwapRateHelper>(
+            swapHelpers.push_back(ext::make_shared<SwapRateHelper>(
                 Handle<Quote>(ext::shared_ptr<Quote>(
                                    new SimpleQuote(ratesSwapmkt[i]))),
                     tenorsSwapMkt[i] * Years,
@@ -95,7 +95,7 @@ int main(int, char* []) {
         swapTS->enableExtrapolation();
 
         ext::shared_ptr<PricingEngine> riskFreeEngine(
-            boost::make_shared<DiscountingSwapEngine>(
+            ext::make_shared<DiscountingSwapEngine>(
                  Handle<YieldTermStructure>(swapTS)));
 
         std::vector<Handle<DefaultProbabilityTermStructure> >
@@ -150,7 +150,7 @@ int main(int, char* []) {
 
         Volatility blackVol = 0.15;   
         ext::shared_ptr<PricingEngine> ctptySwapCvaLow = 
-            boost::make_shared<CounterpartyAdjSwapEngine>(
+            ext::make_shared<CounterpartyAdjSwapEngine>(
                  Handle<YieldTermStructure>(swapTS), 
                  blackVol,
                  defaultIntensityTS[0], 
@@ -158,13 +158,13 @@ int main(int, char* []) {
                  );
 
         ext::shared_ptr<PricingEngine> ctptySwapCvaMedium = 
-            boost::make_shared<CounterpartyAdjSwapEngine>(
+            ext::make_shared<CounterpartyAdjSwapEngine>(
                  Handle<YieldTermStructure>(swapTS), 
                  blackVol, 
                  defaultIntensityTS[1],
                  ctptyRRMedium);
         ext::shared_ptr<PricingEngine> ctptySwapCvaHigh = 
-            boost::make_shared<CounterpartyAdjSwapEngine>(
+            ext::make_shared<CounterpartyAdjSwapEngine>(
                  Handle<YieldTermStructure>(swapTS), 
                  blackVol,
                  defaultIntensityTS[2],

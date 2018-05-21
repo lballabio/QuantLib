@@ -88,7 +88,7 @@ namespace QuantLib {
 
                 helper = ext::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, underlyingLastDate(),
-                    Handle<Quote>(boost::make_shared<SimpleQuote>(atmVol)),
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(atmVol)),
                     standardSwapBase->iborIndex(),
                     standardSwapBase->fixedLegTenor(),
                     standardSwapBase->dayCounter(),
@@ -216,7 +216,7 @@ namespace QuantLib {
 
                 helper = ext::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, matPeriod,
-                    Handle<Quote>(boost::make_shared<SimpleQuote>(
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(
                                       vol)),
                     standardSwapBase->iborIndex(),
                     standardSwapBase->fixedLegTenor(),

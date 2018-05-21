@@ -176,11 +176,11 @@ namespace {
           case bfgs:
             return ext::shared_ptr<OptimizationMethod>(new BFGS);
           case conjugateGradient_goldstein:
-              return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient(boost::make_shared<GoldsteinLineSearch>()));
+              return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient(ext::make_shared<GoldsteinLineSearch>()));
           case steepestDescent_goldstein:
-              return ext::shared_ptr<OptimizationMethod>(new SteepestDescent(boost::make_shared<GoldsteinLineSearch>()));
+              return ext::shared_ptr<OptimizationMethod>(new SteepestDescent(ext::make_shared<GoldsteinLineSearch>()));
           case bfgs_goldstein:
-              return ext::shared_ptr<OptimizationMethod>(new BFGS(boost::make_shared<GoldsteinLineSearch>()));
+              return ext::shared_ptr<OptimizationMethod>(new BFGS(ext::make_shared<GoldsteinLineSearch>()));
           default:
             QL_FAIL("unknown OptimizationMethod type");
         }

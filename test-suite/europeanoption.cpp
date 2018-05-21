@@ -1573,7 +1573,7 @@ void EuropeanOptionTest::testPDESchemes() {
 
     Settings::instance().evaluationDate() = today;
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
     const Handle<YieldTermStructure> qTS(flatRate(today, 0.06, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.10, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.35, dc));
@@ -1581,39 +1581,39 @@ void EuropeanOptionTest::testPDESchemes() {
     const Date maturity = today + Period(6, Months);
 
     const ext::shared_ptr<BlackScholesMertonProcess> process =
-        boost::make_shared<BlackScholesMertonProcess>(
+        ext::make_shared<BlackScholesMertonProcess>(
             spot, qTS, rTS, volTS);
 
     const ext::shared_ptr<PricingEngine> analytic =
-        boost::make_shared<AnalyticEuropeanEngine>(process);
+        ext::make_shared<AnalyticEuropeanEngine>(process);
 
     // Crank-Nicolson and Douglas scheme are the same in one dimension
     const ext::shared_ptr<PricingEngine> crankNicolson =
-        boost::make_shared<FdBlackScholesVanillaEngine>(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
             process, 15, 100, 0, FdmSchemeDesc::Douglas());
 
     const ext::shared_ptr<PricingEngine> implicitEuler =
-        boost::make_shared<FdBlackScholesVanillaEngine>(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
             process, 500, 100, 0, FdmSchemeDesc::ImplicitEuler());
 
     const ext::shared_ptr<PricingEngine> explicitEuler =
-        boost::make_shared<FdBlackScholesVanillaEngine>(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
             process, 1000, 100, 0, FdmSchemeDesc::ExplicitEuler());
 
     const ext::shared_ptr<PricingEngine> methodOfLines =
-        boost::make_shared<FdBlackScholesVanillaEngine>(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
             process, 1, 100, 0, FdmSchemeDesc::MethodOfLines());
 
     const ext::shared_ptr<PricingEngine> hundsdorfer =
-        boost::make_shared<FdBlackScholesVanillaEngine>(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
             process, 10, 100, 0, FdmSchemeDesc::Hundsdorfer());
 
     const ext::shared_ptr<PricingEngine> craigSneyd =
-        boost::make_shared<FdBlackScholesVanillaEngine>(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
             process, 10, 100, 0, FdmSchemeDesc::CraigSneyd());
 
     const ext::shared_ptr<PricingEngine> modCraigSneyd =
-        boost::make_shared<FdBlackScholesVanillaEngine>(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
             process, 15, 100, 0, FdmSchemeDesc::ModifiedCraigSneyd());
 
     const std::pair<ext::shared_ptr<PricingEngine>, std::string> engines[]= {
@@ -1629,10 +1629,10 @@ void EuropeanOptionTest::testPDESchemes() {
     const Size nEngines = LENGTH(engines);
 
     const ext::shared_ptr<PlainVanillaPayoff> payoff(
-        boost::make_shared<PlainVanillaPayoff>(Option::Put, spot->value()));
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, spot->value()));
 
     const ext::shared_ptr<Exercise> exercise(
-        boost::make_shared<EuropeanExercise>(maturity));
+        ext::make_shared<EuropeanExercise>(maturity));
 
     VanillaOption option(payoff, exercise);
 

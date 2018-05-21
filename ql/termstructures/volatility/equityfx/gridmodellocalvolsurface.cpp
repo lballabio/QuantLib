@@ -92,7 +92,7 @@ namespace QuantLib {
                        localVolMatrix->begin(),
                        boost::bind(&Parameter::operator(), _1, 0.0));
 
-        localVol_ = boost::make_shared<FixedLocalVolSurface>(
+        localVol_ = ext::make_shared<FixedLocalVolSurface>(
                 referenceDate_,
                 times_,
                 strikes_,

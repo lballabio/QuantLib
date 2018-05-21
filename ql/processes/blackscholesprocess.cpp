@@ -37,7 +37,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& riskFreeTS,
         const Handle<BlackVolTermStructure>& blackVolTS,
         const Handle<LocalVolTermStructure>& localVolTS)
-    : StochasticProcess1D(boost::make_shared<EulerDiscretization>()),
+    : StochasticProcess1D(ext::make_shared<EulerDiscretization>()),
       x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       externalLocalVolTS_(localVolTS),
@@ -189,7 +189,7 @@ namespace QuantLib {
                                                           *blackVolatility());
             if (constVol) {
                 // ok, the local vol is constant too.
-                localVolatility_.linkTo(boost::make_shared<LocalConstantVol>(
+                localVolatility_.linkTo(ext::make_shared<LocalConstantVol>(
                     constVol->referenceDate(),
                     constVol->blackVol(0.0, x0_->value()),
                     constVol->dayCounter()));
@@ -203,7 +203,7 @@ namespace QuantLib {
                                                           *blackVolatility());
             if (volCurve) {
                 // ok, we can use the optimized algorithm
-                localVolatility_.linkTo(boost::make_shared<LocalVolCurve>(
+                localVolatility_.linkTo(ext::make_shared<LocalVolCurve>(
                     Handle<BlackVarianceCurve>(volCurve)));
                 updated_ = true;
                 return localVolatility_;
@@ -211,7 +211,7 @@ namespace QuantLib {
 
             // ok, so it's strike-dependent. Never mind.
             localVolatility_.linkTo(
-                boost::make_shared<LocalVolSurface>(blackVolatility_, riskFreeRate_,
+                ext::make_shared<LocalVolSurface>(blackVolatility_, riskFreeRate_,
                                                     dividendYield_, x0_->value()));
             updated_ = true;
             isStrikeIndependent_ = false;

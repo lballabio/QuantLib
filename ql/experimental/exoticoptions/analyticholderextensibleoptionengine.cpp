@@ -71,7 +71,7 @@ namespace QuantLib {
         if (payoff->optionType() == Option::Call) {
             //instantiate payoff function for a call
             ext::shared_ptr<PlainVanillaPayoff> vanillaCallPayoff =
-                boost::make_shared<PlainVanillaPayoff>(Option::Call, X1);
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, X1);
             Real BSM = BlackScholesCalculator(vanillaCallPayoff, S, growth, vol*sqrt(t1), discount).value();
             result = BSM
                 + S*exp((b - r)*T2)*M2(y1, y2, minusInf, z1, rho)
@@ -81,7 +81,7 @@ namespace QuantLib {
         } else {
             //instantiate payoff function for a call
             ext::shared_ptr<PlainVanillaPayoff> vanillaPutPayoff =
-                boost::make_shared<PlainVanillaPayoff>(Option::Put, X1);
+                ext::make_shared<PlainVanillaPayoff>(Option::Put, X1);
             result = BlackScholesCalculator(vanillaPutPayoff, S, growth, vol*sqrt(t1), discount).value()
                 - S*exp((b - r)*T2)*M2(y1, y2, minusInf, -z1, rho)
                 + X2*exp(-r*T2)*M2(y1 - vol*sqrt(t1), y2 - vol*sqrt(t1), minusInf, -z1 + vol*sqrt(T2), rho)
@@ -237,7 +237,7 @@ namespace QuantLib {
 
         //payoff
         ext::shared_ptr<PlainVanillaPayoff > vanillaPayoff =
-            boost::make_shared<PlainVanillaPayoff>(optionType, X2);
+            ext::make_shared<PlainVanillaPayoff>(optionType, X2);
 
         //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
         vol = volatility() * std::sqrt(t);

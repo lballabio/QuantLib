@@ -37,21 +37,21 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 
         // set up the index
         RelinkableHandle<YieldTermStructure> curveHandle;
-        ext::shared_ptr<IborIndex> index = boost::make_shared<USDLibor>(Period(3, Months), curveHandle);
+        ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(Period(3, Months), curveHandle);
 
         // set up quotes with no values
         std::vector<ext::shared_ptr<SimpleQuote> > quotes;
-        quotes.push_back(boost::make_shared<SimpleQuote>());
-        quotes.push_back(boost::make_shared<SimpleQuote>());
-        quotes.push_back(boost::make_shared<SimpleQuote>());
+        quotes.push_back(ext::make_shared<SimpleQuote>());
+        quotes.push_back(ext::make_shared<SimpleQuote>());
+        quotes.push_back(ext::make_shared<SimpleQuote>());
 
         // set up the curve (this bit is a very rough sketch - i'm actually using swaps !)
         std::vector<ext::shared_ptr<RateHelper> > helpers;
-        helpers.push_back(boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[0]), Period(1, Years), index));
-        helpers.push_back(boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]), Period(2, Years), index));
-        helpers.push_back(boost::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]), Period(3, Years), index));
+        helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[0]), Period(1, Years), index));
+        helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]), Period(2, Years), index));
+        helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]), Period(3, Years), index));
 
-        ext::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve = boost::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(spotDate,
+        ext::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve = ext::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(spotDate,
                                                                                                                                                              helpers,
                                                                                                                                                              index->dayCounter());
 

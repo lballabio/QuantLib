@@ -82,7 +82,7 @@ namespace QuantLib {
         const FdmSchemeDesc& schemeDesc)
     : map_(map), bcSet_(bcSet),
       condition_((condition) ? condition 
-                             : boost::make_shared<FdmStepConditionComposite>(
+                             : ext::make_shared<FdmStepConditionComposite>(
                                      std::list<std::vector<Time> >(),
                                      FdmStepConditionComposite::Conditions())),
       schemeDesc_(schemeDesc) {

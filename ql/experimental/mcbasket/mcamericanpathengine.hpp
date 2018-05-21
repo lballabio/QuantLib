@@ -145,7 +145,7 @@ namespace QuantLib {
             timePositions[i] = theTimeGrid.index(times[i]);
             discountFactors[i] = riskFreeRate->discount(times[i]);
             forwardTermStructures[i] = Handle<YieldTermStructure>(
-                boost::make_shared<ImpliedTermStructure>(riskFreeRate,
+                ext::make_shared<ImpliedTermStructure>(riskFreeRate,
                                                          fixings[i]));
         }
 

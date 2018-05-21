@@ -209,9 +209,9 @@ namespace QuantLib {
     {
         // on this assignment any previous registration with the attach and 
         //   detach baskets should be removed
-        scalarCorrelModelAttach_ = boost::make_shared<GaussianLHPLossModel>(
+        scalarCorrelModelAttach_ = ext::make_shared<GaussianLHPLossModel>(
             Handle<Quote>(localCorrelationAttach_), recoveries_);
-        scalarCorrelModelDetach_ = boost::make_shared<GaussianLHPLossModel>(
+        scalarCorrelModelDetach_ = ext::make_shared<GaussianLHPLossModel>(
             Handle<Quote>(localCorrelationDetach_), recoveries_);
 
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
@@ -223,19 +223,19 @@ namespace QuantLib {
         BilinearInterpolation>::setupModels() const 
     {
         ext::shared_ptr<GaussianConstantLossLM> lmA = 
-            boost::make_shared<GaussianConstantLossLM>(
+            ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
         ext::shared_ptr<GaussianConstantLossLM> lmD = 
-            boost::make_shared<GaussianConstantLossLM>(
+            ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
         scalarCorrelModelAttach_ = 
-            boost::make_shared<GaussianBinomialLossModel>(lmA);
+            ext::make_shared<GaussianBinomialLossModel>(lmA);
         scalarCorrelModelDetach_ = 
-            boost::make_shared<GaussianBinomialLossModel>(lmD);
+            ext::make_shared<GaussianBinomialLossModel>(lmD);
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
@@ -247,20 +247,20 @@ namespace QuantLib {
         BilinearInterpolation>::setupModels() const 
     {
         ext::shared_ptr<TConstantLossLM> lmA = 
-            boost::make_shared<TConstantLossLM>(
+            ext::make_shared<TConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
         ext::shared_ptr<TConstantLossLM> lmD = 
-            boost::make_shared<TConstantLossLM>(
+            ext::make_shared<TConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
 
         scalarCorrelModelAttach_ = 
-            boost::make_shared<TBinomialLossModel>(lmA);
+            ext::make_shared<TBinomialLossModel>(lmA);
         scalarCorrelModelDetach_ = 
-            boost::make_shared<TBinomialLossModel>(lmD);
+            ext::make_shared<TBinomialLossModel>(lmD);
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
@@ -274,12 +274,12 @@ namespace QuantLib {
         BilinearInterpolation>::setupModels() const 
     {
         ext::shared_ptr<GaussianConstantLossLM> lmA = 
-            boost::make_shared<GaussianConstantLossLM>(
+            ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
         ext::shared_ptr<GaussianConstantLossLM> lmD = 
-            boost::make_shared<GaussianConstantLossLM>(
+            ext::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
@@ -287,9 +287,9 @@ namespace QuantLib {
         // \todo Allow the sending specific model params, as the number of 
         //   buckets here.
         scalarCorrelModelAttach_ = 
-            boost::make_shared<IHGaussPoolLossModel>(lmA, 500);
+            ext::make_shared<IHGaussPoolLossModel>(lmA, 500);
         scalarCorrelModelDetach_ = 
-            boost::make_shared<IHGaussPoolLossModel>(lmD, 500);
+            ext::make_shared<IHGaussPoolLossModel>(lmD, 500);
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);

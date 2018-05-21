@@ -275,8 +275,8 @@ void ObservableTest::testDeepUpdate() {
     ObservableSettings::instance().disableUpdates(true);
 
     Handle<YieldTermStructure> yts(
-        boost::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
-    ext::shared_ptr<IborIndex> ibor = boost::make_shared<Euribor>(3 * Months, yts);
+        ext::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
+    ext::shared_ptr<IborIndex> ibor = ext::make_shared<Euribor>(3 * Months, yts);
     std::vector<Real> strikes;
     std::vector<Date> dates;
     std::vector<std::vector<Handle<Quote> > > quotes;
@@ -284,12 +284,12 @@ void ObservableTest::testDeepUpdate() {
     strikes.push_back(0.02);
     dates.push_back(refDate + 90);
     dates.push_back(refDate + 180);
-    ext::shared_ptr<SimpleQuote> q = boost::make_shared<SimpleQuote>(0.20);
+    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.20);
     quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
     quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
 
     ext::shared_ptr<StrippedOptionletAdapter> vol =
-        boost::make_shared<StrippedOptionletAdapter>(boost::make_shared<StrippedOptionlet>(
+        ext::make_shared<StrippedOptionletAdapter>(ext::make_shared<StrippedOptionlet>(
             0, NullCalendar(), Unadjusted, ibor, dates, strikes, quotes, Actual365Fixed()));
 
     Real v1 = vol->volatility(refDate + 100, 0.01);

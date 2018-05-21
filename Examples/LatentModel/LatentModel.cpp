@@ -77,7 +77,7 @@ int main(int, char* []) {
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
         for(Size i=0; i<hazardRates.size(); i++)
             defTS.push_back(Handle<DefaultProbabilityTermStructure>(
-                boost::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
+                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
                     Actual365Fixed())));
         std::vector<Issuer> issuers;
         for(Size i=0; i<hazardRates.size(); i++) {
@@ -89,7 +89,7 @@ int main(int, char* []) {
             issuers.push_back(Issuer(curves));
         }
 
-        ext::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+        ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
         for(Size i=0; i<hazardRates.size(); i++)
             thePool->add(names[i], issuers[i], NorthAmericaCorpDefaultKey(
                     EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -99,9 +99,9 @@ int main(int, char* []) {
         // Recoveries are irrelevant in this example but must be given as the 
         //   lib stands.
         std::vector<ext::shared_ptr<RecoveryRateModel> > rrModels(
-            hazardRates.size(), boost::make_shared<ConstantRecoveryModel>(
+            hazardRates.size(), ext::make_shared<ConstantRecoveryModel>(
             ConstantRecoveryModel(0.5, SeniorSec)));
-        ext::shared_ptr<Basket> theBskt = boost::make_shared<Basket>(
+        ext::shared_ptr<Basket> theBskt = ext::make_shared<Basket>(
             todaysDate, names, std::vector<Real>(hazardRates.size(), 100.), 
             thePool);
         /* --------------------------------------------------------------
@@ -138,12 +138,12 @@ int main(int, char* []) {
         #ifndef QL_PATCH_SOLARIS
         // Sobol, many cores
         ext::shared_ptr<DefaultLossModel> rdlmG(
-            boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(lmG, 
+            ext::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(lmG, 
                 std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
         #endif
         // StudentT random joint default model:
         ext::shared_ptr<DefaultLossModel> rdlmT(
-            boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, 
+            ext::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, 
             std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
 
         /* --------------------------------------------------------------

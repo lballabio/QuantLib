@@ -52,11 +52,11 @@ namespace QuantLib {
         registerWithMarketData();
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -90,11 +90,11 @@ namespace QuantLib {
         registerWithMarketData();
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -138,11 +138,11 @@ namespace QuantLib {
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -187,11 +187,11 @@ namespace QuantLib {
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -234,11 +234,11 @@ namespace QuantLib {
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {

@@ -75,7 +75,7 @@ namespace QuantLib {
     : events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
 
     ext::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
-        return boost::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
+        return ext::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
     }
 
     BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta) 
@@ -130,6 +130,6 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
-        return boost::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
+        return ext::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
     }
 }

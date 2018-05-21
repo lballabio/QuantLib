@@ -50,7 +50,7 @@ namespace QuantLib {
       bsProcess_    (bsProcess),
       ouProcess_    (ouProcess),
       maturityDates_(maturityDates),
-      rndCalculator_(boost::make_shared<GBSMRNDCalculator>(bsProcess)),
+      rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)),
       maturityTimes_(maturityDates.size()) {
 
         registerWith(bsProcess_);
@@ -105,7 +105,7 @@ namespace QuantLib {
     : y_(model.x_.size()),
       sigma_(model.sigma_),
       ouProcess_(model.ouProcess_),
-      data_(boost::make_shared<InterpolationData>(model)) {
+      data_(ext::make_shared<InterpolationData>(model)) {
 
         for (Size i=0; i < data_->s_.columns(); ++i) {
             const Array y = model.collocationPointsY(model.maturityDates_[i]);

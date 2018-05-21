@@ -117,7 +117,7 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     // 1) Monthly seasonality with all elements equal to 1 <=> no seasonality
     vector<Rate> seasonalityFactors(12, 1.0);
     ext::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality = 
-        boost::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // 2) Seasonality with factors != 1.0
     seasonalityFactors[0] = 1.003245;
@@ -134,7 +134,7 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     seasonalityFactors[11] = 1.004186;
 
     ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
-        boost::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
     
     // Create dates on which we will check fixings
     vector<Date> fixingDates(12);
