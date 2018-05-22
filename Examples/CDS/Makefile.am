@@ -11,7 +11,6 @@ CDS_SOURCES = CDS.cpp
 CDS_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
-    CDS_vc9.vcproj \
     CDS.vcxproj \
     CDS.vcxproj.filters \
     CMakeLists.txt \

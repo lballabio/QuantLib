@@ -12,7 +12,6 @@ Replication_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    Replication_vc9.vcproj \
     Replication.vcxproj \
     Replication.vcxproj.filters \
     ReadMe.txt
