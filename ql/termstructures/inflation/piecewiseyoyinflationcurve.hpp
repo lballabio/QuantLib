@@ -93,14 +93,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
-        #if !defined(QL_PATCH_MSVC90)
-        // this avoids defining another name...
         friend class Bootstrap<this_curve>;
-        #else
-        // ...but VC++ 9 cannot digest it in some contexts.
-        typedef typename Bootstrap<this_curve> bootstrapper;
-        friend class bootstrapper;
-        #endif
         friend class BootstrapError<this_curve>;
         Bootstrap<this_curve> bootstrap_;
     };
