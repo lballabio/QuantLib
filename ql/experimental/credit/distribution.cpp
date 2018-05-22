@@ -24,6 +24,7 @@
 #include <ql/experimental/credit/distribution.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

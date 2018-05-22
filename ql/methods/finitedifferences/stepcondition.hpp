@@ -90,7 +90,7 @@ namespace QuantLib {
 
         class PayoffWrapper : public CurveWrapper {
           private:
-            ext::shared_ptr<Payoff> payoff_;
+            ext::shared_ptr<const Payoff> payoff_;
           public:
             PayoffWrapper (const Payoff * p)
                 : payoff_(p) {};

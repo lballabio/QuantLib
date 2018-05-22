@@ -109,7 +109,7 @@ namespace QuantLib {
                                ext::shared_ptr<T>,
                                bool> {
         bool operator()(const ext::shared_ptr<T>& x,
-                        const ext::shared_ptr<T>& y) {
+                        const ext::shared_ptr<T>& y) const {
             return earlier_than<T>()(*x,*y);
         }
     };

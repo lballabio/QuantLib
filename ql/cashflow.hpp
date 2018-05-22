@@ -76,7 +76,7 @@ namespace QuantLib {
     struct earlier_than<CashFlow>
             : public std::binary_function<CashFlow,CashFlow,bool> {
         bool operator()(const CashFlow& c1,
-                        const CashFlow& c2) {
+                        const CashFlow& c2) const {
             return c1.date() < c2.date();
         }
     };

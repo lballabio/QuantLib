@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
