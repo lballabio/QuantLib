@@ -112,7 +112,7 @@ namespace QuantLib {
 
     Rate SyntheticCDO::fairPremium () const {
         calculate();
-        QL_REQUIRE(premiumValue_ == 0, "Attempted divide by zero while calculating syntheticCDO premium.");
+        QL_REQUIRE(premiumValue_ != 0, "Attempted divide by zero while calculating syntheticCDO premium.");
         return runningRate_
             * (protectionValue_ - upfrontPremiumValue_) / premiumValue_;
     }
