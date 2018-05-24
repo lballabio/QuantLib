@@ -18,6 +18,7 @@
 */
 
 #include <ql/time/daycounters/thirty360.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
