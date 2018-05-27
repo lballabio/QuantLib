@@ -625,7 +625,7 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   boost::optional<bool> endOfMonth)
+								   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(swapIndex->fixingDays()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
@@ -633,7 +633,7 @@ namespace QuantLib {
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      spread_(spread), 
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
@@ -647,9 +647,6 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-		// if not specified use index EoM convention
-		endOfMonth_ = endOfMonth ? *endOfMonth : iborIndex_->endOfMonth();
-
         initializeDates();
     }
 
@@ -666,7 +663,7 @@ namespace QuantLib {
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   boost::optional<bool> endOfMonth)
+								   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(settlementDays),
       tenor_(tenor), pillarChoice_(pillarChoice),
@@ -674,7 +671,7 @@ namespace QuantLib {
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      spread_(spread), 
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
 
         if (settlementDays_==Null<Natural>())
@@ -692,8 +689,6 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-		// if not specified use index EoM convention
-		endOfMonth_ = endOfMonth ? *endOfMonth : iborIndex_->endOfMonth();
         initializeDates();
     }
 
@@ -704,7 +699,7 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   boost::optional<bool> endOfMonth)
+								   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(swapIndex->fixingDays()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
@@ -712,7 +707,7 @@ namespace QuantLib {
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      spread_(spread), 
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
@@ -726,8 +721,6 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-		// if not specified use index EoM convention
-		endOfMonth_ = endOfMonth ? *endOfMonth : iborIndex_->endOfMonth();
         initializeDates();
     }
 
@@ -744,7 +737,7 @@ namespace QuantLib {
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   boost::optional<bool> endOfMonth)
+								   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(settlementDays),
       tenor_(tenor), pillarChoice_(pillarChoice),
@@ -752,7 +745,7 @@ namespace QuantLib {
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      spread_(spread), 
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
 
         if (settlementDays_==Null<Natural>())
@@ -770,8 +763,6 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-		// if not specified use index EoM convention
-		endOfMonth_ = endOfMonth ? *endOfMonth : iborIndex_->endOfMonth();
         initializeDates();
     }
 
