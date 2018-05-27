@@ -316,10 +316,10 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;
+        bool endOfMonth_;
         Period fwdStart_;
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
-		bool endOfMonth_;
     };
 
 
