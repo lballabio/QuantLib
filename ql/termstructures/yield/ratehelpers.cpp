@@ -895,7 +895,7 @@ namespace QuantLib {
                           .endOfMonth(iborIndex_->endOfMonth())
                           .backwards();
 
-        swap_ = ext::make_shared<BMASwap>(BMASwap::Payer, 100.0,
+        swap_ = ext::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
                                                 liborSchedule,
                                                 0.75, // arbitrary
                                                 0.0,
@@ -903,7 +903,7 @@ namespace QuantLib {
                                                 iborIndex_->dayCounter(),
                                                 bmaSchedule,
                                                 clonedIndex,
-                                                bmaDayCount_);
+                                                bmaDayCount_));
         swap_->setPricingEngine(ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
 

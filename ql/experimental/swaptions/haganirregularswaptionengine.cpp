@@ -85,8 +85,8 @@ namespace QuantLib {
                     QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
                     if( coupon->date() <= expiries_[i] ){
-                        ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon> (
-                            coupon->date(),
+                        ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
+                            new  IborCoupon(coupon->date(),
                             1.0,
                             coupon->accrualStartDate(),
                             coupon->accrualEndDate(),
@@ -97,7 +97,7 @@ namespace QuantLib {
                             coupon->referencePeriodStart(),
                             coupon->referencePeriodEnd(),
                             coupon->dayCounter(),
-                            coupon->isInArrears()); 
+                            coupon->isInArrears())); 
 
 
                         if (!newCpn->isInArrears())
@@ -279,8 +279,8 @@ namespace QuantLib {
             ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
             QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
-            ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon> (
-                coupon->date(),
+            ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
+                new  IborCoupon(coupon->date(),
                 coupon->nominal(),
                 coupon->accrualStartDate(),
                 coupon->accrualEndDate(),
@@ -291,7 +291,7 @@ namespace QuantLib {
                 coupon->referencePeriodStart(),
                 coupon->referencePeriodEnd(),
                 coupon->dayCounter(),
-                coupon->isInArrears()); 
+                coupon->isInArrears())); 
 
 
             if (!newCpn->isInArrears())

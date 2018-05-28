@@ -228,7 +228,8 @@ namespace {
             bool isAtmCalibrated = false;
 
             SabrVolCube1 = Handle<SwaptionVolatilityStructure>(
-                ext::make_shared<SwaptionVolCube1>(atmVol,
+                shared_ptr<SwaptionVolCube1>(new
+                    SwaptionVolCube1(atmVol,
                                      optionTenors,
                                      swapTenors,
                                      strikeSpreads,
@@ -238,7 +239,7 @@ namespace {
                                      vegaWeightedSmileFit,
                                      guess,
                                      isParameterFixed,
-                                     isAtmCalibrated));
+                                     isAtmCalibrated)));
             SabrVolCube1->enableExtrapolation();
 
             yieldCurveModels.clear();
