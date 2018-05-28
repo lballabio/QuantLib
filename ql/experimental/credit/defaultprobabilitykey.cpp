@@ -83,12 +83,12 @@ namespace QuantLib {
             new FailureToPay(graceFailureToPay,
             amountFailure)));
         // no specifics for Bankruptcy
-        eventTypes_.push_back( ext::shared_ptr<DefaultType>(
-            new DefaultType(AtomicDefault::Bankruptcy,
-                            Restructuring::XR)));
+        eventTypes_.push_back( ext::make_shared<DefaultType>(
+            AtomicDefault::Bankruptcy,
+                            Restructuring::XR));
         if(resType != Restructuring::NoRestructuring)
-            eventTypes_.push_back( ext::shared_ptr<DefaultType>(
-                new DefaultType(AtomicDefault::Restructuring, resType)));
+            eventTypes_.push_back( ext::make_shared<DefaultType>(
+                AtomicDefault::Restructuring, resType));
     }
 
 }

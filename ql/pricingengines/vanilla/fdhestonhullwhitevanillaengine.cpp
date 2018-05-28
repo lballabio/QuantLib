@@ -169,8 +169,8 @@ namespace QuantLib {
         for (Size i=0; i < strikes_.size(); ++i) {
             cachedArgs2results_[i].first.exercise = arguments_.exercise;
             cachedArgs2results_[i].first.payoff = 
-                ext::shared_ptr<PlainVanillaPayoff>(
-                    new PlainVanillaPayoff(payoff->optionType(), strikes_[i]));
+                ext::make_shared<PlainVanillaPayoff>(
+                    payoff->optionType(), strikes_[i]);
             const Real d = payoff->strike()/strikes_[i];
             
             DividendVanillaOption::results& 

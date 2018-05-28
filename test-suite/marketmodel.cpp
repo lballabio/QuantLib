@@ -822,8 +822,7 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
         optionletPayoffs[i] = ext::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-        displacedPayoffs[i] = ext::shared_ptr<PlainVanillaPayoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
+        displacedPayoffs[i] = ext::make_shared<PlainVanillaPayoff>(Option::Call, todaysForwards[i]+displacement);
     }
 
     OneStepForwards forwards(rateTimes, accruals,
@@ -2279,7 +2278,7 @@ void MarketModelTest::testPathwiseGreeks()
 
                             {
 
-                                PathwiseAccountingEngine accountingengine(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                                PathwiseAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                                     *product,
                                     marketModel, // we need pseudo-roots and displacements
                                     initialNumeraireValue);
@@ -3195,7 +3194,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasAccountingEngine accountingengine(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseVegasAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             productToUse,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -3329,7 +3328,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     SequenceStatisticsInc stats(productToUse2->numberOfProducts()*(todaysForwards.size()+1));
                     {
-                        PathwiseAccountingEngine accountingengine(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             *productToUse2,
                             marketModel, // we need pseudo-roots and displacements
                             initialNumeraireValue);
@@ -3473,7 +3472,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasOuterAccountingEngine accountingengine(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver2)), // method relies heavily on LMM Euler
+                        PathwiseVegasOuterAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver2), // method relies heavily on LMM Euler
                             capsDeflated,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -3484,7 +3483,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasAccountingEngine accountingengine(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseVegasAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             capsDeflated,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -4046,7 +4045,7 @@ void MarketModelTest::testPathwiseMarketVegas()
             {
 
                 PathwiseVegasAccountingEngine
-                    accountingEngine(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)),
+                    accountingEngine(ext::make_shared<LogNormalFwdRateEuler>(evolver),
                     swaptionsDeflated,
                     marketModel,
                     theBumps,initialNumeraireValue);
@@ -4201,7 +4200,7 @@ void MarketModelTest::testPathwiseMarketVegas()
             {
 
                 PathwiseVegasAccountingEngine
-                    accountingEngine(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)),
+                    accountingEngine(ext::make_shared<LogNormalFwdRateEuler>(evolver),
                     capsDeflated,
                     marketModel,
                     theBumps,initialNumeraireValue);

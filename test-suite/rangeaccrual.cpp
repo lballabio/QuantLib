@@ -1457,12 +1457,11 @@ namespace {
             // observations schedule
             observationsConvention = ModifiedFollowing;
             observationsFrequency = Daily;//Monthly;
-            observationSchedule = ext::shared_ptr<Schedule>(new
-                                Schedule(startDate,endDate,
+            observationSchedule = ext::make_shared<Schedule>(startDate,endDate,
                                          Period(observationsFrequency),
                                          calendar,observationsConvention,
                                          observationsConvention,
-                                         DateGeneration::Forward, false));
+                                         DateGeneration::Forward, false);
             // Range accrual pricers properties
             byCallSpread = std::vector<bool>();
             byCallSpread.push_back(true);

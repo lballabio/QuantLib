@@ -530,8 +530,8 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
             optionPureHeston.setPricingEngine(
                 ext::shared_ptr<PricingEngine>(
                     new AnalyticHestonEngine(
-                          ext::shared_ptr<HestonModel>(
-                                           new HestonModel(hestonProcess)))));
+                          ext::make_shared<HestonModel>(
+                                           hestonProcess))));
 
             Real expected   = optionPureHeston.NPV();
 
@@ -900,8 +900,8 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
             
             option.setPricingEngine(ext::shared_ptr<PricingEngine>(
                 new FdHestonHullWhiteVanillaEngine(
-                    ext::shared_ptr<HestonModel>(
-                        new HestonModel(hestonProcess)),
+                    ext::make_shared<HestonModel>(
+                        hestonProcess),
                                         hwProcess, corr[i], 50, 200, 10, 15)));
             const Real calculated = option.NPV();
             const Real calculatedDelta = option.delta();
@@ -1010,15 +1010,15 @@ namespace {
                                              const HestonModelData& params) {
 
         Handle<Quote> spot(
-                ext::shared_ptr<SimpleQuote>(new SimpleQuote(100)));
+                ext::make_shared<SimpleQuote>(100));
 
         DayCounter dayCounter = Actual365Fixed();
         Handle<YieldTermStructure> rTS(flatRate(params.r, dayCounter));
         Handle<YieldTermStructure> qTS(flatRate(params.q, dayCounter));
         
-        return ext::shared_ptr<HestonProcess>(new HestonProcess(
+        return ext::make_shared<HestonProcess>(
                    rTS, qTS, spot, params.v0, params.kappa, 
-                   params.theta, params.sigma, params.rho));
+                   params.theta, params.sigma, params.rho);
     }
     
     ext::shared_ptr<VanillaOption> makeVanillaOption(
@@ -1030,8 +1030,8 @@ namespace {
         ext::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(params.optionType, params.strike));
         
-        return ext::shared_ptr<VanillaOption>(
-                                          new VanillaOption(payoff, exercise));
+        return ext::make_shared<VanillaOption>(
+                                          payoff, exercise);
     }
 }
 
@@ -1308,10 +1308,10 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
             ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
                 detail::ImpliedVolatilityHelper::clone(
-                    ext::shared_ptr<GeneralizedBlackScholesProcess>(
-                        new GeneralizedBlackScholesProcess(
+                    ext::make_shared<GeneralizedBlackScholesProcess>(
+                        
                             s0, qTS, rTS, Handle<BlackVolTermStructure>(
-                                                    flatVol(v->value(), dc)))),
+                                                    flatVol(v->value(), dc))),
                         volQuote);
 
             VanillaOption dummyOption(payoff, exercise);

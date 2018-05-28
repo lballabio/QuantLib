@@ -104,9 +104,9 @@ namespace {
             dates.push_back(process->fixingDates()[i+1]);
         }
 
-        return ext::shared_ptr<CapletVarianceCurve>(
-                         new CapletVarianceCurve(todaysDate, dates,
-                                                 capletVols, Actual360()));
+        return ext::make_shared<CapletVarianceCurve>(
+                         todaysDate, dates,
+                                                 capletVols, Actual360());
     }
 
 }
@@ -441,10 +441,10 @@ void LiborMarketModelTest::testSwaptionPricing() {
                             << "\n    expected:   " << expected);
 
             swapRate = forwardSwap->fairRate();
-            forwardSwap = ext::shared_ptr<VanillaSwap>(
-                new VanillaSwap(VanillaSwap::Receiver, 1.0,
+            forwardSwap = ext::make_shared<VanillaSwap>(
+                VanillaSwap::Receiver, 1.0,
                                 schedule, swapRate, dayCounter,
-                                schedule, index, 0.0, index->dayCounter()));
+                                schedule, index, 0.0, index->dayCounter());
             forwardSwap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                 new DiscountingSwapEngine(index->forwardingTermStructure())));
 

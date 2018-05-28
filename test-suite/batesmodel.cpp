@@ -98,7 +98,7 @@ void BatesModelTest::testAnalyticVsBlack() {
                          kappa, theta, sigma, rho, lambda, nu, delta));
 
     ext::shared_ptr<PricingEngine> engine(new BatesEngine(
-        ext::shared_ptr<BatesModel>(new BatesModel(process)), 64));
+        ext::make_shared<BatesModel>(process), 64));
 
     option.setPricingEngine(engine);
     Real calculated = option.NPV();
@@ -115,8 +115,8 @@ void BatesModelTest::testAnalyticVsBlack() {
     }
 
     engine = ext::shared_ptr<PricingEngine>(new BatesDetJumpEngine(
-        ext::shared_ptr<BatesDetJumpModel>(
-            new BatesDetJumpModel( process, 1.0, 0.0001)), 64));
+        ext::make_shared<BatesDetJumpModel>(
+            process, 1.0, 0.0001), 64));
 
     option.setPricingEngine(engine);
     calculated = option.NPV();
@@ -133,8 +133,8 @@ void BatesModelTest::testAnalyticVsBlack() {
     }
 
     engine = ext::shared_ptr<PricingEngine>(new BatesDoubleExpEngine(
-        ext::shared_ptr<BatesDoubleExpModel>(
-            new BatesDoubleExpModel(process, 0.0001, 0.0001, 0.0001)), 64));
+        ext::make_shared<BatesDoubleExpModel>(
+            process, 0.0001, 0.0001, 0.0001), 64));
 
     option.setPricingEngine(engine);
     calculated = option.NPV();
@@ -150,9 +150,9 @@ void BatesModelTest::testAnalyticVsBlack() {
     }
 
     engine = ext::shared_ptr<PricingEngine>(new BatesDoubleExpDetJumpEngine(
-        ext::shared_ptr<BatesDoubleExpDetJumpModel>(
-            new BatesDoubleExpDetJumpModel(
-                process, 0.0001, 0.0001, 0.0001, 0.5, 1.0, 0.0001)), 64));
+        ext::make_shared<BatesDoubleExpDetJumpModel>(
+            
+                process, 0.0001, 0.0001, 0.0001, 0.5, 1.0, 0.0001), 64));
 
     option.setPricingEngine(engine);
     calculated = option.NPV();
@@ -215,7 +215,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
                             Handle<Quote>(jumpVol)));
 
     ext::shared_ptr<PricingEngine> batesEngine(new BatesEngine(
-        ext::shared_ptr<BatesModel>(new BatesModel(batesProcess)), 160));
+        ext::make_shared<BatesModel>(batesProcess), 160));
 
     const Real mcTol = 0.1;
     ext::shared_ptr<PricingEngine> mcBatesEngine =
@@ -495,27 +495,27 @@ void BatesModelTest::testDAXCalibration() {
     //check pricing of derived engines
     std::vector<ext::shared_ptr<PricingEngine> > pricingEngines;
     
-    process = ext::shared_ptr<BatesProcess>(
-        new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
-                         kappa, theta, sigma, rho, 1.0, -0.1, 0.1));
+    process = ext::make_shared<BatesProcess>(
+        riskFreeTS, dividendTS, s0, v0, 
+                         kappa, theta, sigma, rho, 1.0, -0.1, 0.1);
 
     pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDetJumpEngine(
-            ext::shared_ptr<BatesDetJumpModel>(
-                             new BatesDetJumpModel(process)), 64)) );
+            ext::make_shared<BatesDetJumpModel>(
+                             process), 64)) );
 
     ext::shared_ptr<HestonProcess> hestonProcess(new HestonProcess(
                     riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
     pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDoubleExpEngine(
-            ext::shared_ptr<BatesDoubleExpModel>(
-                         new BatesDoubleExpModel(hestonProcess, 1.0)), 64)) );
+            ext::make_shared<BatesDoubleExpModel>(
+                         hestonProcess, 1.0), 64)) );
 
     pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDoubleExpDetJumpEngine(
-            ext::shared_ptr<BatesDoubleExpDetJumpModel>(
-                    new BatesDoubleExpDetJumpModel(hestonProcess, 1.0)), 64)) );
+            ext::make_shared<BatesDoubleExpDetJumpModel>(
+                    hestonProcess, 1.0), 64)) );
 
     Real expectedValues[] = { 5896.37,
                               5499.29,

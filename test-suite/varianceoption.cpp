@@ -34,7 +34,7 @@ void VarianceOptionTest::testIntegralHeston() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    Handle<Quote> s0(ext::shared_ptr<SimpleQuote>(new SimpleQuote(1.0)));
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
     Handle<YieldTermStructure> qTS;
     ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
@@ -80,8 +80,8 @@ void VarianceOptionTest::testIntegralHeston() {
     sigma = 0.1;
     rho = -0.5;
 
-    process = ext::shared_ptr<HestonProcess>(
-               new HestonProcess(rTS, qTS, s0, v0, kappa, theta, sigma, rho));
+    process = ext::make_shared<HestonProcess>(
+               rTS, qTS, s0, v0, kappa, theta, sigma, rho);
     engine = ext::shared_ptr<PricingEngine>(
                                new IntegralHestonVarianceOptionEngine(process));
 

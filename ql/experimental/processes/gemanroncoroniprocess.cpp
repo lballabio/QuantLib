@@ -77,8 +77,8 @@ namespace QuantLib {
         // random number generator for the jump part 
         if (!urng_) {
             typedef PseudoRandom::urng_type urng_type;
-            urng_ = ext::shared_ptr<urng_type>(
-                     new urng_type((unsigned long)(1234ul*dw+56789ul)));
+            urng_ = ext::make_shared<urng_type>(
+                     (unsigned long)(1234ul*dw+56789ul));
         }
         Array du(3); 
         du[0] = urng_->next().value; 

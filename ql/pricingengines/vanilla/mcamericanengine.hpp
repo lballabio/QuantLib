@@ -186,11 +186,11 @@ namespace QuantLib {
             new AmericanPathPricer(this->arguments_.payoff,
                                    polynomOrder_, polynomType_));
 
-        return ext::shared_ptr<LongstaffSchwartzPathPricer<Path> > (
-             new LongstaffSchwartzPathPricer<Path>(
+        return ext::make_shared<LongstaffSchwartzPathPricer<Path> > (
+             
                                       this->timeGrid(),
                                       earlyExercisePathPricer,
-                                      *(process->riskFreeRate())));
+                                      *(process->riskFreeRate()));
     }
 
     template <class RNG, class S, class RNG_Calibration>

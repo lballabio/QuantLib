@@ -61,7 +61,7 @@ namespace QuantLib {
 
             // set an implausible value, so that calculation is forced
             // at first ImpliedCapVolHelper::operator()(Volatility x) call
-            vol_ = ext::shared_ptr<SimpleQuote>(new SimpleQuote(-1));
+            vol_ = ext::make_shared<SimpleQuote>(-1);
             Handle<Quote> h(vol_);
 
             switch (type) {
@@ -206,7 +206,7 @@ namespace QuantLib {
         if (type() == Floor || type() == Collar)
             floor.push_back(floorRates()[i]);
 
-        return ext::shared_ptr<CapFloor>(new CapFloor(type(), cf, cap, floor));
+        return ext::make_shared<CapFloor>(type(), cf, cap, floor);
     }
 
     void CapFloor::setupArguments(PricingEngine::arguments* args) const {

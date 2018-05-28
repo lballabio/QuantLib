@@ -344,7 +344,7 @@ int Bermudan()
             doCaps));
 
         PathwiseVegasOuterAccountingEngine
-            accountingEngineVegas(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolverEuler)),
+            accountingEngineVegas(ext::make_shared<LogNormalFwdRateEuler>(evolverEuler),
             callableProductPathwisePtr,
             marketModel,
             theBumps,
@@ -688,7 +688,7 @@ int InverseFloater(Real rateLevel)
             doCaps));
 
         PathwiseVegasOuterAccountingEngine
-            accountingEngineVegas(ext::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolverEuler)),
+            accountingEngineVegas(ext::make_shared<LogNormalFwdRateEuler>(evolverEuler),
    //         pathwiseInverseFloaterPtr,
             callableProductPathwisePtr,
             marketModel,

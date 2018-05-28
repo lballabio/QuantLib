@@ -60,8 +60,8 @@ namespace QuantLib {
 
     ext::shared_ptr<IborIndex> IborIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
-        return ext::shared_ptr<IborIndex>(
-                                        new IborIndex(familyName(),
+        return ext::make_shared<IborIndex>(
+                                        familyName(),
                                                       tenor(),
                                                       fixingDays(),
                                                       currency(),
@@ -69,7 +69,7 @@ namespace QuantLib {
                                                       businessDayConvention(),
                                                       endOfMonth(),
                                                       dayCounter(),
-                                                      h));
+                                                      h);
     }
 
 

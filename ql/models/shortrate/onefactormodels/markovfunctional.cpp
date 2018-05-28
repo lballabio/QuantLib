@@ -230,13 +230,13 @@ namespace QuantLib {
             sigma_.setParam(i, volatilities_[i]);
         }
 
-        stateProcess_ = ext::shared_ptr<MfStateProcess>(new MfStateProcess(
-            reversion_(0.0), volsteptimesArray_, sigma_.params()));
+        stateProcess_ = ext::make_shared<MfStateProcess>(
+            reversion_(0.0), volsteptimesArray_, sigma_.params());
 
         y_ = yGrid(modelSettings_.yStdDevs_, modelSettings_.yGridPoints_);
 
-        discreteNumeraire_ = ext::shared_ptr<Matrix>(new Matrix(
-            times_.size(), 2 * modelSettings_.yGridPoints_ + 1, 1.0));
+        discreteNumeraire_ = ext::make_shared<Matrix>(
+            times_.size(), 2 * modelSettings_.yGridPoints_ + 1, 1.0);
         for (Size i = 0; i < times_.size(); i++) {
             ext::shared_ptr<Interpolation> numInt(new CubicInterpolation(
                 y_.begin(), y_.end(), discreteNumeraire_->row_begin(i),
@@ -355,8 +355,8 @@ namespace QuantLib {
 
             if (modelSettings_.adjustments_ & ModelSettings::KahaleSmile) {
 
-                i->second.smileSection_ = ext::shared_ptr<KahaleSmileSection>(
-                    new KahaleSmileSection(
+                i->second.smileSection_ = ext::make_shared<KahaleSmileSection>(
+                    
                         i->second.rawSmileSection_, i->second.atm_,
                         (modelSettings_.adjustments_ &
                          ModelSettings::KahaleInterpolation) != 0,
@@ -366,7 +366,7 @@ namespace QuantLib {
                          ModelSettings::SmileDeleteArbitragePoints) != 0,
                         modelSettings_.smileMoneynessCheckpoints_,
                         modelSettings_.digitalGap_,
-                        forcedLeftIndex, forcedRightIndex));
+                        forcedLeftIndex, forcedRightIndex);
 
                 arbitrageIndices_.push_back(
                     ext::dynamic_pointer_cast<KahaleSmileSection>(
@@ -408,8 +408,8 @@ namespace QuantLib {
                     // we make the sabr section arbitrage free by superimposing
                     // a kahalesection
 
-                    i->second.smileSection_ = ext::shared_ptr<
-                        KahaleSmileSection>(new KahaleSmileSection(
+                    i->second.smileSection_ = ext::make_shared<
+                        KahaleSmileSection>(
                         sabrSection, i->second.atm_, false,
                         (modelSettings_.adjustments_ &
                          ModelSettings::SmileExponentialExtrapolation) != 0,
@@ -417,7 +417,7 @@ namespace QuantLib {
                          ModelSettings::SmileDeleteArbitragePoints) != 0,
                         modelSettings_.smileMoneynessCheckpoints_,
                         modelSettings_.digitalGap_,
-                        forcedLeftIndex, forcedRightIndex));
+                        forcedLeftIndex, forcedRightIndex);
 
                     arbitrageIndices_.push_back(
                         ext::dynamic_pointer_cast<KahaleSmileSection>(

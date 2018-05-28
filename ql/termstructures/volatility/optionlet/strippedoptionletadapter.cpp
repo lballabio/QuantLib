@@ -106,10 +106,9 @@ namespace QuantLib {
             //                              //endCriteria_,
             //                              //optMethod_
             //                              ));
-            strikeInterpolations_[i] = ext::shared_ptr<LinearInterpolation>(new
-                LinearInterpolation(optionletStrikes.begin(),
+            strikeInterpolations_[i] = ext::make_shared<LinearInterpolation>(optionletStrikes.begin(),
                                     optionletStrikes.end(),
-                                    optionletVolatilities.begin()));
+                                    optionletVolatilities.begin());
 
             //QL_ENSURE(strikeInterpolations_[i]->endCriteria()!=EndCriteria::MaxIterations,
             //          "section calibration failed: "

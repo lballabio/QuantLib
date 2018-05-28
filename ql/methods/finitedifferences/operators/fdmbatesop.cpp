@@ -47,22 +47,21 @@ namespace QuantLib {
       bcSet_(bcSet),
       hestonOp_(new FdmHestonOp(
         mesher,
-        ext::shared_ptr<HestonProcess>(new HestonProcess(
+        ext::make_shared<HestonProcess>(
           batesProcess->riskFreeRate(),
           Handle<YieldTermStructure>(
-            ext::shared_ptr<ZeroSpreadedTermStructure>(new
-              ZeroSpreadedTermStructure(
+            ext::make_shared<ZeroSpreadedTermStructure>(
                 batesProcess->dividendYield(),
                 Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(lambda_*m_))),
                 Continuous,
                 NoFrequency,
-                batesProcess->dividendYield()->dayCounter()))),
+                batesProcess->dividendYield()->dayCounter())),
           batesProcess->s0(),
           batesProcess->v0(),
           batesProcess->kappa(),
           batesProcess->theta(),
           batesProcess->sigma(),
-          batesProcess->rho())),
+          batesProcess->rho()),
         quantoHelper)) {}
 
     FdmBatesOp::IntegroIntegrand::IntegroIntegrand(
@@ -112,8 +111,8 @@ namespace QuantLib {
         }
         std::vector<ext::shared_ptr<LinearInterpolation> > interpl(f.rows());
         for (Size i=0; i < f.rows(); ++i) {
-            interpl[i] = ext::shared_ptr<LinearInterpolation>(
-                new LinearInterpolation(x.begin(), x.end(), f.row_begin(i)));
+            interpl[i] = ext::make_shared<LinearInterpolation>(
+                x.begin(), x.end(), f.row_begin(i));
         }
         
         Array integral(r.size());

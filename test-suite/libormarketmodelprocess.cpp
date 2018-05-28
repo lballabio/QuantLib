@@ -81,9 +81,9 @@ namespace {
             dates.push_back(process->fixingDates()[i+1]);
         }
 
-        return ext::shared_ptr<CapletVarianceCurve>(
-                         new CapletVarianceCurve(todaysDate, dates,
-                                                 capletVols, ActualActual()));
+        return ext::make_shared<CapletVarianceCurve>(
+                         todaysDate, dates,
+                                                 capletVols, ActualActual());
     }
 
     ext::shared_ptr<LiborForwardModelProcess>

@@ -109,12 +109,12 @@ int main(int, char* []) {
 
         for (Size j=0; j<LENGTH(putLength); j++) {
             callability.push_back(
-                   ext::shared_ptr<Callability>(
-                           new Callability(Callability::Price(
+                   ext::make_shared<Callability>(
+                           Callability::Price(
                                                    putPrices[j],
                                                    Callability::Price::Clean),
                                            Callability::Put,
-                                           schedule.date(putLength[j]))));
+                                           schedule.date(putLength[j])));
         }
 
         // Assume dividends are paid every 6 months.

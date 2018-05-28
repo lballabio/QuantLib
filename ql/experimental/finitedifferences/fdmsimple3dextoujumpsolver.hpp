@@ -60,8 +60,8 @@ namespace QuantLib {
                                    process_.currentLink(),
                                    rTS_, solverDesc_.bcSet, 32));
 
-            solver_ = ext::shared_ptr<Fdm3DimSolver>(
-                          new Fdm3DimSolver(solverDesc_, schemeDesc_, op));
+            solver_ = ext::make_shared<Fdm3DimSolver>(
+                          solverDesc_, schemeDesc_, op);
         }
 
       private:

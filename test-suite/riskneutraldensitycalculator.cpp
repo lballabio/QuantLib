@@ -66,7 +66,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
 
     const Real s0 = 100;
     const Handle<Quote> spot(
-        ext::shared_ptr<SimpleQuote>(new SimpleQuote(s0)));
+        ext::make_shared<SimpleQuote>(s0));
 
     const Rate r = 0.075;
     const Rate q = 0.04;
@@ -140,7 +140,7 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
 
     const Real s0 = 10;
     const Handle<Quote> spot(
-        ext::shared_ptr<SimpleQuote>(new SimpleQuote(s0)));
+        ext::make_shared<SimpleQuote>(s0));
 
     const Rate r = 0.155;
     const Rate q = 0.0721;

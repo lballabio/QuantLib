@@ -686,7 +686,7 @@ namespace QuantLib {
 
         swapRateValue_ = swap->fairRate();
 
-        objectiveFunction_ = ext::shared_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
+        objectiveFunction_ = ext::make_shared<ObjectiveFunction>(*this, swapRateValue_);
 
         const Schedule& schedule = swap->fixedSchedule();
         Handle<YieldTermStructure> rateCurve =

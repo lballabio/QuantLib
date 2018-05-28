@@ -245,10 +245,10 @@ namespace {
         }
 
         for (int i = 0; i < 10; i++) {
-            r6m.push_back(ext::shared_ptr<DepositRateHelper>(
-                new DepositRateHelper(Handle<Quote>(q6m[i]), q6mh1[i],
+            r6m.push_back(ext::make_shared<DepositRateHelper>(
+                Handle<Quote>(q6m[i]), q6mh1[i],
                                       i < 2 ? i : 2, TARGET(),
-                                      ModifiedFollowing, false, Actual360())));
+                                      ModifiedFollowing, false, Actual360()));
         }
 
         for (int i = 0; i < 18; i++) {
@@ -256,19 +256,19 @@ namespace {
 #ifndef QL_NEGATIVE_RATES
                 if (i + 10 != 16 && i + 10 != 17)
 #endif
-                    r6m.push_back(ext::shared_ptr<FraRateHelper>(
-                        new FraRateHelper(Handle<Quote>(q6m[10 + i]), i + 1,
+                    r6m.push_back(ext::make_shared<FraRateHelper>(
+                        Handle<Quote>(q6m[10 + i]), i + 1,
                                           i + 7, 2, TARGET(), ModifiedFollowing,
-                                          false, Actual360())));
+                                          false, Actual360()));
             }
         }
 
         for (int i = 0; i < 15 + 35; i++) {
             if (i + 7 == 12 || i + 7 == 18 || i + 7 >= 24) {
-                r6m.push_back(ext::shared_ptr<SwapRateHelper>(
-                    new SwapRateHelper(Handle<Quote>(q6m[10 + i]), q6mh2[i],
+                r6m.push_back(ext::make_shared<SwapRateHelper>(
+                    Handle<Quote>(q6m[10 + i]), q6mh2[i],
                                        TARGET(), Annual, ModifiedFollowing,
-                                       Actual360(), euribor6mEmpty)));
+                                       Actual360(), euribor6mEmpty));
             }
         }
 

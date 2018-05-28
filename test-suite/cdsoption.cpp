@@ -96,9 +96,9 @@ void CdsOptionTest::testCached() {
                     << "    calculated: " << option1.NPV() << "\n"
                     << "    expected:   " << cachedValue);
 
-    underlying = ext::shared_ptr<CreditDefaultSwap>(
-         new CreditDefaultSwap(Protection::Buyer, notional, strike, schedule,
-                               convention, dayCounter));
+    underlying = ext::make_shared<CreditDefaultSwap>(
+         Protection::Buyer, notional, strike, schedule,
+                               convention, dayCounter);
     underlying->setPricingEngine(swapEngine);
 
     CdsOption option2(underlying, exercise);

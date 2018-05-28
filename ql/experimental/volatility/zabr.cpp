@@ -304,8 +304,8 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
         std::copy(rhs.begin() + j * f_.size(),
                   rhs.begin() + (j + 1) * f_.size(), result.row_begin(j));
     ext::shared_ptr<BicubicSpline> interpolation =
-        ext::shared_ptr<BicubicSpline>(new BicubicSpline(
-            f_.begin(), f_.end(), v_.begin(), v_.end(), result));
+        ext::make_shared<BicubicSpline>(
+            f_.begin(), f_.end(), v_.begin(), v_.end(), result);
     interpolation->disableExtrapolation();
     return (*interpolation)(forward_, alpha_);
 }

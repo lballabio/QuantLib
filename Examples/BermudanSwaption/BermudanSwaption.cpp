@@ -112,9 +112,9 @@ int main(int, char* []) {
         // flat yield term structure impling 1x5 swap at 5%
         ext::shared_ptr<Quote> flatRate(new SimpleQuote(0.04875825));
         Handle<YieldTermStructure> rhTermStructure(
-            ext::shared_ptr<FlatForward>(
-                      new FlatForward(settlementDate, Handle<Quote>(flatRate),
-                                      Actual365Fixed())));
+            ext::make_shared<FlatForward>(
+                      settlementDate, Handle<Quote>(flatRate),
+                                      Actual365Fixed()));
 
         // Define the ATM/OTM/ITM swaps
         Frequency fixedLegFrequency = Annual;

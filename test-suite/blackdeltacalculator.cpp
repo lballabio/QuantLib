@@ -249,11 +249,10 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
                                     spotQuote->value(),
                                     discDom, discFor, implVol);
 
-        stochProcess=ext::shared_ptr<BlackScholesMertonProcess> (new
-            BlackScholesMertonProcess(spotHandle,
+        stochProcess=ext::make_shared<BlackScholesMertonProcess> (spotHandle,
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
         engine = ext::shared_ptr<PricingEngine>(
                                     new AnalyticEuropeanEngine(stochProcess));

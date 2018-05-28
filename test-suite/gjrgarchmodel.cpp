@@ -151,8 +151,8 @@ void GJRGARCHModelTest::testEngines() {
             .withSeed(1234);
 
         ext::shared_ptr<PricingEngine> engine2(
-            new AnalyticGJRGARCHEngine(ext::shared_ptr<GJRGARCHModel>(
-                                               new GJRGARCHModel(process))));
+            new AnalyticGJRGARCHEngine(ext::make_shared<GJRGARCHModel>(
+                                               process)));
         for (Size i = 0; i < 2; ++i) {
             for (Size j = 0; j < 6; ++j) {
                 Real x = strike[j];

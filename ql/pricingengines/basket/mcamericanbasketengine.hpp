@@ -166,11 +166,11 @@ namespace QuantLib {
             new AmericanBasketPathPricer(processArray->size(),
                                          this->arguments_.payoff));
 
-        return ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > (
-             new LongstaffSchwartzPathPricer<MultiPath>(
+        return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
+             
                      this->timeGrid(),
                      earlyExercisePathPricer,
-                     *(process->riskFreeRate())));
+                     *(process->riskFreeRate()));
     }
 
 

@@ -90,11 +90,11 @@ namespace {
                 const ext::shared_ptr<YieldTermStructure>& q,
                 const ext::shared_ptr<YieldTermStructure>& r,
                 const ext::shared_ptr<BlackVolTermStructure>& vol) {
-        return ext::shared_ptr<BlackScholesMertonProcess>(
-           new BlackScholesMertonProcess(Handle<Quote>(u),
+        return ext::make_shared<BlackScholesMertonProcess>(
+           Handle<Quote>(u),
                                          Handle<YieldTermStructure>(q),
                                          Handle<YieldTermStructure>(r),
-                                         Handle<BlackVolTermStructure>(vol)));
+                                         Handle<BlackVolTermStructure>(vol));
     }
 
     ext::shared_ptr<VanillaOption>

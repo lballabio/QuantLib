@@ -128,10 +128,10 @@ int main(int, char* [])
             Callability::Price myPrice(callPrice,
                                        Callability::Price::Clean);
             callSchedule.push_back(
-                ext::shared_ptr<Callability>(
-                    new Callability(myPrice,
+                ext::make_shared<Callability>(
+                    myPrice,
                                     Callability::Call,
-                                    callDate )));
+                                    callDate ));
             callDate = nullCalendar.advance(callDate, 3, Months);
         }
 

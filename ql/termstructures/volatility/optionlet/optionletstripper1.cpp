@@ -98,15 +98,15 @@ OptionletStripper1::OptionletStripper1(
         ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
         if (volatilityType_ == ShiftedLognormal) {
-            capFloorEngine = ext::shared_ptr<BlackCapFloorEngine>(
-                        new BlackCapFloorEngine(
+            capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
+                        
                             discountCurve, Handle<Quote>(volQuote),
-                            dc, displacement_));
+                            dc, displacement_);
         } else if (volatilityType_ == Normal) {
-            capFloorEngine = ext::shared_ptr<BachelierCapFloorEngine>(
-                        new BachelierCapFloorEngine(
+            capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
+                        
                             discountCurve, Handle<Quote>(volQuote),
-                            dc));
+                            dc);
         } else {
             QL_FAIL("unknown volatility type: " << volatilityType_);
         }

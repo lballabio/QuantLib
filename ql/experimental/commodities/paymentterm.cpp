@@ -32,9 +32,9 @@ namespace QuantLib {
         if (i != paymentTerms_.end())
             data_ = i->second;
         else {
-            data_ = ext::shared_ptr<PaymentTerm::Data>(
-                                 new PaymentTerm::Data(name, eventType,
-                                                       offsetDays, calendar));
+            data_ = ext::make_shared<PaymentTerm::Data>(
+                                 name, eventType,
+                                                       offsetDays, calendar);
             paymentTerms_[name] = data_;
         }
     }

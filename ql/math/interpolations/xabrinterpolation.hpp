@@ -122,8 +122,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         // optMethod_ = ext::shared_ptr<OptimizationMethod>(new
         //    Simplex(0.01));
         if (!endCriteria_) {
-            endCriteria_ = ext::shared_ptr<EndCriteria>(
-                new EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
+            endCriteria_ = ext::make_shared<EndCriteria>(
+                60000, 100, 1e-8, 1e-8, 1e-8);
         }
         this->weights_ =
             std::vector<Real>(xEnd - xBegin, 1.0 / (xEnd - xBegin));

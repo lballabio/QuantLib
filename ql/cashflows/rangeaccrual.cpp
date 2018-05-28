@@ -678,12 +678,11 @@ namespace QuantLib {
                                     start, end, refStart, refEnd)));
             } else { // floating coupon
                 observationsSchedules.push_back(
-                    ext::shared_ptr<Schedule>(new
-                        Schedule(start, end,
+                    ext::make_shared<Schedule>(start, end,
                                  observationTenor_, calendar,
                                  observationConvention_,
                                  observationConvention_,
-                                 DateGeneration::Forward, false)));
+                                 DateGeneration::Forward, false));
 
                     leg.push_back(ext::shared_ptr<CashFlow>(new
                        RangeAccrualFloatersCoupon(

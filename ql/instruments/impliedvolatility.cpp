@@ -98,9 +98,9 @@ namespace QuantLib {
                                                     Handle<Quote>(volQuote),
                                                     blackVol->dayCounter())));
 
-            return ext::shared_ptr<GeneralizedBlackScholesProcess>(
-                new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
-                                                   riskFreeRate, volatility));
+            return ext::make_shared<GeneralizedBlackScholesProcess>(
+                stateVariable, dividendYield,
+                                                   riskFreeRate, volatility);
         }
 
     }

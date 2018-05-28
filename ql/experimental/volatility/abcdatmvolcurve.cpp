@@ -87,10 +87,9 @@ namespace QuantLib {
 
     void AbcdAtmVolCurve::interpolate()
     {
-        interpolation_ = ext::shared_ptr<AbcdInterpolation>(new
-                            AbcdInterpolation(actualOptionTimes_.begin(),
+        interpolation_ = ext::make_shared<AbcdInterpolation>(actualOptionTimes_.begin(),
                                               actualOptionTimes_.end(),
-                                              actualVols_.begin()));
+                                              actualVols_.begin());
     }
 
     void AbcdAtmVolCurve::accept(AcyclicVisitor& v) {

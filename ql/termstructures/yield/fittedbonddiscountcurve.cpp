@@ -140,7 +140,7 @@ namespace QuantLib {
         Frequency yieldFreq = Annual;
 
         Size n = curve_->bondHelpers_.size();
-        costFunction_ = ext::shared_ptr<FittingCost>(new FittingCost(this));
+        costFunction_ = ext::make_shared<FittingCost>(this);
         costFunction_->firstCashFlow_.resize(n);
 
         for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {

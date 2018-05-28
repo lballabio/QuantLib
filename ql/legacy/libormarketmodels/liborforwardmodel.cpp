@@ -191,10 +191,10 @@ namespace QuantLib {
             }
         }
 
-        return swaptionVola = ext::shared_ptr<SwaptionVolatilityMatrix>(
-             new SwaptionVolatilityMatrix(today, exercises, lengths,
+        return swaptionVola = ext::make_shared<SwaptionVolatilityMatrix>(
+             today, exercises, lengths,
                                           volatilities,
-                                          index->dayCounter()));
+                                          index->dayCounter());
     }
 
     // the next two methods are meaningless within this context

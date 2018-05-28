@@ -24,7 +24,7 @@ namespace QuantLib {
 
     CustomRegion::CustomRegion(const std::string& name,
                                const std::string& code) {
-        data_ = ext::shared_ptr<Data>(new Data(name,code));
+        data_ = ext::make_shared<Data>(name,code);
     }
 
 

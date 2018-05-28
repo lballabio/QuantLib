@@ -64,8 +64,8 @@ namespace QuantLib {
                 for (Size i=0; i < dim.size(); ++i) {
                     dim[i] = meshers[i]->size();
                 }
-            return ext::shared_ptr<FdmLinearOpLayout>(
-                new FdmLinearOpLayout(dim));
+            return ext::make_shared<FdmLinearOpLayout>(
+                dim);
         }
     }
 

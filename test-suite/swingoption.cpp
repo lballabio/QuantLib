@@ -59,9 +59,9 @@ namespace {
         ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
             new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
                                                  constant<Real, Real>(x0[0])));
-        return ext::shared_ptr<ExtOUWithJumpsProcess>(
-            new ExtOUWithJumpsProcess(ouProcess, x0[1], beta,
-                                      jumpIntensity, eta));
+        return ext::make_shared<ExtOUWithJumpsProcess>(
+            ouProcess, x0[1], beta,
+                                      jumpIntensity, eta);
     }
 }
 

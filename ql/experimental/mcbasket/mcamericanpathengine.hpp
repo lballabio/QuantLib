@@ -152,13 +152,13 @@ namespace QuantLib {
         const Size polynomialOrder = 2;
         const LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial;
 
-        return ext::shared_ptr<LongstaffSchwartzMultiPathPricer> (
-            new LongstaffSchwartzMultiPathPricer(this->arguments_.payoff,
+        return ext::make_shared<LongstaffSchwartzMultiPathPricer> (
+            this->arguments_.payoff,
                                                  timePositions,
                                                  forwardTermStructures,
                                                  discountFactors,
                                                  polynomialOrder,
-                                                 polynomType));
+                                                 polynomType);
     }
 
 

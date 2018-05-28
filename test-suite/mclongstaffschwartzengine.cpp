@@ -111,11 +111,11 @@ namespace {
             ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
                           new AmericanMaxPathPricer(this->arguments_.payoff));
 
-            return ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > (
-                new LongstaffSchwartzPathPricer<MultiPath>(
+            return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
+                
                     this->timeGrid(),
                     earlyExercisePathPricer,
-                    process->riskFreeRate().currentLink()));
+                    process->riskFreeRate().currentLink());
         }
     };
 

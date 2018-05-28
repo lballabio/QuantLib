@@ -244,10 +244,10 @@ namespace {
         rootEpsilons_.push_back(1e-8);                  // rootEpsilon
         functionEpsilons_.push_back(1e-8);              // functionEpsilon
         gradientNormEpsilons_.push_back(1e-8);          // gradientNormEpsilon
-        endCriterias_.push_back(ext::shared_ptr<EndCriteria>(
-            new EndCriteria(maxIterations_.back(), maxStationaryStateIterations_.back(),
+        endCriterias_.push_back(ext::make_shared<EndCriteria>(
+            maxIterations_.back(), maxStationaryStateIterations_.back(),
                             rootEpsilons_.back(), functionEpsilons_.back(),
-                            gradientNormEpsilons_.back())));
+                            gradientNormEpsilons_.back()));
         // Set optimization methods for optimizer
         OptimizationMethodType optimizationMethodTypes[] = {
             simplex, levenbergMarquardt, levenbergMarquardt2, conjugateGradient,

@@ -51,8 +51,8 @@ namespace QuantLib {
                                    ? quantoHelper_.currentLink()
                                    : ext::shared_ptr<FdmQuantoHelper>()));
 
-        solver_ = ext::shared_ptr<Fdm2DimSolver>(
-                               new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = ext::make_shared<Fdm2DimSolver>(
+                               solverDesc_, schemeDesc_, op);
     }
 
     Real FdmBatesSolver::valueAt(Real s, Real v) const {

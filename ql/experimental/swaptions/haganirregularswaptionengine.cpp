@@ -63,15 +63,15 @@ namespace QuantLib {
 
                 expiries_.push_back(coupon->date());
 
-                ext::shared_ptr<FixedRateCoupon> newCpn = ext::shared_ptr<FixedRateCoupon> (
-                    new  FixedRateCoupon(coupon->date(),
+                ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon> (
+                    coupon->date(),
                     1.0,
                     coupon->rate(),
                     coupon->dayCounter(),
                     coupon->accrualStartDate(),
                     coupon->accrualEndDate(),
                     coupon->referencePeriodStart(),
-                    coupon->referencePeriodEnd())); 
+                    coupon->referencePeriodEnd()); 
 
                 fixedCFS.push_back(newCpn);
 
@@ -85,8 +85,8 @@ namespace QuantLib {
                     QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
                     if( coupon->date() <= expiries_[i] ){
-                        ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
-                            new  IborCoupon(coupon->date(),
+                        ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon> (
+                            coupon->date(),
                             1.0,
                             coupon->accrualStartDate(),
                             coupon->accrualEndDate(),
@@ -97,7 +97,7 @@ namespace QuantLib {
                             coupon->referencePeriodStart(),
                             coupon->referencePeriodEnd(),
                             coupon->dayCounter(),
-                            coupon->isInArrears())); 
+                            coupon->isInArrears()); 
 
 
                         if (!newCpn->isInArrears())
@@ -279,8 +279,8 @@ namespace QuantLib {
             ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
             QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
-            ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
-                new  IborCoupon(coupon->date(),
+            ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon> (
+                coupon->date(),
                 coupon->nominal(),
                 coupon->accrualStartDate(),
                 coupon->accrualEndDate(),
@@ -291,7 +291,7 @@ namespace QuantLib {
                 coupon->referencePeriodStart(),
                 coupon->referencePeriodEnd(),
                 coupon->dayCounter(),
-                coupon->isInArrears())); 
+                coupon->isInArrears()); 
 
 
             if (!newCpn->isInArrears())
@@ -316,22 +316,22 @@ namespace QuantLib {
             ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
             QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
 
-            ext::shared_ptr<FixedRateCoupon> newCpn = ext::shared_ptr<FixedRateCoupon> (
-                new  FixedRateCoupon(coupon->date(),
+            ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon> (
+                coupon->date(),
                 coupon->nominal(),
                 coupon->rate()-cpn_adjustment,
                 coupon->dayCounter(),
                 coupon->accrualStartDate(),
                 coupon->accrualEndDate(),
                 coupon->referencePeriodStart(),
-                coupon->referencePeriodEnd())); 
+                coupon->referencePeriodEnd()); 
 
             fixedCFS.push_back(newCpn);
         }
 
 
         //this is the irregular swap with spread removed 
-        swap_  =  ext::shared_ptr<IrregularSwap>(new IrregularSwap(arguments_.swap->type(),fixedCFS,floatCFS));
+        swap_  =  ext::make_shared<IrregularSwap>(arguments_.swap->type(),fixedCFS,floatCFS);
 
 
 

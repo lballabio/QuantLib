@@ -39,7 +39,7 @@ namespace QuantLib {
                                 maturityDate, 6*Months,
                                 NullCalendar(), Unadjusted, Unadjusted,
                                 DateGeneration::Backward, true),
-                       ext::shared_ptr<Euribor6M>(new Euribor6M(fwdCurve)),
+                       ext::make_shared<Euribor6M>(fwdCurve),
                        Actual360(),
                        Following,
                        Euribor6M().fixingDays(),

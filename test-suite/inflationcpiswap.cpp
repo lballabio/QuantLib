@@ -149,7 +149,7 @@ namespace {
             // link from cpi index to cpi TS
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
+            ii = ext::make_shared<UKRPI>(interp, hcpi);
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -196,8 +196,8 @@ namespace {
                 nomR.push_back(nominalData[i].rate/100.0);
             }
             ext::shared_ptr<YieldTermStructure> nominal =
-            ext::shared_ptr<InterpolatedZeroCurve<Linear>
-            >(new InterpolatedZeroCurve<Linear>(nomD,nomR,dcNominal));
+            ext::make_shared<InterpolatedZeroCurve<Linear>
+            >(nomD,nomR,dcNominal);
 
 
             nominalTS.linkTo(nominal);

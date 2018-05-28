@@ -170,7 +170,7 @@ namespace QuantLib {
 
         // set an implausible value, so that calculation is forced
         // at first operator()(Volatility x) call
-        spreadQuote_ = ext::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
+        spreadQuote_ = ext::make_shared<SimpleQuote>(-1.0);
 
         ext::shared_ptr<OptionletVolatilityStructure> spreadedAdapter(new
             SpreadedOptionletVolatility(Handle<OptionletVolatilityStructure>(

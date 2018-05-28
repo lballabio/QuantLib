@@ -77,8 +77,8 @@ namespace QuantLib {
         conditions.push_back(c2);
         conditions.push_back(c1);
 
-        return ext::shared_ptr<FdmStepConditionComposite>(
-            new FdmStepConditionComposite(stoppingTimes, conditions));
+        return ext::make_shared<FdmStepConditionComposite>(
+            stoppingTimes, conditions);
     }
 
     ext::shared_ptr<FdmStepConditionComposite> 
@@ -118,8 +118,8 @@ namespace QuantLib {
             stoppingTimes.push_back(bermudanCondition->exerciseTimes());
         }
         
-        return ext::shared_ptr<FdmStepConditionComposite>(
-            new FdmStepConditionComposite(stoppingTimes, stepConditions));
+        return ext::make_shared<FdmStepConditionComposite>(
+            stoppingTimes, stepConditions);
 
     }
 

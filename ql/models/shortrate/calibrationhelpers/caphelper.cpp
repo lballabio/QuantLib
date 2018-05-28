@@ -124,8 +124,8 @@ namespace QuantLib {
         swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                             new DiscountingSwapEngine(termStructure_, false)));
         Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
-        cap_ = ext::shared_ptr<Cap>(new Cap(floatingLeg,
-                                              std::vector<Rate>(1, fairRate)));
+        cap_ = ext::make_shared<Cap>(floatingLeg,
+                                              std::vector<Rate>(1, fairRate));
 
         CalibrationHelper::performCalculations();
 

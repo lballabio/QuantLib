@@ -182,15 +182,15 @@ namespace QuantLib {
             type = strike_ <= forward ? VanillaSwap::Receiver : VanillaSwap::Payer;
             // ensure that calibration instrument is out of the money
         }
-        swap_ = ext::shared_ptr<VanillaSwap>(
-            new VanillaSwap(type, nominal_,
+        swap_ = ext::make_shared<VanillaSwap>(
+            type, nominal_,
                             fixedSchedule, exerciseRate_, fixedLegDayCounter_,
-                            floatSchedule, index_, 0.0, floatingLegDayCounter_));
+                            floatSchedule, index_, 0.0, floatingLegDayCounter_);
         swap_->setPricingEngine(swapEngine);
 
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-        swaption_ = ext::shared_ptr<Swaption>(new Swaption(swap_, exercise));
+        swaption_ = ext::make_shared<Swaption>(swap_, exercise);
 
         CalibrationHelper::performCalculations();
 

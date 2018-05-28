@@ -52,7 +52,7 @@ namespace QuantLib {
                                                               Real targetValue)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
-            vol_ = ext::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
+            vol_ = ext::make_shared<SimpleQuote>(-1.0);
             Handle<Quote> h(vol_);
             engine_ = ext::shared_ptr<PricingEngine>(new
                                     BlackSwaptionEngine(discountCurve_, h));

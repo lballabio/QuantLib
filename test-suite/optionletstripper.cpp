@@ -85,10 +85,10 @@ struct CommonVars {
 
             Rate flatFwdRate = 0.04;
             yieldTermStructure.linkTo(
-                ext::shared_ptr<FlatForward>(new FlatForward(0,
+                ext::make_shared<FlatForward>(0,
                                                                calendar,
                                                                flatFwdRate,
-                                                               dayCounter)));
+                                                               dayCounter));
         }
 
         void setRealTermStructure() {
@@ -117,9 +117,9 @@ struct CommonVars {
                 0.009136, 0.009601, 0.009384;
 
             discountingYTS.linkTo(
-                ext::shared_ptr< InterpolatedZeroCurve< Linear > >(
-                    new InterpolatedZeroCurve< Linear >(dates, rates,
-                                                        dayCounter, calendar)));
+                ext::make_shared< InterpolatedZeroCurve< Linear > >(
+                    dates, rates,
+                                                        dayCounter, calendar));
 
             datesTmp.clear();
             dates.clear();
@@ -144,9 +144,9 @@ struct CommonVars {
                 0.010757, 0.010806, 0.010423, 0.010217;
 
             forwardingYTS.linkTo(
-                ext::shared_ptr< InterpolatedZeroCurve< Linear > >(
-                    new InterpolatedZeroCurve< Linear >(dates, rates,
-                                                        dayCounter, calendar)));
+                ext::make_shared< InterpolatedZeroCurve< Linear > >(
+                    dates, rates,
+                                                        dayCounter, calendar));
         }
 
         void setFlatTermVolCurve() {
@@ -165,9 +165,8 @@ struct CommonVars {
                                                         SimpleQuote(flatVol)));
 
           flatTermVolCurve = Handle<CapFloorTermVolCurve>(
-              shared_ptr<CapFloorTermVolCurve>(new
-                  CapFloorTermVolCurve(0, calendar, Following, optionTenors,
-                                       curveVHandle, dayCounter)));
+              ext::make_shared<CapFloorTermVolCurve>(0, calendar, Following, optionTenors,
+                                       curveVHandle, dayCounter));
 
         }
 
@@ -185,10 +184,9 @@ struct CommonVars {
 
             Volatility flatVol = .18;
             termV = Matrix(optionTenors.size(), strikes.size(), flatVol);
-            flatTermVolSurface = ext::shared_ptr<CapFloorTermVolSurface>(new
-                CapFloorTermVolSurface(0, calendar, Following,
+            flatTermVolSurface = ext::make_shared<CapFloorTermVolSurface>(0, calendar, Following,
                                        optionTenors, strikes,
-                                       termV, dayCounter));
+                                       termV, dayCounter);
         }
 
 
@@ -240,10 +238,9 @@ struct CommonVars {
           }
 
           capFloorVolCurve = Handle<CapFloorTermVolCurve>(
-            shared_ptr<CapFloorTermVolCurve>(new
-                CapFloorTermVolCurve(0, calendar, Following,
+            ext::make_shared<CapFloorTermVolCurve>(0, calendar, Following,
                                      optionTenors, atmTermVolHandle,
-                                     dayCounter)));
+                                     dayCounter));
 
          }
 
@@ -303,10 +300,9 @@ struct CommonVars {
             termV[14][0]=0.204; termV[14][1]=0.192; termV[14][2]=0.18;  termV[14][3]=0.171; termV[14][4]=0.164; termV[14][5]=0.152; termV[14][6]=0.143; termV[14][7]=0.138; termV[14][8]=0.134; termV[14][9]=0.134; termV[14][10]=0.137; termV[14][11]=0.14;  termV[14][12]=0.148;
             termV[15][0]=0.2;   termV[15][1]=0.187; termV[15][2]=0.176; termV[15][3]=0.167; termV[15][4]=0.16;  termV[15][5]=0.148; termV[15][6]=0.14;  termV[15][7]=0.135; termV[15][8]=0.131; termV[15][9]=0.132; termV[15][10]=0.135; termV[15][11]=0.139; termV[15][12]=0.146;
 
-            capFloorVolSurface = ext::shared_ptr<CapFloorTermVolSurface>(new
-                CapFloorTermVolSurface(0, calendar, Following,
+            capFloorVolSurface = ext::make_shared<CapFloorTermVolSurface>(0, calendar, Following,
                                        optionTenors, strikes,
-                                       termV, dayCounter));
+                                       termV, dayCounter);
         }
 
         void setRealCapFloorTermVolSurface() {
@@ -372,10 +368,10 @@ struct CommonVars {
             termV /= 100;
 
             capFloorVolRealSurface =
-                ext::shared_ptr< CapFloorTermVolSurface >(
-                    new CapFloorTermVolSurface(0, calendar, Following,
+                ext::make_shared< CapFloorTermVolSurface >(
+                    0, calendar, Following,
                                                optionTenors, strikes, termV,
-                                               dayCounter));
+                                               dayCounter);
         }
 };
 }
@@ -461,8 +457,7 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
                            vars.accuracy));
 
     ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter =
-        ext::shared_ptr<StrippedOptionletAdapter>(new
-            StrippedOptionletAdapter(optionletStripper1));
+        ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
     Handle<OptionletVolatilityStructure> vol(strippedOptionletAdapter);
 
@@ -522,8 +517,8 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
                                vars.discountingYTS, Normal));
 
     ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
-        ext::shared_ptr< StrippedOptionletAdapter >(
-            new StrippedOptionletAdapter(optionletStripper1));
+        ext::make_shared< StrippedOptionletAdapter >(
+            optionletStripper1);
 
     Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
 
@@ -590,8 +585,8 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
                                true));
 
     ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
-        ext::shared_ptr< StrippedOptionletAdapter >(
-            new StrippedOptionletAdapter(optionletStripper1));
+        ext::make_shared< StrippedOptionletAdapter >(
+            optionletStripper1);
 
     Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
 
@@ -725,8 +720,7 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
                            vars.accuracy));
 
   ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1 =
-        ext::shared_ptr<StrippedOptionletAdapter>(new
-            StrippedOptionletAdapter(optionletStripper1));
+        ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
   Handle<OptionletVolatilityStructure> vol1(strippedOptionletAdapter1);
   vol1->enableExtrapolation();
@@ -778,8 +772,8 @@ void OptionletStripperTest::testSwitchStrike() {
     vars.setCapFloorTermVolSurface();
 
     RelinkableHandle< YieldTermStructure > yieldTermStructure;
-    yieldTermStructure.linkTo(ext::shared_ptr< FlatForward >(
-        new FlatForward(0, vars.calendar, 0.03, vars.dayCounter)));
+    yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
+        0, vars.calendar, 0.03, vars.dayCounter));
 
     shared_ptr< IborIndex > iborIndex(new Euribor6M(yieldTermStructure));
 
@@ -803,8 +797,8 @@ void OptionletStripperTest::testSwitchStrike() {
                    << "\nerror:         " << io::rate(error)
                    << "\ntolerance:     " << io::rate(vars.tolerance));
 
-    yieldTermStructure.linkTo(ext::shared_ptr< FlatForward >(
-        new FlatForward(0, vars.calendar, 0.05, vars.dayCounter)));
+    yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
+        0, vars.calendar, 0.05, vars.dayCounter));
 
     #if defined(QL_USE_INDEXED_COUPON)
     expected = 0.0499381;

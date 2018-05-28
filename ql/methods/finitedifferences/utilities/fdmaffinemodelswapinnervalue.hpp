@@ -77,8 +77,8 @@ namespace QuantLib {
     : disModel_(disModel),
       fwdModel_(fwdModel),
       index_(swap->iborIndex()),
-      swap_(ext::shared_ptr<VanillaSwap>(
-          new VanillaSwap(swap->type(),
+      swap_(ext::make_shared<VanillaSwap>(
+          swap->type(),
                           swap->nominal(),
                           swap->fixedSchedule(),
                           swap->fixedRate(),
@@ -87,7 +87,7 @@ namespace QuantLib {
                           swap->iborIndex()->clone(fwdTs_),
                           swap->spread(),
                           swap->floatingDayCount(),
-                          swap->paymentConvention()))),
+                          swap->paymentConvention())),
       exerciseDates_(exerciseDates),
       mesher_(mesher),
       direction_(direction) {

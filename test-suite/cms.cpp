@@ -199,15 +199,14 @@ namespace {
             bool vegaWeightedSmileFit = false;
 
             SabrVolCube2 = Handle<SwaptionVolatilityStructure>(
-                shared_ptr<SwaptionVolCube2>(new
-                    SwaptionVolCube2(atmVol,
+                ext::make_shared<SwaptionVolCube2>(atmVol,
                                      optionTenors,
                                      swapTenors,
                                      strikeSpreads,
                                      volSpreads,
                                      swapIndexBase,
                                      shortSwapIndexBase,
-                                     vegaWeightedSmileFit)));
+                                     vegaWeightedSmileFit));
             SabrVolCube2->enableExtrapolation();
 
             std::vector<std::vector<Handle<Quote> > > guess(nRows);
@@ -229,8 +228,7 @@ namespace {
             bool isAtmCalibrated = false;
 
             SabrVolCube1 = Handle<SwaptionVolatilityStructure>(
-                shared_ptr<SwaptionVolCube1>(new
-                    SwaptionVolCube1(atmVol,
+                ext::make_shared<SwaptionVolCube1>(atmVol,
                                      optionTenors,
                                      swapTenors,
                                      strikeSpreads,
@@ -240,7 +238,7 @@ namespace {
                                      vegaWeightedSmileFit,
                                      guess,
                                      isParameterFixed,
-                                     isAtmCalibrated)));
+                                     isAtmCalibrated));
             SabrVolCube1->enableExtrapolation();
 
             yieldCurveModels.clear();

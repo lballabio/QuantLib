@@ -799,9 +799,9 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     }
 
     FdmBoundaryConditionSet bcSet;
-    bcSet.push_back(ext::shared_ptr<FdmDirichletBoundary>(
-        new FdmDirichletBoundary(mesher, 0.0, 0,
-                                 FdmDirichletBoundary::Upper)));
+    bcSet.push_back(ext::make_shared<FdmDirichletBoundary>(
+        mesher, 0.0, 0,
+                                 FdmDirichletBoundary::Upper));
 
     const Real theta=0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, hestonOp, bcSet);
@@ -955,8 +955,8 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
 
-    Handle<HestonProcess> hestonProcess(ext::shared_ptr<HestonProcess> (
-        new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8)));
+    Handle<HestonProcess> hestonProcess(ext::make_shared<HestonProcess> (
+        rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8));
 
     const Date exerciseDate(28, March, 2005);
     const Date evaluationDate(28, March, 2004);
@@ -1062,9 +1062,9 @@ namespace {
 
         const Real equityShortRateCorr = -0.7;
 
-        return ext::shared_ptr<HybridHestonHullWhiteProcess>(
-                new HybridHestonHullWhiteProcess(hestonProcess, hwFwdProcess,
-                                                 equityShortRateCorr));
+        return ext::make_shared<HybridHestonHullWhiteProcess>(
+                hestonProcess, hwFwdProcess,
+                                                 equityShortRateCorr);
     }
 
     FdmSolverDesc createSolverDesc(

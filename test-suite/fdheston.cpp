@@ -233,8 +233,8 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
              new HestonProcess(rTS, qTS, spot, v0, 1.0, v0, 0.005, 0.0));
 
         barrierOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-            new FdHestonBarrierEngine(ext::shared_ptr<HestonModel>(
-                              new HestonModel(hestonProcess)), 200, 101, 3)));
+            new FdHestonBarrierEngine(ext::make_shared<HestonModel>(
+                              hestonProcess), 200, 101, 3)));
 
         const Real calculatedHE = barrierOption.NPV();
     
@@ -277,8 +277,8 @@ void FdHestonTest::testFdmHestonBarrier() {
     BarrierOption barrierOption(Barrier::UpOut, 135, 0.0, payoff, exercise);
 
     barrierOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-            new FdHestonBarrierEngine(ext::shared_ptr<HestonModel>(
-                              new HestonModel(hestonProcess)), 50, 400, 100)));
+            new FdHestonBarrierEngine(ext::make_shared<HestonModel>(
+                              hestonProcess), 50, 400, 100)));
 
     const Real tol = 0.01;
     const Real npvExpected   =  9.1530;
@@ -329,8 +329,8 @@ void FdHestonTest::testFdmHestonAmerican() {
 
     VanillaOption option(payoff, exercise);
     ext::shared_ptr<PricingEngine> engine(
-         new FdHestonVanillaEngine(ext::shared_ptr<HestonModel>(
-                             new HestonModel(hestonProcess)), 200, 100, 50));
+         new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
+                             hestonProcess), 200, 100, 50));
     option.setPricingEngine(engine);
     
     const Real tol = 0.01;
@@ -393,8 +393,8 @@ void FdHestonTest::testFdmHestonIkonenToivanen() {
             new HestonProcess(rTS, qTS, s0, 0.0625, 5, 0.16, 0.9, 0.1));
     
         ext::shared_ptr<PricingEngine> engine(
-             new FdHestonVanillaEngine(ext::shared_ptr<HestonModel>(
-                                 new HestonModel(hestonProcess)), 100, 400));
+             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
+                                 hestonProcess), 100, 400));
         option.setPricingEngine(engine);
         
         Real calculated = option.NPV();
@@ -449,8 +449,8 @@ void FdHestonTest::testFdmHestonBlackScholes() {
 
         // Hundsdorfer scheme
         option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-             new FdHestonVanillaEngine(ext::shared_ptr<HestonModel>(
-                                           new HestonModel(hestonProcess)), 
+             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
+                                           hestonProcess), 
                                        100, 400, 3)));
         
         Real calculated = option.NPV();
@@ -464,8 +464,8 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         
         // Explicit scheme
         option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-             new FdHestonVanillaEngine(ext::shared_ptr<HestonModel>(
-                                           new HestonModel(hestonProcess)),
+             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
+                                           hestonProcess),
                                        500, 400, 3, 0,
                                        FdmSchemeDesc::ExplicitEuler())));
 
@@ -510,8 +510,8 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
     DividendVanillaOption option(payoff, exercise, dividendDates, dividends);
     ext::shared_ptr<PricingEngine> engine(
-         new FdHestonVanillaEngine(ext::shared_ptr<HestonModel>(
-                             new HestonModel(hestonProcess)), 50, 100, 50));
+         new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
+                             hestonProcess), 50, 100, 50));
     option.setPricingEngine(engine);
     
     const Real tol = 0.01;
@@ -612,8 +612,8 @@ void FdHestonTest::testFdmHestonConvergence() {
                     VanillaOption option(payoff, exercise);
                     ext::shared_ptr<PricingEngine> engine(
                          new FdHestonVanillaEngine(
-                             ext::shared_ptr<HestonModel>(
-                                 new HestonModel(hestonProcess)), 
+                             ext::make_shared<HestonModel>(
+                                 hestonProcess), 
                              tn[j], 101, 51, 0,
                              schemes[l]));
                     option.setPricingEngine(engine);
@@ -622,8 +622,8 @@ void FdHestonTest::testFdmHestonConvergence() {
                     
                     ext::shared_ptr<PricingEngine> analyticEngine(
                         new AnalyticHestonEngine(
-                            ext::shared_ptr<HestonModel>(
-                                new HestonModel(hestonProcess)), 144));
+                            ext::make_shared<HestonModel>(
+                                hestonProcess), 144));
                     
                     option.setPricingEngine(analyticEngine);
                     const Real expected = option.NPV();

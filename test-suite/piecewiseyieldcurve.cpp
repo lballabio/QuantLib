@@ -204,32 +204,32 @@ namespace {
             prices = std::vector<ext::shared_ptr<SimpleQuote> >(bonds);
             fractions = std::vector<ext::shared_ptr<SimpleQuote> >(bmas);
             for (Size i=0; i<deposits; i++) {
-                rates[i] = ext::shared_ptr<SimpleQuote>(
-                                    new SimpleQuote(depositData[i].rate/100));
+                rates[i] = ext::make_shared<SimpleQuote>(
+                                    depositData[i].rate/100);
             }
             for (Size i=0; i<swaps; i++) {
-                rates[i+deposits] = ext::shared_ptr<SimpleQuote>(
-                                       new SimpleQuote(swapData[i].rate/100));
+                rates[i+deposits] = ext::make_shared<SimpleQuote>(
+                                       swapData[i].rate/100);
             }
             for (Size i=0; i<fras; i++) {
-                fraRates[i] = ext::shared_ptr<SimpleQuote>(
-                                        new SimpleQuote(fraData[i].rate/100));
+                fraRates[i] = ext::make_shared<SimpleQuote>(
+                                        fraData[i].rate/100);
             }
             for (Size i = 0; i<bonds; i++) {
-                prices[i] = ext::shared_ptr<SimpleQuote>(
-                                          new SimpleQuote(bondData[i].price));
+                prices[i] = ext::make_shared<SimpleQuote>(
+                                          bondData[i].price);
             }
             for (Size i = 0; i<immFuts; i++) {
-                immFutPrices[i] = ext::shared_ptr<SimpleQuote>(
-                    new SimpleQuote(100.0 - immFutData[i].rate));
+                immFutPrices[i] = ext::make_shared<SimpleQuote>(
+                    100.0 - immFutData[i].rate);
             }
             for (Size i = 0; i<asxFuts; i++) {
-                asxFutPrices[i] = ext::shared_ptr<SimpleQuote>(
-                    new SimpleQuote(100.0 - asxFutData[i].rate));
+                asxFutPrices[i] = ext::make_shared<SimpleQuote>(
+                    100.0 - asxFutData[i].rate);
             }
             for (Size i = 0; i<bmas; i++) {
-                fractions[i] = ext::shared_ptr<SimpleQuote>(
-                                        new SimpleQuote(bmaData[i].rate/100));
+                fractions[i] = ext::make_shared<SimpleQuote>(
+                                        bmaData[i].rate/100);
             }
 
             // rate helpers
@@ -905,8 +905,8 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     // market elements
     vars.rates = std::vector<ext::shared_ptr<SimpleQuote> >(vars.swaps);
     for (Size i=0; i<vars.swaps; i++) {
-        vars.rates[i] = ext::shared_ptr<SimpleQuote>(
-                                       new SimpleQuote(swapData[i].rate/100));
+        vars.rates[i] = ext::make_shared<SimpleQuote>(
+                                       swapData[i].rate/100);
     }
 
     // rate helpers

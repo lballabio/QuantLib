@@ -294,11 +294,10 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate) {
-        iborIndex_ = ext::shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
+        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // never take fixing into account
                       tenor, fixingDays,
                       Currency(), calendar, convention,
-                      endOfMonth, dayCounter, termStructureHandle_));
+                      endOfMonth, dayCounter, termStructureHandle_);
         initializeDates();
     }
 
@@ -310,11 +309,10 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate) {
-        iborIndex_ = ext::shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // never take fixing into account
+        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // never take fixing into account
                       tenor, fixingDays,
                       Currency(), calendar, convention,
-                      endOfMonth, dayCounter, termStructureHandle_));
+                      endOfMonth, dayCounter, termStructureHandle_);
         initializeDates();
     }
 
@@ -389,12 +387,11 @@ namespace QuantLib {
                    ")");
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // correct family name would be needed
+        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
-                      endOfMonth, dayCounter, termStructureHandle_));
+                      endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
         initializeDates();
     }
@@ -417,12 +414,11 @@ namespace QuantLib {
                    ")");
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // correct family name would be needed
+        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
-                      endOfMonth, dayCounter, termStructureHandle_));
+                      endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
         initializeDates();
     }
@@ -475,12 +471,11 @@ namespace QuantLib {
       pillarChoice_(pillarChoice) {
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // correct family name would be needed
+        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       lengthInMonths*Months,
                       fixingDays,
                       Currency(), calendar, convention,
-                      endOfMonth, dayCounter, termStructureHandle_));
+                      endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
         initializeDates();
     }
@@ -499,12 +494,11 @@ namespace QuantLib {
       pillarChoice_(pillarChoice) {
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::shared_ptr<IborIndex>(new
-            IborIndex("no-fix", // correct family name would be needed
+        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       lengthInMonths*Months,
                       fixingDays,
                       Currency(), calendar, convention,
-                      endOfMonth, dayCounter, termStructureHandle_));
+                      endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
         initializeDates();
     }
@@ -901,7 +895,7 @@ namespace QuantLib {
                           .endOfMonth(iborIndex_->endOfMonth())
                           .backwards();
 
-        swap_ = ext::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
+        swap_ = ext::make_shared<BMASwap>(BMASwap::Payer, 100.0,
                                                 liborSchedule,
                                                 0.75, // arbitrary
                                                 0.0,
@@ -909,7 +903,7 @@ namespace QuantLib {
                                                 iborIndex_->dayCounter(),
                                                 bmaSchedule,
                                                 clonedIndex,
-                                                bmaDayCount_));
+                                                bmaDayCount_);
         swap_->setPricingEngine(ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
 

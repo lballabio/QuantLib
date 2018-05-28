@@ -41,7 +41,7 @@ namespace QuantLib {
                    Real targetValue)
             : targetValue_(targetValue) {
 
-                vol_ = ext::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+                vol_ = ext::make_shared<SimpleQuote>(0.0);
                 Handle<Quote> h(vol_);
                 engine_ = ext::shared_ptr<PricingEngine>(
                            new BlackCdsOptionEngine(probability, recoveryRate,

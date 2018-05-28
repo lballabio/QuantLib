@@ -163,8 +163,8 @@ void Gsr::initialize(Real T) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
 
-    stateProcess_ = ext::shared_ptr<GsrProcess>(new GsrProcess(
-        volsteptimesArray_, sigma_.params(), reversion_.params(), T));
+    stateProcess_ = ext::make_shared<GsrProcess>(
+        volsteptimesArray_, sigma_.params(), reversion_.params(), T);
 
     registerWith(termStructure());
 

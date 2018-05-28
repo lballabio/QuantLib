@@ -84,11 +84,11 @@ namespace QuantLib {
         // !!! notional forcibly set to 100
         setSingleRedemption(100.0, redemption, maturityDate_);
 
-        option_ = ext::shared_ptr<option>(
-                           new option(this, exercise, conversionRatio,
+        option_ = ext::make_shared<option>(
+                           this, exercise, conversionRatio,
                                       dividends, callability, creditSpread,
                                       cashflows_, dayCounter, schedule,
-                                      issueDate, settlementDays, redemption));
+                                      issueDate, settlementDays, redemption);
     }
 
 
@@ -118,11 +118,11 @@ namespace QuantLib {
 
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
-        option_ = ext::shared_ptr<option>(
-                           new option(this, exercise, conversionRatio,
+        option_ = ext::make_shared<option>(
+                           this, exercise, conversionRatio,
                                       dividends, callability, creditSpread,
                                       cashflows_, dayCounter, schedule,
-                                      issueDate, settlementDays, redemption));
+                                      issueDate, settlementDays, redemption);
     }
 
 
@@ -156,11 +156,11 @@ namespace QuantLib {
 
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
-        option_ = ext::shared_ptr<option>(
-                           new option(this, exercise, conversionRatio,
+        option_ = ext::make_shared<option>(
+                           this, exercise, conversionRatio,
                                       dividends, callability, creditSpread,
                                       cashflows_, dayCounter, schedule,
-                                      issueDate, settlementDays, redemption));
+                                      issueDate, settlementDays, redemption);
 
         registerWith(index);
     }

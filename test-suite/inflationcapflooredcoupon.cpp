@@ -149,7 +149,7 @@ namespace {
                 207.3, -999.0, -999 };
             // link from yoy index to yoy TS
             bool interp = false;
-            iir = ext::shared_ptr<YYUKRPIr>(new YYUKRPIr(interp, hy));
+            iir = ext::make_shared<YYUKRPIr>(interp, hy);
             for (Size i=0; i<rpiSchedule.size();i++) {
                 iir->addFixing(rpiSchedule[i], fixData[i]);
             }
@@ -246,15 +246,15 @@ namespace {
                               const Rate spread = 0.0) {
 
             Handle<YoYOptionletVolatilitySurface>
-            vol(ext::shared_ptr<ConstantYoYOptionletVolatility>(
-                            new ConstantYoYOptionletVolatility(volatility,
+            vol(ext::make_shared<ConstantYoYOptionletVolatility>(
+                            volatility,
                                 settlementDays,
                                 calendar,
                                 convention,
                                 dc,
                                 observationLag,
                                 frequency,
-                                iir->interpolated())));
+                                iir->interpolated()));
 
             ext::shared_ptr<YoYInflationCouponPricer> pricer;
             switch (which) {
@@ -312,15 +312,15 @@ namespace {
             yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
 
             Handle<YoYOptionletVolatilitySurface>
-            vol(ext::shared_ptr<ConstantYoYOptionletVolatility>(
-                    new ConstantYoYOptionletVolatility(volatility,
+            vol(ext::make_shared<ConstantYoYOptionletVolatility>(
+                    volatility,
                             settlementDays,
                             calendar,
                             convention,
                             dc,
                             observationLag,
                             frequency,
-                            iir->interpolated())));
+                            iir->interpolated()));
 
 
             switch (which) {

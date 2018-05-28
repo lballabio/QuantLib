@@ -306,8 +306,8 @@ namespace QuantLib {
                     if (detail::noOption(caps_, floors_, i)) { // just swaplet
                         ext::shared_ptr<CPICoupon> coup;
 
-                        coup = ext::shared_ptr<CPICoupon>
-                            (new CPICoupon(baseCPI_,    // all have same base for ratio
+                        coup = ext::make_shared<CPICoupon>
+                            (baseCPI_,    // all have same base for ratio
                                      paymentDate,
                                      detail::get(notionals_, i, 0.0),
                                      start, end,
@@ -317,7 +317,7 @@ namespace QuantLib {
                                      paymentDayCounter_,
                                      detail::get(fixedRates_, i, 0.0),
                                      detail::get(spreads_, i, 0.0),
-                                     refStart, refEnd, exCouponDate));
+                                     refStart, refEnd, exCouponDate);
 
                         // in this case you can set a pricer
                         // straight away because it only provides computation - not data

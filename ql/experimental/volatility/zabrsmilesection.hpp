@@ -132,9 +132,9 @@ template <typename Evaluation>
 void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &,
                                         ZabrShortMaturityLognormal) {
 
-    model_ = ext::shared_ptr<ZabrModel>(
-        new ZabrModel(exerciseTime(), forward_, params_[0], params_[1],
-                      params_[2], params_[3], params_[4]));
+    model_ = ext::make_shared<ZabrModel>(
+        exerciseTime(), forward_, params_[0], params_[1],
+                      params_[2], params_[3], params_[4]);
 }
 
 template <typename Evaluation>
@@ -151,9 +151,9 @@ void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
                "zabr expects 5 parameters (alpha,beta,nu,rho,gamma) but ("
                    << params_.size() << ") given");
 
-    model_ = ext::shared_ptr<ZabrModel>(
-        new ZabrModel(exerciseTime(), forward_, params_[0], params_[1],
-                      params_[2], params_[3], params_[4]));
+    model_ = ext::make_shared<ZabrModel>(
+        exerciseTime(), forward_, params_[0], params_[1],
+                      params_[2], params_[3], params_[4]);
 
     // set up strike grid for local vol or full fd flavour of this section
     // this is shared with SmileSectionUtils - unify later ?

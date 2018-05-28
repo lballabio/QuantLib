@@ -269,48 +269,44 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     //floating reference date, floating market data
     description = "floating reference date, floating market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, true, true);
 
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, true, false);
 
     // floating reference date, fixed market data
     description = "floating reference date, fixed market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, false, true);
 
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, false, false);
 
    // fixed reference date and fixed market data, option dates
@@ -333,48 +329,44 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     //floating reference date, floating market data
     description = "floating reference date, floating market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 
     // floating reference date, fixed market data
     description = "floating reference date, fixed market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
-    vol = ext::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 }
 

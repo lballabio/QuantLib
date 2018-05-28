@@ -126,15 +126,15 @@ namespace QuantLib {
                                          const Handle<YieldTermStructure>& qTS,
                                          Volatility vol) {
         
-        return ext::shared_ptr<GeneralizedBlackScholesProcess>(
-            new GeneralizedBlackScholesProcess(
+        return ext::make_shared<GeneralizedBlackScholesProcess>(
+            
                 s0, qTS, rTS,
                 Handle<BlackVolTermStructure>(
                     ext::shared_ptr<BlackVolTermStructure>(
                         new BlackConstantVol(rTS->referenceDate(),
                                              Calendar(),
                                              vol,
-                                             rTS->dayCounter())))));
+                                             rTS->dayCounter()))));
     }
 }
 

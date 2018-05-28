@@ -40,8 +40,8 @@ namespace QuantLib {
                    "KahaleSmileSection only supports shifted lognormal source "
                    "sections");
 
-        ssutils_ = ext::shared_ptr<SmileSectionUtils>(new SmileSectionUtils(
-            *source, moneynessGrid, atm, deleteArbitragePoints));
+        ssutils_ = ext::make_shared<SmileSectionUtils>(
+            *source, moneynessGrid, atm, deleteArbitragePoints);
 
         moneynessGrid_ = ssutils_->moneyGrid();
         k_ = ssutils_->strikeGrid();
@@ -194,8 +194,8 @@ namespace QuantLib {
                 if (exponentialExtrapolation_) {
                     QL_REQUIRE(-cp0 / c0 > 0.0, "dummy"); // this is caught
                                                           // below
-                    cFct = ext::shared_ptr<cFunction>(
-                        new cFunction(-cp0 / c0, std::log(c0) - cp0 / c0 * k0));
+                    cFct = ext::make_shared<cFunction>(
+                        -cp0 / c0, std::log(c0) - cp0 / c0 * k0);
                 } else {
                     sHelper sh(k0, c0, cp0);
                     Real s;
@@ -203,8 +203,8 @@ namespace QuantLib {
                                     QL_KAHALE_SMAX); // numerical parameters
                                                      // hardcoded here
                     sh(s);
-                    cFct = ext::shared_ptr<cFunction>(
-                        new cFunction(sh.f_, s, 0.0, 0.0));
+                    cFct = ext::make_shared<cFunction>(
+                        sh.f_, s, 0.0, 0.0);
                 }
                 cFunctions_[rightIndex_ - leftIndex_ + 1] = cFct;
             }

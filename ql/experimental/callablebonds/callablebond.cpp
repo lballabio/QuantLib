@@ -72,7 +72,7 @@ namespace QuantLib {
                               Real targetValue)
     : targetValue_(targetValue) {
 
-        vol_ = ext::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+        vol_ = ext::make_shared<SimpleQuote>(0.0);
         bond.blackVolQuote_.linkTo(vol_);
 
         QL_REQUIRE(bond.blackEngine_,

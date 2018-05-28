@@ -226,7 +226,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
                  DateGeneration::Backward, false);
 
     ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
-        ext::shared_ptr<std::vector<std::pair<Date, Real> > >(new std::vector<std::pair<Date, Real> >()), 
+        ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
         Date(1, Jan, 2000), Date(31, Dec, 2010)));
 
     ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
@@ -472,7 +472,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYears() {
         Date(30,November,2004), Date(30,November,2044)));
 
     ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
-        ext::shared_ptr<std::vector<std::pair<Date, Real> > >(new std::vector<std::pair<Date, Real> >()), 
+        ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
         Date(1, Jan, 2000), Date(31, Dec, 2010)));
 
     ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
@@ -553,7 +553,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYearsProportional() {
         Date(30,November,2004), Date(30,November,2044)));
 
     ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
-        ext::shared_ptr<std::vector<std::pair<Date, Real> > >(new std::vector<std::pair<Date, Real> >()), 
+        ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
         Date(1, Jan, 2000), Date(31, Dec, 2010)));
 
     ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());
@@ -629,7 +629,7 @@ void CatBondTest::testCatBondWithGeneratedEventsProportional() {
 	ext::shared_ptr<CatRisk> betaCatRisk(new BetaRisk(5000, 50, 500, 500));
 
     ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
-        ext::shared_ptr<std::vector<std::pair<Date, Real> > >(new std::vector<std::pair<Date, Real> >()), 
+        ext::make_shared<std::vector<std::pair<Date, Real> > >(), 
         Date(1, Jan, 2000), Date(31, Dec, 2010)));
 
     ext::shared_ptr<EventPaymentOffset> paymentOffset(new NoOffset());

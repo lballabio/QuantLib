@@ -88,11 +88,11 @@ namespace {
             iborIndex = ext::shared_ptr<IborIndex>(
                      new Euribor(Period(floatingFrequency), termStructure));
             Calendar calendar = iborIndex->fixingCalendar();
-            swapIndex= ext::shared_ptr<SwapIndex>(
-                new SwapIndex("EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
+            swapIndex= ext::make_shared<SwapIndex>(
+                "EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
                               iborIndex->currency(), calendar,
                               Period(fixedFrequency), fixedConvention,
-                              iborIndex->dayCounter(), iborIndex));
+                              iborIndex->dayCounter(), iborIndex);
             spread = 0.0;
             nonnullspread = 0.003;
             Date today(24,April,2007);

@@ -58,10 +58,10 @@ namespace QuantLib {
                           Date());
 
         ext::shared_ptr<CreditDefaultSwap> cds =
-            ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+            ext::make_shared<CreditDefaultSwap>(
                 side_, nominal_, upfrontRate_, couponRate_, schedule, Following,
                 dayCounter_, true, true, start, upfrontDate,
-                ext::shared_ptr<Claim>(), lastPeriodDayCounter_, true));
+                ext::shared_ptr<Claim>(), lastPeriodDayCounter_, true);
 
         cds->setPricingEngine(engine_);
         return cds;

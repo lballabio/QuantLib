@@ -433,7 +433,7 @@ namespace QuantLib {
 
         if (logging_) {
             const LogEntry entry = { timeGrid->at(1),
-                ext::shared_ptr<Array>(new Array(p)), mesher };
+                ext::make_shared<Array>(p), mesher };
             logEntries_.push_back(entry);
         }
 
@@ -534,7 +534,7 @@ namespace QuantLib {
 
             if (logging_) {
                 const LogEntry entry
-                    = { t, ext::shared_ptr<Array>(new Array(p)), mesher };
+                    = { t, ext::make_shared<Array>(p), mesher };
                 logEntries_.push_back(entry);
             }
         }

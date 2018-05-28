@@ -245,12 +245,12 @@ namespace QuantLib {
                 // helper should be an integer number of periods away,
                 // this is enforced by rounding
                 Size nT = (Size)floor(s->timeFromReference(s->yoyOptionDateFromTenor(Tp))+0.5);
-                helpers.push_back(ext::shared_ptr<YoYOptionletHelper>(
-                          new YoYOptionletHelper(quote1, notional, useType,
+                helpers.push_back(ext::make_shared<YoYOptionletHelper>(
+                          quote1, notional, useType,
                                                  lag_,
                                                  dc, cal,
                                                  fixingDays_,
-                                                 anIndex, K, nT, p_)));
+                                                 anIndex, K, nT, p_));
 
                 ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
                           new ConstantYoYOptionletVolatility(found, settlementDays,

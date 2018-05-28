@@ -125,8 +125,8 @@ namespace QuantLib {
         if (type() == Floor || type() == Collar)
             floor.push_back(floorRates()[i]);
 
-        return ext::shared_ptr<YoYInflationCapFloor>(new YoYInflationCapFloor(type(),
-                                                    cf, cap, floor));
+        return ext::make_shared<YoYInflationCapFloor>(type(),
+                                                    cf, cap, floor);
     }
 
     void YoYInflationCapFloor::setupArguments(PricingEngine::arguments* args) const {

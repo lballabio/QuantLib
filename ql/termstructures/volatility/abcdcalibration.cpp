@@ -89,9 +89,8 @@ namespace QuantLib {
             Real rootEpsilon = 1.0e-8;
             Real functionEpsilon = 0.3e-4;     // Why 0.3e-4 ?
             Real gradientNormEpsilon = 0.3e-4; // Why 0.3e-4 ?
-            endCriteria_ = ext::shared_ptr<EndCriteria>(new
-                EndCriteria(maxIterations, maxStationaryStateIterations,
-                            rootEpsilon, functionEpsilon, gradientNormEpsilon));
+            endCriteria_ = ext::make_shared<EndCriteria>(maxIterations, maxStationaryStateIterations,
+                            rootEpsilon, functionEpsilon, gradientNormEpsilon);
         }
     }
 
