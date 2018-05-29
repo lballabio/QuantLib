@@ -109,7 +109,7 @@ namespace QuantLib {
                                boost::shared_ptr<T>,
                                bool> {
         bool operator()(const boost::shared_ptr<T>& x,
-                        const boost::shared_ptr<T>& y) {
+                        const boost::shared_ptr<T>& y) const {
             return earlier_than<T>()(*x,*y);
         }
     };
