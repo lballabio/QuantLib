@@ -84,6 +84,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/auto_ptr.hpp>
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>
@@ -2201,7 +2202,7 @@ void MarketModelTest::testPathwiseGreeks()
         MarketModelPathwiseMultiCaplet product2(rateTimes, accruals,
             paymentTimes, todaysForwards);
 
-        std::auto_ptr<MarketModelPathwiseMultiProduct> product;
+        Clone<MarketModelPathwiseMultiProduct> product;
 
         if (whichProduct == 0)
             product = product2.clone();
@@ -3150,7 +3151,7 @@ void MarketModelTest::testPathwiseVegas()
 
             for (Size deflate =0; deflate <2; ++deflate)
             {
-                std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse;
+                Clone<MarketModelPathwiseMultiProduct> productToUse;
 
                 if (deflate ==0)
                     productToUse = caplets.clone();
@@ -3319,7 +3320,7 @@ void MarketModelTest::testPathwiseVegas()
                     // for deltas and prices the pathwise vega engine should agree precisely with the pathwiseaccounting engine
                     // so lets see if it does
 
-                    std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse2;
+                    Clone<MarketModelPathwiseMultiProduct> productToUse2;
 
                     if (deflate ==0)
                         productToUse2 = caplets.clone();

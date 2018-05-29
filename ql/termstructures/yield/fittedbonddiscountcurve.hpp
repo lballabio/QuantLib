@@ -195,7 +195,11 @@ namespace QuantLib {
         //! final value of cost function after optimization
         Real minimumCostValue() const;
         //! clone of the current object
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        virtual std::unique_ptr<FittingMethod> clone() const = 0;
+        #else
         virtual std::auto_ptr<FittingMethod> clone() const = 0;
+        #endif
         //! return whether there is a constraint at zero
         bool constrainAtZero() const;
         //! return weights being used
