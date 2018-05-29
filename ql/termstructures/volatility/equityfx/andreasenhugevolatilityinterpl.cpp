@@ -517,7 +517,7 @@ namespace QuantLib {
         const Real s = std::max(gridPoints_[1],
             std::min(*(gridPoints_.end()-2), k));
 
-        return f->second.get<2>()->operator()(s);
+        return (*(f->second.get<2>()))(s);
     }
 
     Disposable<Array> AndreasenHugeVolatilityInterpl::getPriceSlice(

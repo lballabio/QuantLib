@@ -168,20 +168,20 @@ namespace QuantLib {
         const interpl_type::const_iterator ge = interpl.lower_bound(t);
 
         if (close_enough(ge->first, t)) {
-            return ge->second->operator()(x, true);
+            return (*ge->second)(x, true);
         }
 
         QL_REQUIRE(ge != interpl.end() && ge != interpl.begin(),
              "extrapolation to large or small t is not allowed");
 
         const Time t1 = ge->first;
-        const Real y1 = ge->second->operator()(x, true);
+        const Real y1 = (*ge->second)(x, true);
 
         interpl_type::const_iterator lt = ge;
         std::advance(lt, -1);
 
         const Time t0 = lt->first;
-        const Real y0 = lt->second->operator()(x, true);
+        const Real y0 = (*lt->second)(x, true);
 
         return y0 + (y1 - y0)/(t1 - t0)*(t - t0);
     }

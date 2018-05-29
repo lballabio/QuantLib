@@ -43,7 +43,7 @@ namespace QuantLib {
 
             Real innerValue(const FdmLinearOpIterator& iter, Time t) {
                 const Real s = mesher_->location(iter, direction_);
-                return payoff_->operator()(s);
+                return (*payoff_)(s);
             }
 
             Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {

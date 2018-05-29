@@ -187,7 +187,7 @@ namespace QuantLib {
 
     Real FdmExtOUJumpOp::IntegroIntegrand::operator()(Real u) const {
         const Real y = y_ + u/eta_;
-        Real valueOfDerivative = interpl_->operator()(y, true);
+        Real valueOfDerivative = (*interpl_)(y, true);
 
         for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
             iter < bcSet_.end(); ++iter) {

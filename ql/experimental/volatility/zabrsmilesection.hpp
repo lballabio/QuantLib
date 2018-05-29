@@ -238,8 +238,8 @@ void ZabrSmileSection<Evaluation>::init3(ZabrLocalVolatility) {
     // we precompute the necessary parameters here
     static const Real eps = 1E-5; // gap for first derivative computation
 
-    Real c0 = callPriceFct_->operator()(strikes_.back());
-    Real c0p = (callPriceFct_->operator()(strikes_.back() - eps) - c0) / eps;
+    Real c0 = (*callPriceFct_)(strikes_.back());
+    Real c0p = ((*callPriceFct_)(strikes_.back() - eps) - c0) / eps;
 
     a_ = c0p / c0;
     b_ = std::log(c0) + a_ * strikes_.back();
@@ -271,7 +271,7 @@ template <typename Evaluation>
 Real ZabrSmileSection<Evaluation>::optionPrice(Rate strike, Option::Type type,
                                                Real discount,
                                                ZabrLocalVolatility) const {
-    Real call = strike <= strikes_.back() ? callPriceFct_->operator()(strike)
+    Real call = strike <= strikes_.back() ? (*callPriceFct_)(strike)
                                           : exp(-a_ * strike + b_);
     if (type == Option::Call)
         return call * discount;

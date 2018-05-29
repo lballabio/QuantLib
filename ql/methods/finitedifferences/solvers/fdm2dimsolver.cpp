@@ -86,7 +86,7 @@ namespace QuantLib {
 
     Real Fdm2DimSolver::interpolateAt(Real x, Real y) const {
         calculate();
-        return interpolation_->operator()(x, y);
+        return (*interpolation_)(x, y);
     }
 
     Real Fdm2DimSolver::thetaAt(Real x, Real y) const {

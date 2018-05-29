@@ -80,16 +80,16 @@ namespace QuantLib {
             k_ - b_ * s2_ * std::exp((m2_ - 0.5 * v2_ * v2_) * fixingTime_ +
                                      v2_ * std::sqrt(fixingTime_) * v);
         Real phi1, phi2;
-        phi1 = cnd_->operator()(
+        phi1 = (*cnd_)(
             phi_ * (std::log(a_ * s1_ / h) +
                     (m1_ + (0.5 - rho_ * rho_) * v1_ * v1_) * fixingTime_ +
                     rho_ * v1_ * std::sqrt(fixingTime_) * v) /
             (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
-        phi2 =
-            cnd_->operator()(phi_ * (std::log(a_ * s1_ / h) +
-                                     (m1_ - 0.5 * v1_ * v1_) * fixingTime_ +
-                                     rho_ * v1_ * std::sqrt(fixingTime_) * v) /
-                             (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
+        phi2 = (*cnd_)(
+            phi_ * (std::log(a_ * s1_ / h) +
+                    (m1_ - 0.5 * v1_ * v1_) * fixingTime_ +
+                    rho_ * v1_ * std::sqrt(fixingTime_) * v) /
+            (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
         Real f = a_ * phi_ * s1_ *
                      std::exp(m1_ * fixingTime_ -
                               0.5 * rho_ * rho_ * v1_ * v1_ * fixingTime_ +
@@ -115,7 +115,7 @@ namespace QuantLib {
                 ? std::max(beta, 0.0)
                 : psi_ * alpha_ / (M_SQRTPI * M_SQRT2) *
                           std::exp(-beta * beta / (2.0 * alpha_ * alpha_)) +
-                      beta * (1.0 - cnd_->operator()(-psi_ * beta / alpha_));
+                      beta * (1.0 - (*cnd_)(-psi_ * beta / alpha_));
         return std::exp(-x * x) * f;
     }
 
@@ -285,7 +285,7 @@ namespace QuantLib {
             }
             res +=
                 1.0 / M_SQRTPI *
-                integrator_->operator()(std::bind1st(
+                (*integrator_)(std::bind1st(
                     std::mem_fun(&LognormalCmsSpreadPricer::integrand), this));
         } else {
             // normal volatility

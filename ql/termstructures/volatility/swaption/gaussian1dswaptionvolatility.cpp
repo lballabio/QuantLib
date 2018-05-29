@@ -53,7 +53,7 @@ Gaussian1dSwaptionVolatility::smileSectionImpl(Time optionTime,
         365.25 * optionTime + static_cast<Real>(referenceDate().serialNumber()),
         1.0)));
     Period tenor(
-        static_cast<Integer>(Rounding(0).operator()(swapLength * 12.0)),
+        static_cast<Integer>(Rounding(0)(swapLength * 12.0)),
         Months);
     d = indexBase_->fixingCalendar().adjust(d);
     return smileSectionImpl(d, tenor);

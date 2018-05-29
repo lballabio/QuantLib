@@ -1146,7 +1146,7 @@ void BarrierOptionTest::testDividendBarrierOption() {
 
     const Real expected[] = {
         rTS->discount(divDate)*rebate,
-        payoff->operator()(
+        (*payoff)(
             (spot - divAmount*rTS->discount(divDate))/rTS->discount(maturity))
             *rTS->discount(maturity)
     };

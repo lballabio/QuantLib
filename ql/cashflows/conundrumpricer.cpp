@@ -432,20 +432,20 @@ namespace QuantLib {
     }
 
     Real NumericHaganPricer::ConundrumIntegrand::functionF (const Real x) const {
-        const Real Gx = gFunction_->operator()(x);
-        const Real GR = gFunction_->operator()(forwardValue_);
+        const Real Gx = (*gFunction_)(x);
+        const Real GR = (*gFunction_)(forwardValue_);
         return (x - strike_) * (Gx/GR - 1.0);
     }
 
     Real NumericHaganPricer::ConundrumIntegrand::firstDerivativeOfF (const Real x) const {
-        const Real Gx = gFunction_->operator()(x);
-        const Real GR = gFunction_->operator()(forwardValue_) ;
+        const Real Gx = (*gFunction_)(x);
+        const Real GR = (*gFunction_)(forwardValue_) ;
         const Real G1 = gFunction_->firstDerivative(x);
         return (Gx/GR - 1.0) + G1/GR * (x - strike_);
     }
 
     Real NumericHaganPricer::ConundrumIntegrand::secondDerivativeOfF (const Real x) const {
-        const Real GR = gFunction_->operator()(forwardValue_) ;
+        const Real GR = (*gFunction_)(forwardValue_) ;
         const Real G1 = gFunction_->firstDerivative(x);
         const Real G2 = gFunction_->secondDerivative(x);
         return 2.0 * G1/GR + (x - strike_) * G2/GR;

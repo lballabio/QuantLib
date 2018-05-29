@@ -156,7 +156,7 @@ namespace {
 
         Array payoffTimesDensity(x.size());
         for (Size i=0; i < x.size(); ++i) {
-            payoffTimesDensity[i] = payoff->operator()(std::exp(x[i]))*p[i];
+            payoffTimesDensity[i] = (*payoff)(std::exp(x[i]))*p[i];
         }
 
         CubicNaturalSpline f(x.begin(), x.end(), payoffTimesDensity.begin());
@@ -859,7 +859,7 @@ namespace {
                     const Size idx = iter.index();
                     const Real s = std::exp(mesher->location(iter, 0));
 
-                    pd[idx] = payoff->operator()(s)*p[idx];
+                    pd[idx] = (*payoff)(s)*p[idx];
                     if (transformationType == FdmSquareRootFwdOp::Power) {
                         const Real v = mesher->location(iter, 1);
                         pd[idx] *= std::pow(v, -alpha);
@@ -1215,7 +1215,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
             const Size idx = iter.index();
             const Real s = std::exp(mesher->location(iter, 0));
 
-            pd[idx] = payoff->operator()(s)*p[idx];
+            pd[idx] = (*payoff)(s)*p[idx];
         }
 
         const Real calculated

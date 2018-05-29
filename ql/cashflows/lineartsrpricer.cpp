@@ -327,14 +327,14 @@ namespace QuantLib {
         if (upper > lower) {
             tmpBound = std::min(upper, swapRateValue_);
             if (tmpBound > lower) {
-                result += integrator_->operator()(
+                result += (*integrator_)(
                     std::bind1st(std::mem_fun(&LinearTsrPricer::integrand),
                                  this),
                     lower, tmpBound);
             }
             tmpBound = std::max(lower, swapRateValue_);
             if (upper > tmpBound) {
-                result += integrator_->operator()(
+                result += (*integrator_)(
                     std::bind1st(std::mem_fun(&LinearTsrPricer::integrand),
                                  this),
                     tmpBound, upper);
