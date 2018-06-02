@@ -24,6 +24,8 @@
 
 class NthOrderDerivativeOpTest {
    public:
+    static void testSparseMatrixApply();
+    static void testFirstOrder2PointsApply();
     static void testFirstOrder3PointsOnUniformGrid();
     static void testFirstOrder5PointsOnUniformGrid();
     static void testFirstOrder2PointsOnUniformGrid();

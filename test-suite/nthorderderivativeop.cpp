@@ -56,6 +56,43 @@ using namespace boost::unit_test_framework;
 
 #ifndef QL_NO_UBLAS_SUPPORT
 
+void NthOrderDerivativeOpTest::testSparseMatrixApply() {
+    BOOST_TEST_MESSAGE("Testing sparse matrix apply...");
+
+    SparseMatrix sm(5,7);
+
+    BOOST_CHECK(sm.size1() == SparseMatrix::size_type(5));
+    BOOST_CHECK(sm.size2() == SparseMatrix::size_type(7));
+
+    sm(1,3) = 3.0;
+
+    const Array x(7,0.0,1.0);
+    const Array y = prod(sm, x);
+
+    BOOST_CHECK(close_enough(y[0], 0.0));
+    BOOST_CHECK(close_enough(y[1], 3.0*3.0));
+    BOOST_CHECK(close_enough(y[2], 0.0));
+    BOOST_CHECK(close_enough(y[3], 0.0));
+    BOOST_CHECK(close_enough(y[4], 0.0));
+}
+
+void NthOrderDerivativeOpTest::testFirstOrder2PointsApply() {
+    BOOST_TEST_MESSAGE("Testing two points first order "
+            "derivative operator apply on an uniform grid...");
+
+    const Real dx = 1/5.0;
+
+    const NthOrderDerivativeOp op(0, 1, 3,
+        boost::make_shared<FdmMesherComposite>(
+            boost::make_shared<Uniform1dMesher>(0.0, 1.0, 6)));
+
+    const Array x(6,0.0, 1.0);
+    const Array y = op.apply(x);
+
+    for (Size i=0; i < x.size(); ++i)
+        BOOST_CHECK(close_enough(y[i], 1/dx));
+}
+
 void NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid() {
     BOOST_TEST_MESSAGE("Testing three points first order "
             "derivative operator on an uniform grid...");
@@ -680,6 +717,10 @@ test_suite* NthOrderDerivativeOpTest::suite() {
 
 #ifndef QL_NO_UBLAS_SUPPORT
 
+    suite->add(QUANTLIB_TEST_CASE(
+        &NthOrderDerivativeOpTest::testSparseMatrixApply));
+    suite->add(QUANTLIB_TEST_CASE(
+        &NthOrderDerivativeOpTest::testFirstOrder2PointsApply));
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid));
     suite->add(QUANTLIB_TEST_CASE(

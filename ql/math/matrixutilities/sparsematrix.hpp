@@ -70,7 +70,7 @@ namespace QuantLib {
         SparseMatrixReference;
 
     inline Disposable<Array> prod(const SparseMatrix& A, const Array& x) {
-        Array b(x.size());
+        Array b(x.size(), 0.0);
 
         for (Size i=0; i < A.filled1()-1; ++i) {
             const Size begin = A.index1_data()[i];
