@@ -2205,9 +2205,9 @@ void MarketModelTest::testPathwiseGreeks()
         Clone<MarketModelPathwiseMultiProduct> product;
 
         if (whichProduct == 0)
-            product = product2.clone();
+            product = product2;
         else
-            product = product1.clone();
+            product = product1;
 
 
         MultiStepOptionlets productDummy(rateTimes, accruals,
@@ -3154,9 +3154,9 @@ void MarketModelTest::testPathwiseVegas()
                 Clone<MarketModelPathwiseMultiProduct> productToUse;
 
                 if (deflate ==0)
-                    productToUse = caplets.clone();
+                    productToUse = caplets;
                 else
-                    productToUse = capletsDeflated.clone();
+                    productToUse = capletsDeflated;
 
                 for (Size k=0; k<LENGTH(measures); k++)
                 {
@@ -3323,9 +3323,9 @@ void MarketModelTest::testPathwiseVegas()
                     Clone<MarketModelPathwiseMultiProduct> productToUse2;
 
                     if (deflate ==0)
-                        productToUse2 = caplets.clone();
+                        productToUse2 = caplets;
                     else
-                        productToUse2 = capletsDeflated.clone();
+                        productToUse2 = capletsDeflated;
 
 
                     SequenceStatisticsInc stats(productToUse2->numberOfProducts()*(todaysForwards.size()+1));
@@ -3425,8 +3425,6 @@ void MarketModelTest::testPathwiseVegas()
                     paymentTimes,
                     capStrike,
                     startsAndEnds);
-
-                // define  productToUse = capletsDeflated.clone();
 
                 for (Size k=0; k<LENGTH(measures); k++)
                 {
