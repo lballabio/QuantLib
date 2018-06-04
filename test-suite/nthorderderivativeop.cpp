@@ -698,7 +698,8 @@ void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
     SavedSettings backup;
 
     const Real n1 = priceQuality(1.0/50);
-    const Real n3 = RichardsonExtrapolation(priceQuality, 1.0/50, 4.0)(2.0);
+    const Real n3
+        = std::fabs(RichardsonExtrapolation(priceQuality, 1.0/50, 4.0)(2.0));
 
     const Real r2 = std::log(n1/n3)*M_LOG2E;
 
