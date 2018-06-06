@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file impliciteulerscheme.hpp
-    \brief Implicit-Euler scheme
+/*! \file trbdf2scheme.hpp
+    \brief trapezoidal BDF2 scheme
 */
 
 #ifndef quantlib_tr_bdf2_hpp

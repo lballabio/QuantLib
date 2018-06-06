@@ -20,7 +20,6 @@
 #include <ql/experimental/barrieroption/vannavolgabarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
-#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
