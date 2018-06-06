@@ -101,5 +101,6 @@ namespace QuantLib {
     }
 
     Size ImplicitEulerScheme::numberOfIterations() const {
-        return *iterations_;    }
+        return *iterations_;
+    }
 }

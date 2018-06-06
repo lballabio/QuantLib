@@ -1,0 +1,153 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2018 Klaus Spanderen
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \file impliciteulerscheme.hpp
+    \brief Implicit-Euler scheme
+*/
+
+#ifndef quantlib_tr_bdf2_hpp
+#define quantlib_tr_bdf2_hpp
+
+#include <ql/math/functional.hpp>
+#include <ql/math/matrixutilities/bicgstab.hpp>
+#include <ql/methods/finitedifferences/operatortraits.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/methods/finitedifferences/schemes/boundaryconditionschemehelper.hpp>
+
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+#include <boost/bind.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
+#include <boost/function.hpp>
+#include <boost/make_shared.hpp>
+
+namespace QuantLib {
+
+    template <class TrapezoidalScheme>
+    class TrBDF2Scheme {
+      public:
+        enum SolverType { BiCGstab, GMRES };
+
+        // typedefs
+        typedef OperatorTraits<FdmLinearOp> traits;
+        typedef traits::operator_type operator_type;
+        typedef traits::array_type array_type;
+        typedef traits::bc_set bc_set;
+        typedef traits::condition_type condition_type;
+
+        // constructors
+        TrBDF2Scheme(
+            Real alpha,
+            const boost::shared_ptr<FdmLinearOpComposite>& map,
+            const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
+            const bc_set& bcSet = bc_set(),
+            Real relTol = 1e-8,
+            SolverType solverType = BiCGstab);
+
+        void step(array_type& a, Time t);
+        void setStep(Time dt);
+
+        Size numberOfIterations() const;
+      protected:
+        Disposable<Array> apply(const Array& r) const;
+
+        Time dt_;
+        boost::shared_ptr<Size> iterations_;
+
+        const Real alpha_;
+        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme_;
+        const BoundaryConditionSchemeHelper bcSet_;
+        const Real relTol_;
+        const SolverType solverType_;
+    };
+
+    template <class TrapezoidalScheme>
+    inline TrBDF2Scheme<TrapezoidalScheme>::TrBDF2Scheme(
+        Real alpha,
+        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
+        const bc_set& bcSet,
+        Real relTol,
+        SolverType solverType)
+    : dt_(Null<Real>()),
+      iterations_(boost::make_shared<Size>(0u)),
+      alpha_(alpha),
+      map_(map),
+      trapezoidalScheme_(trapezoidalScheme),
+      bcSet_(bcSet),
+      relTol_(relTol),
+      solverType_(solverType) {}
+
+    template <class TrapezoidalScheme>
+    void TrBDF2Scheme<TrapezoidalScheme>::setStep(Time dt) {
+        dt_=dt;
+    }
+
+    template <class TrapezoidalScheme>
+    Size TrBDF2Scheme<TrapezoidalScheme>::numberOfIterations() const {
+        return *iterations_;
+    }
+
+    template <class TrapezoidalScheme>
+    Disposable<Array> TrBDF2Scheme<TrapezoidalScheme>::apply(
+        const Array& r) const {
+        return r - (1.0-alpha_)/(2.0-alpha_)*dt_*map_->apply(r);
+    }
+
+    template <class TrapezoidalScheme>
+    void TrBDF2Scheme<TrapezoidalScheme>::step(array_type& fn, Time t) {
+
+        QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
+
+        const Time intermediateTimeStep = dt_*alpha_;
+
+        array_type fStar = fn;
+        trapezoidalScheme_->setStep(intermediateTimeStep);
+        trapezoidalScheme_->step(fStar, t);
+
+        bcSet_.setTime(std::max(0.0, t-dt_));
+        bcSet_.applyBeforeSolving(*map_, fn);
+
+        const array_type f =
+            (1/alpha_*fStar - square<Real>()(1-alpha_)/alpha_*fn)/(2-alpha_);
+
+        const BiCGStabResult result =
+            QuantLib::BiCGstab(
+                boost::function<Disposable<Array>(const Array&)>(
+                    boost::bind(
+                        &TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1)),
+                std::max(Size(10), fn.size()), relTol_,
+                boost::function<Disposable<Array>(const Array&)>(
+                    boost::bind(&FdmLinearOpComposite::preconditioner,
+                                map_, _1, -(1.0-alpha_)/(2.0-alpha_)*dt_))
+            ).solve(f, f);
+
+        (*iterations_) += result.iterations;
+        fn = result.x;
+
+        bcSet_.applyAfterSolving(fn);
+    }
+}
+
+#endif
