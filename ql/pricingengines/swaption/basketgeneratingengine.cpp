@@ -161,7 +161,7 @@ namespace QuantLib {
 
                 boost::shared_ptr<MatchHelper> matchHelper_;
                 matchHelper_ = boost::shared_ptr<MatchHelper>(new MatchHelper(
-                    underlyingType(), npv, delta, gamma, onefactormodel_,
+                    underlyingType(), npv, delta, gamma, *onefactormodel_,
                     standardSwapBase, expiry, maxMaturity, h));
 
                 // Optimize
