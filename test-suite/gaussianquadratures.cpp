@@ -92,9 +92,9 @@ namespace {
         testSingle(I, "f(x) = x^2",
                    square<Real>(),           2/3.);
         testSingle(I, "f(x) = sin(x)",
-                   std::ptr_fun<Real,Real>(std::sin), 0.0);
+                   static_cast<Real(*)(Real)>(std::sin), 0.0);
         testSingle(I, "f(x) = cos(x)",
-                   std::ptr_fun<Real,Real>(std::cos),
+                   static_cast<Real(*)(Real)>(std::cos),
                    std::sin(1.0)-std::sin(-1.0));
         testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(),
@@ -105,9 +105,9 @@ namespace {
     template <class T>
     void testSingleLaguerre(const T& I) {
         testSingle(I, "f(x) = exp(-x)",
-                   std::ptr_fun<Real,Real>(inv_exp), 1.0);
+                   inv_exp, 1.0);
         testSingle(I, "f(x) = x*exp(-x)",
-                   std::ptr_fun<Real,Real>(x_inv_exp), 1.0);
+                   x_inv_exp, 1.0);
         testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(), 0.5);
     }
@@ -148,9 +148,9 @@ void GaussianQuadraturesTest::testLaguerre() {
      testSingleLaguerre(GaussLaguerreIntegration(150,0.01));
 
      testSingle(GaussLaguerreIntegration(16, 1.0), "f(x) = x*exp(-x)",
-                std::ptr_fun<Real,Real>(x_inv_exp), 1.0);
+                x_inv_exp, 1.0);
      testSingle(GaussLaguerreIntegration(32, 0.9), "f(x) = x*exp(-x)",
-                std::ptr_fun<Real,Real>(x_inv_exp), 1.0);
+                x_inv_exp, 1.0);
 }
 
 void GaussianQuadraturesTest::testHermite() {
@@ -159,18 +159,18 @@ void GaussianQuadraturesTest::testHermite() {
      testSingle(GaussHermiteIntegration(16), "f(x) = Gaussian(x)",
                 NormalDistribution(), 1.0);
      testSingle(GaussHermiteIntegration(16,0.5), "f(x) = x*Gaussian(x)",
-                std::ptr_fun<Real,Real>(x_normaldistribution), 0.0);
+                x_normaldistribution, 0.0);
      testSingle(GaussHermiteIntegration(64,0.9), "f(x) = x*x*Gaussian(x)",
-                std::ptr_fun<Real,Real>(x_x_normaldistribution), 1.0);
+                x_x_normaldistribution, 1.0);
 }
 
 void GaussianQuadraturesTest::testHyperbolic() {
      BOOST_TEST_MESSAGE("Testing Gauss hyperbolic integration...");
 
      testSingle(GaussHyperbolicIntegration(16), "f(x) = 1/cosh(x)",
-                std::ptr_fun<Real,Real>(inv_cosh), M_PI);
+                inv_cosh, M_PI);
      testSingle(GaussHyperbolicIntegration(16), "f(x) = x/cosh(x)",
-                std::ptr_fun<Real,Real>(x_inv_cosh), 0.0);
+                x_inv_cosh, 0.0);
 }
 
 void GaussianQuadraturesTest::testTabulated() {
@@ -195,12 +195,12 @@ void GaussianQuadraturesTest::testNonCentralChiSquared() {
      testSingle(
         GaussianQuadrature(2, GaussNonCentralChiSquaredPolynomial(4.0, 1.0)),
         "f(x) = x^2 * nonCentralChiSquared(4, 1)(x)",
-        std::ptr_fun<Real,Real>(x_x_nonCentralChiSquared), 37.0);
+        x_x_nonCentralChiSquared, 37.0);
 
      testSingle(
         GaussianQuadrature(14, GaussNonCentralChiSquaredPolynomial(1.0, 1.0)),
         "f(x) = x * sin(0.1*x)*exp(0.3*x)*nonCentralChiSquared(1, 1)(x)",
-        std::ptr_fun<Real,Real>(x_sin_exp_nonCentralChiSquared), 17.408092);
+        x_sin_exp_nonCentralChiSquared, 17.408092);
 }
 
 

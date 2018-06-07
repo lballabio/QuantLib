@@ -89,7 +89,7 @@ namespace QuantLib {
         }
         void regridLogGrid(Real min, Real max) {
             regrid(BoundedLogGrid(min, max, size()-1),
-                   std::ptr_fun<Real,Real>(std::log));
+                   static_cast<Real(*)(Real)>(std::log));
         }
         void shiftGrid(Real s) {
             grid_ += s;

@@ -45,6 +45,17 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        struct close_enough_to {
+            Real y;
+            Size n;
+            close_enough_to(Real y, Size n=42) : y(y), n(n) {}
+            bool operator()(Real x) const { return close_enough(x, y, n); }
+        };
+
+    }
+
     class AndreasenHugeCostFunction : public CostFunction {
       public:
         AndreasenHugeCostFunction(
@@ -300,7 +311,7 @@ namespace QuantLib {
 
             const Size k = std::distance(strikes_.begin(),
                 std::find_if(strikes_.begin(), strikes_.end(),
-                    std::bind2nd(std::ptr_fun(close_enough), strike)));
+                             close_enough_to(strike)));
 
             calibrationMatrix_[l][k] = i;
         }

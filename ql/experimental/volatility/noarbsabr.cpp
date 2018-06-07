@@ -42,6 +42,16 @@ class NoArbSabrModel::integrand {
     }
 };
 
+class NoArbSabrModel::p_integrand {
+    const NoArbSabrModel* model;
+  public:
+    p_integrand(const NoArbSabrModel* model)
+    : model(model) {}
+    Real operator()(Real f) const {
+        return model->p(f);
+    }
+};
+
 NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
                                const Real alpha, const Real beta, const Real nu,
                                const Real rho)
@@ -124,16 +134,15 @@ Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
     if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
         return 0.0;
     return (1.0 - absProb_)
-        * ((*integrator_)(std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
+        * ((*integrator_)(p_integrand(this),
                           strike, std::max(fmax_, 2.0 * strike)) /
            numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
     forward_ = forward * forward + detail::NoArbSabrModel::strike_min;
-    numericalIntegralOverP_ = (*integrator_)(
-        std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
-        fmin_, fmax_);
+    numericalIntegralOverP_ = (*integrator_)(p_integrand(this),
+                                             fmin_, fmax_);
     return optionPrice(0.0) - externalForward_;
 }
 

@@ -35,6 +35,18 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        struct mapped_payoff {
+            mapped_payoff(const Payoff& payoff) : payoff(payoff) {}
+            Real operator()(Real x) const {
+                return payoff(std::exp(x));
+            }
+            const Payoff& payoff;
+        };
+
+    }
+
     FdmLogInnerValue::FdmLogInnerValue(
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<FdmMesher>& mesher,
@@ -84,9 +96,7 @@ namespace QuantLib {
         if (coord < dim-1) {
             b += mesher_->dplus(iter, direction_)/2.0;
         }
-        boost::function1<Real, Real> f = compose(
-            std::bind1st(std::mem_fun(&Payoff::operator()), payoff_.get()),
-                         std::ptr_fun<Real,Real>(std::exp));
+        mapped_payoff f(*payoff_);
         
         Real retVal;
         try {

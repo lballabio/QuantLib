@@ -37,7 +37,16 @@
 
 namespace QuantLib {
 
-   const Real LinearTsrPricer::defaultLowerBound = 0.0001,
+    class LinearTsrPricer::integrand_f {
+        const LinearTsrPricer* pricer;
+      public:
+        integrand_f(const LinearTsrPricer* pricer) : pricer(pricer) {}
+        Real operator()(Real x) const {
+            return pricer->integrand(x);
+        }
+    };
+
+    const Real LinearTsrPricer::defaultLowerBound = 0.0001,
              LinearTsrPricer::defaultUpperBound = 2.0000;
 
     LinearTsrPricer::LinearTsrPricer(
@@ -328,15 +337,13 @@ namespace QuantLib {
             tmpBound = std::min(upper, swapRateValue_);
             if (tmpBound > lower) {
                 result += integrator_->operator()(
-                    std::bind1st(std::mem_fun(&LinearTsrPricer::integrand),
-                                 this),
+                    integrand_f(this),
                     lower, tmpBound);
             }
             tmpBound = std::max(lower, swapRateValue_);
             if (upper > tmpBound) {
                 result += integrator_->operator()(
-                    std::bind1st(std::mem_fun(&LinearTsrPricer::integrand),
-                                 this),
+                    integrand_f(this),
                     tmpBound, upper);
             }
             result *= (optionType == Option::Call ? 1.0 : -1.0);

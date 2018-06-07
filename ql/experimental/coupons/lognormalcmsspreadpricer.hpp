@@ -99,6 +99,9 @@ namespace QuantLib {
         Real integrand(const Real) const;
         Real integrand_normal(const Real) const;
 
+        class integrand_f;
+        friend class integrand_f;
+
         boost::shared_ptr<CmsCouponPricer> cmsPricer_;
 
         Handle<YieldTermStructure> couponDiscountCurve_;

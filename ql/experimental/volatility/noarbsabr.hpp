@@ -132,6 +132,8 @@ class NoArbSabrModel {
     boost::shared_ptr<GaussLobattoIntegral> integrator_;
     class integrand;
     friend class integrand;
+    class p_integrand;
+    friend class p_integrand;
 };
 
 namespace detail {
