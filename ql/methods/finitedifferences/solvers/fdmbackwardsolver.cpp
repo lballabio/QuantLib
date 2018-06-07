@@ -177,16 +177,16 @@ namespace QuantLib {
           case FdmSchemeDesc::TrBDF2Type:
             {
                 const FdmSchemeDesc trDesc
-                    = FdmSchemeDesc::ModifiedHundsdorfer();
+                    = FdmSchemeDesc::CraigSneyd();
 
-                const boost::shared_ptr<HundsdorferScheme> hsEvolver(
-                    boost::make_shared<HundsdorferScheme>(
+                const boost::shared_ptr<CraigSneydScheme> hsEvolver(
+                    boost::make_shared<CraigSneydScheme>(
                         trDesc.theta, trDesc.mu, map_, bcSet_));
 
-                TrBDF2Scheme<HundsdorferScheme> trBDF2(
+                TrBDF2Scheme<CraigSneydScheme> trBDF2(
                     schemeDesc_.theta, map_, hsEvolver, bcSet_,schemeDesc_.mu);
 
-                FiniteDifferenceModel<TrBDF2Scheme<HundsdorferScheme>>
+                FiniteDifferenceModel<TrBDF2Scheme<CraigSneydScheme> >
                    trBDF2Model(trBDF2, condition_->stoppingTimes());
                 trBDF2Model.rollback(rhs, dampingTo, to, steps, *condition_);
             }

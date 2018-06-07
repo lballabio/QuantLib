@@ -25,6 +25,7 @@
 #define quantlib_tr_bdf2_hpp
 
 #include <ql/math/functional.hpp>
+#include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
@@ -62,7 +63,7 @@ namespace QuantLib {
             const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,
-            SolverType solverType = BiCGstab);
+            SolverType solverType = GMRES);
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
@@ -72,6 +73,7 @@ namespace QuantLib {
         Disposable<Array> apply(const Array& r) const;
 
         Time dt_;
+        Real beta_;
         boost::shared_ptr<Size> iterations_;
 
         const Real alpha_;
@@ -91,6 +93,7 @@ namespace QuantLib {
         Real relTol,
         SolverType solverType)
     : dt_(Null<Real>()),
+      beta_(Null<Real>()),
       iterations_(boost::make_shared<Size>(0u)),
       alpha_(alpha),
       map_(map),
@@ -102,6 +105,7 @@ namespace QuantLib {
     template <class TrapezoidalScheme>
     void TrBDF2Scheme<TrapezoidalScheme>::setStep(Time dt) {
         dt_=dt;
+        beta_= (1.0-alpha_)/(2.0-alpha_)*dt_;
     }
 
     template <class TrapezoidalScheme>
@@ -112,7 +116,7 @@ namespace QuantLib {
     template <class TrapezoidalScheme>
     Disposable<Array> TrBDF2Scheme<TrapezoidalScheme>::apply(
         const Array& r) const {
-        return r - (1.0-alpha_)/(2.0-alpha_)*dt_*map_->apply(r);
+        return r - beta_*map_->apply(r);
     }
 
     template <class TrapezoidalScheme>
@@ -132,19 +136,35 @@ namespace QuantLib {
         const array_type f =
             (1/alpha_*fStar - square<Real>()(1-alpha_)/alpha_*fn)/(2-alpha_);
 
-        const BiCGStabResult result =
-            QuantLib::BiCGstab(
-                boost::function<Disposable<Array>(const Array&)>(
-                    boost::bind(
-                        &TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1)),
-                std::max(Size(10), fn.size()), relTol_,
-                boost::function<Disposable<Array>(const Array&)>(
-                    boost::bind(&FdmLinearOpComposite::preconditioner,
-                                map_, _1, -(1.0-alpha_)/(2.0-alpha_)*dt_))
-            ).solve(f, f);
+        if (map_->size() == -1) {
+            fn = map_->solve_splitting(0, f, -beta_);
+        }
+        else {
+            const boost::function<Disposable<Array>(const Array&)>
+                preconditioner(boost::bind(
+                    &FdmLinearOpComposite::preconditioner, map_, _1, -beta_));
 
-        (*iterations_) += result.iterations;
-        fn = result.x;
+            const boost::function<Disposable<Array>(const Array&)> apply(
+                boost::bind(&TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1));
+
+            if (solverType_ == BiCGstab) {
+                const BiCGStabResult result =
+                    QuantLib::BiCGstab(apply, std::max(Size(10), fn.size()),
+                        relTol_, preconditioner).solve(f, f);
+
+                (*iterations_) += result.iterations;
+                fn = result.x;
+            } else if (solverType_ == GMRES) {
+                const GMRESResult result =
+                    QuantLib::GMRES(apply, std::max(Size(10), fn.size()/10u),
+                        relTol_, preconditioner).solve(f, f);
+
+                (*iterations_) += result.errors.size();
+                fn = result.x;
+            }
+            else
+                QL_FAIL("unknown/illegal solver type");
+        }
 
         bcSet_.applyAfterSolving(fn);
     }

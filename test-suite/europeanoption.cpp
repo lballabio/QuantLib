@@ -1617,6 +1617,10 @@ void EuropeanOptionTest::testPDESchemes() {
         boost::make_shared<FdBlackScholesVanillaEngine>(
             process, 15, 100, 0, FdmSchemeDesc::ModifiedCraigSneyd());
 
+    const boost::shared_ptr<PricingEngine> trBDF2 =
+        boost::make_shared<FdBlackScholesVanillaEngine>(
+            process, 15, 100, 0, FdmSchemeDesc::TrBDF2());
+
     const std::pair<boost::shared_ptr<PricingEngine>, std::string> engines[]= {
         std::make_pair(crankNicolson, "Crank-Nicolson"),
         std::make_pair(implicitEuler, "Implicit-Euler"),
@@ -1624,7 +1628,8 @@ void EuropeanOptionTest::testPDESchemes() {
         std::make_pair(methodOfLines, "Method-of-Lines"),
         std::make_pair(hundsdorfer, "Hundsdorfer"),
         std::make_pair(craigSneyd, "Craig-Sneyd"),
-        std::make_pair(modCraigSneyd, "Modified Craig-Sneyd")
+        std::make_pair(modCraigSneyd, "Modified Craig-Sneyd"),
+        std::make_pair(trBDF2, "TR-BDF2")
     };
 
     const Size nEngines = LENGTH(engines);

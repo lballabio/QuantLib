@@ -573,12 +573,15 @@ void FdHestonTest::testFdmHestonConvergence() {
         { 2.5   , 0.06  , 0.5   , -0.1   , 0.0507, 0.0469, 0.25, 100 }
     };
 
-    FdmSchemeDesc schemes[] = { FdmSchemeDesc::Hundsdorfer(), 
-                                FdmSchemeDesc::ModifiedCraigSneyd(),
-                                FdmSchemeDesc::ModifiedHundsdorfer(), 
-                                FdmSchemeDesc::CraigSneyd() };
+    FdmSchemeDesc schemes[] = {
+        FdmSchemeDesc::Hundsdorfer(),
+        FdmSchemeDesc::ModifiedCraigSneyd(),
+        FdmSchemeDesc::ModifiedHundsdorfer(),
+        FdmSchemeDesc::CraigSneyd(),
+        FdmSchemeDesc::TrBDF2()
+    };
     
-    Size tn[] = { 100 };
+    Size tn[] = { 60 };
     Real v0[] = { 0.04 };
     
     const Date todaysDate(28, March, 2004); 
