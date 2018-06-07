@@ -1203,11 +1203,11 @@ void BarrierOptionTest::testDividendBarrierOption() {
 
 test_suite* BarrierOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
-//    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
-//    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
-//    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &BarrierOptionTest::testLocalVolAndHestonComparison));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BarrierOptionTest::testLocalVolAndHestonComparison));
     suite->add(QUANTLIB_TEST_CASE(
         &BarrierOptionTest::testDividendBarrierOption));
     return suite;
@@ -1215,8 +1215,8 @@ test_suite* BarrierOptionTest::suite() {
 
 test_suite* BarrierOptionTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("Barrier option experimental tests");
-//    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                      &BarrierOptionTest::testVannaVolgaSimpleBarrierValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
+    suite->add(QUANTLIB_TEST_CASE(
+                      &BarrierOptionTest::testVannaVolgaSimpleBarrierValues));
     return suite;
 }
