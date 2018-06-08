@@ -45,6 +45,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
+#include <ql/math/functional.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -220,12 +221,12 @@ namespace {
             curveState_lmm.cmSwapRates(spanningForwards);
         std::transform(usedRates.begin(), usedRates.end(),
                        bumpedRates.begin(),
-                       std::bind1st(std::plus<Rate>(), rateBump));
+                       add<Rate>(rateBump));
 
         std::vector<Volatility> bumpedVols(volatilities.size());
         std::transform(volatilities.begin(), volatilities.end(),
                        bumpedVols.begin(),
-                       std::bind1st(std::plus<Rate>(), volBump));
+                       add<Volatility>(volBump));
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                       longTermCorrelation,
                                                       beta);

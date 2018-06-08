@@ -23,6 +23,7 @@
 
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/processes/jointstochasticprocess.hpp>
 
 namespace QuantLib {
@@ -219,8 +220,7 @@ namespace QuantLib {
                     if (vol > 0.0) {
                         std::transform(stdDev.row_begin(i), stdDev.row_end(i),
                                        stdDev.row_begin(i),
-                                       std::bind2nd(std::divides<Real>(),
-                                                    vol));
+                                       divide_by<Real>(vol));
                     }
                     else {
                         // keep the svd happy

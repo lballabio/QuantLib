@@ -28,12 +28,12 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/utilities/disposable.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/type_traits.hpp>
-#include <functional>
 #include <numeric>
 #include <vector>
 #include <iomanip>
@@ -315,7 +315,7 @@ namespace QuantLib {
 
     inline const Array& Array::operator+=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::plus<Real>(),x));
+                       add<Real>(x));
         return *this;
     }
 
@@ -330,7 +330,7 @@ namespace QuantLib {
 
     inline const Array& Array::operator-=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::minus<Real>(),x));
+                       subtract<Real>(x));
         return *this;
     }
 
@@ -345,7 +345,7 @@ namespace QuantLib {
 
     inline const Array& Array::operator*=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::multiplies<Real>(),x));
+                       multiply_by<Real>(x));
         return *this;
     }
 
@@ -360,7 +360,7 @@ namespace QuantLib {
 
     inline const Array& Array::operator/=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::divides<Real>(),x));
+                       divide_by<Real>(x));
         return *this;
     }
 
@@ -527,14 +527,14 @@ namespace QuantLib {
     inline const Disposable<Array> operator+(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::plus<Real>(),a));
+                       add<Real>(a));
         return result;
     }
 
     inline const Disposable<Array> operator+(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(),
-                       std::bind1st(std::plus<Real>(),a));
+                       add<Real>(a));
         return result;
     }
 
@@ -552,14 +552,14 @@ namespace QuantLib {
     inline const Disposable<Array> operator-(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::minus<Real>(),a));
+                       subtract<Real>(a));
         return result;
     }
 
     inline const Disposable<Array> operator-(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(),
-                       std::bind1st(std::minus<Real>(),a));
+                       subtract_from<Real>(a));
         return result;
     }
 
@@ -577,14 +577,14 @@ namespace QuantLib {
     inline const Disposable<Array> operator*(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::multiplies<Real>(),a));
+                       multiply_by<Real>(a));
         return result;
     }
 
     inline const Disposable<Array> operator*(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(),
-                       std::bind1st(std::multiplies<Real>(),a));
+                       multiply_by<Real>(a));
         return result;
     }
 
@@ -602,14 +602,14 @@ namespace QuantLib {
     inline const Disposable<Array> operator/(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),result.begin(),
-                       std::bind2nd(std::divides<Real>(),a));
+                       divide_by<Real>(a));
         return result;
     }
 
     inline const Disposable<Array> operator/(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(),
-                       std::bind1st(std::divides<Real>(),a));
+                       divide<Real>(a));
         return result;
     }
 

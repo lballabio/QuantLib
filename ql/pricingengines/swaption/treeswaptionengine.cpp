@@ -20,6 +20,7 @@
 
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -94,7 +95,7 @@ namespace QuantLib {
         Time nextExercise =
             *std::find_if(stoppingTimes.begin(),
                           stoppingTimes.end(),
-                          std::bind2nd(std::greater_equal<Time>(), 0.0));
+                          greater_or_equal_to<Time>(0.0));
         swaption.rollback(nextExercise);
 
         results_.value = swaption.presentValue();

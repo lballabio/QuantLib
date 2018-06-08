@@ -322,18 +322,18 @@ namespace {
 
             std::vector<Rate> bumpedForwards(todaysForwards.size());
             std::transform(todaysForwards.begin(), todaysForwards.end(),
-                bumpedForwards.begin(),
-                std::bind1st(std::plus<Rate>(), forwardBump));
+                           bumpedForwards.begin(),
+                           add<Rate>(forwardBump));
 
             std::vector<Volatility> bumpedVols(volatilities.size());
             if (logNormal)
                 std::transform(volatilities.begin(), volatilities.end(),
-                bumpedVols.begin(),
-                std::bind1st(std::plus<Rate>(), volBump));
+                               bumpedVols.begin(),
+                               add<Volatility>(volBump));
             else
                 std::transform(normalVols.begin(), normalVols.end(),
-                bumpedVols.begin(),
-                std::bind1st(std::plus<Rate>(), volBump));
+                               bumpedVols.begin(),
+                               add<Volatility>(volBump));
 
             Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                 longTermCorrelation,

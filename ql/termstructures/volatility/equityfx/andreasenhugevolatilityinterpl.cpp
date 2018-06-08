@@ -339,7 +339,7 @@ namespace QuantLib {
         const Size nOptions = std::count_if(
             calibrationMatrix_[iExpiry].begin(),
             calibrationMatrix_[iExpiry].end(),
-            std::bind2nd(std::not_equal_to<Size>(), Null<Size>()));
+            not_null<Size>());
 
         Array lnMarketStrikes(nOptions),
             marketNPVs(nOptions), marketVegas(nOptions);

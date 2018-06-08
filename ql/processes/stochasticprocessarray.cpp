@@ -20,6 +20,7 @@
 
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -63,7 +64,7 @@ namespace QuantLib {
             Real sigma = processes_[i]->diffusion(t, x[i]);
             std::transform(tmp.row_begin(i), tmp.row_end(i),
                            tmp.row_begin(i),
-                           std::bind2nd(std::multiplies<Real>(),sigma));
+                           multiply_by<Real>(sigma));
         }
         return tmp;
     }
@@ -85,7 +86,7 @@ namespace QuantLib {
             Real sigma = processes_[i]->stdDeviation(t0, x0[i], dt);
             std::transform(tmp.row_begin(i), tmp.row_end(i),
                            tmp.row_begin(i),
-                           std::bind2nd(std::multiplies<Real>(),sigma));
+                           multiply_by<Real>(sigma));
         }
         return tmp;
     }
