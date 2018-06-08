@@ -99,6 +99,12 @@ namespace QuantLib {
         }
 
         void regrid(const Array &new_grid);
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
         template <class T>
         void regrid(const Array &new_grid,
                     T func) {
@@ -124,6 +130,10 @@ namespace QuantLib {
             values_.swap(newValues);
             grid_ = new_grid;
         }
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic pop
+#endif
 
         template <class T>
         inline const SampledCurve& transform(T x) {
