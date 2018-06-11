@@ -40,7 +40,7 @@ namespace QuantLib {
     class LinearTsrPricer::integrand_f {
         const LinearTsrPricer* pricer;
       public:
-        integrand_f(const LinearTsrPricer* pricer) : pricer(pricer) {}
+        explicit integrand_f(const LinearTsrPricer* pricer) : pricer(pricer) {}
         Real operator()(Real x) const {
             return pricer->integrand(x);
         }

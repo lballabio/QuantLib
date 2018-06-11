@@ -72,7 +72,7 @@ namespace QuantLib {
     class add : public std::unary_function<T,T> {
         T y;
       public:
-        add(Real y) : y(y) {}
+        explicit add(Real y) : y(y) {}
         Real operator()(T x) const { return x + y; }
     };
 
@@ -80,7 +80,7 @@ namespace QuantLib {
     class subtract : public std::unary_function<T,T> {
         T y;
       public:
-        subtract(Real y) : y(y) {}
+        explicit subtract(Real y) : y(y) {}
         Real operator()(T x) const { return x - y; }
     };
 
@@ -88,7 +88,7 @@ namespace QuantLib {
     class subtract_from : public std::unary_function<T,T> {
         T y;
       public:
-        subtract_from(Real y) : y(y) {}
+        explicit subtract_from(Real y) : y(y) {}
         Real operator()(T x) const { return y - x; }
     };
 
@@ -96,7 +96,7 @@ namespace QuantLib {
     class multiply_by : public std::unary_function<T,T> {
         T y;
       public:
-        multiply_by(Real y) : y(y) {}
+        explicit multiply_by(Real y) : y(y) {}
         Real operator()(T x) const { return x * y; }
     };
 
@@ -104,7 +104,7 @@ namespace QuantLib {
     class divide : public std::unary_function<T,T> {
         T y;
       public:
-        divide(Real y) : y(y) {}
+        explicit divide(Real y) : y(y) {}
         Real operator()(T x) const { return y / x; }
     };
 
@@ -112,7 +112,7 @@ namespace QuantLib {
     class divide_by : public std::unary_function<T,T> {
         T y;
       public:
-        divide_by(Real y) : y(y) {}
+        explicit divide_by(Real y) : y(y) {}
         Real operator()(T x) const { return x / y; }
     };
 
@@ -120,7 +120,7 @@ namespace QuantLib {
     class less_than : public std::unary_function<T,bool> {
         T y;
       public:
-        less_than(Real y) : y(y) {}
+        explicit less_than(Real y) : y(y) {}
         bool operator()(T x) const { return x < y; }
     };
 
@@ -128,7 +128,7 @@ namespace QuantLib {
     class greater_than : public std::unary_function<T,bool> {
         T y;
       public:
-        greater_than(Real y) : y(y) {}
+        explicit greater_than(Real y) : y(y) {}
         bool operator()(T x) const { return x > y; }
     };
 
@@ -136,7 +136,7 @@ namespace QuantLib {
     class greater_or_equal_to : public std::unary_function<T,bool> {
         T y;
       public:
-        greater_or_equal_to(Real y) : y(y) {}
+        explicit greater_or_equal_to(Real y) : y(y) {}
         bool operator()(T x) const { return x >= y; }
     };
 

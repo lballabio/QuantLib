@@ -35,7 +35,8 @@ namespace QuantLib {
     class LognormalCmsSpreadPricer::integrand_f {
         const LognormalCmsSpreadPricer* pricer;
       public:
-        integrand_f(const LognormalCmsSpreadPricer* pricer) : pricer(pricer) {}
+        explicit integrand_f(const LognormalCmsSpreadPricer* pricer)
+        : pricer(pricer) {}
         Real operator()(Real x) const {
             return pricer->integrand(x);
         }

@@ -38,7 +38,8 @@ namespace QuantLib {
     namespace {
 
         struct mapped_payoff {
-            mapped_payoff(const Payoff& payoff) : payoff(payoff) {}
+            explicit mapped_payoff(const Payoff& payoff)
+            : payoff(payoff) {}
             Real operator()(Real x) const {
                 return payoff(std::exp(x));
             }

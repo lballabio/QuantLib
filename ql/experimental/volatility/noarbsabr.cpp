@@ -45,7 +45,7 @@ class NoArbSabrModel::integrand {
 class NoArbSabrModel::p_integrand {
     const NoArbSabrModel* model;
   public:
-    p_integrand(const NoArbSabrModel* model)
+    explicit p_integrand(const NoArbSabrModel* model)
     : model(model) {}
     Real operator()(Real f) const {
         return model->p(f);
