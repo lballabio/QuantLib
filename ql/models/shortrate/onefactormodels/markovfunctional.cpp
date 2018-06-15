@@ -28,10 +28,6 @@
 #include <ql/termstructures/volatility/atmadjustedsmilesection.hpp>
 #include <ql/termstructures/volatility/atmsmilesection.hpp>
 
-// debug
-// #include <iostream>
-// debug
-
 namespace QuantLib {
 
     MarkovFunctional::MarkovFunctional(
@@ -525,11 +521,6 @@ namespace QuantLib {
                     digitalsCorrectionFactor = i->second.annuity_ / digital;
                     modelOutputs_.digitalsAdjustmentFactors_.front() =
                         digitalsCorrectionFactor;
-                    // debug
-                    // std::clog << "digiCorr,"
-                    //           << i->second.smileSection_->exerciseTime() << ","
-                    //           << digitalsCorrectionFactor << std::endl;
-                    // debug
                 }
 
                 digital = 0.0;
@@ -576,12 +567,6 @@ namespace QuantLib {
                                      "negative for j="
                                          << j << " (" << integral
                                          << ") --- reset it to zero.");
-                        // debug
-                        // std::clog << "WARNING: integral for digitalPrice is "
-                        //              "negative for j="
-                        //           << j << " (" << integral
-                        //           << ") --- reset it to zero." << std::endl;
-                        // debug
                         integral = 0.0;
                     }
 
@@ -592,13 +577,6 @@ namespace QuantLib {
                         ModelSettings::CustomSmile) {
                         swapRate = mfSec->inverseDigitalCall(
                             digital, i->second.annuity_);
-                        // debug
-                        // if (c == 1)
-                        //     std::cout << i->second.smileSection_->exerciseTime()
-                        //               << "," << swapRate << ","
-                        //               << 1.0 - digital / i->second.annuity_
-                        //               << "," << y_[j] << std::endl;
-                        // debug
                     } else if (digital >= i->second.minRateDigital_) {
                         swapRate = modelSettings_.lowerRateBound_ -
                                    i->second.rawSmileSection_->shift();
@@ -622,16 +600,6 @@ namespace QuantLib {
                                  << j + 1 << " it is (" << y_[j + 1] << ","
                                  << swapRate0 << ") --- reset rate to "
                                  << swapRate0 << " in node j=" << j);
-                        // debug
-                        // std::clog <<
-                        //     "WARNING: swap rate is decreasing in y for "
-                        //     "t=" << times_[idx]
-                        //          << ", j=" << j << " (y, swap rate) is ("
-                        //          << y_[j] << "," << swapRate << ") but for j="
-                        //          << j + 1 << " it is (" << y_[j + 1] << ","
-                        //          << swapRate0 << ") --- reset rate to "
-                        //           << swapRate0 << " in node j=" << j << std::endl;
-                        // debug
                         swapRate = swapRate0;
                     }
                     swapRate0 = swapRate;
@@ -639,17 +607,7 @@ namespace QuantLib {
                         1.0 / std::max(swapRate * discreteDeflatedAnnuities[j] +
                                        deflatedFinalPayments[j], 1E-6);
                     (*discreteNumeraire_)[idx][j] = numeraire * normalization;
-                    // debug
-                    // if(c==1)
-                    //     std::cout << i->second.smileSection_->exerciseTime() << ","
-                    //               << y_[j] << "," << numeraire * normalization
-                    //               << "," << swapRate << std::endl;
-                    // debug
                 }
-                // debug
-                // if(c==1)
-                //     std::cout << std::endl;
-                // debug
             }
 
             if (modelSettings_.adjustments_ & ModelSettings::AdjustYts) {
