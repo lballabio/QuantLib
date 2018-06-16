@@ -42,6 +42,7 @@
 
 #include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <boost/make_shared.hpp>
 
 using namespace QuantLib;
@@ -797,6 +798,88 @@ void FdHestonTest::testMethodOfLines() {
     }
 }
 
+void FdHestonTest::testSpuriousOscillations() {
+    BOOST_TEST_MESSAGE("Testing for spurious oscillations when "
+            "solving the Heston PDEs...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(7, June, 2018);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.1, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.0, dc));
+
+    const Real v0    = 0.005;
+    const Real kappa = 1.0;
+    const Real theta = 0.005;
+    const Real sigma = 0.4;
+    const Real rho   = -0.75;
+
+    const Date maturity = today + Period(1, Years);
+
+    const boost::shared_ptr<HestonProcess> process =
+        boost::make_shared<HestonProcess>(
+            rTS, qTS, spot, v0, kappa, theta, sigma, rho);
+
+    const boost::shared_ptr<HestonModel> model =
+        boost::make_shared<HestonModel>(process);
+
+    const boost::shared_ptr<FdHestonVanillaEngine> hestonEngine(
+        boost::make_shared<FdHestonVanillaEngine>(
+            model, 6, 200, 13, 0, FdmSchemeDesc::TrBDF2()));
+
+    VanillaOption option(
+        boost::make_shared<PlainVanillaPayoff>(Option::Call, spot->value()),
+        boost::make_shared<EuropeanExercise>(maturity));
+
+    option.setupArguments(hestonEngine->getArguments());
+
+    const boost::tuple<FdmSchemeDesc, std::string, bool> descs[] = {
+        boost::make_tuple(FdmSchemeDesc::CraigSneyd(), "Craig-Sneyd", true),
+        boost::make_tuple(FdmSchemeDesc::Hundsdorfer(), "Hundsdorfer", true),
+        boost::make_tuple(
+           FdmSchemeDesc::ModifiedHundsdorfer(), "Mod. Hundsdorfer", true),
+        boost::make_tuple(FdmSchemeDesc::Douglas(), "Douglas", true),
+        boost::make_tuple(FdmSchemeDesc::ImplicitEuler(), "Implicit", false),
+        boost::make_tuple(FdmSchemeDesc::TrBDF2(), "TR-BDF2", false)
+    };
+
+    for (Size j=0; j < LENGTH(descs); ++j) {
+        const boost::shared_ptr<FdmHestonSolver> solver =
+            boost::make_shared<FdmHestonSolver>(
+                Handle<HestonProcess>(process),
+                hestonEngine->getSolverDesc(1.0),
+                descs[j].get<0>());
+
+        std::vector<Real> gammas;
+        for (Real x=99; x < 101.001; x+=0.1) {
+            gammas.push_back(solver->gammaAt(x, v0));
+        }
+
+        Real maximum = QL_MIN_REAL;
+        for (Size i=1; i < gammas.size(); ++i) {
+            const Real diff = std::fabs(gammas[i] - gammas[i-1]);
+            if (diff > maximum)
+                maximum = diff;
+        }
+
+        const Real tol = 0.01;
+        const bool hasSpuriousOscillations = maximum > tol;
+
+        if (hasSpuriousOscillations != descs[j].get<2>()) {
+            BOOST_ERROR("unable to reproduce spurious oscillation behaviour "
+                     << "\n   scheme name          : " << descs[j].get<1>()
+                     << "\n   oscillations observed: "
+                         << hasSpuriousOscillations
+                     << "\n   oscillations expected: " << descs[j].get<2>()
+            );
+        }
+    }
+}
 
 test_suite* FdHestonTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
@@ -809,8 +892,8 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
         &FdHestonTest::testFdmHestonEuropeanWithDividends));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testFdmHestonIntradayPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdHestonTest::testMethodOfLines));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLines));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

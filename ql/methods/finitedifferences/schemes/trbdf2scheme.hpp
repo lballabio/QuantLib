@@ -63,7 +63,7 @@ namespace QuantLib {
             const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,
-            SolverType solverType = GMRES);
+            SolverType solverType = BiCGstab);
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
@@ -103,24 +103,24 @@ namespace QuantLib {
       solverType_(solverType) {}
 
     template <class TrapezoidalScheme>
-    void TrBDF2Scheme<TrapezoidalScheme>::setStep(Time dt) {
+    inline void TrBDF2Scheme<TrapezoidalScheme>::setStep(Time dt) {
         dt_=dt;
         beta_= (1.0-alpha_)/(2.0-alpha_)*dt_;
     }
 
     template <class TrapezoidalScheme>
-    Size TrBDF2Scheme<TrapezoidalScheme>::numberOfIterations() const {
+    inline Size TrBDF2Scheme<TrapezoidalScheme>::numberOfIterations() const {
         return *iterations_;
     }
 
     template <class TrapezoidalScheme>
-    Disposable<Array> TrBDF2Scheme<TrapezoidalScheme>::apply(
+    inline Disposable<Array> TrBDF2Scheme<TrapezoidalScheme>::apply(
         const Array& r) const {
         return r - beta_*map_->apply(r);
     }
 
     template <class TrapezoidalScheme>
-    void TrBDF2Scheme<TrapezoidalScheme>::step(array_type& fn, Time t) {
+    inline void TrBDF2Scheme<TrapezoidalScheme>::step(array_type& fn, Time t) {
 
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
 
@@ -144,19 +144,19 @@ namespace QuantLib {
                 preconditioner(boost::bind(
                     &FdmLinearOpComposite::preconditioner, map_, _1, -beta_));
 
-            const boost::function<Disposable<Array>(const Array&)> apply(
+            const boost::function<Disposable<Array>(const Array&)> applyF(
                 boost::bind(&TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1));
 
             if (solverType_ == BiCGstab) {
                 const BiCGStabResult result =
-                    QuantLib::BiCGstab(apply, std::max(Size(10), fn.size()),
+                    QuantLib::BiCGstab(applyF, std::max(Size(10), fn.size()),
                         relTol_, preconditioner).solve(f, f);
 
                 (*iterations_) += result.iterations;
                 fn = result.x;
             } else if (solverType_ == GMRES) {
                 const GMRESResult result =
-                    QuantLib::GMRES(apply, std::max(Size(10), fn.size()/10u),
+                    QuantLib::GMRES(applyF, std::max(Size(10), fn.size()/10u),
                         relTol_, preconditioner).solve(f, f);
 
                 (*iterations_) += result.errors.size();
