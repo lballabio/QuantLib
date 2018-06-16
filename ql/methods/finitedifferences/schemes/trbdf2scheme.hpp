@@ -21,8 +21,8 @@
     \brief trapezoidal BDF2 scheme
 */
 
-#ifndef quantlib_tr_bdf2_hpp
-#define quantlib_tr_bdf2_hpp
+#ifndef quantlib_tr_bdf2_scheme_hpp
+#define quantlib_tr_bdf2_schene_hpp
 
 #include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
