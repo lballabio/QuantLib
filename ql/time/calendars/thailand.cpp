@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    Thailand::Thailand(Market) {
+    Thailand::Thailand() {
         // all calendar instances share the same implementation instance
         static boost::shared_ptr<Calendar::Impl> impl(new Thailand::SetImpl);
         impl_ = impl;

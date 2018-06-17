@@ -72,9 +72,7 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
         };
       public:
-        enum Market { SET    //!< Thailand stock exchange
-        };
-        Thailand(Market m = SET);
+        Thailand();
     };
 
 }
