@@ -22,7 +22,7 @@
 */
 
 #ifndef quantlib_tr_bdf2_scheme_hpp
-#define quantlib_tr_bdf2_schene_hpp
+#define quantlib_tr_bdf2_scheme_hpp
 
 #include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
