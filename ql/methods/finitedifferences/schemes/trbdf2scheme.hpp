@@ -136,7 +136,7 @@ namespace QuantLib {
         const array_type f =
             (1/alpha_*fStar - square<Real>()(1-alpha_)/alpha_*fn)/(2-alpha_);
 
-        if (map_->size() == -1) {
+        if (map_->size() == 1) {
             fn = map_->solve_splitting(0, f, -beta_);
         }
         else {
