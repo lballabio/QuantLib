@@ -12,7 +12,6 @@ LatentModel_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    LatentModel_vc9.vcproj \
     LatentModel.vcxproj \
     LatentModel.vcxproj.filters
 

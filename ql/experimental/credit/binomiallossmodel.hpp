@@ -65,7 +65,7 @@ namespace QuantLib {
     public:
         typedef typename LLM::copulaType copulaType;
         explicit BinomialLossModel(
-            const boost::shared_ptr<LLM>& copula)
+            const ext::shared_ptr<LLM>& copula)
         : copula_(copula) { }
     private:
         void resetModel() {
@@ -145,7 +145,7 @@ namespace QuantLib {
                 const std::vector<Real>& uncondDefProbInv, 
                             const std::vector<Real>&  mktFactor) const;
     protected:
-        const boost::shared_ptr<LLM> copula_;
+        const ext::shared_ptr<LLM> copula_;
 
         // cached arguments:
         // remaining basket magnitudes:

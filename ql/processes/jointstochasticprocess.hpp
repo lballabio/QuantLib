@@ -34,7 +34,7 @@ namespace QuantLib {
     class JointStochasticProcess : public StochasticProcess {
       public:
         JointStochasticProcess(
-            const std::vector<boost::shared_ptr<StochasticProcess> > & l,
+            const std::vector<ext::shared_ptr<StochasticProcess> > & l,
             Size factors = Null<Size>() );
 
         Size size() const;
@@ -64,22 +64,22 @@ namespace QuantLib {
         virtual Disposable<Matrix> crossModelCorrelation(
                                 Time t0, const Array& x0) const = 0;
 
-        const std::vector<boost::shared_ptr<StochasticProcess> > &
+        const std::vector<ext::shared_ptr<StochasticProcess> > &
                                                        constituents() const;
 
         void update();
         Time time(const Date& date) const;
 
       protected:
-        std::vector<boost::shared_ptr<StochasticProcess> > l_;
+        std::vector<ext::shared_ptr<StochasticProcess> > l_;
         Disposable<Array> slice(const Array& x, Size i) const;
 
       private:
         typedef
-            std::vector<boost::shared_ptr<StochasticProcess> >::const_iterator
+            std::vector<ext::shared_ptr<StochasticProcess> >::const_iterator
             const_iterator;
 
-        typedef std::vector<boost::shared_ptr<StochasticProcess> >::iterator
+        typedef std::vector<ext::shared_ptr<StochasticProcess> >::iterator
             iterator;
 
         Size size_, factors_, modelFactors_;

@@ -35,7 +35,7 @@ namespace QuantLib {
         typedef Operator operator_type;
         typedef typename Operator::array_type array_type;
         typedef BoundaryCondition<operator_type> bc_type;
-        typedef std::vector<boost::shared_ptr<bc_type> > bc_set;
+        typedef std::vector<ext::shared_ptr<bc_type> > bc_set;
         typedef StepCondition<array_type> condition_type;
     };
 

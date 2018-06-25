@@ -48,7 +48,7 @@ namespace QuantLib {
         const Array& values() const { return values_; }
         Array& values() { return values_; }
 
-        const boost::shared_ptr<Lattice>& method() const {
+        const ext::shared_ptr<Lattice>& method() const {
             return method_;
         }
         //@}
@@ -63,7 +63,7 @@ namespace QuantLib {
 
             @{
         */
-        void initialize(const boost::shared_ptr<Lattice>&,
+        void initialize(const ext::shared_ptr<Lattice>&,
                         Time t);
         void rollback(Time to);
         void partialRollback(Time to);
@@ -136,7 +136,7 @@ namespace QuantLib {
         Time latestPreAdjustment_, latestPostAdjustment_;
         Array values_;
       private:
-        boost::shared_ptr<Lattice> method_;
+        ext::shared_ptr<Lattice> method_;
     };
 
 
@@ -161,7 +161,7 @@ namespace QuantLib {
     class DiscretizedOption : public DiscretizedAsset {
       public:
         DiscretizedOption(
-                      const boost::shared_ptr<DiscretizedAsset>& underlying,
+                      const ext::shared_ptr<DiscretizedAsset>& underlying,
                       Exercise::Type exerciseType,
                       const std::vector<Time>& exerciseTimes)
         : underlying_(underlying), exerciseType_(exerciseType),
@@ -171,7 +171,7 @@ namespace QuantLib {
       protected:
         void postAdjustValuesImpl();
         void applyExerciseCondition();
-        boost::shared_ptr<DiscretizedAsset> underlying_;
+        ext::shared_ptr<DiscretizedAsset> underlying_;
         Exercise::Type exerciseType_;
         std::vector<Time> exerciseTimes_;
     };
@@ -181,7 +181,7 @@ namespace QuantLib {
     // inline definitions
 
     inline void DiscretizedAsset::initialize(
-                             const boost::shared_ptr<Lattice>& method,
+                             const ext::shared_ptr<Lattice>& method,
                              Time t) {
         method_ = method;
         method_->initialize(*this, t);

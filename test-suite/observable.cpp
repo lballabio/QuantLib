@@ -58,7 +58,7 @@ void ObservableTest::testObservableSettings() {
 
     BOOST_TEST_MESSAGE("Testing observable settings...");
 
-    const boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
+    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
     UpdateCounter updateCounter;
 
     updateCounter.registerWith(quote);
@@ -144,7 +144,7 @@ namespace {
       public:
         GarbageCollector() : terminate_(false) { }
 
-        void addObj(const boost::shared_ptr<MTUpdateCounter>& updateCounter) {
+        void addObj(const ext::shared_ptr<MTUpdateCounter>& updateCounter) {
             boost::lock_guard<boost::mutex> lock(mutex_);
             objList.push_back(updateCounter);
         }
@@ -178,7 +178,7 @@ namespace {
         boost::mutex mutex_;
         boost::atomic<bool> terminate_;
 
-        std::list<boost::shared_ptr<MTUpdateCounter> > objList;
+        std::list<ext::shared_ptr<MTUpdateCounter> > objList;
     };
 }
 
@@ -191,13 +191,13 @@ void ObservableTest::testAsyncGarbagCollector() {
     // of the observer pattern (comparable situation
     // in JVM or .NET eco systems).
 
-    const boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
+    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
 
     GarbageCollector gc;
     boost::thread workerThread(&GarbageCollector::run, &gc);
 
     for (Size i=0; i < 10000; ++i) {
-        const boost::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
+        const ext::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
         observer->registerWith(quote);
         gc.addObj(observer);
 
@@ -218,18 +218,18 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 	BOOST_TEST_MESSAGE("Testing observer global settings in a "
 		               "multithreading environment...");
 	
-	const boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
+	const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
 
     ObservableSettings::instance().disableUpdates(true);
 
     GarbageCollector gc;
     boost::thread workerThread(&GarbageCollector::run, &gc);
 
-    typedef std::list<boost::shared_ptr<MTUpdateCounter> > local_list_type;
+    typedef std::list<ext::shared_ptr<MTUpdateCounter> > local_list_type;
     local_list_type localList;
 
     for (Size i=0; i < 4000; ++i) {
-        const boost::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
+        const ext::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
         observer->registerWith(quote);
 
         if ((i%4) == 0) {
@@ -275,8 +275,8 @@ void ObservableTest::testDeepUpdate() {
     ObservableSettings::instance().disableUpdates(true);
 
     Handle<YieldTermStructure> yts(
-        boost::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
-    boost::shared_ptr<IborIndex> ibor = boost::make_shared<Euribor>(3 * Months, yts);
+        ext::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
+    ext::shared_ptr<IborIndex> ibor = ext::make_shared<Euribor>(3 * Months, yts);
     std::vector<Real> strikes;
     std::vector<Date> dates;
     std::vector<std::vector<Handle<Quote> > > quotes;
@@ -284,12 +284,12 @@ void ObservableTest::testDeepUpdate() {
     strikes.push_back(0.02);
     dates.push_back(refDate + 90);
     dates.push_back(refDate + 180);
-    boost::shared_ptr<SimpleQuote> q = boost::make_shared<SimpleQuote>(0.20);
+    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.20);
     quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
     quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
 
-    boost::shared_ptr<StrippedOptionletAdapter> vol =
-        boost::make_shared<StrippedOptionletAdapter>(boost::make_shared<StrippedOptionlet>(
+    ext::shared_ptr<StrippedOptionletAdapter> vol =
+        ext::make_shared<StrippedOptionletAdapter>(ext::make_shared<StrippedOptionlet>(
             0, NullCalendar(), Unadjusted, ibor, dates, strikes, quotes, Actual365Fixed()));
 
     Real v1 = vol->volatility(refDate + 100, 0.01);

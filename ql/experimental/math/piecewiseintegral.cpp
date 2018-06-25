@@ -22,7 +22,7 @@
 namespace QuantLib {
 
 PiecewiseIntegral::PiecewiseIntegral(
-    const boost::shared_ptr<Integrator> &integrator,
+    const ext::shared_ptr<Integrator> &integrator,
     const std::vector<Real> &criticalPoints, const bool avoidCriticalPoints)
     : Integrator(1.0, 1), integrator_(integrator),
       criticalPoints_(criticalPoints),

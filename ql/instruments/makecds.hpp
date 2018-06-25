@@ -40,7 +40,7 @@ namespace QuantLib {
         MakeCreditDefaultSwap(const Date &termDate, const Real couponRate);
 
         operator CreditDefaultSwap() const;
-        operator boost::shared_ptr<CreditDefaultSwap>() const;
+        operator ext::shared_ptr<CreditDefaultSwap>() const;
 
         MakeCreditDefaultSwap &withUpfrontRate(Real);
         MakeCreditDefaultSwap &withSide(Protection::Side);
@@ -50,7 +50,7 @@ namespace QuantLib {
         MakeCreditDefaultSwap &withLastPeriodDayCounter(DayCounter &);
 
         MakeCreditDefaultSwap &
-        withPricingEngine(const boost::shared_ptr<PricingEngine> &);
+        withPricingEngine(const ext::shared_ptr<PricingEngine> &);
 
       private:
         Protection::Side side_;
@@ -63,7 +63,7 @@ namespace QuantLib {
         DayCounter dayCounter_;
         DayCounter lastPeriodDayCounter_;
 
-        boost::shared_ptr<PricingEngine> engine_;
+        ext::shared_ptr<PricingEngine> engine_;
     };
 }
 

@@ -59,10 +59,10 @@ namespace QuantLib {
       protected:
         //! \name SwaptionVolatilityStructure interface
         //@{
-        boost::shared_ptr<SmileSection> smileSectionImpl(
+        ext::shared_ptr<SmileSection> smileSectionImpl(
                                         const Date& optionDate,
                                         const Period& swapTenor) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(
+        ext::shared_ptr<SmileSection> smileSectionImpl(
                                         Time optionTime,
                                         Time swapLength) const;
         Volatility volatilityImpl(const Date& optionDate,

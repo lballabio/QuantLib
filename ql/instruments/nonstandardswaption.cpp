@@ -24,19 +24,19 @@
 namespace QuantLib {
 
     NonstandardSwaption::NonstandardSwaption(const Swaption &fromSwaption)
-        : Option(boost::shared_ptr<Payoff>(),
+        : Option(ext::shared_ptr<Payoff>(),
                  const_cast<Swaption &>(fromSwaption).exercise()),
-          swap_(boost::shared_ptr<NonstandardSwap>(
-              new NonstandardSwap(*fromSwaption.underlyingSwap()))),
+          swap_(ext::make_shared<NonstandardSwap>(
+              *fromSwaption.underlyingSwap())),
           settlementType_(fromSwaption.settlementType()) {
 
         registerWith(swap_);
     }
 
     NonstandardSwaption::NonstandardSwaption(
-        const boost::shared_ptr<NonstandardSwap> &swap,
-        const boost::shared_ptr<Exercise> &exercise, Settlement::Type delivery)
-        : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
+        const ext::shared_ptr<NonstandardSwap> &swap,
+        const ext::shared_ptr<Exercise> &exercise, Settlement::Type delivery)
+        : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
           settlementType_(delivery) {
 
         registerWith(swap_);
@@ -70,14 +70,14 @@ namespace QuantLib {
         QL_REQUIRE(exercise, "exercise not set");
     }
 
-    Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
+    Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
     NonstandardSwaption::calibrationBasket(
-        boost::shared_ptr<SwapIndex> standardSwapBase,
-        boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        ext::shared_ptr<SwapIndex> standardSwapBase,
+        ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
         const BasketGeneratingEngine::CalibrationBasketType basketType) const {
 
-        boost::shared_ptr<BasketGeneratingEngine> engine =
-            boost::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
+        ext::shared_ptr<BasketGeneratingEngine> engine =
+            ext::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
         QL_REQUIRE(engine, "engine is not a basket generating engine");
         engine_->reset();
         setupArguments(engine_->getArguments());

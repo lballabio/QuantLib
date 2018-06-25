@@ -34,6 +34,8 @@
 #include <boost/iterator/reverse_iterator.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/type_traits.hpp>
+#include <functional>
+#include <algorithm>
 #include <numeric>
 #include <vector>
 #include <iomanip>

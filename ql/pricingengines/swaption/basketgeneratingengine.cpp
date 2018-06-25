@@ -24,18 +24,17 @@
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <boost/make_shared.hpp>
 
 using std::exp;
 using std::fabs;
 
 namespace QuantLib {
 
-    Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
+    Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
     BasketGeneratingEngine::calibrationBasket(
-        const boost::shared_ptr<Exercise> &exercise,
-        boost::shared_ptr<SwapIndex> standardSwapBase,
-        boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        const ext::shared_ptr<Exercise> &exercise,
+        ext::shared_ptr<SwapIndex> standardSwapBase,
+        ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
         const CalibrationBasketType basketType) const {
 
         QL_REQUIRE(
@@ -46,7 +45,7 @@ namespace QuantLib {
                 !standardSwapBase->discountingTermStructure().empty(),
             "standard swap base discounting term structure must not be empty.");
 
-        std::vector<boost::shared_ptr<CalibrationHelper> > result;
+        std::vector<ext::shared_ptr<CalibrationHelper> > result;
 
         Date today = Settings::instance().evaluationDate();
         Size minIdxAlive = static_cast<Size>(
@@ -54,8 +53,8 @@ namespace QuantLib {
                              today) -
             exercise->dates().begin());
 
-        boost::shared_ptr<RebatedExercise> rebEx =
-            boost::dynamic_pointer_cast<RebatedExercise>(exercise);
+        ext::shared_ptr<RebatedExercise> rebEx =
+            ext::dynamic_pointer_cast<RebatedExercise>(exercise);
 
         for (Size i = minIdxAlive; i < exercise->dates().size(); i++) {
 
@@ -67,14 +66,14 @@ namespace QuantLib {
                 rebateDate = rebEx->rebatePaymentDate(i);
             }
 
-            boost::shared_ptr<SwaptionHelper> helper;
+            ext::shared_ptr<SwaptionHelper> helper;
 
             switch (basketType) {
 
             case Naive: {
                 Real swapLength = swaptionVolatility->dayCounter().yearFraction(
                     standardSwapBase->valueDate(expiry), underlyingLastDate());
-                boost::shared_ptr<SmileSection> sec =
+                ext::shared_ptr<SmileSection> sec =
                     swaptionVolatility->smileSection(
                         expiry,
                         static_cast<Size>(swapLength * 12.0 + 0.5) * Months,
@@ -87,9 +86,9 @@ namespace QuantLib {
                     atmVol = sec->volatility(atmStrike);
                 Real shift = sec->shift();
 
-                helper = boost::shared_ptr<SwaptionHelper>(new SwaptionHelper(
+                helper = ext::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, underlyingLastDate(),
-                    Handle<Quote>(boost::make_shared<SimpleQuote>(atmVol)),
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(atmVol)),
                     standardSwapBase->iborIndex(),
                     standardSwapBase->fixedLegTenor(),
                     standardSwapBase->dayCounter(),
@@ -159,10 +158,10 @@ namespace QuantLib {
                     swaptionVolatility->dayCounter().yearFraction(
                         expiry, Date::maxDate() - 365);
 
-                boost::shared_ptr<MatchHelper> matchHelper_;
-                matchHelper_ = boost::shared_ptr<MatchHelper>(new MatchHelper(
+                ext::shared_ptr<MatchHelper> matchHelper_;
+                matchHelper_ = ext::make_shared<MatchHelper>(
                     underlyingType(), npv, delta, gamma, onefactormodel_,
-                    standardSwapBase, expiry, maxMaturity, h));
+                    standardSwapBase, expiry, maxMaturity, h);
 
                 // Optimize
                 Array initial = initialGuess(expiry);
@@ -200,7 +199,7 @@ namespace QuantLib {
                 Period matPeriod =
                     years * Years + months * Months; //+days*Days;
 
-                boost::shared_ptr<SmileSection> sec =
+                ext::shared_ptr<SmileSection> sec =
                     swaptionVolatility->smileSection(expiry, matPeriod, true);
                 Real shift = sec->shift();
 
@@ -215,9 +214,9 @@ namespace QuantLib {
 
                 Real vol = sec->volatility(solution[2]);
 
-                helper = boost::shared_ptr<SwaptionHelper>(new SwaptionHelper(
+                helper = ext::shared_ptr<SwaptionHelper>(new SwaptionHelper(
                     expiry, matPeriod,
-                    Handle<Quote>(boost::make_shared<SimpleQuote>(
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(
                                       vol)),
                     standardSwapBase->iborIndex(),
                     standardSwapBase->fixedLegTenor(),

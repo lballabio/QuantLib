@@ -31,7 +31,7 @@ namespace QuantLib {
     class CotSwapFromFwdCorrelation : public PiecewiseConstantCorrelation {
       public:
         CotSwapFromFwdCorrelation(
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& fwdCorr,
+            const ext::shared_ptr<PiecewiseConstantCorrelation>& fwdCorr,
             const CurveState& curveState,
             Spread displacement);
         const std::vector<Time>& times() const;
@@ -39,7 +39,7 @@ namespace QuantLib {
         const std::vector<Matrix>& correlations() const;
         Size numberOfRates() const;
     private:
-        boost::shared_ptr<PiecewiseConstantCorrelation> fwdCorr_;
+        ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr_;
         Size numberOfRates_;
         std::vector<Matrix> swapCorrMatrices_;
     };

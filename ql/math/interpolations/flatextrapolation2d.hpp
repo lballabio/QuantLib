@@ -31,14 +31,14 @@ namespace QuantLib {
     
     class FlatExtrapolator2D : public Interpolation2D {
       public:
-        FlatExtrapolator2D(boost::shared_ptr<Interpolation2D> decoratedInterpolation) {
-            impl_ = boost::shared_ptr<Interpolation2D::Impl>(
+        FlatExtrapolator2D(ext::shared_ptr<Interpolation2D> decoratedInterpolation) {
+            impl_ = ext::shared_ptr<Interpolation2D::Impl>(
                   new FlatExtrapolator2DImpl(decoratedInterpolation));
         }
       protected:
        class FlatExtrapolator2DImpl: public Interpolation2D::Impl{
           public:
-            FlatExtrapolator2DImpl(boost::shared_ptr<Interpolation2D> decoratedInterpolation)
+            FlatExtrapolator2DImpl(ext::shared_ptr<Interpolation2D> decoratedInterpolation)
             :decoratedInterp_(decoratedInterpolation){
                 calculate();
             }
@@ -79,11 +79,11 @@ namespace QuantLib {
             Real value(Real x, Real y) const {
                 x = bindX(x);
                 y = bindY(y);
-                return decoratedInterp_->operator()(x,y);
+                return (*decoratedInterp_)(x,y);
             }
 
           private:
-            boost::shared_ptr<Interpolation2D> decoratedInterp_;
+            ext::shared_ptr<Interpolation2D> decoratedInterp_;
 
             Real bindX(Real x) const {
                 if(x < xMin())

@@ -44,8 +44,8 @@ namespace QuantLib {
         enum Discretization { Euler, BSMHullWhite };
 
         HybridHestonHullWhiteProcess(
-          const boost::shared_ptr<HestonProcess> & hestonProcess,
-          const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
+          const ext::shared_ptr<HestonProcess> & hestonProcess,
+          const ext::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
           Real corrEquityShortRate,
           Discretization discretization = BSMHullWhite);
 
@@ -60,8 +60,8 @@ namespace QuantLib {
 
         DiscountFactor numeraire(Time t, const Array& x) const;
 
-        const boost::shared_ptr<HestonProcess>& hestonProcess() const;
-        const boost::shared_ptr<HullWhiteForwardProcess>& 
+        const ext::shared_ptr<HestonProcess>& hestonProcess() const;
+        const ext::shared_ptr<HullWhiteForwardProcess>& 
                                                     hullWhiteProcess() const;
 
         Real eta() const;
@@ -70,11 +70,11 @@ namespace QuantLib {
         void update();
 
       protected:
-        const boost::shared_ptr<HestonProcess> hestonProcess_;
-        const boost::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess_;
+        const ext::shared_ptr<HestonProcess> hestonProcess_;
+        const ext::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess_;
         
         //model is used to calculate P(t,T)
-        const boost::shared_ptr<HullWhite> hullWhiteModel_;
+        const ext::shared_ptr<HullWhite> hullWhiteModel_;
 
         const Real corrEquityShortRate_;
         const Discretization discretization_;

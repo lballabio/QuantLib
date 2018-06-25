@@ -100,7 +100,7 @@ namespace QuantLib {
     class SaddlePointLossModel : public DefaultLossModel {
     public:
         explicit SaddlePointLossModel(
-            const boost::shared_ptr<ConstantLossLatentmodel<CP> >& m)
+            const ext::shared_ptr<ConstantLossLatentmodel<CP> >& m)
             : copula_(m) { }
     protected:
         // ----------- Cumulants and derivatives auxiliary functions ---------
@@ -344,7 +344,7 @@ namespace QuantLib {
             copula_->resetBasket(basket_.currentLink());
         }
     protected:
-        const boost::shared_ptr<ConstantLossLatentmodel<CP> > copula_;
+        const ext::shared_ptr<ConstantLossLatentmodel<CP> > copula_;
         // cached todays arguments values
         mutable Size remainingSize_;
         mutable std::vector<Real> remainingNotionals_;

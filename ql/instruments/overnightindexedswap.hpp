@@ -47,7 +47,7 @@ namespace QuantLib {
                         const Schedule& schedule,
                         Rate fixedRate,
                         const DayCounter& fixedDC,
-                        const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                        const ext::shared_ptr<OvernightIndex>& overnightIndex,
                         Spread spread = 0.0,
                         Natural paymentLag = 0,
                         BusinessDayConvention paymentAdjustment = Following,
@@ -60,7 +60,7 @@ namespace QuantLib {
                         const Schedule& schedule,
                         Rate fixedRate,
                         const DayCounter& fixedDC,
-                        const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                        const ext::shared_ptr<OvernightIndex>& overnightIndex,
                         Spread spread = 0.0,
                         Natural paymentLag = 0,
                         BusinessDayConvention paymentAdjustment = Following,
@@ -79,7 +79,7 @@ namespace QuantLib {
         Rate fixedRate() const { return fixedRate_; }
         const DayCounter& fixedDayCount() { return fixedDC_; }
 
-        const boost::shared_ptr<OvernightIndex>& overnightIndex();
+        const ext::shared_ptr<OvernightIndex>& overnightIndex();
         Spread spread() { return spread_; }
 
         const Leg& fixedLeg() const { return legs_[0]; }
@@ -111,7 +111,7 @@ namespace QuantLib {
         Rate fixedRate_;
         DayCounter fixedDC_;
 
-        boost::shared_ptr<OvernightIndex> overnightIndex_;
+        ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
         bool telescopicValueDates_;
     };

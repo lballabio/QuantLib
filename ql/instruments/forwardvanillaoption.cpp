@@ -25,8 +25,8 @@ namespace QuantLib {
     ForwardVanillaOption::ForwardVanillaOption(
                            Real moneyness,
                            const Date& resetDate,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise)
+                           const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                           const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
       moneyness_(moneyness), resetDate_(resetDate) {}
 

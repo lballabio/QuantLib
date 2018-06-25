@@ -42,7 +42,7 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
             stats_type;
-        MCEverestEngine(const boost::shared_ptr<StochasticProcessArray>&,
+        MCEverestEngine(const ext::shared_ptr<StochasticProcessArray>&,
                         Size timeSteps,
                         Size timeStepsPerYear,
                         bool brownianBridge,
@@ -71,7 +71,7 @@ namespace QuantLib {
         DiscountFactor endDiscount() const;
         // McEverest implementation
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const {
+        ext::shared_ptr<path_generator_type> pathGenerator() const {
 
             Size numAssets = processes_->size();
 
@@ -79,14 +79,14 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-            return boost::shared_ptr<path_generator_type>(
+            return ext::shared_ptr<path_generator_type>(
                          new path_generator_type(processes_,
                                                  grid, gen, brownianBridge_));
         }
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const;
 
         // data members
-        boost::shared_ptr<StochasticProcessArray> processes_;
+        ext::shared_ptr<StochasticProcessArray> processes_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_;
         Size maxSamples_;
@@ -101,7 +101,7 @@ namespace QuantLib {
     class MakeMCEverestEngine {
       public:
         explicit MakeMCEverestEngine(
-                            const boost::shared_ptr<StochasticProcessArray>&);
+                            const ext::shared_ptr<StochasticProcessArray>&);
         // named parameters
         MakeMCEverestEngine& withSteps(Size steps);
         MakeMCEverestEngine& withStepsPerYear(Size steps);
@@ -112,9 +112,9 @@ namespace QuantLib {
         MakeMCEverestEngine& withMaxSamples(Size samples);
         MakeMCEverestEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<StochasticProcessArray> process_;
+        ext::shared_ptr<StochasticProcessArray> process_;
         bool brownianBridge_, antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -139,7 +139,7 @@ namespace QuantLib {
 
     template<class RNG, class S>
     inline MCEverestEngine<RNG,S>::MCEverestEngine(
-                   const boost::shared_ptr<StochasticProcessArray>& processes,
+                   const ext::shared_ptr<StochasticProcessArray>& processes,
                    Size timeSteps,
                    Size timeStepsPerYear,
                    bool brownianBridge,
@@ -185,8 +185,8 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline DiscountFactor MCEverestEngine<RNG,S>::endDiscount() const {
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                       processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
@@ -195,10 +195,10 @@ namespace QuantLib {
     }
 
     template <class RNG, class S>
-    inline boost::shared_ptr<typename MCEverestEngine<RNG,S>::path_pricer_type>
+    inline ext::shared_ptr<typename MCEverestEngine<RNG,S>::path_pricer_type>
     MCEverestEngine<RNG,S>::pathPricer() const {
 
-        return boost::shared_ptr<
+        return ext::shared_ptr<
                          typename MCEverestEngine<RNG,S>::path_pricer_type>(
                               new EverestMultiPathPricer(arguments_.notional,
                                                          arguments_.guarantee,
@@ -208,7 +208,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEverestEngine<RNG,S>::MakeMCEverestEngine(
-                     const boost::shared_ptr<StochasticProcessArray>& process)
+                     const ext::shared_ptr<StochasticProcessArray>& process)
     : process_(process), brownianBridge_(false), antithetic_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
@@ -280,12 +280,12 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MakeMCEverestEngine<RNG,S>::operator
-    boost::shared_ptr<PricingEngine>() const {
+    ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCEverestEngine<RNG,S>(process_,
                                    steps_,
                                    stepsPerYear_,

@@ -40,7 +40,7 @@ namespace QuantLib {
       public:
         FdmSimple2dExtOUSolver(
             const Handle<ExtendedOrnsteinUhlenbeckProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
+            const ext::shared_ptr<YieldTermStructure>& rTS,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc  = FdmSchemeDesc::Hundsdorfer())
         : process_(process), rTS_(rTS),
@@ -55,22 +55,22 @@ namespace QuantLib {
 
       protected:
         void performCalculations() const {
-            boost::shared_ptr<FdmLinearOpComposite>op(
+            ext::shared_ptr<FdmLinearOpComposite>op(
                 new FdmExtendedOrnsteinUhlenbackOp(
                                 solverDesc_.mesher, process_.currentLink(),
                                 rTS_, solverDesc_.bcSet));
 
-            solver_ = boost::shared_ptr<Fdm2DimSolver>(
-                          new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+            solver_ = ext::make_shared<Fdm2DimSolver>(
+                          solverDesc_, schemeDesc_, op);
         }
 
       private:
         const Handle<ExtendedOrnsteinUhlenbeckProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

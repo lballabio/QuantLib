@@ -22,7 +22,7 @@
 #define quantlib_multistep_period_caplets_swaptions_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 namespace QuantLib {
 
@@ -35,8 +35,8 @@ namespace QuantLib {
           MultiStepPeriodCapletSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& forwardOptionPaymentTimes,
                                      const std::vector<Time>& swaptionPaymentTimes,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
                                      Size period,
                                      Size offset);
         //! \name MarketModelMultiProduct interface
@@ -49,15 +49,19 @@ namespace QuantLib {
                      const CurveState& currentState,
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
+        #else
         std::auto_ptr<MarketModelMultiProduct> clone() const;
+        #endif
          //@}
 
       private:
         std::vector<Time> paymentTimes_;
         std::vector<Time> forwardOptionPaymentTimes_;
         std::vector<Time> swaptionPaymentTimes_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > forwardPayOffs_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > swapPayOffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > forwardPayOffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > swapPayOffs_;
         Size lastIndex_;
         Size period_;
         Size offset_;

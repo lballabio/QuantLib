@@ -119,9 +119,9 @@ namespace QuantLib {
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->payoff
-            = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         arguments->exercise
-            = boost::dynamic_pointer_cast<SwingExercise>(exercise_);
+            = ext::dynamic_pointer_cast<SwingExercise>(exercise_);
         arguments->minExerciseRights = minExerciseRights_;
         arguments->maxExerciseRights = maxExerciseRights_;
     }

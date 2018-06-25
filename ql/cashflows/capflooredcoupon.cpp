@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     CappedFlooredCoupon::CappedFlooredCoupon(
-                  const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                  const ext::shared_ptr<FloatingRateCoupon>& underlying,
                   Rate cap, Rate floor)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
@@ -72,7 +72,7 @@ namespace QuantLib {
     }
 
     void CappedFlooredCoupon::setPricer(
-                 const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
         FloatingRateCoupon::setPricer(pricer);
         underlying_->setPricer(pricer);
     }

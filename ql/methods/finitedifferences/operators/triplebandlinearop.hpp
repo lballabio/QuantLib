@@ -37,7 +37,7 @@ namespace QuantLib {
     class TripleBandLinearOp : public FdmLinearOp {
       public:
         TripleBandLinearOp(Size direction,
-                           const boost::shared_ptr<FdmMesher>& mesher);
+                           const ext::shared_ptr<FdmMesher>& mesher);
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
         TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
@@ -73,7 +73,7 @@ namespace QuantLib {
         boost::shared_array<Size> reverseIndex_;
         boost::shared_array<Real> lower_, diag_, upper_;
 
-        boost::shared_ptr<FdmMesher> mesher_;
+        ext::shared_ptr<FdmMesher> mesher_;
     };
 }
 

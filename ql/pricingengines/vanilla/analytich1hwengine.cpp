@@ -31,7 +31,7 @@ namespace QuantLib {
 
       public:
         Fj_Helper(const Handle<HestonModel>& hestonModel,
-                  const boost::shared_ptr<HullWhite>& hullWhiteModel,
+                  const ext::shared_ptr<HullWhite>& hullWhiteModel,
                   Real rho_xr, Time term, Real strike, Size j);
 
         std::complex<Real> operator()(Real u) const;
@@ -52,7 +52,7 @@ namespace QuantLib {
 
     AnalyticH1HWEngine::Fj_Helper::Fj_Helper(
         const Handle<HestonModel>& hestonModel,
-        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+        const ext::shared_ptr<HullWhite>& hullWhiteModel,
         Real rhoSr, Time term, Real, Size j)
     : j_     (j),
       lambda_(hullWhiteModel->a()),
@@ -139,8 +139,8 @@ namespace QuantLib {
 
 
     AnalyticH1HWEngine::AnalyticH1HWEngine(
-        const boost::shared_ptr<HestonModel>& model,
-        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+        const ext::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HullWhite>& hullWhiteModel,
         Real rhoSr, Size integrationOrder)
     : AnalyticHestonHullWhiteEngine(model, hullWhiteModel, integrationOrder),
       rhoSr_(rhoSr) {
@@ -149,8 +149,8 @@ namespace QuantLib {
     }
 
     AnalyticH1HWEngine::AnalyticH1HWEngine(
-        const boost::shared_ptr<HestonModel>& model,
-        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+        const ext::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HullWhite>& hullWhiteModel,
         Real rhoSr, Real relTolerance, Size maxEvaluations)
     : AnalyticHestonHullWhiteEngine(model, hullWhiteModel,
                                     relTolerance, maxEvaluations),

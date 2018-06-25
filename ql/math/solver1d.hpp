@@ -28,6 +28,7 @@
 #include <ql/utilities/null.hpp>
 #include <ql/patterns/curiouslyrecurring.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 #include <iomanip>
 
 namespace QuantLib {

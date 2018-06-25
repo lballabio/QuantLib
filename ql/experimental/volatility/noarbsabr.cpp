@@ -22,7 +22,6 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/modifiedbessel.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
@@ -95,8 +94,8 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     QL_REQUIRE(fmax_ > fmin_, "could not find a reasonable integration domain");
 
     integrator_ =
-        boost::shared_ptr<GaussLobattoIntegral>(new GaussLobattoIntegral(
-            detail::NoArbSabrModel::i_max_iterations, detail::NoArbSabrModel::i_accuracy));
+        ext::make_shared<GaussLobattoIntegral>(
+            detail::NoArbSabrModel::i_max_iterations, detail::NoArbSabrModel::i_accuracy);
 
     detail::D0Interpolator d0(forward_, expiryTime_, alpha_, beta_, nu_, rho_);
     absProb_ = d0();
