@@ -100,7 +100,7 @@ namespace QuantLib {
 
         Array zArray(z_.size());
         for (Size i=0; i < z_.size(); ++i) {
-            zArray[i] = interpolation_[i]->operator()(x, y);
+            zArray[i] = (*interpolation_[i])(x, y);
         }
         return MonotonicCubicNaturalSpline(z_.begin(), z_.end(),
                                            zArray.begin())(z);

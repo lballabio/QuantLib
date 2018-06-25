@@ -139,7 +139,7 @@ namespace QuantLib {
 
     inline Volatility AbcdAtmVolCurve::atmVolImpl(Time t) const {
         calculate();
-        return k(t) * interpolation_->operator() (t, true);
+        return k(t) * (*interpolation_)(t, true);
     }
 
     inline const std::vector<Period>& AbcdAtmVolCurve::optionTenors() const {

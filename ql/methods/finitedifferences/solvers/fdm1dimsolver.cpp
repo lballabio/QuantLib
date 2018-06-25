@@ -75,7 +75,7 @@ namespace QuantLib {
 
     Real Fdm1DimSolver::interpolateAt(Real x) const {
         calculate();
-        return interpolation_->operator()(x);
+        return (*interpolation_)(x);
     }
 
     Real Fdm1DimSolver::thetaAt(Real x) const {

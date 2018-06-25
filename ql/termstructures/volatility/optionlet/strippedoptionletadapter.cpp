@@ -69,14 +69,14 @@ namespace QuantLib {
 
         std::vector<Volatility> vol(nInterpolations_);
         for (Size i=0; i<nInterpolations_; ++i)
-            vol[i] = strikeInterpolations_[i]->operator()(strike, true);
+            vol[i] = (*strikeInterpolations_[i])(strike, true);
 
         const std::vector<Time>& optionletTimes =
                                     optionletStripper_->optionletFixingTimes();
         ext::shared_ptr<LinearInterpolation> timeInterpolator(new
             LinearInterpolation(optionletTimes.begin(), optionletTimes.end(),
                                 vol.begin()));
-        return timeInterpolator->operator()(length, true);
+        return (*timeInterpolator)(length, true);
     }
 
     void StrippedOptionletAdapter::performCalculations() const {

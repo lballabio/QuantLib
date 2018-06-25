@@ -46,7 +46,7 @@ namespace QuantLib {
 
     Real FdmLogInnerValue::innerValue(const FdmLinearOpIterator& iter, Time) {
         const Real s = std::exp(mesher_->location(iter, direction_));
-        return payoff_->operator()(s);
+        return (*payoff_)(s);
     }
 
     Real FdmLogInnerValue::avgInnerValue(
@@ -115,7 +115,7 @@ namespace QuantLib {
             x[i] = std::exp(mesher_->location(iter, i));
         }
         
-        return payoff_->operator()(x);
+        return (*payoff_)(x);
     }
     
     Real 

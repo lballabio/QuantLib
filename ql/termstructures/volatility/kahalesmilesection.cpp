@@ -235,8 +235,8 @@ namespace QuantLib {
             (i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1)))
             return discount *
                    (type == Option::Call
-                        ? cFunctions_[i]->operator()(shifted_strike)
-                        : cFunctions_[i]->operator()(shifted_strike) + shifted_strike - f_);
+                        ? (*cFunctions_[i])(shifted_strike)
+                        : (*cFunctions_[i])(shifted_strike) + shifted_strike - f_);
         else
             return source_->optionPrice(strike, type, discount);
     }
@@ -247,7 +247,7 @@ namespace QuantLib {
         if (!interpolate_ &&
             !(i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1)))
             return source_->volatility(strike);
-        Real c = cFunctions_[i]->operator()(shifted_strike);
+        Real c = (*cFunctions_[i])(shifted_strike);
         Real vol = 0.0;
         try {
             Option::Type type = shifted_strike >= f_ ? Option::Call : Option::Put;

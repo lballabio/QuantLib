@@ -112,7 +112,7 @@ namespace QuantLib {
             }
 
             void operator()() const {
-                sig_.operator()();
+                sig_();
             }
           private:
             signal_type sig_;
@@ -152,12 +152,12 @@ namespace QuantLib {
 
     void Observable::notifyObservers() {
         if (settings_.updatesEnabled()) {
-            return sig_->operator()();
+            return (*sig_)();
         }
 
         boost::lock_guard<boost::mutex> sLock(settings_.mutex_);
         if (settings_.updatesEnabled()) {
-            return sig_->operator()();
+            return (*sig_)();
         }
         else if (settings_.updatesDeferred()) {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);

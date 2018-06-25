@@ -58,7 +58,7 @@ inline Real PiecewiseIntegral::integrate_h(const boost::function<Real(Real)> &f,
                                            Real a, Real b) const {
 
     if (!close_enough(a, b))
-        return integrator_->operator()(f, a, b);
+        return (*integrator_)(f, a, b);
     else
         return 0.0;
 }

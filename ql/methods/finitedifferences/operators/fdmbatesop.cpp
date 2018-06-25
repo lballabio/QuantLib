@@ -73,7 +73,7 @@ namespace QuantLib {
                     
     Real FdmBatesOp::IntegroIntegrand::operator()(Real y) const {
         const Real x = x_ + M_SQRT2*delta_*y + nu_;
-        Real valueOfDerivative = interpl_->operator()(x, true);
+        Real valueOfDerivative = (*interpl_)(x, true);
         
         for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
             iter < bcSet_.end(); ++iter) {

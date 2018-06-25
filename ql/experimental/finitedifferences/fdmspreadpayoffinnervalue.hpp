@@ -44,7 +44,7 @@ namespace QuantLib {
             a[0] = calc1_->innerValue(iter, t);
             a[1] = calc2_->innerValue(iter, t);
 
-            return payoff_->operator()(a);
+            return (*payoff_)(a);
         }
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
             return innerValue(iter, t);

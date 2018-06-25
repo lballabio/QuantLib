@@ -79,7 +79,7 @@ namespace QuantLib {
             Real value(Real x, Real y) const {
                 x = bindX(x);
                 y = bindY(y);
-                return decoratedInterp_->operator()(x,y);
+                return (*decoratedInterp_)(x,y);
             }
 
           private:

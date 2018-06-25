@@ -533,7 +533,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
                 stats[u].add(0.0);
             }
             else {
-                stats[u].add(df*payoff->operator()(s));
+                stats[u].add(df*(*payoff)(s));
             }
         }
     }

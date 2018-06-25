@@ -53,7 +53,7 @@ namespace QuantLib {
                 f = std::lower_bound(shape_->begin(), shape_->end(),
                    std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
             }
-            return payoff_->operator()(std::exp(f + x + y));
+            return (*payoff_)(std::exp(f + x + y));
         }
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
             return innerValue(iter, t);

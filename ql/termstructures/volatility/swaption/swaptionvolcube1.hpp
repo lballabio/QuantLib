@@ -369,8 +369,8 @@ namespace QuantLib {
                     }
                 }
 
-                const std::vector<Real>& guess = parametersGuess_.operator()(
-                    optionTimes[j], swapLengths[k]);
+                const std::vector<Real>& guess =
+                    parametersGuess_(optionTimes[j], swapLengths[k]);
 
                 const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
                     ext::shared_ptr<typename Model::Interpolation>(new
@@ -481,8 +481,8 @@ namespace QuantLib {
                 }
             }
 
-            const std::vector<Real>& guess = parametersGuess_.operator()(
-                optionTimes[j], swapLengths[k]);
+            const std::vector<Real>& guess =
+                parametersGuess_(optionTimes[j], swapLengths[k]);
 
                 const ext::shared_ptr<typename Model::Interpolation> sabrInterpolation =
                     ext::shared_ptr<typename Model::Interpolation>(new
@@ -1105,7 +1105,7 @@ namespace QuantLib {
                             const Time optionTime, const Time swapLength) const {
         std::vector<Real> result;
         for (Size k=0; k<nLayers_; ++k)
-            result.push_back(interpolators_[k]->operator()(optionTime, swapLength));
+            result.push_back((*interpolators_[k])(optionTime, swapLength));
         return result;
     }
 
