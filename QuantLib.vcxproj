@@ -1760,6 +1760,7 @@
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
+    <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\config.ansi.hpp" />
