@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -49,8 +50,9 @@ namespace QuantLib {
         return done || currentIndex_ == isExerciseTime_.size();
     }
 
-    std::auto_ptr<MarketModelMultiProduct> ExerciseAdapter::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    ExerciseAdapter::clone() const {
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
                                                   new ExerciseAdapter(*this));
     }
 

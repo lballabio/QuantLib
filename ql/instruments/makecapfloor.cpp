@@ -22,14 +22,11 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 
-using boost::shared_ptr;
-using boost::dynamic_pointer_cast;
-
 namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
                                const Period& tenor,
-                               const shared_ptr<IborIndex>& iborIndex,
+                               const ext::shared_ptr<IborIndex>& iborIndex,
                                Rate strike,
                                const Period& forwardStart)
     : capFloorType_(capFloorType), strike_(strike),
@@ -41,11 +38,11 @@ namespace QuantLib {
                        .withFixedLegTenor(1*Years).withFixedLegDayCount(Actual365Fixed())) {}
 
     MakeCapFloor::operator CapFloor() const {
-        shared_ptr<CapFloor> capfloor = *this;
+        ext::shared_ptr<CapFloor> capfloor = *this;
         return *capfloor;
     }
 
-    MakeCapFloor::operator shared_ptr<CapFloor>() const {
+    MakeCapFloor::operator ext::shared_ptr<CapFloor>() const {
 
         VanillaSwap swap = makeVanillaSwap_;
 
@@ -64,8 +61,8 @@ namespace QuantLib {
 
             // temporary patch...
             // should be fixed for every CapFloor::Engine
-            shared_ptr<BlackCapFloorEngine> temp = 
-                dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
+            ext::shared_ptr<BlackCapFloorEngine> temp = 
+                ext::dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
             QL_REQUIRE(temp,
                        "cannot calculate ATM without a BlackCapFloorEngine");
             Handle<YieldTermStructure> discountCurve = temp->termStructure();
@@ -75,7 +72,7 @@ namespace QuantLib {
                                                  discountCurve->referenceDate());
         }
 
-        shared_ptr<CapFloor> capFloor(new
+        ext::shared_ptr<CapFloor> capFloor(new
             CapFloor(capFloorType_, leg, strikeVector));
         capFloor->setPricingEngine(engine_);
         return capFloor;
@@ -150,7 +147,7 @@ namespace QuantLib {
     }
 
     MakeCapFloor& MakeCapFloor::withPricingEngine(
-                             const shared_ptr<PricingEngine>& engine) {
+                             const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }

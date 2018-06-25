@@ -49,7 +49,7 @@ namespace QuantLib {
                   model cannot provide one itself.
         */
         JamshidianSwaptionEngine(
-                         const boost::shared_ptr<OneFactorAffineModel>& model,
+                         const ext::shared_ptr<OneFactorAffineModel>& model,
                          const Handle<YieldTermStructure>& termStructure =
                                                  Handle<YieldTermStructure>())
         : GenericModelEngine<OneFactorAffineModel,

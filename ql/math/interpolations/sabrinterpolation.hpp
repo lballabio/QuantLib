@@ -33,7 +33,6 @@
 #include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/list_of.hpp>
 
 namespace QuantLib {
@@ -139,10 +138,10 @@ struct SABRSpecs {
                                             addParams[0]);
     }
     typedef SABRWrapper type;
-    boost::shared_ptr<type> instance(const Time t, const Real &forward,
+    ext::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &addParams) {
-        return boost::make_shared<type>(t, forward, params, addParams);
+        return ext::make_shared<type>(t, forward, params, addParams);
     }
 };
 }
@@ -159,15 +158,15 @@ class SABRInterpolation : public Interpolation {
                       const Real &forward, Real alpha, Real beta, Real nu,
                       Real rho, bool alphaIsFixed, bool betaIsFixed,
                       bool nuIsFixed, bool rhoIsFixed, bool vegaWeighted = true,
-                      const boost::shared_ptr<EndCriteria> &endCriteria =
-                          boost::shared_ptr<EndCriteria>(),
-                      const boost::shared_ptr<OptimizationMethod> &optMethod =
-                          boost::shared_ptr<OptimizationMethod>(),
+                      const ext::shared_ptr<EndCriteria> &endCriteria =
+                          ext::shared_ptr<EndCriteria>(),
+                      const ext::shared_ptr<OptimizationMethod> &optMethod =
+                          ext::shared_ptr<OptimizationMethod>(),
                       const Real errorAccept = 0.0020,
                       const bool useMaxError = false,
                       const Size maxGuesses = 50, const Real shift = 0.0) {
 
-        impl_ = boost::shared_ptr<Interpolation::Impl>(
+        impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SABRSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
                 boost::assign::list_of(alpha)(beta)(nu)(rho),
@@ -175,7 +174,7 @@ class SABRInterpolation : public Interpolation {
                     rhoIsFixed),
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses, boost::assign::list_of(shift)));
-        coeffs_ = boost::dynamic_pointer_cast<
+        coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::SABRSpecs> >(impl_);
     }
     Real expiry() const { return coeffs_->t_; }
@@ -192,7 +191,7 @@ class SABRInterpolation : public Interpolation {
     EndCriteria::Type endCriteria() { return coeffs_->XABREndCriteria_; }
 
   private:
-    boost::shared_ptr<detail::XABRCoeffHolder<detail::SABRSpecs> > coeffs_;
+    ext::shared_ptr<detail::XABRCoeffHolder<detail::SABRSpecs> > coeffs_;
 };
 
 //! %SABR interpolation factory and traits
@@ -202,10 +201,10 @@ class SABR {
     SABR(Time t, Real forward, Real alpha, Real beta, Real nu, Real rho,
          bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed, bool rhoIsFixed,
          bool vegaWeighted = false,
-         const boost::shared_ptr<EndCriteria> endCriteria =
-             boost::shared_ptr<EndCriteria>(),
-         const boost::shared_ptr<OptimizationMethod> optMethod =
-             boost::shared_ptr<OptimizationMethod>(),
+         const ext::shared_ptr<EndCriteria> endCriteria =
+             ext::shared_ptr<EndCriteria>(),
+         const ext::shared_ptr<OptimizationMethod> optMethod =
+             ext::shared_ptr<OptimizationMethod>(),
          const Real errorAccept = 0.0020, const bool useMaxError = false,
          const Size maxGuesses = 50, const Real shift = 0.0)
         : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu),
@@ -231,8 +230,8 @@ class SABR {
     Real alpha_, beta_, nu_, rho_;
     bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
     bool vegaWeighted_;
-    const boost::shared_ptr<EndCriteria> endCriteria_;
-    const boost::shared_ptr<OptimizationMethod> optMethod_;
+    const ext::shared_ptr<EndCriteria> endCriteria_;
+    const ext::shared_ptr<OptimizationMethod> optMethod_;
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

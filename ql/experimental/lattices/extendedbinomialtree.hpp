@@ -40,7 +40,7 @@ namespace QuantLib {
       public:
         enum Branches { branches = 2 };
         ExtendedBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end,
                         Size steps)
         : Tree<T>(steps+1), treeProcess_(process) {
@@ -64,7 +64,7 @@ namespace QuantLib {
         Time dt_;
 
       protected:
-        boost::shared_ptr<StochasticProcess1D> treeProcess_;
+        ext::shared_ptr<StochasticProcess1D> treeProcess_;
     };
 
 
@@ -75,7 +75,7 @@ namespace QuantLib {
         : public ExtendedBinomialTree<T> {
       public:
         ExtendedEqualProbabilitiesBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end,
                         Size steps)
         : ExtendedBinomialTree<T>(process, end, steps) {}
@@ -102,7 +102,7 @@ namespace QuantLib {
     class ExtendedEqualJumpsBinomialTree : public ExtendedBinomialTree<T> {
       public:
         ExtendedEqualJumpsBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end,
                         Size steps)
         : ExtendedBinomialTree<T>(process, end, steps) {}
@@ -136,7 +136,7 @@ namespace QuantLib {
     class ExtendedJarrowRudd
         : public ExtendedEqualProbabilitiesBinomialTree<ExtendedJarrowRudd> {
       public:
-        ExtendedJarrowRudd(const boost::shared_ptr<StochasticProcess1D>&,
+        ExtendedJarrowRudd(const ext::shared_ptr<StochasticProcess1D>&,
                            Time end,
                            Size steps,
                            Real strike);
@@ -150,7 +150,7 @@ namespace QuantLib {
     class ExtendedCoxRossRubinstein
         : public ExtendedEqualJumpsBinomialTree<ExtendedCoxRossRubinstein> {
       public:
-        ExtendedCoxRossRubinstein(const boost::shared_ptr<StochasticProcess1D>&,
+        ExtendedCoxRossRubinstein(const ext::shared_ptr<StochasticProcess1D>&,
                                   Time end,
                                   Size steps,
                                   Real strike);
@@ -167,7 +167,7 @@ namespace QuantLib {
                                             ExtendedAdditiveEQPBinomialTree> {
       public:
         ExtendedAdditiveEQPBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>&,
+                        const ext::shared_ptr<StochasticProcess1D>&,
                         Time end,
                         Size steps,
                         Real strike);
@@ -182,7 +182,7 @@ namespace QuantLib {
     class ExtendedTrigeorgis
         : public ExtendedEqualJumpsBinomialTree<ExtendedTrigeorgis> {
       public:
-        ExtendedTrigeorgis(const boost::shared_ptr<StochasticProcess1D>&,
+        ExtendedTrigeorgis(const ext::shared_ptr<StochasticProcess1D>&,
                            Time end,
                            Size steps,
                            Real strike);
@@ -196,7 +196,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class ExtendedTian : public ExtendedBinomialTree<ExtendedTian> {
       public:
-        ExtendedTian(const boost::shared_ptr<StochasticProcess1D>&,
+        ExtendedTian(const ext::shared_ptr<StochasticProcess1D>&,
                      Time end,
                      Size steps,
                      Real strike);
@@ -212,7 +212,7 @@ namespace QuantLib {
     class ExtendedLeisenReimer
         : public ExtendedBinomialTree<ExtendedLeisenReimer> {
       public:
-        ExtendedLeisenReimer(const boost::shared_ptr<StochasticProcess1D>&,
+        ExtendedLeisenReimer(const ext::shared_ptr<StochasticProcess1D>&,
                              Time end,
                              Size steps,
                              Real strike);
@@ -228,7 +228,7 @@ namespace QuantLib {
 
      class ExtendedJoshi4 : public ExtendedBinomialTree<ExtendedJoshi4> {
       public:
-        ExtendedJoshi4(const boost::shared_ptr<StochasticProcess1D>&,
+        ExtendedJoshi4(const ext::shared_ptr<StochasticProcess1D>&,
                        Time end,
                        Size steps,
                        Real strike);

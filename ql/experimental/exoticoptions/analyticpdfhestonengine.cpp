@@ -38,7 +38,7 @@
 namespace QuantLib {
 
     AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(
-        const boost::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HestonModel>& model,
         Real integrationEps_,
         Size maxIntegrationIterations)
     : maxIntegrationIterations_(maxIntegrationIterations),
@@ -50,7 +50,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        const boost::shared_ptr<HestonProcess>& process = model_->process();
+        const ext::shared_ptr<HestonProcess>& process = model_->process();
 
         const Time t = process->time(arguments_.exercise->lastDate());
 

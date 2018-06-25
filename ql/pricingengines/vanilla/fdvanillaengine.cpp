@@ -66,8 +66,8 @@ namespace QuantLib {
 
     void FDVanillaEngine::ensureStrikeInGrid() const {
         // ensure strike is included in the grid
-        boost::shared_ptr<StrikedTypePayoff> striked_payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+        ext::shared_ptr<StrikedTypePayoff> striked_payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         if (!striked_payoff)
             return;
         Real requiredGridValue = striked_payoff->strike();
@@ -98,11 +98,11 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::initializeBoundaryConditions() const {
-        BCs_[0] = boost::shared_ptr<bc_type>(new NeumannBC(
+        BCs_[0] = ext::shared_ptr<bc_type>(new NeumannBC(
                                       intrinsicValues_.value(1)-
                                       intrinsicValues_.value(0),
                                       NeumannBC::Lower));
-        BCs_[1] = boost::shared_ptr<bc_type>(new NeumannBC(
+        BCs_[1] = ext::shared_ptr<bc_type>(new NeumannBC(
                        intrinsicValues_.value(intrinsicValues_.size()-1) -
                        intrinsicValues_.value(intrinsicValues_.size()-2),
                        NeumannBC::Upper));

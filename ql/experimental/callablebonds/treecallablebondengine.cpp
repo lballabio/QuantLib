@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                                const Size timeSteps,
                                const Handle<YieldTermStructure>& termStructure)
     : LatticeShortRateModelEngine<CallableBond::arguments,
@@ -34,7 +34,7 @@ namespace QuantLib {
     }
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid,
                                const Handle<YieldTermStructure>& termStructure)
     : LatticeShortRateModelEngine<CallableBond::arguments,
@@ -53,8 +53,8 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
+            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -66,7 +66,7 @@ namespace QuantLib {
         DiscretizedCallableFixedRateBond callableBond(arguments_,
                                                       referenceDate,
                                                       dayCounter);
-        boost::shared_ptr<Lattice> lattice;
+        ext::shared_ptr<Lattice> lattice;
 
         if (lattice_) {
             lattice = lattice_;

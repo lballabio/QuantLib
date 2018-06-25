@@ -42,8 +42,8 @@ namespace QuantLib {
         Real totalUndiscounted = 0;
         for (CommodityCashFlows::const_iterator i = cashFlows.begin();
              i != cashFlows.end(); ++i) {
-            //const boost::shared_ptr<CommodityCashFlow> cashFlow = *i;
-            const boost::shared_ptr<CommodityCashFlow> cashFlow = i->second;
+            //const ext::shared_ptr<CommodityCashFlow> cashFlow = *i;
+            const ext::shared_ptr<CommodityCashFlow> cashFlow = i->second;
             totalDiscounted += cashFlow->discountedAmount().value();
             totalUndiscounted += cashFlow->undiscountedAmount().value();
             //out << io::iso_date(cashFlow->date()) << " " <<

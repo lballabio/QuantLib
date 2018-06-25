@@ -34,7 +34,7 @@ namespace QuantLib {
     class LastFixingQuote : public Quote,
                             public Observer {
       public:
-        LastFixingQuote(const boost::shared_ptr<Index>& index);
+        LastFixingQuote(const ext::shared_ptr<Index>& index);
         //! \name Quote interface
         //@{
         Real value() const;
@@ -46,11 +46,11 @@ namespace QuantLib {
         //@}
         //! \name LastFixingQuote interface
         //@{
-        const boost::shared_ptr<Index>& index() const { return index_; }
+        const ext::shared_ptr<Index>& index() const { return index_; }
         Date referenceDate() const; 
         //@}
       protected:
-        boost::shared_ptr<Index> index_;
+        ext::shared_ptr<Index> index_;
     };
 
 }

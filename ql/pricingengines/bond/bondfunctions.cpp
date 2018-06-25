@@ -26,8 +26,6 @@
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     Date BondFunctions::startDate(const Bond& bond) {
@@ -478,7 +476,7 @@ namespace QuantLib {
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
-                                   const shared_ptr<YieldTermStructure>& d,
+                                   const ext::shared_ptr<YieldTermStructure>& d,
                                    Spread zSpread,
                                    const DayCounter& dc,
                                    Compounding comp,
@@ -500,7 +498,7 @@ namespace QuantLib {
 
     Spread BondFunctions::zSpread(const Bond& bond,
                                   Real cleanPrice,
-                                  const shared_ptr<YieldTermStructure>& d,
+                                  const ext::shared_ptr<YieldTermStructure>& d,
                                   const DayCounter& dayCounter,
                                   Compounding compounding,
                                   Frequency frequency,

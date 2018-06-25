@@ -30,14 +30,14 @@
 namespace QuantLib {
 
     VanillaOption::VanillaOption(
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise) {}
 
 
     Volatility VanillaOption::impliedVolatility(
              Real targetValue,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy,
              Size maxEvaluations,
              Volatility minVol,
@@ -45,9 +45,9 @@ namespace QuantLib {
 
         QL_REQUIRE(!isExpired(), "option expired");
 
-        boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+        ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
+        ext::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
             detail::ImpliedVolatilityHelper::clone(process, volQuote);
 
         // engines are built-in for the time being

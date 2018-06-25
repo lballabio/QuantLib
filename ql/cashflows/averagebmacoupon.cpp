@@ -36,7 +36,7 @@ namespace QuantLib {
             }
             Rate swapletRate() const {
                 const std::vector<Date>& fixingDates = coupon_->fixingDates();
-                const boost::shared_ptr<InterestRateIndex>& index =
+                const ext::shared_ptr<InterestRateIndex>& index =
                     coupon_->index();
 
                 Natural cutoffDays = 0; // to be verified
@@ -105,7 +105,7 @@ namespace QuantLib {
                                        Real nominal,
                                        const Date& startDate,
                                        const Date& endDate,
-                                       const boost::shared_ptr<BMAIndex>& index,
+                                       const ext::shared_ptr<BMAIndex>& index,
                                        Real gearing, Spread spread,
                                        const Date& refPeriodStart,
                                        const Date& refPeriodEnd,
@@ -120,7 +120,7 @@ namespace QuantLib {
         Date fixingStart = cal.advance(startDate, -fixingDays*Days, Preceding);
         fixingSchedule_ = index->fixingSchedule(fixingStart, endDate);
 
-        setPricer(boost::shared_ptr<FloatingRateCouponPricer>(
+        setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
                                                  new AverageBMACouponPricer));
     }
 
@@ -160,7 +160,7 @@ namespace QuantLib {
 
 
     AverageBMALeg::AverageBMALeg(const Schedule& schedule,
-                                 const boost::shared_ptr<BMAIndex>& index)
+                                 const ext::shared_ptr<BMAIndex>& index)
     : schedule_(schedule), index_(index), paymentAdjustment_(Following) {}
 
     AverageBMALeg& AverageBMALeg::withNotionals(Real notional) {
@@ -234,7 +234,7 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule_.tenor(),
                                          paymentAdjustment_);
 
-            cashflows.push_back(boost::shared_ptr<CashFlow>(new
+            cashflows.push_back(ext::shared_ptr<CashFlow>(new
                 AverageBMACoupon(paymentDate,
                                  detail::get(notionals_, i, notionals_.back()),
                                  start, end,

@@ -75,7 +75,7 @@ namespace QuantLib {
 
 class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
   public:
-    const boost::shared_ptr<StochasticProcess1D> stateProcess() const;
+    const ext::shared_ptr<StochasticProcess1D> stateProcess() const;
 
     Real numeraire(const Time t, const Real y = 0.0,
                    const Handle<YieldTermStructure> &yts =
@@ -106,17 +106,17 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     Real forwardRate(
         const Date &fixing, const Date &referenceDate = Null<Date>(),
         const Real y = 0.0,
-        boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>()) const;
+        ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
 
     Real swapRate(
         const Date &fixing, const Period &tenor,
         const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
+        ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
     Real swapAnnuity(
         const Date &fixing, const Period &tenor,
         const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
+        ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
@@ -155,7 +155,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     // one later on.
 
     struct CachedSwapKey {
-        const boost::shared_ptr<SwapIndex> index;
+        const ext::shared_ptr<SwapIndex> index;
         const Date fixing;
         const Period tenor;
         bool operator==(const CachedSwapKey &o) const {
@@ -176,7 +176,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         }
     };
 
-    typedef boost::unordered_map<CachedSwapKey, boost::shared_ptr<VanillaSwap>,
+    typedef boost::unordered_map<CachedSwapKey, ext::shared_ptr<VanillaSwap>,
                                  CachedSwapKeyHasher> CacheType;
 
     mutable CacheType swapCache_;
@@ -210,14 +210,14 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
     // retrieve underlying swap from cache if possible, otherwise
     // create it and store it in the cache
-    boost::shared_ptr<VanillaSwap>
-    underlyingSwap(const boost::shared_ptr<SwapIndex> &index,
+    ext::shared_ptr<VanillaSwap>
+    underlyingSwap(const ext::shared_ptr<SwapIndex> &index,
                    const Date &expiry, const Period &tenor) const {
 
         CachedSwapKey k = {index, expiry, tenor};
         CacheType::iterator i = swapCache_.find(k);
         if (i == swapCache_.end()) {
-            boost::shared_ptr<VanillaSwap> underlying =
+            ext::shared_ptr<VanillaSwap> underlying =
                 index->clone(tenor)->underlyingSwap(expiry);
             swapCache_.insert(std::make_pair(k, underlying));
             return underlying;
@@ -225,12 +225,12 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         return i->second;
     }
 
-    boost::shared_ptr<StochasticProcess1D> stateProcess_;
+    ext::shared_ptr<StochasticProcess1D> stateProcess_;
     mutable Date evaluationDate_;
     mutable bool enforcesTodaysHistoricFixings_;
 };
 
-inline const boost::shared_ptr<StochasticProcess1D>
+inline const ext::shared_ptr<StochasticProcess1D>
 Gaussian1dModel::stateProcess() const {
 
     QL_REQUIRE(stateProcess_ != NULL, "state process not set");

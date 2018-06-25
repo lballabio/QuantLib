@@ -39,10 +39,10 @@ namespace QuantLib {
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
@@ -52,9 +52,9 @@ namespace QuantLib {
                                                               Real targetValue)
         : discountCurve_(discountCurve), targetValue_(targetValue) {
 
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
+            vol_ = ext::make_shared<SimpleQuote>(-1.0);
             Handle<Quote> h(vol_);
-            engine_ = boost::shared_ptr<PricingEngine>(new
+            engine_ = ext::shared_ptr<PricingEngine>(new
                                     BlackSwaptionEngine(discountCurve_, h));
             swaption.setupArguments(engine_->getArguments());
 
@@ -95,10 +95,10 @@ namespace QuantLib {
         }
     }
 
-    IrregularSwaption::IrregularSwaption(const boost::shared_ptr<IrregularSwap>& swap,
-                                         const boost::shared_ptr<Exercise>& exercise,
+    IrregularSwaption::IrregularSwaption(const ext::shared_ptr<IrregularSwap>& swap,
+                                         const ext::shared_ptr<Exercise>& exercise,
                                          IrregularSettlement::Type delivery)
-    : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
+    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
       settlementType_(delivery) {
         registerWith(swap_);
     }

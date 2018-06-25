@@ -119,7 +119,7 @@ namespace QuantLib {
         void performCalculations() const {
             static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
                 this)->initDates();//in update?
-            copulasRng_ = boost::make_shared<copulaRNG_type>(copula_, seed_);
+            copulasRng_ = ext::make_shared<copulaRNG_type>(copula_, seed_);
             performSimulations();
         }
 
@@ -219,7 +219,7 @@ namespace QuantLib {
             USNG > > > > simsBuffer_;
 
         mutable copulaPolicy copula_;
-        mutable boost::shared_ptr<copulaRNG_type> copulasRng_;
+        mutable ext::shared_ptr<copulaRNG_type> copulasRng_;
 
         // Maximum time inversion horizon
         static const Size maxHorizon_ = 4050; // over 11 years
@@ -819,14 +819,14 @@ namespace QuantLib {
         typedef simEvent<RandomDefaultLM> defaultSimEvent;
 
         // \todo Consider this to be only a ConstantLossLM instead
-        const boost::shared_ptr<DefaultLatentModel<copulaPolicy> > model_;
+        const ext::shared_ptr<DefaultLatentModel<copulaPolicy> > model_;
         const std::vector<Real> recoveries_;
         // for time inversion:
         Real accuracy_;
     public:
         // \todo: Allow a constructor building its own default latent model.
         RandomDefaultLM(
-            const boost::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
+            const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
@@ -844,7 +844,7 @@ namespace QuantLib {
             this->registerWith(model_);
         }
         RandomDefaultLM(
-            const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&
+            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&
                 model,
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
@@ -883,7 +883,7 @@ namespace QuantLib {
             Date today = Settings::instance().evaluationDate();
             Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
 
-            const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+            const ext::shared_ptr<Pool>& pool = this->basket_->pool();
             for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'
                 horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
                     defaultProbability(this->basket_->defaultKeys()[iName])
@@ -935,7 +935,7 @@ namespace QuantLib {
     void RandomDefaultLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const
     {
-        const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+        const ext::shared_ptr<Pool>& pool = this->basket_->pool();
         // starts with no events
         this->simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 

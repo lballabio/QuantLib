@@ -39,7 +39,7 @@ namespace QuantLib {
         class Calculator;
         friend class Calculator;
       public:
-        BlackCalculator(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        BlackCalculator(const ext::shared_ptr<StrikedTypePayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real discount = 1.0);
@@ -106,7 +106,7 @@ namespace QuantLib {
         Real alpha() const;
         Real beta() const;
       protected:
-        void initialize(const boost::shared_ptr<StrikedTypePayoff>& p);
+        void initialize(const ext::shared_ptr<StrikedTypePayoff>& p);
         Real strike_, forward_, stdDev_, discount_, variance_;
         Real d1_, d2_;
         Real alpha_, beta_, DalphaDd1_, DbetaDd2_;

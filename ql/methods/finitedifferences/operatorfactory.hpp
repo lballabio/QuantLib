@@ -40,7 +40,7 @@ namespace QuantLib {
     class OperatorFactory {
       public:
         static TridiagonalOperator getOperator(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess> &process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess> &process,
              const Array &grid,
              Time residualTime,
              bool timeDependent) {
@@ -50,7 +50,7 @@ namespace QuantLib {
                 return BSMOperator(grid, process, residualTime);
         };
         static TridiagonalOperator getOperator(
-          const boost::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
+          const ext::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
           const Array &grid) {
             return OneFactorOperator(grid, process);
         }

@@ -85,7 +85,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const boost::shared_ptr<FixedRateBond>& fixedCouponBond,
+                    const ext::shared_ptr<FixedRateBond>& fixedCouponBond,
                     const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>(),
                     const Handle<YieldTermStructure>& incomeDiscountCurve =
@@ -115,7 +115,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        boost::shared_ptr<FixedRateBond> fixedCouponBond_;
+        ext::shared_ptr<FixedRateBond> fixedCouponBond_;
         void performCalculations() const;
     };
 

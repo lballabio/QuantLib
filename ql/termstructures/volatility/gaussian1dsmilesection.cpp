@@ -21,7 +21,6 @@
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <boost/make_shared.hpp>
 
 using std::fabs;
 using std::sqrt;
@@ -29,13 +28,13 @@ using std::sqrt;
 namespace QuantLib {
 
 Gaussian1dSmileSection::Gaussian1dSmileSection(
-    const Date &fixingDate, const boost::shared_ptr<SwapIndex> &swapIndex,
-    const boost::shared_ptr<Gaussian1dModel> &model,
+    const Date &fixingDate, const ext::shared_ptr<SwapIndex> &swapIndex,
+    const ext::shared_ptr<Gaussian1dModel> &model,
     const DayCounter &dc,
-    const boost::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine)
+    const ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine)
     : SmileSection(fixingDate, dc, model->termStructure()->referenceDate()),
       fixingDate_(fixingDate), swapIndex_(swapIndex),
-      iborIndex_(boost::shared_ptr<IborIndex>()), model_(model),
+      iborIndex_(ext::shared_ptr<IborIndex>()), model_(model),
       engine_(swaptionEngine) {
 
     atm_ = model_->swapRate(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0,
@@ -44,19 +43,19 @@ Gaussian1dSmileSection::Gaussian1dSmileSection(
                                    Null<Date>(), 0.0, swapIndex_);
 
     if (engine_ == NULL) {
-        engine_ = boost::make_shared<Gaussian1dSwaptionEngine>(
+        engine_ = ext::make_shared<Gaussian1dSwaptionEngine>(
             model_, 64, 7.0, true, false,
             swapIndex_->discountingTermStructure());
     }
 }
 
 Gaussian1dSmileSection::Gaussian1dSmileSection(
-    const Date &fixingDate, const boost::shared_ptr<IborIndex> &iborIndex,
-    const boost::shared_ptr<Gaussian1dModel> &model,
+    const Date &fixingDate, const ext::shared_ptr<IborIndex> &iborIndex,
+    const ext::shared_ptr<Gaussian1dModel> &model,
     const DayCounter &dc,
-    const boost::shared_ptr<Gaussian1dCapFloorEngine> capEngine)
+    const ext::shared_ptr<Gaussian1dCapFloorEngine> capEngine)
     : SmileSection(fixingDate, dc, model->termStructure()->referenceDate()),
-      fixingDate_(fixingDate), swapIndex_(boost::shared_ptr<SwapIndex>()),
+      fixingDate_(fixingDate), swapIndex_(ext::shared_ptr<SwapIndex>()),
       iborIndex_(iborIndex), model_(model), engine_(capEngine) {
 
     atm_ = model_->forwardRate(fixingDate_, Null<Date>(), 0.0, iborIndex_);
@@ -68,7 +67,7 @@ Gaussian1dSmileSection::Gaussian1dSmileSection(
         model_->zerobond(c.maturityDate());
 
     if (engine_ == NULL) {
-        engine_ = boost::make_shared<Gaussian1dCapFloorEngine>(
+        engine_ = ext::make_shared<Gaussian1dCapFloorEngine>(
             model_, 64, 7.0, true,
             false); // use model curve as discounting curve
     }

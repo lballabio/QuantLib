@@ -33,7 +33,7 @@ namespace QuantLib {
     class FirstDerivativeOp : public TripleBandLinearOp {
       public:
         FirstDerivativeOp(Size direction,
-                           const boost::shared_ptr<FdmMesher>& mesher);
+                           const ext::shared_ptr<FdmMesher>& mesher);
     };
 }
 

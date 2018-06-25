@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     namespace {
-        bool between(const boost::shared_ptr<DefaultEvent>& e,
+        bool between(const ext::shared_ptr<DefaultEvent>& e,
                      const Date& start,
                      const Date& end,
                      bool includeRefDate = false) {
@@ -40,7 +40,7 @@ namespace QuantLib {
     : probabilities_(probabilities), events_(events) { }
 
     Issuer::Issuer(const std::vector<std::vector<
-                       boost::shared_ptr<DefaultType> > >& eventTypes,
+                       ext::shared_ptr<DefaultType> > >& eventTypes,
                    const std::vector<Currency>& currencies,
                    const std::vector<Seniority>& seniorities,
                    const std::vector<Handle<
@@ -67,7 +67,7 @@ namespace QuantLib {
         QL_FAIL("Probability curve not available.");
     }
 
-    boost::shared_ptr<DefaultEvent>
+    ext::shared_ptr<DefaultEvent>
     Issuer::defaultedBetween(const Date& start,
                              const Date& end,
                              const DefaultProbKey& contractKey,
@@ -83,18 +83,18 @@ namespace QuantLib {
                 between(*itev, start, end, includeRefDate))
                 return *itev;
         }
-        return boost::shared_ptr<DefaultEvent>();
+        return ext::shared_ptr<DefaultEvent>();
     }
 
 
-    std::vector<boost::shared_ptr<DefaultEvent> >
+    std::vector<ext::shared_ptr<DefaultEvent> >
     Issuer::defaultsBetween(const Date& start,
                             const Date& end,
                             const DefaultProbKey& contractKey,
                             bool includeRefDate
                             ) const
     {
-        std::vector<boost::shared_ptr<DefaultEvent> > defaults;
+        std::vector<ext::shared_ptr<DefaultEvent> > defaults;
         // to do: the set is ordered, see how to use it to speed this up
         for(DefaultEventSet::const_iterator itev = events_.begin();
             // am i really speeding things up with the date comp?

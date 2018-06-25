@@ -105,9 +105,9 @@ namespace QuantLib {
     */
     class BatesEngine : public AnalyticHestonEngine {
       public:
-        BatesEngine(const boost::shared_ptr<BatesModel>& model,
+        BatesEngine(const ext::shared_ptr<BatesModel>& model,
                     Size integrationOrder = 144);
-        BatesEngine(const boost::shared_ptr<BatesModel>& model,
+        BatesEngine(const ext::shared_ptr<BatesModel>& model,
                     Real relTolerance, Size maxEvaluations);
 
       protected:
@@ -117,9 +117,9 @@ namespace QuantLib {
 
     class BatesDetJumpEngine : public BatesEngine {
       public:
-        BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
+        BatesDetJumpEngine(const ext::shared_ptr<BatesDetJumpModel>& model,
                            Size integrationOrder = 144);
-        BatesDetJumpEngine(const boost::shared_ptr<BatesDetJumpModel>& model,
+        BatesDetJumpEngine(const ext::shared_ptr<BatesDetJumpModel>& model,
                            Real relTolerance, Size maxEvaluations);
 
       protected:
@@ -130,10 +130,10 @@ namespace QuantLib {
     class BatesDoubleExpEngine : public AnalyticHestonEngine {
       public:
         BatesDoubleExpEngine(
-            const boost::shared_ptr<BatesDoubleExpModel>& model,
+            const ext::shared_ptr<BatesDoubleExpModel>& model,
             Size integrationOrder = 144);
         BatesDoubleExpEngine(
-            const boost::shared_ptr<BatesDoubleExpModel>& model,
+            const ext::shared_ptr<BatesDoubleExpModel>& model,
             Real relTolerance, Size maxEvaluations);
 
       protected:
@@ -144,10 +144,10 @@ namespace QuantLib {
     class BatesDoubleExpDetJumpEngine : public BatesDoubleExpEngine {
       public:
         BatesDoubleExpDetJumpEngine(
-            const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
+            const ext::shared_ptr<BatesDoubleExpDetJumpModel>& model,
             Size integrationOrder = 144);
         BatesDoubleExpDetJumpEngine(
-            const boost::shared_ptr<BatesDoubleExpDetJumpModel>& model,
+            const ext::shared_ptr<BatesDoubleExpDetJumpModel>& model,
             Real relTolerance, Size maxEvaluations);
 
       protected:

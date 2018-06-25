@@ -39,7 +39,7 @@ namespace QuantLib {
 
     BSMOperator::BSMOperator(
              const Array& grid,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Time residualTime)
     : TridiagonalOperator(grid.size()) {
         PdeBSM::grid_type  logGrid(grid);

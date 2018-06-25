@@ -50,9 +50,9 @@ namespace QuantLib {
 
           public:
             FdmSparkSpreadInnerValue(
-                const boost::shared_ptr<BasketPayoff>& basketPayoff,
-                const boost::shared_ptr<FdmInnerValueCalculator>& fuelPrice,
-                const boost::shared_ptr<FdmInnerValueCalculator>& powerPrice)
+                const ext::shared_ptr<BasketPayoff>& basketPayoff,
+                const ext::shared_ptr<FdmInnerValueCalculator>& fuelPrice,
+                const ext::shared_ptr<FdmInnerValueCalculator>& powerPrice)
             : basketPayoff_(basketPayoff),
               fuelPrice_(fuelPrice),
               powerPrice_(powerPrice) { }
@@ -69,18 +69,18 @@ namespace QuantLib {
             }
 
           private:
-            const boost::shared_ptr<BasketPayoff> basketPayoff_;
-            const boost::shared_ptr<FdmInnerValueCalculator> fuelPrice_;
-            const boost::shared_ptr<FdmInnerValueCalculator> powerPrice_;
+            const ext::shared_ptr<BasketPayoff> basketPayoff_;
+            const ext::shared_ptr<FdmInnerValueCalculator> fuelPrice_;
+            const ext::shared_ptr<FdmInnerValueCalculator> powerPrice_;
         };
     }
 
 
     FdSimpleKlugeExtOUVPPEngine::FdSimpleKlugeExtOUVPPEngine(
-        const boost::shared_ptr<KlugeExtOUProcess>& process,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<Shape>& fuelShape,
-        const boost::shared_ptr<Shape>& powerShape,
+        const ext::shared_ptr<KlugeExtOUProcess>& process,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<Shape>& fuelShape,
+        const ext::shared_ptr<Shape>& powerShape,
         Real fuelCostAddon,
         Size tGrid, Size xGrid, Size yGrid, Size gGrid,
         const FdmSchemeDesc& schemeDesc)
@@ -98,8 +98,8 @@ namespace QuantLib {
 
     void FdSimpleKlugeExtOUVPPEngine::calculate() const {
 
-        boost::shared_ptr<SwingExercise> swingExercise(
-            boost::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
+        ext::shared_ptr<SwingExercise> swingExercise(
+            ext::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
 
         QL_REQUIRE(swingExercise, "Swing exercise supported only");
 
@@ -112,65 +112,65 @@ namespace QuantLib {
 
         // 2. mesher set-up
         const Time maturity = exerciseTimes.back();
-        const boost::shared_ptr<ExtOUWithJumpsProcess> klugeProcess
+        const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess
             = process_->getKlugeProcess();
 
-        const boost::shared_ptr<StochasticProcess1D> klugeOUProcess
+        const ext::shared_ptr<StochasticProcess1D> klugeOUProcess
             = klugeProcess->getExtendedOrnsteinUhlenbeckProcess();
 
-        const boost::shared_ptr<Fdm1dMesher> xMesher(
+        const ext::shared_ptr<Fdm1dMesher> xMesher(
             new FdmSimpleProcess1dMesher(xGrid_, klugeOUProcess, maturity));
 
-        const boost::shared_ptr<Fdm1dMesher> yMesher(
+        const ext::shared_ptr<Fdm1dMesher> yMesher(
             new ExponentialJump1dMesher(yGrid_,
                                         klugeProcess->beta(),
                                         klugeProcess->jumpIntensity(),
                                         klugeProcess->eta(), 1e-3));
 
-        const boost::shared_ptr<Fdm1dMesher> gMesher(
+        const ext::shared_ptr<Fdm1dMesher> gMesher(
             new FdmSimpleProcess1dMesher(gGrid_,
                                          process_->getExtOUProcess(),maturity));
 
-        const boost::shared_ptr<Fdm1dMesher> exerciseMesher(
+        const ext::shared_ptr<Fdm1dMesher> exerciseMesher(
             stepConditionFactory.stateMesher());
 
-        const boost::shared_ptr<FdmMesher> mesher (
+        const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(xMesher, yMesher, gMesher, exerciseMesher));
 
         // 3. Calculator
-        const boost::shared_ptr<FdmInnerValueCalculator> zeroInnerValue(
+        const ext::shared_ptr<FdmInnerValueCalculator> zeroInnerValue(
             new FdmZeroInnerValue());
 
-        const boost::shared_ptr<Payoff> zeroStrikeCall(
+        const ext::shared_ptr<Payoff> zeroStrikeCall(
             new PlainVanillaPayoff(Option::Call, 0.0));
 
-        const boost::shared_ptr<FdmInnerValueCalculator> fuelPrice(
+        const ext::shared_ptr<FdmInnerValueCalculator> fuelPrice(
             new FdmExpExtOUInnerValueCalculator(zeroStrikeCall,
                                                 mesher, fuelShape_, 2));
 
-        const boost::shared_ptr<FdmInnerValueCalculator> powerPrice(
+        const ext::shared_ptr<FdmInnerValueCalculator> powerPrice(
             new FdmExtOUJumpModelInnerValue(zeroStrikeCall,mesher,powerShape_));
 
-        const boost::shared_ptr<FdmInnerValueCalculator> sparkSpread(
+        const ext::shared_ptr<FdmInnerValueCalculator> sparkSpread(
             new FdmSparkSpreadInnerValue(
-                boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff),
+                ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff),
                 fuelPrice, powerPrice));
 
         // 4. Step conditions
         std::list<std::vector<Time> > stoppingTimes;
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
 
         // 4.1 Bermudan step conditions
         stoppingTimes.push_back(exerciseTimes);
         const FdmVPPStepConditionMesher mesh = { 3u, mesher };
         
-        const boost::shared_ptr<FdmVPPStepCondition> stepCondition(
+        const ext::shared_ptr<FdmVPPStepCondition> stepCondition(
             stepConditionFactory.build(mesh, fuelCostAddon_,
                                        fuelPrice, sparkSpread));
 
         stepConditions.push_back(stepCondition);
 
-        const boost::shared_ptr<FdmStepConditionComposite> conditions(
+        const ext::shared_ptr<FdmStepConditionComposite> conditions(
             new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
         // 5. Boundary conditions
@@ -180,7 +180,7 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      zeroInnerValue, maturity, tGrid_, 0 };
 
-        const boost::shared_ptr<FdmKlugeExtOUSolver<4> > solver(
+        const ext::shared_ptr<FdmKlugeExtOUSolver<4> > solver(
             new FdmKlugeExtOUSolver<4>(Handle<KlugeExtOUProcess>(process_),
                                        rTS_, solverDesc, schemeDesc_));
 

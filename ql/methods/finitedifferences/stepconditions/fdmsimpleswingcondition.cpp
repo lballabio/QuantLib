@@ -24,8 +24,8 @@ namespace QuantLib {
 
     FdmSimpleSwingCondition::FdmSimpleSwingCondition(
             const std::vector<Time> & exerciseTimes,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
             Size swingDirection,
             Size minExercises)
     : exerciseTimes_ (exerciseTimes),
@@ -45,7 +45,7 @@ namespace QuantLib {
 
             const Size d = std::distance(iter, exerciseTimes_.end());
 
-            const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
             
             for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;

@@ -33,7 +33,6 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/atmsmilesection.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +44,7 @@ namespace QuantLib {
         const Handle<Quote> &meanReversion,
         const Handle<YieldTermStructure> &couponDiscountCurve,
         const Settings &settings,
-        const boost::shared_ptr<Integrator> &integrator)
+        const ext::shared_ptr<Integrator> &integrator)
         : CmsCouponPricer(swaptionVol), meanReversion_(meanReversion),
           couponDiscountCurve_(couponDiscountCurve), settings_(settings),
           volDayCounter_(swaptionVol->dayCounter()), integrator_(integrator) {
@@ -55,7 +54,7 @@ namespace QuantLib {
 
         if (integrator_ == NULL)
             integrator_ =
-                boost::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
+                ext::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
     }
 
     Real LinearTsrPricer::GsrG(const Date &d) const {
@@ -132,7 +131,7 @@ namespace QuantLib {
             swapRateValue_ = swap_->fairRate();
             annuity_ = 1.0E4 * std::fabs(swap_->fixedLegBPS());
 
-            boost::shared_ptr<SmileSection> sectionTmp =
+            ext::shared_ptr<SmileSection> sectionTmp =
                 swaptionVolatility()->smileSection(fixingDate_, swapTenor_);
 
             adjustedLowerBound_ = settings_.lowerRateBound_;
@@ -152,7 +151,7 @@ namespace QuantLib {
             // have one, no need to exit with an exception ...
 
             if (sectionTmp->atmLevel() == Null<Real>())
-                smileSection_ = boost::make_shared<AtmSmileSection>(
+                smileSection_ = ext::make_shared<AtmSmileSection>(
                     sectionTmp, swapRateValue_);
             else
                 smileSection_ = sectionTmp;
@@ -161,8 +160,8 @@ namespace QuantLib {
 
             Real gx = 0.0, gy = 0.0;
             for (Size i = 0; i < swap_->fixedLeg().size(); i++) {
-                boost::shared_ptr<Coupon> c =
-                    boost::dynamic_pointer_cast<Coupon>(swap_->fixedLeg()[i]);
+                ext::shared_ptr<Coupon> c =
+                    ext::dynamic_pointer_cast<Coupon>(swap_->fixedLeg()[i]);
                 Real yf = c->accrualPeriod();
                 Date d = c->date();
                 Real pv = yf * discountCurve_->discount(d);
@@ -327,14 +326,14 @@ namespace QuantLib {
         if (upper > lower) {
             tmpBound = std::min(upper, swapRateValue_);
             if (tmpBound > lower) {
-                result += integrator_->operator()(
+                result += (*integrator_)(
                     std::bind1st(std::mem_fun(&LinearTsrPricer::integrand),
                                  this),
                     lower, tmpBound);
             }
             tmpBound = std::max(lower, swapRateValue_);
             if (upper > tmpBound) {
-                result += integrator_->operator()(
+                result += (*integrator_)(
                     std::bind1st(std::mem_fun(&LinearTsrPricer::integrand),
                                  this),
                     tmpBound, upper);

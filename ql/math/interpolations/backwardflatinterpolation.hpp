@@ -41,7 +41,7 @@ namespace QuantLib {
         template <class I1, class I2>
         BackwardFlatInterpolation(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::BackwardFlatInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                              yBegin));
             impl_->update();

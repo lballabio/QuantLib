@@ -40,8 +40,8 @@ namespace QuantLib {
                        Real premium,
                        Date secondExpiryDate,
                        Real secondStrike,
-                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                       const boost::shared_ptr<Exercise>& exercise);
+                       const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                       const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         Real premium_;

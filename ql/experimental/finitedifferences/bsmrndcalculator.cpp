@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     BSMRNDCalculator::BSMRNDCalculator(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) { }
 
     std::pair<Real, Volatility>

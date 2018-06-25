@@ -30,8 +30,8 @@ namespace QuantLib {
         const std::vector<Period>& swapTenors,
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-        const boost::shared_ptr<SwapIndex>& swapIndexBase,
-        const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
+        const ext::shared_ptr<SwapIndex>& swapIndexBase,
+        const ext::shared_ptr<SwapIndex>& shortSwapIndexBase,
         bool vegaWeightedSmileFit)
     : SwaptionVolatilityDiscrete(optionTenors, swapTenors, 0,
                                  atmVol->calendar(),

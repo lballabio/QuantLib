@@ -23,8 +23,6 @@ EXTRA_DIST = \
 	News.txt \
 	QuantLib.props \
 	QuantLib.spec \
-	QuantLib_vc9.sln \
-	QuantLib_vc9.vcproj \
 	QuantLib.sln \
 	QuantLib.vcxproj \
 	QuantLib.vcxproj.filters \

@@ -35,7 +35,7 @@ namespace QuantLib {
 
 
     LongstaffSchwartzMultiPathPricer::LongstaffSchwartzMultiPathPricer(
-        const boost::shared_ptr<PathPayoff>& payoff,
+        const ext::shared_ptr<PathPayoff>& payoff,
         const std::vector<Size> & timePositions,
         const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
         const Array & discounts,

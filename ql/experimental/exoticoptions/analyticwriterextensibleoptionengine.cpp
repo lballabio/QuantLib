@@ -26,7 +26,7 @@ using namespace std;
 namespace QuantLib {
 
     AnalyticWriterExtensibleOptionEngine::AnalyticWriterExtensibleOptionEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -34,17 +34,17 @@ namespace QuantLib {
     void AnalyticWriterExtensibleOptionEngine::calculate() const {
         // We take all the arguments:
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff1 =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff1 =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff1, "not a plain vanilla payoff");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff2 =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff2);
+        ext::shared_ptr<PlainVanillaPayoff> payoff2 =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff2);
         QL_REQUIRE(payoff2, "not a plain vanilla payoff");
 
-        boost::shared_ptr<Exercise> exercise1 = arguments_.exercise;
+        ext::shared_ptr<Exercise> exercise1 = arguments_.exercise;
 
-        boost::shared_ptr<Exercise> exercise2 = arguments_.exercise2;
+        ext::shared_ptr<Exercise> exercise2 = arguments_.exercise2;
 
 
         // We create and apply the calculate process:

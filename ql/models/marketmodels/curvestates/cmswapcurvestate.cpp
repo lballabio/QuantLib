@@ -20,6 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
+#include <ql/auto_ptr.hpp>    
 
 namespace QuantLib {
 
@@ -176,6 +177,10 @@ namespace QuantLib {
                                                irrCMSwapRates_, irrCMSwapAnnuities_);
             return irrCMSwapRates_;
         }
+    }
+
+    QL_UNIQUE_OR_AUTO_PTR<CurveState> CMSwapCurveState::clone() const {
+        return QL_UNIQUE_OR_AUTO_PTR<CurveState>(new CMSwapCurveState(*this));
     }
 
 }

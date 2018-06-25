@@ -24,8 +24,8 @@ namespace QuantLib {
 
     EverestOption::EverestOption(Real notional,
                                  Rate guarantee,
-                                 const boost::shared_ptr<Exercise>& exercise)
-    : MultiAssetOption(boost::shared_ptr<Payoff>(new NullPayoff), exercise),
+                                 const ext::shared_ptr<Exercise>& exercise)
+    : MultiAssetOption(ext::shared_ptr<Payoff>(new NullPayoff), exercise),
       notional_(notional), guarantee_(guarantee) {}
 
     Rate EverestOption::yield() const {

@@ -80,7 +80,7 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! general constructor
-        DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+        DigitalCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
                       Rate callStrike = Null<Rate>(),
                       Position::Type callPosition = Position::Long,
                       bool isCallITMIncluded = false,
@@ -89,8 +89,8 @@ namespace QuantLib {
                       Position::Type putPosition = Position::Long,
                       bool isPutITMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
-                      const boost::shared_ptr<DigitalReplication>& replication =
-                        boost::shared_ptr<DigitalReplication>() );
+                      const ext::shared_ptr<DigitalReplication>& replication =
+                        ext::shared_ptr<DigitalReplication>() );
 
         //@}
         //! \name Coupon interface
@@ -110,7 +110,7 @@ namespace QuantLib {
         bool hasCollar() const {return (hasCallStrike_ && hasPutStrike_); }
         bool isLongPut() const { return (putCsi_==1.); }
         bool isLongCall() const { return (callCsi_==1.); }
-        boost::shared_ptr<FloatingRateCoupon> underlying() const { return underlying_; }
+        ext::shared_ptr<FloatingRateCoupon> underlying() const { return underlying_; }
         /*! Returns the call option rate
            (multiplied by: nominal*accrualperiod*discount is the NPV of the option)
         */
@@ -129,7 +129,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
 
         void setPricer(
-            const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
             if (pricer_)
                 unregisterWith(pricer_);
             pricer_ = pricer;
@@ -143,7 +143,7 @@ namespace QuantLib {
         //! \name Data members
         //@{
         //!
-        boost::shared_ptr<FloatingRateCoupon> underlying_;
+        ext::shared_ptr<FloatingRateCoupon> underlying_;
         //! strike rate for the the call option
         Rate callStrike_;
         //! strike rate for the the put option

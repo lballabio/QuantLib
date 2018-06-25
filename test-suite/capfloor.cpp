@@ -49,7 +49,7 @@ namespace {
         std::vector<Real> nominals;
         BusinessDayConvention convention;
         Frequency frequency;
-        boost::shared_ptr<IborIndex> index;
+        ext::shared_ptr<IborIndex> index;
         Calendar calendar;
         Natural fixingDays;
         RelinkableHandle<YieldTermStructure> termStructure;
@@ -62,7 +62,7 @@ namespace {
         CommonVars()
         : nominals(1,100) {
             frequency = Semiannual;
-            index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             convention = ModifiedFollowing;
             Date today = calendar.adjust(Date::todaysDate());
@@ -87,25 +87,25 @@ namespace {
                 .withFixingDays(fixingDays);
         }
 
-        boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-            Handle<Quote> vol(boost::shared_ptr<Quote>(
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+            Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-            return boost::shared_ptr<PricingEngine>(
+            return ext::shared_ptr<PricingEngine>(
                                 new BlackCapFloorEngine(termStructure, vol));
         }
 
-        boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
+        ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
                                                  const Leg& leg,
                                                  Rate strike,
                                                  Volatility volatility) {
-            boost::shared_ptr<CapFloor> result;
+            ext::shared_ptr<CapFloor> result;
             switch (type) {
               case CapFloor::Cap:
-                result = boost::shared_ptr<CapFloor>(
+                result = ext::shared_ptr<CapFloor>(
                                   new Cap(leg, std::vector<Rate>(1, strike)));
                 break;
               case CapFloor::Floor:
-                result = boost::shared_ptr<CapFloor>(
+                result = ext::shared_ptr<CapFloor>(
                                 new Floor(leg, std::vector<Rate>(1, strike)));
                 break;
               default:
@@ -157,13 +157,13 @@ void CapFloorTest::testVega() {
             for (Size k=0; k<LENGTH(strikes); k++) {
                 for (Size h=0; h<LENGTH(types); h++) {
                     Leg leg = vars.makeLeg(startDate, lengths[i]);
-                    boost::shared_ptr<CapFloor> capFloor =
+                    ext::shared_ptr<CapFloor> capFloor =
                         vars.makeCapFloor(types[h],leg,
                                           strikes[k],vols[j]);
-                    boost::shared_ptr<CapFloor> shiftedCapFloor2 =
+                    ext::shared_ptr<CapFloor> shiftedCapFloor2 =
                         vars.makeCapFloor(types[h],leg,
                                           strikes[k],vols[j]+shift);
-                     boost::shared_ptr<CapFloor> shiftedCapFloor1 =
+                     ext::shared_ptr<CapFloor> shiftedCapFloor1 =
                         vars.makeCapFloor(types[h],leg,
                                           strikes[k],vols[j]-shift);
                     Real value1 = shiftedCapFloor1->NPV();
@@ -210,11 +210,11 @@ void CapFloorTest::testStrikeDependency() {
             std::vector<Real> cap_values, floor_values;
             for (Size k=0; k<LENGTH(strikes); k++) {
                 Leg leg = vars.makeLeg(startDate,lengths[i]);
-                boost::shared_ptr<Instrument> cap =
+                ext::shared_ptr<Instrument> cap =
                     vars.makeCapFloor(CapFloor::Cap,leg,
                                       strikes[k],vols[j]);
                 cap_values.push_back(cap->NPV());
-                boost::shared_ptr<Instrument> floor =
+                ext::shared_ptr<Instrument> floor =
                     vars.makeCapFloor(CapFloor::Floor,leg,
                                       strikes[k],vols[j]);
                 floor_values.push_back(floor->NPV());
@@ -273,10 +273,10 @@ void CapFloorTest::testConsistency() {
           for (Size l=0; l<LENGTH(vols); l++) {
 
               Leg leg = vars.makeLeg(startDate,lengths[i]);
-              boost::shared_ptr<CapFloor> cap =
+              ext::shared_ptr<CapFloor> cap =
                   vars.makeCapFloor(CapFloor::Cap,leg,
                                     cap_rates[j],vols[l]);
-              boost::shared_ptr<CapFloor> floor =
+              ext::shared_ptr<CapFloor> floor =
                   vars.makeCapFloor(CapFloor::Floor,leg,
                                     floor_rates[k],vols[l]);
               Collar collar(leg,std::vector<Rate>(1,cap_rates[j]),
@@ -297,7 +297,7 @@ void CapFloorTest::testConsistency() {
 
               // test re-composition by optionlets, N.B. two per year
               Real capletsNPV = 0.0;
-              std::vector<boost::shared_ptr<CapFloor> > caplets;
+              std::vector<ext::shared_ptr<CapFloor> > caplets;
               for (Integer m=0; m<lengths[i]*2; m++) {
                 caplets.push_back(cap->optionlet(m));
                 caplets[m]->setPricingEngine(vars.makeEngine(vols[l]));
@@ -317,7 +317,7 @@ void CapFloorTest::testConsistency() {
               }
 
               Real floorletsNPV = 0.0;
-              std::vector<boost::shared_ptr<CapFloor> > floorlets;
+              std::vector<ext::shared_ptr<CapFloor> > floorlets;
               for (Integer m=0; m<lengths[i]*2; m++) {
                 floorlets.push_back(floor->optionlet(m));
                 floorlets[m]->setPricingEngine(vars.makeEngine(vols[l]));
@@ -337,7 +337,7 @@ void CapFloorTest::testConsistency() {
               }
 
               Real collarletsNPV = 0.0;
-              std::vector<boost::shared_ptr<CapFloor> > collarlets;
+              std::vector<ext::shared_ptr<CapFloor> > collarlets;
               for (Integer m=0; m<lengths[i]*2; m++) {
                 collarlets.push_back(collar.optionlet(m));
                 collarlets[m]->setPricingEngine(vars.makeEngine(vols[l]));
@@ -385,10 +385,10 @@ void CapFloorTest::testParity() {
         for (Size k=0; k<LENGTH(vols); k++) {
 
             Leg leg = vars.makeLeg(startDate,lengths[i]);
-            boost::shared_ptr<Instrument> cap =
+            ext::shared_ptr<Instrument> cap =
                 vars.makeCapFloor(CapFloor::Cap,leg,
                                   strikes[j],vols[k]);
-            boost::shared_ptr<Instrument> floor =
+            ext::shared_ptr<Instrument> floor =
                 vars.makeCapFloor(CapFloor::Floor,leg,
                                   strikes[j],vols[k]);
             Date maturity = vars.calendar.advance(startDate,lengths[i],Years,
@@ -401,7 +401,7 @@ void CapFloorTest::testParity() {
                              schedule, strikes[j], vars.index->dayCounter(),
                              schedule, vars.index, 0.0,
                              vars.index->dayCounter());
-            swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                               new DiscountingSwapEngine(vars.termStructure)));
             // FLOATING_POINT_EXCEPTION
             if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
@@ -442,9 +442,9 @@ void CapFloorTest::testATMRate() {
 
         for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(vols); k++) {
-                boost::shared_ptr<CapFloor> cap =
+                ext::shared_ptr<CapFloor> cap =
                     vars.makeCapFloor(CapFloor::Cap, leg, strikes[j],vols[k]);
-                boost::shared_ptr<CapFloor> floor =
+                ext::shared_ptr<CapFloor> floor =
                     vars.makeCapFloor(CapFloor::Floor, leg, strikes[j],vols[k]);
                 Rate capATMRate = cap->atmRate(**vars.termStructure);
                 Rate floorATMRate = floor->atmRate(**vars.termStructure);
@@ -464,7 +464,7 @@ void CapFloorTest::testATMRate() {
                                  vars.index->dayCounter(),
                                  schedule, vars.index, 0.0,
                                  vars.index->dayCounter());
-                swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                               new DiscountingSwapEngine(vars.termStructure)));
                 Real swapNPV = swap.NPV();
                 if (!checkAbsError(swapNPV, 0, 1.0e-10))
@@ -504,7 +504,7 @@ void CapFloorTest::testImpliedVolatility() {
         for (Size i=0; i<LENGTH(types); i++) {
             for (Size j=0; j<LENGTH(strikes); j++) {
 
-                boost::shared_ptr<CapFloor> capfloor =
+                ext::shared_ptr<CapFloor> capfloor =
                     vars.makeCapFloor(types[i], leg, strikes[j], 0.0);
 
                 for (Size n=0; n<LENGTH(rRates); n++) {
@@ -581,9 +581,9 @@ void CapFloorTest::testCachedValue() {
     vars.termStructure.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);
-    boost::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+    ext::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
                                                           0.07,0.20);
-    boost::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+    ext::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
                                                             0.03,0.20);
 #ifndef QL_USE_INDEXED_COUPON
     // par coupon price

@@ -32,7 +32,7 @@ namespace QuantLib {
             ImpliedSpotHelper(DiscountFactor dividendDiscount,
                               DiscountFactor riskFreeDiscount,
                               Real standardDeviation ,
-                              boost::shared_ptr<PlainVanillaPayoff> payoff,
+                              ext::shared_ptr<PlainVanillaPayoff> payoff,
                               Real strike)
             : dividendDiscount_(dividendDiscount),
               riskFreeDiscount_(riskFreeDiscount),
@@ -49,13 +49,13 @@ namespace QuantLib {
             DiscountFactor riskFreeDiscount_;
             Real standardDeviation_;
             Real strike_;
-            boost::shared_ptr<PlainVanillaPayoff> payoff_;
+            ext::shared_ptr<PlainVanillaPayoff> payoff_;
         };
 
     }
 
     AnalyticCompoundOptionEngine::AnalyticCompoundOptionEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process){
         registerWith(process_);
     }
@@ -86,7 +86,7 @@ namespace QuantLib {
             process_->riskFreeRate()->discount(helpMaturity);
 
 
-        boost::shared_ptr<ImpliedSpotHelper> f(
+        ext::shared_ptr<ImpliedSpotHelper> f(
                 new ImpliedSpotHelper(dividendDiscount, riskFreeDiscount,
                                       vol, payoffDaughter(), strikeMother()));
 
@@ -198,19 +198,19 @@ namespace QuantLib {
     }
 
 
-    boost::shared_ptr<PlainVanillaPayoff>
+    ext::shared_ptr<PlainVanillaPayoff>
     AnalyticCompoundOptionEngine::payoffDaughter() const {
-        boost::shared_ptr<PlainVanillaPayoff> dPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+        ext::shared_ptr<PlainVanillaPayoff> dPayoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                    arguments_.daughterPayoff);
         QL_REQUIRE(dPayoff, "non-plain payoff given");
         return dPayoff;
     }
 
-    boost::shared_ptr<PlainVanillaPayoff>
+    ext::shared_ptr<PlainVanillaPayoff>
     AnalyticCompoundOptionEngine::payoffMother() const {
-        boost::shared_ptr<PlainVanillaPayoff> mPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> mPayoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(mPayoff, "non-plain payoff given");
         return mPayoff;
     }

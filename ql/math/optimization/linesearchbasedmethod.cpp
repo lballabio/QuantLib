@@ -26,10 +26,10 @@
 namespace QuantLib {
 
     LineSearchBasedMethod::LineSearchBasedMethod(
-                           const boost::shared_ptr<LineSearch>& lineSearch)
+                           const ext::shared_ptr<LineSearch>& lineSearch)
     : lineSearch_(lineSearch) {
         if (!lineSearch_)
-           lineSearch_ = boost::shared_ptr<LineSearch>(new ArmijoLineSearch);
+           lineSearch_ = ext::shared_ptr<LineSearch>(new ArmijoLineSearch);
     }
 
     EndCriteria::Type
