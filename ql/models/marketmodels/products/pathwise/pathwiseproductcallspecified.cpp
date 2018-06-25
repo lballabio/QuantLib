@@ -21,7 +21,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcallspecified.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcashrebate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-
+#include <ql/auto_ptr.hpp>
 
     namespace QuantLib
     {
@@ -187,11 +187,11 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
             return done || currentIndex_ == evolution_.evolutionTimes().size();
         }
 
-        std::auto_ptr<MarketModelPathwiseMultiProduct>
-            CallSpecifiedPathwiseMultiProduct::clone() const 
+        QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+        CallSpecifiedPathwiseMultiProduct::clone() const 
         {
-            return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-                new CallSpecifiedPathwiseMultiProduct(*this));
+            return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+                                new CallSpecifiedPathwiseMultiProduct(*this));
         }
 
         const MarketModelPathwiseMultiProduct&

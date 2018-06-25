@@ -28,6 +28,7 @@
 #include <ql/models/marketmodels/discounter.hpp>
 #include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/callability/exercisevalue.hpp>
+#include <ql/auto_ptr.hpp>
 #include <algorithm>
 
 namespace QuantLib {
@@ -73,8 +74,8 @@ namespace QuantLib {
                                                      cashFlowsGenerated);
             }
 
-            std::auto_ptr<MarketModelMultiProduct> clone() const {
-                return std::auto_ptr<MarketModelMultiProduct>(
+            QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct> clone() const {
+                return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
                                                    new DecoratedHedge(*this));
             }
 

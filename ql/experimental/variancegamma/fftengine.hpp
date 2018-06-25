@@ -53,7 +53,11 @@ namespace QuantLib {
         void update();
 
         void precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList);
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        virtual std::unique_ptr<FFTEngine> clone() const = 0;
+        #else
         virtual std::auto_ptr<FFTEngine> clone() const = 0;
+        #endif
     protected:
         virtual void precalculateExpiry(Date d) = 0;
         virtual std::complex<Real> complexFourierTransform(std::complex<Real> u) const = 0;

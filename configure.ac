@@ -392,6 +392,23 @@ if test "$ql_use_std_pointers" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_std_pointers])
 
+AC_MSG_CHECKING([whether to enable std::unique_ptr instead of std::auto_ptr])
+AC_ARG_ENABLE([std-unique-ptr],
+              AC_HELP_STRING([--enable-std-unique-ptr],
+                             [If enabled, std::unique_ptr will be used
+                              instead of the deprecated std::auto_ptr;
+                              this requires you to set your compiler's
+                              standard to at least C++11.  If disabled
+                              (the default), std::auto_ptr will still
+                              be used.]),
+              [ql_use_unique_ptr=$enableval],
+              [ql_use_unique_ptr=no])
+if test "$ql_use_unique_ptr" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
+             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
+fi
+AC_MSG_RESULT([$ql_use_unique_ptr])
+
 # manual configurations for specific hosts
 case $host in
   powerpc-apple-darwin*)

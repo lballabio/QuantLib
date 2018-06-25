@@ -21,6 +21,7 @@
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/payoff.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -79,9 +80,9 @@ namespace QuantLib {
          return cf_;
     }
 
-    std::auto_ptr<MarketModelExerciseValue>
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>
     BermudanSwaptionExerciseValue::clone() const {
-        return std::auto_ptr<MarketModelExerciseValue>(
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>(
                                     new BermudanSwaptionExerciseValue(*this));
     }
 

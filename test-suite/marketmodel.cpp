@@ -84,6 +84,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/auto_ptr.hpp>
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>
@@ -2200,12 +2201,12 @@ void MarketModelTest::testPathwiseGreeks()
         MarketModelPathwiseMultiCaplet product2(rateTimes, accruals,
             paymentTimes, todaysForwards);
 
-        std::auto_ptr<MarketModelPathwiseMultiProduct> product;
+        Clone<MarketModelPathwiseMultiProduct> product;
 
         if (whichProduct == 0)
-            product = product2.clone();
+            product = product2;
         else
-            product = product1.clone();
+            product = product1;
 
 
         MultiStepOptionlets productDummy(rateTimes, accruals,
@@ -3149,12 +3150,12 @@ void MarketModelTest::testPathwiseVegas()
 
             for (Size deflate =0; deflate <2; ++deflate)
             {
-                std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse;
+                Clone<MarketModelPathwiseMultiProduct> productToUse;
 
                 if (deflate ==0)
-                    productToUse = caplets.clone();
+                    productToUse = caplets;
                 else
-                    productToUse = capletsDeflated.clone();
+                    productToUse = capletsDeflated;
 
                 for (Size k=0; k<LENGTH(measures); k++)
                 {
@@ -3318,12 +3319,12 @@ void MarketModelTest::testPathwiseVegas()
                     // for deltas and prices the pathwise vega engine should agree precisely with the pathwiseaccounting engine
                     // so lets see if it does
 
-                    std::auto_ptr<MarketModelPathwiseMultiProduct> productToUse2;
+                    Clone<MarketModelPathwiseMultiProduct> productToUse2;
 
                     if (deflate ==0)
-                        productToUse2 = caplets.clone();
+                        productToUse2 = caplets;
                     else
-                        productToUse2 = capletsDeflated.clone();
+                        productToUse2 = capletsDeflated;
 
 
                     SequenceStatisticsInc stats(productToUse2->numberOfProducts()*(todaysForwards.size()+1));
@@ -3423,8 +3424,6 @@ void MarketModelTest::testPathwiseVegas()
                     paymentTimes,
                     capStrike,
                     startsAndEnds);
-
-                // define  productToUse = capletsDeflated.clone();
 
                 for (Size k=0; k<LENGTH(measures); k++)
                 {
