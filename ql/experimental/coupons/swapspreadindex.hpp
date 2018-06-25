@@ -30,8 +30,8 @@ namespace QuantLib {
     class SwapSpreadIndex : public InterestRateIndex {
       public:
         SwapSpreadIndex(const std::string& familyName,
-                        const boost::shared_ptr<SwapIndex>& swapIndex1,
-                        const boost::shared_ptr<SwapIndex>& swapIndex2,
+                        const ext::shared_ptr<SwapIndex>& swapIndex1,
+                        const ext::shared_ptr<SwapIndex>& swapIndex2,
                         const Real gearing1 = 1.0,
                         const Real gearing2 = -1.0);
 
@@ -47,15 +47,15 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        boost::shared_ptr<SwapIndex> swapIndex1() { return swapIndex1_; }
-        boost::shared_ptr<SwapIndex> swapIndex2() { return swapIndex2_; }
+        ext::shared_ptr<SwapIndex> swapIndex1() { return swapIndex1_; }
+        ext::shared_ptr<SwapIndex> swapIndex2() { return swapIndex2_; }
         Real gearing1() { return gearing1_; }
         Real gearing2() { return gearing2_; }
         //@}
 
 
     private:
-        boost::shared_ptr<SwapIndex> swapIndex1_, swapIndex2_;
+        ext::shared_ptr<SwapIndex> swapIndex1_, swapIndex2_;
         Real gearing1_, gearing2_;
     };
 

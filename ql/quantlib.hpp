@@ -32,6 +32,7 @@
 #include <ql/quote.hpp>
 #include <ql/rebatedexercise.hpp>
 #include <ql/settings.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/timegrid.hpp>

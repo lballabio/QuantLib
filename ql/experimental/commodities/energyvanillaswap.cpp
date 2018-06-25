@@ -26,12 +26,12 @@ namespace QuantLib {
                     bool payer, const Calendar& calendar,
                     const Money& fixedPrice,
                     const UnitOfMeasure& fixedPriceUnitOfMeasure,
-                    const boost::shared_ptr<CommodityIndex>& index,
+                    const ext::shared_ptr<CommodityIndex>& index,
                     const Currency& payCurrency,
                     const Currency& receiveCurrency,
                     const PricingPeriods& pricingPeriods,
                     const CommodityType& commodityType,
-                    const boost::shared_ptr<SecondaryCosts>& secondaryCosts,
+                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
                     const Handle<YieldTermStructure>& payLegTermStructure,
                     const Handle<YieldTermStructure>& receiveLegTermStructure,
                     const Handle<YieldTermStructure>& discountTermStructure)
@@ -125,7 +125,7 @@ namespace QuantLib {
             // price each period
             for (PricingPeriods::const_iterator pi = pricingPeriods_.begin();
                  pi != pricingPeriods_.end(); ++pi) {
-                const boost::shared_ptr<PricingPeriod>& pricingPeriod = *pi;
+                const ext::shared_ptr<PricingPeriod>& pricingPeriod = *pi;
 
                 QL_REQUIRE(pricingPeriod->quantity().amount() != 0,
                            "quantity is zero");
@@ -232,8 +232,8 @@ namespace QuantLib {
                                     payLegDiscountFactor;
 
                 paymentCashFlows_[pricingPeriod->paymentDate()] =
-                    boost::shared_ptr<CommodityCashFlow>(
-                           new CommodityCashFlow(pricingPeriod->paymentDate(),
+                    ext::make_shared<CommodityCashFlow>(
+                           pricingPeriod->paymentDate(),
                                                  Money(baseCurrency,
                                                        uDelta * discountFactor),
                                                  Money(baseCurrency, uDelta),
@@ -243,7 +243,7 @@ namespace QuantLib {
                                                        uDelta * pmtFxConversionFactor),
                                                  discountFactor,
                                                  pmtDiscountFactor,
-                                                 pricingPeriod->paymentDate() <= evaluationDate));
+                                                 pricingPeriod->paymentDate() <= evaluationDate);
 
                 calculateSecondaryCostAmounts(
                                pricingPeriods_[0]->quantity().commodityType(),

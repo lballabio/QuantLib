@@ -61,7 +61,7 @@ namespace QuantLib {
     class MTBrownianGeneratorFactory : public BrownianGeneratorFactory {
       public:
         MTBrownianGeneratorFactory(unsigned long seed = 0);
-        boost::shared_ptr<BrownianGenerator> create(Size factors,
+        ext::shared_ptr<BrownianGenerator> create(Size factors,
                                                     Size steps) const;
       private:
         unsigned long seed_;

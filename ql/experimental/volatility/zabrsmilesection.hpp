@@ -62,7 +62,7 @@ template <typename Evaluation> class ZabrSmileSection : public SmileSection {
         return optionPrice(strike, type, discount, Evaluation());
     }
 
-    boost::shared_ptr<ZabrModel> model() { return model_; }
+    ext::shared_ptr<ZabrModel> model() { return model_; }
 
   protected:
     Volatility volatilityImpl(Rate strike) const {
@@ -99,13 +99,13 @@ template <typename Evaluation> class ZabrSmileSection : public SmileSection {
     Volatility volatilityImpl(Rate strike, ZabrShortMaturityNormal) const;
     Volatility volatilityImpl(Rate strike, ZabrLocalVolatility) const;
     Volatility volatilityImpl(Rate strike, ZabrFullFd) const;
-    boost::shared_ptr<ZabrModel> model_;
+    ext::shared_ptr<ZabrModel> model_;
     Evaluation evaluation_;
     Rate forward_;
     std::vector<Real> params_;
     const Size fdRefinement_;
     std::vector<Real> strikes_, callPrices_;
-    boost::shared_ptr<Interpolation> callPriceFct_;
+    ext::shared_ptr<Interpolation> callPriceFct_;
     Real a_, b_;
 };
 
@@ -132,9 +132,9 @@ template <typename Evaluation>
 void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &,
                                         ZabrShortMaturityLognormal) {
 
-    model_ = boost::shared_ptr<ZabrModel>(
-        new ZabrModel(exerciseTime(), forward_, params_[0], params_[1],
-                      params_[2], params_[3], params_[4]));
+    model_ = ext::make_shared<ZabrModel>(
+        exerciseTime(), forward_, params_[0], params_[1],
+                      params_[2], params_[3], params_[4]);
 }
 
 template <typename Evaluation>
@@ -151,9 +151,9 @@ void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
                "zabr expects 5 parameters (alpha,beta,nu,rho,gamma) but ("
                    << params_.size() << ") given");
 
-    model_ = boost::shared_ptr<ZabrModel>(
-        new ZabrModel(exerciseTime(), forward_, params_[0], params_[1],
-                      params_[2], params_[3], params_[4]));
+    model_ = ext::make_shared<ZabrModel>(
+        exerciseTime(), forward_, params_[0], params_[1],
+                      params_[2], params_[3], params_[4]);
 
     // set up strike grid for local vol or full fd flavour of this section
     // this is shared with SmileSectionUtils - unify later ?
@@ -223,12 +223,12 @@ void ZabrSmileSection<Evaluation>::init3(ZabrLocalVolatility) {
     strikes_.insert(strikes_.begin(), 0.0);
     callPrices_.insert(callPrices_.begin(), forward_);
 
-    callPriceFct_ = boost::shared_ptr<Interpolation>(new CubicInterpolation(
+    callPriceFct_ = ext::shared_ptr<Interpolation>(new CubicInterpolation(
         strikes_.begin(), strikes_.end(), callPrices_.begin(),
         CubicInterpolation::Spline, true, CubicInterpolation::SecondDerivative,
         0.0, CubicInterpolation::SecondDerivative, 0.0));
     // callPriceFct_ =
-    //     boost::shared_ptr<Interpolation>(new LinearInterpolation(
+    //     ext::shared_ptr<Interpolation>(new LinearInterpolation(
     //         strikes_.begin(), strikes_.end(), callPrices_.begin()));
 
     callPriceFct_->enableExtrapolation();

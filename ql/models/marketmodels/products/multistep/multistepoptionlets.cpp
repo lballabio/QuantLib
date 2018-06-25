@@ -30,7 +30,7 @@ namespace QuantLib {
                       const std::vector<Time>& rateTimes,
                       const std::vector<Real>& accruals,
                       const std::vector<Time>& paymentTimes,
-                      const std::vector<boost::shared_ptr<Payoff> >& payoffs)
+                      const std::vector<ext::shared_ptr<Payoff> >& payoffs)
     : MultiProductMultiStep(rateTimes), accruals_(accruals),
       paymentTimes_(paymentTimes), payoffs_(payoffs) {
         checkIncreasingTimes(paymentTimes);

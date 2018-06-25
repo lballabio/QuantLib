@@ -50,7 +50,7 @@ namespace QuantLib {
             std::set<Weekday> weekend_;
             std::string name_;
         };
-        boost::shared_ptr<BespokeCalendar::Impl> bespokeImpl_;
+        ext::shared_ptr<BespokeCalendar::Impl> bespokeImpl_;
       public:
         /*! \warning different bespoke calendars created with the same
                      name (or different bespoke calendars created with

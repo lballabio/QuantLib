@@ -45,7 +45,7 @@ namespace QuantLib {
     namespace {
         class FdmStorageValue : public FdmInnerValueCalculator {
           public:
-            explicit FdmStorageValue(const boost::shared_ptr<FdmMesher>& mesher)
+            explicit FdmStorageValue(const ext::shared_ptr<FdmMesher>& mesher)
             : mesher_(mesher) { }
 
             Real innerValue(const FdmLinearOpIterator& iter, Time) {
@@ -57,24 +57,24 @@ namespace QuantLib {
                 return innerValue(iter, t);
             }
           private:
-            const boost::shared_ptr<FdmMesher> mesher_;
+            const ext::shared_ptr<FdmMesher> mesher_;
 
         };
 
         class LessButNotCloseEnough
                 : public std::binary_function<Real, Real, bool> {
           public:
-            bool operator()(Real a, Real b) {
+            bool operator()(Real a, Real b) const {
                 return !(close_enough(a, b, 100) || b < a);
             }
         };
     }
 
     FdSimpleExtOUStorageEngine::FdSimpleExtOUStorageEngine(
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
+            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
+            const ext::shared_ptr<YieldTermStructure>& rTS,
             Size tGrid, Size xGrid, Size yGrid,
-            const boost::shared_ptr<Shape>& shape,
+            const ext::shared_ptr<Shape>& shape,
             const FdmSchemeDesc& schemeDesc)
     : process_(process),
       rTS_  (rTS),
@@ -96,10 +96,10 @@ namespace QuantLib {
             = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
                                               arguments_.exercise->lastDate());
 
-        const boost::shared_ptr<Fdm1dMesher> xMesher(
+        const ext::shared_ptr<Fdm1dMesher> xMesher(
                      new FdmSimpleProcess1dMesher(xGrid_, process_, maturity));
 
-        boost::shared_ptr<Fdm1dMesher> storageMesher;
+        ext::shared_ptr<Fdm1dMesher> storageMesher;
 
         if(yGrid_ == Null<Size>()){
             //elevator mesher
@@ -117,24 +117,24 @@ namespace QuantLib {
                 storageValues.begin(), storageValues.end());
             storageValues.assign(orderedValues.begin(), orderedValues.end());
 
-            storageMesher =    boost::shared_ptr<Fdm1dMesher>(
+            storageMesher =    ext::shared_ptr<Fdm1dMesher>(
                 new Predefined1dMesher(storageValues));
         }
         else {
             // uniform mesher
-            storageMesher = boost::shared_ptr<Fdm1dMesher>(
+            storageMesher = ext::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(0, arguments_.capacity, yGrid_));
         }
 
-        const boost::shared_ptr<FdmMesher> mesher (
+        const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(xMesher, storageMesher));
 
         // 3. Calculator
-        boost::shared_ptr<FdmInnerValueCalculator> storageCalculator(
+        ext::shared_ptr<FdmInnerValueCalculator> storageCalculator(
                                                   new FdmStorageValue(mesher));
 
         // 4. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 4.1 Bermudan step conditions
@@ -149,18 +149,18 @@ namespace QuantLib {
         }
         stoppingTimes.push_back(exerciseTimes);
 
-        boost::shared_ptr<Payoff> payoff(
+        ext::shared_ptr<Payoff> payoff(
                                     new PlainVanillaPayoff(Option::Call, 0.0));
 
-        boost::shared_ptr<FdmInnerValueCalculator> underlyingCalculator(
+        ext::shared_ptr<FdmInnerValueCalculator> underlyingCalculator(
             new FdmExpExtOUInnerValueCalculator(payoff, mesher, shape_));
 
-        stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
+        stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
             new FdmSimpleStorageCondition(exerciseTimes,
                                           mesher, underlyingCalculator,
                                           arguments_.changeRate)));
 
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
+        ext::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
         // 5. Boundary conditions
@@ -170,7 +170,7 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      storageCalculator, maturity, tGrid_, 0 };
 
-        boost::shared_ptr<FdmSimple2dExtOUSolver> solver(
+        ext::shared_ptr<FdmSimple2dExtOUSolver> solver(
                 new FdmSimple2dExtOUSolver(
                            Handle<ExtendedOrnsteinUhlenbeckProcess>(process_),
                            rTS_, solverDesc, schemeDesc_));

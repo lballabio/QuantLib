@@ -28,6 +28,7 @@
 #include <ql/errors.hpp>
 #include <ql/math/comparison.hpp>
 #include <vector>
+#include <algorithm>
 #include <numeric>
 
 namespace QuantLib {

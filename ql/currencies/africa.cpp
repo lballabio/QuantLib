@@ -31,7 +31,7 @@ namespace QuantLib {
        It is divided into 100 cents.
     */
     ZARCurrency::ZARCurrency() {
-        static boost::shared_ptr<Data> zarData(
+        static ext::shared_ptr<Data> zarData(
                                 new Data("South-African rand", "ZAR", 710,
                                          "R", "", 100,
                                          Rounding(),

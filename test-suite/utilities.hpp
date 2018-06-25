@@ -80,44 +80,44 @@ namespace QuantLib {
 
     }
 
-    std::string payoffTypeToString(const boost::shared_ptr<Payoff>&);
-    std::string exerciseTypeToString(const boost::shared_ptr<Exercise>&);
+    std::string payoffTypeToString(const ext::shared_ptr<Payoff>&);
+    std::string exerciseTypeToString(const ext::shared_ptr<Exercise>&);
 
 
-    boost::shared_ptr<YieldTermStructure>
+    ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
-             const boost::shared_ptr<Quote>& forward,
+             const ext::shared_ptr<Quote>& forward,
              const DayCounter& dc);
 
-    boost::shared_ptr<YieldTermStructure>
+    ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              Rate forward,
              const DayCounter& dc);
 
-    boost::shared_ptr<YieldTermStructure>
-    flatRate(const boost::shared_ptr<Quote>& forward,
+    ext::shared_ptr<YieldTermStructure>
+    flatRate(const ext::shared_ptr<Quote>& forward,
              const DayCounter& dc);
 
-    boost::shared_ptr<YieldTermStructure>
+    ext::shared_ptr<YieldTermStructure>
     flatRate(Rate forward,
              const DayCounter& dc);
 
 
-    boost::shared_ptr<BlackVolTermStructure>
+    ext::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            const boost::shared_ptr<Quote>& volatility,
+            const ext::shared_ptr<Quote>& volatility,
             const DayCounter& dc);
 
-    boost::shared_ptr<BlackVolTermStructure>
+    ext::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
             Volatility volatility,
             const DayCounter& dc);
 
-    boost::shared_ptr<BlackVolTermStructure>
-    flatVol(const boost::shared_ptr<Quote>& volatility,
+    ext::shared_ptr<BlackVolTermStructure>
+    flatVol(const ext::shared_ptr<Quote>& volatility,
             const DayCounter& dc);
 
-    boost::shared_ptr<BlackVolTermStructure>
+    ext::shared_ptr<BlackVolTermStructure>
     flatVol(Volatility volatility,
             const DayCounter& dc);
 

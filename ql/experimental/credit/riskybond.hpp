@@ -57,13 +57,13 @@ namespace QuantLib {
                   Natural settlementDays = 0,
                   Calendar calendar = Calendar());
         virtual ~RiskyBond() {}
-        virtual std::vector<boost::shared_ptr<CashFlow> > cashflows() const = 0;
-        std::vector<boost::shared_ptr<CashFlow> > expectedCashflows();
+        virtual std::vector<ext::shared_ptr<CashFlow> > cashflows() const = 0;
+        std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
         virtual Real notional(Date date = Date::minDate()) const = 0;
         virtual Date effectiveDate() const = 0;
         virtual Date maturityDate() const = 0;
-        virtual std::vector<boost::shared_ptr<CashFlow> > interestFlows() const = 0;
-        virtual std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const = 0;
+        virtual std::vector<ext::shared_ptr<CashFlow> > interestFlows() const = 0;
+        virtual std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const = 0;
         Real riskfreeNPV() const;
         Real totalFutureFlows() const;
         std::string name() const;
@@ -127,21 +127,21 @@ namespace QuantLib {
                        const std::vector<Real>& notionals,
                        const Handle<YieldTermStructure>& yieldTS,
                        Natural settlementDays = 0);
-        std::vector<boost::shared_ptr<CashFlow> > cashflows() const;
+        std::vector<ext::shared_ptr<CashFlow> > cashflows() const;
         Real notional(Date date = Date::minDate()) const;
         Date effectiveDate() const;
         Date maturityDate() const;
-        std::vector<boost::shared_ptr<CashFlow> > interestFlows() const;
-        std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const;
+        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const;
+        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const;
     private:
         Schedule schedule_;
         Real rate_;
         DayCounter dayCounter_;
         // BusinessDayConvention paymentConvention_;
         std::vector<Real> notionals_;
-        std::vector<boost::shared_ptr<CashFlow> > leg_;
-        std::vector<boost::shared_ptr<CashFlow> > interestLeg_;
-        std::vector<boost::shared_ptr<CashFlow> > redemptionLeg_;
+        std::vector<ext::shared_ptr<CashFlow> > leg_;
+        std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
+        std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };
 
 
@@ -155,29 +155,29 @@ namespace QuantLib {
                           Real recoveryRate,
                           Handle<DefaultProbabilityTermStructure> defaultTS,
                           Schedule schedule,
-                          boost::shared_ptr<IborIndex> index,
+                          ext::shared_ptr<IborIndex> index,
                           Integer fixingDays,
                           Real spread,
                           std::vector<Real> notionals,
                           Handle<YieldTermStructure> yieldTS,
                           Natural settlementDays = 0);
-        std::vector<boost::shared_ptr<CashFlow> > cashflows() const;
+        std::vector<ext::shared_ptr<CashFlow> > cashflows() const;
         Real notional(Date date = Date::minDate()) const;
         Date effectiveDate() const;
         Date maturityDate() const;
-        std::vector<boost::shared_ptr<CashFlow> > interestFlows() const;
-        std::vector<boost::shared_ptr<CashFlow> > notionalFlows() const;
+        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const;
+        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const;
     private:
         Schedule schedule_;
-        boost::shared_ptr<IborIndex> index_;
+        ext::shared_ptr<IborIndex> index_;
         DayCounter dayCounter_;
         Integer fixingDays_;
         Real spread_;
         // BusinessDayConvention paymentConvention_;
         std::vector<Real> notionals_;
-        std::vector<boost::shared_ptr<CashFlow> > leg_;
-        std::vector<boost::shared_ptr<CashFlow> > interestLeg_;
-        std::vector<boost::shared_ptr<CashFlow> > redemptionLeg_;
+        std::vector<ext::shared_ptr<CashFlow> > leg_;
+        std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
+        std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };
 
 }

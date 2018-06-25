@@ -29,7 +29,7 @@ namespace QuantLib {
     MultiStepSwaption::MultiStepSwaption(const std::vector<Time>& rateTimes,
                                      Size startIndex,
                                      Size endIndex,
-                                     boost::shared_ptr<StrikedTypePayoff> & payOff)
+                                     ext::shared_ptr<StrikedTypePayoff> & payOff)
                                      : MultiProductMultiStep(rateTimes),
      startIndex_(startIndex), endIndex_(endIndex), payoff_(payOff) 
     {

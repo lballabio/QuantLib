@@ -28,8 +28,8 @@ namespace QuantLib {
     MultiStepPeriodCapletSwaptions::MultiStepPeriodCapletSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& forwardOptionPaymentTimes,
                                      const std::vector<Time>& swaptionPaymentTimes,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
                                      Size period,
                                      Size offset)
     : MultiProductMultiStep(rateTimes),

@@ -28,7 +28,7 @@ namespace QuantLib {
     MultiStepCoterminalSwaptions::MultiStepCoterminalSwaptions(
                     const std::vector<Time>& rateTimes,
                     const std::vector<Time>& paymentTimes,
-                    const std::vector<boost::shared_ptr<StrikedTypePayoff> >& payoffs)
+                    const std::vector<ext::shared_ptr<StrikedTypePayoff> >& payoffs)
     : MultiProductMultiStep(rateTimes),
       paymentTimes_(paymentTimes), payoffs_(payoffs) {
         checkIncreasingTimes(paymentTimes);

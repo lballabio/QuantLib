@@ -59,7 +59,7 @@ namespace QuantLib {
       public:
 
         LiborForwardModelProcess(Size size,
-                                 const boost::shared_ptr<IborIndex>& index);
+                                 const ext::shared_ptr<IborIndex>& index);
 
         Disposable<Array>  initialValues() const;
         Disposable<Array>  drift(Time t, const Array& x) const;
@@ -74,13 +74,13 @@ namespace QuantLib {
         Size size() const;
         Size factors() const;
 
-        boost::shared_ptr<IborIndex> index() const;
+        ext::shared_ptr<IborIndex> index() const;
         Leg cashFlows(
                                                      Real amount = 1.0) const;
 
         void setCovarParam(
-               const boost::shared_ptr<LfmCovarianceParameterization>& param);
-        boost::shared_ptr<LfmCovarianceParameterization> covarParam() const;
+               const ext::shared_ptr<LfmCovarianceParameterization>& param);
+        ext::shared_ptr<LfmCovarianceParameterization> covarParam() const;
 
         // convenience support methods
         Size nextIndexReset(Time t) const;
@@ -95,8 +95,8 @@ namespace QuantLib {
       private:
         Size size_;
 
-        const boost::shared_ptr<IborIndex> index_;
-        boost::shared_ptr<LfmCovarianceParameterization> lfmParam_;
+        const ext::shared_ptr<IborIndex> index_;
+        ext::shared_ptr<LfmCovarianceParameterization> lfmParam_;
 
         Array initialValues_;
 

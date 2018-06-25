@@ -74,7 +74,7 @@ namespace QuantLib {
         typedef typename traits::condition_type condition_type;
         // constructors
         ExplicitEuler(const operator_type& L,
-                      const std::vector<boost::shared_ptr<bc_type> >& bcs)
+                      const std::vector<ext::shared_ptr<bc_type> >& bcs)
         : MixedScheme<Operator>(L, 0.0, bcs) {}
     };
 

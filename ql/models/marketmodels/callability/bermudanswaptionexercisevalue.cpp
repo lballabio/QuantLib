@@ -27,7 +27,7 @@ namespace QuantLib {
 
     BermudanSwaptionExerciseValue::BermudanSwaptionExerciseValue(
               const std::vector<Time>& rateTimes,
-              const std::vector<boost::shared_ptr<Payoff> >&payoffs)
+              const std::vector<ext::shared_ptr<Payoff> >&payoffs)
     : numberOfExercises_(rateTimes.empty() ? 0 : rateTimes.size()-1),
       rateTimes_(rateTimes),
       payoffs_(payoffs), currentIndex_(0) {

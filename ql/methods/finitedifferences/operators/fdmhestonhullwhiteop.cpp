@@ -26,14 +26,13 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     FdmHestonHullWhiteEquityPart::FdmHestonHullWhiteEquityPart(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HullWhite>& hwModel,
-        const boost::shared_ptr<YieldTermStructure>& qTS)
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<HullWhite>& hwModel,
+        const ext::shared_ptr<YieldTermStructure>& qTS)
     : x_(mesher->locations(2)),
       varianceValues_(0.5*mesher->locations(1)),
       dxMap_ (FirstDerivativeOp(0, mesher)),
@@ -46,7 +45,7 @@ namespace QuantLib {
         // on the boundary s_min and s_max the second derivative
         // d²V/dS² is zero and due to Ito's Lemma the variance term
         // in the drift should vanish.
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
             ++iter) {
@@ -59,7 +58,7 @@ namespace QuantLib {
     }
 
     void FdmHestonHullWhiteEquityPart::setTime(Time t1, Time t2) {
-        const boost::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics =
+        const ext::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics =
             hwModel_->dynamics();
 
         const Real phi = 0.5*(  dynamics->shortRate(t1, 0.0)
@@ -75,16 +74,16 @@ namespace QuantLib {
     }
 
     FdmHestonHullWhiteOp::FdmHestonHullWhiteOp(
-                    const boost::shared_ptr<FdmMesher>& mesher,
-                    const boost::shared_ptr<HestonProcess>& hestonProcess,
-                    const boost::shared_ptr<HullWhiteProcess>& hwProcess,
+                    const ext::shared_ptr<FdmMesher>& mesher,
+                    const ext::shared_ptr<HestonProcess>& hestonProcess,
+                    const ext::shared_ptr<HullWhiteProcess>& hwProcess,
                     Real equityShortRateCorrelation)
     : v0_(hestonProcess->v0()),
       kappa_(hestonProcess->kappa()),
       theta_(hestonProcess->theta()),
       sigma_(hestonProcess->sigma()),
       rho_(hestonProcess->rho()),
-      hwModel_(boost::make_shared<HullWhite>(hestonProcess->riskFreeRate(),
+      hwModel_(ext::make_shared<HullWhite>(hestonProcess->riskFreeRate(),
                              hwProcess->a(), hwProcess->sigma())),
       hestonCorrMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                      .mult(rho_*sigma_*mesher->locations(1))),

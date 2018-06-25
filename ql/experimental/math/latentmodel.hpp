@@ -36,7 +36,6 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
@@ -144,7 +143,7 @@ namespace QuantLib {
         public MultidimIntegral, public LMIntegration {
     public:
         IntegrationBase(
-            const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+            const std::vector<ext::shared_ptr<Integrator> >& integrators, 
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
@@ -460,7 +459,7 @@ namespace QuantLib {
         */
         class IntegrationFactory {
         public:
-            static boost::shared_ptr<LMIntegration> createLMIntegration(
+            static ext::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
                 LatentModelIntegrationType::LatentModelIntegrationType type = 
                     #ifndef QL_PATCH_SOLARIS
@@ -473,16 +472,16 @@ namespace QuantLib {
                     #ifndef QL_PATCH_SOLARIS
                     case LatentModelIntegrationType::GaussianQuadrature:
                         return 
-                            boost::make_shared<
+                            ext::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
                     #endif
                     case LatentModelIntegrationType::Trapezoid:
                         {
-                        std::vector<boost::shared_ptr<Integrator> > integrals;
+                        std::vector<ext::shared_ptr<Integrator> > integrals;
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
-                            boost::make_shared<TrapezoidIntegral<Default> >(
+                            ext::make_shared<TrapezoidIntegral<Default> >(
                                 1.e-4, 20));
                         /* This integration domain is tailored for the T 
                         distribution; it is too wide for normals or Ts of high
@@ -495,7 +494,7 @@ namespace QuantLib {
                         here in some cases.
                         */
                         return 
-                          boost::make_shared<IntegrationBase<MultidimIntegral> >
+                          ext::make_shared<IntegrationBase<MultidimIntegral> >
                                (integrals, -35., 35.);
                         }
                     default:
@@ -620,7 +619,7 @@ namespace QuantLib {
         // Integrable models must provide their integrator.
         // Arguable, not having the integration in the LM class saves that 
         //   memory but have an entry in the VT... 
-        virtual const boost::shared_ptr<LMIntegration>& integration() const {
+        virtual const ext::shared_ptr<LMIntegration>& integration() const {
             QL_FAIL("Integration non implemented in Latent model.");
         }
         //@}

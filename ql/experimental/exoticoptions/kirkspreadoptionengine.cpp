@@ -26,8 +26,8 @@ using namespace std;
 namespace QuantLib {
 
     KirkSpreadOptionEngine::KirkSpreadOptionEngine(
-            const boost::shared_ptr<BlackProcess>& process1,
-            const boost::shared_ptr<BlackProcess>& process2,
+            const ext::shared_ptr<BlackProcess>& process1,
+            const ext::shared_ptr<BlackProcess>& process2,
             const Handle<Quote>& correlation)
     : process1_(process1), process2_(process2), rho_(correlation) {
         registerWith(process1_);
@@ -41,8 +41,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "not a plain-vanilla payoff");
 
         // forward values - futures, so b=0

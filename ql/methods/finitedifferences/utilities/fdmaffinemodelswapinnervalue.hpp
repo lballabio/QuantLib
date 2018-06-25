@@ -40,11 +40,11 @@ namespace QuantLib {
     class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
       public:
         FdmAffineModelSwapInnerValue(
-            const boost::shared_ptr<ModelType>& disModel,
-            const boost::shared_ptr<ModelType>& fwdModel,
-            const boost::shared_ptr<VanillaSwap>& swap,
+            const ext::shared_ptr<ModelType>& disModel,
+            const ext::shared_ptr<ModelType>& fwdModel,
+            const ext::shared_ptr<VanillaSwap>& swap,
             const std::map<Time, Date>& exerciseDates,
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<FdmMesher>& mesher,
             Size direction);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t);
@@ -52,32 +52,32 @@ namespace QuantLib {
 
       private:
         Disposable<Array> getState(
-            const boost::shared_ptr<ModelType>& model,
+            const ext::shared_ptr<ModelType>& model,
             Time t,
             const FdmLinearOpIterator& iter) const;
 
         RelinkableHandle<YieldTermStructure> disTs_, fwdTs_;
-        const boost::shared_ptr<ModelType> disModel_, fwdModel_;
+        const ext::shared_ptr<ModelType> disModel_, fwdModel_;
 
-        const boost::shared_ptr<IborIndex> index_;
-        const boost::shared_ptr<VanillaSwap> swap_;
+        const ext::shared_ptr<IborIndex> index_;
+        const ext::shared_ptr<VanillaSwap> swap_;
         const std::map<Time, Date> exerciseDates_;
-        const boost::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
     };
 
     template <class ModelType> inline
     FdmAffineModelSwapInnerValue<ModelType>::FdmAffineModelSwapInnerValue(
-        const boost::shared_ptr<ModelType>& disModel,
-        const boost::shared_ptr<ModelType>& fwdModel,
-        const boost::shared_ptr<VanillaSwap>& swap,
+        const ext::shared_ptr<ModelType>& disModel,
+        const ext::shared_ptr<ModelType>& fwdModel,
+        const ext::shared_ptr<VanillaSwap>& swap,
         const std::map<Time, Date>& exerciseDates,
-        const boost::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<FdmMesher>& mesher,
         Size direction)
     : disModel_(disModel),
       fwdModel_(fwdModel),
       index_(swap->iborIndex()),
-      swap_(boost::shared_ptr<VanillaSwap>(
+      swap_(ext::shared_ptr<VanillaSwap>(
           new VanillaSwap(swap->type(),
                           swap->nominal(),
                           swap->fixedSchedule(),
@@ -107,7 +107,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure> discount
                 = disModel_->termStructure();
 
-            disTs_.linkTo(boost::shared_ptr<YieldTermStructure>(
+            disTs_.linkTo(ext::shared_ptr<YieldTermStructure>(
                 new FdmAffineModelTermStructure(disRate,
                     discount->calendar(), discount->dayCounter(),
                     iterExerciseDate, discount->referenceDate(),
@@ -115,7 +115,7 @@ namespace QuantLib {
 
             const Handle<YieldTermStructure> fwd = fwdModel_->termStructure();
 
-            fwdTs_.linkTo(boost::shared_ptr<YieldTermStructure>(
+            fwdTs_.linkTo(ext::shared_ptr<YieldTermStructure>(
                 new FdmAffineModelTermStructure(fwdRate,
                     fwd->calendar(), fwd->dayCounter(),
                     iterExerciseDate, fwd->referenceDate(),
@@ -123,9 +123,9 @@ namespace QuantLib {
 
         }
         else {
-            boost::dynamic_pointer_cast<FdmAffineModelTermStructure>(
+            ext::dynamic_pointer_cast<FdmAffineModelTermStructure>(
                 disTs_.currentLink())->setVariable(disRate);
-            boost::dynamic_pointer_cast<FdmAffineModelTermStructure>(
+            ext::dynamic_pointer_cast<FdmAffineModelTermStructure>(
                 fwdTs_.currentLink())->setVariable(fwdRate);
         }
 
@@ -133,7 +133,7 @@ namespace QuantLib {
         for (Size j = 0; j < 2; j++) {
             for (Leg::const_iterator i = swap_->leg(j).begin();
                  i != swap_->leg(j).end(); ++i) {
-                npv += boost::dynamic_pointer_cast<Coupon>(*i)
+                npv += ext::dynamic_pointer_cast<Coupon>(*i)
                                     ->accrualStartDate() >= iterExerciseDate
                             ? (*i)->amount() * disTs_->discount((*i)->date())
                             : 0.0;

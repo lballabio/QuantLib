@@ -34,7 +34,6 @@
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
 #include <boost/tuple/tuple.hpp>
-#include <boost/make_shared.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -60,7 +59,7 @@ namespace QuantLib {
             Call = Option::Call, Put = Option::Put, CallPut};
 
         typedef std::vector<std::pair<
-            boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> > >
+            ext::shared_ptr<VanillaOption>, ext::shared_ptr<Quote> > >
           CalibrationSet;
 
         AndreasenHugeVolatilityInterpl(
@@ -73,8 +72,8 @@ namespace QuantLib {
             Size nGridPoints = 500,
             Real minStrike = Null<Real>(),
             Real maxStrike = Null<Real>(),
-            const boost::shared_ptr<OptimizationMethod>& optimizationMethod =
-                boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
+            const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
+                ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
             const EndCriteria& endCriteria =
                 EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
 
@@ -101,15 +100,15 @@ namespace QuantLib {
         typedef std::map<Time,
             boost::tuple<
                 Real,
-                boost::shared_ptr<Array>,
-                boost::shared_ptr<Interpolation> > > TimeValueCacheType;
+                ext::shared_ptr<Array>,
+                ext::shared_ptr<Interpolation> > > TimeValueCacheType;
 
         struct SingleStepCalibrationResult {
             Array putNPVs, callNPVs, sigmas;
-            boost::shared_ptr<AndreasenHugeCostFunction> costFunction;
+            ext::shared_ptr<AndreasenHugeCostFunction> costFunction;
         };
 
-        boost::shared_ptr<AndreasenHugeCostFunction> buildCostFunction(
+        ext::shared_ptr<AndreasenHugeCostFunction> buildCostFunction(
             Size iExpiry, Option::Type optionType,
             const Array& previousNPVs) const;
 
@@ -134,7 +133,7 @@ namespace QuantLib {
         const Size nGridPoints_;
         const Real minStrike_, maxStrike_;
 
-        const boost::shared_ptr<OptimizationMethod> optimizationMethod_;
+        const ext::shared_ptr<OptimizationMethod> optimizationMethod_;
         const EndCriteria endCriteria_;
 
         std::vector<Real> strikes_;
@@ -144,7 +143,7 @@ namespace QuantLib {
         std::vector<std::vector<Size> > calibrationMatrix_;
         mutable Real avgError_, minError_, maxError_;
 
-        mutable boost::shared_ptr<FdmMesherComposite> mesher_;
+        mutable ext::shared_ptr<FdmMesherComposite> mesher_;
         mutable Array gridPoints_, gridInFwd_;
 
         mutable std::vector<SingleStepCalibrationResult> calibrationResults_;

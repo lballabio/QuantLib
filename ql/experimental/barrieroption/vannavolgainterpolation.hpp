@@ -27,7 +27,6 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -47,7 +46,7 @@ namespace QuantLib {
                             DiscountFactor dDiscount,
                             DiscountFactor fDiscount,
                             Time T) {
-            impl_ = boost::make_shared<
+            impl_ = ext::make_shared<
                 detail::VannaVolgaInterpolationImpl<I1,I2> >(
                     xBegin, xEnd, yBegin,
                     spot, dDiscount, fDiscount, T);

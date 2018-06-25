@@ -121,7 +121,7 @@ namespace QuantLib {
     }
 
     void Observable::registerObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
+        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.insert(observerProxy);
@@ -133,7 +133,7 @@ namespace QuantLib {
     }
 
     void Observable::unregisterObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
+        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.erase(observerProxy);

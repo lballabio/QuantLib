@@ -12,7 +12,6 @@ FittedBondCurve_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    FittedBondCurve_vc9.vcproj \
     FittedBondCurve.vcxproj \
     FittedBondCurve.vcxproj.filters \
     ReadMe.txt

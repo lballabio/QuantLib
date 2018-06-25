@@ -28,7 +28,7 @@
 #include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/array.hpp>
 
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 #include <vector>
 
@@ -90,10 +90,10 @@ namespace QuantLib {
              bool cIsFixed = false,
              bool dIsFixed = false,
              bool vegaWeighted = false,
-             const boost::shared_ptr<EndCriteria>& endCriteria
-                      = boost::shared_ptr<EndCriteria>(),
-             const boost::shared_ptr<OptimizationMethod>& method
-                      = boost::shared_ptr<OptimizationMethod>());
+             const ext::shared_ptr<EndCriteria>& endCriteria
+                      = ext::shared_ptr<EndCriteria>(),
+             const ext::shared_ptr<OptimizationMethod>& method
+                      = ext::shared_ptr<OptimizationMethod>());
         //! adjustment factors needed to match Black vols
         std::vector<Real> k(const std::vector<Real>& t,
                             const std::vector<Real>& blackVols) const;
@@ -110,12 +110,12 @@ namespace QuantLib {
         Real d() const { return d_; }
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
         Real a_, b_, c_, d_;
-        boost::shared_ptr<ParametersTransformation> transformation_;
+        ext::shared_ptr<ParametersTransformation> transformation_;
       private:
         // optimization method used for fitting
         mutable EndCriteria::Type abcdEndCriteria_;
-        boost::shared_ptr<EndCriteria> endCriteria_;
-        boost::shared_ptr<OptimizationMethod> optMethod_;
+        ext::shared_ptr<EndCriteria> endCriteria_;
+        ext::shared_ptr<OptimizationMethod> optMethod_;
         mutable std::vector<Real> weights_;
         bool vegaWeighted_;
         //! Parameters

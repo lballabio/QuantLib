@@ -41,7 +41,7 @@ namespace QuantLib {
         class engine;
         MargrabeOption(Integer Q1,
                        Integer Q2,
-                       const boost::shared_ptr<Exercise>&);
+                       const ext::shared_ptr<Exercise>&);
         void setupArguments(PricingEngine::arguments*) const;
         Real delta1() const;
         Real delta2() const;

@@ -38,10 +38,10 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
   public:
     Gaussian1dSwaptionVolatility(
         const Calendar &cal, BusinessDayConvention bdc,
-        const boost::shared_ptr<SwapIndex> &indexBase,
-        const boost::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
-        const boost::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
-            boost::shared_ptr<Gaussian1dSwaptionEngine>());
+        const ext::shared_ptr<SwapIndex> &indexBase,
+        const ext::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
+        const ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
+            ext::shared_ptr<Gaussian1dSwaptionEngine>());
     //@{
     Date maxDate() const { return Date::maxDate(); }
     //@}
@@ -55,16 +55,16 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
     const Period &maxSwapTenor() const { return maxSwapTenor_; }
     //@}
   protected:
-    boost::shared_ptr<SmileSection> smileSectionImpl(const Date &,
+    ext::shared_ptr<SmileSection> smileSectionImpl(const Date &,
                                                      const Period &) const;
-    boost::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const;
+    ext::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const;
     Volatility volatilityImpl(const Date &, const Period &, Rate) const;
     Volatility volatilityImpl(Time, Time, Rate) const;
 
   private:
-    boost::shared_ptr<SwapIndex> indexBase_;
-    boost::shared_ptr<Gaussian1dModel> model_;
-    boost::shared_ptr<Gaussian1dSwaptionEngine> engine_;
+    ext::shared_ptr<SwapIndex> indexBase_;
+    ext::shared_ptr<Gaussian1dModel> model_;
+    ext::shared_ptr<Gaussian1dSwaptionEngine> engine_;
     const Period maxSwapTenor_;
 
     class DateHelper;

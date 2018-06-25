@@ -27,7 +27,7 @@
 #define quantlib_bootstrap_error_hpp
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -38,15 +38,15 @@ namespace QuantLib {
       public:
         BootstrapError(
                  const Curve* curve,
-                 const boost::shared_ptr<typename Traits::helper>& instrument,
+                 const ext::shared_ptr<typename Traits::helper>& instrument,
                  Size segment);
         Real operator()(Rate guess) const;
-        const boost::shared_ptr<typename Traits::helper>& helper() {
+        const ext::shared_ptr<typename Traits::helper>& helper() {
             return helper_;
         }
       private:
         const Curve* curve_;
-        const boost::shared_ptr<typename Traits::helper> helper_;
+        const ext::shared_ptr<typename Traits::helper> helper_;
         const Size segment_;
     };
 
@@ -56,7 +56,7 @@ namespace QuantLib {
     template <class Curve>
     BootstrapError<Curve>::BootstrapError(
                      const Curve* curve,
-                     const boost::shared_ptr<typename Traits::helper>& helper,
+                     const ext::shared_ptr<typename Traits::helper>& helper,
                      Size segment)
     : curve_(curve), helper_(helper), segment_(segment) {}
 

@@ -32,7 +32,7 @@ namespace QuantLib {
     class AtmSmileSection : public SmileSection {
 
       public:
-        AtmSmileSection(const boost::shared_ptr<SmileSection> source,
+        AtmSmileSection(const ext::shared_ptr<SmileSection> source,
                         const Real atm = Null<Real>());
 
         Real minStrike() const { return source_->minStrike(); }
@@ -56,7 +56,7 @@ namespace QuantLib {
         }
 
       private:
-        boost::shared_ptr<SmileSection> source_;
+        ext::shared_ptr<SmileSection> source_;
         Real f_;
     };
 }

@@ -26,7 +26,7 @@ namespace QuantLib {
 
     FdmSimpleProcess1dMesher::FdmSimpleProcess1dMesher(
         Size size,
-        const boost::shared_ptr<StochasticProcess1D>& process,
+        const ext::shared_ptr<StochasticProcess1D>& process,
         Time maturity, Size tAvgSteps, Real eps, Real mandatoryPoint)
         : Fdm1dMesher(size) {
             

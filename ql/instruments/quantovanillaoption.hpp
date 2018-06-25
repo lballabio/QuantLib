@@ -51,8 +51,8 @@ namespace QuantLib {
         typedef OneAssetOption::arguments arguments;
         typedef QuantoOptionResults<OneAssetOption::results> results;
         typedef GenericEngine<arguments, results> engine;
-        QuantoVanillaOption(const boost::shared_ptr<StrikedTypePayoff>&,
-                            const boost::shared_ptr<Exercise>&);
+        QuantoVanillaOption(const ext::shared_ptr<StrikedTypePayoff>&,
+                            const ext::shared_ptr<Exercise>&);
         //! \name greeks
         //@{
         Real qvega() const;

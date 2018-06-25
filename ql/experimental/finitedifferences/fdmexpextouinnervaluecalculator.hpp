@@ -36,9 +36,9 @@ namespace QuantLib {
         typedef std::vector<std::pair<Time, Real> > Shape;
 
         FdmExpExtOUInnerValueCalculator(
-            const boost::shared_ptr<Payoff>& payoff,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<Shape>& shape = boost::shared_ptr<Shape>(),
+            const ext::shared_ptr<Payoff>& payoff,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<Shape>& shape = ext::shared_ptr<Shape>(),
             Size direction = 0)
         : direction_(direction),
           payoff_(payoff),
@@ -61,9 +61,9 @@ namespace QuantLib {
         }
       private:
         const Size direction_;
-        const boost::shared_ptr<Payoff> payoff_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<Shape> shape_;
+        const ext::shared_ptr<Payoff> payoff_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<Shape> shape_;
     };
 
 }

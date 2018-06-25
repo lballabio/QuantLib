@@ -86,6 +86,14 @@
 //#    define QL_HIGH_RESOLUTION_DATE
 #endif
 
+/* Define this to use standard smart pointers instead of Boost ones.
+   This requires you to set your compiler's standard to at least
+   C++11.  Note that std::shared_ptr does not check access and can
+   cause segmentation faults. */
+#ifndef QL_USE_STD_SHARED_PTR
+//#    define QL_USE_STD_SHARED_PTR
+#endif
+
 /* Define this to replace std::auto_ptr with std::unique_ptr.
    This requires you to set your compiler's standard to at least C++11. */
 #ifndef QL_USE_STD_UNIQUE_PTR

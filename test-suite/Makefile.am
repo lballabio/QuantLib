@@ -210,7 +210,6 @@ EXTRA_DIST = \
 	CMakeLists.txt \
 	paralleltestrunner.hpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 
@@ -222,7 +221,6 @@ EXTRA_DIST = \
 	paralleltestrunner.hpp \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 

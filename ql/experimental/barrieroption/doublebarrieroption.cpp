@@ -30,8 +30,8 @@ namespace QuantLib {
         Real barrier_lo,
         Real barrier_hi,
         Real rebate,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
       barrierType_(barrierType), barrier_lo_(barrier_lo), 
       barrier_hi_(barrier_hi), rebate_(rebate) {}
@@ -52,7 +52,7 @@ namespace QuantLib {
 
     Volatility DoubleBarrierOption::impliedVolatility(
              Real targetValue,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy,
              Size maxEvaluations,
              Volatility minVol,
@@ -60,9 +60,9 @@ namespace QuantLib {
 
         QL_REQUIRE(!isExpired(), "option expired");
 
-        boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+        ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
+        ext::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
             detail::ImpliedVolatilityHelper::clone(process, volQuote);
 
         // engines are built-in for the time being
