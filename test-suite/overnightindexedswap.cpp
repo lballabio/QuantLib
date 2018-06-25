@@ -49,7 +49,7 @@ using namespace boost::unit_test_framework;
 
 using std::exp;
 
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
 
@@ -200,7 +200,7 @@ namespace {
             fixedEoniaPeriod = 1*Years;
             floatingEoniaPeriod = 1*Years;
             fixedEoniaDayCount = Actual360();
-            eoniaIndex = shared_ptr<Eonia>(new Eonia(eoniaTermStructure));
+            eoniaIndex = ext::make_shared<Eonia>(eoniaTermStructure);
             fixedSwapConvention = ModifiedFollowing;
             fixedSwapFrequency = Annual;
             fixedSwapDayCount = Thirty360();
@@ -361,7 +361,7 @@ void testBootstrap(bool telescopicValueDates) {
 
     for (Size i = 0; i < LENGTH(depositData); i++) {
         Real rate = 0.01 * depositData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
         shared_ptr<Quote> quote (simple);
         Period term = depositData[i].n * depositData[i].unit;
         shared_ptr<RateHelper> helper(new
@@ -381,7 +381,7 @@ void testBootstrap(bool telescopicValueDates) {
 
     for (Size i = 0; i < LENGTH(fraData); i++) {
         Real rate = 0.01 * fraData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
         shared_ptr<Quote> quote (simple);
         shared_ptr<RateHelper> helper(new
                                FraRateHelper(Handle<Quote>(quote),
@@ -397,7 +397,7 @@ void testBootstrap(bool telescopicValueDates) {
 
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
         Real rate = 0.01 * eoniaSwapData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
         shared_ptr<Quote> quote (simple);
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
         shared_ptr<RateHelper> helper(new
@@ -412,7 +412,7 @@ void testBootstrap(bool telescopicValueDates) {
 
     for (Size i = 0; i < LENGTH(swapData); i++) {
         Real rate = 0.01 * swapData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
         shared_ptr<Quote> quote (simple);
         Period tenor = swapData[i].nIndexUnits * swapData[i].indexUnit;
         Period term = swapData[i].nTermUnits * swapData[i].termUnit;

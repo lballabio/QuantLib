@@ -92,13 +92,13 @@ namespace QuantLib {
     class RendistatoBasket : public Observer,
                              public Observable {
       public:
-        RendistatoBasket(const std::vector<boost::shared_ptr<BTP> >& btps,
+        RendistatoBasket(const std::vector<ext::shared_ptr<BTP> >& btps,
                          const std::vector<Real>& outstandings,
                          const std::vector<Handle<Quote> >& cleanPriceQuotes);
         //! \name Inspectors
         //@{
         Size size() const { return n_;}
-        const std::vector<boost::shared_ptr<BTP> >& btps() const;
+        const std::vector<ext::shared_ptr<BTP> >& btps() const;
         const std::vector<Handle<Quote> >& cleanPriceQuotes() const;
         const std::vector<Real>& outstandings() const { return outstandings_;}
         const std::vector<Real>& weights() const { return weights_;}
@@ -109,7 +109,7 @@ namespace QuantLib {
         void update() { notifyObservers(); }
         //@}
       private:
-        std::vector<boost::shared_ptr<BTP> > btps_;
+        std::vector<ext::shared_ptr<BTP> > btps_;
         std::vector<Real> outstandings_;
         std::vector<Handle<Quote> > quotes_;
         Real outstanding_;
@@ -119,8 +119,8 @@ namespace QuantLib {
 
     class RendistatoCalculator : public LazyObject {
       public:
-        RendistatoCalculator(const boost::shared_ptr<RendistatoBasket>& basket,
-                             const boost::shared_ptr<Euribor>& euriborIndex,
+        RendistatoCalculator(const ext::shared_ptr<RendistatoBasket>& basket,
+                             const ext::shared_ptr<Euribor>& euriborIndex,
                              const Handle<YieldTermStructure>& discountCurve);
         //! \name Calculations
         //@{
@@ -137,7 +137,7 @@ namespace QuantLib {
         //@}
         //! \name Equivalent Swap proxy
         //@{
-        boost::shared_ptr<VanillaSwap> equivalentSwap() const;
+        ext::shared_ptr<VanillaSwap> equivalentSwap() const;
         Rate equivalentSwapRate() const;
         Rate equivalentSwapYield() const;
         Time equivalentSwapDuration() const;
@@ -150,8 +150,8 @@ namespace QuantLib {
         void performCalculations() const;
         //@}
       private:
-        boost::shared_ptr<RendistatoBasket> basket_;
-        boost::shared_ptr<Euribor> euriborIndex_;
+        ext::shared_ptr<RendistatoBasket> basket_;
+        ext::shared_ptr<Euribor> euriborIndex_;
         Handle<YieldTermStructure> discountCurve_;
 
         mutable std::vector<Rate> yields_;
@@ -160,7 +160,7 @@ namespace QuantLib {
         mutable Size equivalentSwapIndex_;
 
         Size nSwaps_;
-        mutable std::vector<boost::shared_ptr<VanillaSwap> > swaps_;
+        mutable std::vector<ext::shared_ptr<VanillaSwap> > swaps_;
         std::vector<Time> swapLenghts_;
         mutable std::vector<Time> swapBondDurations_;
         mutable std::vector<Rate> swapBondYields_, swapRates_;
@@ -170,22 +170,22 @@ namespace QuantLib {
     class RendistatoEquivalentSwapLengthQuote : public Quote {
       public:
         RendistatoEquivalentSwapLengthQuote(
-            const boost::shared_ptr<RendistatoCalculator>& r);
+            const ext::shared_ptr<RendistatoCalculator>& r);
         Real value() const;
         bool isValid() const;
       private:
-        boost::shared_ptr<RendistatoCalculator> r_;
+        ext::shared_ptr<RendistatoCalculator> r_;
     };
 
     //! RendistatoCalculator equivalent swap spread Quote adapter
     class RendistatoEquivalentSwapSpreadQuote : public Quote {
       public:
         RendistatoEquivalentSwapSpreadQuote(
-            const boost::shared_ptr<RendistatoCalculator>& r);
+            const ext::shared_ptr<RendistatoCalculator>& r);
         Real value() const;
         bool isValid() const;
       private:
-        boost::shared_ptr<RendistatoCalculator> r_;
+        ext::shared_ptr<RendistatoCalculator> r_;
     };
 
     // inline
@@ -200,7 +200,7 @@ namespace QuantLib {
         return ClosestRounding(5)(result);
     }
 
-    inline const std::vector<boost::shared_ptr<BTP> >&
+    inline const std::vector<ext::shared_ptr<BTP> >&
     RendistatoBasket::btps() const {
         return btps_;
     }
@@ -250,7 +250,7 @@ namespace QuantLib {
         return swapBondDurations_;
     }
 
-    inline boost::shared_ptr<VanillaSwap>
+    inline ext::shared_ptr<VanillaSwap>
     RendistatoCalculator::equivalentSwap() const {
         calculate();
         return swaps_[equivalentSwapIndex_];

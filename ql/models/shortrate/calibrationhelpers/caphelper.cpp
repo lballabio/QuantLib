@@ -30,7 +30,7 @@ namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
                          const Handle<Quote>& volatility,
-                         const boost::shared_ptr<IborIndex>& index,
+                         const ext::shared_ptr<IborIndex>& index,
                          Frequency fixedLegFrequency,
                          const DayCounter& fixedLegDayCounter,
                          bool includeFirstSwaplet,
@@ -66,8 +66,8 @@ namespace QuantLib {
 
     Real CapHelper::blackPrice(Volatility sigma) const {
         calculate();
-        boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
-        boost::shared_ptr<PricingEngine> black(
+        ext::shared_ptr<Quote> vol(new SimpleQuote(sigma));
+        ext::shared_ptr<PricingEngine> black(
                                  new BlackCapFloorEngine(termStructure_,
                                                          Handle<Quote>(vol)));
         cap_->setPricingEngine(black);
@@ -88,7 +88,7 @@ namespace QuantLib {
             startDate = termStructure_->referenceDate() + indexTenor;
             maturity = termStructure_->referenceDate() + length_;
         }
-        boost::shared_ptr<IborIndex> dummyIndex(new
+        ext::shared_ptr<IborIndex> dummyIndex(new
             IborIndex("dummy",
                       indexTenor,
                       index_->fixingDays(),
@@ -121,11 +121,11 @@ namespace QuantLib {
             .withPaymentAdjustment(index_->businessDayConvention());
 
         Swap swap(floatingLeg, fixedLeg);
-        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                             new DiscountingSwapEngine(termStructure_, false)));
         Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
-        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
-                                              std::vector<Rate>(1, fairRate)));
+        cap_ = ext::make_shared<Cap>(floatingLeg,
+                                              std::vector<Rate>(1, fairRate));
 
         CalibrationHelper::performCalculations();
 

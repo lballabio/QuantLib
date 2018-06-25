@@ -23,7 +23,7 @@
 #include <ql/models/marketmodels/models/volatilityinterpolationspecifier.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 
@@ -44,8 +44,8 @@ namespace QuantLib
         virtual void setLastCapletVol(Real vol);
 
 
-        virtual const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& interpolatedVariances() const;
-        virtual const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& originalVariances() const;
+        virtual const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& interpolatedVariances() const;
+        virtual const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& originalVariances() const;
 
         virtual Size getPeriod() const;
         virtual Size getOffset() const;
@@ -56,8 +56,8 @@ namespace QuantLib
         Size period_;
         Size offset_;
 
-         std::vector<boost::shared_ptr<PiecewiseConstantVariance> > interpolatedVariances_;
-         std::vector<boost::shared_ptr<PiecewiseConstantVariance> > originalVariances_;
+         std::vector<ext::shared_ptr<PiecewiseConstantVariance> > interpolatedVariances_;
+         std::vector<ext::shared_ptr<PiecewiseConstantVariance> > originalVariances_;
          std::vector< PiecewiseConstantAbcdVariance> originalABCDVariances_;
          std::vector< PiecewiseConstantAbcdVariance> originalABCDVariancesScaled_;
          Real lastCapletVol_;

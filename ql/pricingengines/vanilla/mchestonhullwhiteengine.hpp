@@ -43,7 +43,7 @@ namespace QuantLib {
         typedef typename base_type::result_type result_type;
 
         MCHestonHullWhiteEngine(
-               const boost::shared_ptr<HybridHestonHullWhiteProcess>& process,
+               const ext::shared_ptr<HybridHestonHullWhiteProcess>& process,
                Size timeSteps,
                Size timeStepsPerYear,
                bool antitheticVariate,
@@ -57,13 +57,13 @@ namespace QuantLib {
         
       protected:
         // just to avoid upcasting
-        boost::shared_ptr<HybridHestonHullWhiteProcess> process_;
+        ext::shared_ptr<HybridHestonHullWhiteProcess> process_;
 
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const;
 
-        boost::shared_ptr<path_pricer_type>    controlPathPricer() const;
-        boost::shared_ptr<PricingEngine>       controlPricingEngine() const;
-        boost::shared_ptr<path_generator_type> controlPathGenerator() const;
+        ext::shared_ptr<path_pricer_type>    controlPathPricer() const;
+        ext::shared_ptr<PricingEngine>       controlPricingEngine() const;
+        ext::shared_ptr<path_generator_type> controlPathGenerator() const;
     };
 
     //! Monte Carlo Heston/Hull-White engine factory
@@ -71,7 +71,7 @@ namespace QuantLib {
     class MakeMCHestonHullWhiteEngine {
       public:
         MakeMCHestonHullWhiteEngine(
-                    const boost::shared_ptr<HybridHestonHullWhiteProcess>&);
+                    const ext::shared_ptr<HybridHestonHullWhiteProcess>&);
         // named parameters
         MakeMCHestonHullWhiteEngine& withSteps(Size steps);
         MakeMCHestonHullWhiteEngine& withStepsPerYear(Size steps);
@@ -82,9 +82,9 @@ namespace QuantLib {
         MakeMCHestonHullWhiteEngine& withMaxSamples(Size samples);
         MakeMCHestonHullWhiteEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<HybridHestonHullWhiteProcess> process_;
+        ext::shared_ptr<HybridHestonHullWhiteProcess> process_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         bool antithetic_, controlVariate_;
         Real tolerance_;
@@ -96,21 +96,21 @@ namespace QuantLib {
       public:
         HestonHullWhitePathPricer(
              Time exerciseTime,
-             const boost::shared_ptr<Payoff> & payoff,
-             const boost::shared_ptr<HybridHestonHullWhiteProcess> & process);
+             const ext::shared_ptr<Payoff> & payoff,
+             const ext::shared_ptr<HybridHestonHullWhiteProcess> & process);
 
         Real operator()(const MultiPath& path) const;
 
       private:
         Time exerciseTime_;
-        boost::shared_ptr<Payoff> payoff_;
-        boost::shared_ptr<HybridHestonHullWhiteProcess> process_;
+        ext::shared_ptr<Payoff> payoff_;
+        ext::shared_ptr<HybridHestonHullWhiteProcess> process_;
     };
 
 
     template<class RNG,class S>
     inline MCHestonHullWhiteEngine<RNG,S>::MCHestonHullWhiteEngine(
-              const boost::shared_ptr<HybridHestonHullWhiteProcess> & process,
+              const ext::shared_ptr<HybridHestonHullWhiteProcess> & process,
               Size timeSteps,
               Size timeStepsPerYear,
               bool antitheticVariate,
@@ -137,41 +137,41 @@ namespace QuantLib {
     }
                   
     template <class RNG,class S> inline
-    boost::shared_ptr<typename MCHestonHullWhiteEngine<RNG,S>::path_pricer_type>
+    ext::shared_ptr<typename MCHestonHullWhiteEngine<RNG,S>::path_pricer_type>
     MCHestonHullWhiteEngine<RNG,S>::pathPricer() const {
 
-        boost::shared_ptr<Exercise> exercise = this->arguments_.exercise;
+        ext::shared_ptr<Exercise> exercise = this->arguments_.exercise;
 
         QL_REQUIRE(exercise->type() == Exercise::European,
                        "only european exercise is supported");
 
         const Time exerciseTime = process_->time(exercise->lastDate());
 
-        return boost::shared_ptr<path_pricer_type>(
+        return ext::shared_ptr<path_pricer_type>(
              new HestonHullWhitePathPricer(exerciseTime,
                                            this->arguments_.payoff,
                                            process_));
     }
 
     template <class RNG, class S> inline
-    boost::shared_ptr<
+    ext::shared_ptr<
         typename MCHestonHullWhiteEngine<RNG,S>::path_pricer_type>
     MCHestonHullWhiteEngine<RNG,S>::controlPathPricer() const {
 
-        boost::shared_ptr<HestonProcess> hestonProcess =
+        ext::shared_ptr<HestonProcess> hestonProcess =
             process_->hestonProcess();
 
         QL_REQUIRE(hestonProcess, "first constituent of the joint stochastic "
                                   "process need to be of type HestonProcess");
 
-        boost::shared_ptr<Exercise> exercise = this->arguments_.exercise;
+        ext::shared_ptr<Exercise> exercise = this->arguments_.exercise;
 
         QL_REQUIRE(exercise->type() == Exercise::European,
                        "only european exercise is supported");
 
         const Time exerciseTime = process_->time(exercise->lastDate());
 
-        return boost::shared_ptr<path_pricer_type>(
+        return ext::shared_ptr<path_pricer_type>(
              new HestonHullWhitePathPricer(
                   exerciseTime,
                   this->arguments_.payoff,
@@ -179,28 +179,28 @@ namespace QuantLib {
     }
 
     template <class RNG, class S> inline
-    boost::shared_ptr<PricingEngine>
+    ext::shared_ptr<PricingEngine>
     MCHestonHullWhiteEngine<RNG,S>::controlPricingEngine() const {
 
-        boost::shared_ptr<HestonProcess> hestonProcess =
+        ext::shared_ptr<HestonProcess> hestonProcess =
             process_->hestonProcess();
 
-        boost::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess =
+        ext::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess =
             process_->hullWhiteProcess();
 
-        boost::shared_ptr<HestonModel> hestonModel(
+        ext::shared_ptr<HestonModel> hestonModel(
                                               new HestonModel(hestonProcess));
-        boost::shared_ptr<HullWhite> hwModel(
+        ext::shared_ptr<HullWhite> hwModel(
                               new HullWhite(hestonProcess->riskFreeRate(),
                                             hullWhiteProcess->a(),
                                             hullWhiteProcess->sigma()));
 
-        return boost::shared_ptr<PricingEngine>(
+        return ext::shared_ptr<PricingEngine>(
                 new AnalyticHestonHullWhiteEngine(hestonModel, hwModel, 144));
     }
 
     template <class RNG, class S> inline
-    boost::shared_ptr<
+    ext::shared_ptr<
         typename MCHestonHullWhiteEngine<RNG,S>::path_generator_type>
     MCHestonHullWhiteEngine<RNG,S>::controlPathGenerator() const {
 
@@ -210,20 +210,20 @@ namespace QuantLib {
             RNG::make_sequence_generator(dimensions*(grid.size()-1),
                                          this->seed_);
 
-        boost::shared_ptr<HybridHestonHullWhiteProcess> cvProcess(
+        ext::shared_ptr<HybridHestonHullWhiteProcess> cvProcess(
             new HybridHestonHullWhiteProcess(process_->hestonProcess(),
                                              process_->hullWhiteProcess(),
                                              0.0,
                                              process_->discretization()));
 
-        return boost::shared_ptr<path_generator_type>(
+        return ext::shared_ptr<path_generator_type>(
                   new path_generator_type(cvProcess, grid, generator, false));
     }
 
 
     template <class RNG, class S>
     inline MakeMCHestonHullWhiteEngine<RNG,S>::MakeMCHestonHullWhiteEngine(
-             const boost::shared_ptr<HybridHestonHullWhiteProcess>& process)
+             const ext::shared_ptr<HybridHestonHullWhiteProcess>& process)
     : process_(process),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
@@ -296,12 +296,12 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MakeMCHestonHullWhiteEngine<RNG,S>::operator
-    boost::shared_ptr<PricingEngine>() const {
+    ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCHestonHullWhiteEngine<RNG,S>(process_,
                                            steps_,
                                            stepsPerYear_,

@@ -134,7 +134,7 @@ namespace QuantLib {
             mutable Real f_, b_;
         };
 
-        KahaleSmileSection(const boost::shared_ptr<SmileSection> source,
+        KahaleSmileSection(const ext::shared_ptr<SmileSection> source,
                            const Real atm = Null<Real>(),
                            const bool interpolate = false,
                            const bool exponentialExtrapolation = false,
@@ -173,15 +173,15 @@ namespace QuantLib {
       private:
         Size index(Rate strike) const;
         void compute();
-        boost::shared_ptr<SmileSection> source_;
+        ext::shared_ptr<SmileSection> source_;
         std::vector<Real> moneynessGrid_, k_, c_;
         Real f_;
         const Real gap_;
         Size leftIndex_, rightIndex_;
-        std::vector<boost::shared_ptr<cFunction> > cFunctions_;
+        std::vector<ext::shared_ptr<cFunction> > cFunctions_;
         const bool interpolate_, exponentialExtrapolation_;
         int forcedLeftIndex_, forcedRightIndex_;
-        boost::shared_ptr<SmileSectionUtils> ssutils_;
+        ext::shared_ptr<SmileSectionUtils> ssutils_;
     };
 }
 

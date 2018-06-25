@@ -97,7 +97,7 @@ namespace QuantLib {
         Real operator()(Time t) const;
       
       private:
-        boost::shared_ptr<AbcdFunction> abcd_;
+        ext::shared_ptr<AbcdFunction> abcd_;
         Time T_, S_;
     };
 

@@ -46,8 +46,8 @@ namespace QuantLib {
 
             Date valueDate = arguments_.startDates[i];
             Date paymentDate = arguments_.endDates[i];
-            boost::shared_ptr<IborIndex> iborIndex =
-                boost::dynamic_pointer_cast<IborIndex>(arguments_.indexes[i]);
+            ext::shared_ptr<IborIndex> iborIndex =
+                ext::dynamic_pointer_cast<IborIndex>(arguments_.indexes[i]);
             // if we do not find an ibor index with associated forwarding curve
             // we fall back on the model curve
 

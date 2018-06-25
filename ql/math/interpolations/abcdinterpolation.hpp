@@ -91,8 +91,8 @@ namespace QuantLib {
                 bool cIsFixed,
                 bool dIsFixed,
                 bool vegaWeighted,
-                const boost::shared_ptr<EndCriteria>& endCriteria,
-                const boost::shared_ptr<OptimizationMethod>& optMethod)
+                const ext::shared_ptr<EndCriteria>& endCriteria,
+                const ext::shared_ptr<OptimizationMethod>& optMethod)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               AbcdCoeffHolder(a, b, c, d,
                               aIsFixed, bIsFixed, cIsFixed, dIsFixed),
@@ -107,7 +107,7 @@ namespace QuantLib {
                     times.push_back(*x);
                     blackVols.push_back(*y);
                 }
-                abcdCalibrator_ = boost::shared_ptr<AbcdCalibration>(
+                abcdCalibrator_ = ext::shared_ptr<AbcdCalibration>(
                     new AbcdCalibration(times, blackVols,
                                         a_, b_, c_, d_,
                                         aIsFixed_, bIsFixed_,
@@ -145,10 +145,10 @@ namespace QuantLib {
             }
 
           private:
-            const boost::shared_ptr<EndCriteria> endCriteria_;
-            const boost::shared_ptr<OptimizationMethod> optMethod_;
+            const ext::shared_ptr<EndCriteria> endCriteria_;
+            const ext::shared_ptr<OptimizationMethod> optMethod_;
             bool vegaWeighted_;
-            boost::shared_ptr<AbcdCalibration> abcdCalibrator_;
+            ext::shared_ptr<AbcdCalibration> abcdCalibrator_;
 
         };
 
@@ -172,12 +172,12 @@ namespace QuantLib {
                           bool cIsFixed = false,
                           bool dIsFixed = false,
                           bool vegaWeighted = false,
-                          const boost::shared_ptr<EndCriteria>& endCriteria
-                              = boost::shared_ptr<EndCriteria>(),
-                          const boost::shared_ptr<OptimizationMethod>& optMethod
-                              = boost::shared_ptr<OptimizationMethod>()) {
+                          const ext::shared_ptr<EndCriteria>& endCriteria
+                              = ext::shared_ptr<EndCriteria>(),
+                          const ext::shared_ptr<OptimizationMethod>& optMethod
+                              = ext::shared_ptr<OptimizationMethod>()) {
 
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::AbcdInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                      a, b, c, d,
                                                      aIsFixed, bIsFixed,
@@ -187,7 +187,7 @@ namespace QuantLib {
                                                      optMethod));
             impl_->update();
             coeffs_ =
-                boost::dynamic_pointer_cast<detail::AbcdCoeffHolder>(impl_);
+                ext::dynamic_pointer_cast<detail::AbcdCoeffHolder>(impl_);
         }
         //! \name Inspectors
         //@{
@@ -205,7 +205,7 @@ namespace QuantLib {
             return li(t);
         }
       private:
-        boost::shared_ptr<detail::AbcdCoeffHolder> coeffs_;
+        ext::shared_ptr<detail::AbcdCoeffHolder> coeffs_;
     };
 
     //! %Abcd interpolation factory and traits
@@ -216,10 +216,10 @@ namespace QuantLib {
              bool aIsFixed, bool bIsFixed,
              bool cIsFixed, bool dIsFixed,
              bool vegaWeighted = false,
-             const boost::shared_ptr<EndCriteria> endCriteria
-                 = boost::shared_ptr<EndCriteria>(),
-             const boost::shared_ptr<OptimizationMethod> optMethod
-                 = boost::shared_ptr<OptimizationMethod>())
+             const ext::shared_ptr<EndCriteria> endCriteria
+                 = ext::shared_ptr<EndCriteria>(),
+             const ext::shared_ptr<OptimizationMethod> optMethod
+                 = ext::shared_ptr<OptimizationMethod>())
         : a_(a), b_(b), c_(c), d_(d),
           aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
           cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
@@ -241,8 +241,8 @@ namespace QuantLib {
         Real a_, b_, c_, d_;
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
         bool vegaWeighted_;
-        const boost::shared_ptr<EndCriteria> endCriteria_;
-        const boost::shared_ptr<OptimizationMethod> optMethod_;
+        const ext::shared_ptr<EndCriteria> endCriteria_;
+        const ext::shared_ptr<OptimizationMethod> optMethod_;
     };
 
 }

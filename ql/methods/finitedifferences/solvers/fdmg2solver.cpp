@@ -40,11 +40,11 @@ namespace QuantLib {
 
 
     void FdmG2Solver::performCalculations() const {
-        const boost::shared_ptr<FdmG2Op> op(
+        const ext::shared_ptr<FdmG2Op> op(
             new FdmG2Op(solverDesc_.mesher, model_.currentLink(), 0, 1));
 
-        solver_ = boost::shared_ptr<Fdm2DimSolver>(
-            new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = ext::make_shared<Fdm2DimSolver>(
+            solverDesc_, schemeDesc_, op);
     }
 
     Real FdmG2Solver::valueAt(Real x, Real y) const {

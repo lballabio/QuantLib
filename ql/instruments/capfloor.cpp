@@ -30,8 +30,6 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     namespace {
@@ -46,10 +44,10 @@ namespace QuantLib {
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
@@ -63,17 +61,17 @@ namespace QuantLib {
 
             // set an implausible value, so that calculation is forced
             // at first ImpliedCapVolHelper::operator()(Volatility x) call
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1));
+            vol_ = ext::make_shared<SimpleQuote>(-1);
             Handle<Quote> h(vol_);
 
             switch (type) {
             case ShiftedLognormal:
-                engine_ = boost::shared_ptr<PricingEngine>(new
+                engine_ = ext::shared_ptr<PricingEngine>(new
                     BlackCapFloorEngine(discountCurve_, h, Actual365Fixed(),
                                                                 displacement));
                 break;
             case Normal:
-                engine_ = boost::shared_ptr<PricingEngine>(new
+                engine_ = ext::shared_ptr<PricingEngine>(new
                     BachelierCapFloorEngine(discountCurve_, h, 
                                                             Actual365Fixed()));
                 break;
@@ -188,15 +186,15 @@ namespace QuantLib {
         return CashFlows::maturityDate(floatingLeg_);
     }
 
-    shared_ptr<FloatingRateCoupon>
+    ext::shared_ptr<FloatingRateCoupon>
     CapFloor::lastFloatingRateCoupon() const {
-        shared_ptr<CashFlow> lastCF(floatingLeg_.back());
-        shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
+        ext::shared_ptr<CashFlow> lastCF(floatingLeg_.back());
+        ext::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
+            ext::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
         return lastFloatingCoupon;
     }
 
-    shared_ptr<CapFloor> CapFloor::optionlet(const Size i) const {
+    ext::shared_ptr<CapFloor> CapFloor::optionlet(const Size i) const {
         QL_REQUIRE(i < floatingLeg().size(),
                    io::ordinal(i+1) << " optionlet does not exist, only " <<
                    floatingLeg().size());
@@ -208,7 +206,7 @@ namespace QuantLib {
         if (type() == Floor || type() == Collar)
             floor.push_back(floorRates()[i]);
 
-        return shared_ptr<CapFloor>(new CapFloor(type(), cf, cap, floor));
+        return ext::make_shared<CapFloor>(type(), cf, cap, floor);
     }
 
     void CapFloor::setupArguments(PricingEngine::arguments* args) const {
@@ -235,8 +233,8 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
 
         for (Size i=0; i<n; ++i) {
-            shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(
+            ext::shared_ptr<FloatingRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
             QL_REQUIRE(coupon, "non-FloatingRateCoupon given");
             arguments->startDates[i] = coupon->accrualStartDate();
@@ -275,8 +273,8 @@ namespace QuantLib {
 
     void CapFloor::deepUpdate() {
         for (Size i = 0; i < floatingLeg_.size(); ++i) {
-            boost::shared_ptr<LazyObject> f =
-                boost::dynamic_pointer_cast<LazyObject>(
+            ext::shared_ptr<LazyObject> f =
+                ext::dynamic_pointer_cast<LazyObject>(
                     floatingLeg_[i]);
             if (f)
                 f->update();

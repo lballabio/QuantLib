@@ -38,7 +38,7 @@ namespace QuantLib {
     class FFTVanillaEngine : public FFTEngine {
     public:
         FFTVanillaEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>&process, Real logStrikeSpacing = 0.001);
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>&process, Real logStrikeSpacing = 0.001);
         virtual std::auto_ptr<FFTEngine> clone() const;
     protected:
         virtual void precalculateExpiry(Date d);

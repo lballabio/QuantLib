@@ -22,7 +22,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -37,12 +36,12 @@ namespace QuantLib {
           couponTenor_(3 * Months), couponRate_(couponRate), upfrontRate_(0.0),
           dayCounter_(Actual360()), lastPeriodDayCounter_(Actual360(true)) {}
     MakeCreditDefaultSwap::operator CreditDefaultSwap() const {
-        boost::shared_ptr<CreditDefaultSwap> swap = *this;
+        ext::shared_ptr<CreditDefaultSwap> swap = *this;
         return *swap;
     }
 
     MakeCreditDefaultSwap::
-    operator boost::shared_ptr<CreditDefaultSwap>() const {
+    operator ext::shared_ptr<CreditDefaultSwap>() const {
 
         Date evaluation = Settings::instance().evaluationDate();
         Date start = evaluation + 1;
@@ -58,11 +57,11 @@ namespace QuantLib {
                           Unadjusted, DateGeneration::CDS, false, Date(),
                           Date());
 
-        boost::shared_ptr<CreditDefaultSwap> cds =
-            boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        ext::shared_ptr<CreditDefaultSwap> cds =
+            ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
                 side_, nominal_, upfrontRate_, couponRate_, schedule, Following,
                 dayCounter_, true, true, start, upfrontDate,
-                boost::shared_ptr<Claim>(), lastPeriodDayCounter_, true));
+                ext::shared_ptr<Claim>(), lastPeriodDayCounter_, true));
 
         cds->setPricingEngine(engine_);
         return cds;
@@ -105,7 +104,7 @@ namespace QuantLib {
     }
 
     MakeCreditDefaultSwap &MakeCreditDefaultSwap::withPricingEngine(
-        const boost::shared_ptr<PricingEngine> &engine) {
+        const ext::shared_ptr<PricingEngine> &engine) {
         engine_ = engine;
         return *this;
     }

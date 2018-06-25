@@ -275,14 +275,14 @@ namespace {
 #endif
     }
 
-    const boost::shared_ptr<SequenceStatisticsInc> simulate(
-        const boost::shared_ptr<MarketModelEvolver>& evolver,
+    const ext::shared_ptr<SequenceStatisticsInc> simulate(
+        const ext::shared_ptr<MarketModelEvolver>& evolver,
         const MarketModelMultiProduct& product) {
             Size initialNumeraire = evolver->numeraires().front();
             Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
             AccountingEngine engine(evolver, product, initialNumeraireValue);
-            boost::shared_ptr<SequenceStatisticsInc> stats(
+            ext::shared_ptr<SequenceStatisticsInc> stats(
                 new SequenceStatisticsInc(product.numberOfProducts()));
             engine.multiplePathValues(*stats, paths_);
             return stats;
@@ -304,7 +304,7 @@ namespace {
         }
     }
 
-    boost::shared_ptr<MarketModel> makeMarketModel(
+    ext::shared_ptr<MarketModel> makeMarketModel(
         bool logNormal,
         const EvolutionDescription& evolution,
         Size numberOfFactors,
@@ -314,9 +314,9 @@ namespace {
 
             std::vector<Time> fixingTimes(evolution.rateTimes());
             fixingTimes.pop_back();
-            boost::shared_ptr<LmVolatilityModel> volModel(new
+            ext::shared_ptr<LmVolatilityModel> volModel(new
                 LmExtLinearExponentialVolModel(fixingTimes,0.5, 0.6, 0.1, 0.1));
-            boost::shared_ptr<LmCorrelationModel> corrModel(
+            ext::shared_ptr<LmCorrelationModel> corrModel(
                 new LmLinearExponentialCorrelationModel(evolution.numberOfRates(),
                 longTermCorrelation, beta));
 
@@ -338,12 +338,12 @@ namespace {
             Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                 longTermCorrelation,
                 beta);
-            boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+            ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
                 TimeHomogeneousForwardCorrelation(correlations,
                 evolution.rateTimes()));
             switch (marketModelType) {
         case MarketModelTest::ExponentialCorrelationFlatVolatility:
-            return boost::shared_ptr<MarketModel>(new
+            return ext::shared_ptr<MarketModel>(new
                 FlatVol(bumpedVols,
                 corr,
                 evolution,
@@ -351,7 +351,7 @@ namespace {
                 bumpedForwards,
                 std::vector<Spread>(bumpedForwards.size(), displacement)));
         case MarketModelTest::ExponentialCorrelationAbcdVolatility:
-            return boost::shared_ptr<MarketModel>(new
+            return ext::shared_ptr<MarketModel>(new
                 AbcdVol(0.0,0.0,1.0,1.0,
                 bumpedVols,
                 corr,
@@ -360,7 +360,7 @@ namespace {
                 bumpedForwards,
                 std::vector<Spread>(bumpedForwards.size(), displacement)));
             //case CalibratedMM:
-            //    return boost::shared_ptr<MarketModel>(new
+            //    return ext::shared_ptr<MarketModel>(new
             //        CalibratedMarketModel(volModel, corrModel,
             //                              evolution,
             //                              numberOfFactors,
@@ -445,27 +445,27 @@ namespace {
         }
     }
 
-    boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
-        const boost::shared_ptr<MarketModel>& marketModel,
+    ext::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
+        const ext::shared_ptr<MarketModel>& marketModel,
         const std::vector<Size>& numeraires,
         const BrownianGeneratorFactory& generatorFactory,
         EvolverType evolverType,
         Size initialStep = 0) {
             switch (evolverType) {
           case Ipc:
-              return boost::shared_ptr<MarketModelEvolver>(
+              return ext::shared_ptr<MarketModelEvolver>(
                   new LogNormalFwdRateIpc(marketModel, generatorFactory,
                   numeraires, initialStep));
           case Balland:
-              return boost::shared_ptr<MarketModelEvolver>(
+              return ext::shared_ptr<MarketModelEvolver>(
                   new LogNormalFwdRateBalland(marketModel, generatorFactory,
                   numeraires, initialStep));
           case Pc:
-              return boost::shared_ptr<MarketModelEvolver>(
+              return ext::shared_ptr<MarketModelEvolver>(
                   new LogNormalFwdRatePc(marketModel, generatorFactory,
                   numeraires, initialStep));
           case NormalPc:
-              return boost::shared_ptr<MarketModelEvolver>(
+              return ext::shared_ptr<MarketModelEvolver>(
                   new NormalFwdRatePc(marketModel, generatorFactory,
                   numeraires, initialStep));
           default:
@@ -534,7 +534,7 @@ namespace {
 
     void checkForwardsAndOptionlets(const SequenceStatisticsInc& stats,
         const std::vector<Rate>& forwardStrikes,
-        const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoffs,
+        const std::vector<ext::shared_ptr<StrikedTypePayoff> >& displacedPayoffs,
         const std::string& config) {
 
             std::vector<Real> results = stats.mean();
@@ -602,7 +602,7 @@ namespace {
 
     void checkNormalForwardsAndOptionlets(const SequenceStatisticsInc& stats,
         const std::vector<Rate>& forwardStrikes,
-        const std::vector<boost::shared_ptr<PlainVanillaPayoff> >& displacedPayoffs,
+        const std::vector<ext::shared_ptr<PlainVanillaPayoff> >& displacedPayoffs,
         const std::string& config) {
 
             std::vector<Real> results = stats.mean();
@@ -723,14 +723,14 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
     setup();
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
-    std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
-    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+    std::vector<ext::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
+    std::vector<ext::shared_ptr<StrikedTypePayoff> >
         displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
-        optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
+        optionletPayoffs[i] = ext::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
     }
 
@@ -765,11 +765,11 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                     std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                     bool logNormal = true;
-                    boost::shared_ptr<MarketModel> marketModel =
+                    ext::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
                     EvolverType evolvers[] = { Pc,  Balland, Ipc};
-                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    ext::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
@@ -793,7 +793,7 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                             if (printReport_)
                                 BOOST_TEST_MESSAGE("    " << config.str());
 
-                            boost::shared_ptr<SequenceStatisticsInc> stats =
+                            ext::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, product);
                             checkForwardsAndOptionlets(*stats,
                                 forwardStrikes,
@@ -815,15 +815,14 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
     setup();
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
-    std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
-    std::vector<boost::shared_ptr<PlainVanillaPayoff> >
+    std::vector<ext::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
+    std::vector<ext::shared_ptr<PlainVanillaPayoff> >
         displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
-        optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
+        optionletPayoffs[i] = ext::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-        displacedPayoffs[i] = boost::shared_ptr<PlainVanillaPayoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
+        displacedPayoffs[i] = ext::make_shared<PlainVanillaPayoff>(Option::Call, todaysForwards[i]+displacement);
     }
 
     OneStepForwards forwards(rateTimes, accruals,
@@ -857,11 +856,11 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                     std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                     bool logNormal = false;
-                    boost::shared_ptr<MarketModel> marketModel =
+                    ext::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
                     EvolverType evolvers[] = { NormalPc};
-                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    ext::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
@@ -885,7 +884,7 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                             if (printReport_)
                                 BOOST_TEST_MESSAGE("    " << config.str());
 
-                            boost::shared_ptr<SequenceStatisticsInc> stats =
+                            ext::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, product);
                             checkNormalForwardsAndOptionlets(*stats,
                                 forwardStrikes,
@@ -967,11 +966,11 @@ void MarketModelTest::testInverseFloater()
                     std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                     bool logNormal = false;
-                    boost::shared_ptr<MarketModel> marketModel =
+                    ext::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
                     EvolverType evolvers[] = {Pc};
-                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    ext::shared_ptr<MarketModelEvolver> evolver;
         
                     for (Size i=0; i<LENGTH(evolvers); i++)
                     {
@@ -995,7 +994,7 @@ void MarketModelTest::testInverseFloater()
                             if (printReport_)
                                 BOOST_TEST_MESSAGE("    " << config.str());
 
-                            boost::shared_ptr<SequenceStatisticsInc> stats =
+                            ext::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, productComposite);
 
                             std::vector<Real> modelVolatilities(accruals.size());
@@ -1076,12 +1075,12 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                                                        std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                                                        bool logNormal = true;
-                                                       boost::shared_ptr<MarketModel> marketModel =
+                                                       ext::shared_ptr<MarketModel> marketModel =
                                                            makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                                                        EvolverType evolvers[] = { Pc, Balland, Ipc };
-                                                       boost::shared_ptr<MarketModelEvolver> evolver;
+                                                       ext::shared_ptr<MarketModelEvolver> evolver;
                                                        Size stop =
                                                            isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                                                        for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
@@ -1105,7 +1104,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                                                                if (printReport_)
                                                                    BOOST_TEST_MESSAGE("    " << config.str());
 
-                                                               boost::shared_ptr<SequenceStatisticsInc> stats =
+                                                               ext::shared_ptr<SequenceStatisticsInc> stats =
                                                                    simulate(evolver, product);
                                                                checkMultiProductCompositeResults(*stats,
                                                                    subProductExpectedValues,
@@ -1144,15 +1143,15 @@ void addOptionLets(MultiProductComposite& product,
                    std::vector<SubProductExpectedValues>& subProductExpectedValues) {
 
                        // create the products...
-                       std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
-                       std::vector<boost::shared_ptr<StrikedTypePayoff> >
+                       std::vector<ext::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
+                       std::vector<ext::shared_ptr<StrikedTypePayoff> >
                            displacedPayoffs(todaysForwards.size());
 
                        for (Size i=0; i<todaysForwards.size(); ++i) {
-                           optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
+                           optionletPayoffs[i] = ext::shared_ptr<Payoff>(new
                                PlainVanillaPayoff(Option::Call, todaysForwards[i]));
                            //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
-                           displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+                           displacedPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
                                PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
                            //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacement, 0.01));
                        }
@@ -1200,9 +1199,9 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
                                         MultiStepCoterminalSwaps swaps(rateTimes, accruals, accruals,
                                             paymentTimes, fixedRate);
 
-                                        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(todaysForwards.size());
+                                        std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs(todaysForwards.size());
                                         for (Size i = 0; i < payoffs.size(); ++i)
-                                            payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+                                            payoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
                                             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
 
                                         MultiStepCoterminalSwaptions swaptions(rateTimes,
@@ -1236,13 +1235,13 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
                                         EvolutionDescription evolution = productClone.evolution();
                                         Size factors = todaysForwards.size();
                                         MarketModelTest::MarketModelType marketModelType = MarketModelTest::ExponentialCorrelationFlatVolatility;
-                                        boost::shared_ptr<MarketModel> marketModel =
+                                        ext::shared_ptr<MarketModel> marketModel =
                                             makeMarketModel(logNormal, evolution, factors, marketModelType);
                                         for (Size i=0; i<todaysForwards.size(); ++i) {
                                             const Matrix& forwardsCovariance = marketModel->totalCovariance(i);
                                             Matrix cotSwapsCovariance =
                                                 jacobian * forwardsCovariance * transpose(jacobian);
-                                            boost::shared_ptr<PlainVanillaPayoff> payoff(
+                                            ext::shared_ptr<PlainVanillaPayoff> payoff(
                                                 new PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
 
                                             Real expectedSwaption =
@@ -1298,20 +1297,20 @@ void MarketModelTest::testPeriodAdapter() {
 
     Size numberBigRates = bigRateCS.numberOfRates();
 
-    std::vector<boost::shared_ptr<StrikedTypePayoff> > optionletPayoffs(numberBigRates);
-    std::vector<boost::shared_ptr<StrikedTypePayoff> > swaptionPayoffs(numberBigRates);
-    std::vector<boost::shared_ptr<StrikedTypePayoff> > displacedOptionletPayoffs(numberBigRates);
-    std::vector<boost::shared_ptr<StrikedTypePayoff> > displacedSwaptionPayoffs(numberBigRates);
+    std::vector<ext::shared_ptr<StrikedTypePayoff> > optionletPayoffs(numberBigRates);
+    std::vector<ext::shared_ptr<StrikedTypePayoff> > swaptionPayoffs(numberBigRates);
+    std::vector<ext::shared_ptr<StrikedTypePayoff> > displacedOptionletPayoffs(numberBigRates);
+    std::vector<ext::shared_ptr<StrikedTypePayoff> > displacedSwaptionPayoffs(numberBigRates);
 
     for (Size i=0; i<numberBigRates; ++i)
     {
-        optionletPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        optionletPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, bigRateCS.forwardRate(i)));
-        swaptionPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        swaptionPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, bigRateCS.coterminalSwapRate(i)));
-        displacedOptionletPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedOptionletPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, bigRateCS.forwardRate(i)+displacement));
-        displacedSwaptionPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedSwaptionPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, bigRateCS.coterminalSwapRate(i)+displacement));
 
     }
@@ -1329,7 +1328,7 @@ void MarketModelTest::testPeriodAdapter() {
     bool logNormal = true;
     Size factors = 5;
 
-    boost::shared_ptr<MarketModel> originalModel =
+    ext::shared_ptr<MarketModel> originalModel =
         makeMarketModel(logNormal,
         evolution,
         factors,
@@ -1337,12 +1336,12 @@ void MarketModelTest::testPeriodAdapter() {
 
     std::vector<Spread> newDisplacements;
 
-    boost::shared_ptr<MarketModel> adaptedforwardModel(new FwdPeriodAdapter(originalModel,
+    ext::shared_ptr<MarketModel> adaptedforwardModel(new FwdPeriodAdapter(originalModel,
         period,
         offset,
         newDisplacements));
 
-    boost::shared_ptr<MarketModel> adaptedSwapModel(new
+    ext::shared_ptr<MarketModel> adaptedSwapModel(new
         FwdToCotSwapAdapter(adaptedforwardModel));
 
     Matrix finalForwardCovariances(adaptedforwardModel->totalCovariance(adaptedforwardModel->numberOfSteps()-1));
@@ -1379,12 +1378,12 @@ void MarketModelTest::testPeriodAdapter() {
 
 
 
-    boost::shared_ptr<MarketModelEvolver> evolver = makeMarketModelEvolver(originalModel,
+    ext::shared_ptr<MarketModelEvolver> evolver = makeMarketModelEvolver(originalModel,
         theProduct.suggestedNumeraires(),
         generatorFactory,
         Pc);
 
-    boost::shared_ptr<SequenceStatisticsInc> stats =
+    ext::shared_ptr<SequenceStatisticsInc> stats =
         simulate(evolver, theProduct);
 
     std::vector<Real> results = stats->mean();
@@ -1485,12 +1484,12 @@ void MarketModelTest::testCallableSwapNaif() {
                     std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
                     bool logNormal = true;
-                    boost::shared_ptr<MarketModel> marketModel =
+                    ext::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                     EvolverType evolvers[] = { Pc, Balland, Ipc };
-                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    ext::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
@@ -1536,7 +1535,7 @@ void MarketModelTest::testCallableSwapNaif() {
                             allProducts.add(callableProduct);
                             allProducts.finalize();
 
-                            boost::shared_ptr<SequenceStatisticsInc> stats =
+                            ext::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, allProducts);
                             checkCallableSwap(*stats, config.str());
 
@@ -1551,7 +1550,7 @@ void MarketModelTest::testCallableSwapNaif() {
                                 uFactory,
                                 evolvers[i]);
 
-                            std::vector<boost::shared_ptr<MarketModelEvolver> >
+                            std::vector<ext::shared_ptr<MarketModelEvolver> >
                                 innerEvolvers;
 
                             std::valarray<bool> isExerciseTime =
@@ -1560,7 +1559,7 @@ void MarketModelTest::testCallableSwapNaif() {
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
                                 if (isExerciseTime[s]) {
                                     MTBrownianGeneratorFactory iFactory(seed_+s);
-                                    boost::shared_ptr<MarketModelEvolver> e =
+                                    ext::shared_ptr<MarketModelEvolver> e =
                                         makeMarketModelEvolver(marketModel,
                                         numeraires,
                                         iFactory,
@@ -1654,12 +1653,12 @@ void MarketModelTest::testCallableSwapLS() {
                     std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
                     bool logNormal = true;
-                    boost::shared_ptr<MarketModel> marketModel =
+                    ext::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                     EvolverType evolvers[] = { Pc, Balland, Ipc };
-                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    ext::shared_ptr<MarketModelEvolver> evolver;
                     Size stop =
                         isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
@@ -1714,7 +1713,7 @@ void MarketModelTest::testCallableSwapLS() {
                             allProducts.add(callableProduct);
                             allProducts.finalize();
 
-                            boost::shared_ptr<SequenceStatisticsInc> stats =
+                            ext::shared_ptr<SequenceStatisticsInc> stats =
                                 simulate(evolver, allProducts);
                             checkCallableSwap(*stats, config.str());
 
@@ -1729,7 +1728,7 @@ void MarketModelTest::testCallableSwapLS() {
                                 uFactory,
                                 evolvers[i]);
 
-                            std::vector<boost::shared_ptr<MarketModelEvolver> >
+                            std::vector<ext::shared_ptr<MarketModelEvolver> >
                                 innerEvolvers;
 
                             std::valarray<bool> isExerciseTime =
@@ -1738,7 +1737,7 @@ void MarketModelTest::testCallableSwapLS() {
                             for (Size s=0; s < isExerciseTime.size(); ++s) {
                                 if (isExerciseTime[s]) {
                                     MTBrownianGeneratorFactory iFactory(seed_+s);
-                                    boost::shared_ptr<MarketModelEvolver> e =
+                                    ext::shared_ptr<MarketModelEvolver> e =
                                         makeMarketModelEvolver(marketModel,
                                         numeraires,
                                         iFactory,
@@ -1828,10 +1827,10 @@ void MarketModelTest::testCallableSwapAnderson(
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
         bool logNormal = true;
-        boost::shared_ptr<MarketModel> marketModel =
+        ext::shared_ptr<MarketModel> marketModel =
             makeMarketModel(logNormal, evolution, factors, marketModelType);
         EvolverType evolvers[] = { Pc, Balland, Ipc };
-        boost::shared_ptr<MarketModelEvolver> evolver;
+        ext::shared_ptr<MarketModelEvolver> evolver;
         Size stop =
             isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
         for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
@@ -1885,7 +1884,7 @@ void MarketModelTest::testCallableSwapAnderson(
                 allProducts.add(bermudanProduct);
                 allProducts.add(callableProduct);
                 allProducts.finalize();
-                boost::shared_ptr<SequenceStatisticsInc> stats =
+                ext::shared_ptr<SequenceStatisticsInc> stats =
                     simulate(evolver, allProducts);
                 checkCallableSwap(*stats, config.str());
 
@@ -1897,7 +1896,7 @@ void MarketModelTest::testCallableSwapAnderson(
                     numeraires,
                     uFactory,
                     evolvers[i]);
-                std::vector<boost::shared_ptr<MarketModelEvolver> >
+                std::vector<ext::shared_ptr<MarketModelEvolver> >
                     innerEvolvers;
                 std::valarray<bool> isExerciseTime =
                     isInSubset(evolution.evolutionTimes(),
@@ -1905,7 +1904,7 @@ void MarketModelTest::testCallableSwapAnderson(
                 for (Size s=0; s < isExerciseTime.size(); ++s) {
                     if (isExerciseTime[s]) {
                         MTBrownianGeneratorFactory iFactory(seed_+s);
-                        boost::shared_ptr<MarketModelEvolver> e =
+                        ext::shared_ptr<MarketModelEvolver> e =
                             makeMarketModelEvolver(marketModel,
                             numeraires,
                             iFactory,
@@ -1939,14 +1938,14 @@ void MarketModelTest::testGreeks() {
 
     setup();
 
-    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
-    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+    std::vector<ext::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    std::vector<ext::shared_ptr<StrikedTypePayoff> >
         displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
-        payoffs[i] = boost::shared_ptr<Payoff>(new
+        payoffs[i] = ext::shared_ptr<Payoff>(new
             //PlainVanillaPayoff(Option::Call, todaysForwards[i]));
             CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
-        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             //PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
             CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacement, 0.01));
     }
@@ -1980,11 +1979,11 @@ void MarketModelTest::testGreeks() {
                             seed_);
 
                         bool logNormal = true;
-                        boost::shared_ptr<MarketModel> marketModel =
+                        ext::shared_ptr<MarketModel> marketModel =
                             makeMarketModel(logNormal, evolution, factors,
                             marketModels[j]);
 
-                        boost::shared_ptr<MarketModelEvolver> evolver(new
+                        ext::shared_ptr<MarketModelEvolver> evolver(new
                             LogNormalFwdRateEuler(marketModel,
                             generatorFactory,
                             numeraires));
@@ -2001,12 +2000,12 @@ void MarketModelTest::testGreeks() {
 
 
                         std::vector<
-                            std::vector<boost::shared_ptr<ConstrainedEvolver> > >
+                            std::vector<ext::shared_ptr<ConstrainedEvolver> > >
                             constrainedEvolvers;
                         std::vector<std::vector<std::vector<Real> > > diffWeights;
                         std::vector<std::vector<SequenceStatisticsInc> > greekStats;
 
-                        std::vector<boost::shared_ptr<ConstrainedEvolver> >
+                        std::vector<ext::shared_ptr<ConstrainedEvolver> >
                             deltaGammaEvolvers;
                         std::vector<std::vector<Real> > deltaGammaWeights(
                             2, std::vector<Real>(3));
@@ -2018,7 +2017,7 @@ void MarketModelTest::testGreeks() {
                             makeMarketModel(logNormal, evolution, factors,
                             marketModels[j], -forwardBump);
                         deltaGammaEvolvers.push_back(
-                            boost::shared_ptr<ConstrainedEvolver>(new
+                            ext::shared_ptr<ConstrainedEvolver>(new
                             LogNormalFwdRateEulerConstrained(marketModel,
                             generatorFactory,
                             numeraires)));
@@ -2028,7 +2027,7 @@ void MarketModelTest::testGreeks() {
                             makeMarketModel(logNormal, evolution, factors,
                             marketModels[j], forwardBump);
                         deltaGammaEvolvers.push_back(
-                            boost::shared_ptr<ConstrainedEvolver>(new
+                            ext::shared_ptr<ConstrainedEvolver>(new
                             LogNormalFwdRateEulerConstrained(marketModel,
                             generatorFactory,
                             numeraires)));
@@ -2044,7 +2043,7 @@ void MarketModelTest::testGreeks() {
                         deltaGammaWeights[1][2] = 1.0/(forwardBump*forwardBump);
 
 
-                        std::vector<boost::shared_ptr<ConstrainedEvolver> >
+                        std::vector<ext::shared_ptr<ConstrainedEvolver> >
                             vegaEvolvers;
                         std::vector<std::vector<Real> > vegaWeights(
                             1, std::vector<Real>(3));
@@ -2055,7 +2054,7 @@ void MarketModelTest::testGreeks() {
                             makeMarketModel(logNormal, evolution, factors,
                             marketModels[j], 0.0, -volBump);
                         vegaEvolvers.push_back(
-                            boost::shared_ptr<ConstrainedEvolver>(new
+                            ext::shared_ptr<ConstrainedEvolver>(new
                             LogNormalFwdRateEulerConstrained(marketModel,
                             generatorFactory,
                             numeraires)));
@@ -2065,7 +2064,7 @@ void MarketModelTest::testGreeks() {
                             makeMarketModel(logNormal, evolution, factors,
                             marketModels[j], 0.0, volBump);
                         vegaEvolvers.push_back(
-                            boost::shared_ptr<ConstrainedEvolver>(new
+                            ext::shared_ptr<ConstrainedEvolver>(new
                             LogNormalFwdRateEulerConstrained(marketModel,
                             generatorFactory,
                             numeraires)));
@@ -2181,14 +2180,14 @@ void MarketModelTest::testPathwiseGreeks()
 
 
 
-    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
-    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+    std::vector<ext::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    std::vector<ext::shared_ptr<StrikedTypePayoff> >
         displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
-        payoffs[i] = boost::shared_ptr<Payoff>(new
+        payoffs[i] = ext::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
         //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
-        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
         //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacement, 0.01));
     }
@@ -2245,7 +2244,7 @@ void MarketModelTest::testPathwiseGreeks()
                             MTBrownianGeneratorFactory generatorFactory(seed_);
 
                             bool logNormal = true;
-                            boost::shared_ptr<MarketModel> marketModel =
+                            ext::shared_ptr<MarketModel> marketModel =
                                 makeMarketModel(logNormal, evolution, factors,
                                 marketModels[j]);
 
@@ -2279,7 +2278,7 @@ void MarketModelTest::testPathwiseGreeks()
 
                             {
 
-                                PathwiseAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                                PathwiseAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                                     *product,
                                     marketModel, // we need pseudo-roots and displacements
                                     initialNumeraireValue);
@@ -2439,14 +2438,14 @@ void MarketModelTest::testPathwiseVegas()
 
 
 
-    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
-    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+    std::vector<ext::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    std::vector<ext::shared_ptr<StrikedTypePayoff> >
         displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
-        payoffs[i] = boost::shared_ptr<Payoff>(new
+        payoffs[i] = ext::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
         //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
-        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
         //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacement, 0.01));
     }
@@ -2518,7 +2517,7 @@ void MarketModelTest::testPathwiseVegas()
 
             bool logNormal = true;
 
-            boost::shared_ptr<MarketModel> marketModel =
+            ext::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
@@ -2624,7 +2623,7 @@ void MarketModelTest::testPathwiseVegas()
 
             bool logNormal = true;
 
-            boost::shared_ptr<MarketModel> marketModel =
+            ext::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
@@ -2776,7 +2775,7 @@ void MarketModelTest::testPathwiseVegas()
 
             bool logNormal = true;
 
-            boost::shared_ptr<MarketModel> marketModel =
+            ext::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
@@ -2803,7 +2802,7 @@ void MarketModelTest::testPathwiseVegas()
 
                                 PseudoRootFacade bumpedUp(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
 
-                                CapPseudoDerivative upDerivative(boost::shared_ptr<MarketModel>(new PseudoRootFacade(bumpedUp)),
+                                CapPseudoDerivative upDerivative(ext::shared_ptr<MarketModel>(new PseudoRootFacade(bumpedUp)),
                                     capStrike,
                                     startIndex,
                                     endIndex,initialNumeraireValue);
@@ -2819,7 +2818,7 @@ void MarketModelTest::testPathwiseVegas()
 
                                 PseudoRootFacade bumpedDown(pseudoRoots,rateTimes,marketModel->initialRates(),marketModel->displacements());
 
-                                CapPseudoDerivative downDerivative(boost::shared_ptr<MarketModel>(new PseudoRootFacade(bumpedDown)),
+                                CapPseudoDerivative downDerivative(ext::shared_ptr<MarketModel>(new PseudoRootFacade(bumpedDown)),
                                     capStrike,
                                     startIndex,
                                     endIndex,initialNumeraireValue);
@@ -2954,7 +2953,7 @@ void MarketModelTest::testPathwiseVegas()
                 MTBrownianGeneratorFactory generatorFactory(seed_);
 
                 bool logNormal = true;
-                boost::shared_ptr<MarketModel> marketModel =
+                ext::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(logNormal, evolution, factors,
                     marketModels[j]);
 
@@ -2997,7 +2996,7 @@ void MarketModelTest::testPathwiseVegas()
 
 
 
-                boost::shared_ptr<BrownianGenerator> generator(generatorFactory.create(factors,
+                ext::shared_ptr<BrownianGenerator> generator(generatorFactory.create(factors,
                     steps));
                 LogNormalFwdRateEuler evolver(marketModel,
                     generatorFactory,
@@ -3165,7 +3164,7 @@ void MarketModelTest::testPathwiseVegas()
                     MTBrownianGeneratorFactory generatorFactory(seed_);
 
                     bool logNormal = true;
-                    boost::shared_ptr<MarketModel> marketModel =
+                    ext::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors,
                         marketModels[j]);
 
@@ -3195,7 +3194,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseVegasAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             productToUse,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -3329,7 +3328,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     SequenceStatisticsInc stats(productToUse2->numberOfProducts()*(todaysForwards.size()+1));
                     {
-                        PathwiseAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             *productToUse2,
                             marketModel, // we need pseudo-roots and displacements
                             initialNumeraireValue);
@@ -3436,7 +3435,7 @@ void MarketModelTest::testPathwiseVegas()
                     MTBrownianGeneratorFactory generatorFactory2(seed_);
 
                     bool logNormal = true;
-                    boost::shared_ptr<MarketModel> marketModel =
+                    ext::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(logNormal, evolution, factors,
                         marketModels[j]);
 
@@ -3473,7 +3472,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasOuterAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver2)), // method relies heavily on LMM Euler
+                        PathwiseVegasOuterAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver2), // method relies heavily on LMM Euler
                             capsDeflated,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -3484,7 +3483,7 @@ void MarketModelTest::testPathwiseVegas()
 
                     {
 
-                        PathwiseVegasAccountingEngine accountingengine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)), // method relies heavily on LMM Euler
+                        PathwiseVegasAccountingEngine accountingengine(ext::make_shared<LogNormalFwdRateEuler>(evolver), // method relies heavily on LMM Euler
                             capsDeflated,
                             marketModel, // we need pseudo-roots and displacements
                             vegaBumps,
@@ -3536,7 +3535,7 @@ void MarketModelTest::testPathwiseVegas()
                     Matrix totalCovariance(marketModel->totalCovariance(marketModel->numberOfSteps()-1));
 
                     std::vector<Real> trueCapletPrices(numberRates);
-                    boost::shared_ptr<StrikedTypePayoff> dispayoff( new
+                    ext::shared_ptr<StrikedTypePayoff> dispayoff( new
                         PlainVanillaPayoff(Option::Call, capStrike+displacement));
 
                     for (Size r =0; r < trueCapletPrices.size(); ++r)
@@ -3642,14 +3641,14 @@ void MarketModelTest::testPathwiseMarketVegas()
     LMMCurveState cs(rateTimes);
     cs.setOnForwardRates(todaysForwards);
 
-    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
-    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+    std::vector<ext::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    std::vector<ext::shared_ptr<StrikedTypePayoff> >
         displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
-        payoffs[i] = boost::shared_ptr<Payoff>(new
+        payoffs[i] = ext::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, cs.coterminalSwapRate(i)));
 
-        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedPayoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, cs.coterminalSwapRate(i)+displacement));
 
     }
@@ -3750,7 +3749,7 @@ void MarketModelTest::testPathwiseMarketVegas()
 
             bool logNormal = true;
 
-            boost::shared_ptr<MarketModel> marketModel =
+            ext::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
@@ -3917,7 +3916,7 @@ void MarketModelTest::testPathwiseMarketVegas()
 
             bool logNormal = true;
 
-            boost::shared_ptr<MarketModel> marketModel =
+            ext::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
@@ -4010,7 +4009,7 @@ void MarketModelTest::testPathwiseMarketVegas()
 
             bool logNormal = true;
 
-            boost::shared_ptr<MarketModel> marketModel =
+            ext::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
@@ -4046,7 +4045,7 @@ void MarketModelTest::testPathwiseMarketVegas()
             {
 
                 PathwiseVegasAccountingEngine
-                    accountingEngine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)),
+                    accountingEngine(ext::make_shared<LogNormalFwdRateEuler>(evolver),
                     swaptionsDeflated,
                     marketModel,
                     theBumps,initialNumeraireValue);
@@ -4165,7 +4164,7 @@ void MarketModelTest::testPathwiseMarketVegas()
 
             bool logNormal = true;
 
-            boost::shared_ptr<MarketModel> marketModel =
+            ext::shared_ptr<MarketModel> marketModel =
                 makeMarketModel(logNormal, evolution, factors,
                 marketModels[j]);
 
@@ -4201,7 +4200,7 @@ void MarketModelTest::testPathwiseMarketVegas()
             {
 
                 PathwiseVegasAccountingEngine
-                    accountingEngine(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolver)),
+                    accountingEngine(ext::make_shared<LogNormalFwdRateEuler>(evolver),
                     capsDeflated,
                     marketModel,
                     theBumps,initialNumeraireValue);
@@ -4338,7 +4337,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
     const Size N = 10;
     const Real precision = 1e-04;
 
-    boost::shared_ptr<AbcdFunction> instVol(new AbcdFunction(a,b,c,d));
+    ext::shared_ptr<AbcdFunction> instVol(new AbcdFunction(a,b,c,d));
     SegmentIntegral SI(20000);
     for (Size i=0; i<N; i++) {
         Time T1 = 0.5*(1+i);     // expiry of forward 1: after T1 AbcdVol = 0
@@ -4401,9 +4400,9 @@ void MarketModelTest::testAbcdVolatilityCompare() {
     Size i1; // index of forward 1
     Size i2; // index of forward 2
 
-    boost::shared_ptr<LmVolatilityModel> lmAbcd(
+    ext::shared_ptr<LmVolatilityModel> lmAbcd(
         new LmExtLinearExponentialVolModel(rateTimes,b,c,d,a));
-    boost::shared_ptr<AbcdFunction> abcd(new AbcdFunction(a,b,c,d));
+    ext::shared_ptr<AbcdFunction> abcd(new AbcdFunction(a,b,c,d));
     for (i1=0; i1<rateTimes.size(); i1++ ) {
         for (i2=0; i2<rateTimes.size(); i2++ ) {
             Time T = 0.;
@@ -4485,15 +4484,15 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
     setup();
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
-    std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
-    /* std::vector<boost::shared_ptr<PlainVanillaPayoff> >
+    std::vector<ext::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
+    /* std::vector<ext::shared_ptr<PlainVanillaPayoff> >
        displacedPayoffs(todaysForwards.size()); */
     for (Size i=0; i<todaysForwards.size(); ++i)
     {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
-        optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
+        optionletPayoffs[i] = ext::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-        /* displacedPayoffs[i] = boost::shared_ptr<PlainVanillaPayoff>(new
+        /* displacedPayoffs[i] = ext::shared_ptr<PlainVanillaPayoff>(new
            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement)); */
     }
 
@@ -4527,7 +4526,7 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
     Real w2=0.5;
     Real cutPoint = 1.5;
 
-    boost::shared_ptr<MarketModelVolProcess> volProcess(new
+    ext::shared_ptr<MarketModelVolProcess> volProcess(new
                         SquareRootAndersen(meanLevel,
                              reversionSpeed,
                              volVar,
@@ -4552,7 +4551,7 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 bool logNormal = true;
-                boost::shared_ptr<MarketModel> marketModel =
+                ext::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
@@ -4560,7 +4559,7 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
                 {
                     MTBrownianGeneratorFactory generatorFactory(seed_);
 
-                    boost::shared_ptr<MarketModelEvolver> evolver(new SVDDFwdRatePc(marketModel,
+                    ext::shared_ptr<MarketModelEvolver> evolver(new SVDDFwdRatePc(marketModel,
                                           generatorFactory,
                                           volProcess,
                                           firstVolatilityFactor,
@@ -4579,7 +4578,7 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
                     if (printReport_)
                         BOOST_TEST_MESSAGE("    " << config.str());
 
-                    boost::shared_ptr<SequenceStatisticsInc> stats =
+                    ext::shared_ptr<SequenceStatisticsInc> stats =
                         simulate(evolver, product);
 
                     std::vector<Real> results = stats->mean();
@@ -4616,7 +4615,7 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
 
 
 
-                              boost::shared_ptr<StrikedTypePayoff> payoff(
+                              ext::shared_ptr<StrikedTypePayoff> payoff(
                                               new PlainVanillaPayoff(Option::Call, forwardStrikes[i]));
 
 
@@ -4702,7 +4701,7 @@ void MarketModelTest::testDriftCalculator() {
         ExponentialCorrelationAbcdVolatility};
     for (Size k=0; k<LENGTH(marketModels); ++k) {   // loop over market models
         bool logNormal = true;
-        boost::shared_ptr<MarketModel> marketModel =
+        ext::shared_ptr<MarketModel> marketModel =
             makeMarketModel(logNormal, evolution, factors, marketModels[k]);
         std::vector<Rate> displacements = marketModel->displacements();
         for (Size j=0; j<numberOfSteps; ++j) {     // loop over steps
@@ -4815,7 +4814,7 @@ void MarketModelTest::testCovariance() {
     std::vector<Real> vols(n-1,1.0);
 
     Matrix c = exponentialCorrelations(rateTimes,0.5,0.2,1.0,0.0);
-    boost::shared_ptr<PiecewiseConstantCorrelation> corr(
+    ext::shared_ptr<PiecewiseConstantCorrelation> corr(
                           new TimeHomogeneousForwardCorrelation(c,rateTimes));
 
     std::vector<std::string> modelNames;
@@ -4825,14 +4824,14 @@ void MarketModelTest::testCovariance() {
     for(Size k=0;k<modelNames.size();k++) {
         for(Size l=0;l<evolNames.size();l++) {
             EvolutionDescription evolution(rateTimes,evolTimes[l]);
-            boost::shared_ptr<MarketModel> model;
+            ext::shared_ptr<MarketModel> model;
             switch(k) {
               case 0:
-                model = boost::shared_ptr<MarketModel>(
+                model = ext::shared_ptr<MarketModel>(
                             new FlatVol(vols,corr,evolution,n-1,rates,displ));
                 break;
               case 1:
-                model = boost::shared_ptr<MarketModel>(
+                model = ext::shared_ptr<MarketModel>(
                                  new AbcdVol(1.0,0.0,1.0E-50,0.0,ks,
                                              corr,evolution,n-1,rates,displ));
                 break;
