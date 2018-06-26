@@ -71,38 +71,38 @@ void TwoAssetBarrierOptionTest::testHaugValues() {
     Calendar calendar = TARGET();
     Date today = Date::todaysDate();
     Date maturity = today + 180;
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
 
-    boost::shared_ptr<SimpleQuote> r(new SimpleQuote);
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
+    ext::shared_ptr<SimpleQuote> r(new SimpleQuote);
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
 
-    boost::shared_ptr<SimpleQuote> s1(new SimpleQuote);
-    boost::shared_ptr<SimpleQuote> q1(new SimpleQuote);
-    boost::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, q1, dc);
-    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote);
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
+    ext::shared_ptr<SimpleQuote> s1(new SimpleQuote);
+    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote);
+    ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, q1, dc);
+    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote);
+    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
-    boost::shared_ptr<BlackScholesMertonProcess> process1(
+    ext::shared_ptr<BlackScholesMertonProcess> process1(
         new BlackScholesMertonProcess(Handle<Quote>(s1),
                                       Handle<YieldTermStructure>(qTS1),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS1)));
 
-    boost::shared_ptr<SimpleQuote> s2(new SimpleQuote);
-    boost::shared_ptr<SimpleQuote> q2(new SimpleQuote);
-    boost::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, q2, dc);
-    boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote);
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
+    ext::shared_ptr<SimpleQuote> s2(new SimpleQuote);
+    ext::shared_ptr<SimpleQuote> q2(new SimpleQuote);
+    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, q2, dc);
+    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote);
+    ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
-    boost::shared_ptr<BlackScholesMertonProcess> process2(
+    ext::shared_ptr<BlackScholesMertonProcess> process2(
         new BlackScholesMertonProcess(Handle<Quote>(s2),
                                       Handle<YieldTermStructure>(qTS2),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-    boost::shared_ptr<SimpleQuote> rho(new SimpleQuote);
+    ext::shared_ptr<SimpleQuote> rho(new SimpleQuote);
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                        new AnalyticTwoAssetBarrierEngine(process1, process2,
                                                          Handle<Quote>(rho)));
 
@@ -120,7 +120,7 @@ void TwoAssetBarrierOptionTest::testHaugValues() {
 
         r->setValue(values[i].r);
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(
+        ext::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(values[i].type, values[i].strike));
 
         TwoAssetBarrierOption barrierOption(values[i].barrierType,

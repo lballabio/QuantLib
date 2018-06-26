@@ -57,7 +57,7 @@ namespace QuantLib {
     class CappedFlooredCoupon : public FloatingRateCoupon {
       public:
         CappedFlooredCoupon(
-                  const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                  const ext::shared_ptr<FloatingRateCoupon>& underlying,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>());
         //! \name Coupon interface
@@ -74,9 +74,9 @@ namespace QuantLib {
         //! effective floor of fixing
         Rate effectiveFloor() const;
         //@}
-        //! \name LazyObject interface
+        //! \name Observer interface
         //@{
-        void performCalculations() const;
+        void update();
         //@}
         //! \name Visitability
         //@{
@@ -86,16 +86,15 @@ namespace QuantLib {
         bool isFloored() const {return isFloored_;}
 
         void setPricer(
-                   const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
+                   const ext::shared_ptr<FloatingRateCouponPricer>& pricer);
 
-        const boost::shared_ptr<FloatingRateCoupon> underlying() { return underlying_; }
+        const ext::shared_ptr<FloatingRateCoupon> underlying() { return underlying_; }
 
     protected:
         // data
-        boost::shared_ptr<FloatingRateCoupon> underlying_;
+        ext::shared_ptr<FloatingRateCoupon> underlying_;
         bool isCapped_, isFloored_;
         Rate cap_, floor_;
-        mutable Real capletRate_, floorletRate_;
     };
 
     class CappedFlooredIborCoupon : public CappedFlooredCoupon {
@@ -106,7 +105,7 @@ namespace QuantLib {
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
-                  const boost::shared_ptr<IborIndex>& index,
+                  const ext::shared_ptr<IborIndex>& index,
                   Real gearing = 1.0,
                   Spread spread = 0.0,
                   Rate cap = Null<Rate>(),
@@ -115,7 +114,7 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false)
-        : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
+        : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
                        dayCounter, isInArrears)), cap, floor) {}
@@ -138,7 +137,7 @@ namespace QuantLib {
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
-                  const boost::shared_ptr<SwapIndex>& index,
+                  const ext::shared_ptr<SwapIndex>& index,
                   Real gearing = 1.0,
                   Spread spread= 0.0,
                   const Rate cap = Null<Rate>(),
@@ -147,7 +146,7 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false)
-        : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
+        : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears)), cap, floor) {}

@@ -57,7 +57,7 @@ namespace QuantLib {
           seniority_(NoSeniority) {}
 
     DefaultProbKey::DefaultProbKey(
-        const std::vector<boost::shared_ptr<DefaultType> >& eventTypes,
+        const std::vector<ext::shared_ptr<DefaultType> >& eventTypes,
                    const Currency cur,
                    Seniority sen)
         : eventTypes_(eventTypes),
@@ -77,18 +77,18 @@ namespace QuantLib {
         Period graceFailureToPay,
         Real amountFailure,
         Restructuring::Type resType)
-    : DefaultProbKey(std::vector<boost::shared_ptr<DefaultType> >(),
+    : DefaultProbKey(std::vector<ext::shared_ptr<DefaultType> >(),
                      currency, sen) {
-        eventTypes_.push_back( boost::shared_ptr<DefaultType>(
+        eventTypes_.push_back( ext::shared_ptr<DefaultType>(
             new FailureToPay(graceFailureToPay,
             amountFailure)));
         // no specifics for Bankruptcy
-        eventTypes_.push_back( boost::shared_ptr<DefaultType>(
-            new DefaultType(AtomicDefault::Bankruptcy,
-                            Restructuring::XR)));
+        eventTypes_.push_back( ext::make_shared<DefaultType>(
+            AtomicDefault::Bankruptcy,
+                            Restructuring::XR));
         if(resType != Restructuring::NoRestructuring)
-            eventTypes_.push_back( boost::shared_ptr<DefaultType>(
-                new DefaultType(AtomicDefault::Restructuring, resType)));
+            eventTypes_.push_back( ext::make_shared<DefaultType>(
+                AtomicDefault::Restructuring, resType));
     }
 
 }

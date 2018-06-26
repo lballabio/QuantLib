@@ -48,9 +48,9 @@ namespace QuantLib {
         FloatFloatSwap(
             const VanillaSwap::Type type, const Real nominal1,
             const Real nominal2, const Schedule &schedule1,
-            const boost::shared_ptr<InterestRateIndex> &index1,
+            const ext::shared_ptr<InterestRateIndex> &index1,
             const DayCounter &dayCount1, const Schedule &schedule2,
-            const boost::shared_ptr<InterestRateIndex> &index2,
+            const ext::shared_ptr<InterestRateIndex> &index2,
             const DayCounter &dayCount2,
             const bool intermediateCapitalExchange = false,
             const bool finalCapitalExchange = false, const Real gearing1 = 1.0,
@@ -66,9 +66,9 @@ namespace QuantLib {
         FloatFloatSwap(
             const VanillaSwap::Type type, const std::vector<Real> &nominal1,
             const std::vector<Real> &nominal2, const Schedule &schedule1,
-            const boost::shared_ptr<InterestRateIndex> &index1,
+            const ext::shared_ptr<InterestRateIndex> &index1,
             const DayCounter &dayCount1, const Schedule &schedule2,
-            const boost::shared_ptr<InterestRateIndex> &index2,
+            const ext::shared_ptr<InterestRateIndex> &index2,
             const DayCounter &dayCount2,
             const bool intermediateCapitalExchange = false,
             const bool finalCapitalExchange = false,
@@ -94,8 +94,8 @@ namespace QuantLib {
         const Schedule &schedule1() const;
         const Schedule &schedule2() const;
 
-        const boost::shared_ptr<InterestRateIndex> &index1() const;
-        const boost::shared_ptr<InterestRateIndex> &index2() const;
+        const ext::shared_ptr<InterestRateIndex> &index1() const;
+        const ext::shared_ptr<InterestRateIndex> &index2() const;
 
         const std::vector<Real> spread1() const;
         const std::vector<Real> spread2() const;
@@ -132,7 +132,7 @@ namespace QuantLib {
         VanillaSwap::Type type_;
         std::vector<Real> nominal1_, nominal2_;
         Schedule schedule1_, schedule2_;
-        boost::shared_ptr<InterestRateIndex> index1_, index2_;
+        ext::shared_ptr<InterestRateIndex> index1_, index2_;
         std::vector<Real> gearing1_, gearing2_, spread1_, spread2_;
         std::vector<Real> cappedRate1_, flooredRate1_, cappedRate2_,
             flooredRate2_;
@@ -159,7 +159,7 @@ namespace QuantLib {
         std::vector<Real> leg1Coupons, leg2Coupons;
         std::vector<Real> leg1AccrualTimes, leg2AccrualTimes;
 
-        boost::shared_ptr<InterestRateIndex> index1, index2;
+        ext::shared_ptr<InterestRateIndex> index1, index2;
 
         std::vector<bool> leg1IsRedemptionFlow, leg2IsRedemptionFlow;
 
@@ -196,12 +196,12 @@ namespace QuantLib {
         return schedule2_;
     }
 
-    inline const boost::shared_ptr<InterestRateIndex> &
+    inline const ext::shared_ptr<InterestRateIndex> &
     FloatFloatSwap::index1() const {
         return index1_;
     }
 
-    inline const boost::shared_ptr<InterestRateIndex> &
+    inline const ext::shared_ptr<InterestRateIndex> &
     FloatFloatSwap::index2() const {
         return index2_;
     }

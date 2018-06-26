@@ -23,8 +23,8 @@
 namespace QuantLib {
 
     QuantoVanillaOption::QuantoVanillaOption(
-                   const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                   const boost::shared_ptr<Exercise>& exercise)
+                   const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                   const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise) {}
 
     Real QuantoVanillaOption::qvega() const {

@@ -33,7 +33,7 @@ namespace QuantLib {
 
     FdmBlackScholesMesher::FdmBlackScholesMesher(
         Size size,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Time maturity, Real strike,
         Real xMinConstraint, Real xMaxConstraint,
         Real eps, Real scaleFactor,
@@ -98,17 +98,17 @@ namespace QuantLib {
             xMax = xMaxConstraint;
         }
 
-        boost::shared_ptr<Fdm1dMesher> helper;
+        ext::shared_ptr<Fdm1dMesher> helper;
         if (   cPoint.first != Null<Real>() 
             && std::log(cPoint.first) >=xMin && std::log(cPoint.first) <=xMax) {
             
-            helper = boost::shared_ptr<Fdm1dMesher>(
+            helper = ext::shared_ptr<Fdm1dMesher>(
                 new Concentrating1dMesher(xMin, xMax, size, 
                     std::pair<Real,Real>(std::log(cPoint.first),
                                          cPoint.second)));
         }
         else {
-            helper = boost::shared_ptr<Fdm1dMesher>(
+            helper = ext::shared_ptr<Fdm1dMesher>(
                                         new Uniform1dMesher(xMin, xMax, size));
             
         }
@@ -120,21 +120,21 @@ namespace QuantLib {
         }
     }
             
-    boost::shared_ptr<GeneralizedBlackScholesProcess> 
+    ext::shared_ptr<GeneralizedBlackScholesProcess> 
     FdmBlackScholesMesher::processHelper(const Handle<Quote>& s0,
                                          const Handle<YieldTermStructure>& rTS,
                                          const Handle<YieldTermStructure>& qTS,
                                          Volatility vol) {
         
-        return boost::shared_ptr<GeneralizedBlackScholesProcess>(
-            new GeneralizedBlackScholesProcess(
+        return ext::make_shared<GeneralizedBlackScholesProcess>(
+            
                 s0, qTS, rTS,
                 Handle<BlackVolTermStructure>(
-                    boost::shared_ptr<BlackVolTermStructure>(
+                    ext::shared_ptr<BlackVolTermStructure>(
                         new BlackConstantVol(rTS->referenceDate(),
                                              Calendar(),
                                              vol,
-                                             rTS->dayCounter())))));
+                                             rTS->dayCounter()))));
     }
 }
 

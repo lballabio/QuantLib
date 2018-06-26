@@ -30,6 +30,7 @@
 #include <ql/math/comparison.hpp>
 #include <ql/errors.hpp>
 #include <vector>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -56,7 +57,7 @@ namespace QuantLib {
             virtual Real derivative(Real) const = 0;
             virtual Real secondDerivative(Real) const = 0;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
       public:
         typedef Real argument_type;
         typedef Real result_type;

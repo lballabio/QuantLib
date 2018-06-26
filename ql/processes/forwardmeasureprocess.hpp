@@ -42,7 +42,7 @@ namespace QuantLib {
         ForwardMeasureProcess() {}
         explicit ForwardMeasureProcess(Time T) : T_(T) {}
         explicit ForwardMeasureProcess(
-                                   const boost::shared_ptr<discretization>&);
+                                   const ext::shared_ptr<discretization>&);
         Time T_;
     };
 
@@ -60,7 +60,7 @@ namespace QuantLib {
         ForwardMeasureProcess1D() {}
         explicit ForwardMeasureProcess1D(Time T) : T_(T) {}
         explicit ForwardMeasureProcess1D(
-                                    const boost::shared_ptr<discretization>&);
+                                    const ext::shared_ptr<discretization>&);
         Time T_;
     };
 

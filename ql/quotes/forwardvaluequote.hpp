@@ -34,7 +34,7 @@ namespace QuantLib {
     class ForwardValueQuote : public Quote,
                               public Observer {
       public:
-        ForwardValueQuote(const boost::shared_ptr<Index>& index,
+        ForwardValueQuote(const ext::shared_ptr<Index>& index,
                           const Date& fixingDate);
         //! \name Quote interface
         //@{
@@ -43,7 +43,7 @@ namespace QuantLib {
         //@}
         void update();
       private:
-        boost::shared_ptr<Index> index_;
+        ext::shared_ptr<Index> index_;
         Date fixingDate_;
     };
 

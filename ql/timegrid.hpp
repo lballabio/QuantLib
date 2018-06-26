@@ -28,6 +28,7 @@
 #include <ql/errors.hpp>
 #include <ql/math/comparison.hpp>
 #include <vector>
+#include <algorithm>
 #include <numeric>
 
 namespace QuantLib {
@@ -60,7 +61,7 @@ namespace QuantLib {
                        "negative times not allowed");
             std::vector<Time>::iterator e =
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            std::ptr_fun(close_enough));
+                            static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             if (mandatoryTimes_[0] > 0.0)
@@ -91,7 +92,7 @@ namespace QuantLib {
                        "negative times not allowed");
             std::vector<Time>::iterator e =
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            std::ptr_fun(close_enough));
+                            static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             Time last = mandatoryTimes_.back();

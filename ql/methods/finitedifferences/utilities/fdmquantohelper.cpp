@@ -29,9 +29,9 @@
 namespace QuantLib {
 
     FdmQuantoHelper::FdmQuantoHelper(
-        const boost::shared_ptr<YieldTermStructure> & rTS,
-        const boost::shared_ptr<YieldTermStructure> & fTS,
-        const boost::shared_ptr<BlackVolTermStructure> & fxVolTS,
+        const ext::shared_ptr<YieldTermStructure> & rTS,
+        const ext::shared_ptr<YieldTermStructure> & fTS,
+        const ext::shared_ptr<BlackVolTermStructure> & fxVolTS,
         Real equityFxCorrelation,
         Real exchRateATMlevel)
     : rTS_(rTS),

@@ -66,7 +66,7 @@ namespace QuantLib {
         const Volatility vol_;
         const boost::function<Real (Real)> b_;
         const Real intEps_;
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
+        const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
         const Discretization discretization_;
     };
 }

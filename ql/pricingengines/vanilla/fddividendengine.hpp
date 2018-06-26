@@ -39,7 +39,7 @@ namespace QuantLib {
     class FDDividendEngineBase : public FDMultiPeriodEngine<Scheme> {
       public:
         FDDividendEngineBase(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100,
              Size gridPoints = 100,
              bool timeDependent = false)
@@ -85,7 +85,7 @@ namespace QuantLib {
     class FDDividendEngineMerton73 : public FDDividendEngineBase<Scheme> {
       public:
         FDDividendEngineMerton73(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100,
              Size gridPoints = 100,
              bool timeDependent = false)
@@ -109,7 +109,7 @@ namespace QuantLib {
     class FDDividendEngineShiftScale : public FDDividendEngineBase<Scheme> {
       public:
         FDDividendEngineShiftScale(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100,
              Size gridPoints = 100,
              bool timeDependent = false)
@@ -126,7 +126,7 @@ namespace QuantLib {
     class FDDividendEngine : public FDDividendEngineMerton73<Scheme> {
       public:
         FDDividendEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100,
              Size gridPoints = 100,
              bool timeDependent = false)
@@ -143,7 +143,7 @@ namespace QuantLib {
         const DividendVanillaOption::arguments *args =
             dynamic_cast<const DividendVanillaOption::arguments *>(a);
         QL_REQUIRE(args, "incorrect argument type");
-        std::vector<boost::shared_ptr<Event> > events(args->cashFlow.size());
+        std::vector<ext::shared_ptr<Event> > events(args->cashFlow.size());
         std::copy(args->cashFlow.begin(), args->cashFlow.end(),
                   events.begin());
         FDMultiPeriodEngine<Scheme>::setupArguments(a, events);

@@ -35,7 +35,7 @@ namespace QuantLib {
                             const Date& startDate,
                             const Date& endDate,
                             Natural fixingDays,
-                            const boost::shared_ptr<InterestRateIndex>& index,
+                            const ext::shared_ptr<InterestRateIndex>& index,
                             Real gearing,
                             Spread spread,
                             const Date& refPeriodStart,
@@ -59,7 +59,7 @@ namespace QuantLib {
     }
 
     void FloatingRateCoupon::setPricer(
-                const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+                const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
         if (pricer_)
             unregisterWith(pricer_);
         pricer_ = pricer;
@@ -87,15 +87,10 @@ namespace QuantLib {
             -static_cast<Integer>(fixingDays_), Days, Preceding);
     }
 
-    void FloatingRateCoupon::performCalculations() const {
+    Rate FloatingRateCoupon::rate() const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
-        swapletRate_ = pricer_->swapletRate();
-    }
-
-    Rate FloatingRateCoupon::rate() const {
-        calculate();
-        return swapletRate_;
+        return pricer_->swapletRate();
     }
 
     Real FloatingRateCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {

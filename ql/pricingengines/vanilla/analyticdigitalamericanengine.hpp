@@ -55,13 +55,13 @@ namespace QuantLib {
     class AnalyticDigitalAmericanEngine : public VanillaOption::engine {
       public:
         AnalyticDigitalAmericanEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
         virtual void calculate() const;
         virtual bool knock_in() const {
            return true;
         }
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
     //! Analytic pricing engine for American Knock-out options with digital payoff
@@ -90,7 +90,7 @@ namespace QuantLib {
                               public AnalyticDigitalAmericanEngine {
       public:
         AnalyticDigitalAmericanKOEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess> 
+                    const ext::shared_ptr<GeneralizedBlackScholesProcess> 
                                  &engine):
         AnalyticDigitalAmericanEngine(engine) {}
         virtual bool knock_in() const {

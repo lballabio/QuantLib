@@ -27,22 +27,22 @@
 namespace QuantLib {
 
     AnalyticDigitalAmericanEngine::AnalyticDigitalAmericanEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
 
     void AnalyticDigitalAmericanEngine::calculate() const {
 
-        boost::shared_ptr<AmericanExercise> ex =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        ext::shared_ptr<AmericanExercise> ex =
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->dates()[0] <=
                    process_->blackVolatility()->referenceDate(),
                    "American option with window exercise not handled yet");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real spot = process_->stateVariable()->value();

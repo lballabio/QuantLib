@@ -46,7 +46,7 @@ namespace QuantLib {
                      helper has sole ownership of it.
         */
         BondHelper(const Handle<Quote>& price,
-                   const boost::shared_ptr<Bond>& bond,
+                   const ext::shared_ptr<Bond>& bond,
                    bool useCleanPrice = true);
         //! \name RateHelper interface
         //@{
@@ -55,7 +55,7 @@ namespace QuantLib {
         //@}
         //! \name Additional inspectors
         //@{
-        boost::shared_ptr<Bond> bond() const;
+        ext::shared_ptr<Bond> bond() const;
         bool useCleanPrice() const;
         //@}
         //! \name Visitability
@@ -63,7 +63,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&);
         //@}
       protected:
-        boost::shared_ptr<Bond> bond_;
+        ext::shared_ptr<Bond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         bool useCleanPrice_;        
     };
@@ -88,20 +88,20 @@ namespace QuantLib {
                             const bool useCleanPrice = true);
         //! \name Additional inspectors
         //@{
-        boost::shared_ptr<FixedRateBond> fixedRateBond() const;
+        ext::shared_ptr<FixedRateBond> fixedRateBond() const;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
         //@}
       protected:
-        boost::shared_ptr<FixedRateBond> fixedRateBond_;
+        ext::shared_ptr<FixedRateBond> fixedRateBond_;
     };
 
 
     // inline
 
-    inline boost::shared_ptr<Bond> BondHelper::bond() const {
+    inline ext::shared_ptr<Bond> BondHelper::bond() const {
         return bond_;
     }
 
@@ -109,7 +109,7 @@ namespace QuantLib {
         return useCleanPrice_;
     }
 
-    inline boost::shared_ptr<FixedRateBond>
+    inline ext::shared_ptr<FixedRateBond>
     FixedRateBondHelper::fixedRateBond() const {
         return fixedRateBond_;
     }
@@ -123,7 +123,7 @@ namespace QuantLib {
                             const bool growthOnly,
                             Real baseCPI,
                             const Period& observationLag,
-                            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                            const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
                             CPI::InterpolationType observationInterpolation,
                             const Schedule& schedule,
                             const std::vector<Rate>& fixedRate,
@@ -138,18 +138,18 @@ namespace QuantLib {
                             const bool useCleanPrice = true);
         //! \name Additional inspectors
         //@{
-        boost::shared_ptr<CPIBond> cpiBond() const;
+        ext::shared_ptr<CPIBond> cpiBond() const;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
         //@}
       protected:
-        boost::shared_ptr<CPIBond> cpiBond_;
+        ext::shared_ptr<CPIBond> cpiBond_;
     };
 
 
-    inline boost::shared_ptr<CPIBond>
+    inline ext::shared_ptr<CPIBond>
     CPIBondHelper::cpiBond() const {
         return cpiBond_;
     }

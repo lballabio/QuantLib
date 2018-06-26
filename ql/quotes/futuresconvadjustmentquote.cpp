@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(
-                               const boost::shared_ptr<IborIndex>& index,
+                               const ext::shared_ptr<IborIndex>& index,
                                const Date& futuresDate,
                                const Handle<Quote>& futuresQuote,
                                const Handle<Quote>& volatility,
@@ -41,7 +41,7 @@ namespace QuantLib {
     }
 
     FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(
-                               const boost::shared_ptr<IborIndex>& index,
+                               const ext::shared_ptr<IborIndex>& index,
                                const std::string& immCode,
                                const Handle<Quote>& futuresQuote,
                                const Handle<Quote>& volatility,

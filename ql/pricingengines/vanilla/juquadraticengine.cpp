@@ -35,7 +35,7 @@ namespace QuantLib {
 
 
     JuQuadraticApproximationEngine::JuQuadraticApproximationEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -45,14 +45,14 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        ext::shared_ptr<AmericanExercise> ex =
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "payoff at expiry not handled");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance = process_->blackVolatility()->blackVariance(

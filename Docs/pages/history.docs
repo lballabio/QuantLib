@@ -18,9 +18,69 @@
 
 /*! \page history Version history
 
+    <strong>Release 1.13 - May 2018</strong>
+
+    PORTABILITY
+    - In April 2018, Microsoft ended its support for Microsoft Visual
+      C++ 2008. This release still includes a solution file for VC++
+      2008, but we won't support it further or take bug reports for
+      it. The next release will only contain project files for Visual
+      C++ 2010 and later.
+    - Fixed build on Solaris 12.5 in C++11 mode (thanks to Nick Glass).
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Fix CDS calculation when the start date falls during the
+      week-end (thanks to Guillaume Horel).
+    - Allow construction of a `ForwardRateAgreement` instance even if
+      the interest-rate curve is not yet linked (thanks to Tom
+      Anderson).
+
+    CASH FLOWS AND INTEREST RATES
+    - Added Mosprime, Pribor, Robor and Wibor indices (thanks to
+      Matthias Lungwitz).
+    - Improved performance of Black pricer for LIBOR coupons (thanks
+      to Peter Caspers).
+    - Fixed experimental quanto coupon pricer (thanks to Peter
+      Caspers).
+    - Revised experimental CMS-spread coupon pricer (thanks to Peter
+      Caspers).
+
+    MODELS
+    - Improvements for the experimental generalized Hull-White model
+      (thanks to Roy Zywina).
+    - Fixed drift in GSR process (thanks to Peter Caspers for the fix
+      and to Seung Beom Bang for the heads up).
+    - Fixed an out-of-bound access in the
+      TwoFactorModel::ShortRateDynamics::process method (thanks to
+      Weston Steimel).
+
+    FINITE DIFFERENCES
+    - Improved Black-Scholes mesher for low volatilities and high
+      discrete dividends (thanks to Klaus Spanderen).
+    - Added method-of-lines scheme (thanks to Klaus Spanderen).
+
+    DATE/TIME
+    - Schedule::until can now be used with schedules built from
+      vectors of dates (thanks to GitHub user Grant6899).
+    - Added Good Friday to the list of Hungarian and Czech holidays
+      (thanks to Matthias Lungwitz).
+    - Updated the list of Turkish holidays after 2014 (thanks to
+      Matthias Lungwitz).
+
+    MATH
+    - Added convenience operators to initialize array and matrices
+      (thanks to Peter Caspers).
+
+    TEST SUITE
+    - Added test case for CIR++ model (thanks to Klaus Spanderen).
+
+    Thanks go also to Jose Aparicio, Roland Kapl and GitHub user
+    lab4quant for smaller fixes and enhancements.
+
+
     <strong>Release 1.12.1 - April 16th, 2018</strong>
 
-    QuantLib 1.12.1 is a bug-fix release for version 1.12.
+    %QuantLib 1.12.1 is a bug-fix release for version 1.12.
 
     It fixes an error that would occur during initialization of the
     test suite when using the newly released Boost 1.67.0.
@@ -35,9 +95,7 @@
       IDE was removed.
     - In April 2018, Microsoft will end its support for Microsoft
       Visual C++ 2008.  Therefore, this is the last version of
-      QuantLib to support it with maintained project files.  The next
-      release will only contain project files for Visual C++ 2010 and
-      later.
+      QuantLib to support it with maintained project files.
     - It is now possible to build a usable library with CMake on
       Windows (thanks to Javier G. Sogo).
     - Fix autotools build outside the source tree (thanks to Joshua

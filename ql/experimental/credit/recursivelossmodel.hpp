@@ -56,7 +56,7 @@ namespace QuantLib {
     class RecursiveLossModel : public DefaultLossModel {
     public:
         RecursiveLossModel(
-            const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
+            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
 // nope! use max common divisor. See O'Kane. Or give both options at least.
             Size nbuckets  = 1)
         : copula_(m), nBuckets_(nbuckets), wk_() { }
@@ -113,7 +113,7 @@ namespace QuantLib {
        Real percentile(const Date& d, Real percentile) const;
        Real expectedShortfall(const Date& d, Real perctl) const;
     protected:
-        const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
+        const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
     private:
         // loss model descriptor members
         const Size nBuckets_;

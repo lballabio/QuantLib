@@ -83,7 +83,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/make_shared.hpp>
 
 #include <numeric>
 
@@ -98,7 +97,7 @@ namespace {
             const std::vector<Real>& redemptions,
             const std::vector<Real>& triggerLevels,
             const std::vector<Time>& exerciseTimes,
-            const boost::shared_ptr<FdmMesher> & mesher)
+            const ext::shared_ptr<FdmMesher> & mesher)
         : redemptions_(redemptions), triggerLevels_(triggerLevels),
           exerciseTimes_(exerciseTimes), mesher_(mesher) {
         }
@@ -110,7 +109,7 @@ namespace {
             if (iter != exerciseTimes_.end()) {
                 Size index = std::distance(exerciseTimes_.begin(), iter);
 
-               boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+               ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
                 const FdmLinearOpIterator endIter = layout->end();
                 for (FdmLinearOpIterator iter = layout->begin();
                      iter != endIter; ++iter) {
@@ -127,7 +126,7 @@ namespace {
         const std::vector<Real> redemptions_;
         const std::vector<Real> triggerLevels_;
         const std::vector<Time> exerciseTimes_;
-        const boost::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmMesher> mesher_;
     };
 
     class ExpressPayoff : public Payoff {
@@ -228,7 +227,7 @@ void FdmLinearOpTest::testUniformGridMesher() {
     Size dims[] = {5,7,8};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>(-5, 10));
     boundaries.push_back(std::pair<Real, Real>( 5, 100));
@@ -258,14 +257,14 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
     Size dims[] = {400, 100, 50};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>(-5, 5));
     boundaries.push_back(std::pair<Real, Real>( 0, 10));
     boundaries.push_back(std::pair<Real, Real>( 5, 15));
 
-    boost::shared_ptr<FdmMesher> mesher(
+    ext::shared_ptr<FdmMesher> mesher(
                                  new UniformGridMesher(index, boundaries));
 
     FirstDerivativeOp map(2, mesher);
@@ -319,14 +318,14 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
     Size dims[] = {50, 50, 50};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
     boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
     boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
 
-    boost::shared_ptr<FdmMesher> mesher(
+    ext::shared_ptr<FdmMesher> mesher(
                             new UniformGridMesher(index, boundaries));
 
     Array r(mesher->layout()->size());
@@ -403,17 +402,17 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
 #ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing finite differences coefficients...");
 
-    const boost::shared_ptr<Fdm1dMesher> mesherX(
+    const ext::shared_ptr<Fdm1dMesher> mesherX(
         new Concentrating1dMesher(-2.0, 3.0, 50, std::make_pair(0.5, 0.01)));
-    const boost::shared_ptr<Fdm1dMesher> mesherY(
+    const ext::shared_ptr<Fdm1dMesher> mesherY(
         new Concentrating1dMesher(0.5, 5.0, 25, std::make_pair(0.5, 0.1)));
-    const boost::shared_ptr<Fdm1dMesher> mesherZ(
+    const ext::shared_ptr<Fdm1dMesher> mesherZ(
         new Concentrating1dMesher(-1.0, 2.0, 31, std::make_pair(1.5, 0.01)));
 
-    const boost::shared_ptr<FdmMesher> meshers(
+    const ext::shared_ptr<FdmMesher> meshers(
         new FdmMesherComposite(mesherX, mesherY, mesherZ));
 
-    const boost::shared_ptr<FdmLinearOpLayout> layout = meshers->layout();
+    const ext::shared_ptr<FdmLinearOpLayout> layout = meshers->layout();
     const FdmLinearOpIterator endIter = layout->end();
 
     const Real tol = 1e-13;
@@ -585,14 +584,14 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
     Size dims[] = {50, 50, 50};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
     boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
     boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
 
-    boost::shared_ptr<FdmMesher> mesher(
+    ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
 
     Array r(mesher->layout()->size());
@@ -684,13 +683,13 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
     Size dims[] = {100, 400};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>( 0, 1.0));
     boundaries.push_back(std::pair<Real, Real>( 0, 1.0));
 
-    boost::shared_ptr<FdmMesher> mesher(
+    ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(layout, boundaries));
 
     FirstDerivativeOp dy(1, mesher);
@@ -769,27 +768,27 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     Size dims[] = {200, 100};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>( 3.8, 4.905274778));
     boundaries.push_back(std::pair<Real, Real>( 0.000, 1.0));
 
-    boost::shared_ptr<FdmMesher> mesher(
+    ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
 
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
 
-    boost::shared_ptr<HestonProcess> hestonProcess(
+    ext::shared_ptr<HestonProcess> hestonProcess(
         new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8));
 
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(28, March, 2005);
 
-    boost::shared_ptr<FdmLinearOpComposite> hestonOp(
+    ext::shared_ptr<FdmLinearOpComposite> hestonOp(
                                    new FdmHestonOp(mesher, hestonProcess));
 
     Array rhs(mesher->layout()->size());
@@ -800,9 +799,9 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     }
 
     FdmBoundaryConditionSet bcSet;
-    bcSet.push_back(boost::shared_ptr<FdmDirichletBoundary>(
-        new FdmDirichletBoundary(mesher, 0.0, 0,
-                                 FdmDirichletBoundary::Upper)));
+    bcSet.push_back(ext::make_shared<FdmDirichletBoundary>(
+        mesher, 0.0, 0,
+                                 FdmDirichletBoundary::Upper));
 
     const Real theta=0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, hestonOp, bcSet);
@@ -863,30 +862,30 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
     Size dims[] = {200, 100};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>( 3.8, std::log(220.0)));
     boundaries.push_back(std::pair<Real, Real>( 0.000, 1.0));
 
-    boost::shared_ptr<FdmMesher> mesher(
+    ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
 
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
 
-    boost::shared_ptr<HestonProcess> hestonProcess(
+    ext::shared_ptr<HestonProcess> hestonProcess(
         new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8));
 
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(28, March, 2005);
 
-    boost::shared_ptr<FdmLinearOpComposite> LinearOp(
+    ext::shared_ptr<FdmLinearOpComposite> LinearOp(
         new FdmHestonOp(mesher, hestonProcess));
 
-    boost::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Put, 100.0));
+    ext::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Put, 100.0));
     Array rhs(mesher->layout()->size());
     const FdmLinearOpIterator endIter = mesher->layout()->end();
     for (FdmLinearOpIterator iter = mesher->layout()->begin();
@@ -896,7 +895,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
     }
 
     FdmAmericanStepCondition condition(mesher,
-        boost::shared_ptr<FdmInnerValueCalculator>(
+        ext::shared_ptr<FdmInnerValueCalculator>(
                                      new FdmLogInnerValue(payoff, mesher, 0)));
     const Real theta=0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, LinearOp);
@@ -942,22 +941,22 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     Size dims[] = {200, 100};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
     boundaries.push_back(std::pair<Real, Real>(3.8, std::log(220.0)));
     boundaries.push_back(std::pair<Real, Real>(0.000, 1.0));
 
-    boost::shared_ptr<FdmMesher> mesher(
+    ext::shared_ptr<FdmMesher> mesher(
                             new UniformGridMesher(index, boundaries));
 
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
 
-    Handle<HestonProcess> hestonProcess(boost::shared_ptr<HestonProcess> (
-        new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8)));
+    Handle<HestonProcess> hestonProcess(ext::make_shared<HestonProcess> (
+        rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8));
 
     const Date exerciseDate(28, March, 2005);
     const Date evaluationDate(28, March, 2004);
@@ -970,14 +969,14 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     std::vector<Time> exerciseTimes(2);
     exerciseTimes[0] = 0.333; exerciseTimes[1] = 0.666;
 
-    DividendSchedule dividendSchedule(1, boost::shared_ptr<Dividend>(
+    DividendSchedule dividendSchedule(1, ext::shared_ptr<Dividend>(
         new FixedDividend(2.5, evaluationDate + Period(6, Months))));
-    boost::shared_ptr<FdmDividendHandler> dividendCondition(
+    ext::shared_ptr<FdmDividendHandler> dividendCondition(
         new FdmDividendHandler(dividendSchedule, mesher,
                                rTS->referenceDate(),
                                rTS->dayCounter(), 0));
 
-    boost::shared_ptr<StepCondition<Array> > expressCondition(
+    ext::shared_ptr<StepCondition<Array> > expressCondition(
         new FdmHestonExpressCondition(redemptions, triggerLevels,
                                       exerciseTimes, mesher));
 
@@ -985,16 +984,16 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     stoppingTimes.push_back(exerciseTimes);
     stoppingTimes.push_back(dividendCondition->dividendTimes());
 
-    std::list<boost::shared_ptr<StepCondition<Array> > > conditions;
+    std::list<ext::shared_ptr<StepCondition<Array> > > conditions;
     conditions.push_back(expressCondition);
     conditions.push_back(dividendCondition);
 
-    boost::shared_ptr<FdmStepConditionComposite> condition(
+    ext::shared_ptr<FdmStepConditionComposite> condition(
         new FdmStepConditionComposite(stoppingTimes, conditions));
 
-    boost::shared_ptr<Payoff> payoff(new ExpressPayoff());
+    ext::shared_ptr<Payoff> payoff(new ExpressPayoff());
 
-    boost::shared_ptr<FdmInnerValueCalculator> calculator(
+    ext::shared_ptr<FdmInnerValueCalculator> calculator(
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
     const FdmBoundaryConditionSet bcSet;
@@ -1031,12 +1030,12 @@ void FdmLinearOpTest::testFdmHestonExpress() {
 
 namespace {
 
-    boost::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(
+    ext::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(
         Time maturity) {
 
         DayCounter dc = Actual365Fixed();
         const Date today = Settings::instance().evaluationDate();
-        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
         std::vector<Date> dates;
         std::vector<Rate> rates, divRates;
@@ -1048,61 +1047,61 @@ namespace {
         }
 
         const Handle<YieldTermStructure> rTS(
-           boost::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
+           ext::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
         const Handle<YieldTermStructure> qTS(
-           boost::shared_ptr<YieldTermStructure>(
+           ext::shared_ptr<YieldTermStructure>(
                                               new ZeroCurve(dates, divRates, dc)));
 
         const Real v0 = 0.04;
-        boost::shared_ptr<HestonProcess> hestonProcess(
+        ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, s0, v0, 1.0, v0*0.75, 0.4, -0.7));
 
-        boost::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
+        ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
                             new HullWhiteForwardProcess(rTS, 0.00883, 0.01));
         hwFwdProcess->setForwardMeasureTime(maturity);
 
         const Real equityShortRateCorr = -0.7;
 
-        return boost::shared_ptr<HybridHestonHullWhiteProcess>(
-                new HybridHestonHullWhiteProcess(hestonProcess, hwFwdProcess,
-                                                 equityShortRateCorr));
+        return ext::make_shared<HybridHestonHullWhiteProcess>(
+                hestonProcess, hwFwdProcess,
+                                                 equityShortRateCorr);
     }
 
     FdmSolverDesc createSolverDesc(
         const std::vector<Size>& dim,
-        const boost::shared_ptr<HybridHestonHullWhiteProcess>& process) {
+        const ext::shared_ptr<HybridHestonHullWhiteProcess>& process) {
 
         const Time maturity
                     = process->hullWhiteProcess()->getForwardMeasureTime();
 
-        boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+        ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
-        std::vector<boost::shared_ptr<Fdm1dMesher> > mesher1d;
-        mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
+        std::vector<ext::shared_ptr<Fdm1dMesher> > mesher1d;
+        mesher1d.push_back(ext::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(std::log(22.0), std::log(440.0), dim[0])));
-        mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
+        mesher1d.push_back(ext::shared_ptr<Fdm1dMesher>(
                 new FdmHestonVarianceMesher(dim[1], process->hestonProcess(),
                                             maturity)));
-        mesher1d.push_back(boost::shared_ptr<Fdm1dMesher>(
+        mesher1d.push_back(ext::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(-0.15, 0.15, dim[2])));
 
-        const boost::shared_ptr<FdmMesher> mesher(
+        const ext::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(mesher1d));
 
         const FdmBoundaryConditionSet boundaries;
 
         std::list<std::vector<Time> > stoppingTimes;
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
 
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
+        ext::shared_ptr<FdmStepConditionComposite> conditions(
             new FdmStepConditionComposite(
                                      std::list<std::vector<Time> >(),
                                      FdmStepConditionComposite::Conditions()));
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(
+        ext::shared_ptr<StrikedTypePayoff> payoff(
                                   new PlainVanillaPayoff(Option::Call, 160.0));
 
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        ext::shared_ptr<FdmInnerValueCalculator> calculator(
                                        new FdmLogInnerValue(payoff, mesher, 0));
 
         const Size tGrid = 100;
@@ -1130,19 +1129,19 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     Size dims[] = {51, 31, 31};
     const std::vector<Size> dim(dims, dims+LENGTH(dims));
 
-    boost::shared_ptr<HybridHestonHullWhiteProcess> jointProcess
+    ext::shared_ptr<HybridHestonHullWhiteProcess> jointProcess
                                             = createHestonHullWhite(maturity);
     FdmSolverDesc desc = createSolverDesc(dim, jointProcess);
-    boost::shared_ptr<FdmMesher> mesher = desc.mesher;
+    ext::shared_ptr<FdmMesher> mesher = desc.mesher;
 
-    boost::shared_ptr<HullWhiteForwardProcess> hwFwdProcess
+    ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess
                                             = jointProcess->hullWhiteProcess();
 
-    boost::shared_ptr<HullWhiteProcess> hwProcess(
+    ext::shared_ptr<HullWhiteProcess> hwProcess(
         new HullWhiteProcess(jointProcess->hestonProcess()->riskFreeRate(),
                              hwFwdProcess->a(), hwFwdProcess->sigma()));
 
-    boost::shared_ptr<FdmLinearOpComposite> linearOp(
+    ext::shared_ptr<FdmLinearOpComposite> linearOp(
         new FdmHestonHullWhiteOp(mesher,
                                  jointProcess->hestonProcess(),
                                  hwProcess,
@@ -1215,9 +1214,9 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     }
 
     VanillaOption option(
-            boost::shared_ptr<StrikedTypePayoff>(
+            ext::shared_ptr<StrikedTypePayoff>(
                                 new PlainVanillaPayoff(Option::Call, 160.0)),
-            boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)));
+            ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)));
 
     const Real tol = 0.025;
     option.setPricingEngine(
@@ -1389,24 +1388,24 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, 0.06, dc);
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.06, dc);
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, 0.35, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, 0.06, dc);
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.06, dc);
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, 0.35, dc);
 
-    boost::shared_ptr<StrikedTypePayoff> payoff(
+    ext::shared_ptr<StrikedTypePayoff> payoff(
                              new CashOrNothingPayoff(Option::Put, 100, 10.0));
 
     Time maturity = 0.75;
     Date exDate = today + Integer(maturity*360+0.5);
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-    boost::shared_ptr<BlackScholesMertonProcess> process(new
+    ext::shared_ptr<BlackScholesMertonProcess> process(new
         BlackScholesMertonProcess(Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS)));
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                 new AnalyticEuropeanEngine(process));
 
     VanillaOption opt(payoff, exercise);
@@ -1418,20 +1417,20 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     const Size csSteps = 25, dampingSteps = 3, xGrid = 400;
     const std::vector<Size> dim(1, xGrid);
 
-    boost::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
-    const boost::shared_ptr<Fdm1dMesher> equityMesher(
+    ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+    const ext::shared_ptr<Fdm1dMesher> equityMesher(
         new FdmBlackScholesMesher(
                 dim[0], process, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.01)));
 
-    const boost::shared_ptr<FdmMesher> mesher (
+    const ext::shared_ptr<FdmMesher> mesher (
         new FdmMesherComposite(equityMesher));
 
-    boost::shared_ptr<FdmBlackScholesOp> map(
+    ext::shared_ptr<FdmBlackScholesOp> map(
                      new FdmBlackScholesOp(mesher, process, payoff->strike()));
 
-    boost::shared_ptr<FdmInnerValueCalculator> calculator(
+    ext::shared_ptr<FdmInnerValueCalculator> calculator(
                                   new FdmLogInnerValue(payoff, mesher, 0));
 
     Array rhs(layout->size()), x(layout->size());
@@ -1444,7 +1443,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     }
 
     FdmBackwardSolver solver(map, FdmBoundaryConditionSet(), 
-                             boost::shared_ptr<FdmStepConditionComposite>(),
+                             ext::shared_ptr<FdmStepConditionComposite>(),
                              FdmSchemeDesc::Douglas());
     solver.rollback(rhs, maturity, 0.0, csSteps, dampingSteps);
 
@@ -1555,16 +1554,16 @@ void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
 void FdmLinearOpTest::testFdmMesherIntegral() {
     BOOST_TEST_MESSAGE("Testing integrals over meshers functions...");
 
-    const boost::shared_ptr<FdmMesherComposite> mesher(
+    const ext::shared_ptr<FdmMesherComposite> mesher(
         new FdmMesherComposite(
-            boost::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
+            ext::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
                 -1, 1.6, 21, std::pair<Real, Real>(0, 0.1))),
-            boost::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
+            ext::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
                 -3, 4, 11, std::pair<Real, Real>(1, 0.01))),
-            boost::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
+            ext::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
                 -2, 1, 5, std::pair<Real, Real>(0.5, 0.1)))));
 
-    const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+    const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
     Array f(mesher->layout()->size());
     for (FdmLinearOpIterator iter = layout->begin();
@@ -1621,9 +1620,9 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
     const Rate q = 0.02;
     const Volatility v = 0.25;
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-        boost::make_shared<GeneralizedBlackScholesProcess>(
-            Handle<Quote>(boost::make_shared<SimpleQuote>(spot)),
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+        ext::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
             Handle<YieldTermStructure>(flatRate(today, q, dc)),
             Handle<YieldTermStructure>(flatRate(today, r, dc)),
             Handle<BlackVolTermStructure>(flatVol(today, v, dc)));
@@ -1681,13 +1680,13 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(28, January, 2018);
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(100.0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
     const Handle<YieldTermStructure> qTS(flatRate(today, 0.07, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.16, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.0, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, volTS);
 
     const Date firstDivDate = today + Period(7, Months);
@@ -1697,9 +1696,9 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
 
     DividendSchedule divSchedule;
     divSchedule.push_back(
-        boost::make_shared<FixedDividend>(firstDivAmount, firstDivDate));
+        ext::make_shared<FixedDividend>(firstDivAmount, firstDivDate));
     divSchedule.push_back(
-        boost::make_shared<FixedDividend>(secondDivAmount, secondDivDate));
+        ext::make_shared<FixedDividend>(secondDivAmount, secondDivDate));
 
     const Size size = 5;
     const Time maturity = 1.0;

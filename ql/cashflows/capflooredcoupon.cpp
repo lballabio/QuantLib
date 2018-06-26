@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     CappedFlooredCoupon::CappedFlooredCoupon(
-                  const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                  const ext::shared_ptr<FloatingRateCoupon>& underlying,
                   Rate cap, Rate floor)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
@@ -72,26 +72,21 @@ namespace QuantLib {
     }
 
     void CappedFlooredCoupon::setPricer(
-                 const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
         FloatingRateCoupon::setPricer(pricer);
         underlying_->setPricer(pricer);
-    }
-
-    void CappedFlooredCoupon::performCalculations() const {
-        QL_REQUIRE(underlying_->pricer(), "pricer not set");
-        floorletRate_ = 0.;
-        if(isFloored_)
-            floorletRate_ = underlying_->pricer()->floorletRate(effectiveFloor());
-        capletRate_ = 0.;
-        if(isCapped_)
-            capletRate_ = underlying_->pricer()->capletRate(effectiveCap());
     }
 
     Rate CappedFlooredCoupon::rate() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
         Rate swapletRate = underlying_->rate();
-        calculate();
-        return swapletRate + floorletRate_ - capletRate_;
+        Rate floorletRate = 0.;
+        if(isFloored_)
+            floorletRate = underlying_->pricer()->floorletRate(effectiveFloor());
+        Rate capletRate = 0.;
+        if(isCapped_)
+            capletRate = underlying_->pricer()->capletRate(effectiveCap());
+        return swapletRate + floorletRate - capletRate;
     }
 
     Rate CappedFlooredCoupon::convexityAdjustment() const {
@@ -126,6 +121,10 @@ namespace QuantLib {
             return (floor_ - spread())/gearing();
         else
             return Null<Rate>();
+    }
+
+    void CappedFlooredCoupon::update() {
+        notifyObservers();
     }
 
     void CappedFlooredCoupon::accept(AcyclicVisitor& v) {

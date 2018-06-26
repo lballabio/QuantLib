@@ -35,9 +35,9 @@ namespace QuantLib {
     FloatFloatSwap::FloatFloatSwap(
         const VanillaSwap::Type type, const Real nominal1, const Real nominal2,
         const Schedule &schedule1,
-        const boost::shared_ptr<InterestRateIndex> &index1,
+        const ext::shared_ptr<InterestRateIndex> &index1,
         const DayCounter &dayCount1, const Schedule &schedule2,
-        const boost::shared_ptr<InterestRateIndex> &index2,
+        const ext::shared_ptr<InterestRateIndex> &index2,
         const DayCounter &dayCount2, const bool intermediateCapitalExchange,
         const bool finalCapitalExchange, const Real gearing1,
         const Real spread1, const Real cappedRate1, const Real flooredRate1,
@@ -68,9 +68,9 @@ namespace QuantLib {
     FloatFloatSwap::FloatFloatSwap(
         const VanillaSwap::Type type, const std::vector<Real> &nominal1,
         const std::vector<Real> &nominal2, const Schedule &schedule1,
-        const boost::shared_ptr<InterestRateIndex> &index1,
+        const ext::shared_ptr<InterestRateIndex> &index1,
         const DayCounter &dayCount1, const Schedule &schedule2,
-        const boost::shared_ptr<InterestRateIndex> &index2,
+        const ext::shared_ptr<InterestRateIndex> &index2,
         const DayCounter &dayCount2, const bool intermediateCapitalExchange,
         const bool finalCapitalExchange, const std::vector<Real> &gearing1,
         const std::vector<Real> &spread1, const std::vector<Real> &cappedRate1,
@@ -223,18 +223,18 @@ namespace QuantLib {
             if (close(gearing2_[i], 0.0))
                 gearing2_[i] = QL_EPSILON;
 
-        boost::shared_ptr<IborIndex> ibor1 =
-            boost::dynamic_pointer_cast<IborIndex>(index1_);
-        boost::shared_ptr<IborIndex> ibor2 =
-            boost::dynamic_pointer_cast<IborIndex>(index2_);
-        boost::shared_ptr<SwapIndex> cms1 =
-            boost::dynamic_pointer_cast<SwapIndex>(index1_);
-        boost::shared_ptr<SwapIndex> cms2 =
-            boost::dynamic_pointer_cast<SwapIndex>(index2_);
-        boost::shared_ptr<SwapSpreadIndex> cmsspread1 =
-            boost::dynamic_pointer_cast<SwapSpreadIndex>(index1_);
-        boost::shared_ptr<SwapSpreadIndex> cmsspread2 =
-            boost::dynamic_pointer_cast<SwapSpreadIndex>(index2_);
+        ext::shared_ptr<IborIndex> ibor1 =
+            ext::dynamic_pointer_cast<IborIndex>(index1_);
+        ext::shared_ptr<IborIndex> ibor2 =
+            ext::dynamic_pointer_cast<IborIndex>(index2_);
+        ext::shared_ptr<SwapIndex> cms1 =
+            ext::dynamic_pointer_cast<SwapIndex>(index1_);
+        ext::shared_ptr<SwapIndex> cms2 =
+            ext::dynamic_pointer_cast<SwapIndex>(index2_);
+        ext::shared_ptr<SwapSpreadIndex> cmsspread1 =
+            ext::dynamic_pointer_cast<SwapSpreadIndex>(index1_);
+        ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
+            ext::dynamic_pointer_cast<SwapSpreadIndex>(index2_);
 
         QL_REQUIRE(ibor1 != NULL || cms1 != NULL || cmsspread1 != NULL,
                    "index1 must be ibor or cms or cms spread");
@@ -329,11 +329,11 @@ namespace QuantLib {
             for (Size i = 0; i < legs_[0].size() - 1; i++) {
                 Real cap = nominal1_[i] - nominal1_[i + 1];
                 if (!close(cap, 0.0)) {
-                    std::vector<boost::shared_ptr<CashFlow> >::iterator it1 =
+                    std::vector<ext::shared_ptr<CashFlow> >::iterator it1 =
                         legs_[0].begin();
                     std::advance(it1, i + 1);
                     legs_[0].insert(
-                        it1, boost::shared_ptr<CashFlow>(
+                        it1, ext::shared_ptr<CashFlow>(
                                  new Redemption(cap, legs_[0][i]->date())));
                     std::vector<Real>::iterator it2 = nominal1_.begin();
                     std::advance(it2, i + 1);
@@ -344,11 +344,11 @@ namespace QuantLib {
             for (Size i = 0; i < legs_[1].size() - 1; i++) {
                 Real cap = nominal2_[i] - nominal2_[i + 1];
                 if (!close(cap, 0.0)) {
-                    std::vector<boost::shared_ptr<CashFlow> >::iterator it1 =
+                    std::vector<ext::shared_ptr<CashFlow> >::iterator it1 =
                         legs_[1].begin();
                     std::advance(it1, i + 1);
                     legs_[1].insert(
-                        it1, boost::shared_ptr<CashFlow>(
+                        it1, ext::shared_ptr<CashFlow>(
                                  new Redemption(cap, legs_[1][i]->date())));
                     std::vector<Real>::iterator it2 = nominal2_.begin();
                     std::advance(it2, i + 1);
@@ -359,10 +359,10 @@ namespace QuantLib {
         }
 
         if (finalCapitalExchange_) {
-            legs_[0].push_back(boost::shared_ptr<CashFlow>(
+            legs_[0].push_back(ext::shared_ptr<CashFlow>(
                 new Redemption(nominal1_.back(), legs_[0].back()->date())));
             nominal1_.push_back(nominal1_.back());
-            legs_[1].push_back(boost::shared_ptr<CashFlow>(
+            legs_[1].push_back(ext::shared_ptr<CashFlow>(
                 new Redemption(nominal2_.back(), legs_[1].back()->date())));
             nominal2_.push_back(nominal2_.back());
         }
@@ -432,8 +432,8 @@ namespace QuantLib {
             std::vector<Real>(leg2Coupons.size(), Null<Real>());
 
         for (Size i = 0; i < leg1Coupons.size(); ++i) {
-            boost::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(leg1Coupons[i]);
+            ext::shared_ptr<FloatingRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(leg1Coupons[i]);
             if (coupon) {
                 arguments->leg1AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg1PayDates[i] = coupon->date();
@@ -447,16 +447,16 @@ namespace QuantLib {
                 catch (Error &) {
                     arguments->leg1Coupons[i] = Null<Real>();
                 }
-                boost::shared_ptr<CappedFlooredCoupon> cfcoupon =
-                    boost::dynamic_pointer_cast<CappedFlooredCoupon>(
+                ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
+                    ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg1Coupons[i]);
                 if (cfcoupon) {
                     arguments->leg1CappedRates[i] = cfcoupon->cap();
                     arguments->leg1FlooredRates[i] = cfcoupon->floor();
                 }
             } else {
-                boost::shared_ptr<CashFlow> cashflow =
-                    boost::dynamic_pointer_cast<CashFlow>(leg1Coupons[i]);
+                ext::shared_ptr<CashFlow> cashflow =
+                    ext::dynamic_pointer_cast<CashFlow>(leg1Coupons[i]);
                 std::vector<Date>::const_iterator j =
                     std::find(arguments->leg1PayDates.begin(),
                               arguments->leg1PayDates.end(), cashflow->date());
@@ -478,8 +478,8 @@ namespace QuantLib {
         }
 
         for (Size i = 0; i < leg2Coupons.size(); ++i) {
-            boost::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(leg2Coupons[i]);
+            ext::shared_ptr<FloatingRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(leg2Coupons[i]);
             if (coupon) {
                 arguments->leg2AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg2PayDates[i] = coupon->date();
@@ -493,16 +493,16 @@ namespace QuantLib {
                 catch (Error &) {
                     arguments->leg2Coupons[i] = Null<Real>();
                 }
-                boost::shared_ptr<CappedFlooredCoupon> cfcoupon =
-                    boost::dynamic_pointer_cast<CappedFlooredCoupon>(
+                ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
+                    ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg2Coupons[i]);
                 if (cfcoupon) {
                     arguments->leg2CappedRates[i] = cfcoupon->cap();
                     arguments->leg2FlooredRates[i] = cfcoupon->floor();
                 }
             } else {
-                boost::shared_ptr<CashFlow> cashflow =
-                    boost::dynamic_pointer_cast<CashFlow>(leg2Coupons[i]);
+                ext::shared_ptr<CashFlow> cashflow =
+                    ext::dynamic_pointer_cast<CashFlow>(leg2Coupons[i]);
                 std::vector<Date>::const_iterator j =
                     std::find(arguments->leg2PayDates.begin(),
                               arguments->leg2PayDates.end(), cashflow->date());

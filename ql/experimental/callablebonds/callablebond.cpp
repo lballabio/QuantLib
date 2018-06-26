@@ -72,7 +72,7 @@ namespace QuantLib {
                               Real targetValue)
     : targetValue_(targetValue) {
 
-        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+        vol_ = ext::make_shared<SimpleQuote>(0.0);
         bond.blackVolQuote_.linkTo(vol_);
 
         QL_REQUIRE(bond.blackEngine_,
@@ -393,9 +393,9 @@ namespace QuantLib {
         }
 
         // used for impliedVolatility() calculation
-        boost::shared_ptr<SimpleQuote> dummyVolQuote(new SimpleQuote(0.));
+        ext::shared_ptr<SimpleQuote> dummyVolQuote(new SimpleQuote(0.));
         blackVolQuote_.linkTo(dummyVolQuote);
-        blackEngine_ = boost::shared_ptr<PricingEngine>(
+        blackEngine_ = ext::shared_ptr<PricingEngine>(
                    new BlackCallableFixedRateBondEngine(blackVolQuote_,
                                                         blackDiscountCurve_));
     }
@@ -409,8 +409,8 @@ namespace QuantLib {
         for (Size i = 0; i<cashflows_.size(); ++i) {
             // the first coupon paying after d is the one we're after
             if (!cashflows_[i]->hasOccurred(settlement,IncludeToday)) {
-                boost::shared_ptr<Coupon> coupon =
-                    boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
+                ext::shared_ptr<Coupon> coupon =
+                    ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
                 if (coupon)
                     // !!!
                     return coupon->accruedAmount(settlement) /

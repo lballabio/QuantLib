@@ -12,7 +12,6 @@ ConvertibleBonds_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    ConvertibleBonds_vc9.vcproj \
     ConvertibleBonds.vcxproj \
     ConvertibleBonds.vcxproj.filters \
     ReadMe.txt

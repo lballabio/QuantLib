@@ -24,14 +24,11 @@
 
 #include <ql/instruments/bond.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/coupon.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
-
-using boost::shared_ptr;
-using boost::dynamic_pointer_cast;
 
 namespace QuantLib {
 
@@ -44,7 +41,7 @@ namespace QuantLib {
 
         if (!coupons.empty()) {
             std::sort(cashflows_.begin(), cashflows_.end(),
-                      earlier_than<shared_ptr<CashFlow> >());
+                      earlier_than<ext::shared_ptr<CashFlow> >());
 
             if (issueDate_ != Date()) {
                 QL_REQUIRE(issueDate_<cashflows_[0]->date(),
@@ -77,7 +74,7 @@ namespace QuantLib {
         if (!cashflows.empty()) {
 
             std::sort(cashflows_.begin(), cashflows_.end()-1,
-                      earlier_than<shared_ptr<CashFlow> >());
+                      earlier_than<ext::shared_ptr<CashFlow> >());
 
             if (maturityDate_ == Date())
                 maturityDate_ = CashFlows::maturityDate(cashflows);
@@ -146,7 +143,7 @@ namespace QuantLib {
         }
     }
 
-    const shared_ptr<CashFlow>& Bond::redemption() const {
+    const ext::shared_ptr<CashFlow>& Bond::redemption() const {
         QL_REQUIRE(redemptions_.size() == 1,
                    "multiple redemption cash flows given");
         return redemptions_.back();
@@ -315,7 +312,7 @@ namespace QuantLib {
                      !redemptions.empty()   ? redemptions.back() :
                                               100.0;
             Real amount = (R/100.0)*(notionals_[i-1]-notionals_[i]);
-            shared_ptr<CashFlow> payment;
+            ext::shared_ptr<CashFlow> payment;
             if (i < notionalSchedule_.size()-1)
                 payment.reset(new AmortizingPayment(amount,
                                                     notionalSchedule_[i]));
@@ -327,20 +324,20 @@ namespace QuantLib {
         // stable_sort now moves the redemptions to the right places
         // while ensuring that they follow coupons with the same date.
         std::stable_sort(cashflows_.begin(), cashflows_.end(),
-                         earlier_than<shared_ptr<CashFlow> >());
+                         earlier_than<ext::shared_ptr<CashFlow> >());
     }
 
     void Bond::setSingleRedemption(Real notional,
                                    Real redemption,
                                    const Date& date) {
 
-        shared_ptr<CashFlow> redemptionCashflow(
+        ext::shared_ptr<CashFlow> redemptionCashflow(
                          new Redemption(notional*redemption/100.0, date));
         setSingleRedemption(notional, redemptionCashflow);
     }
 
     void Bond::setSingleRedemption(Real notional,
-                                   const shared_ptr<CashFlow>& redemption) {
+                                   const ext::shared_ptr<CashFlow>& redemption) {
         notionals_.resize(2);
         notionalSchedule_.resize(2);
         redemptions_.clear();
@@ -355,6 +352,16 @@ namespace QuantLib {
         redemptions_.push_back(redemption);
     }
 
+    void Bond::deepUpdate() {
+        for (Size k = 0; k < cashflows_.size(); ++k) {
+            ext::shared_ptr<LazyObject> f =
+                ext::dynamic_pointer_cast<LazyObject>(cashflows_[k]);
+            if (f)
+                f->update();
+        }
+        update();
+    }
+
     void Bond::calculateNotionalsFromCashflows() {
         notionalSchedule_.clear();
         notionals_.clear();
@@ -362,8 +369,8 @@ namespace QuantLib {
         Date lastPaymentDate = Date();
         notionalSchedule_.push_back(Date());
         for (Size i=0; i<cashflows_.size(); ++i) {
-            shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
+            ext::shared_ptr<Coupon> coupon =
+                ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
             if (!coupon)
                 continue;
 

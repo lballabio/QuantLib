@@ -12,7 +12,6 @@ FRA_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    FRA_vc9.vcproj \
     FRA.vcxproj \
     FRA.vcxproj.filters \
     ReadMe.txt

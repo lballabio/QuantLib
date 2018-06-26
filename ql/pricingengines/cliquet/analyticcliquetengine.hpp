@@ -41,10 +41,10 @@ namespace QuantLib {
     class AnalyticCliquetEngine : public CliquetOption::engine {
       public:
         AnalyticCliquetEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
         void calculate() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

@@ -65,21 +65,21 @@ void ShortRateModelTest::testCachedHullWhite() {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
+    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
-        boost::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        boost::shared_ptr<CalibrationHelper> helper(
+        ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
+        ext::shared_ptr<CalibrationHelper> helper(
                              new SwaptionHelper(Period(data[i].start, Years),
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),
@@ -140,21 +140,21 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure,0.05,0.01));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure,0.05,0.01));
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
+    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
-        boost::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        boost::shared_ptr<CalibrationHelper> helper(
+        ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
+        ext::shared_ptr<CalibrationHelper> helper(
                              new SwaptionHelper(Period(data[i].start, Years),
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),
@@ -218,24 +218,24 @@ void ShortRateModelTest::testCachedHullWhite2() {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
-    boost::shared_ptr<IborIndex> index0(new IborIndex(
+    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index0(new IborIndex(
         index->familyName(),index->tenor(),0,index->currency(),index->fixingCalendar(),
         index->businessDayConvention(),index->endOfMonth(),index->dayCounter(),termStructure)); // Euribor 6m with zero fixing days
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
+    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
-        boost::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        boost::shared_ptr<CalibrationHelper> helper(
+        ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
+        ext::shared_ptr<CalibrationHelper> helper(
                              new SwaptionHelper(Period(data[i].start, Years),
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),
@@ -331,21 +331,21 @@ void ShortRateModelTest::testSwaps() {
     };
 
     Handle<YieldTermStructure> termStructure(
-       boost::shared_ptr<YieldTermStructure>(
+       ext::shared_ptr<YieldTermStructure>(
            new DiscountCurve(
                std::vector<Date>(dates,dates+LENGTH(dates)),
                std::vector<DiscountFactor>(discounts,
                                            discounts+LENGTH(discounts)),
                Actual365Fixed())));
 
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
 
     Integer start[] = { -3, 0, 3 };
     Integer length[] = { 2, 5, 10 };
     Rate rates[] = { 0.02, 0.04, 0.06 };
-    boost::shared_ptr<IborIndex> euribor(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> euribor(new Euribor6M(termStructure));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                         new TreeVanillaSwapEngine(model,120));
 
     #if defined(QL_USE_INDEXED_COUPON)
@@ -379,7 +379,7 @@ void ShortRateModelTest::testSwaps() {
                 VanillaSwap swap(VanillaSwap::Payer, 1000000.0,
                                  fixedSchedule, rates[k], Thirty360(),
                                  floatSchedule, euribor, 0.0, Actual360());
-                swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                                    new DiscountingSwapEngine(termStructure)));
                 Real expected = swap.NPV();
                 swap.setPricingEngine(engine);
@@ -429,7 +429,7 @@ void ShortRateModelTest::testFuturesConvexityBias() {
 }
 
 void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
-    BOOST_TEST_MESSAGE("Testing zero bond pricing for extended CIR model ...");
+    BOOST_TEST_MESSAGE("Testing zero-bond pricing for extended CIR model...");
 
     SavedSettings backup;
     const Date today = Settings::instance().evaluationDate();

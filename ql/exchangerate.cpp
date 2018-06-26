@@ -52,8 +52,8 @@ namespace QuantLib {
         ExchangeRate result;
         result.type_ = Derived;
         result.rateChain_ = std::make_pair(
-                       boost::shared_ptr<ExchangeRate>(new ExchangeRate(r1)),
-                       boost::shared_ptr<ExchangeRate>(new ExchangeRate(r2)));
+                       ext::make_shared<ExchangeRate>(r1),
+                       ext::make_shared<ExchangeRate>(r2));
         if (r1.source_ == r2.source_) {
             result.source_ = r1.target_;
             result.target_ = r2.target_;

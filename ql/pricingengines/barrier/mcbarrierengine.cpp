@@ -30,7 +30,7 @@ namespace QuantLib {
                     Option::Type type,
                     Real strike,
                     const std::vector<DiscountFactor>& discounts,
-                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
+                    const ext::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen)
     : barrierType_(barrierType), barrier_(barrier),
       rebate_(rebate), diffProcess_(diffProcess),

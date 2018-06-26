@@ -39,7 +39,7 @@ namespace QuantLib {
       public:
         FdmBlackScholesMesher(
             Size size,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, Real strike,
             Real xMinConstraint = Null<Real>(),
             Real xMaxConstraint = Null<Real>(),
@@ -49,7 +49,7 @@ namespace QuantLib {
                         = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
             const DividendSchedule& dividendSchedule = DividendSchedule());
 
-        static boost::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
+        static ext::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
              const Handle<Quote>& s0,
              const Handle<YieldTermStructure>& rTS,
              const Handle<YieldTermStructure>& qTS,

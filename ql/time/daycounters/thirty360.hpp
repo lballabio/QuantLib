@@ -89,7 +89,7 @@ namespace QuantLib {
                               const Date&) const {
                 return dayCount(d1,d2)/360.0; }
         };
-        static boost::shared_ptr<DayCounter::Impl> implementation(
+        static ext::shared_ptr<DayCounter::Impl> implementation(
                                                                Convention c);
       public:
         Thirty360(Convention c = Thirty360::BondBasis)
