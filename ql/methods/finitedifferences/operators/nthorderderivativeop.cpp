@@ -34,13 +34,13 @@ namespace QuantLib {
 
     NthOrderDerivativeOp::NthOrderDerivativeOp(
         Size direction, Size order, Integer nPoints,
-        const boost::shared_ptr<FdmMesher>& mesher)
+        const ext::shared_ptr<FdmMesher>& mesher)
     : m_(mesher->layout()->size(), mesher->layout()->size()) {
 
         const Integer hPoints = nPoints/2;
         const bool isEven = (nPoints == 2*hPoints);
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         Array xValues = mesher->locations(direction);

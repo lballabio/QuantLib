@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         NthOrderDerivativeOp(
             Size direction, Size order, Integer nPoints,
-            const boost::shared_ptr<FdmMesher>& mesher);
+            const ext::shared_ptr<FdmMesher>& mesher);
 
         Disposable<array_type> apply(const array_type& r) const;
         Disposable<SparseMatrix> toMatrix() const;

@@ -48,7 +48,6 @@
 #endif
 
 #include <boost/function.hpp>
-#include <boost/make_shared.hpp>
 #include <numeric>
 
 using namespace QuantLib;
@@ -83,8 +82,8 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsApply() {
     const Real dx = 1/5.0;
 
     const NthOrderDerivativeOp op(0, 1, 3,
-        boost::make_shared<FdmMesherComposite>(
-            boost::make_shared<Uniform1dMesher>(0.0, 1.0, 6)));
+        ext::make_shared<FdmMesherComposite>(
+            ext::make_shared<Uniform1dMesher>(0.0, 1.0, 6)));
 
     const Array x(6,0.0, 1.0);
     const Array y = op.apply(x);
@@ -101,8 +100,8 @@ void NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 3,
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Uniform1dMesher>(0.0, 1.0, 6))).toMatrix();
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Uniform1dMesher>(0.0, 1.0, 6))).toMatrix();
 
     // to reproduce the reference results use
     // http://web.media.mit.edu/~crtaylor/calculator.html
@@ -137,8 +136,8 @@ void NthOrderDerivativeOpTest::testFirstOrder5PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 5,
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Uniform1dMesher>(0.0, 2.0, 6))).toMatrix();
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Uniform1dMesher>(0.0, 2.0, 6))).toMatrix();
 
     BOOST_CHECK(close_enough(m(2,0), 1.0/12.0*ddx));
     BOOST_CHECK(close_enough(m(2,1), -2.0/3.0*ddx));
@@ -184,8 +183,8 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 2,
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), -ddx));
     BOOST_CHECK(close_enough(m(0,1), ddx));
@@ -216,8 +215,8 @@ void NthOrderDerivativeOpTest::testFirstOrder4PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 4,
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), -11.0/6.0*ddx));
     BOOST_CHECK(close_enough(m(0,1), 3.0*ddx));
@@ -247,14 +246,14 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOn2DimUniformGrid() {
     const Real ddx = 1.0/0.2;
 
     const Size xGrid=4;
-    const boost::shared_ptr<FdmMesher> mesher =
-        boost::make_shared<FdmMesherComposite>(
-            boost::make_shared<Uniform1dMesher>(0.0, 1, xGrid),
-            boost::make_shared<Uniform1dMesher>(0.0, 0.4, 3));
+    const ext::shared_ptr<FdmMesher> mesher =
+        ext::make_shared<FdmMesherComposite>(
+            ext::make_shared<Uniform1dMesher>(0.0, 1, xGrid),
+            ext::make_shared<Uniform1dMesher>(0.0, 0.4, 3));
 
     const SparseMatrix m = NthOrderDerivativeOp(1, 1, 2, mesher).toMatrix();
 
-    const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+    const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
     const FdmLinearOpIterator endIter = layout->end();
 
     for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
@@ -295,8 +294,8 @@ void NthOrderDerivativeOpTest::testSecondOrder3PointsNonUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 2, 3,
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Predefined1dMesher>(xValues))).toMatrix();
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Predefined1dMesher>(xValues))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), 8.0/3.0));
     BOOST_CHECK(close_enough(m(0,1), -4.0));
@@ -332,8 +331,8 @@ void NthOrderDerivativeOpTest::testSecondOrder4PointsNonUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 2, 4,
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Predefined1dMesher>(xValues))).toMatrix();
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Predefined1dMesher>(xValues))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), 88.0/21.0));
     BOOST_CHECK(close_enough(m(0,1), -140.0/21.0));
@@ -372,8 +371,8 @@ void NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 3, 4,
-            boost::make_shared<FdmMesherComposite>(
-                boost::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
+            ext::make_shared<FdmMesherComposite>(
+                ext::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
 
     for (Size i=0; i < 4; ++i) {
         BOOST_CHECK(close_enough(m(i,0), -125.0));
@@ -401,11 +400,11 @@ namespace {
         FdmHeatEquationOp(
             Size nPoints,
             Volatility vol,
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<FdmMesher>& mesher,
             Size direction = 0)
         : vol2_(0.5*vol*vol),
           direction_(direction),
-          map_(boost::make_shared<NthOrderDerivativeOp>(
+          map_(ext::make_shared<NthOrderDerivativeOp>(
               direction, 2, nPoints, mesher)),
           preconditioner_(SecondDerivativeOp(direction, mesher)
               .mult(Array(mesher->layout()->size(), vol2_))) { }
@@ -466,14 +465,14 @@ namespace {
 
         const Volatility vol2_;
         const Size direction_;
-        const boost::shared_ptr<FdmLinearOp> map_;
+        const ext::shared_ptr<FdmLinearOp> map_;
         const TripleBandLinearOp preconditioner_;
     };
 
 
     class AvgPayoffFct : public std::unary_function<Real,Real> {
       public:
-        AvgPayoffFct(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+        AvgPayoffFct(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                      Volatility vol, Time T, Real growthFactor)
         : payoff_(payoff),
           vol2_(0.5*vol*vol*T),
@@ -484,7 +483,7 @@ namespace {
         }
 
        private:
-        const boost::shared_ptr<PlainVanillaPayoff> payoff_;
+        const ext::shared_ptr<PlainVanillaPayoff> payoff_;
         const Volatility vol2_;
         const Real growthFactor_;
     };
@@ -498,9 +497,9 @@ namespace {
         const Date maturity = today + Period(1, Years);
         const Time T = dc.yearFraction(today, maturity);
 
-        const boost::shared_ptr<YieldTermStructure> rTS
+        const ext::shared_ptr<YieldTermStructure> rTS
             = flatRate(today, 0.05, dc);
-        const boost::shared_ptr<YieldTermStructure> qTS
+        const ext::shared_ptr<YieldTermStructure> qTS
             = flatRate(today, 0.025, dc);
 
         const Real S = 100.0;
@@ -522,8 +521,8 @@ namespace {
             const Real strike = strikes[k];
             const Real specialPoint = std::log(strike/df) + 0.5*vol*vol*T;
 
-            const boost::shared_ptr<Fdm1dMesher> mesher1d =
-                boost::make_shared<Concentrating1dMesher>(
+            const ext::shared_ptr<Fdm1dMesher> mesher1d =
+                ext::make_shared<Concentrating1dMesher>(
                     ymin, ymax, yGrid,
                     std::pair<Real, Real>(specialPoint, setup.density));
 
@@ -540,11 +539,11 @@ namespace {
                     break;
                 }
 
-            const boost::shared_ptr<FdmMesher> mesher =
-                boost::make_shared<FdmMesherComposite>(
-                    boost::make_shared<Predefined1dMesher>(loc));
+            const ext::shared_ptr<FdmMesher> mesher =
+                ext::make_shared<FdmMesherComposite>(
+                    ext::make_shared<Predefined1dMesher>(loc));
 
-            const boost::shared_ptr<FdmLinearOpLayout> layout =
+            const ext::shared_ptr<FdmLinearOpLayout> layout =
                 mesher->layout();
 
             const Array g = mesher->locations(0);
@@ -552,8 +551,8 @@ namespace {
 
             Array rhs(setup.yGrid);
 
-            const boost::shared_ptr<PlainVanillaPayoff> payoff =
-                boost::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+            const ext::shared_ptr<PlainVanillaPayoff> payoff =
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
 
             rhs[0] = (*payoff)(sT[0]);
             rhs[yGrid-1] = (*payoff)(sT[yGrid-1]);
@@ -574,14 +573,14 @@ namespace {
                 else
                     rhs[j] = (*payoff)(sT[j]);
 
-            const boost::shared_ptr<FdmHeatEquationOp> heatEqn =
-                boost::make_shared<FdmHeatEquationOp>(
+            const ext::shared_ptr<FdmHeatEquationOp> heatEqn =
+                ext::make_shared<FdmHeatEquationOp>(
                     setup.nPoints, vol, mesher);
 
             FdmBackwardSolver solver(
               heatEqn,
               FdmBoundaryConditionSet(),
-              boost::shared_ptr<FdmStepConditionComposite>(),
+              ext::shared_ptr<FdmStepConditionComposite>(),
               setup.scheme);
 
             solver.rollback(rhs, T, 0.0, setup.tGrid, 0);
