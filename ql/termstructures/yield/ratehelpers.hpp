@@ -241,7 +241,7 @@ namespace QuantLib {
                                                = Handle<YieldTermStructure>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-					   bool endOfMonth = false);
+                       bool endOfMonth = false);
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -259,7 +259,7 @@ namespace QuantLib {
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-			           bool endOfMonth = false);
+                       bool endOfMonth = false);
         SwapRateHelper(Rate rate,
                        const boost::shared_ptr<SwapIndex>& swapIndex,
                        const Handle<Quote>& spread = Handle<Quote>(),
@@ -269,7 +269,7 @@ namespace QuantLib {
                                             = Handle<YieldTermStructure>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-					   bool endOfMonth = false);
+                       bool endOfMonth = false);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        const Calendar& calendar,
@@ -287,7 +287,7 @@ namespace QuantLib {
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-					   bool endOfMonth = false);
+                       bool endOfMonth = false);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;

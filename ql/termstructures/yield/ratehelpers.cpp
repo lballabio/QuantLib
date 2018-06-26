@@ -625,7 +625,7 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   bool endOfMonth)
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(swapIndex->fixingDays()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
@@ -663,7 +663,7 @@ namespace QuantLib {
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   bool endOfMonth)
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(settlementDays),
       tenor_(tenor), pillarChoice_(pillarChoice),
@@ -699,7 +699,7 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   bool endOfMonth)
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(swapIndex->fixingDays()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
@@ -737,7 +737,7 @@ namespace QuantLib {
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-								   bool endOfMonth)
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(settlementDays),
       tenor_(tenor), pillarChoice_(pillarChoice),
@@ -780,9 +780,9 @@ namespace QuantLib {
             .withFixedLegConvention(fixedConvention_)
             .withFixedLegTerminationDateConvention(fixedConvention_)
             .withFixedLegCalendar(calendar_)
-			.withFixedLegEndOfMonth(endOfMonth_)
-			.withFloatingLegCalendar(calendar_)
-			.withFloatingLegEndOfMonth(endOfMonth_);
+            .withFixedLegEndOfMonth(endOfMonth_)
+            .withFloatingLegCalendar(calendar_)
+            .withFloatingLegEndOfMonth(endOfMonth_);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
