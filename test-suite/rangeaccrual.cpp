@@ -76,7 +76,7 @@ namespace {
         Date paymentDate;
         Natural fixingDays;
         DayCounter rangeCouponDayCount;
-        boost::shared_ptr<Schedule> observationSchedule;
+        ext::shared_ptr<Schedule> observationSchedule;
         // Observation Schedule conventions
         Frequency observationsFrequency;
         BusinessDayConvention observationsConvention;
@@ -88,15 +88,15 @@ namespace {
         Frequency fixedLegFrequency;
         BusinessDayConvention fixedLegConvention;
         DayCounter fixedLegDayCounter;
-        boost::shared_ptr<IborIndex> iborIndex;
-        boost::shared_ptr<SwapIndex> swapIndexBase;
-        boost::shared_ptr<SwapIndex> shortSwapIndexBase;
+        ext::shared_ptr<IborIndex> iborIndex;
+        ext::shared_ptr<SwapIndex> swapIndexBase;
+        ext::shared_ptr<SwapIndex> shortSwapIndexBase;
 
         // Range accrual pricers properties
         std::vector<bool> byCallSpread;
         Real flatVol;
-        std::vector<boost::shared_ptr<SmileSection> > smilesOnExpiry;
-        std::vector<boost::shared_ptr<SmileSection> > smilesOnPayment;
+        std::vector<ext::shared_ptr<SmileSection> > smilesOnExpiry;
+        std::vector<ext::shared_ptr<SmileSection> > smilesOnPayment;
 
         //test parameters
         Real rateTolerance;
@@ -152,7 +152,7 @@ namespace {
             zeroRates.push_back(0.04468646066);    zeroRates.push_back(0.04430951558);
             zeroRates.push_back(0.04363922313);    zeroRates.push_back(0.04363601992);
 
-            termStructure.linkTo( boost::shared_ptr<YieldTermStructure>(
+            termStructure.linkTo( ext::shared_ptr<YieldTermStructure>(
                 new ZeroCurve(dates, zeroRates, Actual365Fixed())));
         }
 
@@ -256,10 +256,10 @@ namespace {
             fixedLegFrequency = Annual;
             fixedLegConvention = Unadjusted;
             fixedLegDayCounter = Thirty360();
-            boost::shared_ptr<SwapIndex> swapIndexBase(new
+            ext::shared_ptr<SwapIndex> swapIndexBase(new
                 EuriborSwapIsdaFixA(2*Years, termStructure));
 
-            boost::shared_ptr<SwapIndex> shortSwapIndexBase(new
+            ext::shared_ptr<SwapIndex> shortSwapIndexBase(new
                 EuriborSwapIsdaFixA(1*Years, termStructure));
 
             vegaWeightedSmileFit = false;
@@ -273,7 +273,7 @@ namespace {
                 atmVolsHandle[i] = std::vector<Handle<Quote> >(nColsAtmVols);
                 for (Size j=0; j<nColsAtmVols; j++) {
                     atmVolsHandle[i][j] =
-                        Handle<Quote>(boost::shared_ptr<Quote>(new
+                        Handle<Quote>(ext::shared_ptr<Quote>(new
                             SimpleQuote(atmVolMatrix[i][j])));
                 }
             }
@@ -281,7 +281,7 @@ namespace {
             dayCounter = Actual365Fixed();
 
             atmVol = Handle<SwaptionVolatilityStructure>(
-                boost::shared_ptr<SwaptionVolatilityStructure>(new
+                ext::shared_ptr<SwaptionVolatilityStructure>(new
                     SwaptionVolatilityMatrix(calendar,
                                              optionBDC,
                                              atmOptionTenors,
@@ -295,16 +295,16 @@ namespace {
             for (i=0; i<optionTenors.size()*swapTenors.size(); i++) {
                 parametersGuess[i] = std::vector<Handle<Quote> >(4);
                 parametersGuess[i][0] =
-                    Handle<Quote>(boost::shared_ptr<Quote>(
+                    Handle<Quote>(ext::shared_ptr<Quote>(
                                                        new SimpleQuote(0.2)));
                 parametersGuess[i][1] =
-                    Handle<Quote>(boost::shared_ptr<Quote>(
+                    Handle<Quote>(ext::shared_ptr<Quote>(
                                                        new SimpleQuote(0.5)));
                 parametersGuess[i][2] =
-                    Handle<Quote>(boost::shared_ptr<Quote>(
+                    Handle<Quote>(ext::shared_ptr<Quote>(
                                                        new SimpleQuote(0.4)));
                 parametersGuess[i][3] =
-                    Handle<Quote>(boost::shared_ptr<Quote>(
+                    Handle<Quote>(ext::shared_ptr<Quote>(
                                                        new SimpleQuote(0.0)));
             }
             std::vector<bool> isParameterFixed(4, false);
@@ -315,12 +315,12 @@ namespace {
                 nullVolSpreads[i] = std::vector<Handle<Quote> >(nCols);
                 for (Size j=0; j<strikeSpreads.size(); j++) {
                     nullVolSpreads[i][j] =
-                        Handle<Quote>(boost::shared_ptr<Quote>(
+                        Handle<Quote>(ext::shared_ptr<Quote>(
                                                         new SimpleQuote(0.)));
                 }
             }
 
-            boost::shared_ptr<SwaptionVolCube1>
+            ext::shared_ptr<SwaptionVolCube1>
             flatSwaptionVolatilityCube1ptr(new SwaptionVolCube1(
                 atmVol,
                 optionTenors,
@@ -334,11 +334,11 @@ namespace {
                 isParameterFixed,
                 false));
             flatSwaptionVolatilityCube1 = Handle<SwaptionVolatilityStructure>(
-                boost::shared_ptr<SwaptionVolatilityStructure>(
+                ext::shared_ptr<SwaptionVolatilityStructure>(
                                              flatSwaptionVolatilityCube1ptr));
             flatSwaptionVolatilityCube1->enableExtrapolation();
 
-            boost::shared_ptr<SwaptionVolCube2>
+            ext::shared_ptr<SwaptionVolCube2>
             flatSwaptionVolatilityCube2ptr(new SwaptionVolCube2(atmVol,
                                                              optionTenors,
                                                              swapTenors,
@@ -348,7 +348,7 @@ namespace {
                                                              shortSwapIndexBase,
                                                              vegaWeightedSmileFit));
             flatSwaptionVolatilityCube2 = Handle<SwaptionVolatilityStructure>(
-                boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube2ptr));
+                ext::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube2ptr));
             flatSwaptionVolatilityCube2->enableExtrapolation();
 
 
@@ -358,12 +358,12 @@ namespace {
                 volSpreads[i] = std::vector<Handle<Quote> >(nCols);
                 for (Size j=0; j<strikeSpreads.size(); j++) {
                     volSpreads[i][j] =
-                        Handle<Quote>(boost::shared_ptr<Quote>(new
+                        Handle<Quote>(ext::shared_ptr<Quote>(new
                             SimpleQuote(volSpreadsMatrix[i][j])));
                 }
             }
 
-            boost::shared_ptr<SwaptionVolCube1>
+            ext::shared_ptr<SwaptionVolCube1>
             swaptionVolatilityCubeBySabrPtr(new SwaptionVolCube1(
                 atmVol,
                 optionTenors,
@@ -377,7 +377,7 @@ namespace {
                 isParameterFixed,
                 false));
             swaptionVolatilityCubeBySabr = Handle<SwaptionVolatilityStructure>(
-            boost::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabrPtr));
+            ext::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabrPtr));
             swaptionVolatilityCubeBySabr->enableExtrapolation();
 
             swaptionVolatilityStructures = std::vector<Handle<SwaptionVolatilityStructure> >();
@@ -1392,11 +1392,11 @@ namespace {
             strikes.push_back(1.002);   stdDevsOnExpiry.push_back(0.504301067577692);   stdDevsOnPayment.push_back(0.506139367804955);
 
             //Create smiles on Expiry Date
-            smilesOnExpiry = std::vector<boost::shared_ptr<SmileSection> >();
-            smilesOnExpiry.push_back(boost::shared_ptr<SmileSection>(
+            smilesOnExpiry = std::vector<ext::shared_ptr<SmileSection> >();
+            smilesOnExpiry.push_back(ext::shared_ptr<SmileSection>(
                 new FlatSmileSection(startDate, flatVol, rangeCouponDayCount)));
             Real dummyAtmLevel = 0;
-            smilesOnExpiry.push_back(boost::shared_ptr<SmileSection>(new
+            smilesOnExpiry.push_back(ext::shared_ptr<SmileSection>(new
                 InterpolatedSmileSection<Linear>(startDate,
                                                  strikes,
                                                  stdDevsOnExpiry,
@@ -1406,10 +1406,10 @@ namespace {
             //    swaptionVolatilityStructures_[0]->smileSection(startDate,
             //                                                   Period(6, Months)));
             //Create smiles on Payment Date
-            smilesOnPayment = std::vector<boost::shared_ptr<SmileSection> >();
-            smilesOnPayment.push_back(boost::shared_ptr<SmileSection>(
+            smilesOnPayment = std::vector<ext::shared_ptr<SmileSection> >();
+            smilesOnPayment.push_back(ext::shared_ptr<SmileSection>(
                 new FlatSmileSection(endDate, flatVol, rangeCouponDayCount)));
-            smilesOnPayment.push_back(boost::shared_ptr<SmileSection>(new
+            smilesOnPayment.push_back(ext::shared_ptr<SmileSection>(new
                 InterpolatedSmileSection<Linear>(endDate,
                                                  strikes,
                                                  stdDevsOnPayment,
@@ -1435,7 +1435,7 @@ namespace {
             referenceDate = termStructure->referenceDate();
             // Ibor index
             iborIndex =
-                boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+                ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
 
             // create Volatility Structures
             flatVol = 0.1;
@@ -1457,12 +1457,11 @@ namespace {
             // observations schedule
             observationsConvention = ModifiedFollowing;
             observationsFrequency = Daily;//Monthly;
-            observationSchedule = boost::shared_ptr<Schedule>(new
-                                Schedule(startDate,endDate,
+            observationSchedule = ext::make_shared<Schedule>(startDate,endDate,
                                          Period(observationsFrequency),
                                          calendar,observationsConvention,
                                          observationsConvention,
-                                         DateGeneration::Forward, false));
+                                         DateGeneration::Forward, false);
             // Range accrual pricers properties
             byCallSpread = std::vector<bool>();
             byCallSpread.push_back(true);
@@ -1508,7 +1507,7 @@ void RangeAccrualTest::testInfiniteRange()  {
 
     for (Size z = 0; z < vars.smilesOnPayment.size(); z++) {
         for (Size i = 0; i < vars.byCallSpread.size(); i++){
-            boost::shared_ptr<RangeAccrualPricer> bgmPricer(new
+            ext::shared_ptr<RangeAccrualPricer> bgmPricer(new
                 RangeAccrualPricerByBgm(vars.correlation,
                                         vars.smilesOnExpiry[z],
                                         vars.smilesOnPayment[z],
@@ -1545,7 +1544,7 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike() {
 
     for (Size z = 0; z < vars.smilesOnPayment.size(); z++) {
         for (Size i = 0; i < vars.byCallSpread.size(); i++){
-            boost::shared_ptr<RangeAccrualPricer> bgmPricer(new
+            ext::shared_ptr<RangeAccrualPricer> bgmPricer(new
                 RangeAccrualPricerByBgm(vars.correlation,
                                         vars.smilesOnExpiry[z],
                                         vars.smilesOnPayment[z],
@@ -1601,7 +1600,7 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
 
     for (Size z = 0; z < vars.smilesOnPayment.size(); z++) {
         for (Size i = 0; i < vars.byCallSpread.size(); i++){
-            boost::shared_ptr<RangeAccrualPricer> bgmPricer(new
+            ext::shared_ptr<RangeAccrualPricer> bgmPricer(new
                 RangeAccrualPricerByBgm(vars.correlation,
                                         vars.smilesOnExpiry[z],
                                         vars.smilesOnPayment[z],

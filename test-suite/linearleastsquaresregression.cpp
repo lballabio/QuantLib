@@ -51,7 +51,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     v.push_back(constant<Real, Real>(1.0));
     v.push_back(identity<Real>());
     v.push_back(square<Real>());
-    v.push_back(std::ptr_fun<Real, Real>(std::sin));
+    v.push_back(static_cast<Real(*)(Real)>(std::sin));
 
     std::vector<boost::function1<Real, Real> > w(v);
     w.push_back(square<Real>());

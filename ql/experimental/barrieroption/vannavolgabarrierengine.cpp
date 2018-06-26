@@ -27,7 +27,6 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <boost/make_shared.hpp>
 
 using std::pow;
 using std::log;
@@ -80,23 +79,23 @@ namespace QuantLib {
         const Real sigmaShift_vanna = 0.0001;
 
         Handle<Quote> x0Quote(
-            boost::make_shared<SimpleQuote>(spotFX_->value())); //used for shift
+            ext::make_shared<SimpleQuote>(spotFX_->value())); //used for shift
         Handle<Quote> atmVolQuote(
-            boost::make_shared<SimpleQuote>(atmVol_->value())); //used for shift
+            ext::make_shared<SimpleQuote>(atmVol_->value())); //used for shift
 
-        boost::shared_ptr<BlackVolTermStructure> blackVolTS =
-            boost::make_shared<BlackConstantVol>(
+        ext::shared_ptr<BlackVolTermStructure> blackVolTS =
+            ext::make_shared<BlackConstantVol>(
                 Settings::instance().evaluationDate(),
                 NullCalendar(), atmVolQuote, Actual365Fixed());
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
-            boost::make_shared<BlackScholesMertonProcess>(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+            ext::make_shared<BlackScholesMertonProcess>(
                                  x0Quote,
                                  foreignTS_,
                                  domesticTS_,
                                  Handle<BlackVolTermStructure>(blackVolTS));
 
-        boost::shared_ptr<PricingEngine> engineBS =
-            boost::make_shared<AnalyticBarrierEngine>(stochProcess);
+        ext::shared_ptr<PricingEngine> engineBS =
+            ext::make_shared<AnalyticBarrierEngine>(stochProcess);
 
         BlackDeltaCalculator blackDeltaCalculatorAtm(
                         Option::Call, atmVol_->deltaType(), x0Quote->value(),
@@ -129,8 +128,8 @@ namespace QuantLib {
         VannaVolga vannaVolga(x0Quote->value(), domesticTS_->discount(T_), foreignTS_->discount(T_), T_);
         Interpolation interpolation = vannaVolga.interpolate(strikes.begin(), strikes.end(), vols.begin());
         interpolation.enableExtrapolation();
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-                                        boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+                                        ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         Real strikeVol = interpolation(payoff->strike());
 
         //vanilla option price
@@ -185,7 +184,7 @@ namespace QuantLib {
             BarrierOption barrierOption(barrierType,
                                         arguments_.barrier,
                                         arguments_.rebate,
-                                        boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff),
+                                        ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff),
                                         arguments_.exercise);
 
             barrierOption.setPricingEngine(engineBS);
@@ -244,59 +243,59 @@ namespace QuantLib {
 
 
             //BS vega
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
             barrierOption.recalculate();
             Real vegaBarBS = (barrierOption.NPV() - priceBS)/sigmaShift_vega;
 
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vega);//setback
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vega);//setback
 
             //BS volga
 
             //vegaBar2
             //base NPV
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_volga);
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_volga);
             barrierOption.recalculate();
             Real priceBS2 = barrierOption.NPV();
 
             //shifted npv
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
             barrierOption.recalculate();
             Real vegaBarBS2 = (barrierOption.NPV() - priceBS2)/sigmaShift_vega;
             Real volgaBarBS = (vegaBarBS2 - vegaBarBS)/sigmaShift_volga;
 
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() 
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() 
                                                                                                - sigmaShift_volga 
                                                                                                - sigmaShift_vega);//setback
 
             //BS Delta
             //base delta
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
             barrierOption.recalculate();
             Real priceBS_delta1 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
             barrierOption.recalculate();
             Real priceBS_delta2 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
             Real deltaBar1 = (priceBS_delta1 - priceBS_delta2)/(2.0*spotShift_delta);
 
             //shifted delta
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vanna);//shift sigma
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vanna);//shift sigma
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
             barrierOption.recalculate();
             priceBS_delta1 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
             barrierOption.recalculate();
             priceBS_delta2 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
             Real deltaBar2 = (priceBS_delta1 - priceBS_delta2)/(2.0*spotShift_delta);
 
             Real vannaBarBS = (deltaBar2 - deltaBar1)/sigmaShift_vanna;
 
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vanna);//set back
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vanna);//set back
 
             //Matrix
             Matrix A(3,3,0.0);

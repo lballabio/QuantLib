@@ -44,8 +44,8 @@ namespace QuantLib {
         class arguments;
         class engine;
         NonstandardSwaption(const Swaption &fromSwaption);
-        NonstandardSwaption(const boost::shared_ptr<NonstandardSwap> &swap,
-                            const boost::shared_ptr<Exercise> &exercise,
+        NonstandardSwaption(const ext::shared_ptr<NonstandardSwap> &swap,
+                            const ext::shared_ptr<Exercise> &exercise,
                             Settlement::Type delivery = Settlement::Physical);
 
         //! \name Instrument interface
@@ -57,20 +57,20 @@ namespace QuantLib {
         //@{
         VanillaSwap::Type type() const { return swap_->type(); }
 
-        const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const {
+        const ext::shared_ptr<NonstandardSwap> &underlyingSwap() const {
             return swap_;
         }
         //@}
-        Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
+        Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
         calibrationBasket(
-            boost::shared_ptr<SwapIndex> standardSwapBase,
-            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+            ext::shared_ptr<SwapIndex> standardSwapBase,
+            ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
             const BasketGeneratingEngine::CalibrationBasketType basketType =
                 BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
 
       private:
         // arguments
-        boost::shared_ptr<NonstandardSwap> swap_;
+        ext::shared_ptr<NonstandardSwap> swap_;
         Settlement::Type settlementType_;
     };
 
@@ -79,7 +79,7 @@ namespace QuantLib {
                                            public Option::arguments {
       public:
         arguments() {}
-        boost::shared_ptr<NonstandardSwap> swap;
+        ext::shared_ptr<NonstandardSwap> swap;
         Settlement::Type settlementType;
         void validate() const;
     };

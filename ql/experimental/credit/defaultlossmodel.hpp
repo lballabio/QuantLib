@@ -153,7 +153,7 @@ namespace QuantLib {
             until the basket takes in a new model....
             ..alternatively both old basket and model could be forced reset here
             */
-            basket_.linkTo(boost::shared_ptr<Basket>(bskt, null_deleter()),
+            basket_.linkTo(ext::shared_ptr<Basket>(bskt, null_deleter()),
                            false);
             resetModel();// or rename to setBasketImpl(...)
         }

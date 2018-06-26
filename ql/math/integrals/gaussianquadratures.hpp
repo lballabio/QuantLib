@@ -49,6 +49,11 @@ namespace QuantLib {
         GaussianQuadrature(Size n,
                            const GaussianOrthogonalPolynomial& p);
 
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
         template <class F>
         Real operator()(const F& f) const {
             Real sum = 0.0;
@@ -57,6 +62,10 @@ namespace QuantLib {
             }
             return sum;
         }
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic pop
+#endif
 
         Size order() const { return x_.size(); }
         const Array& weights() { return w_; }

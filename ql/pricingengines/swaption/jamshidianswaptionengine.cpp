@@ -25,7 +25,7 @@ namespace QuantLib {
 
     class JamshidianSwaptionEngine::rStarFinder {
       public:
-        rStarFinder(const boost::shared_ptr<OneFactorAffineModel>& model,
+        rStarFinder(const ext::shared_ptr<OneFactorAffineModel>& model,
                     Real nominal,
                     Time maturity,
                     Time valueTime,
@@ -49,7 +49,7 @@ namespace QuantLib {
         Time maturity_,valueTime_;
         std::vector<Time> times_;
         const std::vector<Real>& amounts_;
-        const boost::shared_ptr<OneFactorAffineModel>& model_;
+        const ext::shared_ptr<OneFactorAffineModel>& model_;
     };
 
     void JamshidianSwaptionEngine::calculate() const {
@@ -66,8 +66,8 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
+            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();

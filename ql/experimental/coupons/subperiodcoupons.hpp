@@ -46,7 +46,7 @@ namespace QuantLib {
           SubPeriodsCoupon(
                 const Date& paymentDate,
                 Real nominal,
-                const boost::shared_ptr<IborIndex>& index,
+                const ext::shared_ptr<IborIndex>& index,
                 const Date& startDate,
                 const Date& endDate,
                 Natural fixingDays,
@@ -72,7 +72,7 @@ namespace QuantLib {
             return observationTimes_;
         }
 
-        const boost::shared_ptr<Schedule> observationsSchedule() const {
+        const ext::shared_ptr<Schedule> observationsSchedule() const {
             return observationsSchedule_;
         }
 
@@ -87,7 +87,7 @@ namespace QuantLib {
         Real startTime_;                               // S
         Real endTime_;                                 // T
 
-        boost::shared_ptr<Schedule> observationsSchedule_;
+        ext::shared_ptr<Schedule> observationsSchedule_;
         std::vector<Date> observationDates_;
         std::vector<Real> observationTimes_;
 

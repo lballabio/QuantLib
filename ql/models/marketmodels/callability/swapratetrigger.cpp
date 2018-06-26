@@ -19,9 +19,9 @@
 
 #include <ql/models/marketmodels/callability/swapratetrigger.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
-
 
     SwapRateTrigger::SwapRateTrigger(const std::vector<Time>& rateTimes,
                                      const std::vector<Rate>& swapTriggers,
@@ -68,9 +68,9 @@ namespace QuantLib {
         ++currentIndex_;
     }
 
-    std::auto_ptr<ExerciseStrategy<CurveState> >
+    QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >
     SwapRateTrigger::clone() const {
-        return std::auto_ptr<ExerciseStrategy<CurveState> >(
+        return QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >(
                                                   new SwapRateTrigger(*this));
     }
 

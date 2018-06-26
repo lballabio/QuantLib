@@ -25,6 +25,7 @@
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
+#include <ql/math/functional.hpp>
 
 // Intended to replace HomogeneousPoolCDOEngine in syntheticcdoengines.hpp
 
@@ -45,7 +46,7 @@ namespace QuantLib {
         void resetModel();
     public:
         HomogeneousPoolLossModel(
-            const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& 
+            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& 
                 copula,
             Size nBuckets,
             Real max = 5.,
@@ -82,7 +83,7 @@ namespace QuantLib {
             return dist.expectedShortfall(percentile);
         }
     protected:
-        const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
+        const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
         Size nBuckets_;
         mutable Real attach_, detach_, notional_, attachAmount_, detachAmount_;
         mutable std::vector<Real> notionals_;
@@ -128,7 +129,8 @@ namespace QuantLib {
         std::vector<Real> lgd;// switch to a mutable cache member
         std::vector<Real> recoveries = copula_->recoveries();
         std::transform(recoveries.begin(), recoveries.end(), 
-            std::back_inserter(lgd), std::bind1st(std::minus<Real>(), 1.));
+                       std::back_inserter(lgd),
+                       subtract_from<Real>(1.0));
         std::transform(lgd.begin(), lgd.end(), notionals_.begin(), 
             lgd.begin(), std::multiplies<Real>());
         std::vector<Real> prob = basket_->remainingProbabilities(d);

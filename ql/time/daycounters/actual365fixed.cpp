@@ -18,19 +18,18 @@
 */
 
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
-    boost::shared_ptr<DayCounter::Impl>
+    ext::shared_ptr<DayCounter::Impl>
     Actual365Fixed::implementation(Actual365Fixed::Convention c) {
         switch (c) {
           case Standard:
-            return boost::shared_ptr<DayCounter::Impl>(new Impl);
+            return ext::shared_ptr<DayCounter::Impl>(new Impl);
           case Canadian:
-            return boost::shared_ptr<DayCounter::Impl>(new CA_Impl);
+            return ext::shared_ptr<DayCounter::Impl>(new CA_Impl);
           case NoLeap:
-            return boost::shared_ptr<DayCounter::Impl>(new NL_Impl);
+            return ext::shared_ptr<DayCounter::Impl>(new NL_Impl);
           default:
             QL_FAIL("unknown Actual/365 (Fixed) convention");
         }

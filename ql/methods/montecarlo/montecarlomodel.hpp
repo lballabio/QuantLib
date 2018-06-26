@@ -27,7 +27,7 @@
 
 #include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/math/statistics/statistics.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -59,15 +59,15 @@ namespace QuantLib {
         typedef S stats_type;
         // constructor
         MonteCarloModel(
-                  const boost::shared_ptr<path_generator_type>& pathGenerator,
-                  const boost::shared_ptr<path_pricer_type>& pathPricer,
+                  const ext::shared_ptr<path_generator_type>& pathGenerator,
+                  const ext::shared_ptr<path_pricer_type>& pathPricer,
                   const stats_type& sampleAccumulator,
                   bool antitheticVariate,
-                  const boost::shared_ptr<path_pricer_type>& cvPathPricer
-                        = boost::shared_ptr<path_pricer_type>(),
+                  const ext::shared_ptr<path_pricer_type>& cvPathPricer
+                        = ext::shared_ptr<path_pricer_type>(),
                   result_type cvOptionValue = result_type(),
-                  const boost::shared_ptr<path_generator_type>& cvPathGenerator
-                        = boost::shared_ptr<path_generator_type>())
+                  const ext::shared_ptr<path_generator_type>& cvPathGenerator
+                        = ext::shared_ptr<path_generator_type>())
         : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
           sampleAccumulator_(sampleAccumulator),
           isAntitheticVariate_(antitheticVariate),
@@ -81,14 +81,14 @@ namespace QuantLib {
         void addSamples(Size samples);
         const stats_type& sampleAccumulator() const;
       private:
-        boost::shared_ptr<path_generator_type> pathGenerator_;
-        boost::shared_ptr<path_pricer_type> pathPricer_;
+        ext::shared_ptr<path_generator_type> pathGenerator_;
+        ext::shared_ptr<path_pricer_type> pathPricer_;
         stats_type sampleAccumulator_;
         bool isAntitheticVariate_;
-        boost::shared_ptr<path_pricer_type> cvPathPricer_;
+        ext::shared_ptr<path_pricer_type> cvPathPricer_;
         result_type cvOptionValue_;
         bool isControlVariate_;
-        boost::shared_ptr<path_generator_type> cvPathGenerator_;
+        ext::shared_ptr<path_generator_type> cvPathGenerator_;
     };
 
     // inline definitions

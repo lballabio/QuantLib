@@ -54,7 +54,7 @@ namespace QuantLib {
       public:
 
         LongstaffSchwartzMultiPathPricer(
-            const boost::shared_ptr<PathPayoff>& ,
+            const ext::shared_ptr<PathPayoff>& ,
             const std::vector<Size> &,
             const std::vector<Handle<YieldTermStructure> > &,
             const Array &,
@@ -79,7 +79,7 @@ namespace QuantLib {
 
         bool  calibrationPhase_;
 
-        const boost::shared_ptr<PathPayoff> payoff_;
+        const ext::shared_ptr<PathPayoff> payoff_;
 
         boost::scoped_array<Array> coeff_;
         boost::scoped_array<Real> lowerBounds_;

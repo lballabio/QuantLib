@@ -69,7 +69,7 @@ namespace QuantLib {
 
         if (cPoint != Null<Real>()) {
             std::vector<Real> u, z;
-            boost::shared_ptr<Interpolation> transform;
+            ext::shared_ptr<Interpolation> transform;
             const Real c1 = asinh((start - cPoint) / density);
             const Real c2 = asinh((end - cPoint) / density);
             if (requireCPoint) {
@@ -88,7 +88,7 @@ namespace QuantLib {
                 }
                 u.push_back(1.0);
                 z.push_back(1.0);
-                transform = boost::shared_ptr<Interpolation>(
+                transform = ext::shared_ptr<Interpolation>(
                     new LinearInterpolation(u.begin(), u.end(), z.begin()));
             }
 

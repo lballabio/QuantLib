@@ -88,7 +88,7 @@ namespace QuantLib {
                               const Date&,
                               const Date&) const;
         };
-        static boost::shared_ptr<DayCounter::Impl> implementation(
+        static ext::shared_ptr<DayCounter::Impl> implementation(
                                                                Convention c, 
                                                                const Schedule& schedule);
       public:

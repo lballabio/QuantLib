@@ -22,10 +22,10 @@
 namespace QuantLib {
 
     CompoundOption::CompoundOption(
-                   const boost::shared_ptr<StrikedTypePayoff>& motherPayoff,
-                   const boost::shared_ptr<Exercise>& motherExercise,
-                   const boost::shared_ptr<StrikedTypePayoff>& daughterPayoff,
-                   const boost::shared_ptr<Exercise>& daughterExercise)
+                   const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
+                   const ext::shared_ptr<Exercise>& motherExercise,
+                   const ext::shared_ptr<StrikedTypePayoff>& daughterPayoff,
+                   const ext::shared_ptr<Exercise>& daughterExercise)
     : OneAssetOption(motherPayoff, motherExercise),
       daughterPayoff_(daughterPayoff), daughterExercise_(daughterExercise) {}
 

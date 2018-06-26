@@ -44,8 +44,8 @@ namespace QuantLib {
         class engine;
         ContinuousAveragingAsianOption(
                 Average::Type averageType,
-                const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise);
+                const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         Average::Type averageType_;
@@ -62,8 +62,8 @@ namespace QuantLib {
                 Real runningAccumulator,
                 Size pastFixings,
                 const std::vector<Date>& fixingDates,
-                const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise);
+                const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         Average::Type averageType_;

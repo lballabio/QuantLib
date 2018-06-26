@@ -12,7 +12,6 @@ SwapValuation_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    Swap_vc9.vcproj \
     Swap.vcxproj \
     Swap.vcxproj.filters \
     README.txt

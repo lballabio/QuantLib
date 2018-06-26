@@ -26,11 +26,11 @@ namespace QuantLib {
     UnitedKingdom::UnitedKingdom(UnitedKingdom::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+        static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                            new UnitedKingdom::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
                                            new UnitedKingdom::ExchangeImpl);
-        static boost::shared_ptr<Calendar::Impl> metalsImpl(
+        static ext::shared_ptr<Calendar::Impl> metalsImpl(
                                            new UnitedKingdom::MetalsImpl);
         switch (market) {
           case Settlement:

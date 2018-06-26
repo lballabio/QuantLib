@@ -53,7 +53,7 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        AnalyticGJRGARCHEngine(const boost::shared_ptr<GJRGARCHModel>& model);
+        AnalyticGJRGARCHEngine(const ext::shared_ptr<GJRGARCHModel>& model);
         void calculate() const;
         // call back for extended stochastic volatility
         // plus jump diffusion engines like bates model

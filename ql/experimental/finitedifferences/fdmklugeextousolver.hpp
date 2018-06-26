@@ -42,7 +42,7 @@ namespace QuantLib {
       public:
         FdmKlugeExtOUSolver(
           const Handle<KlugeExtOUProcess>& klugeOUProcess,
-          const boost::shared_ptr<YieldTermStructure>& rTS,
+          const ext::shared_ptr<YieldTermStructure>& rTS,
           const FdmSolverDesc& solverDesc,
           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer())
         : klugeOUProcess_(klugeOUProcess),
@@ -59,23 +59,23 @@ namespace QuantLib {
 
       protected:
         void performCalculations() const {
-            boost::shared_ptr<FdmLinearOpComposite>op(
+            ext::shared_ptr<FdmLinearOpComposite>op(
                 new FdmKlugeExtOUOp(solverDesc_.mesher,
                                     klugeOUProcess_.currentLink(),
                                     rTS_, solverDesc_.bcSet, 16));
 
-            solver_ = boost::shared_ptr<FdmNdimSolver<N> >(
+            solver_ = ext::shared_ptr<FdmNdimSolver<N> >(
                           new FdmNdimSolver<N>(solverDesc_, schemeDesc_, op));
         }
 
       private:
         const Handle<KlugeExtOUProcess> klugeOUProcess_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
 
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<FdmNdimSolver<N> > solver_;
+        mutable ext::shared_ptr<FdmNdimSolver<N> > solver_;
         BOOST_STATIC_ASSERT(N >= 3); // KlugeExtOU solver can't be applied on meshes
                                      // with less than three dimensions
     };

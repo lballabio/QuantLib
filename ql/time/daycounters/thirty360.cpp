@@ -19,22 +19,23 @@
 */
 
 #include <ql/time/daycounters/thirty360.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
-    boost::shared_ptr<DayCounter::Impl>
+    ext::shared_ptr<DayCounter::Impl>
     Thirty360::implementation(Thirty360::Convention c, bool isLastPeriod) {
         switch (c) {
           case USA:
           case BondBasis:
-            return boost::shared_ptr<DayCounter::Impl>(new US_Impl);
+            return ext::shared_ptr<DayCounter::Impl>(new US_Impl);
           case European:
           case EurobondBasis:
-            return boost::shared_ptr<DayCounter::Impl>(new EU_Impl);
+            return ext::shared_ptr<DayCounter::Impl>(new EU_Impl);
           case Italian:
-            return boost::shared_ptr<DayCounter::Impl>(new IT_Impl);
+            return ext::shared_ptr<DayCounter::Impl>(new IT_Impl);
           case German:
-            return boost::shared_ptr<DayCounter::Impl>(
+            return ext::shared_ptr<DayCounter::Impl>(
                 new GER_Impl(isLastPeriod));
           default:
             QL_FAIL("unknown 30/360 convention");

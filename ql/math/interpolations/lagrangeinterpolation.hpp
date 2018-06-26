@@ -22,7 +22,6 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/interpolation.hpp>
-#include <boost/make_shared.hpp>
 #if defined(QL_EXTRA_SAFETY_CHECKS)
 #include <set>
 #endif
@@ -141,14 +140,14 @@ namespace QuantLib {
         template <class I1, class I2>
         LagrangeInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin) {
-            impl_ = boost::make_shared<detail::LagrangeInterpolationImpl<I1,I2> >(
+            impl_ = ext::make_shared<detail::LagrangeInterpolationImpl<I1,I2> >(
                 xBegin, xEnd, yBegin);
             impl_->update();
         }
 
         // interpolate with new set of y values for a new x value
         Real value(const Array& y, Real x) const {
-            return boost::dynamic_pointer_cast<detail::UpdatedYInterpolation>
+            return ext::dynamic_pointer_cast<detail::UpdatedYInterpolation>
                 (impl_)->value(y, x);
         }
     };

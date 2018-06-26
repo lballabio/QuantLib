@@ -33,8 +33,8 @@
 namespace QuantLib {
 
     FdHestonHullWhiteVanillaEngine::FdHestonHullWhiteVanillaEngine(
-            const boost::shared_ptr<HestonModel>& hestonModel,
-            const boost::shared_ptr<HullWhiteProcess>& hwProcess,
+            const ext::shared_ptr<HestonModel>& hestonModel,
+            const ext::shared_ptr<HullWhiteProcess>& hwProcess,
             Real corrEquityShortRate,
             Size tGrid, Size xGrid, 
             Size vGrid, Size rGrid,
@@ -61,11 +61,11 @@ namespace QuantLib {
                         == arguments_.exercise->type()
                 && cachedArgs2results_[i].first.exercise->dates()
                         == arguments_.exercise->dates()) {
-                boost::shared_ptr<PlainVanillaPayoff> p1 =
-                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                ext::shared_ptr<PlainVanillaPayoff> p1 =
+                    ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                             arguments_.payoff);
-                boost::shared_ptr<PlainVanillaPayoff> p2 =
-                    boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                ext::shared_ptr<PlainVanillaPayoff> p2 =
+                    ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                           cachedArgs2results_[i].first.payoff);
 
                 if (p1 && p1->strike()     == p2->strike()
@@ -80,23 +80,23 @@ namespace QuantLib {
         }
 
         // 2. Mesher
-        const boost::shared_ptr<HestonProcess> hestonProcess=model_->process();
+        const ext::shared_ptr<HestonProcess> hestonProcess=model_->process();
         const Time maturity=hestonProcess->time(arguments_.exercise->lastDate());
 
         // 2.1 The variance mesher
         const Size tGridMin = 5;
-        const boost::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
+        const ext::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
             new FdmHestonVarianceMesher(vGrid_, hestonProcess,
                                         maturity,std::max(tGridMin,tGrid_/50)));
 
         // 2.2 The equity mesher
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "wrong payoff type given");
 
-        boost::shared_ptr<Fdm1dMesher> equityMesher;
+        ext::shared_ptr<Fdm1dMesher> equityMesher;
         if (strikes_.empty()) {
-            equityMesher = boost::shared_ptr<Fdm1dMesher>(
+            equityMesher = ext::shared_ptr<Fdm1dMesher>(
                 new FdmBlackScholesMesher(
                     xGrid_, 
                     FdmBlackScholesMesher::processHelper(
@@ -111,7 +111,7 @@ namespace QuantLib {
         else {
             QL_REQUIRE(arguments_.cashFlow.empty(),"multiple strikes engine "
                        "does not work with discrete dividends");
-            equityMesher = boost::shared_ptr<Fdm1dMesher>(
+            equityMesher = ext::shared_ptr<Fdm1dMesher>(
                 new FdmBlackScholesMultiStrikeMesher(
                     xGrid_,
                     FdmBlackScholesMesher::processHelper(
@@ -123,21 +123,21 @@ namespace QuantLib {
         }
        
         //2.3 The short rate mesher        
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
             new OrnsteinUhlenbeckProcess(hwProcess_->a(),hwProcess_->sigma()));
-        const boost::shared_ptr<Fdm1dMesher> shortRateMesher(
+        const ext::shared_ptr<Fdm1dMesher> shortRateMesher(
                    new FdmSimpleProcess1dMesher(rGrid_, ouProcess, maturity));
         
-        const boost::shared_ptr<FdmMesher> mesher(
+        const ext::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(equityMesher, varianceMesher,
                                    shortRateMesher));
 
         // 3. Calculator
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
                             new FdmLogInnerValue(arguments_.payoff, mesher, 0));
 
         // 4. Step conditions
-        const boost::shared_ptr<FdmStepConditionComposite> conditions = 
+        const ext::shared_ptr<FdmStepConditionComposite> conditions = 
             FdmStepConditionComposite::vanillaComposite(
                                 arguments_.cashFlow, arguments_.exercise, 
                                 mesher, calculator, 
@@ -152,7 +152,7 @@ namespace QuantLib {
                                            calculator, maturity,
                                            tGrid_, dampingSteps_ };
 
-        const boost::shared_ptr<FdmHestonHullWhiteSolver> solver(
+        const ext::shared_ptr<FdmHestonHullWhiteSolver> solver(
             new FdmHestonHullWhiteSolver(Handle<HestonProcess>(hestonProcess),
                                          Handle<HullWhiteProcess>(hwProcess_),
                                          corrEquityShortRate_,
@@ -169,8 +169,8 @@ namespace QuantLib {
         for (Size i=0; i < strikes_.size(); ++i) {
             cachedArgs2results_[i].first.exercise = arguments_.exercise;
             cachedArgs2results_[i].first.payoff = 
-                boost::shared_ptr<PlainVanillaPayoff>(
-                    new PlainVanillaPayoff(payoff->optionType(), strikes_[i]));
+                ext::make_shared<PlainVanillaPayoff>(
+                    payoff->optionType(), strikes_[i]);
             const Real d = payoff->strike()/strikes_[i];
             
             DividendVanillaOption::results& 
@@ -182,16 +182,16 @@ namespace QuantLib {
         }
      
         if (controlVariate_) {
-            boost::shared_ptr<PricingEngine> analyticEngine(
+            ext::shared_ptr<PricingEngine> analyticEngine(
                                        new AnalyticHestonEngine(*model_, 164));
-            boost::shared_ptr<Exercise> exercise(
+            ext::shared_ptr<Exercise> exercise(
                         new EuropeanExercise(arguments_.exercise->lastDate()));
             
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(analyticEngine);
             Real analyticNPV = option.NPV();
 
-            boost::shared_ptr<FdHestonVanillaEngine> fdEngine(
+            ext::shared_ptr<FdHestonVanillaEngine> fdEngine(
                     new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
                                               vGrid_, dampingSteps_, 
                                               schemeDesc_));
@@ -202,7 +202,7 @@ namespace QuantLib {
             results_.value += analyticNPV - fdNPV;
             for (Size i=0; i < strikes_.size(); ++i) {
                 VanillaOption controlVariateOption(
-                    boost::shared_ptr<StrikedTypePayoff>(
+                    ext::shared_ptr<StrikedTypePayoff>(
                         new PlainVanillaPayoff(payoff->optionType(), 
                                                strikes_[i])), exercise);
                 controlVariateOption.setPricingEngine(analyticEngine);

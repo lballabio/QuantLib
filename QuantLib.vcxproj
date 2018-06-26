@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -1760,6 +1760,7 @@
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
+    <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\config.ansi.hpp" />
@@ -1790,6 +1791,7 @@
     <ClInclude Include="ql\quantlib.hpp" />
     <ClInclude Include="ql\quote.hpp" />
     <ClInclude Include="ql\settings.hpp" />
+    <ClInclude Include="ql\shared_ptr.hpp" />
     <ClInclude Include="ql\stochasticprocess.hpp" />
     <ClInclude Include="ql\termstructure.hpp" />
     <ClInclude Include="ql\timegrid.hpp" />

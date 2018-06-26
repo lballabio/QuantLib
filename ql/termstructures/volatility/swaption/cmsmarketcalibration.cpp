@@ -45,7 +45,7 @@ namespace {
 
         CmsMarketCalibration *smileAndCms_;
         Handle<SwaptionVolatilityStructure> volCube_;
-        boost::shared_ptr<CmsMarket> cmsMarket_;
+        ext::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         CmsMarketCalibration::CalibrationType calibrationType_;
 
@@ -127,8 +127,8 @@ namespace {
         Size nSwapTenors = swapTenors.size();
         QL_REQUIRE(nSwapTenors + 1 == x.size(),
                    "bad calibration guess nSwapTenors+1 != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i)
             volCubeBySabr->recalibration(
                 smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
@@ -174,8 +174,8 @@ namespace {
         Size nSwapTenors = swapTenors.size();
         QL_REQUIRE(nSwapTenors == x.size(),
                    "bad calibration guess nSwapTenors != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i)
             volCubeBySabr->recalibration(
                 smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
@@ -199,8 +199,8 @@ namespace {
         QL_REQUIRE(
             (nSwapLengths * nSwapTenors) + 1 == x.size(),
             "bad calibration guess (nSwapLengths*nSwapTenors)+1 != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
@@ -226,8 +226,8 @@ namespace {
         QL_REQUIRE(
             (nSwapLengths * nSwapTenors) == x.size(),
             "bad calibration guess (nSwapLengths*nSwapTenors) != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
@@ -254,8 +254,8 @@ namespace {
         Size nSwapLengths = swapLengths.size();
         QL_REQUIRE((3 * nSwapTenors) == x.size(),
                    "bad calibration guess (3*nSwapTenors) != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             Real betaInf = smileAndCms_->betaTransformDirect(x[0 + 3 * i]);
             Real beta0 = smileAndCms_->betaTransformDirect(x[1 + 3 * i]);
@@ -287,8 +287,8 @@ namespace {
         Size nSwapLengths = swapLengths.size();
         QL_REQUIRE((3 * nSwapTenors) == x.size(),
                    "bad calibration guess (3*nSwapTenors) != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             Real betaInf = smileAndCms_->betaTransformDirect(x[0 + 3 * i]);
             Real beta0 = smileAndCms_->betaTransformDirect(x[1 + 3 * i]);
@@ -315,7 +315,7 @@ namespace QuantLib {
 
     CmsMarketCalibration::CmsMarketCalibration(
         Handle<SwaptionVolatilityStructure> &volCube,
-        boost::shared_ptr<CmsMarket> &cmsMarket, const Matrix &weights,
+        ext::shared_ptr<CmsMarket> &cmsMarket, const Matrix &weights,
         CalibrationType calibrationType)
         : volCube_(volCube), cmsMarket_(cmsMarket), weights_(weights),
           calibrationType_(calibrationType) {
@@ -333,8 +333,8 @@ namespace QuantLib {
     }
 
     Array CmsMarketCalibration::compute(
-        const boost::shared_ptr<EndCriteria> &endCriteria,
-        const boost::shared_ptr<OptimizationMethod> &method, const Array &guess,
+        const ext::shared_ptr<EndCriteria> &endCriteria,
+        const ext::shared_ptr<OptimizationMethod> &method, const Array &guess,
         bool isMeanReversionFixed) {
         Size nSwapTenors = cmsMarket_->swapTenors().size();
         QL_REQUIRE(isMeanReversionFixed || guess.size() == nSwapTenors + 1,
@@ -384,8 +384,8 @@ namespace QuantLib {
                 result[i] = betaTransformDirect(result[i]);
             result[nBeta] = reversionTransformDirect(result[nBeta]);
         }
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         volCubeBySabr->updateAfterRecalibration();
         sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
         denseSabrParameters_ = volCubeBySabr->denseSabrParameters();
@@ -395,8 +395,8 @@ namespace QuantLib {
     }
 
     Matrix CmsMarketCalibration::compute(
-        const boost::shared_ptr<EndCriteria> &endCriteria,
-        const boost::shared_ptr<OptimizationMethod> &method,
+        const ext::shared_ptr<EndCriteria> &endCriteria,
+        const ext::shared_ptr<OptimizationMethod> &method,
         const Matrix &guess, bool isMeanReversionFixed,
         const Real meanReversionGuess) {
         Size nSwapTenors = cmsMarket_->swapTenors().size();
@@ -473,8 +473,8 @@ namespace QuantLib {
                 result[j][nSwapTenors] = reversionTransformDirect(tmp[nBeta]);
             }
         }
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         volCubeBySabr->updateAfterRecalibration();
         sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
         denseSabrParameters_ = volCubeBySabr->denseSabrParameters();
@@ -484,8 +484,8 @@ namespace QuantLib {
     }
 
     Matrix CmsMarketCalibration::computeParametric(
-        const boost::shared_ptr<EndCriteria> &endCriteria,
-        const boost::shared_ptr<OptimizationMethod> &method,
+        const ext::shared_ptr<EndCriteria> &endCriteria,
+        const ext::shared_ptr<OptimizationMethod> &method,
         const Matrix &guess, bool isMeanReversionFixed,
         const Real meanReversionGuess) {
 
@@ -568,8 +568,8 @@ namespace QuantLib {
             }
         }
 
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         volCubeBySabr->updateAfterRecalibration();
         sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
         denseSabrParameters_ = volCubeBySabr->denseSabrParameters();

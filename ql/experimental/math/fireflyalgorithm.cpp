@@ -28,8 +28,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
     FireflyAlgorithm::FireflyAlgorithm(Size M, 
-        boost::shared_ptr<Intensity> intensity,
-        boost::shared_ptr<RandomWalk> randomWalk,
+        ext::shared_ptr<Intensity> intensity,
+        ext::shared_ptr<RandomWalk> randomWalk,
         Size Mde, Real mutation,
         Real crossover, unsigned long seed):
         mutation_(mutation), crossover_(crossover),

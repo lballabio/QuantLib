@@ -109,7 +109,7 @@ namespace QuantLib {
         private:
             bool isLastPeriod_;
         };
-        static boost::shared_ptr<DayCounter::Impl> implementation(
+        static ext::shared_ptr<DayCounter::Impl> implementation(
             Convention c, bool isLastPeriod);
       public:
         Thirty360(Convention c = Thirty360::BondBasis, bool isLastPeriod = false)

@@ -44,10 +44,10 @@ namespace QuantLib {
 								  public LazyObject {
 	  public:
 		LocalVolRNDCalculator(
-			const boost::shared_ptr<Quote>& spot,
-			const boost::shared_ptr<YieldTermStructure>& rTS,
-			const boost::shared_ptr<YieldTermStructure>& qTS,
-			const boost::shared_ptr<LocalVolTermStructure>& localVol,
+			const ext::shared_ptr<Quote>& spot,
+			const ext::shared_ptr<YieldTermStructure>& rTS,
+			const ext::shared_ptr<YieldTermStructure>& qTS,
+			const ext::shared_ptr<LocalVolTermStructure>& localVol,
 			Size xGrid = 101, Size tGrid = 51,
 			Real x0Density = 0.1,
 			Real localVolProbEps = 1e-6,
@@ -55,11 +55,11 @@ namespace QuantLib {
 			Time gaussianStepSize = -Null<Time>());
 
 		LocalVolRNDCalculator(
-			const boost::shared_ptr<Quote>& spot,
-			const boost::shared_ptr<YieldTermStructure>& rTS,
-			const boost::shared_ptr<YieldTermStructure>& qTS,
-			const boost::shared_ptr<LocalVolTermStructure>& localVol,
-			const boost::shared_ptr<TimeGrid>& timeGrid,
+			const ext::shared_ptr<Quote>& spot,
+			const ext::shared_ptr<YieldTermStructure>& rTS,
+			const ext::shared_ptr<YieldTermStructure>& qTS,
+			const ext::shared_ptr<LocalVolTermStructure>& localVol,
+			const ext::shared_ptr<TimeGrid>& timeGrid,
 			Size xGrid = 101,
 			Real x0Density = 0.1,
 			Real eps = 1e-6,
@@ -70,8 +70,8 @@ namespace QuantLib {
 		Real cdf(Real x, Time t) const;
 		Real invcdf(Real p, Time t) const;
 
-		boost::shared_ptr<TimeGrid> timeGrid() const;
-		boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
+		ext::shared_ptr<TimeGrid> timeGrid() const;
+		ext::shared_ptr<Fdm1dMesher> mesher(Time t) const;
 		Disposable<std::vector<Size> > rescaleTimeSteps() const;
 
 	  protected:
@@ -87,15 +87,15 @@ namespace QuantLib {
 		const Real localVolProbEps_;
 		const Size maxIter_;
 		const Time gaussianStepSize_;
-		const boost::shared_ptr<Quote> spot_;
-		const boost::shared_ptr<LocalVolTermStructure> localVol_;
-		const boost::shared_ptr<YieldTermStructure> rTS_;
-		const boost::shared_ptr<YieldTermStructure> qTS_;
-		const boost::shared_ptr<TimeGrid> timeGrid_;
-		mutable std::vector<boost::shared_ptr<Fdm1dMesher> > xm_;
-		const boost::shared_ptr<Matrix> pm_;
+		const ext::shared_ptr<Quote> spot_;
+		const ext::shared_ptr<LocalVolTermStructure> localVol_;
+		const ext::shared_ptr<YieldTermStructure> rTS_;
+		const ext::shared_ptr<YieldTermStructure> qTS_;
+		const ext::shared_ptr<TimeGrid> timeGrid_;
+		mutable std::vector<ext::shared_ptr<Fdm1dMesher> > xm_;
+		const ext::shared_ptr<Matrix> pm_;
 		mutable std::vector<Size> rescaleTimeSteps_;
-		mutable std::vector<boost::shared_ptr<Interpolation> > pFct_;
+		mutable std::vector<ext::shared_ptr<Interpolation> > pFct_;
 	};
 }
 

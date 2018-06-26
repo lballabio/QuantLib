@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         typedef typename MCVanillaEngine<MultiVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        MCEuropeanHestonEngine(const boost::shared_ptr<P>&,
+        MCEuropeanHestonEngine(const ext::shared_ptr<P>&,
                                Size timeSteps,
                                Size timeStepsPerYear,
                                bool antitheticVariate,
@@ -52,7 +52,7 @@ namespace QuantLib {
                                Size maxSamples,
                                BigNatural seed);
       protected:
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const;
     };
 
     //! Monte Carlo Heston European engine factory
@@ -60,7 +60,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCEuropeanHestonEngine {
       public:
-        MakeMCEuropeanHestonEngine(const boost::shared_ptr<P>&);
+        MakeMCEuropeanHestonEngine(const ext::shared_ptr<P>&);
         // named parameters
         MakeMCEuropeanHestonEngine& withSteps(Size steps);
         MakeMCEuropeanHestonEngine& withStepsPerYear(Size steps);
@@ -70,9 +70,9 @@ namespace QuantLib {
         MakeMCEuropeanHestonEngine& withSeed(BigNatural seed);
         MakeMCEuropeanHestonEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<P> process_;
+        ext::shared_ptr<P> process_;
         bool antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -96,7 +96,7 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     MCEuropeanHestonEngine<RNG, S, P>::MCEuropeanHestonEngine(
-                const boost::shared_ptr<P>& process,
+                const ext::shared_ptr<P>& process,
                 Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
                 Size requiredSamples, Real requiredTolerance,
                 Size maxSamples, BigNatural seed)
@@ -107,20 +107,20 @@ namespace QuantLib {
 
 
     template <class RNG, class S, class P>
-    boost::shared_ptr<
+    ext::shared_ptr<
         typename MCEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
     MCEuropeanHestonEngine<RNG,S,P>::pathPricer() const {
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff(
-                  boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+        ext::shared_ptr<PlainVanillaPayoff> payoff(
+                  ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                     this->arguments_.payoff));
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<P> process =
-            boost::dynamic_pointer_cast<P>(this->process_);
+        ext::shared_ptr<P> process =
+            ext::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return boost::shared_ptr<
+        return ext::shared_ptr<
             typename MCEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
                    new EuropeanHestonPathPricer(
                                         payoff->optionType(),
@@ -133,7 +133,7 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MakeMCEuropeanHestonEngine<RNG,S,P>::MakeMCEuropeanHestonEngine(
-                              const boost::shared_ptr<P>& process)
+                              const ext::shared_ptr<P>& process)
     : process_(process), antithetic_(false),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
@@ -202,10 +202,10 @@ namespace QuantLib {
     template <class RNG, class S, class P>
     inline
     MakeMCEuropeanHestonEngine<RNG,S,P>::
-    operator boost::shared_ptr<PricingEngine>() const {
+    operator ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
-        return boost::shared_ptr<PricingEngine>(
+        return ext::shared_ptr<PricingEngine>(
                new MCEuropeanHestonEngine<RNG,S,P>(process_,
                                                    steps_,
                                                    stepsPerYear_,

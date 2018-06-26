@@ -27,11 +27,11 @@
 namespace QuantLib {
 
     FdmLocalVolFwdOp::FdmLocalVolFwdOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<Quote>& spot,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& qTS,
-        const boost::shared_ptr<LocalVolTermStructure>& localVol,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<Quote>& spot,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<YieldTermStructure>& qTS,
+        const ext::shared_ptr<LocalVolTermStructure>& localVol,
         Size direction)
     : mesher_(mesher),
       rTS_   (rTS),
@@ -48,7 +48,7 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         Array v(layout->size());
