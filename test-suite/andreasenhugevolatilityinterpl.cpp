@@ -122,7 +122,7 @@ namespace {
 
         calibrationSet.reserve(std::count_if(
             &raw[0][0], &raw[nStrikes-1][nMaturities]+1,
-            std::bind2nd(std::not_equal_to<Real>(), 0.0)) - nStrikes);
+            not_zero<Real>()) - nStrikes);
 
         for (Size i=0; i < LENGTH(raw); ++i) {
             const Real strike = spot->value()*raw[i][0];

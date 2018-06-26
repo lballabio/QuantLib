@@ -82,8 +82,8 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
 
     boost::function<Real (Real)> f[] 
         = { constant<Real, Real>(level),
-            std::bind1st(std::plus<Real>(), 1.0),
-            std::ptr_fun<Real, Real>(std::sin) }; 
+            add<Real>(1.0),
+            static_cast<Real(*)(Real)>(std::sin) }; 
 
     for (Size n=0; n < LENGTH(f); ++n) {
         ExtendedOrnsteinUhlenbeckProcess refProcess(

@@ -108,9 +108,9 @@ namespace QuantLib {
                 << cdf(lower, t) << ", " << cdf(upper, t) << ")");
 
         return Brent().solve(
-            compose(std::bind2nd(std::minus<Real>(), q),
-                boost::function<Real(Real)>(
-                    boost::bind(&GBSMRNDCalculator::cdf, this, _1, t))),
+            compose(subtract<Real>(q),
+                    boost::function<Real(Real)>(
+                        boost::bind(&GBSMRNDCalculator::cdf, this, _1, t))),
             1e-10, 0.5*(lower+upper), lower, upper);
     }
 }

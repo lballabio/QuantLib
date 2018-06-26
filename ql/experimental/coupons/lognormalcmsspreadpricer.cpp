@@ -31,6 +31,16 @@ using std::sqrt;
 
 namespace QuantLib {
 
+    class LognormalCmsSpreadPricer::integrand_f {
+        const LognormalCmsSpreadPricer* pricer;
+      public:
+        explicit integrand_f(const LognormalCmsSpreadPricer* pricer)
+        : pricer(pricer) {}
+        Real operator()(Real x) const {
+            return pricer->integrand(x);
+        }
+    };
+
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(
         const ext::shared_ptr<CmsCouponPricer> cmsPricer,
         const Handle<Quote> &correlation,
@@ -283,9 +293,7 @@ namespace QuantLib {
                                gearing2_ * adjustedRate2_ - strike);
             }
             res +=
-                1.0 / M_SQRTPI *
-                (*integrator_)(std::bind1st(
-                    std::mem_fun(&LognormalCmsSpreadPricer::integrand), this));
+                1.0 / M_SQRTPI * (*integrator_)(integrand_f(this));
         } else {
             // normal volatility
             Real forward = gearing1_ * adjustedRate1_ +

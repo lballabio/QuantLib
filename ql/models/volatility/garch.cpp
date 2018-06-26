@@ -22,6 +22,7 @@
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/autocovariance.hpp>
+#include <ql/math/functional.hpp>
 #include <boost/foreach.hpp>
 
 namespace QuantLib {
@@ -109,7 +110,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           std::bind2nd(std::divides<Real>(), norm));
+                           divide_by<Real>(norm));
         }
 
         Real Garch11CostFunction::valueAndGradient(Array& grad,
@@ -133,7 +134,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           std::bind2nd(std::divides<Real>(), norm));
+                           divide_by<Real>(norm));
             return retval / norm;
         }
 
@@ -417,7 +418,7 @@ namespace QuantLib {
         Array acf(maxLag+1);
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+                        subtract<Real>(mean_r2));
         autocovariances (tmp.begin(), tmp.end(), acf.begin(), maxLag);
         QL_REQUIRE (acf[0] > 0, "Data series is constant");
 
@@ -517,7 +518,7 @@ namespace QuantLib {
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+                        subtract<Real>(mean_r2));
         return calibrate_r2(tmp, method, endCriteria, initGuess,
                             alpha, beta, omega);
     }
@@ -550,7 +551,7 @@ namespace QuantLib {
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+                        subtract<Real>(mean_r2));
         return calibrate_r2(tmp, method, constraints, endCriteria,
                             initGuess, alpha, beta, omega);
     }

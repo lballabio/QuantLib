@@ -419,7 +419,7 @@ namespace QuantLib {
             std::transform(xMesher[i]->locations().begin(),
                            xMesher[i]->locations().end(),
                            vStrikes[i]->begin(),
-                           std::ptr_fun<Real, Real>(std::exp));
+                           static_cast<Real(*)(Real)>(std::exp));
         }
 
         const ext::shared_ptr<FixedLocalVolSurface> leverageFct(

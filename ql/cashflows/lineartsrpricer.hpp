@@ -234,6 +234,9 @@ namespace QuantLib {
         Real integrand(const Real strike) const;
         Real a_, b_;
 
+        class integrand_f;
+        friend class integrand_f;
+
         class VegaRatioHelper {
           public:
             VegaRatioHelper(const SmileSection *section, const Real targetVega)

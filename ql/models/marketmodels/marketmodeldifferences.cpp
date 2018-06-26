@@ -21,6 +21,7 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -106,8 +107,7 @@ namespace QuantLib {
                     std::transform(correlations.row_begin(j),
                                    correlations.row_end(j),
                                    pseudoRoot.row_begin(j),
-                                   std::bind2nd(std::multiplies<Real>(),
-                                                            volatility));
+                                   multiply_by<Real>(volatility));
                 }
                 peudoRoots.push_back(pseudoRoot);
             }

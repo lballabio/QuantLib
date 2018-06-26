@@ -31,7 +31,7 @@ PiecewiseIntegral::PiecewiseIntegral(
     std::sort(criticalPoints_.begin(), criticalPoints_.end());
     std::vector<Real>::const_iterator end =
         std::unique(criticalPoints_.begin(), criticalPoints_.end(),
-                    std::ptr_fun(close_enough));
+                    static_cast<bool (*)(Real, Real)>(close_enough));
     criticalPoints_.resize(end - criticalPoints_.begin());
 
 }

@@ -19,6 +19,10 @@
 */
 
 #include <ql/math/optimization/differentialevolution.hpp>
+#include <algorithm>
+#if defined(__cplusplus) && __cplusplus >= 201402L
+#include <random>
+#endif
 
 namespace QuantLib {
 
@@ -30,6 +34,16 @@ namespace QuantLib {
                 return left.cost < right.cost;
             }
         };
+
+        template <class I>
+        void randomize(I begin, I end) {
+            #if defined(__cplusplus) && __cplusplus >= 201402L
+            static std::mt19937 _mt = std::mt19937(std::random_device()());
+            std::shuffle(begin, end, _mt);
+            #else
+            std::random_shuffle(begin, end);
+            #endif
+        }
 
     }
 
@@ -81,11 +95,11 @@ namespace QuantLib {
         switch (configuration().strategy) {
 
           case Rand1Standard: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               mirrorPopulation = shuffledPop1;
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
@@ -97,9 +111,9 @@ namespace QuantLib {
             break;
 
           case BestMemberWithJitter: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               Array jitter(population[0].values.size(), 0.0);
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
@@ -116,9 +130,9 @@ namespace QuantLib {
             break;
 
           case CurrentToBest2Diffs: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
                   population[popIter].values = oldPopulation[popIter].values
@@ -132,11 +146,11 @@ namespace QuantLib {
             break;
 
           case Rand1DiffWithPerVectorDither: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               mirrorPopulation = shuffledPop1;
               Array FWeight = Array(population.front().values.size(), 0.0);
               for (Size fwIter = 0; fwIter < FWeight.size(); fwIter++)
@@ -150,11 +164,11 @@ namespace QuantLib {
             break;
 
           case Rand1DiffWithDither: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               mirrorPopulation = shuffledPop1;
               Real FWeight = (1.0 - configuration().stepsizeWeight) * rng_.nextReal()
                   + configuration().stepsizeWeight;
@@ -166,11 +180,11 @@ namespace QuantLib {
             break;
 
           case EitherOrWithOptimalRecombination: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               mirrorPopulation = shuffledPop1;
               Real probFWeight = 0.5;
               if (rng_.nextReal() < probFWeight) {
@@ -192,11 +206,11 @@ namespace QuantLib {
             break;
 
           case Rand1SelfadaptiveWithRotation: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end());
               mirrorPopulation = shuffledPop1;
 
               adaptSizeWeights();
@@ -312,7 +326,7 @@ namespace QuantLib {
     }
 
     Array DifferentialEvolution::rotateArray(Array a) const {
-        std::random_shuffle(a.begin(), a.end());
+        randomize(a.begin(), a.end());
         return a;
     }
 

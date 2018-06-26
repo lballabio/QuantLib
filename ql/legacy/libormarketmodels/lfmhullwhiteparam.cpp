@@ -19,6 +19,7 @@
 
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -52,8 +53,7 @@ namespace QuantLib {
             for (Size i=0; i < size_-1; ++i) {
                 std::transform(
                     tmpSqrtCorr[i], tmpSqrtCorr[i]+factors_, sqrtCorr[i],
-                    std::bind2nd(std::divides<Real>(),
-                                 std::sqrt(std::inner_product(
+                    divide_by<Real>(std::sqrt(std::inner_product(
                                      tmpSqrtCorr[i],tmpSqrtCorr[i]+factors_,
                                      tmpSqrtCorr[i], 0.0))));
             }

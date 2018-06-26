@@ -27,6 +27,7 @@
 
 #include <ql/numericalmethod.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
@@ -231,7 +232,7 @@ namespace QuantLib {
         // discard negative times...
         std::vector<Time>::const_iterator i =
             std::find_if(exerciseTimes_.begin(),exerciseTimes_.end(),
-                         std::bind2nd(std::greater_equal<Time>(),0.0));
+                         greater_or_equal_to<Time>(0.0));
         // and add the positive ones
         times.insert(times.end(), i, exerciseTimes_.end());
         return times;

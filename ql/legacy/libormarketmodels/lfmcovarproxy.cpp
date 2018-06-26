@@ -19,6 +19,7 @@
 
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
     LfmCovarianceProxy::LfmCovarianceProxy(
@@ -53,7 +54,7 @@ namespace QuantLib {
         for (Size i=0; i<size_; ++i) {
             std::transform(pca.row_begin(i), pca.row_end(i),
                            pca.row_begin(i),
-                           std::bind2nd(std::multiplies<Real>(), vol[i]));
+                           multiply_by<Real>(vol[i]));
         }
 
         return pca;
