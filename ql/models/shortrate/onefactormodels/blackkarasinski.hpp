@@ -44,21 +44,24 @@ namespace QuantLib {
         BlackKarasinski(const Handle<YieldTermStructure>& termStructure,
                         Real a = 0.1, Real sigma = 0.1);
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const {
-            QL_FAIL("no defined process for Black-Karasinski");
-        }
+        ext::shared_ptr<ShortRateDynamics> dynamics() const;
 
         ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+
+      protected:
+        void generateArguments() override;
 
       private:
         class Dynamics;
         class Helper;
+        class FittingParameter;
 
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
 
         Parameter& a_;
         Parameter& sigma_;
+        Parameter phi_;
     };
 
     //! Short-rate dynamics in the Black-Karasinski model
@@ -89,6 +92,39 @@ namespace QuantLib {
       private:
         Parameter fitting_;
     };
+
+    class BlackKarasinski::FittingParameter
+        : public TermStructureFittingParameter {
+    private:
+        class Impl :public Parameter::Impl{
+        public:
+            Impl(const Handle<YieldTermStructure>& termStructure,
+                Real a, Real sigma)
+                :termStructure_(termStructure), a_(a), sigma_(sigma) {}
+
+            Real value(const Array&, Time t) const {
+                QL_FAIL("BlackKarasinski::FittingParameter::Impl::value not implemented.");
+            }
+
+        private:
+            Handle<YieldTermStructure> termStructure_;
+            Real a_, sigma_;
+        };
+    public:
+        FittingParameter(const Handle<YieldTermStructure>& termStructure,
+                         Real a, Real sigma)
+            : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
+                new FittingParameter::Impl(termStructure, a, sigma))) {}
+    };
+
+
+	//inline definitions
+
+    inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+    BlackKarasinski::dynamics() const {
+        return ext::shared_ptr<ShortRateDynamics>(
+            new Dynamics(phi_, a(), sigma()));
+    }
 
 }
 
