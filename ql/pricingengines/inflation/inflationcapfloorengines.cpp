@@ -26,7 +26,7 @@ namespace QuantLib {
 
 
     YoYInflationCapFloorEngine::YoYInflationCapFloorEngine(
-                    const boost::shared_ptr<YoYInflationIndex>& index,
+                    const ext::shared_ptr<YoYInflationIndex>& index,
                     const Handle<YoYOptionletVolatilitySurface>& volatility)
     : index_(index), volatility_(volatility) {
         registerWith(index_);
@@ -131,7 +131,7 @@ namespace QuantLib {
     // pricer implementations
     //======================================================================
     YoYInflationBlackCapFloorEngine::YoYInflationBlackCapFloorEngine(
-                    const boost::shared_ptr<YoYInflationIndex>& index,
+                    const ext::shared_ptr<YoYInflationIndex>& index,
                     const Handle<YoYOptionletVolatilitySurface>& volatility)
     : YoYInflationCapFloorEngine(index, volatility) {}
 
@@ -148,7 +148,7 @@ namespace QuantLib {
 
     YoYInflationUnitDisplacedBlackCapFloorEngine
     ::YoYInflationUnitDisplacedBlackCapFloorEngine(
-                    const boost::shared_ptr<YoYInflationIndex>& index,
+                    const ext::shared_ptr<YoYInflationIndex>& index,
                     const Handle<YoYOptionletVolatilitySurface>& volatility)
     : YoYInflationCapFloorEngine(index, volatility) {}
 
@@ -165,7 +165,7 @@ namespace QuantLib {
 
 
     YoYInflationBachelierCapFloorEngine::YoYInflationBachelierCapFloorEngine(
-                    const boost::shared_ptr<YoYInflationIndex>& index,
+                    const ext::shared_ptr<YoYInflationIndex>& index,
                     const Handle<YoYOptionletVolatilitySurface>& volatility)
     : YoYInflationCapFloorEngine(index, volatility) {}
 

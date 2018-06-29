@@ -76,7 +76,11 @@ class MarketModelPathwiseInverseFloater : public MarketModelPathwiseMultiProduct
             std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
 
         //! returns a newly-allocated copy of itself
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        #else
         virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        #endif
 
     private:
         std::vector<Real> rateTimes_,fixedAccruals_, floatingAccruals_,fixedStrikes_, fixedMultipliers_, floatingSpreads_;

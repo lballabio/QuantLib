@@ -28,15 +28,15 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 void InstrumentTest::testObservable() {
 
     BOOST_TEST_MESSAGE("Testing observability of instruments...");
 
-    boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
-    boost::shared_ptr<Instrument> s(new Stock(h));
+    ext::shared_ptr<Instrument> s(new Stock(h));
 
     Flag f;
     f.registerWith(s);
@@ -48,7 +48,7 @@ void InstrumentTest::testObservable() {
     
     s->NPV();
     f.lower();
-    boost::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of instrument change");

@@ -42,7 +42,7 @@ namespace QuantLib {
                     const Schedule& fixedLegSchedule,
                     Rate fixedRate,
                     const DayCounter& fixedDC,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
                     const Schedule& overnightLegSchedule,
                     Spread spread = 0.0,
                     Real meanReversionSpeed = 0.03,
@@ -54,7 +54,7 @@ namespace QuantLib {
                     const Schedule& fixedLegSchedule,
                     Rate fixedRate,
                     const DayCounter& fixedDC,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
                     const Schedule& overnightLegSchedule,
                     Spread spread = 0.0,
                     Real meanReversionSpeed = 0.03,
@@ -73,7 +73,7 @@ namespace QuantLib {
         Rate fixedRate() const { return fixedRate_; }
         const DayCounter& fixedDayCount() { return fixedDC_; }
 
-        const boost::shared_ptr<OvernightIndex>& overnightIndex();
+        const ext::shared_ptr<OvernightIndex>& overnightIndex();
         Spread spread() { return spread_; }
 
         const Leg& fixedLeg() const { return legs_[0]; }
@@ -103,7 +103,7 @@ namespace QuantLib {
         Rate fixedRate_;
         DayCounter fixedDC_;
 
-        boost::shared_ptr<OvernightIndex> overnightIndex_;
+        ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
 
         bool byApprox_;

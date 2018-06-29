@@ -67,7 +67,7 @@ namespace QuantLib {
         mutable Date exerciseDate_;
         mutable Time tau_;
         mutable Option::Type type_;
-        mutable boost::shared_ptr<VanillaOption> option_;
+        mutable ext::shared_ptr<VanillaOption> option_;
     };
 
 }

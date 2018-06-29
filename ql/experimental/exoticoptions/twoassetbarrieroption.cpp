@@ -26,8 +26,8 @@ namespace QuantLib {
     TwoAssetBarrierOption::TwoAssetBarrierOption(
                            Barrier::Type barrierType,
                            Real barrier,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise)
+                           const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                           const ext::shared_ptr<Exercise>& exercise)
     : Option(payoff, exercise), barrierType_(barrierType), barrier_(barrier) {}
 
     void TwoAssetBarrierOption::setupArguments(

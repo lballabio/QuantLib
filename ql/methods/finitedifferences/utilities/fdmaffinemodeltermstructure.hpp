@@ -38,7 +38,7 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Date& referenceDate,
             const Date& modelReferenceDate,
-            const boost::shared_ptr<AffineModel>& model);
+            const ext::shared_ptr<AffineModel>& model);
 
         Date maxDate() const;
         void setVariable(const Array& r);
@@ -49,7 +49,7 @@ namespace QuantLib {
       private:
         Array r_;
         const Time t_;
-        const boost::shared_ptr<AffineModel> model_;
+        const ext::shared_ptr<AffineModel> model_;
     };
 }
 #endif

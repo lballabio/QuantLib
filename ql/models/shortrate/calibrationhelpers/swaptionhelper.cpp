@@ -27,7 +27,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/iborindex.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +34,7 @@ namespace QuantLib {
                               const Period& maturity,
                               const Period& length,
                               const Handle<Quote>& volatility,
-                              const boost::shared_ptr<IborIndex>& index,
+                              const ext::shared_ptr<IborIndex>& index,
                               const Period& fixedLegTenor,
                               const DayCounter& fixedLegDayCounter,
                               const DayCounter& floatingLegDayCounter,
@@ -56,7 +55,7 @@ namespace QuantLib {
                               const Date& exerciseDate,
                               const Period& length,
                               const Handle<Quote>& volatility,
-                              const boost::shared_ptr<IborIndex>& index,
+                              const ext::shared_ptr<IborIndex>& index,
                               const Period& fixedLegTenor,
                               const DayCounter& fixedLegDayCounter,
                               const DayCounter& floatingLegDayCounter,
@@ -77,7 +76,7 @@ namespace QuantLib {
                               const Date& exerciseDate,
                               const Date& endDate,
                               const Handle<Quote>& volatility,
-                              const boost::shared_ptr<IborIndex>& index,
+                              const ext::shared_ptr<IborIndex>& index,
                               const Period& fixedLegTenor,
                               const DayCounter& fixedLegDayCounter,
                               const DayCounter& floatingLegDayCounter,
@@ -115,15 +114,15 @@ namespace QuantLib {
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         calculate();
-        Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(sigma)));
-        boost::shared_ptr<PricingEngine> engine;
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        ext::shared_ptr<PricingEngine> engine;
         switch(volatilityType_) {
         case ShiftedLognormal:
-            engine = boost::make_shared<BlackSwaptionEngine>(
+            engine = ext::make_shared<BlackSwaptionEngine>(
                 termStructure_, vol, Actual365Fixed(), shift_);
             break;
         case Normal:
-            engine = boost::make_shared<BachelierSwaptionEngine>(
+            engine = ext::make_shared<BachelierSwaptionEngine>(
                 termStructure_, vol, Actual365Fixed());
             break;
         default:
@@ -165,7 +164,7 @@ namespace QuantLib {
                                index_->businessDayConvention(),
                                DateGeneration::Forward, false);
 
-        boost::shared_ptr<PricingEngine> swapEngine(
+        ext::shared_ptr<PricingEngine> swapEngine(
                              new DiscountingSwapEngine(termStructure_, false));
 
         VanillaSwap::Type type = VanillaSwap::Receiver;
@@ -183,15 +182,15 @@ namespace QuantLib {
             type = strike_ <= forward ? VanillaSwap::Receiver : VanillaSwap::Payer;
             // ensure that calibration instrument is out of the money
         }
-        swap_ = boost::shared_ptr<VanillaSwap>(
-            new VanillaSwap(type, nominal_,
+        swap_ = ext::make_shared<VanillaSwap>(
+            type, nominal_,
                             fixedSchedule, exerciseRate_, fixedLegDayCounter_,
-                            floatSchedule, index_, 0.0, floatingLegDayCounter_));
+                            floatSchedule, index_, 0.0, floatingLegDayCounter_);
         swap_->setPricingEngine(swapEngine);
 
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-        swaption_ = boost::shared_ptr<Swaption>(new Swaption(swap_, exercise));
+        swaption_ = ext::make_shared<Swaption>(swap_, exercise);
 
         CalibrationHelper::performCalculations();
 

@@ -44,8 +44,8 @@ namespace QuantLib {
         const FdmVPPStepConditionParams& params,
         Size nStates,
         const FdmVPPStepConditionMesher& mesh,
-        const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-        const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice)
+        const ext::shared_ptr<FdmInnerValueCalculator>& gasPrice,
+        const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice)
     : heatRate_        (params.heatRate),
       pMin_            (params.pMin),
       pMax_            (params.pMax),
@@ -85,7 +85,7 @@ namespace QuantLib {
 
 
     void FdmVPPStepCondition::applyTo(Array& a, Time t) const {
-        boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
 
         const Size nStates = layout->dim()[stateDirection_];
         const FdmLinearOpIterator endIter = layout->end();

@@ -60,12 +60,12 @@ namespace QuantLib {
         boost::function<Real(Real)> f1, f2;
         switch(type_) {
           case Cosine:
-            f1 = std::ptr_fun<Real,Real>(std::sin);
-            f2 = std::ptr_fun<Real,Real>(std::cos);
+            f1 = static_cast<Real(*)(Real)>(std::sin);
+            f2 = static_cast<Real(*)(Real)>(std::cos);
             break;
           case Sine:
-            f1 = std::ptr_fun<Real,Real>(std::cos);
-            f2 = std::ptr_fun<Real,Real>(std::sin);
+            f1 = static_cast<Real(*)(Real)>(std::cos);
+            f2 = static_cast<Real(*)(Real)>(std::sin);
             break;
           default:
             QL_FAIL("unknown integration type");

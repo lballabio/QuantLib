@@ -22,7 +22,6 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +42,7 @@ namespace QuantLib {
         const Date& referenceDate,
         const std::vector<Date>& dates,
         const std::vector<Real>& strikes,
-        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const ext::shared_ptr<Matrix>& localVolMatrix,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
@@ -51,7 +50,7 @@ namespace QuantLib {
           referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(dates.back()),
       localVolMatrix_(localVolMatrix),
-      strikes_(dates.size(),boost::make_shared<std::vector<Real> >(strikes)),
+      strikes_(dates.size(),ext::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(dates.size()),
       lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {
@@ -71,7 +70,7 @@ namespace QuantLib {
         const Date& referenceDate,
         const std::vector<Time>& times,
         const std::vector<Real>& strikes,
-        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const ext::shared_ptr<Matrix>& localVolMatrix,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
@@ -80,7 +79,7 @@ namespace QuantLib {
       maxDate_(time2Date(referenceDate, dayCounter, times.back())),
       times_(times),
       localVolMatrix_(localVolMatrix),
-      strikes_(times.size(),boost::make_shared<std::vector<Real> >(strikes)),
+      strikes_(times.size(),ext::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(times.size()),
       lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {
@@ -94,8 +93,8 @@ namespace QuantLib {
     FixedLocalVolSurface::FixedLocalVolSurface(
         const Date& referenceDate,
         const std::vector<Time>& times,
-        const std::vector<boost::shared_ptr<std::vector<Real> > > & strikes,
-        const boost::shared_ptr<Matrix>& localVolMatrix,
+        const std::vector<ext::shared_ptr<std::vector<Real> > > & strikes,
+        const ext::shared_ptr<Matrix>& localVolMatrix,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)

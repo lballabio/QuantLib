@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     SpreadedSmileSection::SpreadedSmileSection(
-                    const boost::shared_ptr<SmileSection>& underlyingSection,
+                    const ext::shared_ptr<SmileSection>& underlyingSection,
                     const Handle<Quote>& spread)
     : underlyingSection_(underlyingSection), spread_(spread) {
             registerWith(underlyingSection_);

@@ -204,7 +204,7 @@ namespace QuantLib {
                             const M& zData,
                             const Kernel& kernel) {
 
-            impl_ = boost::shared_ptr<Interpolation2D::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation2D::Impl>(new
                 detail::KernelInterpolation2DImpl<I1,I2,M,Kernel>(xBegin, xEnd,
                                                                   yBegin, yEnd,
                                                                   zData, kernel));

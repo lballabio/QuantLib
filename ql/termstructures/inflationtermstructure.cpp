@@ -29,7 +29,7 @@ namespace QuantLib {
                                         bool indexIsInterpolated,
                                         const Handle<YieldTermStructure>& yTS,
                                         const DayCounter& dayCounter,
-                                        const boost::shared_ptr<Seasonality> &seasonality)
+                                        const ext::shared_ptr<Seasonality> &seasonality)
     : TermStructure(dayCounter),
       observationLag_(observationLag), frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
       baseRate_(baseRate), nominalTermStructure_(yTS) {
@@ -46,7 +46,7 @@ namespace QuantLib {
                                         const Handle<YieldTermStructure>& yTS,
                                         const Calendar& calendar,
                                         const DayCounter& dayCounter,
-                                        const boost::shared_ptr<Seasonality> &seasonality)
+                                        const ext::shared_ptr<Seasonality> &seasonality)
     : TermStructure(referenceDate, calendar, dayCounter),
       observationLag_(observationLag),
       frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
@@ -64,7 +64,7 @@ namespace QuantLib {
                                         bool indexIsInterpolated,
                                         const Handle<YieldTermStructure>& yTS,
                                         const DayCounter &dayCounter,
-                                        const boost::shared_ptr<Seasonality> &seasonality)
+                                        const ext::shared_ptr<Seasonality> &seasonality)
     : TermStructure(settlementDays, calendar, dayCounter),
       observationLag_(observationLag),
       frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
@@ -75,7 +75,7 @@ namespace QuantLib {
 
 
     void InflationTermStructure::setSeasonality(
-                          const boost::shared_ptr<Seasonality>& seasonality) {
+                          const ext::shared_ptr<Seasonality>& seasonality) {
         // always reset, whether with null or new pointer
         seasonality_ = seasonality;
         if (seasonality_) {
@@ -113,7 +113,7 @@ namespace QuantLib {
                                     Frequency frequency,
                                     bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
-                                    const boost::shared_ptr<Seasonality> &seasonality)
+                                    const ext::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(baseZeroRate, observationLag, frequency, indexIsInterpolated,
                              yTS, dayCounter, seasonality) {
     }
@@ -127,7 +127,7 @@ namespace QuantLib {
                                     Frequency frequency,
                                     bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
-                                    const boost::shared_ptr<Seasonality> &seasonality)
+                                    const ext::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(referenceDate, baseZeroRate, observationLag, frequency, indexIsInterpolated,
                              yTS, calendar, dayCounter, seasonality) {
     }
@@ -141,7 +141,7 @@ namespace QuantLib {
                                     Frequency frequency,
                                     bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
-                                    const boost::shared_ptr<Seasonality> &seasonality)
+                                    const ext::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(settlementDays, calendar, baseZeroRate, observationLag, frequency, indexIsInterpolated,
                              yTS, dayCounter, seasonality) {
     }
@@ -201,7 +201,7 @@ namespace QuantLib {
                                     Frequency frequency,
                                     bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
-                                    const boost::shared_ptr<Seasonality> &seasonality)
+                                    const ext::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(baseYoYRate, observationLag, frequency, indexIsInterpolated,
                              yTS, dayCounter, seasonality) {}
 
@@ -214,7 +214,7 @@ namespace QuantLib {
                                     Frequency frequency,
                                     bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
-                                    const boost::shared_ptr<Seasonality> &seasonality)
+                                    const ext::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(referenceDate, baseYoYRate, observationLag, frequency, indexIsInterpolated,
                              yTS, calendar, dayCounter, seasonality) {}
 
@@ -227,7 +227,7 @@ namespace QuantLib {
                                     Frequency frequency,
                                     bool indexIsInterpolated,
                                     const Handle<YieldTermStructure>& yTS,
-                                    const boost::shared_ptr<Seasonality> &seasonality)
+                                    const ext::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(settlementDays, calendar, baseYoYRate, observationLag,
                              frequency, indexIsInterpolated,
                              yTS, dayCounter, seasonality) {}

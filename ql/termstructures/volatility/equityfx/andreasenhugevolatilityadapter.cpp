@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     AndreasenHugeVolatilityAdapter::AndreasenHugeVolatilityAdapter(
-        const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
+        const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
         Real eps)
     : eps_(eps),
       volInterpl_(volInterpl) { }

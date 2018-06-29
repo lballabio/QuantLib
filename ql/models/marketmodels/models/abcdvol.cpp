@@ -24,7 +24,6 @@
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
-using boost::shared_ptr;
 using std::vector;
 
 namespace QuantLib {
@@ -34,7 +33,7 @@ namespace QuantLib {
                      Real c,
                      Real d,
                      const vector<Real>& ks,
-                     const shared_ptr<PiecewiseConstantCorrelation>& corr,
+                     const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
                      const EvolutionDescription& evolution,
                      const Size numberOfFactors,
                      const vector<Rate>& initialRates,

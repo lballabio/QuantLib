@@ -62,8 +62,8 @@ namespace QuantLib {
 
     AnalyticBSMHullWhiteEngine::AnalyticBSMHullWhiteEngine(
              Real equityShortRateCorrelation,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const boost::shared_ptr<HullWhite> & model)
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<HullWhite> & model)
     : GenericModelEngine<HullWhite,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
@@ -75,11 +75,11 @@ namespace QuantLib {
 
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying given");
 
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const boost::shared_ptr<Exercise> exercise = arguments_.exercise;
+        const ext::shared_ptr<Exercise> exercise = arguments_.exercise;
 
         Time t = process_->riskFreeRate()->dayCounter().yearFraction(
                                     process_->riskFreeRate()->referenceDate(),
@@ -108,17 +108,17 @@ namespace QuantLib {
         }
 
         Handle<BlackVolTermStructure> volTS(
-             boost::shared_ptr<BlackVolTermStructure>(
+             ext::shared_ptr<BlackVolTermStructure>(
               new ShiftedBlackVolTermStructure(varianceOffset,
                                                process_->blackVolatility())));
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> adjProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> adjProcess(
                 new GeneralizedBlackScholesProcess(process_->stateVariable(),
                                                    process_->dividendYield(),
                                                    process_->riskFreeRate(),
                                                    volTS));
 
-        boost::shared_ptr<AnalyticEuropeanEngine> bsmEngine(
+        ext::shared_ptr<AnalyticEuropeanEngine> bsmEngine(
                                       new AnalyticEuropeanEngine(adjProcess));
 
         VanillaOption(payoff, exercise).setupArguments(

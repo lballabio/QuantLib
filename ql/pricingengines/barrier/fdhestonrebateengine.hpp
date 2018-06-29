@@ -47,19 +47,19 @@ namespace QuantLib {
       public:
         // Constructor
         FdHestonRebateEngine(
-            const boost::shared_ptr<HestonModel>& model,
+            const ext::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                = ext::shared_ptr<LocalVolTermStructure>());
 
         void calculate() const;
 
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
     };
 
 

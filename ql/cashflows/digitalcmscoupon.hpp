@@ -36,7 +36,7 @@ namespace QuantLib {
     class DigitalCmsCoupon : public DigitalCoupon {
       public:
         DigitalCmsCoupon(
-            const boost::shared_ptr<CmsCoupon> &underlying,
+            const ext::shared_ptr<CmsCoupon> &underlying,
             Rate callStrike = Null<Rate>(),
             Position::Type callPosition = Position::Long,
             bool isCallATMIncluded = false,
@@ -45,8 +45,8 @@ namespace QuantLib {
             Position::Type putPosition = Position::Long,
             bool isPutATMIncluded = false,
             Rate putDigitalPayoff = Null<Rate>(),
-            const boost::shared_ptr<DigitalReplication> &replication =
-                boost::shared_ptr<DigitalReplication>(new DigitalReplication));
+            const ext::shared_ptr<DigitalReplication> &replication =
+                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
 
         //! \name Visitability
         //@{
@@ -59,7 +59,7 @@ namespace QuantLib {
     class DigitalCmsLeg {
       public:
         DigitalCmsLeg(const Schedule& schedule,
-                      const boost::shared_ptr<SwapIndex>& index);
+                      const ext::shared_ptr<SwapIndex>& index);
         DigitalCmsLeg& withNotionals(Real notional);
         DigitalCmsLeg& withNotionals(const std::vector<Real>& notionals);
         DigitalCmsLeg& withPaymentDayCounter(const DayCounter&);
@@ -84,12 +84,12 @@ namespace QuantLib {
         DigitalCmsLeg& withPutPayoffs(Rate payoff);
         DigitalCmsLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalCmsLeg& withReplication(
-            const boost::shared_ptr<DigitalReplication> &replication =
-                boost::shared_ptr<DigitalReplication>(new DigitalReplication));
+            const ext::shared_ptr<DigitalReplication> &replication =
+                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
         operator Leg() const;
       private:
         Schedule schedule_;
-        boost::shared_ptr<SwapIndex> index_;
+        ext::shared_ptr<SwapIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
@@ -103,7 +103,7 @@ namespace QuantLib {
         std::vector<Rate> putStrikes_, putPayoffs_;
         Position::Type longPutOption_;
         bool putATM_;
-        boost::shared_ptr<DigitalReplication> replication_;
+        ext::shared_ptr<DigitalReplication> replication_;
     };
 
 }

@@ -26,7 +26,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
     FFTEngine::FFTEngine(
-        const boost::shared_ptr<StochasticProcess1D>& process, Real logStrikeSpacing)
+        const ext::shared_ptr<StochasticProcess1D>& process, Real logStrikeSpacing)
         : process_(process), lambda_(logStrikeSpacing) {
             registerWith(process_);
     }
@@ -36,8 +36,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
             "not an European Option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         ResultMap::const_iterator r1 = resultMap_.find(arguments_.exercise->lastDate());
@@ -64,38 +64,38 @@ namespace QuantLib {
         VanillaOption::engine::update();
     }
 
-    void FFTEngine::calculateUncached(boost::shared_ptr<StrikedTypePayoff> payoff,
-        boost::shared_ptr<Exercise> exercise) const
+    void FFTEngine::calculateUncached(ext::shared_ptr<StrikedTypePayoff> payoff,
+        ext::shared_ptr<Exercise> exercise) const
     {
-        boost::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
-        std::vector<boost::shared_ptr<Instrument> > optionList;
+        ext::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
+        std::vector<ext::shared_ptr<Instrument> > optionList;
         optionList.push_back(option);
 
-        boost::shared_ptr<FFTEngine> tempEngine(clone().release());
+        ext::shared_ptr<FFTEngine> tempEngine(clone().release());
         tempEngine->precalculate(optionList);
         option->setPricingEngine(tempEngine);
         results_.value = option->NPV();
     }
 
-    void FFTEngine::precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList) {
+    void FFTEngine::precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList) {
         // Group payoffs by expiry date
         // as with FFT we can compute a bunch of these at once
         resultMap_.clear();
 
-        typedef std::vector<boost::shared_ptr<StrikedTypePayoff> > PayoffList;
+        typedef std::vector<ext::shared_ptr<StrikedTypePayoff> > PayoffList;
         typedef std::map<Date, PayoffList> PayoffMap;
         PayoffMap payoffMap;
         
-        for (std::vector<boost::shared_ptr<Instrument> >::const_iterator optIt = optionList.begin();
+        for (std::vector<ext::shared_ptr<Instrument> >::const_iterator optIt = optionList.begin();
             optIt != optionList.end(); ++optIt)
         {
-            boost::shared_ptr<VanillaOption> option = boost::dynamic_pointer_cast<VanillaOption>(*optIt);
+            ext::shared_ptr<VanillaOption> option = ext::dynamic_pointer_cast<VanillaOption>(*optIt);
             QL_REQUIRE(option, "instrument must be option");
             QL_REQUIRE(option->exercise()->type() == Exercise::European,
                 "not an European Option");
 
-            boost::shared_ptr<StrikedTypePayoff> payoff =
-                boost::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
+            ext::shared_ptr<StrikedTypePayoff> payoff =
+                ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
             QL_REQUIRE(payoff, "non-striked payoff given");
 
             payoffMap[option->exercise()->lastDate()].push_back(payoff);
@@ -113,7 +113,7 @@ namespace QuantLib {
             for (PayoffList::const_iterator it = payIt->second.begin();
                 it != payIt->second.end(); ++it)
             {
-                boost::shared_ptr<StrikedTypePayoff> payoff = *it;
+                ext::shared_ptr<StrikedTypePayoff> payoff = *it;
 
                 if (payoff->strike() > maxStrike)
                     maxStrike = payoff->strike();
@@ -169,7 +169,7 @@ namespace QuantLib {
             for (PayoffList::const_iterator it = payIt->second.begin();
                 it != payIt->second.end(); ++it)
             {
-                boost::shared_ptr<StrikedTypePayoff> payoff = *it;
+                ext::shared_ptr<StrikedTypePayoff> payoff = *it;
 
                 Real callPrice = LinearInterpolation(strikes.begin(), strikes.end(), prices.begin())(payoff->strike());
                 switch (payoff->optionType())

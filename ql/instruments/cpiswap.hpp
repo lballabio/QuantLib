@@ -79,7 +79,7 @@ namespace QuantLib {
                 const Schedule& floatSchedule,
                 const BusinessDayConvention& floatRoll,
                 Natural fixingDays,
-                const boost::shared_ptr<IborIndex>& floatIndex,
+                const ext::shared_ptr<IborIndex>& floatIndex,
                 // fixed x inflation leg
                 Rate fixedRate,
                 Real baseCPI,
@@ -87,7 +87,7 @@ namespace QuantLib {
                 const Schedule& fixedSchedule,
                 const BusinessDayConvention& fixedRoll,
                 const Period& observationLag,
-                const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
+                const ext::shared_ptr<ZeroInflationIndex>& fixedIndex,
                 CPI::InterpolationType observationInterpolation = CPI::AsIndex,
                 Real inflationNominal = Null<Real>()
                 );
@@ -111,7 +111,7 @@ namespace QuantLib {
         virtual const Schedule& floatSchedule() const;
         virtual const BusinessDayConvention& floatPaymentRoll() const;
         virtual Natural fixingDays() const;
-        virtual const boost::shared_ptr<IborIndex>& floatIndex() const;
+        virtual const ext::shared_ptr<IborIndex>& floatIndex() const;
 
         // fixed rate x inflation
         virtual Rate fixedRate() const;
@@ -120,7 +120,7 @@ namespace QuantLib {
         virtual const Schedule& fixedSchedule() const;
         virtual const BusinessDayConvention& fixedPaymentRoll() const;
         virtual Period observationLag() const;
-        virtual const boost::shared_ptr<ZeroInflationIndex>& fixedIndex() const;
+        virtual const ext::shared_ptr<ZeroInflationIndex>& fixedIndex() const;
         virtual CPI::InterpolationType observationInterpolation() const;
         virtual Real inflationNominal() const;
 
@@ -145,7 +145,7 @@ namespace QuantLib {
         Schedule floatSchedule_;
         BusinessDayConvention floatPaymentRoll_;
         Natural fixingDays_;
-        boost::shared_ptr<IborIndex> floatIndex_;
+        ext::shared_ptr<IborIndex> floatIndex_;
 
         // fixed x inflation leg
         Rate fixedRate_;
@@ -153,7 +153,7 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
         Schedule fixedSchedule_;
         BusinessDayConvention fixedPaymentRoll_;
-        boost::shared_ptr<ZeroInflationIndex> fixedIndex_;
+        ext::shared_ptr<ZeroInflationIndex> fixedIndex_;
         Period observationLag_;
         CPI::InterpolationType observationInterpolation_;
         Real inflationNominal_;
@@ -200,7 +200,7 @@ namespace QuantLib {
     inline const Schedule& CPISwap::floatSchedule() const { return floatSchedule_; }
     inline const BusinessDayConvention& CPISwap::floatPaymentRoll() const { return floatPaymentRoll_; }
     inline Natural CPISwap::fixingDays() const { return fixingDays_; }
-    inline const boost::shared_ptr<IborIndex>& CPISwap::floatIndex() const { return floatIndex_; }
+    inline const ext::shared_ptr<IborIndex>& CPISwap::floatIndex() const { return floatIndex_; }
 
     // fixed rate x inflation
     inline Rate CPISwap::fixedRate() const { return fixedRate_; }
@@ -209,7 +209,7 @@ namespace QuantLib {
     inline const Schedule& CPISwap::fixedSchedule() const { return fixedSchedule_; }
     inline const BusinessDayConvention& CPISwap::fixedPaymentRoll() const { return fixedPaymentRoll_; }
     inline Period CPISwap::observationLag() const { return observationLag_; }
-    inline const boost::shared_ptr<ZeroInflationIndex>& CPISwap::fixedIndex() const { return fixedIndex_; }
+    inline const ext::shared_ptr<ZeroInflationIndex>& CPISwap::fixedIndex() const { return fixedIndex_; }
     inline CPI::InterpolationType CPISwap::observationInterpolation() const { return observationInterpolation_; }
     inline Real CPISwap::inflationNominal() const { return inflationNominal_; }
 

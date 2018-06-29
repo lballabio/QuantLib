@@ -28,7 +28,7 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/comparison.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -119,7 +119,7 @@ namespace QuantLib {
         Size n_;
         Array diagonal_, lowerDiagonal_, upperDiagonal_;
         mutable Array temp_;
-        boost::shared_ptr<TimeSetter> timeSetter_;
+        ext::shared_ptr<TimeSetter> timeSetter_;
     };
 
     /* \relates TridiagonalOperator */

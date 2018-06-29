@@ -42,7 +42,7 @@ namespace QuantLib {
       public:
         YoYCapFloorTermPriceSurface(Natural fixingDays,
                                     const Period &yyLag,
-                                    const boost::shared_ptr<YoYInflationIndex>& yii,
+                                    const ext::shared_ptr<YoYInflationIndex>& yii,
                                     Rate baseRate,
                                     const Handle<YieldTermStructure> &nominal,
                                     const DayCounter &dc,
@@ -68,9 +68,9 @@ namespace QuantLib {
         atmYoYSwapDateRates() const = 0;
 
         //! derived from yoy swap rates
-        virtual boost::shared_ptr<YoYInflationTermStructure> YoYTS() const = 0;
+        virtual ext::shared_ptr<YoYInflationTermStructure> YoYTS() const = 0;
         //! index yoy is based on
-        boost::shared_ptr<YoYInflationIndex> yoyIndex() const { return yoyIndex_; }
+        ext::shared_ptr<YoYInflationIndex> yoyIndex() const { return yoyIndex_; }
 
         //! inspectors
         /*! \note you don't know if price() is a cap or a floor
@@ -121,12 +121,12 @@ namespace QuantLib {
         }
 
         // defaults, mostly used for building yoy-fwd curve from put-call parity
-        //  boost::shared_ptr<YieldTermStructure> nominal_;
+        //  ext::shared_ptr<YieldTermStructure> nominal_;
         //  Period lag_;
         //  Calendar cal_;
         Natural fixingDays_;
         BusinessDayConvention bdc_;
-        boost::shared_ptr<YoYInflationIndex> yoyIndex_;
+        ext::shared_ptr<YoYInflationIndex> yoyIndex_;
         // data
         std::vector<Rate> cStrikes_;
         std::vector<Rate> fStrikes_;
@@ -136,7 +136,7 @@ namespace QuantLib {
         Matrix fPrice_;
         // constructed
         mutable std::vector<Rate> cfStrikes_;
-        mutable boost::shared_ptr<YoYInflationTermStructure> yoy_;
+        mutable ext::shared_ptr<YoYInflationTermStructure> yoy_;
         mutable std::pair<std::vector<Time>, std::vector<Rate> > atmYoYSwapTimeRates_;
         mutable std::pair<std::vector<Date>, std::vector<Rate> > atmYoYSwapDateRates_;
     };
@@ -149,7 +149,7 @@ namespace QuantLib {
         InterpolatedYoYCapFloorTermPriceSurface(
                       Natural fixingDays,
                       const Period &yyLag,  // observation lag
-                      const boost::shared_ptr<YoYInflationIndex>& yii,
+                      const ext::shared_ptr<YoYInflationIndex>& yii,
                       Rate baseRate,
                       const Handle<YieldTermStructure> &nominal,
                       const DayCounter &dc,
@@ -176,7 +176,7 @@ namespace QuantLib {
         atmYoYSwapTimeRates() const { return atmYoYSwapTimeRates_; }
         virtual std::pair<std::vector<Date>, std::vector<Rate> >
         atmYoYSwapDateRates() const { return atmYoYSwapDateRates_; }
-        virtual boost::shared_ptr<YoYInflationTermStructure>
+        virtual ext::shared_ptr<YoYInflationTermStructure>
         YoYTS() const { return yoy_; }
         virtual Rate price(const Date &d, const Rate k) const;
         virtual Real floorPrice(const Date &d, const Rate k) const;
@@ -241,7 +241,7 @@ namespace QuantLib {
     InterpolatedYoYCapFloorTermPriceSurface(
                                     Natural fixingDays,
                                     const Period &yyLag,
-                                    const boost::shared_ptr<YoYInflationIndex>& yii,
+                                    const ext::shared_ptr<YoYInflationIndex>& yii,
                                     Rate baseRate,
                                     const Handle<YieldTermStructure> &nominal,
                                     const DayCounter &dc,
@@ -512,12 +512,12 @@ namespace QuantLib {
         // for now pick every year
         Size nYears = (Size)(0.5+timeFromReference(referenceDate()+cfMaturities_.back()));
 
-        std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > YYhelpers;
+        std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > YYhelpers;
         for (Size i=1; i<=nYears; i++) {
             Date maturity = nominalTermStructure()->referenceDate() + Period(i,Years);
-            Handle<Quote> quote(boost::shared_ptr<Quote>(
+            Handle<Quote> quote(ext::shared_ptr<Quote>(
                                new SimpleQuote( atmYoYSwapRate( maturity ) )));//!
-            boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> >
+            ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> >
             anInstrument(
                 new YearOnYearInflationSwapHelper(
                                 quote, observationLag(), maturity,
@@ -533,7 +533,7 @@ namespace QuantLib {
 
         Handle<YieldTermStructure> nominalH( nominalTermStructure() );
         // Linear is OK because we have every year
-        boost::shared_ptr<PiecewiseYoYInflationCurve<Linear> >   pYITS(
+        ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> >   pYITS(
               new PiecewiseYoYInflationCurve<Linear>(
                       nominalTermStructure()->referenceDate(),
                       calendar(), dayCounter(), observationLag(), yoyIndex()->frequency(),

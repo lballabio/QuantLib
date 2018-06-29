@@ -35,7 +35,7 @@ namespace QuantLib {
     template <class T>
     class TsiveriotisFernandesLattice : public BlackScholesLattice<T> {
       public:
-        TsiveriotisFernandesLattice(const boost::shared_ptr<T>& tree,
+        TsiveriotisFernandesLattice(const ext::shared_ptr<T>& tree,
                                     Rate riskFreeRate,
                                     Time end,
                                     Size steps,
@@ -65,7 +65,7 @@ namespace QuantLib {
 
     template <class T>
     TsiveriotisFernandesLattice<T>::TsiveriotisFernandesLattice(
-                                             const boost::shared_ptr<T>& tree,
+                                             const ext::shared_ptr<T>& tree,
                                              Rate riskFreeRate,
                                              Time end,
                                              Size steps,

@@ -35,7 +35,6 @@
 #include <ql/methods/finitedifferences/schemes/trbdf2scheme.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
     
@@ -83,13 +82,13 @@ namespace QuantLib {
     }
 
     FdmBackwardSolver::FdmBackwardSolver(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet,
-        const boost::shared_ptr<FdmStepConditionComposite> condition,
+        const ext::shared_ptr<FdmStepConditionComposite> condition,
         const FdmSchemeDesc& schemeDesc)
     : map_(map), bcSet_(bcSet),
       condition_((condition) ? condition 
-                             : boost::make_shared<FdmStepConditionComposite>(
+                             : ext::make_shared<FdmStepConditionComposite>(
                                      std::list<std::vector<Time> >(),
                                      FdmStepConditionComposite::Conditions())),
       schemeDesc_(schemeDesc) {
@@ -179,8 +178,8 @@ namespace QuantLib {
                 const FdmSchemeDesc trDesc
                     = FdmSchemeDesc::CraigSneyd();
 
-                const boost::shared_ptr<CraigSneydScheme> hsEvolver(
-                    boost::make_shared<CraigSneydScheme>(
+                const ext::shared_ptr<CraigSneydScheme> hsEvolver(
+                    ext::make_shared<CraigSneydScheme>(
                         trDesc.theta, trDesc.mu, map_, bcSet_));
 
                 TrBDF2Scheme<CraigSneydScheme> trBDF2(

@@ -46,7 +46,7 @@ namespace QuantLib {
       public:
         // Constructor
           FdBlackScholesVanillaEngine(
-                const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                 Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                 const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                 bool localVol = false,
@@ -55,7 +55,7 @@ namespace QuantLib {
         void calculate() const;
 
       private:
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size tGrid_, xGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
         const bool localVol_;

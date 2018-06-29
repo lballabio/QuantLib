@@ -50,13 +50,13 @@ namespace QuantLib {
         InterpolationParameter(Size count,
             const Constraint& constraint = NoConstraint())
         : Parameter(count,
-            boost::shared_ptr<Parameter::Impl>(
+            ext::shared_ptr<Parameter::Impl>(
                 new InterpolationParameter::Impl()),
                 constraint)
         { }
         void reset(const Interpolation &interp) {
-            boost::shared_ptr<InterpolationParameter::Impl> impl =
-                boost::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_);
+            ext::shared_ptr<InterpolationParameter::Impl> impl =
+                ext::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_);
             if (impl) impl->reset(interp);
         }
     };
@@ -107,12 +107,12 @@ namespace QuantLib {
                 speed,vol,speedtraits,voltraits,f,fInverse);
         }
 
-        boost::shared_ptr<ShortRateDynamics> dynamics() const {
+        ext::shared_ptr<ShortRateDynamics> dynamics() const {
             QL_FAIL("no defined process for generalized Hull-White model, "
                     "use HWdynamics()");
         }
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid)const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid)const;
 
         //Analytical calibration of HW
 
@@ -121,7 +121,7 @@ namespace QuantLib {
                   Real a = 0.1, Real sigma = 0.01);
 
 
-        boost::shared_ptr<ShortRateDynamics> HWdynamics() const;
+        ext::shared_ptr<ShortRateDynamics> HWdynamics() const;
 
         //! Only valid under Hull-White model
         Real discountBondOption(Option::Type type,
@@ -242,7 +242,7 @@ namespace QuantLib {
                  const boost::function<Real (Time)>& sigma,
                  const boost::function<Real(Real)>& f,
                  const boost::function<Real(Real)>& fInverse)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
+        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
                       new GeneralizedOrnsteinUhlenbeckProcess(alpha, sigma))),
           fitting_(fitting),
           _f_(f), _fInverse_(fInverse) {}
@@ -252,7 +252,7 @@ namespace QuantLib {
                  Real a,
                  Real sigma)
         : GeneralizedHullWhite::ShortRateDynamics(
-              boost::shared_ptr<StochasticProcess1D>(
+              ext::shared_ptr<StochasticProcess1D>(
                       new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(fitting) {
 
@@ -308,14 +308,14 @@ namespace QuantLib {
       public:
         FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
-        : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
+        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
     };
 
     // Analytic fitting dynamics
-    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics>
+    inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
     GeneralizedHullWhite::HWdynamics() const {
-        return boost::shared_ptr<ShortRateDynamics>(
+        return ext::shared_ptr<ShortRateDynamics>(
           new Dynamics(phi_, a(), sigma()));
     }
 
@@ -332,7 +332,7 @@ namespace QuantLib {
         template <class I1, class I2>
         LinearFlatInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::LinearFlatInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                        yBegin));
             impl_->update();

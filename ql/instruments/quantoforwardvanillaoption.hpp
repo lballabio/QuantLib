@@ -38,8 +38,8 @@ namespace QuantLib {
         typedef QuantoOptionResults<ForwardVanillaOption::results> results;
         QuantoForwardVanillaOption(Real moneyness,
                                    const Date& resetDate,
-                                   const boost::shared_ptr<StrikedTypePayoff>&,
-                                   const boost::shared_ptr<Exercise>&);
+                                   const ext::shared_ptr<StrikedTypePayoff>&,
+                                   const ext::shared_ptr<Exercise>&);
         //! \name greeks
         //@{
         Real qvega() const;

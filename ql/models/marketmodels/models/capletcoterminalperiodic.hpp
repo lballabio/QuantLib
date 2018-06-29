@@ -29,7 +29,7 @@
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -38,11 +38,11 @@ namespace QuantLib {
 
      Integer capletSwaptionPeriodicCalibration(
         const EvolutionDescription& evolution,
-        const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+        const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
         VolatilityInterpolationSpecifier&
         displacedSwapVariances,
         const std::vector<Volatility>& capletVols,
-        const boost::shared_ptr<CurveState>& cs,
+        const ext::shared_ptr<CurveState>& cs,
         const Spread displacement,
         Real caplet0Swaption1Priority, 
         Size numberOfFactors,

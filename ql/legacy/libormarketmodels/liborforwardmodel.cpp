@@ -24,9 +24,9 @@
 namespace QuantLib {
 
      LiborForwardModel::LiborForwardModel(
-          const boost::shared_ptr<LiborForwardModelProcess> & process,
-          const boost::shared_ptr<LmVolatilityModel> & volaModel,
-          const boost::shared_ptr<LmCorrelationModel> & corrModel)
+          const ext::shared_ptr<LiborForwardModelProcess> & process,
+          const ext::shared_ptr<LmVolatilityModel> & volaModel,
+          const ext::shared_ptr<LmCorrelationModel> & corrModel)
      : CalibratedModel(volaModel->params().size()+corrModel->params().size()),
        f_(process->size()),
        accrualPeriod_(process->size()),
@@ -57,7 +57,7 @@ namespace QuantLib {
         covarProxy_->correlationModel()->setParams(
             std::vector<Parameter>(arguments_.begin()+k, arguments_.end()));
 
-        swaptionVola = boost::shared_ptr<SwaptionVolatilityMatrix>();
+        swaptionVola = ext::shared_ptr<SwaptionVolatilityMatrix>();
     }
 
     Real LiborForwardModel::discountBondOption(Option::Type type,
@@ -143,13 +143,13 @@ namespace QuantLib {
     // matrix is valid only for regular fixings and
     // assumes that the fix and floating leg have the
     // same frequency
-    boost::shared_ptr<SwaptionVolatilityMatrix>
+    ext::shared_ptr<SwaptionVolatilityMatrix>
         LiborForwardModel::getSwaptionVolatilityMatrix() const {
         if (swaptionVola) {
             return swaptionVola;
         }
 
-        const boost::shared_ptr<IborIndex> index = process_->index();
+        const ext::shared_ptr<IborIndex> index = process_->index();
         const Date today = process_->fixingDates()[0];
 
         const Size size=process_->size()/2;
@@ -191,10 +191,10 @@ namespace QuantLib {
             }
         }
 
-        return swaptionVola = boost::shared_ptr<SwaptionVolatilityMatrix>(
-             new SwaptionVolatilityMatrix(today, exercises, lengths,
+        return swaptionVola = ext::make_shared<SwaptionVolatilityMatrix>(
+             today, exercises, lengths,
                                           volatilities,
-                                          index->dayCounter()));
+                                          index->dayCounter());
     }
 
     // the next two methods are meaningless within this context

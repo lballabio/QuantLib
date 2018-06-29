@@ -47,8 +47,8 @@ namespace QuantLib {
         //! YoYOptionletStripper interface
         //@{
         virtual void initialize(
-                       const boost::shared_ptr<YoYCapFloorTermPriceSurface> &,
-                       const boost::shared_ptr<YoYInflationCapFloorEngine> &,
+                       const ext::shared_ptr<YoYCapFloorTermPriceSurface> &,
+                       const ext::shared_ptr<YoYInflationCapFloorEngine> &,
                        const Real slope) const;
         virtual Rate minStrike() const {
             return YoYCapFloorTermPriceSurface_->strikes().front();
@@ -64,7 +64,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        mutable std::vector<boost::shared_ptr<YoYOptionletVolatilitySurface> >
+        mutable std::vector<ext::shared_ptr<YoYOptionletVolatilitySurface> >
         volCurves_;
 
         // used to set up the first point on each vol curve
@@ -76,9 +76,9 @@ namespace QuantLib {
                        Real slope, Rate K,
                        Period &lag,
                        Natural fixingDays,
-                       boost::shared_ptr<YoYInflationIndex> anIndex,
-                       const boost::shared_ptr<YoYCapFloorTermPriceSurface> &,
-                       const boost::shared_ptr<YoYInflationCapFloorEngine> &p,
+                       ext::shared_ptr<YoYInflationIndex> anIndex,
+                       const ext::shared_ptr<YoYCapFloorTermPriceSurface> &,
+                       const ext::shared_ptr<YoYInflationCapFloorEngine> &p,
                        Real priceToMatch);
             Real operator()(Volatility guess) const;
           protected:
@@ -91,9 +91,9 @@ namespace QuantLib {
             mutable std::vector<Volatility> vvec_;
             YoYInflationCapFloor capfloor_;
             Real priceToMatch_;
-            boost::shared_ptr<YoYCapFloorTermPriceSurface> surf_;
+            ext::shared_ptr<YoYCapFloorTermPriceSurface> surf_;
             Period lag_;
-            boost::shared_ptr<YoYInflationCapFloorEngine> p_;
+            ext::shared_ptr<YoYInflationCapFloorEngine> p_;
         };
     };
 
@@ -108,9 +108,9 @@ namespace QuantLib {
                    Rate K,
                    Period &lag,
                    Natural fixingDays,
-                   boost::shared_ptr<YoYInflationIndex> anIndex,
-                   const boost::shared_ptr<YoYCapFloorTermPriceSurface> &surf,
-                   const boost::shared_ptr<YoYInflationCapFloorEngine> &p,
+                   ext::shared_ptr<YoYInflationIndex> anIndex,
+                   const ext::shared_ptr<YoYCapFloorTermPriceSurface> &surf,
+                   const ext::shared_ptr<YoYInflationCapFloorEngine> &p,
                    Real priceToMatch)
     : slope_(slope), K_(K), frequency_(anIndex->frequency()),
       indexIsInterpolated_(anIndex->interpolated()),
@@ -156,7 +156,7 @@ namespace QuantLib {
         vvec_[1] = guess;
         vvec_[0] = guess - slope_ * (tvec_[1] - tvec_[0]) * guess;
         // could have Interpolator1D instead of Linear
-        boost::shared_ptr<InterpolatedYoYOptionletVolatilityCurve<Linear> >
+        ext::shared_ptr<InterpolatedYoYOptionletVolatilityCurve<Linear> >
         vCurve(
             new InterpolatedYoYOptionletVolatilityCurve<Linear>(
                                                0, TARGET(), ModifiedFollowing,
@@ -173,8 +173,8 @@ namespace QuantLib {
 
     template <class Interpolator1D>
     void InterpolatedYoYOptionletStripper<Interpolator1D>::
-    initialize(const boost::shared_ptr<YoYCapFloorTermPriceSurface> &s,
-               const boost::shared_ptr<YoYInflationCapFloorEngine> &p,
+    initialize(const ext::shared_ptr<YoYCapFloorTermPriceSurface> &s,
+               const ext::shared_ptr<YoYInflationCapFloorEngine> &p,
                const Real slope) const {
         YoYCapFloorTermPriceSurface_ = s;
         p_ = p;
@@ -196,7 +196,7 @@ namespace QuantLib {
         // provided that the lag and frequency are correct
         RelinkableHandle<YoYInflationTermStructure> hYoY(
                                        YoYCapFloorTermPriceSurface_->YoYTS());
-        boost::shared_ptr<YoYInflationIndex> anIndex(
+        ext::shared_ptr<YoYInflationIndex> anIndex(
                                            new YYGenericCPI(frequency_, false,
                                                             false, lag_,
                                                             Currency(), hYoY));
@@ -230,8 +230,8 @@ namespace QuantLib {
 
             // ***create helpers***
             Real notional = 10000; // work in bps
-            std::vector<boost::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > > helperInstruments;
-            std::vector<boost::shared_ptr<YoYOptionletHelper> > helpers;
+            std::vector<ext::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > > helperInstruments;
+            std::vector<ext::shared_ptr<YoYOptionletHelper> > helpers;
             for (Size j = 0; j < YoYCapFloorTermPriceSurface_->maturities().size(); j++){
                 Period Tp = YoYCapFloorTermPriceSurface_->maturities()[j];
 
@@ -240,19 +240,19 @@ namespace QuantLib {
                      YoYCapFloorTermPriceSurface_->capPrice(Tp, K) :
                      YoYCapFloorTermPriceSurface_->floorPrice(Tp, K));
 
-                Handle<Quote> quote1(boost::shared_ptr<Quote>(
+                Handle<Quote> quote1(ext::shared_ptr<Quote>(
                                                new SimpleQuote( nextPrice )));
                 // helper should be an integer number of periods away,
                 // this is enforced by rounding
                 Size nT = (Size)floor(s->timeFromReference(s->yoyOptionDateFromTenor(Tp))+0.5);
-                helpers.push_back(boost::shared_ptr<YoYOptionletHelper>(
+                helpers.push_back(ext::shared_ptr<YoYOptionletHelper>(
                           new YoYOptionletHelper(quote1, notional, useType,
                                                  lag_,
                                                  dc, cal,
                                                  fixingDays_,
                                                  anIndex, K, nT, p_)));
 
-                boost::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
+                ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
                           new ConstantYoYOptionletVolatility(found, settlementDays,
                                                              cal, bdc, dc,
                                                              lag_, frequency_,
@@ -273,7 +273,7 @@ namespace QuantLib {
             Rate eps = std::max(K, 0.02) / 1000.0;
             Rate minStrike = K-eps;
             Rate maxStrike = K+eps;
-            boost::shared_ptr<
+            ext::shared_ptr<
                 PiecewiseYoYOptionletVolatilityCurve<Interpolator1D> > testPW(
                 new PiecewiseYoYOptionletVolatilityCurve<Interpolator1D>(
                                             settlementDays, cal, bdc, dc, lag_,

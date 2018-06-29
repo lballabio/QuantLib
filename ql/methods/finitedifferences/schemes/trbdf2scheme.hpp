@@ -59,8 +59,8 @@ namespace QuantLib {
         // constructors
         TrBDF2Scheme(
             Real alpha,
-            const boost::shared_ptr<FdmLinearOpComposite>& map,
-            const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
+            const ext::shared_ptr<FdmLinearOpComposite>& map,
+            const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,
             SolverType solverType = BiCGstab);
@@ -74,11 +74,11 @@ namespace QuantLib {
 
         Time dt_;
         Real beta_;
-        boost::shared_ptr<Size> iterations_;
+        ext::shared_ptr<Size> iterations_;
 
         const Real alpha_;
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
-        const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme_;
         const BoundaryConditionSchemeHelper bcSet_;
         const Real relTol_;
         const SolverType solverType_;
@@ -87,14 +87,14 @@ namespace QuantLib {
     template <class TrapezoidalScheme>
     inline TrBDF2Scheme<TrapezoidalScheme>::TrBDF2Scheme(
         Real alpha,
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
-        const boost::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
         const bc_set& bcSet,
         Real relTol,
         SolverType solverType)
     : dt_(Null<Real>()),
       beta_(Null<Real>()),
-      iterations_(boost::make_shared<Size>(0u)),
+      iterations_(ext::make_shared<Size>(0u)),
       alpha_(alpha),
       map_(map),
       trapezoidalScheme_(trapezoidalScheme),
