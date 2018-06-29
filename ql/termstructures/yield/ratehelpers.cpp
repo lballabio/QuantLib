@@ -7,6 +7,7 @@
  Copyright (C) 2007, 2009 Roland Lichters
  Copyright (C) 2015 Maddalena Zanzi
  Copyright (C) 2015 Paolo Mazzocchi
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -615,7 +616,8 @@ namespace QuantLib {
                                    const Period& fwdStart,
                                    const Handle<YieldTermStructure>& discount,
                                    Pillar::Choice pillarChoice,
-                                   Date customPillarDate)
+                                   Date customPillarDate,
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(swapIndex->fixingDays()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
@@ -623,7 +625,7 @@ namespace QuantLib {
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      spread_(spread),
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
@@ -652,7 +654,8 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& discount,
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
-                                   Date customPillarDate)
+                                   Date customPillarDate,
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(settlementDays),
       tenor_(tenor), pillarChoice_(pillarChoice),
@@ -660,7 +663,7 @@ namespace QuantLib {
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      spread_(spread),
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
 
         if (settlementDays_==Null<Natural>())
@@ -687,7 +690,8 @@ namespace QuantLib {
                                    const Period& fwdStart,
                                    const Handle<YieldTermStructure>& discount,
                                    Pillar::Choice pillarChoice,
-                                   Date customPillarDate)
+                                   Date customPillarDate,
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(swapIndex->fixingDays()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
@@ -695,7 +699,7 @@ namespace QuantLib {
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()),
-      spread_(spread),
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
@@ -724,7 +728,8 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& discount,
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
-                                   Date customPillarDate)
+                                   Date customPillarDate,
+                                   bool endOfMonth)
     : RelativeDateRateHelper(rate),
       settlementDays_(settlementDays),
       tenor_(tenor), pillarChoice_(pillarChoice),
@@ -732,7 +737,7 @@ namespace QuantLib {
       fixedConvention_(fixedConvention),
       fixedFrequency_(fixedFrequency),
       fixedDayCount_(fixedDayCount),
-      spread_(spread),
+      spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
 
         if (settlementDays_==Null<Natural>())
@@ -767,7 +772,9 @@ namespace QuantLib {
             .withFixedLegConvention(fixedConvention_)
             .withFixedLegTerminationDateConvention(fixedConvention_)
             .withFixedLegCalendar(calendar_)
-            .withFloatingLegCalendar(calendar_);
+            .withFixedLegEndOfMonth(endOfMonth_)
+            .withFloatingLegCalendar(calendar_)
+            .withFloatingLegEndOfMonth(endOfMonth_);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
