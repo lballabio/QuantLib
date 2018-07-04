@@ -3606,8 +3606,11 @@
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp">
-      <Filter>experimental\math</Filter>
+    <ClInclude Include="ql\methods\finitedifferences\operators\numericaldifferentiation.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\nthorderderivativeop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\piecewisefunction.hpp">
       <Filter>experimental\math</Filter>
@@ -6341,8 +6344,11 @@
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp">
-      <Filter>experimental\math</Filter>
+    <ClCompile Include="ql\methods\finitedifferences\operators\numericaldifferentiation.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\nthorderderivativeop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\piecewiseintegral.cpp">
       <Filter>experimental\math</Filter>

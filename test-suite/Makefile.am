@@ -97,6 +97,7 @@ QL_TESTS = \
 	money.hpp money.cpp \
 	noarbsabr.hpp noarbsabr.cpp \
 	normalclvmodel.hpp normalclvmodel.cpp \
+	nthorderderivativeop.hpp nthorderderivativeop.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	numericaldifferentiation.hpp numericaldifferentiation.cpp \
 	observable.hpp observable.cpp \

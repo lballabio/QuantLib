@@ -22,7 +22,7 @@
 
 #include <ql/math/matrix.hpp>
 #include <ql/math/factorial.hpp>
-#include <ql/experimental/math/numericaldifferentiation.hpp>
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 
 #include <boost/assign/list_of.hpp>
 
