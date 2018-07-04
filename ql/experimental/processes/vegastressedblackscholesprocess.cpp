@@ -31,7 +31,7 @@ namespace QuantLib {
              Real lowerAssetBorderForStressTest,
              Real upperAssetBorderForStressTest,
              Real stressLevel,
-             const boost::shared_ptr<discretization>& disc)
+             const ext::shared_ptr<discretization>& disc)
     : GeneralizedBlackScholesProcess(x0, dividendTS, riskFreeTS,
                                      blackVolTS, disc),
       lowerTimeBorderForStressTest_(lowerTimeBorderForStressTest),

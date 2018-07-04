@@ -22,7 +22,6 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/modifiedbessel.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
@@ -39,6 +38,16 @@ class NoArbSabrModel::integrand {
     : model(model), strike(strike) {}
     Real operator()(Real f) const {
         return std::max(f - strike, 0.0) * model->p(f);
+    }
+};
+
+class NoArbSabrModel::p_integrand {
+    const NoArbSabrModel* model;
+  public:
+    explicit p_integrand(const NoArbSabrModel* model)
+    : model(model) {}
+    Real operator()(Real f) const {
+        return model->p(f);
     }
 };
 
@@ -85,8 +94,8 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     QL_REQUIRE(fmax_ > fmin_, "could not find a reasonable integration domain");
 
     integrator_ =
-        boost::shared_ptr<GaussLobattoIntegral>(new GaussLobattoIntegral(
-            detail::NoArbSabrModel::i_max_iterations, detail::NoArbSabrModel::i_accuracy));
+        ext::make_shared<GaussLobattoIntegral>(
+            detail::NoArbSabrModel::i_max_iterations, detail::NoArbSabrModel::i_accuracy);
 
     detail::D0Interpolator d0(forward_, expiryTime_, alpha_, beta_, nu_, rho_);
     absProb_ = d0();
@@ -124,16 +133,15 @@ Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
     if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
         return 0.0;
     return (1.0 - absProb_)
-        * ((*integrator_)(std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
+        * ((*integrator_)(p_integrand(this),
                           strike, std::max(fmax_, 2.0 * strike)) /
            numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
     forward_ = forward * forward + detail::NoArbSabrModel::strike_min;
-    numericalIntegralOverP_ = (*integrator_)(
-        std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
-        fmin_, fmax_);
+    numericalIntegralOverP_ = (*integrator_)(p_integrand(this),
+                                             fmin_, fmax_);
     return optionPrice(0.0) - externalForward_;
 }
 

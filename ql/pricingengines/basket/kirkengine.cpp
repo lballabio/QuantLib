@@ -26,8 +26,8 @@
 namespace QuantLib {
 
     KirkEngine::KirkEngine(
-            const boost::shared_ptr<BlackProcess>& process1,
-            const boost::shared_ptr<BlackProcess>& process2,
+            const ext::shared_ptr<BlackProcess>& process1,
+            const ext::shared_ptr<BlackProcess>& process2,
             Real correlation)
     : process1_(process1), process2_(process2), rho_(correlation) {
         registerWith(process1_);
@@ -39,16 +39,16 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
-        boost::shared_ptr<SpreadBasketPayoff> spreadPayoff =
-            boost::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<SpreadBasketPayoff> spreadPayoff =
+            ext::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(spreadPayoff," spread payoff expected");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                    spreadPayoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain payoff given");
         const Real strike = payoff->strike();
@@ -73,8 +73,8 @@ namespace QuantLib {
                             *(f2/(f2+strike)));
         
         BlackCalculator black(
-             boost::shared_ptr<PlainVanillaPayoff>(
-                 new PlainVanillaPayoff(payoff->optionType(),1.0)),
+             ext::make_shared<PlainVanillaPayoff>(
+                 payoff->optionType(),1.0),
              f, v, riskFreeDiscount);
         
         results_.value = (f2 + strike)*black.value();

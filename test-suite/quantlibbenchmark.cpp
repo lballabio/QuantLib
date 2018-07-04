@@ -139,6 +139,48 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
+    boost::timer t;
+    std::list<double> runTimes;
+
+    /* PAPI code
+    float real_time, proc_time, mflops;
+    long_long lflop, flop=0;
+    */
+
+    class TimedCase {
+      public:
+        typedef void (*fct_ptr)();
+        explicit TimedCase(fct_ptr f) : f_(f) {}
+
+        void startTimer() const {
+            t.restart();
+
+            /* PAPI code
+               lflop = flop;
+               PAPI_flops(&real_time, &proc_time, &flop, &mflops);
+            */
+        }
+
+        void stopTimer() const {
+            runTimes.push_back(t.elapsed());
+
+            /* PAPI code
+               PAPI_flops(&real_time, &proc_time, &flop, &mflops);
+               printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
+               real_time, proc_time, (flop-lflop)/1e6);
+            */
+        }
+
+        void operator()() const {
+            startTimer();
+            BOOST_CHECK(true); // to prevent no-assertion warning
+            f_();
+            stopTimer();
+        }
+      private:
+        fct_ptr f_;
+    };
+
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
@@ -147,7 +189,13 @@ namespace {
         }
 
         test_case* getTestCase() const {
-            return QUANTLIB_TEST_CASE(f_);
+            #if BOOST_VERSION >= 105900
+            return boost::unit_test::make_test_case(f_, name_,
+                                                    __FILE__, __LINE__);
+            #else
+            return boost::unit_test::make_test_case(
+                       boost::unit_test::callback0<>(f_), name_);
+            #endif
         }
         double getMflop() const {
             return mflop_;
@@ -156,39 +204,13 @@ namespace {
             return name_;
         }
       private:
-        fct_ptr f_;
+        TimedCase f_;
         const std::string name_;
         const double mflop_; // total number of mega floating
                              // point operations (not per sec!)
     };
 
-    boost::timer t;
-    std::list<double> runTimes;
     std::list<Benchmark> bm;
-
-    /* PAPI code
-    float real_time, proc_time, mflops;
-    long_long lflop, flop=0;
-    */
-
-    void startTimer() {
-        t.restart();
-
-        /* PAPI code
-        lflop = flop;
-        PAPI_flops(&real_time, &proc_time, &flop, &mflops);
-        */
-    }
-
-    void stopTimer() {
-        runTimes.push_back(t.elapsed());
-
-        /* PAPI code
-        PAPI_flops(&real_time, &proc_time, &flop, &mflops);
-        printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
-               real_time, proc_time, (flop-lflop)/1e6);
-        */
-    }
 
     void printResults() {
         std::string header = "Benchmark Suite "
@@ -295,9 +317,7 @@ test_suite* init_unit_test_suite(int, char*[]) {
 
     for (std::list<Benchmark>::const_iterator iter = bm.begin();
          iter != bm.end(); ++iter) {
-        test->add(QUANTLIB_TEST_CASE(startTimer));
         test->add(iter->getTestCase());
-        test->add(QUANTLIB_TEST_CASE(stopTimer));
     }
 
     test->add(QUANTLIB_TEST_CASE(printResults));

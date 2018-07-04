@@ -92,7 +92,7 @@ namespace QuantLib {
                   const CreditDefaultSwap::PricingModel model =
                                                  CreditDefaultSwap::Midpoint);
         void setTermStructure(DefaultProbabilityTermStructure*);
-        boost::shared_ptr<CreditDefaultSwap> swap() const {
+        ext::shared_ptr<CreditDefaultSwap> swap() const {
             return swap_;
         }
       void update();
@@ -115,7 +115,7 @@ namespace QuantLib {
         CreditDefaultSwap::PricingModel model_;
 
         Schedule schedule_;
-        boost::shared_ptr<CreditDefaultSwap> swap_;
+        ext::shared_ptr<CreditDefaultSwap> swap_;
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
         //! protection effective date.
         Date protectionStart_;

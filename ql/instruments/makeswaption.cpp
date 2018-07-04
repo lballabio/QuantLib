@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    MakeSwaption::MakeSwaption(const boost::shared_ptr<SwapIndex>& swapIndex,
+    MakeSwaption::MakeSwaption(const ext::shared_ptr<SwapIndex>& swapIndex,
                                const Period& optionTenor,
                                Rate strike)
     : swapIndex_(swapIndex),
@@ -37,9 +37,10 @@ namespace QuantLib {
       optionConvention_(ModifiedFollowing),
       fixingDate_(Null<Date>()),
       strike_(strike),
-      underlyingType_(VanillaSwap::Payer) {}
+      underlyingType_(VanillaSwap::Payer),
+      nominal_(1.0) {}
 
-    MakeSwaption::MakeSwaption(const boost::shared_ptr<SwapIndex>& swapIndex,
+    MakeSwaption::MakeSwaption(const ext::shared_ptr<SwapIndex>& swapIndex,
                                const Date& fixingDate,
                                Rate strike)
     : swapIndex_(swapIndex),
@@ -50,11 +51,11 @@ namespace QuantLib {
       underlyingType_(VanillaSwap::Payer) {}
 
     MakeSwaption::operator Swaption() const {
-        boost::shared_ptr<Swaption> swaption = *this;
+        ext::shared_ptr<Swaption> swaption = *this;
         return *swaption;
     }
 
-    MakeSwaption::operator boost::shared_ptr<Swaption>() const {
+    MakeSwaption::operator ext::shared_ptr<Swaption>() const {
 
         const Calendar& fixingCalendar = swapIndex_->fixingCalendar();
         Date refDate = Settings::instance().evaluationDate();
@@ -65,13 +66,13 @@ namespace QuantLib {
             fixingDate_ = fixingCalendar.advance(refDate, optionTenor_,
                                                  optionConvention_);
         if (exerciseDate_ == Null<Date>()) {
-            exercise_ = boost::shared_ptr<Exercise>(new
+            exercise_ = ext::shared_ptr<Exercise>(new
                 EuropeanExercise(fixingDate_));
         } else {
             QL_REQUIRE(exerciseDate_ <= fixingDate_,
                        "exercise date (" << exerciseDate_ << ") must be less "
                        "than or equal to fixing date (" << fixingDate_ << ")");
-            exercise_ = boost::shared_ptr<Exercise>(new
+            exercise_ = ext::shared_ptr<Exercise>(new
                 EuropeanExercise(exerciseDate_));
         }
 
@@ -81,10 +82,10 @@ namespace QuantLib {
             QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
                        "null term structure set to this instance of " <<
                        swapIndex_->name());
-            boost::shared_ptr<VanillaSwap> temp =
+            ext::shared_ptr<VanillaSwap> temp =
                 swapIndex_->underlyingSwap(fixingDate_);
             temp->setPricingEngine(
-                boost::shared_ptr<PricingEngine>(new DiscountingSwapEngine(
+                ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(
                     swapIndex_->exogenousDiscount()
                         ? swapIndex_->discountingTermStructure()
                         : swapIndex_->forwardingTermStructure(),
@@ -102,9 +103,10 @@ namespace QuantLib {
             .withFixedLegTenor(swapIndex_->fixedLegTenor())
             .withFixedLegConvention(bdc)
             .withFixedLegTerminationDateConvention(bdc)
-            .withType(underlyingType_);
+            .withType(underlyingType_)
+            .withNominal(nominal_);
 
-        boost::shared_ptr<Swaption> swaption(new
+        ext::shared_ptr<Swaption> swaption(new
             Swaption(underlyingSwap_, exercise_, delivery_));
         swaption->setPricingEngine(engine_);
         return swaption;
@@ -132,8 +134,13 @@ namespace QuantLib {
     }
 
     MakeSwaption& MakeSwaption::withPricingEngine(
-                             const boost::shared_ptr<PricingEngine>& engine) {
+                             const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
+        return *this;
+    }
+
+    MakeSwaption& MakeSwaption::withNominal(Real n) {
+        nominal_ = n;
         return *this;
     }
 

@@ -43,8 +43,8 @@ namespace QuantLib {
             const Handle<Quote>& jumpInt,
             const Handle<Quote>& logJMean,
             const Handle<Quote>& logJVol,
-            const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+            const ext::shared_ptr<discretization>& d =
+                  ext::shared_ptr<discretization>(new EulerDiscretization));
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -68,7 +68,7 @@ namespace QuantLib {
         const Handle<Quote>& logJumpVolatility() const;
         //@}
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> blackProcess_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> blackProcess_;
         Handle<Quote> jumpIntensity_, logMeanJump_, logJumpVolatility_;
     };
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -506,10 +506,15 @@
     <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
     <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
+    <ClInclude Include="ql\indexes\ibor\mosprime.hpp" />
     <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
+    <ClInclude Include="ql\indexes\ibor\pribor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\robor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\wibor.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
@@ -584,6 +589,8 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopcomposite.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopiterator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\numericaldifferentiation.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\nthorderderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\firstderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\ninepointlinearop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\secondderivativeop.hpp" />
@@ -825,6 +832,7 @@
     <ClInclude Include="ql\math\functional.hpp" />
     <ClInclude Include="ql\math\generallinearleastsquares.hpp" />
     <ClInclude Include="ql\math\incompletegamma.hpp" />
+    <ClInclude Include="ql\math\initializers.hpp" />
     <ClInclude Include="ql\math\interpolation.hpp" />
     <ClInclude Include="ql\math\kernelfunctions.hpp" />
     <ClInclude Include="ql\math\lexicographicalview.hpp" />
@@ -1746,7 +1754,6 @@
     <ClInclude Include="ql\experimental\math\moorepenroseinverse.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />
-    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp" />
     <ClInclude Include="ql\experimental\math\piecewisefunction.hpp" />
     <ClInclude Include="ql\experimental\math\piecewiseintegral.hpp" />
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
@@ -1754,6 +1761,7 @@
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
+    <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\config.ansi.hpp" />
@@ -1784,6 +1792,7 @@
     <ClInclude Include="ql\quantlib.hpp" />
     <ClInclude Include="ql\quote.hpp" />
     <ClInclude Include="ql\settings.hpp" />
+    <ClInclude Include="ql\shared_ptr.hpp" />
     <ClInclude Include="ql\stochasticprocess.hpp" />
     <ClInclude Include="ql\termstructure.hpp" />
     <ClInclude Include="ql\timegrid.hpp" />
@@ -1813,6 +1822,7 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
@@ -1872,6 +1882,8 @@
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\firstderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\ninepointlinearop.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\numericaldifferentiation.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\nthorderderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\secondderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\secondordermixedderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\triplebandlinearop.cpp" />
@@ -2645,7 +2657,6 @@
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
-    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp" />
     <ClCompile Include="ql\experimental\math\piecewiseintegral.cpp" />
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />

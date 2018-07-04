@@ -26,7 +26,7 @@
 
 #include <ql/time/date.hpp>
 #include <ql/errors.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
@@ -56,16 +56,16 @@ namespace QuantLib {
     class CatRisk {
       public:
         virtual ~CatRisk() {}
-        virtual boost::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const = 0;
+        virtual ext::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const = 0;
     };
 
     class EventSetSimulation : public CatSimulation {
       public:
-        EventSetSimulation(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, Date eventsStart, Date eventsEnd, Date start, Date end);
+        EventSetSimulation(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events, Date eventsStart, Date eventsEnd, Date start, Date end);
         virtual bool nextPath(std::vector<std::pair<Date, Real> > &path);
       
       private:
-        boost::shared_ptr<std::vector<std::pair<Date, Real> > > events_;
+        ext::shared_ptr<std::vector<std::pair<Date, Real> > > events_;
         Date eventsStart_;
         Date eventsEnd_;
 
@@ -77,13 +77,13 @@ namespace QuantLib {
 
     class EventSet : public CatRisk {        
       public:
-        EventSet(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
+        EventSet(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
                  Date eventsStart, 
                  Date eventsEnd);
 
-        boost::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
+        ext::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
       private:
-        boost::shared_ptr<std::vector<std::pair<Date, Real> > > events_; 
+        ext::shared_ptr<std::vector<std::pair<Date, Real> > > events_; 
         Date eventsStart_;
         Date eventsEnd_;
     };
@@ -119,7 +119,7 @@ namespace QuantLib {
                  Real mean, 
                  Real stdDev);
 
-        virtual boost::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
+        virtual ext::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
 
       private:
         Real maxLoss_;

@@ -31,17 +31,16 @@
 #pragma GCC diagnostic pop
 #endif
 #include <boost/function.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     ImplicitEulerScheme::ImplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const bc_set& bcSet,
         Real relTol,
         SolverType solverType)
     : dt_        (Null<Real>()),
-      iterations_(boost::make_shared<Size>(0u)),
+      iterations_(ext::make_shared<Size>(0u)),
       relTol_    (relTol),
       map_       (map),
       bcSet_     (bcSet),
@@ -59,7 +58,10 @@ namespace QuantLib {
 
         bcSet_.applyBeforeSolving(*map_, a);
 
-        if (solverType_ == BiCGstab) {
+        if (map_->size() == 1) {
+            a = map_->solve_splitting(0, a, -dt_);
+        }
+        else if (solverType_ == BiCGstab) {
             const BiCGStabResult result =
                 QuantLib::BiCGstab(
                     boost::function<Disposable<Array>(const Array&)>(

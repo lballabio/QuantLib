@@ -51,7 +51,7 @@ namespace QuantLib {
         };
 
         Gaussian1dSwaptionEngine(
-            const boost::shared_ptr<Gaussian1dModel> &model,
+            const ext::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,

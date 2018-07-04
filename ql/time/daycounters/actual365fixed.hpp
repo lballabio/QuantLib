@@ -80,7 +80,7 @@ namespace QuantLib {
                               const Date& refPeriodStart,
                               const Date& refPeriodEnd) const;
         };
-        static boost::shared_ptr<DayCounter::Impl> implementation(Convention);
+        static ext::shared_ptr<DayCounter::Impl> implementation(Convention);
     };
 
 }

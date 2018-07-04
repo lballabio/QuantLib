@@ -93,7 +93,7 @@ namespace QuantLib {
             useCostFunctionsJacobian_
                 ? boost::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3,
                               _4, _5)
-                : MINPACK::LmdifCostFunction(NULL);
+                : MINPACK::LmdifCostFunction();
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),
                        endCriteria.functionEpsilon(),
                        xtol_,

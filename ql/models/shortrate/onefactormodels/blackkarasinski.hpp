@@ -44,11 +44,11 @@ namespace QuantLib {
         BlackKarasinski(const Handle<YieldTermStructure>& termStructure,
                         Real a = 0.1, Real sigma = 0.1);
 
-        boost::shared_ptr<ShortRateDynamics> dynamics() const {
+        ext::shared_ptr<ShortRateDynamics> dynamics() const {
             QL_FAIL("no defined process for Black-Karasinski");
         }
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
       private:
         class Dynamics;
@@ -75,7 +75,7 @@ namespace QuantLib {
         : public BlackKarasinski::ShortRateDynamics {
       public:
         Dynamics(const Parameter& fitting, Real alpha, Real sigma)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
+        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
                                  new OrnsteinUhlenbeckProcess(alpha, sigma))),
           fitting_(fitting) {}
 

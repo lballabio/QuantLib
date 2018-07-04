@@ -57,7 +57,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
@@ -79,15 +78,15 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
     const Real qRate = 0.05;
     const Volatility vol = 0.25;
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, volTS));
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
 
     const NormalCLVModel m(
         bsProcess, ouProcess, std::vector<Date>(), 5);
@@ -127,22 +126,22 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
     const Real sigma = 0.4;
     const Real rho = -0.75;
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
-    const boost::shared_ptr<HestonProcess> process(
-        boost::make_shared<HestonProcess>(
+    const ext::shared_ptr<HestonProcess> process(
+        ext::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<BlackVolTermStructure> hestonVolTS(
-        boost::make_shared<HestonBlackVolSurface>(
-            Handle<HestonModel>(boost::make_shared<HestonModel>(process))));
+        ext::make_shared<HestonBlackVolSurface>(
+            Handle<HestonModel>(ext::make_shared<HestonModel>(process))));
 
     const NormalCLVModel m(
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, hestonVolTS),
-        boost::shared_ptr<OrnsteinUhlenbeckProcess>(),
+        ext::shared_ptr<OrnsteinUhlenbeckProcess>(),
         std::vector<Date>(), 5);
 
     const HestonRNDCalculator rndCalculator(process);
@@ -194,20 +193,20 @@ void NormalCLVModelTest::testIllustrative1DExample() {
     const Real rRate = 0.03;
     const Real qRate = 0.0;
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     const Handle<BlackVolTermStructure> sabrVol(
-        boost::make_shared<SABRVolTermStructure>(
+        ext::make_shared<SABRVolTermStructure>(
             alpha, beta, gamma, rho, s0, rRate, today, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, sabrVol));
 
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        boost::make_shared<OrnsteinUhlenbeckProcess>(
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        ext::make_shared<OrnsteinUhlenbeckProcess>(
             speed, vol, x0, level));
 
     std::vector<Date> maturityDates;
@@ -307,10 +306,10 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     const Time t = dc.yearFraction(today, maturity);
 
     const Real strike = 110;
-    const boost::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Call, strike);
-    const boost::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(maturity);
+    const ext::shared_ptr<StrikedTypePayoff> payoff =
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    const ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturity);
 
     // Ornstein-Uhlenbeck
     const Real speed = 2.3;
@@ -323,17 +322,17 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     const Real rRate     = 0.10;
     const Real qRate     = 0.04;
 
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> vTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, vTS));
 
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        boost::make_shared<OrnsteinUhlenbeckProcess>(
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        ext::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigma, x0, level));
 
     std::vector<Date> maturities;
@@ -361,7 +360,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     VanillaOption option(payoff, exercise);
     option.setPricingEngine(
-        boost::make_shared<AnalyticEuropeanEngine>(bsProcess));
+        ext::make_shared<AnalyticEuropeanEngine>(bsProcess));
     const Real expected = option.NPV();
 
     const Real tol = 0.01;
@@ -374,12 +373,12 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     }
 
     VanillaOption fdmOption(
-         boost::make_shared<CLVModelPayoff>(
+         ext::make_shared<CLVModelPayoff>(
              payoff->optionType(), payoff->strike(), boost::bind(g, t, _1)),
          exercise);
 
     fdmOption.setPricingEngine(
-        boost::make_shared<FdOrnsteinUhlenbeckVanillaEngine>(
+        ext::make_shared<FdOrnsteinUhlenbeckVanillaEngine>(
             ouProcess, rTS.currentLink(), 50, 800));
 
     calculated = fdmOption.NPV();
@@ -412,7 +411,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     Settings::instance().evaluationDate() = todaysDate;
 
     const Real s0 = 100;
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
     const Rate r = 0.02;
     const Rate q = 0.01;
 
@@ -426,17 +425,17 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    const boost::shared_ptr<HestonModel> hestonModel(
-        boost::make_shared<HestonModel>(
-            boost::make_shared<HestonProcess>(
+    const ext::shared_ptr<HestonModel> hestonModel(
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
                 rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
 
     const Handle<BlackVolTermStructure> vTS(
-        boost::make_shared<HestonBlackVolSurface>(
+        ext::make_shared<HestonBlackVolSurface>(
             Handle<HestonModel>(hestonModel)));
 
-    const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-        boost::make_shared<GeneralizedBlackScholesProcess>(
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+        ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, vTS);
 
     // Ornstein-Uhlenbeck
@@ -445,28 +444,28 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Real sigmaOU = 0.15;
     const Real x0      = 100;
 
-    const boost::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        boost::make_shared<OrnsteinUhlenbeckProcess>(
+    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        ext::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigmaOU, x0, level));
 
-    const boost::shared_ptr<Exercise> europeanExercise(
-        boost::make_shared<EuropeanExercise>(maturityDate));
+    const ext::shared_ptr<Exercise> europeanExercise(
+        ext::make_shared<EuropeanExercise>(maturityDate));
 
     VanillaOption vanillaOption(
-        boost::make_shared<PlainVanillaPayoff>(Option::Call, s0),
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, s0),
         europeanExercise);
 
     vanillaOption.setPricingEngine(
-        boost::make_shared<AnalyticHestonEngine>(hestonModel));
+        ext::make_shared<AnalyticHestonEngine>(hestonModel));
 
     const Volatility atmVol = vanillaOption.impliedVolatility(
         vanillaOption.NPV(),
-        boost::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
+        ext::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
             Handle<BlackVolTermStructure>(flatVol(std::sqrt(theta), dc))));
 
-    const boost::shared_ptr<PricingEngine> analyticEngine(
-        boost::make_shared<AnalyticDoubleBarrierBinaryEngine>(
-            boost::make_shared<GeneralizedBlackScholesProcess>(
+    const ext::shared_ptr<PricingEngine> analyticEngine(
+        ext::make_shared<AnalyticDoubleBarrierBinaryEngine>(
+            ext::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS,
                 Handle<BlackVolTermStructure>(flatVol(atmVol, dc)))));
 
@@ -481,8 +480,8 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Size n = 18;
     Array barrier_lo(n), barrier_hi(n), bsNPV(n);
 
-    const boost::shared_ptr<CashOrNothingPayoff> payoff =
-        boost::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
+    const ext::shared_ptr<CashOrNothingPayoff> payoff =
+        ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
 
     for (Size i=0; i < n; ++i) {
         const Real dist = 10.0+5.0*i;
@@ -505,11 +504,11 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Size tSteps = 200;
     const TimeGrid grid(maturityTime, tSteps);
 
-    const boost::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
-        boost::make_shared<PathGenerator<rsg_type> >(
+    const ext::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
+        ext::make_shared<PathGenerator<rsg_type> >(
             ouProcess, grid, rsg_type(factors, tSteps), false);
 
-    const Size nSims = 400000;
+    const Size nSims = 100000;
     std::vector<GeneralStatistics> stats(n);
     const DiscountFactor df = rTS->discount(maturityDate);
 
@@ -534,16 +533,16 @@ void NormalCLVModelTest::testMoustacheGraph() {
                 stats[u].add(0.0);
             }
             else {
-                stats[u].add(df*payoff->operator()(s));
+                stats[u].add(df*(*payoff)(s));
             }
         }
     }
 
     const Real expected[] = {
-        0.00907689,  0.0892242,  0.139655,   0.111603,   0.059872,
-        0.016652,   -0.0094134, -0.0207528, -0.0230873, -0.0201951,
-        -0.0160556, -0.0116482, -0.00741535,-0.00355287,-0.000165914,
-        0.00493464,  0.00342315, 0.0023405 };
+            0.00931214, 0.0901481, 0.138982, 0.112059, 0.0595901,
+            0.0167549, -0.00906787, -0.0206768, -0.0225628, -0.0203593,
+            -0.016036, -0.0116629, -0.00728792, -0.00328821,
+            -0.000158562, 0.00502041, 0.00347706, 0.00238216, };
 
     const Real tol = 1e-5;
     for (Size u=0; u < n; ++u) {

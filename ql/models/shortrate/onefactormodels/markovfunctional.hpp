@@ -109,8 +109,8 @@ namespace QuantLib {
         class CustomSmileFactory {
         public:
             virtual ~CustomSmileFactory() {}
-            virtual boost::shared_ptr<CustomSmileSection>
-            smileSection(const boost::shared_ptr<SmileSection>& source,
+            virtual ext::shared_ptr<CustomSmileSection>
+            smileSection(const ext::shared_ptr<SmileSection>& source,
                          const Real atm) const = 0;
         };
 
@@ -143,8 +143,8 @@ namespace QuantLib {
                           Real lowerRateBound, Real upperRateBound,
                           int adjustments,
                           const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>(),
-                          const boost::shared_ptr<CustomSmileFactory> customSmileFactory =
-                                                       boost::shared_ptr<CustomSmileFactory>())
+                          const ext::shared_ptr<CustomSmileFactory> customSmileFactory =
+                                                       ext::shared_ptr<CustomSmileFactory>())
                 : yGridPoints_(yGridPoints), yStdDevs_(yStdDevs),
                   gaussHermitePoints_(gaussHermitePoints), digitalGap_(digitalGap),
                   marketRateAccuracy_(marketRateAccuracy), lowerRateBound_(lowerRateBound),
@@ -245,7 +245,7 @@ namespace QuantLib {
                 smileMoneynessCheckpoints_ = m;
                 return *this;
             }
-            ModelSettings &withCustomSmileFactory(const boost::shared_ptr<CustomSmileFactory>& f) {
+            ModelSettings &withCustomSmileFactory(const ext::shared_ptr<CustomSmileFactory>& f) {
                 customSmileFactory_ = f;
                 return *this;
             }
@@ -257,7 +257,7 @@ namespace QuantLib {
             Real lowerRateBound_, upperRateBound_;
             int adjustments_;
             std::vector<Real> smileMoneynessCheckpoints_;
-            boost::shared_ptr<CustomSmileFactory> customSmileFactory_;
+            ext::shared_ptr<CustomSmileFactory> customSmileFactory_;
         };
 
         struct CalibrationPoint {
@@ -267,8 +267,8 @@ namespace QuantLib {
             std::vector<Real> yearFractions_;
             Real atm_;
             Real annuity_;
-            boost::shared_ptr<SmileSection> smileSection_;
-            boost::shared_ptr<SmileSection> rawSmileSection_;
+            ext::shared_ptr<SmileSection> smileSection_;
+            ext::shared_ptr<SmileSection> rawSmileSection_;
             Real minRateDigital_;
             Real maxRateDigital_;
         };
@@ -312,7 +312,7 @@ namespace QuantLib {
                          const Handle<SwaptionVolatilityStructure> &swaptionVol,
                          const std::vector<Date> &swaptionExpiries,
                          const std::vector<Period> &swaptionTenors,
-                         const boost::shared_ptr<SwapIndex> &swapIndexBase,
+                         const ext::shared_ptr<SwapIndex> &swapIndexBase,
                          const MarkovFunctional::ModelSettings &modelSettings =
                              ModelSettings());
 
@@ -323,7 +323,7 @@ namespace QuantLib {
                          const std::vector<Real> &volatilities,
                          const Handle<OptionletVolatilityStructure> &capletVol,
                          const std::vector<Date> &capletExpiries,
-                         const boost::shared_ptr<IborIndex> &iborIndex,
+                         const ext::shared_ptr<IborIndex> &iborIndex,
                          const MarkovFunctional::ModelSettings &modelSettings =
                              ModelSettings());
 
@@ -336,7 +336,7 @@ namespace QuantLib {
         const Array &volatility() const { return sigma_.params(); }
 
         void calibrate(
-            const std::vector<boost::shared_ptr<CalibrationHelper> > &helper,
+            const std::vector<ext::shared_ptr<CalibrationHelper> > &helper,
             OptimizationMethod &method, const EndCriteria &endCriteria,
             const Constraint &constraint = Constraint(),
             const std::vector<Real> &weights = std::vector<Real>(),
@@ -437,37 +437,37 @@ namespace QuantLib {
         Real forwardRateInternal(
             const Date &fixing, const Date &referenceDate = Null<Date>(),
             const Real y = 0.0, const bool zeroFixingDays = false,
-            boost::shared_ptr<IborIndex> iborIdx =
-                boost::shared_ptr<IborIndex>()) const;
+            ext::shared_ptr<IborIndex> iborIdx =
+                ext::shared_ptr<IborIndex>()) const;
 
         Real swapRateInternal(const Date &fixing, const Period &tenor,
                               const Date &referenceDate = Null<Date>(),
                               const Real y = 0.0,
                               const bool zeroFixingDays = false,
-                              boost::shared_ptr<SwapIndex> swapIdx =
-                                        boost::shared_ptr<SwapIndex>()) const;
+                              ext::shared_ptr<SwapIndex> swapIdx =
+                                        ext::shared_ptr<SwapIndex>()) const;
 
         Real
         swapAnnuityInternal(const Date &fixing, const Period &tenor,
                             const Date &referenceDate = Null<Date>(),
                             const Real y = 0.0,
                             const bool zeroFixingDays = false,
-                            boost::shared_ptr<SwapIndex> swapIdx =
-                                boost::shared_ptr<SwapIndex>()) const;
+                            ext::shared_ptr<SwapIndex> swapIdx =
+                                ext::shared_ptr<SwapIndex>()) const;
 
         Real capletPriceInternal(
             const Option::Type &type, const Date &expiry, const Rate strike,
             const Date &referenceDate = Null<Date>(), const Real y = 0.0,
             const bool zeroFixingDays = false,
-            boost::shared_ptr<IborIndex> iborIdx =
-                boost::shared_ptr<IborIndex>()) const;
+            ext::shared_ptr<IborIndex> iborIdx =
+                ext::shared_ptr<IborIndex>()) const;
 
         Real swaptionPriceInternal(
             const Option::Type &type, const Date &expiry, const Period &tenor,
             const Rate strike, const Date &referenceDate = Null<Date>(),
             const Real y = 0.0, const bool zeroFixingDays = false,
-            boost::shared_ptr<SwapIndex> swapIdx =
-                boost::shared_ptr<SwapIndex>()) const;
+            ext::shared_ptr<SwapIndex> swapIdx =
+                ext::shared_ptr<SwapIndex>()) const;
 
         class ZeroHelper;
         friend class ZeroHelper;
@@ -493,10 +493,10 @@ namespace QuantLib {
 
         const bool capletCalibrated_;
 
-        boost::shared_ptr<Matrix> discreteNumeraire_;
+        ext::shared_ptr<Matrix> discreteNumeraire_;
         // vector of interpolated numeraires in y direction for all calibration
         // times
-        std::vector<boost::shared_ptr<Interpolation> > numeraire_;
+        std::vector<ext::shared_ptr<Interpolation> > numeraire_;
 
         Parameter reversion_;
         Parameter &sigma_;
@@ -515,8 +515,8 @@ namespace QuantLib {
 
         std::vector<Date> swaptionExpiries_, capletExpiries_;
         std::vector<Period> swaptionTenors_;
-        boost::shared_ptr<SwapIndex> swapIndexBase_;
-        boost::shared_ptr<IborIndex> iborIndex_;
+        ext::shared_ptr<SwapIndex> swapIndexBase_;
+        ext::shared_ptr<IborIndex> iborIndex_;
 
         mutable std::map<Date, CalibrationPoint> calibrationPoints_;
         mutable std::vector<Real> times_;

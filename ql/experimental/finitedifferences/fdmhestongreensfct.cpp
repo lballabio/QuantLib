@@ -32,8 +32,8 @@
 namespace QuantLib {
 
     FdmHestonGreensFct::FdmHestonGreensFct(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HestonProcess>& process,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<HestonProcess>& process,
         FdmSquareRootFwdOp::TransformationType trafoType_,
         const Real l0)
     : l0_(l0),
@@ -55,7 +55,7 @@ namespace QuantLib {
         const Real kappa = process_->kappa();
         const Real sigma = process_->sigma();
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         Array p(mesher_->layout()->size());

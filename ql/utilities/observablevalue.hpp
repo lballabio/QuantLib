@@ -51,12 +51,12 @@ namespace QuantLib {
         //@}
         //! implicit conversion
         operator T() const;
-        operator boost::shared_ptr<Observable>() const;
+        operator ext::shared_ptr<Observable>() const;
         //! explicit inspector
         const T& value() const;
       private:
         T value_;
-        boost::shared_ptr<Observable> observable_;
+        ext::shared_ptr<Observable> observable_;
     };
 
 
@@ -95,7 +95,7 @@ namespace QuantLib {
     }
 
     template <class T>
-    ObservableValue<T>::operator boost::shared_ptr<Observable>() const {
+    ObservableValue<T>::operator ext::shared_ptr<Observable>() const {
         return observable_;
     }
 

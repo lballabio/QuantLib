@@ -48,7 +48,7 @@ namespace QuantLib {
         };
       public:
         OneDayCounter()
-        : DayCounter(boost::shared_ptr<DayCounter::Impl>(
+        : DayCounter(ext::shared_ptr<DayCounter::Impl>(
                                         new OneDayCounter::Impl)) {}
     };
 

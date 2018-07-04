@@ -25,7 +25,7 @@ namespace QuantLib {
 
     CraigSneydScheme::CraigSneydScheme(
         Real theta, Real mu,
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
+        const ext::shared_ptr<FdmLinearOpComposite> & map,
         const bc_set& bcSet)
         : dt_(Null<Real>()),
         theta_(theta),

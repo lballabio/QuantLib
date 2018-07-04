@@ -27,7 +27,7 @@ namespace QuantLib {
 
 Real Gaussian1dModel::forwardRate(const Date &fixing,
                                   const Date &referenceDate, const Real y,
-                                  boost::shared_ptr<IborIndex> iborIdx) const {
+                                  ext::shared_ptr<IborIndex> iborIdx) const {
 
     QL_REQUIRE(iborIdx != NULL, "no ibor index given");
 
@@ -54,7 +54,7 @@ Real Gaussian1dModel::forwardRate(const Date &fixing,
 
 Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
                                const Date &referenceDate, const Real y,
-                               boost::shared_ptr<SwapIndex> swapIdx) const {
+                               ext::shared_ptr<SwapIndex> swapIdx) const {
 
     QL_REQUIRE(swapIdx != NULL, "no swap index given");
 
@@ -71,13 +71,13 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
 
     Schedule sched, floatSched;
 
-    boost::shared_ptr<VanillaSwap> underlying =
+    ext::shared_ptr<VanillaSwap> underlying =
         underlyingSwap(swapIdx, fixing, tenor);
 
     sched = underlying->fixedSchedule();
 
-    boost::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
-        boost::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
+    ext::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
+        ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
     if (oisIdx != NULL) {
         floatSched = sched;
     } else {
@@ -112,7 +112,7 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
 
 Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
                                   const Date &referenceDate, const Real y,
-                                  boost::shared_ptr<SwapIndex> swapIdx) const {
+                                  ext::shared_ptr<SwapIndex> swapIdx) const {
 
     QL_REQUIRE(swapIdx != NULL, "no swap index given");
 
@@ -122,7 +122,7 @@ Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
         swapIdx->discountingTermStructure(); // might be empty, then use
                                              // model curve
 
-    boost::shared_ptr<VanillaSwap> underlying =
+    ext::shared_ptr<VanillaSwap> underlying =
         underlyingSwap(swapIdx, fixing, tenor);
 
     Schedule sched = underlying->fixedSchedule();

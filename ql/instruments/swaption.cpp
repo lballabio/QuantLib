@@ -27,8 +27,7 @@
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>
-
-#include <boost/make_shared.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -44,10 +43,10 @@ namespace QuantLib {
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
@@ -61,16 +60,16 @@ namespace QuantLib {
 
             // set an implausible value, so that calculation is forced
             // at first ImpliedSwaptionVolHelper::operator()(Volatility x) call
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
+            vol_ = ext::make_shared<SimpleQuote>(-1.0);
             Handle<Quote> h(vol_);
 
             switch (type) {
             case ShiftedLognormal:
-                engine_ = boost::make_shared<BlackSwaptionEngine>(
+                engine_ = ext::make_shared<BlackSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed(), displacement);
                 break;
             case Normal:
-                engine_ = boost::make_shared<BachelierSwaptionEngine>(
+                engine_ = ext::make_shared<BachelierSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed());
                 break;
             default:
@@ -115,10 +114,10 @@ namespace QuantLib {
         }
     }
 
-    Swaption::Swaption(const boost::shared_ptr<VanillaSwap>& swap,
-                       const boost::shared_ptr<Exercise>& exercise,
+    Swaption::Swaption(const ext::shared_ptr<VanillaSwap>& swap,
+                       const ext::shared_ptr<Exercise>& exercise,
                        Settlement::Type delivery)
-    : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
+    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
       settlementType_(delivery) {
         registerWith(swap_);
         registerWithObservables(swap_);

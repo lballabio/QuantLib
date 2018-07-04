@@ -41,11 +41,11 @@ namespace QuantLib {
                 const Schedule& liborSchedule,
                 Rate liborFraction,
                 Rate liborSpread,
-                const boost::shared_ptr<IborIndex>& liborIndex,
+                const ext::shared_ptr<IborIndex>& liborIndex,
                 const DayCounter& liborDayCount,
                 // BMA leg
                 const Schedule& bmaSchedule,
-                const boost::shared_ptr<BMAIndex>& bmaIndex,
+                const ext::shared_ptr<BMAIndex>& bmaIndex,
                 const DayCounter& bmaDayCount);
 
         //! \name Inspectors

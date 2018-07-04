@@ -28,8 +28,8 @@
 namespace QuantLib {
 
     HybridHestonHullWhiteProcess::HybridHestonHullWhiteProcess(
-        const boost::shared_ptr<HestonProcess> & hestonProcess,
-        const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
+        const ext::shared_ptr<HestonProcess> & hestonProcess,
+        const ext::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
         Real corrEquityShortRate,
         HybridHestonHullWhiteProcess::Discretization discretization)
     : hestonProcess_(hestonProcess),
@@ -215,12 +215,12 @@ namespace QuantLib {
         return corrEquityShortRate_;
     }
 
-    const boost::shared_ptr<HestonProcess>& 
+    const ext::shared_ptr<HestonProcess>& 
     HybridHestonHullWhiteProcess::hestonProcess() const {
         return hestonProcess_;
     }
     
-    const boost::shared_ptr<HullWhiteForwardProcess>& 
+    const ext::shared_ptr<HullWhiteForwardProcess>& 
     HybridHestonHullWhiteProcess::hullWhiteProcess() const {
         return hullWhiteProcess_;
     }

@@ -86,6 +86,9 @@
     <ClCompile Include="cms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cmsspread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="commodityunitofmeasure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -162,6 +165,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="forwardoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="forwardrateagreement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="garch.cpp">
@@ -273,6 +279,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="numericaldifferentiation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nthorderderivativeop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ode.cpp">
@@ -512,6 +521,9 @@
     <ClInclude Include="cms.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cmsspread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="commodityunitofmeasure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -588,6 +600,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="forwardoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="forwardrateagreement.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="garch.hpp">
@@ -699,6 +714,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="numericaldifferentiation.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nthorderderivativeop.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ode.hpp">

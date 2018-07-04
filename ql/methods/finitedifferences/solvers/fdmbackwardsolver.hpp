@@ -35,7 +35,8 @@ namespace QuantLib {
     struct FdmSchemeDesc {
         enum FdmSchemeType { HundsdorferType, DouglasType, 
                              CraigSneydType, ModifiedCraigSneydType, 
-                             ImplicitEulerType, ExplicitEulerType };
+                             ImplicitEulerType, ExplicitEulerType,
+                             MethodOfLinesType };
 
         FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
 
@@ -50,6 +51,8 @@ namespace QuantLib {
         static FdmSchemeDesc ModifiedCraigSneyd(); 
         static FdmSchemeDesc Hundsdorfer();
         static FdmSchemeDesc ModifiedHundsdorfer();
+        static FdmSchemeDesc MethodOfLines(
+            Real eps=0.001, Real relInitStepSize=0.01);
     };
         
     class FdmBackwardSolver {
@@ -57,9 +60,9 @@ namespace QuantLib {
         typedef FdmLinearOp::array_type array_type;
         
         FdmBackwardSolver(
-          const boost::shared_ptr<FdmLinearOpComposite>& map,
+          const ext::shared_ptr<FdmLinearOpComposite>& map,
           const FdmBoundaryConditionSet& bcSet,
-          const boost::shared_ptr<FdmStepConditionComposite> condition,
+          const ext::shared_ptr<FdmStepConditionComposite> condition,
           const FdmSchemeDesc& schemeDesc);
 
         void rollback(array_type& a, 
@@ -67,9 +70,9 @@ namespace QuantLib {
                       Size steps, Size dampingSteps);
 
       protected:
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const FdmBoundaryConditionSet bcSet_;
-        const boost::shared_ptr<FdmStepConditionComposite> condition_;
+        const ext::shared_ptr<FdmStepConditionComposite> condition_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

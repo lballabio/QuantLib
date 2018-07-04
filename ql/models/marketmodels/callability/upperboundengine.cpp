@@ -28,6 +28,7 @@
 #include <ql/models/marketmodels/discounter.hpp>
 #include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/callability/exercisevalue.hpp>
+#include <ql/auto_ptr.hpp>
 #include <algorithm>
 
 namespace QuantLib {
@@ -73,8 +74,8 @@ namespace QuantLib {
                                                      cashFlowsGenerated);
             }
 
-            std::auto_ptr<MarketModelMultiProduct> clone() const {
-                return std::auto_ptr<MarketModelMultiProduct>(
+            QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct> clone() const {
+                return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
                                                    new DecoratedHedge(*this));
             }
 
@@ -108,8 +109,8 @@ namespace QuantLib {
 
 
     UpperBoundEngine::UpperBoundEngine(
-                   const boost::shared_ptr<MarketModelEvolver>& evolver,
-                   const std::vector<boost::shared_ptr<MarketModelEvolver> >&
+                   const ext::shared_ptr<MarketModelEvolver>& evolver,
+                   const std::vector<ext::shared_ptr<MarketModelEvolver> >&
                                                                  innerEvolvers,
                    const MarketModelMultiProduct& underlying,
                    const MarketModelExerciseValue& rebate,
@@ -245,7 +246,7 @@ namespace QuantLib {
                     // reset() method brings them to the current point
                     // rather than the beginning of the path.
 
-                    boost::shared_ptr<MarketModelEvolver> currentEvolver =
+                    ext::shared_ptr<MarketModelEvolver> currentEvolver =
                         innerEvolvers_[exercise++];
                     currentEvolver->setInitialState(evolver_->currentState());
 

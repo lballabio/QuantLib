@@ -36,7 +36,7 @@ namespace QuantLib {
         TwoAssetCorrelationOption(Option::Type type,
                                   Real strike1,
                                   Real strike2,
-                                  const boost::shared_ptr<Exercise>&);
+                                  const ext::shared_ptr<Exercise>&);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         Real X2_;

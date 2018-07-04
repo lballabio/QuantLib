@@ -30,8 +30,9 @@
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <boost/make_shared.hpp>
+
 
 namespace QuantLib {
     
@@ -69,14 +70,19 @@ namespace QuantLib {
         return FdmSchemeDesc(FdmSchemeDesc::ImplicitEulerType, 0.0, 0.0);
     }
 
+    FdmSchemeDesc FdmSchemeDesc::MethodOfLines(Real eps, Real relInitStepSize) {
+        return FdmSchemeDesc(
+            FdmSchemeDesc::MethodOfLinesType, eps, relInitStepSize);
+    }
+
     FdmBackwardSolver::FdmBackwardSolver(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet,
-        const boost::shared_ptr<FdmStepConditionComposite> condition,
+        const ext::shared_ptr<FdmStepConditionComposite> condition,
         const FdmSchemeDesc& schemeDesc)
     : map_(map), bcSet_(bcSet),
       condition_((condition) ? condition 
-                             : boost::make_shared<FdmStepConditionComposite>(
+                             : ext::make_shared<FdmStepConditionComposite>(
                                      std::list<std::vector<Time> >(),
                                      FdmStepConditionComposite::Conditions())),
       schemeDesc_(schemeDesc) {
@@ -150,6 +156,15 @@ namespace QuantLib {
                 FiniteDifferenceModel<ExplicitEulerScheme> 
                    explicitModel(explicitEvolver, condition_->stoppingTimes());
                 explicitModel.rollback(rhs, dampingTo, to, steps, *condition_);
+            }
+            break;
+          case FdmSchemeDesc::MethodOfLinesType:
+            {
+                MethodOfLinesScheme methodOfLines(
+                    schemeDesc_.theta, schemeDesc_.mu, map_, bcSet_);
+                FiniteDifferenceModel<MethodOfLinesScheme>
+                   molModel(methodOfLines, condition_->stoppingTimes());
+                molModel.rollback(rhs, dampingTo, to, steps, *condition_);
             }
             break;
           default:

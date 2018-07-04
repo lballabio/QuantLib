@@ -20,14 +20,12 @@
 #include <sstream>
 #include <iomanip>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     SwapSpreadIndex::SwapSpreadIndex(
         const std::string &familyName,
-        const boost::shared_ptr<SwapIndex> &swapIndex1,
-        const boost::shared_ptr<SwapIndex> &swapIndex2, const Real gearing1,
+        const ext::shared_ptr<SwapIndex> &swapIndex1,
+        const ext::shared_ptr<SwapIndex> &swapIndex2, const Real gearing1,
         const Real gearing2)
         : InterestRateIndex(
               familyName,

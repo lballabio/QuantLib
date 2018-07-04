@@ -33,7 +33,7 @@ namespace QuantLib {
 
       public:
 
-        AtmAdjustedSmileSection(const boost::shared_ptr<SmileSection> source,
+        AtmAdjustedSmileSection(const ext::shared_ptr<SmileSection> source,
                                 const Real atm = Null<Real>(),
                                 bool recenterSmile = false);
 
@@ -77,7 +77,7 @@ namespace QuantLib {
       private:
 
         Real adjustedStrike(Real strike) const;
-        boost::shared_ptr<SmileSection> source_;
+        ext::shared_ptr<SmileSection> source_;
         Real adjustment_;
         Real f_;
     };

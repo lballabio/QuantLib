@@ -25,8 +25,8 @@
 namespace QuantLib {
 
     BasketOption::BasketOption(
-        const boost::shared_ptr<BasketPayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<BasketPayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : MultiAssetOption(payoff, exercise) {}
 
 }

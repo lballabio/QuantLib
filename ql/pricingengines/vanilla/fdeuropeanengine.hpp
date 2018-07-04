@@ -44,7 +44,7 @@ namespace QuantLib {
                              public FDVanillaEngine {
       public:
         FDEuropeanEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps=100, Size gridPoints=100,
              bool timeDependent = false)
         : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),

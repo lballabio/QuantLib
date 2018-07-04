@@ -41,7 +41,11 @@ namespace QuantLib {
         bool nextTimeStep(const CurveState&,
                           std::vector<Size>&,
                           std::vector<std::vector<CashFlow> >&);
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
+        #else
         std::auto_ptr<MarketModelMultiProduct> clone() const;
+        #endif
         //@}
         //! \name inspectors
         //@{

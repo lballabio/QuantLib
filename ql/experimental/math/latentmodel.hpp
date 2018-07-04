@@ -36,7 +36,6 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
@@ -144,7 +143,7 @@ namespace QuantLib {
         public MultidimIntegral, public LMIntegration {
     public:
         IntegrationBase(
-            const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+            const std::vector<ext::shared_ptr<Integrator> >& integrators, 
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
@@ -460,7 +459,7 @@ namespace QuantLib {
         */
         class IntegrationFactory {
         public:
-            static boost::shared_ptr<LMIntegration> createLMIntegration(
+            static ext::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
                 LatentModelIntegrationType::LatentModelIntegrationType type = 
                     #ifndef QL_PATCH_SOLARIS
@@ -473,16 +472,16 @@ namespace QuantLib {
                     #ifndef QL_PATCH_SOLARIS
                     case LatentModelIntegrationType::GaussianQuadrature:
                         return 
-                            boost::make_shared<
+                            ext::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
                     #endif
                     case LatentModelIntegrationType::Trapezoid:
                         {
-                        std::vector<boost::shared_ptr<Integrator> > integrals;
+                        std::vector<ext::shared_ptr<Integrator> > integrals;
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
-                            boost::make_shared<TrapezoidIntegral<Default> >(
+                            ext::make_shared<TrapezoidIntegral<Default> >(
                                 1.e-4, 20));
                         /* This integration domain is tailored for the T 
                         distribution; it is too wide for normals or Ts of high
@@ -495,7 +494,7 @@ namespace QuantLib {
                         here in some cases.
                         */
                         return 
-                          boost::make_shared<IntegrationBase<MultidimIntegral> >
+                          ext::make_shared<IntegrationBase<MultidimIntegral> >
                                (integrals, -35., 35.);
                         }
                     default:
@@ -620,7 +619,7 @@ namespace QuantLib {
         // Integrable models must provide their integrator.
         // Arguable, not having the integration in the LM class saves that 
         //   memory but have an entry in the VT... 
-        virtual const boost::shared_ptr<LMIntegration>& integration() const {
+        virtual const ext::shared_ptr<LMIntegration>& integration() const {
             QL_FAIL("Integration non implemented in Latent model.");
         }
         //@}
@@ -765,18 +764,19 @@ namespace QuantLib {
     class LatentModel<TC>
         ::FactorSampler <RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > ,
             dummy> {
+        typedef URNG urng_type;
     public:
         //Size below must be == to the numb of factors idiosy + systemi
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const GaussianCopulaPolicy& copula,
                                BigNatural seed = 0) 
         : boxMullRng_(copula.numFactors(), 
-            BoxMullerGaussianRng<URNG>(URNG(seed))){ }
+            BoxMullerGaussianRng<urng_type>(urng_type(seed))){ }
         const sample_type& nextSequence() const {
                 return boxMullRng_.nextSequence();
         }
     private:
-        RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > boxMullRng_;
+        RandomSequenceGenerator<BoxMullerGaussianRng<urng_type> > boxMullRng_;
     };
 
     /*! \brief Specialization for direct T samples generation.\par
@@ -790,6 +790,7 @@ namespace QuantLib {
     class LatentModel<TC>
         ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > , 
             dummy> {
+        typedef URNG urng_type;
     public:
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const TCopulaPolicy& copula, BigNatural seed = 0)
@@ -799,7 +800,7 @@ namespace QuantLib {
             const std::vector<Real>& varF = copula.varianceFactors();
             for(Size i=0; i<varF.size(); i++)// ...use back inserter lambda
                 trng_.push_back(
-                    PolarStudentTRng<URNG>(2./(1.-varF[i]*varF[i]), urng_));
+                    PolarStudentTRng<urng_type>(2./(1.-varF[i]*varF[i]), urng_));
         }
         const sample_type& nextSequence() const {
             Size i=0;
@@ -811,8 +812,8 @@ namespace QuantLib {
         }
     private:
         mutable sample_type sequence_;
-        URNG urng_;
-        mutable std::vector<PolarStudentTRng<URNG> > trng_;
+        urng_type urng_;
+        mutable std::vector<PolarStudentTRng<urng_type> > trng_;
     };
 
 #endif

@@ -66,7 +66,7 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const Calendar& cal = Calendar(),
             const std::vector<Handle<Quote> >& jumps 
                 = std::vector<Handle<Quote> >(),
@@ -76,14 +76,14 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const Calendar& calendar,
             const Interpolator& interpolator);
         InterpolatedAffineHazardRateCurve(
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
@@ -100,7 +100,7 @@ namespace QuantLib {
       protected:
         InterpolatedAffineHazardRateCurve(
             const DayCounter&,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const std::vector<Handle<Quote> >& jumps 
                 = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -108,7 +108,7 @@ namespace QuantLib {
         InterpolatedAffineHazardRateCurve(
             const Date& referenceDate,
             const DayCounter&,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const std::vector<Handle<Quote> >& jumps 
                 = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -117,7 +117,7 @@ namespace QuantLib {
             Natural settlementDays,
             const Calendar&,
             const DayCounter&,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const std::vector<Handle<Quote> >& jumps 
                 = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -358,7 +358,7 @@ namespace QuantLib {
     template <class T>
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
                                     const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
@@ -369,7 +369,7 @@ namespace QuantLib {
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
                                     const Date& referenceDate,
                                     const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
@@ -382,7 +382,7 @@ namespace QuantLib {
                                     Natural settlementDays,
                                     const Calendar& calendar,
                                     const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
@@ -395,13 +395,14 @@ namespace QuantLib {
                                     const std::vector<Date>& dates,
                                     const std::vector<Rate>& hazardRates,
                                     const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
                                     const Calendar& calendar,
                                     const std::vector<Handle<Quote> >& jumps,
                                     const std::vector<Date>& jumpDates,
                                     const T& interpolator)
     : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, 
         dayCounter, jumps, jumpDates),
+      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
       dates_(dates)
     {
         initialize();
@@ -412,7 +413,7 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const Calendar& calendar,
             const T& interpolator)
     : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, 
@@ -428,7 +429,7 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel> model,
             const T& interpolator)
     : OneFactorAffineSurvivalStructure(model, dates.at(0), Calendar(), 
         dayCounter),
@@ -456,7 +457,6 @@ namespace QuantLib {
             QL_REQUIRE(!close(this->times_[i], this->times_[i-1]),
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
-            QL_REQUIRE(this->data_[i] >= 0.0, "negative hazard rate");
         }
 
         this->interpolation_ =
