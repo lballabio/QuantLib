@@ -27,12 +27,12 @@ namespace QuantLib {
 
     CTSMMCapletOriginalCalibration::CTSMMCapletOriginalCalibration(
                             const EvolutionDescription& evolution,
-                            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-                            const std::vector<boost::shared_ptr<
+                            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+                            const std::vector<ext::shared_ptr<
                                         PiecewiseConstantVariance> >&
                                                 displacedSwapVariances,
                             const std::vector<Volatility>& mktCapletVols,
-                            const boost::shared_ptr<CurveState>& cs,
+                            const ext::shared_ptr<CurveState>& cs,
                             Spread displacement,
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
@@ -51,7 +51,7 @@ namespace QuantLib {
     Natural CTSMMCapletOriginalCalibration::calibrationFunction(
                             const EvolutionDescription& evolution,
                             const PiecewiseConstantCorrelation& corr,
-                            const std::vector<boost::shared_ptr<
+                            const std::vector<ext::shared_ptr<
                                 PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
                             const std::vector<Volatility>& capletVols,

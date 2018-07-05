@@ -148,6 +148,7 @@
 #include "money.hpp"
 #include "noarbsabr.hpp"
 #include "normalclvmodel.hpp"
+#include "nthorderderivativeop.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
 #include "observable.hpp"
@@ -353,7 +354,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(QUANTLIB_TEST_CASE(startTimer));
 
-
     test->add(AmericanOptionTest::suite());
     test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
     test->add(ArrayTest::suite());
@@ -424,6 +424,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
+    test->add(NumericalDifferentiationTest::suite());
+    test->add(NthOrderDerivativeOpTest::suite());
     test->add(ObservableTest::suite());
     test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
@@ -489,7 +491,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(NoArbSabrTest::suite());
     test->add(NormalCLVModelTest::experimental(speed));
     test->add(NthToDefaultTest::suite(speed));
-    test->add(NumericalDifferentiationTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());

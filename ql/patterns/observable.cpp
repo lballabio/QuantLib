@@ -112,7 +112,7 @@ namespace QuantLib {
             }
 
             void operator()() const {
-                sig_.operator()();
+                sig_();
             }
           private:
             signal_type sig_;
@@ -121,7 +121,7 @@ namespace QuantLib {
     }
 
     void Observable::registerObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
+        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.insert(observerProxy);
@@ -133,7 +133,7 @@ namespace QuantLib {
     }
 
     void Observable::unregisterObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
+        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.erase(observerProxy);
@@ -152,12 +152,12 @@ namespace QuantLib {
 
     void Observable::notifyObservers() {
         if (settings_.updatesEnabled()) {
-            return sig_->operator()();
+            return (*sig_)();
         }
 
         boost::lock_guard<boost::mutex> sLock(settings_.mutex_);
         if (settings_.updatesEnabled()) {
-            return sig_->operator()();
+            return (*sig_)();
         }
         else if (settings_.updatesDeferred()) {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);

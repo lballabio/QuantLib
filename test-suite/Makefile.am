@@ -97,6 +97,7 @@ QL_TESTS = \
 	money.hpp money.cpp \
 	noarbsabr.hpp noarbsabr.cpp \
 	normalclvmodel.hpp normalclvmodel.cpp \
+	nthorderderivativeop.hpp nthorderderivativeop.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	numericaldifferentiation.hpp numericaldifferentiation.cpp \
 	observable.hpp observable.cpp \
@@ -210,7 +211,6 @@ EXTRA_DIST = \
 	CMakeLists.txt \
 	paralleltestrunner.hpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 
@@ -222,7 +222,6 @@ EXTRA_DIST = \
 	paralleltestrunner.hpp \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 

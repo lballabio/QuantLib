@@ -34,7 +34,7 @@ namespace QuantLib {
 
 class FdmDupire1dOp : public FdmLinearOpComposite {
   public:
-    FdmDupire1dOp(const boost::shared_ptr<FdmMesher> &mesher,
+    FdmDupire1dOp(const ext::shared_ptr<FdmMesher> &mesher,
                   const Array &localVolatility);
 
     Size size() const;
@@ -53,7 +53,7 @@ class FdmDupire1dOp : public FdmLinearOpComposite {
 #endif
 
   private:
-    const boost::shared_ptr<FdmMesher> mesher_;
+    const ext::shared_ptr<FdmMesher> mesher_;
     const Array localVolatility_;
     TripleBandLinearOp mapT_;
 };

@@ -43,7 +43,7 @@ namespace QuantLib {
         : model_(model) {
             this->registerWith(model_);
         }
-        explicit GenericModelEngine(const boost::shared_ptr<ModelType>& model)
+        explicit GenericModelEngine(const ext::shared_ptr<ModelType>& model)
         : model_(model) {
             this->registerWith(model_);
         }

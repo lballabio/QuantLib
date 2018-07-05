@@ -32,7 +32,7 @@
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/instruments/bond.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -223,7 +223,7 @@ namespace QuantLib {
         //! \name Z-spread functions
         //@{
         static Real cleanPrice(const Bond& bond,
-                               const boost::shared_ptr<YieldTermStructure>& discount,
+                               const ext::shared_ptr<YieldTermStructure>& discount,
                                Spread zSpread,
                                const DayCounter& dayCounter,
                                Compounding compounding,
@@ -231,7 +231,7 @@ namespace QuantLib {
                                Date settlementDate = Date());
         static Spread zSpread(const Bond& bond,
                               Real cleanPrice,
-                              const boost::shared_ptr<YieldTermStructure>&,
+                              const ext::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,

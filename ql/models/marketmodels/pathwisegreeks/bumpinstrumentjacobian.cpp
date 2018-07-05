@@ -162,7 +162,7 @@ namespace QuantLib
 
         Size numberRestrictedBumps(projector.numberValidVectors());
 
-        boost::shared_ptr<MarketModel> marketmodel(derivativesProducer_.getInputBumps().associatedModel());
+        ext::shared_ptr<MarketModel> marketmodel(derivativesProducer_.getInputBumps().associatedModel());
         const EvolutionDescription& evolution(marketmodel->evolution());
 
         Size numberSteps = evolution.numberOfSteps();

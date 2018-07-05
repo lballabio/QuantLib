@@ -35,7 +35,7 @@ namespace QuantLib {
     template <class T>
     class BlackScholesLattice : public TreeLattice1D<BlackScholesLattice<T> > {
       public:
-        BlackScholesLattice(const boost::shared_ptr<T>& tree,
+        BlackScholesLattice(const ext::shared_ptr<T>& tree,
                             Rate riskFreeRate,
                             Time end,
                             Size steps);
@@ -58,7 +58,7 @@ namespace QuantLib {
             return tree_->probability(i, index, branch);
         }
       protected:
-        boost::shared_ptr<T> tree_;
+        ext::shared_ptr<T> tree_;
         Rate riskFreeRate_;
         Time dt_;
         DiscountFactor discount_;
@@ -70,7 +70,7 @@ namespace QuantLib {
 
     template <class T>
     BlackScholesLattice<T>::BlackScholesLattice(
-                                            const boost::shared_ptr<T>& tree,
+                                            const ext::shared_ptr<T>& tree,
                                             Rate riskFreeRate,
                                             Time end,
                                             Size steps)

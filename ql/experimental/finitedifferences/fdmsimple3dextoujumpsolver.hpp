@@ -40,7 +40,7 @@ namespace QuantLib {
       public:
         FdmSimple3dExtOUJumpSolver(
             const Handle<ExtOUWithJumpsProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
+            const ext::shared_ptr<YieldTermStructure>& rTS,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc  = FdmSchemeDesc::Hundsdorfer())
         : process_(process), rTS_(rTS),
@@ -55,22 +55,22 @@ namespace QuantLib {
 
       protected:
         void performCalculations() const {
-            boost::shared_ptr<FdmLinearOpComposite>op(
+            ext::shared_ptr<FdmLinearOpComposite>op(
                 new FdmExtOUJumpOp(solverDesc_.mesher,
                                    process_.currentLink(),
                                    rTS_, solverDesc_.bcSet, 32));
 
-            solver_ = boost::shared_ptr<Fdm3DimSolver>(
-                          new Fdm3DimSolver(solverDesc_, schemeDesc_, op));
+            solver_ = ext::make_shared<Fdm3DimSolver>(
+                          solverDesc_, schemeDesc_, op);
         }
 
       private:
         const Handle<ExtOUWithJumpsProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<Fdm3DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm3DimSolver> solver_;
     };
 }
 

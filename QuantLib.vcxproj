@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -589,6 +589,8 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopcomposite.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopiterator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\numericaldifferentiation.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\nthorderderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\firstderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\ninepointlinearop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\secondderivativeop.hpp" />
@@ -1752,7 +1754,6 @@
     <ClInclude Include="ql\experimental\math\moorepenroseinverse.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />
-    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp" />
     <ClInclude Include="ql\experimental\math\piecewisefunction.hpp" />
     <ClInclude Include="ql\experimental\math\piecewiseintegral.hpp" />
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
@@ -1760,6 +1761,7 @@
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
+    <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\config.ansi.hpp" />
@@ -1790,6 +1792,7 @@
     <ClInclude Include="ql\quantlib.hpp" />
     <ClInclude Include="ql\quote.hpp" />
     <ClInclude Include="ql\settings.hpp" />
+    <ClInclude Include="ql\shared_ptr.hpp" />
     <ClInclude Include="ql\stochasticprocess.hpp" />
     <ClInclude Include="ql\termstructure.hpp" />
     <ClInclude Include="ql\timegrid.hpp" />
@@ -1879,6 +1882,8 @@
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\firstderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\ninepointlinearop.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\numericaldifferentiation.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\nthorderderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\secondderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\secondordermixedderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\triplebandlinearop.cpp" />
@@ -2652,7 +2657,6 @@
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
-    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp" />
     <ClCompile Include="ql\experimental\math\piecewiseintegral.cpp" />
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />

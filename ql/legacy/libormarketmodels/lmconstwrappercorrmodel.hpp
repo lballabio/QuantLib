@@ -31,7 +31,7 @@ namespace QuantLib {
     class LmConstWrapperCorrelationModel : public LmCorrelationModel {
       public:
         LmConstWrapperCorrelationModel(
-            const boost::shared_ptr<LmCorrelationModel> & corrModel)
+            const ext::shared_ptr<LmCorrelationModel> & corrModel)
         : LmCorrelationModel(corrModel->size(), 0),
           corrModel_(corrModel) {
         }
@@ -59,7 +59,7 @@ namespace QuantLib {
     protected:
         void generateArguments() {}
 
-        const boost::shared_ptr<LmCorrelationModel> corrModel_;
+        const ext::shared_ptr<LmCorrelationModel> corrModel_;
     };
 
 }

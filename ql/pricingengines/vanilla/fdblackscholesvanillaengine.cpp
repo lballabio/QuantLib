@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     FdBlackScholesVanillaEngine::FdBlackScholesVanillaEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Size tGrid, Size xGrid, Size dampingSteps, 
             const FdmSchemeDesc& schemeDesc,
             bool localVol, Real illegalLocalVolOverwrite)
@@ -48,26 +48,26 @@ namespace QuantLib {
     void FdBlackScholesVanillaEngine::calculate() const {
 
         // 1. Mesher
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
         const Time maturity = process_->time(arguments_.exercise->lastDate());
-        const boost::shared_ptr<Fdm1dMesher> equityMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(
                     xGrid_, process_, maturity, payoff->strike(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(payoff->strike(), 0.1),
                     arguments_.cashFlow));
         
-        const boost::shared_ptr<FdmMesher> mesher (
+        const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher));
         
         // 2. Calculator
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
                                       new FdmLogInnerValue(payoff, mesher, 0));
 
         // 3. Step conditions
-        const boost::shared_ptr<FdmStepConditionComposite> conditions = 
+        const ext::shared_ptr<FdmStepConditionComposite> conditions = 
             FdmStepConditionComposite::vanillaComposite(
                                     arguments_.cashFlow, arguments_.exercise, 
                                     mesher, calculator, 
@@ -81,7 +81,7 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        const boost::shared_ptr<FdmBlackScholesSolver> solver(
+        const ext::shared_ptr<FdmBlackScholesSolver> solver(
                 new FdmBlackScholesSolver(
                              Handle<GeneralizedBlackScholesProcess>(process_),
                              payoff->strike(), solverDesc, schemeDesc_,

@@ -21,8 +21,6 @@
 #include <ql/experimental/averageois/makearithmeticaverageois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     namespace {
@@ -34,7 +32,7 @@ namespace QuantLib {
                     const Period& tenor, // swap maturity
                     Frequency fixedLegPaymentFrequency,
                     const Handle<Quote>& fixedRate,
-                    const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
                     Frequency overnightLegPaymentFrequency,
                     const Handle<Quote>& spread,
                     Real meanReversionSpeed,
@@ -58,10 +56,10 @@ namespace QuantLib {
 
         // dummy OvernightIndex with curve/swap arguments
         // review here
-        boost::shared_ptr<IborIndex> clonedIborIndex =
+        ext::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex_->clone(termStructureHandle_);
-        shared_ptr<OvernightIndex> clonedOvernightIndex =
-            boost::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+        ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
+            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
        swap_ = MakeArithmeticAverageOIS(tenor_, clonedOvernightIndex, 0.0)
                 .withDiscountingTermStructure(discountRelinkableHandle_)
@@ -79,7 +77,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        ext::shared_ptr<YieldTermStructure> temp(t, no_deletion);
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())

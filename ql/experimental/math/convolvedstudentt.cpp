@@ -22,6 +22,7 @@
 #include <ql/math/factorial.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/functional.hpp>
 #include <boost/function.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
@@ -188,8 +189,8 @@ namespace QuantLib {
         // (q is very close to 1.), in a bad combination fails around 1.-1.e-7
         Real xMax = 1.e6;
         return sign *
-            Brent().solve(boost::bind(std::bind2nd(std::minus<Real>(),
-            effectiveq), boost::bind(
+            Brent().solve(boost::bind(subtract<Real>(effectiveq),
+                                      boost::bind(
                 &CumulativeBehrensFisher::operator(),
                 distrib_, _1)), accuracy_, (xMin+xMax)/2., xMin, xMax);
     }

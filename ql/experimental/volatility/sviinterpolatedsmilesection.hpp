@@ -46,10 +46,10 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
         Real sigma, Real rho, Real m, bool aIsFixed, bool bIsFixed,
         bool sigmaIsFixed, bool rhoIsFixed, bool mIsFixed,
         bool vegaWeighted = true,
-        const boost::shared_ptr<EndCriteria> &endCriteria =
-            boost::shared_ptr<EndCriteria>(),
-        const boost::shared_ptr<OptimizationMethod> &method =
-            boost::shared_ptr<OptimizationMethod>(),
+        const ext::shared_ptr<EndCriteria> &endCriteria =
+            ext::shared_ptr<EndCriteria>(),
+        const ext::shared_ptr<OptimizationMethod> &method =
+            ext::shared_ptr<OptimizationMethod>(),
         const DayCounter &dc = Actual365Fixed());
     //! no quotes
     SviInterpolatedSmileSection(
@@ -59,10 +59,10 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
         Real a, Real b, Real sigma, Real rho, Real m, bool isAFixed,
         bool isBFixed, bool isSigmaFixed, bool isRhoFixed, bool isMFixed,
         bool vegaWeighted = true,
-        const boost::shared_ptr<EndCriteria> &endCriteria =
-            boost::shared_ptr<EndCriteria>(),
-        const boost::shared_ptr<OptimizationMethod> &method =
-            boost::shared_ptr<OptimizationMethod>(),
+        const ext::shared_ptr<EndCriteria> &endCriteria =
+            ext::shared_ptr<EndCriteria>(),
+        const ext::shared_ptr<OptimizationMethod> &method =
+            ext::shared_ptr<OptimizationMethod>(),
         const DayCounter &dc = Actual365Fixed());
     //@}
     //! \name LazyObject interface
@@ -93,7 +93,7 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
   protected:
     //! Creates the mutable SviInterpolation
     void createInterpolation() const;
-    mutable boost::shared_ptr<SviInterpolation> sviInterpolation_;
+    mutable ext::shared_ptr<SviInterpolation> sviInterpolation_;
 
     //! Market data
     const Handle<Quote> forward_;
@@ -111,8 +111,8 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
     //! Svi interpolation settings
     bool isAFixed_, isBFixed_, isSigmaFixed_, isRhoFixed_, isMFixed_;
     bool vegaWeighted_;
-    const boost::shared_ptr<EndCriteria> endCriteria_;
-    const boost::shared_ptr<OptimizationMethod> method_;
+    const ext::shared_ptr<EndCriteria> endCriteria_;
+    const ext::shared_ptr<OptimizationMethod> method_;
 };
 
 inline void SviInterpolatedSmileSection::update() {

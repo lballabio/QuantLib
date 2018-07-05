@@ -33,7 +33,7 @@ namespace QuantLib {
 
 
     FdBlackScholesAsianEngine::FdBlackScholesAsianEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Size tGrid, Size xGrid, Size aGrid, 
             const FdmSchemeDesc& schemeDesc)
     : GenericEngine<DiscreteAveragingAsianOption::arguments,
@@ -53,10 +53,10 @@ namespace QuantLib {
                    "Running average requires at least one past fixing");
 
         // 1. Mesher
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = process_->time(arguments_.exercise->lastDate());
-        const boost::shared_ptr<Fdm1dMesher> equityMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(xGrid_, process_, maturity,
                                       payoff->strike()));
 
@@ -75,19 +75,19 @@ namespace QuantLib {
         Real xMin = std::min(std::log(avg)  - 0.25*r, std::log(spot) - 1.5*r);
         Real xMax = std::max(std::log(avg)  + 0.25*r, std::log(spot) + 1.5*r);
 
-        const boost::shared_ptr<Fdm1dMesher> averageMesher(
+        const ext::shared_ptr<Fdm1dMesher> averageMesher(
             new FdmBlackScholesMesher(aGrid_, process_, maturity,
                                       payoff->strike(), xMin, xMax));
 
-        const boost::shared_ptr<FdmMesher> mesher (
+        const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, averageMesher));
 
         // 2. Calculator
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        ext::shared_ptr<FdmInnerValueCalculator> calculator(
                                 new FdmLogInnerValue(payoff, mesher, 1));
 
         // 3. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Arithmetic average step conditions
@@ -98,12 +98,12 @@ namespace QuantLib {
             averageTimes.push_back(t);
         }
         stoppingTimes.push_back(std::vector<Time>(averageTimes));
-        stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
+        stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
                 new FdmArithmeticAverageCondition(
                         averageTimes, arguments_.runningAccumulator,
                         arguments_.pastFixings, mesher, 0)));
 
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
+        ext::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
         // 4. Boundary conditions
@@ -112,7 +112,7 @@ namespace QuantLib {
         // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity, tGrid_, 0 };
-        boost::shared_ptr<FdmSimple2dBSSolver> solver(
+        ext::shared_ptr<FdmSimple2dBSSolver> solver(
               new FdmSimple2dBSSolver(
                               Handle<GeneralizedBlackScholesProcess>(process_),
                               payoff->strike(), solverDesc, schemeDesc_));

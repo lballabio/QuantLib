@@ -45,12 +45,12 @@ namespace QuantLib {
       public:
         typedef Sample<Path> sample_type;
         // constructors
-        PathGenerator(const boost::shared_ptr<StochasticProcess>&,
+        PathGenerator(const ext::shared_ptr<StochasticProcess>&,
                       Time length,
                       Size timeSteps,
                       const GSG& generator,
                       bool brownianBridge);
-        PathGenerator(const boost::shared_ptr<StochasticProcess>&,
+        PathGenerator(const ext::shared_ptr<StochasticProcess>&,
                       const TimeGrid& timeGrid,
                       const GSG& generator,
                       bool brownianBridge);
@@ -67,7 +67,7 @@ namespace QuantLib {
         GSG generator_;
         Size dimension_;
         TimeGrid timeGrid_;
-        boost::shared_ptr<StochasticProcess1D> process_;
+        ext::shared_ptr<StochasticProcess1D> process_;
         mutable sample_type next_;
         mutable std::vector<Real> temp_;
         BrownianBridge bb_;
@@ -78,14 +78,14 @@ namespace QuantLib {
 
     template <class GSG>
     PathGenerator<GSG>::PathGenerator(
-                          const boost::shared_ptr<StochasticProcess>& process,
+                          const ext::shared_ptr<StochasticProcess>& process,
                           Time length,
                           Size timeSteps,
                           const GSG& generator,
                           bool brownianBridge)
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(length, timeSteps),
-      process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
+      process_(ext::dynamic_pointer_cast<StochasticProcess1D>(process)),
       next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeSteps,
                    "sequence generator dimensionality (" << dimension_
@@ -94,13 +94,13 @@ namespace QuantLib {
 
     template <class GSG>
     PathGenerator<GSG>::PathGenerator(
-                          const boost::shared_ptr<StochasticProcess>& process,
+                          const ext::shared_ptr<StochasticProcess>& process,
                           const TimeGrid& timeGrid,
                           const GSG& generator,
                           bool brownianBridge)
     : brownianBridge_(brownianBridge), generator_(generator),
       dimension_(generator_.dimension()), timeGrid_(timeGrid),
-      process_(boost::dynamic_pointer_cast<StochasticProcess1D>(process)),
+      process_(ext::dynamic_pointer_cast<StochasticProcess1D>(process)),
       next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "sequence generator dimensionality (" << dimension_

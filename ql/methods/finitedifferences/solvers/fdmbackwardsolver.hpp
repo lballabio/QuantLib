@@ -60,9 +60,9 @@ namespace QuantLib {
         typedef FdmLinearOp::array_type array_type;
         
         FdmBackwardSolver(
-          const boost::shared_ptr<FdmLinearOpComposite>& map,
+          const ext::shared_ptr<FdmLinearOpComposite>& map,
           const FdmBoundaryConditionSet& bcSet,
-          const boost::shared_ptr<FdmStepConditionComposite> condition,
+          const ext::shared_ptr<FdmStepConditionComposite> condition,
           const FdmSchemeDesc& schemeDesc);
 
         void rollback(array_type& a, 
@@ -70,9 +70,9 @@ namespace QuantLib {
                       Size steps, Size dampingSteps);
 
       protected:
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const FdmBoundaryConditionSet bcSet_;
-        const boost::shared_ptr<FdmStepConditionComposite> condition_;
+        const ext::shared_ptr<FdmStepConditionComposite> condition_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

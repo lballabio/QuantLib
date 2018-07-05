@@ -90,7 +90,7 @@ int main(int, char* []) {
         Settings::instance().evaluationDate() = repoSettlementDate;
 
         RelinkableHandle<YieldTermStructure> bondCurve;
-        bondCurve.linkTo(boost::shared_ptr<YieldTermStructure>(
+        bondCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
                                        new FlatForward(repoSettlementDate,
                                                        .01, // dummy rate
                                                        bondDayCountConvention,
@@ -98,7 +98,7 @@ int main(int, char* []) {
                                                        bondCouponFrequency)));
 
         /*
-        boost::shared_ptr<FixedRateBond> bond(
+        ext::shared_ptr<FixedRateBond> bond(
                        new FixedRateBond(faceAmount,
                                          bondIssueDate,
                                          bondDatedDate,
@@ -119,7 +119,7 @@ int main(int, char* []) {
                               bondCalendar,bondBusinessDayConvention,
                               bondBusinessDayConvention,
                               DateGeneration::Backward,false);
-        boost::shared_ptr<FixedRateBond> bond(
+        ext::shared_ptr<FixedRateBond> bond(
                        new FixedRateBond(bondSettlementDays,
                                          faceAmount,
                                          bondSchedule,
@@ -128,10 +128,10 @@ int main(int, char* []) {
                                          bondBusinessDayConvention,
                                          bondRedemption,
                                          bondIssueDate));
-        bond->setPricingEngine(boost::shared_ptr<PricingEngine>(
+        bond->setPricingEngine(ext::shared_ptr<PricingEngine>(
                                        new DiscountingBondEngine(bondCurve)));
 
-        bondCurve.linkTo(boost::shared_ptr<YieldTermStructure> (
+        bondCurve.linkTo(ext::shared_ptr<YieldTermStructure> (
                    new FlatForward(repoSettlementDate,
                                    bond->yield(bondCleanPrice,
                                                bondDayCountConvention,
@@ -145,7 +145,7 @@ int main(int, char* []) {
         double dummyStrike = 91.5745;
 
         RelinkableHandle<YieldTermStructure> repoCurve;
-        repoCurve.linkTo(boost::shared_ptr<YieldTermStructure> (
+        repoCurve.linkTo(ext::shared_ptr<YieldTermStructure> (
                                        new FlatForward(repoSettlementDate,
                                                        repoRate,
                                                        repoDayCountConvention,

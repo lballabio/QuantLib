@@ -17,6 +17,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 #ifndef quantlib_randomdefault_latent_model_hpp
 #define quantlib_randomdefault_latent_model_hpp
 
@@ -25,6 +26,7 @@
 #include <ql/math/statistics/riskstatistics.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 
@@ -119,7 +121,7 @@ namespace QuantLib {
         void performCalculations() const {
             static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
                 this)->initDates();//in update?
-            copulasRng_ = boost::make_shared<copulaRNG_type>(copula_, seed_);
+            copulasRng_ = ext::make_shared<copulaRNG_type>(copula_, seed_);
             performSimulations();
         }
 
@@ -219,7 +221,7 @@ namespace QuantLib {
             USNG > > > > simsBuffer_;
 
         mutable copulaPolicy copula_;
-        mutable boost::shared_ptr<copulaRNG_type> copulasRng_;
+        mutable ext::shared_ptr<copulaRNG_type> copulasRng_;
 
         // Maximum time inversion horizon
         static const Size maxHorizon_ = 4050; // over 11 years
@@ -293,7 +295,8 @@ namespace QuantLib {
             }
         }
         std::transform(hitsByDate.begin(), hitsByDate.end(),
-            hitsByDate.begin(), std::bind2nd(std::divides<Real>(), Real(nSims_)));
+                       hitsByDate.begin(),
+                       divide_by<Real>(Real(nSims_)));
         return hitsByDate;
         // \todo Provide confidence interval
     }
@@ -509,7 +512,7 @@ namespace QuantLib {
         /*
         std::vector<Real>::iterator itPastPerc =
             std::find_if(losses.begin() + position, losses.end(),
-                std::bind1st(std::less<Real>(), perctlInf));
+                         greater_or_equal_to<Real>(perctlInf));
         // notice if the sample is flat at the end this might be zero
         Size pointsOverVal = nSims_ - std::distance(itPastPerc, losses.end());
         return pointsOverVal == 0 ? 0. :
@@ -633,7 +636,7 @@ namespace QuantLib {
         std::vector<Real> varLevels = splitVaRAndError(date, loss, 0.95)[0];
         // turn relative units into absolute:
         std::transform(varLevels.begin(), varLevels.end(), varLevels.begin(),
-            std::bind1st(std::multiplies<Real>(), loss));
+                       multiply_by<Real>(loss));
         return varLevels;
     }
 
@@ -819,14 +822,14 @@ namespace QuantLib {
         typedef simEvent<RandomDefaultLM> defaultSimEvent;
 
         // \todo Consider this to be only a ConstantLossLM instead
-        const boost::shared_ptr<DefaultLatentModel<copulaPolicy> > model_;
+        const ext::shared_ptr<DefaultLatentModel<copulaPolicy> > model_;
         const std::vector<Real> recoveries_;
         // for time inversion:
         Real accuracy_;
     public:
         // \todo: Allow a constructor building its own default latent model.
         RandomDefaultLM(
-            const boost::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
+            const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
             const std::vector<Real>& recoveries = std::vector<Real>(),
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
@@ -844,7 +847,7 @@ namespace QuantLib {
             this->registerWith(model_);
         }
         RandomDefaultLM(
-            const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&
+            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&
                 model,
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
@@ -883,7 +886,7 @@ namespace QuantLib {
             Date today = Settings::instance().evaluationDate();
             Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
 
-            const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+            const ext::shared_ptr<Pool>& pool = this->basket_->pool();
             for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'
                 horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
                     defaultProbability(this->basket_->defaultKeys()[iName])
@@ -935,7 +938,7 @@ namespace QuantLib {
     void RandomDefaultLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const
     {
-        const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+        const ext::shared_ptr<Pool>& pool = this->basket_->pool();
         // starts with no events
         this->simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 

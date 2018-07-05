@@ -51,7 +51,7 @@ namespace QuantLib {
         Real alpha(Time t) const;
         //@}
     protected:
-        boost::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
+        ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
         Handle<YieldTermStructure> h_;
         Real a_, sigma_;
     };
@@ -80,7 +80,7 @@ namespace QuantLib {
         Real B(Time t, Time T) const;
 
     protected:
-        boost::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
+        ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
         Handle<YieldTermStructure> h_;
         Real a_, sigma_;
     };

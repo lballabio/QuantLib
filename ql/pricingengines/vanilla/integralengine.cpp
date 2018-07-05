@@ -28,7 +28,7 @@ namespace QuantLib {
 
         class Integrand : std::unary_function<Real,Real> {
           public:
-            Integrand(const boost::shared_ptr<Payoff>& payoff,
+            Integrand(const ext::shared_ptr<Payoff>& payoff,
                       Real s0,
                       Rate drift,
                       Real variance)
@@ -40,7 +40,7 @@ namespace QuantLib {
                     std::exp(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
             }
           private:
-            boost::shared_ptr<Payoff> payoff_;
+            ext::shared_ptr<Payoff> payoff_;
             Real s0_;
             Rate drift_;
             Real variance_;
@@ -48,7 +48,7 @@ namespace QuantLib {
     }
 
     IntegralEngine::IntegralEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -58,8 +58,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =

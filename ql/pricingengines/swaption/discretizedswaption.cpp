@@ -38,7 +38,7 @@ namespace QuantLib {
     DiscretizedSwaption::DiscretizedSwaption(const Swaption::arguments& args,
                                              const Date& referenceDate,
                                              const DayCounter& dayCounter)
-    : DiscretizedOption(boost::shared_ptr<DiscretizedAsset>(),
+    : DiscretizedOption(ext::shared_ptr<DiscretizedAsset>(),
                         args.exercise->type(),
                         std::vector<Time>()),
       arguments_(args) {
@@ -81,7 +81,7 @@ namespace QuantLib {
                                     arguments_.floatingPayDates.back());
         lastPayment_ = std::max(lastFixedPayment,lastFloatingPayment);
 
-        underlying_ = boost::shared_ptr<DiscretizedAsset>(
+        underlying_ = ext::shared_ptr<DiscretizedAsset>(
                                             new DiscretizedSwap(arguments_,
                                                                 referenceDate,
                                                                 dayCounter));

@@ -43,7 +43,6 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 
-#include <boost/make_shared.hpp>
 
 using boost::unit_test_framework::test_suite;
 
@@ -66,26 +65,26 @@ namespace {
         Rate rate;
     };
 
-    boost::shared_ptr<YieldTermStructure> nominalTermStructure() {
+    ext::shared_ptr<YieldTermStructure> nominalTermStructure() {
         Date evaluationDate(13, August, 2007);
-        return boost::shared_ptr<YieldTermStructure>(
+        return ext::shared_ptr<YieldTermStructure>(
             new FlatForward(evaluationDate, 0.05, Actual360()));
     }
 
     template <class T, class U, class I>
-    std::vector<boost::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
             Datum iiData[], Size N,
-            const boost::shared_ptr<I> &ii, const Period &observationLag,
+            const ext::shared_ptr<I> &ii, const Period &observationLag,
             const Calendar &calendar,
             const BusinessDayConvention &bdc,
             const DayCounter &dc) {
 
-        std::vector<boost::shared_ptr<BootstrapHelper<T> > > instruments;
+        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
-            Handle<Quote> quote(boost::shared_ptr<Quote>(
+            Handle<Quote> quote(ext::shared_ptr<Quote>(
                 new SimpleQuote(iiData[i].rate/100.0)));
-            boost::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
+            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                 quote, observationLag, maturity,
                 calendar, bdc, dc, ii));
             instruments.push_back(anInstrument);
@@ -102,7 +101,7 @@ namespace {
 namespace {
 
 void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz, 
-    const boost::shared_ptr<ZeroInflationIndex>& ii) {
+    const ext::shared_ptr<ZeroInflationIndex>& ii) {
     
     QL_REQUIRE(!hz->hasSeasonality(), "We require that the initially passed in term structure "
         << "does not have seasonality");
@@ -117,8 +116,8 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     
     // 1) Monthly seasonality with all elements equal to 1 <=> no seasonality
     vector<Rate> seasonalityFactors(12, 1.0);
-    boost::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality = 
-        boost::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+    ext::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality = 
+        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // 2) Seasonality with factors != 1.0
     seasonalityFactors[0] = 1.003245;
@@ -134,8 +133,8 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     seasonalityFactors[10] = 1.003705;
     seasonalityFactors[11] = 1.004186;
 
-    boost::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
-        boost::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
     
     // Create dates on which we will check fixings
     vector<Date> fixingDates(12);
@@ -274,7 +273,7 @@ void InflationTest::testZeroIndex() {
         207.3, 206.1 };
 
     bool interp = false;
-    boost::shared_ptr<UKRPI> iir(new UKRPI(interp));
+    ext::shared_ptr<UKRPI> iir(new UKRPI(interp));
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -333,13 +332,13 @@ void InflationTest::testZeroTermStructure() {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     bool interp = false;
-    boost::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
+    ext::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
     for (Size i=0; i<LENGTH(fixData); i++) {
         iiUKRPI->addFixing(rpiSchedule[i], fixData[i]);
     }
 
-    boost::shared_ptr<ZeroInflationIndex> ii = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPI);
-    boost::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    ext::shared_ptr<ZeroInflationIndex> ii = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPI);
+    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the zero inflation curve
     Datum zcData[] = {
@@ -362,14 +361,14 @@ void InflationTest::testZeroTermStructure() {
     Period observationLag = Period(2,Months);
     DayCounter dc = Thirty360();
     Frequency frequency = Monthly;
-    std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
     makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
                 ZeroInflationIndex>(zcData, LENGTH(zcData), ii,
                                     observationLag,
                                     calendar, bdc, dc);
 
     Rate baseZeroRate = zcData[0].rate/100.0;
-    boost::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
+    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
                         new PiecewiseZeroInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
                         frequency, ii->interpolated(), baseZeroRate,
@@ -436,7 +435,7 @@ void InflationTest::testZeroTermStructure() {
     Date baseDate(1, January, 2006);
     Date fixDate(1, August, 2014);
     Date payDate=UnitedKingdom().adjust(fixDate+Period(3,Months),ModifiedFollowing);
-    boost::shared_ptr<Index> ind = boost::dynamic_pointer_cast<Index>(ii);
+    ext::shared_ptr<Index> ind = ext::dynamic_pointer_cast<Index>(ii);
     BOOST_REQUIRE_MESSAGE(ind,"dynamic_pointer_cast to Index from InflationIndex failed");
 
     Real notional = 1000000.0;//1m
@@ -453,7 +452,7 @@ void InflationTest::testZeroTermStructure() {
 
     // first make one ...
 
-    boost::shared_ptr<ZeroInflationIndex> zii = boost::dynamic_pointer_cast<ZeroInflationIndex>(ii);
+    ext::shared_ptr<ZeroInflationIndex> zii = ext::dynamic_pointer_cast<ZeroInflationIndex>(ii);
     BOOST_REQUIRE_MESSAGE(zii,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI failed");
     ZeroCouponInflationSwap nzcis(ZeroCouponInflationSwap::Payer,
                                      1000000.0,
@@ -465,7 +464,7 @@ void InflationTest::testZeroTermStructure() {
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
     //      inflation curve attached to the inflation index.
     Handle<YieldTermStructure> hTS(nominalTS);
-    boost::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
     nzcis.setPricingEngine(sppe);
 
     // ... and price it, should be zero
@@ -486,24 +485,24 @@ void InflationTest::testZeroTermStructure() {
     // UKRPI (to save making another term structure)
 
     bool interpYES = true;
-    boost::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz));
+    ext::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz));
     for (Size i=0; i<LENGTH(fixData);i++) {
         iiUKRPIyes->addFixing(rpiSchedule[i], fixData[i]);
     }
 
-    boost::shared_ptr<ZeroInflationIndex> iiyes
-        = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPIyes);
+    ext::shared_ptr<ZeroInflationIndex> iiyes
+        = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPIyes);
 
     // now build the zero inflation curve
     // same data, bigger lag or it will be a self-contradiction
     Period observationLagyes = Period(3,Months);
-    std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpersyes =
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpersyes =
     makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
     ZeroInflationIndex>(zcData, LENGTH(zcData), iiyes,
                         observationLagyes,
                         calendar, bdc, dc);
 
-    boost::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
+    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
             new PiecewiseZeroInflationCurve<Linear>(
             evaluationDate, calendar, dc, observationLagyes,
             frequency, iiyes->interpolated(), baseZeroRate,
@@ -564,7 +563,7 @@ void InflationTest::testZeroTermStructure() {
     //===========================================================================================
     // Test zero coupon swap
 
-    boost::shared_ptr<ZeroInflationIndex> ziiyes = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
+    ext::shared_ptr<ZeroInflationIndex> ziiyes = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
     BOOST_REQUIRE_MESSAGE(ziiyes,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI-I failed");
     ZeroCouponInflationSwap nzcisyes(ZeroCouponInflationSwap::Payer,
                                      1000000.0,
@@ -591,7 +590,7 @@ void InflationTest::testZeroTermStructure() {
     checkSeasonality(hz, iiyes);
 
     // remove circular refernce
-    hz.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
+    hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
 void InflationTest::testZeroIndexFutureFixing() {
@@ -731,8 +730,8 @@ void InflationTest::testYYIndex() {
         207.3 };
 
     bool interp = false;
-    boost::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
-    boost::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
+    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
+    ext::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
     for (Size i=0; i<LENGTH(fixData);i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
         iirYES->addFixing(rpiSchedule[i], fixData[i]);
@@ -820,14 +819,14 @@ void InflationTest::testYYTermStructure() {
 
     RelinkableHandle<YoYInflationTermStructure> hy;
     bool interp = false;
-    boost::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
+    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
 
 
 
-    boost::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the YoY inflation curve
     Datum yyData[] = {
@@ -852,14 +851,14 @@ void InflationTest::testYYTermStructure() {
     DayCounter dc = Thirty360();
 
     // now build the helpers ...
-    std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
+    std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
     makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
     YoYInflationIndex>(yyData, LENGTH(yyData), iir,
                         observationLag,
                         calendar, bdc, dc);
 
     Rate baseYYRate = yyData[0].rate/100.0;
-    boost::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
+    ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
         new PiecewiseYoYInflationCurve<Linear>(
                 evaluationDate, calendar, dc, observationLag,
                 iir->frequency(),iir->interpolated(), baseYYRate,
@@ -872,7 +871,7 @@ void InflationTest::testYYTermStructure() {
     Real eps = 0.000001;
     // usual swap engine
     Handle<YieldTermStructure> hTS(nominalTS);
-    boost::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
 
     // make sure that the index has the latest yoy term structure
     hy.linkTo(pYYTS);
@@ -947,7 +946,7 @@ void InflationTest::testYYTermStructure() {
                             );
     }
     // remove circular refernce
-    hy.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
+    hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
 void InflationTest::testPeriod() {

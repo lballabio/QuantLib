@@ -67,7 +67,7 @@ namespace QuantLib {
         };
 
         Gaussian1dFloatFloatSwaptionEngine(
-            const boost::shared_ptr<Gaussian1dModel> &model,
+            const ext::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
@@ -111,7 +111,7 @@ namespace QuantLib {
         const int integrationPoints_;
         const Real stddevs_;
         const bool extrapolatePayoff_, flatPayoffExtrapolation_;
-        const boost::shared_ptr<Gaussian1dModel> model_;
+        const ext::shared_ptr<Gaussian1dModel> model_;
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
         const bool includeTodaysExercise_;
@@ -122,7 +122,7 @@ namespace QuantLib {
              const bool includeExerciseOnxpiry,
              const bool considerProbabilities=false) const;
 
-        mutable boost::shared_ptr<RebatedExercise> rebatedExercise_;
+        mutable ext::shared_ptr<RebatedExercise> rebatedExercise_;
     };
 }
 

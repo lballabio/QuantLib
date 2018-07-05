@@ -45,7 +45,7 @@ namespace QuantLib {
 
         // constructors
         ImplicitEulerScheme(
-            const boost::shared_ptr<FdmLinearOpComposite>& map,
+            const ext::shared_ptr<FdmLinearOpComposite>& map,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,
             SolverType solverType = BiCGstab);
@@ -58,10 +58,10 @@ namespace QuantLib {
         Disposable<Array> apply(const Array& r) const;   
           
         Time dt_;
-        boost::shared_ptr<Size> iterations_;
+        ext::shared_ptr<Size> iterations_;
 
         const Real relTol_;
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
         const SolverType solverType_;
     };

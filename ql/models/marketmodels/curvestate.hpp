@@ -78,7 +78,11 @@ namespace QuantLib {
         Rate swapRate(Size begin,
                       Size end) const;
 
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        virtual std::unique_ptr<CurveState> clone() const = 0;
+        #else
         virtual std::auto_ptr<CurveState> clone() const = 0;
+        #endif
         //@}
       protected:
         Size numberOfRates_;

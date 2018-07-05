@@ -22,6 +22,7 @@
 
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/comparison.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
