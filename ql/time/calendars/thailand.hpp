@@ -55,11 +55,12 @@ namespace QuantLib {
         Other holidays for which no rule is given
         (data available for 2000-2018 with some years missing)
         <ul>
-        <li>Special Holiday</li>
         <li>Makha Bucha Day</li>
         <li>Wisakha Bucha Day</li>
-        <li>Asarnha Bucha Day</li>
+        <li>Buddhist Lent Day (until 2006)</li>
+        <li>Asarnha Bucha Day (from 2007)</li>
         <li>Chulalongkorn Day</li>
+        <li>Other special holidays</li>
         </ul>
 
         \ingroup calendars
