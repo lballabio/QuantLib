@@ -82,7 +82,35 @@ namespace QuantLib {
                                  FloatFloatSwaption::results>(model),
               integrationPoints_(integrationPoints), stddevs_(stddevs),
               extrapolatePayoff_(extrapolatePayoff),
-              flatPayoffExtrapolation_(flatPayoffExtrapolation), model_(model),
+              flatPayoffExtrapolation_(flatPayoffExtrapolation),
+              oas_(oas), discountCurve_(discountCurve),
+              includeTodaysExercise_(includeTodaysExercise),
+              probabilities_(probabilities) {
+
+            if (!discountCurve_.empty())
+                registerWith(discountCurve_);
+
+            if (!oas_.empty())
+                registerWith(oas_);
+        }
+
+        Gaussian1dFloatFloatSwaptionEngine(
+            const Handle<Gaussian1dModel> &model,
+            const int integrationPoints = 64, const Real stddevs = 7.0,
+            const bool extrapolatePayoff = true,
+            const bool flatPayoffExtrapolation = false,
+            const Handle<Quote> &oas =
+                Handle<Quote>(), // continously compounded w.r.t. yts daycounter
+            const Handle<YieldTermStructure> &discountCurve =
+                Handle<YieldTermStructure>(),
+            const bool includeTodaysExercise = false,
+            const Probabilities probabilities = None)
+            : BasketGeneratingEngine(model, oas, discountCurve),
+              GenericModelEngine<Gaussian1dModel, FloatFloatSwaption::arguments,
+                                 FloatFloatSwaption::results>(model),
+              integrationPoints_(integrationPoints), stddevs_(stddevs),
+              extrapolatePayoff_(extrapolatePayoff),
+              flatPayoffExtrapolation_(flatPayoffExtrapolation),
               oas_(oas), discountCurve_(discountCurve),
               includeTodaysExercise_(includeTodaysExercise),
               probabilities_(probabilities) {
@@ -111,7 +139,6 @@ namespace QuantLib {
         const int integrationPoints_;
         const Real stddevs_;
         const bool extrapolatePayoff_, flatPayoffExtrapolation_;
-        const ext::shared_ptr<Gaussian1dModel> model_;
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
         const bool includeTodaysExercise_;

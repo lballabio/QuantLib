@@ -78,6 +78,12 @@ namespace QuantLib {
             : onefactormodel_(model), oas_(oas), discountCurve_(discountCurve) {
         }
 
+        BasketGeneratingEngine(const Handle<Gaussian1dModel> &model,
+                               const Handle<Quote> &oas,
+                               const Handle<YieldTermStructure> &discountCurve)
+            : onefactormodel_(model), oas_(oas), discountCurve_(discountCurve) {
+        }
+
         virtual ~BasketGeneratingEngine() {}
 
         virtual Real underlyingNpv(const Date &expiry,
@@ -93,7 +99,7 @@ namespace QuantLib {
 
       private:
 
-        const ext::shared_ptr<Gaussian1dModel> onefactormodel_;
+        const Handle<Gaussian1dModel> onefactormodel_;
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
 

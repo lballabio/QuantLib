@@ -160,7 +160,7 @@ namespace QuantLib {
 
                 ext::shared_ptr<MatchHelper> matchHelper_;
                 matchHelper_ = ext::make_shared<MatchHelper>(
-                    underlyingType(), npv, delta, gamma, onefactormodel_,
+                    underlyingType(), npv, delta, gamma, *onefactormodel_,
                     standardSwapBase, expiry, maxMaturity, h);
 
                 // Optimize
