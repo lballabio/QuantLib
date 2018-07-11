@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,11 +24,12 @@
 #ifndef quantlib_markovfunctional_hpp
 #define quantlib_markovfunctional_hpp
 
+#include <ql/math/interpolation.hpp>
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/processes/mfstateprocess.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
-#include <ql/processes/mfstateprocess.hpp>
-#include <ql/math/interpolation.hpp>
 
 namespace QuantLib {
 
@@ -48,14 +49,9 @@ namespace QuantLib {
       to provide an appropriate input smile.
 
       If you use the Kahale or SABR method for smile pretreatment then this
-      implies zero density for negative  underlying rates. This means that
-      in this case the market yield term structure must imply positive
-      underlying atm forward rates. In principle the mf model is able to produce
-      negative rates. To make this work the smileSection provided as input must
-      have an digitalOptionPrice (or an optionPrice) implementation that is
-      consistent with such a yield term structure and the model setting
-      lowerRateBound must be set appropriately as a lower limit for the
-      underlying rates.
+      implies zero density for underlying rates below minus the displacement
+      parameter. This means that in this case the market yield term structure
+      must imply underlying atm forward rates greater than minus displacement.
 
       If you do not use a smile pretreatment you should ensure that the input
       smileSection is arbitrage free and  that the input smileSection covers the
@@ -87,16 +83,37 @@ namespace QuantLib {
       input smile or accumulating numerical errors in very long term calibrations.
       The former point is adressed by smile pretreatment options. The latter point
       may be tackled by higher values for the numerical parameters possibly
-      together with NTL high precision computing. 
+      together with NTL high precision computing.
 
       When using a shifted lognormal smile input the lower rate bound is adjusted
       by the shift so that a lower bound of 0.0 always corresponds to the lower
       bound of the shifted distribution.
-*/
+
+      If a custom smile is used, this will take full responsibility of inverting
+      digital prices to market rates, so digitalGap, marketRateAccuracy,
+      lowerRateBound, upperRateBound are irrelavant and the smile moneyness
+      checkpoints are only used for the debug model output in this setup.
+    */
 
     class MarkovFunctional : public Gaussian1dModel, public CalibratedModel {
 
       public:
+
+        class CustomSmileSection : public SmileSection {
+        public:
+            virtual Real
+            inverseDigitalCall(const Real price,
+                               const Real discount = 1.0) const = 0;
+        };
+
+        class CustomSmileFactory {
+        public:
+            virtual ~CustomSmileFactory() {}
+            virtual ext::shared_ptr<CustomSmileSection>
+            smileSection(const ext::shared_ptr<SmileSection>& source,
+                         const Real atm) const = 0;
+        };
+
         struct ModelSettings {
 
             // NoPayoffExtrapolation overrides ExtrapolatePayoffFlat
@@ -110,7 +127,8 @@ namespace QuantLib {
                 SmileExponentialExtrapolation = 1 << 5,
                 KahaleInterpolation = 1 << 6,
                 SmileDeleteArbitragePoints = 1 << 7,
-                SabrSmile = 1 << 8
+                SabrSmile = 1 << 8,
+                CustomSmile = 1 << 9
             };
 
             ModelSettings()
@@ -119,17 +137,20 @@ namespace QuantLib {
                   lowerRateBound_(0.0), upperRateBound_(2.0),
                   adjustments_(KahaleSmile | SmileExponentialExtrapolation),
                   smileMoneynessCheckpoints_(std::vector<Real>()) {}
-                  
+
             ModelSettings(Size yGridPoints, Real yStdDevs, Size gaussHermitePoints,
-                          Real digitalGap, Real marketRateAccuracy, 
+                          Real digitalGap, Real marketRateAccuracy,
                           Real lowerRateBound, Real upperRateBound,
-                          int adjustments, 
-                          const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>())
-                : yGridPoints_(yGridPoints), yStdDevs_(yStdDevs), 
-                  gaussHermitePoints_(gaussHermitePoints), digitalGap_(digitalGap), 
-                  marketRateAccuracy_(marketRateAccuracy), lowerRateBound_(lowerRateBound), 
+                          int adjustments,
+                          const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>(),
+                          const ext::shared_ptr<CustomSmileFactory> customSmileFactory =
+                                                       ext::shared_ptr<CustomSmileFactory>())
+                : yGridPoints_(yGridPoints), yStdDevs_(yStdDevs),
+                  gaussHermitePoints_(gaussHermitePoints), digitalGap_(digitalGap),
+                  marketRateAccuracy_(marketRateAccuracy), lowerRateBound_(lowerRateBound),
                   upperRateBound_(upperRateBound), adjustments_(adjustments),
-                  smileMoneynessCheckpoints_(smileMoneyCheckpoints) {}
+                  smileMoneynessCheckpoints_(smileMoneyCheckpoints),
+                  customSmileFactory_(customSmileFactory) {}
 
             void validate() {
 
@@ -142,9 +163,11 @@ namespace QuantLib {
                 }
 
                 QL_REQUIRE((adjustments_ & SabrSmile) == 0 ||
-                               (adjustments_ & KahaleSmile) == 0,
-                           "KahaleSmile and SabrSmile can not specified at the "
-                           "same time");
+                           (adjustments_ & KahaleSmile) == 0 ||
+                           (adjustments_ & CustomSmile) == 0
+                           ,
+                           "Only one of KahaleSmile, SabrSmile and CustomSmile"
+                           "can be specified at the same time");
                 QL_REQUIRE(yGridPoints_ > 0, "At least one grid point ("
                                                  << yGridPoints_
                                                  << ") for the state process "
@@ -173,6 +196,9 @@ namespace QuantLib {
                         << lowerRateBound_
                         << ") must be strictly less than upper rate bound ("
                         << upperRateBound_ << ")");
+                QL_REQUIRE(((adjustments_ & CustomSmile) == 0) ||
+                           customSmileFactory_,
+                           "missing CustomSmileFactoy");
             }
 
             ModelSettings &withYGridPoints(Size n) {
@@ -219,6 +245,10 @@ namespace QuantLib {
                 smileMoneynessCheckpoints_ = m;
                 return *this;
             }
+            ModelSettings &withCustomSmileFactory(const ext::shared_ptr<CustomSmileFactory>& f) {
+                customSmileFactory_ = f;
+                return *this;
+            }
 
             Size yGridPoints_;
             Real yStdDevs_;
@@ -227,6 +257,7 @@ namespace QuantLib {
             Real lowerRateBound_, upperRateBound_;
             int adjustments_;
             std::vector<Real> smileMoneynessCheckpoints_;
+            ext::shared_ptr<CustomSmileFactory> customSmileFactory_;
         };
 
         struct CalibrationPoint {

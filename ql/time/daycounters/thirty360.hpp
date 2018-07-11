@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2018 Alexey Indiryakov
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,8 +30,8 @@
 namespace QuantLib {
 
     //! 30/360 day count convention
-    /*! The 30/360 day count can be calculated according to US, European, or
-        Italian conventions.
+    /*! The 30/360 day count can be calculated according to US, European,
+        Italian or German conventions.
 
         US (NASD) convention: if the starting date is the 31st of a
         month, it becomes equal to the 30th of the same month.
@@ -49,13 +50,19 @@ namespace QuantLib {
         occur on February and are grater than 27 become equal to 30
         for computational sake.
 
+        German convention: starting dates or ending dates that
+        occur on the last day of February become equal to 30
+        for computational sake, except for the termination date.
+        Also known as "30E/360 ISDA"
+
         \ingroup daycounters
     */
     class Thirty360 : public DayCounter {
       public:
         enum Convention { USA, BondBasis,
                           European, EurobondBasis,
-                          Italian };
+                          Italian,
+                          German };
       private:
         class US_Impl : public DayCounter::Impl {
           public:
@@ -64,7 +71,7 @@ namespace QuantLib {
                                        const Date& d2) const;
             Time yearFraction(const Date& d1,
                               const Date& d2,
-                              const Date&, 
+                              const Date&,
                               const Date&) const {
                 return dayCount(d1,d2)/360.0; }
         };
@@ -89,11 +96,24 @@ namespace QuantLib {
                               const Date&) const {
                 return dayCount(d1,d2)/360.0; }
         };
+        class GER_Impl : public DayCounter::Impl {
+          public:
+            explicit GER_Impl(bool isLastPeriod) : isLastPeriod_(isLastPeriod) {}
+            std::string name() const { return std::string("30/360 (German)");}
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const;
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&,
+                              const Date&) const {
+                return dayCount(d1,d2)/360.0; }
+        private:
+            bool isLastPeriod_;
+        };
         static ext::shared_ptr<DayCounter::Impl> implementation(
-                                                               Convention c);
+            Convention c, bool isLastPeriod);
       public:
-        Thirty360(Convention c = Thirty360::BondBasis)
-        : DayCounter(implementation(c)) {}
+        Thirty360(Convention c = Thirty360::BondBasis, bool isLastPeriod = false)
+        : DayCounter(implementation(c, isLastPeriod)) {}
     };
 
 }
