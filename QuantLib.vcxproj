@@ -506,7 +506,6 @@
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
@@ -595,7 +594,9 @@
     <ClInclude Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\impliciteulerscheme.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\trbdf2scheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdm1dimsolver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdm2dblackscholessolver.hpp" />
@@ -1824,7 +1825,6 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />
-    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
@@ -1894,6 +1894,7 @@
     <ClCompile Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\impliciteulerscheme.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdm1dimsolver.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdm2dblackscholessolver.cpp" />

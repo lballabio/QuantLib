@@ -3819,17 +3819,8 @@
     <ClInclude Include="ql\methods\finitedifferences\meshers\concentrating1dmesher.hpp">
       <Filter>methods\finitedifferences\meshers</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\schemes\craigsneydscheme.hpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
-    </ClInclude>
     <ClInclude Include="ql\instruments\dividendbarrieroption.hpp">
       <Filter>instruments</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\schemes\douglasscheme.hpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.hpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\meshers\exponentialjump1dmesher.hpp">
       <Filter>methods\finitedifferences\meshers</Filter>
@@ -4014,13 +4005,31 @@
     <ClInclude Include="ql\methods\finitedifferences\schemes\all.hpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\boundaryconditionschemehelper.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\craigsneydscheme.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\douglasscheme.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.hpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\schemes\impliciteulerscheme.hpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\trbdf2scheme.hpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmspreadpayoffinnervalue.hpp">
@@ -4100,9 +4109,6 @@
     </ClInclude>
     <ClInclude Include="ql\math\richardsonextrapolation.hpp">
       <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\schemes\boundaryconditionschemehelper.hpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.hpp">
       <Filter>methods\finitedifferences\utilities</Filter>
@@ -4220,9 +4226,6 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp">
       <Filter>experimental\math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -6475,17 +6478,8 @@
     <ClCompile Include="ql\methods\finitedifferences\meshers\concentrating1dmesher.cpp">
       <Filter>methods\finitedifferences\meshers</Filter>
     </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\schemes\craigsneydscheme.cpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
-    </ClCompile>
     <ClCompile Include="ql\instruments\dividendbarrieroption.cpp">
       <Filter>instruments</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\schemes\douglasscheme.cpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.cpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\meshers\exponentialjump1dmesher.cpp">
       <Filter>methods\finitedifferences\meshers</Filter>
@@ -6628,10 +6622,22 @@
     <ClCompile Include="ql\methods\finitedifferences\meshers\uniformgridmesher.cpp">
       <Filter>methods\finitedifferences\meshers</Filter>
     </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\schemes\craigsneydscheme.cpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\schemes\douglasscheme.cpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.cpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.cpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\schemes\impliciteulerscheme.cpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.cpp">
@@ -6804,9 +6810,6 @@
     </ClCompile>
     <ClCompile Include="ql\time\daycounters\actual365fixed.cpp">
       <Filter>time\daycounters</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp">
-      <Filter>methods\finitedifferences\schemes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

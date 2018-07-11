@@ -1119,9 +1119,28 @@ void BarrierOptionTest::testDividendBarrierOption() {
     const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, v, dc));
 
-    const ext::shared_ptr<PricingEngine> bsEngine =
+    const ext::shared_ptr<BlackScholesMertonProcess> bsProcess =
+        ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS);
+
+    const ext::shared_ptr<PricingEngine> douglas =
         ext::make_shared<FdBlackScholesBarrierEngine>(
-            ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS));
+            bsProcess, 100, 100, 0, FdmSchemeDesc::Douglas());
+
+    const ext::shared_ptr<PricingEngine> craigSnyed =
+        ext::make_shared<FdBlackScholesBarrierEngine>(
+            bsProcess, 100, 100, 0, FdmSchemeDesc::CraigSneyd());
+
+    const ext::shared_ptr<PricingEngine> hundsdorfer =
+        ext::make_shared<FdBlackScholesBarrierEngine>(
+            bsProcess, 100, 100, 0, FdmSchemeDesc::Hundsdorfer());
+
+    const ext::shared_ptr<PricingEngine> mol =
+        ext::make_shared<FdBlackScholesBarrierEngine>(
+            bsProcess, 100, 100, 0, FdmSchemeDesc::MethodOfLines());
+
+    const ext::shared_ptr<PricingEngine> trPDF2 =
+        ext::make_shared<FdBlackScholesBarrierEngine>(
+            bsProcess, 100, 100, 0, FdmSchemeDesc::TrBDF2());
 
     const ext::shared_ptr<PricingEngine> hestonEngine =
         ext::make_shared<FdHestonBarrierEngine>(
@@ -1130,8 +1149,7 @@ void BarrierOptionTest::testDividendBarrierOption() {
                     rTS, qTS, s0, v*v, 1.0, v*v, 0.005, 0.0)), 50, 101, 3);
 
     const ext::shared_ptr<PricingEngine> engines[] = {
-        bsEngine,
-        hestonEngine
+        douglas, trPDF2, craigSnyed, hundsdorfer, mol, hestonEngine
     };
 
     const ext::shared_ptr<StrikedTypePayoff> payoff =
