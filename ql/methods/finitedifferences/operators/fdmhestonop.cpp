@@ -197,7 +197,7 @@ namespace QuantLib {
     Disposable<Array>
         FdmHestonOp::preconditioner(const Array& r, Real dt) const {
 
-        return solve_splitting(0, r, dt);
+        return solve_splitting(1, solve_splitting(0, r, dt), dt) ;
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)

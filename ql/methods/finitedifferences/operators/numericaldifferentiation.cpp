@@ -19,7 +19,7 @@
 
 /*! \file numericaldifferentiation.cpp */
 
-#include <ql/experimental/math/numericaldifferentiation.hpp>
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 
 #ifndef QL_EXTRA_SAFETY_CHECKS
 #define BOOST_DISABLE_ASSERTS 1

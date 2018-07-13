@@ -70,6 +70,7 @@ namespace QuantLib {
             times_.insert(times_.end(),
                           mandatoryTimes_.begin(), mandatoryTimes_.end());
 
+            dt_.reserve(times_.size()-1);
             std::adjacent_difference(times_.begin()+1,times_.end(),
                                      std::back_inserter(dt_));
 
@@ -131,6 +132,7 @@ namespace QuantLib {
                 periodBegin = periodEnd;
             }
 
+            dt_.reserve(times_.size()-1);
             std::adjacent_difference(times_.begin()+1,times_.end(),
                                      std::back_inserter(dt_));
         }

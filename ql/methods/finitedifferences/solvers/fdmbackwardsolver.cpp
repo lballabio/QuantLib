@@ -22,6 +22,7 @@
 /*! \file fdmbackwardsolver.cpp
 */
 
+#include <ql/mathconstants.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
@@ -31,6 +32,7 @@
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/trbdf2scheme.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 
 
@@ -73,6 +75,10 @@ namespace QuantLib {
     FdmSchemeDesc FdmSchemeDesc::MethodOfLines(Real eps, Real relInitStepSize) {
         return FdmSchemeDesc(
             FdmSchemeDesc::MethodOfLinesType, eps, relInitStepSize);
+    }
+
+    FdmSchemeDesc FdmSchemeDesc::TrBDF2() {
+        return FdmSchemeDesc(FdmSchemeDesc::TrBDF2Type, 2 - M_SQRT2, 1e-8);
     }
 
     FdmBackwardSolver::FdmBackwardSolver(
@@ -165,6 +171,23 @@ namespace QuantLib {
                 FiniteDifferenceModel<MethodOfLinesScheme>
                    molModel(methodOfLines, condition_->stoppingTimes());
                 molModel.rollback(rhs, dampingTo, to, steps, *condition_);
+            }
+            break;
+          case FdmSchemeDesc::TrBDF2Type:
+            {
+                const FdmSchemeDesc trDesc
+                    = FdmSchemeDesc::CraigSneyd();
+
+                const ext::shared_ptr<CraigSneydScheme> hsEvolver(
+                    ext::make_shared<CraigSneydScheme>(
+                        trDesc.theta, trDesc.mu, map_, bcSet_));
+
+                TrBDF2Scheme<CraigSneydScheme> trBDF2(
+                    schemeDesc_.theta, map_, hsEvolver, bcSet_,schemeDesc_.mu);
+
+                FiniteDifferenceModel<TrBDF2Scheme<CraigSneydScheme> >
+                   trBDF2Model(trBDF2, condition_->stoppingTimes());
+                trBDF2Model.rollback(rhs, dampingTo, to, steps, *condition_);
             }
             break;
           default:

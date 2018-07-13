@@ -61,37 +61,33 @@ namespace QuantLib {
         if (map_->size() == 1) {
             a = map_->solve_splitting(0, a, -dt_);
         }
-        else if (solverType_ == BiCGstab) {
-            const BiCGStabResult result =
-                QuantLib::BiCGstab(
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&ImplicitEulerScheme::apply, this, _1)),
-                    std::max(Size(10), a.size()), relTol_,
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&FdmLinearOpComposite::preconditioner,
-                                    map_, _1, -dt_))
-                ).solve(a, a);
+        else {
+            const boost::function<Disposable<Array>(const Array&)>
+                preconditioner(boost::bind(
+                    &FdmLinearOpComposite::preconditioner, map_, _1, -dt_));
 
-            (*iterations_) += result.iterations;
-            a = result.x;
-        }
-        else if (solverType_ == GMRES) {
-            const GMRESResult result =
-                QuantLib::GMRES(
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&ImplicitEulerScheme::apply, this, _1)),
-                    std::max(Size(10), a.size()/10u), relTol_,
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&FdmLinearOpComposite::preconditioner,
-                                    map_, _1, -dt_))
-                ).solve(a, a);
+            const boost::function<Disposable<Array>(const Array&)> applyF(
+                boost::bind(&ImplicitEulerScheme::apply, this, _1));
 
-            (*iterations_) += result.errors.size();
-            a = result.x;
+            if (solverType_ == BiCGstab) {
+                const BiCGStabResult result =
+                    QuantLib::BiCGstab(applyF, std::max(Size(10), a.size()),
+                        relTol_, preconditioner).solve(a, a);
+
+                (*iterations_) += result.iterations;
+                a = result.x;
+            }
+            else if (solverType_ == GMRES) {
+                const GMRESResult result =
+                    QuantLib::GMRES(applyF, std::max(Size(10), a.size()/10u),
+                        relTol_, preconditioner).solve(a, a);
+
+                (*iterations_) += result.errors.size();
+                a = result.x;
+            }
+            else
+                QL_FAIL("unknown/illegal solver type");
         }
-        else
-            QL_FAIL("unknown/illegal solver type");
-        
         bcSet_.applyAfterSolving(a);
     }
 
@@ -100,5 +96,6 @@ namespace QuantLib {
     }
 
     Size ImplicitEulerScheme::numberOfIterations() const {
-        return *iterations_;    }
+        return *iterations_;
+    }
 }

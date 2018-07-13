@@ -4,6 +4,7 @@
 #include <ql/indexes/ibor/aonia.hpp>
 #include <ql/indexes/ibor/audlibor.hpp>
 #include <ql/indexes/ibor/bbsw.hpp>
+#include <ql/indexes/ibor/bibor.hpp>
 #include <ql/indexes/ibor/bkbm.hpp>
 #include <ql/indexes/ibor/cadlibor.hpp>
 #include <ql/indexes/ibor/cdor.hpp>

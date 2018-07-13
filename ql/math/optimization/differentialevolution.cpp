@@ -20,9 +20,6 @@
 
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <algorithm>
-#if defined(__cplusplus) && __cplusplus >= 201402L
-#include <random>
-#endif
 
 namespace QuantLib {
 
@@ -36,13 +33,12 @@ namespace QuantLib {
         };
 
         template <class I>
-        void randomize(I begin, I end) {
-            #if defined(__cplusplus) && __cplusplus >= 201402L
-            static std::mt19937 _mt = std::mt19937(std::random_device()());
-            std::shuffle(begin, end, _mt);
-            #else
-            std::random_shuffle(begin, end);
-            #endif
+        void randomize(I begin, I end,
+                       const MersenneTwisterUniformRng& rng) {
+            Size n = static_cast<Size>(end-begin);
+            for (Size i=n-1; i>0; --i) {
+                std::swap(begin[i], begin[rng.nextInt32() % (i+1)]);
+            }
         }
 
     }
@@ -95,11 +91,11 @@ namespace QuantLib {
         switch (configuration().strategy) {
 
           case Rand1Standard: {
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
@@ -111,9 +107,9 @@ namespace QuantLib {
             break;
 
           case BestMemberWithJitter: {
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               Array jitter(population[0].values.size(), 0.0);
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
@@ -130,9 +126,9 @@ namespace QuantLib {
             break;
 
           case CurrentToBest2Diffs: {
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
                   population[popIter].values = oldPopulation[popIter].values
@@ -146,11 +142,11 @@ namespace QuantLib {
             break;
 
           case Rand1DiffWithPerVectorDither: {
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Array FWeight = Array(population.front().values.size(), 0.0);
               for (Size fwIter = 0; fwIter < FWeight.size(); fwIter++)
@@ -164,11 +160,11 @@ namespace QuantLib {
             break;
 
           case Rand1DiffWithDither: {
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Real FWeight = (1.0 - configuration().stepsizeWeight) * rng_.nextReal()
                   + configuration().stepsizeWeight;
@@ -180,11 +176,11 @@ namespace QuantLib {
             break;
 
           case EitherOrWithOptimalRecombination: {
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Real probFWeight = 0.5;
               if (rng_.nextReal() < probFWeight) {
@@ -206,11 +202,11 @@ namespace QuantLib {
             break;
 
           case Rand1SelfadaptiveWithRotation: {
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              randomize(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
 
               adaptSizeWeights();
@@ -326,7 +322,7 @@ namespace QuantLib {
     }
 
     Array DifferentialEvolution::rotateArray(Array a) const {
-        randomize(a.begin(), a.end());
+        randomize(a.begin(), a.end(), rng_);
         return a;
     }
 
