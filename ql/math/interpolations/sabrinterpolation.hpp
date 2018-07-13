@@ -147,7 +147,10 @@ struct SABRSpecs {
 }
 
 //! %SABR smile interpolation between discrete volatility points.
-/*! \ingroup interpolations */
+/*! \ingroup interpolations
+    \warning See the Interpolation class for information about the
+             required lifetime of the underlying data.
+*/
 class SABRInterpolation : public Interpolation {
   public:
     template <class I1, class I2>
