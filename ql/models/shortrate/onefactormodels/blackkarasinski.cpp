@@ -101,7 +101,6 @@ namespace QuantLib {
             // vMax = value + 10.0;
         }
         numericDynamics = ext::make_shared<ShortRateDynamics>(new Dynamics(phi, a(), sigma()));
-
         return numericTree;
     }
 
@@ -112,8 +111,8 @@ namespace QuantLib {
             ext::make_shared<ShortRateDynamics>(
             new Dynamics(phi_, a(), sigma())); 
 
-        TimeGrid grid; // how to setup grid
-        BlackKarasinski::tree(grid, numericDynamics); // calibrate phi_
+        TimeGrid grid; // how to setup grid for given term structure
+        BlackKarasinski::tree(grid, numericDynamics); // calibrate phi_ using the tree
 
         return numericDynamics;
     }

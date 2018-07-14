@@ -58,7 +58,6 @@ namespace QuantLib {
 
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
-        Parameter phi() const { return phi_; }
 
         Parameter& a_;
         Parameter& sigma_;
