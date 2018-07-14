@@ -46,7 +46,7 @@ namespace QuantLib {
 
         ext::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid, ext::shared_ptr<ShortRateDynamics> numericDynamics) const;
 
       protected:
         void generateArguments();
@@ -58,6 +58,7 @@ namespace QuantLib {
 
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
+        Parameter phi() const { return phi_; }
 
         Parameter& a_;
         Parameter& sigma_;
@@ -80,7 +81,8 @@ namespace QuantLib {
         Dynamics(const Parameter& fitting, Real alpha, Real sigma)
         : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
                                  new OrnsteinUhlenbeckProcess(alpha, sigma))),
-          fitting_(fitting) {}
+          fitting_(fitting) {
+        }
 
         Real variable(Time t, Rate r) const {
             return std::log(r) - fitting_(t);
@@ -116,15 +118,6 @@ namespace QuantLib {
             : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
                 new FittingParameter::Impl(termStructure, a, sigma))) {}
     };
-
-
-	//inline definitions
-
-    inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
-    BlackKarasinski::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
-            new Dynamics(phi_, a(), sigma()));
-    }
 
 }
 

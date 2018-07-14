@@ -72,12 +72,9 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<Lattice>
-    BlackKarasinski::tree(const TimeGrid& grid) const {
+    BlackKarasinski::tree(const TimeGrid& grid, ext::shared_ptr<ShortRateDynamics> numericDynamics) const {
 
         TermStructureFittingParameter phi(termStructure());
-
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
-                                             new Dynamics(phi, a(), sigma()));
 
         ext::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
@@ -103,7 +100,22 @@ namespace QuantLib {
             // vMin = value - 10.0;
             // vMax = value + 10.0;
         }
+        numericDynamics = ext::make_shared<ShortRateDynamics>(new Dynamics(phi, a(), sigma()));
+
         return numericTree;
+    }
+
+    ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+        BlackKarasinski::dynamics() const {
+
+        ext::shared_ptr<ShortRateDynamics> numericDynamics = 
+            ext::make_shared<ShortRateDynamics>(
+            new Dynamics(phi_, a(), sigma())); 
+
+        TimeGrid grid; // how to setup grid
+        BlackKarasinski::tree(grid, numericDynamics); // calibrate phi_
+
+        return numericDynamics;
     }
 
 }
