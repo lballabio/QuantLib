@@ -100,15 +100,14 @@ namespace QuantLib {
             // vMin = value - 10.0;
             // vMax = value + 10.0;
         }
-        numericDynamics = ext::make_shared<ShortRateDynamics>(new Dynamics(phi, a(), sigma()));
+        numericDynamics = ext::shared_ptr<ShortRateDynamics>(new Dynamics(phi, a(), sigma()));
         return numericTree;
     }
 
     ext::shared_ptr<OneFactorModel::ShortRateDynamics>
         BlackKarasinski::dynamics() const {
 
-        ext::shared_ptr<ShortRateDynamics> numericDynamics = 
-            ext::make_shared<ShortRateDynamics>(
+        ext::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi_, a(), sigma())); 
 
         TimeGrid grid; // how to setup grid for given term structure
