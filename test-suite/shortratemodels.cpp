@@ -24,6 +24,7 @@
 #include "shortratemodels.hpp"
 #include "utilities.hpp"
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/onefactormodels/blackkarasinski.hpp>
 #include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
@@ -51,6 +52,12 @@ namespace {
         Volatility volatility;
     };
 
+}
+
+void ShortRateModelTest::testBlackKarasinski() {
+    BOOST_TEST_MESSAGE("Testing the calibration of the Black-Karasinski fitting parameter...");
+
+    // Test the calibration of phi to the term structure
 }
 
 
