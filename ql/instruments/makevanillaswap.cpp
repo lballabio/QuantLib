@@ -5,6 +5,7 @@
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
  Copyright (C) 2015 Paolo Mazzocchi
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -139,7 +140,8 @@ namespace QuantLib {
                      curr == SEKCurrency())
                 fixedDayCount = Thirty360(Thirty360::BondBasis);
             else if (curr == GBPCurrency() || curr == JPYCurrency() ||
-                     curr == AUDCurrency() || curr == HKDCurrency())
+                     curr == AUDCurrency() || curr == HKDCurrency() ||
+                     curr == THBCurrency())
                 fixedDayCount = Actual365Fixed();
             else
                 QL_FAIL("unknown fixed leg day counter for " << curr);
