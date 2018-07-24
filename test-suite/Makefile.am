@@ -201,7 +201,7 @@ quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
-TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
+TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message BOOST_TEST_COLOR_OUTPUT=false
 
 .PHONY: benchmark
 benchmark: quantlib-benchmark$(EXEEXT)
