@@ -135,6 +135,10 @@ namespace QuantLib {
         };
     }
 
+    /*! \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class LagrangeInterpolation : public Interpolation {
       public:
         template <class I1, class I2>

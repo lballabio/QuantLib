@@ -71,6 +71,9 @@ namespace QuantLib {
 
     }
 
+    /*! \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class BackwardflatLinearInterpolation : public Interpolation2D {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */

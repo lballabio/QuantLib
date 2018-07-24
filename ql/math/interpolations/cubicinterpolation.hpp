@@ -99,6 +99,8 @@ namespace QuantLib {
         \test to be adapted from old ones.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class CubicInterpolation : public Interpolation {
       public:
