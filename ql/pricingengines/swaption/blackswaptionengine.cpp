@@ -30,25 +30,31 @@ namespace QuantLib {
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure> &discountCurve,
                         Volatility vol, const DayCounter &dc,
-                        Real displacement, CashAnnuityModel model)
+                        Real displacement, CashAnnuityModel model,
+                        Date settlementDate, Date npvDate)
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
-                                                            displacement, model) {}
+                                                            displacement, model,
+                                                            settlementDate, npvDate) {}
 
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure> &discountCurve,
                         const Handle<Quote> &vol,
                         const DayCounter &dc,
                         Real displacement,
-                        CashAnnuityModel model)
+                        CashAnnuityModel model,
+                        Date settlementDate, Date npvDate)
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol, dc,
-                                                            displacement, model) {}
+                                                            displacement, model,
+                                                            settlementDate, npvDate) {}
 
     BlackSwaptionEngine::BlackSwaptionEngine(
                         const Handle<YieldTermStructure> &discountCurve,
                         const Handle<SwaptionVolatilityStructure> &vol,
-                        CashAnnuityModel model)
+                        CashAnnuityModel model,
+                        Date settlementDate, Date npvDate)
     : detail::BlackStyleSwaptionEngine<detail::Black76Spec>(discountCurve, vol,
-                                                            model) {
+                                                            model,
+                                                            settlementDate, npvDate) {
         QL_REQUIRE(vol->volatilityType() == ShiftedLognormal,
                    "BlackSwaptionEngine requires (shifted) lognormal input "
                    "volatility");
@@ -57,21 +63,27 @@ namespace QuantLib {
 
     BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve, Volatility vol,
-        const DayCounter &dc, CashAnnuityModel model)
+        const DayCounter &dc, CashAnnuityModel model,
+        Date settlementDate, Date npvDate)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                              dc, model) {}
+                                                              dc, 0., model,
+                                                              settlementDate, npvDate) {}
 
     BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
-        const Handle<Quote> &vol, const DayCounter &dc, CashAnnuityModel model)
+        const Handle<Quote> &vol, const DayCounter &dc, CashAnnuityModel model,
+        Date settlementDate, Date npvDate)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                              dc, model) {}
+                                                              dc, 0., model,
+                                                              settlementDate, npvDate) {}
 
     BachelierSwaptionEngine::BachelierSwaptionEngine(
         const Handle<YieldTermStructure> &discountCurve,
-        const Handle<SwaptionVolatilityStructure> &vol, CashAnnuityModel model)
+        const Handle<SwaptionVolatilityStructure> &vol, CashAnnuityModel model,
+        Date settlementDate, Date npvDate)
     : detail::BlackStyleSwaptionEngine<detail::BachelierSpec>(discountCurve, vol,
-                                                              model) {
+                                                              model,
+                                                              settlementDate, npvDate) {
         QL_REQUIRE(vol->volatilityType() == Normal,
                    "BachelierSwaptionEngine requires normal input volatility");
     }
