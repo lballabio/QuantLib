@@ -35,32 +35,34 @@
 namespace QuantLib {
 
     //! %THB %THBFIX rate
-    /*! THBFIX 
-    
+    /*! THBFIX
+
     THB interest rate implied by USD/THB foreign exchange swaps
 
-    The Swap Offer Rate represents the cost of 
-    borrowing a currency synthetically by borrowing USD 
-    for the same tenor and using the foreign exchange swap 
-    offer rate on the offer side to swap out the USD in return 
+    The Swap Offer Rate represents the cost of
+    borrowing a currency synthetically by borrowing USD
+    for the same tenor and using the foreign exchange swap
+    offer rate on the offer side to swap out the USD in return
     for the foreign currency.
 
-    Fixing is based on average FX Forward rates from 21 banks 
-    and the USD Libor Fixing .
+    Fixing is based on average FX Forward rates from 21 banks
+    and the USD Libor Fixing.
 
-    Fixing is published at 11:00 am BKK time 
+    Fixing is published at 11:00 am BKK time
     */
     class THBFIX : public IborIndex {
       public:
         THBFIX(const Period& tenor,
-                 const Handle<YieldTermStructure>& h =
+               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : IborIndex("THBFIX", tenor,
-                2,
-                THBCurrency(),
-                JointCalendar(UnitedKingdom(UnitedKingdom::Exchange), JointCalendar(UnitedStates(UnitedStates::LiborImpact), Thailand())),
-                ModifiedFollowing, true,
-                Actual365Fixed(), h) {}
+                    2,
+                    THBCurrency(),
+                    JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
+                                  JointCalendar(UnitedStates(UnitedStates::LiborImpact),
+                                                Thailand())),
+                    ModifiedFollowing, true,
+                    Actual365Fixed(), h) {}
     };
 }
 
