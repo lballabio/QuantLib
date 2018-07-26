@@ -272,6 +272,7 @@ namespace QuantLib {
               break;
           }
           case Settlement::Cash: {
+
               DayCounter dayCount = firstCoupon->dayCounter();
               // we assume that the cash settlement date is equal
               // to the swap start date
@@ -282,7 +283,8 @@ namespace QuantLib {
                                  InterestRate(atmForward, dayCount, Compounded, Annual),
                                  false, discountDate) ;
               annuity =
-                  std::fabs(fixedLegCashBPS / basisPoint) * discountCurve_->discount(discountDate);
+                  std::fabs(fixedLegCashBPS / basisPoint) * discountCurve_->discount(discountDate) /
+                  discountCurve_->discount(npvDate_);
 
               break;
           }
