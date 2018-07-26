@@ -241,9 +241,6 @@ namespace QuantLib {
         results_.additionalResults["strike"] = strike;
         results_.additionalResults["atmForward"] = atmForward;
 
-        // using the discounting curve
-        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                           new DiscountingSwapEngine(discountCurve_, false)));
         Real annuity;
         switch(arguments_.settlementType) {
           case Settlement::Physical: {
