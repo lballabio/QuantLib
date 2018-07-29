@@ -104,9 +104,8 @@ namespace QuantLib {
 
     ext::shared_ptr<OneFactorModel::ShortRateDynamics>
         BlackKarasinski::dynamics() const {
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+        return ext::shared_ptr<ShortRateDynamics>(
             new Dynamics(phi_, a(), sigma())); 
-        return numericDynamics;
     }
 
 }
