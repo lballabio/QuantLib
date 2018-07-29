@@ -97,8 +97,6 @@ namespace QuantLib {
             s1d.setMaxEvaluations(1000);
             value = s1d.solve(finder, 1e-7, value, vMin, vMax);
             impl->set(grid[i], value);
-            // vMin = value - 10.0;
-            // vMax = value + 10.0;
         }
         numericDynamics = ext::shared_ptr<ShortRateDynamics>(new Dynamics(phi, a(), sigma()));
         return numericTree;
@@ -106,13 +104,8 @@ namespace QuantLib {
 
     ext::shared_ptr<OneFactorModel::ShortRateDynamics>
         BlackKarasinski::dynamics() const {
-
         ext::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi_, a(), sigma())); 
-
-        TimeGrid grid; // how to setup grid for given term structure
-        BlackKarasinski::tree(grid, numericDynamics); // calibrate phi_ using the tree
-
         return numericDynamics;
     }
 
