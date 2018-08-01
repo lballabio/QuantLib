@@ -278,10 +278,14 @@ namespace QuantLib {
               // to the swap start date
               Date discountDate = model_ == DiscountCurve ? firstCoupon->accrualStartDate()
                                                           : discountCurve_->referenceDate();
+              Frequency freq = Annual;
+              if(swap.fixedSchedule().hasTenor()) {
+                  freq = swap.fixedSchedule().tenor().frequency();
+              }
               Real fixedLegCashBPS =
                   CashFlows::bps(fixedLeg,
-                                 InterestRate(atmForward, dayCount, Compounded, Annual),
-                                 false, discountDate) ;
+                                 InterestRate(atmForward, dayCount, Compounded, freq),
+                                 false, discountDate);
               annuity =
                   std::fabs(fixedLegCashBPS / basisPoint) * discountCurve_->discount(discountDate) /
                   discountCurve_->discount(npvDate_);
