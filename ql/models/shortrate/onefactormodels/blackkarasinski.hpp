@@ -58,7 +58,6 @@ namespace QuantLib {
 
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
-        Real phi() const { return phi_(0.0); }
 
         Parameter& a_;
         Parameter& sigma_;
@@ -98,14 +97,16 @@ namespace QuantLib {
     class BlackKarasinski::FittingParameter
         : public TermStructureFittingParameter {
     private:
-        class Impl :public Parameter::Impl{
+        class Impl :public TermStructureFittingParameter::NumericalImpl{
         public:
             Impl(const Handle<YieldTermStructure>& termStructure,
                 Real a, Real sigma)
-                :termStructure_(termStructure), a_(a), sigma_(sigma) {}
+                :termStructure_(termStructure), a_(a), sigma_(sigma),
+                TermStructureFittingParameter::NumericalImpl(termStructure)
+            {}
 
             Real value(const Array&, Time t) const {
-                QL_FAIL("BlackKarasinski::FittingParameter::Impl::value not implemented.");
+                return TermStructureFittingParameter::NumericalImpl::value(Array(), t);
             }
 
         private:
