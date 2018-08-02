@@ -31,6 +31,7 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/canada.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/schedule.hpp>
 
 #include <iomanip>
@@ -172,6 +173,65 @@ void DayCounterTest::testActualActual() {
                        << "    expected:   " << testCases[i].result);
         }
     }
+}
+
+void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriod() {
+	Calendar calendar = UnitedStates();
+	Schedule schedule = MakeSchedule()
+		.from(Date(10, January, 2017))
+		.withFirstDate(Date(31, August, 2017))
+		.to(Date(28, February, 2026))
+		.withFrequency(Semiannual)
+		.withCalendar(calendar)
+		.withConvention(Unadjusted)
+		.backwards().endOfMonth(false);
+
+	Date referencePeriodStart = schedule.date(1);
+	Date referencePeriodEnd = schedule.date(3); // because semiannual advance two coupons.
+
+	Date testDate = schedule.date(1);
+	DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
+
+
+	while (testDate < referencePeriodEnd) {
+		float difference = dayCounter.yearFraction(testDate, referencePeriodEnd, referencePeriodStart, referencePeriodEnd) -
+			dayCounter.yearFraction(testDate, referencePeriodEnd);
+		if (std::fabs(difference) > 1.0e-10) {
+			BOOST_FAIL("FAILED TO CORRECTLY USE THE SCHEDULE TO FIND THE REFERENCE PERIOD FOR ACT ACT");
+		};
+
+		testDate = calendar.advance(testDate, 1, Days);
+	}
+}
+
+void DayCounterTest::testActualActualWithScheduleAgainstAnnualReferencePeriod(){
+	//Now do an annual schedule
+	Calendar calendar = UnitedStates();
+	Schedule schedule = MakeSchedule()
+		.from(Date(10, January, 2017))
+		.withFirstDate(Date(31, August, 2017))
+		.to(Date(28, February, 2026))
+		.withFrequency(Annual)
+		.withCalendar(calendar)
+		.withConvention(Unadjusted)
+		.backwards().endOfMonth(false);
+
+	Date referencePeriodStart = schedule.date(1);
+	Date referencePeriodEnd = schedule.date(2); // because annual advance one coupons.
+
+	Date testDate = schedule.date(1);
+	DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
+
+
+	while (testDate < referencePeriodEnd) {
+		float difference = dayCounter.yearFraction(testDate, referencePeriodEnd, referencePeriodStart, referencePeriodEnd) -
+			dayCounter.yearFraction(testDate, referencePeriodEnd);
+		if (std::fabs(difference) > 1.0e-10) {
+			BOOST_FAIL("FAILED TO CORRECTLY USE THE SCHEDULE TO FIND THE REFERENCE PERIOD FOR ACT ACT");
+		};
+
+		testDate = calendar.advance(testDate, 1, Days);
+	}
 }
 
 void DayCounterTest::testActualActualWithSchedule() {
