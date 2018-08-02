@@ -29,7 +29,7 @@ namespace QuantLib {
     SubPeriodsCoupon::SubPeriodsCoupon(
                                     const Date& paymentDate,
                                     Real nominal,
-                                    const boost::shared_ptr<IborIndex>& index,
+                                    const ext::shared_ptr<IborIndex>& index,
                                     const Date& startDate,
                                     const Date& endDate,
                                     Natural fixingDays,
@@ -47,14 +47,13 @@ namespace QuantLib {
             index->forwardingTermStructure();
         const Date& referenceDate = rateCurve->referenceDate();
 
-        observationsSchedule_ = boost::shared_ptr<Schedule>(new
-            Schedule(startDate, endDate,
+        observationsSchedule_ = ext::make_shared<Schedule>(startDate, endDate,
                      index->tenor(),
                      NullCalendar(),
                      Unadjusted,
                      Unadjusted,
                      DateGeneration::Forward,
-                     false));
+                     false);
 
         observationDates_ = observationsSchedule_->dates();
         observationDates_.pop_back();                       //remove end date
@@ -87,8 +86,8 @@ namespace QuantLib {
 
         Date paymentDate = coupon_->date();
 
-        boost::shared_ptr<IborIndex> index =
-            boost::dynamic_pointer_cast<IborIndex>(coupon_->index());
+        ext::shared_ptr<IborIndex> index =
+            ext::dynamic_pointer_cast<IborIndex>(coupon_->index());
         const Handle<YieldTermStructure>& rateCurve =
             index->forwardingTermStructure();
         discount_ = rateCurve->discount(paymentDate);

@@ -111,7 +111,7 @@ namespace QuantLib {
         gearing_ = coupon_->fixedRate();
         spread_ = coupon_->spread();
         paymentDate_ = coupon_->date();
-        rateCurve_ = boost::dynamic_pointer_cast<ZeroInflationIndex>(coupon.index())
+        rateCurve_ = ext::dynamic_pointer_cast<ZeroInflationIndex>(coupon.index())
             ->zeroInflationTermStructure()
             ->nominalTermStructure();
 

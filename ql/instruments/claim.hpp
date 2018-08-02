@@ -51,12 +51,12 @@ namespace QuantLib {
     class FaceValueAccrualClaim : public Claim {
       public:
         FaceValueAccrualClaim(
-                          const boost::shared_ptr<Bond>& referenceSecurity);
+                          const ext::shared_ptr<Bond>& referenceSecurity);
         Real amount(const Date& d,
                     Real notional,
                     Real recoveryRate) const;
       private:
-        boost::shared_ptr<Bond> referenceSecurity_;
+        ext::shared_ptr<Bond> referenceSecurity_;
     };
 
 }

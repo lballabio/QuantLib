@@ -25,7 +25,7 @@ namespace QuantLib {
 
     class Gaussian1dJamshidianSwaptionEngine::rStarFinder {
       public:
-        rStarFinder(const boost::shared_ptr<Gaussian1dModel> &model,
+        rStarFinder(const ext::shared_ptr<Gaussian1dModel> &model,
                     Real nominal, const Date &maturityDate,
                     const Date &valueDate,
                     const std::vector<Date> &fixedPayDates,
@@ -51,7 +51,7 @@ namespace QuantLib {
         Size startIndex_;
         std::vector<Date> times_;
         const std::vector<Real> &amounts_;
-        const boost::shared_ptr<Gaussian1dModel> &model_;
+        const ext::shared_ptr<Gaussian1dModel> &model_;
     };
 
     void Gaussian1dJamshidianSwaptionEngine::calculate() const {

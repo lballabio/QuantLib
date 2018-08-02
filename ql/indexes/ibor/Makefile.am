@@ -7,6 +7,7 @@ this_include_HEADERS = \
     aonia.hpp \
     audlibor.hpp \
     bbsw.hpp \
+    bibor.hpp \
     bkbm.hpp \
     cadlibor.hpp \
     cdor.hpp \
@@ -29,12 +30,14 @@ this_include_HEADERS = \
     shibor.hpp \
     sonia.hpp \
     tibor.hpp \
+    thbfix.hpp \
     trlibor.hpp \
     usdlibor.hpp \
     wibor.hpp \
     zibor.hpp
 
 cpp_files = \
+    bibor.cpp \
     eonia.cpp \
     euribor.cpp \
     eurlibor.cpp \

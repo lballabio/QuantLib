@@ -50,8 +50,8 @@ namespace {
         // common data
         Calendar calendar;
         Natural settlementDays;
-        boost::shared_ptr<YieldTermStructure> termStructure;
-        boost::shared_ptr<YieldTermStructure> dummyTermStructure;
+        ext::shared_ptr<YieldTermStructure> termStructure;
+        ext::shared_ptr<YieldTermStructure> dummyTermStructure;
 
         // cleanup
         SavedSettings backup;
@@ -80,17 +80,17 @@ namespace {
             Size deposits = LENGTH(depositData),
                 swaps = LENGTH(swapData);
 
-            std::vector<boost::shared_ptr<RateHelper> > instruments(
+            std::vector<ext::shared_ptr<RateHelper> > instruments(
                                                               deposits+swaps);
             for (Size i=0; i<deposits; i++) {
-                instruments[i] = boost::shared_ptr<RateHelper>(new
+                instruments[i] = ext::shared_ptr<RateHelper>(new
                     DepositRateHelper(depositData[i].rate/100,
                                       depositData[i].n*depositData[i].units,
                                       settlementDays, calendar,
                                       ModifiedFollowing, true,
                                       Actual360()));
             }
-            boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
+            ext::shared_ptr<IborIndex> index(new IborIndex("dummy",
                                                              6*Months,
                                                              settlementDays,
                                                              Currency(),
@@ -99,17 +99,17 @@ namespace {
                                                              false,
                                                              Actual360()));
             for (Size i=0; i<swaps; ++i) {
-                instruments[i+deposits] = boost::shared_ptr<RateHelper>(new
+                instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
                     SwapRateHelper(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
                                    calendar,
                                    Annual, Unadjusted, Thirty360(),
                                    index));
             }
-            termStructure = boost::shared_ptr<YieldTermStructure>(new
+            termStructure = ext::shared_ptr<YieldTermStructure>(new
                 PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                         instruments, Actual360()));
-            dummyTermStructure = boost::shared_ptr<YieldTermStructure>(new
+            dummyTermStructure = ext::shared_ptr<YieldTermStructure>(new
                 PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                         instruments, Actual360()));
         }
@@ -124,9 +124,9 @@ void TermStructureTest::testReferenceChange() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
+    ext::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
     Handle<Quote> flatRateHandle(flatRate);
-    vars.termStructure = boost::shared_ptr<YieldTermStructure>(
+    vars.termStructure = ext::shared_ptr<YieldTermStructure>(
                           new FlatForward(vars.settlementDays, NullCalendar(),
                                           flatRateHandle, Actual360()));
     Date today = Settings::instance().evaluationDate();
@@ -165,7 +165,7 @@ void TermStructureTest::testImplied() {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     Date testDate = newSettlement + 5*Years;
-    boost::shared_ptr<YieldTermStructure> implied(
+    ext::shared_ptr<YieldTermStructure> implied(
         new ImpliedTermStructure(Handle<YieldTermStructure>(vars.termStructure),
                                  newSettlement));
     DiscountFactor baseDiscount = vars.termStructure->discount(newSettlement);
@@ -190,7 +190,7 @@ void TermStructureTest::testImpliedObs() {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     RelinkableHandle<YieldTermStructure> h;
-    boost::shared_ptr<YieldTermStructure> implied(
+    ext::shared_ptr<YieldTermStructure> implied(
                                   new ImpliedTermStructure(h, newSettlement));
     Flag flag;
     flag.registerWith(implied);
@@ -206,9 +206,9 @@ void TermStructureTest::testFSpreaded() {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    ext::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(
             Handle<YieldTermStructure>(vars.termStructure),mh));
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
@@ -234,10 +234,10 @@ void TermStructureTest::testFSpreadedObs() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h; //(vars.dummyTermStructure);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    ext::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -257,9 +257,9 @@ void TermStructureTest::testZSpreaded() {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    ext::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(
             Handle<YieldTermStructure>(vars.termStructure),mh));
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
@@ -282,11 +282,11 @@ void TermStructureTest::testZSpreadedObs() {
 
     CommonVars vars;
 
-    boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h(vars.dummyTermStructure);
 
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    ext::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -306,10 +306,10 @@ void TermStructureTest::testCreateWithNullUnderlying() {
 
     CommonVars vars;
 
-    Handle<Quote> spread(boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
     RelinkableHandle<YieldTermStructure> underlying;
     // this shouldn't throw
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    ext::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(underlying,spread));
     // if we do this, the curve can work.
     underlying.linkTo(vars.termStructure);
@@ -324,15 +324,15 @@ void TermStructureTest::testLinkToNullUnderlying() {
 
     CommonVars vars;
 
-    Handle<Quote> spread(boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
     RelinkableHandle<YieldTermStructure> underlying(vars.termStructure);
-    boost::shared_ptr<YieldTermStructure> spreaded(
+    ext::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(underlying,spread));
     // check that we can use it
     spreaded->referenceDate();
     // if we do this, the curve can't work anymore. But it shouldn't
     // throw as long as we don't try to use it.
-    underlying.linkTo(boost::shared_ptr<YieldTermStructure>());
+    underlying.linkTo(ext::shared_ptr<YieldTermStructure>());
 }
 
 void TermStructureTest::testCompositeZeroYieldStructures() {
@@ -382,7 +382,7 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     rates.push_back(0.128647300167664);
     rates.push_back(0.0506086995288751);
 
-    boost::shared_ptr<YieldTermStructure> termStructure1 = boost::shared_ptr<YieldTermStructure>(
+    ext::shared_ptr<YieldTermStructure> termStructure1 = ext::shared_ptr<YieldTermStructure>(
         new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
 
     // Second curve
@@ -419,12 +419,12 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     rates.push_back(0.0293567711641792);
     rates.push_back(0.010518655099659);
 
-    boost::shared_ptr<YieldTermStructure> termStructure2 = boost::shared_ptr<YieldTermStructure>(
+    ext::shared_ptr<YieldTermStructure> termStructure2 = ext::shared_ptr<YieldTermStructure>(
         new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
 
     typedef Real(*binary_f)(Real, Real);
 
-    boost::shared_ptr<YieldTermStructure> compoundCurve = boost::shared_ptr<YieldTermStructure>(
+    ext::shared_ptr<YieldTermStructure> compoundCurve = ext::shared_ptr<YieldTermStructure>(
         new CompositeZeroYieldStructure<binary_f>(Handle<YieldTermStructure>(termStructure1), Handle<YieldTermStructure>(termStructure2), sub));
 
     // Expected values

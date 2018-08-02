@@ -34,7 +34,7 @@ namespace QuantLib {
     class AndreasenHugeLocalVolAdapter : public LocalVolTermStructure {
       public:
         explicit AndreasenHugeLocalVolAdapter(
-            const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
+            const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
 
         Date maxDate() const;
         Real minStrike() const;
@@ -49,7 +49,7 @@ namespace QuantLib {
         Volatility localVolImpl(Time t, Real strike) const;
 
       private:
-        const boost::shared_ptr<AndreasenHugeVolatilityInterpl> localVol_;
+        const ext::shared_ptr<AndreasenHugeVolatilityInterpl> localVol_;
     };
 }
 

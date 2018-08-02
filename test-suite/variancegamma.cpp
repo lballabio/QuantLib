@@ -28,7 +28,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/make_shared.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -131,13 +130,13 @@ void VarianceGammaTest::testVarianceGamma() {
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(processes); i++) {
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
-        boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
-        boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
+        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
+        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
+        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-        boost::shared_ptr<VarianceGammaProcess> stochProcess(
+        ext::shared_ptr<VarianceGammaProcess> stochProcess(
             new VarianceGammaProcess(Handle<Quote>(spot),
             Handle<YieldTermStructure>(qTS),
             Handle<YieldTermStructure>(rTS),
@@ -146,28 +145,28 @@ void VarianceGammaTest::testVarianceGamma() {
             processes[i].theta));
 
         // Analytic engine
-        boost::shared_ptr<PricingEngine> analyticEngine(
+        ext::shared_ptr<PricingEngine> analyticEngine(
             new VarianceGammaEngine(stochProcess));
 
         // FFT engine
-        boost::shared_ptr<FFTVarianceGammaEngine> fftEngine(
+        ext::shared_ptr<FFTVarianceGammaEngine> fftEngine(
             new FFTVarianceGammaEngine(stochProcess));
 
         // which requires a list of options
-        std::vector<boost::shared_ptr<Instrument> > optionList;
+        std::vector<ext::shared_ptr<Instrument> > optionList;
 
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs;
         for (Size j=0; j<LENGTH(options); j++)
         {
             Date exDate = today + Integer(options[j].t*360+0.5);
-            boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-            boost::shared_ptr<StrikedTypePayoff> payoff(new
+            ext::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(options[j].type, options[j].strike));
             payoffs.push_back(payoff);
 
             // Test analytic engine
-            boost::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
+            ext::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
             option->setPricingEngine(analyticEngine);
 
             Real calculated = option->NPV();
@@ -189,15 +188,15 @@ void VarianceGammaTest::testVarianceGamma() {
         fftEngine->precalculate(optionList);
         for (Size j=0; j<LENGTH(options); j++)
         {
-            boost::shared_ptr<VanillaOption> option = boost::static_pointer_cast<VanillaOption>(optionList[j]);
+            ext::shared_ptr<VanillaOption> option = ext::static_pointer_cast<VanillaOption>(optionList[j]);
             option->setPricingEngine(fftEngine);
 
             Real calculated = option->NPV();
             Real expected = results[i][j];
             Real error = std::fabs(calculated-expected);
             if (error>tol) {
-                boost::shared_ptr<StrikedTypePayoff> payoff = 
-                    boost::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
+                ext::shared_ptr<StrikedTypePayoff> payoff = 
+                    ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
                 REPORT_FAILURE("fft value", payoff, option->exercise(),
                     processes[i].s, processes[i].q, processes[i].r,
                     today, processes[i].sigma, processes[i].nu,
@@ -227,22 +226,22 @@ void VarianceGammaTest::testSingularityAtZero() {
 
     Settings::instance().evaluationDate() = valuation;
 
-    boost::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(maturity);
-    boost::shared_ptr<StrikedTypePayoff> payoff =
-        boost::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturity);
+    ext::shared_ptr<StrikedTypePayoff> payoff =
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
     VanillaOption option(payoff, exercise);
 
     Handle<YieldTermStructure> dividend(
-             boost::make_shared<FlatForward>(valuation,0.0,discountCounter));
+             ext::make_shared<FlatForward>(valuation,0.0,discountCounter));
     Handle<YieldTermStructure> disc(
-             boost::make_shared<FlatForward>(valuation,0.05,discountCounter));
-    Handle<Quote> S0(boost::make_shared<SimpleQuote>(stock));
-    boost::shared_ptr<QuantLib::VarianceGammaProcess> process =
-        boost::make_shared<VarianceGammaProcess>(S0, dividend, disc,
+             ext::make_shared<FlatForward>(valuation,0.05,discountCounter));
+    Handle<Quote> S0(ext::make_shared<SimpleQuote>(stock));
+    ext::shared_ptr<QuantLib::VarianceGammaProcess> process =
+        ext::make_shared<VarianceGammaProcess>(S0, dividend, disc,
                                                  sigma, kappa, mu);
 
-    option.setPricingEngine(boost::make_shared<VarianceGammaEngine>(process));
+    option.setPricingEngine(ext::make_shared<VarianceGammaEngine>(process));
     // without the fix, the call below goes into an infinite loop,
     // which is hard to test for.  We're just happy to see the test
     // case finish, hence the lack of an assertion.

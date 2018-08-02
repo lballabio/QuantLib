@@ -120,7 +120,7 @@ namespace QuantLib {
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         paymentDate_ = coupon_->date();
-        rateCurve_ = boost::dynamic_pointer_cast<YoYInflationIndex>(coupon.index())
+        rateCurve_ = ext::dynamic_pointer_cast<YoYInflationIndex>(coupon.index())
             ->yoyInflationTermStructure()
             ->nominalTermStructure();
 

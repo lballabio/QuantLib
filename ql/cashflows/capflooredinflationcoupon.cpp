@@ -55,7 +55,7 @@ namespace QuantLib {
 
 
     CappedFlooredYoYInflationCoupon::CappedFlooredYoYInflationCoupon(
-                const boost::shared_ptr<YoYInflationCoupon>& underlying,
+                const ext::shared_ptr<YoYInflationCoupon>& underlying,
                         Rate cap, Rate floor)
     : YoYInflationCoupon(underlying->date(),
                          underlying->nominal(),
@@ -77,7 +77,7 @@ namespace QuantLib {
 
 
     void CappedFlooredYoYInflationCoupon::setPricer(
-            const boost::shared_ptr<YoYInflationCouponPricer>& pricer) {
+            const ext::shared_ptr<YoYInflationCouponPricer>& pricer) {
 
         YoYInflationCoupon::setPricer(pricer);
         if (underlying_) underlying_->setPricer(pricer);

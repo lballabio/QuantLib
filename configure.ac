@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.13],
+AC_INIT([QuantLib], [1.14],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -372,6 +372,42 @@ if test "$ql_use_intraday" = "yes" ; then
              [Define this if you want to enable high resolution date class.])
 fi
 AC_MSG_RESULT([$ql_use_intraday])
+
+AC_MSG_CHECKING([whether to enable standard smart pointers])
+AC_ARG_ENABLE([std-pointers],
+              AC_HELP_STRING([--enable-std-pointers],
+                             [If enabled, std::shared_ptr and related
+                              classes and functions will be used instead
+                              of boost::shared_ptr; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.
+                              Note that std::shared_ptr does not check
+                              access and can cause segmentation faults.]),
+              [ql_use_std_pointers=$enableval],
+              [ql_use_std_pointers=no])
+if test "$ql_use_std_pointers" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+fi
+AC_MSG_RESULT([$ql_use_std_pointers])
+
+AC_MSG_CHECKING([whether to enable std::unique_ptr instead of std::auto_ptr])
+AC_ARG_ENABLE([std-unique-ptr],
+              AC_HELP_STRING([--enable-std-unique-ptr],
+                             [If enabled, std::unique_ptr will be used
+                              instead of the deprecated std::auto_ptr;
+                              this requires you to set your compiler's
+                              standard to at least C++11.  If disabled
+                              (the default), std::auto_ptr will still
+                              be used.]),
+              [ql_use_unique_ptr=$enableval],
+              [ql_use_unique_ptr=no])
+if test "$ql_use_unique_ptr" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
+             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
+fi
+AC_MSG_RESULT([$ql_use_unique_ptr])
 
 # manual configurations for specific hosts
 case $host in

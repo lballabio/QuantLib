@@ -25,6 +25,7 @@
 #define quantlib_functional_hpp
 
 #include <ql/types.hpp>
+#include <ql/utilities/null.hpp>
 #include <cmath>
 #include <functional>
 
@@ -65,6 +66,94 @@ namespace QuantLib {
         T operator()(const T& t) const { T t2 = t*t; return t2*t2; }
     };
 
+    // a few shortcuts for common binders
+
+    template <class T>
+    class add : public std::unary_function<T,T> {
+        T y;
+      public:
+        explicit add(Real y) : y(y) {}
+        Real operator()(T x) const { return x + y; }
+    };
+
+    template <class T>
+    class subtract : public std::unary_function<T,T> {
+        T y;
+      public:
+        explicit subtract(Real y) : y(y) {}
+        Real operator()(T x) const { return x - y; }
+    };
+
+    template <class T>
+    class subtract_from : public std::unary_function<T,T> {
+        T y;
+      public:
+        explicit subtract_from(Real y) : y(y) {}
+        Real operator()(T x) const { return y - x; }
+    };
+
+    template <class T>
+    class multiply_by : public std::unary_function<T,T> {
+        T y;
+      public:
+        explicit multiply_by(Real y) : y(y) {}
+        Real operator()(T x) const { return x * y; }
+    };
+
+    template <class T>
+    class divide : public std::unary_function<T,T> {
+        T y;
+      public:
+        explicit divide(Real y) : y(y) {}
+        Real operator()(T x) const { return y / x; }
+    };
+
+    template <class T>
+    class divide_by : public std::unary_function<T,T> {
+        T y;
+      public:
+        explicit divide_by(Real y) : y(y) {}
+        Real operator()(T x) const { return x / y; }
+    };
+
+    template <class T>
+    class less_than : public std::unary_function<T,bool> {
+        T y;
+      public:
+        explicit less_than(Real y) : y(y) {}
+        bool operator()(T x) const { return x < y; }
+    };
+
+    template <class T>
+    class greater_than : public std::unary_function<T,bool> {
+        T y;
+      public:
+        explicit greater_than(Real y) : y(y) {}
+        bool operator()(T x) const { return x > y; }
+    };
+
+    template <class T>
+    class greater_or_equal_to : public std::unary_function<T,bool> {
+        T y;
+      public:
+        explicit greater_or_equal_to(Real y) : y(y) {}
+        bool operator()(T x) const { return x >= y; }
+    };
+
+    template <class T>
+    class not_zero : public std::unary_function<T,bool> {
+      public:
+        bool operator()(T x) const { return x != T(); }
+    };
+
+    template <class T>
+    class not_null : public std::unary_function<T,bool> {
+        T null;
+      public:
+        not_null() : null(Null<T>()) {}
+        bool operator()(T x) const { return x != null; }
+    };
+    
     // predicates
 
     class everywhere : public constant<Real,bool> {

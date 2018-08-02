@@ -42,7 +42,7 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 namespace {
 
@@ -199,15 +199,14 @@ namespace {
             bool vegaWeightedSmileFit = false;
 
             SabrVolCube2 = Handle<SwaptionVolatilityStructure>(
-                shared_ptr<SwaptionVolCube2>(new
-                    SwaptionVolCube2(atmVol,
+                ext::make_shared<SwaptionVolCube2>(atmVol,
                                      optionTenors,
                                      swapTenors,
                                      strikeSpreads,
                                      volSpreads,
                                      swapIndexBase,
                                      shortSwapIndexBase,
-                                     vegaWeightedSmileFit)));
+                                     vegaWeightedSmileFit));
             SabrVolCube2->enableExtrapolation();
 
             std::vector<std::vector<Handle<Quote> > > guess(nRows);

@@ -36,7 +36,7 @@ namespace QuantLib {
     class DigitalIborCoupon : public DigitalCoupon {
       public:
         DigitalIborCoupon(
-            const boost::shared_ptr<IborCoupon> &underlying,
+            const ext::shared_ptr<IborCoupon> &underlying,
             Rate callStrike = Null<Rate>(),
             Position::Type callPosition = Position::Long,
             bool isCallATMIncluded = false,
@@ -45,8 +45,8 @@ namespace QuantLib {
             Position::Type putPosition = Position::Long,
             bool isPutATMIncluded = false,
             Rate putDigitalPayoff = Null<Rate>(),
-            const boost::shared_ptr<DigitalReplication> &replication =
-                boost::shared_ptr<DigitalReplication>(new DigitalReplication));
+            const ext::shared_ptr<DigitalReplication> &replication =
+                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
 
         //! \name Visitability
         //@{
@@ -59,7 +59,7 @@ namespace QuantLib {
     class DigitalIborLeg {
       public:
         DigitalIborLeg(const Schedule& schedule,
-                       const boost::shared_ptr<IborIndex>& index);
+                       const ext::shared_ptr<IborIndex>& index);
         DigitalIborLeg& withNotionals(Real notional);
         DigitalIborLeg& withNotionals(const std::vector<Real>& notionals);
         DigitalIborLeg& withPaymentDayCounter(const DayCounter&);
@@ -84,12 +84,12 @@ namespace QuantLib {
         DigitalIborLeg& withPutPayoffs(Rate payoff);
         DigitalIborLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalIborLeg &withReplication(
-            const boost::shared_ptr<DigitalReplication> &replication =
-                boost::shared_ptr<DigitalReplication>(new DigitalReplication));
+            const ext::shared_ptr<DigitalReplication> &replication =
+                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
         operator Leg() const;
       private:
         Schedule schedule_;
-        boost::shared_ptr<IborIndex> index_;
+        ext::shared_ptr<IborIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
@@ -103,7 +103,7 @@ namespace QuantLib {
         std::vector<Rate> putStrikes_, putPayoffs_;
         Position::Type longPutOption_;
         bool putATM_;
-        boost::shared_ptr<DigitalReplication> replication_;
+        ext::shared_ptr<DigitalReplication> replication_;
     };
 
 }

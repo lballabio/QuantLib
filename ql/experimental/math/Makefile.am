@@ -21,7 +21,6 @@ this_include_HEADERS = \
     moorepenroseinverse.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
-    numericaldifferentiation.hpp \
     particleswarmoptimization.hpp \
     piecewisefunction.hpp \
     piecewiseintegral.hpp \
@@ -37,7 +36,6 @@ cpp_files = \
     gaussiannoncentralchisquaredpolynomial.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
-    numericaldifferentiation.cpp \
     particleswarmoptimization.cpp \
     piecewiseintegral.cpp \
     tcopulapolicy.cpp \

@@ -24,6 +24,7 @@
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <ql/math/functional.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/bind.hpp>
@@ -64,7 +65,7 @@ namespace QuantLib {
     public:
         typedef typename LLM::copulaType copulaType;
         explicit BinomialLossModel(
-            const boost::shared_ptr<LLM>& copula)
+            const ext::shared_ptr<LLM>& copula)
         : copula_(copula) { }
     private:
         void resetModel() {
@@ -144,7 +145,7 @@ namespace QuantLib {
                 const std::vector<Real>& uncondDefProbInv, 
                             const std::vector<Real>&  mktFactor) const;
     protected:
-        const boost::shared_ptr<LLM> copula_;
+        const ext::shared_ptr<LLM> copula_;
 
         // cached arguments:
         // remaining basket magnitudes:
@@ -204,8 +205,8 @@ namespace QuantLib {
         // nu_E
         std::vector<Probability> oneMinusDefProb;//: 1.-condDefProb[j]
         std::transform(condDefProb.begin(), condDefProb.end(), 
-            std::back_inserter(oneMinusDefProb), 
-            std::bind1st(std::minus<Real>(), 1.));
+                       std::back_inserter(oneMinusDefProb), 
+                       subtract_from<Real>(1.0));
 
         //breaks condDefProb and lgdsLeft to spare memory
         std::transform(condDefProb.begin(), condDefProb.end(), 

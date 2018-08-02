@@ -12,7 +12,6 @@ MultidimIntegral_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    MultidimIntegral_vc9.vcproj \
     MultidimIntegral.vcxproj \
     MultidimIntegral.vcxproj.filters
 

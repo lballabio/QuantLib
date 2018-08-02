@@ -9,6 +9,7 @@ Toyin Akin
 Marius Akre
 Mario Aleppo
 Ferdinando Ametrano
+Tom Anderson
 Grzegorz Andruszkiewicz
 Driss Aouad
 Jose Aparicio
@@ -104,6 +105,7 @@ Mike Jake
 Nicola Jean
 Joseph Jeisman
 Rahul Kanchi
+Roland Kapl
 Andrey Karpov
 Michal Kaut
 Tomoya Kawanishi
@@ -203,6 +205,7 @@ Niels Elken Sønderby
 Klaus Spanderen
 Andreas Spengler
 Roland Stamm
+Weston Steimel
 Edouard Tallent
 Eisuke Tani
 Marco Tarenghi
@@ -221,6 +224,7 @@ Frank Xue
 Jeff Yu
 Maddalena Zanzi
 Francesco Zirilli
+Roy Zywina
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

@@ -53,9 +53,9 @@ namespace QuantLib {
            const BusinessDayConvention bdc,
            const DayCounter& dc,
            const Period &lag,
-           const boost::shared_ptr<YoYCapFloorTermPriceSurface> &capFloorPrices,
-           const boost::shared_ptr<YoYInflationCapFloorEngine> &pricer,
-           const boost::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
+           const ext::shared_ptr<YoYCapFloorTermPriceSurface> &capFloorPrices,
+           const ext::shared_ptr<YoYInflationCapFloorEngine> &pricer,
+           const ext::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
            const Real slope,
            const Interpolator1D &interpolator = Interpolator1D());
 
@@ -72,9 +72,9 @@ namespace QuantLib {
                                           Rate strike) const;
         virtual void performCalculations() const;
 
-        boost::shared_ptr<YoYCapFloorTermPriceSurface> capFloorPrices_;
-        boost::shared_ptr<YoYInflationCapFloorEngine> yoyInflationCouponPricer_;
-        boost::shared_ptr<YoYOptionletStripper> yoyOptionletStripper_;
+        ext::shared_ptr<YoYCapFloorTermPriceSurface> capFloorPrices_;
+        ext::shared_ptr<YoYInflationCapFloorEngine> yoyInflationCouponPricer_;
+        ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper_;
 
         mutable Interpolator1D factory1D_;
         mutable Real slope_;
@@ -97,9 +97,9 @@ namespace QuantLib {
          const BusinessDayConvention bdc,
          const DayCounter& dc,
          const Period &lag,
-         const boost::shared_ptr<YoYCapFloorTermPriceSurface> &capFloorPrices,
-         const boost::shared_ptr<YoYInflationCapFloorEngine> &pricer,
-         const boost::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
+         const ext::shared_ptr<YoYCapFloorTermPriceSurface> &capFloorPrices,
+         const ext::shared_ptr<YoYInflationCapFloorEngine> &pricer,
+         const ext::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
          const Real slope,
          const Interpolator1D &interpolator)
     : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,

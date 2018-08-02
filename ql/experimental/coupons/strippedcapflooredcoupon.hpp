@@ -32,7 +32,7 @@ namespace QuantLib {
 
     public:
 
-        explicit StrippedCappedFlooredCoupon(const boost::shared_ptr<CappedFlooredCoupon> &underlying);
+        explicit StrippedCappedFlooredCoupon(const ext::shared_ptr<CappedFlooredCoupon> &underlying);
 
         //! Coupon interface
         Rate rate() const;
@@ -56,12 +56,12 @@ namespace QuantLib {
         bool isFloor() const;
         bool isCollar() const;
 
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer);
 
-        const boost::shared_ptr<CappedFlooredCoupon> underlying() { return underlying_; }
+        const ext::shared_ptr<CappedFlooredCoupon> underlying() { return underlying_; }
 
     protected:
-        boost::shared_ptr<CappedFlooredCoupon> underlying_;
+        ext::shared_ptr<CappedFlooredCoupon> underlying_;
 
     };
 

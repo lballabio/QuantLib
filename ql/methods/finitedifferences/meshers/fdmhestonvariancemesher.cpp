@@ -30,9 +30,23 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        struct interpolated_volatility {
+            interpolated_volatility(const std::vector<Real>& pGrid,
+                                    const std::vector<Real>& vGrid)
+            : variance(pGrid.begin(), pGrid.end(), vGrid.begin()) {}
+            Real operator()(Real x) const {
+                return std::sqrt(variance(x));
+            }
+            LinearInterpolation variance;
+        };
+
+    }
+
     FdmHestonVarianceMesher::FdmHestonVarianceMesher(
         Size size,
-        const boost::shared_ptr<HestonProcess> & process,
+        const ext::shared_ptr<HestonProcess> & process,
         Time maturity, Size tAvgSteps, Real epsilon)
         : Fdm1dMesher(size) {
 
@@ -108,12 +122,9 @@ namespace QuantLib {
 
         std::sort(pGrid.begin(), pGrid.end());
         volaEstimate_ = GaussLobattoIntegral(100000, 1e-4)(
-            boost::function1<Real, Real>(
-                compose(std::ptr_fun<Real, Real>(std::sqrt),
-                        LinearInterpolation(pGrid.begin(), pGrid.end(),
-                        vGrid.begin()))),
+            interpolated_volatility(pGrid, vGrid),
             pGrid.front(), pGrid.back())*std::pow(skewHint, 1.5);
-        
+
         const Real v0 = process->v0();
         for (Size i=1; i<vGrid.size(); ++i) {
             if (vGrid[i-1] <= v0 && vGrid[i] >= v0) {

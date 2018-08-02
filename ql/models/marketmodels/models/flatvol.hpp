@@ -40,7 +40,7 @@ namespace QuantLib {
       public:
         FlatVol(
             const std::vector<Volatility>& volatilities,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
@@ -78,7 +78,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& yieldCurve,
                               // this might have a structure
                               Spread displacement);
-        boost::shared_ptr<MarketModel> create(const EvolutionDescription&,
+        ext::shared_ptr<MarketModel> create(const EvolutionDescription&,
                                               Size numberOfFactors) const;
         void update();
       private:

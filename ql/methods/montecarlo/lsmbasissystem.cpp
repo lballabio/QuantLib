@@ -75,9 +75,9 @@ namespace QuantLib {
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 QL_REQUIRE(b_.size()==a.size(), "wrong argument size");
                 #endif
-                Real ret = b_[0].operator()(a[0]);
+                Real ret = b_[0](a[0]);
                 for(Size i=1; i<b_.size(); ++i)
-                    ret *= b_[i].operator()(a[i]);
+                    ret *= b_[i](a[i]);
                 return ret;
             }
           private:

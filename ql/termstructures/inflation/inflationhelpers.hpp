@@ -43,7 +43,7 @@ namespace QuantLib {
             const Calendar& calendar,   // index may have null calendar as valid on every day
             BusinessDayConvention paymentConvention,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<ZeroInflationIndex>& zii);
+            const ext::shared_ptr<ZeroInflationIndex>& zii);
 
         void setTermStructure(ZeroInflationTermStructure*);
         Real impliedQuote() const;
@@ -53,8 +53,8 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention paymentConvention_;
         DayCounter dayCounter_;
-        boost::shared_ptr<ZeroInflationIndex> zii_;
-        boost::shared_ptr<ZeroCouponInflationSwap> zciis_;
+        ext::shared_ptr<ZeroInflationIndex> zii_;
+        ext::shared_ptr<ZeroCouponInflationSwap> zciis_;
     };
 
 
@@ -68,7 +68,7 @@ namespace QuantLib {
                                       const Calendar& calendar,
                                       BusinessDayConvention paymentConvention,
                                       const DayCounter& dayCounter,
-                                      const boost::shared_ptr<YoYInflationIndex>& yii);
+                                      const ext::shared_ptr<YoYInflationIndex>& yii);
 
         void setTermStructure(YoYInflationTermStructure*);
         Real impliedQuote() const;
@@ -78,8 +78,8 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention paymentConvention_;
         DayCounter dayCounter_;
-        boost::shared_ptr<YoYInflationIndex> yii_;
-        boost::shared_ptr<YearOnYearInflationSwap> yyiis_;
+        ext::shared_ptr<YoYInflationIndex> yii_;
+        ext::shared_ptr<YearOnYearInflationSwap> yyiis_;
     };
 
 }

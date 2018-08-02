@@ -29,7 +29,7 @@
 
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/comparison.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 #include <vector>
 
@@ -37,7 +37,7 @@ namespace QuantLib {
 
 class PiecewiseIntegral : public Integrator {
   public:
-    PiecewiseIntegral(const boost::shared_ptr<Integrator> &integrator,
+    PiecewiseIntegral(const ext::shared_ptr<Integrator> &integrator,
                       const std::vector<Real> &criticalPoints,
                       const bool avoidCriticalPoints = true);
 
@@ -47,7 +47,7 @@ class PiecewiseIntegral : public Integrator {
   private:
     Real integrate_h(const boost::function<Real(Real)> &f, Real a,
                      Real b) const;
-    const boost::shared_ptr<Integrator> integrator_;
+    const ext::shared_ptr<Integrator> integrator_;
     std::vector<Real> criticalPoints_;
     const Real eps_;
 };
@@ -58,7 +58,7 @@ inline Real PiecewiseIntegral::integrate_h(const boost::function<Real(Real)> &f,
                                            Real a, Real b) const {
 
     if (!close_enough(a, b))
-        return integrator_->operator()(f, a, b);
+        return (*integrator_)(f, a, b);
     else
         return 0.0;
 }

@@ -24,7 +24,7 @@ namespace QuantLib {
 
     Botswana::Botswana() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Botswana::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Botswana::Impl);
         impl_ = impl;
     }
 

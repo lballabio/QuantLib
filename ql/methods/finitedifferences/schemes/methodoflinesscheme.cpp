@@ -34,7 +34,7 @@ namespace QuantLib {
     MethodOfLinesScheme::MethodOfLinesScheme(
         const Real eps,
         const Real relInitStepSize,
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
+        const ext::shared_ptr<FdmLinearOpComposite> & map,
         const bc_set& bcSet)
     : dt_(Null<Real>()),
       eps_(eps),

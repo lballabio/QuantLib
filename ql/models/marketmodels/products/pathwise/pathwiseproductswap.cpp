@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswap.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib 
 {
@@ -85,10 +86,11 @@ namespace QuantLib
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseSwap::clone() const 
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseSwap::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-                                                new MarketModelPathwiseSwap(*this));
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+                                          new MarketModelPathwiseSwap(*this));
     }
 
     std::vector<Size> MarketModelPathwiseSwap::suggestedNumeraires() const

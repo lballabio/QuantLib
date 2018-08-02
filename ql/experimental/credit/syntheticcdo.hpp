@@ -116,7 +116,7 @@ namespace QuantLib {
             \todo: allow for extra payment flags, arbitrary upfront
                    payment date...
         */
-        SyntheticCDO (const boost::shared_ptr<Basket>& basket,
+        SyntheticCDO (const ext::shared_ptr<Basket>& basket,
                       Protection::Side side,
                       const Schedule& schedule,
                       Rate upfrontRate,
@@ -125,7 +125,7 @@ namespace QuantLib {
                       BusinessDayConvention paymentConvention,
                       boost::optional<Real> notional = boost::none);
 
-        const boost::shared_ptr<Basket>& basket() const { return basket_; }
+        const ext::shared_ptr<Basket>& basket() const { return basket_; }
 
         bool isExpired () const;
         Rate fairPremium() const;
@@ -146,7 +146,7 @@ namespace QuantLib {
         }
         //! Last protection date.
         const Date& maturity() const {
-            return boost::dynamic_pointer_cast<FixedRateCoupon>(
+            return ext::dynamic_pointer_cast<FixedRateCoupon>(
                 normalizedLeg_.back())->accrualEndDate();
         }
         /*! The Gaussian Copula LHP implied correlation that makes the 
@@ -170,7 +170,7 @@ namespace QuantLib {
     private:
         void setupExpired() const;
 
-        boost::shared_ptr<Basket> basket_;
+        ext::shared_ptr<Basket> basket_;
         Protection::Side side_;
         Leg normalizedLeg_;
 
@@ -195,7 +195,7 @@ namespace QuantLib {
                       runningRate(Null<Real>()) {}
         void validate() const;
 
-        boost::shared_ptr<Basket> basket;
+        ext::shared_ptr<Basket> basket;
         Protection::Side side;
         Leg normalizedLeg;
 

@@ -36,9 +36,9 @@ namespace QuantLib {
     class Fdm2dBlackScholesOp : public FdmLinearOpComposite {
       public:
         Fdm2dBlackScholesOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
             Real correlation,
             Time maturity,
             bool localVol = false,
@@ -59,9 +59,9 @@ namespace QuantLib {
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
       private:
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> p1_, p2_;
-        const boost::shared_ptr<LocalVolTermStructure> localVol1_, localVol2_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> p1_, p2_;
+        const ext::shared_ptr<LocalVolTermStructure> localVol1_, localVol2_;
         const Array x_, y_;
         
         Real currentForwardRate_;

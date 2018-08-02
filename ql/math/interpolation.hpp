@@ -30,6 +30,7 @@
 #include <ql/math/comparison.hpp>
 #include <ql/errors.hpp>
 #include <vector>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -38,6 +39,18 @@ namespace QuantLib {
         values from two sequences of equal length, representing
         discretized values of a variable and a function of the former,
         respectively.
+
+        \warning Interpolations don't copy their underlying data;
+                 instead, they store iterators through which they
+                 access them.  This allow them to see changes in the
+                 underlying data without having to propagate them
+                 manually, but adds the requirement that the lifetime
+                 of the underlying data exceeds or equals the lifetime
+                 of the interpolation. It is up to the user to ensure
+                 this: usually, a class will store as data members
+                 both the data and the interpolation (see, e.g., the
+                 InterpolatedCurve class) and call the update() method
+                 on the latter when the data change.
     */
     class Interpolation : public Extrapolator {
       protected:
@@ -56,7 +69,7 @@ namespace QuantLib {
             virtual Real derivative(Real) const = 0;
             virtual Real secondDerivative(Real) const = 0;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
       public:
         typedef Real argument_type;
         typedef Real result_type;
