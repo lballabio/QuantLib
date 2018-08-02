@@ -22,6 +22,7 @@
 
 #include <ql/termstructures/credit/hazardratestructure.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
     
@@ -41,7 +42,7 @@ namespace QuantLib {
     public:
         // implement remaining constructors.....
         OneFactorAffineSurvivalStructure(
-            boost::shared_ptr<OneFactorAffineModel> model,
+            ext::shared_ptr<OneFactorAffineModel> model,
             const DayCounter& dayCounter = DayCounter(),
             const std::vector<Handle<Quote> >& jumps 
                 = std::vector<Handle<Quote> >(),
@@ -50,7 +51,7 @@ namespace QuantLib {
             model_(model) {}
 
         OneFactorAffineSurvivalStructure(
-            boost::shared_ptr<OneFactorAffineModel> model,
+            ext::shared_ptr<OneFactorAffineModel> model,
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),
@@ -60,6 +61,18 @@ namespace QuantLib {
         ) 
         : HazardRateStructure(referenceDate, Calendar(), dayCounter, jumps, 
             jumpDates), model_(model) {}
+
+        OneFactorAffineSurvivalStructure(
+            ext::shared_ptr<OneFactorAffineModel> model,
+            Natural settlementDays,
+            const Calendar& calendar,
+            const DayCounter& dayCounter = DayCounter(),
+            const std::vector<Handle<Quote> >& jumps
+                                          = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>())
+        : HazardRateStructure(settlementDays, calendar,
+                              dayCounter, jumps, jumpDates),
+          model_(model) {}
 
         //! \name TermStructure interface
         //@{
@@ -138,14 +151,16 @@ namespace QuantLib {
             return 0.;
         }
 
-        boost::shared_ptr<OneFactorAffineModel> model_;        
+        ext::shared_ptr<OneFactorAffineModel> model_;        
     };
     
     inline Probability
         OneFactorAffineSurvivalStructure::survivalProbabilityImpl(
         Time t) const
     {
-        Real initValHR = std::pow(model_->dynamics()->process()->x0(), 2);
+        Real initValHR =
+            model_->dynamics()->shortRate(0., 
+                model_->dynamics()->process()->x0());
 
         return model_->discountBond(0., t, initValHR);
     }
@@ -158,7 +173,9 @@ namespace QuantLib {
 
     inline Real 
         OneFactorAffineSurvivalStructure::defaultDensityImpl(Time t) const {
-        Real initValHR = std::pow(model_->dynamics()->process()->x0(), 2);
+        Real initValHR = 
+            model_->dynamics()->shortRate(0., 
+                model_->dynamics()->process()->x0());;
 
         return hazardRateImpl(t)*survivalProbabilityImpl(t) /
             model_->discountBond(0., t, initValHR);

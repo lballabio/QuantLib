@@ -22,6 +22,7 @@
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/autocovariance.hpp>
+#include <ql/math/functional.hpp>
 #include <boost/foreach.hpp>
 
 namespace QuantLib {
@@ -46,7 +47,7 @@ namespace QuantLib {
             };
           public:
             Garch11Constraint(Real gammaLower, Real gammaUpper)
-            : Constraint(boost::shared_ptr<Constraint::Impl>(
+            : Constraint(ext::shared_ptr<Constraint::Impl>(
                       new Garch11Constraint::Impl(gammaLower, gammaUpper))) {}
         };
 
@@ -109,7 +110,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           std::bind2nd(std::divides<Real>(), norm));
+                           divide_by<Real>(norm));
         }
 
         Real Garch11CostFunction::valueAndGradient(Array& grad,
@@ -133,7 +134,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           std::bind2nd(std::divides<Real>(), norm));
+                           divide_by<Real>(norm));
             return retval / norm;
         }
 
@@ -219,7 +220,7 @@ namespace QuantLib {
             };
           public:
             FitAcfConstraint(Real gammaLower, Real gammaUpper)
-            : Constraint(boost::shared_ptr<Constraint::Impl>(
+            : Constraint(ext::shared_ptr<Constraint::Impl>(
                        new FitAcfConstraint::Impl(gammaLower, gammaUpper))) {}
         };
 
@@ -390,7 +391,7 @@ namespace QuantLib {
     }
 
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                    Mode mode, const std::vector<Volatility> &r2, Real mean_r2,
                    Real &alpha, Real &beta, Real &omega) {
         EndCriteria endCriteria(10000, 500, tol_level, tol_level, tol_level);
@@ -399,7 +400,7 @@ namespace QuantLib {
                             alpha, beta, omega);
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                    Mode mode, const std::vector<Volatility> &r2, Real mean_r2,
                    OptimizationMethod &method, const EndCriteria &endCriteria,
                    Real &alpha, Real &beta, Real &omega) {
@@ -417,7 +418,7 @@ namespace QuantLib {
         Array acf(maxLag+1);
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+                        subtract<Real>(mean_r2));
         autocovariances (tmp.begin(), tmp.end(), acf.begin(), maxLag);
         QL_REQUIRE (acf[0] > 0, "Data series is constant");
 
@@ -441,7 +442,7 @@ namespace QuantLib {
 
         Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
-        boost::shared_ptr<Problem> ret;
+        ext::shared_ptr<Problem> ret;
         if (mode != DoubleOptimization) {
             try {
                 ret = calibrate_r2(r2, method, constraints, endCriteria,
@@ -459,7 +460,7 @@ namespace QuantLib {
                 }
             }
         } else {
-            boost::shared_ptr<Problem> ret1, ret2;
+            ext::shared_ptr<Problem> ret1, ret2;
             try {
                 ret1 = calibrate_r2(r2, method, constraints, endCriteria,
                                     opt1, alpha, beta, omega);
@@ -499,7 +500,7 @@ namespace QuantLib {
         return ret;
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                OptimizationMethod &method,
                const EndCriteria &endCriteria,
@@ -509,7 +510,7 @@ namespace QuantLib {
                             initGuess, alpha, beta, omega);
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                Real mean_r2,
                OptimizationMethod &method,
@@ -517,19 +518,19 @@ namespace QuantLib {
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+                        subtract<Real>(mean_r2));
         return calibrate_r2(tmp, method, endCriteria, initGuess,
                             alpha, beta, omega);
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                OptimizationMethod &method,
                Constraint &constraints,
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         Garch11CostFunction cost(r2);
-        boost::shared_ptr<Problem> problem(
+        ext::shared_ptr<Problem> problem(
                                new Problem(cost, constraints, initGuess));
         // TODO: check return value from minimize()
         /* EndCriteria::Type ret = */
@@ -541,7 +542,7 @@ namespace QuantLib {
         return problem;
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                Real mean_r2,
                OptimizationMethod &method,
@@ -550,7 +551,7 @@ namespace QuantLib {
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+                        subtract<Real>(mean_r2));
         return calibrate_r2(tmp, method, constraints, endCriteria,
                             initGuess, alpha, beta, omega);
     }

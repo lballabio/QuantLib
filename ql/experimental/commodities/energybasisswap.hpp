@@ -35,24 +35,24 @@ namespace QuantLib {
       public:
         EnergyBasisSwap(
                     const Calendar& calendar,
-                    const boost::shared_ptr<CommodityIndex>& spreadIndex,
-                    const boost::shared_ptr<CommodityIndex>& payIndex,
-                    const boost::shared_ptr<CommodityIndex>& receiveIndex,
+                    const ext::shared_ptr<CommodityIndex>& spreadIndex,
+                    const ext::shared_ptr<CommodityIndex>& payIndex,
+                    const ext::shared_ptr<CommodityIndex>& receiveIndex,
                     bool spreadToPayLeg,
                     const Currency& payCurrency,
                     const Currency& receiveCurrency,
                     const PricingPeriods& pricingPeriods,
                     const CommodityUnitCost& basis,
                     const CommodityType& commodityType,
-                    const boost::shared_ptr<SecondaryCosts>& secondaryCosts,
+                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
                     const Handle<YieldTermStructure>& payLegTermStructure,
                     const Handle<YieldTermStructure>& receiveLegTermStructure,
                     const Handle<YieldTermStructure>& discountTermStructure);
 
-        const boost::shared_ptr<CommodityIndex>& payIndex() const {
+        const ext::shared_ptr<CommodityIndex>& payIndex() const {
             return payIndex_;
         }
-        const boost::shared_ptr<CommodityIndex>& receiveIndex() const {
+        const ext::shared_ptr<CommodityIndex>& receiveIndex() const {
             return receiveIndex_;
         }
         const CommodityUnitCost& basis() const { return basis_; }
@@ -60,9 +60,9 @@ namespace QuantLib {
       protected:
         void performCalculations() const;
 
-        boost::shared_ptr<CommodityIndex> spreadIndex_;
-        boost::shared_ptr<CommodityIndex> payIndex_;
-        boost::shared_ptr<CommodityIndex> receiveIndex_;
+        ext::shared_ptr<CommodityIndex> spreadIndex_;
+        ext::shared_ptr<CommodityIndex> payIndex_;
+        ext::shared_ptr<CommodityIndex> receiveIndex_;
         bool spreadToPayLeg_;
         CommodityUnitCost basis_;
         Handle<YieldTermStructure> payLegTermStructure_;

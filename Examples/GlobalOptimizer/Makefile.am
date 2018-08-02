@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = GlobalOptimizer
@@ -11,7 +11,6 @@ GlobalOptimizer_SOURCES = GlobalOptimizer.cpp
 GlobalOptimizer_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
-    GlobalOptimizer_vc9.vcproj \
     GlobalOptimizer.vcxproj \
     GlobalOptimizer.vcxproj.filters \
     CMakeLists.txt \

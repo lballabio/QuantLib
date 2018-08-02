@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = CallableBonds
@@ -11,7 +11,6 @@ CallableBonds_SOURCES = CallableBonds.cpp
 CallableBonds_LDADD = ../../ql/libQuantLib.la  ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
-    CallableBonds_vc9.vcproj \
     CallableBonds.vcxproj \
     CallableBonds.vcxproj.filters \
     CMakeLists.txt \

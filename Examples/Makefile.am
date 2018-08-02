@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 SUBDIRS = \
     BasketLosses \
@@ -26,10 +26,7 @@ SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 
 EXTRA_DIST = CMakeLists.txt README.txt
 
-%.check:
-	$(MAKE) -C $* check-examples
-
-.PHONY: examples check-examples $(SUBDIRS)
+.PHONY: examples check-examples $(SUBDIRS) $(SUBDIR_CHECKS)
 
 examples: $(SUBDIRS)
 
@@ -37,3 +34,6 @@ check-examples: $(SUBDIR_CHECKS)
 
 $(SUBDIRS):
 	$(MAKE) -C $@ examples
+
+$(SUBDIR_CHECKS):
+	$(MAKE) -C ${@:.check=} check-examples

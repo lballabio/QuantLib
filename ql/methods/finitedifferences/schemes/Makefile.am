@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
@@ -10,7 +10,9 @@ this_include_HEADERS = \
 	expliciteulerscheme.hpp \
 	hundsdorferscheme.hpp \
 	impliciteulerscheme.hpp \
-	modifiedcraigsneydscheme.hpp
+	methodoflinesscheme.hpp \
+	modifiedcraigsneydscheme.hpp \
+	trbdf2scheme.hpp
 
 cpp_files = \
 	craigsneydscheme.cpp \
@@ -18,6 +20,7 @@ cpp_files = \
 	expliciteulerscheme.cpp \
 	hundsdorferscheme.cpp \
 	impliciteulerscheme.cpp \
+	methodoflinesscheme.cpp \
 	modifiedcraigsneydscheme.cpp
 
 if UNITY_BUILD

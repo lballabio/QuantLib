@@ -51,7 +51,10 @@ namespace QuantLib {
     };
 
     //! mixed linear/cubic interpolation between discrete points
-    /*! \ingroup interpolations */
+    /*! \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class MixedLinearCubicInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -65,7 +68,7 @@ namespace QuantLib {
                                       Real leftConditionValue,
                                       CubicInterpolation::BoundaryCondition rightC,
                                       Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::MixedInterpolationImpl<I1, I2, Linear, Cubic>(
                     xBegin, xEnd, yBegin, n, behavior,
                     Linear(),

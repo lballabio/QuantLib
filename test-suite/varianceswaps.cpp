@@ -139,11 +139,11 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
     DayCounter dc = Actual365Fixed();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
         Date exDate = today + Integer(values[i].t*365+0.5);
@@ -184,11 +184,11 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
             strikes.push_back(callStrikes[k]);
         }
 
-        boost::shared_ptr<BlackVolTermStructure> volTS(new
+        ext::shared_ptr<BlackVolTermStructure> volTS(new
             BlackVarianceSurface(today, NullCalendar(),
                                  dates, strikes, vols, dc));
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
                              new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
@@ -196,7 +196,7 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
                                        Handle<BlackVolTermStructure>(volTS)));
 
 
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                           new ReplicatingVarianceSwapEngine(stochProcess, 5.0,
                                                             callStrikes,
                                                             putStrikes));
@@ -243,18 +243,18 @@ void VarianceSwapTest::testMCVarianceSwap() {
     DayCounter dc = Actual365Fixed();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     std::vector<Volatility> vols(2);
     std::vector<Date> dates(2);
 
     for (Size i=0; i<LENGTH(values); i++) {
         Date exDate = today + Integer(values[i].t*365+0.5);
         Date intermDate = today + Integer(values[i].t1*365+0.5);
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         dates[0] = intermDate;
         dates[1] = exDate;
 
@@ -264,17 +264,17 @@ void VarianceSwapTest::testMCVarianceSwap() {
         vols[0] = values[i].v1;
         vols[1] = values[i].v;
 
-        boost::shared_ptr<BlackVolTermStructure> volTS(
+        ext::shared_ptr<BlackVolTermStructure> volTS(
                         new BlackVarianceCurve(today, dates, vols, dc, true));
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
                     new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-        boost::shared_ptr<PricingEngine> engine;
+        ext::shared_ptr<PricingEngine> engine;
         engine =
             MakeMCVarianceSwapEngine<PseudoRandom>(stochProcess)
             .withStepsPerYear(250)

@@ -54,7 +54,7 @@ namespace QuantLib {
                                                     Volatility vol,
                                                     const DayCounter& dc)
     : CapFloorTermVolatilityStructure(settlementDays, cal, bdc, dc),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))) {}
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(vol))) {}
 
     // fixed reference date, fixed market data
     ConstantCapFloorTermVolatility::ConstantCapFloorTermVolatility(
@@ -64,7 +64,7 @@ namespace QuantLib {
                                                     Volatility vol,
                                                     const DayCounter& dc)
     : CapFloorTermVolatilityStructure(referenceDate, cal, bdc, dc),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(vol))) {}
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(vol))) {}
 
     Volatility ConstantCapFloorTermVolatility::volatilityImpl(Time,
                                                               Rate) const {

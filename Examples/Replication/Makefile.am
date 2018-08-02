@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = Replication
@@ -12,7 +12,6 @@ Replication_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    Replication_vc9.vcproj \
     Replication.vcxproj \
     Replication.vcxproj.filters \
     ReadMe.txt

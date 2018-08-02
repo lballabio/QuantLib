@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003, 2017 RiskMap srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -57,11 +57,11 @@ namespace QuantLib {
                                       const Date& refPeriodStart,
                                       const Date& refPeriodEnd) const = 0;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
         /*! This constructor can be invoked by derived classes which
             define a given implementation.
         */
-        explicit DayCounter(const boost::shared_ptr<Impl>& impl)
+        explicit DayCounter(const ext::shared_ptr<Impl>& impl)
         : impl_(impl) {}
       public:
         /*! The default constructor returns a day counter with a null

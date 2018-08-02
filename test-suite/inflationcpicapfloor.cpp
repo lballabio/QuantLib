@@ -62,19 +62,19 @@ namespace {
     };
 
     template <class T, class U, class I>
-    std::vector<boost::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
         Datum iiData[], Size N,
-        const boost::shared_ptr<I> &ii, const Period &observationLag,
+        const ext::shared_ptr<I> &ii, const Period &observationLag,
         const Calendar &calendar,
         const BusinessDayConvention &bdc,
         const DayCounter &dc) {
 
-        std::vector<boost::shared_ptr<BootstrapHelper<T> > > instruments;
+        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
-            Handle<Quote> quote(boost::shared_ptr<Quote>(
+            Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(iiData[i].rate/100.0)));
-            boost::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
+            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                                 quote, observationLag, maturity,
                                 calendar, bdc, dc, ii));
             instruments.push_back(anInstrument);
@@ -105,7 +105,7 @@ namespace {
         DayCounter dcZCIIS,dcNominal;
         std::vector<Date> zciisD;
         std::vector<Rate> zciisR;
-        boost::shared_ptr<UKRPI> ii;
+        ext::shared_ptr<UKRPI> ii;
         RelinkableHandle<ZeroInflationIndex> hii;
         Size zciisDataLength;
 
@@ -116,10 +116,10 @@ namespace {
         vector<Rate> cStrikesUK;
         vector<Rate> fStrikesUK;
         vector<Period> cfMaturitiesUK;
-        boost::shared_ptr<Matrix> cPriceUK;
-        boost::shared_ptr<Matrix> fPriceUK;
+        ext::shared_ptr<Matrix> cPriceUK;
+        ext::shared_ptr<Matrix> fPriceUK;
 
-        boost::shared_ptr<CPICapFloorTermPriceSurface> cpiCFsurfUK;
+        ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFsurfUK;
 
         // cleanup
 
@@ -166,7 +166,7 @@ namespace {
             // link from cpi index to cpi TS
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = boost::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
+            ii = ext::make_shared<UKRPI>(interp, hcpi);
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -215,9 +215,9 @@ namespace {
                 nomD.push_back(nominalData[i].date);
                 nomR.push_back(nominalData[i].rate/100.0);
             }
-            boost::shared_ptr<YieldTermStructure>   nominalTS
-            =   boost::shared_ptr<InterpolatedZeroCurve<Linear>
-            >(new InterpolatedZeroCurve<Linear>(nomD,nomR,dcNominal));
+            ext::shared_ptr<YieldTermStructure>   nominalTS
+            =   ext::make_shared<InterpolatedZeroCurve<Linear>
+            >(nomD,nomR,dcNominal);
 
 
             nominalUK.linkTo(nominalTS);
@@ -254,7 +254,7 @@ namespace {
             }
 
             // now build the helpers ...
-            std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
+            std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
             makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
             ZeroInflationIndex>(zciisData, zciisDataLength, ii,
                                 observationLag,
@@ -263,7 +263,7 @@ namespace {
             // we can use historical or first ZCIIS for this
             // we know historical is WAY off market-implied, so use market implied flat.
             baseZeroRate = zciisData[0].rate/100.0;
-            boost::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
+            ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
                                 new PiecewiseZeroInflationCurve<Linear>(
                                     evaluationDate, calendar, dcZCIIS, observationLag,
                                     ii->frequency(),ii->interpolated(), baseZeroRate,
@@ -277,8 +277,8 @@ namespace {
 
             // cpi CF price surf data
             Period cfMat[] = {3*Years, 5*Years, 7*Years, 10*Years, 15*Years, 20*Years, 30*Years};
-            Real cStrike[] = {3, 4, 5, 6};
-            Real fStrike[] = {-1, 0, 1, 2};
+            Real cStrike[] = {0.03, 0.04, 0.05, 0.06};
+            Real fStrike[] = {-0.01, 0, 0.01, 0.02};
             Size ncStrikes = 4, nfStrikes = 4, ncfMaturities = 7;
 
             Real cPrice[7][4] = {
@@ -305,8 +305,8 @@ namespace {
             for(Size i = 0; i < ncStrikes; i++) cStrikesUK.push_back(cStrike[i]);
             for(Size i = 0; i < nfStrikes; i++) fStrikesUK.push_back(fStrike[i]);
             for(Size i = 0; i < ncfMaturities; i++) cfMaturitiesUK.push_back(cfMat[i]);
-            cPriceUK = boost::shared_ptr<Matrix>(new Matrix(ncStrikes, ncfMaturities));
-            fPriceUK = boost::shared_ptr<Matrix>(new Matrix(nfStrikes, ncfMaturities));
+            cPriceUK = ext::make_shared<Matrix>(ncStrikes, ncfMaturities);
+            fPriceUK = ext::make_shared<Matrix>(nfStrikes, ncfMaturities);
             for(Size i = 0; i < ncStrikes; i++) {
                 for(Size j = 0; j < ncfMaturities; j++) {
                     (*cPriceUK)[i][j] = cPrice[j][i]/10000.0;
@@ -376,8 +376,18 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
         }
     }
 
+    // Test the price method also i.e. does it pick out the correct premium?
+    // Look up premium from surface at 3 years and strike of 1%
+    // Expect, as 1% < ATM, to get back floor premium at 1% i.e. 53.61 bps
+    Real premium = cpiSurf.price(3 * Years, 0.01);
+    Real expPremium = (*common.fPriceUK)[2][0];
+    if (fabs(premium - expPremium) > 1e-12) {
+        BOOST_ERROR("The requested premium, " << premium
+            << ", does not equal the expected premium, " << expPremium << ".");
+    }
+
     // remove circular refernce
-    common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
 
@@ -385,7 +395,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
     CommonVars common;
     Real nominal = 1.0;
-    boost::shared_ptr<CPICapFloorTermPriceSurface> cpiCFpriceSurf(new InterpolatedCPICapFloorTermPriceSurface
+    ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFpriceSurf(new InterpolatedCPICapFloorTermPriceSurface
                                                     <Bilinear>(nominal,
                                                                common.baseZeroRate,
                                                                common.observationLag,
@@ -427,19 +437,18 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
                      observationInterpolation);
 
     Handle<CPICapFloorTermPriceSurface> cpiCFsurfUKh(common.cpiCFsurfUK);
-    boost::shared_ptr<PricingEngine>engine(new InterpolatingCPICapFloorEngine(cpiCFsurfUKh));
+    ext::shared_ptr<PricingEngine>engine(new InterpolatingCPICapFloorEngine(cpiCFsurfUKh));
 
     aCap.setPricingEngine(engine);
 
-    Date d = common.cpiCFsurfUK->cpiOptionDateFromTenor(Period(3,Years));
+    // We should get back the cap premium at strike 0.03 i.e. 227.6 bps
+    Real cached = (*common.cPriceUK)[0][0];
 
-
-    Real cached = cpiCFsurfUKh->capPrice(d, strike);
     QL_REQUIRE(fabs(cached - aCap.NPV())<1e-10,"InterpolatingCPICapFloorEngine does not reproduce cached price: "
                << cached << " vs " << aCap.NPV());
 
     // remove circular refernce
-    common.hcpi.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
 

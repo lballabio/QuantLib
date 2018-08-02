@@ -31,7 +31,7 @@ namespace QuantLib {
        It is divided in 100 stotinki.
     */
     BGLCurrency::BGLCurrency() {
-        static boost::shared_ptr<Data> bglData(
+        static ext::shared_ptr<Data> bglData(
                                      new Data("Bulgarian lev", "BGL", 100,
                                               "lv", "", 100,
                                               Rounding(),
@@ -44,7 +44,7 @@ namespace QuantLib {
        It has no subdivisions.
     */
     BYRCurrency::BYRCurrency() {
-        static boost::shared_ptr<Data> byrData(
+        static ext::shared_ptr<Data> byrData(
                                  new Data("Belarussian ruble", "BYR", 974,
                                           "BR", "", 1,
                                           Rounding(),
@@ -57,7 +57,7 @@ namespace QuantLib {
        It is divided into 100 cents.
     */
     CHFCurrency::CHFCurrency() {
-        static boost::shared_ptr<Data> chfData(
+        static ext::shared_ptr<Data> chfData(
                                        new Data("Swiss franc", "CHF", 756,
                                                 "SwF", "", 100,
                                                 Rounding(),
@@ -70,7 +70,7 @@ namespace QuantLib {
        It is divided in 100 cents.
     */
     CYPCurrency::CYPCurrency() {
-        static boost::shared_ptr<Data> cypData(
+        static ext::shared_ptr<Data> cypData(
                                       new Data("Cyprus pound", "CYP", 196,
                                                "\xA3" "C", "", 100,
                                                Rounding(),
@@ -83,7 +83,7 @@ namespace QuantLib {
        It is divided in 100 haleru.
     */
     CZKCurrency::CZKCurrency() {
-        static boost::shared_ptr<Data> czkData(
+        static ext::shared_ptr<Data> czkData(
                                       new Data("Czech koruna", "CZK", 203,
                                                "Kc", "", 100,
                                                Rounding(),
@@ -96,7 +96,7 @@ namespace QuantLib {
        It is divided in 100 øre.
     */
     DKKCurrency::DKKCurrency() {
-        static boost::shared_ptr<Data> dkkData(
+        static ext::shared_ptr<Data> dkkData(
                                       new Data("Danish krone", "DKK", 208,
                                                "Dkr", "", 100,
                                                Rounding(),
@@ -109,7 +109,7 @@ namespace QuantLib {
        It is divided in 100 senti.
     */
     EEKCurrency::EEKCurrency() {
-        static boost::shared_ptr<Data> eekData(
+        static ext::shared_ptr<Data> eekData(
                                     new Data("Estonian kroon", "EEK", 233,
                                              "KR", "", 100,
                                              Rounding(),
@@ -122,7 +122,7 @@ namespace QuantLib {
        It is divided into 100 cents.
     */
     EURCurrency::EURCurrency() {
-        static boost::shared_ptr<Data> eurData(
+        static ext::shared_ptr<Data> eurData(
                                      new Data("European Euro", "EUR", 978,
                                               "", "", 100,
                                               ClosestRounding(2),
@@ -135,7 +135,7 @@ namespace QuantLib {
        It is divided into 100 pence.
     */
     GBPCurrency::GBPCurrency() {
-        static boost::shared_ptr<Data> gbpData(
+        static ext::shared_ptr<Data> gbpData(
                             new Data("British pound sterling", "GBP", 826,
                                      "\xA3", "p", 100,
                                      Rounding(),
@@ -148,7 +148,7 @@ namespace QuantLib {
        It has no subdivisions.
     */
     HUFCurrency::HUFCurrency() {
-        static boost::shared_ptr<Data> hufData(
+        static ext::shared_ptr<Data> hufData(
                                   new Data("Hungarian forint", "HUF", 348,
                                            "Ft", "", 1,
                                            Rounding(),
@@ -161,7 +161,7 @@ namespace QuantLib {
        It is divided in 100 aurar.
     */
     ISKCurrency::ISKCurrency() {
-        static boost::shared_ptr<Data> iskData(
+        static ext::shared_ptr<Data> iskData(
                                      new Data("Iceland krona", "ISK", 352,
                                               "IKr", "", 100,
                                               Rounding(),
@@ -174,7 +174,7 @@ namespace QuantLib {
        It is divided in 100 centu.
     */
     LTLCurrency::LTLCurrency() {
-        static boost::shared_ptr<Data> ltlData(
+        static ext::shared_ptr<Data> ltlData(
                                   new Data("Lithuanian litas", "LTL", 440,
                                            "Lt", "", 100,
                                            Rounding(),
@@ -187,7 +187,7 @@ namespace QuantLib {
        It is divided in 100 santims.
     */
     LVLCurrency::LVLCurrency() {
-        static boost::shared_ptr<Data> lvlData(
+        static ext::shared_ptr<Data> lvlData(
                                        new Data("Latvian lat", "LVL", 428,
                                                 "Ls", "", 100,
                                                 Rounding(),
@@ -200,7 +200,7 @@ namespace QuantLib {
        It is divided in 100 øre.
     */
     NOKCurrency::NOKCurrency() {
-        static boost::shared_ptr<Data> nokData(
+        static ext::shared_ptr<Data> nokData(
                                    new Data("Norwegian krone", "NOK", 578,
                                             "NKr", "", 100,
                                             Rounding(),
@@ -213,7 +213,7 @@ namespace QuantLib {
        It is divided in 100 groszy.
     */
     PLNCurrency::PLNCurrency() {
-        static boost::shared_ptr<Data> plnData(
+        static ext::shared_ptr<Data> plnData(
                                       new Data("Polish zloty", "PLN", 985,
                                                "zl", "", 100,
                                                Rounding(),
@@ -226,7 +226,7 @@ namespace QuantLib {
        It was divided in 100 bani.
     */
     ROLCurrency::ROLCurrency() {
-        static boost::shared_ptr<Data> rolData(
+        static ext::shared_ptr<Data> rolData(
                                       new Data("Romanian leu", "ROL", 642,
                                                "L", "", 100,
                                                Rounding(),
@@ -239,7 +239,7 @@ namespace QuantLib {
        It is divided in 100 bani.
     */
     RONCurrency::RONCurrency() {
-        static boost::shared_ptr<Data> ronData(
+        static ext::shared_ptr<Data> ronData(
                                       new Data("Romanian new leu",
                                                "RON", 946,
                                                "L", "", 100,
@@ -253,7 +253,7 @@ namespace QuantLib {
        It is divided in 100 kopeyki.
     */
     RUBCurrency::RUBCurrency() {
-        static boost::shared_ptr<Data> rubData(
+        static ext::shared_ptr<Data> rubData(
                                       new Data("Russian ruble",
                                                "RUB", 643,
                                                "", "", 100,
@@ -267,7 +267,7 @@ namespace QuantLib {
        It is divided in 100 öre.
     */
     SEKCurrency::SEKCurrency() {
-        static boost::shared_ptr<Data> sekData(
+        static ext::shared_ptr<Data> sekData(
                                      new Data("Swedish krona", "SEK", 752,
                                               "kr", "", 100,
                                               Rounding(),
@@ -280,7 +280,7 @@ namespace QuantLib {
        It is divided in 100 stotinov.
     */
     SITCurrency::SITCurrency() {
-        static boost::shared_ptr<Data> sitData(
+        static ext::shared_ptr<Data> sitData(
                                    new Data("Slovenian tolar", "SIT", 705,
                                             "SlT", "", 100,
                                             Rounding(),
@@ -293,7 +293,7 @@ namespace QuantLib {
        It was divided in 100 kurus.
     */
     TRLCurrency::TRLCurrency() {
-        static boost::shared_ptr<Data> trlData(
+        static ext::shared_ptr<Data> trlData(
                                       new Data("Turkish lira", "TRL", 792,
                                                "TL", "", 100,
                                                Rounding(),
@@ -306,7 +306,7 @@ namespace QuantLib {
        It is divided in 100 new kurus.
     */
     TRYCurrency::TRYCurrency() {
-        static boost::shared_ptr<Data> tryData(
+        static ext::shared_ptr<Data> tryData(
                                   new Data("New Turkish lira", "TRY", 949,
                                            "YTL", "", 100,
                                            Rounding(),
@@ -322,7 +322,7 @@ namespace QuantLib {
        It was divided in 100 groschen.
     */
     ATSCurrency::ATSCurrency() {
-        static boost::shared_ptr<Data> atsData(
+        static ext::shared_ptr<Data> atsData(
                                   new Data("Austrian shilling", "ATS", 40,
                                            "", "", 100,
                                            Rounding(),
@@ -336,7 +336,7 @@ namespace QuantLib {
        It had no subdivisions.
     */
     BEFCurrency::BEFCurrency() {
-        static boost::shared_ptr<Data> befData(
+        static ext::shared_ptr<Data> befData(
                                       new Data("Belgian franc", "BEF", 56,
                                                "", "", 1,
                                                Rounding(),
@@ -350,7 +350,7 @@ namespace QuantLib {
        It was divided into 100 pfennig.
     */
     DEMCurrency::DEMCurrency() {
-        static boost::shared_ptr<Data> demData(
+        static ext::shared_ptr<Data> demData(
                                      new Data("Deutsche mark", "DEM", 276,
                                               "DM", "", 100,
                                               Rounding(),
@@ -364,7 +364,7 @@ namespace QuantLib {
        It was divided in 100 centimos.
     */
     ESPCurrency::ESPCurrency() {
-        static boost::shared_ptr<Data> espData(
+        static ext::shared_ptr<Data> espData(
                                     new Data("Spanish peseta", "ESP", 724,
                                              "Pta", "", 100,
                                              Rounding(),
@@ -378,7 +378,7 @@ namespace QuantLib {
        It was divided in 100 penniä.
     */
     FIMCurrency::FIMCurrency() {
-        static boost::shared_ptr<Data> fimData(
+        static ext::shared_ptr<Data> fimData(
                                     new Data("Finnish markka", "FIM", 246,
                                              "mk", "", 100,
                                              Rounding(),
@@ -392,7 +392,7 @@ namespace QuantLib {
        It was divided in 100 centimes.
     */
     FRFCurrency::FRFCurrency() {
-        static boost::shared_ptr<Data> frfData(
+        static ext::shared_ptr<Data> frfData(
                                       new Data("French franc", "FRF", 250,
                                                "", "", 100,
                                                Rounding(),
@@ -406,7 +406,7 @@ namespace QuantLib {
        It was divided in 100 lepta.
     */
     GRDCurrency::GRDCurrency() {
-        static boost::shared_ptr<Data> grdData(
+        static ext::shared_ptr<Data> grdData(
                                      new Data("Greek drachma", "GRD", 300,
                                               "", "", 100,
                                               Rounding(),
@@ -420,7 +420,7 @@ namespace QuantLib {
        It was divided in 100 pence.
     */
     IEPCurrency::IEPCurrency() {
-        static boost::shared_ptr<Data> iepData(
+        static ext::shared_ptr<Data> iepData(
                                         new Data("Irish punt", "IEP", 372,
                                                  "", "", 100,
                                                  Rounding(),
@@ -434,7 +434,7 @@ namespace QuantLib {
        It had no subdivisions.
     */
     ITLCurrency::ITLCurrency() {
-        static boost::shared_ptr<Data> itlData(
+        static ext::shared_ptr<Data> itlData(
                                       new Data("Italian lira", "ITL", 380,
                                                "L", "", 1,
                                                Rounding(),
@@ -448,7 +448,7 @@ namespace QuantLib {
        It was divided in 100 centimes.
     */
     LUFCurrency::LUFCurrency() {
-        static boost::shared_ptr<Data> lufData(
+        static ext::shared_ptr<Data> lufData(
                                   new Data("Luxembourg franc", "LUF", 442,
                                            "F", "", 100,
                                            Rounding(),
@@ -462,7 +462,7 @@ namespace QuantLib {
        It is divided in 100 cents.
     */
     MTLCurrency::MTLCurrency() {
-        static boost::shared_ptr<Data> mtlData(
+        static ext::shared_ptr<Data> mtlData(
                                       new Data("Maltese lira", "MTL", 470,
                                                "Lm", "", 100,
                                                Rounding(),
@@ -475,7 +475,7 @@ namespace QuantLib {
        It was divided in 100 cents.
     */
     NLGCurrency::NLGCurrency() {
-        static boost::shared_ptr<Data> nlgData(
+        static ext::shared_ptr<Data> nlgData(
                                      new Data("Dutch guilder", "NLG", 528,
                                               "f", "", 100,
                                               Rounding(),
@@ -489,7 +489,7 @@ namespace QuantLib {
        It was divided in 100 centavos.
     */
     PTECurrency::PTECurrency() {
-        static boost::shared_ptr<Data> pteData(
+        static ext::shared_ptr<Data> pteData(
                                  new Data("Portuguese escudo", "PTE", 620,
                                           "Esc", "", 100,
                                           Rounding(),
@@ -503,7 +503,7 @@ namespace QuantLib {
        It is divided in 100 halierov.
     */
     SKKCurrency::SKKCurrency() {
-        static boost::shared_ptr<Data> skkData(
+        static ext::shared_ptr<Data> skkData(
                                      new Data("Slovak koruna", "SKK", 703,
                                               "Sk", "", 100,
                                               Rounding(),
@@ -516,7 +516,7 @@ namespace QuantLib {
        It is divided in 100 kopiykas.
      */
     UAHCurrency::UAHCurrency() {
-        static boost::shared_ptr<Data> uahData(
+        static ext::shared_ptr<Data> uahData(
                                      new Data("Ukrainian hryvnia", "UAH", 980,
                                               "hrn", "", 100,
                                               Rounding(),

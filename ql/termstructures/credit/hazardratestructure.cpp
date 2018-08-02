@@ -32,8 +32,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-using namespace boost;
-
 namespace QuantLib {
 
     namespace {

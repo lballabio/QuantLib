@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = Gaussian1dModels
@@ -12,7 +12,6 @@ Gaussian1dModels_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    Gaussian1dModels_vc9.vcproj \
     Gaussian1dModels.vcxproj \
     Gaussian1dModels.vcxproj.filters
 

@@ -48,11 +48,6 @@ namespace QuantLib {
         implementation details. Developers thus need only derive new
         fitting methods from the latter.
 
-        <b> Example: </b>
-        \link FittedBondCurve.cpp
-        compares various bond discount curve fitting methodologies
-        \endlink
-
         \warning The method can be slow if there are many bonds to
                  fit. Speed also depends on the particular choice of
                  fitting method chosen and its convergence properties
@@ -94,7 +89,7 @@ namespace QuantLib {
         FittedBondDiscountCurve(
                  Natural settlementDays,
                  const Calendar& calendar,
-                 const std::vector<boost::shared_ptr<BondHelper> >& bonds,
+                 const std::vector<ext::shared_ptr<BondHelper> >& bonds,
                  const DayCounter& dayCounter,
                  const FittingMethod& fittingMethod,
                  Real accuracy = 1.0e-10,
@@ -105,7 +100,7 @@ namespace QuantLib {
         //! curve reference date fixed for life of curve
         FittedBondDiscountCurve(
                  const Date &referenceDate,
-                 const std::vector<boost::shared_ptr<BondHelper> >& bonds,
+                 const std::vector<ext::shared_ptr<BondHelper> >& bonds,
                  const DayCounter& dayCounter,
                  const FittingMethod& fittingMethod,
                  Real accuracy = 1.0e-10,
@@ -145,7 +140,7 @@ namespace QuantLib {
         // a guess solution may be passed into the constructor to speed calcs
         Array guessSolution_;
         mutable Date maxDate_;
-        std::vector<boost::shared_ptr<BondHelper> > bondHelpers_;
+        std::vector<ext::shared_ptr<BondHelper> > bondHelpers_;
         Clone<FittingMethod> fittingMethod_;
     };
 
@@ -200,7 +195,11 @@ namespace QuantLib {
         //! final value of cost function after optimization
         Real minimumCostValue() const;
         //! clone of the current object
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        virtual std::unique_ptr<FittingMethod> clone() const = 0;
+        #else
         virtual std::auto_ptr<FittingMethod> clone() const = 0;
+        #endif
         //! return whether there is a constraint at zero
         bool constrainAtZero() const;
         //! return weights being used
@@ -208,14 +207,14 @@ namespace QuantLib {
         //! return l2 penalties being used
         Array l2() const;
         //! return optimization method being used
-        boost::shared_ptr<OptimizationMethod> optimizationMethod() const;
+        ext::shared_ptr<OptimizationMethod> optimizationMethod() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
         //! constructors
         FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
-                      boost::shared_ptr<OptimizationMethod> optimizationMethod
-                                          = boost::shared_ptr<OptimizationMethod>(),
+                      ext::shared_ptr<OptimizationMethod> optimizationMethod
+                                          = ext::shared_ptr<OptimizationMethod>(),
                       const Array& l2 = Array());
         //! rerun every time instruments/referenceDate changes
         virtual void init();
@@ -235,7 +234,7 @@ namespace QuantLib {
         */
         Array guessSolution_;
         //! base class sets this cost function used in the optimization routine
-        boost::shared_ptr<FittingCost> costFunction_;
+        ext::shared_ptr<FittingCost> costFunction_;
       private:
         // curve optimization called here- adjust optimization parameters here
         void calculate();
@@ -251,7 +250,7 @@ namespace QuantLib {
         // final value for the minimized cost function
         Real costValue_;
         // optimization method to be used, if none provided use Simplex
-        boost::shared_ptr<OptimizationMethod> optimizationMethod_;
+        ext::shared_ptr<OptimizationMethod> optimizationMethod_;
     };
 
     // inline
@@ -312,7 +311,7 @@ namespace QuantLib {
         return l2_;
     }
 
-    inline boost::shared_ptr<OptimizationMethod> 
+    inline ext::shared_ptr<OptimizationMethod> 
     FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
         return optimizationMethod_;
     }

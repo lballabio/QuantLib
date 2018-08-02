@@ -22,11 +22,9 @@
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/projection.hpp>
 #include <ql/math/optimization/projectedconstraint.hpp>
-
 #include <ql/utilities/null_deleter.hpp>
 
 using std::vector;
-using boost::shared_ptr;
 
 namespace QuantLib {
 
@@ -38,7 +36,7 @@ namespace QuantLib {
     class CalibratedModel::CalibrationFunction : public CostFunction {
       public:
         CalibrationFunction(CalibratedModel* model,
-                            const vector<shared_ptr<CalibrationHelper> >& h,
+                            const vector<ext::shared_ptr<CalibrationHelper> >& h,
                             const vector<Real>& weights,
                             const Projection& projection)
             : model_(model, null_deleter()), instruments_(h),
@@ -69,14 +67,14 @@ namespace QuantLib {
         virtual Real finiteDifferenceEpsilon() const { return 1e-6; }
 
       private:
-        shared_ptr<CalibratedModel> model_;
-        const vector<shared_ptr<CalibrationHelper> >& instruments_;
+        ext::shared_ptr<CalibratedModel> model_;
+        const vector<ext::shared_ptr<CalibrationHelper> >& instruments_;
         vector<Real> weights_;
         const Projection projection_;
     };
 
     void CalibratedModel::calibrate(
-                    const vector<shared_ptr<CalibrationHelper> >& instruments,
+                    const vector<ext::shared_ptr<CalibrationHelper> >& instruments,
                     OptimizationMethod& method,
                     const EndCriteria& endCriteria,
                     const Constraint& additionalConstraint,
@@ -113,7 +111,7 @@ namespace QuantLib {
 
     Real CalibratedModel::value(
                 const Array& params,
-                const vector<shared_ptr<CalibrationHelper> >& instruments) {
+                const vector<ext::shared_ptr<CalibrationHelper> >& instruments) {
         vector<Real> w = vector<Real>(instruments.size(), 1.0);
         Projection p(params);
         CalibrationFunction f(this, instruments, w, p);

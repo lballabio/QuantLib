@@ -42,19 +42,19 @@ namespace QuantLib {
           \param exercise2  The second exercise date
         */
         WriterExtensibleOption(
-            const boost::shared_ptr<PlainVanillaPayoff>& payoff1,
-            const boost::shared_ptr<Exercise>& exercise1,
-            const boost::shared_ptr<PlainVanillaPayoff>& payoff2,
-            const boost::shared_ptr<Exercise>& exercise2);
+            const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
+            const ext::shared_ptr<Exercise>& exercise1,
+            const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
+            const ext::shared_ptr<Exercise>& exercise2);
         // inspectors
-        boost::shared_ptr<Payoff> payoff2() { return payoff2_; }
-        boost::shared_ptr<Exercise> exercise2() { return exercise2_; };
+        ext::shared_ptr<Payoff> payoff2() { return payoff2_; }
+        ext::shared_ptr<Exercise> exercise2() { return exercise2_; };
         // Instrument interface
         bool isExpired() const;
         void setupArguments(PricingEngine::arguments*) const;
       private:
-        boost::shared_ptr<StrikedTypePayoff> payoff2_;
-        boost::shared_ptr<Exercise> exercise2_;
+        ext::shared_ptr<StrikedTypePayoff> payoff2_;
+        ext::shared_ptr<Exercise> exercise2_;
     };
 
     //! Additional arguments for writer-extensible option
@@ -62,8 +62,8 @@ namespace QuantLib {
         : public OneAssetOption::arguments {
       public:
         void validate() const;
-        boost::shared_ptr<Payoff> payoff2;
-        boost::shared_ptr<Exercise> exercise2;
+        ext::shared_ptr<Payoff> payoff2;
+        ext::shared_ptr<Exercise> exercise2;
     };
 
     //! Base engine

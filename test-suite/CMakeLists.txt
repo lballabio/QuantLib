@@ -19,10 +19,10 @@ add_executable (${TEST} ${TEST_SUITE_FILES})
 target_link_libraries (${TEST} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
 set_property(TARGET ${TEST} PROPERTY PROJECT_LABEL "testsuite")
 
-set (BENCHMARK quantlib-benchmark)
-add_executable (${BENCHMARK} ${BENCHMARK_FILES})
-target_link_libraries (${BENCHMARK} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
-set_property(TARGET ${BENCHMARK} PROPERTY PROJECT_LABEL "benchmark")
+install(TARGETS ${TEST}
+        RUNTIME DESTINATION bin
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        )
 
 enable_testing ()
 add_test (${TEST} ${TEST})

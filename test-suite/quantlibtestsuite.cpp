@@ -54,6 +54,7 @@
 #include "speedlevel.hpp"
 
 #include "americanoption.hpp"
+#include "andreasenhugevolatilityinterpl.hpp"
 #include "amortizingbond.hpp"
 #include "array.hpp"
 #include "asianoptions.hpp"
@@ -79,6 +80,7 @@
 #include "chooseroption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
+#include "cmsspread.hpp"
 #include "commodityunitofmeasure.hpp"
 #include "compoundoption.hpp"
 #include "convertiblebonds.hpp"
@@ -104,6 +106,7 @@
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
 #include "forwardoption.hpp"
+#include "forwardrateagreement.hpp"
 #include "functions.hpp"
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
@@ -145,6 +148,7 @@
 #include "money.hpp"
 #include "noarbsabr.hpp"
 #include "normalclvmodel.hpp"
+#include "nthorderderivativeop.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
 #include "observable.hpp"
@@ -268,7 +272,7 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
     return knownGoodDefault;
 }
 
-    
+
 SpeedLevel speed_level(int argc, char** argv) {
     /*! Again, dead simple parser:
         - passing --slow causes all tests to be run;
@@ -351,6 +355,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(QUANTLIB_TEST_CASE(startTimer));
 
     test->add(AmericanOptionTest::suite());
+    test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
     test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
@@ -387,6 +392,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
     test->add(ForwardOptionTest::suite());
+    test->add(ForwardRateAgreementTest::suite());
     test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
@@ -418,6 +424,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
+    test->add(NumericalDifferentiationTest::suite());
+    test->add(NthOrderDerivativeOpTest::suite());
     test->add(ObservableTest::suite());
     test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
@@ -462,6 +470,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CdoTest::suite(speed));
     test->add(CdsOptionTest::suite());
     test->add(ChooserOptionTest::suite());
+    test->add(CmsSpreadTest::suite());
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
@@ -482,7 +491,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(NoArbSabrTest::suite());
     test->add(NormalCLVModelTest::experimental(speed));
     test->add(NthToDefaultTest::suite(speed));
-    test->add(NumericalDifferentiationTest::suite());
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());

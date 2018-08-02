@@ -45,7 +45,6 @@
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 
 #include <boost/scoped_ptr.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/assign/std/vector.hpp>
 
 #include <functional>
@@ -55,7 +54,7 @@ using namespace boost::assign;
 namespace QuantLib {
 
     namespace {
-        boost::shared_ptr<Fdm1dMesher> varianceMesher(
+        ext::shared_ptr<Fdm1dMesher> varianceMesher(
             const SquareRootProcessRNDCalculator& rnd,
             Time t0, Time t1, Size vGrid,
             Real v0, const HestonSLVFokkerPlanckFdmParams& params) {
@@ -90,7 +89,7 @@ namespace QuantLib {
                         boost::make_tuple(v0Center, v0Density, true),
                         boost::make_tuple(upperBound, upperBoundDensity, false);
 
-                    return boost::make_shared<Concentrating1dMesher>(
+                    return ext::make_shared<Concentrating1dMesher>(
                         lowerBound, upperBound, vGrid, cPoints, 1e-8);
                   }
                 break;
@@ -103,7 +102,7 @@ namespace QuantLib {
                           boost::make_tuple(v0Center, v0Density, true),
                           boost::make_tuple(upperBound, upperBoundDensity, false);
 
-                      return boost::make_shared<Concentrating1dMesher>(
+                      return ext::make_shared<Concentrating1dMesher>(
                           lowerBound, upperBound, vGrid, cPoints, 1e-8);
                   }
                 break;
@@ -116,7 +115,7 @@ namespace QuantLib {
                         boost::make_tuple(v0Center, v0Density, true),
                         boost::make_tuple(upperBound, upperBoundDensity, false);
 
-                    return boost::make_shared<Concentrating1dMesher>(
+                    return ext::make_shared<Concentrating1dMesher>(
                         lowerBound, upperBound, vGrid, cPoints, 1e-8);
                 }
                 break;
@@ -126,7 +125,7 @@ namespace QuantLib {
         }
 
         Real integratePDF(const Array& p,
-                          const boost::shared_ptr<FdmMesherComposite>& mesher,
+                          const ext::shared_ptr<FdmMesherComposite>& mesher,
                           FdmSquareRootFwdOp::TransformationType trafoType,
                           Real alpha) {
 
@@ -153,7 +152,7 @@ namespace QuantLib {
 
         Disposable<Array> rescalePDF(
             const Array& p,
-            const boost::shared_ptr<FdmMesherComposite>& mesher,
+            const ext::shared_ptr<FdmMesherComposite>& mesher,
             FdmSquareRootFwdOp::TransformationType trafoType, Real alpha) {
 
             Array retVal = p/integratePDF(p, mesher, trafoType, alpha);
@@ -165,13 +164,13 @@ namespace QuantLib {
         template <class Interpolator>
         Disposable<Array> reshapePDF(
             const Array& p,
-            const boost::shared_ptr<FdmMesherComposite>& oldMesher,
-            const boost::shared_ptr<FdmMesherComposite>& newMesher,
+            const ext::shared_ptr<FdmMesherComposite>& oldMesher,
+            const ext::shared_ptr<FdmMesherComposite>& newMesher,
             const Interpolator& interp = Interpolator()) {
 
-            const boost::shared_ptr<FdmLinearOpLayout> oldLayout
+            const ext::shared_ptr<FdmLinearOpLayout> oldLayout
                 = oldMesher->layout();
-            const boost::shared_ptr<FdmLinearOpLayout> newLayout
+            const ext::shared_ptr<FdmLinearOpLayout> newLayout
                 = newMesher->layout();
 
             QL_REQUIRE(   oldLayout->size() == newLayout->size()
@@ -232,34 +231,34 @@ namespace QuantLib {
             const boost::scoped_ptr<T> scheme_;
         };
 
-        boost::shared_ptr<FdmScheme> fdmSchemeFactory(
+        ext::shared_ptr<FdmScheme> fdmSchemeFactory(
             const FdmSchemeDesc desc,
-            const boost::shared_ptr<FdmLinearOpComposite>& op) {
+            const ext::shared_ptr<FdmLinearOpComposite>& op) {
 
             switch (desc.type) {
               case FdmSchemeDesc::HundsdorferType:
-                  return boost::shared_ptr<FdmScheme>(
+                  return ext::shared_ptr<FdmScheme>(
                       new FdmSchemeWrapper<HundsdorferScheme>(
                           new HundsdorferScheme(desc.theta, desc.mu, op)));
               case FdmSchemeDesc::DouglasType:
-                  return boost::shared_ptr<FdmScheme>(
+                  return ext::shared_ptr<FdmScheme>(
                       new FdmSchemeWrapper<DouglasScheme>(
                           new DouglasScheme(desc.theta, op)));
               case FdmSchemeDesc::CraigSneydType:
-                  return boost::shared_ptr<FdmScheme>(
+                  return ext::shared_ptr<FdmScheme>(
                       new FdmSchemeWrapper<CraigSneydScheme>(
                           new CraigSneydScheme(desc.theta, desc.mu, op)));
               case FdmSchemeDesc::ModifiedCraigSneydType:
-                  return boost::shared_ptr<FdmScheme>(
+                  return ext::shared_ptr<FdmScheme>(
                      new FdmSchemeWrapper<ModifiedCraigSneydScheme>(
                           new ModifiedCraigSneydScheme(
                               desc.theta, desc.mu, op)));
               case FdmSchemeDesc::ImplicitEulerType:
-                  return boost::shared_ptr<FdmScheme>(
+                  return ext::shared_ptr<FdmScheme>(
                       new FdmSchemeWrapper<ImplicitEulerScheme>(
                           new ImplicitEulerScheme(op)));
               case FdmSchemeDesc::ExplicitEulerType:
-                  return boost::shared_ptr<FdmScheme>(
+                  return ext::shared_ptr<FdmScheme>(
                       new FdmSchemeWrapper<ExplicitEulerScheme>(
                           new ExplicitEulerScheme(op)));
               default:
@@ -286,15 +285,15 @@ namespace QuantLib {
         registerWith(hestonModel_);
     }
 
-    boost::shared_ptr<HestonProcess> HestonSLVFDMModel::hestonProcess() const {
+    ext::shared_ptr<HestonProcess> HestonSLVFDMModel::hestonProcess() const {
         return hestonModel_->process();
     }
 
-    boost::shared_ptr<LocalVolTermStructure> HestonSLVFDMModel::localVol() const {
+    ext::shared_ptr<LocalVolTermStructure> HestonSLVFDMModel::localVol() const {
         return localVol_.currentLink();
     }
 
-    boost::shared_ptr<LocalVolTermStructure>
+    ext::shared_ptr<LocalVolTermStructure>
     HestonSLVFDMModel::leverageFunction() const {
         calculate();
 
@@ -304,13 +303,13 @@ namespace QuantLib {
     void HestonSLVFDMModel::performCalculations() const {
         logEntries_.clear();
 
-        const boost::shared_ptr<HestonProcess> hestonProcess
+        const ext::shared_ptr<HestonProcess> hestonProcess
             = hestonModel_->process();
-        const boost::shared_ptr<Quote> spot
+        const ext::shared_ptr<Quote> spot
             = hestonProcess->s0().currentLink();
-        const boost::shared_ptr<YieldTermStructure> rTS
+        const ext::shared_ptr<YieldTermStructure> rTS
             = hestonProcess->riskFreeRate().currentLink();
-        const boost::shared_ptr<YieldTermStructure> qTS
+        const ext::shared_ptr<YieldTermStructure> qTS
             = hestonProcess->dividendYield().currentLink();
 
         const Real v0    = hestonProcess->v0();
@@ -352,7 +351,7 @@ namespace QuantLib {
                 dc.yearFraction(referenceDate, mandatoryDates_[i]));
         }
 
-        const boost::shared_ptr<TimeGrid> timeGrid(
+        const ext::shared_ptr<TimeGrid> timeGrid(
             new TimeGrid(times.begin(), times.end()));
 
         // build 1d meshers
@@ -372,12 +371,12 @@ namespace QuantLib {
         const FdmSquareRootFwdOp::TransformationType trafoType
           = params_.trafoType;
 
-        std::vector<boost::shared_ptr<Fdm1dMesher> > xMesher, vMesher;
+        std::vector<ext::shared_ptr<Fdm1dMesher> > xMesher, vMesher;
         xMesher.reserve(timeGrid->size());
         vMesher.reserve(timeGrid->size());
 
         xMesher.push_back(localVolRND.mesher(0.0));
-        vMesher.push_back(boost::make_shared<Predefined1dMesher>(
+        vMesher.push_back(ext::make_shared<Predefined1dMesher>(
             std::vector<Real>(vGrid, v0)));
 
         Size rescaleIdx = 0;
@@ -398,35 +397,35 @@ namespace QuantLib {
         }
 
         // start probability distribution
-        boost::shared_ptr<FdmMesherComposite> mesher
-            = boost::make_shared<FdmMesherComposite>(
+        ext::shared_ptr<FdmMesherComposite> mesher
+            = ext::make_shared<FdmMesherComposite>(
                 xMesher.at(1), vMesher.at(1));
 
         const Volatility lv0
             = localVol_->localVol(0.0, spot->value())/std::sqrt(v0);
 
-        boost::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
+        ext::shared_ptr<Matrix> L(new Matrix(xGrid, timeGrid->size()));
 
         const Real l0 = lv0;
         std::fill(L->column_begin(0),L->column_end(0), l0);
         std::fill(L->column_begin(1),L->column_end(1), l0);
 
         // create strikes from meshers
-        std::vector<boost::shared_ptr<std::vector<Real> > > vStrikes(
+        std::vector<ext::shared_ptr<std::vector<Real> > > vStrikes(
             timeGrid->size());
 
         for (Size i=0; i < timeGrid->size(); ++i) {
-            vStrikes[i] = boost::make_shared<std::vector<Real> >(xGrid);
+            vStrikes[i] = ext::make_shared<std::vector<Real> >(xGrid);
             std::transform(xMesher[i]->locations().begin(),
                            xMesher[i]->locations().end(),
                            vStrikes[i]->begin(),
-                           std::ptr_fun<Real, Real>(std::exp));
+                           static_cast<Real(*)(Real)>(std::exp));
         }
 
-        const boost::shared_ptr<FixedLocalVolSurface> leverageFct(
+        const ext::shared_ptr<FixedLocalVolSurface> leverageFct(
             new FixedLocalVolSurface(referenceDate, times, vStrikes, L, dc));
 
-        boost::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
+        ext::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
             new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
@@ -434,7 +433,7 @@ namespace QuantLib {
 
         if (logging_) {
             const LogEntry entry = { timeGrid->at(1),
-                boost::shared_ptr<Array>(new Array(p)), mesher };
+                ext::make_shared<Array>(p), mesher };
             logEntries_.push_back(entry);
         }
 
@@ -444,7 +443,7 @@ namespace QuantLib {
 
             if (   mesher->getFdm1dMeshers()[0] != xMesher[i]
                 || mesher->getFdm1dMeshers()[1] != vMesher[i]) {
-                const boost::shared_ptr<FdmMesherComposite> newMesher(
+                const ext::shared_ptr<FdmMesherComposite> newMesher(
                     new FdmMesherComposite(xMesher[i], vMesher[i]));
 
                 p = reshapePDF<Bilinear>(p, mesher, newMesher);
@@ -452,7 +451,7 @@ namespace QuantLib {
 
                 p = rescalePDF(p, mesher, trafoType, alpha);
 
-                hestonFwdOp = boost::shared_ptr<FdmLinearOpComposite>(
+                hestonFwdOp = ext::shared_ptr<FdmLinearOpComposite>(
                                 new FdmHestonFwdOp(mesher, hestonProcess,
                                                trafoType, leverageFct));
             }
@@ -472,7 +471,7 @@ namespace QuantLib {
                         ? FdmSchemeDesc::ImplicitEuler()
                         : params_.schemeDesc;
 
-                const boost::shared_ptr<FdmScheme> fdmScheme(
+                const ext::shared_ptr<FdmScheme> fdmScheme(
                     fdmSchemeFactory(fdmSchemeDesc, hestonFwdOp));
 
                 for (Size j=0; j < x.size(); ++j) {
@@ -535,7 +534,7 @@ namespace QuantLib {
 
             if (logging_) {
                 const LogEntry entry
-                    = { t, boost::shared_ptr<Array>(new Array(p)), mesher };
+                    = { t, ext::make_shared<Array>(p), mesher };
                 logEntries_.push_back(entry);
             }
         }

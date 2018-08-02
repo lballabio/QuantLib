@@ -119,7 +119,7 @@ namespace QuantLib {
         const_row_iterator at(Size) const;
         row_iterator operator[](Size);
         row_iterator at(Size);
-        Disposable<Array> diagonal(void) const;
+        Disposable<Array> diagonal() const;
         Real& operator()(Size i, Size j) const;
         //@}
 
@@ -269,13 +269,13 @@ namespace QuantLib {
 
     inline const Matrix& Matrix::operator*=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::multiplies<Real>(),x));
+                       multiply_by<Real>(x));
         return *this;
     }
 
     inline const Matrix& Matrix::operator/=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::divides<Real>(),x));
+                       divide_by<Real>(x));
         return *this;
     }
 
@@ -444,7 +444,7 @@ namespace QuantLib {
         return row_begin(i);
     }
 
-    inline Disposable<Array> Matrix::diagonal(void) const {
+    inline Disposable<Array> Matrix::diagonal() const {
         Size arraySize = std::min<Size>(rows(), columns());
         Array tmp(arraySize);
         for(Size i = 0; i < arraySize; i++)
@@ -507,21 +507,21 @@ namespace QuantLib {
     inline const Disposable<Matrix> operator*(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
-                       std::bind2nd(std::multiplies<Real>(),x));
+                       multiply_by<Real>(x));
         return temp;
     }
 
     inline const Disposable<Matrix> operator*(Real x, const Matrix& m) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
-                       std::bind2nd(std::multiplies<Real>(),x));
+                       multiply_by<Real>(x));
         return temp;
     }
 
     inline const Disposable<Matrix> operator/(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
-                       std::bind2nd(std::divides<Real>(),x));
+                       divide_by<Real>(x));
         return temp;
     }
 
@@ -599,7 +599,7 @@ namespace QuantLib {
 
         for (Size i=0; v1begin!=v1end; i++, v1begin++)
             std::transform(v2begin, v2end, result.row_begin(i),
-                           std::bind1st(std::multiplies<Real>(), *v1begin));
+                           multiply_by<Real>(*v1begin));
 
         return result;
     }

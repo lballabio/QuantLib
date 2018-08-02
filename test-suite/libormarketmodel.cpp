@@ -55,13 +55,13 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    boost::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
+    ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
                                            std::vector<Rate> rates) {
         DayCounter dayCounter = Actual360();
 
         RelinkableHandle<YieldTermStructure> termStructure;
 
-        boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+        ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
         Date todaysDate =
             index->fixingCalendar().adjust(Date(4,September,2005));
@@ -70,14 +70,14 @@ namespace {
         dates[0] = index->fixingCalendar().advance(todaysDate,
                                                    index->fixingDays(), Days);
 
-        termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
+        termStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
 
         return index;
     }
 
 
-    boost::shared_ptr<IborIndex> makeIndex() {
+    ext::shared_ptr<IborIndex> makeIndex() {
         std::vector<Date> dates;
         std::vector<Rate> rates;
         dates.push_back(Date(4,September,2005));
@@ -89,14 +89,14 @@ namespace {
     }
 
 
-    boost::shared_ptr<OptionletVolatilityStructure>
+    ext::shared_ptr<OptionletVolatilityStructure>
     makeCapVolCurve(const Date& todaysDate) {
         Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
                              15.78, 15.40, 15.21, 14.86};
 
         std::vector<Date> dates;
         std::vector<Volatility> capletVols;
-        boost::shared_ptr<LiborForwardModelProcess> process(
+        ext::shared_ptr<LiborForwardModelProcess> process(
                                new LiborForwardModelProcess(10, makeIndex()));
 
         for (Size i=0; i < 9; ++i) {
@@ -104,9 +104,9 @@ namespace {
             dates.push_back(process->fixingDates()[i+1]);
         }
 
-        return boost::shared_ptr<CapletVarianceCurve>(
-                         new CapletVarianceCurve(todaysDate, dates,
-                                                 capletVols, Actual360()));
+        return ext::make_shared<CapletVarianceCurve>(
+                         todaysDate, dates,
+                                                 capletVols, Actual360());
     }
 
 }
@@ -121,7 +121,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
     const Real tolerance = 1e-14;
     Size i;
 
-    boost::shared_ptr<LmCorrelationModel> corrModel(
+    ext::shared_ptr<LmCorrelationModel> corrModel(
                                 new LmExponentialCorrelationModel(size, 0.1));
 
     Matrix recon = corrModel->correlation(0.0)
@@ -146,16 +146,16 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
     const Real c=2.1;
     const Real d=0.3;
 
-    boost::shared_ptr<LmVolatilityModel> volaModel(
+    ext::shared_ptr<LmVolatilityModel> volaModel(
              new LmLinearExponentialVolatilityModel(fixingTimes, a, b, c, d));
 
-    boost::shared_ptr<LfmCovarianceProxy> covarProxy(
+    ext::shared_ptr<LfmCovarianceProxy> covarProxy(
                                 new LfmCovarianceProxy(volaModel, corrModel));
 
-    boost::shared_ptr<LiborForwardModelProcess> process(
+    ext::shared_ptr<LiborForwardModelProcess> process(
                              new LiborForwardModelProcess(size, makeIndex()));
 
-    boost::shared_ptr<LiborForwardModel> liborModel(
+    ext::shared_ptr<LiborForwardModel> liborModel(
                         new LiborForwardModel(process, volaModel, corrModel));
 
     for (Real t=0; t<4.6; t+=0.31) {
@@ -201,34 +201,34 @@ void LiborMarketModelTest::testCapletPricing() {
     const Real tolerance = 1e-12;
     #endif
 
-    boost::shared_ptr<IborIndex> index = makeIndex();
-    boost::shared_ptr<LiborForwardModelProcess> process(
+    ext::shared_ptr<IborIndex> index = makeIndex();
+    ext::shared_ptr<LiborForwardModelProcess> process(
         new LiborForwardModelProcess(size, index));
 
     // set-up pricing engine
-    const boost::shared_ptr<OptionletVolatilityStructure> capVolCurve =
+    const ext::shared_ptr<OptionletVolatilityStructure> capVolCurve =
         makeCapVolCurve(Settings::instance().evaluationDate());
 
     Array variances = LfmHullWhiteParameterization(process, capVolCurve)
         .covariance(0.0).diagonal();
 
-    boost::shared_ptr<LmVolatilityModel> volaModel(
+    ext::shared_ptr<LmVolatilityModel> volaModel(
         new LmFixedVolatilityModel(Sqrt(variances),
                                    process->fixingTimes()));
 
-    boost::shared_ptr<LmCorrelationModel> corrModel(
+    ext::shared_ptr<LmCorrelationModel> corrModel(
                                 new LmExponentialCorrelationModel(size, 0.3));
 
-    boost::shared_ptr<AffineModel> model(
+    ext::shared_ptr<AffineModel> model(
                         new LiborForwardModel(process, volaModel, corrModel));
 
     const Handle<YieldTermStructure> termStructure =
         process->index()->forwardingTermStructure();
 
-    boost::shared_ptr<AnalyticCapFloorEngine> engine1(
+    ext::shared_ptr<AnalyticCapFloorEngine> engine1(
                             new AnalyticCapFloorEngine(model, termStructure));
 
-    boost::shared_ptr<Cap> cap1(
+    ext::shared_ptr<Cap> cap1(
         new Cap(process->cashFlows(),
                 std::vector<Rate>(size, 0.04)));
     cap1->setPricingEngine(engine1);
@@ -268,40 +268,40 @@ void LiborMarketModelTest::testCalibration() {
                                  0.146036, 0.134555, 0.124393, 0.115038,
                                  0.106996, 0.100064};
 
-    boost::shared_ptr<IborIndex> index = makeIndex();
-    boost::shared_ptr<LiborForwardModelProcess> process(
+    ext::shared_ptr<IborIndex> index = makeIndex();
+    ext::shared_ptr<LiborForwardModelProcess> process(
         new LiborForwardModelProcess(size, index));
     Handle<YieldTermStructure> termStructure = index->forwardingTermStructure();
 
     // set-up the model
-    boost::shared_ptr<LmVolatilityModel> volaModel(
+    ext::shared_ptr<LmVolatilityModel> volaModel(
                     new LmExtLinearExponentialVolModel(process->fixingTimes(),
                                                        0.5,0.6,0.1,0.1));
 
-    boost::shared_ptr<LmCorrelationModel> corrModel(
+    ext::shared_ptr<LmCorrelationModel> corrModel(
                      new LmLinearExponentialCorrelationModel(size, 0.5, 0.8));
 
-    boost::shared_ptr<LiborForwardModel> model(
+    ext::shared_ptr<LiborForwardModel> model(
                         new LiborForwardModel(process, volaModel, corrModel));
 
     Size swapVolIndex = 0;
     DayCounter dayCounter=index->forwardingTermStructure()->dayCounter();
 
     // set-up calibration helper
-    std::vector<boost::shared_ptr<CalibrationHelper> > calibrationHelper;
+    std::vector<ext::shared_ptr<CalibrationHelper> > calibrationHelper;
 
     Size i;
     for (i=2; i < size; ++i) {
         const Period maturity = i*index->tenor();
         Handle<Quote> capVol(
-            boost::shared_ptr<Quote>(new SimpleQuote(capVols[i-2])));
+            ext::shared_ptr<Quote>(new SimpleQuote(capVols[i-2])));
 
-        boost::shared_ptr<CalibrationHelper> caphelper(
+        ext::shared_ptr<CalibrationHelper> caphelper(
             new CapHelper(maturity, capVol, index, Annual,
                           index->dayCounter(), true, termStructure,
                           CalibrationHelper::ImpliedVolError));
 
-        caphelper->setPricingEngine(boost::shared_ptr<PricingEngine>(
+        caphelper->setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new AnalyticCapFloorEngine(model, termStructure)));
 
         calibrationHelper.push_back(caphelper);
@@ -311,10 +311,10 @@ void LiborMarketModelTest::testCalibration() {
             for (Size j=1; j <= size/2; ++j) {
                 const Period len = j*index->tenor();
                 Handle<Quote> swaptionVol(
-                    boost::shared_ptr<Quote>(
+                    ext::shared_ptr<Quote>(
                         new SimpleQuote(swaptionVols[swapVolIndex++])));
 
-                boost::shared_ptr<CalibrationHelper> swaptionHelper(
+                ext::shared_ptr<CalibrationHelper> swaptionHelper(
                     new SwaptionHelper(maturity, len, swaptionVol, index,
                                        index->tenor(), dayCounter,
                                        index->dayCounter(),
@@ -322,7 +322,7 @@ void LiborMarketModelTest::testCalibration() {
                                        CalibrationHelper::ImpliedVolError));
 
                 swaptionHelper->setPricingEngine(
-                     boost::shared_ptr<PricingEngine>(
+                     ext::shared_ptr<PricingEngine>(
                                  new LfmSwaptionEngine(model,termStructure)));
 
                 calibrationHelper.push_back(swaptionHelper);
@@ -366,20 +366,20 @@ void LiborMarketModelTest::testSwaptionPricing() {
     rates.push_back(0.04);
     rates.push_back(0.08);
 
-    boost::shared_ptr<IborIndex> index = makeIndex(dates, rates);
+    ext::shared_ptr<IborIndex> index = makeIndex(dates, rates);
 
-    boost::shared_ptr<LiborForwardModelProcess> process(
+    ext::shared_ptr<LiborForwardModelProcess> process(
                                    new LiborForwardModelProcess(size, index));
 
-    boost::shared_ptr<LmCorrelationModel> corrModel(
+    ext::shared_ptr<LmCorrelationModel> corrModel(
                                 new LmExponentialCorrelationModel(size, 0.5));
 
-    boost::shared_ptr<LmVolatilityModel> volaModel(
+    ext::shared_ptr<LmVolatilityModel> volaModel(
         new LmLinearExponentialVolatilityModel(process->fixingTimes(),
                                                0.291, 1.483, 0.116, 0.00001));
 
    // set-up pricing engine
-    process->setCovarParam(boost::shared_ptr<LfmCovarianceParameterization>(
+    process->setCovarParam(ext::shared_ptr<LfmCovarianceParameterization>(
                                new LfmCovarianceProxy(volaModel, corrModel)));
 
     // set-up a small Monte-Carlo simulation to price swations
@@ -403,7 +403,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
     const Size nrTrails = 5000;
     MultiPathGenerator<rsg_type> generator(process, grid, rsg, false);
 
-    boost::shared_ptr<LiborForwardModel>
+    ext::shared_ptr<LiborForwardModel>
         liborModel(new LiborForwardModel(process, volaModel, corrModel));
 
     Calendar calendar = index->fixingCalendar();
@@ -412,7 +412,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     Date settlement  = index->forwardingTermStructure()->referenceDate();
 
-    boost::shared_ptr<SwaptionVolatilityMatrix> m =
+    ext::shared_ptr<SwaptionVolatilityMatrix> m =
                 liborModel->getSwaptionVolatilityMatrix();
 
     for (i=1; i < size; ++i) {
@@ -424,11 +424,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
                                convention, convention, DateGeneration::Forward, false);
 
             Rate swapRate  = 0.0404;
-            boost::shared_ptr<VanillaSwap> forwardSwap(
+            ext::shared_ptr<VanillaSwap> forwardSwap(
                 new VanillaSwap(VanillaSwap::Receiver, 1.0,
                                 schedule, swapRate, dayCounter,
                                 schedule, index, 0.0, index->dayCounter()));
-            forwardSwap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+            forwardSwap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                 new DiscountingSwapEngine(index->forwardingTermStructure())));
 
             // check forward pricing first
@@ -441,21 +441,21 @@ void LiborMarketModelTest::testSwaptionPricing() {
                             << "\n    expected:   " << expected);
 
             swapRate = forwardSwap->fairRate();
-            forwardSwap = boost::shared_ptr<VanillaSwap>(
-                new VanillaSwap(VanillaSwap::Receiver, 1.0,
+            forwardSwap = ext::make_shared<VanillaSwap>(
+                VanillaSwap::Receiver, 1.0,
                                 schedule, swapRate, dayCounter,
-                                schedule, index, 0.0, index->dayCounter()));
-            forwardSwap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                schedule, index, 0.0, index->dayCounter());
+            forwardSwap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                 new DiscountingSwapEngine(index->forwardingTermStructure())));
 
             if (i == j && i<=size/2) {
-                boost::shared_ptr<PricingEngine> engine(
+                ext::shared_ptr<PricingEngine> engine(
                      new LfmSwaptionEngine(liborModel,
                                            index->forwardingTermStructure()));
-                boost::shared_ptr<Exercise> exercise(
+                ext::shared_ptr<Exercise> exercise(
                     new EuropeanExercise(process->fixingDates()[i]));
 
-                boost::shared_ptr<Swaption> swaption(
+                ext::shared_ptr<Swaption> swaption(
                     new Swaption(forwardSwap, exercise));
                 swaption->setPricingEngine(engine);
 

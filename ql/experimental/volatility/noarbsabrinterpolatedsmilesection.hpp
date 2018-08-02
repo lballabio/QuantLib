@@ -50,10 +50,10 @@ namespace QuantLib {
                            bool isAlphaFixed = false, bool isBetaFixed = false,
                            bool isNuFixed = false, bool isRhoFixed = false,
                            bool vegaWeighted = true,
-                           const boost::shared_ptr<EndCriteria>& endCriteria
-                            = boost::shared_ptr<EndCriteria>(),
-                           const boost::shared_ptr<OptimizationMethod>& method
-                            = boost::shared_ptr<OptimizationMethod>(),
+                           const ext::shared_ptr<EndCriteria>& endCriteria
+                            = ext::shared_ptr<EndCriteria>(),
+                           const ext::shared_ptr<OptimizationMethod>& method
+                            = ext::shared_ptr<OptimizationMethod>(),
                            const DayCounter& dc = Actual365Fixed()
                            );
         //! no quotes
@@ -68,10 +68,10 @@ namespace QuantLib {
                            bool isAlphaFixed = false, bool isBetaFixed = false,
                            bool isNuFixed = false, bool isRhoFixed = false,
                            bool vegaWeighted = true,
-                           const boost::shared_ptr<EndCriteria>& endCriteria
-                            = boost::shared_ptr<EndCriteria>(),
-                           const boost::shared_ptr<OptimizationMethod>& method
-                            = boost::shared_ptr<OptimizationMethod>(),
+                           const ext::shared_ptr<EndCriteria>& endCriteria
+                            = ext::shared_ptr<EndCriteria>(),
+                           const ext::shared_ptr<OptimizationMethod>& method
+                            = ext::shared_ptr<OptimizationMethod>(),
                            const DayCounter& dc = Actual365Fixed()
                            );
         //@}
@@ -103,7 +103,7 @@ namespace QuantLib {
 
         //! Creates the mutable SABRInterpolation
         void createInterpolation() const;
-        mutable boost::shared_ptr<NoArbSabrInterpolation> noArbSabrInterpolation_;
+        mutable ext::shared_ptr<NoArbSabrInterpolation> noArbSabrInterpolation_;
 
         //! Market data
         const Handle<Quote> forward_;
@@ -121,8 +121,8 @@ namespace QuantLib {
         //! Sabr interpolation settings
         bool isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_;
         bool vegaWeighted_;
-        const boost::shared_ptr<EndCriteria> endCriteria_;
-        const boost::shared_ptr<OptimizationMethod> method_;
+        const ext::shared_ptr<EndCriteria> endCriteria_;
+        const ext::shared_ptr<OptimizationMethod> method_;
     };
 
     inline void NoArbSabrInterpolatedSmileSection::update() {

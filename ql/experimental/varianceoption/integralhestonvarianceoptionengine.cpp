@@ -218,8 +218,8 @@ namespace QuantLib {
 
         boost::scoped_array<Complex> ff(new Complex[2048*2048]);
         Complex xi;
-        Complex ui,beta,zita,gamma,csum,vero;
-        Complex contrib, caux, caux1,caux2,caux3;
+        Complex ui,beta,zita,gamma,csum;
+        Complex caux,caux1,caux2,caux3;
 
         ui=Complex(0.0,1.0);
 
@@ -346,8 +346,8 @@ namespace QuantLib {
     }
 
     struct payoff_adapter {
-        boost::shared_ptr<QuantLib::Payoff> payoff;
-        explicit payoff_adapter(boost::shared_ptr<QuantLib::Payoff> payoff)
+        ext::shared_ptr<QuantLib::Payoff> payoff;
+        explicit payoff_adapter(ext::shared_ptr<QuantLib::Payoff> payoff)
         : payoff(payoff) {}
         Real operator()(Real S) const {
             return (*payoff)(S);
@@ -357,7 +357,7 @@ namespace QuantLib {
     }
 
     IntegralHestonVarianceOptionEngine::IntegralHestonVarianceOptionEngine(
-                              const boost::shared_ptr<HestonProcess>& process)
+                              const ext::shared_ptr<HestonProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -382,8 +382,8 @@ namespace QuantLib {
                                         riskFreeRate->dayCounter(),
                                         Continuous);
 
-        boost::shared_ptr<PlainVanillaPayoff> plainPayoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> plainPayoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         if (plainPayoff && plainPayoff->optionType() == Option::Call) {
             // a specialization for Call options is available
             Real strike = plainPayoff->strike();

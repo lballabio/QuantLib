@@ -21,6 +21,7 @@
 
 #include <ql/math/optimization/endcriteria.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
     

@@ -20,6 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +39,6 @@ namespace QuantLib {
         fixedMultipliers_(fixedMultipliers),
         floatingSpreads_(floatingSpreads),
         paymentTimes_(paymentTimes),
-        payer_(payer),
         multiplier_(payer ? -1.0 : 1.0), 
         lastIndex_(rateTimes.size()-1)
     {
@@ -72,9 +72,11 @@ namespace QuantLib {
         return (currentIndex_ == lastIndex_);
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepInverseFloater::clone() const 
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    MultiStepInverseFloater::clone() const 
     {
-        return std::auto_ptr<MarketModelMultiProduct>(  new MultiStepInverseFloater(*this));
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
+                                          new MultiStepInverseFloater(*this));
     }
 
 }

@@ -38,12 +38,12 @@ namespace QuantLib {
                     const Calendar& calendar,
                     const Money& fixedPrice,
                     const UnitOfMeasure& fixedPriceUnitOfMeasure,
-                    const boost::shared_ptr<CommodityIndex>& index,
+                    const ext::shared_ptr<CommodityIndex>& index,
                     const Currency& payCurrency,
                     const Currency& receiveCurrency,
                     const PricingPeriods& pricingPeriods,
                     const CommodityType& commodityType,
-                    const boost::shared_ptr<SecondaryCosts>& secondaryCosts,
+                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
                     const Handle<YieldTermStructure>& payLegTermStructure,
                     const Handle<YieldTermStructure>& receiveLegTermStructure,
                     const Handle<YieldTermStructure>& discountTermStructure);
@@ -54,7 +54,7 @@ namespace QuantLib {
         const UnitOfMeasure& fixedPriceUnitOfMeasure() const {
             return fixedPriceUnitOfMeasure_;
         }
-        const boost::shared_ptr<CommodityIndex>& index() const {
+        const ext::shared_ptr<CommodityIndex>& index() const {
             return index_;
         }
 
@@ -64,7 +64,7 @@ namespace QuantLib {
         Integer payReceive_;
         Money fixedPrice_;
         UnitOfMeasure fixedPriceUnitOfMeasure_;
-        boost::shared_ptr<CommodityIndex> index_;
+        ext::shared_ptr<CommodityIndex> index_;
         Handle<YieldTermStructure> payLegTermStructure_;
         Handle<YieldTermStructure> receiveLegTermStructure_;
         Handle<YieldTermStructure> discountTermStructure_;

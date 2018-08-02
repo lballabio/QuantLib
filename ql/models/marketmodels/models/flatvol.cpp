@@ -26,7 +26,6 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/models/marketmodels/correlations/expcorrelations.hpp>
 
-using boost::shared_ptr;
 using std::vector;
 
 namespace QuantLib {
@@ -48,7 +47,7 @@ namespace QuantLib {
 
     FlatVol::FlatVol(
             const vector<Volatility>& vols,
-            const shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const vector<Rate>& initialRates,
@@ -163,7 +162,7 @@ namespace QuantLib {
         registerWith(yieldCurve_);
     }
 
-    shared_ptr<MarketModel>
+    ext::shared_ptr<MarketModel>
     FlatVolFactory::create(const EvolutionDescription& evolution,
                                   Size numberOfFactors) const {
         const vector<Time>& rateTimes = evolution.rateTimes();
@@ -188,10 +187,10 @@ namespace QuantLib {
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                       longTermCorrelation_,
                                                       beta_);
-        shared_ptr<PiecewiseConstantCorrelation> corr(new
+        ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
             TimeHomogeneousForwardCorrelation(correlations,
                                               rateTimes));
-        return shared_ptr<MarketModel>(new
+        return ext::shared_ptr<MarketModel>(new
             FlatVol(displacedVolatilities,
                            corr,
                            evolution,

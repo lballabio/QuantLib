@@ -51,8 +51,8 @@ namespace QuantLib {
         typedef OneAssetOption::results results;
         ForwardVanillaOption(Real moneyness,
                              const Date& resetDate,
-                             const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                             const boost::shared_ptr<Exercise>& exercise);
+                             const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                             const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
         void fetchResults(const PricingEngine::results*) const;
       private:

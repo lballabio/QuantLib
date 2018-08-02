@@ -29,7 +29,7 @@
 #include <ql/errors.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/businessdayconvention.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <set>
 #include <vector>
 #include <string>
@@ -67,7 +67,7 @@ namespace QuantLib {
             virtual bool isWeekend(Weekday) const = 0;
             std::set<Date> addedHolidays, removedHolidays;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
       public:
         /*! The default constructor returns a calendar with a null
             implementation, which is therefore unusable except as a
@@ -96,8 +96,8 @@ namespace QuantLib {
             weekend for the given market.
         */
         bool isWeekend(Weekday w) const;
-        /*! Returns <tt>true</tt> iff the date is last business day for the
-            month in given market.
+        /*! Returns <tt>true</tt> iff in the given market, the date is on
+            or after the last business day for that month.
         */
         bool isEndOfMonth(const Date& d) const;
         //! last business day of the month to which the given date belongs

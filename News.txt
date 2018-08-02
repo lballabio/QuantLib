@@ -1,92 +1,84 @@
 
-Changes for QuantLib 1.11:
+Changes for QuantLib 1.13:
 ==========================
 
-QuantLib 1.11 includes 47 pull requests and fixed issues from several
-contributors.
+QuantLib 1.13 includes 42 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/6?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/8?closed=1>.
 
 PORTABILITY
 
-- This is the last version of QuantLib to support the now obsolete
-  Dev-C++ IDE with a maintained project file.  The project will be
-  removed in next release.
+- In April 2018, Microsoft ended its support for Microsoft Visual
+  C++ 2008. This release still includes a solution file for VC++ 2008,
+  but we won't support it further or take bug reports for it. The next
+  release will only contain project files for Visual C++ 2010 and
+  later.
+
+- Fixed build on Solaris 12.5 in C++11 mode (thanks to Nick Glass).
 
 INSTRUMENTS AND PRICING ENGINES
 
-- Added ISDA pricing engine for credit default swaps (thanks to
-  Guillaume Horel, Jose Aparicio and Peter Caspers).
+- Fix CDS calculation when the start date falls during the week-end
+  (thanks to Guillaume Horel).
 
-- Added Andersen-Piterbarg engine for the Heston model (thanks to
-  Klaus Spanderen).
+- Allow construction of a `ForwardRateAgreement` instance even if the
+  interest-rate curve is not yet linked (thanks to Tom Anderson).
 
-- Improved experimental vanna-volga engine for double-barrier knock-in
-  options (thanks to Giorgio Pazmandi).
+CASH FLOWS AND INTEREST RATES
 
-- Added theta calculation to experimental Kirk spread-option engine
-  (thanks to Krzysztof Wos).
+- Added Mosprime, Pribor, Robor and Wibor indices (thanks to Matthias
+  Lungwitz).
 
-CASH FLOWS
+- Improved performance of Black pricer for LIBOR coupons (thanks to
+  Peter Caspers).
 
-- Added optional payment lag to fixed, floating and OIS legs (thanks
-  to Fabrice Lecuyer and Joseph Jeisman).
+- Fixed experimental quanto coupon pricer (thanks to Peter Caspers).
 
-- Fixed yield calculation with 30/360 US day count convention and
-  settlement on the 31st of the month (thanks to Frank Xue).
+- Revised experimental CMS-spread coupon pricer (thanks to Peter
+  Caspers).
 
 MODELS
 
-- Added adaptive successive over-relaxation method for implied
-  volatility calculation (thanks to Klaus Spanderen).
+- Improvements for the experimental generalized Hull-White model
+  (thanks to Roy Zywina).
 
-INDEXES
+- Fixed drift in GSR process (thanks to Peter Caspers for the fix and
+  to Seung Beom Bang for the heads up).
 
-- Fixed day-count convention and spot lag for CAD LIBOR (thanks to
-  Oleg Kulkov).
+- Fixed an out-of-bound access in the
+  `TwoFactorModel::ShortRateDynamics::process` method (thanks to
+  Weston Steimel).
 
-TERM STRUCTURES
+FINITE DIFFERENCES
 
-- Optionally optimize setting up OIS helpers (thanks to Peter
-  Caspers).
+- Improved Black-Scholes mesher for low volatilities and high discrete
+  dividends (thanks to Klaus Spanderen).
+
+- Added method-of-lines scheme (thanks to Klaus Spanderen).
 
 DATE/TIME
 
-- Added Actual/365 Canadian day count convention (thanks to Andrea
-  Maggiulli).
+- Schedule::until can now be used with schedules built from vectors of
+  dates (thanks to GitHub user Grant6899).
+
+- Added Good Friday to the list of Hungarian and Czech holidays
+  (thanks to Matthias Lungwitz).
+
+- Updated the list of Turkish holidays after 2014 (thanks to Matthias
+  Lungwitz).
 
 MATH
 
-- Added GMRES iterative solver for large linear systems (thanks to
-  Klaus Spanderen).
-
-- Updated Hong Kong calendar up to 2020 (thanks to Nicholas Bertocchi
-  and Alix Lassauzet).
-
-BUILD
-
-- Added configure switch to enable unity build.
+- Added convenience operators to initialize array and matrices (thanks
+  to Peter Caspers).
 
 TEST SUITE
 
-- Added --fast and --faster flags to the test-suite executable.  When
-  passed, slower tests are discarded so that the test suite runs in
-  just a few minutes.
+- Added test case for CIR++ model (thanks to Klaus Spanderen).
 
-DEPRECATED FEATURES
 
-- Remove the HestonExpansionEngine::numberOfEvaluations method
-  (deprecated in version 1.9).
-
-- Remove the MixedLinearCubicInterpolation and MixedLinearCubic
-  constructors not specifying the behavior of the mixed interpolation
-  (deprecated in version 1.8).
-
-- Remove deprecated overloads of the Swaption::impliedVolatility and
-  CapFloor::impliedVolatility methods (deprecated in version 1.9).
-
-- Remove NoArbSabrModel::checkAbsorptionMatrix method (deprecated in
-  version 1.8.1).
+Thanks go also to Jose Aparicio, Roland Kapl and GitHub user lab4quant
+for smaller fixes and enhancements.
 

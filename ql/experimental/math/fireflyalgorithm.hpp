@@ -89,8 +89,8 @@ namespace QuantLib {
         friend class RandomWalk;
         friend class Intensity;
         FireflyAlgorithm(Size M, 
-            boost::shared_ptr<Intensity> intensity,
-            boost::shared_ptr<RandomWalk> randomWalk,
+            ext::shared_ptr<Intensity> intensity,
+            ext::shared_ptr<RandomWalk> randomWalk,
             Size Mde = 0, Real mutationFactor = 1.0,
             Real crossoverFactor = 0.5, unsigned long seed = SeedGenerator::instance().get());
         void startState(Problem &P, const EndCriteria &endCriteria);
@@ -102,8 +102,8 @@ namespace QuantLib {
         Array lX_, uX_;
         Real mutation_, crossover_;
         Size M_, N_, Mde_, Mfa_;
-        boost::shared_ptr<Intensity> intensity_;
-        boost::shared_ptr<RandomWalk> randomWalk_;
+        ext::shared_ptr<Intensity> intensity_;
+        ext::shared_ptr<RandomWalk> randomWalk_;
         variate_integer drawIndex_;
         MersenneTwisterUniformRng rng_;
     };

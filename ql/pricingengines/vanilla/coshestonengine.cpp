@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     COSHestonEngine::COSHestonEngine(
-       const boost::shared_ptr<HestonModel>& model, Real L, Size N)
+       const ext::shared_ptr<HestonModel>& model, Real L, Size N)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
@@ -55,11 +55,11 @@ namespace QuantLib {
                    "not an European option");
 
         // plain vanilla
-        const boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
-        const boost::shared_ptr<HestonProcess> process = model_->process();
+        const ext::shared_ptr<HestonProcess> process = model_->process();
 
         const Date maturityDate = arguments_.exercise->lastDate();
         const Time maturity = process->time(maturityDate);

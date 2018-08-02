@@ -40,7 +40,7 @@ namespace QuantLib {
         class engine;
         SimpleChooserOption(Date choosingDate,
                             Real strike,
-                            const boost::shared_ptr<Exercise>& exercise);
+                            const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         Date choosingDate_;

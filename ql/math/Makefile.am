@@ -3,7 +3,7 @@ SUBDIRS = copulas distributions integrals interpolations \
           matrixutilities ode optimization randomnumbers solvers1d \
           statistics
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
@@ -23,6 +23,7 @@ this_include_HEADERS = \
 	generallinearleastsquares.hpp \
 	kernelfunctions.hpp \
 	incompletegamma.hpp \
+	initializers.hpp \
 	interpolation.hpp \
 	lexicographicalview.hpp \
 	linearleastsquaresregression.hpp \

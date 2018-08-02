@@ -43,7 +43,7 @@ namespace QuantLib {
 
         // constructors
         ExplicitEulerScheme(
-            const boost::shared_ptr<FdmLinearOpComposite>& map,
+            const ext::shared_ptr<FdmLinearOpComposite>& map,
             const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
@@ -51,7 +51,7 @@ namespace QuantLib {
 
       protected:
         Time dt_;
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
     };
 }

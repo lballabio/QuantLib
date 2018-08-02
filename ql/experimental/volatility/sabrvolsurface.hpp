@@ -39,7 +39,7 @@ namespace QuantLib {
     class SabrVolSurface : public InterestRateVolSurface {
       public:
         SabrVolSurface(
-                const boost::shared_ptr<InterestRateIndex>&,
+                const ext::shared_ptr<InterestRateIndex>&,
                 const Handle<BlackAtmVolCurve>&,
                 const std::vector<Period>& optionTenors,
                 const std::vector<Spread>& atmRateSpreads,
@@ -73,7 +73,7 @@ namespace QuantLib {
         //@}
         //! \name BlackVolSurface interface
         //@{
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time) const;
         //@}
       protected:
         //@}

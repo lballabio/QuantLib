@@ -30,7 +30,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +42,7 @@ namespace QuantLib {
                                          bool settlesAccrual,
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
-                                         const boost::shared_ptr<Claim>& claim,
+                                         const ext::shared_ptr<Claim>& claim,
                                          const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual)
     : side_(side), notional_(notional), upfront_(boost::none),
@@ -63,23 +62,26 @@ namespace QuantLib {
             .withLastPeriodDayCounter(lastPeriodDayCounter);
 
         Date effectiveUpfrontDate = schedule.calendar().advance(
-            protectionStart_, 2, Days, convention);
-        // '2' is used above since the protection start is assumed to be
-        //   on trade_date + 1
+            protectionStart_ - 1, 3, Days, convention);
+        // the upfront valuation date is trade_date + 3 (using calendar) and
+        // protection start is assumed to be T+1 (independent of the calendar)
 
         if(rebatesAccrual) {
-            boost::shared_ptr<FixedRateCoupon> firstCoupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-
+            Size i = 0;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            ext::shared_ptr<FixedRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
+            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
+                       "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
-            accrualRebate_ = boost::make_shared<SimpleCashFlow>(
-                firstCoupon->accruedAmount(protectionStart_),
+            accrualRebate_ = ext::make_shared<SimpleCashFlow>(
+                coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 
-        upfrontPayment_ = boost::make_shared<SimpleCashFlow>(0.0, effectiveUpfrontDate);
+        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(0.0, effectiveUpfrontDate);
         if (!claim_)
-            claim_ = boost::make_shared<FaceValueClaim>();
+            claim_ = ext::make_shared<FaceValueClaim>();
         registerWith(claim_);
 
 
@@ -97,7 +99,7 @@ namespace QuantLib {
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
                                          const Date& upfrontDate,
-                                         const boost::shared_ptr<Claim>& claim,
+                                         const ext::shared_ptr<Claim>& claim,
                                          const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual)
     : side_(side), notional_(notional), upfront_(upfront),
@@ -106,7 +108,8 @@ namespace QuantLib {
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
                                                          protectionStart) {
         QL_REQUIRE((protectionStart_ <= schedule[0])
-            || (schedule.rule() == DateGeneration::CDS),
+            || (schedule.rule() == DateGeneration::CDS)
+            || (schedule.rule() == DateGeneration::CDS2015),
                    "protection can not start after accrual");
 
         leg_ = FixedRateLeg(schedule)
@@ -118,31 +121,30 @@ namespace QuantLib {
         // If empty, adjust to T+3 standard settlement, alternatively add
         //  an arbitrary date to the constructor
         Date effectiveUpfrontDate = upfrontDate == Null<Date>() ?
-            schedule.calendar().advance(protectionStart_, 2, Days, convention) :
+            schedule.calendar().advance(protectionStart_ -1 , 3, Days, convention) :
             upfrontDate;
-        // '2' is used above since the protection start is assumed to be
-        //   on trade_date + 1
-        upfrontPayment_ = boost::make_shared<SimpleCashFlow>(notional*upfront,
+        // protection start is assumed to be on trade_date + 1 (no calendar adjustment)
+        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(notional*upfront,
             effectiveUpfrontDate);
 
         QL_REQUIRE(effectiveUpfrontDate >= protectionStart_,
                    "upfront can not be due before contract start");
 
         if(rebatesAccrual) {
-            boost::shared_ptr<FixedRateCoupon> firstCoupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-            // adjust to T+3 standard settlement, alternatively add
-            //  an arbitrary date to the constructor
-
+            Size i = 0;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            ext::shared_ptr<FixedRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
+            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
+                       "contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
-
-            accrualRebate_ = boost::make_shared<SimpleCashFlow>(
-                firstCoupon->accruedAmount(protectionStart_),
+            accrualRebate_ = ext::make_shared<SimpleCashFlow>(
+                coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 
         if (!claim_)
-            claim_ = boost::make_shared<FaceValueClaim>();
+            claim_ = ext::make_shared<FaceValueClaim>();
         registerWith(claim_);
 
         maturity_ = schedule.dates().back();
@@ -321,21 +323,21 @@ namespace QuantLib {
                                Real accuracy,
                                PricingModel model) const {
 
-        boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
+        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
-                boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                ext::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
-        boost::shared_ptr<PricingEngine> engine;
+        ext::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
-            engine = boost::make_shared<MidPointCdsEngine>(
+            engine = ext::make_shared<MidPointCdsEngine>(
                 probability, recoveryRate, discountCurve);
             break;
           case ISDA:
-            engine = boost::make_shared<IsdaCdsEngine>(
+            engine = ext::make_shared<IsdaCdsEngine>(
                 probability, recoveryRate, discountCurve,
                 boost::none,
                 IsdaCdsEngine::Taylor,
@@ -364,21 +366,21 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               PricingModel model) const {
 
-        boost::shared_ptr<SimpleQuote> flatRate = boost::make_shared<SimpleQuote>(0.0);
+        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
-                boost::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                ext::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
-        boost::shared_ptr<PricingEngine> engine;
+        ext::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
-            engine = boost::make_shared<MidPointCdsEngine>(
+            engine = ext::make_shared<MidPointCdsEngine>(
                 probability, conventionalRecovery, discountCurve);
             break;
           case ISDA:
-            engine = boost::make_shared<IsdaCdsEngine>(
+            engine = ext::make_shared<IsdaCdsEngine>(
                 probability, conventionalRecovery, discountCurve,
                 boost::none,
                 IsdaCdsEngine::Taylor,
@@ -408,7 +410,7 @@ namespace QuantLib {
     }
 
     const Date& CreditDefaultSwap::protectionEndDate() const {
-        return boost::dynamic_pointer_cast<Coupon>(leg_.back())
+        return ext::dynamic_pointer_cast<Coupon>(leg_.back())
             ->accrualEndDate();
     }
 

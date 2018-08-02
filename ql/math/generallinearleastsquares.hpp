@@ -157,8 +157,7 @@ namespace QuantLib {
             = std::inner_product(residuals_.begin(), residuals_.end(),
             residuals_.begin(), 0.0);
         std::transform(err_.begin(), err_.end(), standardErrors_.begin(),
-            std::bind1st(std::multiplies<Real>(),
-            std::sqrt(chiSq/(n-2))));
+                       multiply_by<Real>(std::sqrt(chiSq/(n-2))));
     }
 
     template <class xIterator, class yIterator, class vIterator>

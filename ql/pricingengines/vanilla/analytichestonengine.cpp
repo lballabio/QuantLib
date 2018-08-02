@@ -34,7 +34,6 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
-#include <boost/make_shared.hpp>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -129,7 +128,7 @@ namespace QuantLib {
     {
     public:
         Fj_Helper(const VanillaOption::arguments& arguments,
-            const boost::shared_ptr<HestonModel>& model,
+            const ext::shared_ptr<HestonModel>& model,
             const AnalyticHestonEngine* const engine,
             ComplexLogFormula cpxLog,
             Time term, Real ratio, Size j);
@@ -175,7 +174,7 @@ namespace QuantLib {
 
     AnalyticHestonEngine::Fj_Helper::Fj_Helper(
         const VanillaOption::arguments& arguments,
-        const boost::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HestonModel>& model,
         const AnalyticHestonEngine* const engine,
         ComplexLogFormula cpxLog,
         Time term, Real ratio, Size j)
@@ -184,7 +183,7 @@ namespace QuantLib {
         sigma_(model->sigma()), v0_(model->v0()),
         cpxLog_(cpxLog), term_(term),
         x_(std::log(model->process()->s0()->value())),
-        sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
+        sx_(std::log(ext::dynamic_pointer_cast<StrikedTypePayoff>
         (arguments.payoff)->strike())),
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
@@ -438,7 +437,7 @@ namespace QuantLib {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
-                              const boost::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<HestonModel>& model,
                               Size integrationOrder)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
@@ -451,7 +450,7 @@ namespace QuantLib {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
-                              const boost::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<HestonModel>& model,
                               Real relTolerance, Size maxEvaluations)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
@@ -464,7 +463,7 @@ namespace QuantLib {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
-                              const boost::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<HestonModel>& model,
                               ComplexLogFormula cpxLog,
                               const Integration& integration,
                               const Real andersenPiterbargEpsilon)
@@ -586,11 +585,11 @@ namespace QuantLib {
                    "not an European option");
 
         // plain vanilla
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
-        const boost::shared_ptr<HestonProcess>& process = model_->process();
+        const ext::shared_ptr<HestonProcess>& process = model_->process();
 
         const Real riskFreeDiscount = process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());
@@ -624,13 +623,13 @@ namespace QuantLib {
 
     AnalyticHestonEngine::Integration::Integration(
             Algorithm intAlgo,
-            const boost::shared_ptr<Integrator>& integrator)
+            const ext::shared_ptr<Integrator>& integrator)
     : intAlgo_(intAlgo),
       integrator_(integrator) { }
 
     AnalyticHestonEngine::Integration::Integration(
             Algorithm intAlgo,
-            const boost::shared_ptr<GaussianQuadrature>& gaussianQuadrature)
+            const ext::shared_ptr<GaussianQuadrature>& gaussianQuadrature)
     : intAlgo_(intAlgo),
       gaussianQuadrature_(gaussianQuadrature) { }
 
@@ -639,7 +638,7 @@ namespace QuantLib {
                                                     Real absTolerance,
                                                     Size maxEvaluations) {
         return Integration(GaussLobatto,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                                new GaussLobattoIntegral(maxEvaluations,
                                                         absTolerance,
                                                         relTolerance,
@@ -650,7 +649,7 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::gaussKronrod(Real absTolerance,
                                                    Size maxEvaluations) {
         return Integration(GaussKronrod,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                                new GaussKronrodAdaptive(absTolerance,
                                                         maxEvaluations)));
     }
@@ -659,7 +658,7 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::simpson(Real absTolerance,
                                                Size maxEvaluations) {
         return Integration(Simpson,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                                new SimpsonIntegral(absTolerance,
                                                    maxEvaluations)));
     }
@@ -668,7 +667,7 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::trapezoid(Real absTolerance,
                                         Size maxEvaluations) {
         return Integration(Trapezoid,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                               new TrapezoidIntegral<Default>(absTolerance,
                                                              maxEvaluations)));
     }
@@ -677,42 +676,42 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::gaussLaguerre(Size intOrder) {
         QL_REQUIRE(intOrder <= 192, "maximum integraton order (192) exceeded");
         return Integration(GaussLaguerre,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussLaguerreIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussLegendre(Size intOrder) {
         return Integration(GaussLegendre,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussLegendreIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussChebyshev(Size intOrder) {
         return Integration(GaussChebyshev,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussChebyshevIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussChebyshev2nd(Size intOrder) {
         return Integration(GaussChebyshev2nd,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussChebyshev2ndIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::discreteSimpson(Size evaluations) {
         return Integration(
-            DiscreteSimpson, boost::shared_ptr<Integrator>(
+            DiscreteSimpson, ext::shared_ptr<Integrator>(
                 new DiscreteSimpsonIntegrator(evaluations)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::discreteTrapezoid(Size evaluations) {
         return Integration(
-            DiscreteTrapezoid, boost::shared_ptr<Integrator>(
+            DiscreteTrapezoid, ext::shared_ptr<Integrator>(
                 new DiscreteTrapezoidIntegrator(evaluations)));
     }
 
