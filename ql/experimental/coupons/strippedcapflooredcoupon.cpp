@@ -32,7 +32,9 @@ namespace QuantLib {
               underlying->referencePeriodStart(),
               underlying->referencePeriodEnd(), underlying->dayCounter(),
               underlying->isInArrears()),
-          underlying_(underlying) {}
+          underlying_(underlying) {
+        registerWith(underlying);
+    }
 
     Rate StrippedCappedFlooredCoupon::rate() const {
 

@@ -155,7 +155,11 @@ namespace QuantLib {
     }
 
     //! bicubic-spline interpolation between discrete points
-    /*! \todo revise end conditions */
+    /*! \ingroup interpolations
+        \todo revise end conditions
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class BicubicSpline : public Interpolation2D {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */

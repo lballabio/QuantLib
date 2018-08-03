@@ -38,7 +38,10 @@ namespace QuantLib {
     }
 
     //! %log-linear interpolation between discrete points
-    /*! \ingroup interpolations */
+    /*! \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class LogLinearInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
