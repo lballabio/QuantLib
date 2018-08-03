@@ -104,7 +104,7 @@ namespace QuantLib {
         ext::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi_, a(), sigma()));
 
-        Size steps = 10;
+        Size steps = 50;
         ext::shared_ptr<Lattice> lattice = this->tree(
             TimeGrid(termStructure()->maxTime(), steps), numericDynamics);
 
