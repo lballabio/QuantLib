@@ -176,7 +176,10 @@ void DayCounterTest::testActualActual() {
 }
 
 void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriod() {
-	Calendar calendar = UnitedStates();
+
+    BOOST_TEST_MESSAGE("Testing actual/actual with schedule for undefined semi reference periods...");
+
+    Calendar calendar = UnitedStates();
 	Schedule schedule = MakeSchedule()
 		.from(Date(10, January, 2017))
 		.withFirstDate(Date(31, August, 2017))
@@ -205,6 +208,9 @@ void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePerio
 }
 
 void DayCounterTest::testActualActualWithScheduleAgainstAnnualReferencePeriod(){
+
+    BOOST_TEST_MESSAGE("Testing actual/actual with schedule for undefined annual reference periods...");
+
 	//Now do an annual schedule
 	Calendar calendar = UnitedStates();
 	Schedule schedule = MakeSchedule()
@@ -602,6 +608,8 @@ void DayCounterTest::testIntraday() {
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriod));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithScheduleAgainstAnnualReferencePeriod));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithSchedule));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testSimple));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testOne));
