@@ -73,7 +73,7 @@ void ShortRateModelTest::testBlackKarasinski() {
     
     TimeGrid timeGrid(Time(10), 10); // 10 years with yearly steps
 
-    ext::shared_ptr<OneFactorModel::ShortRateTree> lattice = model->tree(timeGrid, numericDynamics);
+    ext::shared_ptr<Lattice> lattice = model->tree(timeGrid, numericDynamics);
 
     DiscountFactor marketDF, modelDF;
     Real tol = 1e-7;
