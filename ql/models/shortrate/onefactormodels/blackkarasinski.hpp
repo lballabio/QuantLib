@@ -80,8 +80,7 @@ namespace QuantLib {
         Dynamics(const Parameter& fitting, Real alpha, Real sigma)
         : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
                                  new OrnsteinUhlenbeckProcess(alpha, sigma))),
-          fitting_(fitting) {
-        }
+          fitting_(fitting) {}
 
         Real variable(Time t, Rate r) const {
             return std::log(r) - fitting_(t);
@@ -101,8 +100,8 @@ namespace QuantLib {
         public:
             Impl(const Handle<YieldTermStructure>& termStructure,
                 Real a, Real sigma)
-                :termStructure_(termStructure), a_(a), sigma_(sigma),
-                TermStructureFittingParameter::NumericalImpl(termStructure)
+                :TermStructureFittingParameter::NumericalImpl(termStructure),
+                termStructure_(termStructure), a_(a), sigma_(sigma)
             {}
 
             Real value(const Array&, Time t) const {
