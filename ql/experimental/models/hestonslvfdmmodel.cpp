@@ -416,10 +416,17 @@ namespace QuantLib {
 
         for (Size i=0; i < timeGrid->size(); ++i) {
             vStrikes[i] = ext::make_shared<std::vector<Real> >(xGrid);
-            std::transform(xMesher[i]->locations().begin(),
-                           xMesher[i]->locations().end(),
-                           vStrikes[i]->begin(),
-                           static_cast<Real(*)(Real)>(std::exp));
+            if (xMesher[i]->locations().front()
+                  == xMesher[i]->locations().back()) {
+                std::fill(vStrikes[i]->begin(), vStrikes[i]->end(),
+                    std::exp(xMesher[i]->locations().front()));
+            }
+            else {
+                std::transform(xMesher[i]->locations().begin(),
+                               xMesher[i]->locations().end(),
+                               vStrikes[i]->begin(),
+                               static_cast<Real(*)(Real)>(std::exp));
+            }
         }
 
         const ext::shared_ptr<FixedLocalVolSurface> leverageFct(

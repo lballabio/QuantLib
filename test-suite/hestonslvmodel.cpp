@@ -2446,7 +2446,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
         -0.0293,-0.0297,-0.0251,-0.0192,-0.0134,-0.0084,-0.0045,
         -0.0015, 0.0005, 0.0017, 0.0020
     };
-    const Real tol = 8e-3;
+    const Real tol = 1e-2;
 
     for (Size i=0; i < 18; ++i) {
         const Real dist = 10.0+5.0*i;
