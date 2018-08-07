@@ -41,28 +41,48 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    struct SingleCase {
-        SingleCase(ActualActual::Convention convention,
-                   const Date& start,
-                   const Date& end,
-                   const Date& refStart,
-                   const Date& refEnd,
-                   Time result)
-        : convention(convention), start(start), end(end),
-          refStart(refStart), refEnd(refEnd), result(result) {}
-        SingleCase(ActualActual::Convention convention,
-                   const Date& start,
-                   const Date& end,
-                   Time result)
-        : convention(convention), start(start), end(end),
-          refStart(Date()), refEnd(Date()), result(result) {}
-        ActualActual::Convention convention;
-        Date start;
-        Date end;
-        Date refStart;
-        Date refEnd;
-        Time result;
-    };
+	struct SingleCase {
+		SingleCase(ActualActual::Convention convention,
+			const Date& start,
+			const Date& end,
+			const Date& refStart,
+			const Date& refEnd,
+			Time result)
+			: convention(convention), start(start), end(end),
+			refStart(refStart), refEnd(refEnd), result(result) {}
+		SingleCase(ActualActual::Convention convention,
+			const Date& start,
+			const Date& end,
+			Time result)
+			: convention(convention), start(start), end(end),
+			refStart(Date()), refEnd(Date()), result(result) {}
+		ActualActual::Convention convention;
+		Date start;
+		Date end;
+		Date refStart;
+		Date refEnd;
+		Time result;
+	};
+
+	static float actualActualDaycountComputation(Schedule schedule, Date start, Date end) {
+
+		DayCounter daycounter = ActualActual(ActualActual::ISMA, schedule);
+		float yearFraction = 0.0;
+
+		for (int i = 1; i < schedule.size() - 1; i++) {
+			Date referenceStart = schedule.date(i);
+			Date referenceEnd = schedule.date(i);
+			if (start < referenceEnd && end > referenceStart) {
+				daycounter.yearFraction(
+					(start > referenceStart) ? start : referenceStart,
+					(end < referenceEnd) ? end : referenceEnd,
+					referenceStart,
+					referenceEnd
+				);
+			};
+		}
+		return yearFraction;
+	}
 
 }
 
@@ -190,7 +210,7 @@ void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePerio
 		.backwards().endOfMonth(false);
 
 	Date referencePeriodStart = schedule.date(1);
-	Date referencePeriodEnd = schedule.date(3); // because semiannual advance two coupons.
+	Date referencePeriodEnd = schedule.date(2); // because semiannual advance two coupons.
 
 	Date testDate = schedule.date(1);
 	DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
@@ -202,10 +222,100 @@ void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePerio
 		if (std::fabs(difference) > 1.0e-10) {
 			BOOST_FAIL("FAILED TO CORRECTLY USE THE SCHEDULE TO FIND THE REFERENCE PERIOD FOR ACT ACT");
 		};
-
 		testDate = calendar.advance(testDate, 1, Days);
 	}
 }
+
+//void DayCounterTest::testScheduleCorrectlyDefinesNextDateAndPreviousDate() {
+//	Calendar calendar = UnitedStates();
+//	Schedule schedule = MakeSchedule()
+//		.from(Date(10, January, 2017))
+//		.withFirstDate(Date(31, August, 2017))
+//		.to(Date(28, February, 2026))
+//		.withFrequency(Semiannual)
+//		.withCalendar(calendar)
+//		.withConvention(Unadjusted)
+//		.backwards().endOfMonth(false);
+//
+//	Date firstCoupon = schedule.date(1); // 31 August 2017
+//	Date secondCoupon = schedule.date(2); // 28 Feb 2018
+//	Date thirdCoupon = schedule.date(3); // 31 August 2018
+//
+//	
+//	QL_ASSERT(schedule.previousDate(Date(25, December, 2017)) == firstCoupon, "The previous date was incorrect");
+//	QL_ASSERT(schedule.nextDate(Date(25, December, 2017)) == secondCoupon, "The next date was incorrect");
+//	QL_ASSERT(schedule.previousDate(Date(25, April, 2018)) == secondCoupon, "The previous date was incorrect");
+//	QL_ASSERT(schedule.nextDate(Date(25, April, 2017)) == thirdCoupon, "The next date was incorrect");
+//	//These conditions question whether nextDate and previousDate give the correct coupon period when the day is on a coupon. 
+//	//So the correct period on a coupon payment day began on the prior coupon and ends on itself.
+//	QL_ASSERT(schedule.previousDate(secondCoupon) == firstCoupon, "The dates should be closed at the front - PreviousDate on a coupon date should return the previous coupon date");
+//	QL_ASSERT(schedule.nextDate(secondCoupon) == secondCoupon, "The dates should be open at the start. So the next coupon of a coupon date is itself.");
+//}
+
+void DayCounterTest::testScheduleAlwaysHasAStartDate() {
+	BOOST_TEST_MESSAGE("Testing Variations of MakeSchedule always produce a schedule with a start date.");
+	//Attempt to establish whether the first coupoun payment date is always the second element of the constructor.
+	Calendar calendar = UnitedStates();
+	Schedule schedule = MakeSchedule()
+		.from(Date(10, January, 2017))
+		.withFirstDate(Date(31, August, 2017))
+		.to(Date(28, February, 2026))
+		.withFrequency(Semiannual)
+		.withCalendar(calendar)
+		.withConvention(Unadjusted)
+		.backwards().endOfMonth(false);
+	QL_ASSERT(schedule.date(0) == Date(10, January, 2017), "The first element should always be the start date");
+	schedule = MakeSchedule()
+		.from(Date(10, January, 2017))
+		.to(Date(28, February, 2026))
+		.withFrequency(Semiannual)
+		.withCalendar(calendar)
+		.withConvention(Unadjusted)
+		.backwards().endOfMonth(false);
+	QL_ASSERT(schedule.date(0) == Date(10, January, 2017), "The first element should always be the start date");
+	schedule = MakeSchedule()
+		.from(Date(31, August, 2017))
+		.to(Date(28, February, 2026))
+		.withFrequency(Semiannual)
+		.withCalendar(calendar)
+		.withConvention(Unadjusted)
+		.backwards().endOfMonth(false);
+	QL_ASSERT(schedule.date(0) == Date(31, August, 2017), "The first element should always be the start date");
+}
+
+void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriodMultipleReferencePeriods() {
+
+	BOOST_TEST_MESSAGE("Testing actual/actual with schedule for undefined semi reference periods...");
+
+	Calendar calendar = UnitedStates();
+	Schedule schedule = MakeSchedule()
+		.from(Date(10, January, 2017))
+		.withFirstDate(Date(31, August, 2017))
+		.to(Date(28, February, 2026))
+		.withFrequency(Semiannual)
+		.withCalendar(calendar)
+		.withConvention(Unadjusted)
+		.backwards().endOfMonth(false);
+
+	
+	Date periodStartDate = schedule.date(1);
+	Date periodEndDate = schedule.date(2);
+
+	DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
+	
+	while (periodEndDate < schedule.date(schedule.size()-2)) {
+
+		if (std::fabs(actualActualDaycountComputation(schedule, periodStartDate, periodEndDate) - dayCounter.yearFraction(periodStartDate, periodEndDate)) > 1e-8) {
+			//BOOST_FAIL("Failed to calculate the correct day fractions for %s - %s" % strftime(periodStartDate % periodEndDate));
+			BOOST_ERROR("Failed to compute the correct year fraction given a schedule: "<<periodStartDate, periodEndDate);
+		}
+		periodEndDate = calendar.advance(periodEndDate, 1, Days);
+	}
+
+	
+}
+
+
 
 void DayCounterTest::testActualActualWithScheduleAgainstAnnualReferencePeriod(){
 
@@ -228,12 +338,11 @@ void DayCounterTest::testActualActualWithScheduleAgainstAnnualReferencePeriod(){
 	Date testDate = schedule.date(1);
 	DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
 
-
 	while (testDate < referencePeriodEnd) {
 		float difference = dayCounter.yearFraction(testDate, referencePeriodEnd, referencePeriodStart, referencePeriodEnd) -
 			dayCounter.yearFraction(testDate, referencePeriodEnd);
 		if (std::fabs(difference) > 1.0e-10) {
-			BOOST_FAIL("FAILED TO CORRECTLY USE THE SCHEDULE TO FIND THE REFERENCE PERIOD FOR ACT ACT");
+			BOOST_ERROR("FAILED TO CORRECTLY USE THE SCHEDULE TO FIND THE REFERENCE PERIOD FOR ACT ACT " << testDate, referencePeriodEnd, referencePeriodStart, referencePeriodEnd);
 		};
 
 		testDate = calendar.advance(testDate, 1, Days);
@@ -272,7 +381,7 @@ void DayCounterTest::testActualActualWithSchedule() {
     Time expected = 0.6160220994;
 
     if (std::fabs(T-expected) > 1.0e-10) {
-        BOOST_FAIL("Failed to reproduce expected time:\n"
+        BOOST_ERROR("Failed to reproduce expected time:\n"
                    << std::setprecision(10)
                    << "    calculated: " << T << "\n"
                    << "    expected:   " << expected);
@@ -607,8 +716,11 @@ void DayCounterTest::testIntraday() {
 
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
+	suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testScheduleAlwaysHasAStartDate));
+	//suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testScheduleCorrectlyDefinesNextDateAndPreviousDate));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriod));
+	suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriodMultipleReferencePeriods));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithScheduleAgainstAnnualReferencePeriod));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithSchedule));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testSimple));

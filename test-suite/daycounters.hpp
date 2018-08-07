@@ -30,6 +30,9 @@ class DayCounterTest {
     static void testActualActual();
     static void testActualActualWithSchedule();
 	static void testActualActualWithScheduleAgainstSemiAnnualReferencePeriod();
+	//static void testScheduleCorrectlyDefinesNextDateAndPreviousDate();
+	static void testScheduleAlwaysHasAStartDate();
+	static void testActualActualWithScheduleAgainstSemiAnnualReferencePeriodMultipleReferencePeriods();
 	static void testActualActualWithScheduleAgainstAnnualReferencePeriod();
     static void testSimple();
     static void testOne();

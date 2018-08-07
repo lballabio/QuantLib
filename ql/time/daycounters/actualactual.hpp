@@ -67,6 +67,24 @@ namespace QuantLib {
                               const Date& refPeriodEnd) const;
           private:
             Schedule schedule_;
+			Time yearFractionWithReferenceDates(
+				const Date& d1,
+				const Date& d2,
+				const Date& refPeriodStart,
+				const Date& refPeriodEnd
+			) const;
+			Time yearFractionUsingSchedule(
+				const Date& d1,
+				const Date& d2
+			) const;
+			Time yearFractionGuess(
+				const Date& d1,
+				const Date& d2
+			) const;
+			std::vector<Date> getListOfPeriodDatesIncludingQuasiPayments() const;
+			bool isReferencePeriodSpecified(const Date& refPeriodStart, const Date& refPeriodEnd) const;
+
+
         };
         class ISDA_Impl : public DayCounter::Impl {
           public:
