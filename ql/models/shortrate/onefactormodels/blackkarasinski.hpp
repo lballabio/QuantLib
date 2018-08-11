@@ -46,7 +46,7 @@ namespace QuantLib {
 
         ext::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid, ext::shared_ptr<ShortRateDynamics> numericDynamics) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
       protected:
         void generateArguments();
