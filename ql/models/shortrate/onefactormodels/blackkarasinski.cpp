@@ -68,7 +68,7 @@ namespace QuantLib {
     }
 
     void BlackKarasinski::generateArguments() {
-        phi_ = BlackKarasinski::FittingParameter(termStructure(), a(), sigma());
+        phi_ = BlackKarasinski::FittingParameter(termStructure());
 
         // Calibrate fitting parameter to term structure
         Size steps = 50;

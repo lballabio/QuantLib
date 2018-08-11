@@ -98,10 +98,9 @@ namespace QuantLib {
     private:
         class Impl :public TermStructureFittingParameter::NumericalImpl{
         public:
-            Impl(const Handle<YieldTermStructure>& termStructure,
-                Real a, Real sigma)
+            Impl(const Handle<YieldTermStructure>& termStructure)
                 :TermStructureFittingParameter::NumericalImpl(termStructure),
-                termStructure_(termStructure), a_(a), sigma_(sigma)
+                termStructure_(termStructure)
             {}
 
             Real value(const Array&, Time t) const {
@@ -110,13 +109,11 @@ namespace QuantLib {
 
         private:
             Handle<YieldTermStructure> termStructure_;
-            Real a_, sigma_;
         };
     public:
-        FittingParameter(const Handle<YieldTermStructure>& termStructure,
-                         Real a, Real sigma)
+        FittingParameter(const Handle<YieldTermStructure>& termStructure)
             : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
-                new FittingParameter::Impl(termStructure, a, sigma))) {}
+                new FittingParameter::Impl(termStructure))) {}
     };
 
 }
