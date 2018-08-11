@@ -468,7 +468,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         option.setPricingEngine(ext::shared_ptr<PricingEngine>(
              new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                                            hestonProcess),
-                                       500, 400, 3, 0,
+                                       4000, 400, 3, 0,
                                        FdmSchemeDesc::ExplicitEuler())));
 
         calculated = option.NPV();
