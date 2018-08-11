@@ -99,16 +99,12 @@ namespace QuantLib {
         class Impl :public TermStructureFittingParameter::NumericalImpl{
         public:
             Impl(const Handle<YieldTermStructure>& termStructure)
-                :TermStructureFittingParameter::NumericalImpl(termStructure),
-                termStructure_(termStructure)
+                :TermStructureFittingParameter::NumericalImpl(termStructure)
             {}
 
             Real value(const Array&, Time t) const {
                 return TermStructureFittingParameter::NumericalImpl::value(Array(), t);
             }
-
-        private:
-            Handle<YieldTermStructure> termStructure_;
         };
     public:
         FittingParameter(const Handle<YieldTermStructure>& termStructure)
