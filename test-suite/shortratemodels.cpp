@@ -23,9 +23,7 @@
 
 #include "shortratemodels.hpp"
 #include "utilities.hpp"
-#include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
-#include <ql/models/shortrate/onefactormodels/blackkarasinski.hpp>
 #include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
@@ -52,38 +50,6 @@ namespace {
         Integer length;
         Volatility volatility;
     };
-
-}
-
-void ShortRateModelTest::testBlackKarasinski() {
-    BOOST_TEST_MESSAGE("Testing the fitting of the Black-Karasinski model to the term structure...");
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
-
-    Date today(15, February, 2002);
-    Date settlement(19, February, 2002);
-    Settings::instance().evaluationDate() = today;
-    Handle<YieldTermStructure> termStructure(flatRate(settlement, 0.04875825,
-        Actual365Fixed()));
-    ext::shared_ptr<BlackKarasinski> model(new BlackKarasinski(termStructure, 0.1, 0.05));
-
-    ext::shared_ptr<OneFactorModel::ShortRateDynamics> 
-        numericDynamics = model->dynamics();
-    
-    TimeGrid timeGrid(Time(10), 10); // 10 years with yearly steps
-
-    ext::shared_ptr<Lattice> lattice = model->tree(timeGrid, numericDynamics);
-
-    DiscountFactor marketDF, modelDF;
-    Real tol = 1e-7;
-    for (auto& time : timeGrid) {
-        DiscountFactor marketDF = model->termStructure()->discount(time);
-        //DiscountFactor modelDF = lattice->discount()
-        Real relDiff = std::abs(marketDF - modelDF) / marketDF;
-        if (relDiff > tol)
-            BOOST_ERROR("Failed to fit Black-Karasinski to the term structure.");
-    }
 
 }
 
