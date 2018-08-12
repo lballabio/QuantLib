@@ -62,12 +62,11 @@ namespace QuantLib {
         a_ = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
         phi_ = TermStructureFittingParameter(termStructure);
-        generateArguments();
 
         registerWith(termStructure);
     }
 
-    void BlackKarasinski::generateArguments() {
+    void BlackKarasinski::generateArguments() const {
         // Calibrate fitting parameter to term structure
         Size steps = 50;
         ext::shared_ptr<Lattice> lattice = this->tree(
@@ -77,7 +76,8 @@ namespace QuantLib {
     ext::shared_ptr<Lattice>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
-        ext::shared_ptr<ShortRateDynamics> numericDynamics = dynamics();
+        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+                         new Dynamics(phi_, a(), sigma()));
         ext::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
         ext::shared_ptr<ShortRateTree> numericTree(
@@ -105,6 +105,7 @@ namespace QuantLib {
 
     ext::shared_ptr<OneFactorModel::ShortRateDynamics>
         BlackKarasinski::dynamics() const {
+        generateArguments();
         ext::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi_, a(), sigma()));
         return numericDynamics;
