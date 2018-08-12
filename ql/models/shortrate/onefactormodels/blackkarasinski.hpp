@@ -48,9 +48,6 @@ namespace QuantLib {
 
         ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
-      protected:
-        void generateArguments() const;
-
       private:
         class Dynamics;
         class Helper;
