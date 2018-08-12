@@ -61,15 +61,13 @@ namespace QuantLib {
       a_(arguments_[0]), sigma_(arguments_[1]) {
         a_ = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
-        phi_ = Parameter();
+        phi_ = TermStructureFittingParameter(termStructure);
         generateArguments();
 
         registerWith(termStructure);
     }
 
     void BlackKarasinski::generateArguments() {
-        phi_ = BlackKarasinski::FittingParameter(termStructure());
-
         // Calibrate fitting parameter to term structure
         Size steps = 50;
         ext::shared_ptr<Lattice> lattice = this->tree(

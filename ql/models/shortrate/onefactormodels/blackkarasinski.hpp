@@ -54,7 +54,6 @@ namespace QuantLib {
       private:
         class Dynamics;
         class Helper;
-        class FittingParameter;
 
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
@@ -93,27 +92,7 @@ namespace QuantLib {
         Parameter fitting_;
     };
 
-    class BlackKarasinski::FittingParameter
-        : public TermStructureFittingParameter {
-    private:
-        class Impl :public TermStructureFittingParameter::NumericalImpl{
-        public:
-            Impl(const Handle<YieldTermStructure>& termStructure)
-                :TermStructureFittingParameter::NumericalImpl(termStructure)
-            {}
-
-            Real value(const Array&, Time t) const {
-                return TermStructureFittingParameter::NumericalImpl::value(Array(), t);
-            }
-        };
-    public:
-        FittingParameter(const Handle<YieldTermStructure>& termStructure)
-            : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
-                new FittingParameter::Impl(termStructure))) {}
-    };
-
 }
-
 
 #endif
 
