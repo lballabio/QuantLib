@@ -142,6 +142,8 @@ namespace QuantLib {
         is considered in the cited text.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class KernelInterpolation : public Interpolation {
       public:

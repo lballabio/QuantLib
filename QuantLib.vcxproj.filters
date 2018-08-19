@@ -675,6 +675,9 @@
     <ClInclude Include="ql\indexes\ibor\sonia.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\thbfix.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
     <ClInclude Include="ql\indexes\ibor\tibor.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>

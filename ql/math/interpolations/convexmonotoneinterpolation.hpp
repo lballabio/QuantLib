@@ -47,6 +47,8 @@ namespace QuantLib {
         values (if required) is in place.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     template <class I1, class I2>
     class ConvexMonotoneInterpolation : public Interpolation {

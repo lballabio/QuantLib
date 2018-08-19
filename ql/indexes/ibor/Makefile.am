@@ -30,6 +30,7 @@ this_include_HEADERS = \
     shibor.hpp \
     sonia.hpp \
     tibor.hpp \
+    thbfix.hpp \
     trlibor.hpp \
     usdlibor.hpp \
     wibor.hpp \
