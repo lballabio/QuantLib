@@ -1152,8 +1152,9 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         const Real x = mesher->location(iter, 0);
         if (v != mesher->location(iter, 1)) {
             v = mesher->location(iter, 1);
-            // on some platforms, the extreme tail probabilities of the
-            // non central chi square distribution lead to numerical exceptions.
+            // the extreme tail probabilities of the non central
+            // chi square distribution lead to numerical exceptions
+            // on some platforms
             if (std::fabs(v - v0) < 5*sigma*std::sqrt(v0*eT))
                 p_v = rndCalculator.pdf(v, eT);
             else
