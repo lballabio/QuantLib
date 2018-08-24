@@ -124,10 +124,11 @@ namespace {
             }
 
             Real error = std::fabs(result-argument);
-            // no floating-point comparison: the solver should have
-            // called the function with the very same value it's
-            // returning
-            if (result != argument) {
+            // the solver should have called the function with
+            // the very same value it's returning. But the internal
+            // 80bit length of the x87 FPU register might lead to
+            // a very small glitch when compiled with -mfpmath=387 on gcc
+            if (error > 2*QL_EPSILON) {
                 BOOST_FAIL(name << " solver ("
                            << (bracketed ? "" : "not ")
                            << "bracketed):\n"
