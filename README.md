@@ -36,14 +36,14 @@ browsed at <http://quantlib.org/reference/history.html>.
 Questions and feedback
 ----------------------
 
+The preferred channel for questions (and the one with the largest
+audience) is the quantlib-users mailing list.  Instructions for
+subscribing are at <http://quantlib.org/mailinglists.shtml>.
+
 Bugs can be reported as a GitHub issue at
 <https://github.com/lballabio/QuantLib/issues>; if you have a patch
 available, you can open a pull request instead (see "Contributing"
 below).
-
-You can also use the `quantlib-users` and `quantlib-dev` mailing lists
-for feedback, questions, etc.  More information and instructions for
-subscribing are at <http://quantlib.org/mailinglists.shtml>.
 
 
 Contributing
