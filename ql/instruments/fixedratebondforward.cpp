@@ -42,6 +42,7 @@ namespace QuantLib {
 
         incomeDiscountCurve_ = incomeDiscountCurve;
         registerWith(incomeDiscountCurve_);
+        registerWith(fixedCouponBond);
     }
 
 
