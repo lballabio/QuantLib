@@ -210,7 +210,7 @@ void BarrierOptionTest::testParity() {
     Real replicated = knockIn.NPV() + knockOut.NPV();
     Real expected = european.NPV();
     Real error = std::fabs(replicated-expected);
-    if (error > 1e-8) {
+    if (error > 1e-7) {
         BOOST_ERROR("Failed to replicate European option"
                     << "\n    knock-in:   " << knockIn.NPV()
                     << "\n    knock-out:  " << knockOut.NPV()
@@ -227,7 +227,7 @@ void BarrierOptionTest::testParity() {
     replicated = knockIn.NPV() + knockOut.NPV();
     expected = european.NPV();
     error = std::fabs(replicated-expected);
-    if (error > 1e-8) {
+    if (error > 1e-7) {
         BOOST_ERROR("Failed to replicate European option"
                     << "\n    knock-in:   " << knockIn.NPV()
                     << "\n    knock-out:  " << knockOut.NPV()
