@@ -168,7 +168,7 @@ void BarrierOptionTest::testParity() {
     BOOST_TEST_MESSAGE("Testing that knock-in plus knock-out barrier options "
                        "replicate a European option...");
 
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     DayCounter dc = Actual360();
 
