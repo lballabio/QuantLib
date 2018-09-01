@@ -41,6 +41,11 @@ namespace QuantLib {
         enum Type { Physical, Cash };
     };
 
+    //! %settlement method
+    struct SettlementMethod {
+        enum Type { Physical, CollateralizedCashPrice, ParYieldCurve };
+    };
+
     std::ostream& operator<<(std::ostream& out,
                              Settlement::Type type);
 
@@ -72,7 +77,9 @@ namespace QuantLib {
         class engine;
         Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                  const boost::shared_ptr<Exercise>& exercise,
-                 Settlement::Type delivery = Settlement::Physical);
+                 Settlement::Type delivery = Settlement::Physical,
+                 boost::optional<SettlementMethod::Type> settlementMethod =
+                     boost::none);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -81,6 +88,9 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Settlement::Type settlementType() const { return settlementType_; }
+        boost::optional<SettlementMethod::Type> settlementMethod() const {
+            return settlementMethod_;
+        }
         VanillaSwap::Type type() const { return swap_->type(); }
         const boost::shared_ptr<VanillaSwap>& underlyingSwap() const {
             return swap_;
@@ -102,6 +112,7 @@ namespace QuantLib {
         boost::shared_ptr<VanillaSwap> swap_;
         //Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
+        boost::optional<SettlementMethod::Type> settlementMethod_;
     };
 
     //! %Arguments for swaption calculation
@@ -111,6 +122,7 @@ namespace QuantLib {
         arguments() : settlementType(Settlement::Physical) {}
         boost::shared_ptr<VanillaSwap> swap;
         Settlement::Type settlementType;
+        SettlementMethod::Type settlementMethod;
         void validate() const;
     };
 

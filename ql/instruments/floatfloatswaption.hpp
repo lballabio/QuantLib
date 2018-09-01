@@ -24,7 +24,7 @@
 #ifndef quantlib_instruments_floatfloatswaption_hpp
 #define quantlib_instruments_floatfloatswaption_hpp
 
-#include <ql/option.hpp>
+#include <ql/instruments/swaption.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/pricingengines/swaption/basketgeneratingengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -42,8 +42,11 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        FloatFloatSwaption(const boost::shared_ptr<FloatFloatSwap> &swap,
-                           const boost::shared_ptr<Exercise> &exercise);
+        FloatFloatSwaption(const boost::shared_ptr<FloatFloatSwap>& swap,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           Settlement::Type delivery = Settlement::Physical,
+                           boost::optional<SettlementMethod::Type>
+                               settlementMethod = boost::none);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -51,6 +54,10 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
+        Settlement::Type settlementType() const { return settlementType_; }
+        boost::optional<SettlementMethod::Type> settlementMethod() const {
+            return settlementMethod_;
+        }
         VanillaSwap::Type type() const { return swap_->type(); }
         const boost::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
             return swap_;
@@ -66,6 +73,8 @@ namespace QuantLib {
       private:
         // arguments
         boost::shared_ptr<FloatFloatSwap> swap_;
+        Settlement::Type settlementType_;
+        boost::optional<SettlementMethod::Type> settlementMethod_;
     };
 
     //! %Arguments for cms swaption calculation
@@ -74,6 +83,8 @@ namespace QuantLib {
       public:
         arguments() {}
         boost::shared_ptr<FloatFloatSwap> swap;
+        Settlement::Type settlementType;
+        SettlementMethod::Type settlementMethod;
         void validate() const;
     };
 

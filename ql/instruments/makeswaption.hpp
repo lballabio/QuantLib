@@ -56,6 +56,7 @@ namespace QuantLib {
 
         MakeSwaption& withNominal(Real n);
         MakeSwaption& withSettlementType(Settlement::Type delivery);
+        MakeSwaption& withSettlementMethod(SettlementMethod::Type settlementMethod);
         MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
         MakeSwaption& withExerciseDate(const Date&);
         MakeSwaption& withUnderlyingType(const VanillaSwap::Type type);
@@ -65,6 +66,7 @@ namespace QuantLib {
       private:
         boost::shared_ptr<SwapIndex> swapIndex_;
         Settlement::Type delivery_;
+        boost::optional<SettlementMethod::Type> settlementMethod_;
         mutable boost::shared_ptr<VanillaSwap> underlyingSwap_;
 
         Period optionTenor_;

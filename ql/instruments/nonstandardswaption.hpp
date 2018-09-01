@@ -44,9 +44,11 @@ namespace QuantLib {
         class arguments;
         class engine;
         NonstandardSwaption(const Swaption &fromSwaption);
-        NonstandardSwaption(const boost::shared_ptr<NonstandardSwap> &swap,
-                            const boost::shared_ptr<Exercise> &exercise,
-                            Settlement::Type delivery = Settlement::Physical);
+        NonstandardSwaption(const boost::shared_ptr<NonstandardSwap>& swap,
+                            const boost::shared_ptr<Exercise>& exercise,
+                            Settlement::Type delivery = Settlement::Physical,
+                            boost::optional<SettlementMethod::Type>
+                                settlementMethod = boost::none);
 
         //! \name Instrument interface
         //@{
@@ -55,6 +57,10 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
+        Settlement::Type settlementType() const { return settlementType_; }
+        boost::optional<SettlementMethod::Type> settlementMethod() const {
+            return settlementMethod_;
+        }
         VanillaSwap::Type type() const { return swap_->type(); }
 
         const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const {
@@ -72,6 +78,7 @@ namespace QuantLib {
         // arguments
         boost::shared_ptr<NonstandardSwap> swap_;
         Settlement::Type settlementType_;
+        boost::optional<SettlementMethod::Type> settlementMethod_;
     };
 
     //! %Arguments for nonstandard swaption calculation
@@ -81,6 +88,7 @@ namespace QuantLib {
         arguments() {}
         boost::shared_ptr<NonstandardSwap> swap;
         Settlement::Type settlementType;
+        SettlementMethod::Type settlementMethod;
         void validate() const;
     };
 

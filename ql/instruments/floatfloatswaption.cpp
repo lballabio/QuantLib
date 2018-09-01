@@ -23,12 +23,15 @@
 
 namespace QuantLib {
 
-    FloatFloatSwaption::FloatFloatSwaption(
-        const boost::shared_ptr<FloatFloatSwap> &swap,
-        const boost::shared_ptr<Exercise> &exercise)
-        : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap) {
-        registerWith(swap_);
-        registerWithObservables(swap_);
+FloatFloatSwaption::FloatFloatSwaption(
+    const boost::shared_ptr<FloatFloatSwap>& swap,
+    const boost::shared_ptr<Exercise>& exercise,
+    const Settlement::Type delivery,
+    const boost::optional<SettlementMethod::Type> settlementMethod)
+    : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
+      settlementType_(delivery), settlementMethod_(settlementMethod) {
+    registerWith(swap_);
+    registerWithObservables(swap_);
     }
 
     bool FloatFloatSwaption::isExpired() const {
@@ -47,12 +50,32 @@ namespace QuantLib {
 
         arguments->swap = swap_;
         arguments->exercise = exercise_;
+        arguments->settlementType = settlementType_;
+        if(settlementMethod_) {
+            arguments->settlementMethod = *settlementMethod_;
+        }
+        else {
+            // if the settlement method is not given, default
+            // values are used
+            arguments->settlementMethod =
+                settlementType_ == Settlement::Physical
+                    ? SettlementMethod::Physical
+                    : SettlementMethod::ParYieldCurve;
+        }
     }
 
     void FloatFloatSwaption::arguments::validate() const {
         FloatFloatSwap::arguments::validate();
         QL_REQUIRE(swap, "underlying cms swap not set");
         QL_REQUIRE(exercise, "exercise not set");
+        QL_REQUIRE(settlementType != Settlement::Physical ||
+                       settlementMethod == SettlementMethod::Physical,
+                   "invalid settlement method for physical settlement");
+        QL_REQUIRE(settlementType != Settlement::Cash ||
+                       (settlementMethod ==
+                            SettlementMethod::CollateralizedCashPrice ||
+                        settlementMethod == SettlementMethod::ParYieldCurve),
+                   "invalid settlement method for cash settlement");
     }
 
     Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >

@@ -26,6 +26,9 @@ namespace QuantLib {
 
     void Gaussian1dFloatFloatSwaptionEngine::calculate() const {
 
+        QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
+                   "cash-settled swaptions not yet implemented ...");
+
         Date settlement = model_->termStructure()->referenceDate();
 
         if (arguments_.exercise->dates().back() <=

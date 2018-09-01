@@ -117,9 +117,10 @@ namespace QuantLib {
 
     Swaption::Swaption(const boost::shared_ptr<VanillaSwap>& swap,
                        const boost::shared_ptr<Exercise>& exercise,
-                       Settlement::Type delivery)
-    : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
-      settlementType_(delivery) {
+                       Settlement::Type delivery,
+                       boost::optional<SettlementMethod::Type> settlementMethod)
+        : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
+          settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
         registerWithObservables(swap_);
     }
@@ -139,6 +140,17 @@ namespace QuantLib {
 
         arguments->swap = swap_;
         arguments->settlementType = settlementType_;
+        if(settlementMethod_) {
+            arguments->settlementMethod = *settlementMethod_;
+        }
+        else {
+            // if the settlement method is not given, default
+            // values are used
+            arguments->settlementMethod =
+                settlementType_ == Settlement::Physical
+                    ? SettlementMethod::Physical
+                    : SettlementMethod::ParYieldCurve;
+        }
         arguments->exercise = exercise_;
     }
 
@@ -146,6 +158,14 @@ namespace QuantLib {
         VanillaSwap::arguments::validate();
         QL_REQUIRE(swap, "vanilla swap not set");
         QL_REQUIRE(exercise, "exercise not set");
+        QL_REQUIRE(settlementType != Settlement::Physical ||
+                       settlementMethod == SettlementMethod::Physical,
+                   "invalid settlement method for physical settlement");
+        QL_REQUIRE(settlementType != Settlement::Cash ||
+                       (settlementMethod ==
+                            SettlementMethod::CollateralizedCashPrice ||
+                        settlementMethod == SettlementMethod::ParYieldCurve),
+                   "invalid settlement method for cash settlement");
     }
 
     Volatility Swaption::impliedVolatility(Real targetValue,

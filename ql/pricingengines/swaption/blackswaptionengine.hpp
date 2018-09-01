@@ -251,18 +251,26 @@ namespace QuantLib {
               break;
           }
           case Settlement::Cash: {
-              DayCounter dayCount = firstCoupon->dayCounter();
-              // we assume that the cash settlement date is equal
-              // to the swap start date
-              Date discountDate = model_ == DiscountCurve ? firstCoupon->accrualStartDate()
-                                                          : discountCurve_->referenceDate();
-              Real fixedLegCashBPS =
-                  CashFlows::bps(fixedLeg,
-                                 InterestRate(atmForward, dayCount, Compounded, Annual),
-                                 false, discountDate) ;
-              annuity =
-                  std::fabs(fixedLegCashBPS / basisPoint) * discountCurve_->discount(discountDate);
-
+              if (arguments_.settlementMethod ==
+                  SettlementMethod::CollateralizedCashPrice) {
+                  annuity = std::fabs(swap.fixedLegBPS())/basisPoint;
+              } else if (arguments_.settlementMethod ==
+                         SettlementMethod::ParYieldCurve) {
+                  DayCounter dayCount = firstCoupon->dayCounter();
+                  // we assume that the cash settlement date is equal
+                  // to the swap start date
+                  Date discountDate = model_ == DiscountCurve
+                                          ? firstCoupon->accrualStartDate()
+                                          : discountCurve_->referenceDate();
+                  Real fixedLegCashBPS = CashFlows::bps(
+                      fixedLeg,
+                      InterestRate(atmForward, dayCount, Compounded, Annual),
+                      false, discountDate);
+                  annuity = std::fabs(fixedLegCashBPS / basisPoint) *
+                            discountCurve_->discount(discountDate);
+              } else {
+                  QL_FAIL("invalid settlement method for cash settlement");
+              }
               break;
           }
           default:
