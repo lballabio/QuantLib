@@ -28,6 +28,7 @@
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
 #include <vector>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {

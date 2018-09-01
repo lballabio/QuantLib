@@ -47,7 +47,7 @@ namespace QuantLib {
                                 OneAssetOption::engine> super;
       public:
         FDShoutEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps=100, Size gridPoints=100,
              bool timeDependent = false)
         : super(process, timeSteps, gridPoints,timeDependent) {}

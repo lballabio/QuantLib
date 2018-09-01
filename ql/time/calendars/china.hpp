@@ -67,13 +67,13 @@ namespace QuantLib {
         class IbImpl : public Calendar::Impl {
           public:
             IbImpl() {
-                sseImpl = boost::shared_ptr<Calendar::Impl>(new China::SseImpl);
+                sseImpl = ext::shared_ptr<Calendar::Impl>(new China::SseImpl);
             }
             std::string name() const { return "China inter bank market";}
             bool isWeekend(Weekday) const;
             bool isBusinessDay(const Date&) const;
           private:
-            boost::shared_ptr<Calendar::Impl> sseImpl;
+            ext::shared_ptr<Calendar::Impl> sseImpl;
         };
       public:
         enum Market { SSE,    //!< Shanghai stock exchange

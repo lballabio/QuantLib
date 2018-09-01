@@ -28,7 +28,6 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 
 #include <boost/timer.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/function.hpp>
 
 #include <iostream>
@@ -78,7 +77,7 @@ int main(int, char* []) {
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
         for(Size i=0; i<hazardRates.size(); i++)
             defTS.push_back(Handle<DefaultProbabilityTermStructure>(
-                boost::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
+                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
                     Actual365Fixed())));
         std::vector<Issuer> issuers;
         for(Size i=0; i<hazardRates.size(); i++) {
@@ -90,7 +89,7 @@ int main(int, char* []) {
             issuers.push_back(Issuer(curves));
         }
 
-        boost::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+        ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
         for(Size i=0; i<hazardRates.size(); i++)
             thePool->add(names[i], issuers[i], NorthAmericaCorpDefaultKey(
                     EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -99,10 +98,10 @@ int main(int, char* []) {
             NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
         // Recoveries are irrelevant in this example but must be given as the 
         //   lib stands.
-        std::vector<boost::shared_ptr<RecoveryRateModel> > rrModels(
-            hazardRates.size(), boost::make_shared<ConstantRecoveryModel>(
+        std::vector<ext::shared_ptr<RecoveryRateModel> > rrModels(
+            hazardRates.size(), ext::make_shared<ConstantRecoveryModel>(
             ConstantRecoveryModel(0.5, SeniorSec)));
-        boost::shared_ptr<Basket> theBskt = boost::make_shared<Basket>(
+        ext::shared_ptr<Basket> theBskt = ext::make_shared<Basket>(
             todaysDate, names, std::vector<Real>(hazardRates.size(), 100.), 
             thePool);
         /* --------------------------------------------------------------
@@ -115,7 +114,7 @@ int main(int, char* []) {
         // --- Default Latent models -------------------------------------
         #ifndef QL_PATCH_SOLARIS
         // Gaussian integrable joint default model:
-        boost::shared_ptr<GaussianDefProbLM> lmG(new 
+        ext::shared_ptr<GaussianDefProbLM> lmG(new 
             GaussianDefProbLM(fctrsWeights, 
             LatentModelIntegrationType::GaussianQuadrature,
 			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
@@ -127,7 +126,7 @@ int main(int, char* []) {
         TCopulaPolicy::initTraits iniT;
         iniT.tOrders = ordersT;
         // StudentT integrable joint default model:
-        boost::shared_ptr<TDefProbLM> lmT(new TDefProbLM(fctrsWeights, 
+        ext::shared_ptr<TDefProbLM> lmT(new TDefProbLM(fctrsWeights, 
             // LatentModelIntegrationType::GaussianQuadrature,
             LatentModelIntegrationType::Trapezoid,
             iniT));
@@ -138,13 +137,13 @@ int main(int, char* []) {
         // Size numCoresUsed = 4;
         #ifndef QL_PATCH_SOLARIS
         // Sobol, many cores
-        boost::shared_ptr<DefaultLossModel> rdlmG(
-            boost::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(lmG, 
+        ext::shared_ptr<DefaultLossModel> rdlmG(
+            ext::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(lmG, 
                 std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
         #endif
         // StudentT random joint default model:
-        boost::shared_ptr<DefaultLossModel> rdlmT(
-            boost::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, 
+        ext::shared_ptr<DefaultLossModel> rdlmT(
+            ext::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, 
             std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
 
         /* --------------------------------------------------------------

@@ -42,8 +42,8 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        FloatFloatSwaption(const boost::shared_ptr<FloatFloatSwap>& swap,
-                           const boost::shared_ptr<Exercise>& exercise,
+        FloatFloatSwaption(const ext::shared_ptr<FloatFloatSwap>& swap,
+                           const ext::shared_ptr<Exercise>& exercise,
                            Settlement::Type delivery = Settlement::Physical,
                            boost::optional<SettlementMethod::Type>
                                settlementMethod = boost::none);
@@ -59,20 +59,20 @@ namespace QuantLib {
             return settlementMethod_;
         }
         VanillaSwap::Type type() const { return swap_->type(); }
-        const boost::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
+        const ext::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
             return swap_;
         }
         //@}
-        Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
+        Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
         calibrationBasket(
-            boost::shared_ptr<SwapIndex> standardSwapBase,
-            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+            ext::shared_ptr<SwapIndex> standardSwapBase,
+            ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
             const BasketGeneratingEngine::CalibrationBasketType basketType =
                 BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
 
       private:
         // arguments
-        boost::shared_ptr<FloatFloatSwap> swap_;
+        ext::shared_ptr<FloatFloatSwap> swap_;
         Settlement::Type settlementType_;
         boost::optional<SettlementMethod::Type> settlementMethod_;
     };
@@ -82,7 +82,7 @@ namespace QuantLib {
                                           public Option::arguments {
       public:
         arguments() {}
-        boost::shared_ptr<FloatFloatSwap> swap;
+        ext::shared_ptr<FloatFloatSwap> swap;
         Settlement::Type settlementType;
         SettlementMethod::Type settlementMethod;
         void validate() const;

@@ -15,6 +15,8 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
+#include <ql/methods/finitedifferences/operators/nthorderderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>

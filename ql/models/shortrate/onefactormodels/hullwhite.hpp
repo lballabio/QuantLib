@@ -50,9 +50,9 @@ namespace QuantLib {
         HullWhite(const Handle<YieldTermStructure>& termStructure,
                   Real a = 0.1, Real sigma = 0.01);
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
-        boost::shared_ptr<ShortRateDynamics> dynamics() const;
+        ext::shared_ptr<ShortRateDynamics> dynamics() const;
 
         Real discountBondOption(Option::Type type,
                                 Real strike,
@@ -111,7 +111,7 @@ namespace QuantLib {
         Dynamics(const Parameter& fitting,
                  Real a,
                  Real sigma)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
+        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(fitting) {}
 
@@ -156,16 +156,16 @@ namespace QuantLib {
       public:
         FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
-        : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
+        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
     };
 
 
     // inline definitions
 
-    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics>
+    inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
     HullWhite::dynamics() const {
-        return boost::shared_ptr<ShortRateDynamics>(
+        return ext::shared_ptr<ShortRateDynamics>(
                                             new Dynamics(phi_, a(), sigma()));
     }
 

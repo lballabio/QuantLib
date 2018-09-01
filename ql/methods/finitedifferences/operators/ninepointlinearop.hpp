@@ -37,7 +37,7 @@ namespace QuantLib {
     class NinePointLinearOp : public FdmLinearOp {
       public:
         NinePointLinearOp(Size d0, Size d1,
-                const boost::shared_ptr<FdmMesher>& mesher);
+                const ext::shared_ptr<FdmMesher>& mesher);
         NinePointLinearOp(const NinePointLinearOp& m);
         NinePointLinearOp(const Disposable<NinePointLinearOp>& m);
         NinePointLinearOp& operator=(const NinePointLinearOp& m);
@@ -63,7 +63,7 @@ namespace QuantLib {
         boost::shared_array<Real> a01_, a11_, a21_;
         boost::shared_array<Real> a02_, a12_, a22_;
 
-        boost::shared_ptr<FdmMesher> mesher_;
+        ext::shared_ptr<FdmMesher> mesher_;
     };
 }
 

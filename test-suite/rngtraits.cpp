@@ -52,7 +52,7 @@ void RngTraitsTest::testDefaultPoisson() {
     BOOST_TEST_MESSAGE("Testing Poisson pseudo-random number generation...");
 
     PoissonPseudoRandom::icInstance =
-        boost::shared_ptr<InverseCumulativePoisson>();
+        ext::shared_ptr<InverseCumulativePoisson>();
     PoissonPseudoRandom::rsg_type rsg =
         PoissonPseudoRandom::make_sequence_generator(100, 1234);
 
@@ -74,8 +74,8 @@ void RngTraitsTest::testCustomPoisson() {
     BOOST_TEST_MESSAGE("Testing custom Poisson pseudo-random number generation...");
 
     PoissonPseudoRandom::icInstance =
-        boost::shared_ptr<InverseCumulativePoisson>(
-                                           new InverseCumulativePoisson(4.0));
+        ext::make_shared<InverseCumulativePoisson>(
+                                           4.0);
     PoissonPseudoRandom::rsg_type rsg =
         PoissonPseudoRandom::make_sequence_generator(100, 1234);
 

@@ -22,7 +22,6 @@
 */
 
 #include <ql/methods/finitedifferences/operators/fdmbatesop.hpp>
-
 #include <ql/processes/batesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/matrix.hpp>
@@ -32,15 +31,13 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
-    FdmBatesOp::FdmBatesOp(const shared_ptr<FdmMesher>& mesher,
-                           const shared_ptr<BatesProcess>& batesProcess,
+    FdmBatesOp::FdmBatesOp(const ext::shared_ptr<FdmMesher>& mesher,
+                           const ext::shared_ptr<BatesProcess>& batesProcess,
                            const FdmBoundaryConditionSet& bcSet,
                            const Size integroIntegrationOrder, 
-                           const shared_ptr<FdmQuantoHelper>& quantoHelper)
+                           const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
     : lambda_(batesProcess->lambda()), 
       delta_ (batesProcess->delta()), 
       nu_    (batesProcess->nu()),
@@ -50,26 +47,25 @@ namespace QuantLib {
       bcSet_(bcSet),
       hestonOp_(new FdmHestonOp(
         mesher,
-        shared_ptr<HestonProcess>(new HestonProcess(
+        ext::make_shared<HestonProcess>(
           batesProcess->riskFreeRate(),
           Handle<YieldTermStructure>(
-            shared_ptr<ZeroSpreadedTermStructure>(new
-              ZeroSpreadedTermStructure(
+            ext::make_shared<ZeroSpreadedTermStructure>(
                 batesProcess->dividendYield(),
-                Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(lambda_*m_))),
+                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(lambda_*m_))),
                 Continuous,
                 NoFrequency,
-                batesProcess->dividendYield()->dayCounter()))),
+                batesProcess->dividendYield()->dayCounter())),
           batesProcess->s0(),
           batesProcess->v0(),
           batesProcess->kappa(),
           batesProcess->theta(),
           batesProcess->sigma(),
-          batesProcess->rho())),
+          batesProcess->rho()),
         quantoHelper)) {}
 
     FdmBatesOp::IntegroIntegrand::IntegroIntegrand(
-                    const shared_ptr<LinearInterpolation>& interpl,
+                    const ext::shared_ptr<LinearInterpolation>& interpl,
                     const FdmBoundaryConditionSet& bcSet,
                     Real x, Real delta, Real nu)
     : x_(x), delta_(delta), nu_(nu), 
@@ -77,13 +73,13 @@ namespace QuantLib {
                     
     Real FdmBatesOp::IntegroIntegrand::operator()(Real y) const {
         const Real x = x_ + M_SQRT2*delta_*y + nu_;
-        Real valueOfDerivative = interpl_->operator()(x, true);
+        Real valueOfDerivative = (*interpl_)(x, true);
         
         for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
             iter < bcSet_.end(); ++iter) {
 
-            const boost::shared_ptr<FdmDirichletBoundary> dirichlet
-                = boost::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
+            const ext::shared_ptr<FdmDirichletBoundary> dirichlet
+                = ext::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
 
             QL_REQUIRE(dirichlet, "FdmBatesOp can only deal with Dirichlet "
                                   "boundary conditions.")
@@ -96,7 +92,7 @@ namespace QuantLib {
     }
     
     Disposable<Array> FdmBatesOp::integro(const Array& r) const {
-        const shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         
         QL_REQUIRE(layout->dim().size() == 2, "invalid layout dimension");
 
@@ -113,10 +109,10 @@ namespace QuantLib {
             f[j][i] = r[iter.index()];
             
         }
-        std::vector<shared_ptr<LinearInterpolation> > interpl(f.rows());
+        std::vector<ext::shared_ptr<LinearInterpolation> > interpl(f.rows());
         for (Size i=0; i < f.rows(); ++i) {
-            interpl[i] = shared_ptr<LinearInterpolation>(
-                new LinearInterpolation(x.begin(), x.end(), f.row_begin(i)));
+            interpl[i] = ext::make_shared<LinearInterpolation>(
+                x.begin(), x.end(), f.row_begin(i));
         }
         
         Array integral(r.size());

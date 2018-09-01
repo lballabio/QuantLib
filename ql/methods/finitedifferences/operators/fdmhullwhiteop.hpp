@@ -36,8 +36,8 @@ namespace QuantLib {
       public:
 
         FdmHullWhiteOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HullWhite>& model,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<HullWhite>& model,
             Size direction);
 
         Size size() const;
@@ -60,7 +60,7 @@ namespace QuantLib {
         const Array x_;
         const TripleBandLinearOp dzMap_;
         TripleBandLinearOp mapT_;
-        const boost::shared_ptr<HullWhite> model_;
+        const ext::shared_ptr<HullWhite> model_;
     };
 }
 

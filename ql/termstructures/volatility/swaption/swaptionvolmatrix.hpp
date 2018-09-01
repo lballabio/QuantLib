@@ -146,9 +146,9 @@ namespace QuantLib {
       protected:
         // defining the following method would break CMS test suite
         // to be further investigated
-        //boost::shared_ptr<SmileSection> smileSectionImpl(const Date&,
+        //ext::shared_ptr<SmileSection> smileSectionImpl(const Date&,
         //                                                 const Period&) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time,
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time,
                                                          Time) const;
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,

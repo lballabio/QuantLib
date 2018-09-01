@@ -42,7 +42,7 @@ namespace QuantLib {
                                     DividendVanillaOption::results> {
       public:
         FdBatesVanillaEngine(
-            const boost::shared_ptr<BatesModel>& model,
+            const ext::shared_ptr<BatesModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());

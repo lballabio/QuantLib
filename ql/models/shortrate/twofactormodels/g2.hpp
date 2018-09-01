@@ -61,7 +61,7 @@ namespace QuantLib {
            Real eta = 0.01,
            Real rho = -0.75);
 
-        boost::shared_ptr<ShortRateDynamics> dynamics() const;
+        ext::shared_ptr<ShortRateDynamics> dynamics() const;
 
         virtual Real discountBond(Time now,
                                   Time maturity,
@@ -127,9 +127,9 @@ namespace QuantLib {
                  Real b,
                  Real eta,
                  Real rho)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
+        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
                                       new OrnsteinUhlenbeckProcess(a, sigma)),
-                            boost::shared_ptr<StochasticProcess1D>(
+                            ext::shared_ptr<StochasticProcess1D>(
                                       new OrnsteinUhlenbeckProcess(b, eta)),
                             rho),
           fitting_(fitting) {}
@@ -187,7 +187,7 @@ namespace QuantLib {
                          Real b,
                          Real eta,
                          Real rho)
-        : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
+        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
                           new FittingParameter::Impl(termStructure, a, sigma,
                                                      b, eta, rho))) {}
     };

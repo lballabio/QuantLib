@@ -43,10 +43,10 @@ namespace QuantLib {
       public:
         CmsMarket(
             const std::vector<Period>& swapLengths,
-            const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
-            const boost::shared_ptr<IborIndex>& iborIndex,
+            const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
+            const ext::shared_ptr<IborIndex>& iborIndex,
             const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-            const std::vector<boost::shared_ptr<CmsCouponPricer> >& pricers,
+            const std::vector<ext::shared_ptr<CmsCouponPricer> >& pricers,
             const Handle<YieldTermStructure>& discountingTS);
         //! \name LazyObject interface
         //@{
@@ -78,10 +78,10 @@ namespace QuantLib {
                                         const Matrix& weights);
 
         std::vector<Period> swapLengths_;
-        std::vector<boost::shared_ptr<SwapIndex> > swapIndexes_;
-        boost::shared_ptr<IborIndex> iborIndex_;
+        std::vector<ext::shared_ptr<SwapIndex> > swapIndexes_;
+        ext::shared_ptr<IborIndex> iborIndex_;
         std::vector<std::vector<Handle<Quote> > > bidAskSpreads_;
-        std::vector<boost::shared_ptr<CmsCouponPricer> > pricers_;
+        std::vector<ext::shared_ptr<CmsCouponPricer> > pricers_;
         Handle<YieldTermStructure> discTS_;
 
         Size nExercise_;
@@ -110,8 +110,8 @@ namespace QuantLib {
         // Differences between mdlFwdCmsLegNPV_ and mktFwdCmsLegNPV_
         mutable Matrix errFwdCmsLegNPV_;
 
-        std::vector<std::vector<boost::shared_ptr<Swap> > > spotSwaps_;
-        std::vector<std::vector<boost::shared_ptr<Swap> > > fwdSwaps_;
+        std::vector<std::vector<ext::shared_ptr<Swap> > > spotSwaps_;
+        std::vector<std::vector<ext::shared_ptr<Swap> > > fwdSwaps_;
 
      };
 

@@ -62,7 +62,7 @@ namespace QuantLib {
         Real maxStrike() const;
       protected:
         Volatility volatilityImpl(Time, Time, Rate) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
                                                          Time bondLength) const;
         Volatility volatilityImpl(const Date&, const Period&, Rate) const;
         //@}

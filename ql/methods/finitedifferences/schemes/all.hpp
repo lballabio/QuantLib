@@ -9,4 +9,5 @@
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/trbdf2scheme.hpp>
 

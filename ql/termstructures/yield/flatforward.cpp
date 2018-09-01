@@ -39,7 +39,7 @@ namespace QuantLib {
                              Compounding compounding,
                              Frequency frequency)
     : YieldTermStructure(referenceDate, Calendar(), dayCounter),
-      forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
+      forward_(ext::shared_ptr<Quote>(new SimpleQuote(forward))),
       compounding_(compounding), frequency_(frequency) {}
 
     FlatForward::FlatForward(Natural settlementDays,
@@ -60,7 +60,7 @@ namespace QuantLib {
                              Compounding compounding,
                              Frequency frequency)
     : YieldTermStructure(settlementDays, calendar, dayCounter),
-      forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
+      forward_(ext::shared_ptr<Quote>(new SimpleQuote(forward))),
       compounding_(compounding), frequency_(frequency) {}
 
 }

@@ -20,7 +20,6 @@
 #include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 using std::pow;
 using std::log;
@@ -30,7 +29,7 @@ using std::sqrt;
 namespace QuantLib {
 
     AnalyticComplexChooserEngine::AnalyticComplexChooserEngine(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -84,11 +83,11 @@ namespace QuantLib {
         DiscountFactor discount;
 
         //payoff
-        boost::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
+        ext::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
         if (optionType == Option::Call){
             //TC-T
             Time t=callMaturity()-choosingTime()-choosingTime();
-            vanillaPayoff = boost::make_shared<PlainVanillaPayoff>(
+            vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                           Option::Call, strike(Option::Call));
             //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
             vol = volatility(t) * std::sqrt(t);
@@ -96,7 +95,7 @@ namespace QuantLib {
             discount = riskFreeDiscount(t);
         } else{
             Time t=putMaturity()-choosingTime()-choosingTime();
-            vanillaPayoff = boost::make_shared<PlainVanillaPayoff>(
+            vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                             Option::Put, strike(Option::Put));
             vol = volatility(t) * std::sqrt(t);
             growth = dividendDiscount(t);

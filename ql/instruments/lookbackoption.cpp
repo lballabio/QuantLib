@@ -24,8 +24,8 @@ namespace QuantLib {
 
     ContinuousFloatingLookbackOption::ContinuousFloatingLookbackOption(
         Real minmax,
-        const boost::shared_ptr<TypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<TypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
       minmax_(minmax) {}
 
@@ -52,8 +52,8 @@ namespace QuantLib {
 
     ContinuousFixedLookbackOption::ContinuousFixedLookbackOption(
         Real minmax,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
       minmax_(minmax) {}
 
@@ -81,8 +81,8 @@ namespace QuantLib {
         Real minmax,
         Real lambda,
         Date lookbackPeriodEnd,
-        const boost::shared_ptr<TypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<TypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : ContinuousFloatingLookbackOption(minmax, payoff, exercise),
       lambda_(lambda),
       lookbackPeriodEnd_(lookbackPeriodEnd) {}
@@ -103,13 +103,13 @@ namespace QuantLib {
 
         ContinuousFloatingLookbackOption::arguments::validate();
 
-        boost::shared_ptr<EuropeanExercise> europeanExercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        ext::shared_ptr<EuropeanExercise> europeanExercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(exercise);
         QL_REQUIRE(lookbackPeriodEnd <= europeanExercise->lastDate(), 
             "lookback start date must be earlier than exercise date");
         
-        boost::shared_ptr<FloatingTypePayoff> floatingTypePayoff =
-            boost::dynamic_pointer_cast<FloatingTypePayoff>(payoff);
+        ext::shared_ptr<FloatingTypePayoff> floatingTypePayoff =
+            ext::dynamic_pointer_cast<FloatingTypePayoff>(payoff);
         
         if (floatingTypePayoff->optionType() == Option::Call) {
             QL_REQUIRE(lambda >= 1.0,
@@ -123,8 +123,8 @@ namespace QuantLib {
 
     ContinuousPartialFixedLookbackOption::ContinuousPartialFixedLookbackOption(
         Date lookbackPeriodStart,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : ContinuousFixedLookbackOption(0, payoff, exercise),
       lookbackPeriodStart_(lookbackPeriodStart) {}
 
@@ -143,8 +143,8 @@ namespace QuantLib {
 
         ContinuousFixedLookbackOption::arguments::validate();
 
-        boost::shared_ptr<EuropeanExercise> europeanExercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        ext::shared_ptr<EuropeanExercise> europeanExercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(exercise);
         QL_REQUIRE(lookbackPeriodStart <= europeanExercise->lastDate(), 
             "lookback start date must be earlier than exercise date");
     }

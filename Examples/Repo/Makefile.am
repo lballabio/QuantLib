@@ -12,7 +12,6 @@ Repo_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    Repo_vc9.vcproj \
     Repo.vcxproj \
     Repo.vcxproj.filters \
     ReadMe.txt
