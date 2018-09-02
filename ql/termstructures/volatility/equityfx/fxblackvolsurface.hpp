@@ -28,7 +28,7 @@
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <qle/termstructures/fxvannavolgasmilesection.hpp>
+#include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
 
 using namespace QuantLib;
 

@@ -18,7 +18,7 @@
 
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <qle/termstructures/fxblackvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/fxblackvolsurface.hpp>
 
 using namespace std;
 
