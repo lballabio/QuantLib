@@ -36,6 +36,7 @@ namespace QuantLib {
       public:
         BSMOperator();
         BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
+        BSMOperator(const Array& grid, Rate r, Rate q, Volatility sigma);
         BSMOperator(const Array& grid,
                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                     Time residualTime);
