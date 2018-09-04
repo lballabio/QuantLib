@@ -106,7 +106,7 @@ namespace QuantLib {
 
         // for backward compatibility
         virtual void calibrate(
-                const std::vector<ext::shared_ptr<CalibrationHelper> >&,
+                const std::vector<ext::shared_ptr<BlackCalibrationHelper> >&,
                 OptimizationMethod& method,
                 const EndCriteria& endCriteria,
                 const Constraint& constraint = Constraint(),
@@ -118,7 +118,7 @@ namespace QuantLib {
 
         // for backward compatibility
         Real value(const Array& params,
-                   const std::vector<ext::shared_ptr<CalibrationHelper> >&);
+                   const std::vector<ext::shared_ptr<BlackCalibrationHelper> >&);
 
         const ext::shared_ptr<Constraint>& constraint() const;
 

@@ -74,7 +74,7 @@ namespace QuantLib {
     };
 
     void CalibratedModel::calibrate(
-                    const vector<ext::shared_ptr<CalibrationHelper> >& instruments,
+                    const vector<ext::shared_ptr<BlackCalibrationHelper> >& instruments,
                     OptimizationMethod& method,
                     const EndCriteria& endCriteria,
                     const Constraint& additionalConstraint,
@@ -125,7 +125,7 @@ namespace QuantLib {
 
     Real CalibratedModel::value(
                 const Array& params,
-                const vector<ext::shared_ptr<CalibrationHelper> >& instruments) {
+                const vector<ext::shared_ptr<BlackCalibrationHelper> >& instruments) {
         vector<ext::shared_ptr<CalibrationHelperBase> > tmp(instruments.size());
         for (Size i=0; i<instruments.size(); ++i)
             tmp[i] = ext::static_pointer_cast<CalibrationHelperBase>(instruments[i]);

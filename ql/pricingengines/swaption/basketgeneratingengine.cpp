@@ -30,7 +30,7 @@ using std::fabs;
 
 namespace QuantLib {
 
-    Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
+    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
     BasketGeneratingEngine::calibrationBasket(
         const ext::shared_ptr<Exercise> &exercise,
         ext::shared_ptr<SwapIndex> standardSwapBase,
@@ -45,7 +45,7 @@ namespace QuantLib {
                 !standardSwapBase->discountingTermStructure().empty(),
             "standard swap base discounting term structure must not be empty.");
 
-        std::vector<ext::shared_ptr<CalibrationHelper> > result;
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > result;
 
         Date today = Settings::instance().evaluationDate();
         Size minIdxAlive = static_cast<Size>(
@@ -96,7 +96,7 @@ namespace QuantLib {
                     standardSwapBase->exogenousDiscount()
                         ? standardSwapBase->discountingTermStructure()
                         : standardSwapBase->forwardingTermStructure(),
-                    CalibrationHelper::RelativePriceError, Null<Real>(), 1.0,
+                    BlackCalibrationHelper::RelativePriceError, Null<Real>(), 1.0,
                     swaptionVolatility->volatilityType() ,shift));
 
                 break;
@@ -225,7 +225,7 @@ namespace QuantLib {
                     standardSwapBase->exogenousDiscount()
                         ? standardSwapBase->discountingTermStructure()
                         : standardSwapBase->forwardingTermStructure(),
-                    CalibrationHelper::RelativePriceError, solution[2],
+                    BlackCalibrationHelper::RelativePriceError, solution[2],
                     fabs(solution[0]), swaptionVolatility->volatilityType(), shift));
                 break;
             }

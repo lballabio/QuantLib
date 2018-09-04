@@ -288,7 +288,7 @@ void LiborMarketModelTest::testCalibration() {
     DayCounter dayCounter=index->forwardingTermStructure()->dayCounter();
 
     // set-up calibration helper
-    std::vector<ext::shared_ptr<CalibrationHelper> > calibrationHelper;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationHelper;
 
     Size i;
     for (i=2; i < size; ++i) {
@@ -296,10 +296,10 @@ void LiborMarketModelTest::testCalibration() {
         Handle<Quote> capVol(
             ext::shared_ptr<Quote>(new SimpleQuote(capVols[i-2])));
 
-        ext::shared_ptr<CalibrationHelper> caphelper(
+        ext::shared_ptr<BlackCalibrationHelper> caphelper(
             new CapHelper(maturity, capVol, index, Annual,
                           index->dayCounter(), true, termStructure,
-                          CalibrationHelper::ImpliedVolError));
+                          BlackCalibrationHelper::ImpliedVolError));
 
         caphelper->setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new AnalyticCapFloorEngine(model, termStructure)));
@@ -314,12 +314,12 @@ void LiborMarketModelTest::testCalibration() {
                     ext::shared_ptr<Quote>(
                         new SimpleQuote(swaptionVols[swapVolIndex++])));
 
-                ext::shared_ptr<CalibrationHelper> swaptionHelper(
+                ext::shared_ptr<BlackCalibrationHelper> swaptionHelper(
                     new SwaptionHelper(maturity, len, swaptionVol, index,
                                        index->tenor(), dayCounter,
                                        index->dayCounter(),
                                        termStructure,
-                                       CalibrationHelper::ImpliedVolError));
+                                       BlackCalibrationHelper::ImpliedVolError));
 
                 swaptionHelper->setPricingEngine(
                      ext::shared_ptr<PricingEngine>(

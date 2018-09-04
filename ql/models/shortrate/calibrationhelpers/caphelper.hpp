@@ -31,7 +31,7 @@ namespace QuantLib {
 
     //! calibration helper for ATM cap
 
-    class CapHelper : public CalibrationHelper {
+    class CapHelper : public BlackCalibrationHelper {
       public:
         CapHelper(const Period& length,
                   const Handle<Quote>& volatility,
@@ -41,8 +41,8 @@ namespace QuantLib {
                   const DayCounter& fixedLegDayCounter,
                   bool includeFirstSwaplet,
                   const Handle<YieldTermStructure>& termStructure,
-                  CalibrationHelper::CalibrationErrorType errorType
-                                    = CalibrationHelper::RelativePriceError);
+                  BlackCalibrationHelper::CalibrationErrorType errorType
+                                    = BlackCalibrationHelper::RelativePriceError);
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;

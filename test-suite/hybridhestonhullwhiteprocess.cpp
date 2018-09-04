@@ -1281,7 +1281,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
         0.303219,0.291534,0.286187,0.283073,0.280239,0.276414,0.270926,0.262173
     };
     
-    std::vector<ext::shared_ptr<CalibrationHelper> > options;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > options;
     
     for (Size i=0; i < LENGTH(maturities); ++i) {
         const Period maturity((int)(maturities[i]*12.0+0.5), Months);
@@ -1297,10 +1297,10 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
                 strikes[j]));
             RelinkableHandle<Quote> v(ext::shared_ptr<Quote>(
                                    new SimpleQuote(vol[i*LENGTH(strikes)+j])));
-            options.push_back(ext::shared_ptr<CalibrationHelper>(
+            options.push_back(ext::shared_ptr<BlackCalibrationHelper>(
                 new HestonModelHelper(maturity, calendar, s0,
                                       strikes[j], v, rTS, qTS,
-                                      CalibrationHelper::PriceError)));
+                                      BlackCalibrationHelper::PriceError)));
             const Real marketValue = options.back()->marketValue();
             
             // Improve the quality of the starting point 
@@ -1363,10 +1363,10 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
                              new PlainVanillaPayoff(Option::Call, strikes[js]));
             Handle<Quote> v(ext::shared_ptr<Quote>(
                                    new SimpleQuote(vol[i*LENGTH(strikes)+js])));
-            options.push_back(ext::shared_ptr<CalibrationHelper>(
+            options.push_back(ext::shared_ptr<BlackCalibrationHelper>(
                 new HestonModelHelper(maturity, calendar, s0,
                                       strikes[js], v, rTS, qTS,
-                                      CalibrationHelper::PriceError)));
+                                      BlackCalibrationHelper::PriceError)));
             
             options.back()->setPricingEngine(engine);
         }
