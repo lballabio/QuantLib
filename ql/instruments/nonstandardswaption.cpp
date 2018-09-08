@@ -27,7 +27,8 @@ namespace QuantLib {
                  const_cast<Swaption &>(fromSwaption).exercise()),
           swap_(ext::make_shared<NonstandardSwap>(
               *fromSwaption.underlyingSwap())),
-          settlementType_(fromSwaption.settlementType()) {
+          settlementType_(fromSwaption.settlementType()),
+          settlementMethod_(fromSwaption.settlementMethod()) {
 
         registerWith(swap_);
     }

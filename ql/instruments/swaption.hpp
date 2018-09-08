@@ -91,7 +91,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Settlement::Type settlementType() const { return settlementType_; }
-        boost::optional<Settlement::Method> settlementMethod() const {
+        Settlement::Method settlementMethod() const {
             return settlementMethod_;
         }
         VanillaSwap::Type type() const { return swap_->type(); }
