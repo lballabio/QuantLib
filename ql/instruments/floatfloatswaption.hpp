@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,11 +42,11 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        FloatFloatSwaption(const ext::shared_ptr<FloatFloatSwap>& swap,
-                           const ext::shared_ptr<Exercise>& exercise,
-                           Settlement::Type delivery = Settlement::Physical,
-                           boost::optional<SettlementMethod::Type>
-                               settlementMethod = boost::none);
+        FloatFloatSwaption(
+            const ext::shared_ptr<FloatFloatSwap>& swap,
+            const ext::shared_ptr<Exercise>& exercise,
+            Settlement::Type delivery = Settlement::Physical,
+            Settlement::Method settlementMethod = Settlement::PhysicalOTC);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -55,7 +55,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Settlement::Type settlementType() const { return settlementType_; }
-        boost::optional<SettlementMethod::Type> settlementMethod() const {
+        Settlement::Method settlementMethod() const {
             return settlementMethod_;
         }
         VanillaSwap::Type type() const { return swap_->type(); }
@@ -74,7 +74,7 @@ namespace QuantLib {
         // arguments
         ext::shared_ptr<FloatFloatSwap> swap_;
         Settlement::Type settlementType_;
-        boost::optional<SettlementMethod::Type> settlementMethod_;
+        Settlement::Method settlementMethod_;
     };
 
     //! %Arguments for cms swaption calculation
@@ -84,7 +84,7 @@ namespace QuantLib {
         arguments() {}
         ext::shared_ptr<FloatFloatSwap> swap;
         Settlement::Type settlementType;
-        SettlementMethod::Type settlementMethod;
+        Settlement::Method settlementMethod;
         void validate() const;
     };
 

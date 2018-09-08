@@ -33,7 +33,7 @@ namespace QuantLib {
                                Rate strike)
     : swapIndex_(swapIndex),
       delivery_(Settlement::Physical),
-      settlementMethod_(boost::none),
+      settlementMethod_(Settlement::PhysicalOTC),
       optionTenor_(optionTenor),
       optionConvention_(ModifiedFollowing),
       fixingDate_(Null<Date>()),
@@ -46,7 +46,7 @@ namespace QuantLib {
                                Rate strike)
     : swapIndex_(swapIndex),
       delivery_(Settlement::Physical),
-      settlementMethod_(boost::none),
+      settlementMethod_(Settlement::PhysicalOTC),
       optionConvention_(ModifiedFollowing),
       fixingDate_(fixingDate),
       strike_(strike),
@@ -120,7 +120,7 @@ namespace QuantLib {
     }
 
     MakeSwaption& MakeSwaption::withSettlementMethod(
-        SettlementMethod::Type settlementMethod) {
+        Settlement::Method settlementMethod) {
         settlementMethod_ = settlementMethod;
         return *this;
     }

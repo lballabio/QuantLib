@@ -6,7 +6,7 @@
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2014 Ferdinando Ametrano
- Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2016, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -114,10 +114,25 @@ namespace QuantLib {
         }
     }
 
+    std::ostream& operator<<(std::ostream& out, Settlement::Method m) {
+        switch (m) {
+        case Settlement::PhysicalOTC:
+            return out << "PhysicalOTC";
+        case Settlement::PhysicalCleared:
+            return out << "PhysicalCleared";
+        case Settlement::CollateralizedCashPrice:
+            return out << "CollateralizedCashPrice";
+        case Settlement::ParYieldCurve:
+            return out << "ParYieldCurve";
+        default:
+            QL_FAIL("unknown Settlement::Method(" << Integer(m) << ")");
+        }
+    }
+
     Swaption::Swaption(const ext::shared_ptr<VanillaSwap>& swap,
                        const ext::shared_ptr<Exercise>& exercise,
                        Settlement::Type delivery,
-                       boost::optional<SettlementMethod::Type> settlementMethod)
+                       Settlement::Method settlementMethod)
         : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
           settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
@@ -139,17 +154,7 @@ namespace QuantLib {
 
         arguments->swap = swap_;
         arguments->settlementType = settlementType_;
-        if(settlementMethod_) {
-            arguments->settlementMethod = *settlementMethod_;
-        }
-        else {
-            // if the settlement method is not given, default
-            // values are used
-            arguments->settlementMethod =
-                settlementType_ == Settlement::Physical
-                    ? SettlementMethod::Physical
-                    : SettlementMethod::ParYieldCurve;
-        }
+        arguments->settlementMethod = settlementMethod_;
         arguments->exercise = exercise_;
     }
 
@@ -157,14 +162,8 @@ namespace QuantLib {
         VanillaSwap::arguments::validate();
         QL_REQUIRE(swap, "vanilla swap not set");
         QL_REQUIRE(exercise, "exercise not set");
-        QL_REQUIRE(settlementType != Settlement::Physical ||
-                       settlementMethod == SettlementMethod::Physical,
-                   "invalid settlement method for physical settlement");
-        QL_REQUIRE(settlementType != Settlement::Cash ||
-                       (settlementMethod ==
-                            SettlementMethod::CollateralizedCashPrice ||
-                        settlementMethod == SettlementMethod::ParYieldCurve),
-                   "invalid settlement method for cash settlement");
+        checkSettlementTypeAndMethodConsistency(settlementType,
+                                                settlementMethod);
     }
 
     Volatility Swaption::impliedVolatility(Real targetValue,
@@ -186,4 +185,16 @@ namespace QuantLib {
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
+    void checkSettlementTypeAndMethodConsistency(
+        Settlement::Type settlementType, Settlement::Method settlementMethod) {
+        QL_REQUIRE(settlementType != Settlement::Physical ||
+                       (settlementMethod == Settlement::PhysicalOTC ||
+                        settlementMethod == Settlement::PhysicalCleared),
+                   "invalid settlement method for physical settlement");
+        QL_REQUIRE(
+            settlementType != Settlement::Cash ||
+                (settlementMethod == Settlement::CollateralizedCashPrice ||
+                 settlementMethod == Settlement::ParYieldCurve),
+            "invalid settlement method for cash settlement");
+    }
 }
