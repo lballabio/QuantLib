@@ -162,8 +162,8 @@ namespace QuantLib {
         VanillaSwap::arguments::validate();
         QL_REQUIRE(swap, "vanilla swap not set");
         QL_REQUIRE(exercise, "exercise not set");
-        checkSettlementTypeAndMethodConsistency(settlementType,
-                                                settlementMethod);
+        Settlement::checkTypeAndMethodConsistency(settlementType,
+                                                  settlementMethod);
     }
 
     Volatility Swaption::impliedVolatility(Real targetValue,
@@ -185,16 +185,19 @@ namespace QuantLib {
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
-    void checkSettlementTypeAndMethodConsistency(
-        Settlement::Type settlementType, Settlement::Method settlementMethod) {
-        QL_REQUIRE(settlementType != Settlement::Physical ||
-                       (settlementMethod == Settlement::PhysicalOTC ||
-                        settlementMethod == Settlement::PhysicalCleared),
-                   "invalid settlement method for physical settlement");
-        QL_REQUIRE(
-            settlementType != Settlement::Cash ||
-                (settlementMethod == Settlement::CollateralizedCashPrice ||
-                 settlementMethod == Settlement::ParYieldCurve),
-            "invalid settlement method for cash settlement");
+    void Settlement::checkTypeAndMethodConsistency(
+                                        Settlement::Type settlementType,
+                                        Settlement::Method settlementMethod) {
+        if (settlementType == Physical) {
+            QL_REQUIRE(settlementMethod == PhysicalOTC ||
+                       settlementMethod == PhysicalCleared,
+                       "invalid settlement method for physical settlement");
+        }
+        if (settlementType == Cash) {
+            QL_REQUIRE(settlementMethod == CollateralizedCashPrice ||
+                       settlementMethod == ParYieldCurve,
+                       "invalid settlement method for cash settlement");
+        }
     }
+
 }

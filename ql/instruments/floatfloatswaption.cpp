@@ -56,8 +56,8 @@ namespace QuantLib {
         FloatFloatSwap::arguments::validate();
         QL_REQUIRE(swap, "underlying cms swap not set");
         QL_REQUIRE(exercise, "exercise not set");
-        checkSettlementTypeAndMethodConsistency(settlementType,
-                                                settlementMethod);
+        Settlement::checkTypeAndMethodConsistency(settlementType,
+                                                  settlementMethod);
     }
 
     Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >

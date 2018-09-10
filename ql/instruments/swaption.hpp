@@ -45,6 +45,9 @@ namespace QuantLib {
             CollateralizedCashPrice,
             ParYieldCurve
         };
+        //! check consistency of settlement type and method
+        static void checkTypeAndMethodConsistency(Settlement::Type,
+                                                  Settlement::Method);
     };
 
     std::ostream& operator<<(std::ostream& out,
@@ -133,9 +136,6 @@ namespace QuantLib {
     class Swaption::engine
         : public GenericEngine<Swaption::arguments, Swaption::results> {};
 
-    //! check consistency of settlement type and method
-    void checkSettlementTypeAndMethodConsistency(
-        Settlement::Type settlementType, Settlement::Method settlementMethod);
 }
 
 #endif

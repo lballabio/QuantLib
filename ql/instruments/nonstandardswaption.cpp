@@ -69,8 +69,8 @@ namespace QuantLib {
         NonstandardSwap::arguments::validate();
         QL_REQUIRE(swap, "underlying non standard swap not set");
         QL_REQUIRE(exercise, "exercise not set");
-        checkSettlementTypeAndMethodConsistency(settlementType,
-                                                settlementMethod);
+        Settlement::checkTypeAndMethodConsistency(settlementType,
+                                                  settlementMethod);
     }
 
     Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
