@@ -95,20 +95,26 @@ namespace QuantLib {
             const vector<Real>& weights,
             const vector<bool>& fixParameters) {
 
-        QL_REQUIRE(weights.empty() || weights.size() == instruments.size(),
-                   "mismatch between number of instruments (" <<
-                   instruments.size() << ") and weights(" <<
-                   weights.size() << ")");
+        QL_REQUIRE(!instruments.empty(), "no instruments provided");
 
         Constraint c;
         if (additionalConstraint.empty())
             c = *constraint_;
         else
             c = CompositeConstraint(*constraint_,additionalConstraint);
+
+        QL_REQUIRE(weights.empty() || weights.size() == instruments.size(),
+                   "mismatch between number of instruments (" <<
+                   instruments.size() << ") and weights (" <<
+                   weights.size() << ")");
         vector<Real> w =
             weights.empty() ? vector<Real>(instruments.size(), 1.0): weights;
 
         Array prms = params();
+        QL_REQUIRE(fixParameters.empty() || fixParameters.size() == prms.size(),
+                   "mismatch between number of parameters (" <<
+                   prms.size() << ") and fixed-parameter specs (" <<
+                   fixParameters.size() << ")");
         vector<bool> all(prms.size(), false);
         Projection proj(prms,fixParameters.size()>0 ? fixParameters : all);
         CalibrationFunction f(this,instruments,w,proj);
@@ -142,15 +148,13 @@ namespace QuantLib {
     }
 
     Disposable<Array> CalibratedModel::params() const {
-        Size size = 0, i;
-        for (i=0; i<arguments_.size(); i++)
+        Size size=0;
+        for (Size i=0; i<arguments_.size(); ++i)
             size += arguments_[i].size();
         Array params(size);
-        Size k = 0;
-        for (i=0; i<arguments_.size(); i++) {
-            for (Size j=0; j<arguments_[i].size(); j++, k++) {
+        for (Size i=0, k=0; i<arguments_.size(); ++i) {
+            for (Size j=0; j<arguments_[i].size(); ++j, ++k)
                 params[k] = arguments_[i].params()[j];
-            }
         }
         return params;
     }
