@@ -507,6 +507,35 @@ void DayCounterTest::testThirty360_EurobondBasis() {
     }
 }
 
+
+void DayCounterTest::testActual365_Canadian() {
+
+    BOOST_TEST_MESSAGE("Testing that Actual 365 (Canadian) throws when needed...");
+
+    Actual365Fixed dayCounter(Actual365Fixed::Canadian);
+
+    try {
+        // no reference period
+        dayCounter.yearFraction(Date(10, September, 2018),
+                                Date(10, September, 2019));
+        BOOST_ERROR("Invalid call to yearFraction failed to throw");
+    } catch (Error& e) {
+        ;  // expected
+    }
+
+    try {
+        // reference period shorter than a month
+        dayCounter.yearFraction(Date(10, September, 2018),
+                                Date(12, September, 2018),
+                                Date(10, September, 2018),
+                                Date(15, September, 2018));
+        BOOST_ERROR("Invalid call to yearFraction failed to throw");
+    } catch (Error& e) {
+        ;  // expected
+    }
+}
+
+
 void DayCounterTest::testIntraday() {
 #ifdef QL_HIGH_RESOLUTION_DATE
 
@@ -548,6 +577,7 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActual365_Canadian));
 
 #ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
