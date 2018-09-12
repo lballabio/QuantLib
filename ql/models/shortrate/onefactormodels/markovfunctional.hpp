@@ -336,7 +336,7 @@ namespace QuantLib {
         const Array &volatility() const { return sigma_.params(); }
 
         void calibrate(
-            const std::vector<ext::shared_ptr<CalibrationHelper> > &helper,
+            const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helper,
             OptimizationMethod &method, const EndCriteria &endCriteria,
             const Constraint &constraint = Constraint(),
             const std::vector<Real> &weights = std::vector<Real>(),

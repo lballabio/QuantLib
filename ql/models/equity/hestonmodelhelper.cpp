@@ -37,8 +37,8 @@ namespace QuantLib {
                             const Handle<Quote>& volatility,
                             const Handle<YieldTermStructure>& riskFreeRate,
                             const Handle<YieldTermStructure>& dividendYield,
-                            CalibrationHelper::CalibrationErrorType errorType)
-    : CalibrationHelper(volatility, riskFreeRate, errorType),
+                            BlackCalibrationHelper::CalibrationErrorType errorType)
+    : BlackCalibrationHelper(volatility, riskFreeRate, errorType),
       maturity_(maturity), calendar_(calendar),
       s0_(Handle<Quote>(ext::make_shared<SimpleQuote>(s0))),
       strikePrice_(strikePrice), dividendYield_(dividendYield) {
@@ -53,8 +53,8 @@ namespace QuantLib {
                             const Handle<Quote>& volatility,
                             const Handle<YieldTermStructure>& riskFreeRate,
                             const Handle<YieldTermStructure>& dividendYield,
-                            CalibrationHelper::CalibrationErrorType errorType)
-    : CalibrationHelper(volatility, riskFreeRate, errorType),
+                            BlackCalibrationHelper::CalibrationErrorType errorType)
+    : BlackCalibrationHelper(volatility, riskFreeRate, errorType),
       maturity_(maturity), calendar_(calendar), s0_(s0),
       strikePrice_(strikePrice), dividendYield_(dividendYield) {
         registerWith(s0);
@@ -74,7 +74,7 @@ namespace QuantLib {
         ext::shared_ptr<Exercise> exercise =
             ext::make_shared<EuropeanExercise>(exerciseDate_);
         option_ = ext::make_shared<VanillaOption>(payoff, exercise);
-        CalibrationHelper::performCalculations();
+        BlackCalibrationHelper::performCalculations();
     }
 
     Real HestonModelHelper::modelValue() const {

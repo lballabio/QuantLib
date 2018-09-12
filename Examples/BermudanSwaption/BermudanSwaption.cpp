@@ -72,7 +72,7 @@ Volatility swaptionVols[] = {
 
 void calibrateModel(
           const ext::shared_ptr<ShortRateModel>& model,
-          const std::vector<ext::shared_ptr<CalibrationHelper> >& helpers) {
+          const std::vector<ext::shared_ptr<BlackCalibrationHelper> >& helpers) {
 
     LevenbergMarquardt om;
     model->calibrate(helpers, om,
@@ -173,7 +173,7 @@ int main(int, char* []) {
         swaptionMaturities.push_back(Period(4, Years));
         swaptionMaturities.push_back(Period(5, Years));
 
-        std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > swaptions;
 
         // List of times that have to be included in the timegrid
         std::list<Time> times;
@@ -183,7 +183,7 @@ int main(int, char* []) {
             Size j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1
             Size k = i*numCols + j;
             ext::shared_ptr<Quote> vol(new SimpleQuote(swaptionVols[k]));
-            swaptions.push_back(ext::shared_ptr<CalibrationHelper>(new
+            swaptions.push_back(ext::shared_ptr<BlackCalibrationHelper>(new
                 SwaptionHelper(swaptionMaturities[i],
                                Period(swapLenghts[j], Years),
                                Handle<Quote>(vol),

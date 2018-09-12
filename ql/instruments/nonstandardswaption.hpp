@@ -61,7 +61,7 @@ namespace QuantLib {
             return swap_;
         }
         //@}
-        Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
+        Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
         calibrationBasket(
             ext::shared_ptr<SwapIndex> standardSwapBase,
             ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
