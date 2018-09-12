@@ -101,6 +101,18 @@ namespace QuantLib {
         return exerciseTimes;
     }
 
+    Real VanillaForwardPayoff::operator()(Real price) const {
+        switch (type_) {
+          case Option::Call:
+            return price-strike_;
+          case Option::Put:
+            return strike_-price;
+          default:
+            QL_FAIL("unknown/illegal option type");
+        }
+    }
+
+
     void VanillaSwingOption::arguments::validate() const {
         QL_REQUIRE(payoff, "no payoff given");
         QL_REQUIRE(exercise, "no exercise given");

@@ -49,6 +49,14 @@ namespace QuantLib {
         const std::vector<Size> seconds_;
     };
 
+    class VanillaForwardPayoff : public StrikedTypePayoff {
+      public:
+        VanillaForwardPayoff(Option::Type type, Real strike)
+          : StrikedTypePayoff(type, strike) {}
+
+        std::string name() const { return "ForwardTypePayoff";}
+        Real operator()(Real price) const;
+    };
 
     //! base option class
     class VanillaSwingOption : public OneAssetOption {

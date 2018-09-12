@@ -232,26 +232,6 @@ void SwingOptionTest::testExtOUJumpVanillaEngine() {
     }
 }
 
-namespace {
-    class VanillaForwardPayoff : public StrikedTypePayoff {
-      public:
-        VanillaForwardPayoff(Option::Type type, Real strike)
-          : StrikedTypePayoff(type, strike) {}
-
-        std::string name() const { return "ForwardTypePayoff";}
-        Real operator()(Real price) const {
-            switch (type_) {
-              case Option::Call:
-                return price-strike_;
-              case Option::Put:
-                return strike_-price;
-              default:
-                QL_FAIL("unknown/illegal option type");
-            }
-        }
-    };
-}
-
 void SwingOptionTest::testFdBSSwingOption() {
 
     BOOST_TEST_MESSAGE("Testing Black-Scholes vanilla swing option pricing...");
