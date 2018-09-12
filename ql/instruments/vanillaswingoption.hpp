@@ -56,6 +56,7 @@ namespace QuantLib {
 
         std::string name() const { return "ForwardTypePayoff";}
         Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
     };
 
     //! base option class

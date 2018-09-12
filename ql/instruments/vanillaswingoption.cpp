@@ -112,6 +112,15 @@ namespace QuantLib {
         }
     }
 
+    void VanillaForwardPayoff::accept(AcyclicVisitor& v) {
+        Visitor<VanillaForwardPayoff>* v1 =
+            dynamic_cast<Visitor<VanillaForwardPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            StrikedTypePayoff::accept(v);
+    }
+
 
     void VanillaSwingOption::arguments::validate() const {
         QL_REQUIRE(payoff, "no payoff given");
