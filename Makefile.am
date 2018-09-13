@@ -26,7 +26,7 @@ EXTRA_DIST = \
 	QuantLib.sln \
 	QuantLib.vcxproj \
 	QuantLib.vcxproj.filters \
-	Readme.txt \
+	README.md \
 	autogen.sh
 
 .PHONY: examples check-examples
