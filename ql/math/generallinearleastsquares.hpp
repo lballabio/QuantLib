@@ -76,16 +76,6 @@ namespace QuantLib {
             xIterator xBegin, xIterator xEnd,
             yIterator yBegin, yIterator yEnd,
             vIterator vBegin);
-
-        /*! \deprecated Use the overload taking 5 parameters.
-                        Deprecated in version 1.10.
-        */
-        template <class xIterator, class yIterator, class vIterator>
-        QL_DEPRECATED
-        void calculate(
-            xIterator xBegin, xIterator xEnd,
-            yIterator yBegin, yIterator yEnd,
-            vIterator vBegin, vIterator vEnd);
     };
 
     template <class xContainer, class yContainer, class vContainer> inline
@@ -158,13 +148,6 @@ namespace QuantLib {
             residuals_.begin(), 0.0);
         std::transform(err_.begin(), err_.end(), standardErrors_.begin(),
                        multiply_by<Real>(std::sqrt(chiSq/(n-2))));
-    }
-
-    template <class xIterator, class yIterator, class vIterator>
-    void GeneralLinearLeastSquares::calculate(xIterator xBegin, xIterator xEnd,
-                                              yIterator yBegin, yIterator yEnd,
-                                              vIterator vBegin, vIterator) {
-        calculate(xBegin, xEnd, yBegin, yEnd, vBegin);
     }
 
 }
