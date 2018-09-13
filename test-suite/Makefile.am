@@ -57,6 +57,7 @@ QL_TESTS = \
 	forwardoption.hpp forwardoption.cpp \
 	forwardrateagreement.hpp forwardrateagreement.cpp \
 	functions.hpp functions.cpp \
+	fxvolsmile.hpp fxvolsmile.cpp \
 	garch.hpp garch.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
 	gjrgarchmodel.hpp gjrgarchmodel.cpp \

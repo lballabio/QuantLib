@@ -32,8 +32,8 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <qle/termstructures/blackinvertedvoltermstructure.hpp>
-#include <qle/termstructures/fxblackvolsurface.hpp>
-#include <qle/termstructures/fxvannavolgasmilesection.hpp>
+#include <ql/termstructures/volatility/equityfx/fxblackvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
 
 using namespace QuantLib;
 using namespace QuantExt;
