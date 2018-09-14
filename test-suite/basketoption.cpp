@@ -783,7 +783,7 @@ namespace {
     };
 }
 
-void BasketOptionTest::testOneDAmericanValues(unsigned from, unsigned to) {
+void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) {
 
     BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
                        "from " << from << " to " << to-1 <<  "...");
