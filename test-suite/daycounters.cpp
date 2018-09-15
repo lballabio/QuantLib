@@ -519,7 +519,7 @@ void DayCounterTest::testActual365_Canadian() {
         dayCounter.yearFraction(Date(10, September, 2018),
                                 Date(10, September, 2019));
         BOOST_ERROR("Invalid call to yearFraction failed to throw");
-    } catch (Error& e) {
+    } catch (Error&) {
         ;  // expected
     }
 
@@ -530,7 +530,7 @@ void DayCounterTest::testActual365_Canadian() {
                                 Date(10, September, 2018),
                                 Date(15, September, 2018));
         BOOST_ERROR("Invalid call to yearFraction failed to throw");
-    } catch (Error& e) {
+    } catch (Error&) {
         ;  // expected
     }
 }
