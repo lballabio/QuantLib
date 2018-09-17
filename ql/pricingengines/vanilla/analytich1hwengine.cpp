@@ -26,8 +26,7 @@
 
 namespace QuantLib {
     // integration helper class
-    class AnalyticH1HWEngine::Fj_Helper
-        : public std::unary_function<std::complex<Real>, Real> {
+    class AnalyticH1HWEngine::Fj_Helper {
 
       public:
         Fj_Helper(const Handle<HestonModel>& hestonModel,

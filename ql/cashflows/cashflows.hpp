@@ -43,7 +43,7 @@ namespace QuantLib {
         CashFlows();
         CashFlows(const CashFlows&);
 
-        class IrrFinder : public std::unary_function<Rate, Real> {
+        class IrrFinder {
           public:
             IrrFinder(const Leg& leg,
                       Real npv,

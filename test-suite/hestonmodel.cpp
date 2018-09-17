@@ -1846,8 +1846,7 @@ void HestonModelTest::testAllIntegrationMethods() {
 }
 
 namespace {
-    class LogCharacteristicFunction
-            : public std::unary_function<Real, Real> {
+    class LogCharacteristicFunction {
       public:
         LogCharacteristicFunction(
             Size n, Time t,

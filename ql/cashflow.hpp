@@ -73,8 +73,11 @@ namespace QuantLib {
     typedef std::vector<ext::shared_ptr<CashFlow> > Leg;
 
     template <>
-    struct earlier_than<CashFlow>
-            : public std::binary_function<CashFlow,CashFlow,bool> {
+    struct earlier_than<CashFlow> {
+        typedef CashFlow first_argument_type;
+        typedef CashFlow second_argument_type;
+        typedef bool result_type;
+
         bool operator()(const CashFlow& c1,
                         const CashFlow& c2) const {
             return c1.date() < c2.date();

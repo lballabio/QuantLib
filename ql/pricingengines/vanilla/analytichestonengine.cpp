@@ -84,7 +84,7 @@ namespace QuantLib {
             Real operator()(Real x) const { return int_(1.0-x); }
         };
 
-        class u_Max : public std::unary_function<Real, Real> {
+        class u_Max {
           public:
             u_Max(Real c_inf, Real epsilon)
             : c_inf_(c_inf), logEpsilon_(std::log(epsilon)),
@@ -103,7 +103,7 @@ namespace QuantLib {
         };
 
 
-        class uHat_Max : public std::unary_function<Real, Real> {
+        class uHat_Max {
           public:
             uHat_Max(Real v0T2, Real epsilon)
             : v0T2_(v0T2), logEpsilon_(std::log(epsilon)),
@@ -123,9 +123,7 @@ namespace QuantLib {
     }
 
     // helper class for integration
-    class AnalyticHestonEngine::Fj_Helper
-        : public std::unary_function<Real, Real>
-    {
+    class AnalyticHestonEngine::Fj_Helper {
     public:
         Fj_Helper(const VanillaOption::arguments& arguments,
             const ext::shared_ptr<HestonModel>& model,
@@ -368,8 +366,7 @@ namespace QuantLib {
     }
 
 
-    class AnalyticHestonEngine::AP_Helper
-        : public std::unary_function<Real, Real> {
+    class AnalyticHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real s0, Real strike, Real ratio,
                   Volatility sigmaBS,

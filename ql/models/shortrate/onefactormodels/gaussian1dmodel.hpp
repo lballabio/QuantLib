@@ -164,8 +164,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         }
     };
 
-    struct CachedSwapKeyHasher
-        : std::unary_function<CachedSwapKey, std::size_t> {
+    struct CachedSwapKeyHasher {
         std::size_t operator()(CachedSwapKey const &x) const {
             std::size_t seed = 0;
             boost::hash_combine(seed, x.index->name());

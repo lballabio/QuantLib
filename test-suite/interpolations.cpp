@@ -171,7 +171,7 @@ namespace {
     }
 
     template <class F>
-    class errorFunction : public std::unary_function<Real,Real> {
+    class errorFunction {
       public:
         errorFunction(const F& f) : f_(f) {}
         Real operator()(Real x) const {

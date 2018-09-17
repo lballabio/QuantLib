@@ -424,7 +424,7 @@ void HestonSLVModelTest::testTransformedZeroFlowBC() {
 }
 
 namespace {
-    class q_fct : public std::unary_function<Real, Real> {
+    class q_fct {
       public:
         q_fct(const Array& v, const Array& p, const Real alpha)
         : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha),

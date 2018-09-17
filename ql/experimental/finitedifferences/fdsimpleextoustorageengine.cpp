@@ -61,8 +61,7 @@ namespace QuantLib {
 
         };
 
-        class LessButNotCloseEnough
-                : public std::binary_function<Real, Real, bool> {
+        class LessButNotCloseEnough {
           public:
             bool operator()(Real a, Real b) const {
                 return !(close_enough(a, b, 100) || b < a);

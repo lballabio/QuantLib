@@ -185,8 +185,7 @@ namespace QuantLib {
     }
 
     template<>
-    struct earlier_than<DefaultEvent>
-        : public std::binary_function<DefaultEvent, DefaultEvent, bool> {
+    struct earlier_than<DefaultEvent> {
         bool operator()(const DefaultEvent& e1,
                         const DefaultEvent& e2) const {
             return e1.date() < e2.date();

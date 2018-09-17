@@ -195,7 +195,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        class DividendAdder : std::unary_function<Real,Real> {
+        class DividendAdder {
           private:
             const Dividend *dividend;
           public:

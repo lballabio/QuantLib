@@ -29,9 +29,7 @@
 namespace QuantLib {
 
     // helper class for integration
-    class AnalyticPTDHestonEngine::Fj_Helper
-        : public std::unary_function<Real, Real> {
-            
+    class AnalyticPTDHestonEngine::Fj_Helper {
       public:
         Fj_Helper(
             const Handle<PiecewiseTimeDependentHestonModel>& model,
@@ -121,8 +119,7 @@ namespace QuantLib {
                 /phi; 
     }
 
-    class AnalyticPTDHestonEngine::AP_Helper
-        : public std::unary_function<Real, Real> {
+    class AnalyticPTDHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real s0, Real strike, Real ratio,
                   Volatility sigmaBS,
