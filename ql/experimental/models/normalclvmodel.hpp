@@ -75,7 +75,7 @@ namespace QuantLib {
         void performCalculations() const;
 
       private:
-        class MappingFunction : public std::binary_function<Time, Real, Real> {
+        class MappingFunction {
           public:
             explicit MappingFunction(const NormalCLVModel& model);
 

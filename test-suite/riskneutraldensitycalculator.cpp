@@ -262,7 +262,7 @@ namespace {
         const ext::shared_ptr<YieldTermStructure> qTS_;
     };
 
-    class ProbWeightedPayoff : public std::unary_function<Real, Real> {
+    class ProbWeightedPayoff {
       public:
         ProbWeightedPayoff(
             Time t,

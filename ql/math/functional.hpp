@@ -34,8 +34,10 @@ namespace QuantLib {
     // functions
 
     template <class T, class U>
-    class constant : public std::unary_function<T,U> {
+    class constant {
       public:
+        typedef T argument_type;
+        typedef U result_type;
         constant(const U& u) : u_(u) {}
         U operator()(const T&) const { return u_; }
       private:
@@ -43,113 +45,153 @@ namespace QuantLib {
     };
 
     template <class T>
-    class identity : public std::unary_function<T,T> {
+    class identity {
       public:
+        typedef T argument_type;
+        typedef T result_type;
         T operator()(const T& t) const { return t; }
     };
 
     template <class T>
-    class square : public std::unary_function<T,T> {
+    class square {
       public:
+        typedef T argument_type;
+        typedef T result_type;
         T operator()(const T& t) const { return t*t; }
     };
 
     template <class T>
-    class cube : public std::unary_function<T,T> {
+    class cube {
       public:
+        typedef T argument_type;
+        typedef T result_type;
         T operator()(const T& t) const { return t*t*t; }
     };
 
     template <class T>
-    class fourth_power : public std::unary_function<T,T> {
+    class fourth_power {
       public:
+        typedef T argument_type;
+        typedef T result_type;
         T operator()(const T& t) const { T t2 = t*t; return t2*t2; }
     };
 
     // a few shortcuts for common binders
 
     template <class T>
-    class add : public std::unary_function<T,T> {
+    class add {
         T y;
       public:
+        typedef T argument_type;
+        typedef Real result_type;
+
         explicit add(Real y) : y(y) {}
         Real operator()(T x) const { return x + y; }
     };
 
     template <class T>
-    class subtract : public std::unary_function<T,T> {
+    class subtract {
         T y;
       public:
+        typedef T argument_type;
+        typedef Real result_type;
+
         explicit subtract(Real y) : y(y) {}
         Real operator()(T x) const { return x - y; }
     };
 
     template <class T>
-    class subtract_from : public std::unary_function<T,T> {
+    class subtract_from {
         T y;
       public:
+        typedef T argument_type;
+        typedef Real result_type;
+
         explicit subtract_from(Real y) : y(y) {}
         Real operator()(T x) const { return y - x; }
     };
 
     template <class T>
-    class multiply_by : public std::unary_function<T,T> {
+    class multiply_by {
         T y;
       public:
+        typedef T argument_type;
+        typedef Real result_type;
+
         explicit multiply_by(Real y) : y(y) {}
         Real operator()(T x) const { return x * y; }
     };
 
     template <class T>
-    class divide : public std::unary_function<T,T> {
+    class divide {
         T y;
       public:
+        typedef T argument_type;
+        typedef Real result_type;
+
         explicit divide(Real y) : y(y) {}
         Real operator()(T x) const { return y / x; }
     };
 
     template <class T>
-    class divide_by : public std::unary_function<T,T> {
+    class divide_by {
         T y;
       public:
+        typedef T argument_type;
+        typedef Real result_type;
+
         explicit divide_by(Real y) : y(y) {}
         Real operator()(T x) const { return x / y; }
     };
 
     template <class T>
-    class less_than : public std::unary_function<T,bool> {
+    class less_than {
         T y;
       public:
+        typedef T argument_type;
+        typedef bool result_type;
+
         explicit less_than(Real y) : y(y) {}
         bool operator()(T x) const { return x < y; }
     };
 
     template <class T>
-    class greater_than : public std::unary_function<T,bool> {
+    class greater_than {
         T y;
       public:
+        typedef T argument_type;
+        typedef bool result_type;
+
         explicit greater_than(Real y) : y(y) {}
         bool operator()(T x) const { return x > y; }
     };
 
     template <class T>
-    class greater_or_equal_to : public std::unary_function<T,bool> {
+    class greater_or_equal_to {
         T y;
       public:
+        typedef T argument_type;
+        typedef bool result_type;
+
         explicit greater_or_equal_to(Real y) : y(y) {}
         bool operator()(T x) const { return x >= y; }
     };
 
     template <class T>
-    class not_zero : public std::unary_function<T,bool> {
+    class not_zero {
       public:
+        typedef T argument_type;
+        typedef bool result_type;
         bool operator()(T x) const { return x != T(); }
     };
 
     template <class T>
-    class not_null : public std::unary_function<T,bool> {
+    class not_null {
         T null;
       public:
+        typedef T argument_type;
+        typedef bool result_type;
+
         not_null() : null(Null<T>()) {}
         bool operator()(T x) const { return x != null; }
     };
@@ -167,10 +209,14 @@ namespace QuantLib {
     };
 
     template <class T>
-    class equal_within : public std::binary_function<T, T, bool> {
+    class equal_within {
       public:
+        typedef T first_argument_type;
+        typedef T second_argument_type;
+        typedef bool result_type;
+
         equal_within(const T& eps) : eps_(eps) {}
-        bool operator()(const T a, const T b) const {
+        bool operator()(const T& a, const T& b) const {
             return std::fabs(a-b) <= eps_;
         }
       private:
@@ -218,10 +264,7 @@ namespace QuantLib {
     }
 
     template <class F, class G, class H>
-    class binary_compose3_function :
-        public std::binary_function<typename G::argument_type,
-                                    typename H::argument_type,
-                                    typename F::result_type>{
+    class binary_compose3_function {
       public:
         typedef typename G::argument_type first_argument_type;
         typedef typename H::argument_type second_argument_type;

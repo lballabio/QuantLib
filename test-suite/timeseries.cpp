@@ -98,7 +98,7 @@ void TimeSeriesTest::testIntervalPrice() {
 namespace boost {
 
     template<>
-    struct hash<Date> : std::unary_function<Date, std::size_t> {
+    struct hash<Date> {
         size_t operator()(const Date& _Keyval) const {
             return boost::hash<Date::serial_type>()(_Keyval.serialNumber());
         }

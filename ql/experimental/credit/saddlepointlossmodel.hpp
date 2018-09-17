@@ -174,8 +174,7 @@ namespace QuantLib {
         Real CumGen4thDerivative(const Date& date, Real s) const;
         
         // -------- Saddle point search functions ---------------------------
-        class SaddleObjectiveFunction : 
-            public std::unary_function<Real, Real> {
+        class SaddleObjectiveFunction {
             const SaddlePointLossModel& me_;
             Real targetValue_;
             const std::vector<Real>& mktFactor_;
@@ -224,7 +223,7 @@ namespace QuantLib {
             Natural maxEvaluations = 50
             ) const;
 
-        class SaddlePercObjFunction : public std::unary_function<Real, Real> {
+        class SaddlePercObjFunction {
             const SaddlePointLossModel& me_;
             Real targetValue_;
             Date date_;

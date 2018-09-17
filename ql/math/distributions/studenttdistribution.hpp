@@ -39,8 +39,11 @@ namespace QuantLib {
         \frac {1} {\left(1+\frac{x^2}{n}\right)^{(n+1)/2}}
         \f]
     */
-    class StudentDistribution : public std::unary_function<Real,Real> {
+    class StudentDistribution {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         StudentDistribution(Integer n) : n_(n) {
             QL_REQUIRE(n > 0, "invalid parameter for t-distribution");
         }
@@ -61,9 +64,11 @@ namespace QuantLib {
         \f]
         where \f$ I(z; a, b) \f$ is the regularized incomplete beta function.
     */
-    class CumulativeStudentDistribution
-        : public std::unary_function<Real,Real> {
+    class CumulativeStudentDistribution {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         CumulativeStudentDistribution(Integer n) : n_(n) {
             QL_REQUIRE(n > 0, "invalid parameter for t-distribution");
         }
@@ -77,9 +82,11 @@ namespace QuantLib {
               cumulative Student t-distribution, replacing the Newton
               iteration
     */
-    class InverseCumulativeStudent
-        : public std::unary_function<Real,Real> {
+    class InverseCumulativeStudent {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         InverseCumulativeStudent(Integer n,
                                  Real accuracy = 1e-6,
                                  Size maxIterations = 50)

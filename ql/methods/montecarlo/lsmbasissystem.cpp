@@ -51,7 +51,7 @@ namespace QuantLib {
             &GaussianOrthogonalPolynomial::weightedValue;
 
         // pow(x, order)
-        class MonomialFct : public std::unary_function<Real, Real> {
+        class MonomialFct {
           public:
             explicit MonomialFct(Size order): order_(order) {}
             inline Real operator()(const Real x) const {
@@ -66,7 +66,7 @@ namespace QuantLib {
 
         /* multiplies [Real -> Real] functors
            to create [Array -> Real] functor */
-        class MultiDimFct : public std::unary_function<Real, Array> {
+        class MultiDimFct {
           public:
             explicit MultiDimFct(const VF_R& b): b_(b) {
                 QL_REQUIRE(b_.size()>0, "zero size basis");

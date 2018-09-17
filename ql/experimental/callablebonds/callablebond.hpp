@@ -159,9 +159,7 @@ namespace QuantLib {
         //! Helper class for option adjusted spread calculations
         class NPVSpreadHelper;
         friend class NPVSpreadHelper;
-        class NPVSpreadHelper :
-            public std::unary_function<Real, Real>
-        {
+        class NPVSpreadHelper {
         public:
             explicit NPVSpreadHelper(CallableBond& bond);
             Real operator()(Spread x) const;

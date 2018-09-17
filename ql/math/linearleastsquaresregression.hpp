@@ -34,8 +34,10 @@ namespace QuantLib {
     namespace details {
 
         template <class Container>
-        class LinearFct : public std::unary_function<Real, Container > {
+        class LinearFct {
           public:
+            typedef Container argument_type;
+            typedef Real result_type;
             explicit LinearFct(Size i) : i_(i) {}
 
             inline Real operator()(const Container& x) const {

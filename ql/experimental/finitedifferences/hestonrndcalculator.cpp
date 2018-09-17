@@ -64,8 +64,7 @@ namespace {
                   + p.sigma*p.sigma*std::complex<Real>(p_x*p_x, -p_x));
         }
 
-        class CpxPv_Helper
-            : public std::unary_function<Real, Real > {
+        class CpxPv_Helper {
           public:
             CpxPv_Helper(const HestonParams& p, Real x, Time t)
               : p_(p), t_(t), x_(x),

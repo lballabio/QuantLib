@@ -470,7 +470,7 @@ namespace {
     };
 
 
-    class AvgPayoffFct : public std::unary_function<Real,Real> {
+    class AvgPayoffFct {
       public:
         AvgPayoffFct(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                      Volatility vol, Time T, Real growthFactor)

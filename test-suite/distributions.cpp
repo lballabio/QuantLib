@@ -638,7 +638,7 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
     
 
 namespace {
-    class InverseNonCentralChiSquared : public std::unary_function<Real,Real> {
+    class InverseNonCentralChiSquared {
       public:
         InverseNonCentralChiSquared(Real df, Real ncp)
         : dist_(df, ncp) {}

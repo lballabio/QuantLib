@@ -141,7 +141,7 @@ namespace {
     };
 
     template <class T, class U, class V>
-    struct multiplies : public std::binary_function<T, U, V> {
+    struct multiplies {
         V operator()(T t, U u) { return t*u;}
     };
 
