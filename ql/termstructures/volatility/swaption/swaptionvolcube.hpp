@@ -45,8 +45,8 @@ namespace QuantLib {
             const std::vector<Period>& swapTenors,
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-            const boost::shared_ptr<SwapIndex>& swapIndexBase,
-            const boost::shared_ptr<SwapIndex>& shortSwapIndexBase,
+            const ext::shared_ptr<SwapIndex>& swapIndexBase,
+            const ext::shared_ptr<SwapIndex>& shortSwapIndexBase,
             bool vegaWeightedSmileFit);
         //! \name TermStructure interface
         //@{
@@ -77,8 +77,8 @@ namespace QuantLib {
 		Handle<SwaptionVolatilityStructure> atmVol() const { return atmVol_; }
         const std::vector<Spread>& strikeSpreads() const { return strikeSpreads_; }
         const std::vector<std::vector<Handle<Quote> > >& volSpreads() const { return volSpreads_; }
-        const boost::shared_ptr<SwapIndex> swapIndexBase() const { return swapIndexBase_; }
-        const boost::shared_ptr<SwapIndex> shortSwapIndexBase() const { return shortSwapIndexBase_; }
+        const ext::shared_ptr<SwapIndex> swapIndexBase() const { return swapIndexBase_; }
+        const ext::shared_ptr<SwapIndex> shortSwapIndexBase() const { return shortSwapIndexBase_; }
         bool vegaWeightedSmileFit() const { return vegaWeightedSmileFit_; }
         //@}
         //! \name LazyObject interface
@@ -108,7 +108,7 @@ namespace QuantLib {
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
         std::vector<std::vector<Handle<Quote> > > volSpreads_;
-        boost::shared_ptr<SwapIndex> swapIndexBase_, shortSwapIndexBase_;
+        ext::shared_ptr<SwapIndex> swapIndexBase_, shortSwapIndexBase_;
         bool vegaWeightedSmileFit_;
     };
 

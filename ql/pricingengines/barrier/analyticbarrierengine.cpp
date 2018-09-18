@@ -27,15 +27,15 @@
 namespace QuantLib {
 
     AnalyticBarrierEngine::AnalyticBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
 
     void AnalyticBarrierEngine::calculate() const {
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,
                    "strike must be positive");
@@ -115,22 +115,22 @@ namespace QuantLib {
     }
 
     Real AnalyticBarrierEngine::strike() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
 
-    Time AnalyticBarrierEngine::residualTime() const {
-        return process_->time(arguments_.exercise->lastDate());
-    }
-
     Volatility AnalyticBarrierEngine::volatility() const {
-        return process_->blackVolatility()->blackVol(residualTime(), strike());
+        return process_->blackVolatility()->blackVol(
+                    arguments_.exercise->lastDate(), 
+                    strike());
     }
 
     Real AnalyticBarrierEngine::stdDeviation() const {
-        return volatility() * std::sqrt(residualTime());
+        return std::sqrt(process_->blackVolatility()->blackVariance(
+                        arguments_.exercise->lastDate(),
+                        strike()));
     }
 
     Real AnalyticBarrierEngine::barrier() const {
@@ -142,21 +142,27 @@ namespace QuantLib {
     }
 
     Rate AnalyticBarrierEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency);
+        return process_->riskFreeRate()->zeroRate(
+                    arguments_.exercise->lastDate(),
+                    process_->riskFreeRate()->dayCounter(),
+                    Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::riskFreeDiscount() const {
-        return process_->riskFreeRate()->discount(residualTime());
+        return process_->riskFreeRate()->discount(
+                    arguments_.exercise->lastDate());
     }
 
     Rate AnalyticBarrierEngine::dividendYield() const {
-        return process_->dividendYield()->zeroRate(residualTime(),
-                                                   Continuous, NoFrequency);
+        return process_->dividendYield()->zeroRate(
+                    arguments_.exercise->lastDate(),
+                    process_->dividendYield()->dayCounter(),
+                    Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::dividendDiscount() const {
-        return process_->dividendYield()->discount(residualTime());
+        return process_->dividendYield()->discount(
+                    arguments_.exercise->lastDate());
     }
 
     Rate AnalyticBarrierEngine::mu() const {

@@ -97,6 +97,7 @@ QL_TESTS = \
 	money.hpp money.cpp \
 	noarbsabr.hpp noarbsabr.cpp \
 	normalclvmodel.hpp normalclvmodel.cpp \
+	nthorderderivativeop.hpp nthorderderivativeop.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	numericaldifferentiation.hpp numericaldifferentiation.cpp \
 	observable.hpp observable.cpp \
@@ -200,7 +201,7 @@ quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
-TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
+TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message BOOST_TEST_COLOR_OUTPUT=false
 
 .PHONY: benchmark
 benchmark: quantlib-benchmark$(EXEEXT)
@@ -210,7 +211,6 @@ EXTRA_DIST = \
 	CMakeLists.txt \
 	paralleltestrunner.hpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 
@@ -222,7 +222,6 @@ EXTRA_DIST = \
 	paralleltestrunner.hpp \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 

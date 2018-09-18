@@ -61,7 +61,7 @@ namespace QuantLib {
                     Rate fixedRate,
                     const DayCounter& fixedDayCount,
                     const Schedule& yoySchedule,
-                    const boost::shared_ptr<YoYInflationIndex>& yoyIndex,
+                    const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
                     const Period& observationLag,
                     Spread spread,
                     const DayCounter& yoyDayCount,
@@ -84,7 +84,7 @@ namespace QuantLib {
         virtual const DayCounter& fixedDayCount() const;
 
         virtual const Schedule& yoySchedule() const;
-        virtual const boost::shared_ptr<YoYInflationIndex>& yoyInflationIndex() const;
+        virtual const ext::shared_ptr<YoYInflationIndex>& yoyInflationIndex() const;
         virtual Period observationLag() const { return observationLag_; }
         virtual Spread spread() const;
         virtual const DayCounter& yoyDayCount() const;
@@ -108,7 +108,7 @@ namespace QuantLib {
         Rate fixedRate_;
         DayCounter fixedDayCount_;
         Schedule yoySchedule_;
-        boost::shared_ptr<YoYInflationIndex> yoyIndex_;
+        ext::shared_ptr<YoYInflationIndex> yoyIndex_;
         Period observationLag_;
         Spread spread_;
         DayCounter yoyDayCount_;
@@ -179,7 +179,7 @@ namespace QuantLib {
         return yoySchedule_;
     }
 
-    inline const boost::shared_ptr<YoYInflationIndex>& YearOnYearInflationSwap::yoyInflationIndex() const {
+    inline const ext::shared_ptr<YoYInflationIndex>& YearOnYearInflationSwap::yoyInflationIndex() const {
         return yoyIndex_;
     }
 

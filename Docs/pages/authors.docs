@@ -28,6 +28,7 @@
     Marius Akre,
     Mario Aleppo,
     Ferdinando Ametrano,
+    Tom Anderson,
     Grzegorz Andruszkiewicz,
     Driss Aouad,
     Jose Aparicio,
@@ -123,6 +124,7 @@
     Nicola Jean,
     Joseph Jeisman,
     Rahul Kanchi,
+    Roland Kapl,
     Andrey Karpov,
     Michal Kaut,
     Tomoya Kawanishi,
@@ -222,6 +224,7 @@
     Klaus Spanderen,
     Andreas Spengler,
     Roland Stamm,
+    Weston Steimel,
     Edouard Tallent,
     Eisuke Tani,
     Marco Tarenghi,
@@ -239,7 +242,8 @@
     Frank Xue,
     Jeff Yu,
     Maddalena Zanzi,
-    and Francesco Zirilli.
+    Francesco Zirilli,
+    and Roy Zywina.
 
     %QuantLib also includes code taken from Peter J&auml;ckel's book
     "Monte Carlo Methods in Finance".

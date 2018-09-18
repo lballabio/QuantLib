@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/callability/nothingexercisevalue.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/errors.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -85,9 +86,9 @@ namespace QuantLib {
          return cf_;
     }
 
-    std::auto_ptr<MarketModelExerciseValue>
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>
     NothingExerciseValue::clone() const {
-        return std::auto_ptr<MarketModelExerciseValue>(
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>(
                                              new NothingExerciseValue(*this));
     }
 

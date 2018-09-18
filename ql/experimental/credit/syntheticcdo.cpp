@@ -32,7 +32,7 @@ using namespace std;
 
 namespace QuantLib {
 
-    SyntheticCDO::SyntheticCDO(const boost::shared_ptr<Basket>& basket,
+    SyntheticCDO::SyntheticCDO(const ext::shared_ptr<Basket>& basket,
                                Protection::Side side,
                                const Schedule& schedule,
                                Rate upfrontRate,
@@ -107,11 +107,12 @@ namespace QuantLib {
     Real SyntheticCDO::protectionLegNPV() const {
         calculate();
         if(side_ == Protection::Buyer) return -protectionValue_;
-        return premiumValue_;
+        return protectionValue_;
     }
 
     Rate SyntheticCDO::fairPremium () const {
         calculate();
+        QL_REQUIRE(premiumValue_ != 0, "Attempted divide by zero while calculating syntheticCDO premium.");
         return runningRate_
             * (protectionValue_ - upfrontPremiumValue_) / premiumValue_;
     }
@@ -236,9 +237,9 @@ namespace QuantLib {
         Real targetNPV,
         Real accuracy) const 
     {
-        boost::shared_ptr<SimpleQuote> correl(new SimpleQuote(0.0));
+        ext::shared_ptr<SimpleQuote> correl(new SimpleQuote(0.0));
 
-        boost::shared_ptr<GaussianLHPLossModel> lhp(new 
+        ext::shared_ptr<GaussianLHPLossModel> lhp(new 
             GaussianLHPLossModel(Handle<Quote>(correl), recoveries));
 
         // lock

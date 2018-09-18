@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     ExtOUWithJumpsProcess::ExtOUWithJumpsProcess(
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
+            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
             Real Y0, Real beta, Real jumpIntensity, Real eta)
     : Y0_(Y0), 
       beta_(beta), 
@@ -40,7 +40,7 @@ namespace QuantLib {
     Size ExtOUWithJumpsProcess::factors() const {
         return 3;
     }
-    boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
+    ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
         ExtOUWithJumpsProcess::getExtendedOrnsteinUhlenbeckProcess() const {
         return ouProcess_;
     }

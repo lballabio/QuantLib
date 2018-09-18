@@ -26,6 +26,7 @@
 
 #include <ql/time/date.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

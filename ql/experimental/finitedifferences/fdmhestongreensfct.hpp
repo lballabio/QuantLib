@@ -34,8 +34,8 @@ namespace QuantLib {
         enum Algorithm { ZeroCorrelation, Gaussian, SemiAnalytical };
 
         FdmHestonGreensFct(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HestonProcess>& process,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<HestonProcess>& process,
             FdmSquareRootFwdOp::TransformationType trafoType_,
             Real l0 = 1.0);
 
@@ -43,8 +43,8 @@ namespace QuantLib {
 
       private:
         const Real l0_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<HestonProcess> process_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<HestonProcess> process_;
         const FdmSquareRootFwdOp::TransformationType trafoType_;
     };
 }

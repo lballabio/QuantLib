@@ -24,7 +24,6 @@
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
@@ -146,8 +145,8 @@ void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
         for (Size j=0; j < LENGTH(types); ++j) {
             const Option::Type type = types[j];
 
-            const boost::shared_ptr<PlainVanillaPayoff> payoff(
-                boost::make_shared<PlainVanillaPayoff>(type, strike));
+            const ext::shared_ptr<PlainVanillaPayoff> payoff(
+                ext::make_shared<PlainVanillaPayoff>(type, strike));
 
             const Real marketValue = blackFormula(payoff, forward, stdDev, df);
 
@@ -225,8 +224,8 @@ void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
     const Date exerciseDate = today + Period(15, Months);
     const Time exerciseTime = dc.yearFraction(today, exerciseDate);
 
-    const boost::shared_ptr<YieldTermStructure> rTS = flatRate(0.10, dc);
-    const boost::shared_ptr<YieldTermStructure> qTS = flatRate(0.06, dc);
+    const ext::shared_ptr<YieldTermStructure> rTS = flatRate(0.10, dc);
+    const ext::shared_ptr<YieldTermStructure> qTS = flatRate(0.06, dc);
 
     const DiscountFactor df = rTS->discount(exerciseDate);
 
@@ -248,8 +247,8 @@ void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
         for (Size j=0; j < LENGTH(types); ++j) {
             const Option::Type type = types[j];
 
-            const boost::shared_ptr<PlainVanillaPayoff> payoff(
-                boost::make_shared<PlainVanillaPayoff>(type, strike));
+            const ext::shared_ptr<PlainVanillaPayoff> payoff(
+                ext::make_shared<PlainVanillaPayoff>(type, strike));
 
             for (Size k=0; k < LENGTH(displacements); ++k) {
 

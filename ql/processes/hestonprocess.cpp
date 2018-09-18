@@ -49,7 +49,7 @@ namespace QuantLib {
                               Real v0, Real kappa,
                               Real theta, Real sigma, Real rho,
                               Discretization d)
-    : StochasticProcess(boost::shared_ptr<discretization>(
+    : StochasticProcess(ext::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
       v0_(v0), kappa_(kappa), theta_(theta), sigma_(sigma), rho_(rho),

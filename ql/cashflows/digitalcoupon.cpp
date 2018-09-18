@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-    DigitalCoupon::DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+    DigitalCoupon::DigitalCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
                   Rate callStrike,
                   Position::Type callPosition,
                   bool isCallATMIncluded,
@@ -34,7 +34,7 @@ namespace QuantLib {
                   Position::Type putPosition,
                   bool isPutATMIncluded,
                   Rate putDigitalPayoff,
-                  const boost::shared_ptr<DigitalReplication>& replication)
+                  const ext::shared_ptr<DigitalReplication>& replication)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),

@@ -39,8 +39,11 @@ namespace QuantLib {
         on Arbitrarily Spaced Grids,
         http://amath.colorado.edu/faculty/fornberg/Docs/MathComp_88_FD_formulas.pdf
     */
-    class NumericalDifferentiation : public std::unary_function<Real, Real> {
+    class NumericalDifferentiation {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         enum Scheme { Central, Backward, Forward };
 
         NumericalDifferentiation(

@@ -44,10 +44,10 @@ namespace QuantLib {
     */
     class YoYInflationCapFloorEngine : public YoYInflationCapFloor::engine {
     public:
-        YoYInflationCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
+        YoYInflationCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
                                    const Handle<YoYOptionletVolatilitySurface>& vol);
 
-        boost::shared_ptr<YoYInflationIndex> index() const { return index_;}
+        ext::shared_ptr<YoYInflationIndex> index() const { return index_;}
         Handle<YoYOptionletVolatilitySurface> volatility() const { return volatility_; }
 
         void setVolatility(const Handle<YoYOptionletVolatilitySurface>& vol);
@@ -59,7 +59,7 @@ namespace QuantLib {
                                    Rate forward, Real stdDev,
                                    Real d) const = 0;
 
-        boost::shared_ptr<YoYInflationIndex> index_;
+        ext::shared_ptr<YoYInflationIndex> index_;
         Handle<YoYOptionletVolatilitySurface> volatility_;
     };
 
@@ -69,7 +69,7 @@ namespace QuantLib {
     class YoYInflationBlackCapFloorEngine
     : public YoYInflationCapFloorEngine {
     public:
-        YoYInflationBlackCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
+        YoYInflationBlackCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
                                         const Handle<YoYOptionletVolatilitySurface>&);
 
     protected:
@@ -86,7 +86,7 @@ namespace QuantLib {
     : public YoYInflationCapFloorEngine {
     public:
         YoYInflationUnitDisplacedBlackCapFloorEngine(
-                    const boost::shared_ptr<YoYInflationIndex>&,
+                    const ext::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>&);
     protected:
 
@@ -102,7 +102,7 @@ namespace QuantLib {
     : public YoYInflationCapFloorEngine {
     public:
         YoYInflationBachelierCapFloorEngine(
-                    const boost::shared_ptr<YoYInflationIndex>&,
+                    const ext::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>&);
 
     protected:

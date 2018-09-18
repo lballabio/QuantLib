@@ -50,7 +50,7 @@ namespace QuantLib {
       public:
         Helper(const Size i, const Real xMin, const Real dx,
                const Real discountBondPrice,
-               const boost::shared_ptr<ShortRateTree>& tree,
+               const ext::shared_ptr<ShortRateTree>& tree,
                const boost::function<Real(Real)>& fInv)
         : size_(tree->size(i)),
           dt_(tree->timeGrid().dt(i)),
@@ -129,7 +129,7 @@ namespace QuantLib {
         Real lnEt = integrateMeanReversion(speed_,0,t);
         Real Et = exp(lnEt);
         Real B = 0;
-        Size N = std::min<Size>((T-t)*365, 2000);
+        Size N = std::min<Size>(Size((T-t)*365), 2000);
         if (N==0) N=1;
         Real dt = 0.5*(T-t)/N;
         Real a,b,c,_t,total=0;
@@ -152,7 +152,7 @@ namespace QuantLib {
         // Gurrieri et al, equation (37)
         Real lnEt = integrateMeanReversion(speed_,0,t);
         Real V = 0,Eu;
-        Size N = std::min<Size>((T-t)*365, 2000);
+        Size N = std::min<Size>(Size((T-t)*365), 2000);
         if (N==0) N=1;
         Real dt = 0.5*(T-t)/N;
         Real a,b,c,_t,lnE=lnEt;
@@ -207,19 +207,19 @@ namespace QuantLib {
     }
 
 
-    boost::shared_ptr<Lattice> GeneralizedHullWhite::tree(
+    ext::shared_ptr<Lattice> GeneralizedHullWhite::tree(
                                                   const TimeGrid& grid) const{
 
         TermStructureFittingParameter phi(termStructure());
-        boost::shared_ptr<ShortRateDynamics> numericDynamics(
+        ext::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi, speed(), vol(), f_, fInverse_));
-        boost::shared_ptr<TrinomialTree> trinomial(
+        ext::shared_ptr<TrinomialTree> trinomial(
             new TrinomialTree(numericDynamics->process(), grid));
-        boost::shared_ptr<ShortRateTree> numericTree(
+        ext::shared_ptr<ShortRateTree> numericTree(
             new ShortRateTree(trinomial, numericDynamics, grid));
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl =
-            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        ext::shared_ptr<NumericalImpl> impl =
+            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
         impl->reset();
         Real value = 1.0;

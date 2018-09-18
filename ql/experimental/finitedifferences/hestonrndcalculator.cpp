@@ -27,7 +27,6 @@
 #include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 
-#include <boost/make_shared.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
@@ -48,7 +47,7 @@ namespace {
         };
 
         HestonParams getHestonParams(
-            const boost::shared_ptr<HestonProcess>& process) {
+            const ext::shared_ptr<HestonProcess>& process) {
             const HestonParams p = { process->v0(),    process->kappa(),
                                      process->theta(), process->sigma(),
                                      process->rho() };
@@ -65,8 +64,7 @@ namespace {
                   + p.sigma*p.sigma*std::complex<Real>(p_x*p_x, -p_x));
         }
 
-        class CpxPv_Helper
-            : public std::unary_function<Real, Real > {
+        class CpxPv_Helper {
           public:
             CpxPv_Helper(const HestonParams& p, Real x, Time t)
               : p_(p), t_(t), x_(x),
@@ -120,7 +118,7 @@ namespace {
 
 
     HestonRNDCalculator::HestonRNDCalculator(
-        const boost::shared_ptr<HestonProcess>& hestonProcess,
+        const ext::shared_ptr<HestonProcess>& hestonProcess,
         Real integrationEps, Size maxIntegrationIterations)
     : hestonProcess_(hestonProcess),
       x0_(std::log(hestonProcess_->s0()->value())),
@@ -157,13 +155,13 @@ namespace {
         const Volatility expVol
             = std::sqrt(theta + (v0-theta)*(1-std::exp(-kappa*t))/(t*kappa));
 
-        const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-            boost::make_shared<BlackScholesMertonProcess>(
+        const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+            ext::make_shared<BlackScholesMertonProcess>(
                 hestonProcess_->s0(),
                 hestonProcess_->dividendYield(),
                 hestonProcess_->riskFreeRate(),
                 Handle<BlackVolTermStructure>(
-                    boost::make_shared<BlackConstantVol>(
+                    ext::make_shared<BlackConstantVol>(
                             hestonProcess_->riskFreeRate()->referenceDate(),
                             NullCalendar(),
                             expVol,

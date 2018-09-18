@@ -60,7 +60,7 @@ namespace QuantLib {
               typename CappedFlooredCouponType>
     Leg FloatingLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
-                    const boost::shared_ptr<InterestRateIndexType>& index,
+                    const ext::shared_ptr<InterestRateIndexType>& index,
                     const DayCounter& paymentDayCounter,
                     BusinessDayConvention paymentAdj,
                     const std::vector<Natural>& fixingDays,
@@ -118,7 +118,7 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule.tenor(), bdc);
             }
             if (detail::get(gearings, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(boost::shared_ptr<CashFlow>(new
+                leg.push_back(ext::shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate,
                                     detail::get(nominals, i, 1.0),
                                     detail::effectiveFixedRate(spreads,caps,
@@ -127,7 +127,7 @@ namespace QuantLib {
                                     start, end, refStart, refEnd)));
             } else { // floating coupon
                 if (detail::noOption(caps, floors, i))
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                    leg.push_back(ext::shared_ptr<CashFlow>(new
                         FloatingCouponType(
                             paymentDate,
                             detail::get(nominals, i, 1.0),
@@ -139,7 +139,7 @@ namespace QuantLib {
                             refStart, refEnd,
                             paymentDayCounter, isInArrears)));
                 else {
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                    leg.push_back(ext::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(
                                paymentDate,
                                detail::get(nominals, i, 1.0),
@@ -166,7 +166,7 @@ namespace QuantLib {
     Leg FloatingDigitalLeg(
                         const Schedule& schedule,
                         const std::vector<Real>& nominals,
-                        const boost::shared_ptr<InterestRateIndexType>& index,
+                        const ext::shared_ptr<InterestRateIndexType>& index,
                         const DayCounter& paymentDayCounter,
                         BusinessDayConvention paymentAdj,
                         const std::vector<Natural>& fixingDays,
@@ -181,7 +181,7 @@ namespace QuantLib {
                         Position::Type putPosition,
                         bool isPutATMIncluded,
                         const std::vector<Rate>& putDigitalPayoffs,
-                        const boost::shared_ptr<DigitalReplication>& replication)
+                        const ext::shared_ptr<DigitalReplication>& replication)
     {
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
@@ -222,14 +222,14 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule.tenor(), bdc);
             }
             if (detail::get(gearings, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(boost::shared_ptr<CashFlow>(new
+                leg.push_back(ext::shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate,
                                     detail::get(nominals, i, 1.0),
                                     detail::get(spreads, i, 1.0),
                                     paymentDayCounter,
                                     start, end, refStart, refEnd)));
             } else { // floating digital coupon
-                boost::shared_ptr<FloatingCouponType> underlying(new
+                ext::shared_ptr<FloatingCouponType> underlying(new
                     FloatingCouponType(paymentDate,
                                        detail::get(nominals, i, 1.0),
                                        start, end,
@@ -239,7 +239,7 @@ namespace QuantLib {
                                        detail::get(spreads, i, 0.0),
                                        refStart, refEnd,
                                        paymentDayCounter, isInArrears));
-                leg.push_back(boost::shared_ptr<CashFlow>(new
+                leg.push_back(ext::shared_ptr<CashFlow>(new
                     DigitalCouponType(
                              underlying,
                              detail::get(callStrikes, i, Null<Real>()),

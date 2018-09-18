@@ -1,111 +1,84 @@
 
-Changes for QuantLib 1.12:
+Changes for QuantLib 1.13:
 ==========================
 
-QuantLib 1.12 includes 54 pull requests from several contributors.
+QuantLib 1.13 includes 42 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/7?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/8?closed=1>.
 
 PORTABILITY
 
-- As announced in the previous release, support for the Dev-C++ IDE
-  was removed.
+- In April 2018, Microsoft ended its support for Microsoft Visual
+  C++ 2008. This release still includes a solution file for VC++ 2008,
+  but we won't support it further or take bug reports for it. The next
+  release will only contain project files for Visual C++ 2010 and
+  later.
 
-- In April 2018, Microsoft will end its support for Microsoft Visual
-  C++ 2008.  Therefore, this is the last version of QuantLib to
-  support it with maintained project files.  The next release will
-  only contain project files for Visual C++ 2010 and later.
-
-- It is now possible to build a usable library with CMake on Windows
-  (thanks to Javier G. Sogo).
-
-- Fix autotools build outside the source tree (thanks to Joshua
-  Ulrich).
+- Fixed build on Solaris 12.5 in C++11 mode (thanks to Nick Glass).
 
 INSTRUMENTS AND PRICING ENGINES
 
-- Added OAS calculation to experimental callable bonds (thanks to
-  Bojan Nikolic).
+- Fix CDS calculation when the start date falls during the week-end
+  (thanks to Guillaume Horel).
 
-- Avoided infinite loop for some sets of parameters in experimental
-  variance-gamma engine (thanks to Roy Zywina).
+- Allow construction of a `ForwardRateAgreement` instance even if the
+  interest-rate curve is not yet linked (thanks to Tom Anderson).
 
-CASH FLOWS
+CASH FLOWS AND INTEREST RATES
 
-- It is now possible to build a cash-flow leg from a schedule created
-  from a precalculated vector of dates (thanks to Peter Caspers).
+- Added Mosprime, Pribor, Robor and Wibor indices (thanks to Matthias
+  Lungwitz).
+
+- Improved performance of Black pricer for LIBOR coupons (thanks to
+  Peter Caspers).
+
+- Fixed experimental quanto coupon pricer (thanks to Peter Caspers).
+
+- Revised experimental CMS-spread coupon pricer (thanks to Peter
+  Caspers).
 
 MODELS
 
-- Affine models can now be used to bootstrap a default-probability
-  curve (thanks to Jose Aparicio).
+- Improvements for the experimental generalized Hull-White model
+  (thanks to Roy Zywina).
 
-- Added Andreasen-Huge volatility interpolation and local volatility
-  calibration (thanks to Klaus Spanderen).
+- Fixed drift in GSR process (thanks to Peter Caspers for the fix and
+  to Seung Beom Bang for the heads up).
 
-- Added Rannacher smoothing steps for Heston stochastic local
-  volatility calibration (thanks to Klaus Spanderen).
+- Fixed an out-of-bound access in the
+  `TwoFactorModel::ShortRateDynamics::process` method (thanks to
+  Weston Steimel).
 
-TERM STRUCTURES
+FINITE DIFFERENCES
 
-- Added L2 penalty to fitted parameters of fitted bond discount curve
-  (thanks to Robin Northcott).
+- Improved Black-Scholes mesher for low volatilities and high discrete
+  dividends (thanks to Klaus Spanderen).
 
-- Added an optional trading calendar to the FX-swap rate helper and
-  and optional payment lag to the OIS rate helper (thanks to Wojciech
-  Slusarski).
-
-- Fixed inconsistent treatment of strike in experimental CPI cap/floor
-  term price surface (thanks to Francis Duffy).
-
-- Correctly handled the case of overlapping strike regions for caps
-  and floors in experimental CPI cap/floor term price surface (thanks
-  to Peter Caspers).
-
-- Fixed calculation of seasonality correction for interpolated
-  inflation indexes (thanks to Francis Duffy).
-
-- Implemented composite zero-yield curve as combination of two
-  existing curves via a given binary function (thanks to Francois
-  Botha).
-
-- Fixed interpolation of shift in swaption volatility matrix (thanks
-  to Peter Caspers).
+- Added method-of-lines scheme (thanks to Klaus Spanderen).
 
 DATE/TIME
 
-- Updated Chinese calendar for 2018 (thanks to Cheng Li).
+- Schedule::until can now be used with schedules built from vectors of
+  dates (thanks to GitHub user Grant6899).
 
-- Added Botswana calendar (thanks to Francois Botha).
+- Added Good Friday to the list of Hungarian and Czech holidays
+  (thanks to Matthias Lungwitz).
 
-- Fixed a few problems with US calendars (thanks to Mike DelMedico and
-  to GitHub user ittegrat).
-
-- User-added holidays now work correctly when intraday calculations
-  are enabled (thanks to Klaus Spanderen for the fix and to GitHub
-  user volchemist for the report).
+- Updated the list of Turkish holidays after 2014 (thanks to Matthias
+  Lungwitz).
 
 MATH
 
-- Fixed monotonicity of Fritsch-Butland and prevented NaNs in some
-  cases (thanks to GitHub user Grant6899 for the fix and to Tom
-  Anderson for the report).
+- Added convenience operators to initialize array and matrices (thanks
+  to Peter Caspers).
 
-DEPRECATED FEATURES
+TEST SUITE
 
-- The ChiSquareDistribution, NonCentralChiSquareDistribution,
-  InverseNonCentralChiSquareDistribution and GammaDistribution were
-  renamed to CumulativeChiSquareDistribution,
-  NonCentralCumulativeChiSquareDistribution,
-  InverseNonCentralCumulativeChiSquareDistribution and
-  CumulativeGammaDistribution, respectively (thanks to GitHub user
-  IGonza).  The old names are still available as typedefs and will be
-  removed in a future release.
+- Added test case for CIR++ model (thanks to Klaus Spanderen).
 
 
-Thanks go also to Marco Craveiro, Dirk Eddelbuettel, Lakshay Garg,
-Guillaume Horel, Alix Lassauzet, Patrick Lewis, and GitHub users
-bmmay, bingoko and tournierjc for smaller fixes and enhancements.
+Thanks go also to Jose Aparicio, Roland Kapl and GitHub user lab4quant
+for smaller fixes and enhancements.
 

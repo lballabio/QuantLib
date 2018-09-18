@@ -30,7 +30,7 @@ namespace QuantLib {
 
 
     FaceValueAccrualClaim::FaceValueAccrualClaim(
-                          const boost::shared_ptr<Bond>& referenceSecurity)
+                          const ext::shared_ptr<Bond>& referenceSecurity)
     : referenceSecurity_(referenceSecurity) {
         registerWith(referenceSecurity);
     }

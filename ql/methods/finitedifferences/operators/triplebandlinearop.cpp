@@ -29,7 +29,7 @@ namespace QuantLib {
 
     TripleBandLinearOp::TripleBandLinearOp(
         Size direction,
-        const boost::shared_ptr<FdmMesher>& mesher)
+        const ext::shared_ptr<FdmMesher>& mesher)
     : direction_(direction),
       i0_       (new Size[mesher->layout()->size()]),
       i2_       (new Size[mesher->layout()->size()]),
@@ -39,7 +39,7 @@ namespace QuantLib {
       upper_    (new Real[mesher->layout()->size()]),
       mesher_(mesher) {
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         std::vector<Size> newDim(layout->dim());
@@ -212,7 +212,7 @@ namespace QuantLib {
     }
 
     Disposable<TripleBandLinearOp> TripleBandLinearOp::multR(const Array& u) const {
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const Size size = layout->size();
         QL_REQUIRE(u.size() == size, "inconsistent size of rhs");
         TripleBandLinearOp retVal(direction_, mesher_);
@@ -246,7 +246,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> TripleBandLinearOp::apply(const Array& r) const {
-        const boost::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
 
         QL_REQUIRE(r.size() == index->size(), "inconsistent length of r");
 
@@ -267,7 +267,7 @@ namespace QuantLib {
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<SparseMatrix> TripleBandLinearOp::toMatrix() const {
-        const boost::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
 
         SparseMatrix retVal(n, n, 3*n);
@@ -284,7 +284,7 @@ namespace QuantLib {
 
     Disposable<Array>
     TripleBandLinearOp::solve_splitting(const Array& r, Real a, Real b) const {
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         QL_REQUIRE(r.size() == layout->size(), "inconsistent size of rhs");
 
 #ifdef QL_EXTRA_SAFETY_CHECKS

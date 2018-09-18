@@ -13,13 +13,6 @@ DOXYGEN_INPUT := $(shell find ${top_srcdir} -name *.hpp) \
 
 BASEPATH = @abs_top_srcdir@
 
-%.gz: %
-	rm -f $@
-	gzip --best $<
-%.tar: %
-	tar chf $@ $<
-	rm $<
-
 .PHONY: docs-all docs-html docs-clean
 .PHONY: docs-dist
 

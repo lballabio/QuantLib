@@ -41,7 +41,7 @@ namespace QuantLib {
                                      public LazyObject {
       public:
           StrippedOptionletAdapter(
-                              const boost::shared_ptr<StrippedOptionletBase>&);
+                              const ext::shared_ptr<StrippedOptionletBase>&);
 
         //! \name TermStructure interface
         //@{
@@ -56,7 +56,7 @@ namespace QuantLib {
         //@{
         void update();
         void performCalculations() const;
-        boost::shared_ptr< OptionletStripper > optionletStripper() const;
+        ext::shared_ptr< OptionletStripper > optionletStripper() const;
         //@}
         //! \name Observer interface
         //@{
@@ -69,15 +69,15 @@ namespace QuantLib {
       protected:
         //! \name OptionletVolatilityStructure interface
         //@{
-        boost::shared_ptr<SmileSection> smileSectionImpl(
+        ext::shared_ptr<SmileSection> smileSectionImpl(
                                                 Time optionTime) const;
         Volatility volatilityImpl(Time length,
                                   Rate strike) const;
         //@} 
     private:
-        const boost::shared_ptr<StrippedOptionletBase> optionletStripper_;
+        const ext::shared_ptr<StrippedOptionletBase> optionletStripper_;
         Size nInterpolations_;
-        mutable std::vector<boost::shared_ptr<Interpolation> > strikeInterpolations_;
+        mutable std::vector<ext::shared_ptr<Interpolation> > strikeInterpolations_;
     };
 
     inline void StrippedOptionletAdapter::update() {
@@ -90,9 +90,9 @@ namespace QuantLib {
         update();
     }
 
-    inline boost::shared_ptr< OptionletStripper >
+    inline ext::shared_ptr< OptionletStripper >
     StrippedOptionletAdapter::optionletStripper() const {
-        return boost::dynamic_pointer_cast< OptionletStripper >(
+        return ext::dynamic_pointer_cast< OptionletStripper >(
             optionletStripper_);
     }
 }

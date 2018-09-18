@@ -29,8 +29,8 @@ namespace QuantLib {
                 const UnitOfMeasure& unitOfMeasure,
                 const Calendar& calendar,
                 Real lotQuantity,
-                const boost::shared_ptr<CommodityCurve>& forwardCurve,
-                const boost::shared_ptr<ExchangeContracts>& exchangeContracts,
+                const ext::shared_ptr<CommodityCurve>& forwardCurve,
+                const ext::shared_ptr<ExchangeContracts>& exchangeContracts,
                 int nearbyOffset)
     : name_(indexName), commodityType_(commodityType),
       unitOfMeasure_(unitOfMeasure), currency_(currency), calendar_(calendar),

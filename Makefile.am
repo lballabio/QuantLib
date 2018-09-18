@@ -16,7 +16,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 nodist_pkgconfig_DATA = quantlib.pc
 
 EXTRA_DIST = \
-	Bugs.txt \
 	ChangeLog.txt \
 	CMakeLists.txt \
 	Contributors.txt \
@@ -24,12 +23,10 @@ EXTRA_DIST = \
 	News.txt \
 	QuantLib.props \
 	QuantLib.spec \
-	QuantLib_vc9.sln \
-	QuantLib_vc9.vcproj \
 	QuantLib.sln \
 	QuantLib.vcxproj \
 	QuantLib.vcxproj.filters \
-	Readme.txt \
+	README.md \
 	autogen.sh
 
 .PHONY: examples check-examples

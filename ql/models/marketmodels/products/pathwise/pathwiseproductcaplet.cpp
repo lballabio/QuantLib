@@ -18,11 +18,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
-
-
 #include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -92,10 +91,11 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiCaplet::clone() const 
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseMultiCaplet::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-            new MarketModelPathwiseMultiCaplet(*this));
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+                                   new MarketModelPathwiseMultiCaplet(*this));
     }
 
     std::vector<Size> MarketModelPathwiseMultiCaplet::suggestedNumeraires() const
@@ -239,10 +239,11 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiDeflatedCaplet::clone() const 
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseMultiDeflatedCaplet::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-            new MarketModelPathwiseMultiDeflatedCaplet(*this));
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+                           new MarketModelPathwiseMultiDeflatedCaplet(*this));
     }
 
     std::vector<Size> MarketModelPathwiseMultiDeflatedCaplet::suggestedNumeraires() const
@@ -378,9 +379,10 @@ namespace QuantLib {
         return done;
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseMultiDeflatedCap::clone() const
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseMultiDeflatedCap::clone() const
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
                               new MarketModelPathwiseMultiDeflatedCap(*this));
     }
 

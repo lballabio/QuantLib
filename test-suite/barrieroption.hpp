@@ -27,6 +27,7 @@
 
 class BarrierOptionTest {
   public:
+    static void testParity();
     static void testHaugValues();
     static void testBabsiriValues();
     static void testBeagleholeValues();

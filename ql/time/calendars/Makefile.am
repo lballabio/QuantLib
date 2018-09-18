@@ -40,6 +40,7 @@ this_include_HEADERS = \
 	switzerland.hpp \
 	taiwan.hpp \
 	target.hpp \
+	thailand.hpp \
 	turkey.hpp \
 	ukraine.hpp \
 	unitedkingdom.hpp \
@@ -82,6 +83,7 @@ cpp_files = \
 	switzerland.cpp \
 	taiwan.cpp \
 	target.cpp \
+	thailand.cpp \
 	turkey.cpp \
 	ukraine.cpp \
 	unitedkingdom.cpp \

@@ -25,9 +25,8 @@
 #define quantlib_fdm_vpp_start_limit_step_condition_hpp
 
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
-
+#include <ql/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -38,8 +37,8 @@ namespace QuantLib {
             const FdmVPPStepConditionParams& params,
             Size nStarts,
             const FdmVPPStepConditionMesher& mesh,
-            const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-            const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
+            const ext::shared_ptr<FdmInnerValueCalculator>& gasPrice,
+            const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
 
         static Size nStates(Size tMinUp, Size tMinDown, Size nStarts);
         Real maxValue(const Array& states) const;

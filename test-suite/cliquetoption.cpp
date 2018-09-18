@@ -58,20 +58,20 @@ void CliquetOptionTest::testValues() {
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(60.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.08));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.30));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(60.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.08));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.30));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    boost::shared_ptr<BlackScholesMertonProcess> process(
+    ext::shared_ptr<BlackScholesMertonProcess> process(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
-    boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine(process));
+    ext::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine(process));
 
     std::vector<Date> reset;
     reset.push_back(today + 90);
@@ -79,9 +79,9 @@ void CliquetOptionTest::testValues() {
     Option::Type type = Option::Call;
     Real moneyness = 1.1;
 
-    boost::shared_ptr<PercentageStrikePayoff> payoff(
+    ext::shared_ptr<PercentageStrikePayoff> payoff(
                                  new PercentageStrikePayoff(type, moneyness));
-    boost::shared_ptr<EuropeanExercise> exercise(
+    ext::shared_ptr<EuropeanExercise> exercise(
                                               new EuropeanExercise(maturity));
 
     CliquetOption option(payoff, exercise, reset);
@@ -128,15 +128,15 @@ namespace {
         Date today = Date::todaysDate();
         Settings::instance().evaluationDate() = today;
 
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
         Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
         Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
         Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-        boost::shared_ptr<BlackScholesMertonProcess> process(
+        ext::shared_ptr<BlackScholesMertonProcess> process(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
@@ -145,10 +145,10 @@ namespace {
             for (Size k=0; k<LENGTH(lengths); k++) {
               for (Size kk=0; kk<LENGTH(frequencies); kk++) {
 
-                boost::shared_ptr<EuropeanExercise> maturity(
+                ext::shared_ptr<EuropeanExercise> maturity(
                               new EuropeanExercise(today + lengths[k]*Years));
 
-                boost::shared_ptr<PercentageStrikePayoff> payoff(
+                ext::shared_ptr<PercentageStrikePayoff> payoff(
                           new PercentageStrikePayoff(types[i], moneyness[j]));
 
                 std::vector<Date> reset;
@@ -157,7 +157,7 @@ namespace {
                      d += Period(frequencies[kk]))
                     reset.push_back(d);
 
-                boost::shared_ptr<PricingEngine> engine(new T(process));
+                ext::shared_ptr<PricingEngine> engine(new T(process));
 
                 CliquetOption option(payoff, maturity, reset);
                 option.setPricingEngine(engine);
@@ -292,15 +292,15 @@ void CliquetOptionTest::testMcPerformance() {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    boost::shared_ptr<BlackScholesMertonProcess> process(
+    ext::shared_ptr<BlackScholesMertonProcess> process(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
@@ -310,10 +310,10 @@ void CliquetOptionTest::testMcPerformance() {
           for (Size kk=0; kk<LENGTH(frequencies); kk++) {
 
               Period tenor = Period(frequencies[kk]);
-              boost::shared_ptr<EuropeanExercise> maturity(
+              ext::shared_ptr<EuropeanExercise> maturity(
                               new EuropeanExercise(today + lengths[k]*tenor));
 
-              boost::shared_ptr<PercentageStrikePayoff> payoff(
+              ext::shared_ptr<PercentageStrikePayoff> payoff(
                           new PercentageStrikePayoff(types[i], moneyness[j]));
 
               std::vector<Date> reset;
@@ -322,10 +322,10 @@ void CliquetOptionTest::testMcPerformance() {
 
               CliquetOption option(payoff, maturity, reset);
 
-              boost::shared_ptr<PricingEngine> refEngine(
+              ext::shared_ptr<PricingEngine> refEngine(
                                       new AnalyticPerformanceEngine(process));
 
-              boost::shared_ptr<PricingEngine> mcEngine =
+              ext::shared_ptr<PricingEngine> mcEngine =
                   MakeMCPerformanceEngine<PseudoRandom>(process)
                   .withBrownianBridge()
                   .withAbsoluteTolerance(5.0e-3)

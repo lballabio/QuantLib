@@ -42,8 +42,8 @@ namespace QuantLib {
                         Barrier::Type barrierType,
                         Real barrier,
                         Real rebate,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                        const boost::shared_ptr<Exercise>& exercise,
+                        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                        const ext::shared_ptr<Exercise>& exercise,
                         const std::vector<Date>& dividendDates,
                         const std::vector<Real>& dividends);
       protected:

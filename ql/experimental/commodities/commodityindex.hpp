@@ -42,8 +42,8 @@ namespace QuantLib {
                 const UnitOfMeasure& unitOfMeasure,
                 const Calendar& calendar,
                 Real lotQuantity,
-                const boost::shared_ptr<CommodityCurve>& forwardCurve,
-                const boost::shared_ptr<ExchangeContracts>& exchangeContracts,
+                const ext::shared_ptr<CommodityCurve>& forwardCurve,
+                const ext::shared_ptr<ExchangeContracts>& exchangeContracts,
                 int nearbyOffset);
         //! \name Index interface
         //@{
@@ -59,7 +59,7 @@ namespace QuantLib {
         const Currency& currency() const;
         const UnitOfMeasure& unitOfMeasure() const;
         const Calendar& calendar() const;
-        const boost::shared_ptr<CommodityCurve>& forwardCurve() const;
+        const ext::shared_ptr<CommodityCurve>& forwardCurve() const;
         Real lotQuantity() const;
 
         Real price(const Date& date);
@@ -94,9 +94,9 @@ namespace QuantLib {
         Calendar calendar_;
         Real lotQuantity_;
         TimeSeries<Real> quotes_;
-        boost::shared_ptr<CommodityCurve> forwardCurve_;
+        ext::shared_ptr<CommodityCurve> forwardCurve_;
         Real forwardCurveUomConversionFactor_;
-        boost::shared_ptr<ExchangeContracts> exchangeContracts_;
+        ext::shared_ptr<ExchangeContracts> exchangeContracts_;
         Integer nearbyOffset_;
     };
 
@@ -135,7 +135,7 @@ namespace QuantLib {
         return lotQuantity_;
     }
 
-    inline const boost::shared_ptr<CommodityCurve>&
+    inline const ext::shared_ptr<CommodityCurve>&
     CommodityIndex::forwardCurve() const {
         return forwardCurve_;
     }

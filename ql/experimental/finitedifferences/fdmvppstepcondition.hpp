@@ -25,9 +25,8 @@
 #define quantlib_fdm_vpp_step_condition_hpp
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
-
+#include <ql/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -45,7 +44,7 @@ namespace QuantLib {
 
     struct FdmVPPStepConditionMesher {
         const Size stateDirection;
-        const boost::shared_ptr<FdmMesher> mesher;
+        const ext::shared_ptr<FdmMesher> mesher;
     };
 
     class FdmVPPStepCondition : public StepCondition<Array> {
@@ -54,8 +53,8 @@ namespace QuantLib {
             const FdmVPPStepConditionParams& params,
             Size nStates,
             const FdmVPPStepConditionMesher& mesh,
-            const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-            const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
+            const ext::shared_ptr<FdmInnerValueCalculator>& gasPrice,
+            const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
 
         Size nStates() const;
         void applyTo(Array& a, Time t) const;
@@ -79,9 +78,9 @@ namespace QuantLib {
         const Size stateDirection_;
         const Size nStates_;
 
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<FdmInnerValueCalculator> gasPrice_;
-        const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmInnerValueCalculator> gasPrice_;
+        const ext::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
 
         std::vector<boost::function<Real (Real)> > stateEvolveFcts_;
     };

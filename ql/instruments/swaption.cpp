@@ -6,7 +6,7 @@
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2014 Ferdinando Ametrano
- Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2016, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,8 +27,7 @@
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>
-
-#include <boost/make_shared.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -44,10 +43,10 @@ namespace QuantLib {
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
@@ -61,16 +60,16 @@ namespace QuantLib {
 
             // set an implausible value, so that calculation is forced
             // at first ImpliedSwaptionVolHelper::operator()(Volatility x) call
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
+            vol_ = ext::make_shared<SimpleQuote>(-1.0);
             Handle<Quote> h(vol_);
 
             switch (type) {
             case ShiftedLognormal:
-                engine_ = boost::make_shared<BlackSwaptionEngine>(
+                engine_ = ext::make_shared<BlackSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed(), displacement);
                 break;
             case Normal:
-                engine_ = boost::make_shared<BachelierSwaptionEngine>(
+                engine_ = ext::make_shared<BachelierSwaptionEngine>(
                     discountCurve_, h, Actual365Fixed());
                 break;
             default:
@@ -115,11 +114,27 @@ namespace QuantLib {
         }
     }
 
-    Swaption::Swaption(const boost::shared_ptr<VanillaSwap>& swap,
-                       const boost::shared_ptr<Exercise>& exercise,
-                       Settlement::Type delivery)
-    : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
-      settlementType_(delivery) {
+    std::ostream& operator<<(std::ostream& out, Settlement::Method m) {
+        switch (m) {
+        case Settlement::PhysicalOTC:
+            return out << "PhysicalOTC";
+        case Settlement::PhysicalCleared:
+            return out << "PhysicalCleared";
+        case Settlement::CollateralizedCashPrice:
+            return out << "CollateralizedCashPrice";
+        case Settlement::ParYieldCurve:
+            return out << "ParYieldCurve";
+        default:
+            QL_FAIL("unknown Settlement::Method(" << Integer(m) << ")");
+        }
+    }
+
+    Swaption::Swaption(const ext::shared_ptr<VanillaSwap>& swap,
+                       const ext::shared_ptr<Exercise>& exercise,
+                       Settlement::Type delivery,
+                       Settlement::Method settlementMethod)
+        : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
+          settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
         registerWithObservables(swap_);
     }
@@ -139,6 +154,7 @@ namespace QuantLib {
 
         arguments->swap = swap_;
         arguments->settlementType = settlementType_;
+        arguments->settlementMethod = settlementMethod_;
         arguments->exercise = exercise_;
     }
 
@@ -146,6 +162,8 @@ namespace QuantLib {
         VanillaSwap::arguments::validate();
         QL_REQUIRE(swap, "vanilla swap not set");
         QL_REQUIRE(exercise, "exercise not set");
+        Settlement::checkTypeAndMethodConsistency(settlementType,
+                                                  settlementMethod);
     }
 
     Volatility Swaption::impliedVolatility(Real targetValue,
@@ -165,6 +183,21 @@ namespace QuantLib {
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
+
+    void Settlement::checkTypeAndMethodConsistency(
+                                        Settlement::Type settlementType,
+                                        Settlement::Method settlementMethod) {
+        if (settlementType == Physical) {
+            QL_REQUIRE(settlementMethod == PhysicalOTC ||
+                       settlementMethod == PhysicalCleared,
+                       "invalid settlement method for physical settlement");
+        }
+        if (settlementType == Cash) {
+            QL_REQUIRE(settlementMethod == CollateralizedCashPrice ||
+                       settlementMethod == ParYieldCurve,
+                       "invalid settlement method for cash settlement");
+        }
     }
 
 }

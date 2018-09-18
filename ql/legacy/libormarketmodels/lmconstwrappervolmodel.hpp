@@ -32,7 +32,7 @@ namespace QuantLib {
     class LmConstWrapperVolatilityModel : public LmVolatilityModel {
       public:
         LmConstWrapperVolatilityModel(
-            const boost::shared_ptr<LmVolatilityModel> & volaModel)
+            const ext::shared_ptr<LmVolatilityModel> & volaModel)
         : LmVolatilityModel(volaModel->size(), 0),
           volaModel_(volaModel) {
         }
@@ -51,7 +51,7 @@ namespace QuantLib {
         }
 
       protected:
-        const boost::shared_ptr<LmVolatilityModel> volaModel_;
+        const ext::shared_ptr<LmVolatilityModel> volaModel_;
 
       private:
         using LmVolatilityModel::volatility;

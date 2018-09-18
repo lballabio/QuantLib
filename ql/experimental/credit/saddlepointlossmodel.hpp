@@ -22,7 +22,7 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newton.hpp>
-
+#include <ql/math/functional.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
@@ -100,7 +100,7 @@ namespace QuantLib {
     class SaddlePointLossModel : public DefaultLossModel {
     public:
         explicit SaddlePointLossModel(
-            const boost::shared_ptr<ConstantLossLatentmodel<CP> >& m)
+            const ext::shared_ptr<ConstantLossLatentmodel<CP> >& m)
             : copula_(m) { }
     protected:
         // ----------- Cumulants and derivatives auxiliary functions ---------
@@ -174,8 +174,7 @@ namespace QuantLib {
         Real CumGen4thDerivative(const Date& date, Real s) const;
         
         // -------- Saddle point search functions ---------------------------
-        class SaddleObjectiveFunction : 
-            public std::unary_function<Real, Real> {
+        class SaddleObjectiveFunction {
             const SaddlePointLossModel& me_;
             Real targetValue_;
             const std::vector<Real>& mktFactor_;
@@ -224,7 +223,7 @@ namespace QuantLib {
             Natural maxEvaluations = 50
             ) const;
 
-        class SaddlePercObjFunction : public std::unary_function<Real, Real> {
+        class SaddlePercObjFunction {
             const SaddlePointLossModel& me_;
             Real targetValue_;
             Date date_;
@@ -344,7 +343,7 @@ namespace QuantLib {
             copula_->resetBasket(basket_.currentLink());
         }
     protected:
-        const boost::shared_ptr<ConstantLossLatentmodel<CP> > copula_;
+        const ext::shared_ptr<ConstantLossLatentmodel<CP> > copula_;
         // cached todays arguments values
         mutable Size remainingSize_;
         mutable std::vector<Real> remainingNotionals_;
@@ -1278,9 +1277,7 @@ namespace QuantLib {
                 / remainingNotionals_[iName];
             volaTot += lgds[iName] * lgds[iName] * pBuffer * (1.-pBuffer) ;
         }
-        std::for_each(vola.begin(), vola.end(), 
-            std::bind1st(std::divides<Real>(), volaTot));
-        for(Size iName=0; iName < nNames; iName++)
+        for (Size iName=0; iName < nNames; iName++)
             vola[iName] = vola[iName] / volaTot;
 
         std::vector<Real> esfPartition(nNames, 0.);
