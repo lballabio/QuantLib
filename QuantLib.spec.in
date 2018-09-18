@@ -95,7 +95,6 @@ cp -p News.txt  %{buildroot}%{docdir}
 cp -pr Examples %{buildroot}%{docdir}
 cp -pr Docs/html %{buildroot}%{docdir}
 rm -f %{buildroot}%{docdir}/html/*.dot
-cp -pr Docs/man/man3 %{buildroot}%{_mandir}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -129,10 +128,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files docs
 %defattr(-,root,root)
-%{_mandir}/man3/*
 %{docdir}/html
 
 %changelog
+* Tue Sep 18 2018 Simon John Rees
+- Updated spec file to work with latest QuantLib version (1.13.0)
+
 * Wed Sep 14 2011 Matt Fair
 - Updated spec file to work with current QuantLib versions
 
