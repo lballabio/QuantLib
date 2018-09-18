@@ -89,7 +89,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # install the documentation
 mkdir -p %{buildroot}%{docdir}
 mkdir -p %{buildroot}%{_mandir}
-cp -p Authors.txt LICENSE.TXT ChangeLog.txt Readme.txt %{buildroot}%{docdir}
+cp -p LICENSE.TXT ChangeLog.txt Readme.txt %{buildroot}%{docdir}
 cp -p Contributors.txt %{buildroot}%{docdir}
 cp -p News.txt  %{buildroot}%{docdir}
 cp -pr Examples %{buildroot}%{docdir}
@@ -106,7 +106,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{docdir}/Authors.txt
 %{docdir}/LICENSE.TXT
 %{docdir}/ChangeLog.txt
 %{docdir}/Readme.txt
