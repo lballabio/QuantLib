@@ -44,6 +44,13 @@ namespace QuantLib {
         }
     }
 
+	int ActualActual::ISMA_Impl::findCouponsPerYear(Date refStart, Date refEnd) const {
+		// This will only work for day counts longer than 15 days.
+		Integer months = Integer(0.5 + 12 * Real(dayCount(refStart, refEnd))/365.0);
+		return (int)round(12.0 / Real(months));
+
+	}
+
 	Time ActualActual::ISMA_Impl::yearFractionWithReferenceDates(
 		const Date& d1,
 		const Date& d2,
@@ -54,9 +61,17 @@ namespace QuantLib {
 			d1 <= d2, 
 			"This function is only correct if d1 <= d2 \n d1: " << d1 << " d2: " << d2
 		);
+		//
 		Real referenceDayCount = Real(dayCount(d3, d4));
 		//guess how many coupon periods per year:
-		int couponsPerYear = (int) round(365.0 / referenceDayCount);
+		int couponsPerYear;
+		if (referenceDayCount < 16) {
+			couponsPerYear = 1;
+			referenceDayCount = dayCount(d1, d1 + 1 * Years);
+		}
+		else {
+			couponsPerYear = findCouponsPerYear(d3, d4);
+		}
 		return Real(dayCount(d1, d2)) / (referenceDayCount*couponsPerYear);
 
 	}

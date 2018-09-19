@@ -67,6 +67,7 @@ namespace QuantLib {
                               const Date& refPeriodEnd) const;
           private:
             Schedule schedule_;
+			int findCouponsPerYear(Date refStart, Date refEnd) const;
 			Time yearFractionWithReferenceDates(
 				const Date& d1,
 				const Date& d2,
