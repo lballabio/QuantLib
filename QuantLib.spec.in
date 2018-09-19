@@ -118,6 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ql/
 %{_libdir}/*
 %{_datadir}/aclocal/*
+%{_datadir}/emacs/*
 %{_bindir}/quantlib-config
 %{_mandir}/man1/quantlib-config.1.gz
 
@@ -146,6 +147,6 @@ rm -rf $RPM_BUILD_ROOT
 - Modified Makefile.am and Makefile.in in Docs/:
     $(DVIPS) refman -> $(DVIPS) -o refman.ps refman
 
-* Tue Aug 22 2003 Liguo Song <liguo.song@vanderbilt.edu>
+* Fri Aug 22 2003 Liguo Song <liguo.song@vanderbilt.edu>
 - Initial package. Refer to Changelog.txt for previous changes.
 - RPM package beta test
