@@ -39,6 +39,9 @@ namespace QuantLib {
                                                const Date& d2,
                                                const Date& refPeriodStart,
                                                const Date& refPeriodEnd) const {
+        if (d1 == d2)
+            return 0.0;
+
         // We need the period to calculate the frequency
         QL_REQUIRE(refPeriodStart != Date(), "invalid refPeriodStart");
         QL_REQUIRE(refPeriodEnd != Date(), "invalid refPeriodEnd");
