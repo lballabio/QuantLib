@@ -32,7 +32,6 @@ Summary: The header files and the static library.
 Group: Development/Libraries
 Requires: QuantLib = %{version}, boost >= 1.43.0
 BuildRequires: boost-devel >= 1.43.0
-BuildRequires: emacs
 
 %description devel
 QuantLib is an open source C++ library for financial quantitative analysts
@@ -77,7 +76,7 @@ You'll want to install this package if you need a reference to QuantLib.
 CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
 CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS ; \
 FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS ; \
-%configure --prefix=%{_prefix}
+%configure --prefix=%{_prefix} EMACS=no
 make %{?_smp_mflags}
 # make documentations
 cd Docs
@@ -119,7 +118,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/ql/
 %{_libdir}/*
 %{_datadir}/aclocal/*
-%{_datadir}/emacs/*
 %{_bindir}/quantlib-config
 %{_mandir}/man1/quantlib-config.1.gz
 
