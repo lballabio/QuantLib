@@ -32,6 +32,7 @@ Summary: The header files and the static library.
 Group: Development/Libraries
 Requires: QuantLib = %{version}, boost >= 1.43.0
 BuildRequires: boost-devel >= 1.43.0
+BuildRequires: emacs
 
 %description devel
 QuantLib is an open source C++ library for financial quantitative analysts
