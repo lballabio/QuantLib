@@ -112,3 +112,4 @@ test-suite/bin/*.pdb
 test-suite/.unit_test_profile.txt
 
 
+/packages/boost.1.68.0.0
