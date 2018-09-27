@@ -1168,12 +1168,14 @@ void BondTest::testExCouponGilt() {
 
     Compounding comp = Compounded;
     Frequency freq   = Semiannual;
-    DayCounter dc = ActualActual(ActualActual::ISMA);
+    
+	Schedule schedule = Schedule(startDate, maturityDate, tenor,
+		NullCalendar(), Unadjusted, Unadjusted,
+		DateGeneration::Forward, true, firstCouponDate);
+	DayCounter dc = ActualActual(ActualActual::ISMA, schedule);
 
     FixedRateBond bond(settlementDays, 100.0,
-                       Schedule(startDate, maturityDate, tenor,
-                                NullCalendar(), Unadjusted, Unadjusted,
-                                DateGeneration::Forward, true, firstCouponDate),
+                       schedule,
                        std::vector<Rate>(1, coupon),
                        dc, Unadjusted, 100.0,
                        issueDate, calendar, exCouponPeriod, calendar);
@@ -1306,12 +1308,14 @@ void BondTest::testExCouponAustralianBond() {
 
     Compounding comp = Compounded;
     Frequency freq   = Semiannual;
-    DayCounter dc = ActualActual(ActualActual::ISMA);
+    
+	Schedule schedule = Schedule(startDate, maturityDate, tenor,
+		NullCalendar(), Unadjusted, Unadjusted,
+		DateGeneration::Forward, true, firstCouponDate);
+	DayCounter dc = ActualActual(ActualActual::ISMA, schedule);
 
     FixedRateBond bond(settlementDays, 100.0,
-                       Schedule(startDate, maturityDate, tenor,
-                                NullCalendar(), Unadjusted, Unadjusted,
-                                DateGeneration::Forward, true, firstCouponDate),
+                       schedule,
                        std::vector<Rate>(1, coupon),
                        dc, Unadjusted, 100.0,
                        issueDate, calendar, exCouponPeriod, NullCalendar());
@@ -1393,10 +1397,9 @@ void BondTest::testBondFromScheduleWithDateVector()
     Rate coupon = 0.0875;
     Compounding comp = Compounded;
     Frequency freq = Semiannual;
-    DayCounter dc = ActualActual(ActualActual::Bond);
+    
 
-    // Yield as quoted in market
-    InterestRate yield(0.09185, dc, comp, freq);
+    
     
     Period tenor = 6 * Months;
     Period exCouponPeriod = 10 * Days;
@@ -1427,7 +1430,7 @@ void BondTest::testBondFromScheduleWithDateVector()
                         schedule.rule(),
                         schedule.endOfMonth(),
                         schedule.isRegular());
-
+	DayCounter dc = ActualActual(ActualActual::Bond, schedule);
     FixedRateBond bond(
         0, 
         100.0,
@@ -1436,6 +1439,9 @@ void BondTest::testBondFromScheduleWithDateVector()
         dc, Following, 100.0,
         issueDate, calendar, 
         exCouponPeriod, calendar, Unadjusted, false);
+
+	// Yield as quoted in market
+	InterestRate yield(0.09185, dc, comp, freq);
 
     Real calculatedPrice = BondFunctions::dirtyPrice(bond, yield, settlementDate);
     Real expectedPrice = 95.75706;
