@@ -102,7 +102,6 @@ namespace QuantLib {
 
 	/*! \An ISMA day counter either needs a schedule or to have been explicitly passed a reference period. This usuage leads to innaccurate year fractions.
 	*/
-	QL_DEPRECATED
 	Time ActualActual::ISMA_Impl::yearFractionGuess(
 		const Date& start,
 		const Date& end
