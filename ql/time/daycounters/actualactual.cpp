@@ -117,10 +117,10 @@ namespace QuantLib {
 		std::vector<Date> couponDates = getListOfPeriodDatesIncludingQuasiPayments();
 
 		Real yearFractionSum = 0;
-		for (int i = 0; i < couponDates.size() - 2; i++) {
+		for (int i = 0; i < couponDates.size() - 1; i++) {
 			Date startReferencePeriod = couponDates[i];
 			Date endReferencePeriod = couponDates[i + 1];
-			if (endReferencePeriod > start && end >= startReferencePeriod) {
+			if (endReferencePeriod > start && end > startReferencePeriod) {
 				yearFractionSum += yearFractionWithReferenceDates(
 					(start > startReferencePeriod) ? start : startReferencePeriod,
 					(end < endReferencePeriod) ? end : endReferencePeriod,

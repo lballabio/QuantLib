@@ -68,7 +68,7 @@ namespace {
 	static Time ISMAYearFractionWithReferenceDates(DayCounter dayCounter, Date start, Date end, Date refStart, Date refEnd) {
 		Real referenceDayCount = double(dayCounter.dayCount(refStart, refEnd));
 		//guess how many coupon periods per year:
-		int couponsPerYear = (int)round(365.0 / referenceDayCount);
+		int couponsPerYear = (int) round(365.0 / referenceDayCount); // good enough for annyal or semi annual payments.
 		return double(dayCounter.dayCount(start, end)) / (referenceDayCount*couponsPerYear);
 	}
 
@@ -210,21 +210,48 @@ void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePerio
     BOOST_TEST_MESSAGE("Testing actual/actual with schedule for undefined semi reference periods...");
 
     Calendar calendar = UnitedStates();
+	Date fromDate = Date(10, January, 2017);
+	Date firstCoupon = Date(31, August, 2017);
+	Date quasiCoupon = Date(28, February, 2017);
+	Date quasiCoupon2 = Date(31, August, 2016);
+
 	Schedule schedule = MakeSchedule()
-		.from(Date(10, January, 2017))
-		.withFirstDate(Date(31, August, 2017))
+		.from(fromDate)
+		.withFirstDate(firstCoupon)
 		.to(Date(28, February, 2026))
 		.withFrequency(Semiannual)
 		.withCalendar(calendar)
 		.withConvention(Unadjusted)
-		.backwards().endOfMonth(false);
-
-	Date referencePeriodStart = schedule.date(1);
-	Date referencePeriodEnd = schedule.date(2); // because semiannual advance two coupons.
+		.backwards().endOfMonth(true);
 
 	Date testDate = schedule.date(1);
 	DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
+	DayCounter dayCounterNoSchedule = ActualActual(ActualActual::ISMA);
+	
+	Date referencePeriodStart = schedule.date(1);
+	Date referencePeriodEnd = schedule.date(2); 
 
+	//Test
+	QL_ASSERT(
+		dayCounter.yearFraction(referencePeriodStart, referencePeriodStart) == 0.0, "This should be zero."
+	);
+	QL_ASSERT(
+		dayCounterNoSchedule.yearFraction(referencePeriodStart, referencePeriodStart) == 0.0, "This should be zero"
+	);
+	QL_ASSERT(
+		dayCounterNoSchedule.yearFraction(referencePeriodStart, referencePeriodStart, referencePeriodStart, referencePeriodStart) == 0.0, "This should be zero"
+	);
+	QL_ASSERT(
+		dayCounter.yearFraction(referencePeriodStart, referencePeriodEnd) == 0.5, "This should be exact using schedule; " << referencePeriodStart << " to " << referencePeriodEnd << "Should be 0.5"
+	);
+	QL_ASSERT(
+		dayCounterNoSchedule.yearFraction(referencePeriodStart, referencePeriodEnd) == dayCounterNoSchedule.dayCount(referencePeriodStart, referencePeriodEnd)/365.0, 
+		"This should be exact with no schedule; " << referencePeriodStart << " to " << referencePeriodEnd << ". This should be " << dayCounterNoSchedule.dayCount(referencePeriodStart, referencePeriodEnd)/365.0 << " /365 but was actually : " << dayCounterNoSchedule.yearFraction(referencePeriodStart, referencePeriodEnd)
+	);
+	QL_ASSERT(
+		dayCounterNoSchedule.yearFraction(referencePeriodStart, referencePeriodEnd, referencePeriodStart, referencePeriodEnd) == 0.5, "This should be exact for explicit reference periods with no schedule";
+	);
+	
 
 	while (testDate < referencePeriodEnd) {
 		double difference = dayCounter.yearFraction(testDate, referencePeriodEnd, referencePeriodStart, referencePeriodEnd) -
@@ -234,6 +261,20 @@ void DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePerio
 		};
 		testDate = calendar.advance(testDate, 1, Days);
 	}
+
+	//Test long first coupon
+	Real caclulatedYearFraction = dayCounter.yearFraction(fromDate, firstCoupon);
+	Real expectedYearFraction = 0.5 + ((Real) dayCounter.dayCount(fromDate, quasiCoupon))/(2*dayCounter.dayCount(quasiCoupon2, quasiCoupon));
+	Real secondCalculation = dayCounterNoSchedule.yearFraction(fromDate, quasiCoupon, quasiCoupon2, quasiCoupon);
+
+	QL_ASSERT(
+		std::fabs(caclulatedYearFraction - expectedYearFraction) < 1.0e-10, 
+		"These Year Fractions Should be Identical: expected " << expectedYearFraction << " but calculated " << caclulatedYearFraction
+	);
+	QL_ASSERT(
+		std::fabs(caclulatedYearFraction - expectedYearFraction) < 1.0e-10, 
+		"These Year Fractions Should be Identical using explicit quasi coupons "<< quasiCoupon2 << " and " << quasiCoupon <<" from " << fromDate
+	);
 }
 
 void DayCounterTest::testScheduleAlwaysHasAStartDate() {
@@ -757,7 +798,6 @@ void DayCounterTest::testIntraday() {
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
 	suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testScheduleAlwaysHasAStartDate));
-	//suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testScheduleCorrectlyDefinesNextDateAndPreviousDate));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriod));
 	suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithScheduleAgainstSemiAnnualReferencePeriodMultipleReferencePeriods));
