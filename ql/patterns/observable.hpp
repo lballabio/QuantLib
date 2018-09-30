@@ -264,14 +264,26 @@ namespace QuantLib {
 #include <boost/enable_shared_from_this.hpp>
 #include <set>
 
+
+
 namespace QuantLib {
+    namespace ext {
+
+        #if defined(QL_USE_STD_SHARED_PTR)
+        using std::enable_shared_from_this;
+        #else
+        using boost::enable_shared_from_this;
+        #endif
+
+    }
+
 
     class Observable;
     class ObservableSettings;
 
     //! Object that gets notified when a given observable changes
     /*! \ingroup patterns */
-    class Observer : public boost::enable_shared_from_this<Observer> {
+    class Observer : public ext::enable_shared_from_this<Observer> {
         friend class Observable;
         friend class ObservableSettings;
       public:
@@ -318,9 +330,14 @@ namespace QuantLib {
             void update() const {
                 boost::lock_guard<boost::recursive_mutex> lock(mutex_);
                 if (active_) {
+                    // c++17 is required if used with std::shared_ptr<T>
                     const ext::weak_ptr<Observer> o
                         = observer_->weak_from_this();
-                    if (!o._empty()) {
+
+                    //check for empty weak reference
+                    //https://stackoverflow.com/questions/45507041/how-to-check-if-weak-ptr-is-empty-non-assigned
+                    const ext::weak_ptr<Observer> empty;
+                    if (o.owner_before(empty) || empty.owner_before(o)) {
                         const ext::shared_ptr<Observer> obs(o.lock());
                         if (obs)
                             obs->update();
