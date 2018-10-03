@@ -261,7 +261,6 @@ namespace QuantLib {
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/smart_ptr/owner_less.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <set>
 
 
