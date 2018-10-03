@@ -267,17 +267,6 @@ namespace QuantLib {
 
 
 namespace QuantLib {
-    namespace ext {
-
-        #if defined(QL_USE_STD_SHARED_PTR)
-        using std::enable_shared_from_this;
-        #else
-        using boost::enable_shared_from_this;
-        #endif
-
-    }
-
-
     class Observable;
     class ObservableSettings;
 

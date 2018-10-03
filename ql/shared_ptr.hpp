@@ -43,12 +43,14 @@ namespace QuantLib {
         using std::make_shared;
         using std::static_pointer_cast;
         using std::dynamic_pointer_cast;
+        using std::enable_shared_from_this;
         #else
         using boost::shared_ptr;
         using boost::weak_ptr;
         using boost::make_shared;
         using boost::static_pointer_cast;
         using boost::dynamic_pointer_cast;
+        using boost::enable_shared_from_this;
         #endif
 
     }
