@@ -440,7 +440,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 twoPoints[1] = gridPoints.at(indexP1)-gridPoints.at(index);
 
                 const Array ndWeights1st = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 1 , twoPoints).weights();
+                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
 
                 const Real beta1  = dfdx(index, index);
                 const Real gamma1 = dfdx(index, indexP1);
@@ -480,7 +480,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 twoPoints[1] = 0.0;
 
                 const Array ndWeights1st = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 1 , twoPoints).weights();
+                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -521,7 +521,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 threePoints[2] = gridPoints.at(indexP1)-gridPoints.at(index);
 
                 const Array ndWeights1st = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 1 , threePoints).weights();
+                    ext::function<Real(Real)>(), 1 , threePoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -547,7 +547,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 }
 
                 const Array ndWeights2nd = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 2 , threePoints).weights();
+                    ext::function<Real(Real)>(), 2 , threePoints).weights();
 
                 const Real alpha2 = d2fdx2(index, indexM1);
                 const Real beta2  = d2fdx2(index, index);
@@ -1291,11 +1291,11 @@ void FdmLinearOpTest::testBiCGstab() {
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const boost::function<Disposable<Array>(const Array&)> matmult(
+    const ext::function<Disposable<Array>(const Array&)> matmult(
                                                 boost::bind(&axpy, a, _1));
 
     SparseILUPreconditioner ilu(a, 4);
-    boost::function<Disposable<Array>(const Array&)> precond(
+    ext::function<Disposable<Array>(const Array&)> precond(
          boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
 
     Array b(n*m);
@@ -1329,11 +1329,11 @@ void FdmLinearOpTest::testGMRES() {
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const boost::function<Disposable<Array>(const Array&)> matmult(
+    const ext::function<Disposable<Array>(const Array&)> matmult(
                                                 boost::bind(&axpy, a, _1));
     
     SparseILUPreconditioner ilu(a, 4);
-    boost::function<Disposable<Array>(const Array&)> precond(
+    ext::function<Disposable<Array>(const Array&)> precond(
          boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
     
     Array b(n*m);

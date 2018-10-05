@@ -142,8 +142,8 @@ Real printFunction(Problem& p, const Array& x) {
 
 class TestFunction : public CostFunction {
 public:
-    typedef boost::function<Real(const Array&)> RealFunc;
-    typedef boost::function<Disposable<Array>(const Array&)> ArrayFunc;
+    typedef ext::function<Real(const Array&)> RealFunc;
+    typedef ext::function<Disposable<Array>(const Array&)> ArrayFunc;
     TestFunction(const RealFunc & f, const ArrayFunc & fs = ArrayFunc()) : f_(f), fs_(fs) {}
     TestFunction(Real(*f)(const Array&), Disposable<Array>(*fs)(const Array&) = NULL) : f_(f), fs_(fs) {}
     virtual ~TestFunction(){}

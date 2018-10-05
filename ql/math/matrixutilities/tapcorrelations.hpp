@@ -95,7 +95,7 @@ namespace QuantLib {
       public:
         FrobeniusCostFunction(
             const Matrix& target,
-            const boost::function<Disposable<Matrix>(const Array&,
+            const ext::function<Disposable<Matrix>(const Array&,
                                                      Size,
                                                      Size)>& f,
                                                      Size matrixSize,
@@ -105,7 +105,7 @@ namespace QuantLib {
         Disposable<Array> values (const Array &x) const;
       private:
         Matrix target_;
-        boost::function<Disposable<Matrix>(const Array&, Size, Size)> f_;
+        ext::function<Disposable<Matrix>(const Array&, Size, Size)> f_;
         Size matrixSize_;
         Size rank_;
     };

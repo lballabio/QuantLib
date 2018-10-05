@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     namespace MINPACK {
-        typedef boost::function<void (int,
+        typedef ext::function<void (int,
                                       int, 
                                       Real*,
                                       Real*,

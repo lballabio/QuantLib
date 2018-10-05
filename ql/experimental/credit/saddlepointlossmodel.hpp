@@ -392,7 +392,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::CumulantGeneratingCond,
                     this,
@@ -414,7 +414,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
        return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::CumGen1stDerivativeCond,
                     this,
@@ -436,7 +436,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::CumGen2ndDerivativeCond,
                     this,
@@ -458,7 +458,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::CumGen3rdDerivativeCond,
                     this,
@@ -480,7 +480,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::CumGen4thDerivativeCond,
                     this,
@@ -507,7 +507,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::probOverLossCond,
                     this,
@@ -529,7 +529,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::probOverLossPortfCond,
                     this,
@@ -551,7 +551,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::conditionalExpectedTrancheLoss,
                     this,
@@ -572,7 +572,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &SaddlePointLossModel<CP>::probDensityCond,
                     this,
@@ -594,7 +594,7 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            boost::function<Disposable<std::vector<Real> > (
+            ext::function<Disposable<std::vector<Real> > (
                 const std::vector<Real>& v1)>(
                     boost::bind(
                         &SaddlePointLossModel<CP>::splitLossCond,
@@ -1411,7 +1411,7 @@ namespace QuantLib {
 
         // Integrate with the tranche or the portfolio according to the limits.
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                   &SaddlePointLossModel<CP>::expectedShortfallFullPortfolioCond,
                   this,

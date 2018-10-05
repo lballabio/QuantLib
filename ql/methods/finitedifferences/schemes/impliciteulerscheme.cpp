@@ -62,11 +62,11 @@ namespace QuantLib {
             a = map_->solve_splitting(0, a, -dt_);
         }
         else {
-            const boost::function<Disposable<Array>(const Array&)>
+            const ext::function<Disposable<Array>(const Array&)>
                 preconditioner(boost::bind(
                     &FdmLinearOpComposite::preconditioner, map_, _1, -dt_));
 
-            const boost::function<Disposable<Array>(const Array&)> applyF(
+            const ext::function<Disposable<Array>(const Array&)> applyF(
                 boost::bind(&ImplicitEulerScheme::apply, this, _1));
 
             if (solverType_ == BiCGstab) {

@@ -38,7 +38,7 @@ namespace QuantLib {
 
     class BiCGstab  {
       public:
-        typedef boost::function<Disposable<Array>(const Array&)> MatrixMult;
+        typedef ext::function<Disposable<Array>(const Array&)> MatrixMult;
         
         BiCGstab(const MatrixMult& A, Size maxIter, Real relTol,
                  const MatrixMult& preConditioner = MatrixMult());

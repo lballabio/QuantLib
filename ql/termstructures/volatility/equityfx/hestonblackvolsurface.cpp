@@ -119,7 +119,7 @@ namespace QuantLib {
         const Volatility guess = std::sqrt(theta);
         const Real accuracy = std::numeric_limits<Real>::epsilon();
 
-        const boost::function<Real(Real)> f = boost::bind(
+        const ext::function<Real(Real)> f = boost::bind(
             &blackValue, payoff.optionType(), strike, fwd, t, _1, df, npv);
 
         return solver.solve(f, accuracy, guess, 0.01);

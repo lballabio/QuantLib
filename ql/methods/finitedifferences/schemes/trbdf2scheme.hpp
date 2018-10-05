@@ -139,11 +139,11 @@ namespace QuantLib {
             fn = map_->solve_splitting(0, f, -beta_);
         }
         else {
-            const boost::function<Disposable<Array>(const Array&)>
+            const ext::function<Disposable<Array>(const Array&)>
                 preconditioner(boost::bind(
                     &FdmLinearOpComposite::preconditioner, map_, _1, -beta_));
 
-            const boost::function<Disposable<Array>(const Array&)> applyF(
+            const ext::function<Disposable<Array>(const Array&)> applyF(
                 boost::bind(&TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1));
 
             if (solverType_ == BiCGstab) {

@@ -68,11 +68,11 @@ namespace QuantLib {
             const Size j = i % (2*tMinUp_ + tMinDown_);
 
             if (j < tMinUp_) {
-                stateEvolveFcts_[i] = boost::function<Real (Real)>(
+                stateEvolveFcts_[i] = ext::function<Real (Real)>(
                     boost::bind(&FdmVPPStepCondition::evolveAtPMin,this, _1));
             }
             else if (j < 2*tMinUp_){
-                stateEvolveFcts_[i] = boost::function<Real (Real)>(
+                stateEvolveFcts_[i] = ext::function<Real (Real)>(
                     boost::bind(&FdmVPPStepCondition::evolveAtPMax,this, _1));
             }
         }

@@ -82,7 +82,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmInnerValueCalculator> gasPrice_;
         const ext::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
 
-        std::vector<boost::function<Real (Real)> > stateEvolveFcts_;
+        std::vector<ext::function<Real (Real)> > stateEvolveFcts_;
     };
 }
 

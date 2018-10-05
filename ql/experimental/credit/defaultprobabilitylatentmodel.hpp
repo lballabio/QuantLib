@@ -216,7 +216,7 @@ namespace QuantLib {
             if (pUncond < 1.e-10) return 0.;
 
             return integratedExpectedValue(
-              boost::function<Real (const std::vector<Real>& v1)>(
+              ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                 &DefaultLatentModel<copulaPolicy>
                     ::conditionalDefaultProbabilityInvP,
@@ -239,7 +239,7 @@ namespace QuantLib {
         */
         Probability probAtLeastNEvents(Size n, const Date& date) const {
             return integratedExpectedValue(
-             boost::function<Real (const std::vector<Real>& v1)>(
+             ext::function<Real (const std::vector<Real>& v1)>(
               boost::bind(
               &DefaultLatentModel<copulaPolicy>::conditionalProbAtLeastNEvents,
               this,
@@ -274,7 +274,7 @@ namespace QuantLib {
         Real E1i1j; // joint default covariance term
         if(iNamei !=iNamej) {
             E1i1j = integratedExpectedValue(
-              boost::function<Real (const std::vector<Real>& v1)>(
+              ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                 &DefaultLatentModel<CP>::condProbProduct,
                 this, invPi, invPj, iNamei, iNamej, _1) ));

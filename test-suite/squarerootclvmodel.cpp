@@ -82,7 +82,7 @@ namespace {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
         CLVModelPayoff(Option::Type type, Real strike,
-                             const boost::function<Real(Real)> g)
+                             const ext::function<Real(Real)> g)
         : PlainVanillaPayoff(type, strike),
           g_(g) { }
 
@@ -91,7 +91,7 @@ namespace {
         }
 
       private:
-        const boost::function<Real(Real)> g_;
+        const ext::function<Real(Real)> g_;
     };
 }
 
@@ -165,7 +165,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
-        const boost::function<Real(Real)> f =
+        const ext::function<Real(Real)> f =
             boost::bind(std::multiplies<Real>(),
                 boost::bind(&CLVModelPayoff::operator(), &clvModelPayoff, _1),
                 boost::bind<Real>(boost::math::pdf<chi_squared_type, Real>,
@@ -237,7 +237,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
     const SquareRootCLVModel model(
         bsProcess, sqrtProcess, calibrationDates, 18, 1-1e-14, 1e-14);
 
-    const boost::function<Real(Time, Real)> g = model.g();
+    const ext::function<Real(Time, Real)> g = model.g();
 
     const Real strikes[] = { 80, 100, 120 };
     const Size offsets[] = { 7, 14, 28, 91, 182, 183, 184, 185, 186, 365 };
@@ -269,7 +269,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
             const CLVModelPayoff clvModelPayoff(
                 optionType, strike, boost::bind(g, t, _1));
 
-            const boost::function<Real(Real)> f =
+            const ext::function<Real(Real)> f =
                 boost::bind(std::multiplies<Real>(),
                     boost::bind(
                         &CLVModelPayoff::operator(), &clvModelPayoff, _1),
@@ -354,7 +354,7 @@ namespace {
                 bsProcess_, sqrtProcess, calibrationDates_,
                 14, 1-1e-14, 1e-14);
 
-            const boost::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
+            const ext::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
 
             Array retVal(resetDates_.size()*strikes_.size());
 
@@ -560,7 +560,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
             clvCalibrationDates.begin(), clvCalibrationDates.end()),
         14, 1-1e-14, 1e-14);
 
-    const boost::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
+    const ext::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
 
     const ext::shared_ptr<SimpleQuote> vol(
         ext::make_shared<SimpleQuote>(0.1));

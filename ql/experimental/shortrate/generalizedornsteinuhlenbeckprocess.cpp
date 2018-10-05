@@ -23,8 +23,8 @@
 namespace QuantLib {
 
     GeneralizedOrnsteinUhlenbeckProcess::GeneralizedOrnsteinUhlenbeckProcess(
-        const boost::function<Real (Time)>& speed,
-        const boost::function<Real (Time)>& vol,
+        const ext::function<Real (Time)>& speed,
+        const ext::function<Real (Time)>& vol,
         Real x0,
         Real level)
     : x0_(x0), level_(level), speed_(speed), volatility_(vol) {
