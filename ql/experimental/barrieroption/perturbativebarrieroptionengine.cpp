@@ -24,7 +24,7 @@
 #include <ql/exercise.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <cmath>
 #include <algorithm>
 
@@ -68,11 +68,11 @@ namespace QuantLib {
 
     Real BarrierUPD(Real kprice, Real stock, Real hbarr,
                       Real taumin, Real taumax, int iord, int igm,
-                      boost::function<Real(Real, Real)> integr,
-                      boost::function<Real(Real, Real)> integalpha,
-                      boost::function<Real(Real, Real)> integs,
-                      boost::function<Real(Real)> alpha,
-                      boost::function<Real(Real)> sigmaq)
+                      ext::function<Real(Real, Real)> integr,
+                      ext::function<Real(Real, Real)> integalpha,
+                      ext::function<Real(Real, Real)> integs,
+                      ext::function<Real(Real)> alpha,
+                      ext::function<Real(Real)> sigmaq)
     {
         Real v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
         int i=0,j=0;

@@ -52,7 +52,7 @@ namespace QuantLib {
           integratorY_(integratorY) {
         }
 
-        Real operator()(const boost::function<Real (Real, Real)>& f,
+        Real operator()(const ext::function<Real (Real, Real)>& f,
                         const std::pair<Real, Real>& a,
                         const std::pair<Real, Real>& b) const {
             return (*integratorX_)(
@@ -61,7 +61,7 @@ namespace QuantLib {
         }
 
       private:
-        Real g(const boost::function<Real (Real, Real)>& f,
+        Real g(const ext::function<Real (Real, Real)>& f,
                Real x, Real a, Real b) const {
             return (*integratorY_)(boost::bind(f, x, _1), a, b);
         }

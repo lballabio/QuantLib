@@ -26,7 +26,7 @@
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/shared_ptr.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -82,7 +82,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmInnerValueCalculator> gasPrice_;
         const ext::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
 
-        std::vector<boost::function<Real (Real)> > stateEvolveFcts_;
+        std::vector<ext::function<Real (Real)> > stateEvolveFcts_;
     };
 }
 

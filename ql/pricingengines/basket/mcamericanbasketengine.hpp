@@ -33,7 +33,7 @@
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
 #include <ql/exercise.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -103,7 +103,7 @@ namespace QuantLib {
         Array state(const MultiPath& path, Size t) const;
         Real operator()(const MultiPath& path, Size t) const;
 
-        std::vector<boost::function1<Real, Array> > basisSystem() const;
+        std::vector<ext::function<Real(Array)> > basisSystem() const;
 
       protected:
         Real payoff(const Array& state) const;
@@ -112,7 +112,7 @@ namespace QuantLib {
         const ext::shared_ptr<Payoff> payoff_;
 
         Real scalingValue_;
-        std::vector<boost::function1<Real, Array> > v_;
+        std::vector<ext::function<Real(Array)> > v_;
     };
 
     template <class RNG> inline

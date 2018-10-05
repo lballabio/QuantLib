@@ -28,7 +28,7 @@
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 
 #include <boost/timer.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <iostream>
@@ -142,8 +142,8 @@ Real printFunction(Problem& p, const Array& x) {
 
 class TestFunction : public CostFunction {
 public:
-    typedef boost::function<Real(const Array&)> RealFunc;
-    typedef boost::function<Disposable<Array>(const Array&)> ArrayFunc;
+    typedef ext::function<Real(const Array&)> RealFunc;
+    typedef ext::function<Disposable<Array>(const Array&)> ArrayFunc;
     TestFunction(const RealFunc & f, const ArrayFunc & fs = ArrayFunc()) : f_(f), fs_(fs) {}
     TestFunction(Real(*f)(const Array&), Disposable<Array>(*fs)(const Array&) = NULL) : f_(f), fs_(fs) {}
     virtual ~TestFunction(){}
@@ -151,7 +151,7 @@ public:
         return f_(x);
     }
     virtual Disposable<Array> values(const Array& x) const {
-        if(fs_.empty())
+        if(!fs_)
             throw std::runtime_error("Invalid function");
         return fs_(x);
     }

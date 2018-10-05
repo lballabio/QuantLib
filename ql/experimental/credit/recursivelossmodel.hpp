@@ -167,7 +167,7 @@ namespace QuantLib {
             basket_->remainingProbabilities(date);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &RecursiveLossModel::expectedConditionalLoss,
                     this,
@@ -184,7 +184,7 @@ namespace QuantLib {
            invProb.push_back(copula_->inverseCumulativeY(uncDefProb[i], i));
            ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                 boost::bind(
                     &RecursiveLossModel::expectedConditionalLossInvP,
                     this,
@@ -202,7 +202,7 @@ namespace QuantLib {
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         return copula_->integratedExpectedValue(
-            boost::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
+            ext::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
                 boost::bind(
                     &RecursiveLossModel::conditionalLossProb,
                     this,

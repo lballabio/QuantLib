@@ -38,7 +38,7 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -109,7 +109,7 @@ namespace QuantLib {
 
         return Brent().solve(
             compose(subtract<Real>(q),
-                    boost::function<Real(Real)>(
+                    ext::function<Real(Real)>(
                         boost::bind(&GBSMRNDCalculator::cdf, this, _1, t))),
             1e-10, 0.5*(lower+upper), lower, upper);
     }

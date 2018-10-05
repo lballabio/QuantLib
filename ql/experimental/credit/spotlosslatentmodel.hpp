@@ -330,7 +330,7 @@ namespace QuantLib {
         Real invRR = inverseCumulativeY(recoveries_[iName], iName + numNames_);
 
         return integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
+            ext::function<Real (const std::vector<Real>& v1)>(
                boost::bind(
                &SpotRecoveryLatentModel<CP>::conditionalExpLossRRInv,
                this,

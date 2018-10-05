@@ -80,7 +80,7 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
         ExtendedOrnsteinUhlenbeckProcess::Trapezodial,
         ExtendedOrnsteinUhlenbeckProcess::GaussLobatto};
 
-    boost::function<Real (Real)> f[] 
+    ext::function<Real (Real)> f[] 
         = { constant<Real, Real>(level),
             add<Real>(1.0),
             static_cast<Real(*)(Real)>(std::sin) }; 

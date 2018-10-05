@@ -122,13 +122,13 @@ namespace QuantLib {
         return s;
     }
 
-    boost::function<Real(Time, Real)> SquareRootCLVModel::g() const {
+    ext::function<Real(Time, Real)> SquareRootCLVModel::g() const {
         calculate();
         return g_;
     }
 
     void SquareRootCLVModel::performCalculations() const {
-        g_ = boost::function<Real(Time, Real)>(MappingFunction(*this));
+        g_ = ext::function<Real(Time, Real)>(MappingFunction(*this));
     }
 
     SquareRootCLVModel::MappingFunction::MappingFunction(

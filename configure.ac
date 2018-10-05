@@ -409,6 +409,22 @@ if test "$ql_use_unique_ptr" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_unique_ptr])
 
+AC_MSG_CHECKING([whether to enable std::function])
+AC_ARG_ENABLE([std-function],
+              AC_HELP_STRING([--enable-std-function],
+                             [If enabled, std::function will be used instead
+                              of boost::function; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.]),
+              [ql_use_std_function=$enableval],
+              [ql_use_std_function=no])
+if test "$ql_use_std_function" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
+             [Define this if you want to use std::function.])
+fi
+AC_MSG_RESULT([$ql_use_std_function])
+
 # manual configurations for specific hosts
 case $host in
   powerpc-apple-darwin*)

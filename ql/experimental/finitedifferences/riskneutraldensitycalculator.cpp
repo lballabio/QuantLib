@@ -32,7 +32,7 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
     RiskNeutralDensityCalculator::InvCDFHelper::InvCDFHelper(
@@ -61,7 +61,7 @@ namespace QuantLib {
 
         QL_REQUIRE(evaluations, "could not calculate interval");
 
-        const boost::function<Real(Real)> cdf
+        const ext::function<Real(Real)> cdf
             = boost::bind(&RiskNeutralDensityCalculator::cdf,
                           calculator_, _1, t);
 

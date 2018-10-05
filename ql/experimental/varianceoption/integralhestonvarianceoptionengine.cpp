@@ -23,7 +23,7 @@
 
 #include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
 #include <ql/errors.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/scoped_array.hpp>
 #include <complex>
 
@@ -199,7 +199,7 @@ namespace QuantLib {
 
     Real IvopTwoDim(Real eps, Real chi, Real theta, Real /*rho*/,
                     Real v0, Time tau, Real rtax,
-                    const boost::function<Real(Real)>& payoff) {
+                    const ext::function<Real(Real)>& payoff) {
 
         Real ss=0.0;
         boost::scoped_array<double> xiv(new double[2048*2048+1]);

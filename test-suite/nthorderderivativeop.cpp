@@ -47,7 +47,7 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <numeric>
 
 using namespace QuantLib;
@@ -435,12 +435,12 @@ namespace {
             if (direction == direction_) {
                 BiCGStabResult result =
                     QuantLib::BiCGstab(
-                        boost::function<Disposable<Array>(const Array&)>(
+                        ext::function<Disposable<Array>(const Array&)>(
                             boost::bind(
                                 &FdmHeatEquationOp::solve_apply,
                                 this, _1, -dt)),
                         std::max(Size(10), r.size()), 1e-14,
-                        boost::function<Disposable<Array>(const Array&)>(
+                        ext::function<Disposable<Array>(const Array&)>(
                             boost::bind(&FdmLinearOpComposite::preconditioner,
                                         this, _1, dt))
                     ).solve(r, r);

@@ -30,7 +30,7 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -62,11 +62,11 @@ namespace QuantLib {
             a = map_->solve_splitting(0, a, -dt_);
         }
         else {
-            const boost::function<Disposable<Array>(const Array&)>
+            const ext::function<Disposable<Array>(const Array&)>
                 preconditioner(boost::bind(
                     &FdmLinearOpComposite::preconditioner, map_, _1, -dt_));
 
-            const boost::function<Disposable<Array>(const Array&)> applyF(
+            const ext::function<Disposable<Array>(const Array&)> applyF(
                 boost::bind(&ImplicitEulerScheme::apply, this, _1));
 
             if (solverType_ == BiCGstab) {

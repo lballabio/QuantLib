@@ -28,7 +28,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 
 #include <boost/timer.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 #include <iostream>
 #include <iomanip>

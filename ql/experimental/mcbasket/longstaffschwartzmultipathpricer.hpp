@@ -34,7 +34,7 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -89,7 +89,7 @@ namespace QuantLib {
         const Array dF_;
 
         mutable std::vector<PathInfo> paths_;
-        const   std::vector<boost::function1<Real, Array> > v_;
+        const std::vector<ext::function<Real(Array)> > v_;
     };
 
 }

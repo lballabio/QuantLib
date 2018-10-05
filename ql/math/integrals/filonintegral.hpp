@@ -49,7 +49,7 @@ namespace QuantLib {
         FilonIntegral(Type type, Real t, Size intervals);
 
       protected:
-        Real integrate(const boost::function<Real (Real)>& f,
+        Real integrate(const ext::function<Real (Real)>& f,
                        Real a, Real b) const;
       private:
         const Type type_;
