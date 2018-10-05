@@ -179,7 +179,7 @@ namespace QuantLib {
             Real c_inf, Real epsilon, Real v0, Real t);
 
         Real calculate(Real c_inf,
-                       const boost::function1<Real, Real>& f,
+                       const boost::function<Real(Real)>& f,
                        Real maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;

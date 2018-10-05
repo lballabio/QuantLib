@@ -71,7 +71,7 @@ namespace QuantLib {
 
         virtual StateType
             state(const PathType& path, TimeType t) const = 0;
-        virtual std::vector<boost::function1<ValueType, StateType> >
+        virtual std::vector<boost::function<ValueType(StateType)> >
             basisSystem() const = 0;
     };
 }

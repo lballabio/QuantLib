@@ -90,7 +90,7 @@ namespace QuantLib {
         boost::scoped_array<DiscountFactor> dF_;
 
         mutable std::vector<PathType> paths_;
-        const   std::vector<boost::function1<Real, StateType> > v_;
+        const   std::vector<boost::function<Real(StateType)> > v_;
 
         const Size len_;
     };

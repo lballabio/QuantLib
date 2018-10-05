@@ -733,7 +733,7 @@ namespace QuantLib {
 
     Real AnalyticHestonEngine::Integration::calculate(
                                Real c_inf,
-                               const boost::function1<Real, Real>& f,
+                               const boost::function<Real(Real)>& f,
                                Real maxBound) const {
         Real retVal;
 

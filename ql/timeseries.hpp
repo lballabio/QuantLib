@@ -173,9 +173,9 @@ namespace QuantLib {
 
       private:
         typedef typename Container::value_type container_value_type;
-        typedef boost::function1<Date, const container_value_type&>
+        typedef boost::function<Date(const container_value_type&)>
                                                               projection_time;
-        typedef boost::function1<T, const container_value_type&>
+        typedef boost::function<T(const container_value_type&)>
                                                              projection_value;
 
       public:
