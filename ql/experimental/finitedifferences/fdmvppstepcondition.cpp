@@ -116,7 +116,7 @@ namespace QuantLib {
 
         const Size state = iter.coordinates()[stateDirection_];
 
-        if (stateEvolveFcts_[state].empty()) {
+        if (!(stateEvolveFcts_[state])) {
             return 0.0;
         }
         else {

@@ -151,7 +151,7 @@ public:
         return f_(x);
     }
     virtual Disposable<Array> values(const Array& x) const {
-        if(fs_.empty())
+        if(!fs_)
             throw std::runtime_error("Invalid function");
         return fs_(x);
     }

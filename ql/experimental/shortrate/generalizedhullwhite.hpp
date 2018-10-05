@@ -183,9 +183,9 @@ namespace QuantLib {
                 "mean reversion inputs inconsistent");
             QL_REQUIRE(volstructure.size()==vol.size(),
                 "volatility inputs inconsistent");
-            if (f_.empty())
+            if (!f_)
                 f_ = identity;
-            if (fInverse_.empty())
+            if (!fInverse_)
                 fInverse_ = identity;
 
             DayCounter dc = yieldtermStructure->dayCounter();
