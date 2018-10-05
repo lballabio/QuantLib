@@ -44,7 +44,7 @@
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 

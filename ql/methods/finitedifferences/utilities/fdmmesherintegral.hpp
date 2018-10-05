@@ -26,7 +26,7 @@
 
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
     class FdmMesherIntegral {

@@ -33,7 +33,7 @@
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
 #include <ql/exercise.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 

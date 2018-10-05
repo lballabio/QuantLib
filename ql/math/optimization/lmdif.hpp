@@ -26,7 +26,7 @@
 #define quantlib_optimization_lmdif_hpp
 
 #include <ql/types.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 

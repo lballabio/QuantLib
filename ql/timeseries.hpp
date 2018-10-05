@@ -30,7 +30,7 @@
 #include <ql/errors.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/utility.hpp>
 #include <map>
 #include <vector>

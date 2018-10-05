@@ -26,7 +26,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 

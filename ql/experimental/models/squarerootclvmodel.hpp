@@ -30,7 +30,7 @@
 #include <ql/math/matrix.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <map>
 
 namespace QuantLib {

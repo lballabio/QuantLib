@@ -25,7 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/timer.hpp>
 
 #include <iostream>

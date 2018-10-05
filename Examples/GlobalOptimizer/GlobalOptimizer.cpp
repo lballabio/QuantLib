@@ -28,7 +28,7 @@
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 
 #include <boost/timer.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <iostream>

@@ -30,7 +30,7 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 

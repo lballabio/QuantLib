@@ -23,7 +23,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/bind.hpp>
 #include <vector>
 

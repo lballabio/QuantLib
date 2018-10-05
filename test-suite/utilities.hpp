@@ -29,7 +29,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <vector>
 #include <string>
 #include <numeric>

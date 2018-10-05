@@ -26,7 +26,7 @@
 
 #include <ql/stochasticprocess.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 

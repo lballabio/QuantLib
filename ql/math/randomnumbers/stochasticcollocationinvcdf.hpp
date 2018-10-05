@@ -28,7 +28,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <functional>
 
 namespace QuantLib {

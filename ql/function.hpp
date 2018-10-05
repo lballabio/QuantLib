@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Klaus Spanderen
- Copyright (C) 2010 Kakhkhor Abdijalilov
+ Copyright (C) 2018 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,35 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file lsmbasissystem.hpp
-    \brief utility classes for Longstaff-Schwartz early-exercise Monte Carlo
+/*! \file function.hpp
+    \brief Maps function to either the boost or std implementation
 */
 
-// lsmbasissystem.hpp
-
-#ifndef quantlib_lsm_basis_system_hpp
-#define quantlib_lsm_basis_system_hpp
+#ifndef quantlib_function_hpp
+#define quantlib_function_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/math/array.hpp>
-#include <ql/function.hpp>
-#include <vector>
+
+#if defined(QL_USE_STD_FUNCTION)
+#include <functional>
+#else
+#include <boost/function.hpp>
+#endif
 
 namespace QuantLib {
 
-    class LsmBasisSystem {
-      public:
-        enum PolynomType { Monomial, Laguerre, Hermite, Hyperbolic,
-                           Legendre, Chebyshev, Chebyshev2nd };
+    namespace ext {
 
-        static std::vector<boost::function1<Real, Real> >
-            pathBasisSystem(Size order, PolynomType polyType);
+        #if defined(QL_USE_STD_FUNCTION)
+        using std::function;
+        #else
+        using boost::function;
+        #endif
 
-        static std::vector<boost::function1<Real, Array> >
-            multiPathBasisSystem(Size dim, Size order, PolynomType polyType);
-    };
-
+    }
 
 }
 
+
 #endif
+

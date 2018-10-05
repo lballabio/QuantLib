@@ -31,7 +31,7 @@
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/functional.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/bind.hpp>
 

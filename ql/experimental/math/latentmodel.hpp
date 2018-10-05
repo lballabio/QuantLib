@@ -32,7 +32,7 @@
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>

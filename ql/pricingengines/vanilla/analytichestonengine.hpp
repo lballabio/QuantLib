@@ -32,7 +32,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <complex>
 
 namespace QuantLib {

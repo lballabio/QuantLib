@@ -30,7 +30,7 @@
 #include <ql/math/matrix.hpp>
 #include <ql/time/date.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
     /*! References:

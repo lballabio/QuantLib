@@ -28,7 +28,7 @@
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
