@@ -600,7 +600,7 @@ namespace QuantLib {
                 integration()->integrate(
                     ext::bind(std::multiplies<Real>(), 
                     ext::bind(&copulaPolicyImpl::density, copula_, _1),
-                    ext::bind(boost::cref(f), _1)));   
+                    ext::bind(f, _1)));   
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
@@ -615,7 +615,7 @@ namespace QuantLib {
                     ext::bind<Disposable<std::vector<Real> > >(
                         detail::multiplyV(),
                         ext::bind(&copulaPolicyImpl::density, copula_, _1),
-                        ext::bind(boost::cref(f), _1)));
+                        ext::bind(f, _1)));
         }
     protected:
         // Integrable models must provide their integrator.

@@ -246,8 +246,9 @@ namespace QuantLib {
     inline detail::DispArray GaussianQuadMultidimIntegrator::integrate<detail::DispArray>(
         const ext::function<detail::DispArray (const std::vector<Real>& v1)>& f) const
     {
+        using namespace ext::placeholders;
         return integralV_(ext::bind(
-                   boost::cref(integrationEntriesVR_[dimension_-1]),
+                   integrationEntriesVR_[dimension_-1],
                    boost::cref(f),
                    _1)
                    );
