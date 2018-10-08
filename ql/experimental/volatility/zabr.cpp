@@ -35,7 +35,7 @@
 #include <ql/experimental/finitedifferences/fdmdupire1dop.hpp>
 #include <ql/experimental/finitedifferences/fdmzabrop.hpp>
 #include <ql/function.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 
 using std::pow;
 
@@ -70,10 +70,11 @@ Real ZabrModel::lognormalVolatility(const Real strike) const {
 
 Disposable<std::vector<Real> >
 ZabrModel::lognormalVolatility(const std::vector<Real> &strikes) const {
+    using namespace ext::placeholders;
     std::vector<Real> x_ = x(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
-                   boost::bind(&ZabrModel::lognormalVolatilityHelper,
+                   ext::bind(&ZabrModel::lognormalVolatilityHelper,
                                this, _1, _2));
     return result;
 }
@@ -91,10 +92,11 @@ Real ZabrModel::normalVolatility(const Real strike) const {
 
 Disposable<std::vector<Real> >
 ZabrModel::normalVolatility(const std::vector<Real> &strikes) const {
+    using namespace ext::placeholders;
     std::vector<Real> x_ = x(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
-                   boost::bind(&ZabrModel::normalVolatilityHelper, this,
+                   ext::bind(&ZabrModel::normalVolatilityHelper, this,
                                _1, _2));
     return result;
 }
@@ -112,10 +114,11 @@ Real ZabrModel::localVolatility(const Real f) const {
 
 Disposable<std::vector<Real> >
 ZabrModel::localVolatility(const std::vector<Real> &f) const {
+    using namespace ext::placeholders;
     std::vector<Real> x_ = x(f);
     std::vector<Real> result(f.size());
     std::transform(f.begin(), f.end(), x_.begin(), result.begin(),
-                   boost::bind(&ZabrModel::localVolatilityHelper, this,
+                   ext::bind(&ZabrModel::localVolatilityHelper, this,
                                _1, _2));
     return result;
 }
@@ -316,6 +319,7 @@ Real ZabrModel::x(const Real strike) const {
 
 Disposable<std::vector<Real> >
 ZabrModel::x(const std::vector<Real> &strikes) const {
+    using namespace ext::placeholders;
 
     QL_REQUIRE(strikes[0] > 0.0 || beta_ < 1.0,
                "strikes must be positive (" << strikes[0] << ") if beta = 1");
@@ -330,7 +334,7 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
                                       // the constructor
     std::vector<Real> y(strikes.size()), result(strikes.size());
     std::transform(strikes.rbegin(), strikes.rend(), y.begin(),
-                   boost::bind(&ZabrModel::y, this, _1));
+                   ext::bind(&ZabrModel::y, this, _1));
 
     if (close(gamma_, 1.0)) {
         for (Size m = 0; m < y.size(); m++) {
@@ -351,7 +355,7 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
             Real y0 = 0.0, u0 = 0.0;
             for (int m = ynz + (dir == -1 ? -1 : 0);
                  dir == -1 ? m >= 0 : m < (int)y.size(); m += dir) {
-                Real u = rk(boost::bind(&ZabrModel::F, this, _1, _2),
+                Real u = rk(ext::bind(&ZabrModel::F, this, _1, _2),
                             u0, y0, y[m]);
                 result[y.size() - 1 - m] = u * pow(alpha_, 1.0 - gamma_);
                 u0 = u;

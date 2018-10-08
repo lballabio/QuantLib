@@ -107,7 +107,7 @@
 //#    define QL_USE_STD_FUNCTION
 #endif
 
-/* Define this to use std::bind instead of boost::bind.
+/* Define this to use std::bind instead of ext::bind.
    This requires you to set your compiler's standard to at least
    C++11. */
 #ifndef QL_USE_STD_BIND

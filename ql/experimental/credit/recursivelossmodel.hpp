@@ -27,7 +27,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -168,7 +168,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &RecursiveLossModel::expectedConditionalLoss,
                     this,
                     boost::cref(uncDefProb),
@@ -185,7 +185,7 @@ namespace QuantLib {
            ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &RecursiveLossModel::expectedConditionalLossInvP,
                     this,
                     boost::cref(invProb),
@@ -203,7 +203,7 @@ namespace QuantLib {
             basket_->remainingProbabilities(date);
         return copula_->integratedExpectedValue(
             ext::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &RecursiveLossModel::conditionalLossProb,
                     this,
                     boost::cref(uncDefProb),

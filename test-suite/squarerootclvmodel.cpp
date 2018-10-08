@@ -55,7 +55,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -99,6 +99,8 @@ namespace {
 void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     BOOST_TEST_MESSAGE(
         "Testing vanilla option pricing with square root kernel process...");
+
+    using namespace ext::placeholders;
 
     SavedSettings backup;
 
@@ -166,9 +168,9 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
         const ext::function<Real(Real)> f =
-            boost::bind(std::multiplies<Real>(),
-                boost::bind(&CLVModelPayoff::operator(), &clvModelPayoff, _1),
-                boost::bind<Real>(boost::math::pdf<chi_squared_type, Real>,
+            ext::bind(std::multiplies<Real>(),
+                ext::bind(&CLVModelPayoff::operator(), &clvModelPayoff, _1),
+                ext::bind<Real>(boost::math::pdf<chi_squared_type, Real>,
                     dist, _1) );
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-6)(
@@ -188,6 +190,8 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
     BOOST_TEST_MESSAGE(
         "Testing mapping function of the square root kernel process...");
+
+    using namespace ext::placeholders;
 
     SavedSettings backup;
 
@@ -267,13 +271,13 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
                 rTS->discount(m)).value();
 
             const CLVModelPayoff clvModelPayoff(
-                optionType, strike, boost::bind(g, t, _1));
+                optionType, strike, ext::bind(g, t, _1));
 
             const ext::function<Real(Real)> f =
-                boost::bind(std::multiplies<Real>(),
-                    boost::bind(
+                ext::bind(std::multiplies<Real>(),
+                    ext::bind(
                         &CLVModelPayoff::operator(), &clvModelPayoff, _1),
-                    boost::bind<Real>(boost::math::pdf<chi_squared_type, Real>,
+                    ext::bind<Real>(boost::math::pdf<chi_squared_type, Real>,
                         dist, _1) );
 
             const Array x = model.collocationPointsX(m);

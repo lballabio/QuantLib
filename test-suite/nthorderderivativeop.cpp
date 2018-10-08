@@ -42,7 +42,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -432,16 +432,17 @@ namespace {
         Disposable<Array> solve_splitting(
             Size direction, const Array& r, Real dt) const {
 
+            using namespace ext::placeholders;
             if (direction == direction_) {
                 BiCGStabResult result =
                     QuantLib::BiCGstab(
                         ext::function<Disposable<Array>(const Array&)>(
-                            boost::bind(
+                            ext::bind(
                                 &FdmHeatEquationOp::solve_apply,
                                 this, _1, -dt)),
                         std::max(Size(10), r.size()), 1e-14,
                         ext::function<Disposable<Array>(const Array&)>(
-                            boost::bind(&FdmLinearOpComposite::preconditioner,
+                            ext::bind(&FdmLinearOpComposite::preconditioner,
                                         this, _1, dt))
                     ).solve(r, r);
 

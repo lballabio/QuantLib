@@ -320,6 +320,7 @@ namespace QuantLib {
     inline Real SpotRecoveryLatentModel<CP>::expectedLoss(const Date& d, 
         Size iName) const 
     {
+        using namespace ext::placeholders;
         const ext::shared_ptr<Pool>& pool = basket_->pool();
         Probability pDefUncond =
             pool->get(pool->names()[iName]).
@@ -331,7 +332,7 @@ namespace QuantLib {
 
         return integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-               boost::bind(
+               ext::bind(
                &SpotRecoveryLatentModel<CP>::conditionalExpLossRRInv,
                this,
                invP,

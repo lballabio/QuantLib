@@ -27,7 +27,7 @@
 #include <ql/math/functional.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <algorithm>
 #include <numeric>
 
@@ -82,6 +82,7 @@ namespace QuantLib {
         */
         Disposable<std::vector<Real> > 
             expectedDistribution(const Date& date) const {
+            using namespace ext::placeholders;
             // precal date conditional magnitudes:
             std::vector<Real> notionals = basket_->remainingNotionals(date);
             std::vector<Probability> invProbs = 
@@ -93,7 +94,7 @@ namespace QuantLib {
             return copula_->integratedExpectedValue(
                 ext::function<Disposable<std::vector<Real> > (
                   const std::vector<Real>& v1)>(
-                    boost::bind(
+                    ext::bind(
                         &BinomialLossModel<LLM>::lossProbability,
                         this,
                         boost::cref(date), //d,
@@ -287,11 +288,12 @@ namespace QuantLib {
     Disposable<std::vector<Real> >
         BinomialLossModel<LLM>::lossPoints(const Date& d) const 
     {
+        using namespace ext::placeholders;
         std::vector<Real> notionals = basket_->remainingNotionals(d);
 
         Real aveLossFrct = copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &BinomialLossModel<LLM>::averageLoss,
                     this,
                     boost::cref(d),
@@ -332,6 +334,7 @@ namespace QuantLib {
 
     template< class LLM>
     Real BinomialLossModel<LLM>::expectedTrancheLoss(const Date& d) const {
+        using namespace ext::placeholders;
         std::vector<Real> lossVals  = lossPoints(d);
         std::vector<Real> notionals = basket_->remainingNotionals(d);
         std::vector<Probability> invProbs = 
@@ -342,7 +345,7 @@ namespace QuantLib {
             
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(&BinomialLossModel<LLM>::condTrancheLoss,
+                ext::bind(&BinomialLossModel<LLM>::condTrancheLoss,
                             this,
                             boost::cref(d), 
                             boost::cref(lossVals), 

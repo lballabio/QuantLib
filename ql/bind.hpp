@@ -38,6 +38,9 @@ namespace QuantLib {
 
         #if defined(QL_USE_STD_BIND)
         using std::bind;
+        namespace placeholders {
+            using namespace std::placeholders;
+        }
         #else
         using boost::bind;
         #endif

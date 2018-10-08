@@ -393,7 +393,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::CumulantGeneratingCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -415,7 +415,7 @@ namespace QuantLib {
 
        return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::CumGen1stDerivativeCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -437,7 +437,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::CumGen2ndDerivativeCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -459,7 +459,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::CumGen3rdDerivativeCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -481,7 +481,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::CumGen4thDerivativeCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -508,7 +508,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::probOverLossCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -530,7 +530,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::probOverLossPortfCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -552,7 +552,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::conditionalExpectedTrancheLoss,
                     this,
                     boost::cref(invUncondProbs),
@@ -573,7 +573,7 @@ namespace QuantLib {
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                     &SaddlePointLossModel<CP>::probDensityCond,
                     this,
                     boost::cref(invUncondProbs),
@@ -596,7 +596,7 @@ namespace QuantLib {
         return copula_->integratedExpectedValue(
             ext::function<Disposable<std::vector<Real> > (
                 const std::vector<Real>& v1)>(
-                    boost::bind(
+                    ext::bind(
                         &SaddlePointLossModel<CP>::splitLossCond,
                         this,
                     boost::cref(invUncondProbs),
@@ -1412,7 +1412,7 @@ namespace QuantLib {
         // Integrate with the tranche or the portfolio according to the limits.
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                   &SaddlePointLossModel<CP>::expectedShortfallFullPortfolioCond,
                   this,
                   boost::cref(invUncondProbs),

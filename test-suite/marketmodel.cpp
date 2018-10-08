@@ -111,7 +111,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <sstream>
 
 #if defined(BOOST_MSVC)
@@ -4900,7 +4900,7 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
         Size testedFactors[] = { 4, 8, todaysForwards.size() };
         #define BOOST_PP_LOCAL_MACRO(n)                                 \
             suite->add(QUANTLIB_TEST_CASE(                              \
-                boost::bind(&MarketModelTest::testCallableSwapAnderson, \
+                ext::bind(&MarketModelTest::testCallableSwapAnderson, \
                     marketModels[n/LENGTH(testedFactors)],              \
                     testedFactors[n%LENGTH(testedFactors)])));
 

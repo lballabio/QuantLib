@@ -78,7 +78,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/operation.hpp>
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -1286,17 +1286,19 @@ void FdmLinearOpTest::testBiCGstab() {
     BOOST_TEST_MESSAGE(
         "Testing bi-conjugated gradient stabilized algorithm...");
 
+    using namespace ext::placeholders;
+
     const Size n=41, m=21;
     const Real theta = 1.0;
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
     const ext::function<Disposable<Array>(const Array&)> matmult(
-                                                boost::bind(&axpy, a, _1));
+                                                ext::bind(&axpy, a, _1));
 
     SparseILUPreconditioner ilu(a, 4);
     ext::function<Disposable<Array>(const Array&)> precond(
-         boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+         ext::bind(&SparseILUPreconditioner::apply, &ilu, _1));
 
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);
@@ -1324,17 +1326,19 @@ void FdmLinearOpTest::testGMRES() {
 #if !defined(QL_NO_UBLAS_SUPPORT)
     BOOST_TEST_MESSAGE("Testing GMRES algorithm...");
 
+    using namespace ext::placeholders;
+
     const Size n=41, m=21;
     const Real theta = 1.0;
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
     const ext::function<Disposable<Array>(const Array&)> matmult(
-                                                boost::bind(&axpy, a, _1));
+                                                ext::bind(&axpy, a, _1));
     
     SparseILUPreconditioner ilu(a, 4);
     ext::function<Disposable<Array>(const Array&)> precond(
-         boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+         ext::bind(&SparseILUPreconditioner::apply, &ilu, _1));
     
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);

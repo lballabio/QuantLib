@@ -40,7 +40,7 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
@@ -271,6 +271,9 @@ namespace QuantLib {
 
     Real NumericHaganPricer::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
+
+            using namespace ext::placeholders;
+
             Real result =.0;
             //double abserr =.0;
             //double alpha = 1.0;
@@ -301,7 +304,7 @@ namespace QuantLib {
                     Size k = 3;
                     ext::function<Real (Real)> temp = integrand;
                     VariableChange variableChange(temp, a, upperBoundary, k);
-                    f = boost::bind(&VariableChange::value, &variableChange, _1);
+                    f = ext::bind(&VariableChange::value, &variableChange, _1);
                     result = gaussKronrodNonAdaptive(f, .0, 1.0);
                 } else {
                     f = integrand;
