@@ -8,6 +8,7 @@
 #endif
 
 #include <ql/auto_ptr.hpp>
+#include <ql/bind.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/compounding.hpp>
 #include <ql/currency.hpp>
