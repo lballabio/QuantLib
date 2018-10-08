@@ -43,6 +43,7 @@ namespace QuantLib {
         }
         #else
         using boost::bind;
+        namespace placeholders {}
         #endif
 
     }
