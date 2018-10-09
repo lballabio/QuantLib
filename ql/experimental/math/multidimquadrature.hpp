@@ -33,7 +33,6 @@
 #include <ql/math/functional.hpp>
 #include <ql/function.hpp>
 #include <ql/bind.hpp>
-#include <boost/lambda/bind.hpp>
 
 namespace QuantLib {
 

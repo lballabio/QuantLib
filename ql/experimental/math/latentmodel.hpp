@@ -29,13 +29,12 @@
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
 #include <ql/function.hpp>
 #include <ql/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/construct.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
@@ -52,7 +51,7 @@ namespace QuantLib {
                 operator()(Real d,  Disposable<std::vector<Real> > v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
-                    boost::lambda::_1 * d);
+                               multiply_by<Real>(d));
                 return v;
             }
         };

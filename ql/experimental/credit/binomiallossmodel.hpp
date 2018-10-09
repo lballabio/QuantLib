@@ -25,8 +25,6 @@
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/math/functional.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
 #include <ql/bind.hpp>
 #include <algorithm>
 #include <numeric>
@@ -275,13 +273,13 @@ namespace QuantLib {
         */
         std::vector<Real> fractionalEL = expConditionalLgd(d, mktFctrs);
         Real notBskt = std::accumulate(reminingNots.begin(), 
-            reminingNots.end(), Real(0.));
+                                       reminingNots.end(), Real(0.));
         std::vector<Real> lgdsLeft;
         std::transform(fractionalEL.begin(), fractionalEL.end(), 
-            reminingNots.begin(), std::back_inserter(lgdsLeft),
-            boost::lambda::_1 * boost::lambda::_2 / notBskt);
+                       reminingNots.begin(), std::back_inserter(lgdsLeft),
+                       std::multiplies<Real>());
         return std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) 
-            / bsktSize;
+            / (bsktSize*notBskt);
     }
 
     template< class LLM>
