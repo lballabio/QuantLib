@@ -31,7 +31,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#include <qle/termstructures/blackinvertedvoltermstructure.hpp>
+#include <ql/termstructures/volatility/equityfx/blackinvertedvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fxblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
 
