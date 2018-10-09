@@ -30,6 +30,7 @@
 #include <functional>
 #else
 #include <boost/bind.hpp>
+#include <boost/ref.hpp>
 #endif
 
 namespace QuantLib {
@@ -38,11 +39,15 @@ namespace QuantLib {
 
         #if defined(QL_USE_STD_BIND)
         using std::bind;
+        using std::ref;
+        using std::cref;
         namespace placeholders {
             using namespace std::placeholders;
         }
         #else
         using boost::bind;
+        using boost::ref;
+        using boost::cref;
         namespace placeholders {}
         #endif
 

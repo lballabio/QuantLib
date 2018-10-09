@@ -396,7 +396,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::CumulantGeneratingCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                    s,
                     _1)
                 )
@@ -418,7 +418,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::CumGen1stDerivativeCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     s,
                     _1)
                 )
@@ -440,7 +440,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::CumGen2ndDerivativeCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     s,
                     _1)
                 )
@@ -462,7 +462,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::CumGen3rdDerivativeCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     s,
                     _1)
                 )
@@ -484,7 +484,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::CumGen4thDerivativeCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     s,
                     _1)
                 )
@@ -511,7 +511,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::probOverLossCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     trancheLossFract,
                     _1)
                 )
@@ -533,7 +533,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::probOverLossPortfCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     loss,
                     _1)
                 )
@@ -555,7 +555,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::conditionalExpectedTrancheLoss,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     _1)
                 )
             );
@@ -576,7 +576,7 @@ namespace QuantLib {
                 ext::bind(
                     &SaddlePointLossModel<CP>::probDensityCond,
                     this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                     loss,
                     _1)
                 )
@@ -599,7 +599,7 @@ namespace QuantLib {
                     ext::bind(
                         &SaddlePointLossModel<CP>::splitLossCond,
                         this,
-                    boost::cref(invUncondProbs),
+                    ext::cref(invUncondProbs),
                         s,
                         _1)
                 )
@@ -1415,7 +1415,7 @@ namespace QuantLib {
                 ext::bind(
                   &SaddlePointLossModel<CP>::expectedShortfallFullPortfolioCond,
                   this,
-                  boost::cref(invUncondProbs),
+                  ext::cref(invUncondProbs),
                   lossPerc,
                   _1)
                 )

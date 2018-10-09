@@ -143,7 +143,7 @@ namespace QuantLib {
         return 
             (*integrators_[nT])(
                 ext::bind(&MultidimIntegral::vectorBinder<nT>, this, f, 
-                    _1, boost::cref(a), boost::cref(b)), a[nT], b[nT]);
+                    _1, ext::cref(a), ext::cref(b)), a[nT], b[nT]);
     }
 
     template<int T_N> 

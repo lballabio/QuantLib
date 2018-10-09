@@ -246,7 +246,7 @@ namespace QuantLib {
               &DefaultLatentModel<copulaPolicy>::conditionalProbAtLeastNEvents,
               this,
               n,
-              boost::cref(date),
+              ext::cref(date),
               _1)
              ));
         }

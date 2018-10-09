@@ -171,7 +171,7 @@ namespace QuantLib {
                 ext::bind(
                     &RecursiveLossModel::expectedConditionalLoss,
                     this,
-                    boost::cref(uncDefProb),
+                    ext::cref(uncDefProb),
                     _1)
                 )
             );
@@ -188,7 +188,7 @@ namespace QuantLib {
                 ext::bind(
                     &RecursiveLossModel::expectedConditionalLossInvP,
                     this,
-                    boost::cref(invProb),
+                    ext::cref(invProb),
                     _1)
                 )
             );
@@ -206,7 +206,7 @@ namespace QuantLib {
                 ext::bind(
                     &RecursiveLossModel::conditionalLossProb,
                     this,
-                    boost::cref(uncDefProb),
+                    ext::cref(uncDefProb),
                     _1)
                 )
             );

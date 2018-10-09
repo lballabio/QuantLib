@@ -217,7 +217,7 @@ namespace QuantLib {
         return integral_(ext::bind(
                    // integration entry level is selected now
                    integrationEntries_[dimension_-1],
-                   boost::cref(f),
+                   ext::cref(f),
                    _1)
                    );
     }
@@ -235,7 +235,7 @@ namespace QuantLib {
         return integral_(ext::bind(
                    // integration entry level is selected now
                    integrationEntries_[dimension_-1],
-                   boost::cref(f),
+                   ext::cref(f),
                    _1)
                    );
     }
@@ -247,8 +247,8 @@ namespace QuantLib {
     {
         using namespace ext::placeholders;
         return integralV_(ext::bind(
-                   integrationEntriesVR_[dimension_-1],
-                   boost::cref(f),
+                   ext::cref(integrationEntriesVR_[dimension_-1]),
+                   ext::cref(f),
                    _1)
                    );
     } 

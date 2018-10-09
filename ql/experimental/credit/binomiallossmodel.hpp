@@ -95,9 +95,9 @@ namespace QuantLib {
                     ext::bind(
                         &BinomialLossModel<LLM>::lossProbability,
                         this,
-                        boost::cref(date), //d,
-                        boost::cref(notionals),
-                        boost::cref(invProbs),
+                        ext::cref(date), //d,
+                        ext::cref(notionals),
+                        ext::cref(invProbs),
                         _1)
                     )
                 );
@@ -294,8 +294,8 @@ namespace QuantLib {
                 ext::bind(
                     &BinomialLossModel<LLM>::averageLoss,
                     this,
-                    boost::cref(d),
-                    boost::cref(notionals),
+                    ext::cref(d),
+                    ext::cref(notionals),
                     _1)
                 )
             );
@@ -345,10 +345,10 @@ namespace QuantLib {
             ext::function<Real (const std::vector<Real>& v1)>(
                 ext::bind(&BinomialLossModel<LLM>::condTrancheLoss,
                             this,
-                            boost::cref(d), 
-                            boost::cref(lossVals), 
-                            boost::cref(notionals), 
-                            boost::cref(invProbs), 
+                            ext::cref(d), 
+                            ext::cref(lossVals), 
+                            ext::cref(notionals), 
+                            ext::cref(invProbs), 
                             _1))
             );
     }
