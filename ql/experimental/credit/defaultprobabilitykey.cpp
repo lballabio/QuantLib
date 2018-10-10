@@ -31,7 +31,7 @@ namespace QuantLib {
     namespace {
 
         struct points_to {
-            points_to(const DefaultType& t) : t(t) {}
+            explicit points_to(const DefaultType& t) : t(t) {}
             bool operator()(const ext::shared_ptr<DefaultType>& p) const {
                 return *p == t;
             }
