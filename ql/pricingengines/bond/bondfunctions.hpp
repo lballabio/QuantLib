@@ -156,7 +156,7 @@ namespace QuantLib {
                           Size maxIterations = 100,
                           Rate guess = 0.05);
         template <typename Solver>
-        static Rate yield(Solver solver,
+        static Rate yield(const Solver& solver,
                           const Bond& bond,
                           Real cleanPrice,
                           const DayCounter& dayCounter,
