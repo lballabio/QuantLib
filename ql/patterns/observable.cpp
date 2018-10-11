@@ -146,7 +146,7 @@ namespace QuantLib {
             }
         }
 
-        sig_->disconnect(boost::bind(&Observer::Proxy::update,
+        sig_->disconnect(ext::bind(&Observer::Proxy::update,
                              observerProxy.get()));
     }
 

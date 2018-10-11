@@ -25,9 +25,7 @@
 #include <ql/errors.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <boost/bind.hpp>
-
-using boost::bind;
+#include <ql/bind.hpp>
 
 namespace QuantLib {
 
@@ -47,8 +45,10 @@ namespace QuantLib {
                    || polynomType == LsmBasisSystem::Chebyshev2nd,
                    "insufficient polynom type");
 
+        using namespace ext::placeholders;
+
         // the payoff gives an additional value
-        v_.push_back(boost::bind(&AmericanPathPricer::payoff, this, _1));
+        v_.push_back(ext::bind(&AmericanPathPricer::payoff, this, _1));
 
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);

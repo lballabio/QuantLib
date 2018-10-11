@@ -28,7 +28,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <boost/scoped_ptr.hpp>
 
 #include <limits>
@@ -79,6 +79,7 @@ namespace QuantLib {
     }
 
     Volatility HestonBlackVolSurface::blackVolImpl(Time t, Real strike) const {
+        using namespace ext::placeholders;
         const ext::shared_ptr<HestonProcess> process = hestonModel_->process();
 
         const DiscountFactor df = process->riskFreeRate()->discount(t, true);
@@ -119,7 +120,7 @@ namespace QuantLib {
         const Volatility guess = std::sqrt(theta);
         const Real accuracy = std::numeric_limits<Real>::epsilon();
 
-        const ext::function<Real(Real)> f = boost::bind(
+        const ext::function<Real(Real)> f = ext::bind(
             &blackValue, payoff.optionType(), strike, fwd, t, _1, df, npv);
 
         return solver.solve(f, accuracy, guess, 0.01);

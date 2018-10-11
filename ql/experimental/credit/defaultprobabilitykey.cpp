@@ -23,19 +23,23 @@
 #pragma warning(push)
 #pragma warning(disable:4181)
 #endif
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/lambda/lambda.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #include <algorithm>
 #include <set>
 
 namespace QuantLib {
 
+    namespace {
+
+        struct points_to {
+            explicit points_to(const DefaultType& t) : t(t) {}
+            bool operator()(const ext::shared_ptr<DefaultType>& p) const {
+                return *p == t;
+            }
+            const DefaultType& t;
+        };
+        
+    }
+    
     bool operator==(const DefaultProbKey& lhs, const DefaultProbKey& rhs) {
         if(lhs.seniority() != rhs.seniority()) return false;
         if(lhs.currency() != rhs.currency()) return false;
@@ -45,7 +49,7 @@ namespace QuantLib {
         // the all types must be equal in the weak sense.
         for(Size i=0; i<mySize; i++) {
             if(std::find_if(lhs.eventTypes().begin(), lhs.eventTypes().end(),
-                            *boost::lambda::_1 == *rhs.eventTypes()[i]) == lhs.eventTypes().end())
+                            points_to(*rhs.eventTypes()[i])) == lhs.eventTypes().end())
                 return false;
         }// naah, I bet this can be done with a double lambda
         return true;

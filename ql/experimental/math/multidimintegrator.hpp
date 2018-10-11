@@ -24,7 +24,7 @@
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>
 #include <ql/function.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -128,8 +128,9 @@ namespace QuantLib {
 
     template<>
     void inline MultidimIntegral::spawnFcts<1>() const {
+        using namespace ext::placeholders;
         integrationLevelEntries_[0] = 
-            boost::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
+            ext::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
     }
 
     template<int nT>
@@ -138,10 +139,11 @@ namespace QuantLib {
         const std::vector<Real>& a,
         const std::vector<Real>& b) const 
     {
+        using namespace ext::placeholders;
         return 
             (*integrators_[nT])(
-                boost::bind(&MultidimIntegral::vectorBinder<nT>, this, f, 
-                    _1, boost::cref(a), boost::cref(b)), a[nT], b[nT]);
+                ext::bind(&MultidimIntegral::vectorBinder<nT>, this, f, 
+                    _1, ext::cref(a), ext::cref(b)), a[nT], b[nT]);
     }
 
     template<int T_N> 
@@ -157,8 +159,9 @@ namespace QuantLib {
 
     template<Size depth>
     void MultidimIntegral::spawnFcts() const {
+        using namespace ext::placeholders;
         integrationLevelEntries_[depth-1] =
-          boost::bind(&MultidimIntegral::integrate<depth-1>, this, 
+          ext::bind(&MultidimIntegral::integrate<depth-1>, this, 
             _1, _2, _3);
         spawnFcts<depth-1>();
     }

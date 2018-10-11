@@ -31,7 +31,7 @@
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <ql/function.hpp>
 #include <numeric>
 

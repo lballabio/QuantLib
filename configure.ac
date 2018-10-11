@@ -425,6 +425,43 @@ if test "$ql_use_std_function" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_std_function])
 
+AC_MSG_CHECKING([whether to enable std::bind])
+AC_ARG_ENABLE([std-bind],
+              AC_HELP_STRING([--enable-std-bind],
+                             [If enabled, std::bind will be used instead
+                              of boost::bind; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.]),
+              [ql_use_std_bind=$enableval],
+              [ql_use_std_bind=no])
+if test "$ql_use_std_bind" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_BIND],[1],
+             [Define this if you want to use std::bind.])
+fi
+AC_MSG_RESULT([$ql_use_std_bind])
+
+AC_MSG_CHECKING([whether to enable available std classes])
+AC_ARG_ENABLE([std-classes],
+              AC_HELP_STRING([--enable-std-classes],
+                             [This is a shortcut for --enable-std-pointers
+                              --enable-std-unique-ptr --enable-std-function
+                              --enable-std-bind.  If enabled, this supersedes
+                              any --disable option passed for the above.]),
+              [ql_use_std_classes=$enableval],
+              [ql_use_std_classes=no])
+if test "$ql_use_std_classes" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
+             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
+   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
+             [Define this if you want to use std::function.])
+   AC_DEFINE([QL_USE_STD_BIND],[1],
+             [Define this if you want to use std::bind.])
+fi
+AC_MSG_RESULT([$ql_use_std_classes])
+
 # manual configurations for specific hosts
 case $host in
   powerpc-apple-darwin*)

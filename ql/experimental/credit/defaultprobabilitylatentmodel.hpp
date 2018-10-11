@@ -207,6 +207,7 @@ namespace QuantLib {
         Trivial method for testing
         */
         Probability probOfDefault(Size iName, const Date& d) const {
+            using namespace ext::placeholders;
             QL_REQUIRE(basket_, "No portfolio basket set.");
             const ext::shared_ptr<Pool>& pool = basket_->pool();
             // avoid repeating this in the integration:
@@ -217,7 +218,7 @@ namespace QuantLib {
 
             return integratedExpectedValue(
               ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                 &DefaultLatentModel<copulaPolicy>
                     ::conditionalDefaultProbabilityInvP,
                 this,
@@ -238,13 +239,14 @@ namespace QuantLib {
         defaults in the basket portfolio at a given time.
         */
         Probability probAtLeastNEvents(Size n, const Date& date) const {
+            using namespace ext::placeholders;
             return integratedExpectedValue(
              ext::function<Real (const std::vector<Real>& v1)>(
-              boost::bind(
+              ext::bind(
               &DefaultLatentModel<copulaPolicy>::conditionalProbAtLeastNEvents,
               this,
               n,
-              boost::cref(date),
+              ext::cref(date),
               _1)
              ));
         }
@@ -257,6 +259,7 @@ namespace QuantLib {
     Real DefaultLatentModel<CP>::defaultCorrelation(const Date& d, 
         Size iNamei, Size iNamej) const 
     {
+        using namespace ext::placeholders;
         QL_REQUIRE(basket_, "No portfolio basket set.");
 
         const ext::shared_ptr<Pool>& pool = basket_->pool();
@@ -275,7 +278,7 @@ namespace QuantLib {
         if(iNamei !=iNamej) {
             E1i1j = integratedExpectedValue(
               ext::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+                ext::bind(
                 &DefaultLatentModel<CP>::condProbProduct,
                 this, invPi, invPj, iNamei, iNamej, _1) ));
         }else{

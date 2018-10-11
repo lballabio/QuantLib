@@ -52,7 +52,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -298,6 +298,8 @@ namespace {
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
+    using namespace ext::placeholders;
+
     SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
@@ -374,7 +376,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     VanillaOption fdmOption(
          ext::make_shared<CLVModelPayoff>(
-             payoff->optionType(), payoff->strike(), boost::bind(g, t, _1)),
+             payoff->optionType(), payoff->strike(), ext::bind(g, t, _1)),
          exercise);
 
     fdmOption.setPricingEngine(

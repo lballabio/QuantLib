@@ -107,6 +107,13 @@
 //#    define QL_USE_STD_FUNCTION
 #endif
 
+/* Define this to use std::bind instead of ext::bind.
+   This requires you to set your compiler's standard to at least
+   C++11. */
+#ifndef QL_USE_STD_BIND
+//#    define QL_USE_STD_BIND
+#endif
+
 /* Define this to enable the parallel unit test runner */
 #ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 //#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER

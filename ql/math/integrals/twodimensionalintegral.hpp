@@ -30,7 +30,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -55,15 +55,17 @@ namespace QuantLib {
         Real operator()(const ext::function<Real (Real, Real)>& f,
                         const std::pair<Real, Real>& a,
                         const std::pair<Real, Real>& b) const {
+            using namespace ext::placeholders;
             return (*integratorX_)(
-                 boost::bind(&TwoDimensionalIntegral::g, this, f, _1,
+                 ext::bind(&TwoDimensionalIntegral::g, this, f, _1,
                              a.second, b.second), a.first, b.first);
         }
 
       private:
         Real g(const ext::function<Real (Real, Real)>& f,
                Real x, Real a, Real b) const {
-            return (*integratorY_)(boost::bind(f, x, _1), a, b);
+            using namespace ext::placeholders;
+            return (*integratorY_)(ext::bind(f, x, _1), a, b);
         }
 
         const ext::shared_ptr<Integrator> integratorX_, integratorY_;

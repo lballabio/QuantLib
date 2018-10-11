@@ -35,7 +35,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -120,6 +120,7 @@ namespace QuantLib {
 
     template <class TrapezoidalScheme>
     inline void TrBDF2Scheme<TrapezoidalScheme>::step(array_type& fn, Time t) {
+        using namespace ext::placeholders;
 
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
 
@@ -140,11 +141,11 @@ namespace QuantLib {
         }
         else {
             const ext::function<Disposable<Array>(const Array&)>
-                preconditioner(boost::bind(
+                preconditioner(ext::bind(
                     &FdmLinearOpComposite::preconditioner, map_, _1, -beta_));
 
             const ext::function<Disposable<Array>(const Array&)> applyF(
-                boost::bind(&TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1));
+                ext::bind(&TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1));
 
             if (solverType_ == BiCGstab) {
                 const BiCGStabResult result =

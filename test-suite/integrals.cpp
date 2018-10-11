@@ -34,8 +34,6 @@
 #include <ql/math/integrals/twodimensionalintegral.hpp>
 #include <ql/experimental/math/piecewisefunction.hpp>
 #include <ql/experimental/math/piecewiseintegral.hpp>
-
-#include <boost/lambda/lambda.hpp>
 #include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;

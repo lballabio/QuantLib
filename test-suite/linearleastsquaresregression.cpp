@@ -27,7 +27,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <boost/circular_buffer.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
@@ -119,6 +119,8 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     BOOST_TEST_MESSAGE(
         "Testing multi-dimensional linear least-squares regression...");
 
+    using namespace ext::placeholders;
+
     SavedSettings backup;
 
     const Size nr=100000;
@@ -129,7 +131,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     std::vector<ext::function<Real(Array)> > v;
     v.push_back(constant<Array, Real>(1.0));
     for (Size i=0; i < dims; ++i) {
-        v.push_back(boost::bind(f, _1, i));
+        v.push_back(ext::bind(f, _1, i));
     }
 
     Array coeff(v.size());
