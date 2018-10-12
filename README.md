@@ -5,10 +5,9 @@ QuantLib: the free/open-source library for quantitative finance
 [![Download](https://api.bintray.com/packages/quantlib/releases/QuantLib/images/download.svg)](https://bintray.com/quantlib/releases/QuantLib/_latestVersion)
 [![Build Status](https://travis-ci.org/lballabio/QuantLib.svg?branch=master)](https://travis-ci.org/lballabio/QuantLib)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4bc1058db994f24aa931b119a885eea)](https://www.codacy.com/app/lballabio/QuantLib)
+[![Code Quality: Cpp](https://img.shields.io/lgtm/grade/cpp/g/lballabio/QuantLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/lballabio/QuantLib/context:cpp)
 [![codecov](https://codecov.io/gh/lballabio/QuantLib/branch/master/graph/badge.svg)](https://codecov.io/gh/lballabio/QuantLib)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/lballabio/QuantLib.svg)](http://isitmaintained.com/project/lballabio/QuantLib)
-[![Code Quality: Cpp](https://img.shields.io/lgtm/grade/cpp/g/lballabio/QuantLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/lballabio/QuantLib/context:cpp)
-[![Total Alerts](https://img.shields.io/lgtm/alerts/g/lballabio/QuantLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/lballabio/QuantLib/alerts)
 
 ---
 
