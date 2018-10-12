@@ -261,7 +261,9 @@ AC_ARG_ENABLE([thread-safe-observer-pattern],
                               enable it if you want to use QuantLib 
                               via the SWIG layer within the JVM or .NET 
                               eco system or any environment with an 
-                              async garbage collector.]),
+                              async garbage collector. C++-17 is required
+                              if this option is used together with 
+                              --enable-std-pointers]),
               [ql_use_tsop=$enableval],
               [ql_use_tsop=no])
 AC_MSG_RESULT([$ql_use_tsop])

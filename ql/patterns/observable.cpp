@@ -130,7 +130,11 @@ namespace QuantLib {
 
         detail::Signal::signal_type::slot_type slot(&Observer::Proxy::update,
                                     observerProxy.get());
+        #if defined(QL_USE_STD_SHARED_PTR)
+        sig_->connect(slot.track_foreign(observerProxy));
+        #else
         sig_->connect(slot.track(observerProxy));
+        #endif
     }
 
     void Observable::unregisterObserver(
