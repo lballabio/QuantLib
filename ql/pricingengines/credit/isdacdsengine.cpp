@@ -117,6 +117,7 @@ namespace QuantLib {
             yDates = castY3->dates();
         } else if(ext::shared_ptr<FlatForward> castY4 =
             ext::dynamic_pointer_cast<FlatForward>(*discountCurve_)) {
+            // no dates to extract
         } else {
             QL_FAIL("Yield curve must be flat forward interpolated");
         }
@@ -134,6 +135,7 @@ namespace QuantLib {
         } else if(
         ext::shared_ptr<FlatHazardRate> castC3 =
             ext::dynamic_pointer_cast<FlatHazardRate>(*probability_)) {
+            // no dates to extract
         } else{
             QL_FAIL("Credit curve must be flat forward interpolated");
         }
