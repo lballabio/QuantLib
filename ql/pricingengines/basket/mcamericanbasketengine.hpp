@@ -87,7 +87,7 @@ namespace QuantLib {
         MakeMCAmericanBasketEngine& withMaxSamples(Size samples);
         MakeMCAmericanBasketEngine& withSeed(BigNatural seed);
         MakeMCAmericanBasketEngine& withCalibrationSamples(Size samples);
-        MakeMCAmericanBasketEngine& withPolynomOrder(Size polynmOrder);
+        MakeMCAmericanBasketEngine& withPolynomialOrder(Size polynmOrder);
         MakeMCAmericanBasketEngine&
             withBasisSystem(LsmBasisSystem::PolynomType polynomType);
 
@@ -275,7 +275,7 @@ namespace QuantLib {
 
     template <class RNG>
     inline MakeMCAmericanBasketEngine<RNG>&
-    MakeMCAmericanBasketEngine<RNG>::withPolynomOrder(Size polynomOrder) {
+    MakeMCAmericanBasketEngine<RNG>::withPolynomialOrder(Size polynomOrder) {
         polynomOrder_ = polynomOrder;
         return *this;
     }
