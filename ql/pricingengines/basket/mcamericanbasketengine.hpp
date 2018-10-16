@@ -57,10 +57,17 @@ namespace QuantLib {
                                Real requiredTolerance,
                                Size maxSamples,
                                BigNatural seed,
-                               Size nCalibrationSamples = Null<Size>());
+                               Size nCalibrationSamples = Null<Size>(),
+                               Size polynomOrder = 2,
+                               LsmBasisSystem::PolynomType
+                                   polynomType = LsmBasisSystem::Monomial);
       protected:
         ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
             lsmPathPricer() const;
+
+      private:
+        const Size polynomOrder_;
+        const LsmBasisSystem::PolynomType polynomType_;
     };
 
 
@@ -80,12 +87,18 @@ namespace QuantLib {
         MakeMCAmericanBasketEngine& withMaxSamples(Size samples);
         MakeMCAmericanBasketEngine& withSeed(BigNatural seed);
         MakeMCAmericanBasketEngine& withCalibrationSamples(Size samples);
+        MakeMCAmericanBasketEngine& withPolynomialOrder(Size polynmOrder);
+        MakeMCAmericanBasketEngine&
+            withBasisSystem(LsmBasisSystem::PolynomType polynomType);
+
         // conversion to pricing engine
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<StochasticProcessArray> process_;
         bool brownianBridge_, antithetic_;
-        Size steps_, stepsPerYear_, samples_, maxSamples_, calibrationSamples_;
+        Size steps_, stepsPerYear_, samples_,
+            maxSamples_, calibrationSamples_, polynomOrder_;
+        LsmBasisSystem::PolynomType polynomType_;
         Real tolerance_;
         BigNatural seed_;
     };
@@ -126,7 +139,9 @@ namespace QuantLib {
                    Real requiredTolerance,
                    Size maxSamples,
                    BigNatural seed,
-                   Size nCalibrationSamples)
+                   Size nCalibrationSamples,
+                   Size polynomOrder,
+                   LsmBasisSystem::PolynomType polynomType)
         : MCLongstaffSchwartzEngine<BasketOption::engine,
                                     MultiVariate,RNG>(processes,
                                                       timeSteps,
@@ -138,7 +153,8 @@ namespace QuantLib {
                                                       requiredTolerance,
                                                       maxSamples,
                                                       seed,
-                                                      nCalibrationSamples) {}
+                                                      nCalibrationSamples),
+          polynomOrder_(polynomOrder), polynomType_(polynomType) {}
 
     template <class RNG>
     inline ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
@@ -164,7 +180,9 @@ namespace QuantLib {
 
         ext::shared_ptr<AmericanBasketPathPricer> earlyExercisePathPricer(
             new AmericanBasketPathPricer(processArray->size(),
-                                         this->arguments_.payoff));
+                                         this->arguments_.payoff,
+                                         polynomOrder_,
+                                         polynomType_));
 
         return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
              
@@ -181,6 +199,8 @@ namespace QuantLib {
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       calibrationSamples_(Null<Size>()),
+      polynomOrder_(2),
+      polynomType_(LsmBasisSystem::Monomial),
       tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG>
@@ -254,6 +274,21 @@ namespace QuantLib {
     }
 
     template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withPolynomialOrder(Size polynomOrder) {
+        polynomOrder_ = polynomOrder;
+        return *this;
+    }
+
+    template <class RNG>
+    inline MakeMCAmericanBasketEngine<RNG>&
+    MakeMCAmericanBasketEngine<RNG>::withBasisSystem(
+        LsmBasisSystem::PolynomType polynomType) {
+        polynomType_ = polynomType;
+        return *this;
+    }
+
+    template <class RNG>
     inline
     MakeMCAmericanBasketEngine<RNG>::operator
     ext::shared_ptr<PricingEngine>() const {
@@ -271,7 +306,9 @@ namespace QuantLib {
                                         tolerance_,
                                         maxSamples_,
                                         seed_,
-                                        calibrationSamples_));
+                                        calibrationSamples_,
+                                        polynomOrder_,
+                                        polynomType_));
     }
 
 }
