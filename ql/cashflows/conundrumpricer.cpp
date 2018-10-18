@@ -302,12 +302,12 @@ namespace QuantLib {
                 upperBoundary = std::max(a,std::min(upperBoundary, hardUpperLimit_));
                 if (upperBoundary > 2*a){
                     Size k = 3;
-                    ext::function<Real (Real)> temp = integrand;
+                    ext::function<Real (Real)> temp = ext::cref(integrand);
                     VariableChange variableChange(temp, a, upperBoundary, k);
                     f = ext::bind(&VariableChange::value, &variableChange, _1);
                     result = gaussKronrodNonAdaptive(f, .0, 1.0);
                 } else {
-                    f = integrand;
+                    f = ext::cref(integrand);
                     result = gaussKronrodNonAdaptive(f, a, upperBoundary);
                 }
 
