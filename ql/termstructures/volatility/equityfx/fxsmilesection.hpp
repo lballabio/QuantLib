@@ -21,14 +21,12 @@
     \ingroup termstructures
 */
 
-#ifndef quantext_fx_smile_section_hpp
-#define quantext_fx_smile_section_hpp
+#ifndef quantlib_fx_smile_section_hpp
+#define quantlib_fx_smile_section_hpp
 
 #include <ql/types.hpp>
 
-using namespace QuantLib;
-
-namespace QuantExt {
+namespace QuantLib {
 
 //! FX SmileSection
 //! \ingroup termstructures
@@ -50,6 +48,6 @@ protected:
     Volatility bf25d_;
 };
 
-} // namespace QuantExt
+}
 
 #endif

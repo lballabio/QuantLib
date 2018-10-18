@@ -20,12 +20,10 @@
   \brief FX Vol smile tests
 */
 
-#ifndef quantext_test_fx_vol_smile_hpp
-#define quantext_test_fx_vol_smile_hpp
+#ifndef quantlib_test_fx_vol_smile_hpp
+#define quantlib_test_fx_vol_smile_hpp
 
 #include <boost/test/unit_test.hpp>
-
-namespace testsuite {
 
 //! FX vol smile tests
 /*!
@@ -39,6 +37,5 @@ public:
     static boost::unit_test_framework::test_suite* suite();
 };
 
-} // namespace testsuite
 
 #endif

@@ -21,14 +21,12 @@
     \ingroup termstructures
 */
 
-#ifndef quantext_black_inverted_vol_termstructure_hpp
-#define quantext_black_inverted_vol_termstructure_hpp
+#ifndef quantlib_black_inverted_vol_termstructure_hpp
+#define quantlib_black_inverted_vol_termstructure_hpp
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 
-using namespace QuantLib;
-
-namespace QuantExt {
+namespace QuantLib {
 
 //! Black volatility surface that inverts an existing surface.
 /*! This class is used when one wants a USD/EUR volatility, at a given USD/EUR strike
@@ -98,6 +96,7 @@ inline void BlackInvertedVolTermStructure::accept(AcyclicVisitor& v) {
     else
         BlackInvertedVolTermStructure::accept(v);
 }
-} // namespace QuantExt
+
+}
 
 #endif

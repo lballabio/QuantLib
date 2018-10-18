@@ -21,8 +21,8 @@
   \ingroup termstructures
 */
 
-#ifndef quantext_fx_black_vol_surface_hpp
-#define quantext_fx_black_vol_surface_hpp
+#ifndef quantlib_fx_black_vol_surface_hpp
+#define quantlib_fx_black_vol_surface_hpp
 
 #include <ql/math/interpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
@@ -30,9 +30,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
 
-using namespace QuantLib;
-
-namespace QuantExt {
+namespace QuantLib {
 
 //! Fx Black volatility surface
 /*! This class calculates time/strike dependent Black volatilities
@@ -115,6 +113,6 @@ protected:
     }
 };
 
-} // namespace QuantExt
+}
 
 #endif

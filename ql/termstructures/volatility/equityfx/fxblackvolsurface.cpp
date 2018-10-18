@@ -22,7 +22,7 @@
 
 using namespace std;
 
-namespace QuantExt {
+namespace QuantLib {
 
 FxBlackVolatilitySurface::FxBlackVolatilitySurface(const Date& referenceDate, const std::vector<Date>& dates,
                                                    const std::vector<Volatility>& atmVols,
@@ -94,4 +94,4 @@ Volatility FxBlackVolatilitySurface::blackVolImpl(Time t, Real strike) const {
         return blackVolSmile(t)->volatility(strike);
 }
 
-} // namespace QuantExt
+}

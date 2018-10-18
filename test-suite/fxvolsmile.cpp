@@ -21,8 +21,6 @@
 */
 
 #include "fxvolsmile.hpp"
-
-#include <boost/make_shared.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
@@ -34,9 +32,9 @@
 #include <ql/termstructures/volatility/equityfx/blackinvertedvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fxblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
+#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
-using namespace QuantExt;
 using namespace boost::unit_test_framework;
 using namespace std;
 
@@ -108,7 +106,6 @@ struct CommonVars {
 
 } // namespace
 
-namespace testsuite {
 
 void FxVolSmileTest::testVannaVolgaFxSmileSection() {
 
@@ -309,4 +306,3 @@ test_suite* FxVolSmileTest::suite() {
     return suite;
 }
 
-} // namespace testsuite

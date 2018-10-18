@@ -19,9 +19,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
 
-using namespace QuantLib;
-
-namespace QuantExt {
+namespace QuantLib {
 
 VannaVolgaSmileSection::VannaVolgaSmileSection(Real spot, Real rd, Real rf, Time t, Volatility atmVol, Volatility rr25d,
                                                Volatility bf25d)
@@ -83,4 +81,4 @@ Volatility VannaVolgaSmileSection::volatility(Real k) const {
     return atmVol_ + (-atmVol_ + sqrt(tmp)) / d1d2k;
 }
 
-} // namespace QuantExt
+}

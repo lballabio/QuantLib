@@ -21,14 +21,12 @@
     \ingroup termstructures
 */
 
-#ifndef quantext_fx_vanna_volga_smile_section_hpp
-#define quantext_fx_vanna_volga_smile_section_hpp
+#ifndef quantlib_fx_vanna_volga_smile_section_hpp
+#define quantlib_fx_vanna_volga_smile_section_hpp
 
 #include <ql/termstructures/volatility/equityfx/fxsmilesection.hpp>
 
-using namespace QuantLib;
-
-namespace QuantExt {
+namespace QuantLib {
 
 /*! Vanna Volga Smile section
  *
@@ -62,6 +60,6 @@ private:
     Volatility vol_25c_, vol_25p_;
 };
 
-} // namespace QuantExt
+}
 
 #endif
