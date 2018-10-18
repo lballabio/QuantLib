@@ -8,6 +8,7 @@ this_include_HEADERS = \
     andreasenhugevolatilityinterpl.hpp \
     andreasenhugevolatilityadapter.hpp \
     blackconstantvol.hpp \
+    blackinvertedvoltermstructure.hpp \
     blackvariancecurve.hpp \
     blackvariancesurface.hpp \
     blackvoltermstructure.hpp \
