@@ -108,6 +108,7 @@
 #include "forwardoption.hpp"
 #include "forwardrateagreement.hpp"
 #include "functions.hpp"
+#include "fxvolsmile.hpp"
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
 #include "gjrgarchmodel.hpp"
@@ -481,6 +482,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());
     test->add(ExtensibleOptionsTest::suite());
+    test->add(FxVolSmileTest::suite());
     test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
     test->add(HestonSLVModelTest::experimental(speed));
