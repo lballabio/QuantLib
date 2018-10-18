@@ -24,7 +24,7 @@
 #ifndef quantlib_fx_vanna_volga_smile_section_hpp
 #define quantlib_fx_vanna_volga_smile_section_hpp
 
-#include <ql/termstructures/volatility/equityfx/fxsmilesection.hpp>
+#include <ql/experimental/fx/fxsmilesection.hpp>
 
 namespace QuantLib {
 

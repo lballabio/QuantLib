@@ -17,7 +17,7 @@
 */
 
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
+#include <ql/experimental/fx/fxvannavolgasmilesection.hpp>
 
 namespace QuantLib {
 

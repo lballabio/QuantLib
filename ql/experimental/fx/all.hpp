@@ -2,5 +2,9 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
+#include <ql/experimental/fx/blackinvertedvoltermstructure.hpp>
 #include <ql/experimental/fx/deltavolquote.hpp>
+#include <ql/experimental/fx/fxblackvolsurface.hpp>
+#include <ql/experimental/fx/fxsmilesection.hpp>
+#include <ql/experimental/fx/fxvannavolgasmilesection.hpp>
 

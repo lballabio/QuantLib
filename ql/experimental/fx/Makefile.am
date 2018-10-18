@@ -5,11 +5,17 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     blackdeltacalculator.hpp \
-    deltavolquote.hpp
+    blackinvertedvoltermstructure.hpp \
+    deltavolquote.hpp \
+    fxblackvolsurface.hpp \
+    fxsmilesection.hpp \
+    fxvannavolgasmilesection.hpp
 
 cpp_files = \
     blackdeltacalculator.cpp \
-    deltavolquote.cpp
+    deltavolquote.cpp \
+    fxblackvolsurface.cpp \
+    fxvannavolgasmilesection.cpp
 
 if UNITY_BUILD
 

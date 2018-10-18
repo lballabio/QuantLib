@@ -29,9 +29,9 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#include <ql/termstructures/volatility/equityfx/blackinvertedvoltermstructure.hpp>
-#include <ql/termstructures/volatility/equityfx/fxblackvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfx/fxvannavolgasmilesection.hpp>
+#include <ql/experimental/fx/blackinvertedvoltermstructure.hpp>
+#include <ql/experimental/fx/fxblackvolsurface.hpp>
+#include <ql/experimental/fx/fxvannavolgasmilesection.hpp>
 #include <boost/make_shared.hpp>
 
 using namespace QuantLib;
