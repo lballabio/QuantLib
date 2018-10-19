@@ -18,6 +18,7 @@
 */
 
 #include <ql/time/daycounters/actualactual.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -71,10 +72,25 @@ namespace QuantLib {
             return newDates;
         }
 
-        bool isReferencePeriodSpecified(const Date& refPeriodStart,
-                                        const Date& refPeriodEnd) {
-            // True only if neither date is a null date;
-            return refPeriodStart != Date() && refPeriodEnd != Date();
+        template <class T>
+        Time yearFractionWithReferenceDates(const T& impl,
+                                            const Date& d1, const Date& d2,
+                                            const Date& d3, const Date& d4) {
+            QL_REQUIRE(d1 <= d2,
+                       "This function is only correct if d1 <= d2\n"
+                       "d1: " << d1 << " d2: " << d2);
+
+            Real referenceDayCount = Real(impl.dayCount(d3, d4));
+            //guess how many coupon periods per year:
+            int couponsPerYear;
+            if (referenceDayCount < 16) {
+                couponsPerYear = 1;
+                referenceDayCount = impl.dayCount(d1, d1 + 1 * Years);
+            }
+            else {
+                couponsPerYear = findCouponsPerYear(impl, d3, d4);
+            }
+            return Real(impl.dayCount(d1, d2)) / (referenceDayCount*couponsPerYear);
         }
 
     }
@@ -101,75 +117,34 @@ namespace QuantLib {
         }
     }
 
-    Time ActualActual::ISMA_Impl::yearFractionWithReferenceDates(
-        const Date& d1,
-        const Date& d2,
-        const Date& d3,
-        const Date& d4
-    ) const {
-        QL_REQUIRE(
-            d1 <= d2,
-            "This function is only correct if d1 <= d2 \n d1: " << d1 << " d2: " << d2
-        );
-        //
-        Real referenceDayCount = Real(dayCount(d3, d4));
-        //guess how many coupon periods per year:
-        int couponsPerYear;
-        if (referenceDayCount < 16) {
-            couponsPerYear = 1;
-            referenceDayCount = dayCount(d1, d1 + 1 * Years);
-        }
-        else {
-            couponsPerYear = findCouponsPerYear(*this, d3, d4);
-        }
-        return Real(dayCount(d1, d2)) / (referenceDayCount*couponsPerYear);
-
-    }
-
-    Time ActualActual::ISMA_Impl::yearFractionUsingSchedule(
-        const Date& start, const Date& end
-    ) const {
-        std::vector<Date> couponDates =
-            getListOfPeriodDatesIncludingQuasiPayments(schedule_);
-
-        Real yearFractionSum = 0;
-        for (int i = 0; i < couponDates.size() - 1; i++) {
-            Date startReferencePeriod = couponDates[i];
-            Date endReferencePeriod = couponDates[i + 1];
-            if (endReferencePeriod > start && end > startReferencePeriod) {
-                yearFractionSum += yearFractionWithReferenceDates(
-                    (start > startReferencePeriod) ? start : startReferencePeriod,
-                    (end < endReferencePeriod) ? end : endReferencePeriod,
-                    startReferencePeriod,
-                    endReferencePeriod
-                );
-            }
-        }
-        return yearFractionSum;
-    }
 
     Time ActualActual::ISMA_Impl::yearFraction(const Date& d1,
                                                const Date& d2,
                                                const Date& d3,
                                                const Date& d4) const {
-        // Base Cases;
         if (d1 == d2) {
             return 0.0;
         } else if (d2 < d1) {
             return -yearFraction(d2, d1, d3, d4);
         }
 
-        // To account for the fact that some higher level classes to not work out the reference periods correctly.
-        // A day counter with a schedule takes precedence over an explicit reference period.
-        if (!schedule_.empty()) {
-            return yearFractionUsingSchedule(d1, d2);
+        std::vector<Date> couponDates =
+            getListOfPeriodDatesIncludingQuasiPayments(schedule_);
+
+        Real yearFractionSum = 0.0;
+        for (Size i = 0; i < couponDates.size() - 1; i++) {
+            Date startReferencePeriod = couponDates[i];
+            Date endReferencePeriod = couponDates[i + 1];
+            if (d1 < endReferencePeriod && d2 > startReferencePeriod) {
+                yearFractionSum +=
+                    yearFractionWithReferenceDates(*this,
+                                                   std::max(d1, startReferencePeriod),
+                                                   std::min(d2, endReferencePeriod),
+                                                   startReferencePeriod,
+                                                   endReferencePeriod);
+            }
         }
-        else if (isReferencePeriodSpecified(d3, d4)) {
-            return yearFractionWithReferenceDates(d1, d2, d3, d4);
-        }
-        else {
-            return yearFractionGuess(*this, d1, d2);
-        }
+        return yearFractionSum;
     }
 
 

@@ -67,16 +67,6 @@ namespace QuantLib {
                               const Date& refPeriodEnd) const;
           private:
             Schedule schedule_;
-            Time yearFractionWithReferenceDates(
-                const Date& d1,
-                const Date& d2,
-                const Date& refPeriodStart,
-                const Date& refPeriodEnd
-            ) const;
-            Time yearFractionUsingSchedule(
-                const Date& d1,
-                const Date& d2
-            ) const;
         };
         class Old_ISMA_Impl : public DayCounter::Impl {
           public:
