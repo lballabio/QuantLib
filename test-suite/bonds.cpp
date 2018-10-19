@@ -1485,7 +1485,7 @@ void BondTest::testThirty360BondWithSettlementOn31st(){
             Unadjusted,
             100.0);
 
-    double cleanPrice = 100;
+    Real cleanPrice = 100.0;
 
     Real yield = BondFunctions::yield(fixedRateBond, cleanPrice, dayCounter, compounding, Semiannual, settlement);
     ASSERT_CLOSE("yield", settlement, yield, 0.015, 1e-4);

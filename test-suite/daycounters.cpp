@@ -68,11 +68,11 @@ namespace {
     Time ISMAYearFractionWithReferenceDates(
                                   DayCounter dayCounter, Date start, Date end,
                                   Date refStart, Date refEnd) {
-        Real referenceDayCount = double(dayCounter.dayCount(refStart, refEnd));
+        Real referenceDayCount = Real(dayCounter.dayCount(refStart, refEnd));
         // guess how many coupon periods per year:
-        int couponsPerYear = (int) round(365.0 / referenceDayCount);
+        Integer couponsPerYear = (Integer) round(365.0 / referenceDayCount);
         // the above is good enough for annual or semi annual payments.
-        return double(dayCounter.dayCount(start, end))
+        return Real(dayCounter.dayCount(start, end))
             / (referenceDayCount*couponsPerYear);
     }
 
@@ -82,7 +82,7 @@ namespace {
         DayCounter daycounter = ActualActual(ActualActual::ISMA, schedule);
         Time yearFraction = 0.0;
 
-        for (int i = 1; i < schedule.size() - 1; i++) {
+        for (Size i = 1; i < schedule.size() - 1; i++) {
             Date referenceStart = schedule.date(i);
             Date referenceEnd = schedule.date(i+1);
             if (start < referenceEnd && end > referenceStart) {
@@ -266,7 +266,7 @@ void DayCounterTest::testActualActualWithSemiannualSchedule() {
 
 
     while (testDate < referencePeriodEnd) {
-        double difference =
+        Time difference =
             dayCounter.yearFraction(testDate, referencePeriodEnd,
                                     referencePeriodStart, referencePeriodEnd) -
             dayCounter.yearFraction(testDate, referencePeriodEnd);
@@ -645,7 +645,7 @@ void DayCounterTest::testThirty360_BondBasis() {
     DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
     std::vector<Date> testStartDates;
     std::vector<Date> testEndDates;
-    Time calculated;
+    Date::serial_type calculated;
 
     // ISDA - Example 1: End dates do not involve the last day of February
     testStartDates.push_back(Date(20, August, 2006)); testEndDates.push_back(Date(20, February, 2007));
@@ -680,11 +680,11 @@ void DayCounterTest::testThirty360_BondBasis() {
     testStartDates.push_back(Date(28, February, 2008)); testEndDates.push_back(Date(30, March, 2008));
     testStartDates.push_back(Date(28, February, 2008)); testEndDates.push_back(Date(31, March, 2008));
 
-    int expected[] = { 180, 180, 180, 180, 180, 180,
-                       178, 183, 179, 182, 178, 183,
-                        28,  28,   5,  14,  30,  28,
-                       178, 180, 182, 183, 362, 363,
-                       359,  32,  33};
+    Date::serial_type expected[] = { 180, 180, 180, 180, 180, 180,
+                                     178, 183, 179, 182, 178, 183,
+                                     28,  28,   5,  14,  30,  28,
+                                     178, 180, 182, 183, 362, 363,
+                                     359,  32,  33};
 
     for (Size i = 0; i < testStartDates.size(); i++) {
         calculated = dayCounter.dayCount(testStartDates[i], testEndDates[i]);
@@ -708,7 +708,7 @@ void DayCounterTest::testThirty360_EurobondBasis() {
     DayCounter dayCounter = Thirty360(Thirty360::EurobondBasis);
     std::vector<Date> testStartDates;
     std::vector<Date> testEndDates;
-    Time calculated;
+    Date::serial_type calculated;
 
     // ISDA - Example 1: End dates do not involve the last day of February
     testStartDates.push_back(Date(20, August, 2006)); testEndDates.push_back(Date(20, February, 2007));
@@ -749,12 +749,12 @@ void DayCounterTest::testThirty360_EurobondBasis() {
     testStartDates.push_back(Date(28, February, 2008)); testEndDates.push_back(Date(30, March, 2008));
     testStartDates.push_back(Date(28, February, 2008)); testEndDates.push_back(Date(31, March, 2008));
 
-    int expected[] = { 180, 180, 180, 180, 180, 180,
-                       182, 178, 182, 179, 181, 178,
-                       182, 178, 182, 178, 182, 179,
-                        28,  28,   5,  14,  30,  28,
-                       178, 180, 182, 182, 362, 363,
-                       359,  32,  32 };
+    Date::serial_type expected[] = { 180, 180, 180, 180, 180, 180,
+                                     182, 178, 182, 179, 181, 178,
+                                     182, 178, 182, 178, 182, 179,
+                                     28,  28,   5,  14,  30,  28,
+                                     178, 180, 182, 182, 362, 363,
+                                     359,  32,  32 };
 
     for (Size i = 0; i < testStartDates.size(); i++) {
         calculated = dayCounter.dayCount(testStartDates[i], testEndDates[i]);
