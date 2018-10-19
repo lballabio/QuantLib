@@ -85,7 +85,10 @@ namespace QuantLib {
         switch (c) {
           case ISMA:
           case Bond:
-            return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(schedule));
+            if (!schedule.empty())
+                return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(schedule));
+            else
+                return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl(schedule));
           case ISDA:
           case Historical:
           case Actual365:
@@ -169,6 +172,114 @@ namespace QuantLib {
         }
     }
 
+
+    Time ActualActual::Old_ISMA_Impl::yearFraction(const Date& d1,
+                                                   const Date& d2,
+                                                   const Date& d3,
+                                                   const Date& d4) const {
+        if (d1 == d2)
+            return 0.0;
+
+        if (d1 > d2)
+            return -yearFraction(d2,d1,d3,d4);
+
+        // when the reference period is not specified, try taking
+        // it equal to (d1,d2)
+        Date refPeriodStart = (d3 != Date() ? d3 : d1);
+        Date refPeriodEnd = (d4 != Date() ? d4 : d2);
+
+        QL_REQUIRE(refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
+                   "invalid reference period: "
+                   << "date 1: " << d1
+                   << ", date 2: " << d2
+                   << ", reference period start: " << refPeriodStart
+                   << ", reference period end: " << refPeriodEnd);
+
+        // estimate roughly the length in months of a period
+        Integer months =
+            Integer(0.5+12*Real(refPeriodEnd-refPeriodStart)/365);
+
+        // for short periods...
+        if (months == 0) {
+            // ...take the reference period as 1 year from d1
+            refPeriodStart = d1;
+            refPeriodEnd = d1 + 1*Years;
+            months = 12;
+        }
+
+        Time period = Real(months)/12.0;
+
+        if (d2 <= refPeriodEnd) {
+            // here refPeriodEnd is a future (notional?) payment date
+            if (d1 >= refPeriodStart) {
+                // here refPeriodStart is the last (maybe notional)
+                // payment date.
+                // refPeriodStart <= d1 <= d2 <= refPeriodEnd
+                // [maybe the equality should be enforced, since
+                // refPeriodStart < d1 <= d2 < refPeriodEnd
+                // could give wrong results] ???
+                return period*Real(daysBetween(d1,d2)) /
+                    daysBetween(refPeriodStart,refPeriodEnd);
+            } else {
+                // here refPeriodStart is the next (maybe notional)
+                // payment date and refPeriodEnd is the second next
+                // (maybe notional) payment date.
+                // d1 < refPeriodStart < refPeriodEnd
+                // AND d2 <= refPeriodEnd
+                // this case is long first coupon
+
+                // the last notional payment date
+                Date previousRef;
+                if (schedule_.empty()) {
+                    previousRef = refPeriodStart - months*Months;
+                } else {
+                    previousRef = schedule_.calendar().advance(refPeriodStart,
+                                                               -schedule_.tenor(),
+                                                               schedule_.businessDayConvention(),
+                                                               schedule_.endOfMonth());
+                }
+
+                if (d2 > refPeriodStart)
+                    return yearFraction(d1, refPeriodStart, previousRef,
+                                        refPeriodStart) +
+                        yearFraction(refPeriodStart, d2, refPeriodStart,
+                                     refPeriodEnd);
+                else
+                    return yearFraction(d1,d2,previousRef,refPeriodStart);
+            }
+        } else {
+            // here refPeriodEnd is the last (notional?) payment date
+            // d1 < refPeriodEnd < d2 AND refPeriodStart < refPeriodEnd
+            QL_REQUIRE(refPeriodStart<=d1,
+                       "invalid dates: "
+                       "d1 < refPeriodStart < refPeriodEnd < d2");
+            // now it is: refPeriodStart <= d1 < refPeriodEnd < d2
+
+            // the part from d1 to refPeriodEnd
+            Time sum = yearFraction(d1, refPeriodEnd,
+                                    refPeriodStart, refPeriodEnd);
+
+            // the part from refPeriodEnd to d2
+            // count how many regular periods are in [refPeriodEnd, d2],
+            // then add the remaining time
+            Integer i=0;
+            Date newRefStart, newRefEnd;
+            for (;;) {
+                newRefStart = refPeriodEnd + (months*i)*Months;
+                newRefEnd = refPeriodEnd + (months*(i+1))*Months;
+                if (d2 < newRefEnd) {
+                    break;
+                } else {
+                    sum += period;
+                    i++;
+                }
+            }
+            sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd);
+            return sum;
+        }
+    }
+
+
     Time ActualActual::ISDA_Impl::yearFraction(const Date& d1,
                                                const Date& d2,
                                                const Date&,
@@ -189,6 +300,7 @@ namespace QuantLib {
         sum += daysBetween(Date(1,January,y2),d2)/dib2;
         return sum;
     }
+
 
     Time ActualActual::AFB_Impl::yearFraction(const Date& d1,
                                               const Date& d2,

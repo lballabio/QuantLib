@@ -143,13 +143,10 @@ void DayCounterTest::testActualActual() {
         SingleCase(ActualActual::ISDA,
                    Date(15,August,2002), Date(15,July,2003),
                    0.915068493151),
-        // Not sure how this every worked? The answer should be
-        // correct when the answer has a schedule, else will be
-        // 334/181 = 0.9226519337016574.
-        //SingleCase(ActualActual::ISMA,
-        //           Date(15,August,2002), Date(15,July,2003),
-        //           Date(15,January,2003), Date(15,July,2003),
-        //           0.915760869565),
+        SingleCase(ActualActual::ISMA,
+                   Date(15,August,2002), Date(15,July,2003),
+                   Date(15,January,2003), Date(15,July,2003),
+                   0.915760869565),
         SingleCase(ActualActual::AFB,
                    Date(15,August,2002), Date(15,July,2003),
                    0.915068493151),
@@ -260,15 +257,6 @@ void DayCounterTest::testActualActualWithSemiannualSchedule() {
               << referencePeriodStart << " to " << referencePeriodEnd
               << "Should be 0.5"
     );
-    Real expected = dayCounterNoSchedule.dayCount(referencePeriodStart,
-                                                  referencePeriodEnd)/365.0;
-    Real calculated = dayCounterNoSchedule.yearFraction(referencePeriodStart,
-                                                        referencePeriodEnd);
-    QL_ASSERT(calculated == expected,
-              "This should be exact with no schedule; "
-              << referencePeriodStart << " to " << referencePeriodEnd
-              << ". This should be " << expected << "/365 but was actually "
-              << calculated);
     QL_ASSERT(dayCounterNoSchedule.yearFraction(referencePeriodStart,
                                                 referencePeriodEnd,
                                                 referencePeriodStart,
