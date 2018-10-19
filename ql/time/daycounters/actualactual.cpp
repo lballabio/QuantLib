@@ -21,8 +21,66 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        // the template argument works around passing a protected type
+
+        template <class T>
+        int findCouponsPerYear(const T& impl,
+                               Date refStart, Date refEnd) {
+            // This will only work for day counts longer than 15 days.
+            Integer months = Integer(0.5 + 12 * Real(impl.dayCount(refStart, refEnd))/365.0);
+            return (int)round(12.0 / Real(months));
+        }
+
+        /*! An ISMA day counter either needs a schedule or to have
+            been explicitly passed a reference period. This usage
+            leads to innaccurate year fractions.
+        */
+        template <class T>
+        Time yearFractionGuess(const T& impl,
+                               const Date& start, const Date& end) {
+            // asymptotically correct.
+            return Real(impl.dayCount(start, end)) / 365.0;
+        }
+
+        std::vector<Date> getListOfPeriodDatesIncludingQuasiPayments(
+                                                   const Schedule& schedule) {
+            // Process the schedule into an array of dates.
+            Date issueDate = schedule.date(0);
+            Date firstCoupon = schedule.date(1);
+            Date notionalCoupon =
+                schedule.calendar().advance(firstCoupon,
+                                            -schedule.tenor(),
+                                            schedule.businessDayConvention(),
+                                            schedule.endOfMonth());
+
+            std::vector<Date> newDates = schedule.dates();
+            newDates[0] = notionalCoupon;
+
+            //long first coupon
+            if (notionalCoupon > issueDate) {
+                Date priorNotionalCoupon =
+                    schedule.calendar().advance(notionalCoupon,
+                                                -schedule.tenor(),
+                                                schedule.businessDayConvention(),
+                                                schedule.endOfMonth());
+                newDates.insert(newDates.begin(),
+                                priorNotionalCoupon); //insert as the first element?
+            }
+            return newDates;
+        }
+
+        bool isReferencePeriodSpecified(const Date& refPeriodStart,
+                                        const Date& refPeriodEnd) {
+            // True only if neither date is a null date;
+            return refPeriodStart != Date() && refPeriodEnd != Date();
+        }
+
+    }
+
     ext::shared_ptr<DayCounter::Impl>
-    ActualActual::implementation(ActualActual::Convention c, 
+    ActualActual::implementation(ActualActual::Convention c,
                                  const Schedule& schedule) {
         switch (c) {
           case ISMA:
@@ -40,13 +98,6 @@ namespace QuantLib {
         }
     }
 
-    int ActualActual::ISMA_Impl::findCouponsPerYear(Date refStart, Date refEnd) const {
-        // This will only work for day counts longer than 15 days.
-        Integer months = Integer(0.5 + 12 * Real(dayCount(refStart, refEnd))/365.0);
-        return (int)round(12.0 / Real(months));
-
-    }
-
     Time ActualActual::ISMA_Impl::yearFractionWithReferenceDates(
         const Date& d1,
         const Date& d2,
@@ -54,7 +105,7 @@ namespace QuantLib {
         const Date& d4
     ) const {
         QL_REQUIRE(
-            d1 <= d2, 
+            d1 <= d2,
             "This function is only correct if d1 <= d2 \n d1: " << d1 << " d2: " << d2
         );
         //
@@ -66,50 +117,17 @@ namespace QuantLib {
             referenceDayCount = dayCount(d1, d1 + 1 * Years);
         }
         else {
-            couponsPerYear = findCouponsPerYear(d3, d4);
+            couponsPerYear = findCouponsPerYear(*this, d3, d4);
         }
         return Real(dayCount(d1, d2)) / (referenceDayCount*couponsPerYear);
 
     }
 
-    std::vector<Date> ActualActual::ISMA_Impl::getListOfPeriodDatesIncludingQuasiPayments()
-    const {
-        //This function will process the schedule into an array of dates.
-        Date issueDate = schedule_.date(0);
-        Date firstCoupon = schedule_.date(1);
-        Date notionalCoupon = schedule_.calendar().advance(firstCoupon,
-            -schedule_.tenor(),
-            schedule_.businessDayConvention(),
-            schedule_.endOfMonth());
-
-        std::vector<Date> newDates = schedule_.dates();
-        newDates[0] = notionalCoupon;
-
-        //long first coupon
-        if (notionalCoupon > issueDate) {
-            Date priorNotionalCoupon = schedule_.calendar().advance(notionalCoupon,
-                -schedule_.tenor(),
-                schedule_.businessDayConvention(),
-                schedule_.endOfMonth());
-            newDates.insert(newDates.begin(), priorNotionalCoupon); //insert as teh first element?
-        }
-        return newDates;
-    }
-
-    /*! \An ISMA day counter either needs a schedule or to have been explicitly passed a reference period. This usuage leads to innaccurate year fractions.
-    */
-    Time ActualActual::ISMA_Impl::yearFractionGuess(
-        const Date& start,
-        const Date& end
-    ) const {
-        //asymptopically correct.
-        return Real(dayCount(start, end)) / 365.0;
-    }
-
     Time ActualActual::ISMA_Impl::yearFractionUsingSchedule(
         const Date& start, const Date& end
     ) const {
-        std::vector<Date> couponDates = getListOfPeriodDatesIncludingQuasiPayments();
+        std::vector<Date> couponDates =
+            getListOfPeriodDatesIncludingQuasiPayments(schedule_);
 
         Real yearFractionSum = 0;
         for (int i = 0; i < couponDates.size() - 1; i++) {
@@ -127,11 +145,6 @@ namespace QuantLib {
         return yearFractionSum;
     }
 
-    bool ActualActual::ISMA_Impl::isReferencePeriodSpecified(const Date& refPeriodStart, const Date& refPeriodEnd) const {
-        //True only if neither date is a null date;
-        return refPeriodStart != Date() && refPeriodEnd != Date();
-    }
-
     Time ActualActual::ISMA_Impl::yearFraction(const Date& d1,
                                                const Date& d2,
                                                const Date& d3,
@@ -143,8 +156,8 @@ namespace QuantLib {
             return -yearFraction(d2, d1, d3, d4);
         }
 
-        //To account for the fact that some higher level classes to not work out the reference periods correctly.
-        //A day counter with a schedule takes precedence over an explicit reference period.
+        // To account for the fact that some higher level classes to not work out the reference periods correctly.
+        // A day counter with a schedule takes precedence over an explicit reference period.
         if (!schedule_.empty()) {
             return yearFractionUsingSchedule(d1, d2);
         }
@@ -152,7 +165,7 @@ namespace QuantLib {
             return yearFractionWithReferenceDates(d1, d2, d3, d4);
         }
         else {
-            return yearFractionGuess(d1, d2);
+            return yearFractionGuess(*this, d1, d2);
         }
     }
 
