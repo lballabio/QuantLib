@@ -31,7 +31,6 @@ class DayCounterTest {
     static void testActualActualWithSchedule();
     static void testActualActualWithAnnualSchedule();
     static void testActualActualWithSemiannualSchedule();
-    static void testScheduleAlwaysHasAStartDate();
     static void testSimple();
     static void testOne();
     static void testBusiness252();

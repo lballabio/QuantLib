@@ -336,42 +336,6 @@ void DayCounterTest::testActualActualWithSemiannualSchedule() {
     }
 }
 
-void DayCounterTest::testScheduleAlwaysHasAStartDate() {
-    BOOST_TEST_MESSAGE("Testing that variations of MakeSchedule "
-                       "always produce a schedule with a start date...");
-    // Attempt to establish whether the first coupoun payment date is
-    // always the second element of the constructor.
-    Calendar calendar = UnitedStates();
-    Schedule schedule = MakeSchedule()
-        .from(Date(10, January, 2017))
-        .withFirstDate(Date(31, August, 2017))
-        .to(Date(28, February, 2026))
-        .withFrequency(Semiannual)
-        .withCalendar(calendar)
-        .withConvention(Unadjusted)
-        .backwards().endOfMonth(false);
-    QL_ASSERT(schedule.date(0) == Date(10, January, 2017),
-              "The first element should always be the start date");
-    schedule = MakeSchedule()
-        .from(Date(10, January, 2017))
-        .to(Date(28, February, 2026))
-        .withFrequency(Semiannual)
-        .withCalendar(calendar)
-        .withConvention(Unadjusted)
-        .backwards().endOfMonth(false);
-    QL_ASSERT(schedule.date(0) == Date(10, January, 2017),
-              "The first element should always be the start date");
-    schedule = MakeSchedule()
-        .from(Date(31, August, 2017))
-        .to(Date(28, February, 2026))
-        .withFrequency(Semiannual)
-        .withCalendar(calendar)
-        .withConvention(Unadjusted)
-        .backwards().endOfMonth(false);
-    QL_ASSERT(schedule.date(0) == Date(31, August, 2017),
-              "The first element should always be the start date");
-}
-
 
 void DayCounterTest::testActualActualWithAnnualSchedule(){
 
@@ -849,8 +813,6 @@ void DayCounterTest::testIntraday() {
 
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
-    suite->add(QUANTLIB_TEST_CASE(
-                           &DayCounterTest::testScheduleAlwaysHasAStartDate));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
     suite->add(QUANTLIB_TEST_CASE(
                     &DayCounterTest::testActualActualWithSemiannualSchedule));
