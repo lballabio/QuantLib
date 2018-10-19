@@ -30,7 +30,7 @@
 #include <ql/errors.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/utility.hpp>
 #include <map>
 #include <vector>
@@ -173,9 +173,9 @@ namespace QuantLib {
 
       private:
         typedef typename Container::value_type container_value_type;
-        typedef boost::function1<Date, const container_value_type&>
+        typedef ext::function<Date(const container_value_type&)>
                                                               projection_time;
-        typedef boost::function1<T, const container_value_type&>
+        typedef ext::function<T(const container_value_type&)>
                                                              projection_value;
 
       public:

@@ -54,7 +54,6 @@ namespace QuantLib {
         // helper methods
         Real underlying() const;
         Real strike() const;
-        Time residualTime() const;
         Volatility volatility() const;
         Real barrier() const;
         Real rebate() const;

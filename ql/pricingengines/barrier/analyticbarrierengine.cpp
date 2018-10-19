@@ -121,16 +121,16 @@ namespace QuantLib {
         return payoff->strike();
     }
 
-    Time AnalyticBarrierEngine::residualTime() const {
-        return process_->time(arguments_.exercise->lastDate());
-    }
-
     Volatility AnalyticBarrierEngine::volatility() const {
-        return process_->blackVolatility()->blackVol(residualTime(), strike());
+        return process_->blackVolatility()->blackVol(
+                    arguments_.exercise->lastDate(), 
+                    strike());
     }
 
     Real AnalyticBarrierEngine::stdDeviation() const {
-        return volatility() * std::sqrt(residualTime());
+        return std::sqrt(process_->blackVolatility()->blackVariance(
+                        arguments_.exercise->lastDate(),
+                        strike()));
     }
 
     Real AnalyticBarrierEngine::barrier() const {
@@ -142,21 +142,27 @@ namespace QuantLib {
     }
 
     Rate AnalyticBarrierEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency);
+        return process_->riskFreeRate()->zeroRate(
+                    arguments_.exercise->lastDate(),
+                    process_->riskFreeRate()->dayCounter(),
+                    Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::riskFreeDiscount() const {
-        return process_->riskFreeRate()->discount(residualTime());
+        return process_->riskFreeRate()->discount(
+                    arguments_.exercise->lastDate());
     }
 
     Rate AnalyticBarrierEngine::dividendYield() const {
-        return process_->dividendYield()->zeroRate(residualTime(),
-                                                   Continuous, NoFrequency);
+        return process_->dividendYield()->zeroRate(
+                    arguments_.exercise->lastDate(),
+                    process_->dividendYield()->dayCounter(),
+                    Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::dividendDiscount() const {
-        return process_->dividendYield()->discount(residualTime());
+        return process_->dividendYield()->discount(
+                    arguments_.exercise->lastDate());
     }
 
     Rate AnalyticBarrierEngine::mu() const {

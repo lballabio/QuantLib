@@ -249,7 +249,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
     Real strike[] = { 3400,3600,3800,4000,4200,4400,
                       4500,4600,4800,5000,5200,5400,5600 };
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > options;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > options;
 
     for (Size s = 3; s < 10; ++s) {
         for (Size m = 0; m < 3; ++m) {
@@ -257,11 +257,11 @@ void GJRGARCHModelTest::testDAXCalibration() {
                                                   new SimpleQuote(v[s*8+m])));
 
             Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
-            options.push_back(ext::shared_ptr<CalibrationHelper>(
+            options.push_back(ext::shared_ptr<BlackCalibrationHelper>(
                     new HestonModelHelper(maturity, calendar,
                                           s0->value(), strike[s], vol,
                                           riskFreeTS, dividendTS, 
-                                          CalibrationHelper::ImpliedVolError)));
+                                          BlackCalibrationHelper::ImpliedVolError)));
         }
     }
 

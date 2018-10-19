@@ -42,12 +42,12 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <numeric>
 
 using namespace QuantLib;
@@ -432,16 +432,17 @@ namespace {
         Disposable<Array> solve_splitting(
             Size direction, const Array& r, Real dt) const {
 
+            using namespace ext::placeholders;
             if (direction == direction_) {
                 BiCGStabResult result =
                     QuantLib::BiCGstab(
-                        boost::function<Disposable<Array>(const Array&)>(
-                            boost::bind(
+                        ext::function<Disposable<Array>(const Array&)>(
+                            ext::bind(
                                 &FdmHeatEquationOp::solve_apply,
                                 this, _1, -dt)),
                         std::max(Size(10), r.size()), 1e-14,
-                        boost::function<Disposable<Array>(const Array&)>(
-                            boost::bind(&FdmLinearOpComposite::preconditioner,
+                        ext::function<Disposable<Array>(const Array&)>(
+                            ext::bind(&FdmLinearOpComposite::preconditioner,
                                         this, _1, dt))
                     ).solve(r, r);
 
@@ -470,7 +471,7 @@ namespace {
     };
 
 
-    class AvgPayoffFct : public std::unary_function<Real,Real> {
+    class AvgPayoffFct {
       public:
         AvgPayoffFct(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                      Volatility vol, Time T, Real growthFactor)

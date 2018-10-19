@@ -23,7 +23,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -142,12 +142,14 @@ namespace QuantLib {
                                               Real& y2,
                                               Real& y3) const
     {
+         using namespace ext::placeholders;
+
          Real x1,x2,x3;
          findByProjection(x1,x2,x3);
 
          y1 = BrentMinimize(
                 bottomValue_, x1, topValue_,tolerance, maxIterations,
-                boost::bind(
+                ext::bind(
                       &SphereCylinderOptimizer::objectiveFunction, this, _1));
          y2 =std::sqrt(s_*s_ - (y1-alpha_)*(y1-alpha_));
          y3= std::sqrt(r_*r_ - y1*y1-y2*y2);

@@ -60,7 +60,7 @@ Integer sessionId() { return 0; }
 // helper function that prints a basket of calibrating swaptions to std::cout
 
 void printBasket(
-    const std::vector<ext::shared_ptr<CalibrationHelper> > &basket) {
+    const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &basket) {
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(20)
               << "Maturity" << std::setw(20) << "Nominal" << std::setw(14)
               << "Rate" << std::setw(12) << "Pay/Rec" << std::setw(14)
@@ -94,7 +94,7 @@ void printBasket(
 // helper function that prints the result of a model calibraiton to std::cout
 
 void printModelCalibration(
-    const std::vector<ext::shared_ptr<CalibrationHelper> > &basket,
+    const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &basket,
     const Array &volatility) {
 
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(14)
@@ -272,7 +272,7 @@ int main(int argc, char *argv[]) {
             ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, yts6m, ytsOis);
 
         timer.start();
-        std::vector<ext::shared_ptr<CalibrationHelper> > basket =
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > basket =
             swaption->calibrationBasket(swapBase, *swaptionVol,
                                         BasketGeneratingEngine::Naive);
         timer.stop();

@@ -46,9 +46,9 @@ namespace QuantLib {
         class integrand1 {
           private:
             const Real c_inf_;
-            const boost::function<Real(Real)> f_;
+            const ext::function<Real(Real)> f_;
           public:
-            integrand1(Real c_inf, const boost::function<Real(Real)>& f)
+            integrand1(Real c_inf, const ext::function<Real(Real)>& f)
             : c_inf_(c_inf), f_(f) {}
             Real operator()(Real x) const {
                 if ((1.0-x)*c_inf_ > QL_EPSILON)
@@ -61,9 +61,9 @@ namespace QuantLib {
         class integrand2 {
           private:
             const Real c_inf_;
-            const boost::function<Real(Real)> f_;
+            const ext::function<Real(Real)> f_;
           public:
-            integrand2(Real c_inf, const boost::function<Real(Real)>& f)
+            integrand2(Real c_inf, const ext::function<Real(Real)>& f)
             : c_inf_(c_inf), f_(f) {}
             Real operator()(Real x) const {
                 if (x*c_inf_ > QL_EPSILON) {
@@ -78,13 +78,13 @@ namespace QuantLib {
           private:
             const integrand2 int_;
           public:
-            integrand3(Real c_inf, const boost::function<Real(Real)>& f)
+            integrand3(Real c_inf, const ext::function<Real(Real)>& f)
             : int_(c_inf, f) {}
 
             Real operator()(Real x) const { return int_(1.0-x); }
         };
 
-        class u_Max : public std::unary_function<Real, Real> {
+        class u_Max {
           public:
             u_Max(Real c_inf, Real epsilon)
             : c_inf_(c_inf), logEpsilon_(std::log(epsilon)),
@@ -103,7 +103,7 @@ namespace QuantLib {
         };
 
 
-        class uHat_Max : public std::unary_function<Real, Real> {
+        class uHat_Max {
           public:
             uHat_Max(Real v0T2, Real epsilon)
             : v0T2_(v0T2), logEpsilon_(std::log(epsilon)),
@@ -123,9 +123,7 @@ namespace QuantLib {
     }
 
     // helper class for integration
-    class AnalyticHestonEngine::Fj_Helper
-        : public std::unary_function<Real, Real>
-    {
+    class AnalyticHestonEngine::Fj_Helper {
     public:
         Fj_Helper(const VanillaOption::arguments& arguments,
             const ext::shared_ptr<HestonModel>& model,
@@ -368,8 +366,7 @@ namespace QuantLib {
     }
 
 
-    class AnalyticHestonEngine::AP_Helper
-        : public std::unary_function<Real, Real> {
+    class AnalyticHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real s0, Real strike, Real ratio,
                   Volatility sigmaBS,
@@ -736,7 +733,7 @@ namespace QuantLib {
 
     Real AnalyticHestonEngine::Integration::calculate(
                                Real c_inf,
-                               const boost::function1<Real, Real>& f,
+                               const ext::function<Real(Real)>& f,
                                Real maxBound) const {
         Real retVal;
 

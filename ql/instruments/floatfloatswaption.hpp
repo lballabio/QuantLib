@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +24,7 @@
 #ifndef quantlib_instruments_floatfloatswaption_hpp
 #define quantlib_instruments_floatfloatswaption_hpp
 
-#include <ql/option.hpp>
+#include <ql/instruments/swaption.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/pricingengines/swaption/basketgeneratingengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -42,8 +42,11 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        FloatFloatSwaption(const ext::shared_ptr<FloatFloatSwap> &swap,
-                           const ext::shared_ptr<Exercise> &exercise);
+        FloatFloatSwaption(
+            const ext::shared_ptr<FloatFloatSwap>& swap,
+            const ext::shared_ptr<Exercise>& exercise,
+            Settlement::Type delivery = Settlement::Physical,
+            Settlement::Method settlementMethod = Settlement::PhysicalOTC);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -51,12 +54,16 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
+        Settlement::Type settlementType() const { return settlementType_; }
+        Settlement::Method settlementMethod() const {
+            return settlementMethod_;
+        }
         VanillaSwap::Type type() const { return swap_->type(); }
         const ext::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
             return swap_;
         }
         //@}
-        Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
+        Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
         calibrationBasket(
             ext::shared_ptr<SwapIndex> standardSwapBase,
             ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
@@ -66,6 +73,8 @@ namespace QuantLib {
       private:
         // arguments
         ext::shared_ptr<FloatFloatSwap> swap_;
+        Settlement::Type settlementType_;
+        Settlement::Method settlementMethod_;
     };
 
     //! %Arguments for cms swaption calculation
@@ -74,6 +83,8 @@ namespace QuantLib {
       public:
         arguments() {}
         ext::shared_ptr<FloatFloatSwap> swap;
+        Settlement::Type settlementType;
+        Settlement::Method settlementMethod;
         void validate() const;
     };
 

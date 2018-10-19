@@ -217,11 +217,17 @@ void CmsSpreadTest::testCouponPricing() {
     cpn1a->setPricer(d.cmsPricerLn);
     cpn1b->setPricer(d.cmsPricerLn);
     cpn1->setPricer(d.cmsspPricerLn);
-    BOOST_CHECK_EQUAL(cpn1->rate(), cpn1a->rate() - cpn1b->rate());
+
+#ifndef __FAST_MATH__
+    const Real eqTol = 100*QL_EPSILON;
+#else
+    const Real eqTol = 1e-13;
+#endif
+    BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     cms10y->addFixing(d.refDate, 0.05);
-    BOOST_CHECK_EQUAL(cpn1->rate(), cpn1a->rate() - cpn1b->rate());
+    BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     cms2y->addFixing(d.refDate, 0.03);
-    BOOST_CHECK_EQUAL(cpn1->rate(), cpn1a->rate() - cpn1b->rate());
+    BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     IndexManager::instance().clearHistories();
 
     ext::shared_ptr<CmsCoupon> cpn2a = ext::shared_ptr<CmsCoupon>(

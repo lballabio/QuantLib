@@ -18,7 +18,91 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.13 - May 2018</strong>
+    <strong>Release 1.14 - October 2018</strong>
+
+    PORTABILITY
+    - In April 2018, Microsoft ended its support for Microsoft Visual
+      C++ 2008. As previously announced, this release drops support
+      for it.
+    - Fixed generation of RPM from QuantLib.spec (thanks to Simon Rees).
+    - Avoided uses of some features removed in C++17 so that the
+      library can be compiled under the latest standard if needed.
+    - `boost::shared_ptr` and a few related classes and functions were
+      imported into the new namespace `QuantLib::ext`.  This allows them
+      to be conditionally replaced with their `std::` versions (see the
+      "opt-in features" section below).  The default is still to use
+      the boost implementation.  Client code using the `boost` namespace
+      explicitly doesn't need to be updated.
+    - Fixed build and tests on FreeBSD-11 (thanks to Klaus Spanderen
+      and to Mikhail Teterin for the heads-up).
+    - Fixed tests with the `-ffast-math` compilation flag enabled
+      (thanks to Klaus Spanderen and to Jon Davies for the heads-up).
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Add different settlement methods for swaptions (thanks to Peter
+      Caspers).
+    - Take into account distinct day-count conventions for different
+      curves in the analytic barrier-option engine (thanks to GitHub
+      user cosplay-raven).
+    - Extract the correct constant coefficients to use in
+      finite-difference vanilla-option engine when using a
+      time-dependent Black-Scholes process (thanks to GitHub user
+      Grant6899 for the analysis).
+
+    CASH FLOWS AND INTEREST RATES
+    - Added Bibor and THBFIX indices (thanks to Matthias Lungwitz).
+
+    MODELS
+    - Added a hook for using a custom smile model in the Markov functional
+      model (thanks to Peter Caspers).
+    - Added a base class CalibrationHelperBase to the hierarchy of
+      calibration helpers in order to allow for helpers not using the
+      Black model.
+    - Return underlying dynamics from Black-Karasinski model (thanks
+      to Fanis Antoniou).
+
+    FINITE DIFFERENCES
+    - Added higher-order spatial operators (thanks to Klaus Spanderen).
+    - Added TR-BDF2 finite-difference scheme (thanks to Klaus Spanderen).
+
+    TERM STRUCTURES
+    - Allow swap helpers to specify end-of-month convention (thanks to
+      Matthias Lungwitz).
+
+    DATE/TIME
+    - Prevented division by zero in Actual/365 Canadian day counter
+      (thanks to Ioannis Rigopoulos for the heads-up).
+    - Added Children's Day to the list of Romanian holidays (thanks to
+      Matthias Lungwitz).
+    - Added new calendar for Thailand (thanks to Matthias Lungwitz).
+    - Added 30/360 German day counter (thanks to Peter Caspers and
+      Alexey Indiryakov).
+
+    MATH
+    - Fixed bug in convex-monotone interpolation (thanks to Peter
+      Caspers for the fix and to Tom Anderson for finding the bug).
+
+    NEW OPT-IN FEATURES
+    - It is now possible to use `std::shared_ptr` and its related
+      classes instead of `boost::shared_ptr`.  Note that, unlike its
+      boost counterpart, `std::shared_ptr` doesn't check for null
+      pointers before access; this can lead to crashes.  The feature
+      can be enabled by uncommenting the `QL_USE_STD_SHARED_PTR` macro
+      in `ql/userconfig.hpp` on Visual C++ or by passing the
+      `--enable-std-pointers` to `./configure` on other systems.  This
+      requires using at least the C++11 standard during compilation.
+    - It is now possible to use `std::unique_ptr` instead of
+      `std::auto_ptr`; this makes it possible to compile the library in
+      strict C++17 mode and to avoid deprecation warnings in C++11 and
+      C++14 mode.  The feature can be enabled by uncommenting the
+      `QL_USE_STD_UNIQUE_PTR` macro in `ql/userconfig.hpp` on Visual C++
+      or by passing the `--enable-std-unique-ptr` to `./configure` on
+      other systems.
+
+    Thanks go also to Sam Danbury, Barry Devlin, Roland Kapl, and GitHub
+    user todatamining for smaller fixes, enhancements, and bug reports.
+
+    <strong>Release 1.13 - May 24th, 2018</strong>
 
     PORTABILITY
     - In April 2018, Microsoft ended its support for Microsoft Visual

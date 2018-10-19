@@ -51,7 +51,7 @@ namespace QuantLib {
         Helper(const Size i, const Real xMin, const Real dx,
                const Real discountBondPrice,
                const ext::shared_ptr<ShortRateTree>& tree,
-               const boost::function<Real(Real)>& fInv)
+               const ext::function<Real(Real)>& fInv)
         : size_(tree->size(i)),
           dt_(tree->timeGrid().dt(i)),
           xMin_(xMin), dx_(dx),
@@ -75,7 +75,7 @@ namespace QuantLib {
         Real xMin_, dx_;
         const Array& statePrices_;
         Real discountBondPrice_;
-        boost::function<Real(Real)> fInverse_;
+        ext::function<Real(Real)> fInverse_;
     };
 
     GeneralizedHullWhite::GeneralizedHullWhite(
@@ -84,8 +84,8 @@ namespace QuantLib {
         const std::vector<Date>& volstructure,
         const std::vector<Real>& speed,
         const std::vector<Real>& vol,
-        const boost::function<Real(Real)>& f,
-        const boost::function<Real(Real)>& fInverse)
+        const ext::function<Real(Real)>& f,
+        const ext::function<Real(Real)>& fInverse)
     : OneFactorAffineModel(2), TermStructureConsistentModel(yieldtermStructure),
       speedstructure_(speedstructure),
       volstructure_(volstructure),
@@ -240,11 +240,11 @@ namespace QuantLib {
         return numericTree;
     }
 
-    boost::function<Real (Time)> GeneralizedHullWhite::speed() const {
+    ext::function<Real (Time)> GeneralizedHullWhite::speed() const {
         return speed_;
     }
 
-    boost::function<Real (Time)> GeneralizedHullWhite::vol() const {
+    ext::function<Real (Time)> GeneralizedHullWhite::vol() const {
         return vol_;
     }
 

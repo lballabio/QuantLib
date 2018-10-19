@@ -35,17 +35,24 @@ namespace QuantLib {
 
     class PricingEngine;
 
-    //! liquid market instrument used during calibration
-    class CalibrationHelper : public LazyObject {
+    //! abstract base class for calibration helpers
+    class CalibrationHelperBase {
+      public:
+        //! returns the error resulting from the model valuation
+        virtual Real calibrationError() = 0;
+    };
+
+    //! liquid Black76 market instrument used during calibration
+    class BlackCalibrationHelper : public LazyObject, public CalibrationHelperBase {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
-        CalibrationHelper(const Handle<Quote>& volatility,
-                          const Handle<YieldTermStructure>& termStructure,
-                          CalibrationErrorType calibrationErrorType
+        BlackCalibrationHelper(const Handle<Quote>& volatility,
+                               const Handle<YieldTermStructure>& termStructure,
+                               CalibrationErrorType calibrationErrorType
                                                          = RelativePriceError,
-                          const VolatilityType type = ShiftedLognormal,
-                          const Real shift = 0.0)
+                               const VolatilityType type = ShiftedLognormal,
+                               const Real shift = 0.0)
         : volatility_(volatility), termStructure_(termStructure),
           volatilityType_(type), shift_(shift),
           calibrationErrorType_(calibrationErrorType) {
@@ -70,7 +77,7 @@ namespace QuantLib {
         virtual Real modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
-        virtual Real calibrationError();
+        Real calibrationError();
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;
 
@@ -100,6 +107,13 @@ namespace QuantLib {
         class ImpliedVolatilityHelper;
         const CalibrationErrorType calibrationErrorType_;
     };
+
+    /*! \deprecated Use BlackCalibrationHelper instead
+
+        Deprecated in version 1.14.
+    */
+    QL_DEPRECATED
+    typedef BlackCalibrationHelper CalibrationHelper;
 
 }
 

@@ -29,13 +29,12 @@
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/construct.hpp>
+#include <ql/function.hpp>
+#include <ql/bind.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
@@ -52,7 +51,7 @@ namespace QuantLib {
                 operator()(Real d,  Disposable<std::vector<Real> > v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
-                    boost::lambda::_1 * d);
+                               multiply_by<Real>(d));
                 return v;
             }
         };
@@ -72,19 +71,19 @@ namespace QuantLib {
     public:
         // Interface with actual integrators:
         // integral of a scalar function
-        virtual Real integrate(const boost::function<Real (
+        virtual Real integrate(const ext::function<Real (
             const std::vector<Real>& arg)>& f) const = 0;
         // integral of a vector function
         /* I had to use a different name, since the compiler does not
         recognise the overload; MSVC sees the argument as 
-        boost::function<Signature> in both cases....   
+        ext::function<Signature> in both cases....   
         I could do the as with the quadratures and have this as a template 
         function and spez for the vector case but I prefer to understand
         why the overload fails....
                     FIX ME
         */
         virtual Disposable<std::vector<Real> > integrateV(
-            const boost::function<Disposable<std::vector<Real> >  (
+            const ext::function<Disposable<std::vector<Real> >  (
             const std::vector<Real>& arg)>& f) const {
             QL_FAIL("No vector integration provided");
         }
@@ -124,12 +123,12 @@ namespace QuantLib {
     public:
         IntegrationBase(Size dimension, Size order) 
         : GaussianQuadMultidimIntegrator(dimension, order) {}
-        Real integrate(const boost::function<Real (
+        Real integrate(const ext::function<Real (
             const std::vector<Real>& arg)>& f) const {
                 return GaussianQuadMultidimIntegrator::integrate<Real>(f);
         }
         Disposable<std::vector<Real> > integrateV(
-            const boost::function<Disposable<std::vector<Real> >  (
+            const ext::function<Disposable<std::vector<Real> >  (
                 const std::vector<Real>& arg)>& f) const {
                 return GaussianQuadMultidimIntegrator::
                     integrate<Disposable<std::vector<Real> > >(f);
@@ -147,7 +146,7 @@ namespace QuantLib {
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
-        Real integrate(const boost::function<Real (
+        Real integrate(const ext::function<Real (
             const std::vector<Real>& arg)>& f) const {
                 return MultidimIntegral::operator ()(f, a_, b_);
         }
@@ -592,28 +591,30 @@ namespace QuantLib {
          computes its expected value).
         */
         Real integratedExpectedValue(
-            const boost::function<Real(const std::vector<Real>& v1)>& f) const {
+            const ext::function<Real(const std::vector<Real>& v1)>& f) const {
+            using namespace ext::placeholders;
             // function composition: composes the integrand with the density 
             //   through a product.
             return 
                 integration()->integrate(
-                    boost::bind(std::multiplies<Real>(), 
-                    boost::bind(&copulaPolicyImpl::density, copula_, _1),
-                    boost::bind(boost::cref(f), _1)));   
+                    ext::bind(std::multiplies<Real>(), 
+                    ext::bind(&copulaPolicyImpl::density, copula_, _1),
+                              ext::bind(ext::cref(f), _1)));   
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
         Disposable<std::vector<Real> > integratedExpectedValue(
-           // const boost::function<std::vector<Real>(
-            const boost::function<Disposable<std::vector<Real> >(
+            // const ext::function<std::vector<Real>(
+            const ext::function<Disposable<std::vector<Real> >(
                 const std::vector<Real>& v1)>& f ) const {
+            using namespace ext::placeholders;
             return 
                 integration()->integrateV(//see note in LMIntegrators base class
-                    boost::bind<Disposable<std::vector<Real> > >(
+                    ext::bind<Disposable<std::vector<Real> > >(
                         detail::multiplyV(),
-                        boost::bind(&copulaPolicyImpl::density, copula_, _1),
-                        boost::bind(boost::cref(f), _1)));
+                        ext::bind(&copulaPolicyImpl::density, copula_, _1),
+                        ext::bind(ext::cref(f), _1)));
         }
     protected:
         // Integrable models must provide their integrator.

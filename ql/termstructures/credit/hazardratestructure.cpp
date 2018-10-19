@@ -27,7 +27,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -78,6 +78,7 @@ namespace QuantLib {
     : DefaultProbabilityTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
     Probability HazardRateStructure::survivalProbabilityImpl(Time t) const {
+        using namespace ext::placeholders;
         static GaussChebyshevIntegration integral(48);
         // this stores the address of the method to integrate (so that
         // we don't have to insert its full expression inside the
@@ -86,7 +87,7 @@ namespace QuantLib {
             &HazardRateStructure::hazardRateImpl;
         // the Gauss-Chebyshev quadratures integrate over [-1,1],
         // hence the remapping (and the Jacobian term t/2)
-        return std::exp(-integral(remap(bind(f,this,_1), t)) * t/2.0);
+        return std::exp(-integral(remap(ext::bind(f,this,_1), t)) * t/2.0);
     }
 
 }

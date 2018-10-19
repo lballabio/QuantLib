@@ -1163,7 +1163,7 @@ namespace QuantLib {
     // Z-spread utility functions
     namespace {
 
-        class ZSpreadFinder : public std::unary_function<Rate, Real> {
+        class ZSpreadFinder {
           public:
             ZSpreadFinder(const Leg& leg,
                           const ext::shared_ptr<YieldTermStructure>& discountCurve,

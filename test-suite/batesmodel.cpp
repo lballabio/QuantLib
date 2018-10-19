@@ -45,7 +45,7 @@ using namespace boost::unit_test_framework;
 namespace {
 
     Real getCalibrationError(
-               std::vector<ext::shared_ptr<CalibrationHelper> > & options) {
+               std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
         Real sse = 0;
         for (Size i = 0; i < options.size(); ++i) {
             const Real diff = options[i]->calibrationError()*100.0;
@@ -459,7 +459,7 @@ void BatesModelTest::testDAXCalibration() {
     ext::shared_ptr<PricingEngine> batesEngine(
                                             new BatesEngine(batesModel, 64));
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > options;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > options;
 
     for (Size s = 0; s < 13; ++s) {
         for (Size m = 0; m < 8; ++m) {
@@ -470,11 +470,11 @@ void BatesModelTest::testDAXCalibration() {
 
             // this is the calibration helper for the bates models
             // FLOATING_POINT_EXCEPTION
-            options.push_back(ext::shared_ptr<CalibrationHelper>(
+            options.push_back(ext::shared_ptr<BlackCalibrationHelper>(
                     new HestonModelHelper(maturity, calendar,
                                           s0->value(), strike[s], vol,
                                           riskFreeTS, dividendTS, 
-                                          CalibrationHelper::ImpliedVolError)));
+                                          BlackCalibrationHelper::ImpliedVolError)));
             options.back()->setPricingEngine(batesEngine);
         }
     }

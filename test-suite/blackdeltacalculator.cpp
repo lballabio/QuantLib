@@ -261,7 +261,21 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
         option.setPricingEngine(engine);
 
         calculatedVal=myCalc.deltaFromStrike(values[i].strike);
-        expectedVal=option.delta()-option.NPV()/spotQuote->value();
+
+        Real delta = 0.0;
+        if (implVol > 0.0) {
+            delta = option.delta();
+        }
+        else {
+            const Real fwd = spotQuote->value()*discFor/discDom;
+            if (payoff->optionType() == Option::Call && fwd > payoff->strike())
+                delta = 1.0;
+            else if (payoff->optionType() == Option::Put && fwd < payoff->strike())
+                delta = -1.0;
+        }
+
+        expectedVal=delta-option.NPV()/spotQuote->value();
+
         error=std::fabs(expectedVal-calculatedVal);
 
         if(error>tolerance){
@@ -289,7 +303,7 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
         myCalc.setDeltaType(DeltaVolQuote::Spot);
 
         calculatedVal=myCalc.deltaFromStrike(values[i].strike);
-        expectedVal=option.delta();
+        expectedVal=delta;
         error=std::fabs(calculatedVal-expectedVal);
 
         if(error>tolerance){

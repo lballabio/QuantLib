@@ -33,7 +33,7 @@ namespace QuantLib {
 
     //! calibration helper for ATM swaption
 
-    class SwaptionHelper : public CalibrationHelper {
+    class SwaptionHelper : public BlackCalibrationHelper {
       public:
         SwaptionHelper(const Period& maturity,
                        const Period& length,
@@ -43,8 +43,8 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType
-                                      = CalibrationHelper::RelativePriceError,
+                       BlackCalibrationHelper::CalibrationErrorType errorType
+                                      = BlackCalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
                        const VolatilityType type = ShiftedLognormal,
@@ -58,8 +58,8 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType
-                                      = CalibrationHelper::RelativePriceError,
+                       BlackCalibrationHelper::CalibrationErrorType errorType
+                                      = BlackCalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
                        const VolatilityType type = ShiftedLognormal,
@@ -73,8 +73,8 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType
-                                      = CalibrationHelper::RelativePriceError,
+                       BlackCalibrationHelper::CalibrationErrorType errorType
+                                      = BlackCalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
                        const VolatilityType type = ShiftedLognormal,

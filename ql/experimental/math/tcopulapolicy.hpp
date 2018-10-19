@@ -24,7 +24,7 @@
 #include <ql/utilities/disposable.hpp>
 #include <ql/experimental/math/convolvedstudentt.hpp>
 #include <boost/math/distributions/students_t.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <vector>
 
 namespace QuantLib {

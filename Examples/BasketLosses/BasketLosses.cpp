@@ -34,7 +34,7 @@
 #include <ql/currencies/europe.hpp>
 
 #include <boost/timer.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <boost/assign/std/vector.hpp>
 
 #include <iostream>

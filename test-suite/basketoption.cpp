@@ -38,7 +38,7 @@
 #include <ql/utilities/dataformatters.hpp>
 
 #include <boost/progress.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;
@@ -783,7 +783,7 @@ namespace {
     };
 }
 
-void BasketOptionTest::testOneDAmericanValues(unsigned from, unsigned to) {
+void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) {
 
     BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
                        "from " << from << " to " << to-1 <<  "...");
@@ -1107,7 +1107,7 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
         #define N_TEST_CASES 5
         #define BOOST_PP_LOCAL_MACRO(n)                                \
             suite->add(QUANTLIB_TEST_CASE(                             \
-                boost::bind(&BasketOptionTest::testOneDAmericanValues, \
+                ext::bind(&BasketOptionTest::testOneDAmericanValues, \
                     (n    *LENGTH(oneDataValues))/N_TEST_CASES,        \
                     ((n+1)*LENGTH(oneDataValues))/N_TEST_CASES)));
 

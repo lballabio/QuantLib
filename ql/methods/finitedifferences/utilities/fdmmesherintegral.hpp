@@ -26,21 +26,21 @@
 
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
     class FdmMesherIntegral {
       public:
         FdmMesherIntegral(
             const ext::shared_ptr<FdmMesherComposite>& mesher,
-            const boost::function<Real(const Array&, const Array&)>&
+            const ext::function<Real(const Array&, const Array&)>&
                 integrator1d);
 
         Real integrate(const Array& f) const;
 
       private:
         const std::vector<ext::shared_ptr<Fdm1dMesher> > meshers_;
-        const boost::function<Real(const Array&, const Array&)>& integrator1d_;
+        const ext::function<Real(const Array&, const Array&)>& integrator1d_;
     };
 }
 #endif

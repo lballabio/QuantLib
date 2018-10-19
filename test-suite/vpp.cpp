@@ -137,7 +137,7 @@ void VPPTest::testGemanRoncoroniProcess() {
     const Real alphaG    = 1.0;
     const Real x0G       = 1.1;
 
-    boost::function<Real (Real)> f = linear(alphaG, betaG);
+    ext::function<Real (Real)> f = linear(alphaG, betaG);
 
     ext::shared_ptr<StochasticProcess1D> eouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -286,7 +286,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 
     ext::shared_ptr<ExtOUWithJumpsProcess>
                                            klugeProcess = createKlugeProcess();
-    boost::function<Real (Real)> f = linear(alphaG, betaG);
+    ext::function<Real (Real)> f = linear(alphaG, betaG);
 
     ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOUProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -741,7 +741,7 @@ void VPPTest::testVPPPricing() {
 
     // regression functions
     const Size dim = 1u;
-    std::vector<boost::function1<Real, Array> > v(
+    std::vector<ext::function<Real(Array)> > v(
         LsmBasisSystem::multiPathBasisSystem(dim,5u, LsmBasisSystem::Monomial));
 
     for (Size i=exercise->dates().size(); i > 0u; --i) {

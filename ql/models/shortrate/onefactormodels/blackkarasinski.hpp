@@ -44,9 +44,7 @@ namespace QuantLib {
         BlackKarasinski(const Handle<YieldTermStructure>& termStructure,
                         Real a = 0.1, Real sigma = 0.1);
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const {
-            QL_FAIL("no defined process for Black-Karasinski");
-        }
+        ext::shared_ptr<ShortRateDynamics> dynamics() const;
 
         ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
@@ -59,6 +57,7 @@ namespace QuantLib {
 
         Parameter& a_;
         Parameter& sigma_;
+        Parameter phi_;
     };
 
     //! Short-rate dynamics in the Black-Karasinski model
@@ -91,7 +90,6 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif
 

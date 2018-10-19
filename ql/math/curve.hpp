@@ -30,13 +30,16 @@
 namespace QuantLib {
 
     //! abstract curve class
-    class Curve : public std::unary_function<Real, Real> {
+    class Curve {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
         virtual ~Curve() {}
         virtual Real operator()(Real x) const = 0;
     };
 
-    class TestCurve : public Curve {
+    /*! \deprecated Deprecated in version 1.14 */
+    class QL_DEPRECATED TestCurve : public Curve {
     public:
         Real operator()(Real x) const { return std::sin(x); }
     };

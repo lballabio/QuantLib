@@ -21,10 +21,9 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/modifiedbessel.hpp>
+#include <ql/bind.hpp>
 
 #include <boost/math/special_functions/gamma.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/functional/hash.hpp>
 
@@ -57,6 +56,8 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     : expiryTime_(expiryTime), externalForward_(forward), alpha_(alpha),
       beta_(beta), nu_(nu), rho_(rho), forward_(forward),
       numericalForward_(forward) {
+
+    using namespace ext::placeholders;
 
     QL_REQUIRE(expiryTime > 0.0 && expiryTime <= detail::NoArbSabrModel::expiryTime_max,
                "expiryTime (" << expiryTime << ") out of bounds");
@@ -104,8 +105,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
         Brent b;
         Real start = std::sqrt(externalForward_ - detail::NoArbSabrModel::strike_min);
         Real tmp =
-            b.solve(boost::lambda::bind(&NoArbSabrModel::forwardError, this,
-                                        boost::lambda::_1),
+            b.solve(ext::bind(&NoArbSabrModel::forwardError, this, _1),
                     detail::NoArbSabrModel::forward_accuracy, start,
                     std::min(detail::NoArbSabrModel::forward_search_step, start / 2.0));
         forward_ = tmp * tmp + detail::NoArbSabrModel::strike_min;

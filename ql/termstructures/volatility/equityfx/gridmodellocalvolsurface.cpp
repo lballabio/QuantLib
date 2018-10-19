@@ -24,7 +24,7 @@
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>
 
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 
 #include <algorithm>
 
@@ -85,12 +85,13 @@ namespace QuantLib {
     }
 
     void GridModelLocalVolSurface::generateArguments() {
+        using namespace ext::placeholders;
         const ext::shared_ptr<Matrix> localVolMatrix(
             new Matrix(strikes_.front()->size(), times_.size()));
 
         std::transform(arguments_.begin(), arguments_.end(),
                        localVolMatrix->begin(),
-                       boost::bind(&Parameter::operator(), _1, 0.0));
+                       ext::bind(&Parameter::operator(), _1, 0.0));
 
         localVol_ = ext::make_shared<FixedLocalVolSurface>(
                 referenceDate_,

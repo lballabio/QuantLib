@@ -29,7 +29,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <vector>
 #include <string>
 #include <numeric>
@@ -54,7 +54,7 @@ namespace QuantLib {
 
         // used to avoid no-assertion messages in Boost 1.35
         class quantlib_test_case {
-            boost::function0<void> test_;
+            ext::function<void()> test_;
           public:
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}

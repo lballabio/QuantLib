@@ -39,7 +39,7 @@ namespace QuantLib {
         QL_REQUIRE( !(intervals_ & 1), "number of intervals must be even");
     }
 
-    Real FilonIntegral::integrate(const boost::function<Real (Real)>& f,
+    Real FilonIntegral::integrate(const ext::function<Real (Real)>& f,
                                   Real a, Real b) const {
         const Real h = (b-a)/(2*n_);
         Array x(2*n_+1, a, h);
@@ -57,7 +57,7 @@ namespace QuantLib {
         Array v(x.size());
         std::transform(x.begin(), x.end(), v.begin(), f);
 
-        boost::function<Real(Real)> f1, f2;
+        ext::function<Real(Real)> f1, f2;
         switch(type_) {
           case Cosine:
             f1 = static_cast<Real(*)(Real)>(std::sin);

@@ -108,7 +108,11 @@ void BrownianBridgeTest::testVariates() {
     for (Size i=0; i<N; i++)
         expectedCovariance[i][i] = 1.0;
 
+#ifndef __FAST_MATH__
     Real meanTolerance = 1.0e-16;
+#else
+    Real meanTolerance = 1.0e-14;
+#endif
     Real covTolerance = 2.5e-4;
 
     std::vector<Real> mean = stats1.mean();
@@ -143,7 +147,6 @@ void BrownianBridgeTest::testVariates() {
         for (Size j=i; j<N; ++j)
             expectedCovariance[i][j] = expectedCovariance[j][i] = times[i];
 
-    meanTolerance = 1.0e-16;
     covTolerance = 6.0e-4;
 
     mean = stats2.mean();
