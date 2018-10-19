@@ -88,7 +88,7 @@ namespace QuantLib {
             if (!schedule.empty())
                 return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(schedule));
             else
-                return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl(schedule));
+                return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl);
           case ISDA:
           case Historical:
           case Actual365:
@@ -229,15 +229,7 @@ namespace QuantLib {
                 // this case is long first coupon
 
                 // the last notional payment date
-                Date previousRef;
-                if (schedule_.empty()) {
-                    previousRef = refPeriodStart - months*Months;
-                } else {
-                    previousRef = schedule_.calendar().advance(refPeriodStart,
-                                                               -schedule_.tenor(),
-                                                               schedule_.businessDayConvention(),
-                                                               schedule_.endOfMonth());
-                }
+                Date previousRef = refPeriodStart - months*Months;
 
                 if (d2 > refPeriodStart)
                     return yearFraction(d1, refPeriodStart, previousRef,
