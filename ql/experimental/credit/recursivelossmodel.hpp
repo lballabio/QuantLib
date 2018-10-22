@@ -177,6 +177,8 @@ namespace QuantLib {
             );
             */
 /**/
+        using namespace ext::placeholders;
+
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         std::vector<Real> invProb;
@@ -197,7 +199,9 @@ namespace QuantLib {
 
     template<class CP>
     inline Disposable<std::vector<Real> > 
-        RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+    RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+
+        using namespace ext::placeholders;
 
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
