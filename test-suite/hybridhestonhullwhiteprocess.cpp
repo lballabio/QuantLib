@@ -54,7 +54,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -652,6 +652,8 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     BOOST_TEST_MESSAGE("Testing the pricing of a callable equity product...");
 
+    using namespace ext::placeholders;
+
     SavedSettings backup;
 
     /*
@@ -693,7 +695,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
 
     std::vector<Time> times(maturity+1);
     std::transform(schedule.begin(), schedule.end(), times.begin(),
-                   boost::bind(&Actual365Fixed::yearFraction,
+                   ext::bind(&Actual365Fixed::yearFraction,
                                dc, today, _1, Date(), Date()));
 
     for (Size i=0; i<=maturity; ++i)

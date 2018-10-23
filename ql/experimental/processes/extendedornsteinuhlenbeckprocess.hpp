@@ -26,7 +26,7 @@
 
 #include <ql/stochasticprocess.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -46,7 +46,7 @@ namespace QuantLib {
 
         ExtendedOrnsteinUhlenbeckProcess(
                                 Real speed, Volatility sigma, Real x0,
-                                const boost::function<Real (Real)>& b,
+                                const ext::function<Real (Real)>& b,
                                 Discretization discretization = MidPoint,
                                 Real intEps = 1e-4);
 
@@ -64,7 +64,7 @@ namespace QuantLib {
       private:
         const Real speed_;
         const Volatility vol_;
-        const boost::function<Real (Real)> b_;
+        const ext::function<Real (Real)> b_;
         const Real intEps_;
         const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
         const Discretization discretization_;

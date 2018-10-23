@@ -36,7 +36,6 @@ namespace QuantLib {
       public:
         SampledCurve(Size gridSize = 0);
         SampledCurve(const Array &grid);
-        SampledCurve& operator=(const SampledCurve&);
 
         //! \name inspectors
         //@{
@@ -167,12 +166,6 @@ namespace QuantLib {
 
     inline SampledCurve::SampledCurve(const Array& grid)
         : grid_(grid), values_(grid.size()) {}
-
-    inline SampledCurve& SampledCurve::operator=(const SampledCurve& from) {
-        SampledCurve temp(from);
-        swap(temp);
-        return *this;
-    }
 
     inline Array& SampledCurve::grid() {
         return grid_;

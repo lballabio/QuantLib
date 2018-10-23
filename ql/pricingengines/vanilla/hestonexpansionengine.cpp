@@ -31,17 +31,6 @@
 #pragma warning(disable: 4180)
 #endif
 
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/lambda/if.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-
 using std::exp;
 using std::pow;
 using std::log;

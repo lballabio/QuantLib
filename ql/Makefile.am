@@ -23,6 +23,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	auto_link.hpp \
 	auto_ptr.hpp \
+	bind.hpp \
 	cashflow.hpp \
 	compounding.hpp \
 	config.hpp \
@@ -33,6 +34,7 @@ this_include_HEADERS = \
 	exchangerate.hpp \
 	exercise.hpp \
 	event.hpp \
+	function.hpp \
 	grid.hpp \
 	handle.hpp \
 	index.hpp \

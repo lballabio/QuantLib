@@ -27,12 +27,12 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
     RiskNeutralDensityCalculator::InvCDFHelper::InvCDFHelper(
@@ -45,6 +45,8 @@ namespace QuantLib {
 
     Real RiskNeutralDensityCalculator::InvCDFHelper::inverseCDF(Real p, Time t)
     const {
+        using namespace ext::placeholders;
+
         const Real guessCDF = calculator_->cdf(guess_, t);
 
         Size evaluations = maxEvaluations_;
@@ -61,8 +63,8 @@ namespace QuantLib {
 
         QL_REQUIRE(evaluations, "could not calculate interval");
 
-        const boost::function<Real(Real)> cdf
-            = boost::bind(&RiskNeutralDensityCalculator::cdf,
+        const ext::function<Real(Real)> cdf
+            = ext::bind(&RiskNeutralDensityCalculator::cdf,
                           calculator_, _1, t);
 
         Brent solver;

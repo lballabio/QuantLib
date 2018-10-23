@@ -44,7 +44,7 @@ namespace QuantLib {
     }
 
     RichardsonExtrapolation::RichardsonExtrapolation(
-        const boost::function<Real (Real)>& f, Real delta_h, Real n)
+        const ext::function<Real (Real)>& f, Real delta_h, Real n)
     : delta_h_(delta_h),
       fdelta_h_(f(delta_h)),
       n_(n),

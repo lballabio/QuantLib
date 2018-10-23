@@ -35,7 +35,7 @@
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <cmath>
 
 // asinh is missing in WIN32 (and possibly on other compilers)
@@ -122,8 +122,9 @@ namespace QuantLib {
           : rk_(tol), points_(points), betas_(betas) {}
 
             Real solve(Real a, Real y0, Real x0, Real x1) {
+                using namespace ext::placeholders;
                 AdaptiveRungeKutta<>::OdeFct1d odeFct(
-                    boost::bind(&OdeIntegrationFct::jac, this, a, _1, _2));
+                    ext::bind(&OdeIntegrationFct::jac, this, a, _1, _2));
 
                 return rk_(odeFct, y0, x0, x1);
             }
@@ -153,6 +154,8 @@ namespace QuantLib {
         const std::vector<boost::tuple<Real, Real, bool> >& cPoints,
         Real tol)
     : Fdm1dMesher(size) {
+        using namespace ext::placeholders;
+
         QL_REQUIRE(end > start, "end must be larger than start");
 
         std::vector<Real> points, betas;
@@ -172,8 +175,8 @@ namespace QuantLib {
 
         OdeIntegrationFct fct(points, betas, tol);
         const Real a = Brent().solve(
-            boost::bind(std::minus<Real>(),
-                boost::bind(&OdeIntegrationFct::solve,
+            ext::bind(std::minus<Real>(),
+                ext::bind(&OdeIntegrationFct::solve,
                             &fct, _1, start, 0.0, 1.0), end),
             tol, aInit, 0.1*aInit);
 
@@ -204,8 +207,8 @@ namespace QuantLib {
                         std::lower_bound(y.begin(), y.end(), points[i]));
 
                 const Real e = Brent().solve(
-                    boost::bind(std::minus<Real>(),
-                        boost::bind(&LinearInterpolation::operator(),
+                    ext::bind(std::minus<Real>(),
+                        ext::bind(&LinearInterpolation::operator(),
                                     odeSolution, _1, true), points[i]),
                     QL_EPSILON, x[j], 0.5/size);
 

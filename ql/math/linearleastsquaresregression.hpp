@@ -59,12 +59,12 @@ namespace QuantLib {
                 v.push_back(identity<ArgumentType>());
             }
 
-            const std::vector< boost::function1<Real, ArgumentType> > & fcts() {
+            const std::vector< ext::function<Real(ArgumentType)> > & fcts() {
                 return v;
             }
 
           private:
-            std::vector< boost::function1<Real, ArgumentType> > v;
+            std::vector< ext::function<Real(ArgumentType)> > v;
         };
 
         // multi-dimensional implementation (container types)
@@ -80,11 +80,11 @@ namespace QuantLib {
                     v.push_back(LinearFct<ArgumentType>(i));
             }
 
-            const std::vector< boost::function1<Real, ArgumentType> > & fcts() {
+            const std::vector< ext::function<Real(ArgumentType)> > & fcts() {
                return v;
             }
           private:
-            std::vector< boost::function1<Real, ArgumentType> > v;
+            std::vector< ext::function<Real(ArgumentType)> > v;
         };
     }
 
@@ -126,7 +126,7 @@ namespace QuantLib {
         LinearLeastSquaresRegression(
             const std::vector<ArgumentType> & x,
             const std::vector<Real> &         y,
-            const std::vector<boost::function1<Real, ArgumentType> > & v)
+            const std::vector<ext::function<Real(ArgumentType)> > & v)
         : GeneralLinearLeastSquares(x, y, v) {
         }
     };

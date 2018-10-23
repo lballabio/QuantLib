@@ -31,7 +31,7 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
@@ -44,8 +44,8 @@ namespace QuantLib {
     namespace {
 
         // makes typing a little easier
-        typedef std::vector<boost::function1<Real, Real> > VF_R;
-        typedef std::vector<boost::function1<Real, Array> > VF_A;
+        typedef std::vector<ext::function<Real(Real)> > VF_R;
+        typedef std::vector<ext::function<Real(Array)> > VF_A;
         typedef std::vector<std::vector<Size> > VV;
         Real (GaussianOrthogonalPolynomial::*ptr_w)(Size, Real) const =
             &GaussianOrthogonalPolynomial::weightedValue;
@@ -120,6 +120,7 @@ namespace QuantLib {
     // LsmBasisSystem static methods
 
     VF_R LsmBasisSystem::pathBasisSystem(Size order, PolynomType polyType) {
+        using namespace ext::placeholders;
         VF_R ret(order+1);
         for (Size i=0; i<=order; ++i) {
             switch (polyType) {
@@ -127,22 +128,22 @@ namespace QuantLib {
                 ret[i] = MonomialFct(i);
                 break;
               case Laguerre:
-                ret[i] = boost::bind(ptr_w, GaussLaguerrePolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussLaguerrePolynomial(), i, _1);
                 break;
               case Hermite:
-                ret[i] = boost::bind(ptr_w, GaussHermitePolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussHermitePolynomial(), i, _1);
                 break;
               case Hyperbolic:
-                ret[i] = boost::bind(ptr_w, GaussHyperbolicPolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussHyperbolicPolynomial(), i, _1);
                 break;
               case Legendre:
-                ret[i] = boost::bind(ptr_w, GaussLegendrePolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussLegendrePolynomial(), i, _1);
                 break;
               case Chebyshev:
-                ret[i] = boost::bind(ptr_w, GaussChebyshevPolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussChebyshevPolynomial(), i, _1);
                 break;
               case Chebyshev2nd:
-                ret[i] = boost::bind(ptr_w,GaussChebyshev2ndPolynomial(),i, _1);
+                ret[i] = ext::bind(ptr_w,GaussChebyshev2ndPolynomial(),i, _1);
                 break;
               default:
                 QL_FAIL("unknown regression type");

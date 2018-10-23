@@ -27,7 +27,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -167,16 +167,18 @@ namespace QuantLib {
             basket_->remainingProbabilities(date);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+            ext::function<Real (const std::vector<Real>& v1)>(
+                ext::bind(
                     &RecursiveLossModel::expectedConditionalLoss,
                     this,
-                    boost::cref(uncDefProb),
+                    ext::cref(uncDefProb),
                     _1)
                 )
             );
             */
 /**/
+        using namespace ext::placeholders;
+
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         std::vector<Real> invProb;
@@ -184,11 +186,11 @@ namespace QuantLib {
            invProb.push_back(copula_->inverseCumulativeY(uncDefProb[i], i));
            ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
+            ext::function<Real (const std::vector<Real>& v1)>(
+                ext::bind(
                     &RecursiveLossModel::expectedConditionalLossInvP,
                     this,
-                    boost::cref(invProb),
+                    ext::cref(invProb),
                     _1)
                 )
             );
@@ -197,16 +199,18 @@ namespace QuantLib {
 
     template<class CP>
     inline Disposable<std::vector<Real> > 
-        RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+    RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+
+        using namespace ext::placeholders;
 
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         return copula_->integratedExpectedValue(
-            boost::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
-                boost::bind(
+            ext::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
+                ext::bind(
                     &RecursiveLossModel::conditionalLossProb,
                     this,
-                    boost::cref(uncDefProb),
+                    ext::cref(uncDefProb),
                     _1)
                 )
             );

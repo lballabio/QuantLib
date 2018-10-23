@@ -34,8 +34,6 @@
 #include <ql/math/integrals/twodimensionalintegral.hpp>
 #include <ql/experimental/math/piecewisefunction.hpp>
 #include <ql/experimental/math/piecewiseintegral.hpp>
-
-#include <boost/lambda/lambda.hpp>
 #include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
@@ -48,7 +46,7 @@ namespace {
 
     template <class T>
     void testSingle(const T& I, const std::string& tag,
-                    const boost::function<Real (Real)>& f,
+                    const ext::function<Real (Real)>& f,
                     Real xMin, Real xMax, Real expected) {
         Real calculated = I(f,xMin,xMax);
         if (std::fabs(calculated-expected) > tolerance) {

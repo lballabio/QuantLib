@@ -261,7 +261,9 @@ AC_ARG_ENABLE([thread-safe-observer-pattern],
                               enable it if you want to use QuantLib 
                               via the SWIG layer within the JVM or .NET 
                               eco system or any environment with an 
-                              async garbage collector.]),
+                              async garbage collector. C++-17 is required
+                              if this option is used together with 
+                              --enable-std-pointers]),
               [ql_use_tsop=$enableval],
               [ql_use_tsop=no])
 AC_MSG_RESULT([$ql_use_tsop])
@@ -408,6 +410,59 @@ if test "$ql_use_unique_ptr" = "yes" ; then
              [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
 fi
 AC_MSG_RESULT([$ql_use_unique_ptr])
+
+AC_MSG_CHECKING([whether to enable std::function])
+AC_ARG_ENABLE([std-function],
+              AC_HELP_STRING([--enable-std-function],
+                             [If enabled, std::function will be used instead
+                              of boost::function; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.]),
+              [ql_use_std_function=$enableval],
+              [ql_use_std_function=no])
+if test "$ql_use_std_function" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
+             [Define this if you want to use std::function.])
+fi
+AC_MSG_RESULT([$ql_use_std_function])
+
+AC_MSG_CHECKING([whether to enable std::bind])
+AC_ARG_ENABLE([std-bind],
+              AC_HELP_STRING([--enable-std-bind],
+                             [If enabled, std::bind will be used instead
+                              of boost::bind; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.]),
+              [ql_use_std_bind=$enableval],
+              [ql_use_std_bind=no])
+if test "$ql_use_std_bind" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_BIND],[1],
+             [Define this if you want to use std::bind.])
+fi
+AC_MSG_RESULT([$ql_use_std_bind])
+
+AC_MSG_CHECKING([whether to enable available std classes])
+AC_ARG_ENABLE([std-classes],
+              AC_HELP_STRING([--enable-std-classes],
+                             [This is a shortcut for --enable-std-pointers
+                              --enable-std-unique-ptr --enable-std-function
+                              --enable-std-bind.  If enabled, this supersedes
+                              any --disable option passed for the above.]),
+              [ql_use_std_classes=$enableval],
+              [ql_use_std_classes=no])
+if test "$ql_use_std_classes" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
+             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
+   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
+             [Define this if you want to use std::function.])
+   AC_DEFINE([QL_USE_STD_BIND],[1],
+             [Define this if you want to use std::bind.])
+fi
+AC_MSG_RESULT([$ql_use_std_classes])
 
 # manual configurations for specific hosts
 case $host in

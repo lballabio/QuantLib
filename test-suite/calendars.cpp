@@ -1765,22 +1765,27 @@ void CalendarTest::testEndOfMonth() {
 
 void CalendarTest::testBusinessDaysBetween() {
 
-    BOOST_TEST_MESSAGE("Testing calculation of business days between dates...");
+    BOOST_TEST_MESSAGE("Testing calculation of business days between dates..."); 
 
     std::vector<Date> testDates;
-    testDates.push_back(Date(1,February,2002));
-    testDates.push_back(Date(4,February,2002));
-    testDates.push_back(Date(16,May,2003));
-    testDates.push_back(Date(17,December,2003));
-    testDates.push_back(Date(17,December,2004));
-    testDates.push_back(Date(19,December,2005));
-    testDates.push_back(Date(2,January,2006));
-    testDates.push_back(Date(13,March,2006));
-    testDates.push_back(Date(15,May,2006));
-    testDates.push_back(Date(17,March,2006));
-    testDates.push_back(Date(15,May,2006));
-    testDates.push_back(Date(26,July,2006));
+    testDates.push_back(Date(1,February,2002)); //isBusinessDay = true
+    testDates.push_back(Date(4,February,2002)); //isBusinessDay = true
+    testDates.push_back(Date(16,May,2003)); //isBusinessDay = true
+    testDates.push_back(Date(17,December,2003)); //isBusinessDay = true
+    testDates.push_back(Date(17,December,2004)); //isBusinessDay = true
+    testDates.push_back(Date(19,December,2005)); //isBusinessDay = true
+    testDates.push_back(Date(2,January,2006)); //isBusinessDay = true
+    testDates.push_back(Date(13,March,2006)); //isBusinessDay = true
+    testDates.push_back(Date(15,May,2006)); //isBusinessDay = true
+    testDates.push_back(Date(17,March,2006)); //isBusinessDay = true
+    testDates.push_back(Date(15,May,2006)); //isBusinessDay = true
+    testDates.push_back(Date(26,July,2006)); //isBusinessDay = true
+    testDates.push_back(Date(26,July,2006)); //isBusinessDay = true
+    testDates.push_back(Date(27,July,2006)); //isBusinessDay = true
+	testDates.push_back(Date(29,July,2006)); //isBusinessDay = false
+    testDates.push_back(Date(29,July,2006)); //isBusinessDay = false
 
+	//default params: from date included, to excluded
     Date::serial_type expected[] = {
         1,
         321,
@@ -1792,19 +1797,107 @@ void CalendarTest::testBusinessDaysBetween() {
         42,
         -38,
         38,
-        51
+        51,
+		0,
+		1,
+		2,
+		0
     };
+
+	//exclude from, include to
+	Date::serial_type expected_include_to[] = {
+		1,
+		321,
+		152,
+		251,
+		252,
+		10,
+		48,
+		42,
+		-38,
+		38,
+		51,
+		0,
+		1,
+		1,
+		0
+	};
+
+	//include both from and to
+	Date::serial_type expected_include_all[] = {
+		2,
+		322,
+		153,
+		252,
+        253,
+		11,
+		49,
+		43,
+		-39,
+		39,
+		52,
+		1,
+		2,
+		2,
+		0
+	};
+
+	//exclude both from and to
+	Date::serial_type expected_exclude_all[] = {
+		0,
+		320,
+		151,
+		250,
+		251,
+		9,
+		47,
+		41,
+		-37,
+		37,
+		50,
+		0,
+		0,
+		1,
+		0
+	};
 
     Calendar calendar = Brazil();
 
     for (Size i=1; i<testDates.size(); i++) {
         Integer calculated = calendar.businessDaysBetween(testDates[i-1],
-                                                          testDates[i]);
+                                                          testDates[i], true, false);
         if (calculated != expected[i-1]) {
-            BOOST_ERROR("from " << testDates[i-1]
-                        << " to " << testDates[i] << ":\n"
+            BOOST_ERROR("from " << testDates[i-1] << " included"
+                        << " to " << testDates[i] << " excluded:\n"
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected[i-1]);
+        }
+
+		calculated = calendar.businessDaysBetween(testDates[i-1],
+														  testDates[i], false, true);
+		if (calculated != expected_include_to[i-1]) {
+            BOOST_ERROR("from " << testDates[i-1] << " excluded"
+                        << " to " << testDates[i] << " included:\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected_include_to[i-1]);
+        }
+
+		calculated = calendar.businessDaysBetween(testDates[i-1],
+                                                          testDates[i], true, true);
+		if (calculated != expected_include_all[i-1]) {
+        	BOOST_ERROR("from " << testDates[i-1] << " included"
+                        << " to " << testDates[i] << " included:\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected_include_all[i-1]);
+		}
+
+		calculated = calendar.businessDaysBetween(testDates[i-1],
+                                                                  testDates[i], false, false);
+        if (calculated != expected_exclude_all[i-1]) {
+            BOOST_ERROR("from " << testDates[i-1] << " excluded"
+                        << " to " << testDates[i] << " excluded:\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected_exclude_all[i-1]);
         }
     }
 }

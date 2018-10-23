@@ -89,6 +89,7 @@ namespace QuantLib {
 
 #else
 
+#include <ql/bind.hpp>
 #include <boost/signals2/signal_type.hpp>
 
 namespace QuantLib {
@@ -129,7 +130,11 @@ namespace QuantLib {
 
         detail::Signal::signal_type::slot_type slot(&Observer::Proxy::update,
                                     observerProxy.get());
+        #if defined(QL_USE_STD_SHARED_PTR)
+        sig_->connect(slot.track_foreign(observerProxy));
+        #else
         sig_->connect(slot.track(observerProxy));
+        #endif
     }
 
     void Observable::unregisterObserver(
@@ -146,7 +151,7 @@ namespace QuantLib {
             }
         }
 
-        sig_->disconnect(boost::bind(&Observer::Proxy::update,
+        sig_->disconnect(ext::bind(&Observer::Proxy::update,
                              observerProxy.get()));
     }
 

@@ -38,7 +38,7 @@
 #include <ql/utilities/dataformatters.hpp>
 
 #include <boost/progress.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;
@@ -1107,7 +1107,7 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
         #define N_TEST_CASES 5
         #define BOOST_PP_LOCAL_MACRO(n)                                \
             suite->add(QUANTLIB_TEST_CASE(                             \
-                boost::bind(&BasketOptionTest::testOneDAmericanValues, \
+                ext::bind(&BasketOptionTest::testOneDAmericanValues, \
                     (n    *LENGTH(oneDataValues))/N_TEST_CASES,        \
                     ((n+1)*LENGTH(oneDataValues))/N_TEST_CASES)));
 

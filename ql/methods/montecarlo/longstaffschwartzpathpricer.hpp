@@ -38,13 +38,13 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -90,7 +90,7 @@ namespace QuantLib {
         boost::scoped_array<DiscountFactor> dF_;
 
         mutable std::vector<PathType> paths_;
-        const   std::vector<boost::function1<Real, StateType> > v_;
+        const   std::vector<ext::function<Real(StateType)> > v_;
 
         const Size len_;
     };

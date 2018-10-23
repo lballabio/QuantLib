@@ -91,7 +91,8 @@ namespace QuantLib {
         while (ts_->instruments_[firstAliveHelper_]->pillarDate() <= firstDate)
             ++firstAliveHelper_;
         alive_ = n_-firstAliveHelper_;
-        QL_REQUIRE(alive_>=Interpolator::requiredPoints-1,
+        Size nodes = alive_+1;
+        QL_REQUIRE(nodes >= Interpolator::requiredPoints,
                    "not enough alive instruments: " << alive_ <<
                    " provided, " << Interpolator::requiredPoints-1 <<
                    " required");

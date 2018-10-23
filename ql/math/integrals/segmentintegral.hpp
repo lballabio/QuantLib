@@ -51,7 +51,7 @@ namespace QuantLib {
       public:
         SegmentIntegral(Size intervals);
       protected:
-        virtual Real integrate(const boost::function<Real (Real)>& f,
+        virtual Real integrate(const ext::function<Real (Real)>& f,
                                Real a,
                                Real b) const;
       private:
@@ -62,7 +62,7 @@ namespace QuantLib {
     // inline and template definitions
 
     inline Real
-    SegmentIntegral::integrate(const boost::function<Real (Real)>& f,
+    SegmentIntegral::integrate(const ext::function<Real (Real)>& f,
                                Real a,
                                Real b) const {
         if(close_enough(a,b))
