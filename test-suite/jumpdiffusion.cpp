@@ -422,12 +422,6 @@ void JumpDiffusionTest::testGreeks() {
                   payoff = ext::shared_ptr<StrikedTypePayoff>(new
                     CashOrNothingPayoff(types[i], strikes[j],
                     100.0));
-              } else if (kk==2) {
-                  payoff = ext::shared_ptr<StrikedTypePayoff>(new
-                    AssetOrNothingPayoff(types[i], strikes[j]));
-              } else if (kk==3) {
-                  payoff = ext::shared_ptr<StrikedTypePayoff>(new
-                    GapPayoff(types[i], strikes[j], 100.0));
               }
               EuropeanOption option(payoff, exercise);
               option.setPricingEngine(engine);
