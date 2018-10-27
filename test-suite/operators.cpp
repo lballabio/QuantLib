@@ -193,43 +193,23 @@ void OperatorTest::testBSMOperatorConsistency() {
     Date exercise = today + 2*Years;
     Time residualTime = dc.yearFraction(today,exercise);
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, sigma, dc);
-    boost::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, sigma, dc);
+    ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
         new GeneralizedBlackScholesProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
-    BSMOperator op1(grid, stochProcess, residualTime);
     BSMTermOperator op2(grid, stochProcess, residualTime);
 
     Real tolerance = 1.0e-6;
-    Array lderror = ref.lowerDiagonal() - op1.lowerDiagonal();
-    Array derror = ref.diagonal() - op1.diagonal();
-    Array uderror = ref.upperDiagonal() - op1.upperDiagonal();
 
-    for (i=2; i<grid.size()-2; i++) {
-        if (std::fabs(lderror[i]) > tolerance ||
-            std::fabs(derror[i]) > tolerance ||
-            std::fabs(uderror[i]) > tolerance) {
-            BOOST_FAIL("inconsistency between BSM operators:\n"
-                       << io::ordinal(i) << " row:\n"
-                       << "expected:   "
-                       << ref.lowerDiagonal()[i] << ", "
-                       << ref.diagonal()[i] << ", "
-                       << ref.upperDiagonal()[i] << "\n"
-                       << "calculated: "
-                       << op1.lowerDiagonal()[i] << ", "
-                       << op1.diagonal()[i] << ", "
-                       << op1.upperDiagonal()[i]);
-        }
-    }
-    lderror = ref.lowerDiagonal() - op2.lowerDiagonal();
-    derror = ref.diagonal() - op2.diagonal();
-    uderror = ref.upperDiagonal() - op2.upperDiagonal();
+    Array lderror = ref.lowerDiagonal() - op2.lowerDiagonal();
+    Array derror = ref.diagonal() - op2.diagonal();
+    Array uderror = ref.upperDiagonal() - op2.upperDiagonal();
 
     for (i=2; i<grid.size()-2; i++) {
         if (std::fabs(lderror[i]) > tolerance ||

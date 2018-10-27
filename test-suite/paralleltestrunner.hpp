@@ -39,8 +39,6 @@
 #endif
 
 #include <boost/timer.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -276,7 +274,7 @@ int main( int argc, char* argv[] )
             // fork worker processes
             boost::thread_group threadGroup;
             for (unsigned i=0; i < nProc; ++i) {
-                threadGroup.create_thread(boost::bind(worker, cmd.str()));
+                threadGroup.create_thread(ext::bind(worker, cmd.str()));
             }
 
             struct mutex_remove {
@@ -406,7 +404,7 @@ int main( int argc, char* argv[] )
                     BOOST_TEST_FOREACH( test_observer*, to,
                         framework::impl::s_frk_state().m_observers )
                         framework::impl::s_frk_state().m_aux_em.vexecute(
-                            boost::bind( &test_observer::test_start, to, 1 ) );
+                            ext::bind( &test_observer::test_start, to, 1 ) );
 
                     framework::impl::s_frk_state().execute_test_tree( id.id );
 

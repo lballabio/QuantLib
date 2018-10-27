@@ -35,7 +35,7 @@ namespace QuantLib {
         : public ContinuousAveragingAsianOption::engine {
       public:
         ContinuousArithmeticAsianVecerEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             const Handle<Quote>& currentAverage,
             Date startDate,
             Size timeSteps = 100,
@@ -47,7 +47,7 @@ namespace QuantLib {
         // Replication of average by holding this amount in assets
         Real cont_strategy(Time t, Time T1,Time T2,Real v, Real r) const; 
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Handle<Quote> currentAverage_ ;
         Date startDate_;
         Real z_min_;

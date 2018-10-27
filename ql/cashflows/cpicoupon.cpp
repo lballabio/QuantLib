@@ -37,7 +37,7 @@ namespace QuantLib {
               const Date& startDate,
               const Date& endDate,
               Natural fixingDays,
-              const boost::shared_ptr<ZeroInflationIndex>& zeroIndex,
+              const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
               const Period& observationLag,
               CPI::InterpolationType observationInterpolation,
               const DayCounter& dayCounter,
@@ -68,9 +68,9 @@ namespace QuantLib {
 
 
     bool CPICoupon::checkPricerImpl(
-            const boost::shared_ptr<InflationCouponPricer>&pricer) const {
+            const ext::shared_ptr<InflationCouponPricer>&pricer) const {
         return static_cast<bool>(
-                        boost::dynamic_pointer_cast<CPICouponPricer>(pricer));
+                        ext::dynamic_pointer_cast<CPICouponPricer>(pricer));
     }
 
 
@@ -149,7 +149,7 @@ namespace QuantLib {
     }
 
 
-    CPILeg::CPILeg(const Schedule& schedule, const boost::shared_ptr<ZeroInflationIndex>& index,
+    CPILeg::CPILeg(const Schedule& schedule, const ext::shared_ptr<ZeroInflationIndex>& index,
                    const Real baseCPI, const Period& observationLag) :
     schedule_(schedule), index_(index),
     baseCPI_(baseCPI), observationLag_(observationLag),
@@ -297,16 +297,16 @@ namespace QuantLib {
                     refEnd = schedule_.calendar().adjust(start + schedule_.tenor(), bdc);
                 }
                 if (detail::get(fixedRates_, i, 1.0) == 0.0) { // fixed coupon
-                    leg.push_back(boost::shared_ptr<CashFlow>
+                    leg.push_back(ext::shared_ptr<CashFlow>
                                   (new FixedRateCoupon
                                    (paymentDate, detail::get(notionals_, i, 0.0),
                                     detail::effectiveFixedRate(spreads_,caps_,floors_,i),
                                     paymentDayCounter_, start, end, refStart, refEnd, exCouponDate)));
                 } else { // zero inflation coupon
                     if (detail::noOption(caps_, floors_, i)) { // just swaplet
-                        boost::shared_ptr<CPICoupon> coup;
+                        ext::shared_ptr<CPICoupon> coup;
 
-                        coup = boost::shared_ptr<CPICoupon>
+                        coup = ext::shared_ptr<CPICoupon>
                             (new CPICoupon(baseCPI_,    // all have same base for ratio
                                      paymentDate,
                                      detail::get(notionals_, i, 0.0),
@@ -321,10 +321,10 @@ namespace QuantLib {
 
                         // in this case you can set a pricer
                         // straight away because it only provides computation - not data
-                        boost::shared_ptr<CPICouponPricer> pricer
+                        ext::shared_ptr<CPICouponPricer> pricer
                             (new CPICouponPricer);
                         coup->setPricer(pricer);
-                        leg.push_back(boost::dynamic_pointer_cast<CashFlow>(coup));
+                        leg.push_back(ext::dynamic_pointer_cast<CashFlow>(coup));
 
                     } else  {     // cap/floorlet
                         QL_FAIL("caps/floors on CPI coupons not implemented.");
@@ -336,7 +336,7 @@ namespace QuantLib {
         // in CPI legs you always have a notional flow of some sort
         Date paymentDate = paymentCalendar_.adjust(schedule_.date(n), paymentAdjustment_);
         Date fixingDate = paymentDate - observationLag_;
-        boost::shared_ptr<CashFlow> xnl(new CPICashFlow
+        ext::shared_ptr<CashFlow> xnl(new CPICashFlow
                           (detail::get(notionals_, n, 0.0), index_,
                            Date(), // is fake, i.e. you do not have one
                            baseCPI_, fixingDate, paymentDate,

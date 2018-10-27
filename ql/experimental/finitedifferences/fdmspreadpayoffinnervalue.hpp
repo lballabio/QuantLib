@@ -32,9 +32,9 @@ namespace QuantLib {
     class FdmSpreadPayoffInnerValue : public FdmInnerValueCalculator {
       public:
         FdmSpreadPayoffInnerValue(
-                const boost::shared_ptr<BasketPayoff>& payoff,
-                const boost::shared_ptr<FdmInnerValueCalculator>& calc1,
-                const boost::shared_ptr<FdmInnerValueCalculator>& calc2)
+                const ext::shared_ptr<BasketPayoff>& payoff,
+                const ext::shared_ptr<FdmInnerValueCalculator>& calc1,
+                const ext::shared_ptr<FdmInnerValueCalculator>& calc2)
         : payoff_(payoff),
           calc1_(calc1),
           calc2_(calc2) { }
@@ -44,16 +44,16 @@ namespace QuantLib {
             a[0] = calc1_->innerValue(iter, t);
             a[1] = calc2_->innerValue(iter, t);
 
-            return payoff_->operator()(a);
+            return (*payoff_)(a);
         }
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
             return innerValue(iter, t);
         }
 
       private:
-        const boost::shared_ptr<BasketPayoff> payoff_;
-        const boost::shared_ptr<FdmInnerValueCalculator> calc1_;
-        const boost::shared_ptr<FdmInnerValueCalculator> calc2_;
+        const ext::shared_ptr<BasketPayoff> payoff_;
+        const ext::shared_ptr<FdmInnerValueCalculator> calc1_;
+        const ext::shared_ptr<FdmInnerValueCalculator> calc2_;
     };
 }
 

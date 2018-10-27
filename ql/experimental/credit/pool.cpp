@@ -18,7 +18,7 @@
 */
 
 #include <ql/experimental/credit/pool.hpp>
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #include <iterator>
 
 namespace QuantLib {
@@ -75,9 +75,10 @@ namespace QuantLib {
     }
 
     Disposable<std::vector<DefaultProbKey> > Pool::defaultKeys() const {
+        using namespace ext::placeholders;
         std::vector<DefaultProbKey> defaultKeys;
         std::transform(defaultKeys_.begin(), defaultKeys_.end(),
-            std::back_inserter(defaultKeys), boost::bind(
+            std::back_inserter(defaultKeys), ext::bind(
               &std::map<std::string, DefaultProbKey>::value_type::second, _1));
         return defaultKeys;
     }

@@ -21,11 +21,9 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/modifiedbessel.hpp>
+#include <ql/bind.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/math/special_functions/gamma.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/functional/hash.hpp>
 
@@ -42,12 +40,24 @@ class NoArbSabrModel::integrand {
     }
 };
 
+class NoArbSabrModel::p_integrand {
+    const NoArbSabrModel* model;
+  public:
+    explicit p_integrand(const NoArbSabrModel* model)
+    : model(model) {}
+    Real operator()(Real f) const {
+        return model->p(f);
+    }
+};
+
 NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
                                const Real alpha, const Real beta, const Real nu,
                                const Real rho)
     : expiryTime_(expiryTime), externalForward_(forward), alpha_(alpha),
       beta_(beta), nu_(nu), rho_(rho), forward_(forward),
       numericalForward_(forward) {
+
+    using namespace ext::placeholders;
 
     QL_REQUIRE(expiryTime > 0.0 && expiryTime <= detail::NoArbSabrModel::expiryTime_max,
                "expiryTime (" << expiryTime << ") out of bounds");
@@ -85,8 +95,8 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     QL_REQUIRE(fmax_ > fmin_, "could not find a reasonable integration domain");
 
     integrator_ =
-        boost::shared_ptr<GaussLobattoIntegral>(new GaussLobattoIntegral(
-            detail::NoArbSabrModel::i_max_iterations, detail::NoArbSabrModel::i_accuracy));
+        ext::make_shared<GaussLobattoIntegral>(
+            detail::NoArbSabrModel::i_max_iterations, detail::NoArbSabrModel::i_accuracy);
 
     detail::D0Interpolator d0(forward_, expiryTime_, alpha_, beta_, nu_, rho_);
     absProb_ = d0();
@@ -95,8 +105,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
         Brent b;
         Real start = std::sqrt(externalForward_ - detail::NoArbSabrModel::strike_min);
         Real tmp =
-            b.solve(boost::lambda::bind(&NoArbSabrModel::forwardError, this,
-                                        boost::lambda::_1),
+            b.solve(ext::bind(&NoArbSabrModel::forwardError, this, _1),
                     detail::NoArbSabrModel::forward_accuracy, start,
                     std::min(detail::NoArbSabrModel::forward_search_step, start / 2.0));
         forward_ = tmp * tmp + detail::NoArbSabrModel::strike_min;
@@ -124,16 +133,15 @@ Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
     if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
         return 0.0;
     return (1.0 - absProb_)
-        * ((*integrator_)(std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
+        * ((*integrator_)(p_integrand(this),
                           strike, std::max(fmax_, 2.0 * strike)) /
            numericalIntegralOverP_);
 }
 
 Real NoArbSabrModel::forwardError(const Real forward) const {
     forward_ = forward * forward + detail::NoArbSabrModel::strike_min;
-    numericalIntegralOverP_ = (*integrator_)(
-        std::bind1st(std::mem_fun(&NoArbSabrModel::p), this),
-        fmin_, fmax_);
+    numericalIntegralOverP_ = (*integrator_)(p_integrand(this),
+                                             fmin_, fmax_);
     return optionPrice(0.0) - externalForward_;
 }
 

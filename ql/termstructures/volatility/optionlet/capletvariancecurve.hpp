@@ -50,7 +50,7 @@ namespace QuantLib {
         Real displacement() const;
 
       protected:
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
         Volatility volatilityImpl(Time t,
                                   Rate) const;
       private:
@@ -83,11 +83,11 @@ namespace QuantLib {
         return blackCurve_.maxStrike();
     }
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     CapletVarianceCurve::smileSectionImpl(Time t) const {
         // dummy strike
         Volatility atmVol = blackCurve_.blackVol(t, 0.05, true);
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             FlatSmileSection(t,
                              atmVol,
                              dayCounter()));

@@ -608,8 +608,7 @@ void MatricesTest::testMoorePenroseInverse() {
 }
 
 namespace {
-    class MatrixMult :
-        public std::unary_function<const Array&, Disposable<Array> > {
+    class MatrixMult {
       public:
         explicit MatrixMult(const Matrix& m) : m_(m) {}
         Disposable<Array> operator()(const Array& x) const {

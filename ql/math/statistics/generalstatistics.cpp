@@ -47,8 +47,7 @@ namespace QuantLib {
         // Subtract the mean and square. Repeat on the whole range.
         // Hopefully, the whole thing will be inlined in a single loop.
         Real s2 = expectationValue(compose(square<Real>(),
-                                           std::bind2nd(std::minus<Real>(),
-                                                        mean())),
+                                           subtract<Real>(mean())),
                                    everywhere()).first;
         return s2*N/(N-1.0);
     }
@@ -59,8 +58,7 @@ namespace QuantLib {
                    "sample number <=2, unsufficient");
 
         Real x = expectationValue(compose(cube<Real>(),
-                                          std::bind2nd(std::minus<Real>(),
-                                                       mean())),
+                                          subtract<Real>(mean())),
                                   everywhere()).first;
         Real sigma = standardDeviation();
 
@@ -73,8 +71,7 @@ namespace QuantLib {
                    "sample number <=3, unsufficient");
 
         Real x = expectationValue(compose(fourth_power<Real>(),
-                                          std::bind2nd(std::minus<Real>(),
-                                                       mean())),
+                                          subtract<Real>(mean())),
                                   everywhere()).first;
         Real sigma2 = variance();
 

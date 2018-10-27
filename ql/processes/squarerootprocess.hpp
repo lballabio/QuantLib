@@ -43,8 +43,8 @@ namespace QuantLib {
       public:
         SquareRootProcess(
             Real b, Real a, Volatility sigma, Real x0 = 0.0,
-            const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization));
+            const ext::shared_ptr<discretization>& d =
+                  ext::shared_ptr<discretization>(new EulerDiscretization));
         //! \name StochasticProcess interface
         //@{
         Real x0() const;

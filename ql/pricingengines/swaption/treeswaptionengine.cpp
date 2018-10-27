@@ -20,11 +20,12 @@
 
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
     TreeSwaptionEngine::TreeSwaptionEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                               Size timeSteps,
                               const Handle<YieldTermStructure>& termStructure)
     : LatticeShortRateModelEngine<Swaption::arguments,
@@ -34,7 +35,7 @@ namespace QuantLib {
     }
 
     TreeSwaptionEngine::TreeSwaptionEngine(
-                              const boost::shared_ptr<ShortRateModel>& model,
+                              const ext::shared_ptr<ShortRateModel>& model,
                               const TimeGrid& timeGrid,
                               const Handle<YieldTermStructure>& termStructure)
     : LatticeShortRateModelEngine<Swaption::arguments,
@@ -62,8 +63,8 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
+            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -73,7 +74,7 @@ namespace QuantLib {
         }
 
         DiscretizedSwaption swaption(arguments_, referenceDate, dayCounter);
-        boost::shared_ptr<Lattice> lattice;
+        ext::shared_ptr<Lattice> lattice;
 
         if (lattice_) {
             lattice = lattice_;
@@ -94,7 +95,7 @@ namespace QuantLib {
         Time nextExercise =
             *std::find_if(stoppingTimes.begin(),
                           stoppingTimes.end(),
-                          std::bind2nd(std::greater_equal<Time>(), 0.0));
+                          greater_or_equal_to<Time>(0.0));
         swaption.rollback(nextExercise);
 
         results_.value = swaption.presentValue();

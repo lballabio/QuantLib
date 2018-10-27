@@ -171,7 +171,7 @@ namespace {
     }
 
     template <class F>
-    class errorFunction : public std::unary_function<Real,Real> {
+    class errorFunction {
       public:
         errorFunction(const F& f) : f_(f) {}
         Real operator()(Real x) const {
@@ -1296,11 +1296,11 @@ void InterpolationTest::testSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-8;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=0; j<methods_.size(); ++j) {
@@ -1431,7 +1431,11 @@ void InterpolationTest::testKernelInterpolation() {
 
             std::vector<Real> currY = yd[j];
             KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
-                                  currY.begin(), myKernel);
+                                  currY.begin(), myKernel
+#ifdef __FAST_MATH__
+                                  ,1e-6
+#endif
+                                  );
             f.update();
 
             for (Size dIt=0; dIt< deltaGrid.size(); ++dIt) {
@@ -1754,7 +1758,11 @@ void InterpolationTest::testNoArbSabrInterpolation(){
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
     // Test SABR function against input volatilities
+#ifndef __FAST_MATH__
     Real tolerance = 1.0e-12;
+#else
+    Real tolerance = 1.0e-8;
+#endif
     std::vector<Real> strikes(31);
     std::vector<Real> volatilities(31), volatilities2(31);
     // input strikes
@@ -1838,11 +1846,11 @@ void InterpolationTest::testNoArbSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-6;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)

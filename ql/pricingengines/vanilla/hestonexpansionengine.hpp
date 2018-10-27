@@ -27,7 +27,7 @@
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -51,7 +51,7 @@ namespace QuantLib {
       public:
         enum HestonExpansionFormula { LPP2, LPP3, Forde };
 
-        HestonExpansionEngine(const boost::shared_ptr<HestonModel>& model,
+        HestonExpansionEngine(const ext::shared_ptr<HestonModel>& model,
                               HestonExpansionFormula formula);
 
         void calculate() const;

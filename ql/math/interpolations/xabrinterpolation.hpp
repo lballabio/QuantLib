@@ -93,7 +93,7 @@ template <typename Model> class XABRCoeffHolder {
     Real error_, maxError_;
     EndCriteria::Type XABREndCriteria_;
     /*! Model instance (if required) */
-    boost::shared_ptr<typename Model::type> modelInstance_;
+    ext::shared_ptr<typename Model::type> modelInstance_;
     /*! additional parameters */
     std::vector<Real> addParams_;
 };
@@ -106,8 +106,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         const I1 &xBegin, const I1 &xEnd, const I2 &yBegin, Time t,
         const Real &forward, const std::vector<Real>& params,
         const std::vector<bool>& paramIsFixed, bool vegaWeighted,
-        const boost::shared_ptr<EndCriteria> &endCriteria,
-        const boost::shared_ptr<OptimizationMethod> &optMethod,
+        const ext::shared_ptr<EndCriteria> &endCriteria,
+        const ext::shared_ptr<OptimizationMethod> &optMethod,
         const Real errorAccept, const bool useMaxError, const Size maxGuesses,
         const std::vector<Real>& addParams = std::vector<Real>())
         : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
@@ -117,13 +117,13 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
           maxGuesses_(maxGuesses), vegaWeighted_(vegaWeighted) {
         // if no optimization method or endCriteria is provided, we provide one
         if (!optMethod_)
-            optMethod_ = boost::shared_ptr<OptimizationMethod>(
+            optMethod_ = ext::shared_ptr<OptimizationMethod>(
                 new LevenbergMarquardt(1e-8, 1e-8, 1e-8));
-        // optMethod_ = boost::shared_ptr<OptimizationMethod>(new
+        // optMethod_ = ext::shared_ptr<OptimizationMethod>(new
         //    Simplex(0.01));
         if (!endCriteria_) {
-            endCriteria_ = boost::shared_ptr<EndCriteria>(
-                new EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
+            endCriteria_ = ext::make_shared<EndCriteria>(
+                60000, 100, 1e-8, 1e-8, 1e-8);
         }
         this->weights_ =
             std::vector<Real>(xEnd - xBegin, 1.0 / (xEnd - xBegin));
@@ -310,8 +310,8 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
       private:
         XABRInterpolationImpl *xabr_;
     };
-    boost::shared_ptr<EndCriteria> endCriteria_;
-    boost::shared_ptr<OptimizationMethod> optMethod_;
+    ext::shared_ptr<EndCriteria> endCriteria_;
+    ext::shared_ptr<OptimizationMethod> optMethod_;
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

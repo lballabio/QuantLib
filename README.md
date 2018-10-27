@@ -3,8 +3,10 @@ QuantLib: the free/open-source library for quantitative finance
 ===============================================================
 
 [![Download](https://api.bintray.com/packages/quantlib/releases/QuantLib/images/download.svg)](https://bintray.com/quantlib/releases/QuantLib/_latestVersion)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1440997.svg)](https://doi.org/10.5281/zenodo.1440997)
 [![Build Status](https://travis-ci.org/lballabio/QuantLib.svg?branch=master)](https://travis-ci.org/lballabio/QuantLib)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4bc1058db994f24aa931b119a885eea)](https://www.codacy.com/app/lballabio/QuantLib)
+[![Code Quality: Cpp](https://img.shields.io/lgtm/grade/cpp/g/lballabio/QuantLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/lballabio/QuantLib/context:cpp)
 [![codecov](https://codecov.io/gh/lballabio/QuantLib/branch/master/graph/badge.svg)](https://codecov.io/gh/lballabio/QuantLib)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/lballabio/QuantLib.svg)](http://isitmaintained.com/project/lballabio/QuantLib)
 
@@ -36,14 +38,14 @@ browsed at <http://quantlib.org/reference/history.html>.
 Questions and feedback
 ----------------------
 
+The preferred channel for questions (and the one with the largest
+audience) is the quantlib-users mailing list.  Instructions for
+subscribing are at <http://quantlib.org/mailinglists.shtml>.
+
 Bugs can be reported as a GitHub issue at
 <https://github.com/lballabio/QuantLib/issues>; if you have a patch
 available, you can open a pull request instead (see "Contributing"
 below).
-
-You can also use the `quantlib-users` and `quantlib-dev` mailing lists
-for feedback, questions, etc.  More information and instructions for
-subscribing are at <http://quantlib.org/mailinglists.shtml>.
 
 
 Contributing

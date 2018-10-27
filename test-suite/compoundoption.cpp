@@ -113,39 +113,39 @@ void CompoundOptionTest::testPutCallParity(){
     DayCounter dc = Actual360();
     Date todaysDate = Settings::instance().evaluationDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<YieldTermStructure> rTS(
+    ext::shared_ptr<YieldTermStructure> rTS(
               new FlatForward(0, NullCalendar(), Handle<Quote>(rRate), dc));
 
-    boost::shared_ptr<YieldTermStructure> qTS(
+    ext::shared_ptr<YieldTermStructure> qTS(
               new FlatForward(0, NullCalendar(), Handle<Quote>(qRate), dc));
 
-    boost::shared_ptr<BlackVolTermStructure> volTS(
+    ext::shared_ptr<BlackVolTermStructure> volTS(
                               new BlackConstantVol(todaysDate, NullCalendar(),
                                                    Handle<Quote>(vol), dc));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        boost::shared_ptr<StrikedTypePayoff> payoffMotherCall(
+        ext::shared_ptr<StrikedTypePayoff> payoffMotherCall(
                 new PlainVanillaPayoff(Option::Call, values[i].strikeMother));
 
-        boost::shared_ptr<StrikedTypePayoff> payoffMotherPut(
+        ext::shared_ptr<StrikedTypePayoff> payoffMotherPut(
                 new PlainVanillaPayoff(Option::Put, values[i].strikeMother));
 
-        boost::shared_ptr<StrikedTypePayoff> payoffDaughter(
+        ext::shared_ptr<StrikedTypePayoff> payoffDaughter(
                             new PlainVanillaPayoff(values[i].typeDaughter,
                                                    values[i].strikeDaughter));
 
         Date matDateMom = todaysDate + timeToDays(values[i].tMother);
         Date matDateDaughter = todaysDate + timeToDays(values[i].tDaughter);
 
-        boost::shared_ptr<Exercise> exerciseCompound(
+        ext::shared_ptr<Exercise> exerciseCompound(
                                             new EuropeanExercise(matDateMom));
-        boost::shared_ptr<Exercise> exerciseDaughter(
+        ext::shared_ptr<Exercise> exerciseDaughter(
                                        new EuropeanExercise(matDateDaughter));
 
         spot ->setValue(values[i].s);
@@ -162,7 +162,7 @@ void CompoundOptionTest::testPutCallParity(){
         VanillaOption vanillaOption(EuropeanOption(payoffDaughter,
                                                    exerciseDaughter));
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
             new BlackScholesMertonProcess(
                       Handle<Quote>(spot),
                       Handle<YieldTermStructure>(qTS),
@@ -170,10 +170,10 @@ void CompoundOptionTest::testPutCallParity(){
                       Handle<BlackVolTermStructure>(volTS)));
 
 
-        boost::shared_ptr<PricingEngine> engineCompound(
+        ext::shared_ptr<PricingEngine> engineCompound(
                               new AnalyticCompoundOptionEngine(stochProcess));
 
-        boost::shared_ptr<PricingEngine> engineEuropean(
+        ext::shared_ptr<PricingEngine> engineEuropean(
                                      new AnalyticEuropeanEngine(stochProcess));
 
         compoundOptionCall.setPricingEngine(engineCompound);
@@ -248,37 +248,37 @@ void CompoundOptionTest::testValues(){
     DayCounter dc = Actual360();
     Date todaysDate = Settings::instance().evaluationDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<YieldTermStructure> rTS(
+    ext::shared_ptr<YieldTermStructure> rTS(
               new FlatForward(0, NullCalendar(), Handle<Quote>(rRate), dc));
 
-    boost::shared_ptr<YieldTermStructure> qTS(
+    ext::shared_ptr<YieldTermStructure> qTS(
               new FlatForward(0, NullCalendar(), Handle<Quote>(qRate), dc));
 
-    boost::shared_ptr<BlackVolTermStructure> volTS(
+    ext::shared_ptr<BlackVolTermStructure> volTS(
                               new BlackConstantVol(todaysDate, NullCalendar(),
                                                    Handle<Quote>(vol), dc));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        boost::shared_ptr<StrikedTypePayoff> payoffMother(
+        ext::shared_ptr<StrikedTypePayoff> payoffMother(
                     new PlainVanillaPayoff(values[i].typeMother,
                                            values[i].strikeMother));
 
-        boost::shared_ptr<StrikedTypePayoff> payoffDaughter(
+        ext::shared_ptr<StrikedTypePayoff> payoffDaughter(
                     new PlainVanillaPayoff(values[i].typeDaughter,
                                            values[i].strikeDaughter));
 
         Date matDateMom = todaysDate + timeToDays(values[i].tMother);
         Date matDateDaughter = todaysDate + timeToDays(values[i].tDaughter);
 
-        boost::shared_ptr<Exercise> exerciseMother(
+        ext::shared_ptr<Exercise> exerciseMother(
                                             new EuropeanExercise(matDateMom));
-        boost::shared_ptr<Exercise> exerciseDaughter(
+        ext::shared_ptr<Exercise> exerciseDaughter(
                                        new EuropeanExercise(matDateDaughter));
 
         spot ->setValue(values[i].s);
@@ -289,14 +289,14 @@ void CompoundOptionTest::testValues(){
         CompoundOption compoundOption(payoffMother,exerciseMother,
                                       payoffDaughter, exerciseDaughter);
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
             new BlackScholesMertonProcess(
                       Handle<Quote>(spot),
                       Handle<YieldTermStructure>(qTS),
                       Handle<YieldTermStructure>(rTS),
                       Handle<BlackVolTermStructure>(volTS)));
 
-        boost::shared_ptr<PricingEngine> engineCompound(
+        ext::shared_ptr<PricingEngine> engineCompound(
                               new AnalyticCompoundOptionEngine(stochProcess));
 
         compoundOption.setPricingEngine(engineCompound);

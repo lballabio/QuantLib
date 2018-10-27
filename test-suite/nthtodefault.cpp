@@ -36,7 +36,6 @@
 
 using namespace QuantLib;
 using namespace std;
-using namespace boost;
 using namespace boost::unit_test_framework;
 
 #ifndef QL_PATCH_SOLARIS
@@ -139,23 +138,23 @@ void NthToDefaultTest::testGauss() {
     gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
     gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
 
-    boost::shared_ptr<YieldTermStructure> yieldPtr (
+    ext::shared_ptr<YieldTermStructure> yieldPtr (
                                    new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
-        boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
+        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
         probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
     }
 
-    boost::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    boost::shared_ptr<DefaultLossModel> copula( new 
+    ext::shared_ptr<DefaultLossModel> copula( new 
         ConstantLossModel<GaussianCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names, 
@@ -165,15 +164,15 @@ void NthToDefaultTest::testGauss() {
     instead below. But you need at least 1e6 simulations to pass the pricing 
     error tests
     */
-    //boost::shared_ptr<GaussianDefProbLM> gLM(
-    //    boost::make_shared<GaussianDefProbLM>(correlationHandle, names,
+    //ext::shared_ptr<GaussianDefProbLM> gLM(
+    //    ext::make_shared<GaussianDefProbLM>(correlationHandle, names,
     //    LatentModelIntegrationType::GaussianQuadrature,
     //    // g++ requires this when using make_shared
     //    GaussianCopulaPolicy::initTraits()));
     //Size numSimulations = 1000000;
     //// Size numCoresUsed = 4; use your are in the multithread branch
     //// Sobol, many cores
-    //boost::shared_ptr<RandomDefaultLM<GaussianCopulaPolicy> > copula( 
+    //ext::shared_ptr<RandomDefaultLM<GaussianCopulaPolicy> > copula( 
     //    new RandomDefaultLM<GaussianCopulaPolicy>(gLM, 
     //        std::vector<Real>(names, recovery), numSimulations, 1.e-6, 
     //        2863311530));
@@ -198,7 +197,7 @@ void NthToDefaultTest::testGauss() {
         issuers.push_back(Issuer(curves));
     }
 
-    boost::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -206,12 +205,12 @@ void NthToDefaultTest::testGauss() {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    boost::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
+    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
         std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
     basket->setLossModel(copula);
 
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
     Real diff, maxDiff = 0;
@@ -286,30 +285,30 @@ void NthToDefaultTest::testGaussStudent() {
     gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
     gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
 
-    boost::shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, 
+    ext::shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, 
         rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
-        boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
+        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
         probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
     }
 
-    boost::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.3));
+    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.3));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    boost::shared_ptr<DefaultLossModel> gaussianCopula( new 
+    ext::shared_ptr<DefaultLossModel> gaussianCopula( new 
         ConstantLossModel<GaussianCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names,
         GaussianCopulaPolicy::initTraits()));
     TCopulaPolicy::initTraits iniT;
     iniT.tOrders = std::vector<QuantLib::Integer>(2,5);
-    boost::shared_ptr<DefaultLossModel> studentCopula( new 
+    ext::shared_ptr<DefaultLossModel> studentCopula( new 
         ConstantLossModel<TCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names, iniT));
@@ -330,7 +329,7 @@ void NthToDefaultTest::testGaussStudent() {
         issuers.push_back(Issuer(curves));
     }
 
-    boost::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -338,10 +337,10 @@ void NthToDefaultTest::testGaussStudent() {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    boost::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
+    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
         std::vector<Real>(names, 100./names), thePool, 0., 1.));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
     vector<NthToDefault> ntd;

@@ -30,11 +30,11 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -54,7 +54,7 @@ namespace QuantLib {
       public:
 
         LongstaffSchwartzMultiPathPricer(
-            const boost::shared_ptr<PathPayoff>& ,
+            const ext::shared_ptr<PathPayoff>& ,
             const std::vector<Size> &,
             const std::vector<Handle<YieldTermStructure> > &,
             const Array &,
@@ -79,7 +79,7 @@ namespace QuantLib {
 
         bool  calibrationPhase_;
 
-        const boost::shared_ptr<PathPayoff> payoff_;
+        const ext::shared_ptr<PathPayoff> payoff_;
 
         boost::scoped_array<Array> coeff_;
         boost::scoped_array<Real> lowerBounds_;
@@ -89,7 +89,7 @@ namespace QuantLib {
         const Array dF_;
 
         mutable std::vector<PathInfo> paths_;
-        const   std::vector<boost::function1<Real, Array> > v_;
+        const std::vector<ext::function<Real(Array)> > v_;
     };
 
 }

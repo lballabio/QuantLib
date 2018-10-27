@@ -45,7 +45,7 @@ namespace QuantLib {
         };
       public:
         NullCalendar() {
-            impl_ = boost::shared_ptr<Calendar::Impl>(new NullCalendar::Impl);
+            impl_ = ext::shared_ptr<Calendar::Impl>(new NullCalendar::Impl);
         }
     };
 

@@ -21,7 +21,6 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -50,7 +49,7 @@ void NoArbSabrSmileSection::init() {
         "shift (" << shift_
                   << ") must be zero, other shifts are not implemented yet");
     model_ =
-        boost::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
+        ext::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
                                            params_[1], params_[2], params_[3]);
 }
 

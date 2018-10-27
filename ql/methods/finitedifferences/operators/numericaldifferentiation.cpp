@@ -19,7 +19,7 @@
 
 /*! \file numericaldifferentiation.cpp */
 
-#include <ql/experimental/math/numericaldifferentiation.hpp>
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 
 #ifndef QL_EXTRA_SAFETY_CHECKS
 #define BOOST_DISABLE_ASSERTS 1
@@ -105,14 +105,14 @@ namespace QuantLib {
     }
 
     NumericalDifferentiation::NumericalDifferentiation(
-        const boost::function<Real(Real)>& f,
+        const ext::function<Real(Real)>& f,
         Size orderOfDerivative,    const Array& x_offsets)
     : offsets_(x_offsets),
       w_(calcWeights(offsets_, orderOfDerivative)), f_(f) { }
 
 
     NumericalDifferentiation::NumericalDifferentiation(
-        const boost::function<Real(Real)>& f,
+        const ext::function<Real(Real)>& f,
         Size orderOfDerivative,
         Real stepSize, Size steps, Scheme scheme)
     : offsets_(calcOffsets(stepSize, steps, scheme)),

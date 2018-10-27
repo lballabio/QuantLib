@@ -30,7 +30,7 @@ namespace QuantLib {
                          bool endOfMonth,
                          const DayCounter& dayCounter,
                          const Handle<Quote>& gearing,
-                         const boost::shared_ptr<IborIndex>& iborIndex,
+                         const ext::shared_ptr<IborIndex>& iborIndex,
                          const Handle<Quote>& spread)
     : IborIndex(familyName, tenor, settlementDays, currency,
                 fixingCalendar, convention, endOfMonth, dayCounter),

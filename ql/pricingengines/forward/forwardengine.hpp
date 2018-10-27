@@ -50,13 +50,13 @@ namespace QuantLib {
                                VanillaOption::results> {
       public:
         ForwardVanillaEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
       protected:
         void setup() const;
         void getOriginalResults() const;
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        mutable boost::shared_ptr<Engine> originalEngine_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        mutable ext::shared_ptr<Engine> originalEngine_;
         mutable VanillaOption::arguments* originalArguments_;
         mutable const VanillaOption::results* originalResults_;
     };
@@ -66,7 +66,7 @@ namespace QuantLib {
 
     template <class Engine>
     ForwardVanillaEngine<Engine>::ForwardVanillaEngine(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -75,12 +75,12 @@ namespace QuantLib {
     template <class Engine>
     void ForwardVanillaEngine<Engine>::setup() const {
 
-        boost::shared_ptr<StrikedTypePayoff> argumentsPayoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(
+        ext::shared_ptr<StrikedTypePayoff> argumentsPayoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(
+        ext::shared_ptr<StrikedTypePayoff> payoff(
                    new PlainVanillaPayoff(argumentsPayoff->optionType(),
                                           this->arguments_.moneyness *
                                           process_->x0()));
@@ -91,11 +91,11 @@ namespace QuantLib {
         Handle<Quote> spot = process_->stateVariable();
         QL_REQUIRE(spot->value() >= 0.0, "negative or null underlting given");
         Handle<YieldTermStructure> dividendYield(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                new ImpliedTermStructure(process_->dividendYield(),
                                         this->arguments_.resetDate)));
         Handle<YieldTermStructure> riskFreeRate(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                new ImpliedTermStructure(process_->riskFreeRate(),
                                         this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
@@ -104,16 +104,16 @@ namespace QuantLib {
         // volatility or at least local volatility (which unfortunately
         // implies an unrealistic time-decreasing smile)
         Handle<BlackVolTermStructure> blackVolatility(
-            boost::shared_ptr<BlackVolTermStructure>(
+            ext::shared_ptr<BlackVolTermStructure>(
                 new ImpliedVolTermStructure(process_->blackVolatility(),
                                             this->arguments_.resetDate)));
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> fwdProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> fwdProcess(
                        new GeneralizedBlackScholesProcess(spot, dividendYield,
                                                           riskFreeRate,
                                                           blackVolatility));
 
-        originalEngine_ = boost::shared_ptr<Engine>(new Engine(fwdProcess));
+        originalEngine_ = ext::shared_ptr<Engine>(new Engine(fwdProcess));
         originalEngine_->reset();
 
         originalArguments_ =

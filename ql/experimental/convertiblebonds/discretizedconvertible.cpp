@@ -26,7 +26,7 @@ namespace QuantLib {
 
     DiscretizedConvertible::DiscretizedConvertible(
              const ConvertibleBond::option::arguments& args,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              const TimeGrid& grid)
     : arguments_(args), process_(process) {
 
@@ -219,7 +219,7 @@ namespace QuantLib {
         for (Size i=0; i<arguments_.dividends.size(); i++) {
             Time dividendTime = dividendTimes_[i];
             if (dividendTime >= t || close(dividendTime,t)) {
-                const boost::shared_ptr<Dividend>& d = arguments_.dividends[i];
+                const ext::shared_ptr<Dividend>& d = arguments_.dividends[i];
                 DiscountFactor dividendDiscount =
                     process_->riskFreeRate()->discount(dividendTime) /
                     process_->riskFreeRate()->discount(t);

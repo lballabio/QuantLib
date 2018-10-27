@@ -38,13 +38,13 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -67,8 +67,8 @@ namespace QuantLib {
 
         LongstaffSchwartzPathPricer(
             const TimeGrid& times,
-            const boost::shared_ptr<EarlyExercisePathPricer<PathType> >& ,
-            const boost::shared_ptr<YieldTermStructure>& termStructure);
+            const ext::shared_ptr<EarlyExercisePathPricer<PathType> >& ,
+            const ext::shared_ptr<YieldTermStructure>& termStructure);
 
         Real operator()(const PathType& path) const;
         virtual void calibrate();
@@ -81,7 +81,7 @@ namespace QuantLib {
                                      const std::vector<Real> &price,
                                      const std::vector<Real> &exercise) {}
         bool  calibrationPhase_;
-        const boost::shared_ptr<EarlyExercisePathPricer<PathType> >
+        const ext::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
 
         mutable QuantLib::IncrementalStatistics exerciseProbability_;
@@ -90,7 +90,7 @@ namespace QuantLib {
         boost::scoped_array<DiscountFactor> dF_;
 
         mutable std::vector<PathType> paths_;
-        const   std::vector<boost::function1<Real, StateType> > v_;
+        const   std::vector<ext::function<Real(StateType)> > v_;
 
         const Size len_;
     };
@@ -98,9 +98,9 @@ namespace QuantLib {
     template <class PathType> inline
     LongstaffSchwartzPathPricer<PathType>::LongstaffSchwartzPathPricer(
         const TimeGrid& times,
-        const boost::shared_ptr<EarlyExercisePathPricer<PathType> >&
+        const ext::shared_ptr<EarlyExercisePathPricer<PathType> >&
             pathPricer,
-        const boost::shared_ptr<YieldTermStructure>& termStructure)
+        const ext::shared_ptr<YieldTermStructure>& termStructure)
     : calibrationPhase_(true),
       pathPricer_(pathPricer),
       coeff_     (new Array[times.size()-2]),

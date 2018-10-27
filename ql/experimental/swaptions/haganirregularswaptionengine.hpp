@@ -58,23 +58,23 @@ namespace QuantLib {
         //helper class
         class Basket {
         public:
-            Basket(boost::shared_ptr<IrregularSwap> swap,
+            Basket(ext::shared_ptr<IrregularSwap> swap,
                    const Handle<YieldTermStructure>& termStructure,
                    const Handle<SwaptionVolatilityStructure>& volatilityStructure);
             Disposable<Array> compute(Rate lambda = 0.0) const;
             Real operator()(Rate x) const;
-            boost::shared_ptr<VanillaSwap> component(Size i) const;
+            ext::shared_ptr<VanillaSwap> component(Size i) const;
             Disposable<Array> weights() const { return compute(lambda_);};
             Real& lambda() const { return lambda_;};
-            boost::shared_ptr<IrregularSwap> swap() const { return swap_;};
+            ext::shared_ptr<IrregularSwap> swap() const { return swap_;};
         private:
-            boost::shared_ptr<IrregularSwap> swap_;
+            ext::shared_ptr<IrregularSwap> swap_;
             Handle<YieldTermStructure>          termStructure_;
             Handle<SwaptionVolatilityStructure> volatilityStructure_;
             
             Real targetNPV_;  
 
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
 
             std::vector<Real> fairRates_;
             std::vector<Real> annuities_;
@@ -84,8 +84,8 @@ namespace QuantLib {
 
         };
 
-        Real HKPrice(Basket& basket,boost::shared_ptr<Exercise>& exercise)  const;
-        Real LGMPrice(Basket& basket,boost::shared_ptr<Exercise>& exercise) const;
+        Real HKPrice(Basket& basket,ext::shared_ptr<Exercise>& exercise)  const;
+        Real LGMPrice(Basket& basket,ext::shared_ptr<Exercise>& exercise) const;
 
     private:
         Handle<YieldTermStructure>          termStructure_;

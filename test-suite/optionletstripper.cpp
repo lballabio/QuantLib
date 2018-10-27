@@ -41,7 +41,7 @@
 using namespace QuantLib;
 using namespace boost::assign;
 using namespace boost::unit_test_framework;
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 namespace {
 
@@ -63,9 +63,9 @@ struct CommonVars {
         Handle<CapFloorTermVolCurve> capFloorVolCurve;
         Handle<CapFloorTermVolCurve> flatTermVolCurve;
 
-        boost::shared_ptr<CapFloorTermVolSurface> capFloorVolSurface;
-        boost::shared_ptr<CapFloorTermVolSurface> flatTermVolSurface;
-        boost::shared_ptr< CapFloorTermVolSurface > capFloorVolRealSurface;
+        ext::shared_ptr<CapFloorTermVolSurface> capFloorVolSurface;
+        ext::shared_ptr<CapFloorTermVolSurface> flatTermVolSurface;
+        ext::shared_ptr< CapFloorTermVolSurface > capFloorVolRealSurface;
 
         Real accuracy;
         Real tolerance;
@@ -85,10 +85,10 @@ struct CommonVars {
 
             Rate flatFwdRate = 0.04;
             yieldTermStructure.linkTo(
-                boost::shared_ptr<FlatForward>(new FlatForward(0,
+                ext::make_shared<FlatForward>(0,
                                                                calendar,
                                                                flatFwdRate,
-                                                               dayCounter)));
+                                                               dayCounter));
         }
 
         void setRealTermStructure() {
@@ -117,9 +117,9 @@ struct CommonVars {
                 0.009136, 0.009601, 0.009384;
 
             discountingYTS.linkTo(
-                boost::shared_ptr< InterpolatedZeroCurve< Linear > >(
-                    new InterpolatedZeroCurve< Linear >(dates, rates,
-                                                        dayCounter, calendar)));
+                ext::make_shared< InterpolatedZeroCurve< Linear > >(
+                    dates, rates,
+                                                        dayCounter, calendar));
 
             datesTmp.clear();
             dates.clear();
@@ -144,9 +144,9 @@ struct CommonVars {
                 0.010757, 0.010806, 0.010423, 0.010217;
 
             forwardingYTS.linkTo(
-                boost::shared_ptr< InterpolatedZeroCurve< Linear > >(
-                    new InterpolatedZeroCurve< Linear >(dates, rates,
-                                                        dayCounter, calendar)));
+                ext::make_shared< InterpolatedZeroCurve< Linear > >(
+                    dates, rates,
+                                                        dayCounter, calendar));
         }
 
         void setFlatTermVolCurve() {
@@ -161,13 +161,12 @@ struct CommonVars {
 
           std::vector<Handle<Quote> >  curveVHandle(optionTenors.size());
           for (Size i=0; i<optionTenors.size(); ++i)
-              curveVHandle[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
+              curveVHandle[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
                                                         SimpleQuote(flatVol)));
 
           flatTermVolCurve = Handle<CapFloorTermVolCurve>(
-              shared_ptr<CapFloorTermVolCurve>(new
-                  CapFloorTermVolCurve(0, calendar, Following, optionTenors,
-                                       curveVHandle, dayCounter)));
+              ext::make_shared<CapFloorTermVolCurve>(0, calendar, Following, optionTenors,
+                                       curveVHandle, dayCounter));
 
         }
 
@@ -185,10 +184,9 @@ struct CommonVars {
 
             Volatility flatVol = .18;
             termV = Matrix(optionTenors.size(), strikes.size(), flatVol);
-            flatTermVolSurface = boost::shared_ptr<CapFloorTermVolSurface>(new
-                CapFloorTermVolSurface(0, calendar, Following,
+            flatTermVolSurface = ext::make_shared<CapFloorTermVolSurface>(0, calendar, Following,
                                        optionTenors, strikes,
-                                       termV, dayCounter));
+                                       termV, dayCounter);
         }
 
 
@@ -235,15 +233,14 @@ struct CommonVars {
           atmTermV.push_back(0.13889);
           atmTermVolHandle.resize(optionTenors.size());
           for (Size i=0; i<optionTenors.size(); ++i) {
-            atmTermVolHandle[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
+            atmTermVolHandle[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
                             SimpleQuote(atmTermV[i])));
           }
 
           capFloorVolCurve = Handle<CapFloorTermVolCurve>(
-            shared_ptr<CapFloorTermVolCurve>(new
-                CapFloorTermVolCurve(0, calendar, Following,
+            ext::make_shared<CapFloorTermVolCurve>(0, calendar, Following,
                                      optionTenors, atmTermVolHandle,
-                                     dayCounter)));
+                                     dayCounter));
 
          }
 
@@ -303,10 +300,9 @@ struct CommonVars {
             termV[14][0]=0.204; termV[14][1]=0.192; termV[14][2]=0.18;  termV[14][3]=0.171; termV[14][4]=0.164; termV[14][5]=0.152; termV[14][6]=0.143; termV[14][7]=0.138; termV[14][8]=0.134; termV[14][9]=0.134; termV[14][10]=0.137; termV[14][11]=0.14;  termV[14][12]=0.148;
             termV[15][0]=0.2;   termV[15][1]=0.187; termV[15][2]=0.176; termV[15][3]=0.167; termV[15][4]=0.16;  termV[15][5]=0.148; termV[15][6]=0.14;  termV[15][7]=0.135; termV[15][8]=0.131; termV[15][9]=0.132; termV[15][10]=0.135; termV[15][11]=0.139; termV[15][12]=0.146;
 
-            capFloorVolSurface = boost::shared_ptr<CapFloorTermVolSurface>(new
-                CapFloorTermVolSurface(0, calendar, Following,
+            capFloorVolSurface = ext::make_shared<CapFloorTermVolSurface>(0, calendar, Following,
                                        optionTenors, strikes,
-                                       termV, dayCounter));
+                                       termV, dayCounter);
         }
 
         void setRealCapFloorTermVolSurface() {
@@ -372,10 +368,10 @@ struct CommonVars {
             termV /= 100;
 
             capFloorVolRealSurface =
-                boost::shared_ptr< CapFloorTermVolSurface >(
-                    new CapFloorTermVolSurface(0, calendar, Following,
+                ext::make_shared< CapFloorTermVolSurface >(
+                    0, calendar, Following,
                                                optionTenors, strikes, termV,
-                                               dayCounter));
+                                               dayCounter);
         }
 };
 }
@@ -393,24 +389,24 @@ void OptionletStripperTest::testFlatTermVolatilityStripping1() {
 
     shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
 
-    boost::shared_ptr<OptionletStripper> optionletStripper1(new
+    ext::shared_ptr<OptionletStripper> optionletStripper1(new
         OptionletStripper1(vars.flatTermVolSurface,
                            iborIndex,
                            Null<Rate>(),
                            vars.accuracy));
 
-    boost::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter(new
+    ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter(new
         StrippedOptionletAdapter(optionletStripper1));
 
     Handle<OptionletVolatilityStructure> vol(strippedOptionletAdapter);
 
     vol->enableExtrapolation();
 
-    boost::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
+    ext::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
         BlackCapFloorEngine(vars.yieldTermStructure,
                             vol));
 
-    boost::shared_ptr<CapFloor> cap;
+    ext::shared_ptr<CapFloor> cap;
     for (Size tenorIndex=0; tenorIndex<vars.optionTenors.size(); ++tenorIndex) {
         for (Size strikeIndex=0; strikeIndex<vars.strikes.size(); ++strikeIndex) {
             cap = MakeCapFloor(CapFloor::Cap,
@@ -422,7 +418,7 @@ void OptionletStripperTest::testFlatTermVolatilityStripping1() {
 
             Real priceFromStrippedVolatility = cap->NPV();
 
-            boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
+            ext::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
                 BlackCapFloorEngine(vars.yieldTermStructure,
                                     vars.termV[tenorIndex][strikeIndex]));
 
@@ -454,25 +450,24 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
 
     shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
 
-    boost::shared_ptr<OptionletStripper> optionletStripper1(new
+    ext::shared_ptr<OptionletStripper> optionletStripper1(new
         OptionletStripper1(vars.capFloorVolSurface,
                            iborIndex,
                            Null<Rate>(),
                            vars.accuracy));
 
-    boost::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter =
-        boost::shared_ptr<StrippedOptionletAdapter>(new
-            StrippedOptionletAdapter(optionletStripper1));
+    ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter =
+        ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
     Handle<OptionletVolatilityStructure> vol(strippedOptionletAdapter);
 
     vol->enableExtrapolation();
 
-    boost::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
+    ext::shared_ptr<BlackCapFloorEngine> strippedVolEngine(new
         BlackCapFloorEngine(vars.yieldTermStructure,
                             vol));
 
-    boost::shared_ptr<CapFloor> cap;
+    ext::shared_ptr<CapFloor> cap;
     for (Size tenorIndex=0; tenorIndex<vars.optionTenors.size(); ++tenorIndex) {
         for (Size strikeIndex=0; strikeIndex<vars.strikes.size(); ++strikeIndex) {
             cap = MakeCapFloor(CapFloor::Cap,
@@ -484,7 +479,7 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
 
             Real priceFromStrippedVolatility = cap->NPV();
 
-            boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
+            ext::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(new
                 BlackCapFloorEngine(vars.yieldTermStructure,
                                     vars.termV[tenorIndex][strikeIndex]));
 
@@ -516,23 +511,23 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
 
     shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
 
-    boost::shared_ptr< OptionletStripper > optionletStripper1(
+    ext::shared_ptr< OptionletStripper > optionletStripper1(
         new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
                                Null< Rate >(), vars.accuracy, 100,
                                vars.discountingYTS, Normal));
 
-    boost::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
-        boost::shared_ptr< StrippedOptionletAdapter >(
-            new StrippedOptionletAdapter(optionletStripper1));
+    ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
+        ext::make_shared< StrippedOptionletAdapter >(
+            optionletStripper1);
 
     Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
 
     vol->enableExtrapolation();
 
-    boost::shared_ptr< BachelierCapFloorEngine > strippedVolEngine(
+    ext::shared_ptr< BachelierCapFloorEngine > strippedVolEngine(
         new BachelierCapFloorEngine(vars.discountingYTS, vol));
 
-    boost::shared_ptr< CapFloor > cap;
+    ext::shared_ptr< CapFloor > cap;
     for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
          ++tenorIndex) {
         for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
@@ -543,7 +538,7 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
 
             Real priceFromStrippedVolatility = cap->NPV();
 
-            boost::shared_ptr< PricingEngine >
+            ext::shared_ptr< PricingEngine >
                 bachelierCapFloorEngineConstantVolatility(
                     new BachelierCapFloorEngine(
                         vars.discountingYTS,
@@ -583,24 +578,24 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
 
     shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
 
-    boost::shared_ptr< OptionletStripper > optionletStripper1(
+    ext::shared_ptr< OptionletStripper > optionletStripper1(
         new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
                                Null< Rate >(), vars.accuracy, 100,
                                vars.discountingYTS, ShiftedLognormal, shift,
                                true));
 
-    boost::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
-        boost::shared_ptr< StrippedOptionletAdapter >(
-            new StrippedOptionletAdapter(optionletStripper1));
+    ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
+        ext::make_shared< StrippedOptionletAdapter >(
+            optionletStripper1);
 
     Handle< OptionletVolatilityStructure > vol(strippedOptionletAdapter);
 
     vol->enableExtrapolation();
 
-    boost::shared_ptr< BlackCapFloorEngine > strippedVolEngine(
+    ext::shared_ptr< BlackCapFloorEngine > strippedVolEngine(
         new BlackCapFloorEngine(vars.discountingYTS, vol));
 
-    boost::shared_ptr< CapFloor > cap;
+    ext::shared_ptr< CapFloor > cap;
     for (Size strikeIndex = 0; strikeIndex < vars.strikes.size();
          ++strikeIndex) {
         for (Size tenorIndex = 0; tenorIndex < vars.optionTenors.size();
@@ -611,7 +606,7 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
 
             Real priceFromStrippedVolatility = cap->NPV();
 
-            boost::shared_ptr< PricingEngine >
+            ext::shared_ptr< PricingEngine >
                 blackCapFloorEngineConstantVolatility(new BlackCapFloorEngine(
                     vars.discountingYTS, vars.termV[tenorIndex][strikeIndex],
                     vars.capFloorVolRealSurface->dayCounter(), shift));
@@ -657,7 +652,7 @@ void OptionletStripperTest::testFlatTermVolatilityStripping2() {
                            Null<Rate>(),
                            vars.accuracy));
 
-  boost::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1(new
+  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1(new
         StrippedOptionletAdapter(optionletStripper1));
 
   Handle<OptionletVolatilityStructure> vol1(strippedOptionletAdapter1);
@@ -718,25 +713,24 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
   shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
 
   // optionletstripper1
-  boost::shared_ptr<OptionletStripper1> optionletStripper1(new
+  ext::shared_ptr<OptionletStripper1> optionletStripper1(new
         OptionletStripper1(vars.capFloorVolSurface,
                            iborIndex,
                            Null<Rate>(),
                            vars.accuracy));
 
-  boost::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1 =
-        boost::shared_ptr<StrippedOptionletAdapter>(new
-            StrippedOptionletAdapter(optionletStripper1));
+  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1 =
+        ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
   Handle<OptionletVolatilityStructure> vol1(strippedOptionletAdapter1);
   vol1->enableExtrapolation();
 
   // optionletstripper2
-  boost::shared_ptr<OptionletStripper> optionletStripper2(new
+  ext::shared_ptr<OptionletStripper> optionletStripper2(new
                 OptionletStripper2(optionletStripper1,
                                    vars.capFloorVolCurve));
 
-  boost::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2(new
+  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2(new
         StrippedOptionletAdapter(optionletStripper2));
 
   Handle<OptionletVolatilityStructure> vol2(strippedOptionletAdapter2);
@@ -778,12 +772,12 @@ void OptionletStripperTest::testSwitchStrike() {
     vars.setCapFloorTermVolSurface();
 
     RelinkableHandle< YieldTermStructure > yieldTermStructure;
-    yieldTermStructure.linkTo(boost::shared_ptr< FlatForward >(
-        new FlatForward(0, vars.calendar, 0.03, vars.dayCounter)));
+    yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
+        0, vars.calendar, 0.03, vars.dayCounter));
 
     shared_ptr< IborIndex > iborIndex(new Euribor6M(yieldTermStructure));
 
-    boost::shared_ptr< OptionletStripper1 > optionletStripper1(
+    ext::shared_ptr< OptionletStripper1 > optionletStripper1(
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
@@ -803,8 +797,8 @@ void OptionletStripperTest::testSwitchStrike() {
                    << "\nerror:         " << io::rate(error)
                    << "\ntolerance:     " << io::rate(vars.tolerance));
 
-    yieldTermStructure.linkTo(boost::shared_ptr< FlatForward >(
-        new FlatForward(0, vars.calendar, 0.05, vars.dayCounter)));
+    yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
+        0, vars.calendar, 0.05, vars.dayCounter));
 
     #if defined(QL_USE_INDEXED_COUPON)
     expected = 0.0499381;

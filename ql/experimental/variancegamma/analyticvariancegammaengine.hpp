@@ -38,11 +38,11 @@ namespace QuantLib {
     class VarianceGammaEngine : public VanillaOption::engine {
     public:
         VarianceGammaEngine(
-            const boost::shared_ptr<VarianceGammaProcess>&,
+            const ext::shared_ptr<VarianceGammaProcess>&,
             Real absoluteError = 1e-5);
         void calculate() const;
     private:
-        boost::shared_ptr<VarianceGammaProcess> process_;
+        ext::shared_ptr<VarianceGammaProcess> process_;
         Real absErr_;
     };
 

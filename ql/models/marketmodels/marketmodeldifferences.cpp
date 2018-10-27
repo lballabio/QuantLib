@@ -21,6 +21,7 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -87,7 +88,7 @@ namespace QuantLib {
 
     std::vector<Matrix> coterminalSwapPseudoRoots(
         const PiecewiseConstantCorrelation& piecewiseConstantCorrelation,
-        const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >&
+        const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&
                                                  piecewiseConstantVariances) {
             QL_ENSURE(piecewiseConstantCorrelation.times()
                 == piecewiseConstantVariances.front()->rateTimes(),
@@ -106,8 +107,7 @@ namespace QuantLib {
                     std::transform(correlations.row_begin(j),
                                    correlations.row_end(j),
                                    pseudoRoot.row_begin(j),
-                                   std::bind2nd(std::multiplies<Real>(),
-                                                            volatility));
+                                   multiply_by<Real>(volatility));
                 }
                 peudoRoots.push_back(pseudoRoot);
             }

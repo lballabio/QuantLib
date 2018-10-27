@@ -28,7 +28,9 @@
     Marius Akre,
     Mario Aleppo,
     Ferdinando Ametrano,
+    Tom Anderson,
     Grzegorz Andruszkiewicz,
+    Fanis Antoniou,
     Driss Aouad,
     Jose Aparicio,
     Sercan Atalik,
@@ -72,6 +74,7 @@
     Fr&eacute;d&eacute;ric Degraeve,
     Piero Del Boca,
     Mike DelMedico,
+    Barry Devlin,
     Nicolas Di C&eacute;sar&eacute;,
     Piter Dias,
     Michael von den Driesch,
@@ -118,11 +121,13 @@
     Shen Hui,
     Charles Chongseok Hyun,
     Simon Ibbotson,
+    Alexey Indiryakov,
     Norbert Irmer,
     Mike Jake,
     Nicola Jean,
     Joseph Jeisman,
     Rahul Kanchi,
+    Roland Kapl,
     Andrey Karpov,
     Michal Kaut,
     Tomoya Kawanishi,
@@ -196,6 +201,7 @@
     Ilyas Rahbaoui,
     Fabio Ramponi,
     Maria Cristina Recchioni,
+    Simon Rees,
     Dimitri Reiswich,
     Sadruddin Rejeb,
     Martin Ross,
@@ -222,6 +228,7 @@
     Klaus Spanderen,
     Andreas Spengler,
     Roland Stamm,
+    Weston Steimel,
     Edouard Tallent,
     Eisuke Tani,
     Marco Tarenghi,
@@ -239,7 +246,8 @@
     Frank Xue,
     Jeff Yu,
     Maddalena Zanzi,
-    and Francesco Zirilli.
+    Francesco Zirilli,
+    and Roy Zywina.
 
     %QuantLib also includes code taken from Peter J&auml;ckel's book
     "Monte Carlo Methods in Finance".

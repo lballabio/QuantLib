@@ -9,7 +9,9 @@ Toyin Akin
 Marius Akre
 Mario Aleppo
 Ferdinando Ametrano
+Tom Anderson
 Grzegorz Andruszkiewicz
+Fanis Antoniou
 Driss Aouad
 Jose Aparicio
 Sercan Atalik
@@ -53,6 +55,7 @@ Daniele De Francesco
 Frédéric Degraeve
 Piero Del Boca
 Mike DelMedico
+Barry Devlin
 Nicolas Di Césaré
 Piter Dias
 Michael von den Driesch
@@ -99,11 +102,13 @@ Daniel Hrabovcak
 Shen Hui
 Charles Chongseok Hyun
 Simon Ibbotson
+Alexey Indiryakov
 Norbert Irmer
 Mike Jake
 Nicola Jean
 Joseph Jeisman
 Rahul Kanchi
+Roland Kapl
 Andrey Karpov
 Michal Kaut
 Tomoya Kawanishi
@@ -177,6 +182,7 @@ J. Erik Radmall
 Ilyas Rahbaoui
 Fabio Ramponi
 Maria Cristina Recchioni
+Simon Rees
 Dimitri Reiswich
 Sadruddin Rejeb
 Martin Ross
@@ -203,6 +209,7 @@ Niels Elken Sønderby
 Klaus Spanderen
 Andreas Spengler
 Roland Stamm
+Weston Steimel
 Edouard Tallent
 Eisuke Tani
 Marco Tarenghi
@@ -221,6 +228,7 @@ Frank Xue
 Jeff Yu
 Maddalena Zanzi
 Francesco Zirilli
+Roy Zywina
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

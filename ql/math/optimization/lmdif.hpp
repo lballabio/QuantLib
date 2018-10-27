@@ -26,12 +26,12 @@
 #define quantlib_optimization_lmdif_hpp
 
 #include <ql/types.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
     namespace MINPACK {
-        typedef boost::function<void (int,
+        typedef ext::function<void (int,
                                       int, 
                                       Real*,
                                       Real*,

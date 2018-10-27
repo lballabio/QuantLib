@@ -23,10 +23,10 @@
 namespace QuantLib {
 
     WriterExtensibleOption::WriterExtensibleOption(
-        const boost::shared_ptr<PlainVanillaPayoff>& payoff1,
-        const boost::shared_ptr<Exercise>& exercise1,
-        const boost::shared_ptr<PlainVanillaPayoff>& payoff2,
-        const boost::shared_ptr<Exercise>& exercise2)
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
+        const ext::shared_ptr<Exercise>& exercise1,
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
+        const ext::shared_ptr<Exercise>& exercise2)
     : OneAssetOption(payoff1, exercise1),
       payoff2_(payoff2), exercise2_(exercise2) {}
 

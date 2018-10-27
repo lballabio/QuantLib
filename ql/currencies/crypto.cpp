@@ -30,7 +30,7 @@ namespace QuantLib {
     /* https://bitcoin.org/
     */
     BTCCurrency::BTCCurrency() {
-        static boost::shared_ptr<Data> btcData(
+        static ext::shared_ptr<Data> btcData(
                                     new Data("Bitcoin", "BTC", 10000,
                                              "BTC", "", 100000,
                                              Rounding(),
@@ -42,7 +42,7 @@ namespace QuantLib {
     /*! https://www.ethereum.org/
     */
     ETHCurrency::ETHCurrency() {
-        static boost::shared_ptr<Data> ethData(
+        static ext::shared_ptr<Data> ethData(
                                       new Data("Ethereum", "ETH", 10001,
                                                "ETH", "", 100000,
                                                Rounding(),
@@ -54,7 +54,7 @@ namespace QuantLib {
     /*! https://ethereumclassic.github.io/
     */
     ETCCurrency::ETCCurrency() {
-        static boost::shared_ptr<Data> etcData(
+        static ext::shared_ptr<Data> etcData(
                                   new Data("Ethereum Classic", "ETC", 10002,
                                            "ETC", "", 100000,
                                            Rounding(),
@@ -66,7 +66,7 @@ namespace QuantLib {
     /*! https://www.bitcoincash.org/
     */
     BCHCurrency::BCHCurrency() {
-        static boost::shared_ptr<Data> bchData(
+        static ext::shared_ptr<Data> bchData(
                                     new Data("Bitcoin Cash", "BCH", 10003,
                                              "BCH", "", 100000,
                                              Rounding(),
@@ -78,7 +78,7 @@ namespace QuantLib {
     /*! https://ripple.com/
     */
     XRPCurrency::XRPCurrency() {
-        static boost::shared_ptr<Data> xrpData(
+        static ext::shared_ptr<Data> xrpData(
                                     new Data("Ripple", "XRP", 10004,
                                              "XRP", "", 100000,
                                              Rounding(),
@@ -90,7 +90,7 @@ namespace QuantLib {
     /*! https://litecoin.com/
     */
     LTCCurrency::LTCCurrency() {
-            static boost::shared_ptr<Data> ltcData(
+            static ext::shared_ptr<Data> ltcData(
                                           new Data("Litecoin", "LTC", 10005,
                                                    "LTC", "", 100000,
                                                    Rounding(),
@@ -102,7 +102,7 @@ namespace QuantLib {
     /*! https://www.dash.org/
     */
     DASHCurrency::DASHCurrency() {
-        static boost::shared_ptr<Data> dashData(
+        static ext::shared_ptr<Data> dashData(
                                        new Data("Dash coin", "DASH", 10006,
                                                 "DASH", "", 100000,
                                                 Rounding(),
@@ -114,7 +114,7 @@ namespace QuantLib {
     /*! https://z.cash/
     */
     ZECCurrency::ZECCurrency() {
-        static boost::shared_ptr<Data> zecData(
+        static ext::shared_ptr<Data> zecData(
                                       new Data("Zcash", "ZEC", 10007,
                                                "ZEC", "", 100000,
                                                Rounding(),

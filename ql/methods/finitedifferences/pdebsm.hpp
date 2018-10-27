@@ -31,7 +31,7 @@ namespace QuantLib {
 
     class PdeBSM : public PdeSecondOrderParabolic {
       public:
-        typedef boost::shared_ptr<GeneralizedBlackScholesProcess>
+        typedef ext::shared_ptr<GeneralizedBlackScholesProcess>
                                                                 argument_type;
         typedef LogGrid grid_type;
         PdeBSM(const argument_type & process) : process_(process) {};

@@ -31,7 +31,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib
 {
 
-    SwaptionPseudoDerivative::SwaptionPseudoDerivative(boost::shared_ptr<MarketModel> inputModel,
+    SwaptionPseudoDerivative::SwaptionPseudoDerivative(ext::shared_ptr<MarketModel> inputModel,
         Size startIndex,
         Size endIndex)
     {
@@ -231,7 +231,7 @@ namespace QuantLib
 
     }
 
-    CapPseudoDerivative::CapPseudoDerivative(boost::shared_ptr<MarketModel> inputModel,
+    CapPseudoDerivative::CapPseudoDerivative(ext::shared_ptr<MarketModel> inputModel,
         Real strike,
         Size startIndex,
         Size endIndex, Real firstDF) : firstDF_(firstDF)

@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     AnalyticPerformanceEngine::AnalyticPerformanceEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -43,8 +43,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        boost::shared_ptr<PercentageStrikePayoff> moneyness =
-            boost::dynamic_pointer_cast<PercentageStrikePayoff>(
+        ext::shared_ptr<PercentageStrikePayoff> moneyness =
+            ext::dynamic_pointer_cast<PercentageStrikePayoff>(
                                                            arguments_.payoff);
         QL_REQUIRE(moneyness, "wrong payoff given");
 
@@ -54,7 +54,7 @@ namespace QuantLib {
         Real underlying = process_->stateVariable()->value();
         QL_REQUIRE(underlying > 0.0, "negative or null underlying");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(
+        ext::shared_ptr<StrikedTypePayoff> payoff(
                         new PlainVanillaPayoff(moneyness->optionType(), 1.0));
 
         results_.value = 0.0;
