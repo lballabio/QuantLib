@@ -27,7 +27,8 @@ namespace QuantLib {
         const ext::shared_ptr<Payoff>& payoff,
         const Date& valueDate,
         const Date& maturityDate,
-        const Handle<YieldTermStructure>& discountCurve)
+        const Handle<YieldTermStructure>& discountCurve,
+        const Handle<Quote>& convexityAdjustment)
       :Forward(overnightIndex->dayCounter(),
         overnightIndex->fixingCalendar(),
         overnightIndex->businessDayConvention(),
@@ -36,7 +37,8 @@ namespace QuantLib {
         valueDate,
         maturityDate,
         discountCurve),
-      overnightIndex_(overnightIndex)
+      overnightIndex_(overnightIndex),
+      convexityAdjustment_(convexityAdjustment)
     {
     }
 
@@ -67,9 +69,11 @@ namespace QuantLib {
             forwardDiscount /= discountCurve_->discount(valueDate_);
         }
         prod /= forwardDiscount;
-        Real R = 100 * (prod - 1) /
+        Real convAdj = convexityAdjustment_.empty() ? 0.0 :
+            convexityAdjustment_->value();
+        Real R = convAdj + (prod - 1) /
             dayCounter_.yearFraction(valueDate_, maturityDate_);
-        underlyingSpotValue_ = 100 - R;
+        underlyingSpotValue_ = 100.0 * (1.0 - R);
         return underlyingSpotValue_;
     }
 
@@ -82,6 +86,11 @@ namespace QuantLib {
     Real OvernightIndexFuture::forwardValue() const {
         calculate();
         return underlyingSpotValue_;
+    }
+
+    Real OvernightIndexFuture::convexityAdjustment() const {
+        return convexityAdjustment_.empty() ? 0.0 :
+            convexityAdjustment_->value();
     }
 
 }

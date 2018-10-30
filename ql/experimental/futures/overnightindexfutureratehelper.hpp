@@ -38,7 +38,8 @@ namespace QuantLib {
           const Date& valueDate,
           // delivery date
           const Date& maturityDate,
-          const ext::shared_ptr<OvernightIndex>& overnightIndex);
+          const ext::shared_ptr<OvernightIndex>& overnightIndex,
+          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
 
         //! \name RateHelper interface
         //@{
@@ -49,6 +50,7 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&);
         //@}
+        Real convexityAdjustment() const;
     private:
         ext::shared_ptr<OvernightIndexFuture> future_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
@@ -70,13 +72,15 @@ namespace QuantLib {
             Month referenceMonth,
             Year referenceYear,
             Frequency referenceFreq,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex);
+            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>());
         SofrFutureRateHelper(
             Real price,
             Month referenceMonth,
             Year referenceYear,
             Frequency referenceFreq,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex);
+            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            Real convexityAdjustment = 0);
     };
 
 }

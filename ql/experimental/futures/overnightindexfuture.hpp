@@ -40,7 +40,8 @@ namespace QuantLib {
             const ext::shared_ptr<Payoff>& payoff,
             const Date& valueDate,
             const Date& maturityDate,
-            const Handle<YieldTermStructure>& discountCurve);
+            const Handle<YieldTermStructure>& discountCurve,
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>());
 
         //! returns spot value/price of an underlying financial instrument
         virtual Real spotValue() const;
@@ -50,8 +51,11 @@ namespace QuantLib {
 
         virtual Real forwardValue() const;
 
+        Real convexityAdjustment() const;
+
     protected:
-      const ext::shared_ptr<OvernightIndex>& overnightIndex_;
+        ext::shared_ptr<OvernightIndex> overnightIndex_;
+        Handle<Quote> convexityAdjustment_;
     };
 
 }
