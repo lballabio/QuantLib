@@ -19,7 +19,6 @@
 
 #include <ql/indexes/bmaindex.hpp>
 #include <ql/currencies/america.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 
 namespace QuantLib {
@@ -40,12 +39,13 @@ namespace QuantLib {
 
     }
 
-    BMAIndex::BMAIndex(const Handle<YieldTermStructure>& h)
+    BMAIndex::BMAIndex(const Handle<YieldTermStructure>& h,
+                       const Calendar& fixingCalendar)
     : InterestRateIndex("BMA",
                         1 * Weeks,
                         1,
                         USDCurrency(),
-                        UnitedStates(UnitedStates::NYSE),
+                        fixingCalendar,
                         ActualActual(ActualActual::ISDA)),
       termStructure_(h) {
         registerWith (h);
