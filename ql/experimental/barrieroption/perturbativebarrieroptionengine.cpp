@@ -24,7 +24,7 @@
 #include <ql/exercise.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 #include <cmath>
 #include <algorithm>
 

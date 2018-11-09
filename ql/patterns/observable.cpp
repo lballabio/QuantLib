@@ -89,7 +89,7 @@ namespace QuantLib {
 
 #else
 
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 #include <boost/signals2/signal_type.hpp>
 
 namespace QuantLib {

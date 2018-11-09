@@ -28,9 +28,9 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
+#include <ql/functional.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
-#include <ql/function.hpp>
 #include <boost/utility.hpp>
 #include <map>
 #include <vector>

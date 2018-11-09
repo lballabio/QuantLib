@@ -29,8 +29,7 @@
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
-
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 #include <map>
 
 namespace QuantLib {

@@ -26,10 +26,9 @@
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/experimental/math/particleswarmoptimization.hpp>
+#include <ql/functional.hpp>
 
 #include <boost/timer.hpp>
-#include <ql/function.hpp>
-#include <ql/bind.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <iostream>
 #include <iomanip>
