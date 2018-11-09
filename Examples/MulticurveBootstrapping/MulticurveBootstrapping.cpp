@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2018 Jose Garcia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,14 @@
 
 /*  This example shows how to set up a Term Structure with ois Discounting
     and then price a simple 5 year swap.
+	
+	Boilerplate code was taken from swapvaluation.cpp
+
+    Example based on market data in paper by F. M. Ametrano and M. Blanchetti,
+	Everything You Always WAnted to Know About Multiple Interest RAte Curve Boostrapping
+	but Were Afraid to Ask (April 2, 2013).
+	http://ssrn.com/abstract=2219548
+	Eonia curve was taken from Figure 25 and Euribor 6m from figure 31. 
 */
 
 #include <ql/qldefines.hpp>
