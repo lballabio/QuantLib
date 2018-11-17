@@ -54,6 +54,7 @@ namespace QuantLib {
         registerWith(correlation);
         if (!couponDiscountCurve_.empty())
             registerWith(couponDiscountCurve_);
+        registerWith(cmsPricer_);
 
         QL_REQUIRE(integrationPoints >= 4,
                    "at least 4 integration points should be used ("
