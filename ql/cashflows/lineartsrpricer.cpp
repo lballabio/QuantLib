@@ -1,4 +1,5 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 /*
   Copyright (C) 2014, 2016 Peter Caspers
 
@@ -37,7 +38,7 @@
 
 namespace QuantLib {
 
-   const Real LinearTsrPricer::defaultLowerBound = 0.0001,
+    const Real LinearTsrPricer::defaultLowerBound = 0.0001,
              LinearTsrPricer::defaultUpperBound = 2.0000;
 
     LinearTsrPricer::LinearTsrPricer(
