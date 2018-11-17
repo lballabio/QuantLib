@@ -42,7 +42,11 @@ namespace QuantLib {
         void values(const CurveState&,
                                   std::vector<Real>& results) const;
 
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelBasisSystem> clone() const;
+        #else
         std::auto_ptr<MarketModelBasisSystem> clone() const;
+        #endif
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;
         Size currentIndex_;

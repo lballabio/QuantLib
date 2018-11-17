@@ -89,6 +89,7 @@ namespace QuantLib {
 
 #else
 
+#include <ql/bind.hpp>
 #include <boost/signals2/signal_type.hpp>
 
 namespace QuantLib {
@@ -112,7 +113,7 @@ namespace QuantLib {
             }
 
             void operator()() const {
-                sig_.operator()();
+                sig_();
             }
           private:
             signal_type sig_;
@@ -121,7 +122,7 @@ namespace QuantLib {
     }
 
     void Observable::registerObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
+        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.insert(observerProxy);
@@ -129,11 +130,15 @@ namespace QuantLib {
 
         detail::Signal::signal_type::slot_type slot(&Observer::Proxy::update,
                                     observerProxy.get());
+        #if defined(QL_USE_STD_SHARED_PTR)
+        sig_->connect(slot.track_foreign(observerProxy));
+        #else
         sig_->connect(slot.track(observerProxy));
+        #endif
     }
 
     void Observable::unregisterObserver(
-        const boost::shared_ptr<Observer::Proxy>& observerProxy) {
+        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.erase(observerProxy);
@@ -146,18 +151,18 @@ namespace QuantLib {
             }
         }
 
-        sig_->disconnect(boost::bind(&Observer::Proxy::update,
+        sig_->disconnect(ext::bind(&Observer::Proxy::update,
                              observerProxy.get()));
     }
 
     void Observable::notifyObservers() {
         if (settings_.updatesEnabled()) {
-            return sig_->operator()();
+            return (*sig_)();
         }
 
         boost::lock_guard<boost::mutex> sLock(settings_.mutex_);
         if (settings_.updatesEnabled()) {
-            return sig_->operator()();
+            return (*sig_)();
         }
         else if (settings_.updatesDeferred()) {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);

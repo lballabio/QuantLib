@@ -7,6 +7,8 @@
 #  include <ql/auto_link.hpp>
 #endif
 
+#include <ql/auto_ptr.hpp>
+#include <ql/bind.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/compounding.hpp>
 #include <ql/currency.hpp>
@@ -16,6 +18,7 @@
 #include <ql/exchangerate.hpp>
 #include <ql/exercise.hpp>
 #include <ql/event.hpp>
+#include <ql/function.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/index.hpp>
@@ -31,6 +34,7 @@
 #include <ql/quote.hpp>
 #include <ql/rebatedexercise.hpp>
 #include <ql/settings.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/timegrid.hpp>

@@ -725,6 +725,7 @@
     <ClCompile Include="normalclvmodel.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="numericaldifferentiation.cpp" />
+    <ClCompile Include="nthorderderivativeop.cpp" />
     <ClCompile Include="observable.cpp" />
     <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
@@ -871,6 +872,7 @@
     <ClInclude Include="normalclvmodel.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="numericaldifferentiation.hpp" />
+    <ClInclude Include="nthorderderivativeop.hpp" />
     <ClInclude Include="observable.hpp" />
     <ClInclude Include="ode.hpp" />
     <ClInclude Include="operators.hpp" />

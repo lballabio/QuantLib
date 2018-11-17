@@ -45,6 +45,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
+#include <ql/math/functional.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -167,14 +168,14 @@ namespace {
         #endif
     }
 
-    const boost::shared_ptr<SequenceStatisticsInc> simulate(
-                         const boost::shared_ptr<MarketModelEvolver>& evolver,
+    const ext::shared_ptr<SequenceStatisticsInc> simulate(
+                         const ext::shared_ptr<MarketModelEvolver>& evolver,
                          const MarketModelMultiProduct& product) {
         Size initialNumeraire = evolver->numeraires().front();
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
         AccountingEngine engine(evolver, product, initialNumeraireValue);
-        boost::shared_ptr<SequenceStatisticsInc> stats(
+        ext::shared_ptr<SequenceStatisticsInc> stats(
                           new SequenceStatisticsInc(product.numberOfProducts()));
         engine.multiplePathValues(*stats, paths_);
         return stats;
@@ -199,7 +200,7 @@ namespace {
         }
     }
 
-    boost::shared_ptr<MarketModel> makeMarketModel(
+    ext::shared_ptr<MarketModel> makeMarketModel(
                                         const EvolutionDescription& evolution,
                                         Size numberOfFactors,
                                         MarketModelType marketModelType,
@@ -208,9 +209,9 @@ namespace {
 
         std::vector<Time> fixingTimes(evolution.rateTimes());
         fixingTimes.pop_back();
-        boost::shared_ptr<LmVolatilityModel> volModel(new
+        ext::shared_ptr<LmVolatilityModel> volModel(new
             LmExtLinearExponentialVolModel(fixingTimes, 0.5, 0.6, 0.1, 0.1));
-        boost::shared_ptr<LmCorrelationModel> corrModel(new
+        ext::shared_ptr<LmCorrelationModel> corrModel(new
             LmLinearExponentialCorrelationModel(evolution.numberOfRates(),
                                                 longTermCorrelation, beta));
         std::vector<Rate> bumpedRates(todaysCMSwapRates.size());
@@ -220,21 +221,21 @@ namespace {
             curveState_lmm.cmSwapRates(spanningForwards);
         std::transform(usedRates.begin(), usedRates.end(),
                        bumpedRates.begin(),
-                       std::bind1st(std::plus<Rate>(), rateBump));
+                       add<Rate>(rateBump));
 
         std::vector<Volatility> bumpedVols(volatilities.size());
         std::transform(volatilities.begin(), volatilities.end(),
                        bumpedVols.begin(),
-                       std::bind1st(std::plus<Rate>(), volBump));
+                       add<Volatility>(volBump));
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                       longTermCorrelation,
                                                       beta);
-        boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+        ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
             TimeHomogeneousForwardCorrelation(correlations,
                                               evolution.rateTimes()));
         switch (marketModelType) {
           case ExponentialCorrelationFlatVolatility:
-            return boost::shared_ptr<MarketModel>(new
+            return ext::shared_ptr<MarketModel>(new
                 FlatVol(bumpedVols,
                                corr,
                                evolution,
@@ -243,7 +244,7 @@ namespace {
                                std::vector<Spread>(bumpedRates.size(),
                                                    displacement)));
           case ExponentialCorrelationAbcdVolatility:
-            return boost::shared_ptr<MarketModel>(new
+            return ext::shared_ptr<MarketModel>(new
                 AbcdVol(0.0,0.0,1.0,1.0,
                                bumpedVols,
                                corr,
@@ -253,7 +254,7 @@ namespace {
                                std::vector<Spread>(bumpedRates.size(),
                                                    displacement)));
           //case CalibratedMM:
-          //    return boost::shared_ptr<MarketModel>(new
+          //    return ext::shared_ptr<MarketModel>(new
           //        CalibratedMarketModel(volModel, corrModel,
           //                              evolution,
           //                              numberOfFactors,
@@ -339,15 +340,15 @@ namespace {
         }
     }
 
-    boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
-                            const boost::shared_ptr<MarketModel>& marketModel,
+    ext::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
+                            const ext::shared_ptr<MarketModel>& marketModel,
                             const std::vector<Size>& numeraires,
                             const BrownianGeneratorFactory& generatorFactory,
                             EvolverType evolverType,
                             Size initialStep = 0) {
         switch (evolverType) {
           case Pc:
-            return boost::shared_ptr<MarketModelEvolver>(new
+            return ext::shared_ptr<MarketModelEvolver>(new
                 LogNormalCmSwapRatePc(spanningForwards,
                                     marketModel, generatorFactory,
                                     numeraires,
@@ -361,9 +362,9 @@ namespace {
     void checkCMSAndSwaptions(
               const SequenceStatisticsInc& stats,
               const Rate fixedRate,
-              const std::vector<boost::shared_ptr<StrikedTypePayoff> >&
+              const std::vector<ext::shared_ptr<StrikedTypePayoff> >&
                                                               displacedPayoff,
-              const boost::shared_ptr<MarketModel>, // marketModel,
+              const ext::shared_ptr<MarketModel>, // marketModel,
               const std::string& config) {
         std::vector<Real> results = stats.mean();
         std::vector<Real> errors = stats.errorEstimate();
@@ -452,13 +453,13 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
                                    fixedRate);
     // swaptions
     std::vector<Time> swaptionPaymentTimes(rateTimes.begin(), rateTimes.end()-1);
-    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+    std::vector<ext::shared_ptr<StrikedTypePayoff> >
         displacedPayoff(todaysForwards.size()), undisplacedPayoff(todaysForwards.size());
     for (Size i=0; i<undisplacedPayoff.size(); ++i) {
-        displacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        displacedPayoff[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, fixedRate+displacement));
 
-        undisplacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new
+        undisplacedPayoff[i] = ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, fixedRate));
     }
 
@@ -491,12 +492,12 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-                boost::shared_ptr<MarketModel> marketModel =
+                ext::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
 
                 EvolverType evolvers[] = { Pc/*, Ipc*/ };
 
-                boost::shared_ptr<MarketModelEvolver> evolver;
+                ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                 for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                     for (Size n=0; n<1; n++) {
@@ -517,7 +518,7 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
                         if (printReport_)
                             BOOST_TEST_MESSAGE("    " << config.str());
 
-                        boost::shared_ptr<SequenceStatisticsInc> stats = simulate(evolver, product);
+                        ext::shared_ptr<SequenceStatisticsInc> stats = simulate(evolver, product);
                         checkCMSAndSwaptions(*stats, fixedRate,
                                              displacedPayoff, marketModel,config.str());
 

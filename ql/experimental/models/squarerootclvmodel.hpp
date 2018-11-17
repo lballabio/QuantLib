@@ -30,7 +30,7 @@
 #include <ql/math/matrix.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <map>
 
 namespace QuantLib {
@@ -42,8 +42,8 @@ namespace QuantLib {
     class SquareRootCLVModel : public LazyObject {
       public:
         SquareRootCLVModel(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            const boost::shared_ptr<SquareRootProcess>& sqrtProcess,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+            const ext::shared_ptr<SquareRootProcess>& sqrtProcess,
             const std::vector<Date>& maturityDates,
             Size lagrangeOrder,
             Real pMax = Null<Real>(),
@@ -62,21 +62,21 @@ namespace QuantLib {
         Disposable<Array> collocationPointsY(const Date& d) const;
 
         // CLV mapping function
-        boost::function<Real(Time, Real)> g() const;
+        ext::function<Real(Time, Real)> g() const;
 
       protected:
         void performCalculations() const;
 
       private:
-        class MappingFunction : public std::binary_function<Time, Real, Real> {
+        class MappingFunction {
           public:
             explicit MappingFunction(const SquareRootCLVModel& model);
 
             Real operator()(Time t, Real x) const;
 
           private:
-            const boost::shared_ptr<Matrix> s_, x_;
-            typedef std::map<Time, boost::shared_ptr<LagrangeInterpolation> >
+            const ext::shared_ptr<Matrix> s_, x_;
+            typedef std::map<Time, ext::shared_ptr<LagrangeInterpolation> >
                 interpl_type;
 
             interpl_type interpl;
@@ -85,13 +85,13 @@ namespace QuantLib {
         std::pair<Real, Real> nonCentralChiSquaredParams(const Date& d) const;
 
         const Real pMax_, pMin_;
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        const boost::shared_ptr<SquareRootProcess> sqrtProcess_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        const ext::shared_ptr<SquareRootProcess> sqrtProcess_;
         const std::vector<Date> maturityDates_;
         const Size lagrangeOrder_;
-        const boost::shared_ptr<GBSMRNDCalculator> rndCalculator_;
+        const ext::shared_ptr<GBSMRNDCalculator> rndCalculator_;
 
-        mutable boost::function<Real(Time, Real)> g_;
+        mutable ext::function<Real(Time, Real)> g_;
     };
 }
 

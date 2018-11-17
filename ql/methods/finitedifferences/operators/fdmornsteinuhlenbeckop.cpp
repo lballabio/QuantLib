@@ -31,9 +31,9 @@
 namespace QuantLib {
 
     FdmOrnsteinUhlenbackOp::FdmOrnsteinUhlenbackOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<OrnsteinUhlenbeckProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& process,
+            const ext::shared_ptr<YieldTermStructure>& rTS,
             const FdmBoundaryConditionSet& bcSet,
             Size direction)
     : mesher_   (mesher),
@@ -44,7 +44,7 @@ namespace QuantLib {
       m_        (direction, mesher),
       mapX_     (direction, mesher)  {
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
 
         Array drift(layout->size());
         const Array x(mesher_->locations(direction));

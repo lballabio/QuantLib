@@ -23,7 +23,7 @@
 #define quantlib_math_integrator_hpp
 
 #include <ql/types.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 
 namespace QuantLib {
 
@@ -33,7 +33,7 @@ namespace QuantLib {
                    Size maxEvaluations);
         virtual ~Integrator() {}
 
-        Real operator()(const boost::function<Real (Real)>& f,
+        Real operator()(const ext::function<Real (Real)>& f,
                         Real a,
                         Real b) const;
 
@@ -56,7 +56,7 @@ namespace QuantLib {
         virtual bool integrationSuccess() const;
 
       protected:
-        virtual Real integrate(const boost::function<Real (Real)>& f,
+        virtual Real integrate(const ext::function<Real (Real)>& f,
                                Real a,
                                Real b) const = 0;
         void setAbsoluteError(Real error) const;

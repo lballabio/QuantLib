@@ -79,7 +79,7 @@ namespace QuantLib {
                                                Real accuracy,
                                                Size maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (boost::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
+      om_ (ext::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
       c_(c)
     {}
 
@@ -87,7 +87,7 @@ namespace QuantLib {
                                      Constraint& c,
                                      Real accuracy,
                                      Size maxiter,
-                                     boost::shared_ptr<OptimizationMethod> om)
+                                     ext::shared_ptr<OptimizationMethod> om)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
       om_ (om), c_(c) {}
 

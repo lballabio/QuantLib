@@ -21,15 +21,13 @@
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
-#include <boost/bind.hpp>
-
-using boost::bind;
+#include <ql/bind.hpp>
 
 namespace QuantLib {
 
     AmericanBasketPathPricer::AmericanBasketPathPricer(
         Size assetNumber,
-        const boost::shared_ptr<Payoff>& payoff,
+        const ext::shared_ptr<Payoff>& payoff,
         Size polynomOrder,
         LsmBasisSystem::PolynomType polynomType)
     : assetNumber_ (assetNumber),
@@ -44,18 +42,19 @@ namespace QuantLib {
                    || polynomType == LsmBasisSystem::Hyperbolic
                    || polynomType == LsmBasisSystem::Chebyshev2nd,
                    "insufficient polynom type");
-        const boost::shared_ptr<BasketPayoff> basketPayoff
-            = boost::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        using namespace ext::placeholders;
+        const ext::shared_ptr<BasketPayoff> basketPayoff
+            = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);
         QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
-        const boost::shared_ptr<StrikedTypePayoff> strikePayoff
-            = boost::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
+        const ext::shared_ptr<StrikedTypePayoff> strikePayoff
+            = ext::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
 
         if (strikePayoff) {
             scalingValue_/=strikePayoff->strike();
         }
 
-        v_.push_back(boost::bind(&AmericanBasketPathPricer::payoff,
+        v_.push_back(ext::bind(&AmericanBasketPathPricer::payoff,
                                  this, _1));
     }
 
@@ -72,8 +71,8 @@ namespace QuantLib {
     }
 
     Real AmericanBasketPathPricer::payoff(const Array& state) const {
-        const boost::shared_ptr<BasketPayoff> basketPayoff
-            = boost::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        const ext::shared_ptr<BasketPayoff> basketPayoff
+            = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);
         QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
         Real value = basketPayoff->accumulate(state);
@@ -85,7 +84,7 @@ namespace QuantLib {
         return this->payoff(this->state(path, t));
     }
 
-    std::vector<boost::function1<Real, Array> >
+    std::vector<ext::function<Real(Array)> >
     AmericanBasketPathPricer::basisSystem() const {
         return v_;
     }

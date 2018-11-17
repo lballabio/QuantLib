@@ -54,7 +54,7 @@ namespace QuantLib {
         mutable bool initialized_, validCurve_, loopRequired_;
         mutable Size firstAliveHelper_, alive_;
         mutable std::vector<Real> previousData_;
-        mutable std::vector<boost::shared_ptr<BootstrapError<Curve> > > errors_;
+        mutable std::vector<ext::shared_ptr<BootstrapError<Curve> > > errors_;
     };
 
 
@@ -91,7 +91,8 @@ namespace QuantLib {
         while (ts_->instruments_[firstAliveHelper_]->pillarDate() <= firstDate)
             ++firstAliveHelper_;
         alive_ = n_-firstAliveHelper_;
-        QL_REQUIRE(alive_>=Interpolator::requiredPoints-1,
+        Size nodes = alive_+1;
+        QL_REQUIRE(nodes >= Interpolator::requiredPoints,
                    "not enough alive instruments: " << alive_ <<
                    " provided, " << Interpolator::requiredPoints-1 <<
                    " required");
@@ -109,7 +110,7 @@ namespace QuantLib {
         // pillar counter: i
         // helper counter: j
         for (Size i=1, j=firstAliveHelper_; j<n_; ++i, ++j) {
-            const boost::shared_ptr<typename Traits::helper>& helper =
+            const ext::shared_ptr<typename Traits::helper>& helper =
                                                         ts_->instruments_[j];
             dates[i] = helper->pillarDate();
             times[i] = ts_->timeFromReference(dates[i]);
@@ -133,7 +134,7 @@ namespace QuantLib {
             if (dates[i] != latestRelevantDate)
                 loopRequired_ = true;
 
-            errors_[i] = boost::shared_ptr<BootstrapError<Curve> >(new
+            errors_[i] = ext::shared_ptr<BootstrapError<Curve> >(new
                 BootstrapError<Curve>(ts_, helper, i));
         }
         ts_->maxDate_ = maxDate;
@@ -162,7 +163,7 @@ namespace QuantLib {
 
         // setup helpers
         for (Size j=firstAliveHelper_; j<n_; ++j) {
-            const boost::shared_ptr<typename Traits::helper>& helper =
+            const ext::shared_ptr<typename Traits::helper>& helper =
                                                         ts_->instruments_[j];
             // check for valid quote
             QL_REQUIRE(helper->quote()->isValid(),

@@ -25,7 +25,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -45,6 +45,8 @@ namespace QuantLib {
 
     EndCriteria::Type LevenbergMarquardt::minimize(Problem& P,
                                                    const EndCriteria& endCriteria) {
+        using namespace ext::placeholders;
+
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
@@ -88,10 +90,10 @@ namespace QuantLib {
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
         MINPACK::LmdifCostFunction lmdifCostFunction =
-            boost::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
+            ext::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
         MINPACK::LmdifCostFunction lmdifJacFunction =
             useCostFunctionsJacobian_
-                ? boost::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3,
+                ? ext::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3,
                               _4, _5)
                 : MINPACK::LmdifCostFunction();
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),

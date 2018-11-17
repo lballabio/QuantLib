@@ -63,18 +63,18 @@ namespace QuantLib {
         // in a stack overflow as the Lobatto integration is a recursive
         // algorithm.
         AnalyticPTDHestonEngine(
-            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Real relTolerance, Size maxEvaluations);
 
         // Constructor using Laguerre integration
         // and Gatheral's version of complex log.
         AnalyticPTDHestonEngine(
-            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Size integrationOrder = 144);
 
         // Constructor giving full control over Fourier integration algorithm
         AnalyticPTDHestonEngine(
-            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             ComplexLogFormula cpxLog,
             const Integration& itg,
             Real andersenPiterbargEpsilon = 1e-8);
@@ -93,7 +93,7 @@ namespace QuantLib {
         
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
-        const boost::shared_ptr<Integration> integration_;
+        const ext::shared_ptr<Integration> integration_;
         const Real andersenPiterbargEpsilon_;
     };
 }

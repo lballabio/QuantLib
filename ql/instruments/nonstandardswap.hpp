@@ -48,7 +48,7 @@ namespace QuantLib {
             const std::vector<Real> &floatingNominal,
             const Schedule &fixedSchedule, const std::vector<Real> &fixedRate,
             const DayCounter &fixedDayCount, const Schedule &floatingSchedule,
-            const boost::shared_ptr<IborIndex> &iborIndex, const Real gearing,
+            const ext::shared_ptr<IborIndex> &iborIndex, const Real gearing,
             const Spread spread, const DayCounter &floatingDayCount,
             const bool intermediateCapitalExchange = false,
             const bool finalCapitalExchange = false,
@@ -59,7 +59,7 @@ namespace QuantLib {
             const std::vector<Real> &floatingNominal,
             const Schedule &fixedSchedule, const std::vector<Real> &fixedRate,
             const DayCounter &fixedDayCount, const Schedule &floatingSchedule,
-            const boost::shared_ptr<IborIndex> &iborIndex,
+            const ext::shared_ptr<IborIndex> &iborIndex,
             const std::vector<Real> &gearing, const std::vector<Spread> &spread,
             const DayCounter &floatingDayCount,
             const bool intermediateCapitalExchange = false,
@@ -77,7 +77,7 @@ namespace QuantLib {
         const DayCounter &fixedDayCount() const;
 
         const Schedule &floatingSchedule() const;
-        const boost::shared_ptr<IborIndex> &iborIndex() const;
+        const ext::shared_ptr<IborIndex> &iborIndex() const;
         Spread spread() const;
         Real gearing() const;
         const std::vector<Spread>& spreads() const;
@@ -106,7 +106,7 @@ namespace QuantLib {
         std::vector<Real> fixedRate_;
         DayCounter fixedDayCount_;
         Schedule floatingSchedule_;
-        boost::shared_ptr<IborIndex> iborIndex_;
+        ext::shared_ptr<IborIndex> iborIndex_;
         std::vector<Spread> spread_;
         std::vector<Real> gearing_;
         bool singleSpreadAndGearing_;
@@ -137,7 +137,7 @@ namespace QuantLib {
         std::vector<Real> floatingGearings;
         std::vector<Real> floatingCoupons;
 
-        boost::shared_ptr<IborIndex> iborIndex;
+        ext::shared_ptr<IborIndex> iborIndex;
 
         std::vector<bool> fixedIsRedemptionFlow;
         std::vector<bool> floatingIsRedemptionFlow;
@@ -183,7 +183,7 @@ namespace QuantLib {
         return floatingSchedule_;
     }
 
-    inline const boost::shared_ptr<IborIndex> &
+    inline const ext::shared_ptr<IborIndex> &
     NonstandardSwap::iborIndex() const {
         return iborIndex_;
     }

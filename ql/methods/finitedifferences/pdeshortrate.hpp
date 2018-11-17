@@ -32,7 +32,7 @@ namespace QuantLib {
 
     class PdeShortRate : public PdeSecondOrderParabolic {
       public:
-        typedef boost::shared_ptr<OneFactorModel::ShortRateDynamics>
+        typedef ext::shared_ptr<OneFactorModel::ShortRateDynamics>
                                                                 argument_type;
         typedef TransformedGrid grid_type;
         PdeShortRate(const argument_type& d) : dynamics_(d) {}

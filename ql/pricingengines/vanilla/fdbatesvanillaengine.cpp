@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     FdBatesVanillaEngine::FdBatesVanillaEngine(
-            const boost::shared_ptr<BatesModel>& model,
+            const ext::shared_ptr<BatesModel>& model,
             Size tGrid, Size xGrid, 
             Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc)
@@ -52,10 +52,10 @@ namespace QuantLib {
 
         FdmSolverDesc solverDesc = helperEngine.getSolverDesc(2.0);
 
-        const boost::shared_ptr<BatesProcess> process =
-                boost::dynamic_pointer_cast<BatesProcess>(model_->process());
+        const ext::shared_ptr<BatesProcess> process =
+                ext::dynamic_pointer_cast<BatesProcess>(model_->process());
 
-        boost::shared_ptr<FdmBatesSolver> solver(
+        ext::shared_ptr<FdmBatesSolver> solver(
             new FdmBatesSolver(Handle<BatesProcess>(process),
                                solverDesc, schemeDesc_));
 

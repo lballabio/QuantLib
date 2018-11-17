@@ -33,8 +33,11 @@
 namespace QuantLib {
 
     //! Abstract base class for option payoffs
-    class Payoff : std::unary_function<Real,Real> {
+    class Payoff {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         virtual ~Payoff() {}
         //! \name Payoff interface
         //@{

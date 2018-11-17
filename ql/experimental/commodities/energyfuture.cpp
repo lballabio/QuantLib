@@ -26,9 +26,9 @@ namespace QuantLib {
     EnergyFuture::EnergyFuture(
                       Integer buySell, const Quantity& quantity,
                       const CommodityUnitCost& tradePrice,
-                      const boost::shared_ptr<CommodityIndex>& index,
+                      const ext::shared_ptr<CommodityIndex>& index,
                       const CommodityType& commodityType,
-                      const boost::shared_ptr<SecondaryCosts>& secondaryCosts)
+                      const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
     : EnergyCommodity(commodityType, secondaryCosts),
       buySell_(buySell), quantity_(quantity), tradePrice_(tradePrice),
       index_(index) {

@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcashrebate.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib 
 {
@@ -105,12 +106,11 @@ namespace QuantLib
         return true;
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct>
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseCashRebate::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-                                            new MarketModelPathwiseCashRebate(*this));
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+                                    new MarketModelPathwiseCashRebate(*this));
     }
-
 
 }

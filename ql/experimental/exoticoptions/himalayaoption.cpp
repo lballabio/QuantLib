@@ -25,9 +25,9 @@ namespace QuantLib {
 
     HimalayaOption::HimalayaOption(const std::vector<Date>& fixingDates,
                                    Real strike)
-    : MultiAssetOption(boost::shared_ptr<Payoff>(
+    : MultiAssetOption(ext::shared_ptr<Payoff>(
                                 new PlainVanillaPayoff(Option::Call, strike)),
-                       boost::shared_ptr<Exercise>(
+                       ext::shared_ptr<Exercise>(
                                    new EuropeanExercise(fixingDates.back()))),
       fixingDates_(fixingDates) {}
 

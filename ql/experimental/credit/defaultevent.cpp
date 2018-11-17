@@ -156,9 +156,9 @@ namespace QuantLib {
 
 
     bool FailureToPayEvent::matchesEventType(
-        const boost::shared_ptr<DefaultType>& contractEvType) const {
-        boost::shared_ptr<FailureToPay> eveType =
-            boost::dynamic_pointer_cast<FailureToPay>(contractEvType);
+        const ext::shared_ptr<DefaultType>& contractEvType) const {
+        ext::shared_ptr<FailureToPay> eveType =
+            ext::dynamic_pointer_cast<FailureToPay>(contractEvType);
         // this chekcs the atomic types, no need to call parents method
         if(!eveType) return false;
         if(defaultedAmount_ < eveType->amountRequired()) return false;

@@ -65,7 +65,7 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps,
              Size timeStepsPerYear,
              bool brownianBridge,
@@ -90,17 +90,17 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const {
+        ext::shared_ptr<path_generator_type> pathGenerator() const {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return boost::shared_ptr<path_generator_type>(
+            return ext::shared_ptr<path_generator_type>(
                          new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
         }
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const;
         // data members
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -115,7 +115,7 @@ namespace QuantLib {
     class MakeMCBarrierEngine {
       public:
         MakeMCBarrierEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
         // named parameters
         MakeMCBarrierEngine& withSteps(Size steps);
         MakeMCBarrierEngine& withStepsPerYear(Size steps);
@@ -127,9 +127,9 @@ namespace QuantLib {
         MakeMCBarrierEngine& withBias(bool b = true);
         MakeMCBarrierEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool brownianBridge_, antithetic_, biased_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -146,14 +146,14 @@ namespace QuantLib {
                     Option::Type type,
                     Real strike,
                     const std::vector<DiscountFactor>& discounts,
-                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
+                    const ext::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
       private:
         Barrier::Type barrierType_;
         Real barrier_;
         Real rebate_;
-        boost::shared_ptr<StochasticProcess1D> diffProcess_;
+        ext::shared_ptr<StochasticProcess1D> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
         std::vector<DiscountFactor> discounts_;
@@ -183,7 +183,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MCBarrierEngine<RNG,S>::MCBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps,
              Size timeStepsPerYear,
              bool brownianBridge,
@@ -232,10 +232,10 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<typename MCBarrierEngine<RNG,S>::path_pricer_type>
+    ext::shared_ptr<typename MCBarrierEngine<RNG,S>::path_pricer_type>
     MCBarrierEngine<RNG,S>::pathPricer() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         TimeGrid grid = timeGrid();
@@ -245,7 +245,7 @@ namespace QuantLib {
 
         // do this with template parameters?
         if (isBiased_) {
-            return boost::shared_ptr<
+            return ext::shared_ptr<
                         typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
                        arguments_.barrierType,
@@ -257,7 +257,7 @@ namespace QuantLib {
         } else {
             PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                                 PseudoRandom::urng_type(5));
-            return boost::shared_ptr<
+            return ext::shared_ptr<
                         typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
@@ -274,7 +274,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCBarrierEngine<RNG,S>::MakeMCBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process), brownianBridge_(false), antithetic_(false),
       biased_(false), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
@@ -352,13 +352,13 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCBarrierEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+    MakeMCBarrierEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCBarrierEngine<RNG,S>(process_,
                                    steps_,
                                    stepsPerYear_,

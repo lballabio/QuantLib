@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -503,18 +503,9 @@
     <ClInclude Include="ql\experimental\models\normalclvmodel.hpp" />
     <ClInclude Include="ql\experimental\models\squarerootclvmodel.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvoltermstructure.hpp" />
-    <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
-    <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
-    <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
-    <ClInclude Include="ql\indexes\ibor\mosprime.hpp" />
-    <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
-    <ClInclude Include="ql\indexes\ibor\pribor.hpp" />
-    <ClInclude Include="ql\indexes\ibor\robor.hpp" />
-    <ClInclude Include="ql\indexes\ibor\wibor.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp" />
     <ClInclude Include="ql\rebatedexercise.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\fdextoujumpvanillaengine.hpp" />
@@ -589,6 +580,8 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopcomposite.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopiterator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\numericaldifferentiation.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\nthorderderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\firstderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\ninepointlinearop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\secondderivativeop.hpp" />
@@ -601,7 +594,9 @@
     <ClInclude Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\impliciteulerscheme.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\trbdf2scheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdm1dimsolver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdm2dblackscholessolver.hpp" />
@@ -726,7 +721,11 @@
     <ClInclude Include="ql\indexes\region.hpp" />
     <ClInclude Include="ql\indexes\swapindex.hpp" />
     <ClInclude Include="ql\indexes\ibor\all.hpp" />
+    <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\audlibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\bbsw.hpp" />
+    <ClInclude Include="ql\indexes\ibor\bibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
     <ClInclude Include="ql\indexes\ibor\cadlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\cdor.hpp" />
     <ClInclude Include="ql\indexes\ibor\chflibor.hpp" />
@@ -739,13 +738,19 @@
     <ClInclude Include="ql\indexes\ibor\jibar.hpp" />
     <ClInclude Include="ql\indexes\ibor\jpylibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\libor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\mosprime.hpp" />
     <ClInclude Include="ql\indexes\ibor\nzdlibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\nzocr.hpp" />
+    <ClInclude Include="ql\indexes\ibor\pribor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\robor.hpp" />
     <ClInclude Include="ql\indexes\ibor\seklibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\shibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\sonia.hpp" />
+    <ClInclude Include="ql\indexes\ibor\thbfix.hpp" />
     <ClInclude Include="ql\indexes\ibor\tibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\trlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\usdlibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\wibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\zibor.hpp" />
     <ClInclude Include="ql\indexes\swap\all.hpp" />
     <ClInclude Include="ql\indexes\swap\chfliborswap.hpp" />
@@ -1467,6 +1472,7 @@
     <ClInclude Include="ql\time\calendars\switzerland.hpp" />
     <ClInclude Include="ql\time\calendars\taiwan.hpp" />
     <ClInclude Include="ql\time\calendars\target.hpp" />
+    <ClInclude Include="ql\time\calendars\thailand.hpp" />
     <ClInclude Include="ql\time\calendars\turkey.hpp" />
     <ClInclude Include="ql\time\calendars\ukraine.hpp" />
     <ClInclude Include="ql\time\calendars\unitedkingdom.hpp" />
@@ -1752,7 +1758,6 @@
     <ClInclude Include="ql\experimental\math\moorepenroseinverse.hpp" />
     <ClInclude Include="ql\experimental\math\multidimintegrator.hpp" />
     <ClInclude Include="ql\experimental\math\multidimquadrature.hpp" />
-    <ClInclude Include="ql\experimental\math\numericaldifferentiation.hpp" />
     <ClInclude Include="ql\experimental\math\piecewisefunction.hpp" />
     <ClInclude Include="ql\experimental\math\piecewiseintegral.hpp" />
     <ClInclude Include="ql\experimental\math\polarstudenttrng.hpp" />
@@ -1760,6 +1765,7 @@
     <ClInclude Include="ql\experimental\math\tcopulapolicy.hpp" />
     <ClInclude Include="ql\experimental\math\zigguratrng.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
+    <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\config.ansi.hpp" />
@@ -1790,6 +1796,7 @@
     <ClInclude Include="ql\quantlib.hpp" />
     <ClInclude Include="ql\quote.hpp" />
     <ClInclude Include="ql\settings.hpp" />
+    <ClInclude Include="ql\shared_ptr.hpp" />
     <ClInclude Include="ql\stochasticprocess.hpp" />
     <ClInclude Include="ql\termstructure.hpp" />
     <ClInclude Include="ql\timegrid.hpp" />
@@ -1819,7 +1826,6 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />
-    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp" />
     <ClCompile Include="ql\patterns\observable.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClInclude Include="ql\experimental\finitedifferences\all.hpp" />
@@ -1879,6 +1885,8 @@
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\firstderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\ninepointlinearop.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\numericaldifferentiation.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\nthorderderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\secondderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\secondordermixedderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\triplebandlinearop.cpp" />
@@ -1887,6 +1895,7 @@
     <ClCompile Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\impliciteulerscheme.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\schemes\methodoflinesscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\modifiedcraigsneydscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdm1dimsolver.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdm2dblackscholessolver.cpp" />
@@ -1960,6 +1969,7 @@
     <ClCompile Include="ql\indexes\interestrateindex.cpp" />
     <ClCompile Include="ql\indexes\region.cpp" />
     <ClCompile Include="ql\indexes\swapindex.cpp" />
+    <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\eonia.cpp" />
     <ClCompile Include="ql\indexes\ibor\euribor.cpp" />
     <ClCompile Include="ql\indexes\ibor\eurlibor.cpp" />
@@ -2450,6 +2460,7 @@
     <ClCompile Include="ql\time\calendars\switzerland.cpp" />
     <ClCompile Include="ql\time\calendars\taiwan.cpp" />
     <ClCompile Include="ql\time\calendars\target.cpp" />
+    <ClCompile Include="ql\time\calendars\thailand.cpp" />
     <ClCompile Include="ql\time\calendars\turkey.cpp" />
     <ClCompile Include="ql\time\calendars\ukraine.cpp" />
     <ClCompile Include="ql\time\calendars\unitedkingdom.cpp" />
@@ -2652,7 +2663,6 @@
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
-    <ClCompile Include="ql\experimental\math\numericaldifferentiation.cpp" />
     <ClCompile Include="ql\experimental\math\piecewiseintegral.cpp" />
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp" />

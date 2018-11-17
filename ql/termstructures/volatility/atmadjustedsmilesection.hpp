@@ -33,7 +33,7 @@ namespace QuantLib {
 
       public:
 
-        AtmAdjustedSmileSection(const boost::shared_ptr<SmileSection> source,
+        AtmAdjustedSmileSection(const ext::shared_ptr<SmileSection> source,
                                 const Real atm = Null<Real>(),
                                 bool recenterSmile = false);
 
@@ -55,7 +55,7 @@ namespace QuantLib {
         }
 
         Real digitalOptionPrice(Rate strike, Option::Type type = Option::Call,
-                                Real discount = 1.0, Real gap = 1.0E-8) const {
+                                Real discount = 1.0, Real gap = 1.0e-5) const {
             return source_->digitalOptionPrice(adjustedStrike(strike), type,
                                                discount, gap);
         }
@@ -77,7 +77,7 @@ namespace QuantLib {
       private:
 
         Real adjustedStrike(Real strike) const;
-        boost::shared_ptr<SmileSection> source_;
+        ext::shared_ptr<SmileSection> source_;
         Real adjustment_;
         Real f_;
     };

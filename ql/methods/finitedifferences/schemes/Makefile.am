@@ -11,7 +11,8 @@ this_include_HEADERS = \
 	hundsdorferscheme.hpp \
 	impliciteulerscheme.hpp \
 	methodoflinesscheme.hpp \
-	modifiedcraigsneydscheme.hpp
+	modifiedcraigsneydscheme.hpp \
+	trbdf2scheme.hpp
 
 cpp_files = \
 	craigsneydscheme.cpp \

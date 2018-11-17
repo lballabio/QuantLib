@@ -29,7 +29,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/math/array.hpp>
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -39,10 +39,10 @@ namespace QuantLib {
         enum PolynomType { Monomial, Laguerre, Hermite, Hyperbolic,
                            Legendre, Chebyshev, Chebyshev2nd };
 
-        static std::vector<boost::function1<Real, Real> >
+        static std::vector<ext::function<Real(Real)> >
             pathBasisSystem(Size order, PolynomType polyType);
 
-        static std::vector<boost::function1<Real, Array> >
+        static std::vector<ext::function<Real(Array)> >
             multiPathBasisSystem(Size dim, Size order, PolynomType polyType);
     };
 

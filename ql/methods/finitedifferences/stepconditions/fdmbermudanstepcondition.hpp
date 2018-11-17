@@ -38,16 +38,16 @@ namespace QuantLib {
             const std::vector<Date> & exerciseDates,
             const Date& referenceDate,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<FdmMesher> & mesher,
-            const boost::shared_ptr<FdmInnerValueCalculator> & calculator);
+            const ext::shared_ptr<FdmMesher> & mesher,
+            const ext::shared_ptr<FdmInnerValueCalculator> & calculator);
 
         void applyTo(Array& a, Time t) const;
         const std::vector<Time>& exerciseTimes() const;
 
       private:
         std::vector<Time> exerciseTimes_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator_;
     };
 }
 

@@ -53,10 +53,10 @@ namespace QuantLib {
         : public VanillaOption::engine {
       public:
         JuQuadraticApproximationEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

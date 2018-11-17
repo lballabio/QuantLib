@@ -33,10 +33,10 @@ namespace QuantLib {
     class FdmInnerValueCalculator;
 
     struct FdmSolverDesc {
-        const boost::shared_ptr<FdmMesher> mesher;
+        const ext::shared_ptr<FdmMesher> mesher;
         const FdmBoundaryConditionSet bcSet;
-        const boost::shared_ptr<FdmStepConditionComposite> condition;
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator;
+        const ext::shared_ptr<FdmStepConditionComposite> condition;
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator;
         const Time maturity;
         const Size timeSteps;
         const Size dampingSteps;

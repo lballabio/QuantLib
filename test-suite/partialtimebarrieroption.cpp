@@ -25,7 +25,6 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -50,28 +49,28 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
     Option::Type type = Option::Call;
     DayCounter dc = Actual360();
     Date maturity = today + 360;
-    boost::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(maturity);
+    ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturity);
     Real barrier = 100.0;
     Real rebate = 0.0;
 
-    boost::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>();
-    boost::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.0);
-    boost::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.1);
-    boost::shared_ptr<SimpleQuote> vol = boost::make_shared<SimpleQuote>(0.25);
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.1);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
 
     Handle<Quote> underlying(spot);
     Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<BlackScholesMertonProcess> process =
-        boost::make_shared<BlackScholesMertonProcess>(underlying,
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTS,
                                                       riskFreeTS,
                                                       blackVolTS);
-    boost::shared_ptr<PricingEngine> engine =
-        boost::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+    ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
 
     TestCase cases[] = {
         {  95.0,  90.0,   1,  0.0393 },
@@ -102,8 +101,8 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
 
     for (Size i=0; i<LENGTH(cases); ++i) {
         Date coverEventDate = today + cases[i].days;
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::make_shared<PlainVanillaPayoff>(type, cases[i].strike);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::make_shared<PlainVanillaPayoff>(type, cases[i].strike);
         PartialTimeBarrierOption option(PartialBarrier::DownOut,
                                         PartialBarrier::EndB1,
                                         barrier, rebate,

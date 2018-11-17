@@ -32,7 +32,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <complex>
 
 namespace QuantLib {
@@ -98,17 +98,17 @@ namespace QuantLib {
         // Be aware: using a too large number for maxEvaluations might result
         // in a stack overflow as the Lobatto integration is a recursive
         // algorithm.
-        AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+        AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                              Real relTolerance, Size maxEvaluations);
 
         // Constructor using Laguerre integration
         // and Gatheral's version of complex log.
-        AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+        AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                              Size integrationOrder = 144);
 
         // Constructor giving full control
         // over the Fourier integration algorithm
-        AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+        AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                              ComplexLogFormula cpxLog, const Integration& itg,
                              Real andersenPiterbargEpsilon = 1e-8);
 
@@ -145,7 +145,7 @@ namespace QuantLib {
 
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
-        const boost::shared_ptr<Integration> integration_;
+        const ext::shared_ptr<Integration> integration_;
         const Real andersenPiterbargEpsilon_;
     };
 
@@ -179,7 +179,7 @@ namespace QuantLib {
             Real c_inf, Real epsilon, Real v0, Real t);
 
         Real calculate(Real c_inf,
-                       const boost::function1<Real, Real>& f,
+                       const ext::function<Real(Real)>& f,
                        Real maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;
@@ -193,14 +193,14 @@ namespace QuantLib {
               GaussChebyshev, GaussChebyshev2nd };
 
         Integration(Algorithm intAlgo,
-                    const boost::shared_ptr<GaussianQuadrature>& quadrature);
+                    const ext::shared_ptr<GaussianQuadrature>& quadrature);
 
         Integration(Algorithm intAlgo,
-                    const boost::shared_ptr<Integrator>& integrator);
+                    const ext::shared_ptr<Integrator>& integrator);
 
         const Algorithm intAlgo_;
-        const boost::shared_ptr<Integrator> integrator_;
-        const boost::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
+        const ext::shared_ptr<Integrator> integrator_;
+        const ext::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
     };
 
     // inline

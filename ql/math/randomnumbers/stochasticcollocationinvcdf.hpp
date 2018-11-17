@@ -28,7 +28,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 
-#include <boost/function.hpp>
+#include <ql/function.hpp>
 #include <functional>
 
 namespace QuantLib {
@@ -41,10 +41,13 @@ namespace QuantLib {
         http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2529691
      */
 
-    class StochasticCollocationInvCDF : public std::unary_function<Real,Real> {
+    class StochasticCollocationInvCDF {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         StochasticCollocationInvCDF(
-            const boost::function<Real(Real)>& invCDF,
+            const ext::function<Real(Real)>& invCDF,
             Size lagrangeOrder,
             Real pMax = Null<Real>(),
             Real pMin = Null<Real>());
