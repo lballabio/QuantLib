@@ -70,7 +70,8 @@ namespace {
                         const ext::shared_ptr<I> &ii, const Period &observationLag,
                         const Calendar &calendar,
                         const BusinessDayConvention &bdc,
-                        const DayCounter &dc) {
+                        const DayCounter &dc,
+                        const Handle<YieldTermStructure>& discountCurve) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
@@ -79,7 +80,7 @@ namespace {
                             new SimpleQuote(iiData[i].rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                             quote, observationLag, maturity,
-                            calendar, bdc, dc, ii));
+                            calendar, bdc, dc, ii, discountCurve));
             instruments.push_back(anInstrument);
         }
 
@@ -184,7 +185,8 @@ namespace {
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
             YoYInflationIndex>(yyData, LENGTH(yyData), iir,
                                observationLag,
-                               calendar, convention, dc);
+                               calendar, convention, dc,
+                               Handle<YieldTermStructure>(nominalTS));
 
             Rate baseYYRate = yyData[0].rate/100.0;
             ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
