@@ -28,6 +28,7 @@ this_include_HEADERS = \
     robor.hpp \
     seklibor.hpp \
     shibor.hpp \
+    sofr.hpp \
     sonia.hpp \
     tibor.hpp \
     thbfix.hpp \
@@ -44,6 +45,7 @@ cpp_files = \
     fedfunds.cpp \
     libor.cpp \
     shibor.cpp \
+    sofr.cpp \
     sonia.cpp
 
 
