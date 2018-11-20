@@ -208,14 +208,14 @@ namespace {
 
 
         ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility,
-                                                    Size which) {
+                                                  Size which) {
 
             ext::shared_ptr<YoYInflationIndex>
             yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
 
             Handle<YoYOptionletVolatilitySurface>
                 vol(ext::make_shared<ConstantYoYOptionletVolatility>(
-                    volatility,
+                                                       volatility,
                                                        settlementDays,
                                                        calendar,
                                                        convention,
@@ -228,15 +228,15 @@ namespace {
             switch (which) {
                 case 0:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBlackCapFloorEngine(iir, vol));
+                            new YoYInflationBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 1:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol));
+                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 2:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBachelierCapFloorEngine(iir, vol));
+                            new YoYInflationBachelierCapFloorEngine(iir, vol, nominalTS));
                     break;
                 default:
                     BOOST_FAIL("unknown engine request: which = "<<which
@@ -249,10 +249,10 @@ namespace {
 
 
         ext::shared_ptr<YoYInflationCapFloor> makeYoYCapFloor(YoYInflationCapFloor::Type type,
-                                                 const Leg& leg,
-                                                 Rate strike,
-                                                 Volatility volatility,
-                                                 Size which) {
+                                                              const Leg& leg,
+                                                              Rate strike,
+                                                              Volatility volatility,
+                                                              Size which) {
             ext::shared_ptr<YoYInflationCapFloor> result;
             switch (type) {
                 case YoYInflationCapFloor::Cap:

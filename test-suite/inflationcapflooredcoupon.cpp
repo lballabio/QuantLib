@@ -328,15 +328,15 @@ namespace {
             switch (which) {
                 case 0:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBlackCapFloorEngine(iir, vol));
+                            new YoYInflationBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 1:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol));
+                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 2:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBachelierCapFloorEngine(iir, vol));
+                            new YoYInflationBachelierCapFloorEngine(iir, vol, nominalTS));
                     break;
                 default:
                     BOOST_FAIL("unknown engine request: which = "<<which
