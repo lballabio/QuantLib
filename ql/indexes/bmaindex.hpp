@@ -41,9 +41,9 @@ namespace QuantLib {
     class BMAIndex : public InterestRateIndex {
       public:
         explicit BMAIndex(const Handle<YieldTermStructure>& h =
-                                            Handle<YieldTermStructure>(),
+                                    Handle<YieldTermStructure>(),
                           const Calendar& fixingCalendar =
-                                            UnitedStates(UnitedStates::NYSE));
+                                    UnitedStates(UnitedStates::GovernmentBond));
         //! \name Index interface
         //@{
         /*! BMA is fixed weekly on Wednesdays.
