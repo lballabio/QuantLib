@@ -122,6 +122,7 @@ QL_TESTS = \
 	sampledcurve.hpp sampledcurve.cpp \
 	schedule.hpp schedule.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
+	sofrfutures.hpp sofrfutures.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
 	squarerootclvmodel.hpp squarerootclvmodel.cpp \
