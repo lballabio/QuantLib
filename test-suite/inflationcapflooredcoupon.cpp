@@ -262,15 +262,15 @@ namespace {
             switch (which) {
                 case 0:
                     pricer = ext::shared_ptr<YoYInflationCouponPricer>(
-                            new BlackYoYInflationCouponPricer(vol));
+                            new BlackYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 case 1:
                     pricer = ext::shared_ptr<YoYInflationCouponPricer>(
-                            new UnitDisplacedBlackYoYInflationCouponPricer(vol));
+                            new UnitDisplacedBlackYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 case 2:
                     pricer = ext::shared_ptr<YoYInflationCouponPricer>(
-                            new BachelierYoYInflationCouponPricer(vol));
+                            new BachelierYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 default:
                     BOOST_FAIL("unknown coupon pricer request: which = "<<which

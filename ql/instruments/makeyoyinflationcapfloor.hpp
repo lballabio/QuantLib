@@ -49,6 +49,7 @@ namespace QuantLib {
                         the passed nominal term structure).  In order
                         to specify a forward start, you'll have to call
                         withForwardStart.
+                        Deprecated in version 1.5.
         */
         QL_DEPRECATED
         MakeYoYInflationCapFloor(
