@@ -27,6 +27,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 
 namespace QuantLib {
 
@@ -40,7 +41,9 @@ namespace QuantLib {
     class BMAIndex : public InterestRateIndex {
       public:
         explicit BMAIndex(const Handle<YieldTermStructure>& h =
-                                                Handle<YieldTermStructure>());
+                                    Handle<YieldTermStructure>(),
+                          const Calendar& fixingCalendar =
+                                    UnitedStates(UnitedStates::GovernmentBond));
         //! \name Index interface
         //@{
         /*! BMA is fixed weekly on Wednesdays.
