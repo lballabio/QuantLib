@@ -184,6 +184,7 @@
 #include "swaptionvolatilitycube.hpp"
 #include "swaptionvolatilitymatrix.hpp"
 #include "termstructures.hpp"
+#include "timegrid.hpp"
 #include "timeseries.hpp"
 #include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
@@ -453,6 +454,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
+	test->add(TimeGridTest::suite());
     test->add(TimeSeriesTest::suite());
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
