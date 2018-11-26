@@ -22,17 +22,17 @@ FOR A PARTICULAR PURPOSE.See the license for more details.
 
 class TimeGridTest {
 public:
-	static void testConstructorAdditionalSteps();
-	static void testConstructorMandatorySteps();
-	static void testConstructorEvenSteps();
-	static void testConstructorEmptyIterator();
-	static void testConstructorNegativeValuesInIterator();
-
-	static void testClosestIndex();
-	static void testClosestTime();
-	static void testMandatoryTimes();
-
-	static boost::unit_test_framework::test_suite* suite();
+    static void testConstructorAdditionalSteps();
+    static void testConstructorMandatorySteps();
+    static void testConstructorEvenSteps();
+    static void testConstructorEmptyIterator();
+    static void testConstructorNegativeValuesInIterator();
+    
+    static void testClosestIndex();
+    static void testClosestTime();
+    static void testMandatoryTimes();
+    
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 #endif
