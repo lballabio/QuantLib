@@ -26,7 +26,6 @@
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/inhomogeneouspooldef.hpp>
 #include <ql/experimental/credit/homogeneouspooldef.hpp>
-
 #include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
@@ -35,10 +34,8 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currencies/europe.hpp>
-
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
-
 #include <iomanip>
 #include <iostream>
 

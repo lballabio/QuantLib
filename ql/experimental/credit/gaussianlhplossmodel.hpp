@@ -31,8 +31,7 @@
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
-#include <ql/bind.hpp>
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 #include <numeric>
 
 /* Intended to replace GaussianLHPCDOEngine in 

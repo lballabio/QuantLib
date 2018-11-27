@@ -25,7 +25,7 @@
 #include <ql/errors.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 

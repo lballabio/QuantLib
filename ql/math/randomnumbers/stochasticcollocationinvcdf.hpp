@@ -27,9 +27,7 @@
 
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
-
-#include <ql/function.hpp>
-#include <functional>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
     //! Stochastic collocation inverse cumulative distribution function

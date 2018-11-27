@@ -111,7 +111,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 #include <sstream>
 
 #if defined(BOOST_MSVC)

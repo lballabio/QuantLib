@@ -31,8 +31,7 @@
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/function.hpp>
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 

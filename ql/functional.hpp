@@ -17,19 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file function.hpp
-    \brief Maps function to either the boost or std implementation
+/*! \file functional.hpp
+    \brief Maps function, bind and cref to either the boost or std implementation
 */
 
-#ifndef quantlib_function_hpp
-#define quantlib_function_hpp
+#ifndef quantlib_functional_hpp
+#define quantlib_functional_hpp
 
 #include <ql/qldefines.hpp>
 
 #if defined(QL_USE_STD_FUNCTION)
 #include <functional>
 #else
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 #include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <boost/ref.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
 #endif
 
 namespace QuantLib {
@@ -38,8 +47,18 @@ namespace QuantLib {
 
         #if defined(QL_USE_STD_FUNCTION)
         using std::function;
+        using std::bind;
+        using std::ref;
+        using std::cref;
+        namespace placeholders {
+            using namespace std::placeholders;
+        }
         #else
         using boost::function;
+        using boost::bind;
+        using boost::ref;
+        using boost::cref;
+        namespace placeholders {}
         #endif
 
     }

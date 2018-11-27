@@ -1782,6 +1782,7 @@
     <ClInclude Include="ql\event.hpp" />
     <ClInclude Include="ql\exchangerate.hpp" />
     <ClInclude Include="ql\exercise.hpp" />
+    <ClInclude Include="ql\functional.hpp" />
     <ClInclude Include="ql\grid.hpp" />
     <ClInclude Include="ql\handle.hpp" />
     <ClInclude Include="ql\index.hpp" />

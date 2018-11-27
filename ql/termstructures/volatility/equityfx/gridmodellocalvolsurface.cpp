@@ -23,9 +23,7 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>
-
-#include <ql/bind.hpp>
-
+#include <ql/functional.hpp>
 #include <algorithm>
 
 namespace QuantLib {

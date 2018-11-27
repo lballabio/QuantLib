@@ -23,7 +23,7 @@
 
 #include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
 #include <ql/errors.hpp>
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 #include <boost/scoped_array.hpp>
 #include <complex>
 
