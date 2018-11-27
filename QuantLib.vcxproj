@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -481,6 +481,9 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp" />
+    <ClInclude Include="ql\experimental\basismodels\tenoroptionletvts.hpp" />
+    <ClInclude Include="ql\experimental\basismodels\tenorswaptionvts.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\gbsmrndcalculator.hpp" />
     <ClInclude Include="ql\experimental\math\fireflyalgorithm.hpp" />
     <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp" />
@@ -1807,6 +1810,9 @@
     <ClInclude Include="ql\volatilitymodel.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ql\experimental\basismodels\swaptioncfs.cpp" />
+    <ClCompile Include="ql\experimental\basismodels\tenoroptionletvts.cpp" />
+    <ClCompile Include="ql\experimental\basismodels\tenorswaptionvts.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\gbsmrndcalculator.cpp" />
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp" />

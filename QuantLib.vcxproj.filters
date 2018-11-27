@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="methods">
@@ -330,6 +330,9 @@
     </Filter>
     <Filter Include="experimental\models">
       <UniqueIdentifier>{9eeb0683-3147-4850-9eba-645af86b58e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="experimental\basismodels">
+      <UniqueIdentifier>{fceaa051-43f2-4c81-9bf5-a38d88b661ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -4230,6 +4233,15 @@
     <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp">
+      <Filter>experimental\basismodels</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\basismodels\tenoroptionletvts.hpp">
+      <Filter>experimental\basismodels</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\basismodels\tenorswaptionvts.hpp">
+      <Filter>experimental\basismodels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6813,6 +6825,15 @@
     </ClCompile>
     <ClCompile Include="ql\time\daycounters\actual365fixed.cpp">
       <Filter>time\daycounters</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\basismodels\swaptioncfs.cpp">
+      <Filter>experimental\basismodels</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\basismodels\tenoroptionletvts.cpp">
+      <Filter>experimental\basismodels</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\basismodels\tenorswaptionvts.cpp">
+      <Filter>experimental\basismodels</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
