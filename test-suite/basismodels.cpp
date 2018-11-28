@@ -65,7 +65,7 @@ namespace {
          0.013334611  ,
          0.013982809
 	};
-	std::vector<Real> discRates(std::begin(discRatesData), std::end(discRatesData));
+	std::vector<Real> discRates(discRatesData, discRatesData+10);
 
 	Real proj3mRatesData[] = {
        -0.000483439	 ,
@@ -79,7 +79,7 @@ namespace {
         0.014534052	 ,
         0.014942896
 	};
-	std::vector<Real> proj3mRates(std::begin(proj3mRatesData), std::end(proj3mRatesData));
+	std::vector<Real> proj3mRates(proj3mRatesData, proj3mRatesData+10);
 
 	Real proj6mRatesData[] = {
         0.000233608	 ,
@@ -93,7 +93,7 @@ namespace {
         0.015136391	 ,
         0.015377704
 	};
-	std::vector<Real> proj6mRates(std::begin(proj6mRatesData), std::end(proj6mRatesData));
+	std::vector<Real> proj6mRates(proj6mRatesData, proj6mRatesData+10);
 
 	Handle<YieldTermStructure> getYTS(const std::vector<Period> terms, const std::vector<Real> rates, const Real spread = 0.0) {
 		Date today = Settings::instance().evaluationDate();
@@ -129,7 +129,7 @@ namespace {
         0.0300,
         0.0500
 	};
-	std::vector<Real> capletStrikes(std::begin(capletStrikesData), std::end(capletStrikesData));
+	std::vector<Real> capletStrikes(capletStrikesData, capletStrikesData+8);
 
 	Real cplRow01[] = { 0.003010094, 0.002628065, 0.00456118,  0.006731268, 0.008678572, 0.010570881, 0.014149552, 0.021000638 };
 	Real cplRow02[] = { 0.004173715, 0.003727039, 0.004180263, 0.005726083, 0.006905876, 0.008263514, 0.010555395, 0.014976523 };
@@ -149,16 +149,16 @@ namespace {
 		for (Size k = 0; k < capletTerms.size(); ++k) dates.push_back(TARGET().advance(today, capletTerms[k], Following));
 		// set up vol data manually
 		std::vector< std::vector<Real> > capletVols;
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow01), std::end(cplRow01)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow02), std::end(cplRow02)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow03), std::end(cplRow03)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow04), std::end(cplRow04)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow05), std::end(cplRow05)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow06), std::end(cplRow06)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow07), std::end(cplRow07)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow08), std::end(cplRow08)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow09), std::end(cplRow09)));
-		capletVols.push_back(std::vector<Real>(std::begin(cplRow10), std::end(cplRow10)));
+		capletVols.push_back(std::vector<Real>(cplRow01, cplRow01 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow02, cplRow02 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow03, cplRow03 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow04, cplRow04 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow05, cplRow05 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow06, cplRow06 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow07, cplRow07 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow08, cplRow08 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow09, cplRow09 + 8));
+		capletVols.push_back(std::vector<Real>(cplRow10, cplRow10 + 8));
 		// create quotes
 		std::vector< std::vector< Handle<Quote> > > capletVolQuotes;
 		for (Size i = 0; i < capletVols.size(); ++i) {
@@ -190,11 +190,11 @@ namespace {
 
 	Handle<SwaptionVolatilityStructure> getSwaptionVTS() {
 		std::vector< std::vector<Real> > swaptionVols;
-		swaptionVols.push_back(std::vector<Real>(std::begin(swtRow01), std::end(swtRow01)));
-		swaptionVols.push_back(std::vector<Real>(std::begin(swtRow02), std::end(swtRow02)));
-		swaptionVols.push_back(std::vector<Real>(std::begin(swtRow03), std::end(swtRow03)));
-		swaptionVols.push_back(std::vector<Real>(std::begin(swtRow04), std::end(swtRow04)));
-		swaptionVols.push_back(std::vector<Real>(std::begin(swtRow05), std::end(swtRow05)));
+		swaptionVols.push_back(std::vector<Real>(swtRow01, swtRow01 + 5));
+		swaptionVols.push_back(std::vector<Real>(swtRow02, swtRow02 + 5));
+		swaptionVols.push_back(std::vector<Real>(swtRow03, swtRow03 + 5));
+		swaptionVols.push_back(std::vector<Real>(swtRow04, swtRow04 + 5));
+		swaptionVols.push_back(std::vector<Real>(swtRow05, swtRow05 + 5));
 		std::vector< std::vector< Handle<Quote> > > swaptionVolQuotes;
 		for (Size i = 0; i < swaptionVols.size(); ++i) {
 			std::vector< Handle<Quote> > row;
@@ -287,9 +287,9 @@ void BasismodelsTest::testTenoroptionletvts() {
 		Real corrTimesRaw[]  = { 0.0, 50.0 };
 		Real rhoInfDataRaw[] = { 0.3,  0.3 };
 		Real betaDataRaw[]   = { 0.9,  0.9 };
-		std::vector<Real> corrTimes(std::begin(corrTimesRaw), std::end(corrTimesRaw));
-		std::vector<Real> rhoInfData(std::begin(rhoInfDataRaw), std::end(rhoInfDataRaw));
-		std::vector<Real> betaData(std::begin(betaDataRaw), std::end(betaDataRaw));
+		std::vector<Real> corrTimes(corrTimesRaw, corrTimesRaw+2);
+		std::vector<Real> rhoInfData(rhoInfDataRaw, rhoInfDataRaw+2);
+		std::vector<Real> betaData(betaDataRaw, betaDataRaw+2);
 		ext::shared_ptr<Interpolation> rho(new LinearInterpolation(corrTimes.begin(), corrTimes.end(), rhoInfData.begin()));
 		ext::shared_ptr<Interpolation> beta(new LinearInterpolation(corrTimes.begin(), corrTimes.end(), betaData.begin()));
 		ext::shared_ptr<TenorOptionletVTS::CorrelationStructure> corr(new TenorOptionletVTS::TwoParameterCorrelation(rho, beta));
@@ -313,9 +313,9 @@ void BasismodelsTest::testTenoroptionletvts() {
 		Real corrTimesRaw[] =  { 0.0, 50.0 };
 		Real rhoInfDataRaw[] = { 0.0,  0.0 };
 		Real betaDataRaw[] =   { 0.0,  0.0 };
-		std::vector<Real> corrTimes(std::begin(corrTimesRaw), std::end(corrTimesRaw));
-		std::vector<Real> rhoInfData(std::begin(rhoInfDataRaw), std::end(rhoInfDataRaw));
-		std::vector<Real> betaData(std::begin(betaDataRaw), std::end(betaDataRaw));
+		std::vector<Real> corrTimes(corrTimesRaw, corrTimesRaw + 2);
+		std::vector<Real> rhoInfData(rhoInfDataRaw, rhoInfDataRaw + 2);
+		std::vector<Real> betaData(betaDataRaw, betaDataRaw + 2);
 		ext::shared_ptr<Interpolation> rho(new LinearInterpolation(corrTimes.begin(), corrTimes.end(), rhoInfData.begin()));
 		ext::shared_ptr<Interpolation> beta(new LinearInterpolation(corrTimes.begin(), corrTimes.end(), betaData.begin()));
 		ext::shared_ptr<TenorOptionletVTS::CorrelationStructure> corr(new TenorOptionletVTS::TwoParameterCorrelation(rho, beta));
