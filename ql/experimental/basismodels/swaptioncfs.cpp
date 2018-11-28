@@ -39,13 +39,13 @@ namespace QuantLib {
 	    : refDate_(discountCurve->referenceDate()) {
 		// we need to find the first coupon for initial payment
 		Size floatIdx=0;
-		while ( (refDate_>(boost::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()) && (floatIdx<iborLeg.size()-1)) ++floatIdx;
-        if (refDate_<=(boost::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()) {  // otherwise there is no floating coupon left
-			ext::shared_ptr<Coupon> firstFloatCoupon = boost::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]);
+		while ( (refDate_>(ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()) && (floatIdx<iborLeg.size()-1)) ++floatIdx;
+        if (refDate_<=(ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()) {  // otherwise there is no floating coupon left
+			ext::shared_ptr<Coupon> firstFloatCoupon = ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]);
 			floatLeg_.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(firstFloatCoupon->nominal(),firstFloatCoupon->accrualStartDate())));
 			// calculate spread payments
             for (Size k=floatIdx; k<iborLeg.size(); ++k) {
-		    	ext::shared_ptr<Coupon> coupon = boost::dynamic_pointer_cast<Coupon>(iborLeg[k]);
+		    	ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(iborLeg[k]);
 		    	if (!coupon) QL_FAIL("FloatingLeg CashFlow is no Coupon.");
 		    	Date startDate = coupon->accrualStartDate();
 		    	Date endDate   = coupon->accrualEndDate();
@@ -66,7 +66,7 @@ namespace QuantLib {
 		    	floatLeg_.push_back(ext::shared_ptr<CashFlow>(new FixedRateCoupon(payDate,coupon->nominal(),spread,coupon->dayCounter(),startDate,endDate)));		    	
 		    }  // for ...
 			// finally, add the notional at the last date
-		    ext::shared_ptr<Coupon> lastFloatCoupon = boost::dynamic_pointer_cast<Coupon>(iborLeg.back());
+		    ext::shared_ptr<Coupon> lastFloatCoupon = ext::dynamic_pointer_cast<Coupon>(iborLeg.back());
 		    floatLeg_.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(-1.0*lastFloatCoupon->nominal(),lastFloatCoupon->accrualEndDate())));
 		} // if ...
 		// assemble raw cash flow data...
@@ -84,14 +84,14 @@ namespace QuantLib {
         // copy fixed leg coupons
 		Leg fixedLeg = swap->fixedLeg();
 		for (Size k=0; k<fixedLeg.size(); ++k) {
-			if (boost::dynamic_pointer_cast<Coupon>(fixedLeg[k])->accrualStartDate()>=refDate_) fixedLeg_.push_back(fixedLeg[k]);
+			if (ext::dynamic_pointer_cast<Coupon>(fixedLeg[k])->accrualStartDate()>=refDate_) fixedLeg_.push_back(fixedLeg[k]);
 		}
 		Actual365Fixed dc;
 		// ... fixed times/weights
 		for (Size k=0; k<fixedLeg_.size(); ++k) fixedTimes_.push_back( dc.yearFraction(refDate_,fixedLeg_[k]->date()) );
 		for (Size k=0; k<fixedLeg_.size(); ++k)	fixedWeights_.push_back( fixedLeg_[k]->amount() );
 		for (Size k=0; k<fixedLeg_.size(); ++k)	{
-			ext::shared_ptr<Coupon> coupon = boost::dynamic_pointer_cast<Coupon>(fixedLeg_[k]);
+			ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(fixedLeg_[k]);
 			if (coupon) annuityWeights_.push_back( coupon->nominal() * coupon->accrualPeriod() );
 		}
 	}
