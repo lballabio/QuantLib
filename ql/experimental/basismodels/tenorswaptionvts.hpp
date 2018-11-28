@@ -106,7 +106,7 @@ namespace QuantLib {
 
         virtual Volatility volatilityImpl(Time optionTime,
                                           Time swapLength,
-										  Rate strike) const { return smileSectionImpl(optionTime,swapLength)->volatility(strike,VolatilityType::Normal,0.0); }
+										  Rate strike) const { return smileSectionImpl(optionTime,swapLength)->volatility(strike,Normal,0.0); }
 
 		// the methodology is designed for normal volatilities
 		VolatilityType volatilityType() const { return Normal; }

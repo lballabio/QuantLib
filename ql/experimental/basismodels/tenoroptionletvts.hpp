@@ -73,6 +73,7 @@ namespace QuantLib {
 		public:
 			// return the correlation between two FRA rates starting at start1 and start2
 			virtual Real operator() (const Time& start1, const Time& start2) const = 0;
+			virtual ~CorrelationStructure() {};
 		};
 
 		// very basic choice for correlation structure
