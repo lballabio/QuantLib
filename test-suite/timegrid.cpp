@@ -28,11 +28,23 @@ using namespace boost::unit_test_framework;
 void TimeGridTest::testConstructorAdditionalSteps()
 {
     BOOST_TEST_MESSAGE("TimeGrid constructor with additional steps.");
-    const std::vector<Time> test_times = { 1, 2, 4 };
+    std::vector<Time> test_times;
+    test_times.push_back(1.0);
+    test_times.push_back(2.0);
+    test_times.push_back(4.0);
     const TimeGrid tg(test_times.begin(), test_times.end(), 8);
     
     // Expect 8 evenly sized steps over the interval [0, 4].
-    const std::vector<Time> expected_times = { 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4 };
+    std::vector<Time> expected_times;
+    expected_times.push_back(0.0);
+    expected_times.push_back(0.5);
+    expected_times.push_back(1.0);
+    expected_times.push_back(1.5);
+    expected_times.push_back(2.0);
+    expected_times.push_back(2.5);
+    expected_times.push_back(3.0);
+    expected_times.push_back(3.5);
+    expected_times.push_back(4.0);
     BOOST_CHECK_EQUAL_COLLECTIONS(
     	tg.begin(), tg.end(), expected_times.begin(), expected_times.end());
 }
@@ -40,7 +52,11 @@ void TimeGridTest::testConstructorAdditionalSteps()
 void TimeGridTest::testConstructorMandatorySteps()
 {
     BOOST_TEST_MESSAGE("TimeGrid constructor with only mandatory points.");
-    const std::vector<Time> test_times = { 0, 1, 2, 4 };
+    std::vector<Time> test_times;
+    test_times.push_back(0.0);
+    test_times.push_back(1.0);
+    test_times.push_back(2.0);
+    test_times.push_back(4.0);
     const TimeGrid tg(test_times.begin(), test_times.end());
     
     // Time grid must include all times from passed iterator.
@@ -57,7 +73,13 @@ void TimeGridTest::testConstructorEvenSteps()
     Time end_time = 10;
     Size steps = 5;
     const TimeGrid tg(end_time, steps);
-    const std::vector<Time> expected_times = { 0, 2, 4, 6, 8, 10 };
+    std::vector<Time> expected_times;
+    expected_times.push_back(0.0);
+    expected_times.push_back(2.0);
+    expected_times.push_back(4.0);
+    expected_times.push_back(6.0);
+    expected_times.push_back(8.0);
+    expected_times.push_back(10.0);
     
     BOOST_CHECK_EQUAL_COLLECTIONS(
     	tg.begin(), tg.end(), expected_times.begin(), expected_times.end()
@@ -70,7 +92,7 @@ void TimeGridTest::testConstructorEmptyIterator()
     	"Test if the constructor raises an error for empty iterators."
     );
     
-    const std::vector<Time> times = {};
+    const std::vector<Time> times;
     BOOST_CHECK_THROW(const TimeGrid tg(times.begin(), times.end()), Error);
 }
 
@@ -80,7 +102,11 @@ void TimeGridTest::testConstructorNegativeValuesInIterator()
     	"Test if the constructor raises an error for negative time values."
     );
     
-    const std::vector<Time> times = { -3, 1, 4, 5 };
+    std::vector<Time> times;
+    times.push_back(-3.0);
+    times.push_back(1.0);
+    times.push_back(4.0);
+    times.push_back(5.0);
     BOOST_CHECK_THROW(const TimeGrid tg(times.begin(), times.end()), Error);
 }
 
@@ -88,7 +114,10 @@ void TimeGridTest::testClosestIndex()
 {
     BOOST_TEST_MESSAGE("Test returned index is closest to the requested time."
     );
-    const std::vector<Time> test_times = { 1, 2, 5 };
+    std::vector<Time> test_times;
+    test_times.push_back(1.0);
+    test_times.push_back(2.0);
+    test_times.push_back(5.0);
     const TimeGrid tg(test_times.begin(), test_times.end());
     const Size expected_index = 3;
     
@@ -100,7 +129,10 @@ void TimeGridTest::testClosestIndex()
 void TimeGridTest::testClosestTime()
 {
     BOOST_TEST_MESSAGE("Test returned time matches to the requested index.");
-    const std::vector<Time> test_times = { 1, 2, 5 };
+    std::vector<Time> test_times;
+    test_times.push_back(1.0);
+    test_times.push_back(2.0);
+    test_times.push_back(5.0);
     const TimeGrid tg(test_times.begin(), test_times.end());
     const Size expected_time = 5;
     
@@ -112,7 +144,10 @@ void TimeGridTest::testClosestTime()
 void TimeGridTest::testMandatoryTimes()
 {
     BOOST_TEST_MESSAGE("Test mandatory times are recalled correctly.");
-    const std::vector<Time> test_times = { 1, 2, 4 };
+    std::vector<Time> test_times;
+    test_times.push_back(1.0);
+    test_times.push_back(2.0);
+    test_times.push_back(4.0);
     const TimeGrid tg(test_times.begin(), test_times.end(), 8);
     
     // Mandatory times are those provided by the original iterator.
