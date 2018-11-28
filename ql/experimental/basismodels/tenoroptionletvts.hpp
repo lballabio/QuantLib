@@ -43,7 +43,7 @@ namespace QuantLib {
 		class TenorOptionletSmileSection : public SmileSection {
 		protected:
 			ext::shared_ptr<CorrelationStructure>         correlation_;
-		    std::vector<ext::shared_ptr<SmileSection>>    baseSmileSection_;
+		    std::vector<ext::shared_ptr<SmileSection> >   baseSmileSection_;
 			std::vector<Time>                             startTimeBase_;  // for correlation parametrisation
 			std::vector<Real>                             fraRateBase_;
 			Real                                          fraRateTarg_;
@@ -86,7 +86,7 @@ namespace QuantLib {
 				rhoInf_ = rhoInf;
 				beta_   = beta;
 			}
-			virtual Real operator() (const Time& start1, const Time& start2) const {
+			Real operator() (const Time& start1, const Time& start2) const {
 				Real rhoInf = (*rhoInf_)(start1);
 				Real beta   = (*beta_)(start1);
 				Real rho = rhoInf + (1.0 - rhoInf)*exp(-beta*fabs(start2-start1));
