@@ -18,7 +18,7 @@
 */
 
 #include <ql/experimental/math/tcopulapolicy.hpp>
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 #include <numeric>
 #include <algorithm>
 

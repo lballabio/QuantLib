@@ -27,9 +27,9 @@
 #include <ql/quote.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/functional.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/floating_point_comparison.hpp>
-#include <ql/function.hpp>
 #include <vector>
 #include <string>
 #include <numeric>

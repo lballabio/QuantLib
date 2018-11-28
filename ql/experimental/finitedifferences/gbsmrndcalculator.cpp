@@ -28,17 +28,7 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <ql/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 

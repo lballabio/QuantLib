@@ -241,7 +241,7 @@ namespace QuantLib {
                 adjustments_ &= ~a;
                 return *this;
             }
-            ModelSettings &withSmileMoneynessCheckpoints(std::vector<Real> m) {
+            ModelSettings &withSmileMoneynessCheckpoints(const std::vector<Real>& m) {
                 smileMoneynessCheckpoints_ = m;
                 return *this;
             }

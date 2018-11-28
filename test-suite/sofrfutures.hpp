@@ -17,35 +17,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file function.hpp
-    \brief Maps function to either the boost or std implementation
-*/
+#ifndef quantlib_test_sofr_futures_hpp
+#define quantlib_test_sofr_futures_hpp
 
-#ifndef quantlib_function_hpp
-#define quantlib_function_hpp
+#include <boost/test/unit_test.hpp>
 
-#include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_FUNCTION)
-#include <functional>
-#else
-#include <boost/function.hpp>
-#endif
-
-namespace QuantLib {
-
-    namespace ext {
-
-        #if defined(QL_USE_STD_FUNCTION)
-        using std::function;
-        #else
-        using boost::function;
-        #endif
-
-    }
-
-}
+class SofrFuturesTest {
+  public:
+    static void testBootstrap();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
 
 #endif
-

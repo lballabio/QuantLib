@@ -100,18 +100,11 @@
 //#    define QL_USE_STD_UNIQUE_PTR
 #endif
 
-/* Define this to use std::function instead of boost::function.
-   This requires you to set your compiler's standard to at least
-   C++11. */
+/* Define this to use std::function and std::bind instead of
+   boost::function and boost::bind.  This requires you to set your
+   compiler's standard to at least C++11. */
 #ifndef QL_USE_STD_FUNCTION
 //#    define QL_USE_STD_FUNCTION
-#endif
-
-/* Define this to use std::bind instead of ext::bind.
-   This requires you to set your compiler's standard to at least
-   C++11. */
-#ifndef QL_USE_STD_BIND
-//#    define QL_USE_STD_BIND
 #endif
 
 /* Define this to enable the parallel unit test runner */

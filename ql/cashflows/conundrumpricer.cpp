@@ -34,17 +34,7 @@
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/vanillaswap.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
-#include <ql/bind.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -302,12 +292,12 @@ namespace QuantLib {
                 upperBoundary = std::max(a,std::min(upperBoundary, hardUpperLimit_));
                 if (upperBoundary > 2*a){
                     Size k = 3;
-                    ext::function<Real (Real)> temp = integrand;
+                    ext::function<Real (Real)> temp = ext::cref(integrand);
                     VariableChange variableChange(temp, a, upperBoundary, k);
                     f = ext::bind(&VariableChange::value, &variableChange, _1);
                     result = gaussKronrodNonAdaptive(f, .0, 1.0);
                 } else {
-                    f = integrand;
+                    f = ext::cref(integrand);
                     result = gaussKronrodNonAdaptive(f, a, upperBoundary);
                 }
 

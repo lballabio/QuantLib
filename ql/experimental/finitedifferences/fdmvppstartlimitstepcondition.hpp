@@ -26,7 +26,6 @@
 
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
 #include <ql/shared_ptr.hpp>
-#include <ql/function.hpp>
 #include <vector>
 
 namespace QuantLib {

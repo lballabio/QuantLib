@@ -22,15 +22,7 @@
 
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <ql/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 #include <map>
 #include <algorithm>
 
@@ -177,6 +169,8 @@ namespace QuantLib {
             );
             */
 /**/
+        using namespace ext::placeholders;
+
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         std::vector<Real> invProb;
@@ -197,7 +191,9 @@ namespace QuantLib {
 
     template<class CP>
     inline Disposable<std::vector<Real> > 
-        RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+    RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+
+        using namespace ext::placeholders;
 
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);

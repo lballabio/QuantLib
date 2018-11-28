@@ -26,8 +26,7 @@
 #define quantlib_numerical_differentiation_hpp
 
 #include <ql/math/array.hpp>
-
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 

@@ -27,17 +27,7 @@
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
-#include <ql/bind.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 namespace QuantLib {
     FdmVPPStepCondition::FdmVPPStepCondition(

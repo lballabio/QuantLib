@@ -414,34 +414,18 @@ AC_MSG_RESULT([$ql_use_unique_ptr])
 AC_MSG_CHECKING([whether to enable std::function])
 AC_ARG_ENABLE([std-function],
               AC_HELP_STRING([--enable-std-function],
-                             [If enabled, std::function will be used instead
-                              of boost::function; this requires you to set
-                              your compiler's standard to at least C++11.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
+                             [If enabled, std::function and std::bind will be
+                              used instead of boost::function and boost::bind;
+                              this requires you to set your compiler's standard
+                              to at least C++11. If disabled (the default) the
+                              Boost facilities are used.]),
               [ql_use_std_function=$enableval],
               [ql_use_std_function=no])
 if test "$ql_use_std_function" = "yes" ; then
    AC_DEFINE([QL_USE_STD_FUNCTION],[1],
-             [Define this if you want to use std::function.])
+             [Define this if you want to use std::function and std::bind.])
 fi
 AC_MSG_RESULT([$ql_use_std_function])
-
-AC_MSG_CHECKING([whether to enable std::bind])
-AC_ARG_ENABLE([std-bind],
-              AC_HELP_STRING([--enable-std-bind],
-                             [If enabled, std::bind will be used instead
-                              of boost::bind; this requires you to set
-                              your compiler's standard to at least C++11.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
-              [ql_use_std_bind=$enableval],
-              [ql_use_std_bind=no])
-if test "$ql_use_std_bind" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_BIND],[1],
-             [Define this if you want to use std::bind.])
-fi
-AC_MSG_RESULT([$ql_use_std_bind])
 
 AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],
@@ -458,9 +442,7 @@ if test "$ql_use_std_classes" = "yes" ; then
    AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
              [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
    AC_DEFINE([QL_USE_STD_FUNCTION],[1],
-             [Define this if you want to use std::function.])
-   AC_DEFINE([QL_USE_STD_BIND],[1],
-             [Define this if you want to use std::bind.])
+             [Define this if you want to use std::function and std::bind.])
 fi
 AC_MSG_RESULT([$ql_use_std_classes])
 
@@ -495,6 +477,7 @@ AC_CONFIG_FILES([
     ql/experimental/credit/Makefile
     ql/experimental/exoticoptions/Makefile
     ql/experimental/finitedifferences/Makefile
+    ql/experimental/futures/Makefile
     ql/experimental/fx/Makefile
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile

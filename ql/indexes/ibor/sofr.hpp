@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2018 StatPro Italia srl
+ Copyright (C) 2018 Roy Zywina
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,44 +17,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bind.hpp
-    \brief Maps bind to either the boost or std implementation
+/*! \file sofr.hpp
+    \brief %SOFR index
 */
 
-#ifndef quantlib_bind_hpp
-#define quantlib_bind_hpp
+#ifndef quantlib_sofr_hpp
+#define quantlib_sofr_hpp
 
-#include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_BIND)
-#include <functional>
-#else
-#include <boost/bind.hpp>
-#include <boost/ref.hpp>
-#endif
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 
-    namespace ext {
-
-        #if defined(QL_USE_STD_BIND)
-        using std::bind;
-        using std::ref;
-        using std::cref;
-        namespace placeholders {
-            using namespace std::placeholders;
-        }
-        #else
-        using boost::bind;
-        using boost::ref;
-        using boost::cref;
-        namespace placeholders {}
-        #endif
-
-    }
+    //! %Sofr (Secured Overnight Financing Rate) index.
+    class Sofr : public OvernightIndex {
+      public:
+        explicit Sofr(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+    };
 
 }
 
-
 #endif
-

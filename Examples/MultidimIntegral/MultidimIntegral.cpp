@@ -24,8 +24,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/functional.hpp>
 
-#include <ql/function.hpp>
 #include <boost/timer.hpp>
 
 #include <iostream>
