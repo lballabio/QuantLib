@@ -40,7 +40,7 @@ using namespace boost::unit_test_framework;
 namespace {
 
 	// auxilliary data
-	std::vector<Period> terms = {
+	Period termsData[] = {
 		Period( 0,Days),
 		Period( 1,Years),
 		Period( 2,Years),
@@ -52,6 +52,7 @@ namespace {
 		Period(20,Years),
 		Period(61,Years)   // avoid extrapolation issues with 30y caplets
 	};
+	std::vector<Period> terms(termsData, termsData+10);
 
 	Real discRatesData[] = {
         -0.00147407	  ,
@@ -106,7 +107,7 @@ namespace {
 		return RelinkableHandle<YieldTermStructure>(ts);
 	}
 
-	std::vector<Period> capletTerms = {
+	Period capletTermsData[] = {
 		Period(1,Years),
 		Period(2,Years),
 		Period(3,Years),
@@ -118,6 +119,7 @@ namespace {
 		Period(25,Years),
 		Period(30,Years)    
 	};
+	std::vector<Period> capletTerms(capletTermsData, capletTermsData + 10);
 
 	Real capletStrikesData[] = {
        -0.0050,
@@ -174,13 +176,14 @@ namespace {
 		return RelinkableHandle<OptionletVolatilityStructure>(tmp2);
 	}
 
-	std::vector<Period> swaptionVTSTerms = {
+	Period swaptionVTSTermsData[] = {
 		Period(1,Years),
 		Period(5,Years),
 		Period(10,Years),
 		Period(20,Years),
 		Period(30,Years),
 	};
+	std::vector<Period> swaptionVTSTerms(swaptionVTSTermsData, swaptionVTSTermsData + 5);
 
 	Real swtRow01[] = { 0.002616, 0.00468,  0.0056,   0.005852, 0.005823 };
 	Real swtRow02[] = { 0.006213, 0.00643,  0.006622, 0.006124, 0.005958 };
