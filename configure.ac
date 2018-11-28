@@ -469,6 +469,7 @@ AC_CONFIG_FILES([
     ql/experimental/amortizingbonds/Makefile
     ql/experimental/averageois/Makefile
     ql/experimental/barrieroption/Makefile
+    ql/experimental/basismodels/Makefile
     ql/experimental/callablebonds/Makefile
     ql/experimental/catbonds/Makefile
     ql/experimental/commodities/Makefile

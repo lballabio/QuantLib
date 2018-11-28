@@ -4,6 +4,7 @@
 #include <ql/experimental/amortizingbonds/all.hpp>
 #include <ql/experimental/averageois/all.hpp>
 #include <ql/experimental/barrieroption/all.hpp>
+#include <ql/experimental/basismodels/all.hpp>
 #include <ql/experimental/callablebonds/all.hpp>
 #include <ql/experimental/catbonds/all.hpp>
 #include <ql/experimental/commodities/all.hpp>

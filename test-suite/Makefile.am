@@ -11,6 +11,7 @@ QL_TESTS = \
 	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	binaryoption.hpp binaryoption.cpp \
+	basismodels.hpp basismodels.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
