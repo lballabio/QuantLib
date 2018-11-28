@@ -134,6 +134,7 @@ QL_TESTS = \
 	swaptionvolstructuresutilities.hpp \
 	swingoption.hpp swingoption.cpp \
 	termstructures.hpp termstructures.cpp \
+	timegrid.hpp timegrid.cpp \
 	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
