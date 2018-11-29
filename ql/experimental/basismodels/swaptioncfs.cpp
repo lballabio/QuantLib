@@ -39,7 +39,7 @@ namespace QuantLib {
 	    : refDate_(discountCurve->referenceDate()) {
 		// we need to find the first coupon for initial payment
 		Size floatIdx=0;
-		while ( (refDate_>(ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()) && (floatIdx<iborLeg.size()-1)) ++floatIdx;
+		while ((floatIdx+1<iborLeg.size()) && (refDate_>(ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()) ) ++floatIdx;
         if (refDate_<=(ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()) {  // otherwise there is no floating coupon left
 			ext::shared_ptr<Coupon> firstFloatCoupon = ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]);
 			floatLeg_.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(firstFloatCoupon->nominal(),firstFloatCoupon->accrualStartDate())));

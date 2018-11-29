@@ -96,7 +96,7 @@ namespace {
 	};
 	std::vector<Real> proj6mRates(proj6mRatesData, proj6mRatesData+10);
 
-	Handle<YieldTermStructure> getYTS(const std::vector<Period> terms, const std::vector<Real> rates, const Real spread = 0.0) {
+	Handle<YieldTermStructure> getYTS(const std::vector<Period>& terms, const std::vector<Real>& rates, const Real spread = 0.0) {
 		Date today = Settings::instance().evaluationDate();
 		std::vector<Date> dates;
 		for (Size k = 0; k < terms.size(); ++k) dates.push_back(NullCalendar().advance(today, terms[k], Unadjusted));
