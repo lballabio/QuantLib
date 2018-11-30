@@ -101,9 +101,9 @@ Examples/GlobalOptimizer/GlobalOptimizer
 Examples/LatentModel/LatentModel
 Examples/MarketModels/MarketModels
 Examples/MultidimIntegral/MultidimIntegral
+Examples/MulticurveBootstrapping/MulticurveBootstrapping
 Examples/Replication/Replication
 Examples/Repo/Repo
-Examples/Swap/SwapValuation
 test-suite/quantlib-test-suite
 test-suite/quantlib-benchmark
 test-suite/bin/*.exp

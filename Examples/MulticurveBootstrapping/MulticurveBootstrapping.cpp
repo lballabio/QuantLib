@@ -22,10 +22,8 @@
 
 /*  This example shows how to set up a Term Structure with ois Discounting
     and then price a simple 5 year swap.
-	
-	Boilerplate code was taken from swapvaluation.cpp
 
-    Example based on market data in paper by F. M. Ametrano and M. Blanchetti,
+    Example based on market data in paper by F. M. Ametrano and M. Bianchetti,
 	Everything You Always WAnted to Know About Multiple Interest RAte Curve Boostrapping
 	but Were Afraid to Ask (April 2, 2013).
 	http://ssrn.com/abstract=2219548
@@ -319,7 +317,7 @@ int main(int, char* []) {
 		double tolerance = 1.0e-15;
 
 		// Eonia curve
-		std::vector<ext::shared_ptr<RateHelper>> eoniaInstruments;
+		std::vector<ext::shared_ptr<RateHelper> > eoniaInstruments;
 		eoniaInstruments.push_back(dON);
 		eoniaInstruments.push_back(dTN);
 		eoniaInstruments.push_back(dSN);

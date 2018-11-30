@@ -6,7 +6,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantLib", "QuantLib.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testsuite", "test-suite\testsuite.vcxproj", "{A613045C-34AF-4706-AA3C-730C92524F74}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Swap", "Examples\Swap\Swap.vcxproj", "{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MulticurveBootstrapping", "Examples\MulticurveBootstrapping\MulticurveBootstrapping.vcxproj", "{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EquityOption", "Examples\EquityOption\EquityOption.vcxproj", "{EF6D982C-CF99-4442-B297-776DBECFAFC9}"
 EndProject
