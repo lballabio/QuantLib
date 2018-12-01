@@ -28,17 +28,7 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -84,6 +74,8 @@ namespace QuantLib {
     }
 
     Real GBSMRNDCalculator::invcdf(Real q, Time t) const {
+        using namespace ext::placeholders;
+
         const Real fwd = process_->x0()
             / process_->riskFreeRate()->discount(t, true)
             * process_->dividendYield()->discount(t, true);
@@ -109,8 +101,8 @@ namespace QuantLib {
 
         return Brent().solve(
             compose(subtract<Real>(q),
-                    boost::function<Real(Real)>(
-                        boost::bind(&GBSMRNDCalculator::cdf, this, _1, t))),
+                    ext::function<Real(Real)>(
+                        ext::bind(&GBSMRNDCalculator::cdf, this, _1, t))),
             1e-10, 0.5*(lower+upper), lower, upper);
     }
 }

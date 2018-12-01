@@ -34,17 +34,7 @@
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/vanillaswap.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
-#include <boost/bind.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -216,7 +206,7 @@ namespace QuantLib {
 
         class VariableChange {
           public:
-            VariableChange(boost::function<Real (Real)>& f,
+            VariableChange(ext::function<Real (Real)>& f,
                            Real a, Real b, Size k)
             : a_(a), width_(b-a), f_(f), k_(k) {}
             Real value(Real x) const {
@@ -230,13 +220,13 @@ namespace QuantLib {
             }
           private:
             Real a_, width_;
-            boost::function<Real (Real)> f_;
+            ext::function<Real (Real)> f_;
             Size k_;
         };
 
         class Spy {
           public:
-            explicit Spy(boost::function<Real (Real)> f) : f_(f) {}
+            explicit Spy(ext::function<Real (Real)> f) : f_(f) {}
             Real value(Real x){
                 abscissas.push_back(x);
                 Real value = f_(x);
@@ -244,7 +234,7 @@ namespace QuantLib {
                 return value;
             }
           private:
-            boost::function<Real (Real)> f_;
+            ext::function<Real (Real)> f_;
             std::vector<Real> abscissas;
             std::vector<Real> functionValues;
         };
@@ -271,6 +261,9 @@ namespace QuantLib {
 
     Real NumericHaganPricer::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
+
+            using namespace ext::placeholders;
+
             Real result =.0;
             //double abserr =.0;
             //double alpha = 1.0;
@@ -291,7 +284,7 @@ namespace QuantLib {
                 if (b > a)
                     upperBoundary = std::min(upperBoundary, b);
 
-                boost::function<Real (Real)> f;
+                ext::function<Real (Real)> f;
                 GaussKronrodNonAdaptive
                     gaussKronrodNonAdaptive(precision_, 1000000, 1.0);
                 // if the integration intervall is wide enough we use the
@@ -299,12 +292,12 @@ namespace QuantLib {
                 upperBoundary = std::max(a,std::min(upperBoundary, hardUpperLimit_));
                 if (upperBoundary > 2*a){
                     Size k = 3;
-                    boost::function<Real (Real)> temp = boost::ref(integrand);
+                    ext::function<Real (Real)> temp = ext::cref(integrand);
                     VariableChange variableChange(temp, a, upperBoundary, k);
-                    f = boost::bind(&VariableChange::value, &variableChange, _1);
+                    f = ext::bind(&VariableChange::value, &variableChange, _1);
                     result = gaussKronrodNonAdaptive(f, .0, 1.0);
                 } else {
-                    f = boost::ref(integrand);
+                    f = ext::cref(integrand);
                     result = gaussKronrodNonAdaptive(f, a, upperBoundary);
                 }
 
@@ -605,9 +598,9 @@ namespace QuantLib {
         Size n = fixedLeg.size();
         accruals_.reserve(n);
         for (Size i=0; i<n; ++i) {
-            ext::shared_ptr<Coupon> coupon =
+            ext::shared_ptr<Coupon> cpn =
                 ext::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
-            accruals_.push_back(coupon->accrualPeriod());
+            accruals_.push_back(cpn->accrualPeriod());
         }
     }
 
@@ -708,10 +701,10 @@ namespace QuantLib {
         shapedSwapPaymentTimes_.reserve(n);
         swapPaymentDiscounts_.reserve(n);
         for(Size i=0; i<n; ++i) {
-            ext::shared_ptr<Coupon> coupon =
+            ext::shared_ptr<Coupon> cpn =
                 ext::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
-            accruals_.push_back(coupon->accrualPeriod());
-            const Date paymentDate(coupon->date());
+            accruals_.push_back(cpn->accrualPeriod());
+            const Date paymentDate(cpn->date());
             const double swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
             shapedSwapPaymentTimes_.push_back(shapeOfShift(swapPaymentTime));
             swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));

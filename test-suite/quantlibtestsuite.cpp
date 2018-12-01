@@ -173,6 +173,7 @@
 #include "sampledcurve.hpp"
 #include "schedule.hpp"
 #include "shortratemodels.hpp"
+#include "sofrfutures.hpp"
 #include "solvers.hpp"
 #include "spreadoption.hpp"
 #include "squarerootclvmodel.hpp"
@@ -495,6 +496,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());
     test->add(RiskNeutralDensityCalculatorTest::experimental(speed));
+    test->add(SofrFuturesTest::suite());
     test->add(SpreadOptionTest::suite());
     test->add(SquareRootCLVModelTest::experimental());
     test->add(SwingOptionTest::suite(speed));

@@ -43,7 +43,7 @@ namespace QuantLib {
         CashFlows();
         CashFlows(const CashFlows&);
 
-        class IrrFinder : public std::unary_function<Rate, Real> {
+        class IrrFinder {
           public:
             IrrFinder(const Leg& leg,
                       Real npv,
@@ -273,7 +273,7 @@ namespace QuantLib {
                           Rate guess = 0.05);
 
         template <typename Solver>
-        static Rate yield(Solver solver,
+        static Rate yield(const Solver& solver,
                           const Leg& leg,
                           Real npv,
                           const DayCounter& dayCounter,

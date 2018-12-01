@@ -90,9 +90,12 @@ namespace QuantLib {
 
     
     // Helper class used by unit tests
-    class AbcdSquared : public std::unary_function<Real,Real> {
+    class AbcdSquared {
       
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         AbcdSquared(Real a, Real b, Real c, Real d, Time T, Time S);
         Real operator()(Time t) const;
       

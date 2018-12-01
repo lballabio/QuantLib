@@ -37,12 +37,6 @@ namespace QuantLib {
     class CapFloor;
     class PricingEngine;
 
-    /*! \deprecated No longer used.
-                    Deprecated in version 1.10.
-    */
-    QL_DEPRECATED
-    typedef std::vector<std::vector<ext::shared_ptr<CapFloor> > > CapFloorMatrix;
-
     /*! Helper class to strip optionlet (i.e. caplet/floorlet) volatilities
         (a.k.a. forward-forward volatilities) from the (cap/floor) term
         volatilities of a CapFloorTermVolSurface.

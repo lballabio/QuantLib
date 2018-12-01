@@ -87,11 +87,11 @@
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/functional.hpp>
 
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 
-#include <boost/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
@@ -424,7 +424,7 @@ void HestonSLVModelTest::testTransformedZeroFlowBC() {
 }
 
 namespace {
-    class q_fct : public std::unary_function<Real, Real> {
+    class q_fct {
       public:
         q_fct(const Array& v, const Array& p, const Real alpha)
         : v_(v), q_(Pow(v, alpha)*p), alpha_(alpha),
@@ -683,11 +683,13 @@ namespace {
         Time maturity, Real eps,
         const ext::shared_ptr<HestonModel>& model) {
 
+        using namespace ext::placeholders;
+
         const AnalyticPDFHestonEngine pdfEngine(model);
         const Real sInit = model->process()->s0()->value();
         const Real xMin = Brent().solve(
-            boost::bind(std::minus<Real>(),
-                boost::bind(&AnalyticPDFHestonEngine::cdf,
+            ext::bind(std::minus<Real>(),
+                ext::bind(&AnalyticPDFHestonEngine::cdf,
                             &pdfEngine, _1, maturity), eps),
                         sInit*1e-3, sInit, sInit*0.001, 1000*sInit);
 
@@ -1152,7 +1154,13 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
         const Real x = mesher->location(iter, 0);
         if (v != mesher->location(iter, 1)) {
             v = mesher->location(iter, 1);
-            p_v = rndCalculator.pdf(v, eT);
+            // the extreme tail probabilities of the non central
+            // chi square distribution lead to numerical exceptions
+            // on some platforms
+            if (std::fabs(v - v0) < 5*sigma*std::sqrt(v0*eT))
+                p_v = rndCalculator.pdf(v, eT);
+            else
+                p_v = 0.0;
         }
         const Real p_x = 1.0/(std::sqrt(M_TWOPI*bsV0*eT))
             * std::exp(-0.5*square<Real>()(x - x0)/(bsV0*eT));
@@ -2446,7 +2454,7 @@ void HestonSLVModelTest::testMoustacheGraph() {
         -0.0293,-0.0297,-0.0251,-0.0192,-0.0134,-0.0084,-0.0045,
         -0.0015, 0.0005, 0.0017, 0.0020
     };
-    const Real tol = 8e-3;
+    const Real tol = 1e-2;
 
     for (Size i=0; i < 18; ++i) {
         const Real dist = 10.0+5.0*i;

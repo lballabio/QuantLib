@@ -26,7 +26,6 @@
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/inhomogeneouspooldef.hpp>
 #include <ql/experimental/credit/homogeneouspooldef.hpp>
-
 #include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
@@ -35,10 +34,8 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currencies/europe.hpp>
-
-#include <boost/bind.hpp>
+#include <ql/functional.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
-
 #include <iomanip>
 #include <iostream>
 
@@ -376,7 +373,7 @@ test_suite* CdoTest::suite(SpeedLevel speed) {
     #ifndef QL_PATCH_SOLARIS
     if (speed == Slow) {
         #define BOOST_PP_LOCAL_MACRO(n) \
-            suite->add(QUANTLIB_TEST_CASE(boost::bind(&CdoTest::testHW, n)));
+            suite->add(QUANTLIB_TEST_CASE(ext::bind(&CdoTest::testHW, n)));
 
         #define BOOST_PP_LOCAL_LIMITS (0, 4)
         #include BOOST_PP_LOCAL_ITERATE()

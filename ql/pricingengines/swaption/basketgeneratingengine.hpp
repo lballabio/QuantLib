@@ -62,7 +62,7 @@ namespace QuantLib {
             MaturityStrikeByDeltaGamma
         } CalibrationBasketType;
 
-        Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
+        Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
         calibrationBasket(
             const ext::shared_ptr<Exercise> &exercise,
             ext::shared_ptr<SwapIndex> standardSwapBase,

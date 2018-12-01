@@ -37,15 +37,16 @@
                   6. i3 540@3.1Ghz          : 1755.3 mflops
                   7. Core2 Dual@2.0Ghz      :  835.9 mflops
                   8. Athlon 64 X2 4400+     :  824.2 mflops
-                  9. Core2 Dual@2.0Ghz      :  754.1 mflops
-                 10. Pentium4 Dual@2.8Ghz   :  423.8 mflops
-                 11. Raspberry Pi3@1.2GHz   :  309.2 mflops
-                 12. Pentium4@3.0Ghz        :  266.3 mflops
-                 13. PentiumIII@1.1Ghz      :  146.2 mflops
-                 14. Alpha 2xEV68@833Mhz    :  184.6 mflops
-                 15. Wii PowerPC 750@729MHz :   46.1 mflops
-                 16. Raspberry Pi ARM@700Mhz:   28.3 mflops
-                 17. Strong ARM@206Mhz      :    1.4 mflops
+                  9. Cortex-A57@2.0GHz      :  821.7 mflops
+                 10. Core2 Dual@2.0Ghz      :  754.1 mflops
+                 11. Pentium4 Dual@2.8Ghz   :  423.8 mflops
+                 12. Raspberry Pi3@1.2GHz   :  309.2 mflops
+                 13. Pentium4@3.0Ghz        :  266.3 mflops
+                 14. PentiumIII@1.1Ghz      :  146.2 mflops
+                 15. Alpha 2xEV68@833Mhz    :  184.6 mflops
+                 16. Wii PowerPC 750@729MHz :   46.1 mflops
+                 17. Raspberry Pi ARM@700Mhz:   28.3 mflops
+                 18. Strong ARM@206Mhz      :    1.4 mflops
 
  Remarks: OS: Linux, static libs
   2. g++-6.3.0 -O3 -ffast-math -march=core-avx2
@@ -64,19 +65,20 @@
       Remark: two processes
   8. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
                 -fp-model fast=2 -ipo-jobs2, Remark: two processes
-  9. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
+  9. clang++-6.0.1 -O2, Remark: four processes
+ 10. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
       Remark: two processes
- 10. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+ 11. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
       -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
- 11. gcc-4.9.2  -O2, Remark: four processes
- 12. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+ 12. gcc-4.9.2  -O2, Remark: four processes
+ 13. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
- 13. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+ 14. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
- 14. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 15. gcc-4.9.2, -O2 -g on a Nintendo Wii
- 16. gcc-4.6.3, -O3
- 17. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 15. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
+ 16. gcc-4.9.2, -O2 -g on a Nintendo Wii
+ 17. gcc-4.6.3, -O3
+ 18. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.

@@ -19,15 +19,7 @@
 
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -56,11 +48,12 @@ namespace QuantLib {
     }
 
     void MethodOfLinesScheme::step(array_type& a, Time t) {
+        using namespace ext::placeholders;
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
 
         const std::vector<Real> v =
            AdaptiveRungeKutta<Real>(eps_, relInitStepSize_*dt_)(
-               boost::bind(&MethodOfLinesScheme::apply, this, _1, _2),
+               ext::bind(&MethodOfLinesScheme::apply, this, _1, _2),
                std::vector<Real>(a.begin(), a.end()),
                t, std::max(0.0, t-dt_));
 

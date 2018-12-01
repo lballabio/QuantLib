@@ -76,10 +76,10 @@ void ShortRateModelTest::testCachedHullWhite() {
     ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
         ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        ext::shared_ptr<CalibrationHelper> helper(
+        ext::shared_ptr<BlackCalibrationHelper> helper(
                              new SwaptionHelper(Period(data[i].start, Years),
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),
@@ -151,10 +151,10 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
         ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        ext::shared_ptr<CalibrationHelper> helper(
+        ext::shared_ptr<BlackCalibrationHelper> helper(
                              new SwaptionHelper(Period(data[i].start, Years),
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),
@@ -232,10 +232,10 @@ void ShortRateModelTest::testCachedHullWhite2() {
     ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
         ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        ext::shared_ptr<CalibrationHelper> helper(
+        ext::shared_ptr<BlackCalibrationHelper> helper(
                              new SwaptionHelper(Period(data[i].start, Years),
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),

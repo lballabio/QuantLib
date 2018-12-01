@@ -132,7 +132,7 @@ namespace QuantLib {
 
         for (Size i=0; i < strikes_.size(); ++i)
             for (Size j=1; j<strikes_[i]->size(); j++) {
-                QL_REQUIRE(strikes_[i]->at(j)>=strikes_[i]->at(j-1),
+                QL_REQUIRE((*strikes_[i])[j]>=(*strikes_[i])[j-1],
                            "strikes must be sorted");
             }
     }

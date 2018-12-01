@@ -22,15 +22,7 @@
 #include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -52,6 +44,7 @@ namespace QuantLib {
     }
 
     void ImplicitEulerScheme::step(array_type& a, Time t) {
+        using namespace ext::placeholders;
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
         map_->setTime(std::max(0.0, t-dt_), t);
         bcSet_.setTime(std::max(0.0, t-dt_));
@@ -62,12 +55,12 @@ namespace QuantLib {
             a = map_->solve_splitting(0, a, -dt_);
         }
         else {
-            const boost::function<Disposable<Array>(const Array&)>
-                preconditioner(boost::bind(
+            const ext::function<Disposable<Array>(const Array&)>
+                preconditioner(ext::bind(
                     &FdmLinearOpComposite::preconditioner, map_, _1, -dt_));
 
-            const boost::function<Disposable<Array>(const Array&)> applyF(
-                boost::bind(&ImplicitEulerScheme::apply, this, _1));
+            const ext::function<Disposable<Array>(const Array&)> applyF(
+                ext::bind(&ImplicitEulerScheme::apply, this, _1));
 
             if (solverType_ == BiCGstab) {
                 const BiCGStabResult result =

@@ -27,8 +27,7 @@ namespace QuantLib {
 
     namespace {
 
-        struct valid_at
-            : public std::unary_function<ExchangeRateManager::Entry,bool> {
+        struct valid_at {
             Date d;
             explicit valid_at(const Date& d) : d(d) {}
             bool operator()(const ExchangeRateManager::Entry& e) {

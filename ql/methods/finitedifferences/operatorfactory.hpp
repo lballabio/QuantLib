@@ -32,12 +32,12 @@
 
 namespace QuantLib {
 
-    //! Black-Scholes-Merton differential operator
-    /*! \ingroup findiff
+    //! Factory for finite-difference operators
+    /*! \deprecated Instantiate operators directly.
 
-        \test coefficients are tested against constant BSM operator
+        Deprecated in version 1.14.
     */
-    class OperatorFactory {
+    class QL_DEPRECATED OperatorFactory {
       public:
         static TridiagonalOperator getOperator(
              const ext::shared_ptr<GeneralizedBlackScholesProcess> &process,

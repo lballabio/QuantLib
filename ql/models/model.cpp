@@ -36,11 +36,11 @@ namespace QuantLib {
     class CalibratedModel::CalibrationFunction : public CostFunction {
       public:
         CalibrationFunction(CalibratedModel* model,
-                            const vector<ext::shared_ptr<CalibrationHelper> >& h,
+                            const vector<ext::shared_ptr<CalibrationHelperBase> >& h,
                             const vector<Real>& weights,
                             const Projection& projection)
             : model_(model, null_deleter()), instruments_(h),
-              weights_(weights), projection_(projection) { }
+              weights_(weights), projection_(projection) {}
 
         virtual ~CalibrationFunction() {}
 
@@ -68,33 +68,53 @@ namespace QuantLib {
 
       private:
         ext::shared_ptr<CalibratedModel> model_;
-        const vector<ext::shared_ptr<CalibrationHelper> >& instruments_;
+        const vector<ext::shared_ptr<CalibrationHelperBase> >& instruments_;
         vector<Real> weights_;
         const Projection projection_;
     };
 
     void CalibratedModel::calibrate(
-                    const vector<ext::shared_ptr<CalibrationHelper> >& instruments,
+                    const vector<ext::shared_ptr<BlackCalibrationHelper> >& instruments,
                     OptimizationMethod& method,
                     const EndCriteria& endCriteria,
                     const Constraint& additionalConstraint,
                     const vector<Real>& weights,
                     const vector<bool>& fixParameters) {
+        vector<ext::shared_ptr<CalibrationHelperBase> > tmp(instruments.size());
+        for (Size i=0; i<instruments.size(); ++i)
+            tmp[i] = ext::static_pointer_cast<CalibrationHelperBase>(instruments[i]);
+        calibrate(tmp, method, endCriteria, additionalConstraint,
+                  weights, fixParameters);
+    }
 
-        QL_REQUIRE(weights.empty() || weights.size() == instruments.size(),
-                   "mismatch between number of instruments (" <<
-                   instruments.size() << ") and weights(" <<
-                   weights.size() << ")");
+    void CalibratedModel::calibrate(
+            const vector<ext::shared_ptr<CalibrationHelperBase> >& instruments,
+            OptimizationMethod& method,
+            const EndCriteria& endCriteria,
+            const Constraint& additionalConstraint,
+            const vector<Real>& weights,
+            const vector<bool>& fixParameters) {
+
+        QL_REQUIRE(!instruments.empty(), "no instruments provided");
 
         Constraint c;
         if (additionalConstraint.empty())
             c = *constraint_;
         else
             c = CompositeConstraint(*constraint_,additionalConstraint);
+
+        QL_REQUIRE(weights.empty() || weights.size() == instruments.size(),
+                   "mismatch between number of instruments (" <<
+                   instruments.size() << ") and weights (" <<
+                   weights.size() << ")");
         vector<Real> w =
             weights.empty() ? vector<Real>(instruments.size(), 1.0): weights;
 
         Array prms = params();
+        QL_REQUIRE(fixParameters.empty() || fixParameters.size() == prms.size(),
+                   "mismatch between number of parameters (" <<
+                   prms.size() << ") and fixed-parameter specs (" <<
+                   fixParameters.size() << ")");
         vector<bool> all(prms.size(), false);
         Projection proj(prms,fixParameters.size()>0 ? fixParameters : all);
         CalibrationFunction f(this,instruments,w,proj);
@@ -111,7 +131,16 @@ namespace QuantLib {
 
     Real CalibratedModel::value(
                 const Array& params,
-                const vector<ext::shared_ptr<CalibrationHelper> >& instruments) {
+                const vector<ext::shared_ptr<BlackCalibrationHelper> >& instruments) {
+        vector<ext::shared_ptr<CalibrationHelperBase> > tmp(instruments.size());
+        for (Size i=0; i<instruments.size(); ++i)
+            tmp[i] = ext::static_pointer_cast<CalibrationHelperBase>(instruments[i]);
+        return value(params, tmp);
+    }
+
+    Real CalibratedModel::value(
+                const Array& params,
+                const vector<ext::shared_ptr<CalibrationHelperBase> >& instruments) {
         vector<Real> w = vector<Real>(instruments.size(), 1.0);
         Projection p(params);
         CalibrationFunction f(this, instruments, w, p);
@@ -119,15 +148,13 @@ namespace QuantLib {
     }
 
     Disposable<Array> CalibratedModel::params() const {
-        Size size = 0, i;
-        for (i=0; i<arguments_.size(); i++)
+        Size size=0;
+        for (Size i=0; i<arguments_.size(); ++i)
             size += arguments_[i].size();
         Array params(size);
-        Size k = 0;
-        for (i=0; i<arguments_.size(); i++) {
-            for (Size j=0; j<arguments_[i].size(); j++, k++) {
+        for (Size i=0, k=0; i<arguments_.size(); ++i) {
+            for (Size j=0; j<arguments_[i].size(); ++j, ++k)
                 params[k] = arguments_[i].params()[j];
-            }
         }
         return params;
     }

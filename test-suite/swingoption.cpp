@@ -80,7 +80,7 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
         ExtendedOrnsteinUhlenbeckProcess::Trapezodial,
         ExtendedOrnsteinUhlenbeckProcess::GaussLobatto};
 
-    boost::function<Real (Real)> f[] 
+    ext::function<Real (Real)> f[] 
         = { constant<Real, Real>(level),
             add<Real>(1.0),
             static_cast<Real(*)(Real)>(std::sin) }; 
@@ -230,26 +230,6 @@ void SwingOptionTest::testExtOUJumpVanillaEngine() {
                     << "\n    MC NPV: " << mcNPV
                     << " +/- " << mcError);
     }
-}
-
-namespace {
-    class VanillaForwardPayoff : public StrikedTypePayoff {
-      public:
-        VanillaForwardPayoff(Option::Type type, Real strike)
-          : StrikedTypePayoff(type, strike) {}
-
-        std::string name() const { return "ForwardTypePayoff";}
-        Real operator()(Real price) const {
-            switch (type_) {
-              case Option::Call:
-                return price-strike_;
-              case Option::Put:
-                return strike_-price;
-              default:
-                QL_FAIL("unknown/illegal option type");
-            }
-        }
-    };
 }
 
 void SwingOptionTest::testFdBSSwingOption() {

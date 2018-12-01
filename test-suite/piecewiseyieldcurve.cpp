@@ -754,7 +754,7 @@ void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
 
     CommonVars vars;
     testCurveConsistency<ForwardRate,ConvexMonotone,LocalBootstrap>(
-                                              vars, ConvexMonotone(), 1.0e-7);
+                                              vars, ConvexMonotone(), 1.0e-6);
     testBMACurveConsistency<ForwardRate,ConvexMonotone,LocalBootstrap>(
                                               vars, ConvexMonotone(), 1.0e-7);
 }

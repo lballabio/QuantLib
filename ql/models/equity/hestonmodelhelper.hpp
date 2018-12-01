@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! calibration helper for Heston model
-    class HestonModelHelper : public CalibrationHelper {
+    class HestonModelHelper : public BlackCalibrationHelper {
       public:
         HestonModelHelper(const Period& maturity,
                           const Calendar& calendar,
@@ -40,8 +40,8 @@ namespace QuantLib {
                           const Handle<Quote>& volatility,
                           const Handle<YieldTermStructure>& riskFreeRate,
                           const Handle<YieldTermStructure>& dividendYield,
-                          CalibrationHelper::CalibrationErrorType errorType
-                                    = CalibrationHelper::RelativePriceError);
+                          BlackCalibrationHelper::CalibrationErrorType errorType
+                                    = BlackCalibrationHelper::RelativePriceError);
 
         HestonModelHelper(const Period& maturity,
                           const Calendar& calendar,
@@ -50,8 +50,8 @@ namespace QuantLib {
                           const Handle<Quote>& volatility,
                           const Handle<YieldTermStructure>& riskFreeRate,
                           const Handle<YieldTermStructure>& dividendYield,
-                          CalibrationHelper::CalibrationErrorType errorType
-                                    = CalibrationHelper::RelativePriceError);
+                          BlackCalibrationHelper::CalibrationErrorType errorType
+                                    = BlackCalibrationHelper::RelativePriceError);
 
         void addTimesTo(std::list<Time>&) const {}
         void performCalculations() const;

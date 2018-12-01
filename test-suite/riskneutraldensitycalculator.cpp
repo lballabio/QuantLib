@@ -42,15 +42,7 @@
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/types.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 
 using namespace QuantLib;
@@ -262,7 +254,7 @@ namespace {
         const ext::shared_ptr<YieldTermStructure> qTS_;
     };
 
-    class ProbWeightedPayoff : public std::unary_function<Real, Real> {
+    class ProbWeightedPayoff {
       public:
         ProbWeightedPayoff(
             Time t,
@@ -491,6 +483,8 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
     BOOST_TEST_MESSAGE("Testing probability density for a square root process...");
 
+    using namespace ext::placeholders;
+
     struct SquareRootProcessParams {
         const Real v0, kappa, theta, sigma;
     };
@@ -512,7 +506,7 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 
             const Real cdfCalculated = rndCalculator.cdf(v, t);
             const Real cdfExpected = GaussLobattoIntegral(10000, 0.01*tol)(
-                boost::bind(&SquareRootProcessRNDCalculator::pdf,
+                ext::bind(&SquareRootProcessRNDCalculator::pdf,
                     &rndCalculator, _1, t), 0, v);
 
             if (std::fabs(cdfCalculated - cdfExpected) > tol) {

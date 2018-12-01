@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/math/piecewiseintegral.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

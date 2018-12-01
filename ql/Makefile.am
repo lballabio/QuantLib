@@ -33,6 +33,7 @@ this_include_HEADERS = \
 	exchangerate.hpp \
 	exercise.hpp \
 	event.hpp \
+	functional.hpp \
 	grid.hpp \
 	handle.hpp \
 	index.hpp \

@@ -29,8 +29,7 @@
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
-
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 #include <map>
 
 namespace QuantLib {
@@ -62,13 +61,13 @@ namespace QuantLib {
         Disposable<Array> collocationPointsY(const Date& d) const;
 
         // CLV mapping function
-        boost::function<Real(Time, Real)> g() const;
+        ext::function<Real(Time, Real)> g() const;
 
       protected:
         void performCalculations() const;
 
       private:
-        class MappingFunction : public std::binary_function<Time, Real, Real> {
+        class MappingFunction {
           public:
             explicit MappingFunction(const SquareRootCLVModel& model);
 
@@ -91,7 +90,7 @@ namespace QuantLib {
         const Size lagrangeOrder_;
         const ext::shared_ptr<GBSMRNDCalculator> rndCalculator_;
 
-        mutable boost::function<Real(Time, Real)> g_;
+        mutable ext::function<Real(Time, Real)> g_;
     };
 }
 

@@ -1,84 +1,121 @@
 
-Changes for QuantLib 1.13:
+Changes for QuantLib 1.14:
 ==========================
 
-QuantLib 1.13 includes 42 pull requests from several contributors.
+QuantLib 1.14 includes 40 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/8?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/10?closed=1>.
 
 PORTABILITY
 
-- In April 2018, Microsoft ended its support for Microsoft Visual
-  C++ 2008. This release still includes a solution file for VC++ 2008,
-  but we won't support it further or take bug reports for it. The next
-  release will only contain project files for Visual C++ 2010 and
-  later.
+- In April 2018, Microsoft ended its support for Microsoft Visual C++
+  2008. As previously announced, this release drops support for it.
 
-- Fixed build on Solaris 12.5 in C++11 mode (thanks to Nick Glass).
+- Fixed generation of RPM from QuantLib.spec (thanks to Simon Rees).
+
+- Avoided uses of some features removed in C++17 so that the library
+  can be compiled under the latest standard if needed.
+
+- boost::shared_ptr and a few related classes and functions were
+  imported into the new namespace QuantLib::ext.  This allows them to
+  be conditionally replaced with their std:: versions (see the "opt-in
+  features" section below).  The default is still to use the boost
+  implementation.  Client code using the boost namespace explicitly
+  doesn't need to be updated.
+
+- Fixed build and tests on FreeBSD-11 (thanks to Klaus Spanderen and
+  to Mikhail Teterin for the heads-up).
+
+- Fixed tests with the -ffast-math compilation flag enabled (thanks to
+  Klaus Spanderen and to Jon Davies for the heads-up).
+
 
 INSTRUMENTS AND PRICING ENGINES
 
-- Fix CDS calculation when the start date falls during the week-end
-  (thanks to Guillaume Horel).
+- Add different settlement methods for swaptions (thanks to Peter
+  Caspers).
 
-- Allow construction of a `ForwardRateAgreement` instance even if the
-  interest-rate curve is not yet linked (thanks to Tom Anderson).
+- Take into account distinct day-count conventions for different
+  curves in the analytic barrier-option engine (thanks to GitHub user
+  cosplay-raven).
+
+- Extract the correct constant coefficients to use in
+  finite-difference vanilla-option engine when using a time-dependent
+  Black-Scholes process (thanks to GitHub user Grant6899 for the
+  analysis).
+
 
 CASH FLOWS AND INTEREST RATES
 
-- Added Mosprime, Pribor, Robor and Wibor indices (thanks to Matthias
-  Lungwitz).
+- Added Bibor and THBFIX indices (thanks to Matthias Lungwitz).
 
-- Improved performance of Black pricer for LIBOR coupons (thanks to
-  Peter Caspers).
-
-- Fixed experimental quanto coupon pricer (thanks to Peter Caspers).
-
-- Revised experimental CMS-spread coupon pricer (thanks to Peter
-  Caspers).
 
 MODELS
 
-- Improvements for the experimental generalized Hull-White model
-  (thanks to Roy Zywina).
+- Added a hook for using a custom smile model in the Markov functional
+  model (thanks to Peter Caspers).
 
-- Fixed drift in GSR process (thanks to Peter Caspers for the fix and
-  to Seung Beom Bang for the heads up).
+- Added a base class CalibrationHelperBase to the hierarchy of
+  calibration helpers in order to allow for helpers not using the
+  Black model.
 
-- Fixed an out-of-bound access in the
-  `TwoFactorModel::ShortRateDynamics::process` method (thanks to
-  Weston Steimel).
+- Return underlying dynamics from Black-Karasinski model (thanks to
+  Fanis Antoniou).
+
 
 FINITE DIFFERENCES
 
-- Improved Black-Scholes mesher for low volatilities and high discrete
-  dividends (thanks to Klaus Spanderen).
+- Added higher-order spatial operators (thanks to Klaus Spanderen).
 
-- Added method-of-lines scheme (thanks to Klaus Spanderen).
+- Added TR-BDF2 finite-difference scheme (thanks to Klaus Spanderen).
+
+
+TERM STRUCTURES
+
+- Allow swap helpers to specify end-of-month convention (thanks to
+  Matthias Lungwitz).
+
 
 DATE/TIME
 
-- Schedule::until can now be used with schedules built from vectors of
-  dates (thanks to GitHub user Grant6899).
+- Prevented division by zero in Actual/365 Canadian day counter
+  (thanks to Ioannis Rigopoulos for the heads-up).
 
-- Added Good Friday to the list of Hungarian and Czech holidays
-  (thanks to Matthias Lungwitz).
+- Added Children's Day to the list of Romanian holidays (thanks to
+  Matthias Lungwitz).
 
-- Updated the list of Turkish holidays after 2014 (thanks to Matthias
-  Lungwitz).
+- Added new calendar for Thailand (thanks to Matthias Lungwitz).
+
+- Added 30/360 German day counter (thanks to Peter Caspers and Alexey
+  Indiryakov).
+
 
 MATH
 
-- Added convenience operators to initialize array and matrices (thanks
-  to Peter Caspers).
-
-TEST SUITE
-
-- Added test case for CIR++ model (thanks to Klaus Spanderen).
+- Fixed bug in convex-monotone interpolation (thanks to Peter Caspers
+  for the fix and to Tom Anderson for finding the bug).
 
 
-Thanks go also to Jose Aparicio, Roland Kapl and GitHub user lab4quant
-for smaller fixes and enhancements.
+NEW OPT-IN FEATURES
 
+- It is now possible to use std::shared_ptr and its related classes
+  instead of boost::shared_ptr.  Note that, unlike its boost
+  counterpart, std::shared_ptr doesn't check for null pointers before
+  access; this can lead to crashes.  The feature can be enabled by
+  uncommenting the QL_USE_STD_SHARED_PTR macro in ql/userconfig.hpp on
+  Visual C++ or by passing the --enable-std-pointers to ./configure on
+  other systems.  This requires using at least the C++11 standard
+  during compilation.
+
+- It is now possible to use std::unique_ptr instead of std::auto_ptr;
+  this makes it possible to compile the library in strict C++17 mode
+  and to avoid deprecation warnings in C++11 and C++14 mode.  The
+  feature can be enabled by uncommenting the QL_USE_STD_UNIQUE_PTR
+  macro in ql/userconfig.hpp on Visual C++ or by passing the
+  --enable-std-unique-ptr to ./configure on other systems.
+
+
+Thanks go also to Sam Danbury, Barry Devlin, Roland Kapl, and GitHub
+user todatamining for smaller fixes, enhancements, and bug reports.

@@ -104,13 +104,13 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     // we do not need a step). Also note that the endcritera reflect
     // only the status of the last calibration when using this method.
     void calibrateVolatilitiesIterative(
-        const std::vector<ext::shared_ptr<CalibrationHelper> > &helpers,
+        const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helpers,
         OptimizationMethod &method, const EndCriteria &endCriteria,
         const Constraint &constraint = Constraint(),
         const std::vector<Real> &weights = std::vector<Real>()) {
 
         for (Size i = 0; i < helpers.size(); i++) {
-            std::vector<ext::shared_ptr<CalibrationHelper> > h(1, helpers[i]);
+            std::vector<ext::shared_ptr<CalibrationHelperBase> > h(1, helpers[i]);
             calibrate(h, method, endCriteria, constraint, weights,
                       MoveVolatility(i));
         }
@@ -120,13 +120,13 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     // to the given helpers. In this case the step dates must be chosen
     // according to the maturities of the calibration instruments.
     void calibrateReversionsIterative(
-        const std::vector<ext::shared_ptr<CalibrationHelper> > &helpers,
+        const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helpers,
         OptimizationMethod &method, const EndCriteria &endCriteria,
         const Constraint &constraint = Constraint(),
         const std::vector<Real> &weights = std::vector<Real>()) {
 
         for (Size i = 0; i < helpers.size(); i++) {
-            std::vector<ext::shared_ptr<CalibrationHelper> > h(1, helpers[i]);
+            std::vector<ext::shared_ptr<CalibrationHelperBase> > h(1, helpers[i]);
             calibrate(h, method, endCriteria, constraint, weights,
                       MoveReversion(i));
         }
