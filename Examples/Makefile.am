@@ -18,9 +18,9 @@ SUBDIRS = \
     LatentModel \
     MarketModels \
     MultidimIntegral \
+    MulticurveBootstrapping \
     Replication \
-    Repo \
-    Swap
+    Repo
 
 SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 
