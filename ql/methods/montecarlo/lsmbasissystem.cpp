@@ -37,8 +37,6 @@ namespace QuantLib {
         typedef std::vector<ext::function<Real(Real)> > VF_R;
         typedef std::vector<ext::function<Real(Array)> > VF_A;
         typedef std::vector<std::vector<Size> > VV;
-        Real (GaussianOrthogonalPolynomial::*ptr_w)(Size, Real) const =
-            &GaussianOrthogonalPolynomial::weightedValue;
 
         // pow(x, order)
         class MonomialFct {
@@ -109,7 +107,6 @@ namespace QuantLib {
     // LsmBasisSystem static methods
 
     VF_R LsmBasisSystem::pathBasisSystem(Size order, PolynomType polyType) {
-        using namespace ext::placeholders;
         VF_R ret(order+1);
         for (Size i=0; i<=order; ++i) {
             switch (polyType) {
@@ -117,22 +114,40 @@ namespace QuantLib {
                 ret[i] = MonomialFct(i);
                 break;
               case Laguerre:
-                ret[i] = ext::bind(ptr_w, GaussLaguerrePolynomial(), i, _1);
+                {
+                  GaussLaguerrePolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Hermite:
-                ret[i] = ext::bind(ptr_w, GaussHermitePolynomial(), i, _1);
+                {
+                  GaussHermitePolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Hyperbolic:
-                ret[i] = ext::bind(ptr_w, GaussHyperbolicPolynomial(), i, _1);
+                {
+                  GaussHyperbolicPolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Legendre:
-                ret[i] = ext::bind(ptr_w, GaussLegendrePolynomial(), i, _1);
+                {
+                  GaussLegendrePolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Chebyshev:
-                ret[i] = ext::bind(ptr_w, GaussChebyshevPolynomial(), i, _1);
+                {
+                  GaussChebyshevPolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Chebyshev2nd:
-                ret[i] = ext::bind(ptr_w,GaussChebyshev2ndPolynomial(),i, _1);
+                {
+                  GaussChebyshev2ndPolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               default:
                 QL_FAIL("unknown regression type");

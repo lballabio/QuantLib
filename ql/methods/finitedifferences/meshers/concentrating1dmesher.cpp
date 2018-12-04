@@ -120,10 +120,7 @@ namespace QuantLib {
           : rk_(tol), points_(points), betas_(betas) {}
 
             Real solve(Real a, Real y0, Real x0, Real x1) {
-                using namespace ext::placeholders;
-                AdaptiveRungeKutta<>::OdeFct1d odeFct(
-                    ext::bind(&OdeIntegrationFct::jac, this, a, _1, _2));
-
+                AdaptiveRungeKutta<>::OdeFct1d odeFct([&](Real x, Real y){ return jac(a, x, y); });
                 return rk_(odeFct, y0, x0, x1);
             }
 
@@ -152,7 +149,6 @@ namespace QuantLib {
         const std::vector<ext::tuple<Real, Real, bool> >& cPoints,
         Real tol)
     : Fdm1dMesher(size) {
-        using namespace ext::placeholders;
 
         QL_REQUIRE(end > start, "end must be larger than start");
 
@@ -172,9 +168,7 @@ namespace QuantLib {
 
         OdeIntegrationFct fct(points, betas, tol);
         const Real a = Brent().solve(
-            ext::bind(std::minus<Real>(),
-                ext::bind(&OdeIntegrationFct::solve,
-                            &fct, _1, start, 0.0, 1.0), end),
+            [&](Real x) { return fct.solve(x, start, 0.0, 1.0) - end; },
             tol, aInit, 0.1*aInit);
 
         // solve ODE for all grid points
@@ -204,9 +198,7 @@ namespace QuantLib {
                         std::lower_bound(y.begin(), y.end(), points[i]));
 
                 const Real e = Brent().solve(
-                    ext::bind(std::minus<Real>(),
-                        ext::bind(&LinearInterpolation::operator(),
-                                    odeSolution, _1, true), points[i]),
+                    [&](Real x){ return odeSolution(x, true) - points[i]; },
                     QL_EPSILON, x[j], 0.5/size);
 
                 w.emplace_back(std::min(x[size - 2], x[j]), e);

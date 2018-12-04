@@ -57,8 +57,6 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
       beta_(beta), nu_(nu), rho_(rho), forward_(forward),
       numericalForward_(forward) {
 
-    using namespace ext::placeholders;
-
     QL_REQUIRE(expiryTime > 0.0 && expiryTime <= detail::NoArbSabrModel::expiryTime_max,
                "expiryTime (" << expiryTime << ") out of bounds");
     QL_REQUIRE(forward > 0.0, "forward (" << forward << ") must be positive");
@@ -105,7 +103,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
         Brent b;
         Real start = std::sqrt(externalForward_ - detail::NoArbSabrModel::strike_min);
         Real tmp =
-            b.solve(ext::bind(&NoArbSabrModel::forwardError, this, _1),
+            b.solve([&](Real x){ return forwardError(x); },
                     detail::NoArbSabrModel::forward_accuracy, start,
                     std::min(detail::NoArbSabrModel::forward_search_step, start / 2.0));
         forward_ = tmp * tmp + detail::NoArbSabrModel::strike_min;

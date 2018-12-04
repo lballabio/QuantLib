@@ -70,16 +70,10 @@ namespace QuantLib {
     : DefaultProbabilityTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
     Probability DefaultDensityStructure::survivalProbabilityImpl(Time t) const {
-        using namespace ext::placeholders;
         static GaussChebyshevIntegration integral(48);
-        // this stores the address of the method to integrate (so that
-        // we don't have to insert its full expression inside the
-        // integral below--it's long enough already)
-        Real (DefaultDensityStructure::*f)(Time) const =
-            &DefaultDensityStructure::defaultDensityImpl;
         // the Gauss-Chebyshev quadratures integrate over [-1,1],
         // hence the remapping (and the Jacobian term t/2)
-        Probability P = 1.0 - integral(remap_t(ext::bind(f,this,_1), t)) * t/2.0;
+        Probability P = 1.0 - integral(remap_t([&](Time tau){ return defaultDensityImpl(tau); }, t)) * t / 2.0;
         //QL_ENSURE(P >= 0.0, "negative survival probability");
         return std::max<Real>(P, 0.0);
     }

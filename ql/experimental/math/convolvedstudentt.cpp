@@ -165,8 +165,6 @@ namespace QuantLib {
       accuracy_(accuracy), distrib_(degreesFreedom, factors) { }
 
     Real InverseCumulativeBehrensFisher::operator()(const Probability q) const {
-        using namespace ext::placeholders;
-
         Probability effectiveq;
         Real sign;
         // since the distrib is symmetric solve only on the right side:
@@ -185,10 +183,8 @@ namespace QuantLib {
         // (q is very close to 1.), in a bad combination fails around 1.-1.e-7
         Real xMax = 1.e6;
         return sign *
-            Brent().solve(ext::bind(subtract<Real>(effectiveq),
-                                      ext::bind(
-                &CumulativeBehrensFisher::operator(),
-                distrib_, _1)), accuracy_, (xMin+xMax)/2., xMin, xMax);
+            Brent().solve([&](Real x){ return distrib_(x) - effectiveq; },
+                          accuracy_, (xMin+xMax)/2., xMin, xMax);
     }
 
 }
