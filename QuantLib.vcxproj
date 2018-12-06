@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -532,6 +532,9 @@
     <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\experimental\models\normalclvmodel.hpp" />
     <ClInclude Include="ql\experimental\models\squarerootclvmodel.hpp" />
+    <ClInclude Include="ql\experimental\vanillalocalvolmodel\vanillalocalvolmodel.hpp" />
+    <ClInclude Include="ql\experimental\vanillalocalvolmodel\vanillalocalvolsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\vanillalocalvolmodel\vanillalocalvoltermstructures.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvoltermstructure.hpp" />
     <ClInclude Include="ql\math\polynomialmathfunction.hpp" />
     <ClInclude Include="ql\math\pascaltriangle.hpp" />
@@ -1857,6 +1860,9 @@
     <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp" />
     <ClCompile Include="ql\experimental\models\normalclvmodel.cpp" />
     <ClCompile Include="ql\experimental\models\squarerootclvmodel.cpp" />
+    <ClCompile Include="ql\experimental\vanillalocalvolmodel\vanillalocalvolmodel.cpp" />
+    <ClCompile Include="ql\experimental\vanillalocalvolmodel\vanillalocalvolsmilesection.cpp" />
+    <ClCompile Include="ql\experimental\vanillalocalvolmodel\vanillalocalvoltermstructures.cpp" />
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\pascaltriangle.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />

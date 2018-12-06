@@ -767,6 +767,7 @@
     <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="utilities.cpp" />
+    <ClCompile Include="vanillalocalvolmodels.cpp" />
     <ClCompile Include="variancegamma.cpp" />
     <ClCompile Include="varianceoption.cpp" />
     <ClCompile Include="varianceswaps.cpp" />
@@ -918,6 +919,7 @@
     <ClInclude Include="twoassetbarrieroption.hpp" />
     <ClInclude Include="twoassetcorrelationoption.hpp" />
     <ClInclude Include="utilities.hpp" />
+    <ClInclude Include="vanillalocalvolmodels.hpp" />
     <ClInclude Include="variancegamma.hpp" />
     <ClInclude Include="varianceoption.hpp" />
     <ClInclude Include="varianceswaps.hpp" />
