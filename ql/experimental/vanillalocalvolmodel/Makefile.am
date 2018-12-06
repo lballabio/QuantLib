@@ -6,12 +6,12 @@ this_include_HEADERS = \
     all.hpp \
     vanillalocalvolmodel.hpp \
 	vanillalocalvolsmilesection.hpp \
-	vanillalocalvoltermstructures.hpp \
+	vanillalocalvoltermstructures.hpp
 
 cpp_files = \
     vanillalocalvolmodel.cpp \
 	vanillalocalvolsmilesection.cpp \
-	vanillalocalvoltermstructures.cpp \
+	vanillalocalvoltermstructures.cpp
 
 if UNITY_BUILD
 
