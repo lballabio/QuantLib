@@ -5,13 +5,13 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     vanillalocalvolmodel.hpp \
-	vanillalocalvolsmilesection.hpp \
-	vanillalocalvoltermstructures.hpp
+    vanillalocalvolsmilesection.hpp \
+    vanillalocalvoltermstructures.hpp
 
 cpp_files = \
     vanillalocalvolmodel.cpp \
-	vanillalocalvolsmilesection.cpp \
-	vanillalocalvoltermstructures.cpp
+    vanillalocalvolsmilesection.cpp \
+    vanillalocalvoltermstructures.cpp
 
 if UNITY_BUILD
 
