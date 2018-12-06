@@ -130,7 +130,8 @@ namespace QuantLib {
 			}
 
 			Disposable<Array> initialValues() const { // we use zero slope as initial guess
-				return Disposable<Array>(Array(relativeStrikes_.size()-1, inverseTransform<Real>(0.0, minSlope_, maxSlope_)));
+				Array initialValue(relativeStrikes_.size() - 1, inverseTransform<Real>(0.0, minSlope_, maxSlope_));
+				return initialValue;
 			}
 
 		};

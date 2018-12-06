@@ -399,7 +399,7 @@ namespace QuantLib {
 			const bool                enableLogging,
 			const bool                useInitialMu,
 			const Real                initialMu)
-			: T_(T), S0_(S0), sigmaATM_(sigmaATM), Mp_(Mp), Mm_(Mm), Xp_(Xp), Xm_(Xm), sigma0_(sigma0),
+			: T_(T), S0_(S0), sigmaATM_(sigmaATM), Mp_(Mp), Mm_(Mm), sigma0_(sigma0), Xp_(Xp), Xm_(Xm),
 			maxCalibrationIters_(maxCalibrationIters), onlyForwardCalibrationIters_(onlyForwardCalibrationIters),
 			adjustATM_(adjustATMFlag), useInitialMu_(useInitialMu), initialMu_(initialMu), enableLogging_(enableLogging) {
 			// some basic sanity checks come here to avoid the need for taking care of it later on
