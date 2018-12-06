@@ -142,6 +142,7 @@ QL_TESTS = \
 	twoassetbarrieroption.hpp twoassetbarrieroption.cpp \
 	twoassetcorrelationoption.hpp twoassetcorrelationoption.cpp \
 	utilities.hpp utilities.cpp \
+    vanillalocalvolmodels.hpp vanillalocalvolmodels.cpp \
 	variancegamma.hpp variancegamma.cpp \
 	varianceoption.hpp varianceoption.cpp \
 	varianceswaps.hpp varianceswaps.cpp \
