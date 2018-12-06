@@ -23,7 +23,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <vector>
 #include <string>
-#include <stdio.h>
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>

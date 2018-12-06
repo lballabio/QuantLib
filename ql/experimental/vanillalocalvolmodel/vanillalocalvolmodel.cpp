@@ -18,6 +18,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 
+#include <sstream>
+
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/vanillalocalvolmodel/vanillalocalvolmodel.hpp>
 
@@ -27,6 +29,13 @@ namespace {
 	// in various places
 	QuantLib::CumulativeNormalDistribution Phi;
 
+	// we need to convert numbers to strings for logging
+	template <typename T>
+	std::string to_string(T val) {
+		std::stringstream stream;
+		stream << val;
+		return stream.str();
+	}
 }
 
 namespace QuantLib {
@@ -190,7 +199,6 @@ namespace QuantLib {
 			sigmaP_[k] = localVol(true, k, Sp_[k]);
 		}
 		for (Size k = 0; k < Sm_.size(); ++k) { // left wing calculations
-			Real x0 = (k > 0) ? Xm_[k - 1] : 0.0;
 			Sm_[k] = underlyingS(false, k, Xm_[k]);
 			sigmaM_[k] = localVol(false, k, Sm_[k]);
 		}
@@ -201,7 +209,6 @@ namespace QuantLib {
 		// positive local volatility and local vol extrapolation
 		for (Size k = 0; k < Sp_.size(); ++k) { // right wing calculations
 			Real x0 = (k > 0) ? Xp_[k - 1] : 0.0;
-			Real S0 = (k > 0) ? Sp_[k - 1] : S0_;
 			Real sigma0 = (k > 0) ? sigmaP_[k - 1] : sigma0_;
 			QL_REQUIRE(sigma0 >= 0.0, "sigma0 >= 0.0 required.");
 			if ((k == Sp_.size() - 1)||(localVol(true, k, Sp_[k])<=0.0)||(underlyingX(true, k, Sp_[k])>upperBoundX()))  { // right wing extrapolation, maybe better use some epsilon here
@@ -219,7 +226,6 @@ namespace QuantLib {
 		}
 		for (Size k = 0; k < Sm_.size(); ++k) { // left wing calculations
 			Real x0 = (k > 0) ? Xm_[k - 1] : 0.0;
-			Real S0 = (k > 0) ? Sm_[k - 1] : S0_;
 			Real sigma0 = (k > 0) ? sigmaM_[k - 1] : sigma0_;
 			QL_REQUIRE(sigma0 >= 0.0, "sigma0 >= 0.0 required.");
 			if ((k == Sm_.size() - 1)||(localVol(false, k, Sm_[k]) <= 0.0)||(underlyingX(false, k, Sm_[k])<lowerBoundX())) { // left wing extrapolation, maybe better use some epsilon here
@@ -267,13 +273,13 @@ namespace QuantLib {
 					dlogSigma0 *= lambda;
 					sigma0_ = exp(logSigma0);
 					updateLocalVol();
-					if (enableLogging_) logging_.push_back("k: " + std::to_string(k) +
-						"; C: " + std::to_string(call) +
-						"; P: " + std::to_string(put) +
-						"; S: " + std::to_string(straddleATM_) +
-						"; lambda: " + std::to_string(lambda) +
-						"; dmu: " + std::to_string(dmu) +
-						"; dlogSigma0: " + std::to_string(dlogSigma0));
+					if (enableLogging_) logging_.push_back("k: " + to_string(k) +
+						"; C: " + to_string(call) +
+						"; P: " + to_string(put) +
+						"; S: " + to_string(straddleATM_) +
+						"; lambda: " + to_string(lambda) +
+						"; dmu: " + to_string(dmu) +
+						"; dlogSigma0: " + to_string(dlogSigma0));
 					continue;  // don't update derivatives and step direction for rejected steps
 				}
 			}
@@ -305,14 +311,14 @@ namespace QuantLib {
 			// prepare for next iteration
 			forwardMinusStrike0 = forwardMinusStrike1;
 			straddleMinusATM0 = straddleMinusATM1;
-			if (enableLogging_) logging_.push_back("k: " + std::to_string(k) +
-				"; C: " + std::to_string(call) +
-				"; P: " + std::to_string(put) +
-				"; S: " + std::to_string(straddleATM_) +
-				"; dfwd_dmu: " + std::to_string(dfwd_dmu) +
-				"; dstr_dlogSigma0: " + std::to_string(dstr_dlogSigma0) +
-				"; dmu: " + std::to_string(dmu) +
-				"; dlogSigma0: " + std::to_string(dlogSigma0));
+			if (enableLogging_) logging_.push_back("k: " + to_string(k) +
+				"; C: " + to_string(call) +
+				"; P: " + to_string(put) +
+				"; S: " + to_string(straddleATM_) +
+				"; dfwd_dmu: " + to_string(dfwd_dmu) +
+				"; dstr_dlogSigma0: " + to_string(dstr_dlogSigma0) +
+				"; dmu: " + to_string(dmu) +
+				"; dlogSigma0: " + to_string(dlogSigma0));
 			if ((fabs(forwardMinusStrike0) < S0Tol_) && (fabs(sigma0_*dlogSigma0) < sigma0Tol_)) break;
 		}
 	}
@@ -324,12 +330,12 @@ namespace QuantLib {
 		Real call0 = expectation(true, S0_);
 		Real put0 = expectation(false, S0_);
 		nu_ = put0 - call0;
-		if (enableLogging_) logging_.push_back("C0: " + std::to_string(call0) + "; P0: " + std::to_string(put0) + "; nu: " + std::to_string(nu_));
+		if (enableLogging_) logging_.push_back("C0: " + to_string(call0) + "; P0: " + to_string(put0) + "; nu: " + to_string(nu_));
 		Real call1 = expectation(true, S0_);
 		Real put1 = expectation(false, S0_);
 		alpha_ = straddleATM_ / (call1 + put1);
 		nu_ = alpha_*nu_ + (1.0 - alpha_)*S0_;
-		if (enableLogging_) logging_.push_back("C1: " + std::to_string(call1) + "; P1: " + std::to_string(put1) + "; alpha_: " + std::to_string(alpha_) + "; nu_: " + std::to_string(nu_));
+		if (enableLogging_) logging_.push_back("C1: " + to_string(call1) + "; P1: " + to_string(put1) + "; alpha_: " + to_string(alpha_) + "; nu_: " + to_string(nu_));
 	}
 
 	// construct model based on S-grid
