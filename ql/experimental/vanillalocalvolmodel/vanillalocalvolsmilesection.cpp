@@ -130,7 +130,7 @@ namespace QuantLib {
 			}
 
 			Disposable<Array> initialValues() const { // we use zero slope as initial guess
-				return Array(relativeStrikes_.size()-1, inverseTransform<Real>(0.0, minSlope_, maxSlope_));
+				return Disposable<Array>(Array(relativeStrikes_.size()-1, inverseTransform<Real>(0.0, minSlope_, maxSlope_)));
 			}
 
 		};
@@ -145,13 +145,13 @@ namespace QuantLib {
 		const Real                                        extrapolationRelativeStrike,
 		const Real                                        extrapolationSlope,
 		bool                                              vegaWeighted,
-		const ext::shared_ptr<EndCriteria>&             endCriteria,
-		const ext::shared_ptr<OptimizationMethod>&      method,
+		const ext::shared_ptr<EndCriteria>&               endCriteria,
+		const ext::shared_ptr<OptimizationMethod>&        method,
 		const DayCounter&                                 dc,
 		const Date&                                       referenceDate,
 		const VolatilityType                              type,
 		const Rate                                        shift,
-		const ext::shared_ptr<VanillaLocalVolModel>&    model,
+		const ext::shared_ptr<VanillaLocalVolModel>&      model,
 		const Real                                        minSlope,    //  lower boundary for m in calibration
 		const Real                                        maxSlope,    //  upper boundary for m in calibration
 		const Real                                        alpha )      //  Tikhonov alpha

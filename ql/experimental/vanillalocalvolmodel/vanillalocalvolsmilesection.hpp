@@ -42,7 +42,7 @@ namespace QuantLib {
 			const DayCounter&                               dc = DayCounter(),
 			const VolatilityType                            type = Normal,
 			const Rate                                      shift = 0.0)
-			: model_(model), SmileSection(model->timeToExpiry(), dc, type, shift) {}
+			: SmileSection(model->timeToExpiry(), dc, type, shift), model_(model) {}
 
 		VanillaLocalVolModelSmileSection(
 			const Date&                                   expiryDate,
@@ -58,7 +58,7 @@ namespace QuantLib {
 			const Date&                                   referenceDate = Date(),
 			const VolatilityType                          type = Normal,
 			const Rate                                    shift = 0.0,
-			const ext::shared_ptr<VanillaLocalVolModel>&  model = 0,
+			const ext::shared_ptr<VanillaLocalVolModel>&  model = ext::shared_ptr<VanillaLocalVolModel>(),
 			const Real                                    minSlope = -3.0,   //  lower boundary for m in calibration
 			const Real                                    maxSlope =  3.0,   //  upper boundary for m in calibration
 			const Real                                    alpha = 1.0e-4);   //  Tikhonov alpha

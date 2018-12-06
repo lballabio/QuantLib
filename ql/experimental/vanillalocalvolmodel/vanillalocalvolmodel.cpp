@@ -354,9 +354,9 @@ namespace QuantLib {
 			const bool                enableLogging,
 			const bool                useInitialMu,
 			const Real                initialMu)
-		: T_(T), S0_(S0), sigmaATM_(sigmaATM), sigma0_(sigmaATM), Sp_(Sp), Sm_(Sm), Mp_(Mp), Mm_(Mm),
+		: T_(T), S0_(S0), sigmaATM_(sigmaATM), Sp_(Sp), Sm_(Sm), Mp_(Mp), Mm_(Mm), sigma0_(sigmaATM),
 		maxCalibrationIters_(maxCalibrationIters), onlyForwardCalibrationIters_(onlyForwardCalibrationIters),
-		adjustATM_(adjustATMFlag), enableLogging_(enableLogging), useInitialMu_(useInitialMu), initialMu_(initialMu) {
+		adjustATM_(adjustATMFlag), useInitialMu_(useInitialMu), initialMu_(initialMu), enableLogging_(enableLogging) {
 		// some basic sanity checks come here to avoid the need for taking care of it later on
 		QL_REQUIRE(T_ > 0, "T_ > 0 required.");
 		QL_REQUIRE(sigmaATM_ > 0, "sigmaATM_ > 0 required.");
@@ -399,9 +399,9 @@ namespace QuantLib {
 			const bool                enableLogging,
 			const bool                useInitialMu,
 			const Real                initialMu)
-			: T_(T), S0_(S0), sigmaATM_(sigmaATM), sigma0_(sigma0), Xp_(Xp), Xm_(Xm), Mp_(Mp), Mm_(Mm),
+			: T_(T), S0_(S0), sigmaATM_(sigmaATM), Mp_(Mp), Mm_(Mm), Xp_(Xp), Xm_(Xm), sigma0_(sigma0),
 			maxCalibrationIters_(maxCalibrationIters), onlyForwardCalibrationIters_(onlyForwardCalibrationIters),
-			adjustATM_(adjustATMFlag), enableLogging_(enableLogging), useInitialMu_(useInitialMu), initialMu_(initialMu) {
+			adjustATM_(adjustATMFlag), useInitialMu_(useInitialMu), initialMu_(initialMu), enableLogging_(enableLogging) {
 			// some basic sanity checks come here to avoid the need for taking care of it later on
 			QL_REQUIRE(T_ > 0, "T_ > 0 required.");
 			QL_REQUIRE(sigmaATM_ > 0, "sigmaATM_ > 0 required.");
