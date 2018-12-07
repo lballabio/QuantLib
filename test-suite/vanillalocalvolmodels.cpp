@@ -217,9 +217,8 @@ namespace {
 	Real smile05x10[] = {  0.006096, 0.006234, 0.006427, 0.006541, 0.006622, 0.006821, 0.006946, 0.007226, 0.007875 };
     Real smile10x10[] = {  0.006175, 0.006353, 0.006485, 0.006582, 0.006602, 0.006850, 0.006923, 0.007097, 0.007495 };
     Real smile05x30[] = {  0.005560, 0.005660, 0.005792, 0.005871, 0.005958, 0.006147, 0.006233, 0.006458, 0.007048 };
-	std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
 
-	ext::shared_ptr<VanillaLocalVolModelSmileSection> getSmileSection(const Period& expTerm, const Period& swapTerm, const Real* smileData, const Size smileOffset = 0) {
+	ext::shared_ptr<VanillaLocalVolModelSmileSection> getSmileSection(const Period& expTerm, const Period& swapTerm, const Real* smileData, const Size smileOffset = 0, bool testSmile = true) {
 		// market data
 		Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
 		Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);
@@ -237,21 +236,23 @@ namespace {
 		// default optimisation parameters should be appropriate to set up the model/smile properly
 		ext::shared_ptr<VanillaLocalVolModelSmileSection> smile(new VanillaLocalVolModelSmileSection(expiryDate, S0, relativeStrikes, smileVolatilities, extrapolationRelativeStrike, extrapolationSlope));
 		//BOOST_TEST_MESSAGE("Smile is set up :)");
-		// we check the calibration accuracy here
-		Real smileTol = 2.0e-4; // 2bp is rather relaxed; mostly we would expect much better accuracy
-		for (Size k = smileOffset; k < 9; ++k) {
-			Real modelVol = smile->volatility(S0+relStrikes[k]);
-			Real inputVol = smileData[k - smileOffset];
-			Real variance = modelVol - inputVol;
-			Time ttE = Actual365Fixed().yearFraction(today, expiryDate);
-			Real vega = bachelierBlackFormulaStdDevDerivative(S0 + relStrikes[k], S0, inputVol*sqrt(ttE))*sqrt(ttE);
-			//BOOST_TEST_MESSAGE("E: " << io::short_period(expTerm) << ", S: " << io::short_period(swapTerm)
-			//	<< ", K: " << relStrikes[k] << ", M: " << modelVol << ", I: " << inputVol << ", D:" << variance	<< ", V:" << vega);
-			Real tol = (relStrikes[k] == 0.0) ? (1.0e-12) : (smileTol);  // for ATM we expect to be spot on
-			if (fabs(variance)>tol)
-				BOOST_ERROR("VanillaLocalVolModel calibration accuracy failed for\n" 
-					<< "E: " << io::short_period(expTerm) << ", S: " << io::short_period(swapTerm)
-					<< ", K: " << relStrikes[k] << ", M: " << modelVol << ", I: " << inputVol << ", D:" << variance << ", V:" << vega);
+		if (testSmile) {
+			// we check the calibration accuracy here
+			Real smileTol = 2.0e-4; // 2bp is rather relaxed; mostly we would expect much better accuracy
+			for (Size k = smileOffset; k < 9; ++k) {
+				Real modelVol = smile->volatility(S0 + relStrikes[k]);
+				Real inputVol = smileData[k - smileOffset];
+				Real variance = modelVol - inputVol;
+				Time ttE = Actual365Fixed().yearFraction(today, expiryDate);
+				Real vega = bachelierBlackFormulaStdDevDerivative(S0 + relStrikes[k], S0, inputVol*sqrt(ttE))*sqrt(ttE);
+				//BOOST_TEST_MESSAGE("E: " << io::short_period(expTerm) << ", S: " << io::short_period(swapTerm)
+				//	<< ", K: " << relStrikes[k] << ", M: " << modelVol << ", I: " << inputVol << ", D:" << variance	<< ", V:" << vega);
+				Real tol = (relStrikes[k] == 0.0) ? (1.0e-12) : (smileTol);  // for ATM we expect to be spot on
+				if (fabs(variance)>tol)
+					BOOST_ERROR("VanillaLocalVolModel calibration accuracy failed for\n"
+						<< "E: " << io::short_period(expTerm) << ", S: " << io::short_period(swapTerm)
+						<< ", K: " << relStrikes[k] << ", M: " << modelVol << ", I: " << inputVol << ", D:" << variance << ", V:" << vega);
+			}
 		}
 		return smile;
 	}
@@ -350,6 +351,7 @@ void VanillaLocalVolModelTest::testShiftedLognormalModelBoundaryCase() {
 
 void VanillaLocalVolModelTest::testSmileCalibration() {
    	BOOST_TEST_MESSAGE("Testing smile calibration to market data...");
+	std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
 	smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
 	smiles[0].push_back(getSmileSection(Period( 1, Years), Period( 1, Years), smile01x01, 1));
 	smiles[1].push_back(getSmileSection(Period(3, Months), Period( 2, Years), smile3mx02, 2));
@@ -367,7 +369,20 @@ void VanillaLocalVolModelTest::testSmileCalibration() {
 
 void VanillaLocalVolModelTest::testSmileInterpolation() {
 	BOOST_TEST_MESSAGE("Testing smile interpolation accross expiries and swap terms...");
-	// this test case requires that testSmileCalibration() was run earlier to set up smiles
+	std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
+	smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
+	// we do not want to run the smile calibration test here
+	smiles[0].push_back(getSmileSection(Period( 1, Years), Period( 1, Years), smile01x01, 1, false));
+	smiles[1].push_back(getSmileSection(Period(3, Months), Period( 2, Years), smile3mx02, 2, false));
+	smiles[1].push_back(getSmileSection(Period( 2, Years), Period( 2, Years), smile02x02, 1, false));
+	smiles[2].push_back(getSmileSection(Period( 1, Years), Period( 5, Years), smile01x05, 0, false));
+	smiles[2].push_back(getSmileSection(Period( 5, Years), Period( 5, Years), smile05x05, 0, false));
+	smiles[3].push_back(getSmileSection(Period(3, Months), Period(10, Years), smile3mx10, 0, false));
+	smiles[3].push_back(getSmileSection(Period( 1, Years), Period(10, Years), smile01x10, 0, false));
+	smiles[3].push_back(getSmileSection(Period( 2, Years), Period(10, Years), smile02x10, 0, false));
+	smiles[3].push_back(getSmileSection(Period( 5, Years), Period(10, Years), smile05x10, 0, false));
+	smiles[3].push_back(getSmileSection(Period(10, Years), Period(10, Years), smile10x10, 0, false));
+	smiles[4].push_back(getSmileSection(Period( 5, Years), Period(30, Years), smile05x30, 0, false));
 	// we interpolate 3m2y and 1y5y smile and check boundary cases
 	// we collect essentials for 3m2y smile
 	Date expDate1 = smiles[1][0]->exerciseDate();
@@ -417,6 +432,20 @@ void VanillaLocalVolModelTest::testSmileInterpolation() {
 
 void VanillaLocalVolModelTest::testSwaptionVTSInterpolation() {
 	BOOST_TEST_MESSAGE("Testing interpolation via SwaptionVTS...");   
+	std::vector< std::vector< ext::shared_ptr<VanillaLocalVolModelSmileSection> > > smiles;
+	smiles.resize(5);   // 1y, 2y, 5y, 10y, 30y swaps
+	// we do not want to run the smile calibration test here
+	smiles[0].push_back(getSmileSection(Period( 1, Years), Period( 1, Years), smile01x01, 1, false));
+	smiles[1].push_back(getSmileSection(Period(3, Months), Period( 2, Years), smile3mx02, 2, false));
+	smiles[1].push_back(getSmileSection(Period( 2, Years), Period( 2, Years), smile02x02, 1, false));
+	smiles[2].push_back(getSmileSection(Period( 1, Years), Period( 5, Years), smile01x05, 0, false));
+	smiles[2].push_back(getSmileSection(Period( 5, Years), Period( 5, Years), smile05x05, 0, false));
+	smiles[3].push_back(getSmileSection(Period(3, Months), Period(10, Years), smile3mx10, 0, false));
+	smiles[3].push_back(getSmileSection(Period( 1, Years), Period(10, Years), smile01x10, 0, false));
+	smiles[3].push_back(getSmileSection(Period( 2, Years), Period(10, Years), smile02x10, 0, false));
+	smiles[3].push_back(getSmileSection(Period( 5, Years), Period(10, Years), smile05x10, 0, false));
+	smiles[3].push_back(getSmileSection(Period(10, Years), Period(10, Years), smile10x10, 0, false));
+	smiles[4].push_back(getSmileSection(Period( 5, Years), Period(30, Years), smile05x30, 0, false));
 	// market data
 	Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
 	Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);

@@ -260,10 +260,10 @@ namespace QuantLib {
 				Real lambda = -num / den;
 				Real eps = 1.0e-6;  // see Griewank '86
 				if (lambda < -0.5 - eps) lambda = -0.5;
-				else if (lambda < -eps) lambda = lambda;
+				else if (lambda < -eps); // lambda = lambda;
 				else if (lambda < 0.0) lambda = -eps;
 				else if (lambda <= eps) lambda = eps;
-				else if (lambda <= 0.5 + eps) lambda = lambda;
+				else if (lambda <= 0.5 + eps); // lambda = lambda;
 				else lambda = 1.0;
 				if (lambda < 1.0) { // reject the step and calculate a new try
 					// x = x - dx + lambda dx = x + (lambda - 1.0) dx
