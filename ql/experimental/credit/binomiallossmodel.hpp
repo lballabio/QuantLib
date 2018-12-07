@@ -81,7 +81,6 @@ namespace QuantLib {
         */
         Disposable<std::vector<Real> > 
             expectedDistribution(const Date& date) const {
-            using namespace ext::placeholders;
             // precal date conditional magnitudes:
             std::vector<Real> notionals = basket_->remainingNotionals(date);
             std::vector<Probability> invProbs = 
@@ -91,17 +90,9 @@ namespace QuantLib {
                     copula_->inverseCumulativeY(invProbs[iName], iName);
 
             return copula_->integratedExpectedValue(
-                ext::function<Disposable<std::vector<Real> > (
-                  const std::vector<Real>& v1)>(
-                    ext::bind(
-                        &BinomialLossModel<LLM>::lossProbability,
-                        this,
-                        ext::cref(date), //d,
-                        ext::cref(notionals),
-                        ext::cref(invProbs),
-                        _1)
-                    )
-                );
+                [&](const std::vector<Real>& v1) {
+                    return lossProbability(date, notionals, invProbs, v1);
+                });
         }
         //! attainable loss points this model provides
         Disposable<std::vector<Real> > lossPoints(const Date&) const;
@@ -286,19 +277,12 @@ namespace QuantLib {
     Disposable<std::vector<Real> >
         BinomialLossModel<LLM>::lossPoints(const Date& d) const 
     {
-        using namespace ext::placeholders;
         std::vector<Real> notionals = basket_->remainingNotionals(d);
 
         Real aveLossFrct = copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &BinomialLossModel<LLM>::averageLoss,
-                    this,
-                    ext::cref(d),
-                    ext::cref(notionals),
-                    _1)
-                )
-            );
+            [&](const std::vector<Real>& v1) {
+                return averageLoss(d, notionals, v1);
+            });
 
         std::vector<Real> data;
         Size dataSize = basket_->remainingSize() + 1;
@@ -332,7 +316,6 @@ namespace QuantLib {
 
     template< class LLM>
     Real BinomialLossModel<LLM>::expectedTrancheLoss(const Date& d) const {
-        using namespace ext::placeholders;
         std::vector<Real> lossVals  = lossPoints(d);
         std::vector<Real> notionals = basket_->remainingNotionals(d);
         std::vector<Probability> invProbs = 
@@ -342,15 +325,9 @@ namespace QuantLib {
                 copula_->inverseCumulativeY(invProbs[iName], iName);
             
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(&BinomialLossModel<LLM>::condTrancheLoss,
-                            this,
-                            ext::cref(d), 
-                            ext::cref(lossVals), 
-                            ext::cref(notionals), 
-                            ext::cref(invProbs), 
-                            _1))
-            );
+            [&](const std::vector<Real>& v1) {
+                return condTrancheLoss(d, lossVals, notionals, invProbs, v1);
+            });
     }
 
 
