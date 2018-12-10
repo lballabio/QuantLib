@@ -25,13 +25,13 @@
 namespace QuantLib {
 
     AnalyticEuropeanEngine::AnalyticEuropeanEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
 
     AnalyticEuropeanEngine::AnalyticEuropeanEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              const Handle<YieldTermStructure>& discountCurve)
     : process_(process), discountCurve_(discountCurve) {
         registerWith(process_);
@@ -42,7 +42,7 @@ namespace QuantLib {
 
         // if the discount curve is not specified, we default to the
         // risk free rate curve embedded within the GBM process
-        boost::shared_ptr<YieldTermStructure> discountPtr = 
+        ext::shared_ptr<YieldTermStructure> discountPtr = 
             discountCurve_.empty() ? 
             process_->riskFreeRate().currentLink() :
             discountCurve_.currentLink();
@@ -50,8 +50,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =

@@ -37,6 +37,7 @@
 #include <ql/time/calendars/switzerland.hpp>
 #include <ql/time/calendars/taiwan.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/thailand.hpp>
 #include <ql/time/calendars/turkey.hpp>
 #include <ql/time/calendars/ukraine.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>

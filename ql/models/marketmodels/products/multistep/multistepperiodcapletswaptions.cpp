@@ -21,14 +21,15 @@
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
     MultiStepPeriodCapletSwaptions::MultiStepPeriodCapletSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& forwardOptionPaymentTimes,
                                      const std::vector<Time>& swaptionPaymentTimes,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
                                      Size period,
                                      Size offset)
     : MultiProductMultiStep(rateTimes),
@@ -136,9 +137,9 @@ namespace QuantLib {
     return terminate;
     }
 
-    std::auto_ptr<MarketModelMultiProduct>
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
     MultiStepPeriodCapletSwaptions::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
                                          new MultiStepPeriodCapletSwaptions(*this));
     }
 

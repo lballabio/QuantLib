@@ -1,0 +1,125 @@
+
+/*
+ Copyright (C) 2000-2003 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*!
+
+    \example BasketLosses.cpp
+    This example shows how to model losses across correlated assets.
+    
+    \example BermudanSwaption.cpp
+    This example prices a bermudan swaption using different models
+    calibrated to market swaptions. The calibration examples include
+    Hull and White's using both an analytic formula as well as
+    numerically, and Black and Karasinski's model. Using these three
+    calibrations, Bermudan swaptions are priced for at-the-money,
+    out-of-the-money and in-the-money volatilities.
+
+    \example Bonds.cpp
+    This example shows how to set up a term structure and then price
+    some simple bonds. The last part is dedicated to peripherical
+    computations such as yield-to-price or price-to-yield.
+    
+    \example CallableBonds.cpp
+    This example prices a number of callable bonds and compares the
+    results to known good data.
+
+    \example CDS.cpp
+    This example bootstraps a default-probability curve over a number
+    of CDS and reprices them.
+
+    \example ConvertibleBonds.cpp
+    For a given set of option parameters, this example computes the
+    value of a convertible bond with an embedded put option for two
+    different equity options types (with european and american
+    exercise features) using the Tsiveriotis-Fernandes method with
+    different implied tree algorithms.  The tree types are
+    Jarrow-Rudd, Cox-Ross-Rubinstein, Additive equiprobabilities,
+    Trigeorgis, Tian and Leisen-Reimer.
+
+    \example CVAIRS.cpp
+    This example shows how to calculate credit value adjustment for an
+    interest rate swap.
+
+    \example DiscreteHedging.cpp
+    This example computes profit and loss of a discrete interval
+    hedging strategy and compares with the outcome with the results of
+    Derman and Kamal's Goldman Sachs Equity Derivatives Research Note
+    "When You Cannot Hedge Continuously: The Corrections to
+    Black-Scholes".  It shows the use of the Monte Carlo framework.
+
+    \example EquityOption.cpp
+    For a given set of option parameters, this example computes the
+    value of three different equity options types (with european,
+    bermudan and american exercise features) using different valuation
+    algorithms. The calculation methods are Black-Scholes (for
+    european options only), Barone-Adesi/Whaley (american-only),
+    Bjerksund/Stensland (american), Integral (european), finite
+    differences, binomial trees, crude Monte Carlo (european-only) and
+    Sobol-sequence Monte Carlo (european-only).
+
+    \example FittedBondCurve.cpp
+    For a given set of coupons and terms to maturity, this example
+    computes the value of a bond by fitting the yields to a curve
+    using different methods. The fitting methods are exponential
+    splines, simple polynomials, Nelson-Siegel, and cubic B-splines.
+    It then shifts the evaluation date into the future to compute
+    implied forward par rates. It also computes yields after small
+    price shifts.
+
+    \example FRA.cpp
+    This example values a forward-rate agreement (FRA) at different
+    forward dates under two yield curve assumptions. It thereby
+    illustrates how set up a term structure, and to use it to price a
+    simple forward-rate agreement.
+
+    \example Gaussian1dModels.cpp
+    This example shows the use of Gaussian short rate model for
+    interest rate derivatives.
+    
+    \example GlobalOptimizer.cpp
+    This example shows the use of several different optimizers:
+    firefly algorithm, hybrid simulated annealing, particle swarm
+    optimization, simulated annealing, and differential evolution.
+
+    \example LatentModel.cpp
+    This example shows the calculation of correlated defaults.
+
+    \example MarketModels.cpp
+    This example shows the use of interest-rate market models.
+
+    \example MultidimIntegral.cpp
+    This example shows multi-dimensional numerical integration.
+
+    \example Replication.cpp
+    This example uses the CompositeInstrument class to statically
+    replicate a down-and-out barrier options.
+
+    \example Repo.cpp
+    This example values a fixed-coupon bond repurchase (repo). The
+    repurchase agreement example is set up to use the repo rate to do
+    all discounting (including the underlying bond income). Forward
+    delivery price is also obtained using this repo rate. All this is
+    done by supplying the FixedCouponBondForward constructor with a
+    flat repo YieldTermStructure.
+
+    \example MulticurveBootstrapping.cpp
+    This example prices an interest rate swap over a term structure
+    and calculates its fair fixed rate and floating spread.
+
+*/
+

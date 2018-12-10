@@ -36,14 +36,14 @@ namespace QuantLib {
     class FDAmericanCondition : public baseEngine {
       public:
         FDAmericanCondition(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100, Size gridPoints = 100,
              bool timeDependent = false)
         : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
       protected:
         void initializeStepCondition() const {
             baseEngine::stepCondition_ =
-                boost::shared_ptr<StandardStepCondition>(
+                ext::shared_ptr<StandardStepCondition>(
                   new AmericanCondition(baseEngine::intrinsicValues_.values()));
         }
     };
@@ -52,7 +52,7 @@ namespace QuantLib {
     class FDShoutCondition : public baseEngine {
       public:
         FDShoutCondition(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100, Size gridPoints = 100,
              bool timeDependent = false)
         : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
@@ -63,7 +63,7 @@ namespace QuantLib {
                 ->zeroRate(residualTime, Continuous);
 
             baseEngine::stepCondition_ =
-                boost::shared_ptr<StandardStepCondition>(
+                ext::shared_ptr<StandardStepCondition>(
                      new ShoutCondition(baseEngine::intrinsicValues_.values(),
                                         residualTime,
                                         riskFreeRate));

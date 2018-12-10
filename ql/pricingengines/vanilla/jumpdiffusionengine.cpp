@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     JumpDiffusionEngine::JumpDiffusionEngine(
-        const boost::shared_ptr<Merton76Process>& process,
+        const ext::shared_ptr<Merton76Process>& process,
         Real relativeAccuracy,
         Size maxIterations)
     : process_(process), relativeAccuracy_(relativeAccuracy),
@@ -48,8 +48,8 @@ namespace QuantLib {
         Real k = std::exp(muPlusHalfSquareVol) - 1.0;
         Real lambda = (k+1.0) * process_->jumpIntensity()->value();
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =
@@ -75,7 +75,7 @@ namespace QuantLib {
         RelinkableHandle<BlackVolTermStructure> volTS(
                                                 *process_->blackVolatility());
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
                  new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
                                                     riskFreeTS, volTS));
 
@@ -113,9 +113,9 @@ namespace QuantLib {
             v = std::sqrt((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - process_->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
-            riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(new
+            riskFreeTS.linkTo(ext::shared_ptr<YieldTermStructure>(new
                 FlatForward(rateRefDate, r, voldc)));
-            volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(new
+            volTS.linkTo(ext::shared_ptr<BlackVolTermStructure>(new
                 BlackConstantVol(rateRefDate, volcal, v, voldc)));
 
             baseArguments->validate();

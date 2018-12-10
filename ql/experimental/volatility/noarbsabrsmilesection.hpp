@@ -50,14 +50,14 @@ class NoArbSabrSmileSection : public SmileSection {
                             Real discount = 1.0, Real gap = 1.0e-5) const;
     Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4) const;
 
-    boost::shared_ptr<NoArbSabrModel> model() { return model_; }
+    ext::shared_ptr<NoArbSabrModel> model() { return model_; }
 
   protected:
     Volatility volatilityImpl(Rate strike) const;
 
   private:
     void init();
-    boost::shared_ptr<NoArbSabrModel> model_;
+    ext::shared_ptr<NoArbSabrModel> model_;
     Rate forward_;
     std::vector<Real> params_;
     Real shift_;

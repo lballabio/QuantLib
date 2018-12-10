@@ -32,8 +32,8 @@
 namespace QuantLib {
 
     FdmG2Op::FdmG2Op(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<G2>& model,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<G2>& model,
         Size direction1, Size direction2)
     : direction1_(direction1),
       direction2_(direction2),
@@ -61,7 +61,7 @@ namespace QuantLib {
 
     void FdmG2Op::setTime(Time t1, Time t2) {
 
-        const boost::shared_ptr<TwoFactorModel::ShortRateDynamics> dynamics =
+        const ext::shared_ptr<TwoFactorModel::ShortRateDynamics> dynamics =
             model_->dynamics();
 
         const Real phi = 0.5*(  dynamics->shortRate(t1, 0.0, 0.0)

@@ -148,7 +148,7 @@ namespace QuantLib {
             type.  typically used from Issuer
         */
         virtual bool matchesEventType(
-                 const boost::shared_ptr<DefaultType>& contractEvType) const {
+                 const ext::shared_ptr<DefaultType>& contractEvType) const {
             // remember we are made of an atomic type.
             // behaviour by default...
             return
@@ -185,9 +185,9 @@ namespace QuantLib {
     }
 
     template<>
-    struct earlier_than<DefaultEvent>
-        : public std::binary_function<DefaultEvent, DefaultEvent, bool> {
-        bool operator()(const DefaultEvent& e1, const DefaultEvent& e2) {
+    struct earlier_than<DefaultEvent> {
+        bool operator()(const DefaultEvent& e1,
+                        const DefaultEvent& e2) const {
             return e1.date() < e2.date();
         }
     };
@@ -213,7 +213,7 @@ namespace QuantLib {
                           Real recoveryRates);
         Real amountDefaulted() const {return defaultedAmount_;}
         bool matchesEventType(
-            const boost::shared_ptr<DefaultType>& contractEvType) const;
+            const ext::shared_ptr<DefaultType>& contractEvType) const;
       private:
         Real defaultedAmount_;
     };
@@ -237,7 +237,7 @@ namespace QuantLib {
                         // means same for all
                         Real recoveryRates);
         //! This is a stronger than all event and will trigger all of them.
-        bool matchesEventType(const boost::shared_ptr<DefaultType>&) const {
+        bool matchesEventType(const ext::shared_ptr<DefaultType>&) const {
             return true;
         }
     };

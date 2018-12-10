@@ -36,10 +36,10 @@ namespace QuantLib {
       public:
         typedef std::vector<std::pair<Time, Real> > Shape;
 
-        FdmExtOUJumpModelInnerValue(const boost::shared_ptr<Payoff>& payoff,
-                                    const boost::shared_ptr<FdmMesher>& mesher,
-                                    const boost::shared_ptr<Shape>& shape =
-                                                    boost::shared_ptr<Shape>())
+        FdmExtOUJumpModelInnerValue(const ext::shared_ptr<Payoff>& payoff,
+                                    const ext::shared_ptr<FdmMesher>& mesher,
+                                    const ext::shared_ptr<Shape>& shape =
+                                                    ext::shared_ptr<Shape>())
         : payoff_(payoff),
           mesher_(mesher),
           shape_ (shape) { }
@@ -53,16 +53,16 @@ namespace QuantLib {
                 f = std::lower_bound(shape_->begin(), shape_->end(),
                    std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
             }
-            return payoff_->operator()(std::exp(f + x + y));
+            return (*payoff_)(std::exp(f + x + y));
         }
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
             return innerValue(iter, t);
         }
 
       private:
-        const boost::shared_ptr<Payoff> payoff_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<Shape> shape_;
+        const ext::shared_ptr<Payoff> payoff_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<Shape> shape_;
     };
 }
 

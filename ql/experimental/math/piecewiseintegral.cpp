@@ -18,11 +18,12 @@
 */
 
 #include <ql/experimental/math/piecewiseintegral.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
 PiecewiseIntegral::PiecewiseIntegral(
-    const boost::shared_ptr<Integrator> &integrator,
+    const ext::shared_ptr<Integrator> &integrator,
     const std::vector<Real> &criticalPoints, const bool avoidCriticalPoints)
     : Integrator(1.0, 1), integrator_(integrator),
       criticalPoints_(criticalPoints),
@@ -31,7 +32,7 @@ PiecewiseIntegral::PiecewiseIntegral(
     std::sort(criticalPoints_.begin(), criticalPoints_.end());
     std::vector<Real>::const_iterator end =
         std::unique(criticalPoints_.begin(), criticalPoints_.end(),
-                    std::ptr_fun(close_enough));
+                    static_cast<bool (*)(Real, Real)>(close_enough));
     criticalPoints_.resize(end - criticalPoints_.begin());
 
 }

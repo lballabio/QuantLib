@@ -60,7 +60,7 @@ namespace QuantLib {
 
       public:
         LognormalCmsSpreadPricer(
-            const boost::shared_ptr<CmsCouponPricer> cmsPricer,
+            const ext::shared_ptr<CmsCouponPricer> cmsPricer,
             const Handle<Quote> &correlation,
             const Handle<YieldTermStructure> &couponDiscountCurve =
                 Handle<YieldTermStructure>(),
@@ -75,31 +75,18 @@ namespace QuantLib {
         virtual Rate capletRate(Rate effectiveCap) const;
         virtual Real floorletPrice(Rate effectiveFloor) const;
         virtual Rate floorletRate(Rate effectiveFloor) const;
-        /* */
-        void flushCache();
 
       private:
-        class PrivateObserver : public Observer {
-          public:
-            explicit PrivateObserver(LognormalCmsSpreadPricer *t) : t_(t) {}
-            void update() { t_->flushCache(); }
-
-          private:
-            LognormalCmsSpreadPricer *t_;
-        };
-
-        boost::shared_ptr<PrivateObserver> privateObserver_;
-
-        typedef std::map<std::pair<std::string, Date>, std::pair<Real, Real> >
-        CacheType;
-
         void initialize(const FloatingRateCoupon &coupon);
         Real optionletPrice(Option::Type optionType, Real strike) const;
 
         Real integrand(const Real) const;
         Real integrand_normal(const Real) const;
 
-        boost::shared_ptr<CmsCouponPricer> cmsPricer_;
+        class integrand_f;
+        friend class integrand_f;
+
+        ext::shared_ptr<CmsCouponPricer> cmsPricer_;
 
         Handle<YieldTermStructure> couponDiscountCurve_;
 
@@ -113,10 +100,10 @@ namespace QuantLib {
         Real spreadLegValue_;
         Real discount_;
 
-        boost::shared_ptr<SwapSpreadIndex> index_;
+        ext::shared_ptr<SwapSpreadIndex> index_;
 
-        boost::shared_ptr<CumulativeNormalDistribution> cnd_;
-        boost::shared_ptr<GaussianQuadrature> integrator_;
+        ext::shared_ptr<CumulativeNormalDistribution> cnd_;
+        ext::shared_ptr<GaussianQuadrature> integrator_;
 
         Real swapRate1_, swapRate2_, gearing1_, gearing2_;
         Real adjustedRate1_, adjustedRate2_;
@@ -132,9 +119,7 @@ namespace QuantLib {
         mutable Real alpha_, psi_;
         mutable Option::Type optionType_;
 
-        boost::shared_ptr<CmsCoupon> c1_, c2_;
-
-        CacheType cache_;
+        ext::shared_ptr<CmsCoupon> c1_, c2_;
     };
 }
 

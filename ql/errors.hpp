@@ -26,9 +26,9 @@
 #define quantlib_errors_hpp
 
 #include <ql/qldefines.hpp>
+#include <ql/shared_ptr.hpp>
 #include <boost/assert.hpp>
 #include <boost/current_function.hpp>
-#include <boost/shared_ptr.hpp>
 #include <exception>
 #include <sstream>
 #include <string>
@@ -52,7 +52,7 @@ namespace QuantLib {
         //! returns the error message.
         const char* what() const throw ();
       private:
-        boost::shared_ptr<std::string> message_;
+        ext::shared_ptr<std::string> message_;
     };
 
 }

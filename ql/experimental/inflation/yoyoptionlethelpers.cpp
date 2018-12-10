@@ -32,9 +32,9 @@ namespace QuantLib {
                   const DayCounter& yoyDayCounter,
                   const Calendar& paymentCalendar,
                   Natural fixingDays,
-                  const boost::shared_ptr<YoYInflationIndex>& index,
+                  const ext::shared_ptr<YoYInflationIndex>& index,
                   Rate strike, Size n,
-                  const boost::shared_ptr<YoYInflationCapFloorEngine> &pricer)
+                  const ext::shared_ptr<YoYInflationCapFloorEngine> &pricer)
     : BootstrapHelper<YoYOptionletVolatilitySurface>(price),
       notional_(notional), capFloorType_(capFloorType), lag_(lag),
       fixingDays_(fixingDays), index_(index), strike_(strike), n_(n),
@@ -42,20 +42,20 @@ namespace QuantLib {
       pricer_(pricer) {
 
         // build the instrument to reprice (only need do this once)
-        yoyCapFloor_ = boost::shared_ptr<YoYInflationCapFloor>(
-                 new YoYInflationCapFloor(
+        yoyCapFloor_ = ext::make_shared<YoYInflationCapFloor>(
+                 
                      MakeYoYInflationCapFloor(capFloorType_, n_, calendar_,
                                               index_, lag_, strike_)
                     .withNominal(notional)
                     .withFixingDays(fixingDays_)
                     .withPaymentDayCounter(yoyDayCounter_)
-                                          ));
+                                          );
         // dates already build in lag of index/instrument
         // these are the dates of the values of the index
         // that fix the capfloor
-          earliestDate_ = boost::dynamic_pointer_cast<YoYInflationCoupon>(
+          earliestDate_ = ext::dynamic_pointer_cast<YoYInflationCoupon>(
               yoyCapFloor_->yoyLeg().front())->fixingDate();
-          latestDate_ = boost::dynamic_pointer_cast<YoYInflationCoupon>(
+          latestDate_ = ext::dynamic_pointer_cast<YoYInflationCoupon>(
               yoyCapFloor_->yoyLeg().back())->fixingDate();
 
         // each reprice is resetting the inflation surf in the
@@ -80,7 +80,7 @@ namespace QuantLib {
         const bool own = false;
         // create a handle to the new vol surface
         Handle<YoYOptionletVolatilitySurface> volSurf(
-            boost::shared_ptr<YoYOptionletVolatilitySurface>(v, null_deleter()),
+            ext::shared_ptr<YoYOptionletVolatilitySurface>(v, null_deleter()),
             own);
         // in this case all we need to do is reset the vol in the pricer
         // we must do it because the surface is a different one each time

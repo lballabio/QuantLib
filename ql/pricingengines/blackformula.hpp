@@ -52,7 +52,7 @@ namespace QuantLib {
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    Real blackFormula(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormula(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                       Real forward,
                       Real stdDev,
                       Real discount = 1.0,
@@ -81,7 +81,7 @@ namespace QuantLib {
         extended moneyness approximation by Corrado and Miller (1996)
     */
     Real blackFormulaImpliedStdDevApproximation(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real blackPrice,
                         Real discount = 1.0,
@@ -112,7 +112,7 @@ namespace QuantLib {
         method.
     */
     Real blackFormulaImpliedStdDevChambers(
-        const boost::shared_ptr<PlainVanillaPayoff> &payoff,
+        const ext::shared_ptr<PlainVanillaPayoff> &payoff,
         Real forward,
         Real blackPrice,
         Real blackAtmPrice,
@@ -141,7 +141,7 @@ namespace QuantLib {
         Real displacement = 0.0);
 
     Real blackFormulaImpliedStdDevApproximationRS(
-        const boost::shared_ptr<PlainVanillaPayoff> &payoff,
+        const ext::shared_ptr<PlainVanillaPayoff> &payoff,
         Real forward,
         Real blackPrice,
         Real discount = 1.0,
@@ -165,7 +165,7 @@ namespace QuantLib {
         i.e. volatility*sqrt(timeToMaturity)
     */
     Real blackFormulaImpliedStdDev(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real blackPrice,
                         Real discount = 1.0,
@@ -201,7 +201,7 @@ namespace QuantLib {
         Natural maxIterations = 100);
 
     Real blackFormulaImpliedStdDevLiRS(
-        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
         Real forward,
         Real blackPrice,
         Real discount = 1.0,
@@ -230,7 +230,7 @@ namespace QuantLib {
                  i.e. volatility*sqrt(timeToMaturity)
     */
     Real blackFormulaCashItmProbability(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real displacement = 0.0);
@@ -267,7 +267,7 @@ namespace QuantLib {
                  blackStdDevDerivative(strike, forward, stdDev)*sqrt(T)
     */
     Real blackFormulaStdDevDerivative(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real discount = 1.0,
@@ -290,7 +290,7 @@ namespace QuantLib {
                  derivative with respect to the standard deviation.
     */
     Real blackFormulaStdDevSecondDerivative(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real discount = 1.0,
@@ -317,7 +317,7 @@ namespace QuantLib {
                  absoluteVolatility*sqrt(timeToMaturity)
     */
     Real bachelierBlackFormula(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real discount = 1.0);
@@ -348,7 +348,7 @@ namespace QuantLib {
                                                 Real stdDev,
                                                 Real discount = 1.0);
 
-    Real bachelierBlackFormulaStdDevDerivative(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real bachelierBlackFormulaStdDevDerivative(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                                                 Real forward,
                                                 Real stdDev,
                                                 Real discount = 1.0);

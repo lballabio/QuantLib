@@ -25,7 +25,7 @@
 #define quantlib_comparison_hpp
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -104,12 +104,13 @@ namespace QuantLib {
     /* partial specialization for shared pointers, forwarding to their
        pointees. */
     template <class T>
-    struct earlier_than<boost::shared_ptr<T> >
-        : std::binary_function<boost::shared_ptr<T>,
-                               boost::shared_ptr<T>,
-                               bool> {
-        bool operator()(const boost::shared_ptr<T>& x,
-                        const boost::shared_ptr<T>& y) {
+    struct earlier_than<ext::shared_ptr<T> > {
+        typedef ext::shared_ptr<T> first_argument_type;
+        typedef ext::shared_ptr<T> second_argument_type;
+        typedef bool result_type;
+
+        bool operator()(const ext::shared_ptr<T>& x,
+                        const ext::shared_ptr<T>& y) const {
             return earlier_than<T>()(*x,*y);
         }
     };

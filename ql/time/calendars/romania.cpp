@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2010 StatPro Italia srl
  Copyright (C) 2015 Riccardo Barone
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +25,7 @@ namespace QuantLib {
 
     Romania::Romania() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Romania::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Romania::Impl);
         impl_ = impl;
     }
 
@@ -48,6 +49,8 @@ namespace QuantLib {
             || (d == 1 && m == May)
             // Pentecost
             || (dd == em+49)
+            // Children's Day (since 2017)
+            || (d == 1 && m == June && y >= 2017)
             // St Marys Day
             || (d == 15 && m == August)
             // Feast of St Andrew

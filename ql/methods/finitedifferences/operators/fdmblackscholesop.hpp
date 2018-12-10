@@ -37,8 +37,8 @@ namespace QuantLib {
     class FdmBlackScholesOp : public FdmLinearOpComposite {
       public:
         FdmBlackScholesOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Real strike,
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>(),
@@ -59,10 +59,10 @@ namespace QuantLib {
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
       private:
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
-        const boost::shared_ptr<BlackVolTermStructure> volTS_;
-        const boost::shared_ptr<LocalVolTermStructure> localVol_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;
+        const ext::shared_ptr<BlackVolTermStructure> volTS_;
+        const ext::shared_ptr<LocalVolTermStructure> localVol_;
         const Array x_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;

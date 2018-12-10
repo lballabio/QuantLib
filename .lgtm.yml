@@ -1,0 +1,12 @@
+
+path_classifiers:
+    docs:
+        - Docs
+        - Examples
+    test:
+        - test-suite
+    library:
+        - tools
+queries:
+    - exclude: cpp/fixme-comment
+

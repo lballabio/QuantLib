@@ -41,15 +41,15 @@ namespace QuantLib {
 class Gaussian1dSmileSection : public SmileSection {
   public:
     Gaussian1dSmileSection(
-        const Date &fixingDate, const boost::shared_ptr<SwapIndex> &swapIndex,
-        const boost::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
-        const boost::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
-            boost::shared_ptr<Gaussian1dSwaptionEngine>());
+        const Date &fixingDate, const ext::shared_ptr<SwapIndex> &swapIndex,
+        const ext::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
+        const ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
+            ext::shared_ptr<Gaussian1dSwaptionEngine>());
     Gaussian1dSmileSection(
-        const Date &fixingDate, const boost::shared_ptr<IborIndex> &swapIndex,
-        const boost::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
-        const boost::shared_ptr<Gaussian1dCapFloorEngine> capEngine =
-            boost::shared_ptr<Gaussian1dCapFloorEngine>());
+        const Date &fixingDate, const ext::shared_ptr<IborIndex> &swapIndex,
+        const ext::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
+        const ext::shared_ptr<Gaussian1dCapFloorEngine> capEngine =
+            ext::shared_ptr<Gaussian1dCapFloorEngine>());
 
     // the minimum strike is zero only because we are
     // returning a lognormal section
@@ -66,10 +66,10 @@ class Gaussian1dSmileSection : public SmileSection {
   private:
     Real atm_, annuity_;
     Date fixingDate_;
-    boost::shared_ptr<SwapIndex> swapIndex_;
-    boost::shared_ptr<IborIndex> iborIndex_;
-    boost::shared_ptr<Gaussian1dModel> model_;
-    boost::shared_ptr<PricingEngine> engine_;
+    ext::shared_ptr<SwapIndex> swapIndex_;
+    ext::shared_ptr<IborIndex> iborIndex_;
+    ext::shared_ptr<Gaussian1dModel> model_;
+    ext::shared_ptr<PricingEngine> engine_;
 };
 }
 

@@ -26,10 +26,10 @@ namespace QuantLib {
     namespace {
 
         class integrand {
-            boost::function<Real (Real)> b;
+            ext::function<Real (Real)> b;
             Real speed;
           public:
-            integrand(const boost::function<Real (Real)>& b, Real speed)
+            integrand(const ext::function<Real (Real)>& b, Real speed)
             : b(b), speed(speed) {}
             Real operator()(Real x) const {
                 return b(x) * std::exp(speed*x);
@@ -40,7 +40,7 @@ namespace QuantLib {
 
     ExtendedOrnsteinUhlenbeckProcess::ExtendedOrnsteinUhlenbeckProcess(
                                         Real speed, Volatility vol, Real x0,
-                                        const boost::function<Real (Real)>& b,
+                                        const ext::function<Real (Real)>& b,
                                         Discretization discretization,
                                         Real intEps)
     : speed_    (speed),

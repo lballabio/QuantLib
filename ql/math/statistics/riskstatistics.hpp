@@ -154,9 +154,8 @@ namespace QuantLib {
         // average over the range below the target
         std::pair<Real,Size> result =
             this->expectationValue(compose(square<Real>(),
-                                           std::bind2nd(std::minus<Real>(),
-                                                        target)),
-                                   std::bind2nd(std::less<Real>(),  target));
+                                           subtract<Real>(target)),
+                                   less_than<Real>(target));
         Real x = result.first;
         Size N = result.second;
         QL_REQUIRE(N > 1,
@@ -196,8 +195,7 @@ namespace QuantLib {
         Real target = -valueAtRisk(centile);
         std::pair<Real,Size> result =
             this->expectationValue(identity<Real>(),
-                             std::bind2nd(std::less<Real>(),
-                                          target));
+                                   less_than<Real>(target));
         Real x = result.first;
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");
@@ -209,8 +207,7 @@ namespace QuantLib {
     Real GenericRiskStatistics<S>::shortfall(Real target) const {
         QL_ENSURE(this->samples() != 0, "empty sample set");
         return this->expectationValue(clip(constant<Real,Real>(1.0),
-                                           std::bind2nd(std::less<Real>(),
-                                                        target)),
+                                           less_than<Real>(target)),
                                       everywhere()).first;
     }
 
@@ -218,10 +215,8 @@ namespace QuantLib {
     Real GenericRiskStatistics<S>::averageShortfall(Real target)
         const {
         std::pair<Real,Size> result =
-            this->expectationValue(std::bind1st(std::minus<Real>(),
-                                                target),
-                                   std::bind2nd(std::less<Real>(),
-                                                target));
+            this->expectationValue(subtract_from<Real>(target),
+                                   less_than<Real>(target));
         Real x = result.first;
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");

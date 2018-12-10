@@ -34,7 +34,6 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
-#include <boost/make_shared.hpp>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -47,9 +46,9 @@ namespace QuantLib {
         class integrand1 {
           private:
             const Real c_inf_;
-            const boost::function<Real(Real)> f_;
+            const ext::function<Real(Real)> f_;
           public:
-            integrand1(Real c_inf, const boost::function<Real(Real)>& f)
+            integrand1(Real c_inf, const ext::function<Real(Real)>& f)
             : c_inf_(c_inf), f_(f) {}
             Real operator()(Real x) const {
                 if ((1.0-x)*c_inf_ > QL_EPSILON)
@@ -62,9 +61,9 @@ namespace QuantLib {
         class integrand2 {
           private:
             const Real c_inf_;
-            const boost::function<Real(Real)> f_;
+            const ext::function<Real(Real)> f_;
           public:
-            integrand2(Real c_inf, const boost::function<Real(Real)>& f)
+            integrand2(Real c_inf, const ext::function<Real(Real)>& f)
             : c_inf_(c_inf), f_(f) {}
             Real operator()(Real x) const {
                 if (x*c_inf_ > QL_EPSILON) {
@@ -79,13 +78,13 @@ namespace QuantLib {
           private:
             const integrand2 int_;
           public:
-            integrand3(Real c_inf, const boost::function<Real(Real)>& f)
+            integrand3(Real c_inf, const ext::function<Real(Real)>& f)
             : int_(c_inf, f) {}
 
             Real operator()(Real x) const { return int_(1.0-x); }
         };
 
-        class u_Max : public std::unary_function<Real, Real> {
+        class u_Max {
           public:
             u_Max(Real c_inf, Real epsilon)
             : c_inf_(c_inf), logEpsilon_(std::log(epsilon)),
@@ -104,7 +103,7 @@ namespace QuantLib {
         };
 
 
-        class uHat_Max : public std::unary_function<Real, Real> {
+        class uHat_Max {
           public:
             uHat_Max(Real v0T2, Real epsilon)
             : v0T2_(v0T2), logEpsilon_(std::log(epsilon)),
@@ -124,12 +123,10 @@ namespace QuantLib {
     }
 
     // helper class for integration
-    class AnalyticHestonEngine::Fj_Helper
-        : public std::unary_function<Real, Real>
-    {
+    class AnalyticHestonEngine::Fj_Helper {
     public:
         Fj_Helper(const VanillaOption::arguments& arguments,
-            const boost::shared_ptr<HestonModel>& model,
+            const ext::shared_ptr<HestonModel>& model,
             const AnalyticHestonEngine* const engine,
             ComplexLogFormula cpxLog,
             Time term, Real ratio, Size j);
@@ -175,7 +172,7 @@ namespace QuantLib {
 
     AnalyticHestonEngine::Fj_Helper::Fj_Helper(
         const VanillaOption::arguments& arguments,
-        const boost::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HestonModel>& model,
         const AnalyticHestonEngine* const engine,
         ComplexLogFormula cpxLog,
         Time term, Real ratio, Size j)
@@ -184,7 +181,7 @@ namespace QuantLib {
         sigma_(model->sigma()), v0_(model->v0()),
         cpxLog_(cpxLog), term_(term),
         x_(std::log(model->process()->s0()->value())),
-        sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
+        sx_(std::log(ext::dynamic_pointer_cast<StrikedTypePayoff>
         (arguments.payoff)->strike())),
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
@@ -369,8 +366,7 @@ namespace QuantLib {
     }
 
 
-    class AnalyticHestonEngine::AP_Helper
-        : public std::unary_function<Real, Real> {
+    class AnalyticHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real s0, Real strike, Real ratio,
                   Volatility sigmaBS,
@@ -438,7 +434,7 @@ namespace QuantLib {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
-                              const boost::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<HestonModel>& model,
                               Size integrationOrder)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
@@ -451,7 +447,7 @@ namespace QuantLib {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
-                              const boost::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<HestonModel>& model,
                               Real relTolerance, Size maxEvaluations)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
@@ -464,7 +460,7 @@ namespace QuantLib {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
-                              const boost::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<HestonModel>& model,
                               ComplexLogFormula cpxLog,
                               const Integration& integration,
                               const Real andersenPiterbargEpsilon)
@@ -586,11 +582,11 @@ namespace QuantLib {
                    "not an European option");
 
         // plain vanilla
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
-        const boost::shared_ptr<HestonProcess>& process = model_->process();
+        const ext::shared_ptr<HestonProcess>& process = model_->process();
 
         const Real riskFreeDiscount = process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());
@@ -624,13 +620,13 @@ namespace QuantLib {
 
     AnalyticHestonEngine::Integration::Integration(
             Algorithm intAlgo,
-            const boost::shared_ptr<Integrator>& integrator)
+            const ext::shared_ptr<Integrator>& integrator)
     : intAlgo_(intAlgo),
       integrator_(integrator) { }
 
     AnalyticHestonEngine::Integration::Integration(
             Algorithm intAlgo,
-            const boost::shared_ptr<GaussianQuadrature>& gaussianQuadrature)
+            const ext::shared_ptr<GaussianQuadrature>& gaussianQuadrature)
     : intAlgo_(intAlgo),
       gaussianQuadrature_(gaussianQuadrature) { }
 
@@ -639,7 +635,7 @@ namespace QuantLib {
                                                     Real absTolerance,
                                                     Size maxEvaluations) {
         return Integration(GaussLobatto,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                                new GaussLobattoIntegral(maxEvaluations,
                                                         absTolerance,
                                                         relTolerance,
@@ -650,7 +646,7 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::gaussKronrod(Real absTolerance,
                                                    Size maxEvaluations) {
         return Integration(GaussKronrod,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                                new GaussKronrodAdaptive(absTolerance,
                                                         maxEvaluations)));
     }
@@ -659,7 +655,7 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::simpson(Real absTolerance,
                                                Size maxEvaluations) {
         return Integration(Simpson,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                                new SimpsonIntegral(absTolerance,
                                                    maxEvaluations)));
     }
@@ -668,7 +664,7 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::trapezoid(Real absTolerance,
                                         Size maxEvaluations) {
         return Integration(Trapezoid,
-                           boost::shared_ptr<Integrator>(
+                           ext::shared_ptr<Integrator>(
                               new TrapezoidIntegral<Default>(absTolerance,
                                                              maxEvaluations)));
     }
@@ -677,42 +673,42 @@ namespace QuantLib {
     AnalyticHestonEngine::Integration::gaussLaguerre(Size intOrder) {
         QL_REQUIRE(intOrder <= 192, "maximum integraton order (192) exceeded");
         return Integration(GaussLaguerre,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussLaguerreIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussLegendre(Size intOrder) {
         return Integration(GaussLegendre,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussLegendreIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussChebyshev(Size intOrder) {
         return Integration(GaussChebyshev,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussChebyshevIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussChebyshev2nd(Size intOrder) {
         return Integration(GaussChebyshev2nd,
-                           boost::shared_ptr<GaussianQuadrature>(
+                           ext::shared_ptr<GaussianQuadrature>(
                                new GaussChebyshev2ndIntegration(intOrder)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::discreteSimpson(Size evaluations) {
         return Integration(
-            DiscreteSimpson, boost::shared_ptr<Integrator>(
+            DiscreteSimpson, ext::shared_ptr<Integrator>(
                 new DiscreteSimpsonIntegrator(evaluations)));
     }
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::discreteTrapezoid(Size evaluations) {
         return Integration(
-            DiscreteTrapezoid, boost::shared_ptr<Integrator>(
+            DiscreteTrapezoid, ext::shared_ptr<Integrator>(
                 new DiscreteTrapezoidIntegrator(evaluations)));
     }
 
@@ -737,7 +733,7 @@ namespace QuantLib {
 
     Real AnalyticHestonEngine::Integration::calculate(
                                Real c_inf,
-                               const boost::function1<Real, Real>& f,
+                               const ext::function<Real(Real)>& f,
                                Real maxBound) const {
         Real retVal;
 

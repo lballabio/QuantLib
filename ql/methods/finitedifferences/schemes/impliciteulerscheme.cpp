@@ -22,26 +22,17 @@
 #include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-#include <boost/function.hpp>
-#include <boost/make_shared.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
     ImplicitEulerScheme::ImplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const bc_set& bcSet,
         Real relTol,
         SolverType solverType)
     : dt_        (Null<Real>()),
-      iterations_(boost::make_shared<Size>(0u)),
+      iterations_(ext::make_shared<Size>(0u)),
       relTol_    (relTol),
       map_       (map),
       bcSet_     (bcSet),
@@ -53,6 +44,7 @@ namespace QuantLib {
     }
 
     void ImplicitEulerScheme::step(array_type& a, Time t) {
+        using namespace ext::placeholders;
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
         map_->setTime(std::max(0.0, t-dt_), t);
         bcSet_.setTime(std::max(0.0, t-dt_));
@@ -62,37 +54,33 @@ namespace QuantLib {
         if (map_->size() == 1) {
             a = map_->solve_splitting(0, a, -dt_);
         }
-        else if (solverType_ == BiCGstab) {
-            const BiCGStabResult result =
-                QuantLib::BiCGstab(
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&ImplicitEulerScheme::apply, this, _1)),
-                    std::max(Size(10), a.size()), relTol_,
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&FdmLinearOpComposite::preconditioner,
-                                    map_, _1, -dt_))
-                ).solve(a, a);
+        else {
+            const ext::function<Disposable<Array>(const Array&)>
+                preconditioner(ext::bind(
+                    &FdmLinearOpComposite::preconditioner, map_, _1, -dt_));
 
-            (*iterations_) += result.iterations;
-            a = result.x;
-        }
-        else if (solverType_ == GMRES) {
-            const GMRESResult result =
-                QuantLib::GMRES(
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&ImplicitEulerScheme::apply, this, _1)),
-                    std::max(Size(10), a.size()/10u), relTol_,
-                    boost::function<Disposable<Array>(const Array&)>(
-                        boost::bind(&FdmLinearOpComposite::preconditioner,
-                                    map_, _1, -dt_))
-                ).solve(a, a);
+            const ext::function<Disposable<Array>(const Array&)> applyF(
+                ext::bind(&ImplicitEulerScheme::apply, this, _1));
 
-            (*iterations_) += result.errors.size();
-            a = result.x;
+            if (solverType_ == BiCGstab) {
+                const BiCGStabResult result =
+                    QuantLib::BiCGstab(applyF, std::max(Size(10), a.size()),
+                        relTol_, preconditioner).solve(a, a);
+
+                (*iterations_) += result.iterations;
+                a = result.x;
+            }
+            else if (solverType_ == GMRES) {
+                const GMRESResult result =
+                    QuantLib::GMRES(applyF, std::max(Size(10), a.size()/10u),
+                        relTol_, preconditioner).solve(a, a);
+
+                (*iterations_) += result.errors.size();
+                a = result.x;
+            }
+            else
+                QL_FAIL("unknown/illegal solver type");
         }
-        else
-            QL_FAIL("unknown/illegal solver type");
-        
         bcSet_.applyAfterSolving(a);
     }
 
@@ -101,5 +89,6 @@ namespace QuantLib {
     }
 
     Size ImplicitEulerScheme::numberOfIterations() const {
-        return *iterations_;    }
+        return *iterations_;
+    }
 }

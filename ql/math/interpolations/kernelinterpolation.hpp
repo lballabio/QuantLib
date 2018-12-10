@@ -142,6 +142,8 @@ namespace QuantLib {
         is considered in the cited text.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class KernelInterpolation : public Interpolation {
       public:
@@ -160,7 +162,7 @@ namespace QuantLib {
                             const I2& yBegin,
                             const Kernel& kernel,
                             const double epsilon = 1.0E-7) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
                                                               yBegin, kernel,
                                                               epsilon));

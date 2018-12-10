@@ -164,26 +164,26 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
 
-    boost::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
-    boost::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
+    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
+    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
 
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
+    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
+    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
         Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot1 ->setValue(values[i].s1);
         spot2 ->setValue(values[i].s2);
@@ -193,19 +193,19 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
         vol1  ->setValue(values[i].v1);
         vol2  ->setValue(values[i].v2);
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
             BlackScholesMertonProcess(Handle<Quote>(spot1),
                                       Handle<YieldTermStructure>(qTS1),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS1)));
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess2(new
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess2(new
             BlackScholesMertonProcess(Handle<Quote>(spot2),
                                       Handle<YieldTermStructure>(qTS2),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
 
@@ -214,7 +214,7 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
             correlationMatrix[j][j] = 1.0;
         }
 
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                              new AnalyticEuropeanMargrabeEngine(stochProcess1,
                                                                 stochProcess2,
                                                                 values[i].rho));
@@ -338,40 +338,40 @@ void MargrabeOptionTest::testGreeks() {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
 
-    boost::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS1 = flatRate(qRate1, dc);
-    boost::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS2 = flatRate(qRate2, dc);
+    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(qRate1, dc);
+    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(qRate2, dc);
 
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(rRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(rRate, dc);
 
-    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(vol1, dc);
-    boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(vol2, dc);
+    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(vol1, dc);
+    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(vol2, dc);
 
     for (Size k=0; k<LENGTH(residualTimes); k++) {
           Date exDate = today + timeToDays(residualTimes[k]);
-          boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+          ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
           // option to check
-          boost::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
+          ext::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
               BlackScholesMertonProcess(Handle<Quote>(spot1),
                                       Handle<YieldTermStructure>(qTS1),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS1)));
 
-          boost::shared_ptr<BlackScholesMertonProcess> stochProcess2(new
+          ext::shared_ptr<BlackScholesMertonProcess> stochProcess2(new
               BlackScholesMertonProcess(Handle<Quote>(spot2),
                                       Handle<YieldTermStructure>(qTS2),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-          std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
+          std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
           procs.push_back(stochProcess1);
           procs.push_back(stochProcess2);
 
@@ -381,7 +381,7 @@ void MargrabeOptionTest::testGreeks() {
           for (Integer j=0; j < 2; j++) {
               correlationMatrix[j][j] = 1.0;
 
-          boost::shared_ptr<PricingEngine> engine(
+          ext::shared_ptr<PricingEngine> engine(
                              new AnalyticEuropeanMargrabeEngine(stochProcess1,
                                                                 stochProcess2,
                                                                 correlation));
@@ -525,26 +525,26 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
 
     Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
-    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
 
-    boost::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
-    boost::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
+    ext::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
+    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
 
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
-    boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
+    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
+    ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
         Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
+        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
         spot1 ->setValue(values[i].s1);
         spot2 ->setValue(values[i].s2);
@@ -554,19 +554,19 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
         vol1  ->setValue(values[i].v1);
         vol2  ->setValue(values[i].v2);
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
             BlackScholesMertonProcess(Handle<Quote>(spot1),
                                       Handle<YieldTermStructure>(qTS1),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS1)));
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess2(new
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess2(new
             BlackScholesMertonProcess(Handle<Quote>(spot2),
                                       Handle<YieldTermStructure>(qTS2),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<boost::shared_ptr<StochasticProcess1D> > procs;
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
 
@@ -575,7 +575,7 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
             correlationMatrix[j][j] = 1.0;
         }
 
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                              new AnalyticAmericanMargrabeEngine(stochProcess1,
                                                                 stochProcess2,
                                                                 values[i].rho));

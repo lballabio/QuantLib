@@ -281,6 +281,9 @@
     <ClCompile Include="numericaldifferentiation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nthorderderivativeop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -339,6 +342,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="shortratemodels.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sofrfutures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="solvers.cpp">
@@ -713,6 +719,9 @@
     <ClInclude Include="numericaldifferentiation.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="nthorderderivativeop.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -774,6 +783,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shortratemodels.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sofrfutures.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="solvers.hpp">

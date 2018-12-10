@@ -19,7 +19,6 @@
 
 #include <ql/experimental/catbonds/catrisk.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -29,7 +28,7 @@ namespace QuantLib {
         }
     }
 
-    EventSetSimulation::EventSetSimulation(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
+    EventSetSimulation::EventSetSimulation(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
                                            Date eventsStart, 
                                            Date eventsEnd, 
                                            Date start, 
@@ -70,13 +69,13 @@ namespace QuantLib {
         return true;
     }
 
-    EventSet::EventSet(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
+    EventSet::EventSet(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
                        Date eventsStart, 
                        Date eventsEnd) 
     : events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
 
-    boost::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
-        return boost::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
+    ext::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
+        return ext::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
     }
 
     BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta) 
@@ -130,7 +129,7 @@ namespace QuantLib {
         beta_=(1.0-normalizedMean)*nu;
     }
 
-    boost::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
-        return boost::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
+    ext::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
+        return ext::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
     }
 }

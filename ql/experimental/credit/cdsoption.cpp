@@ -41,9 +41,9 @@ namespace QuantLib {
                    Real targetValue)
             : targetValue_(targetValue) {
 
-                vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+                vol_ = ext::make_shared<SimpleQuote>(0.0);
                 Handle<Quote> h(vol_);
-                engine_ = boost::shared_ptr<PricingEngine>(
+                engine_ = ext::shared_ptr<PricingEngine>(
                            new BlackCdsOptionEngine(probability, recoveryRate,
                                                     termStructure, h));
                 cdsoption.setupArguments(engine_->getArguments());
@@ -58,19 +58,19 @@ namespace QuantLib {
                 return results_->value-targetValue_;
             }
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
     }
 
 
-    CdsOption::CdsOption(const boost::shared_ptr<CreditDefaultSwap>& swap,
-                         const boost::shared_ptr<Exercise>& exercise,
+    CdsOption::CdsOption(const ext::shared_ptr<CreditDefaultSwap>& swap,
+                         const ext::shared_ptr<Exercise>& exercise,
                          bool knocksOut)
-    : Option(boost::shared_ptr<Payoff>(new NullPayoff), exercise),
+    : Option(ext::shared_ptr<Payoff>(new NullPayoff), exercise),
       swap_(swap), knocksOut_(knocksOut) {
         QL_REQUIRE(swap->side() == Protection::Buyer || knocksOut_,
                    "receiver CDS options must knock out");
