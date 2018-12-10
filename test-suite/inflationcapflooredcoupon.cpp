@@ -70,7 +70,8 @@ namespace {
                         const ext::shared_ptr<I> &ii, const Period &observationLag,
                         const Calendar &calendar,
                         const BusinessDayConvention &bdc,
-                        const DayCounter &dc) {
+                        const DayCounter &dc,
+                        const Handle<YieldTermStructure>& discountCurve) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
@@ -79,7 +80,7 @@ namespace {
                             new SimpleQuote(iiData[i].rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                             quote, observationLag, maturity,
-                            calendar, bdc, dc, ii));
+                            calendar, bdc, dc, ii, discountCurve));
             instruments.push_back(anInstrument);
         }
 
@@ -184,7 +185,8 @@ namespace {
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
             YoYInflationIndex>(yyData, LENGTH(yyData), iir,
                                observationLag,
-                               calendar, convention, dc);
+                               calendar, convention, dc,
+                               Handle<YieldTermStructure>(nominalTS));
 
             Rate baseYYRate = yyData[0].rate/100.0;
             ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
@@ -260,15 +262,15 @@ namespace {
             switch (which) {
                 case 0:
                     pricer = ext::shared_ptr<YoYInflationCouponPricer>(
-                            new BlackYoYInflationCouponPricer(vol));
+                            new BlackYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 case 1:
                     pricer = ext::shared_ptr<YoYInflationCouponPricer>(
-                            new UnitDisplacedBlackYoYInflationCouponPricer(vol));
+                            new UnitDisplacedBlackYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 case 2:
                     pricer = ext::shared_ptr<YoYInflationCouponPricer>(
-                            new BachelierYoYInflationCouponPricer(vol));
+                            new BachelierYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 default:
                     BOOST_FAIL("unknown coupon pricer request: which = "<<which
@@ -326,15 +328,15 @@ namespace {
             switch (which) {
                 case 0:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBlackCapFloorEngine(iir, vol));
+                            new YoYInflationBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 1:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol));
+                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 2:
                     return ext::shared_ptr<PricingEngine>(
-                            new YoYInflationBachelierCapFloorEngine(iir, vol));
+                            new YoYInflationBachelierCapFloorEngine(iir, vol, nominalTS));
                     break;
                 default:
                     BOOST_FAIL("unknown engine request: which = "<<which

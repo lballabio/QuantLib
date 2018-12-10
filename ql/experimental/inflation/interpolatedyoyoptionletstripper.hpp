@@ -89,7 +89,7 @@ namespace QuantLib {
             std::vector<Time> tvec_;
             std::vector<Date> dvec_;
             mutable std::vector<Volatility> vvec_;
-            YoYInflationCapFloor capfloor_;
+            ext::shared_ptr<YoYInflationCapFloor> capfloor_;
             Real priceToMatch_;
             ext::shared_ptr<YoYCapFloorTermPriceSurface> surf_;
             Period lag_;
@@ -114,10 +114,6 @@ namespace QuantLib {
                    Real priceToMatch)
     : slope_(slope), K_(K), frequency_(anIndex->frequency()),
       indexIsInterpolated_(anIndex->interpolated()),
-      capfloor_(MakeYoYInflationCapFloor(type,
-            (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-                                         surf->calendar(), anIndex, lag, K)
-                .withNominal(10000.0) ),
       priceToMatch_(priceToMatch), surf_(surf), p_(p) {
 
         tvec_ = std::vector<Time>(2);
@@ -125,10 +121,11 @@ namespace QuantLib {
         dvec_ = std::vector<Date>(2);
         lag_ = surf_->observationLag();
         capfloor_ =
-            MakeYoYInflationCapFloor(type,
-                (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-                                     surf->calendar(), anIndex, lag, K)
-            .withNominal(10000.0) ;
+            MakeYoYInflationCapFloor(type, anIndex,
+                                     (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
+                                     surf->calendar(), lag)
+            .withNominal(10000.0)
+            .withStrike(K);
 
         // shortest time available from price surface
         dvec_[0] = surf_->baseDate();
@@ -144,7 +141,7 @@ namespace QuantLib {
                     "first maturity in price surface not > 0: "
                     << n);
 
-        capfloor_.setPricingEngine(p_);
+        capfloor_->setPricingEngine(p_);
         // pricer already setup just need to do the volatility surface each time
     }
 
@@ -167,7 +164,7 @@ namespace QuantLib {
         Handle<YoYOptionletVolatilitySurface> hCurve(vCurve);
         p_->setVolatility(hCurve);
         // hopefully this gets to the pricer ... then
-        return priceToMatch_ - capfloor_.NPV();
+        return priceToMatch_ - capfloor_->NPV();
     }
 
 

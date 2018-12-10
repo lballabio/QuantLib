@@ -508,6 +508,8 @@ namespace QuantLib {
     void InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
     calculateYoYTermStructure() const {
 
+        Handle<YieldTermStructure> nominalH( nominalTermStructure() );
+
         // which yoy-swap points to use in building the yoy-fwd curve?
         // for now pick every year
         Size nYears = (Size)(0.5+timeFromReference(referenceDate()+cfMaturities_.back()));
@@ -522,7 +524,7 @@ namespace QuantLib {
                 new YearOnYearInflationSwapHelper(
                                 quote, observationLag(), maturity,
                                 calendar(), bdc_, dayCounter(),
-                                yoyIndex()));
+                                yoyIndex(), nominalH));
             YYhelpers.push_back (anInstrument);
         }
 
@@ -531,7 +533,6 @@ namespace QuantLib {
         // we pick this as the end of the curve
         Rate baseYoYRate = atmYoYSwapRate( referenceDate() );//!
 
-        Handle<YieldTermStructure> nominalH( nominalTermStructure() );
         // Linear is OK because we have every year
         ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> >   pYITS(
               new PiecewiseYoYInflationCurve<Linear>(
