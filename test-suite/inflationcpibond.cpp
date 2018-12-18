@@ -57,7 +57,8 @@ namespace {
         const Period& observationLag,
         const Calendar& calendar,
         const BusinessDayConvention& bdc,
-        const DayCounter& dc) {
+        const DayCounter& dc,
+        const Handle<YieldTermStructure>& yTS) {
 
         std::vector<ext::shared_ptr<Helper> > instruments;
         for (Size i=0; i<N; i++) {
@@ -67,7 +68,7 @@ namespace {
             ext::shared_ptr<Helper> h(
                       new ZeroCouponInflationSwapHelper(quote, observationLag,
                                                         maturity, calendar,
-                                                        bdc, dc, ii));
+                                                        bdc, dc, ii, yTS));
             instruments.push_back(h);
         }
         return instruments;
@@ -152,7 +153,7 @@ namespace {
 
             std::vector<ext::shared_ptr<Helper> > helpers =
                 makeHelpers(zciisData, LENGTH(zciisData), ii,
-                            observationLag, calendar, convention, dayCounter);
+                            observationLag, calendar, convention, dayCounter, yTS);
 
             Rate baseZeroRate = zciisData[0].rate/100.0;
             cpiTS.linkTo(ext::shared_ptr<ZeroInflationTermStructure>(

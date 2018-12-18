@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="swapvaluation.cpp">
+    <ClCompile Include="MulticurveBootstrapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

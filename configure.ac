@@ -594,9 +594,9 @@ AC_CONFIG_FILES([
     Examples/GlobalOptimizer/Makefile
     Examples/MarketModels/Makefile
     Examples/MultidimIntegral/Makefile
+    Examples/MulticurveBootstrapping/Makefile
     Examples/Replication/Makefile
     Examples/Repo/Makefile
-    Examples/Swap/Makefile
     test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])
 AC_CONFIG_FILES([QuantLib.spec])
