@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>Swap</ProjectName>
+    <ProjectName>MulticurveBootstrapping</ProjectName>
     <ProjectGuid>{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}</ProjectGuid>
     <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
@@ -143,18 +143,18 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">false</LinkIncremental>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">false</EmbedManifest>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">false</EmbedManifest>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">SwapValuation-$(qlCompilerTag)-mt-sgd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">SwapValuation-$(qlCompilerTag)-x64-mt-sgd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SwapValuation-$(qlCompilerTag)-mt-gd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">SwapValuation-$(qlCompilerTag)-x64-mt-gd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">SwapValuation-$(qlCompilerTag)-mt-s</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">SwapValuation-$(qlCompilerTag)-x64-mt-s</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SwapValuation-$(qlCompilerTag)-mt</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">SwapValuation-$(qlCompilerTag)-x64-mt</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">MulticurveBootstrapping-$(qlCompilerTag)-mt-sgd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">MulticurveBootstrapping-$(qlCompilerTag)-x64-mt-sgd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MulticurveBootstrapping-$(qlCompilerTag)-mt-gd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MulticurveBootstrapping-$(qlCompilerTag)-x64-mt-gd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">MulticurveBootstrapping-$(qlCompilerTag)-mt-s</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">MulticurveBootstrapping-$(qlCompilerTag)-x64-mt-s</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MulticurveBootstrapping-$(qlCompilerTag)-mt</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MulticurveBootstrapping-$(qlCompilerTag)-x64-mt</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -170,7 +170,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -190,7 +190,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -201,7 +201,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -217,7 +217,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -237,7 +237,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -246,7 +246,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -262,7 +262,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -282,7 +282,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -293,7 +293,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -309,7 +309,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -329,7 +329,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -338,7 +338,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -357,7 +357,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -375,7 +375,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -385,7 +385,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -404,7 +404,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -422,7 +422,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -431,7 +431,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -450,7 +450,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -468,7 +468,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -478,7 +478,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -497,7 +497,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\Swap.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
       <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
       <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
@@ -515,7 +515,7 @@
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\SwapValuation.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\MulticurveBootstrapping.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -523,7 +523,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="swapvaluation.cpp" />
+    <ClCompile Include="MulticurveBootstrapping.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QuantLib.vcxproj">

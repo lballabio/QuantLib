@@ -36,8 +36,24 @@ namespace QuantLib {
         standard yoy inflation cap and floor.
      */
     class MakeYoYInflationCapFloor {
-    public:
-        MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
+      public:
+        MakeYoYInflationCapFloor(
+                        YoYInflationCapFloor::Type capFloorType,
+                        const ext::shared_ptr<YoYInflationIndex>& index,
+                        const Size& length, const Calendar& cal,
+                        const Period& observationLag);
+        /*! \deprecated Use the other constructor.  In order to
+                        specify the strike, you'll have to call either
+                        withStrike (with an explicit strike) or
+                        withAtmStrike (to get a strike at the money on
+                        the passed nominal term structure).  In order
+                        to specify a forward start, you'll have to call
+                        withForwardStart.
+                        Deprecated in version 1.5.
+        */
+        QL_DEPRECATED
+        MakeYoYInflationCapFloor(
+                        YoYInflationCapFloor::Type capFloorType,
                         const Size& length, const Calendar& cal,
                         const ext::shared_ptr<YoYInflationIndex>& index,
                         const Period& observationLag, Rate strike = Null<Rate>(),
@@ -48,17 +64,19 @@ namespace QuantLib {
         MakeYoYInflationCapFloor& withPaymentDayCounter(const DayCounter&);
         MakeYoYInflationCapFloor& withPaymentAdjustment(BusinessDayConvention);
         MakeYoYInflationCapFloor& withFixingDays(Natural fixingDays);
-
+        MakeYoYInflationCapFloor& withPricingEngine(
+                const ext::shared_ptr<PricingEngine>& engine);
+        //! only get last coupon
+        MakeYoYInflationCapFloor& asOptionlet(bool b = true);
+        MakeYoYInflationCapFloor& withStrike(Rate strike);
+        MakeYoYInflationCapFloor& withAtmStrike(
+                      const Handle<YieldTermStructure>& nominalTermStructure);
+        MakeYoYInflationCapFloor& withForwardStart(Period forwardStart);
 
         operator YoYInflationCapFloor() const;
         operator ext::shared_ptr<YoYInflationCapFloor>() const ;
 
-        //! only get last coupon
-        MakeYoYInflationCapFloor& asOptionlet(bool b = true);
-
-        MakeYoYInflationCapFloor& withPricingEngine(
-                const ext::shared_ptr<PricingEngine>& engine);
-    private:
+      private:
         YoYInflationCapFloor::Type capFloorType_;
         Size length_;
         Calendar calendar_;
@@ -72,7 +90,7 @@ namespace QuantLib {
         BusinessDayConvention roll_;
         Natural fixingDays_;
         Real nominal_;
-
+        Handle<YieldTermStructure> nominalTermStructure_;
 
         ext::shared_ptr<PricingEngine> engine_;
     };
