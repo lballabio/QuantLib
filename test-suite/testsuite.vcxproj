@@ -760,6 +760,7 @@
     <ClCompile Include="swaptionvolatilitymatrix.cpp" />
     <ClCompile Include="swingoption.cpp" />
     <ClCompile Include="termstructures.cpp" />
+    <ClCompile Include="timegrid.cpp" />
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
@@ -911,6 +912,7 @@
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="swingoption.hpp" />
     <ClInclude Include="termstructures.hpp" />
+    <ClInclude Include="timegrid.hpp" />
     <ClInclude Include="timeseries.hpp" />
     <ClInclude Include="tqreigendecomposition.hpp" />
     <ClInclude Include="tracing.hpp" />

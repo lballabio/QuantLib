@@ -377,6 +377,9 @@
     <ClCompile Include="termstructures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="timegrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="timeseries.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -822,6 +825,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="termstructures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timegrid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timeseries.hpp">
