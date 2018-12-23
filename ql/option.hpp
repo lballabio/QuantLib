@@ -38,16 +38,16 @@ namespace QuantLib {
         enum Type { Put = -1,
                     Call = 1
         };
-        Option(const boost::shared_ptr<Payoff>& payoff,
-               const boost::shared_ptr<Exercise>& exercise)
+        Option(const ext::shared_ptr<Payoff>& payoff,
+               const ext::shared_ptr<Exercise>& exercise)
         : payoff_(payoff), exercise_(exercise) {}
         void setupArguments(PricingEngine::arguments*) const;
-        boost::shared_ptr<Payoff> payoff() { return payoff_; }
-        boost::shared_ptr<Exercise> exercise() { return exercise_; };
+        ext::shared_ptr<Payoff> payoff() { return payoff_; }
+        ext::shared_ptr<Exercise> exercise() { return exercise_; };
       protected:
         // arguments
-        boost::shared_ptr<Payoff> payoff_;
-        boost::shared_ptr<Exercise> exercise_;
+        ext::shared_ptr<Payoff> payoff_;
+        ext::shared_ptr<Exercise> exercise_;
     };
 
     /*! \relates Option */
@@ -61,8 +61,8 @@ namespace QuantLib {
             QL_REQUIRE(payoff, "no payoff given");
             QL_REQUIRE(exercise, "no exercise given");
         }
-        boost::shared_ptr<Payoff> payoff;
-        boost::shared_ptr<Exercise> exercise;
+        ext::shared_ptr<Payoff> payoff;
+        ext::shared_ptr<Exercise> exercise;
     };
 
     //! additional %option results

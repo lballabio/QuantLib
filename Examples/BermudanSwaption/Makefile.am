@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = BermudanSwaption
@@ -11,7 +11,6 @@ BermudanSwaption_SOURCES = BermudanSwaption.cpp
 BermudanSwaption_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
-    BermudanSwaption_vc9.vcproj \
     BermudanSwaption.vcxproj \
     BermudanSwaption.vcxproj.filters \
     CMakeLists.txt \

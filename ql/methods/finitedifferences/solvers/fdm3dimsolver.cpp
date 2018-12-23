@@ -26,18 +26,17 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     Fdm3DimSolver::Fdm3DimSolver(
                         const FdmSolverDesc& solverDesc,
                         const FdmSchemeDesc& schemeDesc,
-                        const boost::shared_ptr<FdmLinearOpComposite>& op)
+                        const ext::shared_ptr<FdmLinearOpComposite>& op)
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
-      thetaCondition_(boost::make_shared<FdmSnapshotCondition>(
+      thetaCondition_(ext::make_shared<FdmSnapshotCondition>(
         0.99*std::min(1.0/365.0,
                 solverDesc.condition->stoppingTimes().empty()
                 ? solverDesc.maturity :
@@ -50,8 +49,8 @@ namespace QuantLib {
                             solverDesc.mesher->layout()->dim()[0])),
       interpolation_(solverDesc.mesher->layout()->dim()[2]) {
 
-        const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         x_.reserve(layout->dim()[0]);
         y_.reserve(layout->dim()[1]);
@@ -90,7 +89,7 @@ namespace QuantLib {
                       rhs.begin()+(i+1)*y_.size()*x_.size(),
                       resultValues_[i].begin());
 
-            interpolation_[i] = boost::make_shared<BicubicSpline>(x_.begin(), x_.end(),
+            interpolation_[i] = ext::make_shared<BicubicSpline>(x_.begin(), x_.end(),
                                   y_.begin(), y_.end(),
                                   resultValues_[i]);
         }
@@ -101,7 +100,7 @@ namespace QuantLib {
 
         Array zArray(z_.size());
         for (Size i=0; i < z_.size(); ++i) {
-            zArray[i] = interpolation_[i]->operator()(x, y);
+            zArray[i] = (*interpolation_[i])(x, y);
         }
         return MonotonicCubicNaturalSpline(z_.begin(), z_.end(),
                                            zArray.begin())(z);

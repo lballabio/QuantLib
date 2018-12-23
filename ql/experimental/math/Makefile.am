@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
@@ -21,7 +21,6 @@ this_include_HEADERS = \
     moorepenroseinverse.hpp \
     multidimintegrator.hpp \
     multidimquadrature.hpp \
-    numericaldifferentiation.hpp \
     particleswarmoptimization.hpp \
     piecewisefunction.hpp \
     piecewiseintegral.hpp \
@@ -37,7 +36,6 @@ cpp_files = \
     gaussiannoncentralchisquaredpolynomial.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
-    numericaldifferentiation.cpp \
     particleswarmoptimization.cpp \
     piecewiseintegral.cpp \
     tcopulapolicy.cpp \

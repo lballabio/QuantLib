@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     RiskyAssetSwapOption::RiskyAssetSwapOption(
-                                 const boost::shared_ptr<RiskyAssetSwap>& asw,
+                                 const ext::shared_ptr<RiskyAssetSwap>& asw,
                                  const Date& expiry,
                                  Rate marketSpread,
                                  Volatility spreadVolatility)

@@ -65,7 +65,7 @@ namespace QuantLib {
         const Size integroIntegrationOrder_;
         const Handle<FdmQuantoHelper> quantoHelper_;
 
-        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

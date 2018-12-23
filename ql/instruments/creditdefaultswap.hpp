@@ -100,8 +100,8 @@ namespace QuantLib {
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
-                          const boost::shared_ptr<Claim>& =
-                                                  boost::shared_ptr<Claim>(),
+                          const ext::shared_ptr<Claim>& =
+                                                  ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           const bool rebatesAccrual = true);
         //! CDS quoted as upfront and running spread
@@ -148,8 +148,8 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
-                          const boost::shared_ptr<Claim>& =
-                                                  boost::shared_ptr<Claim>(),
+                          const ext::shared_ptr<Claim>& =
+                                                  ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           const bool rebatesAccrual = true);
         //@}
@@ -269,10 +269,10 @@ namespace QuantLib {
         boost::optional<Rate> upfront_;
         Rate runningSpread_;
         bool settlesAccrual_, paysAtDefaultTime_;
-        boost::shared_ptr<Claim> claim_;
+        ext::shared_ptr<Claim> claim_;
         Leg leg_;
-        boost::shared_ptr<CashFlow> upfrontPayment_;
-        boost::shared_ptr<CashFlow> accrualRebate_;
+        ext::shared_ptr<CashFlow> upfrontPayment_;
+        ext::shared_ptr<CashFlow> accrualRebate_;
         Date protectionStart_;
         Date maturity_;
         // results
@@ -295,11 +295,11 @@ namespace QuantLib {
         Rate spread;
         Leg leg;
         // if not initialized by constructors means theres no flows.
-        boost::shared_ptr<CashFlow> upfrontPayment;
-        boost::shared_ptr<CashFlow> accrualRebate;
+        ext::shared_ptr<CashFlow> upfrontPayment;
+        ext::shared_ptr<CashFlow> accrualRebate;
         bool settlesAccrual;
         bool paysAtDefaultTime;
-        boost::shared_ptr<Claim> claim;
+        ext::shared_ptr<Claim> claim;
         Date protectionStart;
         Date maturity;
         void validate() const;

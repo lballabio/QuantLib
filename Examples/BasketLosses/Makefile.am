@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = BasketLosses
@@ -11,7 +11,6 @@ BasketLosses_SOURCES = BasketLosses.cpp
 BasketLosses_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
-    BasketLosses_vc9.vcproj \
     BasketLosses.vcxproj \
     BasketLosses.vcxproj.filters \
     CMakeLists.txt

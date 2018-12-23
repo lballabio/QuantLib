@@ -22,6 +22,7 @@
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/payoff.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -29,7 +30,7 @@ namespace QuantLib {
                       const std::vector<Time>& rateTimes,
                       const std::vector<Real>& accruals,
                       const std::vector<Time>& paymentTimes,
-                      const std::vector<boost::shared_ptr<Payoff> >& payoffs)
+                      const std::vector<ext::shared_ptr<Payoff> >& payoffs)
     : MultiProductMultiStep(rateTimes), accruals_(accruals),
       paymentTimes_(paymentTimes), payoffs_(payoffs) {
         checkIncreasingTimes(paymentTimes);
@@ -52,8 +53,9 @@ namespace QuantLib {
         return (currentIndex_ == payoffs_.size());
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepOptionlets::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    MultiStepOptionlets::clone() const {
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
                                                  new MultiStepOptionlets(*this));
     }
 

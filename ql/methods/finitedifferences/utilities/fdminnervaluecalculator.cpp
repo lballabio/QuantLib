@@ -35,9 +35,22 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        struct mapped_payoff {
+            explicit mapped_payoff(const Payoff& payoff)
+            : payoff(payoff) {}
+            Real operator()(Real x) const {
+                return payoff(std::exp(x));
+            }
+            const Payoff& payoff;
+        };
+
+    }
+
     FdmLogInnerValue::FdmLogInnerValue(
-        const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<Payoff>& payoff,
+        const ext::shared_ptr<FdmMesher>& mesher,
         Size direction)
     : payoff_(payoff), 
       mesher_(mesher),
@@ -46,7 +59,7 @@ namespace QuantLib {
 
     Real FdmLogInnerValue::innerValue(const FdmLinearOpIterator& iter, Time) {
         const Real s = std::exp(mesher_->location(iter, direction_));
-        return payoff_->operator()(s);
+        return (*payoff_)(s);
     }
 
     Real FdmLogInnerValue::avgInnerValue(
@@ -56,14 +69,13 @@ namespace QuantLib {
             avgInnerValues_.resize(mesher_->layout()->dim()[direction_]);
             std::deque<bool> initialized(avgInnerValues_.size(), false);
 
-            const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
-            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-                 ++iter) {
-                const Size xn = iter.coordinates()[direction_];
+            for (FdmLinearOpIterator i = layout->begin(); i != endIter; ++i) {
+                const Size xn = i.coordinates()[direction_];
                 if (!initialized[xn]) {
                     initialized[xn]     = true;
-                    avgInnerValues_[xn] = avgInnerValueCalc(iter, t);
+                    avgInnerValues_[xn] = avgInnerValueCalc(i, t);
                 }
             }
         }
@@ -84,9 +96,7 @@ namespace QuantLib {
         if (coord < dim-1) {
             b += mesher_->dplus(iter, direction_)/2.0;
         }
-        boost::function1<Real, Real> f = compose(
-            std::bind1st(std::mem_fun(&Payoff::operator()), payoff_.get()),
-                         std::ptr_fun<Real,Real>(std::exp));
+        mapped_payoff f(*payoff_);
         
         Real retVal;
         try {
@@ -103,8 +113,8 @@ namespace QuantLib {
     }
     
     FdmLogBasketInnerValue::FdmLogBasketInnerValue(
-                                const boost::shared_ptr<BasketPayoff>& payoff,
-                                const boost::shared_ptr<FdmMesher>& mesher)
+                                const ext::shared_ptr<BasketPayoff>& payoff,
+                                const ext::shared_ptr<FdmMesher>& mesher)
     : payoff_(payoff),
       mesher_(mesher) { }
 
@@ -115,7 +125,7 @@ namespace QuantLib {
             x[i] = std::exp(mesher_->location(iter, i));
         }
         
-        return payoff_->operator()(x);
+        return (*payoff_)(x);
     }
     
     Real 

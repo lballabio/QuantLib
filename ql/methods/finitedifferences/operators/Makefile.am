@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
@@ -18,6 +18,8 @@ this_include_HEADERS = \
 	fdmlinearoplayout.hpp \
 	firstderivativeop.hpp \
 	ninepointlinearop.hpp \
+	nthorderderivativeop.hpp \
+	numericaldifferentiation.hpp \
 	secondderivativeop.hpp \
 	secondordermixedderivativeop.hpp \
 	triplebandlinearop.hpp
@@ -34,6 +36,8 @@ cpp_files = \
 	fdmornsteinuhlenbeckop.cpp \
 	firstderivativeop.cpp \
 	ninepointlinearop.cpp \
+	nthorderderivativeop.cpp \
+	numericaldifferentiation.cpp \
 	secondderivativeop.cpp \
 	secondordermixedderivativeop.cpp \
 	triplebandlinearop.cpp

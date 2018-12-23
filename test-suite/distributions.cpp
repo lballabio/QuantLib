@@ -33,7 +33,14 @@
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
 
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #include <boost/math/distributions/non_central_chi_squared.hpp>
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic pop
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -238,9 +245,8 @@ void DistributionTest::testNormal() {
     Size i;
     for (i=0; i<N; i++)
         x[i] = xMin+h*i;
-    std::transform(x.begin(),x.end(),y.begin(),std::ptr_fun(gaussian));
-    std::transform(x.begin(),x.end(),yd.begin(),
-                   std::ptr_fun(gaussianDerivative));
+    std::transform(x.begin(), x.end(), y.begin(), gaussian);
+    std::transform(x.begin(), x.end(), yd.begin(), gaussianDerivative);
 
     // check that normal = Gaussian
     std::transform(x.begin(),x.end(),temp.begin(),normal);
@@ -632,7 +638,7 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
     
 
 namespace {
-    class InverseNonCentralChiSquared : public std::unary_function<Real,Real> {
+    class InverseNonCentralChiSquared {
       public:
         InverseNonCentralChiSquared(Real df, Real ncp)
         : dist_(df, ncp) {}

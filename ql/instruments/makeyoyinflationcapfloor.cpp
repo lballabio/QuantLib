@@ -25,9 +25,23 @@
 
 namespace QuantLib {
 
-    MakeYoYInflationCapFloor::MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
+    MakeYoYInflationCapFloor::MakeYoYInflationCapFloor(
+                                YoYInflationCapFloor::Type capFloorType,
+                                const ext::shared_ptr<YoYInflationIndex>& index,
                                 const Size& length, const Calendar& cal,
-                                const boost::shared_ptr<YoYInflationIndex>& index,
+                                const Period& observationLag)
+    : capFloorType_(capFloorType), length_(length),
+      calendar_(cal), index_(index), observationLag_(observationLag),
+      strike_(Null<Rate>()), firstCapletExcluded_(false),
+      asOptionlet_(false), effectiveDate_(Date()),
+      dayCounter_(Thirty360()), roll_(ModifiedFollowing), fixingDays_(0),
+      nominal_(1000000.0)
+     {}
+
+    MakeYoYInflationCapFloor::MakeYoYInflationCapFloor(
+                                YoYInflationCapFloor::Type capFloorType,
+                                const Size& length, const Calendar& cal,
+                                const ext::shared_ptr<YoYInflationIndex>& index,
                                 const Period& observationLag, Rate strike,
                                 const Period& forwardStart)
     : capFloorType_(capFloorType), length_(length),
@@ -39,11 +53,11 @@ namespace QuantLib {
      {}
 
     MakeYoYInflationCapFloor::operator YoYInflationCapFloor() const {
-        boost::shared_ptr<YoYInflationCapFloor> capfloor = *this;
+        ext::shared_ptr<YoYInflationCapFloor> capfloor = *this;
         return *capfloor;
     }
 
-    MakeYoYInflationCapFloor::operator boost::shared_ptr<YoYInflationCapFloor>() const {
+    MakeYoYInflationCapFloor::operator ext::shared_ptr<YoYInflationCapFloor>() const {
 
         Date startDate;
         if (effectiveDate_ != Date()) {
@@ -78,16 +92,20 @@ namespace QuantLib {
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>()) {
             // ATM on the forecasting curve
-            QL_REQUIRE(!index_->yoyInflationTermStructure().empty(),
-                       "no forecasting yoy term structure set for " <<
-                       index_->name());
-            Handle<YieldTermStructure> fc
-            = index_->yoyInflationTermStructure()->nominalTermStructure();
+            Handle<YieldTermStructure> fc;
+            if (!nominalTermStructure_.empty()) {
+                fc = nominalTermStructure_;
+            } else {
+                QL_REQUIRE(!index_->yoyInflationTermStructure().empty(),
+                           "no forecasting yoy term structure set for " <<
+                           index_->name());
+                fc = index_->yoyInflationTermStructure()->nominalTermStructure();
+            }
             strikeVector[0] = CashFlows::atmRate(leg,**fc,
                                                  false, fc->referenceDate());
         }
 
-        boost::shared_ptr<YoYInflationCapFloor> capFloor(new
+        ext::shared_ptr<YoYInflationCapFloor> capFloor(new
                     YoYInflationCapFloor(capFloorType_, leg, strikeVector));
         capFloor->setPricingEngine(engine_);
         return capFloor;
@@ -128,8 +146,29 @@ namespace QuantLib {
     }
 
     MakeYoYInflationCapFloor& MakeYoYInflationCapFloor::withPricingEngine(
-        const boost::shared_ptr<PricingEngine>& engine) {
+        const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
+        return *this;
+    }
+
+    MakeYoYInflationCapFloor&
+    MakeYoYInflationCapFloor::withStrike(Rate strike) {
+        QL_REQUIRE(nominalTermStructure_.empty(), "ATM strike already given");
+        strike_ = strike;
+        return *this;
+    }
+
+    MakeYoYInflationCapFloor&
+    MakeYoYInflationCapFloor::withAtmStrike(
+                      const Handle<YieldTermStructure>& nominalTermStructure) {
+        QL_REQUIRE(strike_ == Null<Rate>(), "explicit strike already given");
+        nominalTermStructure_ = nominalTermStructure;
+        return *this;
+    }
+
+    MakeYoYInflationCapFloor&
+    MakeYoYInflationCapFloor::withForwardStart(Period forwardStart) {
+        forwardStart_ = forwardStart;
         return *this;
     }
 

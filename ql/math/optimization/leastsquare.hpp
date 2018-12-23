@@ -104,7 +104,7 @@ namespace QuantLib {
         NonLinearLeastSquare(Constraint& c,
                              Real accuracy,
                              Size maxiter,
-                             boost::shared_ptr<OptimizationMethod> om);
+                             ext::shared_ptr<OptimizationMethod> om);
         //! Destructor
         ~NonLinearLeastSquare() {}
 
@@ -141,7 +141,7 @@ namespace QuantLib {
         //! maximum and real number of iterations
         Size maxIterations_, nbIterations_;
         //! Optimization method
-        boost::shared_ptr<OptimizationMethod> om_;
+        ext::shared_ptr<OptimizationMethod> om_;
         //constraint
         Constraint& c_;
 

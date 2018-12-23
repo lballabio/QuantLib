@@ -25,8 +25,9 @@ namespace QuantLib {
 
     void Gaussian1dSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
-                   "cash-settled swaptions not yet implemented ...");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "Gaussian1dSwaptionEngine");
 
         Date settlement = model_->termStructure()->referenceDate();
 
@@ -115,7 +116,7 @@ namespace QuantLib {
 #endif
 
 #pragma omp parallel for default(shared) firstprivate(p) if(expiry0>settlement)
-            for (Size k = 0; k < (expiry0 > settlement ? npv0.size() : 1);
+            for (long k = 0; k < (expiry0 > settlement ? (long)npv0.size() : 1);
                  k++) {
 
                 Real price = 0.0;

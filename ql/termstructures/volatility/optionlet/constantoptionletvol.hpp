@@ -76,8 +76,8 @@ namespace QuantLib {
         Real displacement() const;
 
       protected:
-        boost::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time) const;
         Volatility volatilityImpl(Time,
                                   Rate) const;
       private:

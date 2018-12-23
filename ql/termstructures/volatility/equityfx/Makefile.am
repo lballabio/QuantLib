@@ -1,9 +1,12 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    andreasenhugelocalvoladapter.hpp \
+    andreasenhugevolatilityinterpl.hpp \
+    andreasenhugevolatilityadapter.hpp \
     blackconstantvol.hpp \
     blackvariancecurve.hpp \
     blackvariancesurface.hpp \
@@ -19,6 +22,9 @@ this_include_HEADERS = \
     noexceptlocalvolsurface.hpp
 
 cpp_files = \
+    andreasenhugelocalvoladapter.cpp \
+    andreasenhugevolatilityinterpl.cpp \
+    andreasenhugevolatilityadapter.cpp \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
     blackvoltermstructure.cpp \

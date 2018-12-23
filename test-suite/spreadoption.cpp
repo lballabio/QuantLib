@@ -103,48 +103,48 @@ void SpreadOptionTest::testKirkEngine() {
         Date exerciseDate = today  + cases[i].length;
 
         // Futures values
-        boost::shared_ptr<SimpleQuote> F1(new SimpleQuote(cases[i].F1));
-        boost::shared_ptr<SimpleQuote> F2(new SimpleQuote(cases[i].F2));
+        ext::shared_ptr<SimpleQuote> F1(new SimpleQuote(cases[i].F1));
+        ext::shared_ptr<SimpleQuote> F2(new SimpleQuote(cases[i].F2));
 
         // Risk-free interest rate
         Rate riskFreeRate = cases[i].r;
-        boost::shared_ptr<YieldTermStructure> forwardRate =
+        ext::shared_ptr<YieldTermStructure> forwardRate =
             flatRate(today,riskFreeRate,dc);
 
         // Correlation
-        boost::shared_ptr<Quote> rho(new SimpleQuote(cases[i].rho));
+        ext::shared_ptr<Quote> rho(new SimpleQuote(cases[i].rho));
 
         // Volatilities
         Volatility vol1 = cases[i].sigma1;
         Volatility vol2 = cases[i].sigma2;
-        boost::shared_ptr<BlackVolTermStructure> volTS1 =
+        ext::shared_ptr<BlackVolTermStructure> volTS1 =
             flatVol(today,vol1,dc);
-        boost::shared_ptr<BlackVolTermStructure> volTS2 =
+        ext::shared_ptr<BlackVolTermStructure> volTS2 =
             flatVol(today,vol2,dc);
 
         // Black-Scholes Processes
         // The BlackProcess is the relevant class for futures contracts
-        boost::shared_ptr<BlackProcess> stochProcess1(
+        ext::shared_ptr<BlackProcess> stochProcess1(
                      new BlackProcess(Handle<Quote>(F1),
                                       Handle<YieldTermStructure>(forwardRate),
                                       Handle<BlackVolTermStructure>(volTS1)));
 
-        boost::shared_ptr<BlackProcess> stochProcess2(
+        ext::shared_ptr<BlackProcess> stochProcess2(
                      new BlackProcess(Handle<Quote>(F2),
                                       Handle<YieldTermStructure>(forwardRate),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
         // Creating the pricing engine
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                       new KirkSpreadOptionEngine(stochProcess1, stochProcess2,
                                                  Handle<Quote>(rho)));
 
         // Finally, create the option:
         Option::Type type = Option::Call;
         Real strike = cases[i].X;
-        boost::shared_ptr<PlainVanillaPayoff> payoff(
+        ext::shared_ptr<PlainVanillaPayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
-        boost::shared_ptr<Exercise> exercise(
+        ext::shared_ptr<Exercise> exercise(
                                           new EuropeanExercise(exerciseDate));
 
         SpreadOption option(payoff, exercise);

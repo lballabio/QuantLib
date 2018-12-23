@@ -26,14 +26,7 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 namespace QuantLib {
     ExponentialJump1dMesher::ExponentialJump1dMesher(
@@ -80,14 +73,19 @@ namespace QuantLib {
     }
 
     Real ExponentialJump1dMesher::jumpSizeDistribution(Real x, Time t) const {
+        using namespace ext::placeholders;
         const Real xmin = std::min(x, 1.0e-100);
-        
+
+        // the typedef is needed to disambiguate the overloaded method
+        typedef Real (ExponentialJump1dMesher::*M)(Real, Time) const;
         return GaussLobattoIntegral(1000000, 1e-12)(
-            boost::bind(&ExponentialJump1dMesher::jumpSizeDensity, this, _1, t),
+            ext::bind(M(&ExponentialJump1dMesher::jumpSizeDensity),
+                      this, _1, t),
             xmin, std::max(x, xmin));
     }
 
     Real ExponentialJump1dMesher::jumpSizeDistribution(Real x) const {
+        using namespace ext::placeholders;
         const Real a    = jumpIntensity_/beta_;
         const Real xmin = std::min(x, QL_EPSILON);
         const Real gammaValue 
@@ -96,8 +94,11 @@ namespace QuantLib {
         const Real lowerEps = 
             (std::pow(xmin, a)/a - std::pow(xmin, a+1)/(a+1))/gammaValue;
         
+        // the typedef is needed to disambiguate the overloaded method
+        typedef Real (ExponentialJump1dMesher::*M)(Real) const;
         return lowerEps + GaussLobattoIntegral(10000, 1e-12)(
-            boost::bind(&ExponentialJump1dMesher::jumpSizeDensity, this, _1),
+            ext::bind(M(&ExponentialJump1dMesher::jumpSizeDensity),
+                      this, _1),
             xmin/eta_, std::max(x, xmin/eta_));
     }
 }

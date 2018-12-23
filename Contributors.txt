@@ -1,5 +1,5 @@
 
-We gratefully acknowledge contributions from:
+We gratefully acknowledge contributions from (in alphabetical order):
 
 Nathan Abbott
 Samad Abdessadki
@@ -8,13 +8,17 @@ Xavier Abulker
 Toyin Akin
 Marius Akre
 Mario Aleppo
+Ferdinando Ametrano
+Tom Anderson
 Grzegorz Andruszkiewicz
+Fanis Antoniou
 Driss Aouad
 Jose Aparicio
 Sercan Atalik
 Ahmed Ayadi
 Lluis Pujol Bajador
 Gerardo Ballabio
+Luigi Ballabio
 Nabila Barkati
 Riccardo Barone
 Clément Barret
@@ -27,6 +31,7 @@ Luca Berardi
 Nicholas Bertocchi
 Sylvain Bertrand
 Manas Bhatt
+Marco Bianchetti
 David Binderman
 Theo Boafo
 Francois Botha
@@ -35,6 +40,7 @@ Fakher Braham
 Joe Byers
 Xavier Caron
 Marine Casanova
+Peter Caspers
 Antoine Cellerier
 Yee Man Chan
 Aurelien Chanudet
@@ -43,10 +49,14 @@ Yanice Cherrak
 Meryem Chibo
 Warren Chou
 Scott Condit
+Marco Craveiro
 Jon Davidson
 Daniele De Francesco
 Frédéric Degraeve
 Piero Del Boca
+Mike DelMedico
+Barry Devlin
+Nicolas Di Césaré
 Piter Dias
 Michael von den Driesch
 Francis Duffy
@@ -59,11 +69,13 @@ Matt Fair
 Paul Farrington
 Lorella Fatone
 Luca Ferraro
+Neil Firth
 Stefano Fondi
 Chiara Fornarola
 Silvia Frasson
 Andreas Gaida
 Matteo Gallivanoni
+Lakshay Garg
 Riccardo Ghetta
 Paul Giltinan
 Roman Gitlin
@@ -90,14 +102,18 @@ Daniel Hrabovcak
 Shen Hui
 Charles Chongseok Hyun
 Simon Ibbotson
+Alexey Indiryakov
 Norbert Irmer
 Mike Jake
+Nicola Jean
 Joseph Jeisman
 Rahul Kanchi
+Roland Kapl
 Andrey Karpov
 Michal Kaut
 Tomoya Kawanishi
 Gary Kennedy
+Chris Kenyon
 Oleksandr Khomenko
 Matt Knox
 Andrew Kolesnikov
@@ -115,8 +131,10 @@ Fabrice Lecuyer
 James Lee
 Samuel Lerouge
 Bernd Lewerenz
+Patrick Lewis
 Cheng Li
 Gang Liang
+Roland Lichters
 Robert Lopez
 André Louw
 Matthias Lungwitz
@@ -126,6 +144,7 @@ Jose Magana
 Andrea Maggiulli
 John Maiden
 Katiuscia Manzoni
+Marco Marchioro
 Francesca Mariani
 Slava Mazur
 Paolo Mazzocchi
@@ -139,6 +158,7 @@ Dmitri Nesteruk
 Billy Ng
 Bojan Nikolic
 Jean Nkeng
+Robin Northcott
 Nikolai Nowaczyk
 Adrian O'Neill
 Andrea Odetti
@@ -162,6 +182,7 @@ J. Erik Radmall
 Ilyas Rahbaoui
 Fabio Ramponi
 Maria Cristina Recchioni
+Simon Rees
 Dimitri Reiswich
 Sadruddin Rejeb
 Martin Ross
@@ -180,12 +201,15 @@ Kirill Shemyakin
 Eugene Shevkoplyas
 Enrico Sirola
 Leon Sit
+Wojciech Slusarski
 Dale Smith
 Tim Smith
 Maxim Sokolov
 Niels Elken Sønderby
+Klaus Spanderen
 Andreas Spengler
 Roland Stamm
+Weston Steimel
 Edouard Tallent
 Eisuke Tani
 Marco Tarenghi
@@ -193,6 +217,7 @@ Ryan Taylor
 Yue Tian
 Jayanth R. Varma
 François du Vignaud
+Joseph Wang
 Qingxiao Wang
 Charles Whitmore
 Stephen Wong
@@ -203,6 +228,7 @@ Frank Xue
 Jeff Yu
 Maddalena Zanzi
 Francesco Zirilli
+Roy Zywina
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

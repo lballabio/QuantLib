@@ -45,7 +45,7 @@ namespace QuantLib {
         }
     }
 
-    boost::shared_ptr<Fdm1dMesher>
+    ext::shared_ptr<Fdm1dMesher>
     FdmVPPStepConditionFactory::stateMesher() const {
         Size nStates;
         switch (type_) {
@@ -60,15 +60,15 @@ namespace QuantLib {
             QL_FAIL("vpp type is not supported");
         }
 
-        return boost::shared_ptr<Fdm1dMesher>(
+        return ext::shared_ptr<Fdm1dMesher>(
             new Uniform1dMesher(0.0, 1.0, nStates));
     }
 
-    boost::shared_ptr<FdmVPPStepCondition> FdmVPPStepConditionFactory::build(
+    ext::shared_ptr<FdmVPPStepCondition> FdmVPPStepConditionFactory::build(
         const FdmVPPStepConditionMesher& mesh,
         Real fuelCostAddon,
-        const boost::shared_ptr<FdmInnerValueCalculator>& fuel,
-        const boost::shared_ptr<FdmInnerValueCalculator>& spark) const {
+        const ext::shared_ptr<FdmInnerValueCalculator>& fuel,
+        const ext::shared_ptr<FdmInnerValueCalculator>& spark) const {
 
         const FdmVPPStepConditionParams params = {
             args_.heatRate, args_.pMin, args_.pMax,
@@ -80,7 +80,7 @@ namespace QuantLib {
         switch (type_) {
           case Vanilla:
           case StartLimit:
-              return boost::shared_ptr<FdmVPPStepCondition>(
+              return ext::shared_ptr<FdmVPPStepCondition>(
                   new FdmVPPStartLimitStepCondition(params, args_.nStarts,
                           mesh, fuel, spark));
               break;

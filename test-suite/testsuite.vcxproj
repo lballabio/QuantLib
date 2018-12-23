@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -630,6 +630,7 @@
   <ItemGroup>
     <ClCompile Include="americanoption.cpp" />
     <ClCompile Include="amortizingbond.cpp" />
+    <ClCompile Include="andreasenhugevolatilityinterpl.cpp" />
     <ClCompile Include="array.cpp" />
     <ClCompile Include="asianoptions.cpp" />
     <ClCompile Include="assetswap.cpp" />
@@ -654,6 +655,7 @@
     <ClCompile Include="chooseroption.cpp" />
     <ClCompile Include="cliquetoption.cpp" />
     <ClCompile Include="cms.cpp" />
+    <ClCompile Include="cmsspread.cpp" />
     <ClCompile Include="commodityunitofmeasure.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />
@@ -680,6 +682,7 @@
     <ClCompile Include="fdheston.cpp" />
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
+    <ClCompile Include="forwardrateagreement.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
@@ -722,6 +725,7 @@
     <ClCompile Include="normalclvmodel.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
     <ClCompile Include="numericaldifferentiation.cpp" />
+    <ClCompile Include="nthorderderivativeop.cpp" />
     <ClCompile Include="observable.cpp" />
     <ClCompile Include="ode.cpp" />
     <ClCompile Include="operators.cpp" />
@@ -744,6 +748,7 @@
     <ClCompile Include="sampledcurve.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="shortratemodels.cpp" />
+    <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="solvers.cpp" />
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
@@ -755,6 +760,7 @@
     <ClCompile Include="swaptionvolatilitymatrix.cpp" />
     <ClCompile Include="swingoption.cpp" />
     <ClCompile Include="termstructures.cpp" />
+    <ClCompile Include="timegrid.cpp" />
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
@@ -773,6 +779,7 @@
   <ItemGroup>
     <ClInclude Include="americanoption.hpp" />
     <ClInclude Include="amortizingbond.hpp" />
+    <ClInclude Include="andreasenhugevolatilityinterpl.hpp" />
     <ClInclude Include="array.hpp" />
     <ClInclude Include="asianoptions.hpp" />
     <ClInclude Include="assetswap.hpp" />
@@ -797,6 +804,7 @@
     <ClInclude Include="chooseroption.hpp" />
     <ClInclude Include="cliquetoption.hpp" />
     <ClInclude Include="cms.hpp" />
+    <ClInclude Include="cmsspread.hpp" />
     <ClInclude Include="commodityunitofmeasure.hpp" />
     <ClInclude Include="compoundoption.hpp" />
     <ClInclude Include="convertiblebonds.hpp" />
@@ -823,6 +831,7 @@
     <ClInclude Include="fdheston.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />
     <ClInclude Include="forwardoption.hpp" />
+    <ClInclude Include="forwardrateagreement.hpp" />
     <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
     <ClInclude Include="gjrgarchmodel.hpp" />
@@ -865,6 +874,7 @@
     <ClInclude Include="normalclvmodel.hpp" />
     <ClInclude Include="nthtodefault.hpp" />
     <ClInclude Include="numericaldifferentiation.hpp" />
+    <ClInclude Include="nthorderderivativeop.hpp" />
     <ClInclude Include="observable.hpp" />
     <ClInclude Include="ode.hpp" />
     <ClInclude Include="operators.hpp" />
@@ -888,6 +898,7 @@
     <ClInclude Include="sampledcurve.hpp" />
     <ClInclude Include="schedule.hpp" />
     <ClInclude Include="shortratemodels.hpp" />
+    <ClInclude Include="sofrfutures.hpp" />
     <ClInclude Include="solvers.hpp" />
     <ClInclude Include="speedlevel.hpp" />
     <ClInclude Include="spreadoption.hpp" />
@@ -901,6 +912,7 @@
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="swingoption.hpp" />
     <ClInclude Include="termstructures.hpp" />
+    <ClInclude Include="timegrid.hpp" />
     <ClInclude Include="timeseries.hpp" />
     <ClInclude Include="tqreigendecomposition.hpp" />
     <ClInclude Include="tracing.hpp" />

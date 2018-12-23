@@ -6,6 +6,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2009 Dimitri Reiswich
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2018 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -170,7 +171,7 @@ namespace {
     }
 
     template <class F>
-    class errorFunction : public std::unary_function<Real,Real> {
+    class errorFunction {
       public:
         errorFunction(const F& f) : f_(f) {}
         Real operator()(Real x) const {
@@ -943,6 +944,52 @@ void InterpolationTest::testAsFunctor() {
 }
 
 
+namespace {
+
+    Integer sign(Real y1, Real y2) {
+        return y1 == y2 ? 0 :
+               y1 < y2 ?  1 :
+                         -1 ;
+    }
+
+}
+
+void InterpolationTest::testFritschButland() {
+
+    BOOST_TEST_MESSAGE("Testing Fritsch-Butland interpolation...");
+
+    const Real x[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[][5] = {{ 1.0, 2.0, 1.0, 1.0, 2.0 },
+                         { 1.0, 2.0, 1.0, 1.0, 1.0 },
+                         { 2.0, 1.0, 0.0, 2.0, 3.0 }};
+
+    for (Size i=0; i<3; ++i) {
+
+        Interpolation f = FritschButlandCubic(BEGIN(x), END(x), BEGIN(y[i]));
+        f.update();
+
+        for (Size j=0; j<4; ++j) {
+            Real left_knot = x[j];
+            Integer expected_sign = sign(y[i][j], y[i][j+1]);
+            for (Size k=0; k<10; ++k) {
+                Real x1 = left_knot + k*0.1, x2 = left_knot + (k+1)*0.1;
+                Real y1 = f(x1), y2 = f(x2);
+                if (boost::math::isnan(y1))
+                    BOOST_ERROR("NaN detected in case " << i << ":"
+                                << std::fixed
+                                << "\n    f(" << x1 << ") = " << y1);
+                else if (sign(y1, y2) != expected_sign)
+                    BOOST_ERROR("interpolation is not monotonic "
+                                "in case " << i << ":"
+                                << std::fixed
+                                << "\n    f(" << x1 << ") = " << y1
+                                << "\n    f(" << x2 << ") = " << y2);
+            }
+        }
+    }
+}
+
+
 void InterpolationTest::testBackwardFlat() {
 
     BOOST_TEST_MESSAGE("Testing backward-flat interpolation...");
@@ -1249,11 +1296,11 @@ void InterpolationTest::testSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-8;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=0; j<methods_.size(); ++j) {
@@ -1384,7 +1431,11 @@ void InterpolationTest::testKernelInterpolation() {
 
             std::vector<Real> currY = yd[j];
             KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
-                                  currY.begin(), myKernel);
+                                  currY.begin(), myKernel
+#ifdef __FAST_MATH__
+                                  ,1e-6
+#endif
+                                  );
             f.update();
 
             for (Size dIt=0; dIt< deltaGrid.size(); ++dIt) {
@@ -1707,7 +1758,11 @@ void InterpolationTest::testNoArbSabrInterpolation(){
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
     // Test SABR function against input volatilities
+#ifndef __FAST_MATH__
     Real tolerance = 1.0e-12;
+#else
+    Real tolerance = 1.0e-8;
+#endif
     std::vector<Real> strikes(31);
     std::vector<Real> volatilities(31), volatilities2(31);
     // input strikes
@@ -1791,11 +1846,11 @@ void InterpolationTest::testNoArbSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-6;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
@@ -2125,31 +2180,36 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
 
     const Real tol = 1e-13;
+    const Real tolDeriv = 1e-11;
 
-    for (Real x=-1.0; x <= 1.0; x+=0.01) {
+    for (Real x=-1.0; x <= 1.0; x+=0.03) {
         const Real calculated = interpl(x, true);
         const Real expected = std::exp(x)/std::cos(x);
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diff = std::fabs(expected - calculated);
+        if (   boost::math::isnan(calculated) || diff > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation on Chebyshev points"
+                    " interpolation on Chebyshev points"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculated
-                    << "\n    expected  : " << expected);
+                    << "\n    expected  : " << expected
+                    << std::scientific
+                    << "\n    difference: " << diff);
         }
 
         const Real calculatedDeriv = interpl.derivative(x, true);
         const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
                 / square<Real>()(std::cos(x));
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
+        if (   boost::math::isnan(calculated) || diffDeriv > tolDeriv) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation derivative on Chebyshev points"
+                    " interpolation derivative on Chebyshev points"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculatedDeriv
-                    << "\n    expected  : " << expectedDeriv);
+                    << "\n    expected  : " << expectedDeriv
+                    << std::scientific
+                    << "\n    difference: " << diffDeriv);
         }
     }
 }
@@ -2202,6 +2262,41 @@ void InterpolationTest::testBSplines() {
     }
 }
 
+void InterpolationTest::testBackwardFlatOnSinglePoint() {
+    BOOST_TEST_MESSAGE("Testing piecewise constant interpolation on a "
+                       "single point...");
+    const std::vector<Real> knots(1, 1.0), values(1, 2.5);
+
+    const Interpolation impl(BackwardFlat().interpolate(
+        knots.begin(), knots.end(), values.begin()));
+
+    const Real x[] = { -1.0, 1.0, 2.0, 3.0 };
+
+    for (Size i=0; i < LENGTH(x); ++i) {
+        const Real calculated = impl(x[i], true);
+        const Real expected = values[0];
+
+        if (!close_enough(calculated, expected)) {
+            BOOST_FAIL("failed to reproduce a piecewise constant "
+                    "interpolation on a single point "
+                    << "\n   x         : " << x[i]
+                    << "\n   expected  : " << expected
+                    << "\n   calculated: " << calculated);
+        }
+
+        const Real expectedPrimitive = values[0]*(x[i] - knots[0]);
+        const Real calculatedPrimitive = impl.primitive(x[i], true);
+
+        if (!close_enough(calculatedPrimitive, expectedPrimitive)) {
+            BOOST_FAIL("failed to reproduce primitive on a piecewise constant "
+                    "interpolation for a single point "
+                    << "\n   x         : " << x[i]
+                    << "\n   expected  : " << expectedPrimitive
+                    << "\n   calculated: " << calculatedPrimitive);
+        }
+    }
+}
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -2221,6 +2316,7 @@ test_suite* InterpolationTest::suite() {
                         &InterpolationTest::testSplineErrorOnGaussianValues));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testMultiSpline));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testAsFunctor));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFritschButland));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
@@ -2243,6 +2339,9 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
+
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testBackwardFlatOnSinglePoint));
 
     return suite;
 }

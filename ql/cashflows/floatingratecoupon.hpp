@@ -49,7 +49,7 @@ namespace QuantLib {
                            const Date& startDate,
                            const Date& endDate,
                            Natural fixingDays,
-                           const boost::shared_ptr<InterestRateIndex>& index,
+                           const ext::shared_ptr<InterestRateIndex>& index,
                            Real gearing = 1.0,
                            Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
@@ -73,7 +73,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! floating index
-        const boost::shared_ptr<InterestRateIndex>& index() const;
+        const ext::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
         Natural fixingDays() const { return fixingDays_; }
         //! fixing date
@@ -102,23 +102,23 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
 
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>&);
-        boost::shared_ptr<FloatingRateCouponPricer> pricer() const;
+        virtual void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&);
+        ext::shared_ptr<FloatingRateCouponPricer> pricer() const;
       protected:
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
-        boost::shared_ptr<InterestRateIndex> index_;
+        ext::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
         Natural fixingDays_;
         Real gearing_;
         Spread spread_;
         bool isInArrears_;
-        boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+        ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
     // inline definitions
 
-    inline const boost::shared_ptr<InterestRateIndex>&
+    inline const ext::shared_ptr<InterestRateIndex>&
     FloatingRateCoupon::index() const {
         return index_;
     }
@@ -131,7 +131,7 @@ namespace QuantLib {
         return (rate()-spread())/gearing();
     }
 
-    inline boost::shared_ptr<FloatingRateCouponPricer>
+    inline ext::shared_ptr<FloatingRateCouponPricer>
     FloatingRateCoupon::pricer() const {
         return pricer_;
     }

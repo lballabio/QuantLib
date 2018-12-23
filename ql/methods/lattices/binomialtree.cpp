@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     JarrowRudd::JarrowRudd(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<JarrowRudd>(process, end, steps) {
         // drift removed
@@ -35,7 +35,7 @@ namespace QuantLib {
 
 
     CoxRossRubinstein::CoxRossRubinstein(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualJumpsBinomialTree<CoxRossRubinstein>(process, end, steps) {
 
@@ -49,7 +49,7 @@ namespace QuantLib {
 
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<AdditiveEQPBinomialTree>(process,
                                                               end, steps) {
@@ -60,7 +60,7 @@ namespace QuantLib {
 
 
     Trigeorgis::Trigeorgis(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualJumpsBinomialTree<Trigeorgis>(process, end, steps) {
 
@@ -74,7 +74,7 @@ namespace QuantLib {
     }
 
 
-    Tian::Tian(const boost::shared_ptr<StochasticProcess1D>& process,
+    Tian::Tian(const ext::shared_ptr<StochasticProcess1D>& process,
                Time end, Size steps, Real)
     : BinomialTree<Tian>(process, end, steps) {
 
@@ -97,7 +97,7 @@ namespace QuantLib {
 
 
     LeisenReimer::LeisenReimer(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real strike)
     : BinomialTree<LeisenReimer>(process, end,
                                  ((steps%2) ? steps : (steps+1))) {
@@ -138,7 +138,7 @@ namespace QuantLib {
         return p;
     }
 
-    Joshi4::Joshi4(const boost::shared_ptr<StochasticProcess1D>& process,
+    Joshi4::Joshi4(const ext::shared_ptr<StochasticProcess1D>& process,
                    Time end, Size steps, Real strike)
     : BinomialTree<Joshi4>(process, end, (steps%2) ? steps : (steps+1)) {
 

@@ -202,39 +202,39 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
     Real calculatedVal  =0.0;
     Real error          =0.0;
 
-    boost::shared_ptr<SimpleQuote> spotQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spotQuote(new SimpleQuote(0.0));
     Handle<Quote> spotHandle(spotQuote);
 
-    boost::shared_ptr<SimpleQuote> qQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qQuote(new SimpleQuote(0.0));
     Handle<Quote> qHandle(qQuote);
-    boost::shared_ptr<YieldTermStructure> qTS(
+    ext::shared_ptr<YieldTermStructure> qTS(
                                          new FlatForward(today, qHandle, dc));
 
-    boost::shared_ptr<SimpleQuote> rQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rQuote(new SimpleQuote(0.0));
     Handle<Quote> rHandle(qQuote);
-    boost::shared_ptr<YieldTermStructure> rTS(
+    ext::shared_ptr<YieldTermStructure> rTS(
                                          new FlatForward(today, rHandle, dc));
 
-    boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote(0.0));
     Handle<Quote> volHandle(volQuote);
-    boost::shared_ptr<BlackVolTermStructure> volTS(
+    ext::shared_ptr<BlackVolTermStructure> volTS(
                         new BlackConstantVol(today, calendar, volHandle, dc));
 
-    boost::shared_ptr<BlackScholesMertonProcess>    stochProcess;
-    boost::shared_ptr<PricingEngine>                engine;
-    boost::shared_ptr<StrikedTypePayoff>            payoff;
+    ext::shared_ptr<BlackScholesMertonProcess>    stochProcess;
+    ext::shared_ptr<PricingEngine>                engine;
+    ext::shared_ptr<StrikedTypePayoff>            payoff;
     Date exDate;
-    boost::shared_ptr<Exercise>                     exercise;
+    ext::shared_ptr<Exercise>                     exercise;
     // Setup of market data finished
 
     Real tolerance=1.0e-10;
 
     for(Size i=0; i<LENGTH(values);++i){
 
-        payoff = boost::shared_ptr<StrikedTypePayoff>(
+        payoff = ext::shared_ptr<StrikedTypePayoff>(
                     new PlainVanillaPayoff(values[i].type, values[i].strike));
         exDate = today + timeToDays(values[i].t);
-        exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
+        exercise = ext::shared_ptr<Exercise>(new EuropeanExercise(exDate));
 
         spotQuote   ->setValue(values[i].s);
         volQuote    ->setValue(values[i].v);
@@ -249,20 +249,33 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
                                     spotQuote->value(),
                                     discDom, discFor, implVol);
 
-        stochProcess=boost::shared_ptr<BlackScholesMertonProcess> (new
-            BlackScholesMertonProcess(spotHandle,
+        stochProcess=ext::make_shared<BlackScholesMertonProcess> (spotHandle,
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+                                      Handle<BlackVolTermStructure>(volTS));
 
-        engine = boost::shared_ptr<PricingEngine>(
+        engine = ext::shared_ptr<PricingEngine>(
                                     new AnalyticEuropeanEngine(stochProcess));
 
         EuropeanOption option(payoff, exercise);
         option.setPricingEngine(engine);
 
         calculatedVal=myCalc.deltaFromStrike(values[i].strike);
-        expectedVal=option.delta()-option.NPV()/spotQuote->value();
+
+        Real delta = 0.0;
+        if (implVol > 0.0) {
+            delta = option.delta();
+        }
+        else {
+            const Real fwd = spotQuote->value()*discFor/discDom;
+            if (payoff->optionType() == Option::Call && fwd > payoff->strike())
+                delta = 1.0;
+            else if (payoff->optionType() == Option::Put && fwd < payoff->strike())
+                delta = -1.0;
+        }
+
+        expectedVal=delta-option.NPV()/spotQuote->value();
+
         error=std::fabs(expectedVal-calculatedVal);
 
         if(error>tolerance){
@@ -290,7 +303,7 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
         myCalc.setDeltaType(DeltaVolQuote::Spot);
 
         calculatedVal=myCalc.deltaFromStrike(values[i].strike);
-        expectedVal=option.delta();
+        expectedVal=delta;
         error=std::fabs(calculatedVal-expectedVal);
 
         if(error>tolerance){
@@ -380,35 +393,35 @@ void BlackDeltaCalculatorTest::testPutCallParity(){
     Real error          =0.0;
     Real forward        =0.0;
 
-    boost::shared_ptr<SimpleQuote> spotQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spotQuote(new SimpleQuote(0.0));
 
-    boost::shared_ptr<SimpleQuote> qQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qQuote(new SimpleQuote(0.0));
     Handle<Quote> qHandle(qQuote);
-    boost::shared_ptr<YieldTermStructure> qTS(
+    ext::shared_ptr<YieldTermStructure> qTS(
                                          new FlatForward(today, qHandle, dc));
 
-    boost::shared_ptr<SimpleQuote> rQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rQuote(new SimpleQuote(0.0));
     Handle<Quote> rHandle(qQuote);
-    boost::shared_ptr<YieldTermStructure> rTS(
+    ext::shared_ptr<YieldTermStructure> rTS(
                                          new FlatForward(today, rHandle, dc));
 
-    boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote(0.0));
     Handle<Quote> volHandle(volQuote);
-    boost::shared_ptr<BlackVolTermStructure> volTS(
+    ext::shared_ptr<BlackVolTermStructure> volTS(
                         new BlackConstantVol(today, calendar, volHandle, dc));
 
-    boost::shared_ptr<StrikedTypePayoff> payoff;
+    ext::shared_ptr<StrikedTypePayoff> payoff;
     Date exDate;
-    boost::shared_ptr<Exercise> exercise;
+    ext::shared_ptr<Exercise> exercise;
 
     Real tolerance=1.0e-10;
 
     for(Size i=0; i<LENGTH(values);++i){
 
-        payoff = boost::shared_ptr<StrikedTypePayoff>(new
+        payoff = ext::shared_ptr<StrikedTypePayoff>(new
                             PlainVanillaPayoff(Option::Call, values[i].strike));
         exDate = today + timeToDays(values[i].t);
-        exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
+        exercise = ext::shared_ptr<Exercise>(new EuropeanExercise(exDate));
 
         spotQuote->setValue(values[i].s);
         volQuote->setValue(values[i].v);

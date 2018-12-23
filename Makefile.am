@@ -16,8 +16,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 nodist_pkgconfig_DATA = quantlib.pc
 
 EXTRA_DIST = \
-	Authors.txt \
-	Bugs.txt \
 	ChangeLog.txt \
 	CMakeLists.txt \
 	Contributors.txt \
@@ -25,12 +23,10 @@ EXTRA_DIST = \
 	News.txt \
 	QuantLib.props \
 	QuantLib.spec \
-	QuantLib_vc9.sln \
-	QuantLib_vc9.vcproj \
 	QuantLib.sln \
 	QuantLib.vcxproj \
 	QuantLib.vcxproj.filters \
-	Readme.txt \
+	README.md \
 	autogen.sh
 
 .PHONY: examples check-examples
@@ -43,13 +39,11 @@ check-examples:
 benchmark:
 	$(MAKE) -C test-suite benchmark
 
-.PHONY: docs docs-man docs-online docs-dist docs-clean
+.PHONY: docs docs-online docs-dist docs-clean
 docs:
 	$(MAKE) -C Docs docs-all
 html-local:
 	$(MAKE) -C Docs docs-html
-docs-man:
-	$(MAKE) -C Docs docs-man
 docs-dist:
 	$(MAKE) -C Docs docs-dist
 docs-clean:
@@ -57,3 +51,6 @@ docs-clean:
 
 dist-hook:
 	mkdir -p $(distdir)/build
+	mkdir -p $(distdir)/cmake
+	cp -p $(srcdir)/cmake/quantlib.cmake $(distdir)/cmake
+

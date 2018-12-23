@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,11 +23,13 @@
 namespace QuantLib {
 
     FloatFloatSwaption::FloatFloatSwaption(
-        const boost::shared_ptr<FloatFloatSwap> &swap,
-        const boost::shared_ptr<Exercise> &exercise)
-        : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap) {
-        registerWith(swap_);
-        registerWithObservables(swap_);
+        const ext::shared_ptr<FloatFloatSwap>& swap,
+        const ext::shared_ptr<Exercise>& exercise, Settlement::Type delivery,
+        Settlement::Method settlementMethod)
+    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
+      settlementType_(delivery), settlementMethod_(settlementMethod) {
+    registerWith(swap_);
+    registerWithObservables(swap_);
     }
 
     bool FloatFloatSwaption::isExpired() const {
@@ -47,22 +48,26 @@ namespace QuantLib {
 
         arguments->swap = swap_;
         arguments->exercise = exercise_;
+        arguments->settlementType = settlementType_;
+        arguments->settlementMethod = settlementMethod_;
     }
 
     void FloatFloatSwaption::arguments::validate() const {
         FloatFloatSwap::arguments::validate();
         QL_REQUIRE(swap, "underlying cms swap not set");
         QL_REQUIRE(exercise, "exercise not set");
+        Settlement::checkTypeAndMethodConsistency(settlementType,
+                                                  settlementMethod);
     }
 
-    Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
+    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
     FloatFloatSwaption::calibrationBasket(
-        boost::shared_ptr<SwapIndex> standardSwapBase,
-        boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        ext::shared_ptr<SwapIndex> standardSwapBase,
+        ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
         const BasketGeneratingEngine::CalibrationBasketType basketType) const {
 
-        boost::shared_ptr<BasketGeneratingEngine> engine =
-            boost::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
+        ext::shared_ptr<BasketGeneratingEngine> engine =
+            ext::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
         QL_REQUIRE(engine, "engine is not a basket generating engine");
         engine_->reset();
         setupArguments(engine_->getArguments());

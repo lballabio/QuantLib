@@ -58,9 +58,17 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& dividendTS,
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
-            const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            const ext::shared_ptr<discretization>& d =
+                  ext::shared_ptr<discretization>(new EulerDiscretization),
             bool forceDiscretization = false);
+
+        GeneralizedBlackScholesProcess(
+            const Handle<Quote>& x0,
+            const Handle<YieldTermStructure>& dividendTS,
+            const Handle<YieldTermStructure>& riskFreeTS,
+            const Handle<BlackVolTermStructure>& blackVolTS,
+            const Handle<LocalVolTermStructure>& localVolTS);
+
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -95,7 +103,9 @@ namespace QuantLib {
         Handle<Quote> x0_;
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
+        Handle<LocalVolTermStructure> externalLocalVolTS_;
         bool forceDiscretization_;
+        bool hasExternalLocalVol_;
         mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_, isStrikeIndependent_;
     };
@@ -118,8 +128,8 @@ namespace QuantLib {
             const Handle<Quote>& x0,
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
-            const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            const ext::shared_ptr<discretization>& d =
+                  ext::shared_ptr<discretization>(new EulerDiscretization),
             bool forceDiscretization = false);
     };
 
@@ -140,8 +150,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& dividendTS,
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
-            const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            const ext::shared_ptr<discretization>& d =
+                  ext::shared_ptr<discretization>(new EulerDiscretization),
             bool forceDiscretization = false);
     };
 
@@ -163,8 +173,8 @@ namespace QuantLib {
             const Handle<Quote>& x0,
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
-            const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            const ext::shared_ptr<discretization>& d =
+                  ext::shared_ptr<discretization>(new EulerDiscretization),
             bool forceDiscretization = false);
     };
 
@@ -188,8 +198,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& foreignRiskFreeTS,
             const Handle<YieldTermStructure>& domesticRiskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
-            const boost::shared_ptr<discretization>& d =
-                  boost::shared_ptr<discretization>(new EulerDiscretization),
+            const ext::shared_ptr<discretization>& d =
+                  ext::shared_ptr<discretization>(new EulerDiscretization),
             bool forceDiscretization = false);
     };
 

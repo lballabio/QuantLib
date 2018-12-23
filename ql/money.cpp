@@ -22,7 +22,6 @@
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/comparison.hpp>
 #include <boost/format.hpp>
-#include <assert.h>
 
 namespace QuantLib {
 

@@ -21,6 +21,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

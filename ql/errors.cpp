@@ -93,8 +93,8 @@ namespace QuantLib {
     Error::Error(const std::string& file, long line,
                  const std::string& function,
                  const std::string& message) {
-        message_ = boost::shared_ptr<std::string>(new std::string(
-                                      format(file, line, function, message)));
+        message_ = ext::make_shared<std::string>(
+                                      format(file, line, function, message));
     }
 
     const char* Error::what() const throw () {

@@ -26,36 +26,36 @@ namespace QuantLib {
     TwoFactorModel::TwoFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    boost::shared_ptr<Lattice>
+    ext::shared_ptr<Lattice>
     TwoFactorModel::tree(const TimeGrid& grid) const {
-        boost::shared_ptr<ShortRateDynamics> dyn = dynamics();
+        ext::shared_ptr<ShortRateDynamics> dyn = dynamics();
 
-        boost::shared_ptr<TrinomialTree> tree1(
+        ext::shared_ptr<TrinomialTree> tree1(
                                     new TrinomialTree(dyn->xProcess(), grid));
-        boost::shared_ptr<TrinomialTree> tree2(
+        ext::shared_ptr<TrinomialTree> tree2(
                                     new TrinomialTree(dyn->yProcess(), grid));
 
-        return boost::shared_ptr<Lattice>(
+        return ext::shared_ptr<Lattice>(
                         new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));
     }
 
     TwoFactorModel::ShortRateTree::ShortRateTree(
-                         const boost::shared_ptr<TrinomialTree>& tree1,
-                         const boost::shared_ptr<TrinomialTree>& tree2,
-                         const boost::shared_ptr<ShortRateDynamics>& dynamics)
+                         const ext::shared_ptr<TrinomialTree>& tree1,
+                         const ext::shared_ptr<TrinomialTree>& tree2,
+                         const ext::shared_ptr<ShortRateDynamics>& dynamics)
     : TreeLattice2D<TwoFactorModel::ShortRateTree,TrinomialTree>(
                                        tree1, tree2, dynamics->correlation()),
       dynamics_(dynamics) {}
 
-    boost::shared_ptr<StochasticProcess>
+    ext::shared_ptr<StochasticProcess>
     TwoFactorModel::ShortRateDynamics::process() const {
         Matrix correlation(2,2);
         correlation[0][0] = correlation[1][1] = 1.0;
         correlation[0][1] = correlation[1][0] = correlation_;
-        std::vector<boost::shared_ptr<StochasticProcess1D> > processes;
+        std::vector<ext::shared_ptr<StochasticProcess1D> > processes(2);
         processes[0] = xProcess_;
         processes[1] = yProcess_;
-        return boost::shared_ptr<StochasticProcess>(
+        return ext::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     }
 

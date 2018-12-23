@@ -27,7 +27,6 @@
 #include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <ql/experimental/volatility/svismilesection.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/assign/list_of.hpp>
 
 namespace QuantLib {
@@ -134,10 +133,10 @@ struct SviSpecs {
         return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0);
     }
     typedef SviWrapper type;
-    boost::shared_ptr<type> instance(const Time t, const Real &forward,
+    ext::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &addParams) {
-        return boost::make_shared<type>(t, forward, params);
+        return ext::make_shared<type>(t, forward, params);
     }
 };
 }
@@ -153,15 +152,15 @@ class SviInterpolation : public Interpolation {
                      const Real &forward, Real a, Real b, Real sigma, Real rho,
                      Real m, bool aIsFixed, bool bIsFixed, bool sigmaIsFixed,
                      bool rhoIsFixed, bool mIsFixed, bool vegaWeighted = true,
-                     const boost::shared_ptr<EndCriteria> &endCriteria =
-                         boost::shared_ptr<EndCriteria>(),
-                     const boost::shared_ptr<OptimizationMethod> &optMethod =
-                         boost::shared_ptr<OptimizationMethod>(),
+                     const ext::shared_ptr<EndCriteria> &endCriteria =
+                         ext::shared_ptr<EndCriteria>(),
+                     const ext::shared_ptr<OptimizationMethod> &optMethod =
+                         ext::shared_ptr<OptimizationMethod>(),
                      const Real errorAccept = 0.0020,
                      const bool useMaxError = false,
                      const Size maxGuesses = 50) {
 
-        impl_ = boost::shared_ptr<Interpolation::Impl>(
+        impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SviSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
                 boost::assign::list_of(a)(b)(sigma)(rho)(m),
@@ -169,7 +168,7 @@ class SviInterpolation : public Interpolation {
                     rhoIsFixed)(mIsFixed),
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
-        coeffs_ = boost::dynamic_pointer_cast<
+        coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::SviSpecs> >(impl_);
     }
     Real expiry() const { return coeffs_->t_; }
@@ -187,7 +186,7 @@ class SviInterpolation : public Interpolation {
     EndCriteria::Type endCriteria() { return coeffs_->XABREndCriteria_; }
 
   private:
-    boost::shared_ptr<detail::XABRCoeffHolder<detail::SviSpecs> > coeffs_;
+    ext::shared_ptr<detail::XABRCoeffHolder<detail::SviSpecs> > coeffs_;
 };
 
 //! %Svi interpolation factory and traits
@@ -196,10 +195,10 @@ class Svi {
     Svi(Time t, Real forward, Real a, Real b, Real sigma, Real rho, Real m,
          bool aIsFixed, bool bIsFixed, bool sigmaIsFixed, bool rhoIsFixed,
          bool mIsFixed, bool vegaWeighted = false,
-         const boost::shared_ptr<EndCriteria> endCriteria =
-             boost::shared_ptr<EndCriteria>(),
-         const boost::shared_ptr<OptimizationMethod> optMethod =
-             boost::shared_ptr<OptimizationMethod>(),
+         const ext::shared_ptr<EndCriteria> endCriteria =
+             ext::shared_ptr<EndCriteria>(),
+         const ext::shared_ptr<OptimizationMethod> optMethod =
+             ext::shared_ptr<OptimizationMethod>(),
          const Real errorAccept = 0.0020, const bool useMaxError = false,
          const Size maxGuesses = 50)
         : t_(t), forward_(forward), a_(a), b_(b), sigma_(sigma), rho_(rho),
@@ -226,8 +225,8 @@ class Svi {
     Real a_, b_, sigma_, rho_, m_;
     bool aIsFixed_, bIsFixed_, sigmaIsFixed_, rhoIsFixed_, mIsFixed_;
     bool vegaWeighted_;
-    const boost::shared_ptr<EndCriteria> endCriteria_;
-    const boost::shared_ptr<OptimizationMethod> optMethod_;
+    const ext::shared_ptr<EndCriteria> endCriteria_;
+    const ext::shared_ptr<OptimizationMethod> optMethod_;
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

@@ -22,12 +22,13 @@
 #include <ql/math/factorial.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <boost/function.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/functional.hpp>
+
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
 #include <boost/math/distributions/students_t.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
@@ -170,6 +171,8 @@ namespace QuantLib {
       accuracy_(accuracy), distrib_(degreesFreedom, factors) { }
 
     Real InverseCumulativeBehrensFisher::operator()(const Probability q) const {
+        using namespace ext::placeholders;
+
         Probability effectiveq;
         Real sign;
         // since the distrib is symmetric solve only on the right side:
@@ -188,8 +191,8 @@ namespace QuantLib {
         // (q is very close to 1.), in a bad combination fails around 1.-1.e-7
         Real xMax = 1.e6;
         return sign *
-            Brent().solve(boost::bind(std::bind2nd(std::minus<Real>(),
-            effectiveq), boost::bind(
+            Brent().solve(ext::bind(subtract<Real>(effectiveq),
+                                      ext::bind(
                 &CumulativeBehrensFisher::operator(),
                 distrib_, _1)), accuracy_, (xMin+xMax)/2., xMin, xMax);
     }

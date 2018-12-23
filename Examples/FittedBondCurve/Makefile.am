@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 if AUTO_EXAMPLES
 bin_PROGRAMS = FittedBondCurve
@@ -12,7 +12,6 @@ FittedBondCurve_LDADD = ../../ql/libQuantLib.la ${BOOST_THREAD_LIB}
 
 EXTRA_DIST = \
     CMakeLists.txt \
-    FittedBondCurve_vc9.vcproj \
     FittedBondCurve.vcxproj \
     FittedBondCurve.vcxproj.filters \
     ReadMe.txt

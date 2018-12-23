@@ -23,7 +23,6 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -94,8 +93,8 @@ namespace QuantLib {
                                                includeSettlementDateFlows_))
                 continue;
 
-            boost::shared_ptr<FixedRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
+            ext::shared_ptr<FixedRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
 
             // In order to avoid a few switches, we calculate the NPV
             // of both legs as a positive quantity. We'll give them

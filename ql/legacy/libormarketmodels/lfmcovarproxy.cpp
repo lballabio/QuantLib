@@ -19,11 +19,12 @@
 
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/functional.hpp>
 
 namespace QuantLib {
     LfmCovarianceProxy::LfmCovarianceProxy(
-        const boost::shared_ptr<LmVolatilityModel>& volaModel,
-        const boost::shared_ptr<LmCorrelationModel>& corrModel)
+        const ext::shared_ptr<LmVolatilityModel>& volaModel,
+        const ext::shared_ptr<LmCorrelationModel>& corrModel)
 
     : LfmCovarianceParameterization(corrModel->size(), corrModel->factors()),
       volaModel_(volaModel),
@@ -35,12 +36,12 @@ namespace QuantLib {
             ") models");
     }
 
-    boost::shared_ptr<LmVolatilityModel>
+    ext::shared_ptr<LmVolatilityModel>
     LfmCovarianceProxy::volatilityModel() const {
         return volaModel_;
     }
 
-    boost::shared_ptr<LmCorrelationModel>
+    ext::shared_ptr<LmCorrelationModel>
     LfmCovarianceProxy::correlationModel() const {
         return corrModel_;
     }
@@ -53,7 +54,7 @@ namespace QuantLib {
         for (Size i=0; i<size_; ++i) {
             std::transform(pca.row_begin(i), pca.row_end(i),
                            pca.row_begin(i),
-                           std::bind2nd(std::multiplies<Real>(), vol[i]));
+                           multiply_by<Real>(vol[i]));
         }
 
         return pca;

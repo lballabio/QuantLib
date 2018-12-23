@@ -22,7 +22,7 @@
 #define quantlib_multistep_coterminal_swaptions_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -32,7 +32,7 @@ namespace QuantLib {
       public:
         MultiStepCoterminalSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& paymentTimes,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >&);
+                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >&);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
@@ -43,12 +43,16 @@ namespace QuantLib {
                      const CurveState& currentState,
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
+        #else
         std::auto_ptr<MarketModelMultiProduct> clone() const;
+        #endif
          //@}
 
       private:
         std::vector<Time> paymentTimes_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs_;
         Size lastIndex_;
         // things that vary in a path
         Size currentIndex_;

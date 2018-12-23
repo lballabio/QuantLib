@@ -27,8 +27,8 @@
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
-        const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<Payoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : Option(payoff, exercise) {}
 
     bool MultiAssetOption::isExpired() const {

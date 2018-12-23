@@ -148,8 +148,8 @@ namespace QuantLib {
         //@}
       protected:
         StochasticProcess();
-        explicit StochasticProcess(const boost::shared_ptr<discretization>&);
-        boost::shared_ptr<discretization> discretization_;
+        explicit StochasticProcess(const ext::shared_ptr<discretization>&);
+        ext::shared_ptr<discretization> discretization_;
     };
 
 
@@ -223,8 +223,8 @@ namespace QuantLib {
         //@}
       protected:
         StochasticProcess1D();
-        explicit StochasticProcess1D(const boost::shared_ptr<discretization>&);
-        boost::shared_ptr<discretization> discretization_;
+        explicit StochasticProcess1D(const ext::shared_ptr<discretization>&);
+        ext::shared_ptr<discretization> discretization_;
       private:
         // StochasticProcess interface implementation
         Size size() const;

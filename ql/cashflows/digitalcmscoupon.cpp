@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     DigitalCmsCoupon::DigitalCmsCoupon(
-                      const boost::shared_ptr<CmsCoupon>& underlying,
+                      const ext::shared_ptr<CmsCoupon>& underlying,
                       Rate callStrike,
                       Position::Type callPosition,
                       bool isCallATMIncluded,
@@ -34,7 +34,7 @@ namespace QuantLib {
                       Position::Type putPosition,
                       bool isPutATMIncluded,
                       Rate putDigitalPayoff,
-                      const boost::shared_ptr<DigitalReplication>& replication)
+                      const ext::shared_ptr<DigitalReplication>& replication)
     : DigitalCoupon(underlying, callStrike, callPosition, isCallATMIncluded,
                     callDigitalPayoff, putStrike, putPosition,
                     isPutATMIncluded, putDigitalPayoff, replication) {}
@@ -52,7 +52,7 @@ namespace QuantLib {
 
 
     DigitalCmsLeg::DigitalCmsLeg(const Schedule& schedule,
-                                 const boost::shared_ptr<SwapIndex>& index)
+                                 const ext::shared_ptr<SwapIndex>& index)
     : schedule_(schedule), index_(index),
       paymentAdjustment_(Following), inArrears_(false),
       longCallOption_(Position::Long), callATM_(false),
@@ -184,7 +184,7 @@ namespace QuantLib {
     }
 
     DigitalCmsLeg& DigitalCmsLeg::withReplication(
-                   const boost::shared_ptr<DigitalReplication>& replication) {
+                   const ext::shared_ptr<DigitalReplication>& replication) {
         replication_ = replication;
         return *this;
     }

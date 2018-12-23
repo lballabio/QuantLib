@@ -53,6 +53,10 @@ namespace QuantLib {
         Swap(const std::vector<Leg>& legs,
              const std::vector<bool>& payer);
         //@}
+        //! \name Observable interface
+        //@{
+        void deepUpdate();
+        //@}
         //! \name Instrument interface
         //@{
         bool isExpired() const;
