@@ -81,7 +81,7 @@ namespace QuantLib {
             fr = eqn(left + step);
         }
 
-        QL_REQUIRE(left < 15.1,"could not estimate the rate of convergence");
+        QL_REQUIRE(left < 15.1,"could not estimate the order of convergence");
 
         const Real k = Brent().solve(eqn, 1e-8, left+0.5*step, left, left+step);
 
