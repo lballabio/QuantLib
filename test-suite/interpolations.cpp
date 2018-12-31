@@ -1731,7 +1731,7 @@ namespace {
 
 void InterpolationTest::testUnknownRichardsonExtrapolation() {
     BOOST_TEST_MESSAGE("Testing Richardson extrapolation with "
-            "unknwon order of convergence...");
+            "unknown order of convergence...");
 
     const Real stepSize = 0.01;
 
