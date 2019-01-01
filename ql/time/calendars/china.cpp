@@ -65,6 +65,7 @@ namespace QuantLib {
             || (y == 2015 && d <= 3 && m == January)
             || (y == 2017 && d == 2 && m == January)
             || (y == 2018 && d == 1 && m == January)
+            || (y == 2018 && d == 31 && m == December)
             || (y == 2019 && d == 1 && m == January)
             // Chinese New Year
             || (y == 2004 && d >= 19 && d <= 28 && m == January)
