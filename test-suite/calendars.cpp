@@ -1656,6 +1656,7 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(3, Oct, 2018));
     expectedHol.push_back(Date(4, Oct, 2018));
     expectedHol.push_back(Date(5, Oct, 2018));
+    expectedHol.push_back(Date(31, December, 2018));
 
     // China Shanghai Securities Exchange holiday list in the year 2019
     expectedHol.push_back(Date(1, Jan, 2019));
