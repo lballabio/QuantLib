@@ -47,7 +47,14 @@ namespace QuantLib {
             if (timeDependent)
                 return BSMTermOperator(grid, process, residualTime);
             else
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
                 return BSMOperator(grid, process, residualTime);
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
         };
         static TridiagonalOperator getOperator(
           const ext::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
