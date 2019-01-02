@@ -4249,6 +4249,9 @@
     <ClInclude Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\basismodels\all.hpp">
+      <Filter>experimental\basismodels</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp">
       <Filter>experimental\basismodels</Filter>
     </ClInclude>

@@ -511,6 +511,7 @@
     <ClInclude Include="ql\cashflows\simplecashflow.hpp" />
     <ClInclude Include="ql\cashflows\timebasket.hpp" />
     <ClInclude Include="ql\cashflows\yoyinflationcoupon.hpp" />
+    <ClInclude Include="ql\experimental\basismodels\all.hpp" />
     <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp" />
     <ClInclude Include="ql\experimental\basismodels\tenoroptionletvts.hpp" />
     <ClInclude Include="ql\experimental\basismodels\tenorswaptionvts.hpp" />
