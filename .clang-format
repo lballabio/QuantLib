@@ -22,7 +22,7 @@ FixNamespaceComments: false
 
 BinPackParameters: false
 AllowShortFunctionsOnASingleLine: Inline
-AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakTemplateDeclarations: true
 
 # T& x, not T &x:
 
