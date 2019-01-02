@@ -41,7 +41,7 @@ namespace QuantLib {
         CompositeQuote(
             const Handle<Quote>& element1,
             const Handle<Quote>& element2,
-            const BinaryFunction& f = BinaryFunction());
+            const BinaryFunction& f);
         //! \name inspectors
         //@{
         Real value1() const { return element1_->value(); }

@@ -39,7 +39,7 @@ namespace QuantLib {
     class DerivedQuote : public Quote, public Observer {
       public:
         DerivedQuote(const Handle<Quote>& element,
-                     const UnaryFunction& f = UnaryFunction());
+                     const UnaryFunction& f);
         //! \name Quote interface
         //@{
         Real value() const;
