@@ -636,6 +636,7 @@
     <ClCompile Include="assetswap.cpp" />
     <ClCompile Include="autocovariances.cpp" />
     <ClCompile Include="barrieroption.cpp" />
+    <ClCompile Include="basismodels.cpp" />
     <ClCompile Include="basketoption.cpp" />
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
@@ -785,6 +786,7 @@
     <ClInclude Include="assetswap.hpp" />
     <ClInclude Include="autocovariances.hpp" />
     <ClInclude Include="barrieroption.hpp" />
+    <ClInclude Include="basismodels.hpp" />
     <ClInclude Include="basketoption.hpp" />
     <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />

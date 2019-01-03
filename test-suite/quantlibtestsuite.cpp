@@ -61,6 +61,7 @@
 #include "assetswap.hpp"
 #include "autocovariances.hpp"
 #include "barrieroption.hpp"
+#include "basismodels.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
 #include "bermudanswaption.hpp"
@@ -466,7 +467,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     // tests for experimental classes
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental());
-    test->add(BarrierOptionTest::experimental());
+	test->add(BasismodelsTest::suite());
+	test->add(BarrierOptionTest::experimental());
     test->add(DoubleBarrierOptionTest::experimental());
     test->add(BlackDeltaCalculatorTest::suite());
     test->add(CatBondTest::suite());
