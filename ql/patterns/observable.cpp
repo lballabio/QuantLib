@@ -151,7 +151,8 @@ namespace QuantLib {
             }
         }
 
-        sig_->disconnect(ext::bind(&Observer::Proxy::update,
+        // signals2 needs boost::bind, std::bind does not work
+        sig_->disconnect(boost::bind(&Observer::Proxy::update,
                              observerProxy.get()));
     }
 

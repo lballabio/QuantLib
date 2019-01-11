@@ -31,6 +31,7 @@
 #define quantlib_parallel_test_runner_hpp
 
 #include <ql/types.hpp>
+#include <ql/functional.hpp>
 
 #ifdef VERSION
 /* This comes from ./configure, and for some reason it interferes with
@@ -204,7 +205,7 @@ int main( int argc, char* argv[] )
             if (in.good()) {
                 for (std::string line; std::getline(in, line);) {
                     std::vector<std::string> tok;
-                    boost::split(tok, line, boost::is_any_of(" "));
+                    boost::split(tok, line, boost::is_any_of(":"));
 
                     QL_REQUIRE(tok.size() == 2,
                         "every line should consists of two entries");
@@ -274,7 +275,7 @@ int main( int argc, char* argv[] )
             // fork worker processes
             boost::thread_group threadGroup;
             for (unsigned i=0; i < nProc; ++i) {
-                threadGroup.create_thread(ext::bind(worker, cmd.str()));
+                threadGroup.create_thread(QuantLib::ext::bind(worker, cmd.str()));
             }
 
             struct mutex_remove {
@@ -367,7 +368,7 @@ int main( int argc, char* argv[] )
             out << std::setprecision(6);
             for (std::map<std::string, QuantLib::Time>::const_iterator
                 iter = runTimeLog.begin(); iter != runTimeLog.end(); ++iter) {
-                out << iter->first << " " << iter->second << std::endl;
+                out << iter->first << ":" << iter->second << std::endl;
             }
             out.close();
 
