@@ -150,8 +150,7 @@ void FdSabrTest::testFdmSabrOp() {
 
         const ext::shared_ptr<PricingEngine> pdeEngine =
             ext::make_shared<FdSabrVanillaEngine>(
-                f0, alpha, beta, nu, rho, rTS,
-                100, 400, 100, 0, 1.0, 1e-4);
+                f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
 
         optionPut.setPricingEngine(pdeEngine);
         const Real pdePut = optionPut.NPV();
@@ -248,7 +247,7 @@ void FdSabrTest::testFdmSabrCevPricing() {
                 const Real beta = betas[k];
 
                 option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
-                    f0, alpha, beta, nu, rho, rTS, 100, 400, 3, 0, 1.0, 1e-4));
+                    f0, alpha, beta, nu, rho, rTS, 100, 400, 3));
 
                 const Real calculated = option.NPV();
 
@@ -513,7 +512,7 @@ void FdSabrTest::testBenchOpSabrCase() {
                     f0, alpha, beta, nu, rho, rTS,
                     Size(gridT*factor),
                     Size(gridX*factor),
-                    Size(gridY*std::sqrt(factor)), 1, 1.0));
+                    Size(gridY*std::sqrt(factor))));
 
             const Real calculated = option.NPV();
             const Real diff = std::fabs(calculated - expected[i][j]);

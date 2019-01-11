@@ -34,13 +34,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmMesher>& mesher,
         const ext::shared_ptr<YieldTermStructure>& rTS,
         Real f0, Real alpha, Real beta, Real nu, Real rho)
-    : mesher_(mesher),
-      rTS_  (rTS),
-      f0_   (f0),
-      alpha_(alpha),
-      beta_ (beta),
-      nu_   (nu),
-      rho_  (rho),
+    : rTS_  (rTS),
       dffMap_(SecondDerivativeOp(0, mesher).
           mult(0.5 * Exp(2.0*mesher->locations(1))
                * Pow(mesher->locations(0), 2.0*beta))),
@@ -49,8 +43,8 @@ namespace QuantLib {
       dxxMap_(SecondDerivativeOp(1, mesher).
           mult(Array(mesher->layout()->size(),  0.5*nu*nu))),
       correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher).
-          mult(rho_ * nu * Exp(mesher->locations(1))
-               * Pow(mesher->locations(0), beta_))),
+          mult(rho * nu * Exp(mesher->locations(1))
+               * Pow(mesher->locations(0), beta))),
       mapF_(0, mesher),
       mapA_(1, mesher) { }
 

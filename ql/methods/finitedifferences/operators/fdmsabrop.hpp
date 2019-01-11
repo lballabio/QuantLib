@@ -64,9 +64,7 @@ namespace QuantLib {
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
       private:
-        const ext::shared_ptr<FdmMesher>& mesher_;
         const ext::shared_ptr<YieldTermStructure> rTS_;
-        const Real f0_, alpha_, beta_, nu_, rho_;
 
         const TripleBandLinearOp dffMap_;
         const TripleBandLinearOp dxMap_, dxxMap_;
