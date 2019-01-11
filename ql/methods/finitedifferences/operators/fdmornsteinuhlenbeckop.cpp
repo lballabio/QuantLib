@@ -34,12 +34,10 @@ namespace QuantLib {
             const ext::shared_ptr<FdmMesher>& mesher,
             const ext::shared_ptr<OrnsteinUhlenbeckProcess>& process,
             const ext::shared_ptr<YieldTermStructure>& rTS,
-            const FdmBoundaryConditionSet& bcSet,
             Size direction)
     : mesher_   (mesher),
       process_  (process),
       rTS_      (rTS),
-      bcSet_    (bcSet),
       direction_(direction),
       m_        (direction, mesher),
       mapX_     (direction, mesher)  {

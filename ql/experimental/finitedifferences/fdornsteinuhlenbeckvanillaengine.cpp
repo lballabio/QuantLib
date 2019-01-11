@@ -110,7 +110,7 @@ namespace QuantLib {
                                      maturity, tGrid_, dampingSteps_ };
 
         const ext::shared_ptr<FdmOrnsteinUhlenbackOp> op(
-            new FdmOrnsteinUhlenbackOp(mesher, process_, rTS_, boundaries, 0));
+            new FdmOrnsteinUhlenbackOp(mesher, process_, rTS_, 0));
 
         const ext::shared_ptr<Fdm1DimSolver> solver(
                 new Fdm1DimSolver(solverDesc, schemeDesc_, op));

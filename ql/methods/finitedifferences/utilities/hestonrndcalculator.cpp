@@ -24,8 +24,8 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/functional.hpp>
 #include <complex>
 

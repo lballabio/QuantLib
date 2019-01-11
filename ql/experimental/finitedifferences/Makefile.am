@@ -4,7 +4,6 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    bsmrndcalculator.hpp \
     dynprogvppintrinsicvalueengine.hpp \
     fdextoujumpvanillaengine.hpp \
 	fdklugeextouspreadengine.hpp \
@@ -33,17 +32,11 @@ this_include_HEADERS = \
 	fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
 	fdsimpleklugeextouvppengine.hpp \
-    gbsmrndcalculator.hpp \
 	glued1dmesher.hpp \
-	hestonrndcalculator.hpp \
-	localvolrndcalculator.hpp \
 	modtriplebandlinearop.hpp \
-	riskneutraldensitycalculator.hpp \
-	squarerootprocessrndcalculator.hpp \
 	vanillavppoption.hpp
 
 cpp_files = \
-    bsmrndcalculator.cpp \
 	dynprogvppintrinsicvalueengine.cpp \
     fdextoujumpvanillaengine.cpp \
 	fdklugeextouspreadengine.cpp \
@@ -66,12 +59,7 @@ cpp_files = \
 	fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \
-    gbsmrndcalculator.cpp \
 	glued1dmesher.cpp \
-	hestonrndcalculator.cpp \
-	localvolrndcalculator.cpp \
-	riskneutraldensitycalculator.cpp \
-	squarerootprocessrndcalculator.cpp \
 	vanillavppoption.cpp
 
 if UNITY_BUILD

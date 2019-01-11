@@ -55,6 +55,8 @@ QL_TESTS = \
 	fastfouriertransform.hpp fastfouriertransform.cpp \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
+	fdcev.hpp fdcev.cpp \
+	fdsabr.hpp fdsabr.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	forwardrateagreement.hpp forwardrateagreement.cpp \
 	functions.hpp functions.cpp \

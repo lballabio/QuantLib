@@ -25,7 +25,7 @@
 
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 
 #include <cmath>
 

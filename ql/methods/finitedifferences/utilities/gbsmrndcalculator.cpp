@@ -26,7 +26,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/functional.hpp>
 
