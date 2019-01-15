@@ -41,7 +41,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given (data available for
-        2004-2017 only):
+        2004-2019 only):
         <ul>
         <li>Chinese New Year</li>
         <li>Ching Ming Festival</li>
