@@ -1709,6 +1709,76 @@ void InterpolationTest::testBicubicUpdate() {
     }
 }
 
+
+namespace {
+    class GF {
+      public:
+        GF(Real exponent, Real factor)
+        : exponent_(exponent), factor_(factor) {}
+
+        Real operator()(Real h) const {
+            return M_PI + factor_*std::pow(h, exponent_)
+                + std::pow(factor_*h, exponent_ + 1);
+        }
+      private:
+        const Real exponent_, factor_;
+    };
+
+    Real limCos(Real h) {
+        return -std::cos(h);
+    }
+}
+
+void InterpolationTest::testUnknownRichardsonExtrapolation() {
+    BOOST_TEST_MESSAGE("Testing Richardson extrapolation with "
+            "unknown order of convergence...");
+
+    const Real stepSize = 0.01;
+
+    const std::pair<Real, Real> testCases[] = {
+            std::make_pair(1.0, 1.0), std::make_pair(1.0, -1.0),
+            std::make_pair(2.0, 0.25), std::make_pair(2.0, -1.0),
+            std::make_pair(3.0, 2.0), std::make_pair(3.0, -0.5),
+            std::make_pair(4.0, 1.0), std::make_pair(4.0, 0.5)
+    };
+
+    for (Size i=0; i < LENGTH(testCases); ++i) {
+        const std::pair<Real, Real> testCase = testCases[i];
+
+        const RichardsonExtrapolation extrap(
+            GF(testCase.first, testCase.second), stepSize);
+
+        const Real calculated = extrap(4.0, 2.0);
+        const Real diff = std::fabs(M_PI - calculated);
+
+        const Real tol = std::pow(stepSize, testCase.first+1);
+
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                    " with unknown order of convergence");
+        }
+    }
+
+    const Real highOrder = RichardsonExtrapolation(GF(14.0, 1.0), 0.5)(4.0,2.0);
+    if (std::fabs(highOrder - M_PI) > 1e-12) {
+        BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                " with unknown order of convergence");
+    }
+
+    try {
+        RichardsonExtrapolation(GF(16.0, 1.0), 0.5)(4.0,2.0);
+        BOOST_ERROR("Richardson extrapolation with order of"
+            " convergence above 15 should throw exception");
+    }
+    catch (...) {}
+
+    const Real limCosValue = RichardsonExtrapolation(limCos, 0.01)(4.0,2.0);
+    if (std::fabs(limCosValue + 1.0) > 1e-6)
+        BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                " with unknown order of convergence");
+}
+
+
 namespace {
     Real f(Real h) {
         return std::pow( 1.0 + h, 1/h);
@@ -2325,6 +2395,8 @@ test_suite* InterpolationTest::suite() {
                               &InterpolationTest::testKernelInterpolation2D));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testUnknownRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(
                             &InterpolationTest::testRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
