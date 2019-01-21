@@ -223,10 +223,18 @@ namespace {
                 << "SwaptionCashFlows:    " << floatLeg << "\n"
                 << "swap->floatingLegNPV: " << swap->floatingLegNPV() << "\n"
                 << "Variance:             " << swap->floatingLegNPV() - floatLeg << "\n");
-        // There should not be spread coupons in a single-curve setting
+        // There should not be spread coupons in a single-curve setting.
+        // However, if indexed coupons are used the floating leg is not at par,
+        // so we need to relax the tolerance to a level at which it will only
+        // catch large errors.
+        #if defined(QL_USE_INDEXED_COUPON)
+        Real tol2 = 0.02;
+        #else
+        Real tol2 = tol;
+        #endif
         SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
         for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {
-            if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol)
+            if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol2)
                 BOOST_ERROR("Swaption cash flow floating leg spread does not vanish in "
                             "single-curve setting.\n"
                             << "Cash flow index k: " << k << ", floatWeights: "
