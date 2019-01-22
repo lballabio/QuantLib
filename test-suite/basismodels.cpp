@@ -420,12 +420,9 @@ void BasismodelsTest::testTenorswaptionvts() {
 
 test_suite* BasismodelsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Basismodels tests");
-    // The test data use current market conditions, i.e., negative rates.
-    #if defined(QL_NEGATIVE_RATES)
     suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsContCompSpread));
     suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsSimpleCompSpread));
     suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testTenoroptionletvts));
     suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testTenorswaptionvts));
-    #endif
     return suite;
 }

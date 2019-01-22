@@ -828,13 +828,10 @@ test_suite* OptionletStripperTest::suite() {
                        &OptionletStripperTest::testTermVolatilityStripping2));
     suite->add(QUANTLIB_TEST_CASE(
                        &OptionletStripperTest::testSwitchStrike));
-
-    #if defined(QL_NEGATIVE_RATES)
     suite->add(QUANTLIB_TEST_CASE(
         &OptionletStripperTest::testTermVolatilityStrippingNormalVol));
     suite->add(QUANTLIB_TEST_CASE(
         &OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol));
-    #endif
 
     return suite;
 }

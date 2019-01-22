@@ -31,7 +31,6 @@ class PiecewiseYieldCurveTest {
     static void testLogLinearDiscountConsistency();
     static void testLinearDiscountConsistency();
 
-    static void testLogLinearZeroConsistency();
     static void testLinearZeroConsistency();
     static void testSplineZeroConsistency();
 
