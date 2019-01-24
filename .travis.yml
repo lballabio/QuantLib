@@ -36,6 +36,10 @@ env:
     - DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    # Latest Boost, clang 7.0
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
+      CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
