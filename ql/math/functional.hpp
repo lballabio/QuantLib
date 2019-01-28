@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file functional.hpp
+/*! \file ql/math/functional.hpp
     \brief functionals and combinators not included in the STL
 */
 

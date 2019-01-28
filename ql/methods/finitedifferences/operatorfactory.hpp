@@ -34,8 +34,7 @@ namespace QuantLib {
 
     //! Factory for finite-difference operators
     /*! \deprecated Instantiate operators directly.
-
-        Deprecated in version 1.14.
+                    Deprecated in version 1.14.
     */
     class QL_DEPRECATED OperatorFactory {
       public:
