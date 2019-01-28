@@ -28,6 +28,7 @@
 #define quantlib_linear_least_squares_regression_hpp
 
 #include <ql/math/generallinearleastsquares.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
