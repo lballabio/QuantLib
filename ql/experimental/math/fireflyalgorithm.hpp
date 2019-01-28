@@ -27,10 +27,6 @@ http://arxiv.org/pdf/1003.1464.pdf
 #ifndef quantlib_optimization_fireflyalgorithm_hpp
 #define quantlib_optimization_fireflyalgorithm_hpp
 
-#include <ql/qldefines.hpp>
-
-#if BOOST_VERSION >= 104700
-
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/experimental/math/isotropicrandomwalk.hpp>
@@ -281,7 +277,5 @@ namespace QuantLib {
         Size iteration_;
     };
 }
-
-#endif
 
 #endif
