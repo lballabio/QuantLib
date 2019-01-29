@@ -24,11 +24,6 @@
 #ifndef quantlib_levy_flight_distribution_hpp
 #define quantlib_levy_flight_distribution_hpp
 
-#include <ql/qldefines.hpp>
-
-// The included Boost.Random headers were added in Boost 1.47
-#if BOOST_VERSION >= 104700
-
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <boost/config/no_tr1/cmath.hpp>
@@ -200,7 +195,5 @@ namespace QuantLib {
     };
 
 }
-
-#endif
 
 #endif

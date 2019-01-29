@@ -55,11 +55,11 @@ AC_DEFUN([QL_CHECK_BOOST_DEVEL],
 # ----------------------
 # Check whether the Boost installation is up to date
 AC_DEFUN([QL_CHECK_BOOST_VERSION],
-[AC_MSG_CHECKING([for Boost version >= 1.43])
+[AC_MSG_CHECKING([for Boost version >= 1.48])
  AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
  AC_TRY_COMPILE(
     [@%:@include <boost/version.hpp>],
-    [@%:@if BOOST_VERSION < 104300
+    [@%:@if BOOST_VERSION < 104800
      @%:@error too old
      @%:@endif],
     [AC_MSG_RESULT([yes])],
@@ -146,7 +146,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
                   boost_unit_test_framework-$CC_BASENAME-mt \
                   boost_unit_test_framework-mt ; do
      LIBS="$ql_original_LIBS -l$boost_lib"
-     # 1.33.1 or 1.34 static
+     # static version
      CXXFLAGS="$ql_original_CXXFLAGS"
      boost_unit_found=no
      AC_LINK_IFELSE([AC_LANG_SOURCE(
@@ -162,7 +162,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
           boost_defines=""
           break],
          [])
-     # 1.34 shared
+     # shared version
      CXXFLAGS="$ql_original_CXXFLAGS -DBOOST_TEST_MAIN -DBOOST_TEST_DYN_LINK"
      boost_unit_found=no
      AC_LINK_IFELSE([AC_LANG_SOURCE(
