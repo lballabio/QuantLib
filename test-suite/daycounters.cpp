@@ -70,7 +70,7 @@ namespace {
                                   Date refStart, Date refEnd) {
         Real referenceDayCount = Real(dayCounter.dayCount(refStart, refEnd));
         // guess how many coupon periods per year:
-        Integer couponsPerYear = (Integer) round(365.0 / referenceDayCount);
+        Integer couponsPerYear = (Integer)(0.5 + 365.0 / referenceDayCount);
         // the above is good enough for annual or semi annual payments.
         return Real(dayCounter.dayCount(start, end))
             / (referenceDayCount*couponsPerYear);

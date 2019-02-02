@@ -31,12 +31,12 @@ namespace QuantLib {
                                    Date refStart, Date refEnd) {
             // This will only work for day counts longer than 15 days.
             Integer months = Integer(0.5 + 12 * Real(impl.dayCount(refStart, refEnd))/365.0);
-            return (Integer)round(12.0 / Real(months));
+            return (Integer)(0.5 + 12.0 / Real(months));
         }
 
-        /*! An ISMA day counter either needs a schedule or to have
-            been explicitly passed a reference period. This usage
-            leads to innaccurate year fractions.
+        /* An ISMA day counter either needs a schedule or to have
+           been explicitly passed a reference period. This usage
+           leads to inaccurate year fractions.
         */
         template <class T>
         Time yearFractionGuess(const T& impl,
