@@ -181,8 +181,8 @@ namespace QuantLib {
                         Position::Type putPosition,
                         bool isPutATMIncluded,
                         const std::vector<Rate>& putDigitalPayoffs,
-                        const ext::shared_ptr<DigitalReplication>& replication)
-    {
+                        const ext::shared_ptr<DigitalReplication>& replication,
+                        bool nakedOption) {
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
         QL_REQUIRE(nominals.size() <= n,
@@ -250,7 +250,7 @@ namespace QuantLib {
                              putPosition,
                              isPutATMIncluded,
                              detail::get(putDigitalPayoffs, i, Null<Real>()),
-                             replication)));
+                             replication, nakedOption)));
             }
         }
         return leg;

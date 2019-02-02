@@ -45,7 +45,8 @@ namespace QuantLib {
           rate + csi * rate * Heaviside(rate-strike)
         - Coupon with asset-or-nothing Digital Put
           rate + csi * rate * Heaviside(strike-rate)
-        where csi=+1 or csi=-1.
+        where csi=+1 or csi=-1. If nakedOption is true, the rate in the
+        payoffs is set to zero.
         The evaluation of the coupon is made using the call/put spread
         replication method.
     */
@@ -90,7 +91,8 @@ namespace QuantLib {
                       bool isPutITMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
                       const ext::shared_ptr<DigitalReplication>& replication =
-                        ext::shared_ptr<DigitalReplication>() );
+                        ext::shared_ptr<DigitalReplication>(),
+                      bool nakedOption = false);
 
         //@}
         //! \name Coupon interface
@@ -172,6 +174,8 @@ namespace QuantLib {
         bool hasPutStrike_, hasCallStrike_;
         //! Type of replication
         Replication::Type replicationType_;
+        //! underlying excluded from the payoff?g
+        bool nakedOption_;
 
         //@}
       private:

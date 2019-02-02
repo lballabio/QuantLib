@@ -34,7 +34,8 @@ namespace QuantLib {
                   Position::Type putPosition,
                   bool isPutATMIncluded,
                   Rate putDigitalPayoff,
-                  const ext::shared_ptr<DigitalReplication>& replication)
+                  const ext::shared_ptr<DigitalReplication>& replication,
+                  const bool nakedOption)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -53,7 +54,7 @@ namespace QuantLib {
       callLeftEps_(replication->gap()/2.), callRightEps_(replication->gap()/2.),
       putLeftEps_(replication->gap()/2.), putRightEps_(replication->gap()/2.),
       hasPutStrike_(false), hasCallStrike_(false),
-      replicationType_(replication->replicationType()) {
+      replicationType_(replication->replicationType()), nakedOption_(nakedOption) {
 
         QL_REQUIRE(replication->gap()>0.0, "Non positive epsilon not allowed");
 
@@ -66,10 +67,8 @@ namespace QuantLib {
             "Call Cash rate non allowed if call strike is null");
         }
         if (callStrike != Null<Rate>()) {
-            QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasCallStrike_ = true;
             callStrike_ = callStrike;
-            QL_REQUIRE(callStrike_>=replication->gap()/2., "call strike < eps/2");
             switch (callPosition) {
                 case Position::Long :
                     callCsi_ = 1.0;
@@ -86,7 +85,6 @@ namespace QuantLib {
             }
         }
         if (putStrike != Null<Rate>()){
-            QL_REQUIRE(putStrike >= 0., "negative put strike not allowed");
             hasPutStrike_ = true;
             putStrike_ = putStrike;
             switch (putPosition) {
@@ -227,7 +225,7 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         bool enforceTodaysHistoricFixings =
             Settings::instance().enforcesTodaysHistoricFixings();
-        Rate underlyingRate = underlying_->rate();
+        Rate underlyingRate = nakedOption_ ? 0.0 : underlying_->rate();
         if (fixingDate < today ||
             ((fixingDate == today) && enforceTodaysHistoricFixings)) {
             // must have been fixed
