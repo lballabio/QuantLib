@@ -348,7 +348,7 @@ void DayCounterTest::testActualActualWithAnnualSchedule(){
     DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
 
     while (testDate < referencePeriodEnd) {
-        float difference =
+        Time difference =
             ISMAYearFractionWithReferenceDates(dayCounter,
                                                testDate, referencePeriodEnd,
                                                referencePeriodStart, referencePeriodEnd) -
