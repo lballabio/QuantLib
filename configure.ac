@@ -431,9 +431,9 @@ AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],
               AC_HELP_STRING([--enable-std-classes],
                              [This is a shortcut for --enable-std-pointers
-                              --enable-std-unique-ptr --enable-std-function
-                              --enable-std-bind.  If enabled, this supersedes
-                              any --disable option passed for the above.]),
+                              --enable-std-unique-ptr --enable-std-function.
+                              If enabled, this supersedes any --disable
+                              option passed for the above.]),
               [ql_use_std_classes=$enableval],
               [ql_use_std_classes=no])
 if test "$ql_use_std_classes" = "yes" ; then
