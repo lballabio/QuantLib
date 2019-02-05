@@ -61,8 +61,10 @@ Piter Dias
 Michael von den Driesch
 Francis Duffy
 Cristina Duminuco
+Jan Ladislav Dussek
 Dirk Eddelbuettel
 Faycal El Karaa
+Joshua Engelman
 Bernd Engelmann
 Giorgio Facchinetti
 Matt Fair
@@ -75,6 +77,7 @@ Chiara Fornarola
 Silvia Frasson
 Andreas Gaida
 Matteo Gallivanoni
+Jose Garcia
 Lakshay Garg
 Riccardo Ghetta
 Paul Giltinan
@@ -191,6 +194,7 @@ Mohamed Amine Sadaoui
 Amine Samani
 Alpha Sanou Toure
 Tamas Sashalmi
+Sebastian Schlenkrich
 Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
@@ -210,6 +214,8 @@ Klaus Spanderen
 Andreas Spengler
 Roland Stamm
 Weston Steimel
+Philip Stephens
+Kai Striega
 Edouard Tallent
 Eisuke Tani
 Marco Tarenghi
