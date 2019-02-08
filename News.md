@@ -93,6 +93,15 @@ Examples
   Garcia). This examples supersedes the old swap-valuation example,
   that was therefore removed.
 
+Deprecated features
+-------------------
+
+- Up to this release, it has been possible to force interest rates to
+  be non-negative by commenting the `QL_NEGATIVE_RATES` macro in
+  `ql/userconfig.hpp` on Visual C++ or by passing the
+  `--disable-negative-rates` switch to `./configure` on other systems.
+  This possibility will no longer be supported in future releases.
+
 New opt-in features
 -------------------
 
@@ -100,8 +109,8 @@ New opt-in features
   related classes instead of `boost::function` and `boost::bind`.  The
   feature can be enabled by uncommenting the `QL_USE_STD_FUNCTION`
   macro in `ql/userconfig.hpp` on Visual C++ or by passing the
-  `--enable-std-function` to `./configure` on other systems.  This
-  requires using at least the C++11 standard during compilation.
+  `--enable-std-function` switch to `./configure` on other systems.
+  This requires using at least the C++11 standard during compilation.
 
 - A new `./configure` switch, `--enable-std-classes`, was added as a
   shortcut for `--enable-std-pointers` `--enable-std-unique-ptr`
