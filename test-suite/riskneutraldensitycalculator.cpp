@@ -89,7 +89,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
             const BlackCalculator blackCalc(
                 Option::Put, strike, fwd, stdDev, df);
 
-            const Real tol = std::sqrt(QL_EPSILON);
+            const Real tol = 10*std::sqrt(QL_EPSILON);
             const Real calculatedCDF = bsm.cdf(xs, t);
             const Real expectedCDF
                 = blackCalc.strikeSensitivity()/df;
@@ -501,7 +501,11 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
         const Time t = 0.75;
         const Time tInfty = 60.0/params[i].kappa;
 
+#if defined __FreeBSD__ && defined __i386__
+        const Real tol = 1e-7;
+#else
         const Real tol = 1e-10;
+#endif
         for (Real v = 1e-5; v < 1.0; v+=(v < params[i].theta) ? 0.005 : 0.1) {
 
             const Real cdfCalculated = rndCalculator.cdf(v, t);

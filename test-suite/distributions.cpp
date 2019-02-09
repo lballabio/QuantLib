@@ -660,7 +660,12 @@ void DistributionTest::testInvCDFviaStochasticCollocation() {
 
     const InverseCumulativeNormal invNormalCDF;
     const CumulativeNormalDistribution normalCDF;
+#if defined __FreeBSD__ && defined __i386__
+    const InverseNonCentralCumulativeChiSquareDistribution invCDF(
+            k, lambda, 2000, 1e-13);
+#else
     const InverseNonCentralChiSquared invCDF(k, lambda);
+#endif
 
     const StochasticCollocationInvCDF scInvCDF10(invCDF, 10);
 

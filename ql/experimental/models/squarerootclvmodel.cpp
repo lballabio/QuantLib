@@ -24,6 +24,9 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/squarerootprocess.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
+#if defined __FreeBSD__ && defined __i386__
+#include <ql/math/distributions/chisquaredistribution.hpp>
+#endif
 
 #include <ql/experimental/models/squarerootclvmodel.hpp>
 #include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
@@ -83,6 +86,17 @@ namespace QuantLib {
 
         std::sort(x.begin(), x.end());
 
+#if defined __FreeBSD__ && defined __i386__
+        const Real xMin = std::max(x.front(),
+            (pMin_ == Null<Real>())
+                ? 0.0 : InverseNonCentralCumulativeChiSquareDistribution(
+                            p.first, p.second, 2000, 1e-12)(pMin_));
+
+        const Real xMax = std::min(x.back(),
+            (pMax_ == Null<Real>())
+            ? QL_MAX_REAL : InverseNonCentralCumulativeChiSquareDistribution(
+                                p.first, p.second, 2000, 1e-12)(pMax_));
+#else
         const boost::math::non_central_chi_squared_distribution<Real>
             dist(p.first, p.second);
 
@@ -93,6 +107,7 @@ namespace QuantLib {
         const Real xMax = std::min(x.back(),
             (pMax_ == Null<Real>())
             ? QL_MAX_REAL : boost::math::quantile(dist, pMax_));
+#endif
 
         const Real b = xMin - x.front();
         const Real a = (xMax - xMin)/(x.back() - x.front());

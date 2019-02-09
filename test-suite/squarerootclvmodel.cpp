@@ -144,7 +144,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     const std::vector<Date> maturityDates(1, maturityDate);
 
     const SquareRootCLVModel model(
-        bsProcess, sqrtProcess, maturityDates, 14, 1-1e-14, 1e-14);
+        bsProcess, sqrtProcess, maturityDates, 14, 1-1e-10, 1e-10);
 
     const Array x = model.collocationPointsX(maturityDate);
     const Array y = model.collocationPointsY(maturityDate);

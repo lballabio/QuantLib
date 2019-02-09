@@ -18,7 +18,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
+#if defined __FreeBSD__ && defined __i386__
+#include <ql/math/distributions/chisquaredistribution.hpp>
+#endif
 #include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
 
 #include <boost/math/distributions/non_central_chi_squared.hpp>
@@ -58,10 +60,15 @@ namespace QuantLib {
         const Real k   = d_/(1-e);
         const Real ncp = k*v0_*e;
 
+#if defined __FreeBSD__ && defined __i386__
+        return InverseNonCentralCumulativeChiSquareDistribution(
+            df_, ncp, 2000, 1e-14)(q) / k;
+#else
         const boost::math::non_central_chi_squared_distribution<Real>
             dist(df_, ncp);
 
         return boost::math::quantile(dist, q) / k;
+#endif
     }
 
     Real SquareRootProcessRNDCalculator::stationary_pdf(Real v) const {
