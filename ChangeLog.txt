@@ -1,3 +1,53 @@
+commit a5560b4f5b7628ba6702d5015ce9104a24140863
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 17 Feb 2019 16:37:09 +0100
+
+    Relax tolerance in a couple of tests.
+
+ test-suite/creditdefaultswap.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 499d9afa67f649746741018ad66ab4d25560de50
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 Feb 2019 14:13:08 +0100
+
+    Deprecated positive-rates switch.
+
+ News.md | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+commit bd8dab8e5a60ebeb76e9f18e90f213906d790d62
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 Feb 2019 14:06:43 +0100
+
+    Add missing header.
+
+ ql/experimental/math/piecewiseintegral.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 12103384c9b801e816405af4ee5401e42d8e7864
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 5 Feb 2019 16:18:48 +0100
+
+    Fix distribution.
+
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 6c99ca7f7835bd773c72169886b8d583a75669d2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 5 Feb 2019 16:14:07 +0100
+
+    Update changelog and news.
+
+ ChangeLog.txt           | 5228 +++++++++++++----------------------------------
+ Contributors.txt        |    6 +
+ Docs/pages/authors.docs |    6 +
+ Docs/pages/history.docs |   77 +-
+ News.md                 |  108 +
+ News.txt                |  121 --
+ 6 files changed, 1602 insertions(+), 3944 deletions(-)
+
 commit 5713908c0493eb4e02afc1d308193281b80f8ec7
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 5 Feb 2019 16:13:07 +0100
