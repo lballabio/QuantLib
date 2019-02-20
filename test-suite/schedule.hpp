@@ -38,6 +38,7 @@ class ScheduleTest {
     static void testDateConstructor();
     static void testFourWeeksTenor();
     static void testScheduleAlwaysHasAStartDate();
+    static void testEomSchedule();
     static boost::unit_test_framework::test_suite* suite();
 };
 
