@@ -260,7 +260,7 @@ namespace QuantLib {
         
         if (y == 2016) {
             if (// Lunar New Year
-                || (d >= 8 && d <= 12 && m == February)
+                (d >= 8 && d <= 12 && m == February)
                 // adjusted holidays
                 || (d == 29 && m == February)
                 // Children's Day
@@ -306,7 +306,7 @@ namespace QuantLib {
     
         if (y == 2018) {
             if (// Lunar New Year
-                || (d >= 15 && d <= 20 && m == February)
+                (d >= 15 && d <= 20 && m == February)
                 // Children's Day
                 || (d == 4 && m == April)
                 // Tomb Sweeping Day
@@ -325,7 +325,7 @@ namespace QuantLib {
 
         if (y == 2019) {
             if (// Lunar New Year
-                || (d >= 4 && d <= 8 && m == February)
+                (d >= 4 && d <= 8 && m == February)
                 // adjusted holidays
                 || (d == 1 && m == March)
                 // Children's Day
