@@ -431,6 +431,7 @@ test_suite* ScheduleTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015Convention));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDateConstructor));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFourWeeksTenor));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testScheduleAlwaysHasAStartDate));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testShortEomSchedule));
     return suite;
 }
