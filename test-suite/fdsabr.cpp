@@ -351,7 +351,7 @@ namespace {
 
     class OsterleeReferenceResults {
       public:
-        OsterleeReferenceResults(Size i) : i_(i) { }
+        explicit OsterleeReferenceResults(Size i) : i_(i) { }
 
         Real operator()(Real t) const {
             Size i;
