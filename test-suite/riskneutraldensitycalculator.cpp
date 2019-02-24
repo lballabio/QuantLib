@@ -89,7 +89,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
             const BlackCalculator blackCalc(
                 Option::Put, strike, fwd, stdDev, df);
 
-            const Real tol = std::sqrt(QL_EPSILON);
+            const Real tol = 10*std::sqrt(QL_EPSILON);
             const Real calculatedCDF = bsm.cdf(xs, t);
             const Real expectedCDF
                 = blackCalc.strikeSensitivity()/df;
