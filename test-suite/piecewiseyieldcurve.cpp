@@ -654,17 +654,6 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     testBMACurveConsistency<Discount,Linear,IterativeBootstrap>(vars);
 }
 
-void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
-
-    BOOST_TEST_MESSAGE(
-        "Testing consistency of piecewise-log-linear zero-yield curve...");
-
-    CommonVars vars;
-
-    testCurveConsistency<ZeroYield,LogLinear,IterativeBootstrap>(vars);
-    testBMACurveConsistency<ZeroYield,LogLinear,IterativeBootstrap>(vars);
-}
-
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
 
     BOOST_TEST_MESSAGE(
@@ -1128,11 +1117,6 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
 
-    #if !defined(QL_NEGATIVE_RATES)
-    // if rates can be negative, we can't interpolate loglinearly
-    suite->add(QUANTLIB_TEST_CASE(
-                     &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
-    #endif
     suite->add(QUANTLIB_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(QUANTLIB_TEST_CASE(
@@ -1163,9 +1147,8 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
 
-    #if defined(QL_NEGATIVE_RATES) && !defined(QL_USE_INDEXED_COUPON)
-    // This regression test didn't work with indexed coupons or
-    // without negative rates anyway.
+    #if !defined(QL_USE_INDEXED_COUPON)
+    // This regression test didn't work with indexed coupons anyway.
     suite->add(QUANTLIB_TEST_CASE(
                              &PiecewiseYieldCurveTest::testBadPreviousCurve));
     #endif

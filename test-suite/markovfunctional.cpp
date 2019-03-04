@@ -253,11 +253,8 @@ namespace {
 
         for (int i = 0; i < 18; i++) {
             if (i + 1 != 6 && i + 1 != 12 && i + 1 != 18) {
-#ifndef QL_NEGATIVE_RATES
-                if (i + 10 != 16 && i + 10 != 17)
-#endif
-                    r6m.push_back(ext::make_shared<FraRateHelper>(
-                        Handle<Quote>(q6m[10 + i]), i + 1,
+                r6m.push_back(ext::make_shared<FraRateHelper>(
+                            Handle<Quote>(q6m[10 + i]), i + 1,
                                           i + 7, 2, TARGET(), ModifiedFollowing,
                                           false, Actual360()));
             }
