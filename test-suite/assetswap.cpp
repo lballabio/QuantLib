@@ -2008,7 +2008,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                 parAssetSwap);
     zeroCpnAssetSwap2.setPricingEngine(swapEngine);
     Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairCleanPrice();
-    Real error9 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
+    Real error9 = std::fabs(zeroCpnBondAssetSwapPrice2-zeroCpnBondPrice2);
 
     if (error9>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for zero cpn bond:"
