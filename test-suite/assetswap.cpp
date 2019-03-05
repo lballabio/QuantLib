@@ -4203,7 +4203,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                zeroCpnSpecializedBondAssetSwap2.fairCleanPrice();
     Real error15 = std::fabs(zeroCpnBondAssetSwapPrice2
                              -zeroCpnSpecializedBondAssetSwapPrice2);
-    if (error8>tolerance) {
+    if (error15>tolerance) {
         BOOST_FAIL("wrong clean price for zerocpn bond:"
                     << std::fixed << std::setprecision(4)
                     << "\n  generic zero cpn bond's clean price: "
