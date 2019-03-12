@@ -41,7 +41,7 @@ namespace QuantLib {
 
         boost::shared_ptr<EuropeanExercise> exercise =
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
-        QL_REQUIRE(exercise, "not an European Option");
+        QL_REQUIRE(exercise, "not an European Exercise");
 
         boost::shared_ptr<SpreadBasketPayoff> spreadPayoff =
             boost::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
