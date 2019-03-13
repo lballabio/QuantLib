@@ -168,13 +168,13 @@ namespace QuantLib {
         Rate putDigitalPayoff_;
         //! the left and right gaps applied in payoff replication for call
         Real callLeftEps_, callRightEps_;
-        //! the left and right gaps applied in payoff replication for puf
+        //! the left and right gaps applied in payoff replication for put
         Real putLeftEps_, putRightEps_;
         //!
         bool hasPutStrike_, hasCallStrike_;
         //! Type of replication
         Replication::Type replicationType_;
-        //! underlying excluded from the payoff?g
+        //! underlying excluded from the payoff
         bool nakedOption_;
 
         //@}
