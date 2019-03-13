@@ -83,7 +83,7 @@ namespace QuantLib {
                                        Real variance1, Real variance2,
                                        Real rho) {
 
-            boost::shared_ptr<StrikedTypePayoff> payoff(new
+            ext::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
 
             Real black1 = blackFormula(payoff->optionType(), payoff->strike(),
@@ -100,8 +100,8 @@ namespace QuantLib {
     }
 
     StulzEngine::StulzEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process1,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process2,
             Real correlation)
     : process1_(process1), process2_(process2), rho_(correlation) {
         registerWith(process1_);
@@ -113,22 +113,22 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
-        boost::shared_ptr<BasketPayoff> basket_payoff =
-            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<BasketPayoff> basket_payoff =
+            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
 
-        boost::shared_ptr<MinBasketPayoff> min_basket =
-            boost::dynamic_pointer_cast<MinBasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<MinBasketPayoff> min_basket =
+            ext::dynamic_pointer_cast<MinBasketPayoff>(arguments_.payoff);
 
-        boost::shared_ptr<MaxBasketPayoff> max_basket =
-            boost::dynamic_pointer_cast<MaxBasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<MaxBasketPayoff> max_basket =
+            ext::dynamic_pointer_cast<MaxBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(min_basket || max_basket, "unknown basket type");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(basket_payoff->basePayoff());
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(basket_payoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Real strike = payoff->strike();

@@ -21,24 +21,15 @@
     \brief Analytic engine for arbitrary European payoffs under the Heston model
 */
 
-
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
     AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(
-        const boost::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HestonModel>& model,
         Real integrationEps_,
         Size maxIntegrationIterations)
     : maxIntegrationIterations_(maxIntegrationIterations),
@@ -46,11 +37,13 @@ namespace QuantLib {
       model_(model) {  }
 
     void AnalyticPDFHestonEngine::calculate() const {
+        using namespace ext::placeholders;
+
         // this is an European option pricer
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        const boost::shared_ptr<HestonProcess>& process = model_->process();
+        const ext::shared_ptr<HestonProcess>& process = model_->process();
 
         const Time t = process->time(arguments_.exercise->lastDate());
 
@@ -66,7 +59,7 @@ namespace QuantLib {
 
         results_.value = GaussLobattoIntegral(
             maxIntegrationIterations_, integrationEps_)(
-            boost::bind(&AnalyticPDFHestonEngine::weightedPayoff, this,_1, t),
+            ext::bind(&AnalyticPDFHestonEngine::weightedPayoff, this,_1, t),
                          -xMax+drift, xMax+drift);
     }
 

@@ -23,8 +23,8 @@
 
 namespace QuantLib {
     FdmMesherIntegral::FdmMesherIntegral(
-        const boost::shared_ptr<FdmMesherComposite>& mesher,
-        const boost::function<Real(const Array&, const Array&)>& integrator1d)
+        const ext::shared_ptr<FdmMesherComposite>& mesher,
+        const ext::function<Real(const Array&, const Array&)>& integrator1d)
     : meshers_(mesher->getFdm1dMeshers().begin(),
                mesher->getFdm1dMeshers().end()),
       integrator1d_(integrator1d) {
@@ -38,9 +38,9 @@ namespace QuantLib {
             return integrator1d_(x, f);
         }
 
-        const boost::shared_ptr<FdmMesherComposite> subMesher(
+        const ext::shared_ptr<FdmMesherComposite> subMesher(
             new FdmMesherComposite(
-                std::vector<boost::shared_ptr<Fdm1dMesher> >(
+                std::vector<ext::shared_ptr<Fdm1dMesher> >(
                     meshers_.begin(), meshers_.end()-1)));
 
         FdmMesherIntegral subMesherIntegral(subMesher, integrator1d_);

@@ -36,8 +36,17 @@ namespace QuantLib {
       public:
         BSMOperator();
         BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
+        BSMOperator(const Array& grid, Rate r, Rate q, Volatility sigma);
+        /*! \deprecated Use one of the other overloads.
+                        Deprecated in version 1.14.
+
+            \warning This constructor tries to extract constant
+                     parameters from the process, but the
+                     implementation is incorrect.
+        */
+        QL_DEPRECATED
         BSMOperator(const Array& grid,
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                     Time residualTime);
     };
 

@@ -11,6 +11,7 @@ QL_TESTS = \
 	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	binaryoption.hpp binaryoption.cpp \
+	basismodels.hpp basismodels.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
@@ -29,6 +30,7 @@ QL_TESTS = \
 	chooseroption.hpp chooseroption.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
 	cms.hpp cms.cpp \
+	cmsspread.hpp cmsspread.cpp \
 	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
@@ -54,6 +56,7 @@ QL_TESTS = \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
 	forwardoption.hpp forwardoption.cpp \
+	forwardrateagreement.hpp forwardrateagreement.cpp \
 	functions.hpp functions.cpp \
 	garch.hpp garch.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
@@ -95,6 +98,7 @@ QL_TESTS = \
 	money.hpp money.cpp \
 	noarbsabr.hpp noarbsabr.cpp \
 	normalclvmodel.hpp normalclvmodel.cpp \
+	nthorderderivativeop.hpp nthorderderivativeop.cpp \
 	nthtodefault.hpp nthtodefault.cpp \
 	numericaldifferentiation.hpp numericaldifferentiation.cpp \
 	observable.hpp observable.cpp \
@@ -119,6 +123,7 @@ QL_TESTS = \
 	sampledcurve.hpp sampledcurve.cpp \
 	schedule.hpp schedule.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
+	sofrfutures.hpp sofrfutures.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
 	squarerootclvmodel.hpp squarerootclvmodel.cpp \
@@ -131,6 +136,7 @@ QL_TESTS = \
 	swaptionvolstructuresutilities.hpp \
 	swingoption.hpp swingoption.cpp \
 	termstructures.hpp termstructures.cpp \
+	timegrid.hpp timegrid.cpp \
 	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
@@ -198,7 +204,7 @@ quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
-TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
+TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message BOOST_TEST_COLOR_OUTPUT=false
 
 .PHONY: benchmark
 benchmark: quantlib-benchmark$(EXEEXT)
@@ -208,7 +214,6 @@ EXTRA_DIST = \
 	CMakeLists.txt \
 	paralleltestrunner.hpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 
@@ -220,7 +225,6 @@ EXTRA_DIST = \
 	paralleltestrunner.hpp \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
 	testsuite.vcxproj.filters
 

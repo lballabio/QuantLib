@@ -361,6 +361,43 @@ void ScheduleTest::testFourWeeksTenor() {
 }
 
 
+void ScheduleTest::testScheduleAlwaysHasAStartDate() {
+    BOOST_TEST_MESSAGE("Testing that variations of MakeSchedule "
+                       "always produce a schedule with a start date...");
+    // Attempt to establish whether the first coupoun payment date is
+    // always the second element of the constructor.
+    Calendar calendar = UnitedStates();
+    Schedule schedule = MakeSchedule()
+        .from(Date(10, January, 2017))
+        .withFirstDate(Date(31, August, 2017))
+        .to(Date(28, February, 2026))
+        .withFrequency(Semiannual)
+        .withCalendar(calendar)
+        .withConvention(Unadjusted)
+        .backwards().endOfMonth(false);
+    QL_ASSERT(schedule.date(0) == Date(10, January, 2017),
+              "The first element should always be the start date");
+    schedule = MakeSchedule()
+        .from(Date(10, January, 2017))
+        .to(Date(28, February, 2026))
+        .withFrequency(Semiannual)
+        .withCalendar(calendar)
+        .withConvention(Unadjusted)
+        .backwards().endOfMonth(false);
+    QL_ASSERT(schedule.date(0) == Date(10, January, 2017),
+              "The first element should always be the start date");
+    schedule = MakeSchedule()
+        .from(Date(31, August, 2017))
+        .to(Date(28, February, 2026))
+        .withFrequency(Semiannual)
+        .withCalendar(calendar)
+        .withConvention(Unadjusted)
+        .backwards().endOfMonth(false);
+    QL_ASSERT(schedule.date(0) == Date(31, August, 2017),
+              "The first element should always be the start date");
+}
+
+
 test_suite* ScheduleTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Schedule tests");
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDailySchedule));
@@ -378,5 +415,7 @@ test_suite* ScheduleTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015Convention));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDateConstructor));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFourWeeksTenor));
+    suite->add(QUANTLIB_TEST_CASE(
+                           &ScheduleTest::testScheduleAlwaysHasAStartDate));
     return suite;
 }

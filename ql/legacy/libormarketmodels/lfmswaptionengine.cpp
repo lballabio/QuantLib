@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     LfmSwaptionEngine::LfmSwaptionEngine(
-                            const boost::shared_ptr<LiborForwardModel>& model,
+                            const ext::shared_ptr<LiborForwardModel>& model,
                             const Handle<YieldTermStructure>& discountCurve)
     : GenericModelEngine<LiborForwardModel,
                          Swaption::arguments,
@@ -36,13 +36,13 @@ namespace QuantLib {
 
     void LfmSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
-                   "cash-settled swaptions not priced with Lfm engine");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with Lfm engine");
 
         static const Spread basisPoint = 1.0e-4;
 
         VanillaSwap swap = *arguments_.swap;
-        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new DiscountingSwapEngine(discountCurve_, false)));
 
         Spread correction = swap.spread() *
@@ -50,7 +50,7 @@ namespace QuantLib {
         Rate fixedRate = swap.fixedRate() - correction;
         Rate fairRate = swap.fairRate() - correction;
 
-        boost::shared_ptr<SwaptionVolatilityMatrix> volatility =
+        ext::shared_ptr<SwaptionVolatilityMatrix> volatility =
             model_->getSwaptionVolatilityMatrix();
 
         Date referenceDate = volatility->referenceDate();

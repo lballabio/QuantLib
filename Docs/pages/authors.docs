@@ -17,29 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \page group The QuantLib Group
+/*! \page group Contributors
 
-    \section authors Authors
-
-    The %QuantLib Group members are:
-
-    - Ferdinando Ametrano, Banca IMI SpA, administrator
-    - Luigi Ballabio, StatPro Italia srl, administrator
-    - Marco Bianchetti, Banca IMI SpA
-    - Peter Caspers, Quaternion
-    - Nicolas Di C&eacute;sar&eacute;
-    - Dirk Eddelbuettel
-    - Neil Firth, Mathematical Institute, University of Oxford
-    - Nicola Jean, StatPro Italia srl
-    - Chris Kenyon
-    - Roland Lichters
-    - Marco Marchioro, StatPro Italia srl
-    - Klaus Spanderen
-    - Joseph Wang
-    
-    \section contributors Contributors
-
-    We gratefully acknowledge contributions from
+    We gratefully acknowledge contributions from (in alphabetical order)
     Nathan Abbott,
     Samad Abdessadki,
     Kakhkhor Abdijalilov,
@@ -47,13 +27,17 @@
     Toyin Akin,
     Marius Akre,
     Mario Aleppo,
+    Ferdinando Ametrano,
+    Tom Anderson,
     Grzegorz Andruszkiewicz,
+    Fanis Antoniou,
     Driss Aouad,
     Jose Aparicio,
     Sercan Atalik,
     Ahmed Ayadi,
     Lluis Pujol Bajador,
     Gerardo Ballabio,
+    Luigi Ballabio,
     Nabila Barkati,
     Riccardo Barone,
     Cl&eacute;ment Barret,
@@ -66,6 +50,7 @@
     Nicholas Bertocchi,
     Sylvain Bertrand,
     Manas Bhatt,
+    Marco Bianchetti,
     David Binderman,
     Theo Boafo,
     Francois Botha,
@@ -74,6 +59,7 @@
     Joe Byers,
     Xavier Caron,
     Marine Casanova,
+    Peter Caspers,
     Antoine Cellerier,
     Yee Man Chan,
     Aurelien Chanudet,
@@ -88,23 +74,29 @@
     Fr&eacute;d&eacute;ric Degraeve,
     Piero Del Boca,
     Mike DelMedico,
+    Barry Devlin,
+    Nicolas Di C&eacute;sar&eacute;,
     Piter Dias,
     Michael von den Driesch,
     Francis Duffy,
     Cristina Duminuco,
+    Jan Ladislav Dussek,
     Dirk Eddelbuettel,
     Faycal El Karaa,
+    Joshua Engelman,
     Bernd Engelmann,
     Giorgio Facchinetti,
     Matt Fair,
     Paul Farrington,
     Lorella Fatone,
     Luca Ferraro,
+    Neil Firth,
     Stefano Fondi,
     Chiara Fornarola,
     Silvia Frasson,
     Andreas Gaida,
     Matteo Gallivanoni,
+    Jose Garcia,
     Lakshay Garg,
     Riccardo Ghetta,
     Paul Giltinan,
@@ -132,14 +124,18 @@
     Shen Hui,
     Charles Chongseok Hyun,
     Simon Ibbotson,
+    Alexey Indiryakov,
     Norbert Irmer,
     Mike Jake,
+    Nicola Jean,
     Joseph Jeisman,
     Rahul Kanchi,
+    Roland Kapl,
     Andrey Karpov,
     Michal Kaut,
     Tomoya Kawanishi,
     Gary Kennedy,
+    Chris Kenyon,
     Oleksandr Khomenko,
     Matt Knox,
     Andrew Kolesnikov,
@@ -160,6 +156,7 @@
     Patrick Lewis,
     Cheng Li,
     Gang Liang,
+    Roland Lichters,
     Robert Lopez,
     Andr&eacute; Louw,
     Matthias Lungwitz,
@@ -169,6 +166,7 @@
     Andrea Maggiulli,
     John Maiden,
     Katiuscia Manzoni,
+    Marco Marchioro,
     Francesca Mariani,
     Slava Mazur,
     Paolo Mazzocchi,
@@ -206,6 +204,7 @@
     Ilyas Rahbaoui,
     Fabio Ramponi,
     Maria Cristina Recchioni,
+    Simon Rees,
     Dimitri Reiswich,
     Sadruddin Rejeb,
     Martin Ross,
@@ -214,6 +213,7 @@
     Amine Samani,
     Alpha Sanou Toure,
     Tamas Sashalmi,
+    Sebastian Schlenkrich,
     Peter Schmitteckert,
     Ralph Schreyer,
     David Schwartz,
@@ -229,8 +229,12 @@
     Tim Smith,
     Maxim Sokolov,
     Niels Elken S&oslash;nderby,
+    Klaus Spanderen,
     Andreas Spengler,
     Roland Stamm,
+    Weston Steimel,
+    Philip Stephens,
+    Kai Striega,
     Edouard Tallent,
     Eisuke Tani,
     Marco Tarenghi,
@@ -238,6 +242,7 @@
     Yue Tian,
     Jayanth R. Varma,
     Fran&ccedil;ois du Vignaud,
+    Joseph Wang,
     Qingxiao Wang,
     Charles Whitmore,
     Stephen Wong,
@@ -247,7 +252,8 @@
     Frank Xue,
     Jeff Yu,
     Maddalena Zanzi,
-    and Francesco Zirilli.
+    Francesco Zirilli,
+    and Roy Zywina.
 
     %QuantLib also includes code taken from Peter J&auml;ckel's book
     "Monte Carlo Methods in Finance".

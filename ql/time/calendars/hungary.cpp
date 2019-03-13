@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Hungary::Hungary() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Hungary::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Hungary::Impl);
         impl_ = impl;
     }
 
@@ -34,6 +34,8 @@ namespace QuantLib {
         Year y = date.year();
         Day em = easterMonday(y);
         if (isWeekend(w)
+            // Good Friday (since 2017)
+            || (dd == em - 3 && y >= 2017)
             // Easter Monday
             || (dd == em)
             // Whit Monday

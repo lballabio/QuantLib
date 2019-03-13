@@ -27,7 +27,7 @@ namespace QuantLib {
 
     NinePointLinearOp::NinePointLinearOp(
         Size d0, Size d1,
-        const boost::shared_ptr<FdmMesher>& mesher)
+        const ext::shared_ptr<FdmMesher>& mesher)
     : d0_(d0), d1_(d1),
       i00_(new Size[mesher->layout()->size()]),
       i10_(new Size[mesher->layout()->size()]),
@@ -53,7 +53,7 @@ namespace QuantLib {
             && d1_ < mesher->layout()->dim().size(),
             "inconsistent derivative directions");
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
@@ -131,7 +131,7 @@ namespace QuantLib {
     Disposable<Array> NinePointLinearOp::apply(const Array& u)
         const {
 
-        const boost::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
         QL_REQUIRE(u.size() == index->size(),"inconsistent length of r "
                     << u.size() << " vs " << index->size());
 
@@ -161,7 +161,7 @@ namespace QuantLib {
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<SparseMatrix> NinePointLinearOp::toMatrix() const {
-        const boost::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
 
         SparseMatrix retVal(n, n, 9*n);

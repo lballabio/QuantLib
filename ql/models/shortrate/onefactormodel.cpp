@@ -28,7 +28,7 @@ namespace QuantLib {
       public:
         Helper(Size i,
                Real discountBondPrice,
-               const boost::shared_ptr
+               const ext::shared_ptr
                    <TermStructureFittingParameter::NumericalImpl>& theta,
                ShortRateTree& tree)
         : size_(tree.size(i)),
@@ -53,14 +53,14 @@ namespace QuantLib {
         Size i_;
         const Array& statePrices_;
         Real discountBondPrice_;
-        boost::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
+        ext::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
         ShortRateTree& tree_;
     };
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-            const boost::shared_ptr<TrinomialTree>& tree,
-            const boost::shared_ptr<ShortRateDynamics>& dynamics,
-            const boost::shared_ptr
+            const ext::shared_ptr<TrinomialTree>& tree,
+            const ext::shared_ptr<ShortRateDynamics>& dynamics,
+            const ext::shared_ptr
                 <TermStructureFittingParameter::NumericalImpl>& theta,
             const TimeGrid& timeGrid)
     : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
@@ -83,8 +83,8 @@ namespace QuantLib {
     }
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-                         const boost::shared_ptr<TrinomialTree>& tree,
-                         const boost::shared_ptr<ShortRateDynamics>& dynamics,
+                         const ext::shared_ptr<TrinomialTree>& tree,
+                         const ext::shared_ptr<ShortRateDynamics>& dynamics,
                          const TimeGrid& timeGrid)
     : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
       tree_(tree), dynamics_(dynamics), spread_(0.0) {}
@@ -92,11 +92,11 @@ namespace QuantLib {
     OneFactorModel::OneFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    boost::shared_ptr<Lattice>
+    ext::shared_ptr<Lattice>
     OneFactorModel::tree(const TimeGrid& grid) const {
-        boost::shared_ptr<TrinomialTree> trinomial(
+        ext::shared_ptr<TrinomialTree> trinomial(
                               new TrinomialTree(dynamics()->process(), grid));
-        return boost::shared_ptr<Lattice>(
+        return ext::shared_ptr<Lattice>(
                               new ShortRateTree(trinomial, dynamics(), grid));
     }
 

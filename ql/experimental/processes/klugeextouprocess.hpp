@@ -57,8 +57,8 @@ namespace QuantLib {
       public:
         KlugeExtOUProcess(
             Real rho,
-            const boost::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU);
+            const ext::shared_ptr<ExtOUWithJumpsProcess>& kluge,
+            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU);
 
         Size size() const;
         Size factors() const;
@@ -69,16 +69,16 @@ namespace QuantLib {
         Disposable<Array> evolve(Time t0, const Array& x0,
                                  Time dt, const Array& dw) const;
 
-        boost::shared_ptr<ExtOUWithJumpsProcess> getKlugeProcess() const;
-        boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
+        ext::shared_ptr<ExtOUWithJumpsProcess> getKlugeProcess() const;
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
                                                  getExtOUProcess() const;
 
         Real rho() const;
 
       private:
         const Real rho_, sqrtMRho_;
-        const boost::shared_ptr<ExtOUWithJumpsProcess> klugeProcess_;
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
+        const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess_;
+        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
     };
 }
 #endif

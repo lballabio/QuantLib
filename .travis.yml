@@ -3,7 +3,6 @@ language: cpp
 
 os: linux
 dist: trusty
-sudo: required
 compiler: gcc
 services: docker
 
@@ -13,24 +12,36 @@ env:
   global:
     - DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
   matrix:
+    # Minimum allowed Boost version, gcc 4.8
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:1.48.0-trusty
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     # Regression test with old Boost version, gcc 4.8
     - DOCKER_IMAGE=lballabio/quantlib-devenv:1.54.0-trusty
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
-    # Latest Boost, gcc 5.4, strict C++03 mode
-    - DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
+    # Boost 1.66, gcc 5.4, strict C++03 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:1.66.0-xenial
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
-    # Latest Boost, gcc 6.3, C++14 mode
-    - DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+    # Boost 1.66, gcc 6.3, C++11 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:1.66.0-zesty
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++11"
+    # Latest Boost, gcc 7.3, C++14 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
-    # Latest Boost, gcc 7.2, C++14 mode
-    - DOCKER_IMAGE=lballabio/quantlib-devenv:artful
+    # Latest Boost, gcc 8.2, C++17 mode
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
-      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
-    # Latest Boost, clang 4.0
-    - DOCKER_IMAGE=lballabio/quantlib-devenv:artful
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++17"
+    # Latest Boost, clang 6.0
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+      CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+      CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    # Latest Boost, clang 7.0
+    - DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
 

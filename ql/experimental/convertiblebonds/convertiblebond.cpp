@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     ConvertibleBond::ConvertibleBond(
-            const boost::shared_ptr<Exercise>&,
+            const ext::shared_ptr<Exercise>&,
             Real conversionRatio,
             const DividendSchedule& dividends,
             const CallabilitySchedule& callability,
@@ -65,7 +65,7 @@ namespace QuantLib {
 
 
     ConvertibleZeroCouponBond::ConvertibleZeroCouponBond(
-                          const boost::shared_ptr<Exercise>& exercise,
+                          const ext::shared_ptr<Exercise>& exercise,
                           Real conversionRatio,
                           const DividendSchedule& dividends,
                           const CallabilitySchedule& callability,
@@ -84,7 +84,7 @@ namespace QuantLib {
         // !!! notional forcibly set to 100
         setSingleRedemption(100.0, redemption, maturityDate_);
 
-        option_ = boost::shared_ptr<option>(
+        option_ = ext::shared_ptr<option>(
                            new option(this, exercise, conversionRatio,
                                       dividends, callability, creditSpread,
                                       cashflows_, dayCounter, schedule,
@@ -93,7 +93,7 @@ namespace QuantLib {
 
 
     ConvertibleFixedCouponBond::ConvertibleFixedCouponBond(
-                          const boost::shared_ptr<Exercise>& exercise,
+                          const ext::shared_ptr<Exercise>& exercise,
                           Real conversionRatio,
                           const DividendSchedule& dividends,
                           const CallabilitySchedule& callability,
@@ -118,7 +118,7 @@ namespace QuantLib {
 
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
-        option_ = boost::shared_ptr<option>(
+        option_ = ext::shared_ptr<option>(
                            new option(this, exercise, conversionRatio,
                                       dividends, callability, creditSpread,
                                       cashflows_, dayCounter, schedule,
@@ -127,14 +127,14 @@ namespace QuantLib {
 
 
     ConvertibleFloatingRateBond::ConvertibleFloatingRateBond(
-                          const boost::shared_ptr<Exercise>& exercise,
+                          const ext::shared_ptr<Exercise>& exercise,
                           Real conversionRatio,
                           const DividendSchedule& dividends,
                           const CallabilitySchedule& callability,
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
                           Natural settlementDays,
-                          const boost::shared_ptr<IborIndex>& index,
+                          const ext::shared_ptr<IborIndex>& index,
                           Natural fixingDays,
                           const std::vector<Spread>& spreads,
                           const DayCounter& dayCounter,
@@ -156,7 +156,7 @@ namespace QuantLib {
 
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
-        option_ = boost::shared_ptr<option>(
+        option_ = ext::shared_ptr<option>(
                            new option(this, exercise, conversionRatio,
                                       dividends, callability, creditSpread,
                                       cashflows_, dayCounter, schedule,
@@ -167,7 +167,7 @@ namespace QuantLib {
 
     ConvertibleBond::option::option(
             const ConvertibleBond* bond,
-            const boost::shared_ptr<Exercise>& exercise,
+            const ext::shared_ptr<Exercise>& exercise,
             Real conversionRatio,
             const DividendSchedule& dividends,
             const CallabilitySchedule& callability,
@@ -178,7 +178,7 @@ namespace QuantLib {
             const Date& issueDate,
             Natural settlementDays,
             Real redemption)
-    : OneAssetOption(boost::shared_ptr<StrikedTypePayoff>(new
+    : OneAssetOption(ext::shared_ptr<StrikedTypePayoff>(new
           PlainVanillaPayoff(Option::Call,
                              (bond->notionals()[0])/100.0
                              *redemption/conversionRatio)),
@@ -188,7 +188,7 @@ namespace QuantLib {
       creditSpread_(creditSpread), cashflows_(cashflows),
       dayCounter_(dayCounter), issueDate_(issueDate), schedule_(schedule),
       settlementDays_(settlementDays), redemption_(redemption) {
-        registerWith(boost::shared_ptr<ConvertibleBond>(const_cast<ConvertibleBond*>(bond),
+        registerWith(ext::shared_ptr<ConvertibleBond>(const_cast<ConvertibleBond*>(bond),
                                                         null_deleter()));
     }
 
@@ -226,8 +226,8 @@ namespace QuantLib {
                                                     Callability::Price::Clean)
                     moreArgs->callabilityPrices.back() +=
                         bond_->accruedAmount(callability_[i]->date());
-                boost::shared_ptr<SoftCallability> softCall =
-                    boost::dynamic_pointer_cast<SoftCallability>(
+                ext::shared_ptr<SoftCallability> softCall =
+                    ext::dynamic_pointer_cast<SoftCallability>(
                                                              callability_[i]);
                 if (softCall)
                     moreArgs->callabilityTriggers.push_back(

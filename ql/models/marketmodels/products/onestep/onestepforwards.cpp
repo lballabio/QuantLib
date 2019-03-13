@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -49,8 +50,9 @@ namespace QuantLib {
         return true;
     }
 
-    std::auto_ptr<MarketModelMultiProduct> OneStepForwards::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    OneStepForwards::clone() const {
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
                                                   new OneStepForwards(*this));
     }
 

@@ -35,7 +35,7 @@ namespace QuantLib {
                                    Rate hazardRate,
                                    const DayCounter& dayCounter)
     : HazardRateStructure(referenceDate, Calendar(), dayCounter),
-      hazardRate_(boost::shared_ptr<Quote>(new SimpleQuote(hazardRate))) {}
+      hazardRate_(ext::shared_ptr<Quote>(new SimpleQuote(hazardRate))) {}
 
     FlatHazardRate::FlatHazardRate(Natural settlementDays,
                                    const Calendar& calendar,
@@ -51,6 +51,6 @@ namespace QuantLib {
                                    Rate hazardRate,
                                    const DayCounter& dayCounter)
     : HazardRateStructure(settlementDays, calendar, dayCounter),
-      hazardRate_(boost::shared_ptr<Quote>(new SimpleQuote(hazardRate))) {}
+      hazardRate_(ext::shared_ptr<Quote>(new SimpleQuote(hazardRate))) {}
 
 }

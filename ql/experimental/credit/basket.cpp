@@ -22,7 +22,6 @@
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace std;
 
@@ -31,10 +30,10 @@ namespace QuantLib {
     Basket::Basket(const Date& refDate,
         const vector<string>& names,
         const vector<Real>& notionals,
-        const boost::shared_ptr<Pool> pool,
+        const ext::shared_ptr<Pool> pool,
         Real attachment,
         Real detachment,
-        const boost::shared_ptr<Claim>& claim
+        const ext::shared_ptr<Claim>& claim
         )
     : notionals_(notionals),
       pool_(pool),
@@ -79,7 +78,7 @@ namespace QuantLib {
     the outside. In that case reconsider the observability chain.
     */
     void Basket::setLossModel(
-        const boost::shared_ptr<DefaultLossModel>& lossModel) {
+        const ext::shared_ptr<DefaultLossModel>& lossModel) {
 
         if (lossModel_)
             unregisterWith(lossModel_);
@@ -124,7 +123,7 @@ namespace QuantLib {
             "Target date lies before basket inception");
         Real loss = 0.0;
         for (Size i = 0; i < size(); i++) {
-            boost::shared_ptr<DefaultEvent> credEvent =
+            ext::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
             if (credEvent) {
@@ -149,7 +148,7 @@ namespace QuantLib {
         
         Real loss = 0.0;
         for (Size i = 0; i < size(); i++) {
-            boost::shared_ptr<DefaultEvent> credEvent =
+            ext::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
             if (credEvent) {

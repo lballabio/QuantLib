@@ -44,7 +44,7 @@ namespace QuantLib {
             const Schedule& floatSchedule,
             const BusinessDayConvention& floatPaymentRoll,
             Natural fixingDays,
-            const boost::shared_ptr<IborIndex>& floatIndex,
+            const ext::shared_ptr<IborIndex>& floatIndex,
             // fixed x inflation leg
             Rate fixedRate,
             Real baseCPI,
@@ -52,7 +52,7 @@ namespace QuantLib {
             const Schedule& fixedSchedule,
             const BusinessDayConvention& fixedPaymentRoll,
             const Period& observationLag,
-            const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
+            const ext::shared_ptr<ZeroInflationIndex>& fixedIndex,
             CPI::InterpolationType observationInterpolation,
             Real inflationNominal
             )
@@ -96,7 +96,7 @@ namespace QuantLib {
             }
 
             Real floatAmount = subtractInflationNominal_ ? nominal_ - inflationNominal_ : nominal_;
-            boost::shared_ptr<CashFlow> nf(new SimpleCashFlow(floatAmount, payNotional));
+            ext::shared_ptr<CashFlow> nf(new SimpleCashFlow(floatAmount, payNotional));
             floatingLeg.push_back(nf);
         }
 

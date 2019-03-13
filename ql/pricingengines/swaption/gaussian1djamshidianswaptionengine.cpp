@@ -25,7 +25,7 @@ namespace QuantLib {
 
     class Gaussian1dJamshidianSwaptionEngine::rStarFinder {
       public:
-        rStarFinder(const boost::shared_ptr<Gaussian1dModel> &model,
+        rStarFinder(const ext::shared_ptr<Gaussian1dModel> &model,
                     Real nominal, const Date &maturityDate,
                     const Date &valueDate,
                     const std::vector<Date> &fixedPayDates,
@@ -51,13 +51,14 @@ namespace QuantLib {
         Size startIndex_;
         std::vector<Date> times_;
         const std::vector<Real> &amounts_;
-        const boost::shared_ptr<Gaussian1dModel> &model_;
+        const ext::shared_ptr<Gaussian1dModel> &model_;
     };
 
     void Gaussian1dJamshidianSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
-                   "cash-settled swaptions not priced by Jamshidian engine");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "Gaussian1dJamshidianSwaptionEngine");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "cannot use the Jamshidian decomposition "

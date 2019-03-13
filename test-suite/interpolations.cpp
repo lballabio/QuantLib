@@ -171,7 +171,7 @@ namespace {
     }
 
     template <class F>
-    class errorFunction : public std::unary_function<Real,Real> {
+    class errorFunction {
       public:
         errorFunction(const F& f) : f_(f) {}
         Real operator()(Real x) const {
@@ -1296,11 +1296,11 @@ void InterpolationTest::testSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-8;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=0; j<methods_.size(); ++j) {
@@ -1431,7 +1431,11 @@ void InterpolationTest::testKernelInterpolation() {
 
             std::vector<Real> currY = yd[j];
             KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
-                                  currY.begin(), myKernel);
+                                  currY.begin(), myKernel
+#ifdef __FAST_MATH__
+                                  ,1e-6
+#endif
+                                  );
             f.update();
 
             for (Size dIt=0; dIt< deltaGrid.size(); ++dIt) {
@@ -1705,6 +1709,76 @@ void InterpolationTest::testBicubicUpdate() {
     }
 }
 
+
+namespace {
+    class GF {
+      public:
+        GF(Real exponent, Real factor)
+        : exponent_(exponent), factor_(factor) {}
+
+        Real operator()(Real h) const {
+            return M_PI + factor_*std::pow(h, exponent_)
+                + std::pow(factor_*h, exponent_ + 1);
+        }
+      private:
+        const Real exponent_, factor_;
+    };
+
+    Real limCos(Real h) {
+        return -std::cos(h);
+    }
+}
+
+void InterpolationTest::testUnknownRichardsonExtrapolation() {
+    BOOST_TEST_MESSAGE("Testing Richardson extrapolation with "
+            "unknown order of convergence...");
+
+    const Real stepSize = 0.01;
+
+    const std::pair<Real, Real> testCases[] = {
+            std::make_pair(1.0, 1.0), std::make_pair(1.0, -1.0),
+            std::make_pair(2.0, 0.25), std::make_pair(2.0, -1.0),
+            std::make_pair(3.0, 2.0), std::make_pair(3.0, -0.5),
+            std::make_pair(4.0, 1.0), std::make_pair(4.0, 0.5)
+    };
+
+    for (Size i=0; i < LENGTH(testCases); ++i) {
+        const std::pair<Real, Real> testCase = testCases[i];
+
+        const RichardsonExtrapolation extrap(
+            GF(testCase.first, testCase.second), stepSize);
+
+        const Real calculated = extrap(4.0, 2.0);
+        const Real diff = std::fabs(M_PI - calculated);
+
+        const Real tol = std::pow(stepSize, testCase.first+1);
+
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                    " with unknown order of convergence");
+        }
+    }
+
+    const Real highOrder = RichardsonExtrapolation(GF(14.0, 1.0), 0.5)(4.0,2.0);
+    if (std::fabs(highOrder - M_PI) > 1e-12) {
+        BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                " with unknown order of convergence");
+    }
+
+    try {
+        RichardsonExtrapolation(GF(16.0, 1.0), 0.5)(4.0,2.0);
+        BOOST_ERROR("Richardson extrapolation with order of"
+            " convergence above 15 should throw exception");
+    }
+    catch (...) {}
+
+    const Real limCosValue = RichardsonExtrapolation(limCos, 0.01)(4.0,2.0);
+    if (std::fabs(limCosValue + 1.0) > 1e-6)
+        BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                " with unknown order of convergence");
+}
+
+
 namespace {
     Real f(Real h) {
         return std::pow( 1.0 + h, 1/h);
@@ -1754,7 +1828,11 @@ void InterpolationTest::testNoArbSabrInterpolation(){
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
     // Test SABR function against input volatilities
+#ifndef __FAST_MATH__
     Real tolerance = 1.0e-12;
+#else
+    Real tolerance = 1.0e-8;
+#endif
     std::vector<Real> strikes(31);
     std::vector<Real> volatilities(31), volatilities2(31);
     // input strikes
@@ -1838,11 +1916,11 @@ void InterpolationTest::testNoArbSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-6;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod> > methods_;
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
+    methods_.push_back( ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
@@ -2172,31 +2250,36 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
 
     const Real tol = 1e-13;
+    const Real tolDeriv = 1e-11;
 
-    for (Real x=-1.0; x <= 1.0; x+=0.01) {
+    for (Real x=-1.0; x <= 1.0; x+=0.03) {
         const Real calculated = interpl(x, true);
         const Real expected = std::exp(x)/std::cos(x);
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diff = std::fabs(expected - calculated);
+        if (   boost::math::isnan(calculated) || diff > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation on Chebyshev points"
+                    " interpolation on Chebyshev points"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculated
-                    << "\n    expected  : " << expected);
+                    << "\n    expected  : " << expected
+                    << std::scientific
+                    << "\n    difference: " << diff);
         }
 
         const Real calculatedDeriv = interpl.derivative(x, true);
         const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
                 / square<Real>()(std::cos(x));
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
+        if (   boost::math::isnan(calculated) || diffDeriv > tolDeriv) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation derivative on Chebyshev points"
+                    " interpolation derivative on Chebyshev points"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculatedDeriv
-                    << "\n    expected  : " << expectedDeriv);
+                    << "\n    expected  : " << expectedDeriv
+                    << std::scientific
+                    << "\n    difference: " << diffDeriv);
         }
     }
 }
@@ -2248,7 +2331,6 @@ void InterpolationTest::testBSplines() {
         }
     }
 }
-
 
 void InterpolationTest::testBackwardFlatOnSinglePoint() {
     BOOST_TEST_MESSAGE("Testing piecewise constant interpolation on a "
@@ -2313,6 +2395,8 @@ test_suite* InterpolationTest::suite() {
                               &InterpolationTest::testKernelInterpolation2D));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testUnknownRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(
                             &InterpolationTest::testRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));

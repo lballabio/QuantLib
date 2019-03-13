@@ -59,7 +59,7 @@ namespace QuantLib {
     class ExtOUWithJumpsProcess : public StochasticProcess {
       public:
         ExtOUWithJumpsProcess(
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
+            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
             Real Y0, Real beta, Real jumpIntensity, Real eta);
         
         Size size() const;
@@ -71,7 +71,7 @@ namespace QuantLib {
         Disposable<Array> evolve(Time t0, const Array& x0,
                                  Time dt, const Array& dw) const;
 
-        boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
                                  getExtendedOrnsteinUhlenbeckProcess() const;
 
         Real beta()          const;
@@ -80,7 +80,7 @@ namespace QuantLib {
 
       private:
         const Real Y0_, beta_, jumpIntensity_, eta_;
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
+        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
         
         const CumulativeNormalDistribution cumNormalDist_;
     };

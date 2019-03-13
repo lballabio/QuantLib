@@ -25,18 +25,17 @@
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     Fdm2DimSolver::Fdm2DimSolver(
                              const FdmSolverDesc& solverDesc,
                              const FdmSchemeDesc& schemeDesc,
-                             const boost::shared_ptr<FdmLinearOpComposite>& op)
+                             const ext::shared_ptr<FdmLinearOpComposite>& op)
     : solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       op_(op),
-      thetaCondition_(boost::make_shared<FdmSnapshotCondition>(
+      thetaCondition_(ext::make_shared<FdmSnapshotCondition>(
         0.99*std::min(1.0/365.0,
            solverDesc.condition->stoppingTimes().empty()
                     ? solverDesc.maturity
@@ -47,8 +46,8 @@ namespace QuantLib {
       resultValues_ (solverDesc.mesher->layout()->dim()[1],
                      solverDesc.mesher->layout()->dim()[0]) {
 
-        const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         x_.reserve(layout->dim()[0]);
         y_.reserve(layout->dim()[1]);
@@ -79,14 +78,14 @@ namespace QuantLib {
                       solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
-        interpolation_ = boost::make_shared<BicubicSpline>(x_.begin(), x_.end(),
+        interpolation_ = ext::make_shared<BicubicSpline>(x_.begin(), x_.end(),
                               y_.begin(), y_.end(),
                               resultValues_);
     }
 
     Real Fdm2DimSolver::interpolateAt(Real x, Real y) const {
         calculate();
-        return interpolation_->operator()(x, y);
+        return (*interpolation_)(x, y);
     }
 
     Real Fdm2DimSolver::thetaAt(Real x, Real y) const {

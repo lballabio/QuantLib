@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -86,6 +86,9 @@
     <ClCompile Include="cms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cmsspread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="commodityunitofmeasure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -162,6 +165,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="forwardoption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="forwardrateagreement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="garch.cpp">
@@ -275,6 +281,9 @@
     <ClCompile Include="numericaldifferentiation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nthorderderivativeop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -335,6 +344,9 @@
     <ClCompile Include="shortratemodels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sofrfutures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="solvers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -363,6 +375,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="termstructures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timegrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="timeseries.cpp">
@@ -433,6 +448,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="normalclvmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basismodels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -512,6 +530,9 @@
     <ClInclude Include="cms.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cmsspread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="commodityunitofmeasure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -588,6 +609,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="forwardoption.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="forwardrateagreement.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="garch.hpp">
@@ -701,6 +725,9 @@
     <ClInclude Include="numericaldifferentiation.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="nthorderderivativeop.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -764,6 +791,9 @@
     <ClInclude Include="shortratemodels.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sofrfutures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="solvers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -798,6 +828,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="termstructures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timegrid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timeseries.hpp">
@@ -867,6 +900,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="normalclvmodel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basismodels.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

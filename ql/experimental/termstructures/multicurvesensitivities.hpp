@@ -26,7 +26,7 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -69,10 +69,10 @@ public:
     for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
       registerWith((*it).second);
     for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
-      boost::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
-          boost::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
+      ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
+          ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
       QL_REQUIRE(curve != NULL, "Couldn't cast curvename: " << it->first);
-      for (std::vector< boost::shared_ptr< BootstrapHelper< YieldTermStructure > > >::iterator inst =
+      for (std::vector< ext::shared_ptr< BootstrapHelper< YieldTermStructure > > >::iterator inst =
                curve->instruments_.begin();
            inst != curve->instruments_.end(); ++inst) {
         allQuotes_.push_back((*inst)->quote());
@@ -109,7 +109,7 @@ inline void MultiCurveSensitivities::performCalculations() const {
   for (std::vector< Handle< Quote > >::const_iterator it = allQuotes_.begin(); it != allQuotes_.end(); ++it) {
     Rate bps = +1e-4;
     Rate origQuote = (*it)->value();
-    boost::shared_ptr< SimpleQuote > q = boost::dynamic_pointer_cast< SimpleQuote >((*it).currentLink());
+    ext::shared_ptr< SimpleQuote > q = ext::dynamic_pointer_cast< SimpleQuote >((*it).currentLink());
     q->setValue(origQuote + bps);
     try {
       std::vector< Rate > tmp(allZeros());
@@ -139,8 +139,8 @@ inline Matrix MultiCurveSensitivities::inverseSensitivities() const {
 inline std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const {
   std::vector< std::pair< Date, Real > > result;
   for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
-    boost::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
-        boost::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
+    ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
+        ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
     result.reserve(result.size() + curve->nodes().size() - 1);
     for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1; p != curve->nodes().end(); ++p)
       result.push_back(*p);

@@ -42,7 +42,7 @@ namespace QuantLib {
                   model cannot provide one itself.
         */
         Gaussian1dJamshidianSwaptionEngine(
-            const boost::shared_ptr<Gaussian1dModel> &model)
+            const ext::shared_ptr<Gaussian1dModel> &model)
             : GenericModelEngine<Gaussian1dModel, Swaption::arguments,
                                  Swaption::results>(model) {}
         void calculate() const;
