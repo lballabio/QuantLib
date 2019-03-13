@@ -182,7 +182,7 @@ namespace QuantLib {
                         bool isPutATMIncluded,
                         const std::vector<Rate>& putDigitalPayoffs,
                         const ext::shared_ptr<DigitalReplication>& replication,
-                        bool nakedOption) {
+                        bool nakedOption = false) {
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
         QL_REQUIRE(nominals.size() <= n,
