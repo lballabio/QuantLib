@@ -47,11 +47,6 @@
 //#   define QL_ENABLE_TRACING
 #endif
 
-/* Define this if negative rates should be allowed. */
-#ifndef QL_NEGATIVE_RATES
-#   define QL_NEGATIVE_RATES
-#endif
-
 /* Define this if extra safety checks should be performed. This can degrade
    performance. */
 #ifndef QL_EXTRA_SAFETY_CHECKS

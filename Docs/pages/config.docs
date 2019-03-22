@@ -57,12 +57,6 @@
     performance. Undefined by default.
 
     \code
-    #define QL_NEGATIVE_RATES
-    \endcode
-    If defined (the default), negative yield rates are allowed in a
-    few places where they used to be forbidden.
-
-    \code
     #define QL_EXTRA_SAFETY_CHECKS
     \endcode
     If defined, extra run-time checks are added to a few

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file functional.hpp
+/*! \file ql/functional.hpp
     \brief Maps function, bind and cref to either the boost or std implementation
 */
 

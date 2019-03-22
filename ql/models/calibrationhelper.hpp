@@ -109,9 +109,8 @@ namespace QuantLib {
         const CalibrationErrorType calibrationErrorType_;
     };
 
-    /*! \deprecated Use BlackCalibrationHelper instead
-
-        Deprecated in version 1.14.
+    /*! \deprecated Use BlackCalibrationHelper instead.
+                    Deprecated in version 1.14.
     */
     QL_DEPRECATED
     typedef BlackCalibrationHelper CalibrationHelper;

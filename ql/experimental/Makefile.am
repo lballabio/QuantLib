@@ -1,5 +1,5 @@
 
-SUBDIRS = amortizingbonds averageois barrieroption callablebonds \
+SUBDIRS = amortizingbonds averageois barrieroption basismodels callablebonds \
           catbonds commodities convertiblebonds coupons credit \
           exoticoptions finitedifferences futures fx inflation lattices \
           math mcbasket models processes risk shortrate swaptions \
@@ -17,6 +17,7 @@ libExperimental_la_LIBADD = \
     amortizingbonds/libAmortizingBonds.la \
     averageois/libAverageOIS.la \
     barrieroption/libBarrierOption.la \
+    basismodels/libBasisModels.la \
     callablebonds/libCallableBonds.la \
     catbonds/libCatBonds.la \
     commodities/libCommodities.la \

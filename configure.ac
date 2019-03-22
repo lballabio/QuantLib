@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.15],
+AC_INIT([QuantLib], [1.16],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -205,21 +205,6 @@ if test "$ql_indexed_coupon" = "yes" ; then
               floating legs.])
 fi
 AC_MSG_RESULT([$ql_indexed_coupon])
-
-AC_MSG_CHECKING([whether to enable negative rates])
-AC_ARG_ENABLE([negative-rates],
-              AC_HELP_STRING([--enable-negative-rates],
-                             [If enabled (the default), negative yield
-                              rates are allowed.  If disabled, some
-                              features (notably, curve bootstrapping)
-                              will throw when negative rates are found.]),
-              [ql_negative_rates=$enableval],
-              [ql_negative_rates=yes])
-if test "$ql_negative_rates" = "yes" ; then
-   AC_DEFINE([QL_NEGATIVE_RATES],[1],
-             [Define this if negative yield rates should be allowed.])
-fi
-AC_MSG_RESULT([$ql_negative_rates])
 
 AC_MSG_CHECKING([whether to enable extra safety checks])
 AC_ARG_ENABLE([extra-safety-checks],
@@ -431,9 +416,9 @@ AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],
               AC_HELP_STRING([--enable-std-classes],
                              [This is a shortcut for --enable-std-pointers
-                              --enable-std-unique-ptr --enable-std-function
-                              --enable-std-bind.  If enabled, this supersedes
-                              any --disable option passed for the above.]),
+                              --enable-std-unique-ptr --enable-std-function.
+                              If enabled, this supersedes any --disable
+                              option passed for the above.]),
               [ql_use_std_classes=$enableval],
               [ql_use_std_classes=no])
 if test "$ql_use_std_classes" = "yes" ; then
@@ -469,6 +454,7 @@ AC_CONFIG_FILES([
     ql/experimental/amortizingbonds/Makefile
     ql/experimental/averageois/Makefile
     ql/experimental/barrieroption/Makefile
+    ql/experimental/basismodels/Makefile
     ql/experimental/callablebonds/Makefile
     ql/experimental/catbonds/Makefile
     ql/experimental/commodities/Makefile

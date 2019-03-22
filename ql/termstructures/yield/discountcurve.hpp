@@ -265,14 +265,6 @@ namespace QuantLib {
                        "two dates correspond to the same time "
                        "under this curve's day count convention");
             QL_REQUIRE(this->data_[i] > 0.0, "negative discount");
-            #if !defined(QL_NEGATIVE_RATES)
-            QL_REQUIRE(this->data_[i] <= this->data_[i-1],
-                       "negative forward rate implied by the discount " <<
-                       this->data_[i] << " at " << dates_[i] <<
-                       " (t=" << this->times_[i] << ") after the discount " <<
-                       this->data_[i-1] << " at " << dates_[i-1] <<
-                       " (t=" << this->times_[i-1] << ")");
-            #endif
         }
 
         this->interpolation_ =
