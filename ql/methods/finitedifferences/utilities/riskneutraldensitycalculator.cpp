@@ -20,7 +20,7 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp>
 #include <ql/functional.hpp>
 
 namespace QuantLib {

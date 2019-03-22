@@ -26,7 +26,7 @@
 #ifndef quantlib_heston_risk_neutral_density_calculator_hpp
 #define quantlib_heston_risk_neutral_density_calculator_hpp
 
-#include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp>
 #include <ql/shared_ptr.hpp>
 
 namespace QuantLib {

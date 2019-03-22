@@ -90,6 +90,18 @@ namespace QuantLib {
 
     }
 
+    Real NonCentralCumulativeChiSquareSankaranApprox::operator()(Real x) const {
+
+        const Real h = 1-2*(df_+ncp_)*(df_+3*ncp_)/(3*square<Real>()(df_+2*ncp_));
+        const Real p = (df_+2*ncp_)/square<Real>()(df_+ncp_);
+        const Real m = (h-1)*(1-3*h);
+
+        const Real u= (std::pow(x/(df_+ncp_), h) - (1 + h*p*(h-1-0.5*(2-h)*m*p)))/
+            (h*std::sqrt(2*p)*(1+0.5*m*p));
+
+        return CumulativeNormalDistribution()(u);
+    }
+
     InverseNonCentralCumulativeChiSquareDistribution::
       InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp, 
                                              Size maxEvaluations, 

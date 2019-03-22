@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	fdm2dblackscholesop.hpp \
 	fdmbatesop.hpp \
 	fdmblackscholesop.hpp \
+	fdmcevop.hpp \
 	fdmg2op.hpp \
 	fdmhestonhullwhiteop.hpp \
 	fdmhestonop.hpp \
@@ -16,6 +17,7 @@ this_include_HEADERS = \
 	fdmlinearop.hpp \
 	fdmlinearopiterator.hpp \
 	fdmlinearoplayout.hpp \
+	fdmsabrop.hpp \
 	firstderivativeop.hpp \
 	ninepointlinearop.hpp \
 	nthorderderivativeop.hpp \
@@ -28,12 +30,14 @@ cpp_files = \
 	fdm2dblackscholesop.cpp \
 	fdmbatesop.cpp \
 	fdmblackscholesop.cpp \
+	fdmcevop.cpp \
 	fdmg2op.cpp \
 	fdmhestonhullwhiteop.cpp \
 	fdmhestonop.cpp \
 	fdmhullwhiteop.cpp \
 	fdmlinearoplayout.cpp \
 	fdmornsteinuhlenbeckop.cpp \
+	fdmsabrop.cpp \
 	firstderivativeop.cpp \
 	ninepointlinearop.cpp \
 	nthorderderivativeop.cpp \

@@ -5,6 +5,7 @@
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006 StatPro Italia srl
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2019 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -65,11 +66,18 @@ namespace QuantLib {
                                  Real rho,
                                  Real shift);
 
+    Real sabrFlochKennedyVolatility(Rate strike,
+                                    Rate forward,
+                                    Time expiryTime,
+                                    Real alpha,
+                                    Real beta,
+                                    Real nu,
+                                    Real rho);
+
     void validateSabrParameters(Real alpha,
                                 Real beta,
                                 Real nu,
                                 Real rho);
-
 }
 
 #endif

@@ -106,6 +106,8 @@
 #include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
+#include "fdcev.hpp"
+#include "fdsabr.hpp"
 #include "forwardoption.hpp"
 #include "forwardrateagreement.hpp"
 #include "functions.hpp"
@@ -388,6 +390,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
+    test->add(FdCevTest::suite(speed));
+    test->add(FdSabrTest::suite(speed));
     test->add(ForwardOptionTest::suite());
     test->add(ForwardRateAgreementTest::suite());
     test->add(FunctionsTest::suite());
@@ -461,8 +465,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     // tests for experimental classes
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental());
-	test->add(BasismodelsTest::suite());
-	test->add(BarrierOptionTest::experimental());
+    test->add(BasismodelsTest::suite());
+    test->add(BarrierOptionTest::experimental());
     test->add(DoubleBarrierOptionTest::experimental());
     test->add(BlackDeltaCalculatorTest::suite());
     test->add(CatBondTest::suite());

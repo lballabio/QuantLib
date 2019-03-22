@@ -30,7 +30,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
-#include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp>
 
 #include <vector>
 

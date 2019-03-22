@@ -25,7 +25,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 
 namespace QuantLib {
 

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2016 Klaus Spanderen
+ Copyright (C) 2018 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,66 +17,56 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmornsteinuhlenbeckop.hpp
-    \brief Ornstein Uhlenbeck process
+/*! \file fdmcevop.hpp
+    \brief FDM operator for the Constant Elasticity of Variance (CEV) model
 */
 
-#ifndef quantlib_fdm_ornstein_uhlenback_op_hpp
-#define quantlib_fdm_ornstein_uhlenback_op_hpp
+#ifndef quantlib_fdm_cev_op_hpp
+#define quantlib_fdm_cev_op_hpp
 
-#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/ninepointlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
-
 
 namespace QuantLib {
 
+    //! constant elasticity of variance process (absorbing boundary at f=0)
+    /*! \f[
+         df_t = \alpha f_t^\beta \mathrm{d}W_t
+        \f]
+    */
+
     class FdmMesher;
     class YieldTermStructure;
-    class OrnsteinUhlenbeckProcess;
 
-    class FdmOrnsteinUhlenbackOp : public FdmLinearOpComposite {
+    class FdmCEVOp : public FdmLinearOpComposite {
       public:
-        FdmOrnsteinUhlenbackOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& p,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size direction = 0);
 
-        /*! \deprecated use the other constructor.
-                        Deprecated in version 1.16.
-        */
-        QL_DEPRECATED
-        FdmOrnsteinUhlenbackOp(
+        FdmCEVOp(
             const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& p,
             const ext::shared_ptr<YieldTermStructure>& rTS,
-            const FdmBoundaryConditionSet& bcSet,
-            Size direction = 0);
+            Real f0, Real alpha, Real beta,
+            Size direction);
 
         Size size() const;
         void setTime(Time t1, Time t2);
 
         Disposable<Array> apply(const Array& r) const;
         Disposable<Array> apply_mixed(const Array& r) const;
-
-        Disposable<Array> apply_direction(Size direction,
-                                          const Array& r) const;
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& r, Real s) const;
+        Disposable<Array> apply_direction(Size direction, const Array& r) const;
+        Disposable<Array>
+            solve_splitting(Size direction, const Array& r, Real s) const;
         Disposable<Array> preconditioner(const Array& r, Real s) const;
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
       private:
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<OrnsteinUhlenbeckProcess> process_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure>& rTS_;
         const Size direction_;
-
-        TripleBandLinearOp m_, mapX_;
+        const TripleBandLinearOp dxxMap_;
+        TripleBandLinearOp mapT_;
     };
 }
+
 #endif

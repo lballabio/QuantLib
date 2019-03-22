@@ -9,6 +9,7 @@ this_include_HEADERS = \
     fdm1dmesher.hpp \
     fdmblackscholesmesher.hpp \
     fdmblackscholesmultistrikemesher.hpp \
+    fdmcev1dmesher.hpp \
     fdmhestonvariancemesher.hpp \
     fdmmeshercomposite.hpp \
     fdmmesher.hpp \
@@ -22,6 +23,7 @@ cpp_files = \
     exponentialjump1dmesher.cpp \
     fdmblackscholesmesher.cpp \
     fdmblackscholesmultistrikemesher.cpp \
+    fdmcev1dmesher.cpp \
     fdmhestonvariancemesher.cpp \
     fdmmeshercomposite.cpp \
     fdmsimpleprocess1dmesher.cpp \
