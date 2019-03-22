@@ -115,7 +115,7 @@ namespace QuantLib {
             || (y == 2016 && d >= 1 && d <=2 && m == May)
             || (y == 2017 && d == 1 && m == May)
             || (y == 2018 && ((d == 30 && m == April) || (d == 1 && m == May)))
-            || (y == 2019 && d == 1 && m == May)
+            || (y == 2019 && d >= 1 && d <=3 && m == May)
             // Tuen Ng Festival
             || (y <= 2008 && d == 9 && m == June)
             || (y == 2009 && (d == 28 || d == 29) && m == May)
@@ -276,6 +276,8 @@ namespace QuantLib {
             // 2019
             Date(2, February, 2019),
             Date(3, February, 2019),
+            Date(28, April, 2019),
+            Date(5, May, 2019),
             Date(29, September, 2019),
             Date(12, October, 2019)
         };
