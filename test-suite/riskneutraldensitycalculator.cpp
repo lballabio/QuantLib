@@ -736,6 +736,8 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
     BOOST_TEST_MESSAGE("Testing the mass at zero for a "
         "constant elasticity of variance (CEV) process ...");
 
+    using namespace ext::placeholders;
+
     const Real f0 = 100.0;
     const Time t = 2.75;
 

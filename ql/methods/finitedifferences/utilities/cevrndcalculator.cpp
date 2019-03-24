@@ -102,6 +102,7 @@ namespace QuantLib {
     }
 
     Real CEVRNDCalculator::invcdf(Real q, Time t) const {
+        using namespace ext::placeholders;
 
         if (delta_ < 2.0) {
             if (f0_ < QL_EPSILON || q < massAtZero(t))
