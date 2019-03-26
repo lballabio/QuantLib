@@ -41,8 +41,8 @@
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/experimental/models/hestonslvfdmmodel.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
-#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/assign/std/vector.hpp>

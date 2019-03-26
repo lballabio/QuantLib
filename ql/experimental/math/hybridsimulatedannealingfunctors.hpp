@@ -34,19 +34,11 @@ typedef boost::mt19937 base_generator_type;
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/cauchy_distribution.hpp>
-#if BOOST_VERSION >= 104700
 #include <boost/random/uniform_real_distribution.hpp>
 typedef boost::random::uniform_real_distribution<double> uniform;
 typedef boost::random::normal_distribution<> normal_random;
 typedef boost::random::lognormal_distribution<> lognormal_random;
 typedef boost::random::cauchy_distribution<> cauchy_random;
-#else
-#include <boost/random/uniform_real.hpp>
-typedef boost::uniform_real<> uniform;
-typedef boost::normal_distribution<> normal_random;
-typedef boost::lognormal_distribution<> lognormal_random;
-typedef boost::cauchy_distribution<> cauchy_random;
-#endif
 
 #include <boost/random/variate_generator.hpp>
 typedef boost::variate_generator<base_generator_type&, uniform > uniform_variate;

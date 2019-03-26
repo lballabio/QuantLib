@@ -27,7 +27,7 @@ using namespace boost::unit_test_framework;
 
 void TimeGridTest::testConstructorAdditionalSteps()
 {
-    BOOST_TEST_MESSAGE("TimeGrid constructor with additional steps.");
+    BOOST_TEST_MESSAGE("Testing TimeGrid construction with additional steps...");
     std::vector<Time> test_times;
     test_times.push_back(1.0);
     test_times.push_back(2.0);
@@ -46,12 +46,12 @@ void TimeGridTest::testConstructorAdditionalSteps()
     expected_times.push_back(3.5);
     expected_times.push_back(4.0);
     BOOST_CHECK_EQUAL_COLLECTIONS(
-    	tg.begin(), tg.end(), expected_times.begin(), expected_times.end());
+        tg.begin(), tg.end(), expected_times.begin(), expected_times.end());
 }
 
 void TimeGridTest::testConstructorMandatorySteps()
 {
-    BOOST_TEST_MESSAGE("TimeGrid constructor with only mandatory points.");
+    BOOST_TEST_MESSAGE("Testing TimeGrid construction with only mandatory points...");
     std::vector<Time> test_times;
     test_times.push_back(0.0);
     test_times.push_back(1.0);
@@ -62,13 +62,12 @@ void TimeGridTest::testConstructorMandatorySteps()
     // Time grid must include all times from passed iterator.
     // Further no additional times can be added.
     BOOST_CHECK_EQUAL_COLLECTIONS(
-    	tg.begin(), tg.end(), test_times.begin(), test_times.end());
+        tg.begin(), tg.end(), test_times.begin(), test_times.end());
 }
 
 void TimeGridTest::testConstructorEvenSteps()
 {
-    BOOST_TEST_MESSAGE(
-    	"Test TimeGrid construction with n evenly spaced points");
+    BOOST_TEST_MESSAGE("Testing TimeGrid construction with n evenly spaced points...");
     
     Time end_time = 10;
     Size steps = 5;
@@ -82,14 +81,14 @@ void TimeGridTest::testConstructorEvenSteps()
     expected_times.push_back(10.0);
     
     BOOST_CHECK_EQUAL_COLLECTIONS(
-    	tg.begin(), tg.end(), expected_times.begin(), expected_times.end()
+        tg.begin(), tg.end(), expected_times.begin(), expected_times.end()
     );
 }
 
 void TimeGridTest::testConstructorEmptyIterator()
 {
     BOOST_TEST_MESSAGE(
-    	"Test if the constructor raises an error for empty iterators."
+        "Testing that the TimeGrid constructor raises an error for empty iterators..."
     );
     
     const std::vector<Time> times;
@@ -99,7 +98,7 @@ void TimeGridTest::testConstructorEmptyIterator()
 void TimeGridTest::testConstructorNegativeValuesInIterator()
 {
     BOOST_TEST_MESSAGE(
-    	"Test if the constructor raises an error for negative time values."
+        "Testing that the TimeGrid constructor raises an error for negative time values..."
     );
     
     std::vector<Time> times;
@@ -112,7 +111,7 @@ void TimeGridTest::testConstructorNegativeValuesInIterator()
 
 void TimeGridTest::testClosestIndex()
 {
-    BOOST_TEST_MESSAGE("Test returned index is closest to the requested time."
+    BOOST_TEST_MESSAGE("Testing that the returned index is closest to the requested time..."
     );
     std::vector<Time> test_times;
     test_times.push_back(1.0);
@@ -122,13 +121,13 @@ void TimeGridTest::testClosestIndex()
     const Size expected_index = 3;
     
     QL_ASSERT(tg.closestIndex(4) == expected_index,
-    	"Expected index: " << expected_index << ", which does not match " <<
-    	"the returned index: " << tg.closestIndex(4));
+              "Expected index: " << expected_index << ", which does not match " <<
+              "the returned index: " << tg.closestIndex(4));
 }
 
 void TimeGridTest::testClosestTime()
 {
-    BOOST_TEST_MESSAGE("Test returned time matches to the requested index.");
+    BOOST_TEST_MESSAGE("Testing that the returned time matches the requested index...");
     std::vector<Time> test_times;
     test_times.push_back(1.0);
     test_times.push_back(2.0);
@@ -137,13 +136,13 @@ void TimeGridTest::testClosestTime()
     const Size expected_time = 5;
     
     QL_ASSERT(tg.closestTime(4) == expected_time,
-    	"Expected time of: " << expected_time << ", which does not match " <<
-    	"the returned time: " << tg.closestTime(4));
+              "Expected time of: " << expected_time << ", which does not match " <<
+              "the returned time: " << tg.closestTime(4));
 }
 
 void TimeGridTest::testMandatoryTimes()
 {
-    BOOST_TEST_MESSAGE("Test mandatory times are recalled correctly.");
+    BOOST_TEST_MESSAGE("Testing that mandatory times are recalled correctly...");
     std::vector<Time> test_times;
     test_times.push_back(1.0);
     test_times.push_back(2.0);
@@ -153,8 +152,8 @@ void TimeGridTest::testMandatoryTimes()
     // Mandatory times are those provided by the original iterator.
     const std::vector<Time> tg_mandatory_times = tg.mandatoryTimes();
     BOOST_CHECK_EQUAL_COLLECTIONS(
-    	tg_mandatory_times.begin(), tg_mandatory_times.end(),
-    	test_times.begin(), test_times.end());
+        tg_mandatory_times.begin(), tg_mandatory_times.end(),
+        test_times.begin(), test_times.end());
 }
 
 test_suite* TimeGridTest::suite()

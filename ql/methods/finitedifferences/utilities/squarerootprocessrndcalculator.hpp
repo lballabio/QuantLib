@@ -19,33 +19,30 @@
 */
 
 /*! \file bsmrndcalculator.hpp
-    \brief risk neutral terminal density calculator for the
-           Black-Scholes-Merton model with constant volatility
+    \brief risk neutral terminal density calculator for the square root process
 */
 
-#ifndef quantlib_bsm_risk_neutral_density_calculator_hpp
-#define quantlib_bsm_risk_neutral_density_calculator_hpp
+#ifndef quantlib_square_root_process_risk_neutral_density_calculator_hpp
+#define quantlib_square_root_process_risk_neutral_density_calculator_hpp
 
-#include <ql/experimental/finitedifferences/riskneutraldensitycalculator.hpp>
-#include <ql/shared_ptr.hpp>
+#include <ql/methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp>
 
 namespace QuantLib {
-    class GeneralizedBlackScholesProcess;
+    class SquareRootProcessRNDCalculator : public RiskNeutralDensityCalculator {
+      public:
+        SquareRootProcessRNDCalculator(
+            Real v0, Real kappa, Real theta, Real sigma);
 
-    class BSMRNDCalculator : public RiskNeutralDensityCalculator {
-    public:
-        explicit BSMRNDCalculator(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-
-        // x = ln(S)
-        Real pdf(Real x, Time t) const;
-        Real cdf(Real x, Time t) const;
+        Real pdf(Real v, Time t) const;
+        Real cdf(Real v, Time t) const;
         Real invcdf(Real q, Time t) const;
 
-    private:
-        std::pair<Real, Volatility> distributionParams(Real x, Time t) const;
+        Real stationary_pdf(Real v) const;
+        Real stationary_cdf(Real v) const;
+        Real stationary_invcdf(Real q) const;
 
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+      private:
+        const Real v0_, kappa_, theta_, d_, df_;
     };
 }
 

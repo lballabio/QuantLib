@@ -8,6 +8,7 @@ this_include_HEADERS = \
     analyticdigitalamericanengine.hpp \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
+    analyticcevengine.hpp \
     analyticgjrgarchengine.hpp \
     analytich1hwengine.hpp \
     analytichestonengine.hpp \
@@ -27,6 +28,7 @@ this_include_HEADERS = \
 	fdbatesvanillaengine.hpp \
     fdbermudanengine.hpp \
 	fdblackscholesvanillaengine.hpp \
+	fdcevvanillaengine.hpp \
     fddividendamericanengine.hpp \
     fddividendengine.hpp \
     fddividendeuropeanengine.hpp \
@@ -35,6 +37,7 @@ this_include_HEADERS = \
 	fdhestonhullwhitevanillaengine.hpp \
 	fdhestonvanillaengine.hpp \
     fdmultiperiodengine.hpp \
+    fdsabrvanillaengine.hpp \
     fdshoutengine.hpp \
 	fdsimplebsswingengine.hpp \
     fdstepconditionengine.hpp \
@@ -53,6 +56,7 @@ cpp_files = \
     analyticdigitalamericanengine.cpp \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
+    analyticcevengine.cpp \
     analyticgjrgarchengine.cpp \
     analytich1hwengine.cpp \
     analytichestonengine.cpp \
@@ -69,8 +73,10 @@ cpp_files = \
     juquadraticengine.cpp \
 	fdbatesvanillaengine.cpp \
 	fdblackscholesvanillaengine.cpp \
+	fdcevvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdhestonvanillaengine.cpp \
+	fdsabrvanillaengine.cpp \
 	fdsimplebsswingengine.cpp \
     fdvanillaengine.cpp \
     mcamericanengine.cpp \

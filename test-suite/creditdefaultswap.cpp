@@ -466,7 +466,7 @@ void CreditDefaultSwapTest::testFairSpread() {
     fairCds.setPricingEngine(engine);
 
     Real fairNPV = fairCds.NPV();
-    Real tolerance = 1e-10;
+    Real tolerance = 1e-9;
 
     if (std::fabs(fairNPV) > tolerance)
         BOOST_ERROR(
@@ -534,7 +534,7 @@ void CreditDefaultSwapTest::testFairUpfront() {
     fairCds.setPricingEngine(engine);
 
     Real fairNPV = fairCds.NPV();
-    Real tolerance = 1e-10;
+    Real tolerance = 1e-9;
 
     if (std::fabs(fairNPV) > tolerance)
         BOOST_ERROR(

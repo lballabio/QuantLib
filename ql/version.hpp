@@ -31,15 +31,15 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "1.15-debug"
+    #define QL_VERSION "1.16-debug"
 #else
-    #define QL_VERSION "1.15"
+    #define QL_VERSION "1.16"
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x011500f0
+#define QL_HEX_VERSION 0x011600f0
 //! version string for output lib name
-#define QL_LIB_VERSION "1_15"
+#define QL_LIB_VERSION "1_16"
 
 /*! @}  */
 

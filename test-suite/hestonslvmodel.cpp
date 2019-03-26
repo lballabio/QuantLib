@@ -80,8 +80,8 @@
 #include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
-#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>

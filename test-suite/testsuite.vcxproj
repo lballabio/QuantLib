@@ -636,6 +636,7 @@
     <ClCompile Include="assetswap.cpp" />
     <ClCompile Include="autocovariances.cpp" />
     <ClCompile Include="barrieroption.cpp" />
+    <ClCompile Include="basismodels.cpp" />
     <ClCompile Include="basketoption.cpp" />
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
@@ -677,6 +678,8 @@
     <ClCompile Include="exchangerate.cpp" />
     <ClCompile Include="extendedtrees.cpp" />
     <ClCompile Include="extensibleoptions.cpp" />
+    <ClCompile Include="fdcev.cpp" />
+    <ClCompile Include="fdsabr.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />
@@ -785,6 +788,7 @@
     <ClInclude Include="assetswap.hpp" />
     <ClInclude Include="autocovariances.hpp" />
     <ClInclude Include="barrieroption.hpp" />
+    <ClInclude Include="basismodels.hpp" />
     <ClInclude Include="basketoption.hpp" />
     <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />
@@ -826,6 +830,8 @@
     <ClInclude Include="exchangerate.hpp" />
     <ClInclude Include="extendedtrees.hpp" />
     <ClInclude Include="extensibleoptions.hpp" />
+    <ClInclude Include="fdcev.hpp" />
+    <ClInclude Include="fdsabr.hpp" />
     <ClInclude Include="functions.hpp" />
     <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />

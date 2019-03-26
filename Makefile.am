@@ -20,7 +20,7 @@ EXTRA_DIST = \
 	CMakeLists.txt \
 	Contributors.txt \
 	LICENSE.TXT \
-	News.txt \
+	News.md \
 	QuantLib.props \
 	QuantLib.spec \
 	QuantLib.sln \
