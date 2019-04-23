@@ -360,7 +360,6 @@ void ScheduleTest::testFourWeeksTenor() {
     }
 }
 
-
 void ScheduleTest::testScheduleAlwaysHasAStartDate() {
     BOOST_TEST_MESSAGE("Testing that variations of MakeSchedule "
                        "always produce a schedule with a start date...");
@@ -397,6 +396,23 @@ void ScheduleTest::testScheduleAlwaysHasAStartDate() {
               "The first element should always be the start date");
 }
 
+void ScheduleTest::testShortEomSchedule() {
+    BOOST_TEST_MESSAGE("Testing short eom schedule...");
+    Schedule s;
+    // seg-faults in 1.15
+    BOOST_REQUIRE_NO_THROW(s = MakeSchedule()
+                                   .from(Date(21, Feb, 2019))
+                                   .to(Date(28, Feb, 2019))
+                                   .withCalendar(TARGET())
+                                   .withTenor(1 * Years)
+                                   .withConvention(ModifiedFollowing)
+                                   .withTerminationDateConvention(ModifiedFollowing)
+                                   .backwards()
+                                   .endOfMonth(true));
+    BOOST_REQUIRE(s.size() == 2);
+    BOOST_CHECK(s[0] == Date(21, Feb, 2019));
+    BOOST_CHECK(s[1] == Date(28, Feb, 2019));
+}
 
 test_suite* ScheduleTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Schedule tests");
@@ -415,7 +431,7 @@ test_suite* ScheduleTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015Convention));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDateConstructor));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFourWeeksTenor));
-    suite->add(QUANTLIB_TEST_CASE(
-                           &ScheduleTest::testScheduleAlwaysHasAStartDate));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testScheduleAlwaysHasAStartDate));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testShortEomSchedule));
     return suite;
 }
