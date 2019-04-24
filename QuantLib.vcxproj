@@ -1485,6 +1485,7 @@
     <ClInclude Include="ql\time\calendars\czechrepublic.hpp" />
     <ClInclude Include="ql\time\calendars\denmark.hpp" />
     <ClInclude Include="ql\time\calendars\finland.hpp" />
+    <ClInclude Include="ql\time\calendars\france.hpp" />
     <ClInclude Include="ql\time\calendars\germany.hpp" />
     <ClInclude Include="ql\time\calendars\hongkong.hpp" />
     <ClInclude Include="ql\time\calendars\hungary.hpp" />
@@ -2480,6 +2481,7 @@
     <ClCompile Include="ql\time\calendars\czechrepublic.cpp" />
     <ClCompile Include="ql\time\calendars\denmark.cpp" />
     <ClCompile Include="ql\time\calendars\finland.cpp" />
+    <ClCompile Include="ql\time\calendars\france.cpp" />
     <ClCompile Include="ql\time\calendars\germany.cpp" />
     <ClCompile Include="ql\time\calendars\hongkong.cpp" />
     <ClCompile Include="ql\time\calendars\hungary.cpp" />
