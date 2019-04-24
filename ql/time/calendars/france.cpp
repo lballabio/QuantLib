@@ -86,26 +86,21 @@ namespace QuantLib {
         if (isWeekend(w)
             // Jour de l'An
             || (d == 1 && m == January)
-            // Lundi de Paques
+            // Good Friday
+            || (dd == em-3)
+            // Easter Monday
             || (dd == em)
-            // Fete du Travail
+            // Labor Day
             || (d == 1 && m == May)
-            // Victoire 1945
-            || (d == 8 && m == May)
-            // Ascension
-            || (d == 10 && m == May)
-            // Pentecote
-            || (d == 21 && m == May)
-            // Fete nationale
-            || (d == 14 && m == July)
-            // Assomption
-            || (d == 15 && m == August)
-            // Toussaint
-            || (d == 1 && m == November)
-            // Armistice 1918
-            || (d == 11 && m == November)
-            // Noel
-            || (d == 25 && m == December))
+            // Christmas Eve
+            || (d == 24 && m == December)
+            // Christmas Day
+            || (d == 25 && m == December)
+            // Boxing Day
+            || (d == 26 && m == December)
+            // New Year's Eeve
+            || (d == 31 && m == December))
+         
             return false;
         return true;
     }
