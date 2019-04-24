@@ -62,9 +62,6 @@ namespace QuantLib {
         </ul>
 
         \ingroup calendars
-
-        \test the correctness of the returned results is tested against a
-              list of known holidays.
     */
     class France : public Calendar {
       private:
@@ -83,7 +80,7 @@ namespace QuantLib {
         enum Market { Settlement,     //!< generic settlement calendar
                       Exchange        //!< Paris stock-exchange calendar
         };
-        France(Market market = Settlement);
+        explicit France(Market market = Settlement);
     };
 
 }
