@@ -63,16 +63,16 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
+        L_ = getLeverageFctSlice(t1, t2);
+        const Array Lsquare = L_*L_;
+
         if (quantoHelper_) {
-            mapT_.axpyb(r - q - varianceValues_
+            mapT_.axpyb(r - q - varianceValues_*Lsquare
                 - quantoHelper_->quantoAdjustment(
-                volatilityValues_, t1, t2),
-                dxMap_, dxxMap_, Array(1, -0.5*r));
+                    volatilityValues_*L_, t1, t2),
+                dxMap_, dxxMap_.mult(Lsquare), Array(1, -0.5*r));
         }
         else {
-            L_ = getLeverageFctSlice(t1, t2);
-            const Array Lsquare = L_*L_;
-
             mapT_.axpyb(r - q - varianceValues_*Lsquare, dxMap_,
                         dxxMap_.mult(Lsquare), Array(1, -0.5*r));
         }

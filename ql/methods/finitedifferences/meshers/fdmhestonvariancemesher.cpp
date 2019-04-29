@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, s2019 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,10 +20,23 @@
 */
 
 #include <ql/math/functional.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++11-extensions"
+#endif
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/weighted_mean.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 #include <set>
 #include <algorithm>
@@ -90,7 +103,7 @@ namespace QuantLib {
             QL_REQUIRE(grid.size() == size*tAvgSteps, 
                        "something wrong with the grid size");
             
-            std::vector<std::pair<Real, Real> > tp(grid.begin(), grid.end());
+            const std::vector<std::pair<Real, Real> > tp(grid.begin(), grid.end());
 
             for (Size i=0; i < size; ++i) {
                 const Size b = (i*tp.size())/size;
@@ -141,5 +154,65 @@ namespace QuantLib {
             dminus_[i+1] = dplus_[i] = vGrid[i+1] - vGrid[i];
         }
         dplus_.back() = dminus_.front() = Null<Real>();
+    }
+
+
+    FdmHestonLocalVolatiliyVarianceMesher::FdmHestonLocalVolatiliyVarianceMesher(
+        Size size,
+        const ext::shared_ptr<HestonProcess>& process,
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+        Time maturity, Size tAvgSteps, Real epsilon)
+     : Fdm1dMesher(size) {
+
+        const FdmHestonVarianceMesher mesher(
+            size, process, maturity, tAvgSteps, epsilon);
+
+        for (Size i=0; i < size; ++i) {
+            dplus_[i] = mesher.dplus(i);
+            dminus_[i] = mesher.dminus(i);
+            locations_[i] = mesher.location(i);
+        }
+
+        volaEstimate_ = mesher.volaEstimate();
+
+        if (leverageFct) {
+            typedef boost::accumulators::accumulator_set<
+                Real, boost::accumulators::stats<
+                    boost::accumulators::tag::weighted_mean>, Real>
+                accumulator_set;
+
+            accumulator_set acc;
+
+            const Real s0 = process->s0()->value();
+
+            acc(leverageFct->localVol(0, s0, true),
+                boost::accumulators::weight = 1.0);
+
+            const Handle<YieldTermStructure> rTS = process->riskFreeRate();
+            const Handle<YieldTermStructure> qTS = process->dividendYield();
+
+            for (Size l=1; l <= tAvgSteps; ++l) {
+                const Real t = (maturity*l)/tAvgSteps;
+                const Real vol = volaEstimate_ * boost::accumulators::mean(acc);
+
+                const Real fwd = s0*qTS->discount(t)/rTS->discount(t);
+
+                const Size sAvgSteps = 20;
+
+                for (Size i=0; i < sAvgSteps; ++i) {
+                    const Real q = epsilon
+                        + ((1-2*epsilon)/(sAvgSteps-1))*i;
+                    const Real x = InverseCumulativeNormal()(q);
+                    const Real p = NormalDistribution()(x);
+
+                    const Real gf = x * vol*std::sqrt(t);
+                    const Real f = fwd*std::exp(gf);
+
+                    acc(leverageFct->localVol(t, f, true),
+                        boost::accumulators::weight = p);
+                }
+            }
+            volaEstimate_ *= boost::accumulators::weighted_mean(acc);
+        }
     }
 }

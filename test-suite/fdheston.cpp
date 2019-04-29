@@ -31,6 +31,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
@@ -41,7 +42,6 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
 #include <boost/assign/std/vector.hpp>
-
 #include <boost/tuple/tuple.hpp>
 
 using namespace QuantLib;
@@ -80,8 +80,10 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
             Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
             0.09, 1.0, 0.09, 0.2, -0.5));
 
-    const std::vector<Real> locations =
-        FdmHestonVarianceMesher(5, process, 1.0).locations();
+    const ext::shared_ptr<FdmHestonVarianceMesher> mesher
+        = ext::make_shared<FdmHestonVarianceMesher>(5, process, 1.0);
+
+    const std::vector<Real> locations = mesher->locations();
 
     const Real expected[] = {
         0.0, 6.652314e-02, 9.000000e-02, 1.095781e-01, 2.563610e-01
@@ -99,6 +101,27 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
                         << "\n    difference  " << diff
                         << "\n    tolerance:  " << tol);
         }
+    }
+
+    const ext::shared_ptr<LocalVolTermStructure> lVol =
+        ext::make_shared<LocalConstantVol>(today, 2.5, dc);
+
+    const ext::shared_ptr<FdmHestonLocalVolatiliyVarianceMesher> slvMesher
+        = ext::make_shared<FdmHestonLocalVolatiliyVarianceMesher>
+              (5, process, lVol, 1.0);
+
+    const Real expectedVol = 2.5 * mesher->volaEstimate();
+    const Real calculatedVol = slvMesher->volaEstimate();
+
+    const Real diff = std::fabs(calculatedVol - expectedVol);
+    if (std::fabs(expectedVol - calculatedVol) > tol) {
+        BOOST_ERROR("Failed to reproduce Heston local volatility "
+                "variance estimate"
+                    << "\n    calculated: " << calculatedVol
+                    << "\n    expected:   " << expectedVol
+                    << std::scientific
+                    << "\n    difference  " << diff
+                    << "\n    tolerance:  " << tol);
     }
 }
 

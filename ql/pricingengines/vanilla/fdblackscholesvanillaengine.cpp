@@ -22,6 +22,7 @@
 #include <ql/exercise.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -38,12 +39,30 @@ namespace QuantLib {
             bool localVol, Real illegalLocalVolOverwrite)
     : process_(process),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc), 
+      schemeDesc_(schemeDesc),
       localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
 
         registerWith(process_);
     }
+
+    FdBlackScholesVanillaEngine::FdBlackScholesVanillaEngine(
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
+            Size tGrid, Size xGrid, Size dampingSteps,
+            const FdmSchemeDesc& schemeDesc,
+            bool localVol, Real illegalLocalVolOverwrite)
+    : process_(process),
+      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), 
+      localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
+      quantoHelper_(quantoHelper) {
+
+        registerWith(process_);
+        registerWith(quantoHelper_);
+    }
+
 
     void FdBlackScholesVanillaEngine::calculate() const {
 
@@ -53,11 +72,12 @@ namespace QuantLib {
 
         const Time maturity = process_->time(arguments_.exercise->lastDate());
         const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+            ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_, process_, maturity, payoff->strike(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(payoff->strike(), 0.1),
-                    arguments_.cashFlow));
+                    arguments_.cashFlow,
+                    quantoHelper_));
         
         const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher));
@@ -82,10 +102,11 @@ namespace QuantLib {
                                      maturity, tGrid_, dampingSteps_ };
 
         const ext::shared_ptr<FdmBlackScholesSolver> solver(
-                new FdmBlackScholesSolver(
-                             Handle<GeneralizedBlackScholesProcess>(process_),
-                             payoff->strike(), solverDesc, schemeDesc_,
-                             localVol_, illegalLocalVolOverwrite_));
+            ext::make_shared<FdmBlackScholesSolver>(
+                Handle<GeneralizedBlackScholesProcess>(process_),
+                payoff->strike(), solverDesc, schemeDesc_,
+                localVol_, illegalLocalVolOverwrite_,
+                Handle<FdmQuantoHelper>(quantoHelper_)));
 
         const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);
