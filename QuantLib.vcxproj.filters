@@ -2808,9 +2808,6 @@
     <ClInclude Include="ql\time\daycounters\actual365fixed.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
-    <ClInclude Include="ql\time\daycounters\actual365nl.hpp">
-      <Filter>time\daycounters</Filter>
-    </ClInclude>
     <ClInclude Include="ql\time\daycounters\actualactual.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>

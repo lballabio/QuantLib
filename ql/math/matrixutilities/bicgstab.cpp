@@ -92,8 +92,4 @@ namespace QuantLib {
         return result;
     }
 
-    Real BiCGstab::norm2(const Array& a) const {
-        return Norm2(a);
-    }
-
 }
