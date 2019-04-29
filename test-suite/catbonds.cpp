@@ -20,7 +20,9 @@
 #include "catbonds.hpp"
 #include "utilities.hpp"
 #include <ql/types.hpp>
-#include <ql/experimental/catbonds/all.hpp>
+#include <ql/experimental/catbonds/catbond.hpp>
+#include <ql/experimental/catbonds/catrisk.hpp>
+#include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>

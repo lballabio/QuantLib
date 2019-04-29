@@ -25,20 +25,22 @@
 #include <ql/experimental/basismodels/tenorswaptionvts.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/swaption.hpp>
-#include <ql/math/interpolations/all.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/termstructures/volatility/optionlet/all.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/yield/all.hpp>
-#include <ql/time/all.hpp>
-#include <ql/types.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 namespace {
 
-    // auxilliary data
+    // auxiliary data
     Period termsData[] = {
         Period(0, Days),   Period(1, Years), Period(2, Years),  Period(3, Years),
         Period(5, Years),  Period(7, Years), Period(10, Years), Period(15, Years),
