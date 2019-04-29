@@ -32,7 +32,7 @@
 #pragma clang diagnostic ignored "-Wc++11-extensions"
 #endif
 #include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/weighted_mean.hpp>
+#include <boost/accumulators/statistics/mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
 #if defined(__clang__)
 #pragma clang diagnostic pop
@@ -50,7 +50,7 @@ namespace QuantLib {
                                     const std::vector<Real>& vGrid)
             : variance(pGrid.begin(), pGrid.end(), vGrid.begin()) {}
             Real operator()(Real x) const {
-                return std::sqrt(variance(x));
+                return std::sqrt(variance(x, true));
             }
             LinearInterpolation variance;
         };
@@ -136,7 +136,7 @@ namespace QuantLib {
         std::sort(pGrid.begin(), pGrid.end());
         volaEstimate_ = GaussLobattoIntegral(100000, 1e-4)(
             interpolated_volatility(pGrid, vGrid),
-            pGrid.front(), pGrid.back())*std::pow(skewHint, 1.5);
+                pGrid.front(), pGrid.back())*std::pow(skewHint, 1.5);
 
         const Real v0 = process->v0();
         for (Size i=1; i<vGrid.size(); ++i) {
@@ -178,15 +178,14 @@ namespace QuantLib {
         if (leverageFct) {
             typedef boost::accumulators::accumulator_set<
                 Real, boost::accumulators::stats<
-                    boost::accumulators::tag::weighted_mean>, Real>
+                    boost::accumulators::tag::mean> >
                 accumulator_set;
 
             accumulator_set acc;
 
             const Real s0 = process->s0()->value();
 
-            acc(leverageFct->localVol(0, s0, true),
-                boost::accumulators::weight = 1.0);
+            acc(leverageFct->localVol(0, s0, true));
 
             const Handle<YieldTermStructure> rTS = process->riskFreeRate();
             const Handle<YieldTermStructure> qTS = process->dividendYield();
@@ -199,20 +198,26 @@ namespace QuantLib {
 
                 const Size sAvgSteps = 20;
 
+                std::vector<Real> u(sAvgSteps), sig(sAvgSteps);
+
                 for (Size i=0; i < sAvgSteps; ++i) {
-                    const Real q = epsilon
-                        + ((1-2*epsilon)/(sAvgSteps-1))*i;
-                    const Real x = InverseCumulativeNormal()(q);
-                    const Real p = NormalDistribution()(x);
+                    u[i] = epsilon + ((1-2*epsilon)/(sAvgSteps-1))*i;
+                    const Real x = InverseCumulativeNormal()(u[i]);
 
                     const Real gf = x * vol*std::sqrt(t);
                     const Real f = fwd*std::exp(gf);
 
-                    acc(leverageFct->localVol(t, f, true),
-                        boost::accumulators::weight = p);
+                    sig[i] = square<Real>()(leverageFct->localVol(t, f, true));
                 }
+
+                const Real leverageAvg =
+                    GaussLobattoIntegral(10000, 1e-4)(
+                        interpolated_volatility(u, sig), u.front(), u.back())
+                    / (1-2*epsilon);
+
+                acc(leverageAvg);
             }
-            volaEstimate_ *= boost::accumulators::weighted_mean(acc);
+            volaEstimate_ *= boost::accumulators::mean(acc);
         }
     }
 }

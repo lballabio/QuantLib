@@ -21,6 +21,7 @@
 #include "fdheston.hpp"
 #include "utilities.hpp"
 
+#include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -61,6 +62,33 @@ namespace {
         Rate r;        // risk-free rate
         Time t;        // time to maturity
         Volatility v;  // volatility
+    };
+
+    class ParableLocalVolatility : public LocalVolTermStructure {
+      public:
+        ParableLocalVolatility(
+            const Date& referenceDate,
+            Real f0,
+            Real alpha,
+            const DayCounter& dayCounter)
+        : referenceDate_(referenceDate),
+          f0_(f0),
+          alpha_(alpha),
+          dayCounter_(dayCounter) {}
+
+            Date maxDate() const   { return Date::maxDate(); }
+            Real minStrike() const { return 0.0; }
+            Real maxStrike() const { return std::numeric_limits<Real>::max(); }
+
+      protected:
+        Volatility localVolImpl(Time t, Real strike) const {
+            return alpha_*square<Real>()(f0_ - strike);
+        }
+
+      private:
+        const Date referenceDate_;
+        const Real f0_, alpha_;
+        const DayCounter dayCounter_;
     };
 }
 
@@ -106,12 +134,12 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
     const ext::shared_ptr<LocalVolTermStructure> lVol =
         ext::make_shared<LocalConstantVol>(today, 2.5, dc);
 
-    const ext::shared_ptr<FdmHestonLocalVolatiliyVarianceMesher> slvMesher
+    const ext::shared_ptr<FdmHestonLocalVolatiliyVarianceMesher> constSlvMesher
         = ext::make_shared<FdmHestonLocalVolatiliyVarianceMesher>
               (5, process, lVol, 1.0);
 
     const Real expectedVol = 2.5 * mesher->volaEstimate();
-    const Real calculatedVol = slvMesher->volaEstimate();
+    const Real calculatedVol = constSlvMesher->volaEstimate();
 
     const Real diff = std::fabs(calculatedVol - expectedVol);
     if (std::fabs(expectedVol - calculatedVol) > tol) {
@@ -123,6 +151,18 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
                     << "\n    difference  " << diff
                     << "\n    tolerance:  " << tol);
     }
+
+    const ext::shared_ptr<FdmHestonLocalVolatiliyVarianceMesher> slvMesher
+        = ext::make_shared<FdmHestonLocalVolatiliyVarianceMesher>(5,
+              ext::make_shared<HestonProcess>(
+                      Handle<YieldTermStructure>(flatRate(0.0, dc)),
+                      Handle<YieldTermStructure>(flatRate(0.0, dc)),
+                      Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+                      0.25, 1.0, 0.25, 1e-4, 0),
+              ext::make_shared<ParableLocalVolatility>(today, 100.0, 0.01, dc),
+              1.0, 1);
+
+
 }
 
 void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
