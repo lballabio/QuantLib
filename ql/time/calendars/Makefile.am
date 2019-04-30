@@ -14,6 +14,7 @@ this_include_HEADERS = \
 	czechrepublic.hpp \
 	denmark.hpp \
 	finland.hpp \
+	france.hpp \
 	germany.hpp \
 	hongkong.hpp \
 	hungary.hpp \
@@ -58,6 +59,7 @@ cpp_files = \
 	czechrepublic.cpp \
 	denmark.cpp \
 	finland.cpp \
+	france.cpp \
 	germany.cpp \
 	hongkong.cpp \
 	hungary.cpp \
