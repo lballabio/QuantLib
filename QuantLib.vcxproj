@@ -1520,7 +1520,6 @@
     <ClInclude Include="ql\time\calendars\weekendsonly.hpp" />
     <ClInclude Include="ql\time\daycounters\actual360.hpp" />
     <ClInclude Include="ql\time\daycounters\actual365fixed.hpp" />
-    <ClInclude Include="ql\time\daycounters\actual365nl.hpp" />
     <ClInclude Include="ql\time\daycounters\actualactual.hpp" />
     <ClInclude Include="ql\time\daycounters\all.hpp" />
     <ClInclude Include="ql\time\daycounters\business252.hpp" />
