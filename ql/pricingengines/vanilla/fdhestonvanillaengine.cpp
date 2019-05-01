@@ -89,13 +89,13 @@ namespace QuantLib {
                 new FdmBlackScholesMesher(
                     xGrid_, 
                     FdmBlackScholesMesher::processHelper(
-                      process->s0(), process->dividendYield(), 
-                      process->riskFreeRate(), avgVolaEstimate),
-                      maturity, payoff->strike(),
-                      Null<Real>(), Null<Real>(), 0.0001, 2.0,
-                      std::pair<Real, Real>(payoff->strike(), 0.1),
-                      arguments_.cashFlow,
-                      quantoHelper_));
+                        process->s0(), process->dividendYield(),
+                        process->riskFreeRate(), avgVolaEstimate),
+                    maturity, payoff->strike(),
+                    Null<Real>(), Null<Real>(), 0.0001, 2.0,
+                    std::pair<Real, Real>(payoff->strike(), 0.1),
+                    arguments_.cashFlow,
+                    quantoHelper_));
         }
         else {
             QL_REQUIRE(arguments_.cashFlow.empty(),"multiple strikes engine "

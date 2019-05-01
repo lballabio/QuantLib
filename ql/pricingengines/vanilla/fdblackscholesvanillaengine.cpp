@@ -72,7 +72,7 @@ namespace QuantLib {
 
         const Time maturity = process_->time(arguments_.exercise->lastDate());
         const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            ext::make_shared<FdmBlackScholesMesher>(
+            new FdmBlackScholesMesher(
                     xGrid_, process_, maturity, payoff->strike(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(payoff->strike(), 0.1),

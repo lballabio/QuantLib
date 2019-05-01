@@ -1115,13 +1115,13 @@ void QuantoOptionTest::testFDMQuantoHelper()  {
     const Real eps = 0.0002;
     const Real scalingFactor = 1.25;
 
-    const ext::shared_ptr<FdmBlackScholesMesher> mesher =
-        ext::make_shared<FdmBlackScholesMesher>(
+    const ext::shared_ptr<FdmBlackScholesMesher> mesher(
+        new FdmBlackScholesMesher(
             3, bsmProcess, maturityTime, s,
             Null<Real>(), Null<Real>(), eps, scalingFactor,
             std::pair<Real, Real>(Null<Real>(), Null<Real>()),
             DividendSchedule(),
-            fdmQuantoHelper);
+            fdmQuantoHelper));
 
     const Real normInvEps = InverseCumulativeNormal()(1-eps);
     const Real sigmaSqrtT = vol * std::sqrt(maturityTime);
