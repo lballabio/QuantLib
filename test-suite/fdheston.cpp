@@ -164,8 +164,7 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
         ext::make_shared<FdmHestonVarianceMesher>(5, process, 0.5, 1, 0.01)->
             volaEstimate();
 
-    const Real vEst = leverageFct->localVol(0, 100) * initialVolEstimate;
-
+    // const Real vEst = leverageFct->localVol(0, 100) * initialVolEstimate;
     // Mathematica solution
     //    N[Integrate[
     //      alpha*((100*Exp[vEst*x*Sqrt[0.5]] - 100)^2 + 25)*
