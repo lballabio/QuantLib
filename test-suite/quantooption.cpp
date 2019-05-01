@@ -1205,7 +1205,7 @@ void QuantoOptionTest::testPDEOptionValues()  {
 
         const ext::shared_ptr<StrikedTypePayoff> payoff
             = ext::make_shared<PlainVanillaPayoff>(
-                values[i].type, values[i].strike);
+                values[i].type, strike);
         const Date exDate = today + Integer(values[i].t*360+0.5);
         const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
@@ -1230,8 +1230,6 @@ void QuantoOptionTest::testPDEOptionValues()  {
                          ext::make_shared<SimpleQuote>(equityFxCorrelation)));
 
         option.setPricingEngine(analyticEngine);
-
-        const Real analyticNPV = option.NPV();
 
         expected["npv"]   = option.NPV();
         expected["delta"] = option.delta();
