@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008, s2019 Klaus Spanderen
+ Copyright (C) 2008, 2019 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,7 +44,6 @@
 namespace QuantLib {
 
     namespace {
-
         struct interpolated_volatility {
             interpolated_volatility(const std::vector<Real>& pGrid,
                                     const std::vector<Real>& vGrid)
@@ -54,7 +53,6 @@ namespace QuantLib {
             }
             LinearInterpolation variance;
         };
-
     }
 
     FdmHestonVarianceMesher::FdmHestonVarianceMesher(
@@ -196,7 +194,7 @@ namespace QuantLib {
 
                 const Real fwd = s0*qTS->discount(t)/rTS->discount(t);
 
-                const Size sAvgSteps = 20;
+                const Size sAvgSteps = 50;
 
                 std::vector<Real> u(sAvgSteps), sig(sAvgSteps);
 
@@ -204,7 +202,7 @@ namespace QuantLib {
                     u[i] = epsilon + ((1-2*epsilon)/(sAvgSteps-1))*i;
                     const Real x = InverseCumulativeNormal()(u[i]);
 
-                    const Real gf = x * vol*std::sqrt(t);
+                    const Real gf = x*vol*std::sqrt(t);
                     const Real f = fwd*std::exp(gf);
 
                     sig[i] = square<Real>()(leverageFct->localVol(t, f, true));
