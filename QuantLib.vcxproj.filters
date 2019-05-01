@@ -2706,6 +2706,9 @@
     <ClInclude Include="ql\time\calendars\finland.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\france.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\calendars\germany.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
@@ -2806,9 +2809,6 @@
       <Filter>time\daycounters</Filter>
     </ClInclude>
     <ClInclude Include="ql\time\daycounters\actual365fixed.hpp">
-      <Filter>time\daycounters</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\time\daycounters\actual365nl.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
     <ClInclude Include="ql\time\daycounters\actualactual.hpp">
@@ -5737,6 +5737,9 @@
       <Filter>time\calendars</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\calendars\finland.cpp">
+      <Filter>time\calendars</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\calendars\france.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\calendars\germany.cpp">

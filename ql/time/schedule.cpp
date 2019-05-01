@@ -391,16 +391,23 @@ namespace QuantLib {
                 for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
             }
+            Date d1 = dates_.front(), d2 = dates_.back();
             if (terminationDateConvention != Unadjusted) {
-                dates_.front() = calendar_.endOfMonth(dates_.front());
-                dates_.back() = calendar_.endOfMonth(dates_.back());
+                d1 = calendar_.endOfMonth(dates_.front());
+                d2 = calendar_.endOfMonth(dates_.back());
             } else {
                 // the termination date is the first if going backwards,
                 // the last otherwise.
                 if (*rule_ == DateGeneration::Backward)
-                    dates_.back() = Date::endOfMonth(dates_.back());
+                    d2 = Date::endOfMonth(dates_.back());
                 else
-                    dates_.front() = Date::endOfMonth(dates_.front());
+                    d1 = Date::endOfMonth(dates_.front());
+            }
+            // if the eom adjustment leads to a single date schedule
+            // we do not apply it
+            if(d1 != d2) {
+                dates_.front() = d1;
+                dates_.back() = d2;
             }
         } else {
             // first date not adjusted for old CDS schedules
@@ -426,9 +433,12 @@ namespace QuantLib {
         // date due to EOM adjustments (see the Schedule test suite
         // for an example).
         if (dates_.size() >= 2 && dates_[dates_.size()-2] >= dates_.back()) {
-            isRegular_[isRegular_.size()-2] =
-                (dates_[dates_.size()-2] == dates_.back());
-            dates_[dates_.size()-2] = dates_.back();
+            // there might be two dates only, then isRegular_ has size one
+            if (isRegular_.size() >= 2) {
+                isRegular_[isRegular_.size() - 2] =
+                    (dates_[dates_.size() - 2] == dates_.back());
+            }
+            dates_[dates_.size() - 2] = dates_.back();
             dates_.pop_back();
             isRegular_.pop_back();
         }

@@ -176,13 +176,13 @@ int main(int, char* []) {
             Handle<Quote>(ois1WRate), eonia));
         ext::shared_ptr<RateHelper> ois2W(new OISRateHelper(
             2, 2 * Weeks,
-            Handle<Quote>(ois1WRate), eonia));
+            Handle<Quote>(ois2WRate), eonia));
         ext::shared_ptr<RateHelper> ois3W(new OISRateHelper(
             2, 3 * Weeks,
-            Handle<Quote>(ois1WRate), eonia));
+            Handle<Quote>(ois3WRate), eonia));
         ext::shared_ptr<RateHelper> ois1M(new OISRateHelper(
             2, 1 * Months,
-            Handle<Quote>(ois1WRate), eonia));
+            Handle<Quote>(ois1MRate), eonia));
 
 
         // Dated OIS
