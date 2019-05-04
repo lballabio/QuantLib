@@ -55,8 +55,8 @@ namespace QuantLib {
         const Size tGridMin = 5;
         const Size tGridAvgSteps = std::max(tGridMin, tGrid_/50);
 
-        const ext::shared_ptr<FdmHestonLocalVolatiliyVarianceMesher> vMesher
-            = ext::make_shared<FdmHestonLocalVolatiliyVarianceMesher>(
+        const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> vMesher
+            = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
                   vGrid_, process, leverageFct_, maturity, tGridAvgSteps);
 
         // 1.2 The equity mesher

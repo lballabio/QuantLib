@@ -134,8 +134,8 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
     const ext::shared_ptr<LocalVolTermStructure> lVol =
         ext::make_shared<LocalConstantVol>(today, 2.5, dc);
 
-    const ext::shared_ptr<FdmHestonLocalVolatiliyVarianceMesher> constSlvMesher
-        = ext::make_shared<FdmHestonLocalVolatiliyVarianceMesher>
+    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> constSlvMesher
+        = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>
               (5, process, lVol, 1.0);
 
     const Real expectedVol = 2.5 * mesher->volaEstimate();
@@ -156,8 +156,8 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
     const ext::shared_ptr<LocalVolTermStructure> leverageFct
         = ext::make_shared<ParableLocalVolatility>(today, 100.0, alpha, dc);
 
-    const ext::shared_ptr<FdmHestonLocalVolatiliyVarianceMesher> slvMesher
-        = ext::make_shared<FdmHestonLocalVolatiliyVarianceMesher>(
+    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> slvMesher
+        = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
               5, process, leverageFct, 0.5, 1, 0.01);
 
     const Real initialVolEstimate =

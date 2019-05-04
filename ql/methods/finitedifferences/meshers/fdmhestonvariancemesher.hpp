@@ -47,9 +47,9 @@ namespace QuantLib {
 
     class LocalVolTermStructure;
 
-    class FdmHestonLocalVolatiliyVarianceMesher : public Fdm1dMesher {
+    class FdmHestonLocalVolatilityVarianceMesher : public Fdm1dMesher {
       public:
-        FdmHestonLocalVolatiliyVarianceMesher(
+        FdmHestonLocalVolatilityVarianceMesher(
             Size size,
             const ext::shared_ptr<HestonProcess>& process,
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct,

@@ -155,7 +155,7 @@ namespace QuantLib {
     }
 
 
-    FdmHestonLocalVolatiliyVarianceMesher::FdmHestonLocalVolatiliyVarianceMesher(
+    FdmHestonLocalVolatilityVarianceMesher::FdmHestonLocalVolatilityVarianceMesher(
         Size size,
         const ext::shared_ptr<HestonProcess>& process,
         const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
