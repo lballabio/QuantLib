@@ -35,6 +35,7 @@ class CapFloorTest {
     static void testATMRate();
     static void testImpliedVolatility();
     static void testCachedValue();
+    static void testCachedValueFromOptionLets();
     static boost::unit_test_framework::test_suite* suite();
 };
 

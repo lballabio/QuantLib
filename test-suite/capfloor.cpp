@@ -610,6 +610,67 @@ void CapFloorTest::testCachedValue() {
             << "    expected:   " << cachedFloorNPV);
 }
 
+void CapFloorTest::testCachedValueFromOptionLets() {
+
+    BOOST_TEST_MESSAGE("Testing Black cap/floor price as a sum of optionlets prices against cached values...");
+
+    CommonVars vars;
+
+    Date cachedToday(14,March,2002),
+         cachedSettlement(18,March,2002);
+    Settings::instance().evaluationDate() = cachedToday;
+    vars.termStructure.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
+    Date startDate = vars.termStructure->referenceDate();
+    Leg leg = vars.makeLeg(startDate,20);
+    ext::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+                                                          0.07,0.20);
+    ext::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+                                                            0.03,0.20);
+#ifndef QL_USE_INDEXED_COUPON
+    // par coupon price
+    Real cachedCapNPV   = 6.87570026732,
+         cachedFloorNPV = 2.65812927959;
+    Real calculatedCapNPV   = 0.0,
+         calculatedFloorNPV = 0.0;     
+#else
+    // index fixing price
+    Real cachedCapNPV   = 6.87630307745,
+         cachedFloorNPV = 2.65796764715;
+#endif
+    // test Black cap price against cached value
+    std::vector<Real> capletPrices;
+    std::vector<Real> floorletPrices;
+
+    // std::map<std::string,boost::any>::const_iterator prices =
+    //             results_->additionalResults.find("optionletsPrice");
+    //         QL_REQUIRE(vega_ != results_->additionalResults.end(),
+    //                    "vega not provided");
+    //         return boost::any_cast<Real>(vega_->second);
+    // capletPrices = boost::any_cast<Real>(cap->additionalResults.find("optionletsPrice")->second);
+    // floorletPrices = boost::any_cast<Real>(floor->additionalResults.find("optionletsPrice")->second);
+
+    for (Size n=0; n<LENGTH(capletPrices); n++){
+        calculatedCapNPV += capletPrices[n];
+    }
+
+    for (Size n=0; n<LENGTH(floorletPrices); n++){
+        calculatedFloorNPV += floorletPrices[n];
+    }
+
+    if (std::fabs(calculatedCapNPV-cachedCapNPV) > 1.0e-11)
+        BOOST_ERROR(
+            "failed to reproduce cached cap value from its caplets' values:\n"
+            << std::setprecision(12)
+            << "    calculated: " << calculatedCapNPV << "\n"
+            << "    expected:   " << cachedCapNPV);
+    // test Black floor price against cached value
+    if (std::fabs(calculatedFloorNPV-cachedFloorNPV) > 1.0e-11)
+        BOOST_ERROR(
+            "failed to reproduce cached floor value from its floorlets' values:\n"
+            << std::setprecision(12)
+            << "    calculated: " << calculatedFloorNPV << "\n"
+            << "    expected:   " << cachedFloorNPV);
+}
 
 test_suite* CapFloorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cap and floor tests");
@@ -621,6 +682,7 @@ test_suite* CapFloorTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testATMRate));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testImpliedVolatility));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValue));
+    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValueFromOptionLets));
     return suite;
 }
 
