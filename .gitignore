@@ -111,4 +111,9 @@ test-suite/bin/*.lib
 test-suite/bin/*.pdb
 test-suite/.unit_test_profile.txt
 
-
+# Netbeans
+nbproject/private/*
+nbproject/project.xml
+nbproject/project.properties
+nbproject/configurations.xml
+.cproject
