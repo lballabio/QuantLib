@@ -197,12 +197,12 @@ namespace QuantLib {
             }
 
             // ok, so it's not constant. Maybe it's strike-independent?
-            ext::shared_ptr<BlackVarianceCurve> volCurve = blackVolatility()->isCurve();
+            bool volCurve = blackVolatility()->isCurve();
 
             if (volCurve) {
                 // ok, we can use the optimized algorithm
-                localVolatility_.linkTo(ext::make_shared<LocalVolCurve>(
-                    Handle<BlackVarianceCurve>(blackVolatility())));
+                localVolatility_.linkTo(
+                    ext::make_shared<LocalVolCurve>(blackVolatility()));
                 updated_ = true;
                 return localVolatility_;
             }
