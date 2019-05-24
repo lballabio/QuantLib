@@ -54,6 +54,11 @@ namespace QuantLib {
                          const Calendar&,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter);
+        //! \name BlackVolTermStructure interface
+        //@{
+        bool isConstant() const { return true; }
+        bool isCurve() const { return true; }
+        //@}
         //! \name TermStructure interface
         //@{
         Date maxDate() const;

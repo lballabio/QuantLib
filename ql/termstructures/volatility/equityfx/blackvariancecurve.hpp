@@ -61,6 +61,11 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
+        //! \name BlackVolTermStructure interface
+        //@{
+        bool isConstant() const { return false; }
+        bool isCurve() const { return true; }
+        //@}
         //! \name Modifiers
         //@{
         template <class Interpolator>

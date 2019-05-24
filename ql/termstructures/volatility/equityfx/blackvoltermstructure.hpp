@@ -101,6 +101,10 @@ namespace QuantLib {
                                   Time time2,
                                   Real strike,
                                   bool extrapolate = false) const;
+        //! is the volatility constant across strikes and maturities?
+        virtual bool isConstant() const { return false; }
+        //! is the volatility independent of the strike?
+        virtual bool isCurve() const { return false; }
         //@}
         //! \name Visitability
         //@{
