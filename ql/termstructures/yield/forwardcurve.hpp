@@ -67,11 +67,11 @@ namespace QuantLib {
         //@}
         //! \name other inspectors
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
+        virtual const std::vector<Time>& times() const;
+        virtual const std::vector<Date>& dates() const;
+        virtual const std::vector<Real>& data() const;
         const std::vector<Rate>& forwards() const;
-        std::vector<std::pair<Date, Real> > nodes() const;
+        virtual std::vector<std::pair<Date, Real> > nodes() const;
         //@}
       protected:
         InterpolatedForwardCurve(
