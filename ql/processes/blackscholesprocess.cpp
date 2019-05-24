@@ -184,25 +184,25 @@ namespace QuantLib {
             isStrikeIndependent_=true;
 
             // constant Black vol?
-            bool constVol = blackVolatility.isConstant();
+            bool constVol = blackVolatility()->isConstant();
 
             if (constVol) {
                 // ok, the local vol is constant too.
                 localVolatility_.linkTo(ext::make_shared<LocalConstantVol>(
-                    constVol->referenceDate(),
-                    constVol->blackVol(0.0, x0_->value()),
-                    constVol->dayCounter()));
+                    blackVolatility()->referenceDate(),
+                    blackVolatility()->blackVol(0.0, x0_->value()),
+                    blackVolatility()->dayCounter()));
                 updated_ = true;
                 return localVolatility_;
             }
 
             // ok, so it's not constant. Maybe it's strike-independent?
-            ext::shared_ptr<BlackVarianceCurve> volCurve = blackVolatility().isCurve();
+            ext::shared_ptr<BlackVarianceCurve> volCurve = blackVolatility()->isCurve();
 
             if (volCurve) {
                 // ok, we can use the optimized algorithm
                 localVolatility_.linkTo(ext::make_shared<LocalVolCurve>(
-                    Handle<BlackVarianceCurve>(volCurve)));
+                    Handle<BlackVarianceCurve>(blackVolatility())));
                 updated_ = true;
                 return localVolatility_;
             }
