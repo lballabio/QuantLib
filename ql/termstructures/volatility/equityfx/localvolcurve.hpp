@@ -32,13 +32,13 @@ namespace QuantLib {
     //! Local volatility curve derived from a Black curve
     class LocalVolCurve : public LocalVolTermStructure {
       public:
-        LocalVolCurve(const Handle<BlackVolTermStructure>& curve)
-        : LocalVolTermStructure(curve->businessDayConvention(),
-                                curve->dayCounter()),
-          blackVarianceCurve_(curve) {
-            QL_REQUIRE(curve->isCurve(), "expected vol curve");
-            registerWith(blackVarianceCurve_);
-        }
+          explicit LocalVolCurve(const Handle<BlackVolTermStructure>& curve)
+              : LocalVolTermStructure(curve->businessDayConvention(),
+                                      curve->dayCounter()),
+                blackVarianceCurve_(curve) {
+              QL_REQUIRE(curve->isCurve(), "expected vol curve");
+              registerWith(blackVarianceCurve_);
+          }
         //! \name TermStructure interface
         //@{
         const Date& referenceDate() const {
