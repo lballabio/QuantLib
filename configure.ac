@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.13],
+AC_INIT([QuantLib], [1.16],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -206,21 +206,6 @@ if test "$ql_indexed_coupon" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_indexed_coupon])
 
-AC_MSG_CHECKING([whether to enable negative rates])
-AC_ARG_ENABLE([negative-rates],
-              AC_HELP_STRING([--enable-negative-rates],
-                             [If enabled (the default), negative yield
-                              rates are allowed.  If disabled, some
-                              features (notably, curve bootstrapping)
-                              will throw when negative rates are found.]),
-              [ql_negative_rates=$enableval],
-              [ql_negative_rates=yes])
-if test "$ql_negative_rates" = "yes" ; then
-   AC_DEFINE([QL_NEGATIVE_RATES],[1],
-             [Define this if negative yield rates should be allowed.])
-fi
-AC_MSG_RESULT([$ql_negative_rates])
-
 AC_MSG_CHECKING([whether to enable extra safety checks])
 AC_ARG_ENABLE([extra-safety-checks],
               AC_HELP_STRING([--enable-extra-safety-checks],
@@ -261,7 +246,9 @@ AC_ARG_ENABLE([thread-safe-observer-pattern],
                               enable it if you want to use QuantLib 
                               via the SWIG layer within the JVM or .NET 
                               eco system or any environment with an 
-                              async garbage collector.]),
+                              async garbage collector. C++-17 is required
+                              if this option is used together with 
+                              --enable-std-pointers]),
               [ql_use_tsop=$enableval],
               [ql_use_tsop=no])
 AC_MSG_RESULT([$ql_use_tsop])
@@ -373,6 +360,77 @@ if test "$ql_use_intraday" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_intraday])
 
+AC_MSG_CHECKING([whether to enable standard smart pointers])
+AC_ARG_ENABLE([std-pointers],
+              AC_HELP_STRING([--enable-std-pointers],
+                             [If enabled, std::shared_ptr and related
+                              classes and functions will be used instead
+                              of boost::shared_ptr; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.
+                              Note that std::shared_ptr does not check
+                              access and can cause segmentation faults.]),
+              [ql_use_std_pointers=$enableval],
+              [ql_use_std_pointers=no])
+if test "$ql_use_std_pointers" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+fi
+AC_MSG_RESULT([$ql_use_std_pointers])
+
+AC_MSG_CHECKING([whether to enable std::unique_ptr instead of std::auto_ptr])
+AC_ARG_ENABLE([std-unique-ptr],
+              AC_HELP_STRING([--enable-std-unique-ptr],
+                             [If enabled, std::unique_ptr will be used
+                              instead of the deprecated std::auto_ptr;
+                              this requires you to set your compiler's
+                              standard to at least C++11.  If disabled
+                              (the default), std::auto_ptr will still
+                              be used.]),
+              [ql_use_unique_ptr=$enableval],
+              [ql_use_unique_ptr=no])
+if test "$ql_use_unique_ptr" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
+             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
+fi
+AC_MSG_RESULT([$ql_use_unique_ptr])
+
+AC_MSG_CHECKING([whether to enable std::function])
+AC_ARG_ENABLE([std-function],
+              AC_HELP_STRING([--enable-std-function],
+                             [If enabled, std::function and std::bind will be
+                              used instead of boost::function and boost::bind;
+                              this requires you to set your compiler's standard
+                              to at least C++11. If disabled (the default) the
+                              Boost facilities are used.]),
+              [ql_use_std_function=$enableval],
+              [ql_use_std_function=no])
+if test "$ql_use_std_function" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
+             [Define this if you want to use std::function and std::bind.])
+fi
+AC_MSG_RESULT([$ql_use_std_function])
+
+AC_MSG_CHECKING([whether to enable available std classes])
+AC_ARG_ENABLE([std-classes],
+              AC_HELP_STRING([--enable-std-classes],
+                             [This is a shortcut for --enable-std-pointers
+                              --enable-std-unique-ptr --enable-std-function.
+                              If enabled, this supersedes any --disable
+                              option passed for the above.]),
+              [ql_use_std_classes=$enableval],
+              [ql_use_std_classes=no])
+if test "$ql_use_std_classes" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
+             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
+   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
+             [Define this if you want to use std::function and std::bind.])
+fi
+AC_MSG_RESULT([$ql_use_std_classes])
+
 # manual configurations for specific hosts
 case $host in
   powerpc-apple-darwin*)
@@ -396,6 +454,7 @@ AC_CONFIG_FILES([
     ql/experimental/amortizingbonds/Makefile
     ql/experimental/averageois/Makefile
     ql/experimental/barrieroption/Makefile
+    ql/experimental/basismodels/Makefile
     ql/experimental/callablebonds/Makefile
     ql/experimental/catbonds/Makefile
     ql/experimental/commodities/Makefile
@@ -404,6 +463,7 @@ AC_CONFIG_FILES([
     ql/experimental/credit/Makefile
     ql/experimental/exoticoptions/Makefile
     ql/experimental/finitedifferences/Makefile
+    ql/experimental/futures/Makefile
     ql/experimental/fx/Makefile
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
@@ -520,9 +580,9 @@ AC_CONFIG_FILES([
     Examples/GlobalOptimizer/Makefile
     Examples/MarketModels/Makefile
     Examples/MultidimIntegral/Makefile
+    Examples/MulticurveBootstrapping/Makefile
     Examples/Replication/Makefile
     Examples/Repo/Makefile
-    Examples/Swap/Makefile
     test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])
 AC_CONFIG_FILES([QuantLib.spec])

@@ -29,9 +29,12 @@ namespace QuantLib {
     
     //! %Cubic functional form
     /*! \f[ f(t) = \sum_{i=0}^n{c_i t^i} \f] */
-    class PolynomialFunction : public std::unary_function<Time, Real> {
+    class PolynomialFunction {
 
       public:
+        typedef Time argument_type;
+        typedef Real result_type;
+
         PolynomialFunction(const std::vector<Real>& coeff);
 
         //! function value at time t: \f[ f(t) = \sum_{i=0}^n{c_i t^i} \f]

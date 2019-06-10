@@ -25,7 +25,7 @@ namespace QuantLib {
 
     Japan::Japan() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Japan::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Japan::Impl);
         impl_ = impl;
     }
 

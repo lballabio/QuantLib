@@ -29,7 +29,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& dividendYield,
         const Handle<YieldTermStructure>& riskFreeRate,
         Real sigma, Real nu, Real theta)
-        : StochasticProcess1D(boost::shared_ptr<discretization>(
+        : StochasticProcess1D(ext::shared_ptr<discretization>(
             new EulerDiscretization)),
         s0_(s0), dividendYield_(dividendYield), riskFreeRate_(riskFreeRate), 
         sigma_(sigma), nu_(nu), theta_(theta) {

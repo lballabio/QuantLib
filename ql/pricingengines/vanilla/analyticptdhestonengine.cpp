@@ -29,9 +29,7 @@
 namespace QuantLib {
 
     // helper class for integration
-    class AnalyticPTDHestonEngine::Fj_Helper
-        : public std::unary_function<Real, Real> {
-            
+    class AnalyticPTDHestonEngine::Fj_Helper {
       public:
         Fj_Helper(
             const Handle<PiecewiseTimeDependentHestonModel>& model,
@@ -45,7 +43,7 @@ namespace QuantLib {
         const Real v0_, x_, sx_;
         
         std::vector<Rate> r_, q_;
-        const boost::shared_ptr<YieldTermStructure> qTS_;
+        const ext::shared_ptr<YieldTermStructure> qTS_;
         const Handle<PiecewiseTimeDependentHestonModel> model_;
         
         const TimeGrid timeGrid_;
@@ -121,8 +119,7 @@ namespace QuantLib {
                 /phi; 
     }
 
-    class AnalyticPTDHestonEngine::AP_Helper
-        : public std::unary_function<Real, Real> {
+    class AnalyticPTDHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real s0, Real strike, Real ratio,
                   Volatility sigmaBS,
@@ -212,7 +209,7 @@ namespace QuantLib {
     }
 
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         Size integrationOrder)
     : GenericModelEngine<PiecewiseTimeDependentHestonModel,
                          VanillaOption::arguments,
@@ -225,7 +222,7 @@ namespace QuantLib {
     }
                          
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         Real relTolerance, Size maxEvaluations)
     : GenericModelEngine<PiecewiseTimeDependentHestonModel,
                          VanillaOption::arguments,
@@ -238,7 +235,7 @@ namespace QuantLib {
     }
 
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         ComplexLogFormula cpxLog,
         const Integration& itg,
         Real andersenPiterbargEpsilon)
@@ -258,8 +255,8 @@ namespace QuantLib {
                 "not an European option");
 
         // plain vanilla
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
         
         const Real v0 = model_->v0();

@@ -28,14 +28,17 @@
 #define quantlib_linear_least_squares_regression_hpp
 
 #include <ql/math/generallinearleastsquares.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
     namespace details {
 
         template <class Container>
-        class LinearFct : public std::unary_function<Real, Container > {
+        class LinearFct {
           public:
+            typedef Container argument_type;
+            typedef Real result_type;
             explicit LinearFct(Size i) : i_(i) {}
 
             inline Real operator()(const Container& x) const {
@@ -57,12 +60,12 @@ namespace QuantLib {
                 v.push_back(identity<ArgumentType>());
             }
 
-            const std::vector< boost::function1<Real, ArgumentType> > & fcts() {
+            const std::vector< ext::function<Real(ArgumentType)> > & fcts() {
                 return v;
             }
 
           private:
-            std::vector< boost::function1<Real, ArgumentType> > v;
+            std::vector< ext::function<Real(ArgumentType)> > v;
         };
 
         // multi-dimensional implementation (container types)
@@ -78,11 +81,11 @@ namespace QuantLib {
                     v.push_back(LinearFct<ArgumentType>(i));
             }
 
-            const std::vector< boost::function1<Real, ArgumentType> > & fcts() {
+            const std::vector< ext::function<Real(ArgumentType)> > & fcts() {
                return v;
             }
           private:
-            std::vector< boost::function1<Real, ArgumentType> > v;
+            std::vector< ext::function<Real(ArgumentType)> > v;
         };
     }
 
@@ -124,7 +127,7 @@ namespace QuantLib {
         LinearLeastSquaresRegression(
             const std::vector<ArgumentType> & x,
             const std::vector<Real> &         y,
-            const std::vector<boost::function1<Real, ArgumentType> > & v)
+            const std::vector<ext::function<Real(ArgumentType)> > & v)
         : GeneralLinearLeastSquares(x, y, v) {
         }
     };

@@ -28,7 +28,7 @@
 #include <ql/event.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <boost/optional.hpp>
 #include <vector>
 
@@ -84,7 +84,7 @@ namespace QuantLib {
             Event::accept(v);
     }
 
-    typedef std::vector<boost::shared_ptr<Callability> > CallabilitySchedule;
+    typedef std::vector<ext::shared_ptr<Callability> > CallabilitySchedule;
 
 }
 

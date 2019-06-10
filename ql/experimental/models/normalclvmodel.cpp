@@ -31,15 +31,14 @@
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     NormalCLVModel::NormalCLVModel(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        const ext::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
         const std::vector<Date>& maturityDates,
         Size lagrangeOrder, Real pMax, Real pMin)
     : x_(M_SQRT2*GaussHermiteIntegration(lagrangeOrder).x()),
@@ -51,7 +50,7 @@ namespace QuantLib {
       bsProcess_    (bsProcess),
       ouProcess_    (ouProcess),
       maturityDates_(maturityDates),
-      rndCalculator_(boost::make_shared<GBSMRNDCalculator>(bsProcess)),
+      rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)),
       maturityTimes_(maturityDates.size()) {
 
         registerWith(bsProcess_);
@@ -96,7 +95,7 @@ namespace QuantLib {
     }
 
 
-    boost::function<Real(Time, Real)> NormalCLVModel::g() const {
+    ext::function<Real(Time, Real)> NormalCLVModel::g() const {
         calculate();
         return g_;
     }
@@ -106,7 +105,7 @@ namespace QuantLib {
     : y_(model.x_.size()),
       sigma_(model.sigma_),
       ouProcess_(model.ouProcess_),
-      data_(boost::make_shared<InterpolationData>(model)) {
+      data_(ext::make_shared<InterpolationData>(model)) {
 
         for (Size i=0; i < data_->s_.columns(); ++i) {
             const Array y = model.collocationPointsY(model.maturityDates_[i]);
@@ -137,6 +136,6 @@ namespace QuantLib {
     }
 
     void NormalCLVModel::performCalculations() const {
-        g_ = boost::function<Real(Time, Real)>(MappingFunction(*this));
+        g_ = ext::function<Real(Time, Real)>(MappingFunction(*this));
     }
 }

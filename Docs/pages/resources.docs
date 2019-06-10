@@ -29,16 +29,11 @@
       (http://quantlib.org/mailinglists.shtml);
     - the %QuantLib programming style guidelines
       (http://quantlib.org/style.shtml);
-    - a link to the %QuantLib project page on SourceForge.net
-     (http://sourceforge.net/projects/quantlib);
-    - links to pages for bug reports
-      (http://sourceforge.net/tracker/?group_id=12740&atid=112740),
-      patch submissions
-      (http://sourceforge.net/tracker/?group_id=12740&atid=312740),
-      and feature requests
-      (http://sourceforge.net/tracker/?group_id=12740&atid=362740);
+    - links to pages for reporting issues
+      (https://github.com/lballabio/QuantLib/issues)
+      and submitting changes
+      (https://github.com/lballabio/QuantLib/pulls);
     - a page (http://quantlib.org/extensions.shtml) about how to use %QuantLib
-      in other languages/platforms;
-    - as well as links to additional quantitative finance resources.
+      in other languages/platforms.
 */
 

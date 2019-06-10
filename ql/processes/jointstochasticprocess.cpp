@@ -23,12 +23,13 @@
 
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/processes/jointstochasticprocess.hpp>
 
 namespace QuantLib {
 
     JointStochasticProcess::JointStochasticProcess(
-        const std::vector<boost::shared_ptr<StochasticProcess> > & l,
+        const std::vector<ext::shared_ptr<StochasticProcess> > & l,
         Size factors)
     : l_      (l),
       size_   (0),
@@ -219,8 +220,7 @@ namespace QuantLib {
                     if (vol > 0.0) {
                         std::transform(stdDev.row_begin(i), stdDev.row_end(i),
                                        stdDev.row_begin(i),
-                                       std::bind2nd(std::divides<Real>(),
-                                                    vol));
+                                       divide_by<Real>(vol));
                     }
                     else {
                         // keep the svd happy
@@ -295,7 +295,7 @@ namespace QuantLib {
         return this->postEvolve(t0, x0, dt, dv, retVal);
     }
 
-    const std::vector<boost::shared_ptr<StochasticProcess> > &
+    const std::vector<ext::shared_ptr<StochasticProcess> > &
                           JointStochasticProcess::constituents() const {
         return l_;
     }

@@ -37,7 +37,7 @@
 namespace QuantLib {
 
     FdHullWhiteSwaptionEngine::FdHullWhiteSwaptionEngine(
-        const boost::shared_ptr<HullWhite>& model,
+        const ext::shared_ptr<HullWhite>& model,
         Size tGrid, Size xGrid, 
         Size dampingSteps, Real invEps,
         const FdmSchemeDesc& schemeDesc)
@@ -61,13 +61,13 @@ namespace QuantLib {
                                               arguments_.exercise->lastDate());
 
 
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess> process(
+        const ext::shared_ptr<OrnsteinUhlenbeckProcess> process(
             new OrnsteinUhlenbeckProcess(model_->a(), model_->sigma()));
 
-        const boost::shared_ptr<Fdm1dMesher> shortRateMesher(
+        const ext::shared_ptr<Fdm1dMesher> shortRateMesher(
             new FdmSimpleProcess1dMesher(xGrid_, process, maturity,1,invEps_));
 
-        const boost::shared_ptr<FdmMesher> mesher(
+        const ext::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(shortRateMesher));
 
         // 3. Inner Value Calculator
@@ -90,16 +90,16 @@ namespace QuantLib {
         QL_REQUIRE(fwdTs->referenceDate() == disTs->referenceDate(),
                 "reference date of forward and discount curve must match");
 
-        const boost::shared_ptr<HullWhite> fwdModel(
+        const ext::shared_ptr<HullWhite> fwdModel(
             new HullWhite(fwdTs, model_->a(), model_->sigma()));
 
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
              new FdmAffineModelSwapInnerValue<HullWhite>(
                  model_.currentLink(), fwdModel,
                  arguments_.swap, t2d, mesher, 0));
 
         // 4. Step conditions
-        const boost::shared_ptr<FdmStepConditionComposite> conditions =
+        const ext::shared_ptr<FdmStepConditionComposite> conditions =
              FdmStepConditionComposite::vanillaComposite(
                  DividendSchedule(), arguments_.exercise,
                  mesher, calculator, referenceDate, dc);

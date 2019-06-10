@@ -230,8 +230,10 @@ namespace QuantLib {
 
         // no heap memory is allocated
         // in any of the recursive calls
-        class base_cubic_spline : public std::unary_function<Real,Real> {
+        class base_cubic_spline {
           public:
+            typedef Real argument_type;
+            typedef Real result_type;
             typedef base_data data;
             typedef base_data_table data_table;
             typedef base_output_data output_data;
@@ -277,8 +279,10 @@ namespace QuantLib {
             output_data &v_;
         };
 
-        class base_cubic_splint : public std::unary_function<base_arg_type,Real> {
+        class base_cubic_splint {
           public:
+            typedef base_arg_type argument_type;
+            typedef Real result_type;
             typedef base_data data;
             typedef base_data_table data_table;
             typedef base_dimensions dimensions;
@@ -297,23 +301,22 @@ namespace QuantLib {
         };
 
         template<class X>
-        class n_cubic_splint : public
-        std::unary_function<Point<Real, typename X::argument_type>, Real> {
+        class n_cubic_splint {
           public:
-            typedef std::unary_function<Point<Real, typename X::argument_type>,
-                                        Real> super;
+            typedef Point<Real, typename X::argument_type> argument_type;
+            typedef Real result_type;
             typedef Data<base_data, typename X::data> data;
             typedef DataTable<typename X::data_table> data_table;
             typedef Point<Size, typename X::dimensions> dimensions;
             typedef Point<base_output_data, typename X::output_data> output_data;
-            typedef Point<typename super::result_type,
+            typedef Point<result_type,
                           typename X::return_type> return_type;
             n_cubic_splint(const return_type &a, const return_type &b,
                            const return_type &a2, const return_type &b2,
                            const dimensions &i, const data &d, const data &d2,
                            const data_table &y, data_table &y2, output_data &v,
                            output_data &v1, output_data &v2,
-                           typename super::result_type& r)
+                           result_type& r)
             :  a_(a), b_(b), a2_(a2), b2_(b2), i_(i), d_(d), d2_(d2),
                y_(y), y2_(y2), v_(v), v1_(v1), v2_(v2) {
                 for(Size j = 0, dim = y_.size(); j < dim; ++j)

@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -31,7 +32,7 @@ namespace QuantLib {
                                  bool payer)
     : MultiProductMultiStep(rateTimes),
       fixedAccruals_(fixedAccruals), floatingAccruals_(floatingAccruals),
-      paymentTimes_(paymentTimes), fixedRate_(fixedRate), payer_(payer),
+      paymentTimes_(paymentTimes), fixedRate_(fixedRate),
       multiplier_(payer ? 1.0 : -1.0), lastIndex_(rateTimes.size()-1) {
         checkIncreasingTimes(paymentTimes);
     }
@@ -59,8 +60,9 @@ namespace QuantLib {
         return (currentIndex_ == lastIndex_);
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepSwap::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    MultiStepSwap::clone() const {
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
                                                  new MultiStepSwap(*this));
     }
 

@@ -87,7 +87,7 @@ namespace QuantLib {
 
     EnergyCommodity::EnergyCommodity(
                       const CommodityType& commodityType,
-                      const boost::shared_ptr<SecondaryCosts>& secondaryCosts)
+                      const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
     : Commodity(secondaryCosts), commodityType_(commodityType) {}
 
     const CommodityType& EnergyCommodity::commodityType() const {

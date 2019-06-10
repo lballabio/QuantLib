@@ -33,18 +33,18 @@ namespace QuantLib {
 
     //! calibration helper for ATM swaption
 
-    class SwaptionHelper : public CalibrationHelper {
+    class SwaptionHelper : public BlackCalibrationHelper {
       public:
         SwaptionHelper(const Period& maturity,
                        const Period& length,
                        const Handle<Quote>& volatility,
-                       const boost::shared_ptr<IborIndex>& index,
+                       const ext::shared_ptr<IborIndex>& index,
                        const Period& fixedLegTenor,
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType
-                                      = CalibrationHelper::RelativePriceError,
+                       BlackCalibrationHelper::CalibrationErrorType errorType
+                                      = BlackCalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
                        const VolatilityType type = ShiftedLognormal,
@@ -53,13 +53,13 @@ namespace QuantLib {
         SwaptionHelper(const Date& exerciseDate,
                        const Period& length,
                        const Handle<Quote>& volatility,
-                       const boost::shared_ptr<IborIndex>& index,
+                       const ext::shared_ptr<IborIndex>& index,
                        const Period& fixedLegTenor,
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType
-                                      = CalibrationHelper::RelativePriceError,
+                       BlackCalibrationHelper::CalibrationErrorType errorType
+                                      = BlackCalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
                        const VolatilityType type = ShiftedLognormal,
@@ -68,13 +68,13 @@ namespace QuantLib {
         SwaptionHelper(const Date& exerciseDate,
                        const Date& endDate,
                        const Handle<Quote>& volatility,
-                       const boost::shared_ptr<IborIndex>& index,
+                       const ext::shared_ptr<IborIndex>& index,
                        const Period& fixedLegTenor,
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       CalibrationHelper::CalibrationErrorType errorType
-                                      = CalibrationHelper::RelativePriceError,
+                       BlackCalibrationHelper::CalibrationErrorType errorType
+                                      = BlackCalibrationHelper::RelativePriceError,
                        const Real strike = Null<Real>(),
                        const Real nominal = 1.0,
                        const VolatilityType type = ShiftedLognormal,
@@ -84,19 +84,19 @@ namespace QuantLib {
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;
 
-        boost::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
-        boost::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
+        ext::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
+        ext::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
 
       private:
         void performCalculations() const;
         mutable Date exerciseDate_, endDate_;
         const Period maturity_, length_, fixedLegTenor_;
-        const boost::shared_ptr<IborIndex> index_;
+        const ext::shared_ptr<IborIndex> index_;
         const DayCounter fixedLegDayCounter_, floatingLegDayCounter_;
         const Real strike_, nominal_;
         mutable Rate exerciseRate_;
-        mutable boost::shared_ptr<VanillaSwap> swap_;
-        mutable boost::shared_ptr<Swaption> swaption_;
+        mutable ext::shared_ptr<VanillaSwap> swap_;
+        mutable ext::shared_ptr<Swaption> swaption_;
     };
 
 }

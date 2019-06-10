@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,7 +30,10 @@
 
 namespace QuantLib {
 
-    //! smile-section utilities
+    /*! smile-section utilities, the moneyness is expressed in
+        - absolute terms for normal
+        - relative terms for shifted lognormal
+        volatility smile sections */
     class SmileSectionUtils {
       public:
         SmileSectionUtils(const SmileSection &section,

@@ -35,11 +35,11 @@ namespace QuantLib {
     class LfmCovarianceProxy : public LfmCovarianceParameterization {
       public:
         LfmCovarianceProxy(
-                      const boost::shared_ptr<LmVolatilityModel>& volaModel,
-                      const boost::shared_ptr<LmCorrelationModel>& corrModel);
+                      const ext::shared_ptr<LmVolatilityModel>& volaModel,
+                      const ext::shared_ptr<LmCorrelationModel>& corrModel);
 
-        boost::shared_ptr<LmVolatilityModel>  volatilityModel() const;
-        boost::shared_ptr<LmCorrelationModel> correlationModel() const;
+        ext::shared_ptr<LmVolatilityModel>  volatilityModel() const;
+        ext::shared_ptr<LmCorrelationModel> correlationModel() const;
 
         Disposable<Matrix> diffusion(
             Time t, const Array& x = Null<Array>()) const;
@@ -51,8 +51,8 @@ namespace QuantLib {
             Size i, Size j, Time t, const Array& x = Null<Array>()) const;
 
       protected:
-        const boost::shared_ptr<LmVolatilityModel>  volaModel_;
-        const boost::shared_ptr<LmCorrelationModel> corrModel_;
+        const ext::shared_ptr<LmVolatilityModel>  volaModel_;
+        const ext::shared_ptr<LmCorrelationModel> corrModel_;
 
       private:
         class Var_Helper;

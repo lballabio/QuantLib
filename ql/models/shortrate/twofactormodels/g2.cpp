@@ -43,8 +43,8 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    boost::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
-        return boost::shared_ptr<ShortRateDynamics>(new
+    ext::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
+        return ext::shared_ptr<ShortRateDynamics>(new
             Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
     }
 

@@ -128,7 +128,7 @@ namespace QuantLib {
               Rate minStrike,
               Rate maxStrike,
               Volatility baseYoYVolatility,
-              const std::vector<boost::shared_ptr<typename Traits::helper> >&
+              const std::vector<ext::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
               Real accuracy = 1.0e-12,
               const Interpolator &interpolator = Interpolator())
@@ -160,7 +160,7 @@ namespace QuantLib {
         // methods
         void performCalculations() const;
         // data members
-        std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
+        std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
         friend class Bootstrap<this_curve>;

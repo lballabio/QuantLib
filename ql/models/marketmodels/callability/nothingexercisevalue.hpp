@@ -39,7 +39,11 @@ namespace QuantLib {
         // whether or not evolution times are exercise times
         std::valarray<bool> isExerciseTime() const;
         MarketModelMultiProduct::CashFlow value(const CurveState&) const;
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelExerciseValue> clone() const;
+        #else
         std::auto_ptr<MarketModelExerciseValue> clone() const;
+        #endif
       private:
         Size numberOfExercises_;
         std::vector<Time> rateTimes_;

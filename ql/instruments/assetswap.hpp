@@ -54,20 +54,20 @@ namespace QuantLib {
         class results;
 
         AssetSwap(bool payBondCoupon,
-                  const boost::shared_ptr<Bond>& bond,
+                  const ext::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
-                  const boost::shared_ptr<IborIndex>& iborIndex,
+                  const ext::shared_ptr<IborIndex>& iborIndex,
                   Spread spread,
                   const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parAssetSwap = true);
 
         AssetSwap(bool parAssetSwap,
-                  const boost::shared_ptr<Bond>& bond,
+                  const ext::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
                   Real nonParRepayment,
                   Real gearing,
-                  const boost::shared_ptr<IborIndex>& iborIndex,
+                  const ext::shared_ptr<IborIndex>& iborIndex,
                   Spread spread = 0.0,
                   const DayCounter& floatingDayCount = DayCounter(),
                   Date dealMaturity = Date(),
@@ -83,7 +83,7 @@ namespace QuantLib {
         Spread spread() const { return spread_; }
         Real cleanPrice() const { return bondCleanPrice_; }
         Real nonParRepayment() const { return nonParRepayment_; }
-        const boost::shared_ptr<Bond>& bond() const { return bond_; }
+        const ext::shared_ptr<Bond>& bond() const { return bond_; }
         bool payBondCoupon() const { return (payer_[0] == -1.0); }
         const Leg& bondLeg() const { return legs_[0]; }
         const Leg& floatingLeg() const { return legs_[1]; }
@@ -92,7 +92,7 @@ namespace QuantLib {
         void fetchResults(const PricingEngine::results*) const;
       private:
         void setupExpired() const;
-        boost::shared_ptr<Bond> bond_;
+        ext::shared_ptr<Bond> bond_;
         Real bondCleanPrice_, nonParRepayment_;
         Spread spread_;
         bool parSwap_;

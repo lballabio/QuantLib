@@ -50,7 +50,7 @@ namespace QuantLib {
         : Integrator(Null<Real>(), evaluations) {}
 
       protected:
-        Real integrate(const boost::function<Real (Real)>& f,
+        Real integrate(const ext::function<Real (Real)>& f,
                        Real a, Real b) const;
     };
 
@@ -60,7 +60,7 @@ namespace QuantLib {
         : Integrator(Null<Real>(), evaluations) {}
 
       protected:
-        Real integrate(const boost::function<Real (Real)>& f,
+        Real integrate(const ext::function<Real (Real)>& f,
                        Real a, Real b) const;
     };
 }

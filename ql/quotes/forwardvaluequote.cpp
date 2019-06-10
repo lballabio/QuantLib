@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     ForwardValueQuote::ForwardValueQuote(
-                            const boost::shared_ptr<Index>& index,
+                            const ext::shared_ptr<Index>& index,
                             const Date& fixingDate)
     : index_(index), fixingDate_(fixingDate) {
         registerWith(index_);

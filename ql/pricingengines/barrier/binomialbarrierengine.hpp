@@ -57,7 +57,7 @@ namespace QuantLib {
             ignored.
         */
         BinomialBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps,
              Size maxTimeSteps=0)
         : process_(process), timeSteps_(timeSteps), maxTimeSteps_(maxTimeSteps) {
@@ -74,7 +74,7 @@ namespace QuantLib {
         }
         void calculate() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;
         Size maxTimeSteps_;
     };
@@ -103,22 +103,22 @@ namespace QuantLib {
 
         // binomial trees with constant coefficient
         Handle<YieldTermStructure> flatRiskFree(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                 new FlatForward(referenceDate, r, rfdc)));
         Handle<YieldTermStructure> flatDividends(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                 new FlatForward(referenceDate, q, divdc)));
         Handle<BlackVolTermStructure> flatVol(
-            boost::shared_ptr<BlackVolTermStructure>(
+            ext::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, volcal, v, voldc)));
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
-        boost::shared_ptr<StochasticProcess1D> bs(
+        ext::shared_ptr<StochasticProcess1D> bs(
                          new GeneralizedBlackScholesProcess(
                                       process_->stateVariable(),
                                       flatDividends, flatRiskFree, flatVol));
@@ -152,10 +152,10 @@ namespace QuantLib {
 
         TimeGrid grid(maturity, optimum_steps);
 
-        boost::shared_ptr<T> tree(new T(bs, maturity, optimum_steps,
+        ext::shared_ptr<T> tree(new T(bs, maturity, optimum_steps,
                                         payoff->strike()));
 
-        boost::shared_ptr<BlackScholesLattice<T> > lattice(
+        ext::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, optimum_steps));
 
         D option(arguments_, *process_, grid);

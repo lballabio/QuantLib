@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    LastFixingQuote::LastFixingQuote(const boost::shared_ptr<Index>& index)
+    LastFixingQuote::LastFixingQuote(const ext::shared_ptr<Index>& index)
     : index_(index) {
         registerWith(index_);
     }

@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class SpreadedSmileSection : public SmileSection {
       public:
-        SpreadedSmileSection(const boost::shared_ptr<SmileSection>&,
+        SpreadedSmileSection(const ext::shared_ptr<SmileSection>&,
                              const Handle<Quote>& spread);
         //! \name SmileSection interface
         //@{
@@ -54,7 +54,7 @@ namespace QuantLib {
       protected:
         Volatility volatilityImpl(Rate strike) const;
       private:
-        const boost::shared_ptr<SmileSection> underlyingSection_;
+        const ext::shared_ptr<SmileSection> underlyingSection_;
         const Handle<Quote> spread_;
     };
 

@@ -30,8 +30,8 @@ SviInterpolatedSmileSection::SviInterpolatedSmileSection(
     const std::vector<Handle<Quote> > &volHandles, Real a, Real b, Real sigma,
     Real rho, Real m, bool isAFixed, bool isBFixed, bool isSigmaFixed,
     bool isRhoFixed, bool isMFixed, bool vegaWeighted,
-    const boost::shared_ptr<EndCriteria> &endCriteria,
-    const boost::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
+    const ext::shared_ptr<EndCriteria> &endCriteria,
+    const ext::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
     : SmileSection(optionDate, dc), forward_(forward),
       atmVolatility_(atmVolatility), volHandles_(volHandles), strikes_(strikes),
       actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes),
@@ -52,13 +52,13 @@ SviInterpolatedSmileSection::SviInterpolatedSmileSection(
     const Volatility &atmVolatility, const std::vector<Volatility> &volHandles,
     Real a, Real b, Real sigma, Real rho, Real m, bool isAFixed, bool isBFixed,
     bool isSigmaFixed, bool isRhoFixed, bool isMFixed, bool vegaWeighted,
-    const boost::shared_ptr<EndCriteria> &endCriteria,
-    const boost::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
+    const ext::shared_ptr<EndCriteria> &endCriteria,
+    const ext::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
     : SmileSection(optionDate, dc),
       forward_(
-          Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(forward)))),
+          Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(forward)))),
       atmVolatility_(Handle<Quote>(
-          boost::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
+          ext::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
       volHandles_(volHandles.size()), strikes_(strikes),
       actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes),
       vols_(volHandles.size()), a_(a), b_(b), sigma_(sigma), rho_(rho), m_(m),
@@ -68,11 +68,11 @@ SviInterpolatedSmileSection::SviInterpolatedSmileSection(
 
     for (Size i = 0; i < volHandles_.size(); ++i)
         volHandles_[i] = Handle<Quote>(
-            boost::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
+            ext::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
 }
 
 void SviInterpolatedSmileSection::createInterpolation() const {
-    boost::shared_ptr<SviInterpolation> tmp(new SviInterpolation(
+    ext::shared_ptr<SviInterpolation> tmp(new SviInterpolation(
         actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
         exerciseTime(), forwardValue_, a_, b_, sigma_, rho_, m_, isAFixed_,
         isBFixed_, isSigmaFixed_, isRhoFixed_, isMFixed_, vegaWeighted_,

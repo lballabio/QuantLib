@@ -1,4 +1,5 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 /*
   Copyright (C) 2014, 2016 Peter Caspers
 
@@ -93,20 +94,6 @@ namespace QuantLib {
                 return *this;
             }
 
-            /*! \deprecated Use the overload taking 3 parameters.
-                            Deprecated in version 1.10.
-            */
-            QL_DEPRECATED
-            Settings &withVegaRatio(const Real vegaRatio,
-                                    const Real lowerRateBound) {
-                strategy_ = VegaRatio;
-                vegaRatio_ = vegaRatio;
-                lowerRateBound_ = lowerRateBound;
-                upperRateBound_ = defaultUpperBound;
-                defaultBounds_ = false;
-                return *this;
-            }
-
             Settings &withVegaRatio(const Real vegaRatio,
                                     const Real lowerRateBound,
                                     const Real upperRateBound) {
@@ -127,20 +114,6 @@ namespace QuantLib {
                 return *this;
             }
 
-            /*! \deprecated Use the overload taking 3 parameters.
-                            Deprecated in version 1.10.
-            */
-            QL_DEPRECATED
-            Settings &withPriceThreshold(const Real priceThreshold,
-                                         const Real lowerRateBound) {
-                strategy_ = PriceThreshold;
-                priceThreshold_ = priceThreshold;
-                lowerRateBound_ = lowerRateBound;
-                upperRateBound_ = defaultUpperBound;
-                defaultBounds_ = false;
-                return *this;
-            }
-
             Settings &withPriceThreshold(const Real priceThreshold,
                                          const Real lowerRateBound,
                                          const Real upperRateBound) {
@@ -158,20 +131,6 @@ namespace QuantLib {
                 lowerRateBound_ = defaultLowerBound;
                 upperRateBound_ = defaultUpperBound;
                 defaultBounds_ = true;
-                return *this;
-            }
-
-            /*! \deprecated Use the overload taking 3 parameters.
-                            Deprecated in version 1.10.
-            */
-            QL_DEPRECATED
-            Settings &withBSStdDevs(const Real stdDevs,
-                                    const Real lowerRateBound) {
-                strategy_ = BSStdDevs;
-                stdDevs_ = stdDevs;
-                lowerRateBound_ = lowerRateBound;
-                upperRateBound_ = defaultUpperBound;
-                defaultBounds_ = false;
                 return *this;
             }
 
@@ -207,8 +166,8 @@ namespace QuantLib {
                         const Handle<YieldTermStructure> &couponDiscountCurve =
                             Handle<YieldTermStructure>(),
                         const Settings &settings = Settings(),
-                        const boost::shared_ptr<Integrator> &integrator =
-                            boost::shared_ptr<Integrator>());
+                        const ext::shared_ptr<Integrator> &integrator =
+                            ext::shared_ptr<Integrator>());
 
         /* */
         virtual Real swapletPrice() const;
@@ -233,6 +192,9 @@ namespace QuantLib {
         Real singularTerms(const Option::Type type, const Real strike) const;
         Real integrand(const Real strike) const;
         Real a_, b_;
+
+        class integrand_f;
+        friend class integrand_f;
 
         class VegaRatioHelper {
           public:
@@ -279,13 +241,13 @@ namespace QuantLib {
         Period swapTenor_;
         Real spreadLegValue_, swapRateValue_, couponDiscountRatio_, annuity_;
 
-        boost::shared_ptr<SwapIndex> swapIndex_;
-        boost::shared_ptr<VanillaSwap> swap_;
-        boost::shared_ptr<SmileSection> smileSection_;
+        ext::shared_ptr<SwapIndex> swapIndex_;
+        ext::shared_ptr<VanillaSwap> swap_;
+        ext::shared_ptr<SmileSection> smileSection_;
 
         Settings settings_;
         DayCounter volDayCounter_;
-        boost::shared_ptr<Integrator> integrator_;
+        ext::shared_ptr<Integrator> integrator_;
 
         Real adjustedLowerBound_, adjustedUpperBound_;
     };

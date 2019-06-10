@@ -17,10 +17,6 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/qldefines.hpp>
-
-#if BOOST_VERSION >= 104700
-
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <cmath>
@@ -29,8 +25,8 @@ using std::sqrt;
 
 namespace QuantLib {
     ParticleSwarmOptimization::ParticleSwarmOptimization(Size M,
-        boost::shared_ptr<Topology> topology,
-        boost::shared_ptr<Inertia> inertia,
+        ext::shared_ptr<Topology> topology,
+        ext::shared_ptr<Inertia> inertia,
         Real c1, Real c2,
         unsigned long seed)
         : M_(M), rng_(seed),
@@ -44,8 +40,8 @@ namespace QuantLib {
     }
 
     ParticleSwarmOptimization::ParticleSwarmOptimization(Size M,
-        boost::shared_ptr<Topology> topology,
-        boost::shared_ptr<Inertia> inertia,
+        ext::shared_ptr<Topology> topology,
+        ext::shared_ptr<Inertia> inertia,
         Real omega, Real c1, Real c2,
         unsigned long seed)
         : M_(M), c0_(omega), c1_(c1), c2_(c2), rng_(seed),
@@ -402,4 +398,4 @@ namespace QuantLib {
         }
     }
 }
-#endif
+

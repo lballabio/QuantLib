@@ -175,7 +175,7 @@ namespace
     }
 }
 
-    AlphaFinder::AlphaFinder(boost::shared_ptr<AlphaForm> parametricform)
+    AlphaFinder::AlphaFinder(ext::shared_ptr<AlphaForm> parametricform)
     : parametricform_(parametricform) {}
 
 

@@ -27,8 +27,12 @@
 #define quantlib_fdm_inner_value_calculator_hpp
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
+#include <ql/math/functional.hpp>
+
+#include <boost/function.hpp>
 #include <vector>
+
 
 namespace QuantLib {
 
@@ -36,6 +40,7 @@ namespace QuantLib {
     class BasketPayoff;
     class FdmMesher;
     class FdmLinearOpIterator;
+
 
     class FdmInnerValueCalculator {
       public:
@@ -46,36 +51,46 @@ namespace QuantLib {
     };
 
 
-    class FdmLogInnerValue : public FdmInnerValueCalculator {
+    class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
       public:
-        FdmLogInnerValue(const boost::shared_ptr<Payoff>& payoff,
-                         const boost::shared_ptr<FdmMesher>& mesher,
-                         Size direction);
+        FdmCellAveragingInnerValue(
+            const ext::shared_ptr<Payoff>& payoff,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            Size direction,
+            const boost::function<Real(Real)>& gridMapping = identity<Real>());
 
         Real innerValue(const FdmLinearOpIterator& iter, Time);
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time);
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
 
       private:
+        Real avgInnerValueCalc(const FdmLinearOpIterator& iter, Time t);
 
-        Real avgInnerValueCalc(const FdmLinearOpIterator& iter, Time);
-
-        const boost::shared_ptr<Payoff> payoff_;
-        const boost::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<Payoff> payoff_;
+        const ext::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
+        const boost::function<Real(Real)> gridMapping_;
+
         std::vector<Real> avgInnerValues_;
+    };
+
+    class FdmLogInnerValue : public FdmCellAveragingInnerValue {
+      public:
+        FdmLogInnerValue(const ext::shared_ptr<Payoff>& payoff,
+                         const ext::shared_ptr<FdmMesher>& mesher,
+                         Size direction);
     };
 
     class FdmLogBasketInnerValue : public FdmInnerValueCalculator {
       public:
-        FdmLogBasketInnerValue(const boost::shared_ptr<BasketPayoff>& payoff,
-                               const boost::shared_ptr<FdmMesher>& mesher);
+        FdmLogBasketInnerValue(const ext::shared_ptr<BasketPayoff>& payoff,
+                               const ext::shared_ptr<FdmMesher>& mesher);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time);
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time);
 
       private:
-        const boost::shared_ptr<BasketPayoff> payoff_;
-        const boost::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<BasketPayoff> payoff_;
+        const ext::shared_ptr<FdmMesher> mesher_;
     };
 
     class FdmZeroInnerValue : public FdmInnerValueCalculator {

@@ -102,11 +102,6 @@ namespace QuantLib {
                 QL_REQUIRE(thisJump > 0.0,
                            "invalid " << io::ordinal(i+1) << " jump value: " <<
                            thisJump);
-                #if !defined(QL_NEGATIVE_RATES)
-                QL_REQUIRE(thisJump <= 1.0,
-                           "invalid " << io::ordinal(i+1) << " jump value: " <<
-                           thisJump);
-                #endif
                 jumpEffect *= thisJump;
             }
         }

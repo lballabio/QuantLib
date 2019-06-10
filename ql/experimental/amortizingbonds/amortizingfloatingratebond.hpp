@@ -38,7 +38,7 @@ namespace QuantLib {
                         Natural settlementDays,
                         const std::vector<Real>& notional,
                         const Schedule& schedule,
-                        const boost::shared_ptr<IborIndex>& index,
+                        const ext::shared_ptr<IborIndex>& index,
                         const DayCounter& accrualDayCounter,
                         BusinessDayConvention paymentConvention = Following,
                         Natural fixingDays = Null<Natural>(),

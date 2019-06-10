@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/callability/triggeredswapexercise.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -86,9 +87,9 @@ namespace QuantLib {
         parameters[0] = strikes_.at(exerciseIndex);
     }
 
-    std::auto_ptr<MarketModelParametricExercise>
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelParametricExercise>
     TriggeredSwapExercise::clone() const {
-        return std::auto_ptr<MarketModelParametricExercise>(
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelParametricExercise>(
                                             new TriggeredSwapExercise(*this));
     }
 

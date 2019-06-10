@@ -44,13 +44,16 @@ namespace QuantLib {
                      const CurveState& currentState,
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
+        #else
         std::auto_ptr<MarketModelMultiProduct> clone() const;
+        #endif
         //@}
       private:
         std::vector<Real> fixedAccruals_, floatingAccruals_;
         std::vector<Time> paymentTimes_;
         Rate fixedRate_;
-        bool payer_;
         Real multiplier_;
         Size lastIndex_;
         // things that vary in a path

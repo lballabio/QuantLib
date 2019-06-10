@@ -47,11 +47,6 @@
 //#   define QL_ENABLE_TRACING
 #endif
 
-/* Define this if negative rates should be allowed. */
-#ifndef QL_NEGATIVE_RATES
-#   define QL_NEGATIVE_RATES
-#endif
-
 /* Define this if extra safety checks should be performed. This can degrade
    performance. */
 #ifndef QL_EXTRA_SAFETY_CHECKS
@@ -84,6 +79,27 @@
    allow for accurate intraday pricing.*/
 #ifndef QL_HIGH_RESOLUTION_DATE
 //#    define QL_HIGH_RESOLUTION_DATE
+#endif
+
+/* Define this to use standard smart pointers instead of Boost ones.
+   This requires you to set your compiler's standard to at least
+   C++11.  Note that std::shared_ptr does not check access and can
+   cause segmentation faults. */
+#ifndef QL_USE_STD_SHARED_PTR
+//#    define QL_USE_STD_SHARED_PTR
+#endif
+
+/* Define this to replace std::auto_ptr with std::unique_ptr.
+   This requires you to set your compiler's standard to at least C++11. */
+#ifndef QL_USE_STD_UNIQUE_PTR
+//#    define QL_USE_STD_UNIQUE_PTR
+#endif
+
+/* Define this to use std::function and std::bind instead of
+   boost::function and boost::bind.  This requires you to set your
+   compiler's standard to at least C++11. */
+#ifndef QL_USE_STD_FUNCTION
+//#    define QL_USE_STD_FUNCTION
 #endif
 
 /* Define this to enable the parallel unit test runner */
