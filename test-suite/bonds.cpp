@@ -138,21 +138,23 @@ void BondTest::testYield() {
               for (Size m=0; m<LENGTH(yields); m++) {
 
                 Real price = BondFunctions::cleanPrice(bond, yields[m],
-                                                 bondDayCount,
-                                                 compounding[n],
-                                                 frequencies[l]);
+                                                       bondDayCount,
+                                                       compounding[n],
+                                                       frequencies[l]);
+
                 Rate calculated = BondFunctions::yield(bond, price,
-                                             bondDayCount, compounding[n],
-                                             frequencies[l],
-                                             Date(),
-                                             tolerance, maxEvaluations);
+                                                       bondDayCount, compounding[n],
+                                                       frequencies[l],
+                                                       Date(),
+                                                       tolerance, maxEvaluations,
+                                                       0.05, true);
 
                 if (std::fabs(yields[m]-calculated) > tolerance) {
                   // the difference might not matter
                   Real price2 = BondFunctions::cleanPrice(bond, calculated,
-                                                    bondDayCount,
-                                                    compounding[n],
-                                                    frequencies[l]);
+                                                          bondDayCount,
+                                                          compounding[n],
+                                                          frequencies[l]);
                   if (std::fabs(price-price2)/price > tolerance) {
                       BOOST_ERROR("\nyield recalculation failed:"
                           "\n    issue:     " << issue <<
@@ -163,9 +165,43 @@ void BondTest::testYield() {
                           (compounding[n] == Compounded ?
                                 " compounded" : " continuous") <<
                           std::setprecision(7) <<
-                          "\n    price:   " << price <<
+                          "\n    clean price:   " << price <<
                           "\n    yield': " << io::rate(calculated) <<
-                          "\n    price': " << price2);
+                          "\n    clean price': " << price2);
+                  }
+                }
+
+                price = BondFunctions::dirtyPrice(bond, yields[m],
+                                                  bondDayCount,
+                                                  compounding[n],
+                                                  frequencies[l]);
+
+                calculated = BondFunctions::yield(bond, price,
+                                                  bondDayCount, compounding[n],
+                                                  frequencies[l],
+                                                  Date(),
+                                                  tolerance, maxEvaluations,
+                                                  0.05, false);
+
+                if (std::fabs(yields[m]-calculated) > tolerance) {
+                  // the difference might not matter
+                  Real price2 = BondFunctions::dirtyPrice(bond, calculated,
+                                                          bondDayCount,
+                                                          compounding[n],
+                                                          frequencies[l]);
+                  if (std::fabs(price-price2)/price > tolerance) {
+                      BOOST_ERROR("\nyield recalculation failed:"
+                          "\n    issue:     " << issue <<
+                          "\n    maturity:  " << maturity <<
+                          "\n    coupon:    " << io::rate(coupons[k]) <<
+                          "\n    frequency: " << frequencies[l] <<
+                          "\n    yield:   " << io::rate(yields[m]) <<
+                          (compounding[n] == Compounded ?
+                                " compounded" : " continuous") <<
+                          std::setprecision(7) <<
+                          "\n    dirty price:   " << price <<
+                          "\n    yield': " << io::rate(calculated) <<
+                          "\n    dirty price': " << price2);
                   }
                 }
               }

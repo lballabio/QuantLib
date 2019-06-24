@@ -359,19 +359,20 @@ namespace QuantLib {
     }
 
     Rate BondFunctions::yield(const Bond& bond,
-                              Real cleanPrice,
+                              Real price,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
                               Date settlement,
                               Real accuracy,
                               Size maxIterations,
-                              Rate guess) {
+                              Rate guess,
+                              const bool priceIsClean) {
         NewtonSafe solver;
         solver.setMaxEvaluations(maxIterations);
-        return yield<NewtonSafe>(solver, bond, cleanPrice, dayCounter,
+        return yield<NewtonSafe>(solver, bond, price, dayCounter,
                                  compounding, frequency, settlement,
-                                 accuracy, guess);
+                                 accuracy, guess, priceIsClean);
     }
 
     Time BondFunctions::duration(const Bond& bond,
