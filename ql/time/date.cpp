@@ -251,6 +251,13 @@ namespace QuantLib {
         return YearIsLeap[y-1900];
     }
 
+    bool Date::isLeapMonth(Date d) {
+        return d.month() == 2 && Date::isLeap(d.year());
+    }
+
+    bool Date::isLeapDay(Date d) { 
+        return d.dayOfMonth() == 29 && Date::isLeapMonth(d);
+    }
 
     Integer Date::monthLength(Month m, bool leapYear) {
         static const Integer MonthLength[] = {

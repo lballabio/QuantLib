@@ -205,6 +205,10 @@ namespace QuantLib {
         static Date maxDate();
         //! whether the given year is a leap one
         static bool isLeap(Year y);
+        //! whether the given date falls in a leap month 
+        static bool isLeapMonth(Date d);
+        //! whether the given date is a leap day
+        static bool isLeapDay(Date d);
         //! last day of the month to which the given date belongs
         static Date endOfMonth(const Date& d);
         //! whether a date is the last day of its month

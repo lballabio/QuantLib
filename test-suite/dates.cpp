@@ -432,6 +432,41 @@ void DateTest::intraday() {
 #endif
 }
 
+void DateTest::testLeapDays() {
+    BOOST_TEST_MESSAGE("Testing leap days...");
+
+    Date d;
+
+    d = Date(15, February, 2019);
+    BOOST_ASSERT(!Date::isLeap(d.year()));
+    BOOST_ASSERT(!Date::isLeapMonth(d));
+    BOOST_ASSERT(!Date::isLeapDay(d));
+
+    d = Date(28, February, 2019);
+    BOOST_ASSERT(!Date::isLeap(d.year()));
+    BOOST_ASSERT(!Date::isLeapMonth(d));
+    BOOST_ASSERT(!Date::isLeapDay(d));
+
+    d = Date(15, February, 2020);
+    BOOST_ASSERT(Date::isLeap(d.year()));
+    BOOST_ASSERT(Date::isLeapMonth(d));
+    BOOST_ASSERT(!Date::isLeapDay(d));
+
+    d = Date(28, February, 2020);
+    BOOST_ASSERT(Date::isLeap(d.year()));
+    BOOST_ASSERT(Date::isLeapMonth(d));
+    BOOST_ASSERT(!Date::isLeapDay(d));
+
+    d = Date(29, February, 2020);
+    BOOST_ASSERT(Date::isLeap(d.year()));
+    BOOST_ASSERT(Date::isLeapMonth(d));
+    BOOST_ASSERT(Date::isLeapDay(d));
+
+    d = Date(29, January, 2020);
+    BOOST_ASSERT(Date::isLeap(d.year()));
+    BOOST_ASSERT(!Date::isLeapMonth(d));
+    BOOST_ASSERT(!Date::isLeapDay(d));
+}
 
 test_suite* DateTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
@@ -444,6 +479,7 @@ test_suite* DateTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
     #endif
     suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::testLeapDays));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&DateTest::asxDates));

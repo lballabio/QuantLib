@@ -35,6 +35,7 @@ class DateTest {
     static void isoDates();
     static void parseDates();
     static void intraday();
+    static void testLeapDays();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
