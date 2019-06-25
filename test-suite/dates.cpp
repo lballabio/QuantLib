@@ -468,6 +468,79 @@ void DateTest::testLeapDays() {
     BOOST_ASSERT(!Date::isLeapDay(d));
 }
 
+void DateTest::testEndOfMonth() {
+    BOOST_TEST_MESSAGE("Testing end of month evaluation...");
+    Date d;
+
+    // Test Date::isEndOfMonth
+
+    d = Date(15, January, 2016);
+    if (Date::isEndOfMonth(d, false))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << false);
+
+    if (Date::isEndOfMonth(d, true))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << true);
+
+
+    d = Date(28, February, 2020);
+    if (Date::isEndOfMonth(d, false))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << false);
+
+    if (!Date::isEndOfMonth(d, true))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << true);
+
+    // Test Date::endOfMonth
+    
+    d = Date(15, January, 2016);
+
+    if (Date::endOfMonth(d, false) != Date(31, January, 2016))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << false
+                   << " output date: " << Date::endOfMonth(d, false) << "\n"
+                   << " expected date: " << Date(31, January, 2016) << "\n");
+
+    if (Date::endOfMonth(d, true) != Date(31, January, 2016))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << true
+                   << " output date: " << Date::endOfMonth(d, true) << "\n"
+                   << " expected date: " << Date(31, January, 2016) << "\n");
+
+    d = Date(15, February, 2020);
+
+    if (Date::endOfMonth(d, false) != Date(29, February, 2020))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << false
+                   << " output date: " << Date::endOfMonth(d, false) << "\n"
+                   << " expected date: " << Date(29, February, 2016) << "\n");
+
+    if (Date::endOfMonth(d, true) != Date(28, February, 2020))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << true
+                   << " output date: " << Date::endOfMonth(d, true) << "\n"
+                   << " expected date: " << Date(28, February, 2016) << "\n");
+
+
+    d = Date(29, February, 2020);
+    if (Date::endOfMonth(d, true) != Date(28, February, 2020))
+        BOOST_FAIL("end of month evaluation failed\n"
+                   << " input date:  " << d << "\n"
+                   << " ignore leap years: " << true
+                   << " output date: " << Date::endOfMonth(d, true) << "\n"
+                   << " expected date: " << Date(28, February, 2016) << "\n");
+}
+
 test_suite* DateTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
 
@@ -480,6 +553,7 @@ test_suite* DateTest::suite(SpeedLevel speed) {
     #endif
     suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::testLeapDays));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::testEndOfMonth));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&DateTest::asxDates));

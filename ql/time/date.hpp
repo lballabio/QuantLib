@@ -210,9 +210,9 @@ namespace QuantLib {
         //! whether the given date is a leap day
         static bool isLeapDay(Date d);
         //! last day of the month to which the given date belongs
-        static Date endOfMonth(const Date& d);
+        static Date endOfMonth(const Date& d, const bool ignoreLeapYears = false);
         //! whether a date is the last day of its month
-        static bool isEndOfMonth(const Date& d);
+        static bool isEndOfMonth(const Date& d, const bool ignoreLeapYears = false);
         //! next given weekday following or equal to the given date
         /*! E.g., the Friday following Tuesday, January 15th, 2002
             was January 18th, 2002.
@@ -395,14 +395,15 @@ namespace QuantLib {
         return advance(*this,-p.length(),p.units());
     }
 
-    inline Date Date::endOfMonth(const Date& d) {
+    inline Date Date::endOfMonth(const Date& d, const bool ignoreLeapYears) {
         Month m = d.month();
         Year y = d.year();
-        return Date(monthLength(m, isLeap(y)), m, y);
+        Day day = monthLength(m, !ignoreLeapYears && isLeap(y));
+        return Date(day, m, y);
     }
 
-    inline bool Date::isEndOfMonth(const Date& d) {
-       return (d.dayOfMonth() == monthLength(d.month(), isLeap(d.year())));
+    inline bool Date::isEndOfMonth(const Date& d, const bool ignoreLeapYears) {
+       return (d.dayOfMonth() == monthLength(d.month(), !ignoreLeapYears && isLeap(d.year())));
     }
 
     inline Date::serial_type operator-(const Date& d1, const Date& d2) {
