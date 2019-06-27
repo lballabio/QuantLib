@@ -100,7 +100,7 @@ namespace QuantLib {
         return data_->offsetDays;
     }
  
-    inline Calendar& PaymentTerm::calendar() const {
+    inline const Calendar& PaymentTerm::calendar() const {
         return data_->calendar;
     }
 
