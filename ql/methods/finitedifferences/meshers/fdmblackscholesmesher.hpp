@@ -32,6 +32,7 @@
 
 namespace QuantLib {
 
+    class FdmQuantoHelper;
     class YieldTermStructure;
     class GeneralizedBlackScholesProcess;
 
@@ -46,8 +47,10 @@ namespace QuantLib {
             Real eps = 0.0001,
             Real scaleFactor = 1.5,
             const std::pair<Real, Real>& cPoint
-                        = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
-            const DividendSchedule& dividendSchedule = DividendSchedule());
+                = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
+            const DividendSchedule& dividendSchedule = DividendSchedule(),
+            const ext::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper
+                = ext::shared_ptr<FdmQuantoHelper>());
 
         static ext::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
              const Handle<Quote>& s0,

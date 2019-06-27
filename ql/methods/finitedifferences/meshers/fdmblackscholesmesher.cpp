@@ -23,8 +23,10 @@
 
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/yield/quantotermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
@@ -38,7 +40,8 @@ namespace QuantLib {
         Real xMinConstraint, Real xMaxConstraint,
         Real eps, Real scaleFactor,
         const std::pair<Real, Real>& cPoint,
-        const DividendSchedule& dividendSchedule)
+        const DividendSchedule& dividendSchedule,
+        const ext::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper)
     : Fdm1dMesher(size) {
 
         const Real S = process->x0();
@@ -61,7 +64,20 @@ namespace QuantLib {
         std::sort(intermediateSteps.begin(), intermediateSteps.end());
 
         const Handle<YieldTermStructure> rTS = process->riskFreeRate();
-        const Handle<YieldTermStructure> qTS = process->dividendYield();
+
+        const Handle<YieldTermStructure> qTS = (fdmQuantoHelper)
+            ? Handle<YieldTermStructure>(
+                ext::make_shared<QuantoTermStructure>(
+                    process->dividendYield(),
+                    process->riskFreeRate(),
+                    Handle<YieldTermStructure>(fdmQuantoHelper->fTS_),
+                    process->blackVolatility(),
+                    strike,
+                    Handle<BlackVolTermStructure>(fdmQuantoHelper->fxVolTS_),
+                    fdmQuantoHelper->exchRateATMlevel_,
+                    fdmQuantoHelper->equityFxCorrelation_)
+              )
+            : process->dividendYield();
 
         Time lastDivTime = 0.0;
         Real fwd = S, mi = S, ma = S;

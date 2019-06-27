@@ -34,7 +34,8 @@ namespace QuantLib {
         Real strike,
         bool localVol,
         Real illegalLocalVolOverwrite,
-        Size direction)
+        Size direction,
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
     : mesher_(mesher),
       rTS_   (bsProcess->riskFreeRate().currentLink()),
       qTS_   (bsProcess->dividendYield().currentLink()),
@@ -47,7 +48,8 @@ namespace QuantLib {
       mapT_  (direction, mesher),
       strike_(strike),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      direction_(direction) {
+      direction_(direction),
+      quantoHelper_(quantoHelper) {
     }
 
     void FdmBlackScholesOp::setTime(Time t1, Time t2) {
@@ -77,15 +79,35 @@ namespace QuantLib {
 
                 }
             }
-            mapT_.axpyb(r - q - 0.5*v, dxMap_,
-                        dxxMap_.mult(0.5*v), Array(1, -r));
+
+            if (quantoHelper_) {
+                mapT_.axpyb(r - q - 0.5*v
+                    - quantoHelper_->quantoAdjustment(Sqrt(v), t1, t2),
+                    dxMap_, dxxMap_.mult(0.5*v), Array(1, -r));
+            }
+            else {
+                mapT_.axpyb(r - q - 0.5*v, dxMap_,
+                            dxxMap_.mult(0.5*v), Array(1, -r));
+            }
         }
         else {
             const Real v
                 = volTS_->blackForwardVariance(t1, t2, strike_)/(t2-t1);
-            mapT_.axpyb(Array(1, r - q - 0.5*v), dxMap_,
-                        dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
-                        Array(1, -r));
+
+            if (quantoHelper_) {
+                mapT_.axpyb(
+                    Array(1, r - q - 0.5*v)
+                        - quantoHelper_->quantoAdjustment(
+                            Array(1, std::sqrt(v)), t1, t2),
+                    dxMap_,
+                    dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
+                    Array(1, -r));
+            }
+            else {
+                mapT_.axpyb(Array(1, r - q - 0.5*v), dxMap_,
+                    dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
+                    Array(1, -r));
+            }
         }
     }
 
