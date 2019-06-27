@@ -29,8 +29,7 @@
 #include <ql/types.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/math/functional.hpp>
-
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 
 
@@ -57,7 +56,7 @@ namespace QuantLib {
             const ext::shared_ptr<Payoff>& payoff,
             const ext::shared_ptr<FdmMesher>& mesher,
             Size direction,
-            const boost::function<Real(Real)>& gridMapping = identity<Real>());
+            const ext::function<Real(Real)>& gridMapping = identity<Real>());
 
         Real innerValue(const FdmLinearOpIterator& iter, Time);
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
@@ -68,7 +67,7 @@ namespace QuantLib {
         const ext::shared_ptr<Payoff> payoff_;
         const ext::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
-        const boost::function<Real(Real)> gridMapping_;
+        const ext::function<Real(Real)> gridMapping_;
 
         std::vector<Real> avgInnerValues_;
     };
