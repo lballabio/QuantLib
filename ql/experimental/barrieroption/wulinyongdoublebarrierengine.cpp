@@ -129,10 +129,6 @@ namespace QuantLib {
     }
 
 
-    Real WulinYongDoubleBarrierEngine::underlying() const {
-        return process_->x0();
-    }
-
     Real WulinYongDoubleBarrierEngine::strike() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
@@ -146,10 +142,6 @@ namespace QuantLib {
 
     Volatility WulinYongDoubleBarrierEngine::volatility() const {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
-    }
-
-    Real WulinYongDoubleBarrierEngine::stdDeviation() const {
-        return volatility() * std::sqrt(residualTime());
     }
 
     Rate WulinYongDoubleBarrierEngine::riskFreeRate() const {
