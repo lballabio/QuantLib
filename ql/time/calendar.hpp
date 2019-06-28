@@ -89,10 +89,10 @@ namespace QuantLib {
         */
 
         /*! Returns the set of added holidays for the given calendar */
-        std::set<Date> addedHolidays() const;
+        const std::set<Date>& addedHolidays() const;
         
         /*! Returns the set of removed holidays for the given calendar */
-        std::set<Date> removedHolidays() const;
+        const std::set<Date>& removedHolidays() const;
 
         bool isBusinessDay(const Date& d) const;
         /*! Returns <tt>true</tt> iff the date is a holiday for the given
@@ -201,12 +201,12 @@ namespace QuantLib {
         return impl_->name();
     }
 
-    inline std::set<Date> Calendar::addedHolidays() const {
+    inline const std::set<Date>& Calendar::addedHolidays() const {
         QL_REQUIRE(impl_, "no implementation provided");
         return impl_->addedHolidays;
     }
 
-    inline std::set<Date> Calendar::removedHolidays() const {
+    inline const std::set<Date>& Calendar::removedHolidays() const {
         QL_REQUIRE(impl_, "no implementation provided");
         return impl_->removedHolidays;
     }
