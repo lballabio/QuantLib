@@ -52,5 +52,7 @@ docs-clean:
 dist-hook:
 	mkdir -p $(distdir)/build
 	mkdir -p $(distdir)/cmake
+	mkdir -p $(distdir)/mk
 	cp -p $(srcdir)/cmake/quantlib.cmake $(distdir)/cmake
+	cp -p $(srcdir)/mk/*.mk $(distdir)/mk
 
