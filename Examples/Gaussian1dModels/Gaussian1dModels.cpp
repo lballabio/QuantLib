@@ -313,14 +313,14 @@ int main(int argc, char *argv[]) {
                   << std::fixed << std::setprecision(6) << npv << std::endl;
         printTiming(timer);
 
-        std::cout
-            << "\nThere is another mode to generate a calibration basket called"
-               "\nMaturityStrikeByDeltaGamma. This means that the maturity, "
-               "\nthe strike and the nominal of the calibrating swaption are "
-               "\ncomputed such that the npv and its first and second "
-               "\nderivative with respect to the model's state variable) of"
-               "\nthe exotics underlying match with the calibrating swaption's"
-               "\nunderlying. Let's try this in our case." << std::endl;
+        std::cout << "\nThere is another mode to generate a calibration basket called"
+                     "\nMaturityStrikeByDeltaGamma. This means that the maturity,"
+                     "\nthe strike and the nominal of the calibrating swaptions are"
+                     "\nobtained matching the NPV, first derivative and second derivative"
+                     "\nof the swap you will exercise into at at each bermudan call date."
+                     "\nThe derivatives are taken with respect to the model's state variable."
+                     "\nLet's try this in our case."
+                  << std::endl;
 
         timer.start();
         basket = swaption->calibrationBasket(
