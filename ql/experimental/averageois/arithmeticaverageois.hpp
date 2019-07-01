@@ -73,7 +73,7 @@ namespace QuantLib {
         Rate fixedRate() const { return fixedRate_; }
         const DayCounter& fixedDayCount() { return fixedDC_; }
 
-        const ext::shared_ptr<OvernightIndex>& overnightIndex();
+        const ext::shared_ptr<OvernightIndex>& overnightIndex() { return overnightIndex_; }
         Spread spread() { return spread_; }
 
         const Leg& fixedLeg() const { return legs_[0]; }
