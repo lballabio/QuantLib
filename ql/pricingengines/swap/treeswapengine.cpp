@@ -71,7 +71,7 @@ namespace QuantLib {
             lattice = model_->tree(timeGrid);
         }
 
-        swap.initialize(lattice, times.back());
+        swap.initialize(lattice, lattice->timeGrid().back());
         swap.rollback(0.0);
 
         results_.value = swap.presentValue();
