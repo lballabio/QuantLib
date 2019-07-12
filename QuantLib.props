@@ -12,13 +12,4 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
 	<PlatformToolset Condition="'$(VisualStudioVersion)' == '16.0'">v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros">
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '10.0'">vc100</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '11.0'">vc110</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '12.0'">vc120</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '13.0'">vc130</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '14.0'">vc140</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '15.0'">vc141</qlCompilerTag>
-	<qlCompilerTag Condition="'$(VisualStudioVersion)' == '16.0'">vc142</qlCompilerTag>
-  </PropertyGroup>
 </Project>
