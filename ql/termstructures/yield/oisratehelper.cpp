@@ -73,7 +73,9 @@ namespace QuantLib {
             .withOvernightLegSpread(overnightSpread_);
 
         earliestDate_ = swap_->startDate();
-        latestDate_ = swap_->maturityDate();
+        Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
+                                        swap_->fixedLeg().back()->date());
+        latestDate_ = std::max(swap_->maturityDate(), lastPaymentDate);
     }
 
     void OISRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -137,7 +139,9 @@ namespace QuantLib {
             .withTelescopicValueDates(telescopicValueDates_);
 
         earliestDate_ = swap_->startDate();
-        latestDate_ = swap_->maturityDate();
+        Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
+                                        swap_->fixedLeg().back()->date());
+        latestDate_ = std::max(swap_->maturityDate(), lastPaymentDate);
     }
 
     void DatedOISRateHelper::setTermStructure(YieldTermStructure* t) {
