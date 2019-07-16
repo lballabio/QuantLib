@@ -6,7 +6,7 @@ AC_PREREQ(2.62)
 AC_CONFIG_SRCDIR([ql/qldefines.hpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([ql/config.hpp])
-AM_INIT_AUTOMAKE([foreign subdir-objects])
+AM_INIT_AUTOMAKE([foreign nostdinc subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_COPYRIGHT([
