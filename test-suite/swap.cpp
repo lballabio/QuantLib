@@ -310,11 +310,11 @@ void SwapTest::testCachedValue() {
 
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
 
-	Real cachedNPV;  
+    Real cachedNPV;  
     if (!Settings::instance().useIndexedCoupon())
-		cachedNPV = -5.872863313209;
+        cachedNPV = -5.872863313209;
     else
-		cachedNPV = -5.872342992212;
+        cachedNPV = -5.872342992212;
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_ERROR("failed to reproduce cached swap value:\n"

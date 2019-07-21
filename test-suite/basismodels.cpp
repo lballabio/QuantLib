@@ -234,9 +234,9 @@ namespace {
         if (Settings::instance().useIndexedCoupon())
             tol2 = 0.02;
         else
-			tol2 = tol;
+            tol2 = tol;
 
-		SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
+        SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
         for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {
             if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol2)
                 BOOST_ERROR("Swaption cash flow floating leg spread does not vanish in "

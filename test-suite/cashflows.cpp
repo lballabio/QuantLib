@@ -427,7 +427,7 @@ test_suite* CashFlowsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
     if (!Settings::instance().useIndexedCoupon())
-	    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
+        suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
 
     suite->add(QUANTLIB_TEST_CASE(
                              &CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));

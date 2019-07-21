@@ -1,5 +1,4 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-
 /*
  Copyright (C) 2007, 2011 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
@@ -109,9 +108,9 @@ namespace QuantLib {
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
 
-		/*! If set, this flag specifies whether to use indexed coupons 
-		    instead of par coupons in floating legs.
-		*/
+        /*! If set, this flag specifies whether to use indexed coupons 
+            instead of par coupons in floating legs.
+        */
         bool& useIndexedCoupon();
         bool useIndexedCoupon() const;
 

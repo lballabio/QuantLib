@@ -1149,10 +1149,10 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
 
     if (!Settings::instance().useIndexedCoupon()) {
-		// This regression test didn't work with indexed coupons anyway.
-		suite->add(QUANTLIB_TEST_CASE(
-								  &PiecewiseYieldCurveTest::testBadPreviousCurve));
-	}
+        // This regression test didn't work with indexed coupons anyway.
+        suite->add(QUANTLIB_TEST_CASE(
+               &PiecewiseYieldCurveTest::testBadPreviousCurve));
+    }
 
     return suite;
 }

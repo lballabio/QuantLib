@@ -782,11 +782,11 @@ void OptionletStripperTest::testSwitchStrike() {
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
-	Real expected;
+    Real expected;
     if (Settings::instance().useIndexedCoupon())
-		expected = 0.02981258;
+        expected = 0.02981258;
     else
-		expected = 0.02981223;
+        expected = 0.02981223;
     
     Real error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
@@ -803,7 +803,7 @@ void OptionletStripperTest::testSwitchStrike() {
     if (Settings::instance().useIndexedCoupon())
         expected = 0.0499381;
     else
-		expected = 0.0499371;
+        expected = 0.0499371;
 
     error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)

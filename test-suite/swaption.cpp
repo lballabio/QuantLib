@@ -403,11 +403,11 @@ void SwaptionTest::testCachedValue() {
     ext::shared_ptr<Swaption> swaption =
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
-	Real cachedNPV;
+    Real cachedNPV;
     if (!Settings::instance().useIndexedCoupon())
-		cachedNPV = 0.036418158579;
+        cachedNPV = 0.036418158579;
     else
-		cachedNPV = 0.036421429684;
+        cachedNPV = 0.036421429684;
 
     // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)

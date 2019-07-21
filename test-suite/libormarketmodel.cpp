@@ -198,9 +198,9 @@ void LiborMarketModelTest::testCapletPricing() {
     const Size size = 10;
     Real tolerance;
     if (Settings::instance().useIndexedCoupon())
-		tolerance = 1e-5;
+        tolerance = 1e-5;
     else
-		tolerance = 1e-12;
+        tolerance = 1e-12;
 
     ext::shared_ptr<IborIndex> index = makeIndex();
     ext::shared_ptr<LiborForwardModelProcess> process(
@@ -355,11 +355,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
     const Size size  = 10;
     const Size steps = 8*size;
 
-	Real tolerance;
+    Real tolerance;
     if (Settings::instance().useIndexedCoupon())
-		tolerance = 1e-6;
+        tolerance = 1e-6;
     else
-		tolerance = 1e-12;
+        tolerance = 1e-12;
 
     std::vector<Date> dates;
     std::vector<Rate> rates;

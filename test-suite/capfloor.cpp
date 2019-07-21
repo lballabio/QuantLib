@@ -589,16 +589,16 @@ void CapFloorTest::testCachedValue() {
 
     Real cachedCapNPV, cachedFloorNPV ;
     if (Settings::instance().useIndexedCoupon()) {
-		// index fixing price
-		cachedCapNPV   = 6.87630307745,
+        // index fixing price
+        cachedCapNPV   = 6.87630307745,
         cachedFloorNPV = 2.65796764715;
     } else {
         // par coupon price
         cachedCapNPV   = 6.87570026732;
-		cachedFloorNPV = 2.65812927959;
+        cachedFloorNPV = 2.65812927959;
     }
 
-	// test Black cap price against cached value
+    // test Black cap price against cached value
     if (std::fabs(cap->NPV()-cachedCapNPV) > 1.0e-11)
         BOOST_ERROR(
             "failed to reproduce cached cap value:\n"

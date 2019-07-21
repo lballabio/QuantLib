@@ -35,10 +35,10 @@ namespace QuantLib {
     Settings::Settings()
     : includeReferenceDateEvents_(false),
       enforcesTodaysHistoricFixings_(false),
-	  useIndexedCoupon_(false) {
-		#ifdef QL_USE_INDEXED_COUPON
+      useIndexedCoupon_(false) {
+        #ifdef QL_USE_INDEXED_COUPON
         useIndexedCoupon_ = true;
-		#endif
+        #endif
     }
 
     void Settings::anchorEvaluationDate() {
@@ -72,7 +72,7 @@ namespace QuantLib {
             Settings::instance().enforcesTodaysHistoricFixings() =
                 enforcesTodaysHistoricFixings_;
             Settings::instance().useIndexedCoupon() = 
-				useIndexedCoupon_;
+                useIndexedCoupon_;
         } catch (...) {
             // nothing we can do except bailing out.
         }

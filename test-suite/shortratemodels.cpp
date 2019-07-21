@@ -104,7 +104,7 @@ void ShortRateModelTest::testCachedHullWhite() {
     // Check and print out results
     Real cachedA, cachedSigma;
     if (Settings::instance().useIndexedCoupon()) {
-		cachedA = 0.0463679, cachedSigma = 0.00579831;
+        cachedA = 0.0463679, cachedSigma = 0.00579831;
     } else {
         cachedA = 0.0464041, cachedSigma = 0.00579912;
     }
@@ -182,9 +182,9 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     // Check and print out results
     Real cachedA, cachedSigma;
     if (Settings::instance().useIndexedCoupon())
-		cachedA = 0.05, cachedSigma = 0.00585835;
+        cachedA = 0.05, cachedSigma = 0.00585835;
     else
-		cachedA = 0.05, cachedSigma = 0.00585858;
+        cachedA = 0.05, cachedSigma = 0.00585858;
 
     Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
@@ -265,10 +265,10 @@ void ShortRateModelTest::testCachedHullWhite2() {
     // JamshidianEngine not accounting for the delay between option
     // expiry and underlying start
     Real cachedA, cachedSigma;
-	if (Settings::instance().useIndexedCoupon())
-		cachedA = 0.0481608, cachedSigma = 0.00582493;
+    if (Settings::instance().useIndexedCoupon())
+        cachedA = 0.0481608, cachedSigma = 0.00582493;
     else
-		cachedA = 0.0482063, cachedSigma = 0.00582687;
+        cachedA = 0.0482063, cachedSigma = 0.00582687;
 
     Real tolerance = 5.0e-6; 
     Array xMinCalculated = model->params();
@@ -354,10 +354,10 @@ void ShortRateModelTest::testSwaps() {
                                         new TreeVanillaSwapEngine(model,120));
 
     Real tolerance;
-	if (Settings::instance().useIndexedCoupon())
-		tolerance = 4.0e-3;
+    if (Settings::instance().useIndexedCoupon())
+        tolerance = 4.0e-3;
     else
-		tolerance = 1.0e-8;
+        tolerance = 1.0e-8;
 
     for (Size i=0; i<LENGTH(start); i++) {
 

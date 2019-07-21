@@ -558,9 +558,9 @@ void AssetSwapTest::testImpliedValue() {
     // curve set up, which we do not test here.
     Real tolerance2;
     if (Settings::instance().useIndexedCoupon())
-		tolerance2 = 1.0e-2;
-	else
-		tolerance2 = 1.0e-13;
+        tolerance2 = 1.0e-2;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -930,8 +930,8 @@ void AssetSwapTest::testMarketASWSpread() {
     Real tolerance2;
     if (Settings::instance().useIndexedCoupon())
         tolerance2 = 1.0e-4;
-	else
-		tolerance2 = 1.0e-13;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -1687,8 +1687,8 @@ void AssetSwapTest::testGenericBondImplied() {
     Real tolerance2;
     if (Settings::instance().useIndexedCoupon())
         tolerance2 = 1.0e-2;
-	else
-		tolerance2 = 1.0e-13;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -2088,8 +2088,8 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Real tolerance2; 
     if (Settings::instance().useIndexedCoupon())
         tolerance2 = 1.0e-4;
-	else
-		tolerance2 = 1.0e-13;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
