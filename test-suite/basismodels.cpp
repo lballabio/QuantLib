@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 Sebastian Schlenkrich
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -229,12 +230,13 @@ namespace {
         // However, if indexed coupons are used the floating leg is not at par,
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
-        #if defined(QL_USE_INDEXED_COUPON)
-        Real tol2 = 0.02;
-        #else
-        Real tol2 = tol;
-        #endif
-        SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
+        Real tol2;
+        if (Settings::instance().useIndexedCoupon())
+            tol2 = 0.02;
+        else
+			tol2 = tol;
+
+		SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
         for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {
             if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol2)
                 BOOST_ERROR("Swaption cash flow floating leg spread does not vanish in "

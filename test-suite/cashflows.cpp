@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009, 2012 StatPro Italia srl
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -425,9 +426,9 @@ test_suite* CashFlowsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
-    #ifndef QL_USE_INDEXED_COUPON
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
-    #endif
+    if (!Settings::instance().useIndexedCoupon())
+	    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
+
     suite->add(QUANTLIB_TEST_CASE(
                              &CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(

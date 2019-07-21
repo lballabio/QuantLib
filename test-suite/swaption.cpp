@@ -6,6 +6,7 @@
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2007, 2008 StatPro Italia srl
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -401,11 +402,12 @@ void SwaptionTest::testCachedValue() {
 
     ext::shared_ptr<Swaption> swaption =
         vars.makeSwaption(swap, exerciseDate, 0.20);
-    #ifndef QL_USE_INDEXED_COUPON
-    Real cachedNPV = 0.036418158579;
-    #else
-    Real cachedNPV = 0.036421429684;
-    #endif
+
+	Real cachedNPV;
+    if (!Settings::instance().useIndexedCoupon())
+		cachedNPV = 0.036418158579;
+    else
+		cachedNPV = 0.036421429684;
 
     // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)

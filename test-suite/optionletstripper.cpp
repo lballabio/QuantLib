@@ -4,6 +4,7 @@
  Copyright (C) 2008 Ferdinando Ametrano
  Copyright (C) 2007, 2008 Laurent Hoffmann
  Copyright (C) 2015, 2016 Michael von den Driesch
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -781,13 +782,12 @@ void OptionletStripperTest::testSwitchStrike() {
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
-
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real expected = 0.02981258;
-    #else
-    Real expected = 0.02981223;
-    #endif
-
+	Real expected;
+    if (Settings::instance().useIndexedCoupon())
+		expected = 0.02981258;
+    else
+		expected = 0.02981223;
+    
     Real error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
         BOOST_FAIL("\nSwitchstrike not correctly computed:  "
@@ -800,11 +800,10 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    expected = 0.0499381;
-    #else
-    expected = 0.0499371;
-    #endif
+    if (Settings::instance().useIndexedCoupon())
+        expected = 0.0499381;
+    else
+		expected = 0.0499371;
 
     error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)

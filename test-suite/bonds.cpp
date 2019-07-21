@@ -4,6 +4,7 @@
  Copyright (C) 2004, 2005 StatPro Italia srl
  Copyright (C) 2007, 2012 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Piter Dias
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -923,12 +924,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond1.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice1 = 99.874645;
-    #else
-    Real cachedPrice1 = 99.874646;
-    #endif
-
+	Real cachedPrice1;
+    if (Settings::instance().useIndexedCoupon())
+		cachedPrice1 = 99.874645;
+    else
+		cachedPrice1 = 99.874646;
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -955,13 +955,13 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond2.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice2 = 97.955904;
-    #else
-    Real cachedPrice2 = 97.955904;
-    #endif
+	Real cachedPrice2;
+    if (Settings::instance().useIndexedCoupon())
+		cachedPrice2 = 97.955904;
+    else
+		cachedPrice2 = 97.955904;
 
-    price = bond2.cleanPrice();
+	price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
         BOOST_FAIL("failed to reproduce cached price:\n"
                    << std::fixed
@@ -990,11 +990,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond3.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice3 = 98.495458;
-    #else
-    Real cachedPrice3 = 98.495459;
-    #endif
+	Real cachedPrice3; 
+    if (Settings::instance().useIndexedCoupon())
+		cachedPrice3 = 98.495458;
+    else
+		cachedPrice3 = 98.495459;
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {

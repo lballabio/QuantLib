@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2017 StatPro Italia srl
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -1147,11 +1148,11 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
 
-    #if !defined(QL_USE_INDEXED_COUPON)
-    // This regression test didn't work with indexed coupons anyway.
-    suite->add(QUANTLIB_TEST_CASE(
-                             &PiecewiseYieldCurveTest::testBadPreviousCurve));
-    #endif
+    if (!Settings::instance().useIndexedCoupon()) {
+		// This regression test didn't work with indexed coupons anyway.
+		suite->add(QUANTLIB_TEST_CASE(
+								  &PiecewiseYieldCurveTest::testBadPreviousCurve));
+	}
 
     return suite;
 }

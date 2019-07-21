@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2012, 2013 Grzegorz Andruszkiewicz
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -260,12 +261,11 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond1.setPricingEngine(catBondEngine);
     setCouponPricer(catBond1.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice1 = 99.874645;
-    #else
-    Real cachedPrice1 = 99.874646;
-    #endif
-
+	Real cachedPrice1;
+    if (Settings::instance().useIndexedCoupon())
+		cachedPrice1 = 99.874645;
+    else
+		cachedPrice1 = 99.874646;
 
     Real price = bond1.cleanPrice();
     Real catPrice = catBond1.cleanPrice();
@@ -308,13 +308,13 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond2.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond2.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice2 = 97.955904;
-    #else
-    Real cachedPrice2 = 97.955904;
-    #endif
+	Real cachedPrice2; 
+    if (Settings::instance().useIndexedCoupon())
+		cachedPrice2 = 97.955904;
+    else
+		cachedPrice2 = 97.955904;
 
-    price = bond2.cleanPrice();
+	price = bond2.cleanPrice();
     catPrice = catBond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance || std::fabs(catPrice-price) > tolerance) {
         BOOST_FAIL("failed to reproduce floating rate bond price:\n"
@@ -356,11 +356,11 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond3.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond3.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice3 = 98.495458;
-    #else
-    Real cachedPrice3 = 98.495459;
-    #endif
+	Real cachedPrice3;
+    if (Settings::instance().useIndexedCoupon())
+		cachedPrice3 = 98.495458;
+    else
+		cachedPrice3 = 98.495459;
 
     price = bond3.cleanPrice();
     catPrice = catBond3.cleanPrice();

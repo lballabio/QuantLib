@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006 Klaus Spanderen
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -195,11 +196,11 @@ void LiborMarketModelTest::testCapletPricing() {
     SavedSettings backup;
 
     const Size size = 10;
-    #if defined(QL_USE_INDEXED_COUPON)
-    const Real tolerance = 1e-5;
-    #else
-    const Real tolerance = 1e-12;
-    #endif
+    Real tolerance;
+    if (Settings::instance().useIndexedCoupon())
+		tolerance = 1e-5;
+    else
+		tolerance = 1e-12;
 
     ext::shared_ptr<IborIndex> index = makeIndex();
     ext::shared_ptr<LiborForwardModelProcess> process(
@@ -353,11 +354,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     const Size size  = 10;
     const Size steps = 8*size;
-    #if defined(QL_USE_INDEXED_COUPON)
-    const Real tolerance = 1e-6;
-    #else
-    const Real tolerance = 1e-12;
-    #endif
+
+	Real tolerance;
+    if (Settings::instance().useIndexedCoupon())
+		tolerance = 1e-6;
+    else
+		tolerance = 1e-12;
 
     std::vector<Date> dates;
     std::vector<Rate> rates;
