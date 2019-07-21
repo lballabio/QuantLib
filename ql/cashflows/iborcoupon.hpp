@@ -7,6 +7,7 @@
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,7 +56,7 @@ namespace QuantLib {
         const ext::shared_ptr<IborIndex>& iborIndex() const {
             return iborIndex_;
         }
-        //! this is dependent on QL_USE_INDEXED_COUPON
+        //! this is dependent on Settings::instance().useIndexedCoupon()
         const Date& fixingEndDate() const { return fixingEndDate_; }
         //@}
         //! \name FloatingRateCoupon interface

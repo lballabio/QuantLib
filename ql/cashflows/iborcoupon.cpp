@@ -6,6 +6,7 @@
  Copyright (C) 2010, 2011 Ferdinando Ametrano
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,18 +57,18 @@ namespace QuantLib {
         fixingValueDate_ = fixingCalendar.advance(
             fixingDate_, indexFixingDays, Days);
 
-        #ifdef QL_USE_INDEXED_COUPON
-        fixingEndDate_ = index_->maturityDate(fixingValueDate_);
-        #else
-        if (isInArrears_)
+		if (Settings::instance().useIndexedCoupon()) {
             fixingEndDate_ = index_->maturityDate(fixingValueDate_);
-        else { // par coupon approximation
-            Date nextFixingDate = fixingCalendar.advance(
-                accrualEndDate_, -static_cast<Integer>(fixingDays_), Days);
-            fixingEndDate_ = fixingCalendar.advance(
-                nextFixingDate, indexFixingDays, Days);
+		} else {
+			if (isInArrears_)
+				fixingEndDate_ = index_->maturityDate(fixingValueDate_);
+			else { // par coupon approximation
+				Date nextFixingDate = fixingCalendar.advance(
+					accrualEndDate_, -static_cast<Integer>(fixingDays_), Days);
+				fixingEndDate_ = fixingCalendar.advance(
+					nextFixingDate, indexFixingDays, Days);
+			}
         }
-        #endif
 
         const DayCounter& dc = index_->dayCounter();
         spanningTime_ = dc.yearFraction(fixingValueDate_,

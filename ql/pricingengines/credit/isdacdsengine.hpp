@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2014 Jose Aparicio
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -86,8 +87,8 @@ namespace QuantLib {
             specifications.
 
             To be precisely consistent with the ISDA specification
-            QL_USE_INDEXED_COUPON
-            must not be defined. This is not checked in order not to
+                Settings::instance().useIndexedCoupon()
+            must be false. This is not checked in order not to
             kill the engine completely in this case.
 
             Furthermore, the ibor index in the swap rate helpers should not

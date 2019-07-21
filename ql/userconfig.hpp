@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004, 2011 Ferdinando Ametrano
  Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,7 +55,7 @@
 #endif
 
 /* Define this to use indexed coupons instead of par coupons in floating
-   legs. */
+   legs as the default in Settings::instance().useIndexedCoupon(). */
 #ifndef QL_USE_INDEXED_COUPON
 //#   define QL_USE_INDEXED_COUPON
 #endif

@@ -4,6 +4,7 @@
  Copyright (C) 2007, 2011 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2004, 2005, 2007, 2009 StatPro Italia srl
+ Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,7 +34,12 @@ namespace QuantLib {
 
     Settings::Settings()
     : includeReferenceDateEvents_(false),
-      enforcesTodaysHistoricFixings_(false) {}
+      enforcesTodaysHistoricFixings_(false),
+	  useIndexedCoupon_(false) {
+		#ifdef QL_USE_INDEXED_COUPON
+        useIndexedCoupon_ = true;
+		#endif
+    }
 
     void Settings::anchorEvaluationDate() {
         // set to today's date if not already set.
@@ -52,7 +58,8 @@ namespace QuantLib {
                         Settings::instance().includeReferenceDateEvents()),
       includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
       enforcesTodaysHistoricFixings_(
-                        Settings::instance().enforcesTodaysHistoricFixings()) {}
+                        Settings::instance().enforcesTodaysHistoricFixings()),
+      useIndexedCoupon_(Settings::instance().useIndexedCoupon()) {}
 
     SavedSettings::~SavedSettings() {
         try {
@@ -64,6 +71,8 @@ namespace QuantLib {
                 includeTodaysCashFlows_;
             Settings::instance().enforcesTodaysHistoricFixings() =
                 enforcesTodaysHistoricFixings_;
+            Settings::instance().useIndexedCoupon() = 
+				useIndexedCoupon_;
         } catch (...) {
             // nothing we can do except bailing out.
         }
