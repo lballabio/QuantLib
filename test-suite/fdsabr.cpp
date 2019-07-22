@@ -177,7 +177,7 @@ void FdSabrTest::testFdmSabrOp() {
         const Real putPdeImplVol =
             optionPut.impliedVolatility(optionPut.NPV(), bsProcess, 1e-6);
 
-        const boost::function<Real(Real)> mcSabr(
+        const ext::function<Real(Real)> mcSabr(
             SabrMonteCarloPricer(f0, maturityTime, putPayoff,
                                  alpha, beta, nu, rho));
 

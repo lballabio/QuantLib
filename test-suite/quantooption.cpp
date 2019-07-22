@@ -5,6 +5,7 @@
  Copyright (C) 2004, 2007 StatPro Italia srl
  Copyright (C) 2008 Paul Farrington
  Copyright (C) 2014 Thema Consulting SA
+ Copyright (C) 2019 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,12 +29,17 @@
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/experimental/barrieroption/quantodoublebarrieroption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/quanto/quantoengine.hpp>
 #include <ql/pricingengines/forward/forwardperformanceengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 
@@ -1042,6 +1048,353 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
     }
 }
 
+void QuantoOptionTest::testFDMQuantoHelper()  {
+
+    BOOST_TEST_MESSAGE("Testing FDM quanto helper...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual360();
+    const Date today = Date(22, April, 2019);
+
+    const Real s = 100;
+    const Rate domesticR = 0.1;
+    const Rate foreignR = 0.2;
+    const Rate q = 0.3;
+    const Volatility vol = 0.3;
+    const Volatility fxVol = 0.2;
+
+    const Real exchRateATMlevel = 1.0;
+    const Real equityFxCorrelation = -0.75;
+
+    const Handle<YieldTermStructure> domesticTS(
+        flatRate(today, domesticR, dc));
+
+    const Handle<YieldTermStructure> divTS(
+        flatRate(today, q, dc));
+
+    const Handle<BlackVolTermStructure> volTS(
+        flatVol(today, vol, dc));
+
+    const Handle<Quote> spot(
+        ext::make_shared<SimpleQuote>(s));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess
+        = ext::make_shared<BlackScholesMertonProcess>(
+            spot, divTS, domesticTS, volTS);
+
+    const ext::shared_ptr<YieldTermStructure> foreignTS
+        = flatRate(today, foreignR, dc);
+
+    const ext::shared_ptr<BlackVolTermStructure> fxVolTS
+        = flatVol(today, fxVol, dc);
+
+    const ext::shared_ptr<FdmQuantoHelper> fdmQuantoHelper
+        = ext::make_shared<FdmQuantoHelper>(
+              domesticTS.currentLink(),
+              foreignTS, fxVolTS,
+              equityFxCorrelation, exchRateATMlevel);
+
+    const Real calculatedQuantoAdj
+        = fdmQuantoHelper->quantoAdjustment(vol, 0.0, 1.0);
+
+    const Real expectedQuantoAdj
+        = domesticR - foreignR + equityFxCorrelation*vol*fxVol;
+
+    const Real tol = 1e-10;
+    if (std::fabs(calculatedQuantoAdj - expectedQuantoAdj) > tol) {
+        BOOST_ERROR("failed to reproduce quanto drift rate"
+                    << std::setprecision(10)
+                    << "\n    calculated: " << calculatedQuantoAdj
+                    << "\n    expected:   " << expectedQuantoAdj);
+    }
+
+    const Date maturityDate = today + Period(6, Months);
+    const Time maturityTime = dc.yearFraction(today, maturityDate);
+
+    const Real eps = 0.0002;
+    const Real scalingFactor = 1.25;
+
+    const ext::shared_ptr<FdmBlackScholesMesher> mesher(
+        new FdmBlackScholesMesher(
+            3, bsmProcess, maturityTime, s,
+            Null<Real>(), Null<Real>(), eps, scalingFactor,
+            std::pair<Real, Real>(Null<Real>(), Null<Real>()),
+            DividendSchedule(),
+            fdmQuantoHelper));
+
+    const Real normInvEps = InverseCumulativeNormal()(1-eps);
+    const Real sigmaSqrtT = vol * std::sqrt(maturityTime);
+
+    const Real qQuanto = q + expectedQuantoAdj;
+    const Real expectedDriftRate = domesticR - qQuanto;
+
+    const Real logFwd = std::log(s) + expectedDriftRate*maturityTime;
+    const Real xMin = logFwd - sigmaSqrtT*normInvEps*scalingFactor;
+    const Real xMax = std::log(s) + sigmaSqrtT*normInvEps*scalingFactor;
+
+    const std::vector<Real> loc = mesher->locations();
+
+    if (std::fabs(loc.front()-xMin) > tol || std::fabs(loc.back()-xMax) > tol) {
+        BOOST_ERROR("failed to reproduce FDM grid boundaries"
+                    << "\n    calculated: (" << std::setprecision(10)
+                        << loc.front() << ", " << loc.back() << ")"
+                    << "\n    expected:   (" << xMin << ", " << xMax << ")");
+    }
+}
+
+void QuantoOptionTest::testPDEOptionValues()  {
+
+    BOOST_TEST_MESSAGE("Testing quanto-option values with PDEs...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual360();
+    const Date today = Date(21, April, 2019);
+
+    QuantoOptionData values[] = {
+        //    type,    strike,  spot,   div, domestic rate,  t,   vol, foreign rate, fx vol, correlation, result,     tol
+        { Option::Call, 105.0, 100.0, 0.04,     0.08,      0.5,  0.2,     0.05,      0.10,     0.3,  Null<Real>(), Null<Real>() },
+        { Option::Call, 100.0, 100.0, 0.16,     0.08,      0.25, 0.15,    0.05,      0.20,    -0.3,  Null<Real>(), Null<Real>() },
+        { Option::Call, 105.0, 100.0, 0.04,     0.08,      0.5,  0.2,     0.05,      0.10,     0.3,  Null<Real>(), Null<Real>() },
+        {  Option::Put, 105.0, 100.0, 0.04,     0.08,      0.5,  0.2,     0.05,      0.10,     0.3,  Null<Real>(), Null<Real>() },
+        { Option::Call, 0.0,   100.0, 0.04,     0.08,      0.3,  0.3,     0.05,      0.10,     0.75, Null<Real>(), Null<Real>() },
+    };
+
+    for (Size i=0; i < LENGTH(values); ++i) {
+
+        std::map<std::string,Real> calculated, expected, tolerance;
+        tolerance["npv"]   = 2e-4;
+        tolerance["delta"] = 1e-4;
+        tolerance["gamma"] = 1e-4;
+        tolerance["theta"] = 1e-4;
+
+        const Handle<Quote> spot(
+            ext::make_shared<SimpleQuote>(values[i].s));
+
+        const Real strike = values[i].strike;
+
+        const Handle<YieldTermStructure> domesticTS(
+            flatRate(today, values[i].r, dc));
+
+        const Handle<YieldTermStructure> divTS(
+            flatRate(today, values[i].q, dc));
+
+        const Handle<BlackVolTermStructure> volTS(
+            flatVol(today, values[i].v, dc));
+
+        const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess
+            = ext::make_shared<BlackScholesMertonProcess>(
+                spot, divTS, domesticTS, volTS);
+
+        const Handle<YieldTermStructure> foreignTS(
+            flatRate(today, values[i].fxr, dc));
+
+        const Handle<BlackVolTermStructure> fxVolTS(
+            flatVol(today, values[i].fxv, dc));
+
+        const Real exchRateATMlevel = 1.0;
+        const Real equityFxCorrelation = values[i].corr;
+
+        const ext::shared_ptr<FdmQuantoHelper> quantoHelper
+            = ext::make_shared<FdmQuantoHelper>(
+                  domesticTS.currentLink(),
+                  foreignTS.currentLink(),
+                  fxVolTS.currentLink(),
+                  equityFxCorrelation, exchRateATMlevel);
+
+        const ext::shared_ptr<StrikedTypePayoff> payoff
+            = ext::make_shared<PlainVanillaPayoff>(
+                values[i].type, strike);
+        const Date exDate = today + Integer(values[i].t*360+0.5);
+        const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+        VanillaOption option(payoff, exercise);
+
+        const ext::shared_ptr<PricingEngine> pdeEngine =
+            ext::make_shared<FdBlackScholesVanillaEngine>(
+                bsmProcess, quantoHelper, Size(values[i].t*200), 500, 1);
+
+        option.setPricingEngine(pdeEngine);
+
+        calculated["npv"]   = option.NPV();
+        calculated["delta"] = option.delta();
+        calculated["gamma"] = option.delta();
+        calculated["theta"] = option.delta();
+
+        const ext::shared_ptr<PricingEngine> analyticEngine
+            = ext::make_shared<QuantoEngine<
+                VanillaOption, AnalyticEuropeanEngine> >(
+                     bsmProcess, foreignTS, fxVolTS,
+                     Handle<Quote>(
+                         ext::make_shared<SimpleQuote>(equityFxCorrelation)));
+
+        option.setPricingEngine(analyticEngine);
+
+        expected["npv"]   = option.NPV();
+        expected["delta"] = option.delta();
+        expected["gamma"] = option.delta();
+        expected["theta"] = option.delta();
+
+        for (std::map<std::string,Real>::const_iterator it = calculated.begin();
+             it != calculated.end(); ++it) {
+
+            const std::string greek = it->first;
+
+            const Real expct = expected[greek];
+            const Real calcl = calculated[greek];
+            const Real error = std::fabs(expct - calcl);
+            const Real tol = tolerance[greek];
+
+            if (error > tol) {
+                QUANTO_REPORT_FAILURE(greek, payoff, exercise,
+                    values[i].s, values[i].q, values[i].r, today,
+                    values[i].v, values[i].fxr, values[i].fxv,
+                    values[i].corr, expct, calcl, error, tol)
+            }
+        }
+    }
+}
+
+void QuantoOptionTest::testAmericanQuantoOption()  {
+
+    BOOST_TEST_MESSAGE("Testing American quanto-option values with PDEs...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(21, April, 2019);
+    const Date maturity = today + Period(9, Months);
+
+    const Real s = 100;
+    const Rate domesticR = 0.025;
+    const Rate foreignR  = 0.075;
+    const Rate q = 0.03;
+    const Volatility vol = 0.3;
+    const Volatility fxVol = 0.15;
+
+    const Real exchRateATMlevel    =  1.0;
+    const Real equityFxCorrelation = -0.75;
+
+    const Handle<YieldTermStructure> domesticTS(
+        flatRate(today, domesticR, dc));
+
+    const Handle<YieldTermStructure> divTS(
+        flatRate(today, q, dc));
+
+    const Handle<BlackVolTermStructure> volTS(
+        flatVol(today, vol, dc));
+
+    const Handle<Quote> spot(
+        ext::make_shared<SimpleQuote>(s));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess
+        = ext::make_shared<BlackScholesMertonProcess>(
+            spot, divTS, domesticTS, volTS);
+
+    const ext::shared_ptr<YieldTermStructure> foreignTS
+        = flatRate(today, foreignR, dc);
+
+    const ext::shared_ptr<BlackVolTermStructure> fxVolTS
+        = flatVol(today, fxVol, dc);
+
+    const ext::shared_ptr<FdmQuantoHelper> quantoHelper
+        = ext::make_shared<FdmQuantoHelper>(
+              domesticTS.currentLink(),
+              foreignTS,
+              fxVolTS,
+              equityFxCorrelation, exchRateATMlevel);
+
+    const Real strike = 105.0;
+
+    DividendVanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        ext::make_shared<AmericanExercise>(maturity),
+        std::vector<Date>(1, today + Period(6, Months)),
+        std::vector<Real>(1, 8.0));
+
+    option.setPricingEngine(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
+            bsmProcess, quantoHelper, 100, 400, 1));
+
+    const Real tol = 1e-4;
+    const Real expected = 8.90611734;
+    const Real bsCalculated = option.NPV();
+
+    if (std::fabs(expected - bsCalculated) > tol) {
+        BOOST_ERROR("failed to reproduce American quanto option prices "
+                    "with the Black-Scholes-Merton model"
+                    << "\n    calculated: " << bsCalculated
+                    << "\n    expected:   " << expected);
+    }
+
+    option.setPricingEngine(
+        ext::make_shared<FdBlackScholesVanillaEngine>(
+            bsmProcess, quantoHelper, 100, 400, 1));
+
+    const Real localVolCalculated = option.NPV();
+    if (std::fabs(expected - localVolCalculated) > tol) {
+        BOOST_ERROR("failed to reproduce American quanto option prices "
+                    "with the Local Volatility model"
+                    << "\n    calculated: " << localVolCalculated
+                    << "\n    expected:   " << expected);
+    }
+
+    const Real tolBetweenBSandLocalVol = 1e-6;
+    if (std::fabs(bsCalculated - localVolCalculated) > tolBetweenBSandLocalVol) {
+        BOOST_ERROR("difference between American quanto option prices "
+                    "for Local Volatility and Black-Scholes model"
+                    << "\n    calculated Local Vol    : " << localVolCalculated
+                    << "\n    calculated Black-Scholes: " << bsCalculated);
+    }
+
+    const Real v0    = vol*vol;
+    const Real kappa = 1.0;
+    const Real theta = v0;
+    const Real sigma = 1e-4;
+    const Real rho   = 0.0;
+
+    const ext::shared_ptr<HestonModel> hestonModel =
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
+                domesticTS, divTS, spot, v0, kappa, theta, sigma, rho));
+
+    option.setPricingEngine(
+        ext::make_shared<FdHestonVanillaEngine>(
+            hestonModel, quantoHelper, 100, 400, 3, 1));
+
+    const Real hestonCalculated = option.NPV();
+
+    if (std::fabs(expected - hestonCalculated) > tol) {
+        BOOST_ERROR("failed to reproduce American quanto option prices "
+                    "with the Heston model"
+                    << "\n    calculated: " << hestonCalculated
+                    << "\n    expected:   " << expected);
+    }
+
+    const ext::shared_ptr<LocalVolTermStructure> localConstVol =
+        ext::make_shared<LocalConstantVol>(today, 2.0, dc);
+
+    const ext::shared_ptr<HestonModel> hestonModel05 =
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
+                domesticTS, divTS, spot, 0.25*v0, kappa, 0.25*theta, sigma, rho));
+
+    option.setPricingEngine(
+        ext::make_shared<FdHestonVanillaEngine>(
+            hestonModel05, quantoHelper, 100, 400, 3, 1,
+            FdmSchemeDesc::Hundsdorfer(), localConstVol));
+
+    const Real hestoSlvCalculated = option.NPV();
+
+    if (std::fabs(expected - hestoSlvCalculated) > tol) {
+        BOOST_ERROR("failed to reproduce American quanto option prices "
+                    "with the Heston Local Volatility model"
+                    << "\n    calculated: " << hestoSlvCalculated
+                    << "\n    expected:   " << expected);
+    }
+}
+
 test_suite* QuantoOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Quanto option tests");
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testValues));
@@ -1051,6 +1404,10 @@ test_suite* QuantoOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                             &QuantoOptionTest::testForwardPerformanceValues));
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testBarrierValues));
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testFDMQuantoHelper));
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testPDEOptionValues));
+
+    suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testAmericanQuantoOption));
     return suite;
 }
 

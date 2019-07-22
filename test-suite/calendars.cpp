@@ -62,6 +62,14 @@ void CalendarTest::testModifiedCalendars() {
     c1.addHoliday(d2);
 
     // test
+    std::set<Date> addedHolidays(c1.addedHolidays());
+    std::set<Date> removedHolidays(c1.removedHolidays());
+
+    QL_REQUIRE(addedHolidays.find(d1) == addedHolidays.end(), "did not expect to find date in addedHolidays");
+    QL_REQUIRE(addedHolidays.find(d2) != addedHolidays.end(), "expected to find date in addedHolidays");
+    QL_REQUIRE(removedHolidays.find(d1) != removedHolidays.end(), "expected to find date in removedHolidays");
+    QL_REQUIRE(removedHolidays.find(d2) == removedHolidays.end(), "did not expect to find date in removedHolidays");
+
     if (c1.isHoliday(d1))
         BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
     if (c1.isBusinessDay(d2))
@@ -1667,6 +1675,8 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(8, Feb, 2019));
     expectedHol.push_back(Date(5, April, 2019));
     expectedHol.push_back(Date(1, May, 2019));
+    expectedHol.push_back(Date(2, May, 2019));
+    expectedHol.push_back(Date(3, May, 2019));
     expectedHol.push_back(Date(7, June, 2019));
     expectedHol.push_back(Date(13, September, 2019));
     expectedHol.push_back(Date(30, September, 2019));
@@ -1736,6 +1746,8 @@ void CalendarTest::testChinaIB() {
     // China Inter Bank working weekends list in the year 2019
     expectedWorkingWeekEnds.push_back(Date(2, Feb, 2019));
     expectedWorkingWeekEnds.push_back(Date(3, Feb, 2019));
+    expectedWorkingWeekEnds.push_back(Date(28, April, 2019));
+    expectedWorkingWeekEnds.push_back(Date(5, May, 2019));
     expectedWorkingWeekEnds.push_back(Date(29, September, 2019));
     expectedWorkingWeekEnds.push_back(Date(12, October, 2019));
 
