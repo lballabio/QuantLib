@@ -183,7 +183,7 @@ namespace QuantLib {
         return enforcesTodaysHistoricFixings_;
     }
 
-	inline bool& Settings::useIndexedCoupon() {
+    inline bool& Settings::useIndexedCoupon() {
         return useIndexedCoupon_;
     }
 
