@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#pragma once 
+#ifndef quantlib_compiledboostversion_test_hpp
+#define quantlib_compiledboostversion_test_hpp
 
 #include <boost/test/unit_test.hpp>
 
@@ -29,3 +30,4 @@ class CompiledBoostVersionTest {
     static boost::unit_test_framework::test_suite* suite();
 };
 
+#endif

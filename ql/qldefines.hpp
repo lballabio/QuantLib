@@ -187,15 +187,11 @@
 // emit warning when using deprecated features
 #if defined(BOOST_MSVC)       // Microsoft Visual C++
 #define QL_DEPRECATED __declspec(deprecated)
-#define QL_FORCE_NONINLINE __declspec(noinline)
 #elif defined(__GNUC__) || defined(__clang__)
 #define QL_DEPRECATED __attribute__((deprecated))
-#define QL_FORCE_NONINLINE __attribute__((noinline))
 #else
 // we don't know how to enable it, just define the macro away
 #define QL_DEPRECATED
-#define QL_FORCE_NONINLINE
-#warning QL_FORCE_NONINLINE is not implemented on this platform
 #endif
 
 
