@@ -34,7 +34,7 @@
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
-#include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
 #include <ql/functional.hpp>
 

@@ -397,7 +397,7 @@ void ScheduleTest::testScheduleAlwaysHasAStartDate() {
 }
 
 void ScheduleTest::testShortEomSchedule() {
-    BOOST_TEST_MESSAGE("Testing short eom schedule...");
+    BOOST_TEST_MESSAGE("Testing short end-of-month schedule...");
     Schedule s;
     // seg-faults in 1.15
     BOOST_REQUIRE_NO_THROW(s = MakeSchedule()
@@ -412,6 +412,64 @@ void ScheduleTest::testShortEomSchedule() {
     BOOST_REQUIRE(s.size() == 2);
     BOOST_CHECK(s[0] == Date(21, Feb, 2019));
     BOOST_CHECK(s[1] == Date(28, Feb, 2019));
+}
+
+void ScheduleTest::testFirstDateOnMaturity() {
+    BOOST_TEST_MESSAGE("Testing schedule with first date on maturity...");
+    Schedule schedule = MakeSchedule()
+        .from(Date(20, September, 2016))
+        .to(Date(20, December, 2016))
+        .withFirstDate(Date(20, December, 2016))
+        .withFrequency(Quarterly)
+        .withCalendar(UnitedStates())
+        .withConvention(Unadjusted)
+        .backwards();
+
+    std::vector<Date> expected(2);
+    expected[0] = Date(20,September,2016);
+    expected[1] = Date(20,December,2016);
+
+    check_dates(schedule, expected);
+
+    schedule = MakeSchedule()
+        .from(Date(20, September, 2016))
+        .to(Date(20, December, 2016))
+        .withFirstDate(Date(20, December, 2016))
+        .withFrequency(Quarterly)
+        .withCalendar(UnitedStates())
+        .withConvention(Unadjusted)
+        .forwards();
+
+    check_dates(schedule, expected);
+}
+
+void ScheduleTest::testNextToLastDateOnStart() {
+    BOOST_TEST_MESSAGE("Testing schedule with next-to-last date on start date...");
+    Schedule schedule = MakeSchedule()
+        .from(Date(20, September, 2016))
+        .to(Date(20, December, 2016))
+        .withNextToLastDate(Date(20, September, 2016))
+        .withFrequency(Quarterly)
+        .withCalendar(UnitedStates())
+        .withConvention(Unadjusted)
+        .backwards();
+
+    std::vector<Date> expected(2);
+    expected[0] = Date(20,September,2016);
+    expected[1] = Date(20,December,2016);
+
+    check_dates(schedule, expected);
+
+    schedule = MakeSchedule()
+        .from(Date(20, September, 2016))
+        .to(Date(20, December, 2016))
+        .withNextToLastDate(Date(20, September, 2016))
+        .withFrequency(Quarterly)
+        .withCalendar(UnitedStates())
+        .withConvention(Unadjusted)
+        .backwards();
+
+    check_dates(schedule, expected);
 }
 
 test_suite* ScheduleTest::suite() {
@@ -433,5 +491,7 @@ test_suite* ScheduleTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFourWeeksTenor));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testScheduleAlwaysHasAStartDate));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testShortEomSchedule));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFirstDateOnMaturity));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testNextToLastDateOnStart));
     return suite;
 }

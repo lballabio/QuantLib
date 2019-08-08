@@ -19,7 +19,6 @@ this_include_HEADERS = \
 	fdmhestonfwdop.hpp \
 	fdmklugeextouop.hpp \
 	fdmklugeextousolver.hpp \
-	fdmlocalvolfwdop.hpp \
 	fdmsimple2dextousolver.hpp \
     fdmsimple3dextoujumpsolver.hpp \
 	fdmspreadpayoffinnervalue.hpp \
@@ -49,7 +48,6 @@ cpp_files = \
 	fdmhestongreensfct.cpp \
 	fdmhestonfwdop.cpp \
 	fdmklugeextouop.cpp \
-	fdmlocalvolfwdop.cpp \
 	fdmsquarerootfwdop.cpp \
 	fdmvppstartlimitstepcondition.cpp \
 	fdmvppstepcondition.cpp \

@@ -149,10 +149,10 @@ namespace QuantLib {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
                 QL_REQUIRE(firstDate_ > effectiveDate &&
-                           firstDate_ < terminationDate,
+                           firstDate_ <= terminationDate,
                            "first date (" << firstDate_ <<
-                           ") out of effective-termination date range [" <<
-                           effectiveDate << ", " << terminationDate << ")");
+                           ") out of effective-termination date range (" <<
+                           effectiveDate << ", " << terminationDate << "]");
                 // we should ensure that the above condition is still
                 // verified after adjustment
                 break;
@@ -177,11 +177,11 @@ namespace QuantLib {
             switch (*rule_) {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
-                QL_REQUIRE(nextToLastDate_ > effectiveDate &&
+                QL_REQUIRE(nextToLastDate_ >= effectiveDate &&
                            nextToLastDate_ < terminationDate,
                            "next to last date (" << nextToLastDate_ <<
-                           ") out of effective-termination date range (" <<
-                           effectiveDate << ", " << terminationDate << "]");
+                           ") out of effective-termination date range [" <<
+                           effectiveDate << ", " << terminationDate << ")");
                 // we should ensure that the above condition is still
                 // verified after adjustment
                 break;

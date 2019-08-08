@@ -1,12 +1,12 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.16],
+AC_INIT([QuantLib], [1.17],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
 AC_CONFIG_SRCDIR([ql/qldefines.hpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([ql/config.hpp])
-AM_INIT_AUTOMAKE([foreign subdir-objects])
+AM_INIT_AUTOMAKE([foreign nostdinc subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_COPYRIGHT([
