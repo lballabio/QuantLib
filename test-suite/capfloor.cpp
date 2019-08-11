@@ -621,7 +621,8 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     Settings::instance().evaluationDate() = cachedToday;
     vars.termStructure.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
     Date startDate = vars.termStructure->referenceDate();
-    Leg leg = vars.makeLeg(startDate,20);
+    Leg leg = vars.makeLeg(startDate,20);  
+
     ext::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
                                                           0.07,0.20);
     ext::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
@@ -631,44 +632,73 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     Real cachedCapNPV   = 6.87570026732,
          cachedFloorNPV = 2.65812927959;
     Real calculatedCapNPV   = 0.0,
-         calculatedFloorNPV = 0.0;     
+         calculatedFloorNPV = 0.0,   
+         calculatedCapletsNPV = 0.0,
+         calculatedFloorletsNPV = 0.0;
+
 #else
     // index fixing price
     Real cachedCapNPV   = 6.87630307745,
          cachedFloorNPV = 2.65796764715;
 #endif
-    // test Black cap price against cached value
+    // test Black floor price against cached value
+    std::cout << "Current instance date: \t" << Settings::instance().evaluationDate() << std::endl;
+    
+    calculatedCapNPV = cap->NPV();
+    if (std::fabs(calculatedCapNPV-cachedCapNPV) > 1.0e-11)
+        BOOST_ERROR(
+            "failed to reproduce cached cap value:\n"
+            << std::setprecision(12)
+            << "    calculated: " << cap->NPV() << "\n"
+            << "    expected:   " << cachedCapNPV);
+    calculatedFloorNPV = floor->NPV();
+    if (std::fabs(calculatedFloorNPV-cachedFloorNPV) > 1.0e-11)
+        BOOST_ERROR(
+            "failed to reproduce cached floor value:\n"
+            << std::setprecision(12)
+            << "    calculated: " << floor->NPV() << "\n"
+            << "    expected:   " << cachedFloorNPV);
+    
+    //so far tests pass, now try to get additional results and it will fail
     std::vector<Real> capletPrices;
     std::vector<Real> floorletPrices;
+    std::map<std::string,boost::any> additionalResults;
+    
+    capletPrices = cap->result<std::vector<Real> >("optionletsPrice");
+    floorletPrices = floor->result<std::vector<Real> >("optionletsPrice");
+    
 
-    // std::map<std::string,boost::any>::const_iterator prices =
-    //             results_->additionalResults.find("optionletsPrice");
-    //         QL_REQUIRE(vega_ != results_->additionalResults.end(),
-    //                    "vega not provided");
-    //         return boost::any_cast<Real>(vega_->second);
-    // capletPrices = boost::any_cast<Real>(cap->additionalResults.find("optionletsPrice")->second);
-    // floorletPrices = boost::any_cast<Real>(floor->additionalResults.find("optionletsPrice")->second);
+    std::cout << "How many caplets: " << LENGTH(capletPrices) << std::endl;
+    std::cout << "today: \t" << vars.termStructure->referenceDate() << std::endl;
+
+    if (LENGTH(capletPrices) != 40)
+        BOOST_ERROR(
+            "failed to produce prices for all caplets:\n"
+            << "    calculated: " << LENGTH(capletPrices) << " caplet prices\n"
+            << "    expected:   " << 40);
 
     for (Size n=0; n<LENGTH(capletPrices); n++){
-        calculatedCapNPV += capletPrices[n];
+        calculatedCapletsNPV += capletPrices[n];
+        std::cout << "  Caplet: \t" << n << " = " << capletPrices[n] << std::endl;     
     }
 
     for (Size n=0; n<LENGTH(floorletPrices); n++){
-        calculatedFloorNPV += floorletPrices[n];
+        calculatedFloorletsNPV += floorletPrices[n];
+        std::cout << "  Floorlet: \t" << n << " = " << floorletPrices[n] << "\n"; 
     }
 
-    if (std::fabs(calculatedCapNPV-cachedCapNPV) > 1.0e-11)
+    if (std::fabs(calculatedCapletsNPV-cachedCapNPV) > 1.0e-11)
         BOOST_ERROR(
             "failed to reproduce cached cap value from its caplets' values:\n"
             << std::setprecision(12)
-            << "    calculated: " << calculatedCapNPV << "\n"
+            << "    calculated: " << calculatedCapletsNPV << "\n"
             << "    expected:   " << cachedCapNPV);
     // test Black floor price against cached value
-    if (std::fabs(calculatedFloorNPV-cachedFloorNPV) > 1.0e-11)
+    if (std::fabs(calculatedFloorletsNPV-cachedFloorNPV) > 1.0e-11)
         BOOST_ERROR(
             "failed to reproduce cached floor value from its floorlets' values:\n"
             << std::setprecision(12)
-            << "    calculated: " << calculatedFloorNPV << "\n"
+            << "    calculated: " << calculatedFloorletsNPV << "\n"
             << "    expected:   " << cachedFloorNPV);
 }
 

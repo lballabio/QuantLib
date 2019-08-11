@@ -235,6 +235,27 @@ namespace QuantLib {
                         Real stdDev,
                         Real displacement = 0.0);
 
+/*! Black 1976 probability of being in the money in the asset martingale
+        measure, i.e. N(d1).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real blackFormulaItmAssetProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement = 0.0);
+
+    /*! Black 1976 probability of being in the money in the asset martingale
+        measure, i.e. N(d1).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real blackFormulaItmAssetProbability(
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement = 0.0);
+    
     /*! Black 1976 formula for standard deviation derivative
         \warning instead of volatility it uses standard deviation, i.e.
                  volatility*sqrt(timeToMaturity), and it returns the
