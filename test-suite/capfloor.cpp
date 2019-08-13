@@ -668,21 +668,21 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     floorletPrices = floor->result<std::vector<Real> >("optionletsPrice");
     
 
-    std::cout << "How many caplets: " << LENGTH(capletPrices) << std::endl;
+    std::cout << "How many caplets: " << capletPrices.size() << std::endl;
     std::cout << "today: \t" << vars.termStructure->referenceDate() << std::endl;
 
-    if (LENGTH(capletPrices) != 40)
+    if (capletPrices.size() != 40)
         BOOST_ERROR(
             "failed to produce prices for all caplets:\n"
-            << "    calculated: " << LENGTH(capletPrices) << " caplet prices\n"
+            << "    calculated: " << capletPrices.size() << " caplet prices\n"
             << "    expected:   " << 40);
 
-    for (Size n=0; n<LENGTH(capletPrices); n++){
+    for (Size n=0; n<capletPrices.size(); n++){
         calculatedCapletsNPV += capletPrices[n];
         std::cout << "  Caplet: \t" << n << " = " << capletPrices[n] << std::endl;     
     }
 
-    for (Size n=0; n<LENGTH(floorletPrices); n++){
+    for (Size n=0; n<floorletPrices.size(); n++){
         calculatedFloorletsNPV += floorletPrices[n];
         std::cout << "  Floorlet: \t" << n << " = " << floorletPrices[n] << "\n"; 
     }
