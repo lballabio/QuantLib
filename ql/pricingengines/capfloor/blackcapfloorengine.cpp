@@ -83,6 +83,7 @@ namespace QuantLib {
         std::vector<Real> deltas(optionlets, 0.0);
         std::vector<Real> vegas(optionlets, 0.0);
         std::vector<Real> stdDevs(optionlets, 0.0);
+        std::vector<Real> deflators(optionlets, 0.0);
         CapFloor::Type type = arguments_.type;
         Date today = vol_->referenceDate();
         Date settlement = discountCurve_->referenceDate();
@@ -98,6 +99,7 @@ namespace QuantLib {
                                    arguments_.accrualTimes[i];
                 DiscountFactor d = accrualFactor *
                                    discountCurve_->discount(paymentDate);
+                deflators[i] = d;
 
                 Rate forward = arguments_.forwards[i];
 
@@ -114,8 +116,7 @@ namespace QuantLib {
                         vegas[i] = blackFormulaStdDevDerivative(strike,
                             forward, stdDevs[i], d, displacement_) * sqrtTime;
                         deltas[i] = blackFormulaItmAssetProbability(Option::Call,
-                            strike, forward, stdDevs[i], displacement_) 
-                            * accrualFactor;
+                            strike, forward, stdDevs[i], displacement_);
                     }
                     // include caplets with past fixing date
                     values[i] = blackFormula(Option::Call,
@@ -130,9 +131,9 @@ namespace QuantLib {
                                                                    strike));
                         floorletVega = blackFormulaStdDevDerivative(strike,
                             forward, stdDevs[i], d, displacement_) * sqrtTime;
-                        floorletDelta = blackFormulaItmAssetProbability(Option::Put,
-                            strike, forward, stdDevs[i], displacement_) 
-                            * accrualFactor;
+                        floorletDelta = Option::Put * blackFormulaItmAssetProbability(
+                                                        Option::Put, strike, forward, 
+                                                        stdDevs[i], displacement_);
                     }
                     Real floorlet = blackFormula(Option::Put,
                         strike, forward, stdDevs[i], d, displacement_);
@@ -156,7 +157,8 @@ namespace QuantLib {
 
         results_.additionalResults["optionletsPrice"] = values;
         results_.additionalResults["optionletsVega"] = vegas;
-        results_.additionalResults["optionletsForwardDelta"] = deltas;
+        results_.additionalResults["optionletsDelta"] = deltas;
+        results_.additionalResults["optionletsDeflators"] = deflators;
         results_.additionalResults["optionletsAtmForward"] = arguments_.forwards;
         if (type != CapFloor::Collar)
             results_.additionalResults["optionletsStdDev"] = stdDevs;

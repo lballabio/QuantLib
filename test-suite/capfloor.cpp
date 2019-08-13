@@ -24,6 +24,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -619,7 +620,9 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
-    vars.termStructure.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
+    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+                                                             0.05, Actual360());                                              
+    vars.termStructure.linkTo(baseCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
 
@@ -640,37 +643,18 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     // index fixing price
     Real cachedCapNPV   = 6.87630307745,
          cachedFloorNPV = 2.65796764715;
+    Real calculatedCapNPV   = 0.0,
+         calculatedFloorNPV = 0.0,   
+         calculatedCapletsNPV = 0.0,
+         calculatedFloorletsNPV = 0.0;
 #endif
     // test Black floor price against cached value
-    std::cout << "Current instance date: \t" << Settings::instance().evaluationDate() << std::endl;
-    
-    calculatedCapNPV = cap->NPV();
-    if (std::fabs(calculatedCapNPV-cachedCapNPV) > 1.0e-11)
-        BOOST_ERROR(
-            "failed to reproduce cached cap value:\n"
-            << std::setprecision(12)
-            << "    calculated: " << cap->NPV() << "\n"
-            << "    expected:   " << cachedCapNPV);
-    calculatedFloorNPV = floor->NPV();
-    if (std::fabs(calculatedFloorNPV-cachedFloorNPV) > 1.0e-11)
-        BOOST_ERROR(
-            "failed to reproduce cached floor value:\n"
-            << std::setprecision(12)
-            << "    calculated: " << floor->NPV() << "\n"
-            << "    expected:   " << cachedFloorNPV);
-    
-    //so far tests pass, now try to get additional results and it will fail
     std::vector<Real> capletPrices;
     std::vector<Real> floorletPrices;
-    std::map<std::string,boost::any> additionalResults;
     
     capletPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletPrices = floor->result<std::vector<Real> >("optionletsPrice");
     
-
-    std::cout << "How many caplets: " << capletPrices.size() << std::endl;
-    std::cout << "today: \t" << vars.termStructure->referenceDate() << std::endl;
-
     if (capletPrices.size() != 40)
         BOOST_ERROR(
             "failed to produce prices for all caplets:\n"
@@ -679,12 +663,10 @@ void CapFloorTest::testCachedValueFromOptionLets() {
 
     for (Size n=0; n<capletPrices.size(); n++){
         calculatedCapletsNPV += capletPrices[n];
-        std::cout << "  Caplet: \t" << n << " = " << capletPrices[n] << std::endl;     
     }
 
     for (Size n=0; n<floorletPrices.size(); n++){
         calculatedFloorletsNPV += floorletPrices[n];
-        std::cout << "  Floorlet: \t" << n << " = " << floorletPrices[n] << "\n"; 
     }
 
     if (std::fabs(calculatedCapletsNPV-cachedCapNPV) > 1.0e-11)
@@ -702,6 +684,106 @@ void CapFloorTest::testCachedValueFromOptionLets() {
             << "    expected:   " << cachedFloorNPV);
 }
 
+void CapFloorTest::testOptionLetsDelta() {
+
+    BOOST_TEST_MESSAGE("Testing Black cap/floor price as a sum of optionlets prices against cached values...");
+
+    CommonVars vars;
+
+    Date cachedToday(14,March,2002),
+         cachedSettlement(18,March,2002);
+    Settings::instance().evaluationDate() = cachedToday;
+    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+                                                             0.05, Actual360());
+    RelinkableHandle<YieldTermStructure> baseCurveHandle(baseCurve);
+
+    // Define spreaded curve with eps as spread used for FD sensitivities
+    Real bps = 0.00000001;
+    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
+                                                            baseCurveHandle,
+                                                            Handle<Quote>(spread)));                                               
+    vars.termStructure.linkTo(spreadCurve);
+    Date startDate = vars.termStructure->referenceDate();
+    Leg leg = vars.makeLeg(startDate,20);  
+
+    ext::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+                                                          0.05,0.20);
+    ext::shared_ptr<CapFloor> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+                                                            0.05,0.20);
+
+    
+    //so far tests pass, now try to get additional results and it will fail
+    Size capletsNum = cap->capRates().size();
+    std::vector<Real> capletUpPrices, 
+                      capletDownPrices,
+                      capletAnalyticDelta,
+                      capletDeflatorsUp,
+                      capletDeflatorsDown,
+                      capletFDDelta(capletsNum, 0.0); 
+    Size floorletNum = floor->floorRates().size();
+    std::vector<Real> floorletUpPrices, 
+                      floorletDownPrices,
+                      floorletAnalyticDelta,
+                      floorletDeflatorsUp,
+                      floorletDeflatorsDown,
+                      floorletFDDelta(floorletNum, 0.0);
+    
+    capletAnalyticDelta = cap->result<std::vector<Real> >("optionletsDelta");
+    floorletAnalyticDelta = floor->result<std::vector<Real> >("optionletsDelta");
+    
+    spread->setValue(bps);
+    capletUpPrices = cap->result<std::vector<Real> >("optionletsPrice");
+    floorletUpPrices = floor->result<std::vector<Real> >("optionletsPrice");
+    capletDeflatorsUp = cap->result<std::vector<Real> >("optionletsDeflators");
+    floorletDeflatorsUp = floor->result<std::vector<Real> >("optionletsDeflators");
+    
+    spread->setValue(-bps);
+    capletDownPrices = cap->result<std::vector<Real> >("optionletsPrice");
+    floorletDownPrices = floor->result<std::vector<Real> >("optionletsPrice");
+    capletDeflatorsDown = cap->result<std::vector<Real> >("optionletsDeflators");
+    floorletDeflatorsDown = floor->result<std::vector<Real> >("optionletsDeflators");
+    
+    for (Size n=0; n<capletUpPrices.size(); n++){
+        // calculating only caplet's FD sensitivity w.r.t. forward rate
+        // without the effect of sensitivity w.r.t. changed discount factor
+        capletFDDelta[n] = (capletUpPrices[n] / capletDeflatorsUp[n]
+                            - capletDownPrices[n] / capletDeflatorsDown[n]) 
+                            / 2 / bps;   
+    }
+
+    for (Size n=0; n<floorletUpPrices.size(); n++){
+        // calculating only caplet's FD sensitivity w.r.t. forward rate
+        // without the effect of sensitivity w.r.t. changed discount factor
+        floorletFDDelta[n] = (floorletUpPrices[n] / floorletDeflatorsUp[n] 
+                             - floorletDownPrices[n] / floorletDeflatorsDown[n]) 
+                             / 2 / bps;        
+    }
+
+    
+
+    for (Size n=0; n<capletAnalyticDelta.size(); n++){
+        if (std::fabs(capletAnalyticDelta[n]-capletFDDelta[n]) > 1.0e-11)
+            BOOST_ERROR(
+                "failed to compare analytical and finite difference caplet delta:\n"
+                << "caplet number:\t" << n << "\n"
+                << std::setprecision(12)
+                << "    finite difference: " << capletFDDelta[n]<< "\n"
+                << "    analytical value:   " << capletAnalyticDelta[n]);    
+    }
+
+    for (Size n=0; n<floorletAnalyticDelta.size(); n++){
+        if (std::fabs(floorletAnalyticDelta[n]-floorletFDDelta[n]) > 1.0e-11)
+            BOOST_ERROR(
+                "failed to compare analytical and finite difference floorlet delta:\n"
+                << "floorlet number:\t" << n << "\n"
+                << std::setprecision(12)
+                << "    finite difference: " << floorletFDDelta[n]<< "\n"
+                << "    analytical value:   " << floorletAnalyticDelta[n]);    
+    }
+
+}
+
 test_suite* CapFloorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cap and floor tests");
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testStrikeDependency));
@@ -713,6 +795,7 @@ test_suite* CapFloorTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testImpliedVolatility));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValue));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValueFromOptionLets));
+    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testOptionLetsDelta));
     return suite;
 }
 

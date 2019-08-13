@@ -36,6 +36,7 @@ class CapFloorTest {
     static void testImpliedVolatility();
     static void testCachedValue();
     static void testCachedValueFromOptionLets();
+    static void testOptionLetsDelta();
     static boost::unit_test_framework::test_suite* suite();
 };
 
