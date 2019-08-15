@@ -686,7 +686,7 @@ void CapFloorTest::testCachedValueFromOptionLets() {
 
 void CapFloorTest::testOptionLetsDelta() {
 
-    BOOST_TEST_MESSAGE("Testing Black cap/floor price as a sum of optionlets prices against cached values...");
+    BOOST_TEST_MESSAGE("Testing Black caplet / floorlet  delta coefficients against finite difference values...");
 
     CommonVars vars;
 
@@ -698,11 +698,14 @@ void CapFloorTest::testOptionLetsDelta() {
     RelinkableHandle<YieldTermStructure> baseCurveHandle(baseCurve);
 
     // Define spreaded curve with eps as spread used for FD sensitivities
-    Real bps = 0.00000001;
+    Real eps = 1.0e-6;
     ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
-                                                            Handle<Quote>(spread)));                                               
+                                                            Handle<Quote>(spread),
+                                                            Continuous,
+                                                            Annual,
+                                                            Actual360()));                                               
     vars.termStructure.linkTo(spreadCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
@@ -720,6 +723,8 @@ void CapFloorTest::testOptionLetsDelta() {
                       capletAnalyticDelta,
                       capletDeflatorsUp,
                       capletDeflatorsDown,
+                      capletForwardsUp,
+                      capletForwardsDown,
                       capletFDDelta(capletsNum, 0.0); 
     Size floorletNum = floor->floorRates().size();
     std::vector<Real> floorletUpPrices, 
@@ -727,59 +732,65 @@ void CapFloorTest::testOptionLetsDelta() {
                       floorletAnalyticDelta,
                       floorletDeflatorsUp,
                       floorletDeflatorsDown,
+                      floorletForwardsUp,
+                      floorletForwardsDown,
                       floorletFDDelta(floorletNum, 0.0);
     
     capletAnalyticDelta = cap->result<std::vector<Real> >("optionletsDelta");
     floorletAnalyticDelta = floor->result<std::vector<Real> >("optionletsDelta");
     
-    spread->setValue(bps);
+    spread->setValue(eps);
     capletUpPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletUpPrices = floor->result<std::vector<Real> >("optionletsPrice");
     capletDeflatorsUp = cap->result<std::vector<Real> >("optionletsDeflators");
     floorletDeflatorsUp = floor->result<std::vector<Real> >("optionletsDeflators");
+    capletForwardsUp = cap->result<std::vector<Real> >("optionletsAtmForward");
+    floorletForwardsUp = floor->result<std::vector<Real> >("optionletsAtmForward");
     
-    spread->setValue(-bps);
+    spread->setValue(-eps);
     capletDownPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletDownPrices = floor->result<std::vector<Real> >("optionletsPrice");
     capletDeflatorsDown = cap->result<std::vector<Real> >("optionletsDeflators");
     floorletDeflatorsDown = floor->result<std::vector<Real> >("optionletsDeflators");
-    
-    for (Size n=0; n<capletUpPrices.size(); n++){
+    capletForwardsDown = cap->result<std::vector<Real> >("optionletsAtmForward");
+    floorletForwardsDown = floor->result<std::vector<Real> >("optionletsAtmForward");
+
+    for (Size n=1; n < capletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
-        // without the effect of sensitivity w.r.t. changed discount factor
+        // without the effect of sensitivity related to changed discount factor
         capletFDDelta[n] = (capletUpPrices[n] / capletDeflatorsUp[n]
-                            - capletDownPrices[n] / capletDeflatorsDown[n]) 
-                            / 2 / bps;   
+                           - capletDownPrices[n] / capletDeflatorsDown[n]) 
+                           / (capletForwardsUp[n] - capletForwardsDown[n]);
     }
 
     for (Size n=0; n<floorletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
-        // without the effect of sensitivity w.r.t. changed discount factor
+        // without the effect of sensitivity related to changed discount factor
         floorletFDDelta[n] = (floorletUpPrices[n] / floorletDeflatorsUp[n] 
                              - floorletDownPrices[n] / floorletDeflatorsDown[n]) 
-                             / 2 / bps;        
+                             / (floorletForwardsUp[n] - floorletForwardsDown[n]);        
     }
 
-    
-
     for (Size n=0; n<capletAnalyticDelta.size(); n++){
-        if (std::fabs(capletAnalyticDelta[n]-capletFDDelta[n]) > 1.0e-11)
+        if (std::fabs(capletAnalyticDelta[n]-capletFDDelta[n]) > 1.0e-6)
             BOOST_ERROR(
                 "failed to compare analytical and finite difference caplet delta:\n"
                 << "caplet number:\t" << n << "\n"
                 << std::setprecision(12)
                 << "    finite difference: " << capletFDDelta[n]<< "\n"
-                << "    analytical value:   " << capletAnalyticDelta[n]);    
+                << "    analytical value:   " << capletAnalyticDelta[n] << "\n"
+                << "    resulting ratio: " << capletFDDelta[n] / capletAnalyticDelta[n]);    
     }
 
     for (Size n=0; n<floorletAnalyticDelta.size(); n++){
-        if (std::fabs(floorletAnalyticDelta[n]-floorletFDDelta[n]) > 1.0e-11)
+        if (std::fabs(floorletAnalyticDelta[n]-floorletFDDelta[n]) > 1.0e-6)
             BOOST_ERROR(
                 "failed to compare analytical and finite difference floorlet delta:\n"
                 << "floorlet number:\t" << n << "\n"
                 << std::setprecision(12)
                 << "    finite difference: " << floorletFDDelta[n]<< "\n"
-                << "    analytical value:   " << floorletAnalyticDelta[n]);    
+                << "    analytical value:   " << floorletAnalyticDelta[n] << "\n"
+                << "    resulting ratio: " << floorletFDDelta[n] / floorletAnalyticDelta[n]);    
     }
 
 }

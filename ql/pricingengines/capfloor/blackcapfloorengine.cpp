@@ -84,6 +84,7 @@ namespace QuantLib {
         std::vector<Real> vegas(optionlets, 0.0);
         std::vector<Real> stdDevs(optionlets, 0.0);
         std::vector<Real> deflators(optionlets, 0.0);
+        std::vector<Real> accrualFactors(optionlets, 0.0);
         CapFloor::Type type = arguments_.type;
         Date today = vol_->referenceDate();
         Date settlement = discountCurve_->referenceDate();
@@ -100,7 +101,7 @@ namespace QuantLib {
                 DiscountFactor d = accrualFactor *
                                    discountCurve_->discount(paymentDate);
                 deflators[i] = d;
-
+                accrualFactors[i] = accrualFactor;
                 Rate forward = arguments_.forwards[i];
 
                 Date fixingDate = arguments_.fixingDates[i];
@@ -160,6 +161,8 @@ namespace QuantLib {
         results_.additionalResults["optionletsDelta"] = deltas;
         results_.additionalResults["optionletsDeflators"] = deflators;
         results_.additionalResults["optionletsAtmForward"] = arguments_.forwards;
+        results_.additionalResults["optionletsAccrualFactors"] = accrualFactors;
+        results_.additionalResults["optionletsEndDates"] = arguments_.endDates;
         if (type != CapFloor::Collar)
             results_.additionalResults["optionletsStdDev"] = stdDevs;
     }
