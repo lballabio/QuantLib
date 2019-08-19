@@ -36,9 +36,9 @@ namespace QuantLib {
     class YieldTermStructure;
     class OrnsteinUhlenbeckProcess;
 
-    class FdmOrnsteinUhlenbackOp : public FdmLinearOpComposite {
+    class FdmOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
       public:
-        FdmOrnsteinUhlenbackOp(
+        FdmOrnsteinUhlenbeckOp(
             const boost::shared_ptr<FdmMesher>& mesher,
             const boost::shared_ptr<OrnsteinUhlenbeckProcess>& p,
             const boost::shared_ptr<YieldTermStructure>& rTS,
