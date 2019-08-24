@@ -28,6 +28,7 @@
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/correlations/expcorrelations.hpp>
@@ -96,10 +97,18 @@ namespace {
                                 new BlackCapFloorEngine(termStructure, vol));
         }
 
+        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) {
+            Handle<Quote> vol(ext::shared_ptr<Quote>(
+                                                new SimpleQuote(volatility)));
+            return ext::shared_ptr<PricingEngine>(
+                                new BachelierCapFloorEngine(termStructure, vol));
+        }
+
         ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
                                                  const Leg& leg,
                                                  Rate strike,
-                                                 Volatility volatility) {
+                                                 Volatility volatility,
+                                                 bool isLogNormal = true) {
             ext::shared_ptr<CapFloor> result;
             switch (type) {
               case CapFloor::Cap:
@@ -113,7 +122,11 @@ namespace {
               default:
                 QL_FAIL("unknown cap/floor type");
             }
-            result->setPricingEngine(makeEngine(volatility));
+            if(isLogNormal){
+                result->setPricingEngine(makeEngine(volatility));
+            } else {
+                result->setPricingEngine(makeBachelierEngine(volatility));
+            }
             return result;
         }
 
@@ -790,6 +803,120 @@ void CapFloorTest::testOptionLetsDelta() {
 
 }
 
+void CapFloorTest::testBachelierOptionLetsDelta() {
+
+    BOOST_TEST_MESSAGE("Testing Bachelier caplet / floorlet  delta coefficients against finite difference values...");
+
+    CommonVars vars;
+
+    Date cachedToday(14,March,2002),
+         cachedSettlement(18,March,2002);
+    Settings::instance().evaluationDate() = cachedToday;
+    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+                                                             0.05, Actual360());
+    RelinkableHandle<YieldTermStructure> baseCurveHandle(baseCurve);
+
+    // Define spreaded curve with eps as spread used for FD sensitivities
+    Real eps = 1.0e-6;
+    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
+                                                            baseCurveHandle,
+                                                            Handle<Quote>(spread),
+                                                            Continuous,
+                                                            Annual,
+                                                            Actual360()));                                               
+    vars.termStructure.linkTo(spreadCurve);
+    Date startDate = vars.termStructure->referenceDate();
+    Leg leg = vars.makeLeg(startDate,20);  
+
+    // Use normal model (BachelierCapFloorEngine)
+    bool isLogNormal = false;
+
+    ext::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+                                                      0.05, 0.01, isLogNormal);
+    ext::shared_ptr<CapFloor> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+                                                        0.05, 0.01, isLogNormal);
+
+    
+    //so far tests pass, now try to get additional results and it will fail
+    Size capletsNum = cap->capRates().size();
+    std::vector<Real> capletUpPrices, 
+                      capletDownPrices,
+                      capletAnalyticDelta,
+                      capletDeflatorsUp,
+                      capletDeflatorsDown,
+                      capletForwardsUp,
+                      capletForwardsDown,
+                      capletFDDelta(capletsNum, 0.0); 
+    Size floorletNum = floor->floorRates().size();
+    std::vector<Real> floorletUpPrices, 
+                      floorletDownPrices,
+                      floorletAnalyticDelta,
+                      floorletDeflatorsUp,
+                      floorletDeflatorsDown,
+                      floorletForwardsUp,
+                      floorletForwardsDown,
+                      floorletFDDelta(floorletNum, 0.0);
+    
+    capletAnalyticDelta = cap->result<std::vector<Real> >("optionletsDelta");
+    floorletAnalyticDelta = floor->result<std::vector<Real> >("optionletsDelta");
+    
+    spread->setValue(eps);
+    capletUpPrices = cap->result<std::vector<Real> >("optionletsPrice");
+    floorletUpPrices = floor->result<std::vector<Real> >("optionletsPrice");
+    capletDeflatorsUp = cap->result<std::vector<Real> >("optionletsDeflators");
+    floorletDeflatorsUp = floor->result<std::vector<Real> >("optionletsDeflators");
+    capletForwardsUp = cap->result<std::vector<Real> >("optionletsAtmForward");
+    floorletForwardsUp = floor->result<std::vector<Real> >("optionletsAtmForward");
+    
+    spread->setValue(-eps);
+    capletDownPrices = cap->result<std::vector<Real> >("optionletsPrice");
+    floorletDownPrices = floor->result<std::vector<Real> >("optionletsPrice");
+    capletDeflatorsDown = cap->result<std::vector<Real> >("optionletsDeflators");
+    floorletDeflatorsDown = floor->result<std::vector<Real> >("optionletsDeflators");
+    capletForwardsDown = cap->result<std::vector<Real> >("optionletsAtmForward");
+    floorletForwardsDown = floor->result<std::vector<Real> >("optionletsAtmForward");
+
+    for (Size n=1; n < capletUpPrices.size(); n++){
+        // calculating only caplet's FD sensitivity w.r.t. forward rate
+        // without the effect of sensitivity related to changed discount factor
+        capletFDDelta[n] = (capletUpPrices[n] / capletDeflatorsUp[n]
+                           - capletDownPrices[n] / capletDeflatorsDown[n]) 
+                           / (capletForwardsUp[n] - capletForwardsDown[n]);
+    }
+
+    for (Size n=0; n<floorletUpPrices.size(); n++){
+        // calculating only caplet's FD sensitivity w.r.t. forward rate
+        // without the effect of sensitivity related to changed discount factor
+        floorletFDDelta[n] = (floorletUpPrices[n] / floorletDeflatorsUp[n] 
+                             - floorletDownPrices[n] / floorletDeflatorsDown[n]) 
+                             / (floorletForwardsUp[n] - floorletForwardsDown[n]);        
+    }
+
+    for (Size n=0; n<capletAnalyticDelta.size(); n++){
+        if (std::fabs(capletAnalyticDelta[n]-capletFDDelta[n]) > 1.0e-6)
+            BOOST_ERROR(
+                "failed to compare analytical and finite difference caplet delta:\n"
+                << "caplet number:\t" << n << "\n"
+                << std::setprecision(12)
+                << "    finite difference: " << capletFDDelta[n]<< "\n"
+                << "    analytical value:   " << capletAnalyticDelta[n] << "\n"
+                << "    resulting ratio: " << capletFDDelta[n] / capletAnalyticDelta[n]);    
+    }
+
+    for (Size n=0; n<floorletAnalyticDelta.size(); n++){
+        if (std::fabs(floorletAnalyticDelta[n]-floorletFDDelta[n]) > 1.0e-6)
+            BOOST_ERROR(
+                "failed to compare analytical and finite difference floorlet delta:\n"
+                << "floorlet number:\t" << n << "\n"
+                << std::setprecision(12)
+                << "    finite difference: " << floorletFDDelta[n]<< "\n"
+                << "    analytical value:   " << floorletAnalyticDelta[n] << "\n"
+                << "    resulting ratio: " << floorletFDDelta[n] / floorletAnalyticDelta[n]);    
+    }
+
+}
+
 test_suite* CapFloorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cap and floor tests");
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testStrikeDependency));
@@ -802,6 +929,7 @@ test_suite* CapFloorTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValue));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValueFromOptionLets));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testOptionLetsDelta));
+    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testBachelierOptionLetsDelta));
     return suite;
 }
 

@@ -38,6 +38,7 @@ class CapFloorTest {
     static void testCachedValue();
     static void testCachedValueFromOptionLets();
     static void testOptionLetsDelta();
+    static void testBachelierOptionLetsDelta();
     static boost::unit_test_framework::test_suite* suite();
 };
 

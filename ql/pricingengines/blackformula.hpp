@@ -236,7 +236,7 @@ namespace QuantLib {
                         Real stdDev,
                         Real displacement = 0.0);
 
-/*! Black 1976 probability of being in the money in the asset martingale
+    /*! Black 1976 probability of being in the money in the asset martingale
         measure, i.e. N(d1).
         It is a risk-neutral probability, not the real world one.
     */
@@ -374,6 +374,25 @@ namespace QuantLib {
                                                 Real forward,
                                                 Real stdDev,
                                                 Real discount = 1.0);
+
+    /*! Bachelier formula for probability of being in the money in the asset martingale
+        measure, i.e. N(d).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real bachelierBlackFormulaItmAssetProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev);
+
+    /*! Bachelier formula for of being in the money in the asset martingale
+        measure, i.e. N(d).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real bachelierBlackFormulaItmAssetProbability(
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev);                                                
 
 }
 
