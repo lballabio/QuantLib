@@ -631,18 +631,17 @@ void CapFloorTest::testCachedValueFromOptionLets() {
                                                           0.07,0.20);
     ext::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
                                                             0.03,0.20);
+    Real calculatedCapletsNPV = 0.0,
+         calculatedFloorletsNPV = 0.0;
+
 #ifndef QL_USE_INDEXED_COUPON
     // par coupon price
     Real cachedCapNPV   = 6.87570026732,
          cachedFloorNPV = 2.65812927959;
-    Real calculatedCapletsNPV = 0.0,
-         calculatedFloorletsNPV = 0.0;
 #else
     // index fixing price
     Real cachedCapNPV   = 6.87630307745,
          cachedFloorNPV = 2.65796764715;
-    Real calculatedCapletsNPV = 0.0,
-         calculatedFloorletsNPV = 0.0;
 #endif
     // test Black floor price against cached value
     std::vector<Real> capletPrices;

@@ -98,8 +98,7 @@ namespace QuantLib {
                 Real accrualFactor = arguments_.nominals[i] *
                                    arguments_.gearings[i] *
                                    arguments_.accrualTimes[i];
-                DiscountFactor d = accrualFactor *
-                                   discountCurve_->discount(paymentDate);
+                Real d = accrualFactor * discountCurve_->discount(paymentDate);
                 deflators[i] = d;
                 accrualFactors[i] = accrualFactor;
                 Rate forward = arguments_.forwards[i];
