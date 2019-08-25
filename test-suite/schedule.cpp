@@ -397,7 +397,7 @@ void ScheduleTest::testScheduleAlwaysHasAStartDate() {
 }
 
 void ScheduleTest::testShortEomSchedule() {
-    BOOST_TEST_MESSAGE("Testing short eom schedule...");
+    BOOST_TEST_MESSAGE("Testing short end-of-month schedule...");
     Schedule s;
     // seg-faults in 1.15
     BOOST_REQUIRE_NO_THROW(s = MakeSchedule()
