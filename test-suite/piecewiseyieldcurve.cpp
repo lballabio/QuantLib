@@ -1104,6 +1104,28 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     }
 }
 
+void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
+
+    BOOST_TEST_MESSAGE("Testing that construction with an explicit bootstrap succeeds...");
+
+    CommonVars vars;
+
+    // With an explicit IterativeBootstrap object
+    ext::shared_ptr<YieldTermStructure> yts = 
+        ext::make_shared<PiecewiseYieldCurve<ForwardRate, Linear, IterativeBootstrap> >(
+            vars.settlement, vars.instruments, Actual360(), Linear(),
+            IterativeBootstrap<PiecewiseYieldCurve<ForwardRate, Linear, IterativeBootstrap> >());
+
+    // Check anything to show that the construction succeeded
+    BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
+
+    // With an explicit LocalBootstrap object
+    yts = ext::make_shared<PiecewiseYieldCurve<ForwardRate, ConvexMonotone, LocalBootstrap> >(
+        vars.settlement, vars.instruments, Actual360(), ConvexMonotone(),
+        LocalBootstrap<PiecewiseYieldCurve<ForwardRate, ConvexMonotone, LocalBootstrap> >());
+    
+    BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
+}
 
 test_suite* PiecewiseYieldCurveTest::suite() {
 
@@ -1152,6 +1174,8 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                              &PiecewiseYieldCurveTest::testBadPreviousCurve));
     #endif
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
 
     return suite;
 }
