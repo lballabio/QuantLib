@@ -240,7 +240,7 @@ namespace QuantLib {
         measure, i.e. N(d1).
         It is a risk-neutral probability, not the real world one.
     */
-    Real blackFormulaItmAssetProbability(
+    Real blackFormulaAssetItmProbability(
                         Option::Type optionType,
                         Real strike,
                         Real forward,
@@ -251,7 +251,7 @@ namespace QuantLib {
         measure, i.e. N(d1).
         It is a risk-neutral probability, not the real world one.
     */
-    Real blackFormulaItmAssetProbability(
+    Real blackFormulaAssetItmProbability(
                         const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
@@ -379,7 +379,7 @@ namespace QuantLib {
         measure, i.e. N(d).
         It is a risk-neutral probability, not the real world one.
     */
-    Real bachelierBlackFormulaItmAssetProbability(
+    Real bachelierBlackFormulaAssetItmProbability(
                         Option::Type optionType,
                         Real strike,
                         Real forward,
@@ -389,7 +389,7 @@ namespace QuantLib {
         measure, i.e. N(d).
         It is a risk-neutral probability, not the real world one.
     */
-    Real bachelierBlackFormulaItmAssetProbability(
+    Real bachelierBlackFormulaAssetItmProbability(
                         const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev);                                                

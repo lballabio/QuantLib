@@ -69,8 +69,7 @@ namespace QuantLib {
         std::vector<Real> deltas(optionlets, 0.0);
         std::vector<Real> vegas(optionlets, 0.0);
         std::vector<Real> stdDevs(optionlets, 0.0);
-        std::vector<Real> deflators(optionlets, 0.0);
-        std::vector<Real> accrualFactors(optionlets, 0.0);
+        std::vector<DiscountFactor> discountFactors(optionlets, 0.0);
         CapFloor::Type type = arguments_.type;
         Date today = vol_->referenceDate();
         Date settlement = discountCurve_->referenceDate();
@@ -81,14 +80,12 @@ namespace QuantLib {
             // should be implemented.
             // For the time being just discard expired caplets
             if (paymentDate > settlement) {
+                DiscountFactor d = discountCurve_->discount(paymentDate);
+                discountFactors[i] = d;
                 Real accrualFactor = arguments_.nominals[i] *
                                    arguments_.gearings[i] *
                                    arguments_.accrualTimes[i];
-                Real d = accrualFactor *
-                         discountCurve_->discount(paymentDate);
-
-                deflators[i] = d;
-                accrualFactors[i] = accrualFactor;
+                Real discountedAccrual = d * accrualFactor;
 
                 Rate forward = arguments_.forwards[i];
 
@@ -103,13 +100,13 @@ namespace QuantLib {
                         stdDevs[i] = std::sqrt(vol_->blackVariance(fixingDate,
                                                                    strike));
                         vegas[i] = bachelierBlackFormulaStdDevDerivative(strike,
-                            forward, stdDevs[i], d) * sqrtTime;
-                        deltas[i] = bachelierBlackFormulaItmAssetProbability(Option::Call,
+                            forward, stdDevs[i], discountedAccrual) * sqrtTime;
+                        deltas[i] = bachelierBlackFormulaAssetItmProbability(Option::Call,
                             strike, forward, stdDevs[i]);
                     }
                     // include caplets with past fixing date
                     values[i] = bachelierBlackFormula(Option::Call,
-                        strike, forward, stdDevs[i], d);
+                        strike, forward, stdDevs[i], discountedAccrual);
                 }
                 if (type == CapFloor::Floor || type == CapFloor::Collar) {
                     Rate strike = arguments_.floorRates[i];
@@ -119,13 +116,13 @@ namespace QuantLib {
                         stdDevs[i] = std::sqrt(vol_->blackVariance(fixingDate,
                                                                    strike));
                         floorletVega = bachelierBlackFormulaStdDevDerivative(strike,
-                            forward, stdDevs[i], d) * sqrtTime;
-                        floorletDelta = Option::Put * bachelierBlackFormulaItmAssetProbability(
+                            forward, stdDevs[i], discountedAccrual) * sqrtTime;
+                        floorletDelta = Option::Put * bachelierBlackFormulaAssetItmProbability(
                                                         Option::Put, strike, forward, 
                                                         stdDevs[i]);
                     }
                     Real floorlet = bachelierBlackFormula(Option::Put,
-                        strike, forward, stdDevs[i], d);
+                        strike, forward, stdDevs[i], discountedAccrual);
                     if (type == CapFloor::Floor) {
                         values[i] = floorlet;
                         vegas[i] = floorletVega;
@@ -147,10 +144,8 @@ namespace QuantLib {
         results_.additionalResults["optionletsPrice"] = values;
         results_.additionalResults["optionletsVega"] = vegas;
         results_.additionalResults["optionletsDelta"] = deltas;
-        results_.additionalResults["optionletsDeflators"] = deflators;
+        results_.additionalResults["optionletsDiscountFactor"] = discountFactors;
         results_.additionalResults["optionletsAtmForward"] = arguments_.forwards;
-        results_.additionalResults["optionletsAccrualFactors"] = accrualFactors;
-        results_.additionalResults["optionletsEndDates"] = arguments_.endDates;
         if (type != CapFloor::Collar)
             results_.additionalResults["optionletsStdDev"] = stdDevs;
     }

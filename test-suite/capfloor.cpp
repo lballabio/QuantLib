@@ -729,8 +729,8 @@ void CapFloorTest::testOptionLetsDelta() {
     std::vector<Real> capletUpPrices, 
                       capletDownPrices,
                       capletAnalyticDelta,
-                      capletDeflatorsUp,
-                      capletDeflatorsDown,
+                      capletDiscountFactorsUp,
+                      capletDiscountFactorsDown,
                       capletForwardsUp,
                       capletForwardsDown,
                       capletFDDelta(capletsNum, 0.0); 
@@ -738,8 +738,8 @@ void CapFloorTest::testOptionLetsDelta() {
     std::vector<Real> floorletUpPrices, 
                       floorletDownPrices,
                       floorletAnalyticDelta,
-                      floorletDeflatorsUp,
-                      floorletDeflatorsDown,
+                      floorletDiscountFactorsUp,
+                      floorletDiscountFactorsDown,
                       floorletForwardsUp,
                       floorletForwardsDown,
                       floorletFDDelta(floorletNum, 0.0);
@@ -750,33 +750,43 @@ void CapFloorTest::testOptionLetsDelta() {
     spread->setValue(eps);
     capletUpPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletUpPrices = floor->result<std::vector<Real> >("optionletsPrice");
-    capletDeflatorsUp = cap->result<std::vector<Real> >("optionletsDeflators");
-    floorletDeflatorsUp = floor->result<std::vector<Real> >("optionletsDeflators");
+    capletDiscountFactorsUp = cap->result<std::vector<Real> >("optionletsDiscountFactor");
+    floorletDiscountFactorsUp = floor->result<std::vector<Real> >("optionletsDiscountFactor");
     capletForwardsUp = cap->result<std::vector<Real> >("optionletsAtmForward");
     floorletForwardsUp = floor->result<std::vector<Real> >("optionletsAtmForward");
     
     spread->setValue(-eps);
     capletDownPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletDownPrices = floor->result<std::vector<Real> >("optionletsPrice");
-    capletDeflatorsDown = cap->result<std::vector<Real> >("optionletsDeflators");
-    floorletDeflatorsDown = floor->result<std::vector<Real> >("optionletsDeflators");
+    capletDiscountFactorsDown = cap->result<std::vector<Real> >("optionletsDiscountFactor");
+    floorletDiscountFactorsDown = floor->result<std::vector<Real> >("optionletsDiscountFactor");
     capletForwardsDown = cap->result<std::vector<Real> >("optionletsAtmForward");
     floorletForwardsDown = floor->result<std::vector<Real> >("optionletsAtmForward");
 
+    Real accrualFactor;
+    Leg capLeg = cap->floatingLeg();
+    Leg floorLeg = floor->floatingLeg();
+    
     for (Size n=1; n < capletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        capletFDDelta[n] = (capletUpPrices[n] / capletDeflatorsUp[n]
-                           - capletDownPrices[n] / capletDeflatorsDown[n]) 
-                           / (capletForwardsUp[n] - capletForwardsDown[n]);
+        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(capLeg[n]);
+        accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
+        capletFDDelta[n] = (capletUpPrices[n] / capletDiscountFactorsUp[n]
+                           - capletDownPrices[n] / capletDiscountFactorsDown[n]) 
+                           / (capletForwardsUp[n] - capletForwardsDown[n])
+                           / accrualFactor;
     }
 
     for (Size n=0; n<floorletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        floorletFDDelta[n] = (floorletUpPrices[n] / floorletDeflatorsUp[n] 
-                             - floorletDownPrices[n] / floorletDeflatorsDown[n]) 
-                             / (floorletForwardsUp[n] - floorletForwardsDown[n]);        
+        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(floorLeg[n]);
+        accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
+        floorletFDDelta[n] = (floorletUpPrices[n] / floorletDiscountFactorsUp[n] 
+                             - floorletDownPrices[n] / floorletDiscountFactorsDown[n]) 
+                             / (floorletForwardsUp[n] - floorletForwardsDown[n])
+                             / accrualFactor;        
     }
 
     for (Size n=0; n<capletAnalyticDelta.size(); n++){
@@ -843,8 +853,8 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     std::vector<Real> capletUpPrices, 
                       capletDownPrices,
                       capletAnalyticDelta,
-                      capletDeflatorsUp,
-                      capletDeflatorsDown,
+                      capletDiscountFactorsUp,
+                      capletDiscountFactorsDown,
                       capletForwardsUp,
                       capletForwardsDown,
                       capletFDDelta(capletsNum, 0.0); 
@@ -852,8 +862,8 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     std::vector<Real> floorletUpPrices, 
                       floorletDownPrices,
                       floorletAnalyticDelta,
-                      floorletDeflatorsUp,
-                      floorletDeflatorsDown,
+                      floorletDiscountFactorsUp,
+                      floorletDiscountFactorsDown,
                       floorletForwardsUp,
                       floorletForwardsDown,
                       floorletFDDelta(floorletNum, 0.0);
@@ -864,33 +874,43 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     spread->setValue(eps);
     capletUpPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletUpPrices = floor->result<std::vector<Real> >("optionletsPrice");
-    capletDeflatorsUp = cap->result<std::vector<Real> >("optionletsDeflators");
-    floorletDeflatorsUp = floor->result<std::vector<Real> >("optionletsDeflators");
+    capletDiscountFactorsUp = cap->result<std::vector<Real> >("optionletsDiscountFactor");
+    floorletDiscountFactorsUp = floor->result<std::vector<Real> >("optionletsDiscountFactor");
     capletForwardsUp = cap->result<std::vector<Real> >("optionletsAtmForward");
     floorletForwardsUp = floor->result<std::vector<Real> >("optionletsAtmForward");
     
     spread->setValue(-eps);
     capletDownPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletDownPrices = floor->result<std::vector<Real> >("optionletsPrice");
-    capletDeflatorsDown = cap->result<std::vector<Real> >("optionletsDeflators");
-    floorletDeflatorsDown = floor->result<std::vector<Real> >("optionletsDeflators");
+    capletDiscountFactorsDown = cap->result<std::vector<Real> >("optionletsDiscountFactor");
+    floorletDiscountFactorsDown = floor->result<std::vector<Real> >("optionletsDiscountFactor");
     capletForwardsDown = cap->result<std::vector<Real> >("optionletsAtmForward");
     floorletForwardsDown = floor->result<std::vector<Real> >("optionletsAtmForward");
 
+    Real accrualFactor;
+    Leg capLeg = cap->floatingLeg();
+    Leg floorLeg = floor->floatingLeg();
+    
     for (Size n=1; n < capletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        capletFDDelta[n] = (capletUpPrices[n] / capletDeflatorsUp[n]
-                           - capletDownPrices[n] / capletDeflatorsDown[n]) 
-                           / (capletForwardsUp[n] - capletForwardsDown[n]);
+        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(capLeg[n]);
+        accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
+        capletFDDelta[n] = (capletUpPrices[n] / capletDiscountFactorsUp[n]
+                           - capletDownPrices[n] / capletDiscountFactorsDown[n]) 
+                           / (capletForwardsUp[n] - capletForwardsDown[n])
+                           / accrualFactor;
     }
 
     for (Size n=0; n<floorletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        floorletFDDelta[n] = (floorletUpPrices[n] / floorletDeflatorsUp[n] 
-                             - floorletDownPrices[n] / floorletDeflatorsDown[n]) 
-                             / (floorletForwardsUp[n] - floorletForwardsDown[n]);        
+        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(floorLeg[n]);
+        accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
+        floorletFDDelta[n] = (floorletUpPrices[n] / floorletDiscountFactorsUp[n] 
+                             - floorletDownPrices[n] / floorletDiscountFactorsDown[n]) 
+                             / (floorletForwardsUp[n] - floorletForwardsDown[n])
+                             / accrualFactor;        
     }
 
     for (Size n=0; n<capletAnalyticDelta.size(); n++){

@@ -549,7 +549,7 @@ namespace QuantLib {
             payoff->strike(), forward, stdDev , displacement);
     }
 
-    Real blackFormulaItmAssetProbability(
+    Real blackFormulaAssetItmProbability(
                         Option::Type optionType,
                         Real strike,
                         Real forward,
@@ -568,12 +568,12 @@ namespace QuantLib {
         return phi(optionType*d1);
     }
 
-    Real blackFormulaItmAssetProbability(
+    Real blackFormulaAssetItmProbability(
                         const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real displacement) {
-        return blackFormulaItmAssetProbability(payoff->optionType(),
+        return blackFormulaAssetItmProbability(payoff->optionType(),
             payoff->strike(), forward, stdDev , displacement);
     }
 
@@ -793,7 +793,7 @@ namespace QuantLib {
                                      stdDev, discount);
     }
 
-    Real bachelierBlackFormulaItmAssetProbability(
+    Real bachelierBlackFormulaAssetItmProbability(
                         Option::Type optionType,
                         Real strike,
                         Real forward,
@@ -808,11 +808,11 @@ namespace QuantLib {
         return result;
     }
 
-    Real bachelierBlackFormulaItmAssetProbability(
+    Real bachelierBlackFormulaAssetItmProbability(
                         const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev) {
-        return bachelierBlackFormulaItmAssetProbability(payoff->optionType(),
+        return bachelierBlackFormulaAssetItmProbability(payoff->optionType(),
             payoff->strike(), forward, stdDev);
     }
 }
