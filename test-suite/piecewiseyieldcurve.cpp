@@ -1115,7 +1115,7 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
     ext::shared_ptr<YieldTermStructure> yts = 
         ext::make_shared<PiecewiseYieldCurve<ForwardRate, Linear, IterativeBootstrap> >(
             vars.settlement, vars.instruments, Actual360(), Linear(),
-            IterativeBootstrap<PwLinearForward>());
+            IterativeBootstrap<PwLinearForward::this_curve>());
 
     // Check anything to show that the construction succeeded
     BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
@@ -1124,7 +1124,7 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
     typedef PiecewiseYieldCurve<ForwardRate, ConvexMonotone, LocalBootstrap> PwCmForward;
     yts = ext::make_shared<PiecewiseYieldCurve<ForwardRate, ConvexMonotone, LocalBootstrap> >(
         vars.settlement, vars.instruments, Actual360(), ConvexMonotone(), 
-        LocalBootstrap<PwCmForward>());
+        LocalBootstrap<PwCmForward::this_curve>());
     
     BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
 }

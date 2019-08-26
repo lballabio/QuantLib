@@ -63,8 +63,8 @@ namespace QuantLib {
           public LazyObject {
       private:
         typedef typename Traits::template curve<Interpolator>::type base_curve;
-        typedef PiecewiseYieldCurve<Traits,Interpolator,Bootstrap> this_curve;
       public:
+        typedef PiecewiseYieldCurve<Traits,Interpolator,Bootstrap> this_curve;
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
         //! \name Constructors
