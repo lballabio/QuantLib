@@ -1,6 +1,6 @@
 
 # Number of days of inactivity before an issue or pull request becomes stale
-daysUntilStale: 365
+daysUntilStale: 180
 
 # Number of days of inactivity before a stale issue or pull request is closed.
 daysUntilClose: 30
@@ -11,26 +11,18 @@ exemptMilestones: true
 # Label to use when marking as stale
 staleLabel: stale
 
-issues:
-  # Issues with these labels will never be considered stale.
-  exemptLabels:
-    - "in progress"
-    - "help wanted"
-  # Comment to post when marking as stale.
-  markComment: >
-    This issue has been automatically marked as stale because it has not had
-    recent activity. It will be closed if no further activity occurs. Thank you
-    for your contributions.
-  # Comment to post when closing as stale.
-  closeComment: >
-    This issue has been automatically closed as stale.
+# Issues with these labels will never be considered stale.
+exemptLabels:
+  - "in progress"
+  - "help wanted"
 
-pulls:
-  # Comment to post when marking as stale.
-  markComment: >
-    This pull request has been automatically marked as stale because it has not had
-    recent activity. It will be closed if no further activity occurs. Thank you
-    for your contributions.
-  # Comment to post when closing as stale.
-  closeComment: >
-    This pull request has been automatically closed as stale.
+# Comment to post when marking as stale.
+markComment: >
+  This issue has been automatically marked as stale because it has not had
+  recent activity. It will be closed if no further activity occurs. Thank you
+  for your contributions.
+
+# Comment to post when closing as stale.
+closeComment: >
+  This issue has been automatically closed as stale.
+
