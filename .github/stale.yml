@@ -1,6 +1,6 @@
 
 # Number of days of inactivity before an issue or pull request becomes stale
-daysUntilStale: 180
+daysUntilStale: 120
 
 # Number of days of inactivity before a stale issue or pull request is closed.
 daysUntilClose: 30
