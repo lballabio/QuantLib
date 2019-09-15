@@ -88,17 +88,17 @@ namespace QuantLib {
     UnitedStates::UnitedStates(UnitedStates::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+        static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                         new UnitedStates::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> liborImpactImpl(
+        static ext::shared_ptr<Calendar::Impl> liborImpactImpl(
                                         new UnitedStates::LiborImpactImpl);
-        static boost::shared_ptr<Calendar::Impl> nyseImpl(
+        static ext::shared_ptr<Calendar::Impl> nyseImpl(
                                         new UnitedStates::NyseImpl);
-        static boost::shared_ptr<Calendar::Impl> governmentImpl(
+        static ext::shared_ptr<Calendar::Impl> governmentImpl(
                                         new UnitedStates::GovernmentBondImpl);
-        static boost::shared_ptr<Calendar::Impl> nercImpl(
+        static ext::shared_ptr<Calendar::Impl> nercImpl(
                                         new UnitedStates::NercImpl);
-        static boost::shared_ptr<Calendar::Impl> federalreserveImpl(
+        static ext::shared_ptr<Calendar::Impl> federalreserveImpl(
                                         new UnitedStates::FederalReserveImpl);
         switch (market) {
           case Settlement:
@@ -210,8 +210,10 @@ namespace QuantLib {
             return false;
 
         // Special closings
-        if (// Hurricane Sandy
-            (y == 2012 && m == October && (d == 29 || d == 30))
+        if (// President Bush's Funeral
+            (y == 2018 && m == December && d == 5)
+            // Hurricane Sandy
+            || (y == 2012 && m == October && (d == 29 || d == 30))
             // President Ford's funeral
             || (y == 2007 && m == January && d == 2)
             // President Reagan's funeral

@@ -34,7 +34,7 @@ namespace QuantLib {
 
 class FdmZabrUnderlyingPart {
   public:
-    FdmZabrUnderlyingPart(const boost::shared_ptr<FdmMesher> &mesher,
+    FdmZabrUnderlyingPart(const ext::shared_ptr<FdmMesher> &mesher,
                           const Real beta, const Real nu, const Real rho,
                           const Real gamma);
 
@@ -46,12 +46,12 @@ class FdmZabrUnderlyingPart {
     const Array forwardValues_;
     TripleBandLinearOp mapT_;
 
-    const boost::shared_ptr<FdmMesher> mesher_;
+    const ext::shared_ptr<FdmMesher> mesher_;
 };
 
 class FdmZabrVolatilityPart {
   public:
-    FdmZabrVolatilityPart(const boost::shared_ptr<FdmMesher> &mesher,
+    FdmZabrVolatilityPart(const ext::shared_ptr<FdmMesher> &mesher,
                           const Real beta, const Real nu, const Real rho,
                           const Real gamma);
 
@@ -63,13 +63,13 @@ class FdmZabrVolatilityPart {
     const Array forwardValues_;
     TripleBandLinearOp mapT_;
 
-    const boost::shared_ptr<FdmMesher> mesher_;
+    const ext::shared_ptr<FdmMesher> mesher_;
 };
 
 class FdmZabrOp : public FdmLinearOpComposite {
   public:
     FdmZabrOp(
-        const boost::shared_ptr<FdmMesher> &mesher, const Real beta,
+        const ext::shared_ptr<FdmMesher> &mesher, const Real beta,
         const Real nu, const Real rho,
         const Real gamma = 1.0); // gamma=1.0 recovers the classic sabr model
 

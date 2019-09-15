@@ -26,7 +26,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-class PlusOne : std::unary_function<Real,Real> {
+class PlusOne {
 public:
     Real operator()(Real x) const { return x+1;};
 };

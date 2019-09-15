@@ -32,9 +32,12 @@ namespace QuantLib {
     //! %Abcd functional form
     /*! \f[ f(t) = [ a + b*t ] e^{-c*t} + d \f]
         following Rebonato's notation. */
-    class AbcdMathFunction : public std::unary_function<Time, Real> {
+    class AbcdMathFunction {
 
       public:
+        typedef Time argument_type;
+        typedef Real result_type;
+
         AbcdMathFunction(Real a = 0.002,
                          Real b = 0.001, 
                          Real c = 0.16,
@@ -119,7 +122,7 @@ namespace QuantLib {
     inline Real AbcdMathFunction::maximumValue() const {
         if (b_==0.0 || a_<=0.0)
             return d_;
-        return this->operator()(maximumLocation());
+        return (*this)(maximumLocation());
     }
 
 }

@@ -149,10 +149,10 @@ namespace QuantLib {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
                 QL_REQUIRE(firstDate_ > effectiveDate &&
-                           firstDate_ < terminationDate,
+                           firstDate_ <= terminationDate,
                            "first date (" << firstDate_ <<
-                           ") out of effective-termination date range [" <<
-                           effectiveDate << ", " << terminationDate << ")");
+                           ") out of effective-termination date range (" <<
+                           effectiveDate << ", " << terminationDate << "]");
                 // we should ensure that the above condition is still
                 // verified after adjustment
                 break;
@@ -177,11 +177,11 @@ namespace QuantLib {
             switch (*rule_) {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
-                QL_REQUIRE(nextToLastDate_ > effectiveDate &&
+                QL_REQUIRE(nextToLastDate_ >= effectiveDate &&
                            nextToLastDate_ < terminationDate,
                            "next to last date (" << nextToLastDate_ <<
-                           ") out of effective-termination date range (" <<
-                           effectiveDate << ", " << terminationDate << "]");
+                           ") out of effective-termination date range [" <<
+                           effectiveDate << ", " << terminationDate << ")");
                 // we should ensure that the above condition is still
                 // verified after adjustment
                 break;
@@ -391,16 +391,23 @@ namespace QuantLib {
                 for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
             }
+            Date d1 = dates_.front(), d2 = dates_.back();
             if (terminationDateConvention != Unadjusted) {
-                dates_.front() = calendar_.endOfMonth(dates_.front());
-                dates_.back() = calendar_.endOfMonth(dates_.back());
+                d1 = calendar_.endOfMonth(dates_.front());
+                d2 = calendar_.endOfMonth(dates_.back());
             } else {
                 // the termination date is the first if going backwards,
                 // the last otherwise.
                 if (*rule_ == DateGeneration::Backward)
-                    dates_.back() = Date::endOfMonth(dates_.back());
+                    d2 = Date::endOfMonth(dates_.back());
                 else
-                    dates_.front() = Date::endOfMonth(dates_.front());
+                    d1 = Date::endOfMonth(dates_.front());
+            }
+            // if the eom adjustment leads to a single date schedule
+            // we do not apply it
+            if(d1 != d2) {
+                dates_.front() = d1;
+                dates_.back() = d2;
             }
         } else {
             // first date not adjusted for old CDS schedules
@@ -426,9 +433,12 @@ namespace QuantLib {
         // date due to EOM adjustments (see the Schedule test suite
         // for an example).
         if (dates_.size() >= 2 && dates_[dates_.size()-2] >= dates_.back()) {
-            isRegular_[isRegular_.size()-2] =
-                (dates_[dates_.size()-2] == dates_.back());
-            dates_[dates_.size()-2] = dates_.back();
+            // there might be two dates only, then isRegular_ has size one
+            if (isRegular_.size() >= 2) {
+                isRegular_[isRegular_.size() - 2] =
+                    (dates_[dates_.size() - 2] == dates_.back());
+            }
+            dates_[dates_.size() - 2] = dates_.back();
             dates_.pop_back();
             isRegular_.pop_back();
         }
@@ -465,7 +475,8 @@ namespace QuantLib {
             // remove later dates
             while (result.dates_.back()>truncationDate) {
                 result.dates_.pop_back();
-                result.isRegular_.pop_back();
+                if(!result.isRegular_.empty())
+                    result.isRegular_.pop_back();
             }
 
             // add truncationDate if missing
@@ -510,8 +521,12 @@ namespace QuantLib {
             return Date();
     }
 
+    bool Schedule::hasIsRegular() const {
+        return isRegular_.size() > 0;
+    }
+
     bool Schedule::isRegular(Size i) const {
-        QL_REQUIRE(isRegular_.size() > 0,
+        QL_REQUIRE(hasIsRegular(),
                    "full interface (isRegular) not available");
         QL_REQUIRE(i<=isRegular_.size() && i>0,
                    "index (" << i << ") must be in [1, " <<

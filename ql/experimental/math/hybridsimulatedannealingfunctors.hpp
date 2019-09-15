@@ -34,19 +34,11 @@ typedef boost::mt19937 base_generator_type;
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/cauchy_distribution.hpp>
-#if BOOST_VERSION >= 104700
 #include <boost/random/uniform_real_distribution.hpp>
 typedef boost::random::uniform_real_distribution<double> uniform;
 typedef boost::random::normal_distribution<> normal_random;
 typedef boost::random::lognormal_distribution<> lognormal_random;
 typedef boost::random::cauchy_distribution<> cauchy_random;
-#else
-#include <boost/random/uniform_real.hpp>
-typedef boost::uniform_real<> uniform;
-typedef boost::normal_distribution<> normal_random;
-typedef boost::lognormal_distribution<> lognormal_random;
-typedef boost::cauchy_distribution<> cauchy_random;
-#endif
 
 #include <boost/random/variate_generator.hpp>
 typedef boost::variate_generator<base_generator_type&, uniform > uniform_variate;
@@ -73,6 +65,12 @@ namespace QuantLib
         SamplerLogNormal(const SamplerLogNormal& sampler) : generator_(sampler.gaussian_.engine()),
             distribution_(sampler.gaussian_.distribution()),
             gaussian_(generator_, distribution_) {};
+        SamplerLogNormal& operator=(const SamplerLogNormal& sampler) {
+            generator_ = sampler.gaussian_.engine();
+            distribution_ = sampler.gaussian_.distribution();
+            gaussian_ = normal_variate(generator_, distribution_);
+            return *this;
+        }
 
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
@@ -99,6 +97,12 @@ namespace QuantLib
         SamplerGaussian(const SamplerGaussian& sampler) : generator_(sampler.gaussian_.engine()),
             distribution_(sampler.gaussian_.distribution()),
             gaussian_(generator_, distribution_) {};
+        SamplerGaussian& operator=(const SamplerGaussian& sampler) {
+            generator_ = sampler.gaussian_.engine();
+            distribution_ = sampler.gaussian_.distribution();
+            gaussian_ = normal_variate(generator_, distribution_);
+            return *this;
+        }
 
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
@@ -130,6 +134,14 @@ namespace QuantLib
             distribution_(sampler.gaussian_.distribution()),
             gaussian_(generator_, distribution_),
             lower_(sampler.lower_), upper_(sampler.upper_) {};
+        SamplerRingGaussian& operator=(const SamplerRingGaussian& sampler) {
+            generator_ = sampler.gaussian_.engine();
+            distribution_ = sampler.gaussian_.distribution();
+            gaussian_ = normal_variate(generator_, distribution_);
+            lower_ = sampler.lower_;
+            upper_ = sampler.upper_;
+            return *this;
+        }
 
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
@@ -170,6 +182,14 @@ namespace QuantLib
             distribution_(sampler.gaussian_.distribution()),
             gaussian_(generator_, distribution_),
             lower_(sampler.lower_), upper_(sampler.upper_) {};
+        SamplerMirrorGaussian& operator=(const SamplerMirrorGaussian& sampler) {
+            generator_ = sampler.gaussian_.engine();
+            distribution_ = sampler.gaussian_.distribution();
+            gaussian_ = normal_variate(generator_, distribution_);
+            lower_ = sampler.lower_;
+            upper_ = sampler.upper_;
+            return *this;
+        }
 
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");

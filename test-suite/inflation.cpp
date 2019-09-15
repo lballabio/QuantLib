@@ -20,12 +20,14 @@
 
 #include "inflation.hpp"
 #include "utilities.hpp"
+
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
@@ -44,11 +46,17 @@
 
 using boost::unit_test_framework::test_suite;
 
-
 using namespace QuantLib;
 
 using std::fabs;
 using std::pow;
+using std::vector;
+
+#define REPORT_FAILURE(d, res, periodName) \
+    BOOST_ERROR("wrong " << periodName << " inflation period for Date (1 " \
+        << d << "), Start Date ( " \
+        << res.first << "), End Date (" \
+        << res.second << ")"); \
 
 namespace {
 
@@ -57,41 +65,157 @@ namespace {
         Rate rate;
     };
 
-    boost::shared_ptr<YieldTermStructure> nominalTermStructure() {
+    ext::shared_ptr<YieldTermStructure> nominalTermStructure() {
         Date evaluationDate(13, August, 2007);
-        return boost::shared_ptr<YieldTermStructure>(
+        return ext::shared_ptr<YieldTermStructure>(
             new FlatForward(evaluationDate, 0.05, Actual360()));
     }
 
     template <class T, class U, class I>
-    std::vector<boost::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
             Datum iiData[], Size N,
-            const boost::shared_ptr<I> &ii, const Period &observationLag,
+            const ext::shared_ptr<I> &ii, const Period &observationLag,
             const Calendar &calendar,
             const BusinessDayConvention &bdc,
-            const DayCounter &dc) {
+            const DayCounter &dc,
+            const Handle<YieldTermStructure>& yTS) {
 
-        std::vector<boost::shared_ptr<BootstrapHelper<T> > > instruments;
+        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
-            Handle<Quote> quote(boost::shared_ptr<Quote>(
+            Handle<Quote> quote(ext::shared_ptr<Quote>(
                 new SimpleQuote(iiData[i].rate/100.0)));
-            boost::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
+            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                 quote, observationLag, maturity,
-                calendar, bdc, dc, ii));
+                calendar, bdc, dc, ii, yTS));
             instruments.push_back(anInstrument);
         }
 
         return instruments;
     }
-
 }
-
 
 //===========================================================================================
 // zero inflation tests, index, termstructure, and swaps
 //===========================================================================================
 
+namespace {
+
+void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz, 
+    const ext::shared_ptr<ZeroInflationIndex>& ii) {
+    
+    QL_REQUIRE(!hz->hasSeasonality(), "We require that the initially passed in term structure "
+        << "does not have seasonality");
+
+    // Tolerance that we will use below when comparing projected index fixings
+    Rate tolerance = 1e-12;
+
+    Date trueBaseDate = inflationPeriod(hz->baseDate(), ii->frequency()).second;
+    Date seasonalityBaseDate(31, January, trueBaseDate.year());
+    
+    // Create two different seasonality objects
+    
+    // 1) Monthly seasonality with all elements equal to 1 <=> no seasonality
+    vector<Rate> seasonalityFactors(12, 1.0);
+    ext::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality = 
+        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+
+    // 2) Seasonality with factors != 1.0
+    seasonalityFactors[0] = 1.003245;
+    seasonalityFactors[1] = 1.000000;
+    seasonalityFactors[2] = 0.999715;
+    seasonalityFactors[3] = 1.000495;
+    seasonalityFactors[4] = 1.000929;
+    seasonalityFactors[5] = 0.998687;
+    seasonalityFactors[6] = 0.995949;
+    seasonalityFactors[7] = 0.994682;
+    seasonalityFactors[8] = 0.995949;
+    seasonalityFactors[9] = 1.000519;
+    seasonalityFactors[10] = 1.003705;
+    seasonalityFactors[11] = 1.004186;
+
+    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+    
+    // Create dates on which we will check fixings
+    vector<Date> fixingDates(12);
+    Date anchorDate(14, January, 2013);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        fixingDates[i] = anchorDate + i * Months;
+    }
+
+    // Projected inflation index fixings when there is no seasonality
+    vector<Rate> noSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        noSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Set seasonality of all 1's and get the projected index fixings
+    hz->setSeasonality(unitSeasonality);
+    vector<Rate> unitSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        unitSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Check that the unit seasonality fixings agree with the no seasonality fixings
+    for (Size i = 0; i < fixingDates.size(); i++) {
+        if (fabs(noSeasonalityFixings[i] - unitSeasonalityFixings[i]) > tolerance) {
+            BOOST_ERROR("Seasonality doesn't work correctly when seasonality factors are set = 1"
+                << "No seasonality fixing is: " << noSeasonalityFixings[i] 
+                << " but unit seasonality fixing is: " << unitSeasonalityFixings[i]
+                << " for fixing date " << io::iso_date(fixingDates[i]));
+        }
+    }
+
+    // Testing seasonality correction when seasonality factors are different from 1
+    // We expect to see that I_{SA}(t) = I_{NSA}(t) * S(t) / S(t_b)
+    Month baseCpiMonth = hz->baseDate().month();
+    Size baseCpiIndex = static_cast<Size>(baseCpiMonth) - 1;
+    Rate baseSeasonality = seasonalityFactors[baseCpiIndex];
+
+    // These are the expected fixings
+    vector<Rate> expectedSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < expectedSeasonalityFixings.size(); ++i) {
+        expectedSeasonalityFixings[i] = ii->fixing(fixingDates[i], true) * 
+            seasonalityFactors[i] / baseSeasonality;
+    }
+
+    // Set the seasonality and calculate the actual seasonally adjusted fixings
+    hz->setSeasonality(nonUnitSeasonality);
+    vector<Rate> nonUnitSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        nonUnitSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Check that the calculated fixings agree with the expected fixings
+    for (Size i = 0; i < fixingDates.size(); i++) {
+        if (fabs(expectedSeasonalityFixings[i] - nonUnitSeasonalityFixings[i]) > tolerance) {
+            BOOST_ERROR("Seasonality doesn't work correctly for non-unit seasonality factors."
+                << " Expected fixing is: " << expectedSeasonalityFixings[i]
+                << " but calculated fixing is: " << nonUnitSeasonalityFixings[i]
+                << " for fixing date " << io::iso_date(fixingDates[i]));
+        }
+    }
+
+    // Testing that unsetting seasonality works also
+    hz->setSeasonality();
+    vector<Rate> unsetSeasonalityFixings(12, 1.0);
+    for (Size i = 0; i < fixingDates.size(); ++i) {
+        unsetSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
+    }
+
+    // Check that seasonality has been unset by comparing with the no seasonality fixings
+    for (Size i = 0; i < fixingDates.size(); i++) {
+        if (fabs(noSeasonalityFixings[i] - unsetSeasonalityFixings[i]) > tolerance) {
+            BOOST_ERROR("Unsetting seasonality doesn't work correctly."
+                << " No seasonality fixing is: " << noSeasonalityFixings[i]
+                << " but after unsetting seasonality fixing is: " << unitSeasonalityFixings[i]
+                << " for fixing date " << io::iso_date(fixingDates[i]));
+        }
+    }
+}
+
+}
 
 void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
@@ -150,7 +274,7 @@ void InflationTest::testZeroIndex() {
         207.3, 206.1 };
 
     bool interp = false;
-    boost::shared_ptr<UKRPI> iir(new UKRPI(interp));
+    ext::shared_ptr<UKRPI> iir(new UKRPI(interp));
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -209,13 +333,13 @@ void InflationTest::testZeroTermStructure() {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     bool interp = false;
-    boost::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
+    ext::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
     for (Size i=0; i<LENGTH(fixData); i++) {
         iiUKRPI->addFixing(rpiSchedule[i], fixData[i]);
     }
 
-    boost::shared_ptr<ZeroInflationIndex> ii = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPI);
-    boost::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    ext::shared_ptr<ZeroInflationIndex> ii = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPI);
+    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the zero inflation curve
     Datum zcData[] = {
@@ -238,14 +362,15 @@ void InflationTest::testZeroTermStructure() {
     Period observationLag = Period(2,Months);
     DayCounter dc = Thirty360();
     Frequency frequency = Monthly;
-    std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
     makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
                 ZeroInflationIndex>(zcData, LENGTH(zcData), ii,
                                     observationLag,
-                                    calendar, bdc, dc);
+                                    calendar, bdc, dc,
+                                    Handle<YieldTermStructure>(nominalTS));
 
     Rate baseZeroRate = zcData[0].rate/100.0;
-    boost::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
+    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
                         new PiecewiseZeroInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
                         frequency, ii->interpolated(), baseZeroRate,
@@ -312,7 +437,7 @@ void InflationTest::testZeroTermStructure() {
     Date baseDate(1, January, 2006);
     Date fixDate(1, August, 2014);
     Date payDate=UnitedKingdom().adjust(fixDate+Period(3,Months),ModifiedFollowing);
-    boost::shared_ptr<Index> ind = boost::dynamic_pointer_cast<Index>(ii);
+    ext::shared_ptr<Index> ind = ext::dynamic_pointer_cast<Index>(ii);
     BOOST_REQUIRE_MESSAGE(ind,"dynamic_pointer_cast to Index from InflationIndex failed");
 
     Real notional = 1000000.0;//1m
@@ -329,7 +454,7 @@ void InflationTest::testZeroTermStructure() {
 
     // first make one ...
 
-    boost::shared_ptr<ZeroInflationIndex> zii = boost::dynamic_pointer_cast<ZeroInflationIndex>(ii);
+    ext::shared_ptr<ZeroInflationIndex> zii = ext::dynamic_pointer_cast<ZeroInflationIndex>(ii);
     BOOST_REQUIRE_MESSAGE(zii,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI failed");
     ZeroCouponInflationSwap nzcis(ZeroCouponInflationSwap::Payer,
                                      1000000.0,
@@ -341,7 +466,7 @@ void InflationTest::testZeroTermStructure() {
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
     //      inflation curve attached to the inflation index.
     Handle<YieldTermStructure> hTS(nominalTS);
-    boost::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
     nzcis.setPricingEngine(sppe);
 
     // ... and price it, should be zero
@@ -354,175 +479,33 @@ void InflationTest::testZeroTermStructure() {
                         << " discount " << nominalTS->discount(nzcis.maturityDate())
                         );
 
-
-    //===========================================================================================
-    // Test multiplicative seasonality in price
-    //
-
-    //Seasonality factors NOT normalized
-    //and UKRPI is not interpolated
-    Date trueBaseDate = inflationPeriod(hz->baseDate(), ii->frequency()).second;
-    Date seasonallityBaseDate(31,January,trueBaseDate.year());
-    std::vector<Rate> seasonalityFactors(12);
-    seasonalityFactors[0] = 1.003245;
-    seasonalityFactors[1] = 1.000000;
-    seasonalityFactors[2] = 0.999715;
-    seasonalityFactors[3] = 1.000495;
-    seasonalityFactors[4] = 1.000929;
-    seasonalityFactors[5] = 0.998687;
-    seasonalityFactors[6] = 0.995949;
-    seasonalityFactors[7] = 0.994682;
-    seasonalityFactors[8] = 0.995949;
-    seasonalityFactors[9] = 1.000519;
-    seasonalityFactors[10] = 1.003705;
-    seasonalityFactors[11] = 1.004186;
-
-    //Creating two different seasonality objects
-    //
-    boost::shared_ptr<MultiplicativePriceSeasonality> seasonality_1(new MultiplicativePriceSeasonality());
-    std::vector<Rate> seasonalityFactors_1(12, 1.0);
-    seasonality_1->set(seasonallityBaseDate,Monthly,seasonalityFactors_1);
-
-    boost::shared_ptr<MultiplicativePriceSeasonality> seasonality_real(
-        new MultiplicativePriceSeasonality(seasonallityBaseDate,Monthly,seasonalityFactors));
-    //Testing seasonality correction when seasonality factors are = 1
-    //
-    Rate fixing[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-    };
-
-    hz->setSeasonality(seasonality_1);
-    QL_REQUIRE(hz->hasSeasonality(),"[44] incorrectly believes NO seasonality correction");
-
-    Rate seasonalityFixing_1[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-
-    };
-
-    for(int i=0;i<12;i++){
-        if(std::fabs(fixing[i] - seasonalityFixing_1[i]) > eps) {
-            BOOST_ERROR("Seasonality doesn't work correctly when seasonality factors are set = 1");
-        }
-    }
-
-    //Testing seasonality correction when seasonality factors are different from 1
-    //
-    //0.998687 is the seasonality factor corresponding to June (the base CPI curve month)
-    //
-    Rate expectedFixing[] = {
-        ii->fixing(Date(14,January  ,2013),true) * 1.003245/0.998687,
-        ii->fixing(Date(14,February ,2013),true) * 1.000000/0.998687,
-        ii->fixing(Date(14,March    ,2013),true) * 0.999715/0.998687,
-        ii->fixing(Date(14,April    ,2013),true) * 1.000495/0.998687,
-        ii->fixing(Date(14,May      ,2013),true) * 1.000929/0.998687,
-        ii->fixing(Date(14,June     ,2013),true) * 0.998687/0.998687,
-        ii->fixing(Date(14,July     ,2013),true) * 0.995949/0.998687,
-        ii->fixing(Date(14,August   ,2013),true) * 0.994682/0.998687,
-        ii->fixing(Date(14,September,2013),true) * 0.995949/0.998687,
-        ii->fixing(Date(14,October  ,2013),true) * 1.000519/0.998687,
-        ii->fixing(Date(14,November ,2013),true) * 1.003705/0.998687,
-        ii->fixing(Date(14,December ,2013),true) * 1.004186/0.998687
-    };
-
-    hz->setSeasonality(seasonality_real);
-
-    Rate seasonalityFixing_real[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-    };
-
-    for(int i=0;i<12;i++){
-        if(std::fabs(expectedFixing[i] - seasonalityFixing_real[i]) > 0.01) {
-            BOOST_ERROR("Seasonality doesn't work correctly when considering seasonality factors != 1 "
-                        << expectedFixing[i] << " vs " << seasonalityFixing_real[i]);
-        }
-    }
-
-    //Testing Unset function
-    //
-    QL_REQUIRE(hz->hasSeasonality(),"[4] incorrectly believes NO seasonality correction");
-    hz->setSeasonality();
-    QL_REQUIRE(!hz->hasSeasonality(),"[5] incorrectly believes HAS seasonality correction");
-
-    Rate seasonalityFixing_unset[] = {
-        ii->fixing(Date(14,January  ,2013),true),
-        ii->fixing(Date(14,February ,2013),true),
-        ii->fixing(Date(14,March    ,2013),true),
-        ii->fixing(Date(14,April    ,2013),true),
-        ii->fixing(Date(14,May      ,2013),true),
-        ii->fixing(Date(14,June     ,2013),true),
-        ii->fixing(Date(14,July     ,2013),true),
-        ii->fixing(Date(14,August   ,2013),true),
-        ii->fixing(Date(14,September,2013),true),
-        ii->fixing(Date(14,October  ,2013),true),
-        ii->fixing(Date(14,November ,2013),true),
-        ii->fixing(Date(14,December ,2013),true)
-    };
-
-    for(int i=0;i<12;i++){
-        if(std::fabs(seasonalityFixing_unset[i] - seasonalityFixing_1[i]) > eps) {
-            BOOST_ERROR("UnsetSeasonality doesn't work correctly "
-                        << seasonalityFixing_unset[i] << " vs " << seasonalityFixing_1[i]);
-        }
-    }
-
-
+    // Perform checks on the seasonality for this non-interpolated index
+    checkSeasonality(hz, ii);
 
     //==============================================================================
     // now do an INTERPOLATED index, i.e. repeat everything on a fake version of
     // UKRPI (to save making another term structure)
 
     bool interpYES = true;
-    boost::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz));
+    ext::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz));
     for (Size i=0; i<LENGTH(fixData);i++) {
         iiUKRPIyes->addFixing(rpiSchedule[i], fixData[i]);
     }
 
-    boost::shared_ptr<ZeroInflationIndex> iiyes
-        = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPIyes);
+    ext::shared_ptr<ZeroInflationIndex> iiyes
+        = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPIyes);
 
     // now build the zero inflation curve
     // same data, bigger lag or it will be a self-contradiction
     Period observationLagyes = Period(3,Months);
-    std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpersyes =
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpersyes =
     makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
     ZeroInflationIndex>(zcData, LENGTH(zcData), iiyes,
                         observationLagyes,
-                        calendar, bdc, dc);
+                        calendar, bdc, dc,
+                        Handle<YieldTermStructure>(nominalTS));
 
-    boost::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
+    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
             new PiecewiseZeroInflationCurve<Linear>(
             evaluationDate, calendar, dc, observationLagyes,
             frequency, iiyes->interpolated(), baseZeroRate,
@@ -583,7 +566,7 @@ void InflationTest::testZeroTermStructure() {
     //===========================================================================================
     // Test zero coupon swap
 
-    boost::shared_ptr<ZeroInflationIndex> ziiyes = boost::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
+    ext::shared_ptr<ZeroInflationIndex> ziiyes = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
     BOOST_REQUIRE_MESSAGE(ziiyes,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI-I failed");
     ZeroCouponInflationSwap nzcisyes(ZeroCouponInflationSwap::Payer,
                                      1000000.0,
@@ -606,8 +589,11 @@ void InflationTest::testZeroTermStructure() {
                         << " discount " << nominalTS->discount(nzcisyes.maturityDate())
                         );
 
+    // Perform checks on the seasonality for this interpolated index
+    checkSeasonality(hz, iiyes);
+
     // remove circular refernce
-    hz.linkTo(boost::shared_ptr<ZeroInflationTermStructure>());
+    hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
 void InflationTest::testZeroIndexFutureFixing() {
@@ -747,8 +733,8 @@ void InflationTest::testYYIndex() {
         207.3 };
 
     bool interp = false;
-    boost::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
-    boost::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
+    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
+    ext::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
     for (Size i=0; i<LENGTH(fixData);i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
         iirYES->addFixing(rpiSchedule[i], fixData[i]);
@@ -836,14 +822,14 @@ void InflationTest::testYYTermStructure() {
 
     RelinkableHandle<YoYInflationTermStructure> hy;
     bool interp = false;
-    boost::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
+    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
 
 
 
-    boost::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the YoY inflation curve
     Datum yyData[] = {
@@ -868,14 +854,15 @@ void InflationTest::testYYTermStructure() {
     DayCounter dc = Thirty360();
 
     // now build the helpers ...
-    std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
+    std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
     makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
     YoYInflationIndex>(yyData, LENGTH(yyData), iir,
-                        observationLag,
-                        calendar, bdc, dc);
+                       observationLag,
+                       calendar, bdc, dc,
+                       Handle<YieldTermStructure>(nominalTS));
 
     Rate baseYYRate = yyData[0].rate/100.0;
-    boost::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
+    ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
         new PiecewiseYoYInflationCurve<Linear>(
                 evaluationDate, calendar, dc, observationLag,
                 iir->frequency(),iir->interpolated(), baseYYRate,
@@ -888,7 +875,7 @@ void InflationTest::testYYTermStructure() {
     Real eps = 0.000001;
     // usual swap engine
     Handle<YieldTermStructure> hTS(nominalTS);
-    boost::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
 
     // make sure that the index has the latest yoy term structure
     hy.linkTo(pYYTS);
@@ -963,7 +950,7 @@ void InflationTest::testYYTermStructure() {
                             );
     }
     // remove circular refernce
-    hy.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
+    hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
 void InflationTest::testPeriod() {
@@ -971,23 +958,73 @@ void InflationTest::testPeriod() {
 
     Date d;
     Frequency f;
-    /* std::pair<Date,Date> res; */
+    std::pair<Date,Date> res;
+    int days[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
 
-    // fails by crashing out
-    for (Size i=1; i<=12; i++){
-        d = Date(1,Month(i),2009);
+    for (int year = 1950; year < 2051; ++year) {
 
-        f = Monthly;
-        /* res = */ inflationPeriod (d,f);
+        if (Date::isLeap(year))
+            days[2] = 29;
+        else
+            days[2] = 28;
 
-        f = Quarterly;
-        /* res = */ inflationPeriod (d,f);
+        for (Size i=1; i<=12; ++i){
 
-        f = Semiannual;
-        /* res = */ inflationPeriod (d,f);
+            d = Date(1,Month(i),year);
+            
+            f = Monthly;
+            res = inflationPeriod (d,f);
+            if (res.first != Date(1,Month(i),year)
+                || res.second != Date(days[i],Month(i),year)) {
+                REPORT_FAILURE(d, res, "Monthly");
+            }
 
-        f = Annual;
-        /* res = */ inflationPeriod (d,f);
+            f = Quarterly;
+            res = inflationPeriod (d,f);
+            
+            if ( (i==1 || i==2 || i==3) &&
+                (res.first != Date(1,Month(1),year)
+                 || res.second != Date(31,Month(3),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+            else if ( (i==4 || i==5 || i==6) &&
+                (res.first != Date(1,Month(4),year)
+                 || res.second != Date(30,Month(6),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+            else if ( (i==7 || i==8 || i==9) &&
+                (res.first != Date(1,Month(7),year)
+                 || res.second != Date(30,Month(9),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+            else if ( (i==10 || i==11 || i==12) &&
+                (res.first != Date(1,Month(10),year)
+                 || res.second != Date(31,Month(12),year))) {
+                REPORT_FAILURE(d, res, "Quarterly");
+            }
+
+            f = Semiannual;
+            res = inflationPeriod (d,f);
+            
+            if ( (i>0 && i<7) && (
+                res.first != Date(1,Month(1),year)
+                || res.second != Date(30,Month(6),year))) {
+                REPORT_FAILURE(d, res, "Semiannual");
+            }
+            else if ( (i>6 && i<13) && (
+                res.first != Date(1,Month(7),year)
+                || res.second != Date(31,Month(12),year))) {
+                REPORT_FAILURE(d, res, "Semiannual");
+            }
+
+            f = Annual;
+            res = inflationPeriod (d,f);
+            
+            if (res.first != Date(1,Month(1),year)
+                || res.second != Date(31,Month(12),year)) {
+                REPORT_FAILURE(d, res, "Annual");
+            }
+        }
     }
 }
 

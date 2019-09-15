@@ -33,7 +33,14 @@
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
 
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #include <boost/math/distributions/non_central_chi_squared.hpp>
+#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
+#pragma GCC diagnostic pop
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -238,9 +245,8 @@ void DistributionTest::testNormal() {
     Size i;
     for (i=0; i<N; i++)
         x[i] = xMin+h*i;
-    std::transform(x.begin(),x.end(),y.begin(),std::ptr_fun(gaussian));
-    std::transform(x.begin(),x.end(),yd.begin(),
-                   std::ptr_fun(gaussianDerivative));
+    std::transform(x.begin(), x.end(), y.begin(), gaussian);
+    std::transform(x.begin(), x.end(), yd.begin(), gaussianDerivative);
 
     // check that normal = Gaussian
     std::transform(x.begin(),x.end(),temp.begin(),normal);
@@ -632,7 +638,7 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
     
 
 namespace {
-    class InverseNonCentralChiSquared : public std::unary_function<Real,Real> {
+    class InverseNonCentralChiSquared {
       public:
         InverseNonCentralChiSquared(Real df, Real ncp)
         : dist_(df, ncp) {}
@@ -710,6 +716,43 @@ void DistributionTest::testInvCDFviaStochasticCollocation() {
     }
 }
 
+void DistributionTest::testSankaranApproximation() {
+    BOOST_TEST_MESSAGE("Testing Sankaran approximation for the "
+                       "non-central cumulative chi-square distribution...");
+
+    const Real dfs[] = {2,2,2,4,4};
+    const Real ncps[] = {1,2,3,1,2,3};
+
+    const Real tol = 0.01;
+    for (Size i=0; i < LENGTH(dfs); ++i) {
+        const Real df = dfs[i];
+
+        for (Size j=0; j < LENGTH(ncps); ++j) {
+            Real ncp = ncps[j];
+
+            const NonCentralCumulativeChiSquareDistribution d(df, ncp);
+            const NonCentralCumulativeChiSquareSankaranApprox sankaran(df, ncp);
+
+            for (Real x=0.25; x < 10; x+=0.1) {
+                const Real expected = d(x);
+                const Real calculated = sankaran(x);
+                const Real diff = std::fabs(expected - calculated);
+
+                if (diff > tol) {
+                    BOOST_ERROR("Failed to match accuracy of Sankaran approximation"""
+                           "\n    df        : " << df <<
+                           "\n    ncp       : " << ncp <<
+                           "\n    x         : " << x <<
+                           "\n    expected  : " << expected <<
+                           "\n    calculated: " << calculated <<
+                           "\n    diff      : " << diff <<
+                           "\n    tol       : " << tol);
+                }
+            }
+        }
+    }
+}
+
 test_suite* DistributionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
 
@@ -723,6 +766,9 @@ test_suite* DistributionTest::suite(SpeedLevel speed) {
                           &DistributionTest::testBivariateCumulativeStudent));
     suite->add(QUANTLIB_TEST_CASE(
                    &DistributionTest::testInvCDFviaStochasticCollocation));
+
+    suite->add(QUANTLIB_TEST_CASE(
+                   &DistributionTest::testSankaranApproximation));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

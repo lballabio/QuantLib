@@ -52,11 +52,6 @@ namespace QuantLib {
               between the settlementDate and the deliveryDate. (Note
               the two different discount curves used in b. and c.)
 
-        <b>Example: </b>
-        \link Repo.cpp
-        valuation of a repo on a fixed-rate bond
-        \endlink
-
         \todo Add preconditions and tests
 
         \todo Create switch- if coupon goes to seller is toggled on,
@@ -90,7 +85,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const boost::shared_ptr<FixedRateBond>& fixedCouponBond,
+                    const ext::shared_ptr<FixedRateBond>& fixedCouponBond,
                     const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>(),
                     const Handle<YieldTermStructure>& incomeDiscountCurve =
@@ -120,7 +115,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        boost::shared_ptr<FixedRateBond> fixedCouponBond_;
+        ext::shared_ptr<FixedRateBond> fixedCouponBond_;
         void performCalculations() const;
     };
 

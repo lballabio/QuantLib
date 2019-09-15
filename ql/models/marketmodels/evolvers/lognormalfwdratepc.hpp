@@ -34,7 +34,7 @@ namespace QuantLib {
     //! Predictor-Corrector
     class LogNormalFwdRatePc : public MarketModelEvolver {
       public:
-        LogNormalFwdRatePc(const boost::shared_ptr<MarketModel>&,
+        LogNormalFwdRatePc(const ext::shared_ptr<MarketModel>&,
                            const BrownianGeneratorFactory&,
                            const std::vector<Size>& numeraires,
                            Size initialStep = 0);
@@ -50,10 +50,10 @@ namespace QuantLib {
       private:
         void setForwards(const std::vector<Real>& forwards);
         // inputs
-        boost::shared_ptr<MarketModel> marketModel_;
+        ext::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         Size initialStep_;
-        boost::shared_ptr<BrownianGenerator> generator_;
+        ext::shared_ptr<BrownianGenerator> generator_;
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
          // working variables

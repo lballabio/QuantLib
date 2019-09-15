@@ -50,11 +50,11 @@ namespace QuantLib {
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
-                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                const ext::shared_ptr<InterestRateIndex>& fwdIndex,
                 const Period& initialGap,
                 const Period& horizon,
-                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                const std::vector<ext::shared_ptr<IborIndex> >& iborIndexes,
+                const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy = 1.0e-12,
                 const Interpolator& i = Interpolator()) {
@@ -70,16 +70,16 @@ namespace QuantLib {
         SavedSettings backup;
         Settings::instance().enforcesTodaysHistoricFixings() = true;
 
-        std::vector<boost::shared_ptr<RateHelper> > rateHelpers;
+        std::vector<ext::shared_ptr<RateHelper> > rateHelpers;
 
         // Create DepositRateHelper
-        std::vector<boost::shared_ptr<SimpleQuote> > iborQuotes;
-        std::vector<boost::shared_ptr<IborIndex> >::const_iterator ibor;
+        std::vector<ext::shared_ptr<SimpleQuote> > iborQuotes;
+        std::vector<ext::shared_ptr<IborIndex> >::const_iterator ibor;
         for (ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
-            boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
+            ext::shared_ptr<SimpleQuote> quote(new SimpleQuote);
             iborQuotes.push_back(quote);
             Handle<Quote> quoteHandle(quote);
-            rateHelpers.push_back(boost::shared_ptr<RateHelper> (new
+            rateHelpers.push_back(ext::shared_ptr<RateHelper> (new
                 DepositRateHelper(quoteHandle,
                                   (*ibor)->tenor(),
                                   (*ibor)->fixingDays(),
@@ -90,13 +90,13 @@ namespace QuantLib {
         }
 
         // Create SwapRateHelper
-        std::vector<boost::shared_ptr<SimpleQuote> > swapQuotes;
-        std::vector<boost::shared_ptr<SwapIndex> >::const_iterator swap;
+        std::vector<ext::shared_ptr<SimpleQuote> > swapQuotes;
+        std::vector<ext::shared_ptr<SwapIndex> >::const_iterator swap;
         for (swap=swapIndexes.begin(); swap!=swapIndexes.end(); ++swap) {
-            boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
+            ext::shared_ptr<SimpleQuote> quote(new SimpleQuote);
             swapQuotes.push_back(quote);
             Handle<Quote> quoteHandle(quote);
-            rateHelpers.push_back(boost::shared_ptr<RateHelper> (new
+            rateHelpers.push_back(ext::shared_ptr<RateHelper> (new
                 SwapRateHelper(quoteHandle,
                                (*swap)->tenor(),
                                (*swap)->fixingCalendar(),
@@ -207,15 +207,15 @@ namespace QuantLib {
     class HistoricalForwardRatesAnalysisImpl : public HistoricalForwardRatesAnalysis {
       public:
         HistoricalForwardRatesAnalysisImpl(
-                const boost::shared_ptr<SequenceStatistics>& stats,
+                const ext::shared_ptr<SequenceStatistics>& stats,
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
-                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                const ext::shared_ptr<InterestRateIndex>& fwdIndex,
                 const Period& initialGap,
                 const Period& horizon,
-                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                const std::vector<ext::shared_ptr<IborIndex> >& iborIndexes,
+                const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy);
         HistoricalForwardRatesAnalysisImpl(){};
@@ -224,10 +224,10 @@ namespace QuantLib {
         const std::vector<Date>& failedDates() const;
         const std::vector<std::string>& failedDatesErrorMessage() const;
         const std::vector<Period>& fixingPeriods() const;
-        //const boost::shared_ptr<SequenceStatistics>& stats() const;
+        //const ext::shared_ptr<SequenceStatistics>& stats() const;
       private:
         // calculated data
-        boost::shared_ptr<SequenceStatistics> stats_;
+        ext::shared_ptr<SequenceStatistics> stats_;
         std::vector<Date> skippedDates_;
         std::vector<std::string> skippedDatesErrorMessage_;
         std::vector<Date> failedDates_;
@@ -266,21 +266,21 @@ namespace QuantLib {
         return failedDatesErrorMessage_;
     }
 
-    //inline const boost::shared_ptr<SequenceStatistics>&
+    //inline const ext::shared_ptr<SequenceStatistics>&
     //HistoricalForwardRatesAnalysis::stats() const {
     //    return stats_;
     //}
     template<class Traits, class Interpolator>
     HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::HistoricalForwardRatesAnalysisImpl(
-                const boost::shared_ptr<SequenceStatistics>& stats,
+                const ext::shared_ptr<SequenceStatistics>& stats,
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
-                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                const ext::shared_ptr<InterestRateIndex>& fwdIndex,
                 const Period& initialGap,
                 const Period& horizon,
-                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                const std::vector<ext::shared_ptr<IborIndex> >& iborIndexes,
+                const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy)
     : stats_(stats) {

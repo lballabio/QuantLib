@@ -34,14 +34,17 @@ namespace QuantLib {
     }
 
     //! Backward-flat interpolation between discrete points
-    /*! \ingroup interpolations */
+    /*! \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class BackwardFlatInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
         BackwardFlatInterpolation(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::BackwardFlatInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                              yBegin));
             impl_->update();
@@ -58,7 +61,7 @@ namespace QuantLib {
             return BackwardFlatInterpolation(xBegin, xEnd, yBegin);
         }
         static const bool global = false;
-        static const Size requiredPoints = 2;
+        static const Size requiredPoints = 1;
     };
 
     namespace detail {
@@ -81,8 +84,10 @@ namespace QuantLib {
                 }
             }
             Real value(Real x) const {
-                if (x <= this->xBegin_[0])
+                if (x <= this->xBegin_[0]
+                    || std::distance(this->xBegin_, this->xEnd_) == 1)
                     return this->yBegin_[0];
+
                 Size i = this->locate(x);
                 if (x == this->xBegin_[i])
                     return this->yBegin_[i];
@@ -90,6 +95,9 @@ namespace QuantLib {
                     return this->yBegin_[i+1];
             }
             Real primitive(Real x) const {
+                if (std::distance(this->xBegin_, this->xEnd_) == 1)
+                    return (x - this->xBegin_[0]) * this->yBegin_[0];
+
                 Size i = this->locate(x);
                 Real dx = x-this->xBegin_[i];
                 return primitive_[i] + dx*this->yBegin_[i+1];

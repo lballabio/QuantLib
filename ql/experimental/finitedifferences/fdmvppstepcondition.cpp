@@ -27,25 +27,15 @@
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
-#include <boost/bind.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 namespace QuantLib {
     FdmVPPStepCondition::FdmVPPStepCondition(
         const FdmVPPStepConditionParams& params,
         Size nStates,
         const FdmVPPStepConditionMesher& mesh,
-        const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-        const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice)
+        const ext::shared_ptr<FdmInnerValueCalculator>& gasPrice,
+        const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice)
     : heatRate_        (params.heatRate),
       pMin_            (params.pMin),
       pMax_            (params.pMax),
@@ -61,6 +51,8 @@ namespace QuantLib {
       sparkSpreadPrice_(sparkSpreadPrice),
       stateEvolveFcts_ (nStates_) {
 
+        using namespace ext::placeholders;
+
         QL_REQUIRE(nStates_ == mesher_->layout()->dim()[stateDirection_],
                    "mesher does not fit to vpp arguments");
 
@@ -68,12 +60,12 @@ namespace QuantLib {
             const Size j = i % (2*tMinUp_ + tMinDown_);
 
             if (j < tMinUp_) {
-                stateEvolveFcts_[i] = boost::function<Real (Real)>(
-                    boost::bind(&FdmVPPStepCondition::evolveAtPMin,this, _1));
+                stateEvolveFcts_[i] = ext::function<Real (Real)>(
+                    ext::bind(&FdmVPPStepCondition::evolveAtPMin,this, _1));
             }
             else if (j < 2*tMinUp_){
-                stateEvolveFcts_[i] = boost::function<Real (Real)>(
-                    boost::bind(&FdmVPPStepCondition::evolveAtPMax,this, _1));
+                stateEvolveFcts_[i] = ext::function<Real (Real)>(
+                    ext::bind(&FdmVPPStepCondition::evolveAtPMax,this, _1));
             }
         }
     }
@@ -85,7 +77,7 @@ namespace QuantLib {
 
 
     void FdmVPPStepCondition::applyTo(Array& a, Time t) const {
-        boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
 
         const Size nStates = layout->dim()[stateDirection_];
         const FdmLinearOpIterator endIter = layout->end();
@@ -116,7 +108,7 @@ namespace QuantLib {
 
         const Size state = iter.coordinates()[stateDirection_];
 
-        if (stateEvolveFcts_[state].empty()) {
+        if (!(stateEvolveFcts_[state])) {
             return 0.0;
         }
         else {

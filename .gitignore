@@ -46,6 +46,9 @@ test-suite/*.trs
 .idea
 cmake-build-debug
 
+# Visual Studio Code
+.vscode
+
 # Artifacts created in multiple directories
 Makefile
 Makefile.in
@@ -80,6 +83,7 @@ testCaseCollection.xml
 CMakeFiles
 *.cmake
 TAGS
+.dirstamp
 
 # Outputs
 Examples/BasketLosses/BasketLosses
@@ -98,9 +102,9 @@ Examples/GlobalOptimizer/GlobalOptimizer
 Examples/LatentModel/LatentModel
 Examples/MarketModels/MarketModels
 Examples/MultidimIntegral/MultidimIntegral
+Examples/MulticurveBootstrapping/MulticurveBootstrapping
 Examples/Replication/Replication
 Examples/Repo/Repo
-Examples/Swap/SwapValuation
 test-suite/quantlib-test-suite
 test-suite/quantlib-benchmark
 test-suite/bin/*.exp

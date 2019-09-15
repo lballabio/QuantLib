@@ -29,7 +29,7 @@ namespace QuantLib {
 
     FdmDividendHandler::FdmDividendHandler(
         const DividendSchedule& schedule,
-        const boost::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<FdmMesher>& mesher,
         const Date& referenceDate,
         const DayCounter& dayCounter,
         Size equityDirection)

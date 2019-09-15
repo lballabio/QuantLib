@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Norway::Norway() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Norway::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Norway::Impl);
         impl_ = impl;
     }
 

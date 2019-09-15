@@ -44,7 +44,11 @@ namespace QuantLib {
         void reset();
         bool exercise(const CurveState& currentState) const;
         void nextStep(const CurveState& currentState);
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const;
+        #else
         std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
+        #endif
       private:
         Clone<MarketModelBasisSystem> basisSystem_;
         std::vector<std::vector<Real> > basisCoefficients_;

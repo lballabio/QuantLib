@@ -26,7 +26,7 @@
 #define quantlib_bicgstab_hpp
 
 #include <ql/math/array.hpp>
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +38,7 @@ namespace QuantLib {
 
     class BiCGstab  {
       public:
-        typedef boost::function1<Disposable<Array> , const Array& > MatrixMult;
+        typedef ext::function<Disposable<Array>(const Array&)> MatrixMult;
         
         BiCGstab(const MatrixMult& A, Size maxIter, Real relTol,
                  const MatrixMult& preConditioner = MatrixMult());
@@ -46,10 +46,6 @@ namespace QuantLib {
         BiCGStabResult solve(const Array& b, const Array& x0 = Array()) const;
         
       protected:
-        /*! \deprecated use Norm2(a) */
-        QL_DEPRECATED
-        Real norm2(const Array& a) const;
-
         const MatrixMult A_, M_;
         const Size maxIter_;
         const Real relTol_;  

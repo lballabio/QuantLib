@@ -31,7 +31,6 @@
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/functional.hpp>
-#include <boost/function.hpp>
 #include <boost/type_traits.hpp>
 #include <vector>
 
@@ -76,13 +75,6 @@ namespace QuantLib {
             xIterator xBegin, xIterator xEnd,
             yIterator yBegin, yIterator yEnd,
             vIterator vBegin);
-
-        template <class xIterator, class yIterator, class vIterator>
-        QL_DEPRECATED
-        void calculate(
-            xIterator xBegin, xIterator xEnd,
-            yIterator yBegin, yIterator yEnd,
-            vIterator vBegin, vIterator vEnd);
     };
 
     template <class xContainer, class yContainer, class vContainer> inline
@@ -154,15 +146,7 @@ namespace QuantLib {
             = std::inner_product(residuals_.begin(), residuals_.end(),
             residuals_.begin(), 0.0);
         std::transform(err_.begin(), err_.end(), standardErrors_.begin(),
-            std::bind1st(std::multiplies<Real>(),
-            std::sqrt(chiSq/(n-2))));
-    }
-
-    template <class xIterator, class yIterator, class vIterator>
-    void GeneralLinearLeastSquares::calculate(xIterator xBegin, xIterator xEnd,
-                                              yIterator yBegin, yIterator yEnd,
-                                              vIterator vBegin, vIterator) {
-        calculate(xBegin, xEnd, yBegin, yEnd, vBegin);
+                       multiply_by<Real>(std::sqrt(chiSq/(n-2))));
     }
 
 }

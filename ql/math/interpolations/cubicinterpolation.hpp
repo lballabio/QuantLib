@@ -99,6 +99,8 @@ namespace QuantLib {
         \test to be adapted from old ones.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class CubicInterpolation : public Interpolation {
       public:
@@ -162,7 +164,7 @@ namespace QuantLib {
                            Real leftConditionValue,
                            CubicInterpolation::BoundaryCondition rightCond,
                            Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::CubicInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                       da,
                                                       monotonic,
@@ -172,7 +174,7 @@ namespace QuantLib {
                                                       rightConditionValue));
             impl_->update();
             coeffs_ =
-                boost::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
+                ext::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
         }
         const std::vector<Real>& primitiveConstants() const {
             return coeffs_->primitiveConst_;
@@ -184,7 +186,7 @@ namespace QuantLib {
             return coeffs_->monotonicityAdjustments_;
         }
       private:
-        boost::shared_ptr<detail::CoefficientHolder> coeffs_;
+        ext::shared_ptr<detail::CoefficientHolder> coeffs_;
     };
 
 
@@ -289,7 +291,7 @@ namespace QuantLib {
                             const I1& xEnd,
                             const I2& yBegin)
         : CubicInterpolation(xBegin, xEnd, yBegin,
-                             FritschButland, false,
+                             FritschButland, true,
                              SecondDerivative, 0.0,
                              SecondDerivative, 0.0) {}
     };
@@ -575,7 +577,16 @@ namespace QuantLib {
                                 for (Size i=1; i<n_-1; ++i) {
                                     Real Smin = std::min(S_[i-1], S_[i]);
                                     Real Smax = std::max(S_[i-1], S_[i]);
-                                    tmp_[i] = 3.0*Smin*Smax/(Smax+2.0*Smin);
+                                    if(Smax+2.0*Smin == 0){
+                                        if (Smin*Smax < 0)
+                                            tmp_[i] = QL_MIN_REAL;
+                                        else if (Smin*Smax == 0)
+                                            tmp_[i] = 0;
+                                        else
+                                            tmp_[i] = QL_MAX_REAL;
+                                    }
+                                    else
+                                        tmp_[i] = 3.0*Smin*Smax/(Smax+2.0*Smin);
                                 }
                                 // end points
                                 tmp_[0]    = ((2.0*dx_[   0]+dx_[   1])*S_[   0] - dx_[   0]*S_[   1]) / (dx_[   0]+dx_[   1]);

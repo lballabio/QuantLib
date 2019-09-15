@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/callability/parametricexerciseadapter.hpp>
 #include <ql/models/marketmodels/callability/marketmodelparametricexercise.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -66,9 +67,9 @@ namespace QuantLib {
                                    variables_);
     }
 
-    std::auto_ptr<ExerciseStrategy<CurveState> >
+    QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >
     ParametricExerciseAdapter::clone() const {
-        return std::auto_ptr<ExerciseStrategy<CurveState> >(
+        return QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >(
                                         new ParametricExerciseAdapter(*this));
     }
 

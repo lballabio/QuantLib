@@ -35,7 +35,8 @@ namespace QuantLib {
     struct FdmSchemeDesc {
         enum FdmSchemeType { HundsdorferType, DouglasType, 
                              CraigSneydType, ModifiedCraigSneydType, 
-                             ImplicitEulerType, ExplicitEulerType };
+                             ImplicitEulerType, ExplicitEulerType,
+                             MethodOfLinesType, TrBDF2Type };
 
         FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
 
@@ -43,13 +44,16 @@ namespace QuantLib {
         const Real theta, mu;
 
         // some default scheme descriptions
-        static FdmSchemeDesc Douglas();
+        static FdmSchemeDesc Douglas(); //same as Crank-Nicolson in 1 dimension
         static FdmSchemeDesc ImplicitEuler();
         static FdmSchemeDesc ExplicitEuler();
         static FdmSchemeDesc CraigSneyd();
         static FdmSchemeDesc ModifiedCraigSneyd(); 
         static FdmSchemeDesc Hundsdorfer();
         static FdmSchemeDesc ModifiedHundsdorfer();
+        static FdmSchemeDesc MethodOfLines(
+            Real eps=0.001, Real relInitStepSize=0.01);
+        static FdmSchemeDesc TrBDF2();
     };
         
     class FdmBackwardSolver {
@@ -57,9 +61,9 @@ namespace QuantLib {
         typedef FdmLinearOp::array_type array_type;
         
         FdmBackwardSolver(
-          const boost::shared_ptr<FdmLinearOpComposite>& map,
+          const ext::shared_ptr<FdmLinearOpComposite>& map,
           const FdmBoundaryConditionSet& bcSet,
-          const boost::shared_ptr<FdmStepConditionComposite> condition,
+          const ext::shared_ptr<FdmStepConditionComposite> condition,
           const FdmSchemeDesc& schemeDesc);
 
         void rollback(array_type& a, 
@@ -67,9 +71,9 @@ namespace QuantLib {
                       Size steps, Size dampingSteps);
 
       protected:
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const FdmBoundaryConditionSet bcSet_;
-        const boost::shared_ptr<FdmStepConditionComposite> condition_;
+        const ext::shared_ptr<FdmStepConditionComposite> condition_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

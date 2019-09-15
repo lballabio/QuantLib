@@ -19,6 +19,10 @@
 
 #include <ql/math/copulas/claytoncopula.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
+
+using std::max;
+using std::pow;
 
 namespace QuantLib {
 

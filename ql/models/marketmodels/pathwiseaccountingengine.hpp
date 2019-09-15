@@ -44,9 +44,9 @@ namespace QuantLib {
     class PathwiseAccountingEngine 
     {
       public:
-        PathwiseAccountingEngine(const boost::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
+        PathwiseAccountingEngine(const ext::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
                          const Clone<MarketModelPathwiseMultiProduct>& product,
-                         const boost::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
+                         const ext::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
                          Real initialNumeraireValue);
 
         void multiplePathValues(SequenceStatisticsInc& stats,
@@ -54,9 +54,9 @@ namespace QuantLib {
       private:
           Real singlePathValues(std::vector<Real>& values);
 
-        boost::shared_ptr<LogNormalFwdRateEuler> evolver_;
+        ext::shared_ptr<LogNormalFwdRateEuler> evolver_;
         Clone<MarketModelPathwiseMultiProduct> product_;
-        boost::shared_ptr<MarketModel> pseudoRootStructure_;
+        ext::shared_ptr<MarketModel> pseudoRootStructure_;
 
         Real initialNumeraireValue_;
         Size numberProducts_;
@@ -113,9 +113,9 @@ namespace QuantLib {
     class PathwiseVegasAccountingEngine 
     {
       public:
-        PathwiseVegasAccountingEngine(const boost::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
+        PathwiseVegasAccountingEngine(const ext::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
                          const Clone<MarketModelPathwiseMultiProduct>& product,
-                         const boost::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
+                         const ext::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
                          const std::vector<std::vector<Matrix> >& VegaBumps, 
                          Real initialNumeraireValue);
 
@@ -125,9 +125,9 @@ namespace QuantLib {
       private:
           Real singlePathValues(std::vector<Real>& values);
 
-        boost::shared_ptr<LogNormalFwdRateEuler> evolver_;
+        ext::shared_ptr<LogNormalFwdRateEuler> evolver_;
         Clone<MarketModelPathwiseMultiProduct> product_;
-        boost::shared_ptr<MarketModel> pseudoRootStructure_;
+        ext::shared_ptr<MarketModel> pseudoRootStructure_;
         std::vector<Size> numeraires_;
 
         Real initialNumeraireValue_;
@@ -192,9 +192,9 @@ namespace QuantLib {
     class PathwiseVegasOuterAccountingEngine 
     {
       public:
-        PathwiseVegasOuterAccountingEngine(const boost::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
+        PathwiseVegasOuterAccountingEngine(const ext::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
                          const Clone<MarketModelPathwiseMultiProduct>& product,
-                         const boost::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
+                         const ext::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
                          const std::vector<std::vector<Matrix> >& VegaBumps, 
                          Real initialNumeraireValue);
 
@@ -211,9 +211,9 @@ namespace QuantLib {
       private:
           Real singlePathValues(std::vector<Real>& values);
 
-        boost::shared_ptr<LogNormalFwdRateEuler> evolver_;
+        ext::shared_ptr<LogNormalFwdRateEuler> evolver_;
         Clone<MarketModelPathwiseMultiProduct> product_;
-        boost::shared_ptr<MarketModel> pseudoRootStructure_;
+        ext::shared_ptr<MarketModel> pseudoRootStructure_;
         std::vector<std::vector<Matrix> > vegaBumps_; 
         std::vector<Size> numeraires_;
 

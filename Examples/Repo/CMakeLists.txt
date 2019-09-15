@@ -1,2 +1,2 @@
 add_executable(Repo Repo.cpp)
-target_link_libraries(Repo QuantLib)
+target_link_libraries(Repo ${QL_LINK_LIBRARY})

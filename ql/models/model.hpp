@@ -97,7 +97,16 @@ namespace QuantLib {
             satisfied in addition to the constraints of the model.
         */
         virtual void calibrate(
-                const std::vector<boost::shared_ptr<CalibrationHelper> >&,
+                const std::vector<ext::shared_ptr<CalibrationHelperBase> >&,
+                OptimizationMethod& method,
+                const EndCriteria& endCriteria,
+                const Constraint& constraint = Constraint(),
+                const std::vector<Real>& weights = std::vector<Real>(),
+                const std::vector<bool>& fixParameters = std::vector<bool>());
+
+        // for backward compatibility
+        virtual void calibrate(
+                const std::vector<ext::shared_ptr<BlackCalibrationHelper> >&,
                 OptimizationMethod& method,
                 const EndCriteria& endCriteria,
                 const Constraint& constraint = Constraint(),
@@ -105,9 +114,13 @@ namespace QuantLib {
                 const std::vector<bool>& fixParameters = std::vector<bool>());
 
         Real value(const Array& params,
-                   const std::vector<boost::shared_ptr<CalibrationHelper> >&);
+                   const std::vector<ext::shared_ptr<CalibrationHelperBase> >&);
 
-        const boost::shared_ptr<Constraint>& constraint() const;
+        // for backward compatibility
+        Real value(const Array& params,
+                   const std::vector<ext::shared_ptr<BlackCalibrationHelper> >&);
+
+        const ext::shared_ptr<Constraint>& constraint() const;
 
         //! Returns end criteria result
         EndCriteria::Type endCriteria() const { return shortRateEndCriteria_; }
@@ -124,7 +137,7 @@ namespace QuantLib {
       protected:
         virtual void generateArguments() {}
         std::vector<Parameter> arguments_;
-        boost::shared_ptr<Constraint> constraint_;
+        ext::shared_ptr<Constraint> constraint_;
         EndCriteria::Type shortRateEndCriteria_;
         Array problemValues_;
         Integer functionEvaluation_;
@@ -141,8 +154,8 @@ namespace QuantLib {
     /*! \ingroup shortrate */
     class ShortRateModel : public CalibratedModel {
       public:
-        ShortRateModel(Size nArguments);
-        virtual boost::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
+        explicit ShortRateModel(Size nArguments);
+        virtual ext::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
     };
 
 
@@ -157,7 +170,7 @@ namespace QuantLib {
         return discountBondOption(type, strike, maturity, bondMaturity);
     }
 
-    inline const boost::shared_ptr<Constraint>&
+    inline const ext::shared_ptr<Constraint>&
     CalibratedModel::constraint() const {
         return constraint_;
     }
@@ -166,7 +179,7 @@ namespace QuantLib {
       private:
         class Impl :  public Constraint::Impl {
           public:
-            Impl(const std::vector<Parameter>& arguments)
+            explicit Impl(const std::vector<Parameter>& arguments)
             : arguments_(arguments) {}
 
             bool test(const Array& params) const {
@@ -226,8 +239,8 @@ namespace QuantLib {
             const std::vector<Parameter>& arguments_;
         };
       public:
-        PrivateConstraint(const std::vector<Parameter>& arguments)
-        : Constraint(boost::shared_ptr<Constraint::Impl>(
+        explicit PrivateConstraint(const std::vector<Parameter>& arguments)
+        : Constraint(ext::shared_ptr<Constraint::Impl>(
                                    new PrivateConstraint::Impl(arguments))) {}
     };
 

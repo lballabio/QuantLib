@@ -28,7 +28,7 @@ namespace QuantLib {
       public:
         Helper(Size i, Real xMin, Real dx,
                Real discountBondPrice,
-               const boost::shared_ptr<ShortRateTree>& tree)
+               const ext::shared_ptr<ShortRateTree>& tree)
         : size_(tree->size(i)),
           dt_(tree->timeGrid().dt(i)),
           xMin_(xMin), dx_(dx),
@@ -61,26 +61,24 @@ namespace QuantLib {
       a_(arguments_[0]), sigma_(arguments_[1]) {
         a_ = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
+        phi_ = TermStructureFittingParameter(termStructure);
 
         registerWith(termStructure);
     }
 
-    boost::shared_ptr<Lattice>
+    ext::shared_ptr<Lattice>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
-        TermStructureFittingParameter phi(termStructure());
-
-        boost::shared_ptr<ShortRateDynamics> numericDynamics(
-                                             new Dynamics(phi, a(), sigma()));
-
-        boost::shared_ptr<TrinomialTree> trinomial(
+        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+                         new Dynamics(phi_, a(), sigma()));
+        ext::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-        boost::shared_ptr<ShortRateTree> numericTree(
+        ext::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl =
-            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        ext::shared_ptr<NumericalImpl> impl =
+            ext::dynamic_pointer_cast<NumericalImpl>(phi_.implementation());
         impl->reset();
         Real value = 1.0;
         Real vMin = -50.0;
@@ -94,10 +92,19 @@ namespace QuantLib {
             s1d.setMaxEvaluations(1000);
             value = s1d.solve(finder, 1e-7, value, vMin, vMax);
             impl->set(grid[i], value);
-            // vMin = value - 10.0;
-            // vMax = value + 10.0;
         }
         return numericTree;
+    }
+
+    ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+        BlackKarasinski::dynamics() const {
+        // Calibrate fitting parameter to term structure
+        Size steps = 50;
+        ext::shared_ptr<Lattice> lattice = this->tree(
+            TimeGrid(termStructure()->maxTime(), steps));
+        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+            new Dynamics(phi_, a(), sigma()));
+        return numericDynamics;
     }
 
 }

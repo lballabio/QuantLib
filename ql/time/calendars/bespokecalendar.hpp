@@ -41,7 +41,7 @@ namespace QuantLib {
       private:
         class Impl : public Calendar::Impl {
           public:
-            Impl(const std::string& name = "");
+            explicit Impl(const std::string& name = "");
             std::string name() const;
             bool isWeekend(Weekday) const;
             bool isBusinessDay(const Date&) const;
@@ -50,7 +50,7 @@ namespace QuantLib {
             std::set<Weekday> weekend_;
             std::string name_;
         };
-        boost::shared_ptr<BespokeCalendar::Impl> bespokeImpl_;
+        ext::shared_ptr<BespokeCalendar::Impl> bespokeImpl_;
       public:
         /*! \warning different bespoke calendars created with the same
                      name (or different bespoke calendars created with

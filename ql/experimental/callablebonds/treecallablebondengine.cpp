@@ -17,13 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/experimental/callablebonds/treecallablebondengine.hpp>
 #include <ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp>
 
 namespace QuantLib {
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                                const Size timeSteps,
                                const Handle<YieldTermStructure>& termStructure)
     : LatticeShortRateModelEngine<CallableBond::arguments,
@@ -33,7 +34,7 @@ namespace QuantLib {
     }
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid,
                                const Handle<YieldTermStructure>& termStructure)
     : LatticeShortRateModelEngine<CallableBond::arguments,
@@ -43,13 +44,17 @@ namespace QuantLib {
     }
 
     void TreeCallableFixedRateBondEngine::calculate() const {
+        return calculateWithSpread(arguments_.spread);
+    }
+
+    void TreeCallableFixedRateBondEngine::calculateWithSpread(Spread s) const {
         QL_REQUIRE(!model_.empty(), "no model specified");
 
         Date referenceDate;
         DayCounter dayCounter;
 
-        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
+            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -61,7 +66,7 @@ namespace QuantLib {
         DiscretizedCallableFixedRateBond callableBond(arguments_,
                                                       referenceDate,
                                                       dayCounter);
-        boost::shared_ptr<Lattice> lattice;
+        ext::shared_ptr<Lattice> lattice;
 
         if (lattice_) {
             lattice = lattice_;
@@ -69,6 +74,14 @@ namespace QuantLib {
             std::vector<Time> times = callableBond.mandatoryTimes();
             TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
             lattice = model_->tree(timeGrid);
+        }
+
+        if (s != 0.0) {
+            OneFactorModel::ShortRateTree *sr=
+                dynamic_cast<OneFactorModel::ShortRateTree*>(&(*lattice));
+            QL_REQUIRE(sr,
+                       "Spread is not supported for trees other than OneFactorModel");
+            sr->setSpread(s);
         }
 
         Time redemptionTime =

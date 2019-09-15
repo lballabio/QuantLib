@@ -62,6 +62,14 @@ void CalendarTest::testModifiedCalendars() {
     c1.addHoliday(d2);
 
     // test
+    std::set<Date> addedHolidays(c1.addedHolidays());
+    std::set<Date> removedHolidays(c1.removedHolidays());
+
+    QL_REQUIRE(addedHolidays.find(d1) == addedHolidays.end(), "did not expect to find date in addedHolidays");
+    QL_REQUIRE(addedHolidays.find(d2) != addedHolidays.end(), "expected to find date in addedHolidays");
+    QL_REQUIRE(removedHolidays.find(d1) != removedHolidays.end(), "expected to find date in removedHolidays");
+    QL_REQUIRE(removedHolidays.find(d2) == removedHolidays.end(), "did not expect to find date in removedHolidays");
+
     if (c1.isHoliday(d1))
         BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
     if (c1.isBusinessDay(d2))
@@ -1638,9 +1646,48 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(5, Oct, 2017));
     expectedHol.push_back(Date(6, Oct, 2017));
 
+    // China Shanghai Securities Exchange holiday list in the year 2018
+    expectedHol.push_back(Date(1, Jan, 2018));
+    expectedHol.push_back(Date(15, Feb, 2018));
+    expectedHol.push_back(Date(16, Feb, 2018));
+    expectedHol.push_back(Date(19, Feb, 2018));
+    expectedHol.push_back(Date(20, Feb, 2018));
+    expectedHol.push_back(Date(21, Feb, 2018));
+    expectedHol.push_back(Date(5, April, 2018));
+    expectedHol.push_back(Date(6, April, 2018));
+    expectedHol.push_back(Date(30, April, 2018));
+    expectedHol.push_back(Date(1, May, 2018));
+    expectedHol.push_back(Date(18, June, 2018));
+    expectedHol.push_back(Date(24, September, 2018));
+    expectedHol.push_back(Date(1, Oct, 2018));
+    expectedHol.push_back(Date(2, Oct, 2018));
+    expectedHol.push_back(Date(3, Oct, 2018));
+    expectedHol.push_back(Date(4, Oct, 2018));
+    expectedHol.push_back(Date(5, Oct, 2018));
+    expectedHol.push_back(Date(31, December, 2018));
+
+    // China Shanghai Securities Exchange holiday list in the year 2019
+    expectedHol.push_back(Date(1, Jan, 2019));
+    expectedHol.push_back(Date(4, Feb, 2019));
+    expectedHol.push_back(Date(5, Feb, 2019));
+    expectedHol.push_back(Date(6, Feb, 2019));
+    expectedHol.push_back(Date(7, Feb, 2019));
+    expectedHol.push_back(Date(8, Feb, 2019));
+    expectedHol.push_back(Date(5, April, 2019));
+    expectedHol.push_back(Date(1, May, 2019));
+    expectedHol.push_back(Date(2, May, 2019));
+    expectedHol.push_back(Date(3, May, 2019));
+    expectedHol.push_back(Date(7, June, 2019));
+    expectedHol.push_back(Date(13, September, 2019));
+    expectedHol.push_back(Date(30, September, 2019));
+    expectedHol.push_back(Date(1, October, 2019));
+    expectedHol.push_back(Date(2, October, 2019));
+    expectedHol.push_back(Date(3, October, 2019));
+    expectedHol.push_back(Date(4, October, 2019));
+
     Calendar c = China(China::SSE);
     std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),
-        Date(31, December, 2017));
+        Date(31, December, 2019));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -1687,9 +1734,26 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.push_back(Date(27, May, 2017));
     expectedWorkingWeekEnds.push_back(Date(30, Sep, 2017));
 
+    // China Inter Bank working weekends list in the year 2018
+    expectedWorkingWeekEnds.push_back(Date(11, Feb, 2018));
+    expectedWorkingWeekEnds.push_back(Date(24, Feb, 2018));
+    expectedWorkingWeekEnds.push_back(Date(8, April, 2018));
+    expectedWorkingWeekEnds.push_back(Date(28, April, 2018));
+    expectedWorkingWeekEnds.push_back(Date(29, Sep, 2018));
+    expectedWorkingWeekEnds.push_back(Date(30, Sep, 2018));
+    expectedWorkingWeekEnds.push_back(Date(29, December, 2018));
+
+    // China Inter Bank working weekends list in the year 2019
+    expectedWorkingWeekEnds.push_back(Date(2, Feb, 2019));
+    expectedWorkingWeekEnds.push_back(Date(3, Feb, 2019));
+    expectedWorkingWeekEnds.push_back(Date(28, April, 2019));
+    expectedWorkingWeekEnds.push_back(Date(5, May, 2019));
+    expectedWorkingWeekEnds.push_back(Date(29, September, 2019));
+    expectedWorkingWeekEnds.push_back(Date(12, October, 2019));
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2017);
+    Date end(31, Dec, 2019);
 
     Size k = 0;
 
@@ -1738,22 +1802,27 @@ void CalendarTest::testEndOfMonth() {
 
 void CalendarTest::testBusinessDaysBetween() {
 
-    BOOST_TEST_MESSAGE("Testing calculation of business days between dates...");
+    BOOST_TEST_MESSAGE("Testing calculation of business days between dates..."); 
 
     std::vector<Date> testDates;
-    testDates.push_back(Date(1,February,2002));
-    testDates.push_back(Date(4,February,2002));
-    testDates.push_back(Date(16,May,2003));
-    testDates.push_back(Date(17,December,2003));
-    testDates.push_back(Date(17,December,2004));
-    testDates.push_back(Date(19,December,2005));
-    testDates.push_back(Date(2,January,2006));
-    testDates.push_back(Date(13,March,2006));
-    testDates.push_back(Date(15,May,2006));
-    testDates.push_back(Date(17,March,2006));
-    testDates.push_back(Date(15,May,2006));
-    testDates.push_back(Date(26,July,2006));
+    testDates.push_back(Date(1,February,2002)); //isBusinessDay = true
+    testDates.push_back(Date(4,February,2002)); //isBusinessDay = true
+    testDates.push_back(Date(16,May,2003)); //isBusinessDay = true
+    testDates.push_back(Date(17,December,2003)); //isBusinessDay = true
+    testDates.push_back(Date(17,December,2004)); //isBusinessDay = true
+    testDates.push_back(Date(19,December,2005)); //isBusinessDay = true
+    testDates.push_back(Date(2,January,2006)); //isBusinessDay = true
+    testDates.push_back(Date(13,March,2006)); //isBusinessDay = true
+    testDates.push_back(Date(15,May,2006)); //isBusinessDay = true
+    testDates.push_back(Date(17,March,2006)); //isBusinessDay = true
+    testDates.push_back(Date(15,May,2006)); //isBusinessDay = true
+    testDates.push_back(Date(26,July,2006)); //isBusinessDay = true
+    testDates.push_back(Date(26,July,2006)); //isBusinessDay = true
+    testDates.push_back(Date(27,July,2006)); //isBusinessDay = true
+	testDates.push_back(Date(29,July,2006)); //isBusinessDay = false
+    testDates.push_back(Date(29,July,2006)); //isBusinessDay = false
 
+	//default params: from date included, to excluded
     Date::serial_type expected[] = {
         1,
         321,
@@ -1765,19 +1834,107 @@ void CalendarTest::testBusinessDaysBetween() {
         42,
         -38,
         38,
-        51
+        51,
+		0,
+		1,
+		2,
+		0
     };
+
+	//exclude from, include to
+	Date::serial_type expected_include_to[] = {
+		1,
+		321,
+		152,
+		251,
+		252,
+		10,
+		48,
+		42,
+		-38,
+		38,
+		51,
+		0,
+		1,
+		1,
+		0
+	};
+
+	//include both from and to
+	Date::serial_type expected_include_all[] = {
+		2,
+		322,
+		153,
+		252,
+        253,
+		11,
+		49,
+		43,
+		-39,
+		39,
+		52,
+		1,
+		2,
+		2,
+		0
+	};
+
+	//exclude both from and to
+	Date::serial_type expected_exclude_all[] = {
+		0,
+		320,
+		151,
+		250,
+		251,
+		9,
+		47,
+		41,
+		-37,
+		37,
+		50,
+		0,
+		0,
+		1,
+		0
+	};
 
     Calendar calendar = Brazil();
 
     for (Size i=1; i<testDates.size(); i++) {
         Integer calculated = calendar.businessDaysBetween(testDates[i-1],
-                                                          testDates[i]);
+                                                          testDates[i], true, false);
         if (calculated != expected[i-1]) {
-            BOOST_ERROR("from " << testDates[i-1]
-                        << " to " << testDates[i] << ":\n"
+            BOOST_ERROR("from " << testDates[i-1] << " included"
+                        << " to " << testDates[i] << " excluded:\n"
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected[i-1]);
+        }
+
+		calculated = calendar.businessDaysBetween(testDates[i-1],
+														  testDates[i], false, true);
+		if (calculated != expected_include_to[i-1]) {
+            BOOST_ERROR("from " << testDates[i-1] << " excluded"
+                        << " to " << testDates[i] << " included:\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected_include_to[i-1]);
+        }
+
+		calculated = calendar.businessDaysBetween(testDates[i-1],
+                                                          testDates[i], true, true);
+		if (calculated != expected_include_all[i-1]) {
+        	BOOST_ERROR("from " << testDates[i-1] << " included"
+                        << " to " << testDates[i] << " included:\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected_include_all[i-1]);
+		}
+
+		calculated = calendar.businessDaysBetween(testDates[i-1],
+                                                                  testDates[i], false, false);
+        if (calculated != expected_exclude_all[i-1]) {
+            BOOST_ERROR("from " << testDates[i-1] << " excluded"
+                        << " to " << testDates[i] << " excluded:\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected_exclude_all[i-1]);
         }
     }
 }
@@ -1897,6 +2054,96 @@ void CalendarTest::testBespokeCalendars() {
 
 }
 
+void CalendarTest::testIntradayAddHolidays() {
+#ifdef QL_HIGH_RESOLUTION_DATE
+    BOOST_TEST_MESSAGE("Testing addHolidays with enable-intraday...");
+
+    // test cases taken from testModifiedCalendars
+
+    Calendar c1 = TARGET();
+    Calendar c2 = UnitedStates(UnitedStates::NYSE);
+    Date d1(1,May,2004);      // holiday for both calendars
+    Date d2(26,April,2004, 0, 0, 1, 1);   // business day
+
+    Date d1Mock(1,May,2004, 1, 1, 0, 0);      // holiday for both calendars
+    Date d2Mock(26,April,2004);   // business day
+
+    // this works anyhow because implementation uses day() month() etc
+    QL_REQUIRE(c1.isHoliday(d1), "wrong assumption---correct the test");
+    QL_REQUIRE(c1.isBusinessDay(d2), "wrong assumption---correct the test");
+
+    QL_REQUIRE(c2.isHoliday(d1), "wrong assumption---correct the test");
+    QL_REQUIRE(c2.isBusinessDay(d2), "wrong assumption---correct the test");
+
+    // now with different hourly/min/sec
+    QL_REQUIRE(c1.isHoliday(d1Mock), "wrong assumption---correct the test");
+    QL_REQUIRE(c1.isBusinessDay(d2Mock), "wrong assumption---correct the test");
+
+    QL_REQUIRE(c2.isHoliday(d1Mock), "wrong assumption---correct the test");
+    QL_REQUIRE(c2.isBusinessDay(d2Mock), "wrong assumption---correct the test");
+
+
+    // modify the TARGET calendar
+    c1.removeHoliday(d1);
+    c1.addHoliday(d2);
+
+    // test
+    if (c1.isHoliday(d1))
+        BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
+    if (c1.isBusinessDay(d2))
+        BOOST_FAIL(d2 << " still a business day for original TARGET instance");
+
+    if (c1.isHoliday(d1Mock))
+        BOOST_FAIL(d1Mock << " still a holiday for original TARGET instance" <<
+                    " and different hours/min/secs");
+    if (c1.isBusinessDay(d2Mock))
+        BOOST_FAIL(d2Mock << " still a business day for generic TARGET instance" <<
+                    " and different hours/min/secs");
+
+    // any instance of TARGET should be modified...
+    Calendar c3 = TARGET();
+    if (c3.isHoliday(d1))
+        BOOST_FAIL(d1 << " still a holiday for generic TARGET instance");
+    if (c3.isBusinessDay(d2))
+        BOOST_FAIL(d2 << " still a business day for generic TARGET instance");
+
+    if (c3.isHoliday(d1Mock))
+        BOOST_FAIL(d1Mock << " still a holiday for original TARGET instance" <<
+                    " and different hours/min/secs");
+    if (c3.isBusinessDay(d2Mock))
+        BOOST_FAIL(d2Mock << " still a business day for generic TARGET instance" <<
+                    " and different hours/min/secs");
+
+    // ...but not other calendars
+    if (c2.isBusinessDay(d1))
+        BOOST_FAIL(d1 << " business day for New York");
+    if (c2.isHoliday(d2))
+        BOOST_FAIL(d2 << " holiday for New York");
+
+    if (c2.isBusinessDay(d1Mock))
+        BOOST_FAIL(d1Mock << " business day for New York" <<
+                    " and different hours/min/secs");
+    if (c2.isHoliday(d2Mock))
+        BOOST_FAIL(d2Mock << " holiday for New York" <<
+                    " and different hours/min/secs");
+
+    // restore original holiday set---test the other way around
+    c3.addHoliday(d1Mock);
+    c3.removeHoliday(d2Mock);
+
+    if (c1.isBusinessDay(d1))
+        BOOST_FAIL(d1 << " still a business day");
+    if (c1.isHoliday(d2))
+        BOOST_FAIL(d2 << " still a holiday");
+
+    if (c1.isBusinessDay(d1Mock))
+        BOOST_FAIL(d1Mock << " still a business day" <<
+                    " and different hours/min/secs");
+    if (c1.isHoliday(d2Mock))
+        BOOST_FAIL(d2Mock << " still a holiday and different hours/min/secs");
+
+#endif
+}
 
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
@@ -1934,6 +2181,8 @@ test_suite* CalendarTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
+
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testIntradayAddHolidays));
 
     return suite;
 }

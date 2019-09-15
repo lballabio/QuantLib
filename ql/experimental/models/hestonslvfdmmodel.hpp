@@ -45,6 +45,9 @@ class SimpleQuote;
         const Size tMaxStepsPerYear, tMinStepsPerYear;
         const Real tStepNumberDecay;
 
+        // Rannacher smoothing steps at the beginning
+        const Size nRannacherTimeSteps;
+
         const Size predictionCorretionSteps;
 
         // local volatility forward equation
@@ -77,14 +80,14 @@ class SimpleQuote;
             const bool logging = false,
             const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
-        boost::shared_ptr<HestonProcess> hestonProcess() const;
-        boost::shared_ptr<LocalVolTermStructure> localVol() const;
-        boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
+        ext::shared_ptr<HestonProcess> hestonProcess() const;
+        ext::shared_ptr<LocalVolTermStructure> localVol() const;
+        ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 
         struct LogEntry {
             const Time t;
-            const boost::shared_ptr<Array> prob;
-            const boost::shared_ptr<FdmMesherComposite> mesher;
+            const ext::shared_ptr<Array> prob;
+            const ext::shared_ptr<FdmMesherComposite> mesher;
         };
 
         const std::list<LogEntry>& logEntries() const;
@@ -98,7 +101,7 @@ class SimpleQuote;
         const HestonSLVFokkerPlanckFdmParams params_;
         const std::vector<Date> mandatoryDates_;
 
-        mutable boost::shared_ptr<LocalVolTermStructure> leverageFunction_;
+        mutable ext::shared_ptr<LocalVolTermStructure> leverageFunction_;
 
         const bool logging_;
         mutable std::list<LogEntry> logEntries_;

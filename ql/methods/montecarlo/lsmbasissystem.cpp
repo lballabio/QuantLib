@@ -25,18 +25,7 @@
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
-#include <boost/bind.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-
+#include <ql/functional.hpp>
 #include <set>
 #include <numeric>
 
@@ -44,14 +33,14 @@ namespace QuantLib {
     namespace {
 
         // makes typing a little easier
-        typedef std::vector<boost::function1<Real, Real> > VF_R;
-        typedef std::vector<boost::function1<Real, Array> > VF_A;
+        typedef std::vector<ext::function<Real(Real)> > VF_R;
+        typedef std::vector<ext::function<Real(Array)> > VF_A;
         typedef std::vector<std::vector<Size> > VV;
         Real (GaussianOrthogonalPolynomial::*ptr_w)(Size, Real) const =
             &GaussianOrthogonalPolynomial::weightedValue;
 
         // pow(x, order)
-        class MonomialFct : public std::unary_function<Real, Real> {
+        class MonomialFct {
           public:
             explicit MonomialFct(Size order): order_(order) {}
             inline Real operator()(const Real x) const {
@@ -66,7 +55,7 @@ namespace QuantLib {
 
         /* multiplies [Real -> Real] functors
            to create [Array -> Real] functor */
-        class MultiDimFct : public std::unary_function<Real, Array> {
+        class MultiDimFct {
           public:
             explicit MultiDimFct(const VF_R& b): b_(b) {
                 QL_REQUIRE(b_.size()>0, "zero size basis");
@@ -75,9 +64,9 @@ namespace QuantLib {
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 QL_REQUIRE(b_.size()==a.size(), "wrong argument size");
                 #endif
-                Real ret = b_[0].operator()(a[0]);
+                Real ret = b_[0](a[0]);
                 for(Size i=1; i<b_.size(); ++i)
-                    ret *= b_[i].operator()(a[i]);
+                    ret *= b_[i](a[i]);
                 return ret;
             }
           private:
@@ -120,6 +109,7 @@ namespace QuantLib {
     // LsmBasisSystem static methods
 
     VF_R LsmBasisSystem::pathBasisSystem(Size order, PolynomType polyType) {
+        using namespace ext::placeholders;
         VF_R ret(order+1);
         for (Size i=0; i<=order; ++i) {
             switch (polyType) {
@@ -127,22 +117,22 @@ namespace QuantLib {
                 ret[i] = MonomialFct(i);
                 break;
               case Laguerre:
-                ret[i] = boost::bind(ptr_w, GaussLaguerrePolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussLaguerrePolynomial(), i, _1);
                 break;
               case Hermite:
-                ret[i] = boost::bind(ptr_w, GaussHermitePolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussHermitePolynomial(), i, _1);
                 break;
               case Hyperbolic:
-                ret[i] = boost::bind(ptr_w, GaussHyperbolicPolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussHyperbolicPolynomial(), i, _1);
                 break;
               case Legendre:
-                ret[i] = boost::bind(ptr_w, GaussLegendrePolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussLegendrePolynomial(), i, _1);
                 break;
               case Chebyshev:
-                ret[i] = boost::bind(ptr_w, GaussChebyshevPolynomial(), i, _1);
+                ret[i] = ext::bind(ptr_w, GaussChebyshevPolynomial(), i, _1);
                 break;
               case Chebyshev2nd:
-                ret[i] = boost::bind(ptr_w,GaussChebyshev2ndPolynomial(),i, _1);
+                ret[i] = ext::bind(ptr_w,GaussChebyshev2ndPolynomial(),i, _1);
                 break;
               default:
                 QL_FAIL("unknown regression type");

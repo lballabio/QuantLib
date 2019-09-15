@@ -29,7 +29,7 @@
 #include <ql/errors.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/businessdayconvention.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <set>
 #include <vector>
 #include <string>
@@ -67,7 +67,7 @@ namespace QuantLib {
             virtual bool isWeekend(Weekday) const = 0;
             std::set<Date> addedHolidays, removedHolidays;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
       public:
         /*! The default constructor returns a calendar with a null
             implementation, which is therefore unusable except as a
@@ -87,6 +87,13 @@ namespace QuantLib {
         /*! Returns <tt>true</tt> iff the date is a business day for the
             given market.
         */
+
+        /*! Returns the set of added holidays for the given calendar */
+        const std::set<Date>& addedHolidays() const;
+        
+        /*! Returns the set of removed holidays for the given calendar */
+        const std::set<Date>& removedHolidays() const;
+
         bool isBusinessDay(const Date& d) const;
         /*! Returns <tt>true</tt> iff the date is a holiday for the given
             market.
@@ -96,8 +103,8 @@ namespace QuantLib {
             weekend for the given market.
         */
         bool isWeekend(Weekday w) const;
-        /*! Returns <tt>true</tt> iff the date is last business day for the
-            month in given market.
+        /*! Returns <tt>true</tt> iff in the given market, the date is on
+            or after the last business day for that month.
         */
         bool isEndOfMonth(const Date& d) const;
         //! last business day of the month to which the given date belongs
@@ -194,13 +201,31 @@ namespace QuantLib {
         return impl_->name();
     }
 
+    inline const std::set<Date>& Calendar::addedHolidays() const {
+        QL_REQUIRE(impl_, "no implementation provided");
+        return impl_->addedHolidays;
+    }
+
+    inline const std::set<Date>& Calendar::removedHolidays() const {
+        QL_REQUIRE(impl_, "no implementation provided");
+        return impl_->removedHolidays;
+    }
+
     inline bool Calendar::isBusinessDay(const Date& d) const {
         QL_REQUIRE(impl_, "no implementation provided");
-        if (impl_->addedHolidays.find(d) != impl_->addedHolidays.end())
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const Date _d(d.dayOfMonth(), d.month(), d.year());
+#else
+        const Date& _d = d;
+#endif
+
+        if (impl_->addedHolidays.find(_d) != impl_->addedHolidays.end())
             return false;
-        if (impl_->removedHolidays.find(d) != impl_->removedHolidays.end())
+        if (impl_->removedHolidays.find(_d) != impl_->removedHolidays.end())
             return true;
-        return impl_->isBusinessDay(d);
+
+        return impl_->isBusinessDay(_d);
     }
 
     inline bool Calendar::isEndOfMonth(const Date& d) const {

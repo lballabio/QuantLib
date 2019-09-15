@@ -108,7 +108,11 @@ void BrownianBridgeTest::testVariates() {
     for (Size i=0; i<N; i++)
         expectedCovariance[i][i] = 1.0;
 
+#ifndef __FAST_MATH__
     Real meanTolerance = 1.0e-16;
+#else
+    Real meanTolerance = 1.0e-14;
+#endif
     Real covTolerance = 2.5e-4;
 
     std::vector<Real> mean = stats1.mean();
@@ -143,7 +147,6 @@ void BrownianBridgeTest::testVariates() {
         for (Size j=i; j<N; ++j)
             expectedCovariance[i][j] = expectedCovariance[j][i] = times[i];
 
-    meanTolerance = 1.0e-16;
     covTolerance = 6.0e-4;
 
     mean = stats2.mean();
@@ -203,16 +206,16 @@ void BrownianBridgeTest::testPathGeneration() {
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> gsg(sobol);
 
     Date today = Settings::instance().evaluationDate();
-    Handle<Quote> x0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
-    Handle<YieldTermStructure> r(boost::shared_ptr<YieldTermStructure>(
+    Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<YieldTermStructure> r(ext::shared_ptr<YieldTermStructure>(
                                new FlatForward(today,0.06,Actual365Fixed())));
-    Handle<YieldTermStructure> q(boost::shared_ptr<YieldTermStructure>(
+    Handle<YieldTermStructure> q(ext::shared_ptr<YieldTermStructure>(
                                new FlatForward(today,0.03,Actual365Fixed())));
     Handle<BlackVolTermStructure> sigma(
-                   boost::shared_ptr<BlackVolTermStructure>(
+                   ext::shared_ptr<BlackVolTermStructure>(
                           new BlackConstantVol(today, NullCalendar(), 0.20,Actual365Fixed())));
 
-    boost::shared_ptr<StochasticProcess1D> process(
+    ext::shared_ptr<StochasticProcess1D> process(
                               new BlackScholesMertonProcess(x0, q, r, sigma));
 
 

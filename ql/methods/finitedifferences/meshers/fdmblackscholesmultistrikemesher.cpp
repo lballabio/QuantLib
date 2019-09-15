@@ -33,7 +33,7 @@ namespace QuantLib {
 
     FdmBlackScholesMultiStrikeMesher::FdmBlackScholesMultiStrikeMesher(
             Size size,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, const std::vector<Real>& strikes,
             Real eps, Real scaleFactor,
             const std::pair<Real, Real>& cPoint)
@@ -70,16 +70,16 @@ namespace QuantLib {
                        std::log(Fmax) + sigmaSqrtTmax*normInvEps*scaleFactor
                                       - sigmaSqrtTmax*sigmaSqrtTmax/2.0);
 
-        boost::shared_ptr<Fdm1dMesher> helper;
+        ext::shared_ptr<Fdm1dMesher> helper;
         if (   cPoint.first != Null<Real>() 
             && std::log(cPoint.first) >=xMin && std::log(cPoint.first) <=xMax) {
             
-            helper = boost::shared_ptr<Fdm1dMesher>(
+            helper = ext::shared_ptr<Fdm1dMesher>(
                 new Concentrating1dMesher(xMin, xMax, size, 
                     std::pair<Real,Real>(std::log(cPoint.first),cPoint.second)));
         }
         else {
-            helper = boost::shared_ptr<Fdm1dMesher>(
+            helper = ext::shared_ptr<Fdm1dMesher>(
                                         new Uniform1dMesher(xMin, xMax, size));
             
         }

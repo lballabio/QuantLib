@@ -26,6 +26,7 @@
 
 #include <ql/math/fastfouriertransform.hpp>
 #include <ql/math/array.hpp>
+#include <ql/math/functional.hpp>
 #include <complex>
 #include <vector>
 #include <algorithm>
@@ -65,7 +66,7 @@ namespace QuantLib {
             for (InputIterator it = begin; it != end; ++it, ++n)
                 mean = (mean*Real(n-1) + *it)/n;
             std::transform(begin, end, out,
-                           std::bind2nd(std::minus<Real>(), mean));
+                           subtract<Real>(mean));
             return mean;
         }
 

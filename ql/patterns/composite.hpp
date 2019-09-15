@@ -25,7 +25,7 @@
 #define quantlib_composite_hpp
 
 #include <ql/qldefines.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <list>
 
 namespace QuantLib {
@@ -46,10 +46,10 @@ namespace QuantLib {
     template <class T>
     class Composite : public T {
       protected:
-        std::list<boost::shared_ptr<T> > components_;
-        void add(const boost::shared_ptr<T>& c) { components_.push_back(c); }
-        typedef typename std::list<boost::shared_ptr<T> >::iterator iterator;
-        typedef typename std::list<boost::shared_ptr<T> >::const_iterator
+        std::list<ext::shared_ptr<T> > components_;
+        void add(const ext::shared_ptr<T>& c) { components_.push_back(c); }
+        typedef typename std::list<ext::shared_ptr<T> >::iterator iterator;
+        typedef typename std::list<ext::shared_ptr<T> >::const_iterator
                                                               const_iterator;
     };
 

@@ -26,11 +26,11 @@ namespace QuantLib {
     UnitedKingdom::UnitedKingdom(UnitedKingdom::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+        static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                            new UnitedKingdom::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
                                            new UnitedKingdom::ExchangeImpl);
-        static boost::shared_ptr<Calendar::Impl> metalsImpl(
+        static ext::shared_ptr<Calendar::Impl> metalsImpl(
                                            new UnitedKingdom::MetalsImpl);
         switch (market) {
           case Settlement:
@@ -62,7 +62,9 @@ namespace QuantLib {
             // Easter Monday
             || (dd == em)
             // first Monday of May (Early May Bank Holiday)
-            || (d <= 7 && w == Monday && m == May)
+            // moved to May 8th in 1995 and 2020 for V.E. day
+            || (d <= 7 && w == Monday && m == May && y != 1995 && y != 2020)
+            || (d == 8 && m == May && (y == 1995 || y == 2020))
             // last Monday of May (Spring Bank Holiday)
             || (d >= 25 && w == Monday && m == May && y != 2002 && y != 2012)
             // last Monday of August (Summer Bank Holiday)
@@ -103,7 +105,9 @@ namespace QuantLib {
             // Easter Monday
             || (dd == em)
             // first Monday of May (Early May Bank Holiday)
-            || (d <= 7 && w == Monday && m == May)
+            // moved to May 8th in 1995 and 2020 for V.E. day
+            || (d <= 7 && w == Monday && m == May && y != 1995 && y != 2020)
+            || (d == 8 && m == May && (y == 1995 || y == 2020))
             // last Monday of May (Spring Bank Holiday)
             || (d >= 25 && w == Monday && m == May && y != 2002 && y != 2012)
             // last Monday of August (Summer Bank Holiday)
@@ -144,7 +148,9 @@ namespace QuantLib {
             // Easter Monday
             || (dd == em)
             // first Monday of May (Early May Bank Holiday)
-            || (d <= 7 && w == Monday && m == May)
+            // moved to May 8th in 1995 and 2020 for V.E. day
+            || (d <= 7 && w == Monday && m == May && y != 1995 && y != 2020)
+            || (d == 8 && m == May && (y == 1995 || y == 2020))
             // last Monday of May (Spring Bank Holiday)
             || (d >= 25 && w == Monday && m == May && y != 2002 && y != 2012)
             // last Monday of August (Summer Bank Holiday)

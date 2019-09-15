@@ -46,10 +46,10 @@ namespace QuantLib {
                 return constraint_.test(projection_.include(params));
             }
             Array upperBound(const Array &params) const {
-                return constraint_.upperBound(projection_.include(params));
+				return projection_.project(constraint_.upperBound(projection_.include(params)));
             }
             Array lowerBound(const Array &params) const {
-                return constraint_.lowerBound(projection_.include(params));
+				return projection_.project(constraint_.lowerBound(projection_.include(params)));
             }
 
           private:
@@ -62,13 +62,13 @@ namespace QuantLib {
         ProjectedConstraint(const Constraint &constraint,
                             const Array &parameterValues,
                             const std::vector<bool> &fixParameters)
-            : Constraint(boost::shared_ptr<Constraint::Impl>(
+            : Constraint(ext::shared_ptr<Constraint::Impl>(
                   new ProjectedConstraint::Impl(constraint, parameterValues,
                                                 fixParameters))) {}
 
         ProjectedConstraint(const Constraint &constraint,
                             const Projection &projection)
-            : Constraint(boost::shared_ptr<Constraint::Impl>(
+            : Constraint(ext::shared_ptr<Constraint::Impl>(
                   new ProjectedConstraint::Impl(constraint, projection))) {}
     };
 }

@@ -33,7 +33,12 @@
 namespace QuantLib {
     class HestonBlackVolSurface : public BlackVolTermStructure {
       public:
-        explicit HestonBlackVolSurface(const Handle<HestonModel>& hestonModel);
+        explicit HestonBlackVolSurface(
+            const Handle<HestonModel>& hestonModel,
+            const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula
+                = AnalyticHestonEngine::Gatheral,
+            const AnalyticHestonEngine::Integration& integration =
+                AnalyticHestonEngine::Integration::gaussLaguerre(164));
 
         DayCounter dayCounter() const;
         Date maxDate() const;
@@ -46,6 +51,7 @@ namespace QuantLib {
 
       private:
         const Handle<HestonModel> hestonModel_;
+        const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula_;
         const AnalyticHestonEngine::Integration integration_;
     };
 }

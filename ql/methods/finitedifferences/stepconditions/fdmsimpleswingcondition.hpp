@@ -34,8 +34,8 @@ namespace QuantLib {
       public:
           FdmSimpleSwingCondition(
                   const std::vector<Time> & exerciseTimes,
-                  const boost::shared_ptr<FdmMesher>& mesher,
-                  const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+                  const ext::shared_ptr<FdmMesher>& mesher,
+                  const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
                   Size swingDirection,
                   Size minExercises = 0);
     
@@ -43,8 +43,8 @@ namespace QuantLib {
     
       private:
         const std::vector<Time> exerciseTimes_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator_;
         const Size minExercises_;
         const Size swingDirection_;
     };

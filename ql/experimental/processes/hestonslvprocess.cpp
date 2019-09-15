@@ -25,13 +25,13 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 
 namespace QuantLib {
 
     HestonSLVProcess::HestonSLVProcess(
-        const boost::shared_ptr<HestonProcess>& hestonProcess,
-        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
+        const ext::shared_ptr<HestonProcess>& hestonProcess,
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
     : hestonProcess_(hestonProcess),
       leverageFct_(leverageFct) {
         registerWith(hestonProcess);

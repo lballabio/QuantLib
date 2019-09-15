@@ -60,7 +60,7 @@ namespace QuantLib {
         const CallabilitySchedule& callability() const { return callability_; }
         const Handle<Quote>& creditSpread() const { return creditSpread_; }
       protected:
-        ConvertibleBond(const boost::shared_ptr<Exercise>& exercise,
+        ConvertibleBond(const ext::shared_ptr<Exercise>& exercise,
                         Real conversionRatio,
                         const DividendSchedule& dividends,
                         const CallabilitySchedule& callability,
@@ -74,7 +74,7 @@ namespace QuantLib {
         CallabilitySchedule callability_;
         DividendSchedule dividends_;
         Handle<Quote> creditSpread_;
-        boost::shared_ptr<option> option_;
+        ext::shared_ptr<option> option_;
     };
 
 
@@ -87,7 +87,7 @@ namespace QuantLib {
     class ConvertibleZeroCouponBond : public ConvertibleBond {
       public:
         ConvertibleZeroCouponBond(
-                    const boost::shared_ptr<Exercise>& exercise,
+                    const ext::shared_ptr<Exercise>& exercise,
                     Real conversionRatio,
                     const DividendSchedule& dividends,
                     const CallabilitySchedule& callability,
@@ -109,7 +109,7 @@ namespace QuantLib {
     class ConvertibleFixedCouponBond : public ConvertibleBond {
       public:
         ConvertibleFixedCouponBond(
-                const boost::shared_ptr<Exercise>& exercise,
+                const ext::shared_ptr<Exercise>& exercise,
                 Real conversionRatio,
                 const DividendSchedule& dividends,
                 const CallabilitySchedule& callability,
@@ -132,14 +132,14 @@ namespace QuantLib {
     class ConvertibleFloatingRateBond : public ConvertibleBond {
       public:
         ConvertibleFloatingRateBond(
-                const boost::shared_ptr<Exercise>& exercise,
+                const ext::shared_ptr<Exercise>& exercise,
                 Real conversionRatio,
                 const DividendSchedule& dividends,
                 const CallabilitySchedule& callability,
                 const Handle<Quote>& creditSpread,
                 const Date& issueDate,
                 Natural settlementDays,
-                const boost::shared_ptr<IborIndex>& index,
+                const ext::shared_ptr<IborIndex>& index,
                 Natural fixingDays,
                 const std::vector<Spread>& spreads,
                 const DayCounter& dayCounter,
@@ -153,7 +153,7 @@ namespace QuantLib {
         class arguments;
         class engine;
         option(const ConvertibleBond* bond,
-               const boost::shared_ptr<Exercise>& exercise,
+               const ext::shared_ptr<Exercise>& exercise,
                Real conversionRatio,
                const DividendSchedule& dividends,
                const CallabilitySchedule& callability,

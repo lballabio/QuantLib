@@ -61,8 +61,8 @@ namespace QuantLib {
     template <class TS>
     class BootstrapHelper : public Observer, public Observable {
       public:
-        BootstrapHelper(const Handle<Quote>& quote);
-        BootstrapHelper(Real quote);
+        explicit BootstrapHelper(const Handle<Quote>& quote);
+        explicit BootstrapHelper(Real quote);
         virtual ~BootstrapHelper() {}
         //! \name BootstrapHelper interface
         //@{
@@ -127,8 +127,8 @@ namespace QuantLib {
     template <class TS>
     class RelativeDateBootstrapHelper : public BootstrapHelper<TS> {
       public:
-        RelativeDateBootstrapHelper(const Handle<Quote>& quote);
-        RelativeDateBootstrapHelper(Real quote);
+        explicit RelativeDateBootstrapHelper(const Handle<Quote>& quote);
+        explicit RelativeDateBootstrapHelper(Real quote);
         //! \name Observer interface
         //@{
         void update() {
@@ -154,7 +154,7 @@ namespace QuantLib {
 
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(Real quote)
-    : quote_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
+    : quote_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(quote)))),
       termStructure_(0) {}
 
     template <class TS>
@@ -246,8 +246,8 @@ namespace QuantLib {
           public:
             template <class Helper>
             bool operator()(
-                    const boost::shared_ptr<Helper>& h1,
-                    const boost::shared_ptr<Helper>& h2) const {
+                    const ext::shared_ptr<Helper>& h1,
+                    const ext::shared_ptr<Helper>& h2) const {
                 return (h1->pillarDate() < h2->pillarDate());
             }
         };

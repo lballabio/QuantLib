@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     SabrVolSurface::SabrVolSurface(
-        const boost::shared_ptr<InterestRateIndex>& index,
+        const ext::shared_ptr<InterestRateIndex>& index,
         const Handle<BlackAtmVolCurve>& atmCurve,
         const std::vector<Period>& optionTenors,
         const std::vector<Spread>& atmRateSpreads,
@@ -118,7 +118,7 @@ namespace QuantLib {
 
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SabrVolSurface::smileSectionImpl(Time t) const {
 
         BigInteger n = BigInteger(t*365.0);
@@ -129,7 +129,7 @@ namespace QuantLib {
         // calculate sabr fit
         boost::array<Real, 4> sabrParameters1 = sabrGuesses(d);
 
-        boost::shared_ptr<SabrInterpolatedSmileSection> tmp(new
+        ext::shared_ptr<SabrInterpolatedSmileSection> tmp(new
             SabrInterpolatedSmileSection(d,
                                          index_->fixing(d,true), atmRateSpreads_, true,
                                             atmCurve_->atmVol(d), volSpreads,
@@ -138,8 +138,8 @@ namespace QuantLib {
                                             isAlphaFixed_, isBetaFixed_,
                                             isNuFixed_, isRhoFixed_,
                                             vegaWeighted_/*,
-                                            const boost::shared_ptr<EndCriteria>& endCriteria,
-                                            const boost::shared_ptr<OptimizationMethod>& method,
+                                            const ext::shared_ptr<EndCriteria>& endCriteria,
+                                            const ext::shared_ptr<OptimizationMethod>& method,
                                             const DayCounter& dc*/));
 
         // update guess

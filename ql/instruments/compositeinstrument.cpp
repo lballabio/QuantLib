@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     void CompositeInstrument::add(
-           const boost::shared_ptr<Instrument>& instrument, Real multiplier) {
+           const ext::shared_ptr<Instrument>& instrument, Real multiplier) {
         components_.push_back(std::make_pair(instrument,multiplier));
         registerWith(instrument);
         update();
@@ -38,7 +38,7 @@ namespace QuantLib {
     }
 
     void CompositeInstrument::subtract(
-           const boost::shared_ptr<Instrument>& instrument, Real multiplier) {
+           const ext::shared_ptr<Instrument>& instrument, Real multiplier) {
         add(instrument, -multiplier);
     }
 
@@ -55,6 +55,13 @@ namespace QuantLib {
         for (const_iterator i=components_.begin(); i!=components_.end(); ++i) {
             NPV_ += i->second * i->first->NPV();
         }
+    }
+
+    void CompositeInstrument::deepUpdate() {
+        for (const_iterator i=components_.begin(); i!=components_.end(); ++i) {
+            i->first->deepUpdate();
+        }
+        update();
     }
 
 }

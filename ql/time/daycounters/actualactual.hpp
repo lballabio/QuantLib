@@ -40,7 +40,7 @@ namespace QuantLib {
         - the AFB convention, also known as "Actual/Actual (Euro)".
 
         For more details, refer to
-        http://www.isda.org/publications/pdf/Day-Count-Fracation1999.pdf
+        https://www.isda.org/a/pIJEE/The-Actual-Actual-Day-Count-Fraction-1999.pdf
 
         \ingroup daycounters
 
@@ -68,6 +68,16 @@ namespace QuantLib {
           private:
             Schedule schedule_;
         };
+        class Old_ISMA_Impl : public DayCounter::Impl {
+          public:
+            std::string name() const {
+                return std::string("Actual/Actual (ISMA)");
+            }
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date& refPeriodStart,
+                              const Date& refPeriodEnd) const;
+        };
         class ISDA_Impl : public DayCounter::Impl {
           public:
             std::string name() const {
@@ -88,7 +98,7 @@ namespace QuantLib {
                               const Date&,
                               const Date&) const;
         };
-        static boost::shared_ptr<DayCounter::Impl> implementation(
+        static ext::shared_ptr<DayCounter::Impl> implementation(
                                                                Convention c, 
                                                                const Schedule& schedule);
       public:

@@ -32,20 +32,20 @@ namespace QuantLib {
         generateArguments();
     }
 
-    boost::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
+    ext::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
                                                  const TimeGrid& grid) const {
         TermStructureFittingParameter phi(termStructure());
-        boost::shared_ptr<Dynamics> numericDynamics(
+        ext::shared_ptr<Dynamics> numericDynamics(
                               new Dynamics(phi, theta(), k(), sigma(), x0()));
 
-        boost::shared_ptr<TrinomialTree> trinomial(
+        ext::shared_ptr<TrinomialTree> trinomial(
                    new TrinomialTree(numericDynamics->process(), grid, true));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl =
-            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        ext::shared_ptr<NumericalImpl> impl =
+            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
-        return boost::shared_ptr<Lattice>(
+        return ext::shared_ptr<Lattice>(
                    new ShortRateTree(trinomial, numericDynamics, impl, grid));
     }
 
@@ -89,8 +89,8 @@ namespace QuantLib {
         Real ncps = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi+b);
         Real ncpt = 2.0*rho*rho*(r0-phi_(0.0))*std::exp(h*t)/(rho+psi);
 
-        NonCentralChiSquareDistribution chis(df, ncps);
-        NonCentralChiSquareDistribution chit(df, ncpt);
+        NonCentralCumulativeChiSquareDistribution chis(df, ncps);
+        NonCentralCumulativeChiSquareDistribution chit(df, ncpt);
 
         Real z = std::log(CoxIngersollRoss::A(t,s)/strike)/b;
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -

@@ -35,24 +35,15 @@
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
-#include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/types.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-
-#include <boost/make_shared.hpp>
+#include <ql/functional.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -67,7 +58,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
 
     const Real s0 = 100;
     const Handle<Quote> spot(
-        boost::shared_ptr<SimpleQuote>(new SimpleQuote(s0)));
+        ext::make_shared<SimpleQuote>(s0));
 
     const Rate r = 0.075;
     const Rate q = 0.04;
@@ -77,7 +68,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
 
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
 
-    const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
         new BlackScholesMertonProcess(
             spot, qTS, rTS,
             Handle<BlackVolTermStructure>(flatVol(v, dayCounter))));
@@ -98,7 +89,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
             const BlackCalculator blackCalc(
                 Option::Put, strike, fwd, stdDev, df);
 
-            const Real tol = std::sqrt(QL_EPSILON);
+            const Real tol = 10*std::sqrt(QL_EPSILON);
             const Real calculatedCDF = bsm.cdf(xs, t);
             const Real expectedCDF
                 = blackCalc.strikeSensitivity()/df;
@@ -141,7 +132,7 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
 
     const Real s0 = 10;
     const Handle<Quote> spot(
-        boost::shared_ptr<SimpleQuote>(new SimpleQuote(s0)));
+        ext::make_shared<SimpleQuote>(s0));
 
     const Rate r = 0.155;
     const Rate q = 0.0721;
@@ -157,14 +148,14 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
 
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dayCounter));
 
-    const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
         new BlackScholesMertonProcess(
             spot, qTS, rTS,
             Handle<BlackVolTermStructure>(flatVol(v, dayCounter))));
 
     const BSMRNDCalculator bsm(bsmProcess);
     const HestonRNDCalculator heston(
-        boost::make_shared<HestonProcess>(
+        ext::make_shared<HestonProcess>(
             rTS, qTS, spot,
             v0, kappa, theta, sigma, rho), 1e-8);
 
@@ -231,9 +222,9 @@ namespace {
       public:
         DumasParametricVolSurface(
             Real b1, Real b2, Real b3, Real b4, Real b5,
-            const boost::shared_ptr<Quote>& spot,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
-            const boost::shared_ptr<YieldTermStructure>& qTS)
+            const ext::shared_ptr<Quote>& spot,
+            const ext::shared_ptr<YieldTermStructure>& rTS,
+            const ext::shared_ptr<YieldTermStructure>& qTS)
         : BlackVolatilityTermStructure(
               0, NullCalendar(), Following, rTS->dayCounter()),
           b1_(b1), b2_(b2), b3_(b3), b4_(b4), b5_(b5),
@@ -258,17 +249,17 @@ namespace {
 
       private:
         const Real b1_, b2_, b3_, b4_, b5_;
-        const boost::shared_ptr<Quote> spot_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
-        const boost::shared_ptr<YieldTermStructure> qTS_;
+        const ext::shared_ptr<Quote> spot_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> qTS_;
     };
 
-    class ProbWeightedPayoff : public std::unary_function<Real, Real> {
+    class ProbWeightedPayoff {
       public:
         ProbWeightedPayoff(
             Time t,
-            const boost::shared_ptr<Payoff>& payoff,
-            const boost::shared_ptr<RiskNeutralDensityCalculator>& calc)
+            const ext::shared_ptr<Payoff>& payoff,
+            const ext::shared_ptr<RiskNeutralDensityCalculator>& calc)
       : t_(t), payoff_(payoff), calc_(calc) {}
 
         Real operator()(Real x) const {
@@ -277,8 +268,8 @@ namespace {
 
       private:
         const Real t_;
-        const boost::shared_ptr<Payoff> payoff_;
-        const boost::shared_ptr<RiskNeutralDensityCalculator> calc_;
+        const ext::shared_ptr<Payoff> payoff_;
+        const ext::shared_ptr<RiskNeutralDensityCalculator> calc_;
     };
 
     Disposable<std::vector<Time> > adaptiveTimeGrid(
@@ -316,19 +307,19 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     const Real s0      = 100;
     const Volatility v = 0.25;
 
-    const boost::shared_ptr<Quote> spot(
-        boost::make_shared<SimpleQuote>(s0));
-    const boost::shared_ptr<YieldTermStructure> rTS(
+    const ext::shared_ptr<Quote> spot(
+        ext::make_shared<SimpleQuote>(s0));
+    const ext::shared_ptr<YieldTermStructure> rTS(
         flatRate(todaysDate, r, dayCounter));
-    const boost::shared_ptr<YieldTermStructure> qTS(
+    const ext::shared_ptr<YieldTermStructure> qTS(
         flatRate(todaysDate, q, dayCounter));
 
-    const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 101));
+    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 101));
 
-    const boost::shared_ptr<LocalVolRNDCalculator> constVolCalc(
+    const ext::shared_ptr<LocalVolRNDCalculator> constVolCalc(
         new LocalVolRNDCalculator(
             spot, rTS, qTS,
-            boost::make_shared<LocalConstantVol>(todaysDate, v, dayCounter),
+            ext::make_shared<LocalConstantVol>(todaysDate, v, dayCounter),
             timeGrid, 201));
 
     const Real rTol = 0.01, atol = 0.005;
@@ -403,18 +394,18 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     const Real b4 = -0.02;
     const Real b5 = -0.005;
 
-    const boost::shared_ptr<DumasParametricVolSurface> dumasVolSurface(
+    const ext::shared_ptr<DumasParametricVolSurface> dumasVolSurface(
         new DumasParametricVolSurface(b1, b2, b3, b4, b5, spot, rTS, qTS));
 
-    const boost::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
         new BlackScholesMertonProcess(
             Handle<Quote>(spot),
             Handle<YieldTermStructure>(qTS),
             Handle<YieldTermStructure>(rTS),
             Handle<BlackVolTermStructure>(dumasVolSurface)));
 
-    const boost::shared_ptr<LocalVolTermStructure> localVolSurface
-        = boost::make_shared<NoExceptLocalVolSurface>(
+    const ext::shared_ptr<LocalVolTermStructure> localVolSurface
+        = ext::make_shared<NoExceptLocalVolSurface>(
               Handle<BlackVolTermStructure>(dumasVolSurface),
               Handle<YieldTermStructure>(rTS),
               Handle<YieldTermStructure>(qTS),
@@ -423,10 +414,10 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     const std::vector<Time> adaptiveGrid
         = adaptiveTimeGrid(400, 50, 5.0, 3.0);
 
-    const boost::shared_ptr<TimeGrid> dumasTimeGrid(
+    const ext::shared_ptr<TimeGrid> dumasTimeGrid(
         new TimeGrid(adaptiveGrid.begin(), adaptiveGrid.end()));
 
-    const boost::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
+    const ext::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
         new LocalVolRNDCalculator(
             spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 0.1, 1e-8));
 
@@ -444,17 +435,17 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
         const Time expiry
             = rTS->dayCounter().yearFraction(todaysDate, maturities[i]);
 
-        const boost::shared_ptr<PricingEngine> engine(
+        const ext::shared_ptr<PricingEngine> engine(
             new FdBlackScholesVanillaEngine(
                 bsmProcess, std::max(Size(51), Size(expiry*101)),
                 201, 0, FdmSchemeDesc::Douglas(), true, b1));
 
-        const boost::shared_ptr<Exercise> exercise(
+        const ext::shared_ptr<Exercise> exercise(
             new EuropeanExercise(maturities[i]));
 
         for (Size k=0; k < LENGTH(strikes); ++k) {
             const Real strike = strikes[k];
-            const boost::shared_ptr<StrikedTypePayoff> payoff(
+            const ext::shared_ptr<StrikedTypePayoff> payoff(
                 new PlainVanillaPayoff(
                     (strike > spot->value()) ? Option::Call : Option::Put
                     , strike));
@@ -492,6 +483,8 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
     BOOST_TEST_MESSAGE("Testing probability density for a square root process...");
 
+    using namespace ext::placeholders;
+
     struct SquareRootProcessParams {
         const Real v0, kappa, theta, sigma;
     };
@@ -513,7 +506,7 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 
             const Real cdfCalculated = rndCalculator.cdf(v, t);
             const Real cdfExpected = GaussLobattoIntegral(10000, 0.01*tol)(
-                boost::bind(&SquareRootProcessRNDCalculator::pdf,
+                ext::bind(&SquareRootProcessRNDCalculator::pdf,
                     &rndCalculator, _1, t), 0, v);
 
             if (std::fabs(cdfCalculated - cdfExpected) > tol) {
@@ -607,21 +600,22 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
 
     const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dc));
-    const Handle<Quote> spot(boost::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
 
-    const boost::shared_ptr<HestonProcess> hestonProcess(
-        boost::make_shared<HestonProcess>(
+    const ext::shared_ptr<HestonProcess> hestonProcess(
+        ext::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<BlackVolTermStructure> hestonSurface(
-        boost::make_shared<HestonBlackVolSurface>(
-            Handle<HestonModel>(
-                boost::make_shared<HestonModel>(hestonProcess))));
+        ext::make_shared<HestonBlackVolSurface>(
+            Handle<HestonModel>(ext::make_shared<HestonModel>(hestonProcess)),
+            AnalyticHestonEngine::AndersenPiterbarg,
+            AnalyticHestonEngine::Integration::discreteTrapezoid(64)));
 
-    const boost::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
+    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
 
-    const boost::shared_ptr<LocalVolTermStructure> localVol(
-        boost::make_shared<NoExceptLocalVolSurface>(
+    const ext::shared_ptr<LocalVolTermStructure> localVol(
+        ext::make_shared<NoExceptLocalVolSurface>(
             hestonSurface, rTS, qTS, spot, std::sqrt(theta)));
 
     const LocalVolRNDCalculator localVolCalc(
@@ -631,7 +625,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     const HestonRNDCalculator hestonCalc(hestonProcess);
 
     const GBSMRNDCalculator gbsmCalc(
-        boost::make_shared<BlackScholesMertonProcess>(
+        ext::make_shared<BlackScholesMertonProcess>(
             spot, qTS, rTS, hestonSurface));
 
     const Real strikes[] = { 85, 75, 90, 110, 125, 150 };
@@ -738,6 +732,83 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     }
 }
 
+void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
+    BOOST_TEST_MESSAGE("Testing the mass at zero for a "
+                       "constant elasticity of variance (CEV) process...");
+
+    using namespace ext::placeholders;
+
+    const Real f0 = 100.0;
+    const Time t = 2.75;
+
+    const std::pair<Real, Real> params[] = {
+      std::make_pair(0.1, 1.6),
+      std::make_pair(0.01, 2.0),
+      std::make_pair(10.0, 0.35),
+      std::make_pair(50.0, 0.1)
+    };
+
+    const Real tol = 1e-4;
+
+    for (Size i=0; i < LENGTH(params); ++i) {
+        const Real alpha = params[i].first;
+        const Real beta = params[i].second;
+
+        const ext::shared_ptr<CEVRNDCalculator> calculator =
+            ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);
+
+        const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
+
+        const Real calculated = GaussLobattoIntegral(1000, 1e-8)(
+            ext::bind(&CEVRNDCalculator::pdf, calculator, _1, t),
+                      std::max(QL_EPSILON, f0-ax), f0+ax) +
+            calculator->massAtZero(t);
+
+        if (std::fabs(calculated - 1.0) > tol) {
+            BOOST_FAIL("failed to reproduce the total probability mass"
+                    << "\n   alpha:     " << alpha
+                    << "\n   beta:      " << beta
+                    << "\n   prob mass: " << calculated
+                    << "\n   tolerance: " << tol);
+        }
+    }
+}
+
+void RiskNeutralDensityCalculatorTest::testCEVCDF() {
+    BOOST_TEST_MESSAGE("Testing CDF for a "
+                       "constant elasticity of variance (CEV) process...");
+
+    const Real f0 = 2.1;
+    const Time t = 0.75;
+
+    const Real alpha = 0.1;
+    const Real betas[] = { 0.45, 1.25 };
+
+    const Real tol = 1e-6;
+    for (Size i = 1; i < LENGTH(betas); ++i) {
+        const Real beta = betas[i];
+        const ext::shared_ptr<CEVRNDCalculator> calculator =
+            ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);
+
+        for (Real x = 1.3; x < 3.1; x+=0.1) {
+
+            const Real cdfValue = calculator->cdf(x, t);
+            const Real calculated = calculator->invcdf(cdfValue, t);
+
+            if (std::fabs(x - calculated) > tol) {
+                BOOST_FAIL(
+                    "failed to reproduce the inverse cumulative probability"
+                        << "\n   alpha:     " << alpha
+                        << "\n   beta:      " << beta
+                        << "\n   x:         " << x
+                        << "\n   calculated:" << calculated
+                        << "\n   difference:" << x - calculated
+                        << "\n   tolerance: " << tol);
+            }
+        }
+    }
+}
+
 test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
 
@@ -749,6 +820,10 @@ test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
         &RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
     suite->add(QUANTLIB_TEST_CASE(
         &RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
+    suite->add(QUANTLIB_TEST_CASE(
+        &RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND));
+    suite->add(QUANTLIB_TEST_CASE(
+          &RiskNeutralDensityCalculatorTest::testCEVCDF));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

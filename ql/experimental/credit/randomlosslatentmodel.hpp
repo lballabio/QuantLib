@@ -74,16 +74,16 @@ namespace QuantLib {
     private:
         typedef simEvent<RandomLossLM> defaultSimEvent;
 
-        const boost::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> > copula_;
+        const ext::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> > copula_;
         // for time inversion:
         Real accuracy_;
     public:
         RandomLossLM(
-            const boost::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> >& 
+            const ext::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> >& 
                 copula,
             Size nSims = 0,
             Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>
             (copula->numFactors(), copula->size(), copula->copula(), 
                 nSims, seed),
@@ -113,7 +113,7 @@ namespace QuantLib {
             Date today = Settings::instance().evaluationDate();
             Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
 
-            const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+            const ext::shared_ptr<Pool>& pool = this->basket_->pool();
             for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'
                 horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
                     defaultProbability(this->basket_->defaultKeys()[iName])
@@ -157,7 +157,7 @@ namespace QuantLib {
     void RandomLossLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const 
     {
-        const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+        const ext::shared_ptr<Pool>& pool = this->basket_->pool();
         this->simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 
         // half the model is defaults, the other half are RRs...

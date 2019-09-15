@@ -37,6 +37,10 @@ class ScheduleTest {
     static void testCDS2015Convention();
     static void testDateConstructor();
     static void testFourWeeksTenor();
+    static void testScheduleAlwaysHasAStartDate();
+    static void testShortEomSchedule();
+    static void testFirstDateOnMaturity();
+    static void testNextToLastDateOnStart();
     static boost::unit_test_framework::test_suite* suite();
 };
 

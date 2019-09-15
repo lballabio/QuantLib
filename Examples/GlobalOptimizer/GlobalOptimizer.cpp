@@ -26,11 +26,9 @@
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/experimental/math/particleswarmoptimization.hpp>
+#include <ql/functional.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <iostream>
 #include <iomanip>
@@ -143,8 +141,8 @@ Real printFunction(Problem& p, const Array& x) {
 
 class TestFunction : public CostFunction {
 public:
-    typedef boost::function<Real(const Array&)> RealFunc;
-    typedef boost::function<Disposable<Array>(const Array&)> ArrayFunc;
+    typedef ext::function<Real(const Array&)> RealFunc;
+    typedef ext::function<Disposable<Array>(const Array&)> ArrayFunc;
     TestFunction(const RealFunc & f, const ArrayFunc & fs = ArrayFunc()) : f_(f), fs_(fs) {}
     TestFunction(Real(*f)(const Array&), Disposable<Array>(*fs)(const Array&) = NULL) : f_(f), fs_(fs) {}
     virtual ~TestFunction(){}
@@ -152,7 +150,7 @@ public:
         return f_(x);
     }
     virtual Disposable<Array> values(const Array& x) const {
-        if(fs_.empty())
+        if(!fs_)
             throw std::runtime_error("Invalid function");
         return fs_(x);
     }
@@ -186,7 +184,6 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
     return 1;
 }
 
-#if BOOST_VERSION >= 104700
 void testFirefly() {
     /*
     The Eggholder function is only in 2 dimensions, it has a multitude
@@ -201,10 +198,10 @@ void testFirefly() {
     Size agents = 150;
     Real vola = 1.5;
     Real intense = 1.0;
-    boost::shared_ptr<FireflyAlgorithm::Intensity> intensity =
-        boost::make_shared<ExponentialIntensity>(10.0, 1e-8, intense);
-    boost::shared_ptr<FireflyAlgorithm::RandomWalk> randomWalk =
-        boost::make_shared<LevyFlightWalk>(vola, 0.5, 1.0, seed);
+    ext::shared_ptr<FireflyAlgorithm::Intensity> intensity =
+        ext::make_shared<ExponentialIntensity>(10.0, 1e-8, intense);
+    ext::shared_ptr<FireflyAlgorithm::RandomWalk> randomWalk =
+        ext::make_shared<LevyFlightWalk>(vola, 0.5, 1.0, seed);
     std::cout << "Function eggholder, Agents: " << agents
             << ", Vola: " << vola << ", Intensity: " << intense << std::endl;
     TestFunction f(eggholder);
@@ -213,7 +210,6 @@ void testFirefly() {
     test(fa, f, ec, x, constraint, optimum);
     std::cout << "================================================================" << std::endl;
 }
-#endif
 
 void testSimulatedAnnealing(Size dimension, Size maxSteps, Size staticSteps){
 
@@ -260,7 +256,7 @@ void testGaussianSA(Size dimension, Size maxSteps, Size staticSteps, Real initia
                     GaussianSimulatedAnnealing::ResetScheme resetScheme = GaussianSimulatedAnnealing::ResetToBestPoint,
                     Size resetSteps = 150,
                     GaussianSimulatedAnnealing::LocalOptimizeScheme optimizeScheme = GaussianSimulatedAnnealing::EveryBestPoint,
-                    boost::shared_ptr<OptimizationMethod> localOptimizer = boost::make_shared<LevenbergMarquardt>()){
+                    ext::shared_ptr<OptimizationMethod> localOptimizer = ext::make_shared<LevenbergMarquardt>()){
 
     /*The ackley function has a large amount of local minima, but the
      * structure is symmetric, so if one could simply just ignore the
@@ -299,7 +295,6 @@ void testGaussianSA(Size dimension, Size maxSteps, Size staticSteps, Real initia
     std::cout << "================================================================" << std::endl;
 }
 
-#if BOOST_VERSION >= 104700
 void testPSO(Size n){
     /*The Rosenbrock function has a global minima at (1.0, ...) and a local minima at (-1.0, 1.0, ...)
     The difficulty lies in the weird shape of the function*/
@@ -312,17 +307,16 @@ void testPSO(Size n){
     std::cout << "Function: rosenbrock, Dimensions: " << n
             << ", Agents: " << agents << ", K-neighbors: " << kneighbor
             << ", Threshold: " << threshold << std::endl;
-    boost::shared_ptr<ParticleSwarmOptimization::Topology> topology =
-        boost::make_shared<KNeighbors>(kneighbor);
-    boost::shared_ptr<ParticleSwarmOptimization::Inertia> inertia =
-        boost::make_shared<LevyFlightInertia>(1.5, threshold, seed);
+    ext::shared_ptr<ParticleSwarmOptimization::Topology> topology =
+        ext::make_shared<KNeighbors>(kneighbor);
+    ext::shared_ptr<ParticleSwarmOptimization::Inertia> inertia =
+        ext::make_shared<LevyFlightInertia>(1.5, threshold, seed);
     TestFunction f(rosenbrock);
     ParticleSwarmOptimization pso(agents, topology, inertia, 2.05, 2.05, seed);
     EndCriteria ec(10000, 1000, 1.0e-8, 1.0e-8, 1.0e-8);
     test(pso, f, ec, x, constraint, optimum);
     std::cout << "================================================================" << std::endl;
 }
-#endif
 
 void testDifferentialEvolution(Size n, Size agents){
     /*The Rosenbrock function has a global minima at (1.0, ...) and a local minima at (-1.0, 1.0, ...)
@@ -375,14 +369,12 @@ int main(int, char* []) {
         std::cout << std::endl;
         boost::timer timer;
 
-#if BOOST_VERSION >= 104700
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Firefly Algorithm Test" << std::endl;
         std::cout << "----------------------------------------------------------------" << std::endl;
         testFirefly();
 
         printTime(timer.elapsed());
-#endif
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Hybrid Simulated Annealing Test" << std::endl;
@@ -393,7 +385,6 @@ int main(int, char* []) {
 
         printTime(timer.elapsed());
 
-#if BOOST_VERSION >= 104700
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Particle Swarm Optimization Test" << std::endl;
         std::cout << "----------------------------------------------------------------" << std::endl;
@@ -402,7 +393,6 @@ int main(int, char* []) {
         testPSO(30);
 
         printTime(timer.elapsed());
-#endif
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Simulated Annealing Test" << std::endl;

@@ -35,7 +35,7 @@ namespace QuantLib {
     //! %Lattice (tree, finite-differences) base class
     class Lattice {
       public:
-        Lattice(const TimeGrid& timeGrid) : t_(timeGrid) {}
+        explicit Lattice(const TimeGrid& timeGrid) : t_(timeGrid) {}
         virtual ~Lattice() {}
 
         //!\name Inspectors

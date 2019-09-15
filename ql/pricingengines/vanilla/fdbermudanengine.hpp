@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         // constructor
         FDBermudanEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100,
              Size gridPoints = 100,
              bool timeDependent = false)
@@ -54,7 +54,7 @@ namespace QuantLib {
         Real extraTermInBermudan ;
         void initializeStepCondition() const {
             this->stepCondition_ =
-                boost::shared_ptr<StandardStepCondition>(
+                ext::shared_ptr<StandardStepCondition>(
                                                   new NullCondition<Array>());
         };
         void executeIntermediateStep(Size ) const {
