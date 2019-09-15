@@ -117,7 +117,7 @@ namespace QuantLib {
             impl_ = nercImpl;
             break;
           case FederalReserve:
-            impl_ = federalreserveImpl;
+            impl_ = federalReserveImpl;
             break;
           default:
             QL_FAIL("unknown market");
