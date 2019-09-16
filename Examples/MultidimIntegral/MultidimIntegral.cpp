@@ -52,7 +52,6 @@ struct integrand {
 };
 
 int main() {
-    boost::timer timer;
     std::cout << std::endl;
 
     /* 
