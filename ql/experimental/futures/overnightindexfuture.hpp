@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 Roy Zywina
+ Copyright (C) 2019 Eisuke Tani
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,13 +36,19 @@ namespace QuantLib {
     */
     class OvernightIndexFuture : public Forward {
     public:
+        enum SubPeriodsNettingType { Averaging, Compounding };
         OvernightIndexFuture(
             const ext::shared_ptr<OvernightIndex>& overnightIndex,
             const ext::shared_ptr<Payoff>& payoff,
             const Date& valueDate,
             const Date& maturityDate,
             const Handle<YieldTermStructure>& discountCurve,
-            const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+            const SubPeriodsNettingType subPeriodsNettingType = Compounding);
+
+        virtual Real spotValueByArithmeticAveraging() const;
+
+        virtual Real spotValueByCompounding() const;
 
         //! returns spot value/price of an underlying financial instrument
         virtual Real spotValue() const;
@@ -56,6 +63,7 @@ namespace QuantLib {
     protected:
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Handle<Quote> convexityAdjustment_;
+        SubPeriodsNettingType subPeriodsNettingType_;
     };
 
 }

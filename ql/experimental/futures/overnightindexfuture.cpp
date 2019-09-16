@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 Roy Zywina
+ Copyright (C) 2019 Eisuke Tani
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,21 +29,49 @@ namespace QuantLib {
         const Date& valueDate,
         const Date& maturityDate,
         const Handle<YieldTermStructure>& discountCurve,
-        const Handle<Quote>& convexityAdjustment)
-      :Forward(overnightIndex->dayCounter(),
-        overnightIndex->fixingCalendar(),
-        overnightIndex->businessDayConvention(),
-        0,
-        payoff,
-        valueDate,
-        maturityDate,
-        discountCurve),
-      overnightIndex_(overnightIndex),
-      convexityAdjustment_(convexityAdjustment)
-    {
+        const Handle<Quote>& convexityAdjustment,
+        const SubPeriodsNettingType subPeriodsNettingType)
+        :Forward(overnightIndex->dayCounter(),
+            overnightIndex->fixingCalendar(),
+            overnightIndex->businessDayConvention(),
+            0,
+            payoff,
+            valueDate,
+            maturityDate,
+            discountCurve),
+        overnightIndex_(overnightIndex),
+        convexityAdjustment_(convexityAdjustment),
+        subPeriodsNettingType_(subPeriodsNettingType) {}
+
+    Real OvernightIndexFuture::spotValueByArithmeticAveraging() const {
+        Date today = Settings::instance().evaluationDate();
+        Real avg = 0;
+        Date d1 = valueDate_;
+        const TimeSeries<Real>& history = IndexManager::instance()
+            .getHistory(overnightIndex_->name());
+        Real fwd;
+        while (d1 < maturityDate_) {
+            Date d2 = calendar_.advance(d1, 1, Days);
+            if (d1 < today) {
+                fwd = history[d1];
+                QL_REQUIRE(fwd != Null<Real>(), "missing rate on " <<
+                    d1 << " for index " << overnightIndex_->name());
+            } else {
+                fwd = discountCurve_->forwardRate(d1, d2, dayCounter_, Simple).rate();
+            }
+            avg += fwd * dayCounter_.yearFraction(d1, d2);
+            d1 = d2;
+        }
+
+        Real convAdj = convexityAdjustment_.empty() ? 0.0 :
+            convexityAdjustment_->value();
+        Real R = convAdj + avg /
+            dayCounter_.yearFraction(valueDate_, maturityDate_);
+        Real underlyingSpotValueByArithmeticAveraging = 100.0 * (1.0 - R);
+        return underlyingSpotValueByArithmeticAveraging;
     }
 
-    Real OvernightIndexFuture::spotValue() const {
+    Real OvernightIndexFuture::spotValueByCompounding() const {
         Date today = Settings::instance().evaluationDate();
         Real prod = 1;
         if (today > valueDate_) {
@@ -57,8 +86,8 @@ namespace QuantLib {
             Date d1 = valueDate_;
             while (d1 < today) {
                 Real r = history[d1];
-                QL_REQUIRE(r!=Null<Real>(), "missing rate on "<<
-                    d1<<" for index "<<overnightIndex_->name());
+                QL_REQUIRE(r != Null<Real>(), "missing rate on " <<
+                    d1 << " for index " << overnightIndex_->name());
                 Date d2 = calendar_.advance(d1, 1, Days);
                 prod *= 1 + r * dayCounter_.yearFraction(d1, d2);
                 d1 = d2;
@@ -69,16 +98,31 @@ namespace QuantLib {
             forwardDiscount /= discountCurve_->discount(valueDate_);
         }
         prod /= forwardDiscount;
+
         Real convAdj = convexityAdjustment_.empty() ? 0.0 :
             convexityAdjustment_->value();
         Real R = convAdj + (prod - 1) /
             dayCounter_.yearFraction(valueDate_, maturityDate_);
-        underlyingSpotValue_ = 100.0 * (1.0 - R);
+        Real underlyingSpotValueByCompounding = 100.0 * (1.0 - R);
+        return underlyingSpotValueByCompounding;
+    }
+
+    Real OvernightIndexFuture::spotValue() const {
+        switch (subPeriodsNettingType_) {
+            case Averaging:
+                underlyingSpotValue_ = spotValueByArithmeticAveraging();
+                break;
+            case Compounding:
+                underlyingSpotValue_ = spotValueByCompounding();
+                break;
+            default:
+                QL_FAIL("unknown compounding convention ("
+                    << Integer(subPeriodsNettingType_) << ")");
+        }
         return underlyingSpotValue_;
     }
 
-    Real OvernightIndexFuture::spotIncome(const Handle<YieldTermStructure>&) const
-    {
+    Real OvernightIndexFuture::spotIncome(const Handle<YieldTermStructure>&) const {
         underlyingIncome_ = 0;
         return underlyingIncome_;
     }

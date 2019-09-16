@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 Roy Zywina
+ Copyright (C) 2019 Eisuke Tani
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,13 +34,15 @@ namespace QuantLib {
     class OvernightIndexFutureRateHelper : public RateHelper {
     public:
         OvernightIndexFutureRateHelper(
-          const Handle<Quote>& price,
-          // first day of reference period
-          const Date& valueDate,
-          // delivery date
-          const Date& maturityDate,
-          const ext::shared_ptr<OvernightIndex>& overnightIndex,
-          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+            const Handle<Quote>& price,
+            // first day of reference period
+            const Date& valueDate,
+            // delivery date
+            const Date& maturityDate,
+            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+            const OvernightIndexFuture::SubPeriodsNettingType
+            subPeriodsNettingType = OvernightIndexFuture::SubPeriodsNettingType::Compounding);
 
         //! \name RateHelper interface
         //@{
@@ -73,14 +76,18 @@ namespace QuantLib {
             Year referenceYear,
             Frequency referenceFreq,
             const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+            const OvernightIndexFuture::SubPeriodsNettingType
+            subPeriodsNettingType = OvernightIndexFuture::SubPeriodsNettingType::Compounding);
         SofrFutureRateHelper(
             Real price,
             Month referenceMonth,
             Year referenceYear,
             Frequency referenceFreq,
             const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            Real convexityAdjustment = 0);
+            Real convexityAdjustment = 0,
+            const OvernightIndexFuture::SubPeriodsNettingType
+            subPeriodsNettingType = OvernightIndexFuture::SubPeriodsNettingType::Compounding);
     };
 
 }
