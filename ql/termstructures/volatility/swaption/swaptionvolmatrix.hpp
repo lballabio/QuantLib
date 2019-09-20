@@ -100,7 +100,22 @@ namespace QuantLib {
                     const bool flatExtrapolation = false,
                     const VolatilityType type = ShiftedLognormal,
                     const Matrix& shifts = Matrix());
-        // fixed reference date and fixed market data, option dates
+        //! fixed reference date and fixed market data, option dates
+        SwaptionVolatilityMatrix(const Date& referenceDate,
+                                 const Calendar& calendar,
+                                 BusinessDayConvention bdc,
+                                 const std::vector<Date>& optionDates,
+                                 const std::vector<Period>& swapTenors,
+                                 const Matrix& volatilities,
+                                 const DayCounter& dayCounter,
+                                 const bool flatExtrapolation = false,
+                                 const VolatilityType type = ShiftedLognormal,
+                                 const Matrix& shifts = Matrix());
+        /*! \deprecated Use the constructor also taking a calendar and
+                        business-day convention instead.
+                        Deprecated in version 1.16.
+        */
+        QL_DEPRECATED
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& optionDates,
                                  const std::vector<Period>& swapTenors,
@@ -146,9 +161,9 @@ namespace QuantLib {
       protected:
         // defining the following method would break CMS test suite
         // to be further investigated
-        //boost::shared_ptr<SmileSection> smileSectionImpl(const Date&,
+        //ext::shared_ptr<SmileSection> smileSectionImpl(const Date&,
         //                                                 const Period&) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time,
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time,
                                                          Time) const;
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,

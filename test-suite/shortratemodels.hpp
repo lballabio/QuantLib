@@ -33,6 +33,7 @@ class ShortRateModelTest {
     static void testCachedHullWhiteFixedReversion();
     static void testCachedHullWhite2();
     static void testSwaps();
+    static void testExtendedCoxIngersollRossDiscountFactor();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 

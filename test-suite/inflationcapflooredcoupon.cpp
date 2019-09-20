@@ -65,21 +65,22 @@ namespace {
     };
 
     template <class T, class U, class I>
-    std::vector<boost::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
                         Datum iiData[], Size N,
-                        const boost::shared_ptr<I> &ii, const Period &observationLag,
+                        const ext::shared_ptr<I> &ii, const Period &observationLag,
                         const Calendar &calendar,
                         const BusinessDayConvention &bdc,
-                        const DayCounter &dc) {
+                        const DayCounter &dc,
+                        const Handle<YieldTermStructure>& discountCurve) {
 
-        std::vector<boost::shared_ptr<BootstrapHelper<T> > > instruments;
+        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
-            Handle<Quote> quote(boost::shared_ptr<Quote>(
+            Handle<Quote> quote(ext::shared_ptr<Quote>(
                             new SimpleQuote(iiData[i].rate/100.0)));
-            boost::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
+            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                             quote, observationLag, maturity,
-                            calendar, bdc, dc, ii));
+                            calendar, bdc, dc, ii, discountCurve));
             instruments.push_back(anInstrument);
         }
 
@@ -104,10 +105,10 @@ namespace {
         Date settlement;
         Period observationLag;
         DayCounter dc;
-        boost::shared_ptr<YYUKRPIr> iir;
+        ext::shared_ptr<YYUKRPIr> iir;
 
         RelinkableHandle<YieldTermStructure> nominalTS;
-        boost::shared_ptr<YoYInflationTermStructure> yoyTS;
+        ext::shared_ptr<YoYInflationTermStructure> yoyTS;
         RelinkableHandle<YoYInflationTermStructure> hy;
 
         // cleanup
@@ -149,12 +150,12 @@ namespace {
                 207.3, -999.0, -999 };
             // link from yoy index to yoy TS
             bool interp = false;
-            iir = boost::shared_ptr<YYUKRPIr>(new YYUKRPIr(interp, hy));
+            iir = ext::make_shared<YYUKRPIr>(interp, hy);
             for (Size i=0; i<rpiSchedule.size();i++) {
                 iir->addFixing(rpiSchedule[i], fixData[i]);
             }
 
-            boost::shared_ptr<YieldTermStructure> nominalFF(
+            ext::shared_ptr<YieldTermStructure> nominalFF(
                         new FlatForward(evaluationDate, 0.05, ActualActual()));
             nominalTS.linkTo(nominalFF);
 
@@ -180,20 +181,21 @@ namespace {
             };
 
             // now build the helpers ...
-            std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
+            std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
             YoYInflationIndex>(yyData, LENGTH(yyData), iir,
                                observationLag,
-                               calendar, convention, dc);
+                               calendar, convention, dc,
+                               Handle<YieldTermStructure>(nominalTS));
 
             Rate baseYYRate = yyData[0].rate/100.0;
-            boost::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
+            ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
                             new PiecewiseYoYInflationCurve<Linear>(
                                 evaluationDate, calendar, dc, observationLag,
                                 iir->frequency(),iir->interpolated(), baseYYRate,
                                 Handle<YieldTermStructure>(nominalTS), helpers));
             pYYTS->recalculate();
-            yoyTS = boost::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
+            yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
 
             // make sure that the index has the latest yoy term structure
@@ -204,8 +206,8 @@ namespace {
         Leg makeYoYLeg(const Date& startDate, Integer length,
                        const Rate gearing = 1.0,
                        const Rate spread = 0.0) {
-            boost::shared_ptr<YoYInflationIndex> ii =
-            boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+            ext::shared_ptr<YoYInflationIndex> ii =
+            ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               Unadjusted,Unadjusted,// ref periods & acc periods
@@ -246,29 +248,29 @@ namespace {
                               const Rate spread = 0.0) {
 
             Handle<YoYOptionletVolatilitySurface>
-            vol(boost::shared_ptr<ConstantYoYOptionletVolatility>(
-                            new ConstantYoYOptionletVolatility(volatility,
+            vol(ext::make_shared<ConstantYoYOptionletVolatility>(
+                            volatility,
                                 settlementDays,
                                 calendar,
                                 convention,
                                 dc,
                                 observationLag,
                                 frequency,
-                                iir->interpolated())));
+                                iir->interpolated()));
 
-            boost::shared_ptr<YoYInflationCouponPricer> pricer;
+            ext::shared_ptr<YoYInflationCouponPricer> pricer;
             switch (which) {
                 case 0:
-                    pricer = boost::shared_ptr<YoYInflationCouponPricer>(
-                            new BlackYoYInflationCouponPricer(vol));
+                    pricer = ext::shared_ptr<YoYInflationCouponPricer>(
+                            new BlackYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 case 1:
-                    pricer = boost::shared_ptr<YoYInflationCouponPricer>(
-                            new UnitDisplacedBlackYoYInflationCouponPricer(vol));
+                    pricer = ext::shared_ptr<YoYInflationCouponPricer>(
+                            new UnitDisplacedBlackYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 case 2:
-                    pricer = boost::shared_ptr<YoYInflationCouponPricer>(
-                            new BachelierYoYInflationCouponPricer(vol));
+                    pricer = ext::shared_ptr<YoYInflationCouponPricer>(
+                            new BachelierYoYInflationCouponPricer(vol, nominalTS));
                     break;
                 default:
                     BOOST_FAIL("unknown coupon pricer request: which = "<<which
@@ -280,8 +282,8 @@ namespace {
             std::vector<Rate> gearingVector(length, gearing);
             std::vector<Spread> spreadVector(length, spread);
 
-            boost::shared_ptr<YoYInflationIndex> ii =
-            boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+            ext::shared_ptr<YoYInflationIndex> ii =
+            ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               Unadjusted,Unadjusted,// ref periods & acc periods
@@ -297,7 +299,7 @@ namespace {
             .withFloors(floors);
 
             for(Size i=0; i<yoyLeg.size(); i++) {
-                boost::dynamic_pointer_cast<YoYInflationCoupon>(yoyLeg[i])->setPricer(pricer);
+                ext::dynamic_pointer_cast<YoYInflationCoupon>(yoyLeg[i])->setPricer(pricer);
             }
 
 
@@ -306,35 +308,35 @@ namespace {
         }
 
 
-        boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) {
 
-            boost::shared_ptr<YoYInflationIndex>
-            yyii = boost::dynamic_pointer_cast<YoYInflationIndex>(iir);
+            ext::shared_ptr<YoYInflationIndex>
+            yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
 
             Handle<YoYOptionletVolatilitySurface>
-            vol(boost::shared_ptr<ConstantYoYOptionletVolatility>(
-                    new ConstantYoYOptionletVolatility(volatility,
+            vol(ext::make_shared<ConstantYoYOptionletVolatility>(
+                    volatility,
                             settlementDays,
                             calendar,
                             convention,
                             dc,
                             observationLag,
                             frequency,
-                            iir->interpolated())));
+                            iir->interpolated()));
 
 
             switch (which) {
                 case 0:
-                    return boost::shared_ptr<PricingEngine>(
-                            new YoYInflationBlackCapFloorEngine(iir, vol));
+                    return ext::shared_ptr<PricingEngine>(
+                            new YoYInflationBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 1:
-                    return boost::shared_ptr<PricingEngine>(
-                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol));
+                    return ext::shared_ptr<PricingEngine>(
+                            new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol, nominalTS));
                     break;
                 case 2:
-                    return boost::shared_ptr<PricingEngine>(
-                            new YoYInflationBachelierCapFloorEngine(iir, vol));
+                    return ext::shared_ptr<PricingEngine>(
+                            new YoYInflationBachelierCapFloorEngine(iir, vol, nominalTS));
                     break;
                 default:
                     BOOST_FAIL("unknown engine request: which = "<<which
@@ -346,19 +348,19 @@ namespace {
         }
 
 
-        boost::shared_ptr<YoYInflationCapFloor> makeYoYCapFloor(YoYInflationCapFloor::Type type,
+        ext::shared_ptr<YoYInflationCapFloor> makeYoYCapFloor(YoYInflationCapFloor::Type type,
                                                                 const Leg& leg,
                                                                 Rate strike,
                                                                 Volatility volatility,
                                                                 Size which) {
-            boost::shared_ptr<YoYInflationCapFloor> result;
+            ext::shared_ptr<YoYInflationCapFloor> result;
             switch (type) {
                 case YoYInflationCapFloor::Cap:
-                    result = boost::shared_ptr<YoYInflationCapFloor>(
+                    result = ext::shared_ptr<YoYInflationCapFloor>(
                                 new YoYInflationCap(leg, std::vector<Rate>(1, strike)));
                     break;
                 case YoYInflationCapFloor::Floor:
-                    result = boost::shared_ptr<YoYInflationCapFloor>(
+                    result = ext::shared_ptr<YoYInflationCapFloor>(
                                 new YoYInflationFloor(leg, std::vector<Rate>(1, strike)));
                     break;
                 default:
@@ -412,7 +414,7 @@ void InflationCapFlooredCouponTest::testDecomposition() {
     // Swap with null fixed leg and floating leg with negative gearing and spread<>0
     Swap vanillaLeg_n(fixedLeg,floatLeg_n);
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
             new DiscountingSwapEngine(vars.nominalTS));
 
     vanillaLeg.setPricingEngine(engine);    // here use the autoset feature
@@ -686,7 +688,7 @@ void InflationCapFlooredCouponTest::testDecomposition() {
                     "  Diff: " << error );
     }
     // remove circular refernce
-    vars.hy.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
+    vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
 
@@ -713,11 +715,11 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
 
                     Leg leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
 
-                    boost::shared_ptr<Instrument> cap
+                    ext::shared_ptr<Instrument> cap
                     = vars.makeYoYCapFloor(YoYInflationCapFloor::Cap,
                                            leg, strikes[j], vols[k], whichPricer);
 
-                    boost::shared_ptr<Instrument> floor
+                    ext::shared_ptr<Instrument> floor
                     = vars.makeYoYCapFloor(YoYInflationCapFloor::Floor,
                                            leg, strikes[j], vols[k], whichPricer);
 
@@ -743,7 +745,7 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                                                     UnitedKingdom());
 
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
-                    boost::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+                    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
 
                     Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from,
@@ -794,14 +796,14 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
         }
     }
     // remove circular refernce
-    vars.hy.linkTo(boost::shared_ptr<YoYInflationTermStructure>());
+    vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
 
 
 
 test_suite* InflationCapFlooredCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("YoY inflation capped/floored coupon tests");
+    test_suite* suite = BOOST_TEST_SUITE("YoY inflation capped and floored coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testInstrumentEquality));
     return suite;

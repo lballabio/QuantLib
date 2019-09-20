@@ -27,7 +27,7 @@ namespace QuantLib {
                      const Calendar& calendar,
                      BusinessDayConvention businessDayConvention,
                      Natural settlementDays,
-                     const boost::shared_ptr<Payoff>& payoff,
+                     const ext::shared_ptr<Payoff>& payoff,
                      const Date& valueDate,
                      const Date& maturityDate,
                      const Handle<YieldTermStructure>& discountCurve)
@@ -84,8 +84,8 @@ namespace QuantLib {
         QL_REQUIRE(!discountCurve_.empty(),
                    "null term structure set to Forward");
 
-        boost::shared_ptr<ForwardTypePayoff> ftpayoff =
-            boost::dynamic_pointer_cast<ForwardTypePayoff>(payoff_);
+        ext::shared_ptr<ForwardTypePayoff> ftpayoff =
+            ext::dynamic_pointer_cast<ForwardTypePayoff>(payoff_);
         Real fwdValue = forwardValue();
         NPV_ = (*ftpayoff)(fwdValue) * discountCurve_->discount(maturityDate_);
     }

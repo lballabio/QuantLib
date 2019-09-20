@@ -182,6 +182,8 @@ namespace QuantLib {
 
             if (from > to)
                 wd = -wd;
+        } else if (includeFirst && includeLast && isBusinessDay(from)) {
+            wd = 1;
         }
 
         return wd;

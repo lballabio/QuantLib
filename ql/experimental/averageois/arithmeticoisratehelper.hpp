@@ -36,7 +36,7 @@ namespace QuantLib {
                         const Period& tenor, // swap maturity
                         Frequency fixedLegPaymentFrequency,
                         const Handle<Quote>& fixedRate,
-                        const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                        const ext::shared_ptr<OvernightIndex>& overnightIndex,
                         Frequency overnightLegPaymentFrequency,
                         const Handle<Quote>& spread,
                         Real meanReversionSpeed = 0.03,
@@ -52,7 +52,7 @@ namespace QuantLib {
         //@}
         //! \name inspectors
         //@{
-        boost::shared_ptr<ArithmeticAverageOIS> swap() const { return swap_; }
+        ext::shared_ptr<ArithmeticAverageOIS> swap() const { return swap_; }
         //@}
         //! \name Visitability
         //@{
@@ -63,9 +63,9 @@ namespace QuantLib {
 
         Natural settlementDays_;
         Period tenor_;
-        boost::shared_ptr<OvernightIndex> overnightIndex_;
+        ext::shared_ptr<OvernightIndex> overnightIndex_;
 
-        boost::shared_ptr<ArithmeticAverageOIS> swap_;
+        ext::shared_ptr<ArithmeticAverageOIS> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
         Handle<YieldTermStructure> discountHandle_;

@@ -34,9 +34,6 @@
 #include <ql/math/integrals/twodimensionalintegral.hpp>
 #include <ql/experimental/math/piecewisefunction.hpp>
 #include <ql/experimental/math/piecewiseintegral.hpp>
-
-#include <boost/make_shared.hpp>
-#include <boost/lambda/lambda.hpp>
 #include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
@@ -49,7 +46,7 @@ namespace {
 
     template <class T>
     void testSingle(const T& I, const std::string& tag,
-                    const boost::function<Real (Real)>& f,
+                    const ext::function<Real (Real)>& f,
                     Real xMin, Real xMax, Real expected) {
         Real calculated = I(f,xMin,xMax);
         if (std::fabs(calculated-expected) > tolerance) {
@@ -71,9 +68,9 @@ namespace {
         testSingle(I, "f(x) = x^2",
                    square<Real>(),             0.0, 1.0, 1.0/3.0);
         testSingle(I, "f(x) = sin(x)",
-                   std::ptr_fun<Real,Real>(std::sin), 0.0, M_PI, 2.0);
+                   static_cast<Real(*)(Real)>(std::sin), 0.0, M_PI, 2.0);
         testSingle(I, "f(x) = cos(x)",
-                   std::ptr_fun<Real,Real>(std::cos), 0.0, M_PI, 0.0);
+                   static_cast<Real(*)(Real)>(std::cos), 0.0, M_PI, 0.0);
         testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(), -10.0, 10.0, 1.0);
         testSingle(I, "f(x) = Abcd2(x)",
@@ -146,9 +143,9 @@ void IntegralTest::testTwoDimensionalIntegration() {
 
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
-        boost::shared_ptr<Integrator>(
+        ext::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
-        boost::shared_ptr<Integrator>(
+        ext::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
         std::multiplies<Real>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
@@ -297,10 +294,10 @@ void IntegralTest::testPiecewiseIntegral() {
     BOOST_TEST_MESSAGE("Testing piecewise integral...");
     x += 1.0, 2.0, 3.0, 4.0, 5.0;
     y += 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
-    boost::shared_ptr<Integrator> segment =
-        boost::make_shared<SegmentIntegral>(1);
-    boost::shared_ptr<Integrator> piecewise =
-        boost::make_shared<PiecewiseIntegral>(segment, x);
+    ext::shared_ptr<Integrator> segment =
+        ext::make_shared<SegmentIntegral>(1);
+    ext::shared_ptr<Integrator> piecewise =
+        ext::make_shared<PiecewiseIntegral>(segment, x);
     pw_check(*piecewise, -1.0, 0.0, 1.0);
     pw_check(*piecewise, 0.0, 1.0, 1.0);
     pw_check(*piecewise, 0.0, 1.5, 2.0);

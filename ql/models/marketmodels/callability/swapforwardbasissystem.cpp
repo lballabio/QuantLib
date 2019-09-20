@@ -20,6 +20,7 @@
 #include <ql/models/marketmodels/callability/swapforwardbasissystem.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib
 {
@@ -130,8 +131,9 @@ namespace QuantLib
 
     }
 
-    std::auto_ptr<MarketModelBasisSystem> SwapForwardBasisSystem::clone() const {
-        return std::auto_ptr<MarketModelBasisSystem>(
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelBasisSystem>
+    SwapForwardBasisSystem::clone() const {
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelBasisSystem>(
                                                   new SwapForwardBasisSystem(*this));
     }
 

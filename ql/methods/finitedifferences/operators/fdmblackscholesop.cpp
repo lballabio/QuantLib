@@ -29,25 +29,27 @@
 namespace QuantLib {
 
     FdmBlackScholesOp::FdmBlackScholesOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
         Real strike,
         bool localVol,
         Real illegalLocalVolOverwrite,
-        Size direction)
+        Size direction,
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
     : mesher_(mesher),
       rTS_   (bsProcess->riskFreeRate().currentLink()),
       qTS_   (bsProcess->dividendYield().currentLink()),
       volTS_ (bsProcess->blackVolatility().currentLink()),
       localVol_((localVol) ? bsProcess->localVolatility().currentLink()
-                           : boost::shared_ptr<LocalVolTermStructure>()),
+                           : ext::shared_ptr<LocalVolTermStructure>()),
       x_     ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
       dxMap_ (FirstDerivativeOp(direction, mesher)),
       dxxMap_(SecondDerivativeOp(direction, mesher)),
       mapT_  (direction, mesher),
       strike_(strike),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      direction_(direction) {
+      direction_(direction),
+      quantoHelper_(quantoHelper) {
     }
 
     void FdmBlackScholesOp::setTime(Time t1, Time t2) {
@@ -55,7 +57,7 @@ namespace QuantLib {
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
         if (localVol_) {
-            const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
             Array v(layout->size());
@@ -77,15 +79,35 @@ namespace QuantLib {
 
                 }
             }
-            mapT_.axpyb(r - q - 0.5*v, dxMap_,
-                        dxxMap_.mult(0.5*v), Array(1, -r));
+
+            if (quantoHelper_) {
+                mapT_.axpyb(r - q - 0.5*v
+                    - quantoHelper_->quantoAdjustment(Sqrt(v), t1, t2),
+                    dxMap_, dxxMap_.mult(0.5*v), Array(1, -r));
+            }
+            else {
+                mapT_.axpyb(r - q - 0.5*v, dxMap_,
+                            dxxMap_.mult(0.5*v), Array(1, -r));
+            }
         }
         else {
             const Real v
                 = volTS_->blackForwardVariance(t1, t2, strike_)/(t2-t1);
-            mapT_.axpyb(Array(1, r - q - 0.5*v), dxMap_,
-                        dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
-                        Array(1, -r));
+
+            if (quantoHelper_) {
+                mapT_.axpyb(
+                    Array(1, r - q - 0.5*v)
+                        - quantoHelper_->quantoAdjustment(
+                            Array(1, std::sqrt(v)), t1, t2),
+                    dxMap_,
+                    dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
+                    Array(1, -r));
+            }
+            else {
+                mapT_.axpyb(Array(1, r - q - 0.5*v), dxMap_,
+                    dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
+                    Array(1, -r));
+            }
         }
     }
 

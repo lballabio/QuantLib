@@ -21,12 +21,11 @@
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     WulinYongDoubleBarrierEngine::WulinYongDoubleBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             int series)
     : process_(process), series_(series) {
         registerWith(process_);
@@ -34,8 +33,8 @@ namespace QuantLib {
 
     void WulinYongDoubleBarrierEngine::calculate() const {
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,
                    "strike must be positive");
@@ -68,8 +67,8 @@ namespace QuantLib {
 
         //european option
         EuropeanOption europeanOption(payoff, arguments_.exercise);
-        boost::shared_ptr<PricingEngine> analyticEuropeanEngine =
-            boost::make_shared<AnalyticEuropeanEngine>(process_);
+        ext::shared_ptr<PricingEngine> analyticEuropeanEngine =
+            ext::make_shared<AnalyticEuropeanEngine>(process_);
         europeanOption.setPricingEngine(analyticEuropeanEngine);
         Real european = europeanOption.NPV();
 
@@ -127,16 +126,13 @@ namespace QuantLib {
         results_.additionalResults["vanilla"] = european;
         results_.additionalResults["barrierOut"] = barrierOut;
         results_.additionalResults["barrierIn"] = european - barrierOut;
+        results_.additionalResults["rebateIn"] = rebateIn;
     }
 
-
-    Real WulinYongDoubleBarrierEngine::underlying() const {
-        return process_->x0();
-    }
 
     Real WulinYongDoubleBarrierEngine::strike() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
@@ -147,10 +143,6 @@ namespace QuantLib {
 
     Volatility WulinYongDoubleBarrierEngine::volatility() const {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
-    }
-
-    Real WulinYongDoubleBarrierEngine::stdDeviation() const {
-        return volatility() * std::sqrt(residualTime());
     }
 
     Rate WulinYongDoubleBarrierEngine::riskFreeRate() const {

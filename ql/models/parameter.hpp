@@ -42,7 +42,7 @@ namespace QuantLib {
             virtual ~Impl() {}
             virtual Real value(const Array& params, Time t) const = 0;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
       public:
         Parameter()
         : constraint_(NoConstraint()) {}
@@ -55,13 +55,13 @@ namespace QuantLib {
         Real operator()(Time t) const {
             return impl_->value(params_, t);
         }
-        const boost::shared_ptr<Impl>& implementation() const {
+        const ext::shared_ptr<Impl>& implementation() const {
             return impl_;
         }
         const Constraint& constraint() const { return constraint_; }
       protected:
         Parameter(Size size,
-                  const boost::shared_ptr<Impl>& impl,
+                  const ext::shared_ptr<Impl>& impl,
                   const Constraint& constraint)
         : impl_(impl), params_(size), constraint_(constraint) {}
         Array params_;
@@ -81,7 +81,7 @@ namespace QuantLib {
         ConstantParameter(const Constraint& constraint)
         : Parameter(
               1,
-              boost::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
+              ext::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
               constraint)
         {}
 
@@ -89,7 +89,7 @@ namespace QuantLib {
                           const Constraint& constraint)
         : Parameter(
               1,
-              boost::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
+              ext::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
               constraint) {
             params_[0] = value;
             QL_REQUIRE(testParams(params_),
@@ -111,7 +111,7 @@ namespace QuantLib {
         NullParameter()
         : Parameter(
                   0,
-                  boost::shared_ptr<Parameter::Impl>(new NullParameter::Impl),
+                  ext::shared_ptr<Parameter::Impl>(new NullParameter::Impl),
                   NoConstraint())
         {}
     };
@@ -144,7 +144,7 @@ namespace QuantLib {
                                    const Constraint& constraint =
                                                              NoConstraint())
         : Parameter(times.size()+1,
-                    boost::shared_ptr<Parameter::Impl>(
+                    ext::shared_ptr<Parameter::Impl>(
                                  new PiecewiseConstantParameter::Impl(times)),
                     constraint)
         {}
@@ -186,13 +186,13 @@ namespace QuantLib {
         };
 
         TermStructureFittingParameter(
-                               const boost::shared_ptr<Parameter::Impl>& impl)
+                               const ext::shared_ptr<Parameter::Impl>& impl)
         : Parameter(0, impl, NoConstraint()) {}
 
         TermStructureFittingParameter(const Handle<YieldTermStructure>& term)
         : Parameter(
                   0,
-                  boost::shared_ptr<Parameter::Impl>(new NumericalImpl(term)),
+                  ext::shared_ptr<Parameter::Impl>(new NumericalImpl(term)),
                   NoConstraint())
         {}
     };

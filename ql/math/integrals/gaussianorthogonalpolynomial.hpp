@@ -62,7 +62,7 @@ namespace QuantLib {
     //! Gauss-Laguerre polynomial
     class GaussLaguerrePolynomial : public GaussianOrthogonalPolynomial {
       public:
-        GaussLaguerrePolynomial(Real s = 0.0);
+        explicit GaussLaguerrePolynomial(Real s = 0.0);
 
         Real mu_0() const;
         Real alpha(Size i) const;
@@ -76,7 +76,7 @@ namespace QuantLib {
     //! Gauss-Hermite polynomial
     class GaussHermitePolynomial : public GaussianOrthogonalPolynomial {
       public:
-        GaussHermitePolynomial(Real mu = 0.0);
+        explicit GaussHermitePolynomial(Real mu = 0.0);
 
         Real mu_0()const;
         Real alpha(Size i) const;
@@ -90,7 +90,7 @@ namespace QuantLib {
     //! Gauss-Jacobi polynomial
     class GaussJacobiPolynomial : public GaussianOrthogonalPolynomial {
       public:
-        GaussJacobiPolynomial(Real alpha, Real beta);
+        explicit GaussJacobiPolynomial(Real alpha, Real beta);
 
         Real mu_0() const;
         Real alpha(Size i) const;
@@ -123,7 +123,7 @@ namespace QuantLib {
     //! Gauss-Gegenbauer polynomial
     class GaussGegenbauerPolynomial : public GaussJacobiPolynomial {
       public:
-        GaussGegenbauerPolynomial(Real lambda);
+        explicit GaussGegenbauerPolynomial(Real lambda);
     };
 
     //! Gauss hyperbolic polynomial

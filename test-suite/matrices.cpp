@@ -22,6 +22,7 @@
 
 #include "matrices.hpp"
 #include "utilities.hpp"
+#include <ql/math/initializers.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
@@ -558,6 +559,9 @@ void MatricesTest::testCholeskyDecomposition() {
 }
 
 void MatricesTest::testMoorePenroseInverse() {
+
+    BOOST_TEST_MESSAGE("Testing Moore-Penrose inverse...");
+
     // this is taken from
     // http://de.mathworks.com/help/matlab/ref/pinv.html
     Real tmp[8][6] = {{64, 2, 3, 61, 60, 6},    {9, 55, 54, 12, 13, 51},
@@ -590,7 +594,7 @@ void MatricesTest::testMoorePenroseInverse() {
     }
 
     Array y = A*x;
-    Real tol2 = 1000.0 * QL_EPSILON;
+    Real tol2 = 2000.0 * QL_EPSILON;
     for (Size i = 0; i < 6; ++i) {
         if (std::abs(y[i] - 260.0) > tol2) {
             BOOST_FAIL(
@@ -604,8 +608,7 @@ void MatricesTest::testMoorePenroseInverse() {
 }
 
 namespace {
-    class MatrixMult :
-        public std::unary_function<const Array&, Disposable<Array> > {
+    class MatrixMult {
       public:
         explicit MatrixMult(const Matrix& m) : m_(m) {}
         Disposable<Array> operator()(const Array& x) const {
@@ -681,6 +684,58 @@ void MatricesTest::testIterativeSolvers() {
     #endif
 }
 
+void MatricesTest::testInitializers() {
+    BOOST_TEST_MESSAGE("Testing matrix and array initializers...");
+
+    Array a1(0);
+    BOOST_CHECK_THROW({ a1 << 1.0; }, QuantLib::Error);
+
+    Array a2(1);
+    BOOST_CHECK_NO_THROW({ a2 << 1.0; });
+    // the macro doesn't work on VC++ when the code contains commas
+    try {
+        a2 << 1.0, 2.0;
+        QL_FAIL("failed to throw the expected exception");
+    } catch(QuantLib::Error&) {}
+
+    Array a3(1);
+    a3 << 1.0;
+    BOOST_REQUIRE(a3.size() == 1);
+    BOOST_CHECK_EQUAL(a3[0], 1.0);
+
+    Array a4(5);
+    a4 << 1.0, 2.2, 3.3, 4.4, 5.5;
+    BOOST_REQUIRE(a4.size() == 5);
+    BOOST_CHECK_EQUAL(a4[0], 1.0);
+    BOOST_CHECK_EQUAL(a4[1], 2.2);
+    BOOST_CHECK_EQUAL(a4[2], 3.3);
+    BOOST_CHECK_EQUAL(a4[3], 4.4);
+    BOOST_CHECK_EQUAL(a4[4], 5.5);
+
+    Matrix m1(0, 0);
+    BOOST_CHECK_THROW({ m1 << 1.0; }, QuantLib::Error);
+
+    Matrix m2(2, 2);
+    m2 << 1.0, 2.0,
+          3.0, 4.0;
+    // see above
+    try {
+        m2 << 1.0, 2.0, 3.0,
+              4.0, 5.0, 6.0,
+              7.0, 8.0, 9.0;
+    } catch (QuantLib::Error&) {}
+
+    Matrix m3(2,2);
+    m3 << 1.0, 2.0,
+          3.0, 4.0;
+    BOOST_REQUIRE(m3.rows() == 2);
+    BOOST_REQUIRE(m3.columns() == 2);
+    BOOST_CHECK_EQUAL(m3(0, 0), 1.0);
+    BOOST_CHECK_EQUAL(m3(0, 1), 2.0);
+    BOOST_CHECK_EQUAL(m3(1, 0), 3.0);
+    BOOST_CHECK_EQUAL(m3(1, 1), 4.0);
+}
+
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
 
@@ -698,6 +753,7 @@ test_suite* MatricesTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testCholeskyDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testIterativeSolvers));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInitializers));
     return suite;
 }
 

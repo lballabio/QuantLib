@@ -51,7 +51,7 @@ ConstantOptionletVolatility::ConstantOptionletVolatility(
         Volatility vol, const DayCounter &dc, VolatilityType type,
         Real displacement)
         : OptionletVolatilityStructure(settlementDays, cal, bdc, dc),
-          volatility_(boost::shared_ptr< Quote >(new SimpleQuote(vol))),
+          volatility_(ext::shared_ptr< Quote >(new SimpleQuote(vol))),
           type_(type), displacement_(displacement) {}
 
     // fixed reference date, fixed market data
@@ -60,20 +60,20 @@ ConstantOptionletVolatility::ConstantOptionletVolatility(
         BusinessDayConvention bdc, Volatility vol, const DayCounter &dc,
         VolatilityType type, Real displacement)
         : OptionletVolatilityStructure(referenceDate, cal, bdc, dc),
-          volatility_(boost::shared_ptr< Quote >(new SimpleQuote(vol))),
+          volatility_(ext::shared_ptr< Quote >(new SimpleQuote(vol))),
           type_(type), displacement_(displacement) {}
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     ConstantOptionletVolatility::smileSectionImpl(const Date& d) const {
         Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     ConstantOptionletVolatility::smileSectionImpl(Time optionTime) const {
         Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             FlatSmileSection(optionTime, atmVol, dayCounter()));
     }
 

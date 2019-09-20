@@ -32,9 +32,9 @@
 namespace QuantLib {
 
     FdmExtendedOrnsteinUhlenbeckOp::FdmExtendedOrnsteinUhlenbeckOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
+            const ext::shared_ptr<YieldTermStructure>& rTS,
             const FdmBoundaryConditionSet& bcSet,
             Size direction)
     : mesher_   (mesher),
@@ -57,7 +57,7 @@ namespace QuantLib {
     void FdmExtendedOrnsteinUhlenbeckOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         Array drift(layout->size());
@@ -91,7 +91,7 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbekOp::solve_splitting(
+    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::solve_splitting(
                             Size direction, const Array& r, Real a) const {
         if (direction == direction_) {
             return mapX_.solve_splitting(r, a, 1.0);

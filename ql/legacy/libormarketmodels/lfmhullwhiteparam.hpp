@@ -41,8 +41,8 @@ namespace QuantLib {
     class LfmHullWhiteParameterization : public LfmCovarianceParameterization {
       public:
         LfmHullWhiteParameterization(
-            const boost::shared_ptr<LiborForwardModelProcess> & process,
-            const boost::shared_ptr<OptionletVolatilityStructure> & capletVol,
+            const ext::shared_ptr<LiborForwardModelProcess> & process,
+            const ext::shared_ptr<OptionletVolatilityStructure> & capletVol,
             const Matrix& correlation = Matrix(), Size factors = 1);
 
         Disposable<Matrix> diffusion (

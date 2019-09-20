@@ -43,6 +43,8 @@ namespace QuantLib {
               reproducing results available in web/literature
               and comparison with Black pricing.
     */
+    class FdmQuantoHelper;
+
     class FdHestonVanillaEngine
         : public GenericModelEngine<HestonModel,
                                     DividendVanillaOption::arguments,
@@ -50,12 +52,21 @@ namespace QuantLib {
       public:
         // Constructor
         FdHestonVanillaEngine(
-            const boost::shared_ptr<HestonModel>& model,
+            const ext::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                = ext::shared_ptr<LocalVolTermStructure>());
+
+        FdHestonVanillaEngine(
+            const ext::shared_ptr<HestonModel>& model,
+            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                = ext::shared_ptr<LocalVolTermStructure>());
 
         void calculate() const;
         
@@ -69,7 +80,8 @@ namespace QuantLib {
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
         
         std::vector<Real> strikes_;
         mutable std::vector<std::pair<DividendVanillaOption::arguments,

@@ -28,6 +28,7 @@
 
 #include <ql/payoff.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
@@ -37,12 +38,14 @@ namespace QuantLib {
     class FdmBlackScholesOp : public FdmLinearOpComposite {
       public:
         FdmBlackScholesOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Real strike,
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>(),
-            Size direction = 0);
+            Size direction = 0,
+            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+                = ext::shared_ptr<FdmQuantoHelper>());
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -59,10 +62,10 @@ namespace QuantLib {
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
 #endif
       private:
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
-        const boost::shared_ptr<BlackVolTermStructure> volTS_;
-        const boost::shared_ptr<LocalVolTermStructure> localVol_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;
+        const ext::shared_ptr<BlackVolTermStructure> volTS_;
+        const ext::shared_ptr<LocalVolTermStructure> localVol_;
         const Array x_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;
@@ -70,6 +73,7 @@ namespace QuantLib {
         const Real strike_;
         const Real illegalLocalVolOverwrite_;
         const Size direction_;
+        const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 }
 

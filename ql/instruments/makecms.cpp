@@ -27,13 +27,12 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     MakeCms::MakeCms(const Period& swapTenor,
-                     const boost::shared_ptr<SwapIndex>& swapIndex,
-                     const boost::shared_ptr<IborIndex>& iborIndex,
+                     const ext::shared_ptr<SwapIndex>& swapIndex,
+                     const ext::shared_ptr<IborIndex>& iborIndex,
                      Spread iborSpread,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
@@ -64,7 +63,7 @@ namespace QuantLib {
 
 
     MakeCms::MakeCms(const Period& swapTenor,
-                     const boost::shared_ptr<SwapIndex>& swapIndex,
+                     const ext::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
@@ -93,11 +92,11 @@ namespace QuantLib {
 
 
     MakeCms::operator Swap() const {
-        boost::shared_ptr<Swap> swap = *this;
+        ext::shared_ptr<Swap> swap = *this;
         return *swap;
     }
 
-    MakeCms::operator boost::shared_ptr<Swap>() const {
+    MakeCms::operator ext::shared_ptr<Swap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -175,11 +174,11 @@ namespace QuantLib {
             .withFixingDays(iborIndex_->fixingDays())
             .withSpreads(usedSpread);
 
-        boost::shared_ptr<Swap> swap;
+        ext::shared_ptr<Swap> swap;
         if (payCms_)
-            swap = boost::make_shared<Swap>(cmsLeg, floatLeg);
+            swap = ext::make_shared<Swap>(cmsLeg, floatLeg);
         else
-            swap = boost::make_shared<Swap>(floatLeg, cmsLeg);
+            swap = ext::make_shared<Swap>(floatLeg, cmsLeg);
         swap->setPricingEngine(engine_);
         return swap;
     }
@@ -202,12 +201,12 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        engine_ = boost::make_shared<DiscountingSwapEngine>(discountingTermStructure);
+        engine_ = ext::make_shared<DiscountingSwapEngine>(discountingTermStructure);
         return *this;
     }
 
     MakeCms& MakeCms::withCmsCouponPricer(
-                    const boost::shared_ptr<CmsCouponPricer>& couponPricer) {
+                    const ext::shared_ptr<CmsCouponPricer>& couponPricer) {
         couponPricer_ = couponPricer;
         return *this;
     }

@@ -41,8 +41,8 @@ namespace QuantLib {
         TwoAssetBarrierOption(
                       Barrier::Type barrierType,
                       Real barrier,
-                      const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                      const boost::shared_ptr<Exercise>& exercise);
+                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                      const ext::shared_ptr<Exercise>& exercise);
 
         bool isExpired() const;
         void setupArguments(PricingEngine::arguments*) const;

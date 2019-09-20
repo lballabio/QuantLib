@@ -39,7 +39,7 @@ namespace QuantLib {
                                 maturityDate, 6*Months,
                                 NullCalendar(), Unadjusted, Unadjusted,
                                 DateGeneration::Backward, true),
-                       boost::shared_ptr<Euribor6M>(new Euribor6M(fwdCurve)),
+                       ext::make_shared<Euribor6M>(fwdCurve),
                        Actual360(),
                        Following,
                        Euribor6M().fixingDays(),
@@ -89,7 +89,7 @@ namespace QuantLib {
 
 
     RendistatoBasket::RendistatoBasket(
-            const std::vector<boost::shared_ptr<BTP> >& btps,
+            const std::vector<ext::shared_ptr<BTP> >& btps,
             const std::vector<Real>& outstandings,
             const std::vector<Handle<Quote> >& cleanPriceQuotes)
     : btps_(btps), outstandings_(outstandings), quotes_(cleanPriceQuotes) {
@@ -133,8 +133,8 @@ namespace QuantLib {
 
 
     RendistatoCalculator::RendistatoCalculator(
-                            const boost::shared_ptr<RendistatoBasket>& basket,
-                            const boost::shared_ptr<Euribor>& euriborIndex,
+                            const ext::shared_ptr<RendistatoBasket>& basket,
+                            const ext::shared_ptr<Euribor>& euriborIndex,
                             const Handle<YieldTermStructure>& discountCurve)
     : basket_(basket),
       euriborIndex_(euriborIndex), discountCurve_(discountCurve),
@@ -159,7 +159,7 @@ namespace QuantLib {
 
     void RendistatoCalculator::performCalculations() const {
 
-        const std::vector<boost::shared_ptr<BTP> >& btps = basket_->btps();
+        const std::vector<ext::shared_ptr<BTP> >& btps = basket_->btps();
         const std::vector<Handle<Quote> >& quotes = basket_->cleanPriceQuotes();
         Date bondSettlementDate = btps[0]->settlementDate();
         for (Size i=0; i<basket_->size(); ++i) {
@@ -228,7 +228,7 @@ namespace QuantLib {
     }
 
     RendistatoEquivalentSwapLengthQuote::RendistatoEquivalentSwapLengthQuote(
-        const boost::shared_ptr<RendistatoCalculator>& r) : r_(r) {}
+        const ext::shared_ptr<RendistatoCalculator>& r) : r_(r) {}
 
     bool RendistatoEquivalentSwapLengthQuote::isValid() const {
         try {
@@ -240,7 +240,7 @@ namespace QuantLib {
     }
 
     RendistatoEquivalentSwapSpreadQuote::RendistatoEquivalentSwapSpreadQuote(
-        const boost::shared_ptr<RendistatoCalculator>& r) : r_(r) {}
+        const ext::shared_ptr<RendistatoCalculator>& r) : r_(r) {}
 
     bool RendistatoEquivalentSwapSpreadQuote::isValid() const {
         try {

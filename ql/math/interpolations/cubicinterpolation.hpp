@@ -99,6 +99,8 @@ namespace QuantLib {
         \test to be adapted from old ones.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class CubicInterpolation : public Interpolation {
       public:
@@ -162,7 +164,7 @@ namespace QuantLib {
                            Real leftConditionValue,
                            CubicInterpolation::BoundaryCondition rightCond,
                            Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::CubicInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                       da,
                                                       monotonic,
@@ -172,7 +174,7 @@ namespace QuantLib {
                                                       rightConditionValue));
             impl_->update();
             coeffs_ =
-                boost::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
+                ext::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
         }
         const std::vector<Real>& primitiveConstants() const {
             return coeffs_->primitiveConst_;
@@ -184,7 +186,7 @@ namespace QuantLib {
             return coeffs_->monotonicityAdjustments_;
         }
       private:
-        boost::shared_ptr<detail::CoefficientHolder> coeffs_;
+        ext::shared_ptr<detail::CoefficientHolder> coeffs_;
     };
 
 

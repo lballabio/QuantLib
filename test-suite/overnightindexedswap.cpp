@@ -49,7 +49,7 @@ using namespace boost::unit_test_framework;
 
 using std::exp;
 
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
 
@@ -59,23 +59,6 @@ namespace {
         Integer settlementDays;
         Integer n;
         TimeUnit unit;
-        Rate rate;
-    };
-
-    struct FraDatum {
-        Integer settlementDays;
-        Integer nExpiry;
-        Integer nMaturity;
-        //        TimeUnit units;
-        Rate rate;
-    };
-
-    struct SwapDatum {
-        Integer settlementDays;
-        Integer nIndexUnits;
-        TimeUnit indexUnit;
-        Integer nTermUnits;
-        TimeUnit termUnit;
         Rate rate;
     };
 
@@ -128,32 +111,6 @@ namespace {
         { 2, 30,  Years, 3.369 }
     };
 
-    FraDatum fraData[] = {
-        { 2, 3, 6, 1.728 },
-        { 2, 6, 9, 1.702 }
-     };
-
-    SwapDatum swapData[] = {
-        { 2, 3, Months,  1, Years, 1.867 },
-        { 2, 3, Months, 15, Months, 1.879 },
-        { 2, 3, Months, 18, Months, 1.934 },
-        { 2, 3, Months, 21, Months, 2.005 },
-        { 2, 3, Months,  2, Years, 2.091 },
-        { 2, 3, Months,  3, Years, 2.435 },
-        { 2, 3, Months,  4, Years, 2.733 },
-        { 2, 3, Months,  5, Years, 2.971 },
-        { 2, 3, Months,  6, Years, 3.174 },
-        { 2, 3, Months,  7, Years, 3.345 },
-        { 2, 3, Months,  8, Years, 3.491 },
-        { 2, 3, Months,  9, Years, 3.620 },
-        { 2, 3, Months, 10, Years, 3.733 },
-        { 2, 3, Months, 12, Years, 3.910 },
-        { 2, 3, Months, 15, Years, 4.052 },
-        { 2, 3, Months, 20, Years, 4.073 },
-        { 2, 3, Months, 25, Years, 3.844 },
-        { 2, 3, Months, 30, Years, 3.687 }
-    };
-
     struct CommonVars {
         // global data
         Date today, settlement;
@@ -182,11 +139,13 @@ namespace {
                                                   Rate fixedRate,
                                                   Spread spread,
                                                   bool telescopicValueDates,
-                                                  Date effectiveDate = Null<Date>()) {
+                                                  Date effectiveDate = Null<Date>(),
+                                                  Natural paymentLag = 0) {
             return MakeOIS(length, eoniaIndex, fixedRate)
                 .withEffectiveDate(effectiveDate == Null<Date>() ? settlement : effectiveDate)
                 .withOvernightLegSpread(spread)
                 .withNominal(nominal)
+                .withPaymentLag(paymentLag)
                 .withDiscountingTermStructure(eoniaTermStructure)
                 .withTelescopicValueDates(telescopicValueDates);
         }
@@ -200,7 +159,7 @@ namespace {
             fixedEoniaPeriod = 1*Years;
             floatingEoniaPeriod = 1*Years;
             fixedEoniaDayCount = Actual360();
-            eoniaIndex = shared_ptr<Eonia>(new Eonia(eoniaTermStructure));
+            eoniaIndex = ext::make_shared<Eonia>(eoniaTermStructure);
             fixedSwapConvention = ModifiedFollowing;
             fixedSwapFrequency = Annual;
             fixedSwapDayCount = Thirty360();
@@ -353,15 +312,16 @@ void testBootstrap(bool telescopicValueDates) {
 
     CommonVars vars;
 
+    Natural paymentLag = 2;
+
     std::vector<shared_ptr<RateHelper> > eoniaHelpers;
-    std::vector<shared_ptr<RateHelper> > swap3mHelpers;
 
     shared_ptr<IborIndex> euribor3m(new Euribor3M);
     shared_ptr<Eonia> eonia(new Eonia);
 
     for (Size i = 0; i < LENGTH(depositData); i++) {
         Real rate = 0.01 * depositData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
         shared_ptr<Quote> quote (simple);
         Period term = depositData[i].n * depositData[i].unit;
         shared_ptr<RateHelper> helper(new
@@ -375,29 +335,11 @@ void testBootstrap(bool telescopicValueDates) {
 
         if (term <= 2*Days)
             eoniaHelpers.push_back(helper);
-        if (term <= 3*Months)
-            swap3mHelpers.push_back(helper);
-    }
-
-    for (Size i = 0; i < LENGTH(fraData); i++) {
-        Real rate = 0.01 * fraData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
-        shared_ptr<Quote> quote (simple);
-        shared_ptr<RateHelper> helper(new
-                               FraRateHelper(Handle<Quote>(quote),
-                                             fraData[i].nExpiry,
-                                             fraData[i].nMaturity,
-                                             fraData[i].settlementDays,
-                                             euribor3m->fixingCalendar(),
-                                             euribor3m->businessDayConvention(),
-                                             euribor3m->endOfMonth(),
-                                             euribor3m->dayCounter()));
-        swap3mHelpers.push_back(helper);
     }
 
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
         Real rate = 0.01 * eoniaSwapData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
+        shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
         shared_ptr<Quote> quote (simple);
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
         shared_ptr<RateHelper> helper(new
@@ -406,44 +348,25 @@ void testBootstrap(bool telescopicValueDates) {
                                    Handle<Quote>(quote),
                                    eonia,
                                    Handle<YieldTermStructure>(),
-                                   telescopicValueDates));
+                                   telescopicValueDates,
+                                   paymentLag));
         eoniaHelpers.push_back(helper);
     }
 
-    for (Size i = 0; i < LENGTH(swapData); i++) {
-        Real rate = 0.01 * swapData[i].rate;
-        shared_ptr<SimpleQuote> simple = shared_ptr<SimpleQuote>(new SimpleQuote(rate));
-        shared_ptr<Quote> quote (simple);
-        Period tenor = swapData[i].nIndexUnits * swapData[i].indexUnit;
-        Period term = swapData[i].nTermUnits * swapData[i].termUnit;
-        shared_ptr<RateHelper> helper(new SwapRateHelper(
-                               Handle<Quote>(quote),
-                               term,
-                               vars.calendar,
-                               vars.fixedSwapFrequency,
-                               vars.fixedSwapConvention,
-                               vars.fixedSwapDayCount,
-                               euribor3m));
-        if (tenor == 3*Months)
-            swap3mHelpers.push_back(helper);
-    }
-
-    shared_ptr<PiecewiseFlatForward> eoniaTS(new
-        PiecewiseFlatForward (vars.today, eoniaHelpers, Actual365Fixed()));
-
-    shared_ptr<PiecewiseFlatForward> swapTS(new
-        PiecewiseFlatForward (vars.today, swap3mHelpers, Actual365Fixed()));
+    shared_ptr<PiecewiseFlatForward> eoniaTS(
+        new PiecewiseFlatForward (vars.today, eoniaHelpers, Actual365Fixed()));
 
     vars.eoniaTermStructure.linkTo(eoniaTS);
 
     // test curve consistency
     Real tolerance = 1.0e-8;
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
-        Rate expected = eoniaSwapData[i].rate;
+        Rate expected = eoniaSwapData[i].rate/100;
         Period term = eoniaSwapData[i].n * eoniaSwapData[i].unit;
         // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
-        shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(term, 0.0, 0.0, false);
-        Rate calculated = 100.0 * swap->fairRate();
+        shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(term, 0.0, 0.0, false,
+                                                              Null<Date>(), paymentLag);
+        Rate calculated = swap->fairRate();
         Rate error = std::fabs(expected-calculated);
 
         if (error>tolerance)

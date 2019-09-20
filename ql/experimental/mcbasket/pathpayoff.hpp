@@ -33,7 +33,7 @@
 namespace QuantLib {
 
     //! Abstract base class for path-dependent option payoffs
-    class PathPayoff : std::unary_function<Matrix, Disposable<Array> > {
+    class PathPayoff {
       public:
         virtual ~PathPayoff() {}
         //! \name Payoff interface

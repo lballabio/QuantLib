@@ -20,6 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib 
 {
@@ -45,7 +46,6 @@ namespace QuantLib
         fixedMultipliers_(fixedMultipliers),
         floatingSpreads_(floatingSpreads),
         paymentTimes_(paymentTimes),
-        payer_(payer),
         multiplier_(payer ? -1.0 : 1.0), 
         lastIndex_(rateTimes.size()-1)
     {
@@ -103,10 +103,11 @@ namespace QuantLib
 
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseInverseFloater::clone() const 
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseInverseFloater::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-            new MarketModelPathwiseInverseFloater(*this));
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+                                new MarketModelPathwiseInverseFloater(*this));
     }
 
     std::vector<Size> MarketModelPathwiseInverseFloater::suggestedNumeraires() const

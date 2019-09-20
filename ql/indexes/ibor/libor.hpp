@@ -55,7 +55,7 @@ namespace QuantLib {
         // @}
         //! \name Other methods
         //@{
-        boost::shared_ptr<IborIndex> clone(
+        ext::shared_ptr<IborIndex> clone(
                                    const Handle<YieldTermStructure>& h) const;
         // @}
         //! \name Other inspectors

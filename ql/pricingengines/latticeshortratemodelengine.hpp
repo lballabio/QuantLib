@@ -39,24 +39,24 @@ namespace QuantLib {
         : public GenericModelEngine<ShortRateModel, Arguments, Results> {
       public:
         LatticeShortRateModelEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                                Size timeSteps);
         LatticeShortRateModelEngine(
                                const Handle<ShortRateModel>& model,
                                Size timeSteps);
         LatticeShortRateModelEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid);
         void update();
       protected:
         TimeGrid timeGrid_;
         Size timeSteps_;
-        boost::shared_ptr<Lattice> lattice_;
+        ext::shared_ptr<Lattice> lattice_;
     };
 
     template <class Arguments, class Results>
     LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
-            const boost::shared_ptr<ShortRateModel>& model,
+            const ext::shared_ptr<ShortRateModel>& model,
             Size timeSteps)
     : GenericModelEngine<ShortRateModel, Arguments, Results>(model),
       timeSteps_(timeSteps) {
@@ -78,7 +78,7 @@ namespace QuantLib {
 
     template <class Arguments, class Results>
     LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
-            const boost::shared_ptr<ShortRateModel>& model,
+            const ext::shared_ptr<ShortRateModel>& model,
             const TimeGrid& timeGrid)
     : GenericModelEngine<ShortRateModel, Arguments, Results>(model),
       timeGrid_(timeGrid), timeSteps_(0) {

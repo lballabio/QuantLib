@@ -21,12 +21,13 @@
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/payoff.hpp>
+#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
     BermudanSwaptionExerciseValue::BermudanSwaptionExerciseValue(
               const std::vector<Time>& rateTimes,
-              const std::vector<boost::shared_ptr<Payoff> >&payoffs)
+              const std::vector<ext::shared_ptr<Payoff> >&payoffs)
     : numberOfExercises_(rateTimes.empty() ? 0 : rateTimes.size()-1),
       rateTimes_(rateTimes),
       payoffs_(payoffs), currentIndex_(0) {
@@ -79,9 +80,9 @@ namespace QuantLib {
          return cf_;
     }
 
-    std::auto_ptr<MarketModelExerciseValue>
+    QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>
     BermudanSwaptionExerciseValue::clone() const {
-        return std::auto_ptr<MarketModelExerciseValue>(
+        return QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>(
                                     new BermudanSwaptionExerciseValue(*this));
     }
 

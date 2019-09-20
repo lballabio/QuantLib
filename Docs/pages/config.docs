@@ -57,12 +57,6 @@
     performance. Undefined by default.
 
     \code
-    #define QL_NEGATIVE_RATES
-    \endcode
-    If defined (the default), negative yield rates are allowed in a
-    few places where they used to be forbidden.
-
-    \code
     #define QL_EXTRA_SAFETY_CHECKS
     \endcode
     If defined, extra run-time checks are added to a few
@@ -108,6 +102,15 @@
     intraday pricing.  If disabled (the default) the smallest
     resolution of date objects will be a single day.  Intraday
     datetime resolution is experimental.
+
+    \code
+    #define QL_USE_STD_SHARED_PTR
+    \endcode
+    If defined, std::shared_ptr and related classes and functions will
+    be used instead of boost::shared_ptr; this requires you to set
+    your compiler's standard to at least C++11. If disabled (the
+    default) the Boost facilities are used. Note that std::shared_ptr
+    does not check access and can cause segmentation faults.
 
     \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER

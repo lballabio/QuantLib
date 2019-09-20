@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     PathMultiAssetOption::PathMultiAssetOption(
-                            const boost::shared_ptr<PricingEngine>& engine) {
+                            const ext::shared_ptr<PricingEngine>& engine) {
         if (engine)
             setPricingEngine(engine);
     }

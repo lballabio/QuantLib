@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     AnalyticSimpleChooserEngine::AnalyticSimpleChooserEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : process_(process) {
         registerWith(process_);
     }
@@ -42,8 +42,8 @@ namespace QuantLib {
                    "Risk-free rate and volatility must"
                    "have the same day counter");
         Real spot = process_->stateVariable()->value();
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         Real strike = payoff->strike();
         Volatility volatility = process_->blackVolatility()->blackVol(

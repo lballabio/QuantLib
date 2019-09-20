@@ -17,10 +17,6 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/qldefines.hpp>
-
-#if BOOST_VERSION >= 104700
-
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -28,8 +24,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
     FireflyAlgorithm::FireflyAlgorithm(Size M, 
-        boost::shared_ptr<Intensity> intensity,
-        boost::shared_ptr<RandomWalk> randomWalk,
+        ext::shared_ptr<Intensity> intensity,
+        ext::shared_ptr<RandomWalk> randomWalk,
         Size Mde, Real mutation,
         Real crossover, unsigned long seed):
         mutation_(mutation), crossover_(crossover),
@@ -246,6 +242,4 @@ namespace QuantLib {
         }
     }
 }
-
-#endif
 

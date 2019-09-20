@@ -32,16 +32,17 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const boost::shared_ptr<FixedRateBond>& fixedCouponBond,
+                    const ext::shared_ptr<FixedRateBond>& fixedCouponBond,
                     const Handle<YieldTermStructure>& discountCurve,
                     const Handle<YieldTermStructure>& incomeDiscountCurve)
     : Forward(dayCounter, calendar, businessDayConvention, settlementDays,
-              boost::shared_ptr<Payoff>(new ForwardTypePayoff(type,strike)),
+              ext::shared_ptr<Payoff>(new ForwardTypePayoff(type,strike)),
               valueDate, maturityDate, discountCurve),
       fixedCouponBond_(fixedCouponBond) {
 
         incomeDiscountCurve_ = incomeDiscountCurve;
         registerWith(incomeDiscountCurve_);
+        registerWith(fixedCouponBond);
     }
 
 

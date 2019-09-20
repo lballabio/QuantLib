@@ -26,8 +26,8 @@ namespace QuantLib {
 
     KlugeExtOUProcess::KlugeExtOUProcess(
         Real rho,
-        const boost::shared_ptr<ExtOUWithJumpsProcess>& klugeProcess,
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& ouProcess)
+        const ext::shared_ptr<ExtOUWithJumpsProcess>& klugeProcess,
+        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& ouProcess)
     : rho_         (rho),
       sqrtMRho_    (std::sqrt(1-rho*rho)),
       klugeProcess_(klugeProcess),
@@ -86,11 +86,11 @@ namespace QuantLib {
         return retVal;
     }
 
-    boost::shared_ptr<ExtOUWithJumpsProcess>
+    ext::shared_ptr<ExtOUWithJumpsProcess>
         KlugeExtOUProcess::getKlugeProcess() const {
         return klugeProcess_;
     }
-    boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
+    ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
         KlugeExtOUProcess::getExtOUProcess() const {
         return ouProcess_;
     }

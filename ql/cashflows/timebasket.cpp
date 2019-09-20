@@ -20,6 +20,7 @@
 
 #include <ql/cashflows/timebasket.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

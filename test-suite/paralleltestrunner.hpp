@@ -31,6 +31,7 @@
 #define quantlib_parallel_test_runner_hpp
 
 #include <ql/types.hpp>
+#include <ql/functional.hpp>
 
 #ifdef VERSION
 /* This comes from ./configure, and for some reason it interferes with
@@ -39,8 +40,6 @@
 #endif
 
 #include <boost/timer.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -150,7 +149,7 @@ namespace {
     void output_logstream(
         std::ostream& out, std::streambuf* outBuf, std::stringstream& s) {
 
-        static named_mutex mutex(open_or_create, "namesLogMutexName");
+        static named_mutex mutex(open_or_create, namesLogMutexName);
         scoped_lock<named_mutex> lock(mutex);
 
         out.flush();
@@ -163,7 +162,7 @@ namespace {
         for (std::vector<std::string>::const_iterator iter = tok.begin();
             iter != tok.end(); ++iter) {
             if (iter->length() && iter->compare("Running 1 test case...")) {
-                out << *iter << std::endl;
+                out << *iter  << std::endl;
             }
         }
 
@@ -206,7 +205,7 @@ int main( int argc, char* argv[] )
             if (in.good()) {
                 for (std::string line; std::getline(in, line);) {
                     std::vector<std::string> tok;
-                    boost::split(tok, line, boost::is_any_of(" "));
+                    boost::split(tok, line, boost::is_any_of(":"));
 
                     QL_REQUIRE(tok.size() == 2,
                         "every line should consists of two entries");
@@ -273,23 +272,10 @@ int main( int argc, char* argv[] )
                     ? tcc.map().find(tcc.testSuiteId())->second
                     : std::list<test_unit_id>();
 
-            std::stringstream logBuf;
-            std::streambuf* const oldBuf = log_stream().rdbuf();
-            log_stream().rdbuf(logBuf.rdbuf());
-
-            for (std::list<test_unit_id>::const_iterator iter = qlRoot.begin();
-                std::distance(qlRoot.begin(), iter) < int(qlRoot.size())-1;
-                ++iter) {
-
-                framework::impl::s_frk_state().execute_test_tree(*iter);
-            }
-            output_logstream(log_stream(), oldBuf, logBuf);
-            log_stream().rdbuf(oldBuf);
-
             // fork worker processes
             boost::thread_group threadGroup;
             for (unsigned i=0; i < nProc; ++i) {
-                threadGroup.create_thread(boost::bind(worker, cmd.str()));
+                threadGroup.create_thread(QuantLib::ext::bind(worker, cmd.str()));
             }
 
             struct mutex_remove {
@@ -366,17 +352,6 @@ int main( int argc, char* argv[] )
                     = remoteResults.results;
             }
 
-            if (!qlRoot.empty()) {
-                std::streambuf* const oldBuf = log_stream().rdbuf();
-                log_stream().rdbuf(logBuf.rdbuf());
-
-                const test_unit_id id = qlRoot.back();
-                framework::impl::s_frk_state().execute_test_tree(id);
-
-                output_logstream(log_stream(), oldBuf, logBuf);
-                log_stream().rdbuf(oldBuf);
-            }
-
             TestCaseReportAggregator tca;
             traverse_test_tree(framework::master_test_suite(), tca , true);
 
@@ -393,7 +368,7 @@ int main( int argc, char* argv[] )
             out << std::setprecision(6);
             for (std::map<std::string, QuantLib::Time>::const_iterator
                 iter = runTimeLog.begin(); iter != runTimeLog.end(); ++iter) {
-                out << iter->first << " " << iter->second << std::endl;
+                out << iter->first << ":" << iter->second << std::endl;
             }
             out.close();
 
@@ -430,7 +405,7 @@ int main( int argc, char* argv[] )
                     BOOST_TEST_FOREACH( test_observer*, to,
                         framework::impl::s_frk_state().m_observers )
                         framework::impl::s_frk_state().m_aux_em.vexecute(
-                            boost::bind( &test_observer::test_start, to, 1 ) );
+                            ext::bind( &test_observer::test_start, to, 1 ) );
 
                     framework::impl::s_frk_state().execute_test_tree( id.id );
 

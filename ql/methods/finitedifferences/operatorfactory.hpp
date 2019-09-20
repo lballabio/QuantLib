@@ -32,25 +32,31 @@
 
 namespace QuantLib {
 
-    //! Black-Scholes-Merton differential operator
-    /*! \ingroup findiff
-
-        \test coefficients are tested against constant BSM operator
+    //! Factory for finite-difference operators
+    /*! \deprecated Instantiate operators directly.
+                    Deprecated in version 1.14.
     */
-    class OperatorFactory {
+    class QL_DEPRECATED OperatorFactory {
       public:
         static TridiagonalOperator getOperator(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess> &process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess> &process,
              const Array &grid,
              Time residualTime,
              bool timeDependent) {
             if (timeDependent)
                 return BSMTermOperator(grid, process, residualTime);
             else
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
                 return BSMOperator(grid, process, residualTime);
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
         };
         static TridiagonalOperator getOperator(
-          const boost::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
+          const ext::shared_ptr<OneFactorModel::ShortRateDynamics> &process,
           const Array &grid) {
             return OneFactorOperator(grid, process);
         }

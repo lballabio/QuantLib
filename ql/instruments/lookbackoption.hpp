@@ -40,8 +40,8 @@ namespace QuantLib {
         class engine;
         ContinuousFloatingLookbackOption(
                           Real currentMinmax,
-                          const boost::shared_ptr<TypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
+                          const ext::shared_ptr<TypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
@@ -56,8 +56,8 @@ namespace QuantLib {
         class engine;
         ContinuousFixedLookbackOption(
                           Real currentMinmax,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
+                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
@@ -87,8 +87,8 @@ namespace QuantLib {
                           Real currentMinmax,
                           Real lambda,
                           Date lookbackPeriodEnd,
-                          const boost::shared_ptr<TypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
+                          const ext::shared_ptr<TypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
@@ -122,8 +122,8 @@ namespace QuantLib {
         class engine;
         ContinuousPartialFixedLookbackOption(
                           Date lookbackPeriodStart,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
+                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments

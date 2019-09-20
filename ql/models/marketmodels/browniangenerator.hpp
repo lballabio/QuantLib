@@ -22,7 +22,7 @@
 #define quantlib_brownian_generator_hpp
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         virtual ~BrownianGeneratorFactory() {}
 
-        virtual boost::shared_ptr<BrownianGenerator> create(Size factors,
+        virtual ext::shared_ptr<BrownianGenerator> create(Size factors,
                                                             Size steps) const = 0;
     };
 

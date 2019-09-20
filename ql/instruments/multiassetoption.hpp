@@ -35,8 +35,8 @@ namespace QuantLib {
       public:
         class engine;
         class results;
-        MultiAssetOption(const boost::shared_ptr<Payoff>&,
-                         const boost::shared_ptr<Exercise>&);
+        MultiAssetOption(const ext::shared_ptr<Payoff>&,
+                         const ext::shared_ptr<Exercise>&);
         //! \name Instrument interface
         //@{
         bool isExpired() const;

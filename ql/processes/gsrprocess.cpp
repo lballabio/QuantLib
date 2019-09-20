@@ -49,7 +49,8 @@ namespace QuantLib {
     Real GsrProcess::x0() const { return 0.0; }
 
     Real GsrProcess::drift(Time t, Real x) const {
-        return core_.y(t) - core_.G(t, x) * sigma(t) * sigma(t) -
+        return core_.y(t) -
+               core_.G(t, getForwardMeasureTime()) * sigma(t) * sigma(t) -
                reversion(t) * x;
     }
 
