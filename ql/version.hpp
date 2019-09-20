@@ -44,11 +44,13 @@
 /*! @}  */
 
 namespace QuantLib {
+
     /*! Returns the version of boost that the QuantLib library was built with
         Use to check that client code is using a consistent version of boost.
         Using QuantLib header files compiled with a different version of boost
         than the library itself may result in undefined behaviour */
-    size_t compiledBoostVersion();
+    std::size_t compiledBoostVersion();
+
 }
 
 #endif

@@ -35,8 +35,9 @@
 
 namespace QuantLib {
 
-    QL_FORCE_NONINLINE size_t compiledBoostVersion()
+    QL_FORCE_NONINLINE std::size_t compiledBoostVersion()
     {
-      return static_cast<size_t>(BOOST_VERSION);
+        return static_cast<size_t>(BOOST_VERSION);
     }
+
 }
