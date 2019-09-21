@@ -2109,8 +2109,8 @@ void InterpolationTest::testTransformations() {
 }
 
 void InterpolationTest::testFlochKennedySabrIsSmoothAroundATM() {
-    BOOST_TEST_MESSAGE("Testing that Andersen Sabr formula is smooth"
-            "close to the ATM level...");
+    BOOST_TEST_MESSAGE("Testing that Andersen SABR formula is smooth "
+                       "close to the ATM level...");
 
     const Real f0    = 1.1;
     const Real alpha = 0.35;

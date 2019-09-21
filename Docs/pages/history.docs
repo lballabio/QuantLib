@@ -18,7 +18,57 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.15 - February 2019</strong>
+    <strong>Release 1.16 - August 2019</strong>
+
+    PORTABILITY
+    - Added support for Visual Studio 2019 (thanks to Paul Giltinan).
+
+    CONFIGURATION
+    - As announced in past release, the compile-time switch to force
+      non-negative rates was removed.
+
+    PRICING ENGINES
+    - Added constant elasticity of variance (CEV) pricing engines for
+      vanilla options.  Analytic, FD and SABR engines are available
+      (thanks to Klaus Spanderen).
+    - Added quanto pricing functionality to a couple of FD engines for
+      DividendVanillaOption (thanks to Klaus Spanderen).
+
+    CASH FLOWS
+    - Digital coupons can now optionally return the value of the naked
+      option (thanks to Peter Caspers).
+
+    DATE/TIME
+    - Updated Taiwan holidays for 2019 (thanks to Hank Liu).
+    - Added two newly announced holidays to Chinese calendar (thanks to
+      Cheng Li).
+    - Updated Japan calendar (thanks to Eisuke Tani).
+    - Fixed New Year's day adjustment for Canadian calendar (thanks to Roy
+      Zywina).
+    - Added a couple of exceptions for UK bank holidays (thanks to GitHub
+      user Vililikku for the heads-up).
+    - Added French calendar (thanks to GitHub user NJeanray).
+    - Added public methods to expose a calendar's added and removed
+      holidays (thanks to Francois Botha).
+    - Allow the stub date of a schedule to equal the maturity.
+
+    DEPRECATED FEATURES
+    - Deprecated a constructor of the SwaptionVolatilityMatrix class that
+      didn't take a calendar.
+    - Removed typedefs GammaDistribution, ChiSquareDistribution,
+      NonCentralChiSquareDistribution and
+      InverseNonCentralChiSquareDistribution, deprecated in version 1.12.
+      Use CumulativeGammaDistribution, CumulativeChiSquareDistribution,
+      NonCentralCumulativeChiSquareDistribution and
+      InverseNonCentralCumulativeChiSquareDistribution instead.
+    - Removed Actual365NoLeap class, deprecated in version 1.11.  It was
+      folded into Actual365Fixed.
+
+    TERM STRUCTURES
+    - Take payment days into account when calculating the nodes of a
+      bootstrapped curve based on overnight swaps.
+
+    <strong>Release 1.15 - February 19th, 2019</strong>
 
     PORTABILITY
     - This release drops support for Boost version 1.43 to 1.47; the
