@@ -52,22 +52,22 @@ void SofrFuturesTest::testBootstrap() {
     Settings::instance().evaluationDate() = today;
 
     const SofrQuotes sofrQuotes[] = {
-        {Monthly, Oct, 2018, 97.8175, OvernightIndexFuture::SubPeriodsNettingType::Averaging},
-        {Monthly, Nov, 2018, 97.770, OvernightIndexFuture::SubPeriodsNettingType::Averaging},
-        {Monthly, Dec, 2018, 97.685, OvernightIndexFuture::SubPeriodsNettingType::Averaging},
-        {Monthly, Jan, 2019, 97.595, OvernightIndexFuture::SubPeriodsNettingType::Averaging},
-        {Monthly, Feb, 2019, 97.590, OvernightIndexFuture::SubPeriodsNettingType::Averaging},
-        {Monthly, Mar, 2019, 97.525, OvernightIndexFuture::SubPeriodsNettingType::Averaging},
+        {Monthly, Oct, 2018, 97.8175, OvernightIndexFuture::Averaging},
+        {Monthly, Nov, 2018, 97.770, OvernightIndexFuture::Averaging},
+        {Monthly, Dec, 2018, 97.685, OvernightIndexFuture::Averaging},
+        {Monthly, Jan, 2019, 97.595, OvernightIndexFuture::Averaging},
+        {Monthly, Feb, 2019, 97.590, OvernightIndexFuture::Averaging},
+        {Monthly, Mar, 2019, 97.525, OvernightIndexFuture::Averaging},
         // removed due to overlap in bootstrap
-        // {Quarterly, Sep, 2018, 97.8175, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        // {Quarterly, Dec, 2018, 97.600, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        {Quarterly, Mar, 2019, 97.440, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        {Quarterly, Jun, 2019, 97.295, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        {Quarterly, Sep, 2019, 97.220, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        {Quarterly, Dec, 2019, 97.170, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        {Quarterly, Mar, 2020, 97.160, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        {Quarterly, Jun, 2020, 97.165, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
-        {Quarterly, Sep, 2020, 97.175, OvernightIndexFuture::SubPeriodsNettingType::Compounding},
+        // {Quarterly, Sep, 2018, 97.8175, OvernightIndexFuture::Compounding},
+        // {Quarterly, Dec, 2018, 97.600, OvernightIndexFuture::Compounding},
+        {Quarterly, Mar, 2019, 97.440, OvernightIndexFuture::Compounding},
+        {Quarterly, Jun, 2019, 97.295, OvernightIndexFuture::Compounding},
+        {Quarterly, Sep, 2019, 97.220, OvernightIndexFuture::Compounding},
+        {Quarterly, Dec, 2019, 97.170, OvernightIndexFuture::Compounding},
+        {Quarterly, Mar, 2020, 97.160, OvernightIndexFuture::Compounding},
+        {Quarterly, Jun, 2020, 97.165, OvernightIndexFuture::Compounding},
+        {Quarterly, Sep, 2020, 97.175, OvernightIndexFuture::Compounding},
     };
 
     ext::shared_ptr<OvernightIndex> index = ext::make_shared<Sofr>();
