@@ -6464,6 +6464,7 @@
     <ClCompile Include="ql\stochasticprocess.cpp" />
     <ClCompile Include="ql\termstructure.cpp" />
     <ClCompile Include="ql\timegrid.cpp" />
+    <ClCompile Include="ql\version.cpp" />
     <ClCompile Include="ql\cashflows\cpicoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
