@@ -32,6 +32,7 @@ QL_TESTS = \
 	cms.hpp cms.cpp \
 	cmsspread.hpp cmsspread.cpp \
 	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
+	compiledboostversion.hpp compiledboostversion.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \

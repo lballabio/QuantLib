@@ -83,6 +83,7 @@
 #include "cms.hpp"
 #include "cmsspread.hpp"
 #include "commodityunitofmeasure.hpp"
+#include "compiledboostversion.hpp"
 #include "compoundoption.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
@@ -475,6 +476,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ChooserOptionTest::suite());
     test->add(CmsSpreadTest::suite());
     test->add(CommodityUnitOfMeasureTest::suite());
+    test->add(CompiledBoostVersionTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CreditRiskPlusTest::suite());
