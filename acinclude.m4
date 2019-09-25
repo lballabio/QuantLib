@@ -130,35 +130,37 @@ AC_DEFUN([QL_CHECK_BOOST_UBLAS],
 # ------------------------
 # Check whether the Boost unit-test framework is available
 AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
-[AC_MSG_CHECKING([for Boost unit-test framework])
+[AC_MSG_CHECKING([for Boost unit-test framework and Boost timer])
  AC_REQUIRE([AC_PROG_CC])
  ql_original_LIBS=$LIBS
  ql_original_CXXFLAGS=$CXXFLAGS
  CC_BASENAME=`basename $CC`
  CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
- for boost_lib in boost_unit_test_framework-$CC_BASENAME$CC_VERSION \
-                  boost_unit_test_framework-$CC_BASENAME \
-                  boost_unit_test_framework \
-                  boost_unit_test_framework-mt-$CC_BASENAME$CC_VERSION \
-                  boost_unit_test_framework-$CC_BASENAME$CC_VERSION-mt \
-                  boost_unit_test_framework-x$CC_BASENAME$CC_VERSION-mt \
-                  boost_unit_test_framework-mt-$CC_BASENAME \
-                  boost_unit_test_framework-$CC_BASENAME-mt \
-                  boost_unit_test_framework-mt ; do
-     LIBS="$ql_original_LIBS -l$boost_lib"
+ for boost_libs in "-lboost_unit_test_framework-$CC_BASENAME$CC_VERSION -lboost_timer-$CC_BASENAME$CC_VERSION" \
+                   "-lboost_unit_test_framework-$CC_BASENAME -lboost_timer-$CC_BASENAME" \
+                   "-lboost_unit_test_framework -lboost_timer" \
+                   "-lboost_unit_test_framework-mt-$CC_BASENAME$CC_VERSION -lboost_timer-mt-$CC_BASENAME$CC_VERSION" \
+                   "-lboost_unit_test_framework-$CC_BASENAME$CC_VERSION-mt -lboost_timer-$CC_BASENAME$CC_VERSION-mt" \
+                   "-lboost_unit_test_framework-x$CC_BASENAME$CC_VERSION-mt -lboost_timer-x$CC_BASENAME$CC_VERSION-mt" \
+                   "-lboost_unit_test_framework-mt-$CC_BASENAME -lboost_timer-mt-$CC_BASENAME" \
+                   "-lboost_unit_test_framework-$CC_BASENAME-mt -lboost_timer-$CC_BASENAME-mt" \
+                   "-lboost_unit_test_framework-mt -lboost_timer-mt" ; do
+     LIBS="$ql_original_LIBS $boost_libs"
      # static version
      CXXFLAGS="$ql_original_CXXFLAGS"
      boost_unit_found=no
      AC_LINK_IFELSE([AC_LANG_SOURCE(
          [@%:@include <boost/test/unit_test.hpp>
+          @%:@include <boost/timer/timer.hpp>
           using namespace boost::unit_test_framework;
           test_suite*
           init_unit_test_suite(int argc, char** argv)
           {
+              boost::timer::auto_cpu_timer t;
               return (test_suite*) 0;
           }
          ])],
-         [boost_unit_found=$boost_lib
+         [boost_unit_found=$boost_libs
           boost_defines=""
           break],
          [])
@@ -167,14 +169,16 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
      boost_unit_found=no
      AC_LINK_IFELSE([AC_LANG_SOURCE(
          [@%:@include <boost/test/unit_test.hpp>
+          @%:@include <boost/timer/timer.hpp>
           using namespace boost::unit_test_framework;
           test_suite*
           init_unit_test_suite(int argc, char** argv)
           {
+              boost::timer::auto_cpu_timer t;
               return (test_suite*) 0;
           }
          ])],
-         [boost_unit_found=$boost_lib
+         [boost_unit_found=$boost_libs
           boost_defines="-DBOOST_TEST_DYN_LINK"
           break],
          [])
@@ -189,7 +193,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
      AC_MSG_WARN([The test suite will be disabled.])
  else
      AC_MSG_RESULT([yes])
-     AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_lib])
+     AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_libs])
      AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[$boost_defines])
  fi
 ])
