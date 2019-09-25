@@ -37,7 +37,6 @@
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/functional.hpp>
-#include <boost/progress.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;

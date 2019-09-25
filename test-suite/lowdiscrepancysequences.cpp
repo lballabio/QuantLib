@@ -31,7 +31,6 @@
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <ql/math/randomnumbers/latticerules.hpp>
 #include <ql/math/randomnumbers/latticersg.hpp>
 

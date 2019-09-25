@@ -29,7 +29,7 @@
 #include <boost/test/unit_test.hpp>
 #endif
 
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
@@ -210,16 +210,17 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    boost::timer t;
+    boost::timer::cpu_timer t;
 
-    void startTimer() { t.restart(); }
+    void startTimer() { t.start(); }
     void stopTimer() {
-        double seconds = t.elapsed();
+        t.stop();
+        std::cout << "\nTests completed in ";
+        double seconds = t.elapsed().wall * 1e-9;
         int hours = int(seconds/3600);
         seconds -= hours * 3600;
         int minutes = int(seconds/60);
         seconds -= minutes * 60;
-        std::cout << " \nTests completed in ";
         if (hours > 0)
             std::cout << hours << " h ";
         if (hours > 0 || minutes > 0)
