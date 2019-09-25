@@ -154,7 +154,7 @@ namespace QuantLib {
             || (y == 2016 && d >= 3 && d <= 7 && m == October)
             || (y == 2017 && d >= 2 && d <= 6 && m == October)
             || (y == 2018 && d >= 1 && d <= 5 && m == October)
-            || (y == 2019 && ((d == 30 && m == September) || (d >= 1 && d <= 4 && m == October)))
+            || (y == 2019 && d >= 1 && d <= 7 && m == October)
             // 70th anniversary of the victory of anti-Japaneses war
             || (y == 2015 && d >= 3 && d <= 4 && m == September)
             )
