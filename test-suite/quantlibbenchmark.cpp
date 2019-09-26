@@ -109,6 +109,9 @@
 #  define BOOST_LIB_NAME boost_timer
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_system
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
 
 /* uncomment the following lines to unmask floating-point exceptions.
    See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481

@@ -136,15 +136,16 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
  ql_original_CXXFLAGS=$CXXFLAGS
  CC_BASENAME=`basename $CC`
  CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
- for boost_libs in "-lboost_unit_test_framework-$CC_BASENAME$CC_VERSION -lboost_timer-$CC_BASENAME$CC_VERSION" \
-                   "-lboost_unit_test_framework-$CC_BASENAME -lboost_timer-$CC_BASENAME" \
-                   "-lboost_unit_test_framework -lboost_timer" \
-                   "-lboost_unit_test_framework-mt-$CC_BASENAME$CC_VERSION -lboost_timer-mt-$CC_BASENAME$CC_VERSION" \
-                   "-lboost_unit_test_framework-$CC_BASENAME$CC_VERSION-mt -lboost_timer-$CC_BASENAME$CC_VERSION-mt" \
-                   "-lboost_unit_test_framework-x$CC_BASENAME$CC_VERSION-mt -lboost_timer-x$CC_BASENAME$CC_VERSION-mt" \
-                   "-lboost_unit_test_framework-mt-$CC_BASENAME -lboost_timer-mt-$CC_BASENAME" \
-                   "-lboost_unit_test_framework-$CC_BASENAME-mt -lboost_timer-$CC_BASENAME-mt" \
-                   "-lboost_unit_test_framework-mt -lboost_timer-mt" ; do
+ for suffix in "-$CC_BASENAME$CC_VERSION" \
+               "-$CC_BASENAME" \
+               "" \
+               "-mt-$CC_BASENAME$CC_VERSION" \
+               "-$CC_BASENAME$CC_VERSION-mt" \
+               "-x$CC_BASENAME$CC_VERSION-mt" \
+               "-mt-$CC_BASENAME" \
+               "-$CC_BASENAME-mt" \
+               "-mt" ; do
+     boost_libs="-lboost_unit_test_framework$suffix -lboost_timer$suffix -lboost_system$suffix"
      LIBS="$ql_original_LIBS $boost_libs"
      # static version
      CXXFLAGS="$ql_original_CXXFLAGS"
@@ -208,15 +209,16 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
  ql_original_CXXFLAGS=$CXXFLAGS
  CC_BASENAME=`basename $CC`
  CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
- for boost_thread_lib in "-lboost_thread-$CC_BASENAME$CC_VERSION -lboost_system-$CC_BASENAME$CC_VERSION" \
-                          "-lboost_thread-$CC_BASENAME -lboost_system-$CC_BASENAME" \
-                          "-lboost_thread -lboost_system" \
-                          "-lboost_thread-mt-$CC_BASENAME$CC_VERSION -lboost_system-mt-$CC_BASENAME$CC_VERSION" \
-                          "-lboost_thread-$CC_BASENAME$CC_VERSION-mt -lboost_system-$CC_BASENAME$CC_VERSION-mt" \
-                          "-lboost_thread-x$CC_BASENAME$CC_VERSION-mt -lboost_system-x$CC_BASENAME$CC_VERSION-mt" \
-                          "-lboost_thread-mt-$CC_BASENAME -lboost_system-mt-$CC_BASENAME" \
-                          "-lboost_thread-$CC_BASENAME-mt -lboost_system-$CC_BASENAME-mt" \
-                          "-lboost_thread-mt -lboost_system-mt"; do
+ for suffix in "-$CC_BASENAME$CC_VERSION" \
+               "-$CC_BASENAME" \
+               "" \
+               "-mt-$CC_BASENAME$CC_VERSION" \
+               "-$CC_BASENAME$CC_VERSION-mt" \
+               "-x$CC_BASENAME$CC_VERSION-mt" \
+               "-mt-$CC_BASENAME" \
+               "-$CC_BASENAME-mt" \
+               "-mt" ; do
+     boost_thread_lib="-lboost_thread$suffix -lboost_system$suffix"
      LIBS="$ql_original_LIBS $boost_thread_lib"
      CXXFLAGS="$ql_original_CXXFLAGS -pthread"
      boost_thread_found=no

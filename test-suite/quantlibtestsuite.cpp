@@ -41,6 +41,12 @@
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_timer
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_system
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
 #endif
 
 /* uncomment the following lines to unmask floating-point exceptions.
