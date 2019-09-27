@@ -34,14 +34,12 @@
 namespace QuantLib {
 
     //! Pricing engine for European options using finite-differences
-    /*! \ingroup vanillaengines
-
-        \test the correctness of the returned value is tested by
-              checking it against analytic results.
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDEuropeanEngine : public OneAssetOption::engine,
-                             public FDVanillaEngine {
+    class QL_DEPRECATED FDEuropeanEngine : public OneAssetOption::engine,
+                                           public FDVanillaEngine {
       public:
         FDEuropeanEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,

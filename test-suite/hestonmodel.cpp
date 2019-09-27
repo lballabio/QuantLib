@@ -31,9 +31,6 @@
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
-#include <ql/pricingengines/vanilla/fddividendeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
@@ -690,7 +687,7 @@ void HestonModelTest::testFdVanillaVsCached() {
     ext::shared_ptr<BlackScholesMertonProcess> ref_process(
 		ext::make_shared<BlackScholesMertonProcess>(s0, dividendTS, riskFreeTS, volTS));
     ext::shared_ptr<PricingEngine> ref_engine(
-		ext::make_shared<FDAmericanEngine<CrankNicolson> >(ref_process, 200, 400));
+		ext::make_shared<FdBlackScholesVanillaEngine>(ref_process, 200, 400));
     option.setPricingEngine(ref_engine);
     expected = option.NPV();
 
