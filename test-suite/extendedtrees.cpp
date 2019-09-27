@@ -144,9 +144,7 @@ namespace {
                                Size binomialSteps,
                                std::map<std::string,Real> tolerance) {
 
-        QL_TEST_START_TIMING
-
-            std::map<std::string,Real> calculated, expected;
+        std::map<std::string,Real> calculated, expected;
 
         // test options
         Option::Type types[] = { Option::Call, Option::Put };

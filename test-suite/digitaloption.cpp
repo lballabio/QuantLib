@@ -688,8 +688,6 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     SavedSettings backup;
 
-    QL_TEST_START_TIMING
-
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-2, true },

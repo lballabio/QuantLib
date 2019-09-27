@@ -42,14 +42,6 @@
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
-/* the following displays the elapsed time for the test if
-   QL_DISPLAY_TEST_TIME is defined. */
-#if defined(QL_DISPLAY_TEST_TIME)
-#define QL_TEST_START_TIMING boost::progress_timer t;
-#else
-#define QL_TEST_START_TIMING
-#endif
-
 #define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))
 
 namespace QuantLib {

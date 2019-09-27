@@ -834,8 +834,6 @@ namespace {
                                   #endif
                                   ) {
 
-        QL_TEST_START_TIMING
-
         #ifndef PRINT_ONLY
         Real tolerance = 1.0e-2;
         #endif
