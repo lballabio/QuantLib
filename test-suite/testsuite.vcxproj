@@ -658,6 +658,7 @@
     <ClCompile Include="cms.cpp" />
     <ClCompile Include="cmsspread.cpp" />
     <ClCompile Include="commodityunitofmeasure.cpp" />
+    <ClCompile Include="compiledboostversion.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />
     <ClCompile Include="covariance.cpp" />
@@ -810,6 +811,7 @@
     <ClInclude Include="cms.hpp" />
     <ClInclude Include="cmsspread.hpp" />
     <ClInclude Include="commodityunitofmeasure.hpp" />
+    <ClInclude Include="compiledboostversion.hpp" />
     <ClInclude Include="compoundoption.hpp" />
     <ClInclude Include="convertiblebonds.hpp" />
     <ClInclude Include="covariance.hpp" />
