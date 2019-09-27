@@ -46,7 +46,7 @@ namespace QuantLib {
           dividends is tested.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendAmericanEngine
+    class QL_DEPRECATED FDDividendAmericanEngine
         : public FDEngineAdapter<FDAmericanCondition<FDDividendEngine<Scheme> >,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngine<Scheme> >,
@@ -83,7 +83,7 @@ namespace QuantLib {
                     Deprecated in version 1.17.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendAmericanEngineShiftScale
+    class QL_DEPRECATED FDDividendAmericanEngineShiftScale
         : public FDEngineAdapter<FDAmericanCondition<
                                      FDDividendEngineShiftScale<Scheme> >,
                                  DividendVanillaOption::engine> {
