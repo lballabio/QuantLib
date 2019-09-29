@@ -62,7 +62,7 @@ namespace QuantLib {
     /*! \ingroup interpolations */
     class CompoundedLinear {
       public:
-        CompoundedLinear(Real compFreq)
+        explicit CompoundedLinear(Real compFreq)
         : compFreq_(compFreq) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
