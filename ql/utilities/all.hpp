@@ -10,5 +10,6 @@
 #include <ql/utilities/observablevalue.hpp>
 #include <ql/utilities/steppingiterator.hpp>
 #include <ql/utilities/tracing.hpp>
+#include <ql/utilities/typesareequal.hpp>
 #include <ql/utilities/vectors.hpp>
 
