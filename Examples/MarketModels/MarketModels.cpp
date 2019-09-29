@@ -21,7 +21,33 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
 #endif
-#include <ql/models/marketmodels/all.hpp>
+#include <ql/models/marketmodels/marketmodel.hpp>
+#include <ql/models/marketmodels/accountingengine.hpp>
+#include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
+#include <ql/models/marketmodels/products/multiproductcomposite.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
+#include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
+#include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepnothing.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductswap.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductcallspecified.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/callability/swapratetrigger.hpp>
+#include <ql/models/marketmodels/callability/swapbasissystem.hpp>
+#include <ql/models/marketmodels/callability/swapforwardbasissystem.hpp>
+#include <ql/models/marketmodels/callability/nothingexercisevalue.hpp>
+#include <ql/models/marketmodels/callability/collectnodedata.hpp>
+#include <ql/models/marketmodels/callability/lsstrategy.hpp>
+#include <ql/models/marketmodels/callability/upperboundengine.hpp>
+#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
+#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
+#include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
+#include <ql/models/marketmodels/pathwisegreeks/bumpinstrumentjacobian.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>

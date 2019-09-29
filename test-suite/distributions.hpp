@@ -38,6 +38,7 @@ class DistributionTest {
     static void testBivariateCumulativeStudent();
     static void testBivariateCumulativeStudentVsBivariate();
     static void testInvCDFviaStochasticCollocation();
+    static void testSankaranApproximation();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 

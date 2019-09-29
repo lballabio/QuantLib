@@ -25,7 +25,7 @@
 #define quantlib_gmres_hpp
 
 #include <ql/math/array.hpp>
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 
 #include <list>
 

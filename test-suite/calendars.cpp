@@ -62,6 +62,14 @@ void CalendarTest::testModifiedCalendars() {
     c1.addHoliday(d2);
 
     // test
+    std::set<Date> addedHolidays(c1.addedHolidays());
+    std::set<Date> removedHolidays(c1.removedHolidays());
+
+    QL_REQUIRE(addedHolidays.find(d1) == addedHolidays.end(), "did not expect to find date in addedHolidays");
+    QL_REQUIRE(addedHolidays.find(d2) != addedHolidays.end(), "expected to find date in addedHolidays");
+    QL_REQUIRE(removedHolidays.find(d1) != removedHolidays.end(), "expected to find date in removedHolidays");
+    QL_REQUIRE(removedHolidays.find(d2) == removedHolidays.end(), "did not expect to find date in removedHolidays");
+
     if (c1.isHoliday(d1))
         BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
     if (c1.isBusinessDay(d2))
@@ -1656,10 +1664,30 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(3, Oct, 2018));
     expectedHol.push_back(Date(4, Oct, 2018));
     expectedHol.push_back(Date(5, Oct, 2018));
+    expectedHol.push_back(Date(31, December, 2018));
+
+    // China Shanghai Securities Exchange holiday list in the year 2019
+    expectedHol.push_back(Date(1, Jan, 2019));
+    expectedHol.push_back(Date(4, Feb, 2019));
+    expectedHol.push_back(Date(5, Feb, 2019));
+    expectedHol.push_back(Date(6, Feb, 2019));
+    expectedHol.push_back(Date(7, Feb, 2019));
+    expectedHol.push_back(Date(8, Feb, 2019));
+    expectedHol.push_back(Date(5, April, 2019));
+    expectedHol.push_back(Date(1, May, 2019));
+    expectedHol.push_back(Date(2, May, 2019));
+    expectedHol.push_back(Date(3, May, 2019));
+    expectedHol.push_back(Date(7, June, 2019));
+    expectedHol.push_back(Date(13, September, 2019));
+    expectedHol.push_back(Date(30, September, 2019));
+    expectedHol.push_back(Date(1, October, 2019));
+    expectedHol.push_back(Date(2, October, 2019));
+    expectedHol.push_back(Date(3, October, 2019));
+    expectedHol.push_back(Date(4, October, 2019));
 
     Calendar c = China(China::SSE);
     std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),
-        Date(31, December, 2018));
+        Date(31, December, 2019));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -1713,10 +1741,19 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.push_back(Date(28, April, 2018));
     expectedWorkingWeekEnds.push_back(Date(29, Sep, 2018));
     expectedWorkingWeekEnds.push_back(Date(30, Sep, 2018));
+    expectedWorkingWeekEnds.push_back(Date(29, December, 2018));
+
+    // China Inter Bank working weekends list in the year 2019
+    expectedWorkingWeekEnds.push_back(Date(2, Feb, 2019));
+    expectedWorkingWeekEnds.push_back(Date(3, Feb, 2019));
+    expectedWorkingWeekEnds.push_back(Date(28, April, 2019));
+    expectedWorkingWeekEnds.push_back(Date(5, May, 2019));
+    expectedWorkingWeekEnds.push_back(Date(29, September, 2019));
+    expectedWorkingWeekEnds.push_back(Date(12, October, 2019));
 
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2018);
+    Date end(31, Dec, 2019);
 
     Size k = 0;
 

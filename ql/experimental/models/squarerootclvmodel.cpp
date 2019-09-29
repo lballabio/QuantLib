@@ -26,7 +26,7 @@
 #include <ql/math/integrals/gaussianquadratures.hpp>
 
 #include <ql/experimental/models/squarerootclvmodel.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
 
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 

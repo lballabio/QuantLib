@@ -26,7 +26,7 @@
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/shared_ptr.hpp>
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 
 namespace QuantLib {

@@ -25,7 +25,9 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <ql/math/interpolations/all.hpp>
+#include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

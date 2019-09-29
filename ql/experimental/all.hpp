@@ -4,6 +4,7 @@
 #include <ql/experimental/amortizingbonds/all.hpp>
 #include <ql/experimental/averageois/all.hpp>
 #include <ql/experimental/barrieroption/all.hpp>
+#include <ql/experimental/basismodels/all.hpp>
 #include <ql/experimental/callablebonds/all.hpp>
 #include <ql/experimental/catbonds/all.hpp>
 #include <ql/experimental/commodities/all.hpp>
@@ -12,6 +13,7 @@
 #include <ql/experimental/credit/all.hpp>
 #include <ql/experimental/exoticoptions/all.hpp>
 #include <ql/experimental/finitedifferences/all.hpp>
+#include <ql/experimental/futures/all.hpp>
 #include <ql/experimental/fx/all.hpp>
 #include <ql/experimental/inflation/all.hpp>
 #include <ql/experimental/lattices/all.hpp>

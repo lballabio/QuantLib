@@ -30,7 +30,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/utilities/disposable.hpp>
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 #include <cmath>
 

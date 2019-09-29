@@ -41,8 +41,8 @@
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/experimental/models/hestonslvfdmmodel.hpp>
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
-#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/assign/std/vector.hpp>
@@ -383,7 +383,8 @@ namespace QuantLib {
         for (Size i=1; i < timeGrid->size(); ++i) {
             xMesher.push_back(localVolRND.mesher(timeGrid->at(i)));
 
-            if (i == rescaleSteps[rescaleIdx]) {
+            if ((rescaleIdx < rescaleSteps.size())
+                && (i == rescaleSteps[rescaleIdx])) {
                 ++rescaleIdx;
                 vMesher.push_back(varianceMesher(squareRootRnd,
                     timeGrid->at(rescaleSteps[rescaleIdx-1]),

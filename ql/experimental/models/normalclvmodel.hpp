@@ -29,8 +29,7 @@
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/date.hpp>
-
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
     /*! References:

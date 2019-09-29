@@ -25,7 +25,7 @@
 #include <ql/utilities/disposable.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/optimization/costfunction.hpp>
-#include <ql/function.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 
 namespace QuantLib {

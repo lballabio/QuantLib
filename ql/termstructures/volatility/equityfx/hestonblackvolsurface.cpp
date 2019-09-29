@@ -27,10 +27,8 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 #include <boost/scoped_ptr.hpp>
-
 #include <limits>
 
 namespace QuantLib {

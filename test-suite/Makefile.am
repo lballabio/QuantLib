@@ -11,6 +11,7 @@ QL_TESTS = \
 	autocovariances.hpp autocovariances.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	binaryoption.hpp binaryoption.cpp \
+	basismodels.hpp basismodels.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
@@ -31,6 +32,7 @@ QL_TESTS = \
 	cms.hpp cms.cpp \
 	cmsspread.hpp cmsspread.cpp \
 	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
+	compiledboostversion.hpp compiledboostversion.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \
@@ -54,6 +56,8 @@ QL_TESTS = \
 	fastfouriertransform.hpp fastfouriertransform.cpp \
 	fdheston.hpp fdheston.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
+	fdcev.hpp fdcev.cpp \
+	fdsabr.hpp fdsabr.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	forwardrateagreement.hpp forwardrateagreement.cpp \
 	functions.hpp functions.cpp \
@@ -122,6 +126,7 @@ QL_TESTS = \
 	sampledcurve.hpp sampledcurve.cpp \
 	schedule.hpp schedule.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
+	sofrfutures.hpp sofrfutures.cpp \
 	solvers.hpp solvers.cpp \
 	spreadoption.hpp spreadoption.cpp \
 	squarerootclvmodel.hpp squarerootclvmodel.cpp \
@@ -134,6 +139,7 @@ QL_TESTS = \
 	swaptionvolstructuresutilities.hpp \
 	swingoption.hpp swingoption.cpp \
 	termstructures.hpp termstructures.cpp \
+	timegrid.hpp timegrid.cpp \
 	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \
 	tqreigendecomposition.hpp tqreigendecomposition.cpp \
@@ -194,11 +200,11 @@ endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}  ${BOOST_INTERPROCESS_LIB}
+                            ${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB} ${BOOST_INTERPROCESS_LIB}
 
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                           -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
+                           ${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message BOOST_TEST_COLOR_OUTPUT=false

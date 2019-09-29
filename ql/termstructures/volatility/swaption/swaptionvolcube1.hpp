@@ -408,7 +408,7 @@ namespace QuantLib {
                           "MaxIterations reached: " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
                           "swap tenor = " << swapTenors[k] << ", \n" <<
-                          "error = " << io::rate(errors[j][k])  << ", \n" <<
+                          "rms error = " << io::rate(errors[j][k])  << ", \n" <<
                           "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
                           "   alpha = " <<  alphas[j][k] << "n" <<
                           "   beta = " <<  betas[j][k] << "\n" <<
@@ -416,20 +416,20 @@ namespace QuantLib {
                           "   rho = " <<  rhos[j][k]  << "\n"
                           );
 
-                QL_ENSURE(useMaxError_ ? maxError : rmsError < maxErrorTolerance_,
-                      "global swaptions calibration failed: "
-                      "option tenor " << optionDates[j] <<
-                      ", swap tenor " << swapTenors[k] <<
-                      (useMaxError_ ? ": max error " : ": error") <<
-                      (useMaxError_ ? maxError : rmsError) <<
-                          "   alpha = " <<  alphas[j][k] << "\n" <<
-                          "   beta = " <<  betas[j][k] << "\n" <<
-                          "   nu = " <<  nus[j][k]   << "\n" <<
-                          "   rho = " <<  rhos[j][k]  << "\n" <<
-                      (useMaxError_ ? ": error" : ": max error ") <<
-                      (useMaxError_ ? rmsError :maxError)
-                );
-
+                QL_ENSURE((useMaxError_ ? maxError : rmsError) < maxErrorTolerance_,
+                          "global swaptions calibration failed: "
+                          "error tolerance exceeded: "
+                              << "\n"
+                              << "using " << (useMaxError_ ? "maxError" : "rmsError")
+                              << " tolerance " << maxErrorTolerance_ << ", \n"
+                              << "option maturity = " << optionDates[j] << ", \n"
+                              << "swap tenor = " << swapTenors[k] << ", \n"
+                              << "rms error = " << io::rate(errors[j][k]) << ", \n"
+                              << "max error = " << io::rate(maxErrors[j][k]) << ", \n"
+                              << "   alpha = " << alphas[j][k] << "n"
+                              << "   beta = " << betas[j][k] << "\n"
+                              << "   nu = " << nus[j][k] << "\n"
+                              << "   rho = " << rhos[j][k] << "\n");
             }
         }
         Cube sabrParametersCube(optionDates, swapTenors,

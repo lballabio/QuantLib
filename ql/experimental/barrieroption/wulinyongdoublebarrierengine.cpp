@@ -126,12 +126,9 @@ namespace QuantLib {
         results_.additionalResults["vanilla"] = european;
         results_.additionalResults["barrierOut"] = barrierOut;
         results_.additionalResults["barrierIn"] = european - barrierOut;
+        results_.additionalResults["rebateIn"] = rebateIn;
     }
 
-
-    Real WulinYongDoubleBarrierEngine::underlying() const {
-        return process_->x0();
-    }
 
     Real WulinYongDoubleBarrierEngine::strike() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
@@ -146,10 +143,6 @@ namespace QuantLib {
 
     Volatility WulinYongDoubleBarrierEngine::volatility() const {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
-    }
-
-    Real WulinYongDoubleBarrierEngine::stdDeviation() const {
-        return volatility() * std::sqrt(residualTime());
     }
 
     Rate WulinYongDoubleBarrierEngine::riskFreeRate() const {

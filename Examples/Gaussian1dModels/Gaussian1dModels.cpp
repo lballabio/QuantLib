@@ -43,8 +43,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 
-#include <boost/timer.hpp>
-
 #include <iostream>
 #include <iomanip>
 
@@ -126,23 +124,6 @@ void printModelCalibration(
         std::cout << std::setw(20) << " " << volatility.back() << std::endl;
 }
 
-// helper function that prints timing information to std::cout
-
-class Timer {
-    boost::timer timer_;
-    double elapsed_;
-
-  public:
-    void start() { timer_ = boost::timer(); }
-    void stop() { elapsed_ = timer_.elapsed(); }
-    double elapsed() const { return elapsed_; }
-};
-
-void printTiming(const Timer &timer) {
-    double seconds = timer.elapsed();
-    std::cout << std::fixed << std::setprecision(1) << "\n(this step took "
-              << seconds << "s)" << std::endl;
-}
 
 // here the main part of the code starts
 
@@ -155,8 +136,6 @@ int main(int argc, char *argv[]) {
         std::cout << "\nThis is some example code showing how to use the GSR "
                      "\n(Gaussian short rate) and Markov Functional model."
                   << std::endl;
-
-        Timer timer;
 
         Date refDate(30, April, 2014);
         Settings::instance().evaluationDate() = refDate;
@@ -271,14 +250,12 @@ int main(int argc, char *argv[]) {
         ext::shared_ptr<SwapIndex> swapBase =
             ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, yts6m, ytsOis);
 
-        timer.start();
+        
         std::vector<ext::shared_ptr<BlackCalibrationHelper> > basket =
             swaption->calibrationBasket(swapBase, *swaptionVol,
                                         BasketGeneratingEngine::Naive);
-        timer.stop();
-
         printBasket(basket);
-        printTiming(timer);
+        
 
         std::cout
             << "\nLet's calibrate our model to this basket. We use a "
@@ -295,41 +272,41 @@ int main(int argc, char *argv[]) {
         EndCriteria ec(1000, 10, 1E-8, 1E-8,
                        1E-8); // only max iterations use actually used by LM
 
-        timer.start();
+        
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
-        timer.stop();
+        
 
         printModelCalibration(basket, gsr->volatility());
-        printTiming(timer);
+        
 
         std::cout << "\nFinally we price our bermudan swaption in the "
                      "calibrated model:" << std::endl;
 
-        timer.start();
+        
         Real npv = swaption->NPV();
-        timer.stop();
+        
 
         std::cout << "\nBermudan swaption NPV (ATM calibrated GSR) = "
                   << std::fixed << std::setprecision(6) << npv << std::endl;
-        printTiming(timer);
+        
 
-        std::cout
-            << "\nThere is another mode to generate a calibration basket called"
-               "\nMaturityStrikeByDeltaGamma. This means that the maturity, "
-               "\nthe strike and the nominal of the calibrating swaption are "
-               "\ncomputed such that the npv and its first and second "
-               "\nderivative with respect to the model's state variable) of"
-               "\nthe exotics underlying match with the calibrating swaption's"
-               "\nunderlying. Let's try this in our case." << std::endl;
+        std::cout << "\nThere is another mode to generate a calibration basket called"
+                     "\nMaturityStrikeByDeltaGamma. This means that the maturity,"
+                     "\nthe strike and the nominal of the calibrating swaptions are"
+                     "\nobtained matching the NPV, first derivative and second derivative"
+                     "\nof the swap you will exercise into at at each bermudan call date."
+                     "\nThe derivatives are taken with respect to the model's state variable."
+                     "\nLet's try this in our case."
+                  << std::endl;
 
-        timer.start();
+        
         basket = swaption->calibrationBasket(
             swapBase, *swaptionVol,
             BasketGeneratingEngine::MaturityStrikeByDeltaGamma);
-        timer.stop();
+        
 
         printBasket(basket);
-        printTiming(timer);
+        
 
         std::cout
             << "\nThe calibrated nominal is close to the exotics nominal."
@@ -343,23 +320,23 @@ int main(int argc, char *argv[]) {
         for (Size i = 0; i < basket.size(); ++i)
             basket[i]->setPricingEngine(swaptionEngine);
 
-        timer.start();
+        
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
-        timer.stop();
+        
 
         printModelCalibration(basket, gsr->volatility());
-        printTiming(timer);
+        
 
         std::cout << "\nAnd the bermudan's price becomes:" << std::endl;
 
-        timer.start();
+        
         npv = swaption->NPV();
-        timer.stop();
+        
 
         std::cout << "\nBermudan swaption NPV (deal strike calibrated GSR) = "
                   << std::setprecision(6) << npv << std::endl;
 
-        printTiming(timer);
+        
 
         std::cout
             << "\nWe can do more complicated things, let's e.g. modify the"
@@ -386,14 +363,14 @@ int main(int argc, char *argv[]) {
 
         swaption2->setPricingEngine(nonstandardSwaptionEngine);
 
-        timer.start();
+        
         basket = swaption2->calibrationBasket(
             swapBase, *swaptionVol,
             BasketGeneratingEngine::MaturityStrikeByDeltaGamma);
-        timer.stop();
+        
 
         printBasket(basket);
-        printTiming(timer);
+        
 
         std::cout << "\nThe notional is weighted over the underlying exercised "
                      "\ninto and the maturity is adjusted downwards. The rate"
@@ -437,15 +414,15 @@ int main(int argc, char *argv[]) {
 
         swaption3->setPricingEngine(nonstandardSwaptionEngine2);
 
-        timer.start();
+        
 
         basket = swaption3->calibrationBasket(
             swapBase, *swaptionVol,
             BasketGeneratingEngine::MaturityStrikeByDeltaGamma);
-        timer.stop();
+        
 
         printBasket(basket);
-        printTiming(timer);
+        
 
         std::cout
             << "\nNote that nominals are not exactly 1.0 here. This is"
@@ -459,14 +436,14 @@ int main(int argc, char *argv[]) {
         for (Size i = 0; i < basket.size(); i++)
             basket[i]->setPricingEngine(swaptionEngine);
 
-        timer.start();
+        
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
         Real npv3 = swaption3->NPV();
-        timer.stop();
+        
 
         std::cout << "\nBond's bermudan call right npv = "
                   << std::setprecision(6) << npv3 << std::endl;
-        printTiming(timer);
+        
 
         std::cout
             << "\nUp to now, no credit spread is included in the pricing."
@@ -476,13 +453,13 @@ int main(int argc, char *argv[]) {
 
         oas.linkTo(oas100);
 
-        timer.start();
+        
         basket = swaption3->calibrationBasket(
             swapBase, *swaptionVol,
             BasketGeneratingEngine::MaturityStrikeByDeltaGamma);
-        timer.stop();
+        
         printBasket(basket);
-        printTiming(timer);
+        
 
         std::cout
             << "\nThe adjusted basket takes the credit spread into account."
@@ -494,14 +471,14 @@ int main(int argc, char *argv[]) {
         for (Size i = 0; i < basket.size(); i++)
             basket[i]->setPricingEngine(swaptionEngine);
 
-        timer.start();
+        
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
         Real npv4 = swaption3->NPV();
-        timer.stop();
+        
 
         std::cout << "\nBond's bermudan call right npv (oas = 100bp) = "
                   << std::setprecision(6) << npv4 << std::endl;
-        printTiming(timer);
+        
 
         std::cout
             << "\nThe next instrument we look at is a CMS 10Y vs Euribor "
@@ -544,9 +521,9 @@ int main(int argc, char *argv[]) {
 
         underlying4->setPricingEngine(swapPricer);
 
-        timer.start();
+        
         Real npv5 = underlying4->NPV();
-        timer.stop();
+        
 
         std::cout << "Underlying CMS Swap NPV = " << std::setprecision(6)
                   << npv5 << std::endl;
@@ -555,32 +532,32 @@ int main(int argc, char *argv[]) {
         std::cout << "       Euribor Leg  NPV = " << underlying4->legNPV(1)
                   << std::endl;
 
-        printTiming(timer);
+        
 
         std::cout << "\nWe generate a naive calibration basket and calibrate "
                      "\nthe GSR model to it:" << std::endl;
 
-        timer.start();
+        
         basket = swaption4->calibrationBasket(swapBase, *swaptionVol,
                                               BasketGeneratingEngine::Naive);
         for (Size i = 0; i < basket.size(); ++i)
             basket[i]->setPricingEngine(swaptionEngine);
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
-        timer.stop();
+        
 
         printBasket(basket);
         printModelCalibration(basket, gsr->volatility());
-        printTiming(timer);
+        
 
         std::cout << "\nThe npv of the bermudan swaption is" << std::endl;
 
-        timer.start();
+        
         Real npv6 = swaption4->NPV();
-        timer.stop();
+        
 
         std::cout << "\nFloat swaption NPV (GSR) = " << std::setprecision(6)
                   << npv6 << std::endl;
-        printTiming(timer);
+        
 
         std::cout << "\nIn this case it is also interesting to look at the "
                      "\nunderlying swap npv in the GSR model." << std::endl;
@@ -622,15 +599,15 @@ int main(int argc, char *argv[]) {
 
         swaption4->setPricingEngine(floatEngineMarkov);
 
-        timer.start();
+        
         Real npv7 = swaption4->NPV();
-        timer.stop();
+        
 
         std::cout << "\nThe option npv is the markov model is:" << std::endl;
 
         std::cout << "\nFloat swaption NPV (Markov) = " << std::setprecision(6)
                   << npv7 << std::endl;
-        printTiming(timer);
+        
 
         std::cout << "\nThis is not too far from the GSR price." << std::endl;
 
@@ -662,23 +639,23 @@ int main(int argc, char *argv[]) {
         for (Size i = 0; i < basket.size(); ++i)
             basket[i]->setPricingEngine(swaptionEngineMarkov);
 
-        timer.start();
+        
         markov->calibrate(basket, method, ec);
-        timer.stop();
+        
 
         printModelCalibration(basket, markov->volatility());
-        printTiming(timer);
+        
 
         std::cout << "\nNow let's have a look again at the underlying pricing."
                      "\nIt shouldn't have changed much, because the underlying"
                      "\nsmile is still matched." << std::endl;
 
-        timer.start();
+        
         Real npv8 = swaption4->result<Real>("underlyingValue");
-        timer.stop();
+        
         std::cout << "\nFloat swap NPV (Markov) = " << std::setprecision(6)
                   << npv8 << std::endl;
-        printTiming(timer);
+        
 
         std::cout << "\nThis is close to the previous value as expected."
                   << std::endl;

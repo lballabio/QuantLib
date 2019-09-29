@@ -12,7 +12,7 @@ if (USE_BOOST_DYNAMIC_LIBRARIES)
     add_definitions(-DBOOST_TEST_DYN_LINK)
 endif()
 
-find_package (Boost COMPONENTS unit_test_framework REQUIRED)
+find_package (Boost COMPONENTS unit_test_framework timer system REQUIRED)
 
 set (TEST quantlib-test-suite)
 add_executable (${TEST} ${TEST_SUITE_FILES})

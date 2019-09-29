@@ -117,7 +117,7 @@
     done by supplying the FixedCouponBondForward constructor with a
     flat repo YieldTermStructure.
 
-    \example swapvaluation.cpp
+    \example MulticurveBootstrapping.cpp
     This example prices an interest rate swap over a term structure
     and calculates its fair fixed rate and floating spread.
 

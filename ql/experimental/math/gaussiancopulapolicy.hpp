@@ -22,7 +22,7 @@
 
 #include <ql/utilities/disposable.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 #include <numeric>
 #include <algorithm>

@@ -34,8 +34,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdupire1dop.hpp>
 #include <ql/experimental/finitedifferences/fdmzabrop.hpp>
-#include <ql/function.hpp>
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 
 using std::pow;
 

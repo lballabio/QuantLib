@@ -38,7 +38,7 @@ namespace QuantLib {
         virtual Real operator()(Real x) const = 0;
     };
 
-    /*! \deprecated Deprecated in version 1.14 */
+    /*! \deprecated Deprecated in version 1.14. */
     class QL_DEPRECATED TestCurve : public Curve {
     public:
         Real operator()(Real x) const { return std::sin(x); }

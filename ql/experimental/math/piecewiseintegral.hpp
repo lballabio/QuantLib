@@ -30,7 +30,7 @@
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/shared_ptr.hpp>
-
+#include <algorithm>
 #include <vector>
 
 namespace QuantLib {

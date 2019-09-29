@@ -71,6 +71,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/experimental/models/hestonslvfdmmodel.hpp>
@@ -78,20 +79,19 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
-#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/functional.hpp>
 
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 
-#include <ql/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
@@ -1814,7 +1814,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModels() {
 
     const Real localDeltaExpected =  -0.439068;
     const Real hestonDeltaExpected = -0.342059;
-    const Real tol = 0.0001;
+    const Real tol = 0.0005;
     if (std::fabs(hestonDeltaExpected - hestonDeltaCalculated) > tol) {
         BOOST_ERROR("Heston Delta does not match"
                 << "\n calculated : " << hestonDeltaCalculated

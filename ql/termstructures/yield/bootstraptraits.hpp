@@ -83,12 +83,8 @@ namespace QuantLib {
                                   Size) // firstAliveHelper
         {
             if (validData) {
-                #if defined(QL_NEGATIVE_RATES)
                 return *(std::min_element(c->data().begin(),
                                           c->data().end()))/2.0;
-                #else
-                return c->data().back()/2.0;
-                #endif
             }
             Time dt = c->times()[i] - c->times()[i-1];
             return c->data()[i-1] * std::exp(- detail::maxRate * dt);
@@ -99,13 +95,8 @@ namespace QuantLib {
                                   bool validData,
                                   Size) // firstAliveHelper
         {
-            #if defined(QL_NEGATIVE_RATES)
             Time dt = c->times()[i] - c->times()[i-1];
             return c->data()[i-1] * std::exp(detail::maxRate * dt);
-            #else
-            // discounts cannot increase
-            return c->data()[i-1];
-            #endif
         }
 
         // root-finding update
@@ -166,19 +157,11 @@ namespace QuantLib {
         {
             if (validData) {
                 Real r = *(std::min_element(c->data().begin(), c->data().end()));
-                #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r*2.0 : r/2.0;
-                #else
-                return r/2.0;
-                #endif
             }
-            #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
             return -detail::maxRate;
-            #else
-            return QL_EPSILON;
-            #endif
         }
         template <class C>
         static Real maxValueAfter(Size,
@@ -188,11 +171,7 @@ namespace QuantLib {
         {
             if (validData) {
                 Real r = *(std::max_element(c->data().begin(), c->data().end()));
-                #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r/2.0 : r*2.0;
-                #else
-                return r*2.0;
-                #endif
             }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
@@ -259,19 +238,11 @@ namespace QuantLib {
         {
             if (validData) {
                 Real r = *(std::min_element(c->data().begin(), c->data().end()));
-                #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r*2.0 : r/2.0;
-                #else
-                return r/2.0;
-                #endif
             }
-            #if defined(QL_NEGATIVE_RATES)
             // no constraints.
             // We choose as min a value very unlikely to be exceeded.
             return -detail::maxRate;
-            #else
-            return QL_EPSILON;
-            #endif
         }
         template <class C>
         static Real maxValueAfter(Size,
@@ -281,11 +252,7 @@ namespace QuantLib {
         {
             if (validData) {
                 Real r = *(std::max_element(c->data().begin(), c->data().end()));
-                #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r/2.0 : r*2.0;
-                #else
-                return r*2.0;
-                #endif
             }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.

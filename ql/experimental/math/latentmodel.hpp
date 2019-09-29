@@ -33,8 +33,7 @@
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
-#include <ql/function.hpp>
-#include <ql/bind.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
