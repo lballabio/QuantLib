@@ -25,8 +25,9 @@ namespace QuantLib {
 
     void Gaussian1dSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
-                   "cash-settled swaptions not yet implemented ...");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "Gaussian1dSwaptionEngine");
 
         Date settlement = model_->termStructure()->referenceDate();
 

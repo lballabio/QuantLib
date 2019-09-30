@@ -32,21 +32,28 @@ namespace QuantLib {
         const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
         bool localVol,
-        Real illegalLocalVolOverwrite)
+        Real illegalLocalVolOverwrite,
+        const Handle<FdmQuantoHelper>& quantoHelper)
     : process_(process),
       strike_(strike),
       solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       localVol_(localVol),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
+      quantoHelper_(quantoHelper) {
 
         registerWith(process_);
+        registerWith(quantoHelper_);
     }
 
     void FdmBlackScholesSolver::performCalculations() const {
-        const ext::shared_ptr<FdmBlackScholesOp> op(ext::make_shared<FdmBlackScholesOp>(
+            const ext::shared_ptr<FdmBlackScholesOp> op(
+            ext::make_shared<FdmBlackScholesOp>(
                 solverDesc_.mesher, process_.currentLink(), strike_,
-                localVol_, illegalLocalVolOverwrite_));
+                localVol_, illegalLocalVolOverwrite_, 0,
+                (quantoHelper_.empty())
+                    ? ext::shared_ptr<FdmQuantoHelper>()
+                    : quantoHelper_.currentLink()));
 
         solver_ = ext::make_shared<Fdm1DimSolver>(solverDesc_, schemeDesc_, op);
     }

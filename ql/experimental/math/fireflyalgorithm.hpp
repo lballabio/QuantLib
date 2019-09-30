@@ -27,10 +27,6 @@ http://arxiv.org/pdf/1003.1464.pdf
 #ifndef quantlib_optimization_fireflyalgorithm_hpp
 #define quantlib_optimization_fireflyalgorithm_hpp
 
-#include <ql/qldefines.hpp>
-
-#if BOOST_VERSION >= 104700
-
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/experimental/math/isotropicrandomwalk.hpp>
@@ -53,10 +49,12 @@ typedef boost::variate_generator<base_generator_type, uniform_integer> variate_i
 namespace QuantLib {
 
     /*! The main process is as follows:
-    M individuals are used to explore the N-dimensional parameter space
-    X_{i}^k = (X_{i, 1}^k, X_{i, 2}^k, \ldots, X_{i, N}^k) is the kth-iteration 
+    M individuals are used to explore the N-dimensional parameter space:
+    \f$ X_{i}^k = (X_{i, 1}^k, X_{i, 2}^k, \ldots, X_{i, N}^k) \f$ is the kth-iteration 
     for the ith-individual. X is updated via the rule
+    \f[
     X_{i, j}^{k+1} = X_{i, j}^k + I(X^k)_{i,j} + RandomWalk_{i,j}^k
+    \f]
 
     The intensity function I(X) should be monotonic
     The optimization stops either because the number of iterations has been reached
@@ -75,12 +73,18 @@ namespace QuantLib {
     then divided into two subpopulations based on their order. The subpopulation 
     with the best results are updated via the firefly algorithm. The worse 
     subpopulation is updated via the DE operator:
+    \f[
     Y^{k+1} = X_{best}^k + F(X_{r1}^k - X_{r2}^k)
+    \f]
     and 
-    X_{i,j}^{k+1} = if R_{i,j} <= CR Y_{i,j}^{k+1}
-                    if R_{i,j} > CR X_{i,j}^{k+1}
-    Where CR is the crossover constant, and R is a random uniformly distributed
-    number
+    \f[
+    X_{i,j}^{k+1} = Y_{i,j}^{k+1}\ \text{if} R_{i,j} <= C
+    \f]
+    \f[
+    X_{i,j}^{k+1} = X_{i,j}^{k+1}\ \text{otherwise}
+    \f]
+    where C is the crossover constant, and R is a random uniformly distributed
+    number.
     */
     class FireflyAlgorithm : public OptimizationMethod {
       public:
@@ -281,7 +285,5 @@ namespace QuantLib {
         Size iteration_;
     };
 }
-
-#endif
 
 #endif

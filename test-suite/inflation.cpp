@@ -77,7 +77,8 @@ namespace {
             const ext::shared_ptr<I> &ii, const Period &observationLag,
             const Calendar &calendar,
             const BusinessDayConvention &bdc,
-            const DayCounter &dc) {
+            const DayCounter &dc,
+            const Handle<YieldTermStructure>& yTS) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
@@ -86,7 +87,7 @@ namespace {
                 new SimpleQuote(iiData[i].rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                 quote, observationLag, maturity,
-                calendar, bdc, dc, ii));
+                calendar, bdc, dc, ii, yTS));
             instruments.push_back(anInstrument);
         }
 
@@ -365,7 +366,8 @@ void InflationTest::testZeroTermStructure() {
     makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
                 ZeroInflationIndex>(zcData, LENGTH(zcData), ii,
                                     observationLag,
-                                    calendar, bdc, dc);
+                                    calendar, bdc, dc,
+                                    Handle<YieldTermStructure>(nominalTS));
 
     Rate baseZeroRate = zcData[0].rate/100.0;
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
@@ -500,7 +502,8 @@ void InflationTest::testZeroTermStructure() {
     makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
     ZeroInflationIndex>(zcData, LENGTH(zcData), iiyes,
                         observationLagyes,
-                        calendar, bdc, dc);
+                        calendar, bdc, dc,
+                        Handle<YieldTermStructure>(nominalTS));
 
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
             new PiecewiseZeroInflationCurve<Linear>(
@@ -854,8 +857,9 @@ void InflationTest::testYYTermStructure() {
     std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
     makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
     YoYInflationIndex>(yyData, LENGTH(yyData), iir,
-                        observationLag,
-                        calendar, bdc, dc);
+                       observationLag,
+                       calendar, bdc, dc,
+                       Handle<YieldTermStructure>(nominalTS));
 
     Rate baseYYRate = yyData[0].rate/100.0;
     ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(

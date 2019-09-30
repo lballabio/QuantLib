@@ -636,6 +636,7 @@
     <ClCompile Include="assetswap.cpp" />
     <ClCompile Include="autocovariances.cpp" />
     <ClCompile Include="barrieroption.cpp" />
+    <ClCompile Include="basismodels.cpp" />
     <ClCompile Include="basketoption.cpp" />
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
@@ -657,6 +658,7 @@
     <ClCompile Include="cms.cpp" />
     <ClCompile Include="cmsspread.cpp" />
     <ClCompile Include="commodityunitofmeasure.cpp" />
+    <ClCompile Include="compiledboostversion.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />
     <ClCompile Include="covariance.cpp" />
@@ -677,6 +679,8 @@
     <ClCompile Include="exchangerate.cpp" />
     <ClCompile Include="extendedtrees.cpp" />
     <ClCompile Include="extensibleoptions.cpp" />
+    <ClCompile Include="fdcev.cpp" />
+    <ClCompile Include="fdsabr.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />
@@ -760,6 +764,7 @@
     <ClCompile Include="swaptionvolatilitymatrix.cpp" />
     <ClCompile Include="swingoption.cpp" />
     <ClCompile Include="termstructures.cpp" />
+    <ClCompile Include="timegrid.cpp" />
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
@@ -784,6 +789,7 @@
     <ClInclude Include="assetswap.hpp" />
     <ClInclude Include="autocovariances.hpp" />
     <ClInclude Include="barrieroption.hpp" />
+    <ClInclude Include="basismodels.hpp" />
     <ClInclude Include="basketoption.hpp" />
     <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />
@@ -805,6 +811,7 @@
     <ClInclude Include="cms.hpp" />
     <ClInclude Include="cmsspread.hpp" />
     <ClInclude Include="commodityunitofmeasure.hpp" />
+    <ClInclude Include="compiledboostversion.hpp" />
     <ClInclude Include="compoundoption.hpp" />
     <ClInclude Include="convertiblebonds.hpp" />
     <ClInclude Include="covariance.hpp" />
@@ -825,6 +832,8 @@
     <ClInclude Include="exchangerate.hpp" />
     <ClInclude Include="extendedtrees.hpp" />
     <ClInclude Include="extensibleoptions.hpp" />
+    <ClInclude Include="fdcev.hpp" />
+    <ClInclude Include="fdsabr.hpp" />
     <ClInclude Include="functions.hpp" />
     <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />
@@ -911,6 +920,7 @@
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="swingoption.hpp" />
     <ClInclude Include="termstructures.hpp" />
+    <ClInclude Include="timegrid.hpp" />
     <ClInclude Include="timeseries.hpp" />
     <ClInclude Include="tqreigendecomposition.hpp" />
     <ClInclude Include="tracing.hpp" />

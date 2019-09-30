@@ -56,8 +56,9 @@ namespace QuantLib {
 
     void Gaussian1dJamshidianSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
-                   "cash-settled swaptions not priced by Jamshidian engine");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "Gaussian1dJamshidianSwaptionEngine");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "cannot use the Jamshidian decomposition "

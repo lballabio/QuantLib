@@ -46,7 +46,8 @@ namespace QuantLib {
             bool isPutATMIncluded = false,
             Rate putDigitalPayoff = Null<Rate>(),
             const ext::shared_ptr<DigitalReplication> &replication =
-                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
+                ext::shared_ptr<DigitalReplication>(new DigitalReplication),
+            bool nakedOption = false);
 
         //! \name Visitability
         //@{
@@ -86,6 +87,8 @@ namespace QuantLib {
         DigitalCmsLeg& withReplication(
             const ext::shared_ptr<DigitalReplication> &replication =
                 ext::shared_ptr<DigitalReplication>(new DigitalReplication));
+        DigitalCmsLeg& withNakedOption(bool nakedOption = true);
+
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -104,6 +107,7 @@ namespace QuantLib {
         Position::Type longPutOption_;
         bool putATM_;
         ext::shared_ptr<DigitalReplication> replication_;
+        bool nakedOption_;
     };
 
 }

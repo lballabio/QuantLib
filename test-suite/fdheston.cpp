@@ -21,6 +21,7 @@
 #include "fdheston.hpp"
 #include "utilities.hpp"
 
+#include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -31,6 +32,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
@@ -41,7 +43,6 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
 #include <boost/assign/std/vector.hpp>
-
 #include <boost/tuple/tuple.hpp>
 
 using namespace QuantLib;
@@ -62,6 +63,33 @@ namespace {
         Time t;        // time to maturity
         Volatility v;  // volatility
     };
+
+    class ParableLocalVolatility : public LocalVolTermStructure {
+      public:
+        ParableLocalVolatility(
+            const Date& referenceDate,
+            Real s0,
+            Real alpha,
+            const DayCounter& dayCounter)
+        : LocalVolTermStructure(
+              referenceDate, NullCalendar(), Following, dayCounter),
+          referenceDate_(referenceDate),
+          s0_(s0),
+          alpha_(alpha) {}
+
+        Date maxDate() const   { return Date::maxDate(); }
+        Real minStrike() const { return 0.0; }
+        Real maxStrike() const { return std::numeric_limits<Real>::max(); }
+
+      protected:
+        Volatility localVolImpl(Time t, Real s) const {
+            return alpha_*(square<Real>()(s0_ - s) + 25.0);
+        }
+
+      private:
+        const Date referenceDate_;
+        const Real s0_, alpha_;
+    };
 }
 
 void FdHestonTest::testFdmHestonVarianceMesher() {
@@ -80,8 +108,10 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
             Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
             0.09, 1.0, 0.09, 0.2, -0.5));
 
-    const std::vector<Real> locations =
-        FdmHestonVarianceMesher(5, process, 1.0).locations();
+    const ext::shared_ptr<FdmHestonVarianceMesher> mesher
+        = ext::make_shared<FdmHestonVarianceMesher>(5, process, 1.0);
+
+    const std::vector<Real> locations = mesher->locations();
 
     const Real expected[] = {
         0.0, 6.652314e-02, 9.000000e-02, 1.095781e-01, 2.563610e-01
@@ -99,6 +129,64 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
                         << "\n    difference  " << diff
                         << "\n    tolerance:  " << tol);
         }
+    }
+
+    const ext::shared_ptr<LocalVolTermStructure> lVol =
+        ext::make_shared<LocalConstantVol>(today, 2.5, dc);
+
+    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> constSlvMesher
+        = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>
+              (5, process, lVol, 1.0);
+
+    const Real expectedVol = 2.5 * mesher->volaEstimate();
+    const Real calculatedVol = constSlvMesher->volaEstimate();
+
+    const Real diff = std::fabs(calculatedVol - expectedVol);
+    if (diff > tol) {
+        BOOST_ERROR("Failed to reproduce Heston local volatility "
+                "variance estimate"
+                    << "\n    calculated: " << calculatedVol
+                    << "\n    expected:   " << expectedVol
+                    << std::scientific
+                    << "\n    difference  " << diff
+                    << "\n    tolerance:  " << tol);
+    }
+
+    const Real alpha = 0.01;
+    const ext::shared_ptr<LocalVolTermStructure> leverageFct
+        = ext::make_shared<ParableLocalVolatility>(today, 100.0, alpha, dc);
+
+    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> slvMesher
+        = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
+              5, process, leverageFct, 0.5, 1, 0.01);
+
+    const Real initialVolEstimate =
+        ext::make_shared<FdmHestonVarianceMesher>(5, process, 0.5, 1, 0.01)->
+            volaEstimate();
+
+    // const Real vEst = leverageFct->localVol(0, 100) * initialVolEstimate;
+    // Mathematica solution
+    //    N[Integrate[
+    //      alpha*((100*Exp[vEst*x*Sqrt[0.5]] - 100)^2 + 25)*
+    //       PDF[NormalDistribution[0, 1], x], {x ,
+    //       InverseCDF[NormalDistribution[0, 1], 0.01],
+    //       InverseCDF[NormalDistribution[0, 1], 0.99]}]]
+
+    const Real leverageAvg = 0.455881 / (1-0.02);
+
+    const Real volaEstExpected =
+        0.5*(leverageAvg + leverageFct->localVol(0, 100)) * initialVolEstimate;
+
+    const Real volaEstCalculated = slvMesher->volaEstimate();
+
+    if (std::fabs(volaEstExpected - volaEstCalculated) > 0.001) {
+        BOOST_ERROR("Failed to reproduce Heston local volatility "
+                "variance estimate"
+                    << "\n    calculated: " << calculatedVol
+                    << "\n    expected:   " << expectedVol
+                    << std::scientific
+                    << "\n    difference  " << std::fabs(volaEstExpected - volaEstCalculated)
+                    << "\n    tolerance:  " << tol);
     }
 }
 

@@ -39,13 +39,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
-// Boost libraries prior to 1.47 have a bug in the hash function,
-// which makes boost::unordered_set very inefficient if the key is of type
-// ext::shared_ptr. In this case fall back to std::set.
-#if BOOST_VERSION < 104700
-#include <set>
-#endif
-
 namespace QuantLib {
 
     class Observer;
@@ -106,11 +99,7 @@ namespace QuantLib {
     /*! \ingroup patterns */
     class Observer {
       public:
-#if BOOST_VERSION < 104700
-        typedef std::set<ext::shared_ptr<Observable> > set_type;
-#else
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
-#endif
         typedef set_type::iterator iterator;
 
         // constructors, assignment, destructor

@@ -44,7 +44,7 @@ namespace QuantLib {
         const Real theta, mu;
 
         // some default scheme descriptions
-        static FdmSchemeDesc Douglas();
+        static FdmSchemeDesc Douglas(); //same as Crank-Nicolson in 1 dimension
         static FdmSchemeDesc ImplicitEuler();
         static FdmSchemeDesc ExplicitEuler();
         static FdmSchemeDesc CraigSneyd();

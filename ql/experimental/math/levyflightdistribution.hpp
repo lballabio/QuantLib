@@ -24,11 +24,6 @@
 #ifndef quantlib_levy_flight_distribution_hpp
 #define quantlib_levy_flight_distribution_hpp
 
-#include <ql/qldefines.hpp>
-
-// The included Boost.Random headers were added in Boost 1.47
-#if BOOST_VERSION >= 104700
-
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <boost/config/no_tr1/cmath.hpp>
@@ -42,13 +37,18 @@ namespace QuantLib {
     //! Levy Flight distribution as needed by Boost Random
     /*! The levy flight distribution is a random distribution with 
         the following form:
+        \f[
         p(x) = \frac{\alpha x_m^{\alpha}}{x^{\alpha+1}}
-        with support over x \elem [x_m, \infty)
-        and the parameter \alpha > 0
-        Levy Flight is normally defined as x_m = 1 and 0 < \alpha < 2, which is 
-        where p(x) has an infinite variance. However, the more general version, 
-        known as Pareto Type I, is well defined for \alpha > 2, so the current
-        implementation does not restrict \alpha to be smaller than 2
+        \f]
+        with support over \f$ x \in [x_m, \infty) \f$
+        and the parameter \f$ \alpha > 0 \f$.
+
+        Levy Flight is normally defined as \f$ x_m = 1 \f$ and \f$ 0 <
+        \alpha < 2 \f$, which is where \f$ p(x) \f$ has an infinite
+        variance. However, the more general version, known as Pareto
+        Type I, is well defined for \f$ \alpha > 2 \f$, so the current
+        implementation does not restrict \f$ \alpha \f$ to be smaller
+        than 2.
     */
     class LevyFlightDistribution
     {
@@ -200,7 +200,5 @@ namespace QuantLib {
     };
 
 }
-
-#endif
 
 #endif

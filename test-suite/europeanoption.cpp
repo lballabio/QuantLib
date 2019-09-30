@@ -40,7 +40,6 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -981,9 +980,7 @@ namespace {
                                std::map<std::string,Real> tolerance,
                                bool testGreeks = false) {
 
-        QL_TEST_START_TIMING
-
-            std::map<std::string,Real> calculated, expected;
+        std::map<std::string,Real> calculated, expected;
 
         // test options
         Option::Type types[] = { Option::Call, Option::Put };

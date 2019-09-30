@@ -49,9 +49,12 @@ class InterpolationTest {
     static void testKernelInterpolation2D();
     static void testBicubicDerivatives();
     static void testBicubicUpdate();
+    static void testUnknownRichardsonExtrapolation();
     static void testRichardsonExtrapolation();
     static void testNoArbSabrInterpolation();
     static void testSabrSingleCases();
+    static void testFlochKennedySabrIsSmoothAroundATM();
+    static void testLeFlochKennedySabrExample();
     static void testTransformations();
     static void testLagrangeInterpolation();
     static void testLagrangeInterpolationAtSupportPoint();

@@ -28,7 +28,10 @@
 
 #include <ql/types.hpp>
 #include <ql/shared_ptr.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/functional.hpp>
 #include <vector>
+
 
 namespace QuantLib {
 
@@ -36,6 +39,7 @@ namespace QuantLib {
     class BasketPayoff;
     class FdmMesher;
     class FdmLinearOpIterator;
+
 
     class FdmInnerValueCalculator {
       public:
@@ -46,23 +50,33 @@ namespace QuantLib {
     };
 
 
-    class FdmLogInnerValue : public FdmInnerValueCalculator {
+    class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
       public:
-        FdmLogInnerValue(const ext::shared_ptr<Payoff>& payoff,
-                         const ext::shared_ptr<FdmMesher>& mesher,
-                         Size direction);
+        FdmCellAveragingInnerValue(
+            const ext::shared_ptr<Payoff>& payoff,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            Size direction,
+            const ext::function<Real(Real)>& gridMapping = identity<Real>());
 
         Real innerValue(const FdmLinearOpIterator& iter, Time);
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time);
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
 
       private:
-
-        Real avgInnerValueCalc(const FdmLinearOpIterator& iter, Time);
+        Real avgInnerValueCalc(const FdmLinearOpIterator& iter, Time t);
 
         const ext::shared_ptr<Payoff> payoff_;
         const ext::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
+        const ext::function<Real(Real)> gridMapping_;
+
         std::vector<Real> avgInnerValues_;
+    };
+
+    class FdmLogInnerValue : public FdmCellAveragingInnerValue {
+      public:
+        FdmLogInnerValue(const ext::shared_ptr<Payoff>& payoff,
+                         const ext::shared_ptr<FdmMesher>& mesher,
+                         Size direction);
     };
 
     class FdmLogBasketInnerValue : public FdmInnerValueCalculator {

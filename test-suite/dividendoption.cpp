@@ -37,7 +37,6 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

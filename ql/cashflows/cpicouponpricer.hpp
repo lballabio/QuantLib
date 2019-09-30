@@ -37,12 +37,23 @@ namespace QuantLib {
               volatility-dependent coupons you need to implement the descendents.
     */
     class CPICouponPricer : public InflationCouponPricer {
-    public:
-        CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol
-                                 = Handle<CPIVolatilitySurface>());
+      public:
+        CPICouponPricer();
+        /*! \deprecated Use the constructor also taking an explicit
+                        nominal term structure.
+                        Deprecated in version 1.15.
+        */
+        QL_DEPRECATED
+        explicit CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol);
+        CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol,
+                        const Handle<YieldTermStructure>& nominalTermStructure);
 
         virtual Handle<CPIVolatilitySurface> capletVolatility() const{
             return capletVol_;
+        }
+
+        virtual Handle<YieldTermStructure> nominalTermStructure() const{
+            return nominalTermStructure_;
         }
 
         virtual void setCapletVolatility(
@@ -62,25 +73,31 @@ namespace QuantLib {
 
 
     protected:
-        //! can replace this if really required
         virtual Real optionletPrice(Option::Type optionType,
                                     Real effStrike) const;
 
-        //! usually only need implement this (of course they may need
-        //! to re-implement initialize too ...)
+        virtual Real optionletRate(Option::Type optionType,
+                                   Real effStrike) const;
+
+        /*! Derived classes usually only need to implement this.
+
+            The name of the method is misleading.  This actually
+            returns the rate of the optionlet (so not discounted and
+            not accrued).
+        */
         virtual Real optionletPriceImp(Option::Type, Real strike,
                                        Real forward, Real stdDev) const;
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
         //! data
         Handle<CPIVolatilitySurface> capletVol_;
+        Handle<YieldTermStructure> nominalTermStructure_;
         const CPICoupon* coupon_;
         Real gearing_;
         Spread spread_;
         Real discount_;
-        Real spreadLegValue_;
     };
 
-}   // namespace QuantLib
+}
 
 #endif

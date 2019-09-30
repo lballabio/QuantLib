@@ -27,8 +27,6 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
-#include <boost/timer.hpp>
-
 #include <iostream>
 #include <iomanip>
 
@@ -53,7 +51,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         Calendar calendar = TARGET();
@@ -294,21 +291,6 @@ int main(int, char* []) {
             ;
                 cout << endl;
         }
-
-
-
-        Real seconds  = timer.elapsed();
-        Integer hours = Integer(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = Integer(seconds/60);
-        seconds -= minutes * 60;
-        cout << "Run completed in ";
-        if (hours > 0)
-            cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            cout << minutes << " m ";
-        cout << fixed << setprecision(0)
-             << seconds << " s" << endl;
 
         return 0;
     } catch (exception& e) {
