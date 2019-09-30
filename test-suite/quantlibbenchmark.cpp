@@ -109,6 +109,9 @@
 #  define BOOST_LIB_NAME boost_timer
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_chrono
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
 #  define BOOST_LIB_NAME boost_system
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
