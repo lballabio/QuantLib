@@ -31,7 +31,6 @@
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <ql/math/randomnumbers/latticerules.hpp>
 #include <ql/math/randomnumbers/latticersg.hpp>
 
@@ -834,8 +833,6 @@ namespace {
                                   const std::string& arrayName
                                   #endif
                                   ) {
-
-        QL_TEST_START_TIMING
 
         #ifndef PRINT_ONLY
         Real tolerance = 1.0e-2;

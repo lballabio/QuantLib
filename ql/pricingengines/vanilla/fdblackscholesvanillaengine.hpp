@@ -40,6 +40,7 @@ namespace QuantLib {
               reproducing results available in web/literature
               and comparison with Black pricing.
     */
+    class FdmQuantoHelper;
     class GeneralizedBlackScholesProcess;
 
     class FdBlackScholesVanillaEngine : public DividendVanillaOption::engine {
@@ -47,6 +48,14 @@ namespace QuantLib {
         // Constructor
           FdBlackScholesVanillaEngine(
                 const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
+                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                bool localVol = false,
+                Real illegalLocalVolOverwrite = -Null<Real>());
+
+          FdBlackScholesVanillaEngine(
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
+                const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
                 Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                 const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                 bool localVol = false,
@@ -60,6 +69,7 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
+        const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 }
 

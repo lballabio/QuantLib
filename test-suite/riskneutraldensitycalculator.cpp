@@ -734,7 +734,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
 
 void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
     BOOST_TEST_MESSAGE("Testing the mass at zero for a "
-        "constant elasticity of variance (CEV) process ...");
+                       "constant elasticity of variance (CEV) process...");
 
     using namespace ext::placeholders;
 
@@ -776,7 +776,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
 
 void RiskNeutralDensityCalculatorTest::testCEVCDF() {
     BOOST_TEST_MESSAGE("Testing CDF for a "
-        "constant elasticity of variance (CEV) process ...");
+                       "constant elasticity of variance (CEV) process...");
 
     const Real f0 = 2.1;
     const Time t = 0.75;

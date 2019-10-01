@@ -718,7 +718,7 @@ void DistributionTest::testInvCDFviaStochasticCollocation() {
 
 void DistributionTest::testSankaranApproximation() {
     BOOST_TEST_MESSAGE("Testing Sankaran approximation for the "
-            " non central cumulative chi-square distribution...");
+                       "non-central cumulative chi-square distribution...");
 
     const Real dfs[] = {2,2,2,4,4};
     const Real ncps[] = {1,2,3,1,2,3};

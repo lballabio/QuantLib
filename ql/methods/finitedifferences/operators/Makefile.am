@@ -13,6 +13,7 @@ this_include_HEADERS = \
 	fdmhestonop.hpp \
 	fdmhullwhiteop.hpp \
 	fdmlinearopcomposite.hpp \
+	fdmlocalvolfwdop.hpp \
 	fdmornsteinuhlenbeckop.hpp \
 	fdmlinearop.hpp \
 	fdmlinearopiterator.hpp \
@@ -36,6 +37,7 @@ cpp_files = \
 	fdmhestonop.cpp \
 	fdmhullwhiteop.cpp \
 	fdmlinearoplayout.cpp \
+	fdmlocalvolfwdop.cpp \
 	fdmornsteinuhlenbeckop.cpp \
 	fdmsabrop.cpp \
 	firstderivativeop.cpp \
