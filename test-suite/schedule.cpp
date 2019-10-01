@@ -442,6 +442,7 @@ void ScheduleTest::testTruncation() {
     expected[8] = Date(30, September, 2013);
     expected[9] = Date(1, January, 2014);
     check_dates(t, expected);
+    BOOST_CHECK(t.isRegular().back() == false);
 
     // Until, with truncation date falling on a schedule date
     t = s.until(Date(30, September, 2013));
@@ -456,6 +457,7 @@ void ScheduleTest::testTruncation() {
     expected[7] = Date(29, March, 2013);
     expected[8] = Date(30, September, 2013);
     check_dates(t, expected);
+    BOOST_CHECK(t.isRegular().back() == true);
 
     // After
     t = s.after(Date(1, Jan, 2014));
@@ -476,6 +478,7 @@ void ScheduleTest::testTruncation() {
     expected[13] = Date(31, March, 2020);
     expected[14] = Date(30, June, 2020);
     check_dates(t, expected);
+    BOOST_CHECK(t.isRegular().front() == false);
 
     // After, with truncation date falling on a schedule date
     t = s.after(Date(28, September, 2018));
@@ -486,6 +489,7 @@ void ScheduleTest::testTruncation() {
     expected[3] = Date(31, March, 2020);
     expected[4] = Date(30, June, 2020);
     check_dates(t, expected);
+    BOOST_CHECK(t.isRegular().front() == true);
 }
 
 test_suite* ScheduleTest::suite() {
