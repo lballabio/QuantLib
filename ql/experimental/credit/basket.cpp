@@ -22,6 +22,7 @@
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
+#include <numeric>
 
 using namespace std;
 
@@ -107,6 +108,10 @@ namespace QuantLib {
         more efficient sending the pool only; however the modtionals and other 
         basket info are still used.*/
         lossModel_->setBasket(const_cast<Basket*>(this));
+    }
+
+    Real Basket::notional() const {
+        return std::accumulate(notionals_.begin(), notionals_.end(), 0.0);
     }
 
     Disposable<vector<Real> > Basket::probabilities(const Date& d) const {
@@ -278,6 +283,10 @@ namespace QuantLib {
 
     Size Basket::remainingSize() const {
         return evalDateLiveList_.size();
+    }
+
+    Size Basket::remainingSize(const Date& d) const {
+        return remainingDefaultKeys(d).size();
     }
 
     /* computed on the inception values, notice the positions might have 
