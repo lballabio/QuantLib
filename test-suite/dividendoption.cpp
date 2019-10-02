@@ -934,8 +934,8 @@ void DividendOptionTest::testEscrowedDividendModel() {
     Settings::instance().evaluationDate() = today;
 
     const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
-    const Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
-    const Handle<YieldTermStructure> rTS(flatRate(today, 0.075, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.063, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.094, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.3, dc));
 
     const Date maturity = today + Period(1, Years);
@@ -1024,7 +1024,7 @@ test_suite* DividendOptionTest::suite() {
     //  suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
     // Doesn't quite work.  Need to use discounted values
-    // suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
+    //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
