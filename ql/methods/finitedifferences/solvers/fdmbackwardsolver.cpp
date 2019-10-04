@@ -138,8 +138,8 @@ namespace QuantLib {
             {
               CrankNicolsonScheme cnEvolver(schemeDesc_.theta, map_, bcSet_);
               FiniteDifferenceModel<CrankNicolsonScheme>
-                             dsModel(cnEvolver, condition_->stoppingTimes());
-              dsModel.rollback(rhs, dampingTo, to, steps, *condition_);
+                             cnModel(cnEvolver, condition_->stoppingTimes());
+              cnModel.rollback(rhs, dampingTo, to, steps, *condition_);
 
             }
             break;
