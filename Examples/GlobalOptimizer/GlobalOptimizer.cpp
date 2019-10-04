@@ -28,7 +28,7 @@
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/functional.hpp>
 
-#include <boost/timer.hpp>
+
 #include <boost/tuple/tuple.hpp>
 #include <iostream>
 #include <iomanip>
@@ -349,32 +349,17 @@ void testDifferentialEvolution(Size n, Size agents){
     std::cout << "================================================================" << std::endl;
 }
 
-void printTime(double seconds){
-    Integer hours = int(seconds/3600);
-    seconds -= hours * 3600;
-    Integer minutes = int(seconds/60);
-    seconds -= minutes * 60;
-    std::cout << " \nRun completed in ";
-    if (hours > 0)
-        std::cout << hours << " h ";
-    if (hours > 0 || minutes > 0)
-        std::cout << minutes << " m ";
-    std::cout << std::fixed << std::setprecision(0)
-              << seconds << " s\n" << std::endl;
-}
 
 int main(int, char* []) {
 
     try {
         std::cout << std::endl;
-        boost::timer timer;
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Firefly Algorithm Test" << std::endl;
         std::cout << "----------------------------------------------------------------" << std::endl;
         testFirefly();
 
-        printTime(timer.elapsed());
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Hybrid Simulated Annealing Test" << std::endl;
@@ -383,7 +368,6 @@ int main(int, char* []) {
         testGaussianSA(10, 500, 200, 100.0, 0.1, GaussianSimulatedAnnealing::ResetToBestPoint, 150, GaussianSimulatedAnnealing::EveryNewPoint);
         testGaussianSA(30, 500, 200, 100.0, 0.1, GaussianSimulatedAnnealing::ResetToBestPoint, 150, GaussianSimulatedAnnealing::EveryNewPoint);
 
-        printTime(timer.elapsed());
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Particle Swarm Optimization Test" << std::endl;
@@ -392,7 +376,6 @@ int main(int, char* []) {
         testPSO(10);
         testPSO(30);
 
-        printTime(timer.elapsed());
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Simulated Annealing Test" << std::endl;
@@ -401,7 +384,6 @@ int main(int, char* []) {
         testSimulatedAnnealing(10, 10000, 4000);
         testSimulatedAnnealing(30, 10000, 4000);
 
-        printTime(timer.elapsed());
 
         std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
         std::cout << "Differential Evolution Test" << std::endl;
@@ -409,8 +391,6 @@ int main(int, char* []) {
         testDifferentialEvolution(3, 50);
         testDifferentialEvolution(10, 150);
         testDifferentialEvolution(30, 450);
-
-        printTime(timer.elapsed());
 
         return 0;
     } catch (std::exception& e) {
