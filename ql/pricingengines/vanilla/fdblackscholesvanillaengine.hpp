@@ -76,6 +76,41 @@ namespace QuantLib {
         const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
         const CashDividendModel cashDividendModel_;
     };
+
+
+    class MakeFdBlackScholesVanillaEngine {
+      public:
+        MakeFdBlackScholesVanillaEngine(
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+
+        MakeFdBlackScholesVanillaEngine& withQuantoHelper(
+            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
+
+        MakeFdBlackScholesVanillaEngine& withTGrid(Size tGrid);
+        MakeFdBlackScholesVanillaEngine& withXGrid(Size xGrid);
+        MakeFdBlackScholesVanillaEngine& withDampingSteps(
+            Size dampingSteps);
+
+        MakeFdBlackScholesVanillaEngine& withFdmSchemeDesc(
+            const FdmSchemeDesc& schemeDesc);
+
+        MakeFdBlackScholesVanillaEngine& withLocalVol(bool localVol);
+        MakeFdBlackScholesVanillaEngine& withIllegalLocalVolOverwrite(
+            Real illegalLocalVolOverwrite);
+
+        MakeFdBlackScholesVanillaEngine& withCashDividendModel(
+            FdBlackScholesVanillaEngine::CashDividendModel cashDividendModel);
+
+        operator ext::shared_ptr<PricingEngine>() const;
+      private:
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        Size tGrid_, xGrid_, dampingSteps_;
+        ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
+        bool localVol_;
+        Real illegalLocalVolOverwrite_;
+        ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        FdBlackScholesVanillaEngine::CashDividendModel cashDividendModel_;
+    };
 }
 
 #endif

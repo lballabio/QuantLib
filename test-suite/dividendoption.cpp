@@ -924,7 +924,7 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 
 void DividendOptionTest::testEscrowedDividendModel() {
     BOOST_TEST_MESSAGE("Testing finite-difference European engine "
-                       "with he escrowed dividend model...");
+                       "with the escrowed dividend model...");
 
     SavedSettings backup;
 
@@ -968,12 +968,12 @@ void DividendOptionTest::testEscrowedDividendModel() {
     const Real analyticDelta = option.delta();
 
     option.setPricingEngine(
-        ext::make_shared<FdBlackScholesVanillaEngine>(
-            process,
-            50, 200, 1,
-            FdmSchemeDesc::Douglas(),
-            false, -Null<Real>(),
-            FdBlackScholesVanillaEngine::Escrowed));
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(50)
+            .withXGrid(200)
+            .withDampingSteps(1)
+            .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed)
+        );
 
     const Real pdeNPV = option.NPV();
     const Real pdeDelta = option.delta();

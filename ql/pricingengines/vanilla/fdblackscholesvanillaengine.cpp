@@ -43,6 +43,7 @@ namespace QuantLib {
       schemeDesc_(schemeDesc),
       localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
+      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
       cashDividendModel_(cashDividendModel) {
         registerWith(process_);
     }
@@ -150,5 +151,81 @@ namespace QuantLib {
         results_.delta = solver->deltaAt(spot);
         results_.gamma = solver->gammaAt(spot);
         results_.theta = solver->thetaAt(spot);
+    }
+
+    MakeFdBlackScholesVanillaEngine::MakeFdBlackScholesVanillaEngine(
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+      : process_(process),
+        tGrid_(100),
+        xGrid_(100),
+        dampingSteps_(0),
+        schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Douglas())),
+        localVol_(false),
+        illegalLocalVolOverwrite_(-Null<Real>()),
+        quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
+        cashDividendModel_(FdBlackScholesVanillaEngine::Spot) {}
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withQuantoHelper(
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper) {
+        quantoHelper_ = quantoHelper;
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withTGrid(Size tGrid) {
+        tGrid_ = tGrid;
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withXGrid(Size xGrid) {
+        xGrid_ = xGrid;
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withDampingSteps(Size dampingSteps) {
+        dampingSteps_ = dampingSteps;
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withFdmSchemeDesc(
+        const FdmSchemeDesc& schemeDesc) {
+        schemeDesc_ = ext::make_shared<FdmSchemeDesc>(schemeDesc);
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withLocalVol(bool localVol) {
+        localVol_ = localVol;
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withIllegalLocalVolOverwrite(
+        Real illegalLocalVolOverwrite) {
+        illegalLocalVolOverwrite_ = illegalLocalVolOverwrite;
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine&
+    MakeFdBlackScholesVanillaEngine::withCashDividendModel(
+        FdBlackScholesVanillaEngine::CashDividendModel cashDividendModel) {
+        cashDividendModel_ = cashDividendModel;
+        return *this;
+    }
+
+    MakeFdBlackScholesVanillaEngine::operator
+    ext::shared_ptr<PricingEngine>() const {
+        return ext::make_shared<FdBlackScholesVanillaEngine>(
+            process_,
+            quantoHelper_,
+            tGrid_, xGrid_, dampingSteps_,
+            *schemeDesc_,
+            localVol_,
+            illegalLocalVolOverwrite_,
+            cashDividendModel_);
     }
 }
