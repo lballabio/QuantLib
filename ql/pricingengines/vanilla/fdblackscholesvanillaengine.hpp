@@ -80,7 +80,7 @@ namespace QuantLib {
 
     class MakeFdBlackScholesVanillaEngine {
       public:
-        MakeFdBlackScholesVanillaEngine(
+        explicit MakeFdBlackScholesVanillaEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 
         MakeFdBlackScholesVanillaEngine& withQuantoHelper(

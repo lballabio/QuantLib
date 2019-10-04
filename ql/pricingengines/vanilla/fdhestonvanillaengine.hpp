@@ -91,7 +91,7 @@ namespace QuantLib {
 
     class MakeFdHestonVanillaEngine {
       public:
-        MakeFdHestonVanillaEngine(
+        explicit MakeFdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& hestonModel);
 
         MakeFdHestonVanillaEngine& withQuantoHelper(
