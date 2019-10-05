@@ -31,9 +31,6 @@ namespace QuantLib {
     /*! In one dimension the Crank-Nicolson scheme is equivalent to the
         Douglas scheme and in higher dimensions it is usually inferior to
         operator splitting methods like Craig-Sneyd or Hundsdorfer-Verwer.
-        The linear solver encoded by SolverType and the relative
-        tolerance of the linear solver are only used in two or higher
-        dimensional problems.
     */
     class ExplicitEulerScheme;
 
