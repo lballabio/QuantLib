@@ -72,8 +72,8 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
         quotes[2]->setValue(0.03);
 
         double rate = fra.forwardRate();
-        if (std::fabs(rate - 0.0100006) > 1e-6) {
-                BOOST_ERROR("grid creation failed");
+        if (std::fabs(rate - 0.01) > 1e-6) {
+            BOOST_ERROR("grid creation failed, got rate " << rate << " expected " << 0.01);
         }
 }
 
