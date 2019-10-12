@@ -538,7 +538,12 @@ namespace QuantLib {
 
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
+#ifdef QL_USE_INDEXED_COUPON
         return iborIndex_->fixing(fixingDate_, true);
+#else
+        return (termStructure_->discount(earliestDate_) / termStructure_->discount(maturityDate_) - 1.0) /
+               spanningTime_;
+#endif
     }
 
     void FraRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -570,8 +575,13 @@ namespace QuantLib {
                                periodToStart_ + iborIndex_->tenor(),
                                iborIndex_->businessDayConvention(),
                                iborIndex_->endOfMonth());
+#ifdef QL_INDEXED_COUPON
         // latest relevant date is calculated from earliestDate_ instead
         latestRelevantDate_ = iborIndex_->maturityDate(earliestDate_);
+#else
+        latestRelevantDate_ = maturityDate_;
+        spanningTime_ = iborIndex_->dayCounter().yearFraction(earliestDate_, maturityDate_);
+#endif
 
         switch (pillarChoice_) {
           case Pillar::MaturityDate:

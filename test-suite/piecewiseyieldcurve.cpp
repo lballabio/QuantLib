@@ -429,7 +429,8 @@ namespace {
                                       fraData[i].units,
                                       euribor3m->businessDayConvention(),
                                       euribor3m->endOfMonth());
-            Date end = vars.calendar.advance(start, 3, Months,
+            BOOST_REQUIRE(fraData[i].units == Months);
+            Date end = vars.calendar.advance(vars.settlement, 3 + fraData[i].n, Months,
                                              euribor3m->businessDayConvention(),
                                              euribor3m->endOfMonth());
 

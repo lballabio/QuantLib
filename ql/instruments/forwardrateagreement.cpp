@@ -93,18 +93,29 @@ namespace QuantLib {
 
     void ForwardRateAgreement::setupExpired() const {
         Forward::setupExpired();
-        forwardRate_ = InterestRate(index_->fixing(fixingDate()),
-                                    index_->dayCounter(),
-                                    Simple, Once);
+        calculateForwardRate();
     }
 
     void ForwardRateAgreement::performCalculations() const {
-        forwardRate_ = InterestRate(index_->fixing(fixingDate()),
-                                    index_->dayCounter(),
-                                    Simple, Once);
+        calculateForwardRate();
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = 0.0;
         Forward::performCalculations();
+    }
+
+    void ForwardRateAgreement::calculateForwardRate() const {
+#ifdef QL_USE_INDEXED_COUPON
+        forwardRate_ = InterestRate(index_->fixing(fixingDate()),
+                                    index_->dayCounter(),
+                                    Simple, Once);
+#else
+        // par coupon approximation
+        forwardRate_ = InterestRate((index_->forwardingTermStructure()->discount(valueDate_) /
+                                         index_->forwardingTermStructure()->discount(maturityDate_) -
+                                     1.0) /
+                                        index_->dayCounter().yearFraction(valueDate_, maturityDate_),
+                                    index_->dayCounter(), Simple, Once);
+#endif
     }
 
 }

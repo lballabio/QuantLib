@@ -225,6 +225,9 @@ namespace QuantLib {
         Pillar::Choice pillarChoice_;
         ext::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+#ifndef QL_USE_INDEXED_COUPON
+		Real spanningTime_;
+#endif
     };
 
 

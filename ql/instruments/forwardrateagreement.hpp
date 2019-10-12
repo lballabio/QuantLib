@@ -113,6 +113,9 @@ namespace QuantLib {
         InterestRate strikeForwardRate_;
         Real notionalAmount_;
         ext::shared_ptr<IborIndex> index_;
+
+      private:
+        void calculateForwardRate() const;
     };
 
 }
