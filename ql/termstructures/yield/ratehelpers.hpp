@@ -226,7 +226,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 #ifndef QL_USE_INDEXED_COUPON
-		Real spanningTime_;
+        Real spanningTime_;
 #endif
     };
 
