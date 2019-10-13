@@ -575,7 +575,7 @@ namespace QuantLib {
                                periodToStart_ + iborIndex_->tenor(),
                                iborIndex_->businessDayConvention(),
                                iborIndex_->endOfMonth());
-#ifdef QL_INDEXED_COUPON
+#ifdef QL_USE_INDEXED_COUPON
         // latest relevant date is calculated from earliestDate_ instead
         latestRelevantDate_ = iborIndex_->maturityDate(earliestDate_);
 #else
