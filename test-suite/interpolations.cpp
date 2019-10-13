@@ -2106,7 +2106,86 @@ void InterpolationTest::testTransformations() {
                         << z[1] - y[1] << "," << z[2] - y[2] << ","
                         << z[3] - y[3] << ")");
     }
+}
 
+void InterpolationTest::testFlochKennedySabrIsSmoothAroundATM() {
+    BOOST_TEST_MESSAGE("Testing that Andersen SABR formula is smooth "
+                       "close to the ATM level...");
+
+    const Real f0    = 1.1;
+    const Real alpha = 0.35;
+    const Real nu    = 1.1;
+    const Real rho   = 0.25;
+    const Real beta  = 0.3;
+    const Real strike= f0;
+    const Time t = 2.1;
+
+    const Real vol = sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, nu, rho);
+
+    const Real expected = 0.3963883944;
+    const Real tol = 1e-8;
+    const Real diff = std::fabs(expected - vol);
+    if (diff > tol) {
+        BOOST_ERROR("\nfailed to get ATM value :" <<
+                    "\n    expected:   " << expected <<
+                    "\n    calculated: " << vol <<
+                    "\n    diff:      " << diff);
+    }
+
+    Real k = 0.996*strike;
+    Real v = sabrFlochKennedyVolatility(k, f0, t, alpha, beta, nu, rho);
+
+    for (; k < 1.004*strike; k += 0.0001*strike) {
+        const Real vt = sabrFlochKennedyVolatility(k, f0, t, alpha, beta, nu, rho);
+
+        const Real diff = std::fabs(v - vt);
+
+        if (diff > 1e-5) {
+            BOOST_ERROR("\nSabr vol spike around ATM :" <<
+                        "\n    volatility at " << k-0.0001*strike <<
+                        " is " << v <<
+                        "\n    volatility at " << k << " is " << vt <<
+                        "\n    difference: " << diff <<
+                        "\n    tolerance : " << 1e-5);
+        }
+        v = vt;
+    }
+}
+
+void InterpolationTest::testLeFlochKennedySabrExample() {
+    BOOST_TEST_MESSAGE("Testing Le Floc'h Kennedy SABR Example...");
+
+    /*
+    Example is taken from F. Le Floc'h, G. Kennedy:
+     Explicit SABR Calibration through Simple Expansions.
+     https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2467231
+    */
+
+    const Real f0    = 1.0;
+    const Real alpha = 0.35;
+    const Real nu    = 1.0;
+    const Real rho   = 0.25;
+    const Real beta  = 0.25;
+    const Real strikes[]= {1.0, 1.5, 0.5};
+    const Time t = 2.0;
+
+    const Real expected[] = {0.408702473958, 0.428489933046, 0.585701651161};
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+        const Real vol =
+            sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, nu, rho);
+
+        const Real tol = 1e-8;
+        const Real diff = std::fabs(expected[i] - vol);
+
+        if (diff > tol) {
+            BOOST_ERROR("\nfailed to reproduce reference examples :" <<
+                        "\n    expected:   " << expected[i] <<
+                        "\n    calculated: " << vol <<
+                        "\n    diff:       " << diff);
+        }
+    }
 }
 
 namespace {
@@ -2390,6 +2469,10 @@ test_suite* InterpolationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testFlochKennedySabrIsSmoothAroundATM));
+    suite->add(QUANTLIB_TEST_CASE(
+        &InterpolationTest::testLeFlochKennedySabrExample));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation));
     suite->add(QUANTLIB_TEST_CASE(
                               &InterpolationTest::testKernelInterpolation2D));
@@ -2414,6 +2497,7 @@ test_suite* InterpolationTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
         &InterpolationTest::testBackwardFlatOnSinglePoint));
+
 
     return suite;
 }

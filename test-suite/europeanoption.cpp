@@ -40,7 +40,6 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -154,9 +153,9 @@ namespace {
             break;
           case FiniteDifferences:
             engine = ext::shared_ptr<PricingEngine>(
-                            new FDEuropeanEngine<CrankNicolson>(stochProcess,
-                                                                binomialSteps,
-                                                                samples));
+                            new FdBlackScholesVanillaEngine(stochProcess,
+                                                            binomialSteps,
+                                                            samples));
             break;
           case Integral:
             engine = ext::shared_ptr<PricingEngine>(
@@ -981,9 +980,7 @@ namespace {
                                std::map<std::string,Real> tolerance,
                                bool testGreeks = false) {
 
-        QL_TEST_START_TIMING
-
-            std::map<std::string,Real> calculated, expected;
+        std::map<std::string,Real> calculated, expected;
 
         // test options
         Option::Type types[] = { Option::Call, Option::Put };
@@ -1212,13 +1209,13 @@ void EuropeanOptionTest::testFdEngines() {
     SavedSettings backup;
 
     EngineType engine = FiniteDifferences;
-    Size timeSteps = 300;
-    Size gridPoints = 300;
+    Size timeSteps = 500;
+    Size gridPoints = 500;
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 1.0e-4;
     relativeTol["delta"] = 1.0e-6;
     relativeTol["gamma"] = 1.0e-6;
-    relativeTol["theta"] = 1.0e-4;
+    relativeTol["theta"] = 1.0e-3;
     testEngineConsistency(engine,timeSteps,gridPoints,relativeTol,true);
 }
 
@@ -1279,104 +1276,6 @@ void EuropeanOptionTest::testFFTEngines() {
     std::map<std::string,Real> relativeTol;
     relativeTol["value"] = 0.01;
     testEngineConsistency(engine,steps,samples,relativeTol);
-}
-
-
-void EuropeanOptionTest::testPriceCurve() {
-
-    BOOST_TEST_MESSAGE("Testing European price curves...");
-
-    SavedSettings backup;
-
-    /* The data below are from
-       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
-    */
-    EuropeanOptionData values[] = {
-      // pag 2-8
-      //        type, strike,   spot,    q,    r,    t,  vol,   value
-      { Option::Call,  65.00,  60.00, 0.00, 0.08, 0.25, 0.30,  2.1334, 0.0},
-      { Option::Put,   95.00, 100.00, 0.05, 0.10, 0.50, 0.20,  2.4648, 0.0},
-    };
-
-    DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Size timeSteps = 300;
-    Size gridPoints = 300;
-
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
-
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
-                                      Handle<YieldTermStructure>(qTS),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
-    ext::shared_ptr<PricingEngine> engine(
-                             new FDEuropeanEngine<CrankNicolson>(stochProcess,
-                                                                 timeSteps,
-                                                                 gridPoints));
-
-    for (Size i=0; i<LENGTH(values); i++) {
-
-        ext::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(values[i].type, values[i].strike));
-        // FLOATING_POINT_EXCEPTION
-        Date exDate = today + timeToDays(values[i].t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
-
-        EuropeanOption option(payoff, exercise);
-        option.setPricingEngine(engine);
-        SampledCurve price_curve = option.result<SampledCurve>("priceCurve");
-        if (price_curve.empty()) {
-            REPORT_FAILURE("no price curve", payoff, exercise, values[i].s,
-                           values[i].q, values[i].r, today,
-                           values[i].v, values[i].result, 0.0,
-                           0.0, 0.0);
-            continue;
-        }
-
-        // Ignore the end points
-        Size start = price_curve.size() / 4;
-        Size end = price_curve.size() * 3 / 4;
-        for (Size i=start; i < end; i++) {
-            spot->setValue(price_curve.gridValue(i));
-            ext::shared_ptr<StochasticProcess> stochProcess1(
-                      new BlackScholesMertonProcess(
-                                       Handle<Quote>(spot),
-                                       Handle<YieldTermStructure>(qTS),
-                                       Handle<YieldTermStructure>(rTS),
-                                       Handle<BlackVolTermStructure>(volTS)));
-            ext::shared_ptr<PricingEngine> engine1(
-                             new FDEuropeanEngine<CrankNicolson>(stochProcess,
-                                                                 timeSteps,
-                                                                 gridPoints));
-
-            option.setPricingEngine(engine1);
-            Real calculated = option.NPV();
-            Real error = std::fabs(calculated-price_curve.value(i));
-            Real tolerance = 1e-3;
-            if (error>tolerance) {
-                REPORT_FAILURE("price curve error", payoff, exercise,
-                               price_curve.gridValue(i),
-                               values[i].q, values[i].r, today,
-                               values[i].v,
-                               price_curve.value(i), calculated,
-                               error, tolerance);
-                break;
-            }
-        }
-    }
-
 }
 
 
@@ -1735,9 +1634,8 @@ void EuropeanOptionTest::testFdEngineWithNonConstantParameters() {
 
     Size timeSteps = 200;
     Size gridPoints = 201;
-    bool timeDependent = false;
-    option.setPricingEngine(ext::make_shared<FDEuropeanEngine<CrankNicolson> >(
-                              process, timeSteps, gridPoints, timeDependent));
+    option.setPricingEngine(ext::make_shared<FdBlackScholesVanillaEngine>(
+                              process, timeSteps, gridPoints));
     Real calculated = option.NPV();
 
     Real tolerance = 0.01;
@@ -1775,7 +1673,6 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
 
-    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testLocalVolatility));
 
     suite->add(QUANTLIB_TEST_CASE(

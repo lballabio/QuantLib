@@ -35,15 +35,15 @@
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
-#include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/localvolrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/types.hpp>
 #include <ql/functional.hpp>
-
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -89,7 +89,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
             const BlackCalculator blackCalc(
                 Option::Put, strike, fwd, stdDev, df);
 
-            const Real tol = std::sqrt(QL_EPSILON);
+            const Real tol = 10*std::sqrt(QL_EPSILON);
             const Real calculatedCDF = bsm.cdf(xs, t);
             const Real expectedCDF
                 = blackCalc.strikeSensitivity()/df;
@@ -732,6 +732,83 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     }
 }
 
+void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
+    BOOST_TEST_MESSAGE("Testing the mass at zero for a "
+                       "constant elasticity of variance (CEV) process...");
+
+    using namespace ext::placeholders;
+
+    const Real f0 = 100.0;
+    const Time t = 2.75;
+
+    const std::pair<Real, Real> params[] = {
+      std::make_pair(0.1, 1.6),
+      std::make_pair(0.01, 2.0),
+      std::make_pair(10.0, 0.35),
+      std::make_pair(50.0, 0.1)
+    };
+
+    const Real tol = 1e-4;
+
+    for (Size i=0; i < LENGTH(params); ++i) {
+        const Real alpha = params[i].first;
+        const Real beta = params[i].second;
+
+        const ext::shared_ptr<CEVRNDCalculator> calculator =
+            ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);
+
+        const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
+
+        const Real calculated = GaussLobattoIntegral(1000, 1e-8)(
+            ext::bind(&CEVRNDCalculator::pdf, calculator, _1, t),
+                      std::max(QL_EPSILON, f0-ax), f0+ax) +
+            calculator->massAtZero(t);
+
+        if (std::fabs(calculated - 1.0) > tol) {
+            BOOST_FAIL("failed to reproduce the total probability mass"
+                    << "\n   alpha:     " << alpha
+                    << "\n   beta:      " << beta
+                    << "\n   prob mass: " << calculated
+                    << "\n   tolerance: " << tol);
+        }
+    }
+}
+
+void RiskNeutralDensityCalculatorTest::testCEVCDF() {
+    BOOST_TEST_MESSAGE("Testing CDF for a "
+                       "constant elasticity of variance (CEV) process...");
+
+    const Real f0 = 2.1;
+    const Time t = 0.75;
+
+    const Real alpha = 0.1;
+    const Real betas[] = { 0.45, 1.25 };
+
+    const Real tol = 1e-6;
+    for (Size i = 1; i < LENGTH(betas); ++i) {
+        const Real beta = betas[i];
+        const ext::shared_ptr<CEVRNDCalculator> calculator =
+            ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);
+
+        for (Real x = 1.3; x < 3.1; x+=0.1) {
+
+            const Real cdfValue = calculator->cdf(x, t);
+            const Real calculated = calculator->invcdf(cdfValue, t);
+
+            if (std::fabs(x - calculated) > tol) {
+                BOOST_FAIL(
+                    "failed to reproduce the inverse cumulative probability"
+                        << "\n   alpha:     " << alpha
+                        << "\n   beta:      " << beta
+                        << "\n   x:         " << x
+                        << "\n   calculated:" << calculated
+                        << "\n   difference:" << x - calculated
+                        << "\n   tolerance: " << tol);
+            }
+        }
+    }
+}
+
 test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
 
@@ -743,6 +820,10 @@ test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
         &RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
     suite->add(QUANTLIB_TEST_CASE(
         &RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
+    suite->add(QUANTLIB_TEST_CASE(
+        &RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND));
+    suite->add(QUANTLIB_TEST_CASE(
+          &RiskNeutralDensityCalculatorTest::testCEVCDF));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

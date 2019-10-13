@@ -716,6 +716,43 @@ void DistributionTest::testInvCDFviaStochasticCollocation() {
     }
 }
 
+void DistributionTest::testSankaranApproximation() {
+    BOOST_TEST_MESSAGE("Testing Sankaran approximation for the "
+                       "non-central cumulative chi-square distribution...");
+
+    const Real dfs[] = {2,2,2,4,4};
+    const Real ncps[] = {1,2,3,1,2,3};
+
+    const Real tol = 0.01;
+    for (Size i=0; i < LENGTH(dfs); ++i) {
+        const Real df = dfs[i];
+
+        for (Size j=0; j < LENGTH(ncps); ++j) {
+            Real ncp = ncps[j];
+
+            const NonCentralCumulativeChiSquareDistribution d(df, ncp);
+            const NonCentralCumulativeChiSquareSankaranApprox sankaran(df, ncp);
+
+            for (Real x=0.25; x < 10; x+=0.1) {
+                const Real expected = d(x);
+                const Real calculated = sankaran(x);
+                const Real diff = std::fabs(expected - calculated);
+
+                if (diff > tol) {
+                    BOOST_ERROR("Failed to match accuracy of Sankaran approximation"""
+                           "\n    df        : " << df <<
+                           "\n    ncp       : " << ncp <<
+                           "\n    x         : " << x <<
+                           "\n    expected  : " << expected <<
+                           "\n    calculated: " << calculated <<
+                           "\n    diff      : " << diff <<
+                           "\n    tol       : " << tol);
+                }
+            }
+        }
+    }
+}
+
 test_suite* DistributionTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
 
@@ -729,6 +766,9 @@ test_suite* DistributionTest::suite(SpeedLevel speed) {
                           &DistributionTest::testBivariateCumulativeStudent));
     suite->add(QUANTLIB_TEST_CASE(
                    &DistributionTest::testInvCDFviaStochasticCollocation));
+
+    suite->add(QUANTLIB_TEST_CASE(
+                   &DistributionTest::testSankaranApproximation));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

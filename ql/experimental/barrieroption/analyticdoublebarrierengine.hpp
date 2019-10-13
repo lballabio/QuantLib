@@ -64,7 +64,6 @@ namespace QuantLib {
         Real volatilitySquared() const;
         Real barrierLo() const;
         Real barrierHi() const;
-        Real rebate() const;
         Real stdDeviation() const;
         Rate riskFreeRate() const;
         DiscountFactor riskFreeDiscount() const;

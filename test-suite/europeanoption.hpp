@@ -45,7 +45,6 @@ class EuropeanOptionTest {
     static void testQmcEngines();
     static void testMcEngines();
     static void testFFTEngines();
-    static void testPriceCurve();
     static void testLocalVolatility();
     static void testAnalyticEngineDiscountCurve();
     static void testPDESchemes();

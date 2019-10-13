@@ -39,7 +39,6 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
-#include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -57,7 +56,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         Date today(29, May, 2006);
@@ -367,19 +365,6 @@ int main(int, char* []) {
             << "risk-free rate are changed. Feel free to experiment with \n"
             << "the example and contribute a patch if you spot any errors."
             << std::endl;
-
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        std::cout << " \nRun completed in ";
-        if (hours > 0)
-            std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
 
         return 0;
     } catch (std::exception& e) {

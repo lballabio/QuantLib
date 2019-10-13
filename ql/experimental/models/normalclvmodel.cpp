@@ -31,7 +31,7 @@
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
 
 
 namespace QuantLib {

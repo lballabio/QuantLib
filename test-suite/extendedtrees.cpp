@@ -28,7 +28,6 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -145,9 +144,7 @@ namespace {
                                Size binomialSteps,
                                std::map<std::string,Real> tolerance) {
 
-        QL_TEST_START_TIMING
-
-            std::map<std::string,Real> calculated, expected;
+        std::map<std::string,Real> calculated, expected;
 
         // test options
         Option::Type types[] = { Option::Call, Option::Put };
