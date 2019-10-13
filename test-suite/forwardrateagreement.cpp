@@ -33,11 +33,14 @@ using namespace boost::unit_test_framework;
 void ForwardRateAgreementTest::testConstructionWithoutACurve() {
         BOOST_TEST_MESSAGE("Testing forward rate agreement construction...");
 
-        Date spotDate = QuantLib::Settings::instance().evaluationDate();
+        Date today = QuantLib::Settings::instance().evaluationDate();
 
         // set up the index
         RelinkableHandle<YieldTermStructure> curveHandle;
         ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(Period(3, Months), curveHandle);
+
+        // determine the settlement date for a FRA
+        Date settlementDate = index->fixingCalendar().advance(today, index->fixingDays() * Days);
 
         // set up quotes with no values
         std::vector<ext::shared_ptr<SimpleQuote> > quotes;
@@ -51,15 +54,15 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
         helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]), Period(2, Years), index));
         helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]), Period(3, Years), index));
 
-        ext::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve = ext::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(spotDate,
+        ext::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve = ext::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(today,
                                                                                                                                                              helpers,
                                                                                                                                                              index->dayCounter());
 
         curveHandle.linkTo(curve);
 
         // set up the instrument to price
-        ForwardRateAgreement fra(spotDate + Period(6, Months),
-                                 spotDate + Period(18, Months),
+        ForwardRateAgreement fra(settlementDate + Period(12, Months),
+                                 settlementDate + Period(15, Months),
                                  Position::Long,
                                  0,
                                  1,
