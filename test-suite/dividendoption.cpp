@@ -34,6 +34,7 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -924,6 +925,101 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 }
 
 
+void DividendOptionTest::testEscrowedDividendModel() {
+    BOOST_TEST_MESSAGE("Testing finite-difference European engine "
+                       "with the escrowed dividend model...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(12, October, 2019);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.063, dc));
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.094, dc));
+    const Handle<BlackVolTermStructure> volTS(flatVol(today, 0.3, dc));
+
+    const Date maturity = today + Period(1, Years);
+
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(
+            spot, qTS, rTS, volTS);
+
+    const ext::shared_ptr<PlainVanillaPayoff> payoff(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, spot->value()));
+
+    const ext::shared_ptr<Exercise> exercise(
+        ext::make_shared<EuropeanExercise>(maturity));
+
+    std::vector<Date> dividendDates;
+    dividendDates.push_back(Date(today + Period(3, Months)));
+    dividendDates.push_back(Date(today + Period(9, Months)));
+
+    std::vector<Real> dividendAmounts;
+    dividendAmounts.push_back(8.3);
+    dividendAmounts.push_back(6.8);
+
+    DividendVanillaOption option(
+        payoff, exercise, dividendDates, dividendAmounts);
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticDividendEuropeanEngine>(process));
+
+    const Real analyticNPV = option.NPV();
+    const Real analyticDelta = option.delta();
+
+    option.setPricingEngine(
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(50)
+            .withXGrid(200)
+            .withDampingSteps(1)
+            .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed)
+        );
+
+    const Real pdeNPV = option.NPV();
+    const Real pdeDelta = option.delta();
+
+    const Real tol = 0.0025;
+    if (std::fabs(pdeNPV - analyticNPV) > tol) {
+        BOOST_FAIL("Failed to reproduce European option values "
+                "with the escrowed dividend model and the "
+                "FdBlackScholesVanillaEngine engine"
+                   << "\n    calculated: " << pdeNPV
+                   << "\n    expected:   " << analyticNPV
+                   << "\n    difference: " << std::fabs(pdeNPV - analyticNPV)
+                   << "\n    tolerance:  " << tol);
+    }
+
+    if (std::fabs(pdeDelta - analyticDelta) > tol) {
+        BOOST_FAIL("Failed to reproduce European option deltas "
+                "with the escrowed dividend model and the "
+                "FdBlackScholesVanillaEngine engine"
+                   << "\n    calculated: " << pdeNPV
+                   << "\n    expected:   " << analyticNPV
+                   << "\n    difference: " << std::fabs(pdeNPV - analyticNPV)
+                   << "\n    tolerance:  " << tol);
+    }
+
+    option.setPricingEngine(
+        ext::make_shared<FDDividendEuropeanEngineMerton73<> >(
+            process, 50, 200));
+
+    const Real deprecatedPDENPV = option.NPV();
+
+    if (std::fabs(deprecatedPDENPV - analyticNPV) > tol) {
+        BOOST_FAIL("Failed to reproduce European option values "
+                "with the escrowed dividend model and the "
+                "FDDividendEuropeanEngineMerton73 engine"
+                   << "\n    calculated: " << pdeNPV
+                   << "\n    expected:   " << analyticNPV
+                   << "\n    difference: "
+                   << std::fabs(deprecatedPDENPV - analyticNPV)
+                   << "\n    tolerance:  " << tol);
+    }
+}
+
 test_suite* DividendOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Dividend European option tests");
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
@@ -931,7 +1027,7 @@ test_suite* DividendOptionTest::suite() {
     //  suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
     // Doesn't quite work.  Need to use discounted values
-    // suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
+    //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
@@ -945,6 +1041,9 @@ test_suite* DividendOptionTest::suite() {
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                               &DividendOptionTest::testFdAmericanDegenerate));
+    suite->add(QUANTLIB_TEST_CASE(
+                 &DividendOptionTest::testEscrowedDividendModel));
+
     return suite;
 }
 
