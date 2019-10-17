@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Andreas Gaida
- Copyright (C) 2009 Ralph Schreyer
- Copyright (C) 2009, 2017 Klaus Spanderen
+ Copyright (C) 2019 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,23 +17,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file impliciteulerscheme.hpp
-    \brief Implicit-Euler scheme
+/*! \file cranknicolsonscheme.hpp
+    \brief Crank-Nicolson scheme
 */
 
-#ifndef quantlib_implicit_euler_scheme_hpp
-#define quantlib_implicit_euler_scheme_hpp
+#ifndef quantlib_crank_nicolson_scheme_hpp
+#define quantlib_crank_nicolson_scheme_hpp
 
-#include <ql/methods/finitedifferences/operatortraits.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/methods/finitedifferences/schemes/boundaryconditionschemehelper.hpp>
+#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
 
 namespace QuantLib {
 
-    class ImplicitEulerScheme {
-      public:
-        enum SolverType { BiCGstab, GMRES };
+    /*! In one dimension the Crank-Nicolson scheme is equivalent to the
+        Douglas scheme and in higher dimensions it is usually inferior to
+        operator splitting methods like Craig-Sneyd or Hundsdorfer-Verwer.
+    */
+    class ExplicitEulerScheme;
 
+    class CrankNicolsonScheme  {
+      public:
         // typedefs
         typedef OperatorTraits<FdmLinearOp> traits;
         typedef traits::operator_type operator_type;
@@ -44,29 +44,23 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        ImplicitEulerScheme(
+        CrankNicolsonScheme(
+            Real theta,
             const ext::shared_ptr<FdmLinearOpComposite>& map,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,
-            SolverType solverType = BiCGstab);
+            ImplicitEulerScheme::SolverType solverType
+                = ImplicitEulerScheme::BiCGstab);
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
 
         Size numberOfIterations() const;
       protected:
-        friend class CrankNicolsonScheme;
-        void step(array_type& a, Time t, Real theta);
-
-        Disposable<Array> apply(const Array& r, Real theta) const;
-          
-        Time dt_;
-        ext::shared_ptr<Size> iterations_;
-
-        const Real relTol_;
-        const ext::shared_ptr<FdmLinearOpComposite> map_;
-        const BoundaryConditionSchemeHelper bcSet_;
-        const SolverType solverType_;
+        Real dt_;
+        const Real theta_;
+        const ext::shared_ptr<ExplicitEulerScheme> explicit_;
+        const ext::shared_ptr<ImplicitEulerScheme> implicit_;
     };
 }
 
