@@ -58,8 +58,10 @@ namespace QuantLib {
             fixingDate_, indexFixingDays, Days);
 
         if (Settings::instance().createIndexedCoupons()) {
+            isAtPar_ = false;
             fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         } else {
+            isAtPar_ = true;
             if (isInArrears_)
                 fixingEndDate_ = index_->maturityDate(fixingValueDate_);
             else { // par coupon approximation

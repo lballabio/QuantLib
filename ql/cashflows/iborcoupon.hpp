@@ -58,6 +58,8 @@ namespace QuantLib {
         }
         //! this is dependent on Settings::instance().createIndexedCoupons()
         const Date& fixingEndDate() const { return fixingEndDate_; }
+        //! this is dependent on Settings::instance().createIndexedCoupons()
+        bool isAtPar() const { return isAtPar_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -72,6 +74,7 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> iborIndex_;
         Date fixingDate_, fixingValueDate_, fixingEndDate_;
         Time spanningTime_;
+        bool isAtPar_;
     };
 
 
