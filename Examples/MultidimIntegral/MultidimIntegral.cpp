@@ -26,7 +26,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/functional.hpp>
 
-#include <boost/timer.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -53,7 +52,6 @@ struct integrand {
 };
 
 int main() {
-    boost::timer timer;
     std::cout << std::endl;
 
     /* 
@@ -73,9 +71,7 @@ int main() {
     #ifndef QL_PATCH_SOLARIS
     GaussianQuadMultidimIntegrator intg(dimension, 15);
 
-    timer.restart();
     Real valueQuad = intg(f);
-    Real secondsQuad = timer.elapsed();
     #endif
 
     std::vector<ext::shared_ptr<Integrator> > integrals;
@@ -86,9 +82,7 @@ int main() {
     std::vector<Real> b_limits(integrals.size(), 4.);
     MultidimIntegral testIntg(integrals);
 
-    timer.restart();
     Real valueGrid = testIntg(f, a_limits, b_limits);
-    Real secondsGrid = timer.elapsed();
 
     cout << fixed << setprecision(4);
     cout << endl << "-------------- " << endl
@@ -99,10 +93,5 @@ int main() {
          << "Grid: " << valueGrid << endl
          << endl;
 
-    cout
-        #ifndef QL_PATCH_SOLARIS
-        << "Seconds for Quad: " << secondsQuad << endl
-        #endif
-        << "Seconds for Grid: " << secondsGrid << endl;
     return 0;
 }

@@ -4,7 +4,6 @@
  Copyright (C) 2007, 2011 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2004, 2005, 2007, 2009 StatPro Italia srl
- Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

@@ -7,7 +7,6 @@
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
- Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,7 +49,8 @@ namespace QuantLib {
                    const Date& refPeriodStart = Date(),
                    const Date& refPeriodEnd = Date(),
                    const DayCounter& dayCounter = DayCounter(),
-                   bool isInArrears = false);
+                   bool isInArrears = false,
+                   const Date& exCouponDate = Date());
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const {
@@ -98,6 +98,10 @@ namespace QuantLib {
         IborLeg& withFloors(const std::vector<Rate>& floors);
         IborLeg& inArrears(bool flag = true);
         IborLeg& withZeroPayments(bool flag = true);
+        IborLeg& withExCouponPeriod(const Period&,
+                                         const Calendar&,
+                                         BusinessDayConvention,
+                                         bool endOfMonth = false);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -112,6 +116,10 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
         bool inArrears_, zeroPayments_;
+        Period exCouponPeriod_;
+        Calendar exCouponCalendar_;
+        BusinessDayConvention exCouponAdjustment_;
+        bool exCouponEndOfMonth_;
     };
 
 }

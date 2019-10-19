@@ -4,7 +4,6 @@
  Copyright (C) 2004, 2005 StatPro Italia srl
  Copyright (C) 2007, 2012 Ferdinando Ametrano
  Copyright (C) 2007, 2009 Piter Dias
- Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -1003,6 +1002,32 @@ void BondTest::testCachedFloating() {
                    << "    calculated: " << price << "\n"
                    << "    expected:   " << cachedPrice3 << "\n"
                    << "    error:      " << price-cachedPrice3);
+    }
+
+    Schedule sch2(Date(26, November, 2003), Date(26, November, 2007), Period(Semiannual),
+                 UnitedStates(UnitedStates::GovernmentBond), ModifiedFollowing, ModifiedFollowing,
+                 DateGeneration::Backward, false);
+    FloatingRateBond bond4(settlementDays, vars.faceAmount, sch2, index,
+                           ActualActual(ActualActual::ISMA), ModifiedFollowing, fixingDays,
+                           std::vector<Real>(), spreads, std::vector<Rate>(), std::vector<Rate>(), false, 100.0, Date(29, October, 2004), Period(6*Days));
+
+    index->addFixing(Date(25, May, 2004), 0.0402);
+    bond4.setPricingEngine(bondEngine2);
+
+    setCouponPricer(bond4.cashflows(), pricer);
+
+    #if defined(QL_USE_INDEXED_COUPON)
+        Real cachedPrice4 = 98.892346;
+    #else
+        Real cachedPrice4 = 98.892055;
+    #endif
+
+    price = bond4.cleanPrice();
+    if (std::fabs(price - cachedPrice4) > tolerance) {
+        BOOST_FAIL("failed to reproduce cached price:\n"
+                   << std::fixed << "    calculated: " << price << "\n"
+                   << "    expected:   " << cachedPrice4 << "\n"
+                   << "    error:      " << price - cachedPrice4);
     }
 }
 

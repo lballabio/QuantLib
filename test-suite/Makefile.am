@@ -32,6 +32,7 @@ QL_TESTS = \
 	cms.hpp cms.cpp \
 	cmsspread.hpp cmsspread.cpp \
 	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
+	compiledboostversion.hpp compiledboostversion.cpp \
 	compoundoption.hpp compoundoption.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \
@@ -199,11 +200,11 @@ endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}  ${BOOST_INTERPROCESS_LIB}
+                            ${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB} ${BOOST_INTERPROCESS_LIB}
 
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                           -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
+                           ${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message BOOST_TEST_COLOR_OUTPUT=false

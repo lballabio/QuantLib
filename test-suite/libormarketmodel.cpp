@@ -2,7 +2,6 @@
 
 /*
  Copyright (C) 2005, 2006 Klaus Spanderen
- Copyright (C) 2019 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
