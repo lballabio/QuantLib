@@ -8,6 +8,7 @@
  Copyright (C) 2015 Maddalena Zanzi
  Copyright (C) 2015 Paolo Mazzocchi
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2019 nexRates! S.r.l
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,6 +38,8 @@
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+
+#include <boost/optional.hpp>
 
 namespace QuantLib {
 
@@ -209,6 +212,18 @@ namespace QuantLib {
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date());
+        FraRateHelper(const Handle<Quote>& rate,
+                      Natural immOffsetStart,
+                      Natural immOffsetEnd,
+                      const ext::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
+        FraRateHelper(Rate rate,
+                      Natural immOffsetStart,
+                      Natural immOffsetEnd,
+                      const ext::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -221,7 +236,8 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Period periodToStart_;
+        boost::optional<Period> periodToStart_;
+        boost::optional<Natural> immOffsetStart_, immOffsetEnd_;
         Pillar::Choice pillarChoice_;
         ext::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
