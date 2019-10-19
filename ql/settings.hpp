@@ -107,8 +107,14 @@ namespace QuantLib {
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
 
-        /*! If set, this flag specifies whether to use indexed coupons 
-            instead of par coupons in floating legs.
+        /*! If set, this flag specifies whether to create indexed coupons
+            instead of par coupons in 'ql\cashflows\iborcoupon.hpp'.
+            Changing this setting does not effect already created
+            coupons, its will remain an indexed or par coupons.
+            To check whether it was created as a par coupon you can use
+            'bool IborCoupon::isAtPar() const;'.
+            The default depends on the compiler flag QL_USE_INDEXED_COUPON
+            defined in 'ql\userconfig.hpp'.
         */
         bool& createIndexedCoupons();
         bool createIndexedCoupons() const;
