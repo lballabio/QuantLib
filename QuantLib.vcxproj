@@ -1180,6 +1180,7 @@
     <ClInclude Include="ql\methods\finitedifferences\schemes\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\boundaryconditionschemehelper.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\craigsneydscheme.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\schemes\cranknicolsonscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\douglasscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.hpp" />
@@ -2280,6 +2281,7 @@
     <ClCompile Include="ql\methods\finitedifferences\operators\secondordermixedderivativeop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\triplebandlinearop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\craigsneydscheme.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\schemes\cranknicolsonscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\douglasscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\expliciteulerscheme.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\schemes\hundsdorferscheme.cpp" />

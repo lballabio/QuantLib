@@ -41,9 +41,9 @@ namespace QuantLib {
                             const Date& refPeriodStart,
                             const Date& refPeriodEnd,
                             const DayCounter& dayCounter,
-                            bool isInArrears)
-    : Coupon(paymentDate, nominal,
-             startDate, endDate, refPeriodStart, refPeriodEnd),
+                            bool isInArrears,
+                            const Date& exCouponDate)
+    : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd, exCouponDate),
       index_(index), dayCounter_(dayCounter),
       fixingDays_(fixingDays==Null<Natural>() ? index->fixingDays() : fixingDays),
       gearing_(gearing), spread_(spread),
@@ -71,6 +71,10 @@ namespace QuantLib {
     Real FloatingRateCoupon::accruedAmount(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0.0;
+        } else if (tradingExCoupon(d)) {
+            return -nominal() * rate() *
+                   dayCounter().yearFraction(d, accrualEndDate_,
+                                             refPeriodStart_, refPeriodEnd_);
         } else {
             return nominal() * rate() *
                 dayCounter().yearFraction(accrualStartDate_,

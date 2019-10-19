@@ -29,9 +29,7 @@
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/batesengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
-#include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fdbermudanengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -218,15 +216,13 @@ int main(int, char* []) {
         // Finite differences
         Size timeSteps = 801;
         method = "Finite differences";
-        europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                 new FDEuropeanEngine<CrankNicolson>(bsmProcess,
-                                                     timeSteps,timeSteps-1)));
-        bermudanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                 new FDBermudanEngine<CrankNicolson>(bsmProcess,
-                                                     timeSteps,timeSteps-1)));
-        americanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                 new FDAmericanEngine<CrankNicolson>(bsmProcess,
-                                                     timeSteps,timeSteps-1)));
+        ext::shared_ptr<PricingEngine> fdengine =
+            ext::make_shared<FdBlackScholesVanillaEngine>(bsmProcess,
+                                                          timeSteps,
+                                                          timeSteps-1);
+        europeanOption.setPricingEngine(fdengine);
+        bermudanOption.setPricingEngine(fdengine);
+        americanOption.setPricingEngine(fdengine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()

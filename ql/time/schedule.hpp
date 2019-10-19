@@ -104,6 +104,7 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         //! truncated schedule
+        Schedule after(const Date& truncationDate) const;
         Schedule until(const Date& truncationDate) const;
         //@}
       private:

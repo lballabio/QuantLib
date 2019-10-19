@@ -41,11 +41,12 @@ namespace QuantLib {
                            const Date& refPeriodStart,
                            const Date& refPeriodEnd,
                            const DayCounter& dayCounter,
-                           bool isInArrears)
+                           bool isInArrears,
+                           const Date& exCouponDate)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter, isInArrears),
+                         dayCounter, isInArrears, exCouponDate),
       iborIndex_(iborIndex) {
 
         fixingDate_ = fixingDate();
@@ -133,7 +134,9 @@ namespace QuantLib {
     : schedule_(schedule), index_(index),
       paymentAdjustment_(Following),
       paymentLag_(0), paymentCalendar_(Calendar()),
-      inArrears_(false), zeroPayments_(false) {}
+      inArrears_(false), zeroPayments_(false),
+      exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), 
+	  exCouponAdjustment_(Unadjusted), exCouponEndOfMonth_(false) {}
 
     IborLeg& IborLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);
@@ -225,12 +228,24 @@ namespace QuantLib {
         return *this;
     }
 
+	IborLeg& IborLeg::withExCouponPeriod(const Period& period,
+                                         const Calendar& cal,
+                                         BusinessDayConvention convention,
+                                         bool endOfMonth) {
+        exCouponPeriod_ = period;
+        exCouponCalendar_ = cal;
+        exCouponAdjustment_ = convention;
+        exCouponEndOfMonth_ = endOfMonth;
+        return *this;
+	}
+
     IborLeg::operator Leg() const {
 
         Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
                          schedule_, notionals_, index_, paymentDayCounter_,
                          paymentAdjustment_, fixingDays_, gearings_, spreads_,
-                         caps_, floors_, inArrears_, zeroPayments_, paymentLag_, paymentCalendar_);
+                         caps_, floors_, inArrears_, zeroPayments_, paymentLag_, paymentCalendar_, 
+			             exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_, exCouponEndOfMonth_);
 
         if (caps_.empty() && floors_.empty() && !inArrears_) {
             ext::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer);
