@@ -86,7 +86,7 @@ namespace QuantLib {
             specifications.
 
             To be precisely consistent with the ISDA specification
-                Settings::instance().useIndexedCoupon()
+                Settings::instance().createIndexedCoupons()
             must be false. This is not checked in order not to
             kill the engine completely in this case.
 

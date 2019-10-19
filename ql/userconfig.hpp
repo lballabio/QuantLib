@@ -54,7 +54,7 @@
 #endif
 
 /* Define this to use indexed coupons instead of par coupons in floating
-   legs as the default in Settings::instance().useIndexedCoupon(). */
+   legs as the default in Settings::instance().createIndexedCoupons(). */
 #ifndef QL_USE_INDEXED_COUPON
 //#   define QL_USE_INDEXED_COUPON
 #endif

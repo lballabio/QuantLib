@@ -230,7 +230,7 @@ namespace {
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
         Real tol2;
-        if (Settings::instance().useIndexedCoupon())
+        if (Settings::instance().createIndexedCoupons())
             tol2 = 0.02;
         else
             tol2 = tol;

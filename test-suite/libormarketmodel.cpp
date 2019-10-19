@@ -196,7 +196,7 @@ void LiborMarketModelTest::testCapletPricing() {
 
     const Size size = 10;
     Real tolerance;
-    if (Settings::instance().useIndexedCoupon())
+    if (Settings::instance().createIndexedCoupons())
         tolerance = 1e-5;
     else
         tolerance = 1e-12;
@@ -355,7 +355,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
     const Size steps = 8*size;
 
     Real tolerance;
-    if (Settings::instance().useIndexedCoupon())
+    if (Settings::instance().createIndexedCoupons())
         tolerance = 1e-6;
     else
         tolerance = 1e-12;

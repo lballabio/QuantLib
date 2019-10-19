@@ -403,7 +403,7 @@ void SwaptionTest::testCachedValue() {
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
     Real cachedNPV;
-    if (!Settings::instance().useIndexedCoupon())
+    if (!Settings::instance().createIndexedCoupons())
         cachedNPV = 0.036418158579;
     else
         cachedNPV = 0.036421429684;

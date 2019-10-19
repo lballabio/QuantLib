@@ -57,7 +57,7 @@ namespace QuantLib {
         fixingValueDate_ = fixingCalendar.advance(
             fixingDate_, indexFixingDays, Days);
 
-        if (Settings::instance().useIndexedCoupon()) {
+        if (Settings::instance().createIndexedCoupons()) {
             fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         } else {
             if (isInArrears_)

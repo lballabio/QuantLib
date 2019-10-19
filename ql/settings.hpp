@@ -110,15 +110,15 @@ namespace QuantLib {
         /*! If set, this flag specifies whether to use indexed coupons 
             instead of par coupons in floating legs.
         */
-        bool& useIndexedCoupon();
-        bool useIndexedCoupon() const;
+        bool& createIndexedCoupons();
+        bool createIndexedCoupons() const;
 
       private:
         DateProxy evaluationDate_;
         bool includeReferenceDateEvents_;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
-        bool useIndexedCoupon_;
+        bool createIndexedCoupons_;
     };
 
 
@@ -132,7 +132,7 @@ namespace QuantLib {
         bool includeReferenceDateEvents_;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
-        bool useIndexedCoupon_;
+        bool createIndexedCoupons_;
     };
 
 
@@ -182,12 +182,12 @@ namespace QuantLib {
         return enforcesTodaysHistoricFixings_;
     }
 
-    inline bool& Settings::useIndexedCoupon() {
-        return useIndexedCoupon_;
+    inline bool& Settings::createIndexedCoupons() { 
+		return createIndexedCoupons_;
     }
 
-    inline bool Settings::useIndexedCoupon() const {
-        return useIndexedCoupon_;
+    inline bool Settings::createIndexedCoupons() const { 
+		return createIndexedCoupons_;
     }
 }
 

@@ -365,7 +365,7 @@ void CPISwapTest::consistency() {
     Real diff = fabs(1-zisV.NPV()/4191660.0);
     
     Real max_diff;
-    if (!Settings::instance().useIndexedCoupon())
+    if (!Settings::instance().createIndexedCoupons())
         max_diff = 1e-5;
     else
         max_diff = 3e-5;

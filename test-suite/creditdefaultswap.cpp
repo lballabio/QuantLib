@@ -660,7 +660,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                              -4702034.688,
                              -4042340.999};
     Real tolerance;
-    if (!Settings::instance().useIndexedCoupon()) {
+    if (!Settings::instance().createIndexedCoupons()) {
         tolerance = 1.0e-6;
     } else {
         /* The risk-free curve is a bit off. We might skip the tests

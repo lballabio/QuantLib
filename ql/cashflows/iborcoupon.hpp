@@ -56,7 +56,7 @@ namespace QuantLib {
         const ext::shared_ptr<IborIndex>& iborIndex() const {
             return iborIndex_;
         }
-        //! this is dependent on Settings::instance().useIndexedCoupon()
+        //! this is dependent on Settings::instance().createIndexedCoupons()
         const Date& fixingEndDate() const { return fixingEndDate_; }
         //@}
         //! \name FloatingRateCoupon interface

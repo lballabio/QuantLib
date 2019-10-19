@@ -34,9 +34,9 @@ namespace QuantLib {
     Settings::Settings()
     : includeReferenceDateEvents_(false),
       enforcesTodaysHistoricFixings_(false),
-      useIndexedCoupon_(false) {
+      createIndexedCoupons_(false) {
         #ifdef QL_USE_INDEXED_COUPON
-        useIndexedCoupon_ = true;
+        createIndexedCoupons_ = true;
         #endif
     }
 
@@ -58,7 +58,7 @@ namespace QuantLib {
       includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
       enforcesTodaysHistoricFixings_(
                         Settings::instance().enforcesTodaysHistoricFixings()),
-      useIndexedCoupon_(Settings::instance().useIndexedCoupon()) {}
+      createIndexedCoupons_(Settings::instance().createIndexedCoupons()) {}
 
     SavedSettings::~SavedSettings() {
         try {
@@ -70,8 +70,8 @@ namespace QuantLib {
                 includeTodaysCashFlows_;
             Settings::instance().enforcesTodaysHistoricFixings() =
                 enforcesTodaysHistoricFixings_;
-            Settings::instance().useIndexedCoupon() = 
-                useIndexedCoupon_;
+            Settings::instance().createIndexedCoupons() = 
+                createIndexedCoupons_;
         } catch (...) {
             // nothing we can do except bailing out.
         }
