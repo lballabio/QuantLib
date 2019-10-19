@@ -989,7 +989,7 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond3.cashflows(),pricer);
 
-    Real cachedPrice3; 
+    Real cachedPrice3;
     if (Settings::instance().createIndexedCoupons())
         cachedPrice3 = 98.495458;
     else
