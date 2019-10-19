@@ -37,6 +37,11 @@ namespace QuantLib {
         const Real avgRate = 0.05;
         const Real maxRate = 1.0;
     }
+    //forward declarations , for overloading
+    template <class Curve>
+    class IterativeBootstrap;
+    template <class Traits, class Interpolator,template <class> class Bootstrap>
+    class PiecewiseYieldCurve;
 
     //! Discount-curve traits
     struct Discount {
@@ -98,6 +103,16 @@ namespace QuantLib {
             Time dt = c->times()[i] - c->times()[i-1];
             return c->data()[i-1] * std::exp(detail::maxRate * dt);
         }
+        template <class C, class I, template <class> class B>
+        static Real minValueAfter(Size i,
+                                  const PiecewiseYieldCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
+        template <class C, class I, template <class> class B>
+        static Real maxValueAfter(Size i,
+                                  const PiecewiseYieldCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
 
         // root-finding update
         static void updateGuess(std::vector<Real>& data,
@@ -177,6 +192,17 @@ namespace QuantLib {
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
         }
+        template <class C, class I, template <class> class B>
+        static Real minValueAfter(Size i,
+                                  const PiecewiseYieldCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
+        template <class C, class I, template <class> class B>
+        static Real maxValueAfter(Size i,
+                                  const PiecewiseYieldCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
+
 
         // root-finding update
         static void updateGuess(std::vector<Real>& data,
@@ -258,6 +284,17 @@ namespace QuantLib {
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxRate;
         }
+        template <class C, class I, template <class> class B>
+        static Real minValueAfter(Size i,
+                                  const PiecewiseYieldCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
+        template <class C, class I, template <class> class B>
+        static Real maxValueAfter(Size i,
+                                  const PiecewiseYieldCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
+
 
         // root-finding update
         static void updateGuess(std::vector<Real>& data,

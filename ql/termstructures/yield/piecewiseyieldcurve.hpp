@@ -92,11 +92,12 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                Real accuracy,
                const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>(),
+                Real maxrate = 1.0)
         : base_curve(referenceDate, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
-          accuracy_(accuracy), bootstrap_(bootstrap) {
+          accuracy_(accuracy),maxrate_(maxrate),bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -105,11 +106,12 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                const Interpolator& i,
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>(),
+                Real maxrate = 1.0)
         : base_curve(referenceDate, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
-          accuracy_(1.0e-12), bootstrap_(bootstrap) {
+          accuracy_(1.0e-12), maxrate_(maxrate),bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -122,10 +124,11 @@ namespace QuantLib {
                const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>(),
+                Real maxrate = 1.0)
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
           instruments_(instruments),
-          accuracy_(accuracy), bootstrap_(bootstrap) {
+          accuracy_(accuracy), maxrate_(maxrate),bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -136,11 +139,12 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                Real accuracy,
                const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>(),
+               Real maxrate = 1.0)
         : base_curve(settlementDays, calendar, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
-          accuracy_(accuracy), bootstrap_(bootstrap) {
+          accuracy_(accuracy), maxrate_(maxrate),bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         PiecewiseYieldCurve(
@@ -150,11 +154,12 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                const Interpolator& i,
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>(),
+               Real maxrate = 1.0)
         : base_curve(settlementDays, calendar, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
-          accuracy_(1.0e-12), bootstrap_(bootstrap) {
+          accuracy_(1.0e-12), maxrate_(maxrate),bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         //@}
@@ -173,6 +178,7 @@ namespace QuantLib {
         //@{
         void update();
         //@}
+        Real maxRate() const;
       private:
         //! \name LazyObject interface
         //@{
@@ -183,6 +189,7 @@ namespace QuantLib {
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
+        Real maxrate_;
 
         // bootstrapper classes are declared as friend to manipulate
         // the curve data. They might be passed the data instead, but
@@ -256,6 +263,90 @@ namespace QuantLib {
         bootstrap_.calculate();
     }
 
+    template <class C, class I, template <class> class B>
+    inline Real PiecewiseYieldCurve<C,I,B>::maxRate() const {
+        return maxrate_;
+    }
+
+    template <class C, class I, template <class> class B>
+    inline Real Discount::minValueAfter(Size i,
+                              const PiecewiseYieldCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            return *(std::min_element(c->data().begin(),
+                                      c->data().end()))/2.0;
+        }
+        Time dt = c->times()[i] - c->times()[i-1];
+        return c->data()[i-1] * std::exp(- c->maxRate() * dt);
+    }
+    template <class C, class I, template <class> class B>
+    Real Discount::maxValueAfter(Size i,
+                              const PiecewiseYieldCurve<C,I,B>* c,
+                              bool,
+                              Size) // firstAliveHelper
+    {
+        Time dt = c->times()[i] - c->times()[i-1];
+        return c->data()[i-1] * std::exp(c->maxRate() * dt);
+    }
+    // possible constraints based on previous values
+    template <class C, class I, template <class> class B>
+    inline Real ZeroYield::minValueAfter(Size,
+                              const PiecewiseYieldCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            Real r = *(std::min_element(c->data().begin(), c->data().end()));
+            return r<0.0 ? r*2.0 : r/2.0;
+        }
+        // use value set in curve construction.
+        return -c->maxRate();
+    }
+    template <class C, class I, template <class> class B>
+    inline Real ZeroYield::maxValueAfter(Size,
+                              const PiecewiseYieldCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            Real r = *(std::max_element(c->data().begin(), c->data().end()));
+            return r<0.0 ? r/2.0 : r*2.0;
+        }
+        // no constraints.
+        // Use value set while construction of curve.
+        return c->maxRate();
+    }
+    // possible constraints based on previous values
+    template <class C, class I, template <class> class B>
+    inline Real ForwardRate::minValueAfter(Size,
+                              const PiecewiseYieldCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            Real r = *(std::min_element(c->data().begin(), c->data().end()));
+            return r<0.0 ? r*2.0 : r/2.0;
+        }
+        // no constraints.
+        // Use value set while construction of curve.
+        return -c->maxRate();
+    }
+    template <class C, class I, template <class> class B>
+    inline Real ForwardRate::maxValueAfter(Size,
+                              const PiecewiseYieldCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            Real r = *(std::max_element(c->data().begin(), c->data().end()));
+            return r<0.0 ? r/2.0 : r*2.0;
+        }
+        // no constraints.
+        // Use value set while construction of curve.
+        return c->maxRate();
+    }
 }
 
 #endif
