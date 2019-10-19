@@ -1016,11 +1016,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond4.cashflows(), pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-        Real cachedPrice4 = 98.892346;
-    #else
-        Real cachedPrice4 = 98.892055;
-    #endif
+    Real cachedPrice4;
+    if (Settings::instance().createIndexedCoupons())
+        cachedPrice4 = 98.892346;
+    else
+        cachedPrice4 = 98.892055;
 
     price = bond4.cleanPrice();
     if (std::fabs(price - cachedPrice4) > tolerance) {
