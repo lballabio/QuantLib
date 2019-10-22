@@ -47,7 +47,7 @@ namespace QuantLib {
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears, exCouponDate),
-      iborIndex_(iborIndex) {
+      iborIndex_(iborIndex), isAtPar_(!Settings::instance().createIndexedCoupons()) {
 
         fixingDate_ = fixingDate();
 
@@ -57,11 +57,7 @@ namespace QuantLib {
         fixingValueDate_ = fixingCalendar.advance(
             fixingDate_, indexFixingDays, Days);
 
-        if (Settings::instance().createIndexedCoupons()) {
-            isAtPar_ = false;
-            fixingEndDate_ = index_->maturityDate(fixingValueDate_);
-        } else {
-            isAtPar_ = true;
+        if (isAtPar_) {
             if (isInArrears_)
                 fixingEndDate_ = index_->maturityDate(fixingValueDate_);
             else { // par coupon approximation
@@ -70,6 +66,8 @@ namespace QuantLib {
                 fixingEndDate_ = fixingCalendar.advance(
                     nextFixingDate, indexFixingDays, Days);
             }
+        } else {
+            fixingEndDate_ = index_->maturityDate(fixingValueDate_);
         }
 
         const DayCounter& dc = index_->dayCounter();
