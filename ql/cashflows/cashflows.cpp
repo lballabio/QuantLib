@@ -848,7 +848,7 @@ namespace QuantLib {
 #endif
 
         Real npv = 0.0;
-        Time t = 0.0;
+        DiscountFactor discount = 1.0;
         Date lastDate = npvDate;
         const DayCounter& dc = y.dayCounter();
         for (Size i=0; i<leg.size(); ++i) {
@@ -861,8 +861,8 @@ namespace QuantLib {
                 amount = 0.0;
             }
 
-            t += getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate);//******* added by me
-            DiscountFactor discount = y.discountFactor(t);
+            DiscountFactor b = y.discountFactor(getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate));
+            discount *= b;
             lastDate = leg[i]->date();
 
             npv += amount * discount;
