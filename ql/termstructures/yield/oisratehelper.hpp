@@ -46,7 +46,9 @@ namespace QuantLib {
                       Frequency paymentFrequency = Annual,
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& forwardStart = 0 * Days, 
-                      const Spread overnightSpread = 0.0);
+                      const Spread overnightSpread = 0.0,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -62,6 +64,7 @@ namespace QuantLib {
         //@}
     protected:
         void initializeDates();
+        Pillar::Choice pillarChoice_;
 
         Natural settlementDays_;
         Period tenor_;

@@ -34,14 +34,12 @@
 namespace QuantLib {
 
     //! Pricing engine for European options using finite-differences
-    /*! \ingroup vanillaengines
-
-        \test the correctness of the returned value is tested by
-              checking it against analytic results.
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDEuropeanEngine : public OneAssetOption::engine,
-                             public FDVanillaEngine {
+    class QL_DEPRECATED FDEuropeanEngine : public OneAssetOption::engine,
+                                           public FDVanillaEngine {
       public:
         FDEuropeanEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -53,35 +51,31 @@ namespace QuantLib {
         }
       private:
         mutable SampledCurve prices_;
-        void calculate() const;
-    };
+        void calculate() const {
+            setupArguments(&arguments_);
+            setGridLimits();
+            initializeInitialCondition();
+            initializeOperator();
+            initializeBoundaryConditions();
 
-
-    template <template <class> class Scheme>
-    void FDEuropeanEngine<Scheme>::calculate() const {
-        setupArguments(&arguments_);
-        setGridLimits();
-        initializeInitialCondition();
-        initializeOperator();
-        initializeBoundaryConditions();
-
-        FiniteDifferenceModel<Scheme<TridiagonalOperator> > model(
+            FiniteDifferenceModel<Scheme<TridiagonalOperator> > model(
                                              finiteDifferenceOperator_, BCs_);
 
-        prices_ = intrinsicValues_;
+            prices_ = intrinsicValues_;
 
-        model.rollback(prices_.values(), getResidualTime(),
-                       0, timeSteps_);
+            model.rollback(prices_.values(), getResidualTime(),
+                           0, timeSteps_);
 
-        results_.value = prices_.valueAtCenter();
-        results_.delta = prices_.firstDerivativeAtCenter();
-        results_.gamma = prices_.secondDerivativeAtCenter();
-        results_.theta = blackScholesTheta(process_,
-                                           results_.value,
-                                           results_.delta,
-                                           results_.gamma);
-        results_.additionalResults["priceCurve"] = prices_;
-    }
+            results_.value = prices_.valueAtCenter();
+            results_.delta = prices_.firstDerivativeAtCenter();
+            results_.gamma = prices_.secondDerivativeAtCenter();
+            results_.theta = blackScholesTheta(process_,
+                                               results_.value,
+                                               results_.delta,
+                                               results_.gamma);
+            results_.additionalResults["priceCurve"] = prices_;
+        }
+    };
 
 }
 

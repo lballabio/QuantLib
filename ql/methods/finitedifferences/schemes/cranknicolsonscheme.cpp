@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Andreas Gaida
- Copyright (C) 2009 Ralph Schreyer
- Copyright (C) 2009 Klaus Spanderen
+ Copyright (C) 2019 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,32 +15,42 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
- */
+*/
 
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/cranknicolsonscheme.hpp>
 
 namespace QuantLib {
-    ExplicitEulerScheme::ExplicitEulerScheme(
+    CrankNicolsonScheme::CrankNicolsonScheme(
+        Real theta,
         const ext::shared_ptr<FdmLinearOpComposite> & map,
-        const bc_set& bcSet) :
-        dt_(Null<Real>()), map_(map), bcSet_(bcSet) {
+        const bc_set& bcSet,
+        Real relTol,
+        ImplicitEulerScheme::SolverType solverType)
+    : dt_(Null<Real>()),
+      theta_(theta),
+      explicit_(ext::make_shared<ExplicitEulerScheme>(map, bcSet)),
+      implicit_(ext::make_shared<ImplicitEulerScheme>(
+          map, bcSet, relTol, solverType)) {
     }
 
-    void ExplicitEulerScheme::step(array_type& a, Time t) {
-        step(a, t, 1.0);
-    }
-
-    void ExplicitEulerScheme::step(array_type& a, Time t, Real theta) {
+    void CrankNicolsonScheme::step(array_type& a, Time t) {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
-        map_->setTime(std::max(0.0, t - dt_), t);
-        bcSet_.setTime(std::max(0.0, t-dt_));
 
-        bcSet_.applyBeforeApplying(*map_);
-        a += (theta*dt_) * map_->apply(a);
-        bcSet_.applyAfterApplying(a);
+        if (theta_ != 1.0)
+            explicit_->step(a, t, 1.0-theta_);
+
+        if (theta_ != 0.0)
+            implicit_->step(a, t, theta_);
     }
 
-    void ExplicitEulerScheme::setStep(Time dt) {
+    void CrankNicolsonScheme::setStep(Time dt) {
         dt_ = dt;
+        explicit_->setStep(dt_);
+        implicit_->setStep(dt_);
+    }
+
+    Size CrankNicolsonScheme::numberOfIterations() const {
+        return implicit_->numberOfIterations();
     }
 }

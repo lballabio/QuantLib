@@ -33,16 +33,11 @@
 namespace QuantLib {
 
     //! Finite-differences pricing engine for American one asset options
-    /*! \ingroup vanillaengines
-
-        \test
-        - the correctness of the returned value is tested by
-          reproducing results available in literature.
-        - the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDAmericanEngine
+    class QL_DEPRECATED FDAmericanEngine
         : public FDEngineAdapter<FDAmericanCondition<
                                      FDStepConditionEngine<Scheme> >,
                                  OneAssetOption::engine> {

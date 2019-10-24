@@ -45,7 +45,8 @@ namespace QuantLib {
       tGrid_(tGrid), xGrid_(xGrid), 
       vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc),
-      leverageFct_(leverageFct) {
+      leverageFct_(leverageFct),
+      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {
     }
 
     FdHestonVanillaEngine::FdHestonVanillaEngine(
@@ -206,5 +207,72 @@ namespace QuantLib {
                                         const std::vector<Real>& strikes) {
         strikes_ = strikes;
         cachedArgs2results_.clear();
+    }
+
+
+    MakeFdHestonVanillaEngine::MakeFdHestonVanillaEngine(
+        const ext::shared_ptr<HestonModel>& hestonModel)
+      : hestonModel_(hestonModel),
+        tGrid_(100),
+        xGrid_(100),
+        vGrid_(50),
+        dampingSteps_(0),
+        schemeDesc_(
+            ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Hundsdorfer())),
+        leverageFct_(ext::shared_ptr<LocalVolTermStructure>()),
+        quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {}
+
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withQuantoHelper(
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper) {
+        quantoHelper_ = quantoHelper;
+        return *this;
+    }
+
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withTGrid(Size tGrid) {
+        tGrid_ = tGrid;
+        return *this;
+    }
+
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withXGrid(Size xGrid) {
+        xGrid_ = xGrid;
+        return *this;
+    }
+
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withVGrid(Size vGrid) {
+        vGrid_ = vGrid;
+        return *this;
+    }
+
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withDampingSteps(Size dampingSteps) {
+        dampingSteps_ = dampingSteps;
+        return *this;
+    }
+
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withFdmSchemeDesc(
+        const FdmSchemeDesc& schemeDesc) {
+        schemeDesc_ = ext::make_shared<FdmSchemeDesc>(schemeDesc);
+        return *this;
+    }
+
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withLeverageFunction(
+        ext::shared_ptr<LocalVolTermStructure>& leverageFct) {
+        leverageFct_ = leverageFct;
+        return *this;
+    }
+
+    MakeFdHestonVanillaEngine::operator
+    ext::shared_ptr<PricingEngine>() const {
+        return ext::make_shared<FdHestonVanillaEngine>(
+            hestonModel_,
+            quantoHelper_,
+            tGrid_, xGrid_, vGrid_, dampingSteps_,
+            *schemeDesc_,
+            leverageFct_);
     }
 }
