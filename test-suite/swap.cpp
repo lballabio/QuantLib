@@ -310,7 +310,7 @@ void SwapTest::testCachedValue() {
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
 
     Real cachedNPV;  
-    if (!!IborCoupon::usingAtParCoupons())
+    if (IborCoupon::usingAtParCoupons())
         cachedNPV = -5.872863313209;
     else
         cachedNPV = -5.872342992212;

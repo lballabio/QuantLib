@@ -479,7 +479,7 @@ void example03() {
                                               false, Actual360());
 
     // this index is probably not important since we are not using
-    // Settings::instance().createIndexedCoupons() == true 
+    // IborCoupon::usingAtParCoupons() == false 
     // - define it "isda compliant" anyway
     ext::shared_ptr<IborIndex> euribor6m = ext::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),

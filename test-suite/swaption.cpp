@@ -404,7 +404,7 @@ void SwaptionTest::testCachedValue() {
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
     Real cachedNPV;
-    if (!!IborCoupon::usingAtParCoupons())
+    if (IborCoupon::usingAtParCoupons())
         cachedNPV = 0.036418158579;
     else
         cachedNPV = 0.036421429684;

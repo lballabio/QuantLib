@@ -30,22 +30,22 @@
 
 namespace QuantLib {
 
-    bool IborCoupon::constructorWasCalled_ = false;
+    bool IborCoupon::constructorWasNotCalled_ = true;
 
-#if defined QL_USE_INDEXED_COUPON
-    bool IborCoupon::usingAtParCoupons_ = false;
-#else
+#ifndef QL_USE_INDEXED_COUPON
     bool IborCoupon::usingAtParCoupons_ = true;
+#else
+    bool IborCoupon::usingAtParCoupons_ = false;
 #endif
 
     void IborCoupon::createAtParCoupons() {
-        QL_ASSERT(!constructorWasCalled_,
+        QL_ASSERT(constructorWasNotCalled_,
                   "Cannot call this method after the first IborCoupon was created.");
         usingAtParCoupons_ = true;
     }
 
     void IborCoupon::createIndexedCoupons() {
-        QL_ASSERT(!constructorWasCalled_,
+        QL_ASSERT(constructorWasNotCalled_,
                   "Cannot call this method after the first IborCoupon was created.");
         usingAtParCoupons_ = false;
     }
@@ -68,7 +68,7 @@ namespace QuantLib {
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears, exCouponDate),
       iborIndex_(iborIndex) {
-        constructorWasCalled_ = true;
+        constructorWasNotCalled_ = false;
 
         fixingDate_ = fixingDate();
 

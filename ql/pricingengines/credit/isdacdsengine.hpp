@@ -86,8 +86,8 @@ namespace QuantLib {
             specifications.
 
             To be precisely consistent with the ISDA specification
-                Settings::instance().createIndexedCoupons()
-            must be false. This is not checked in order not to
+                static bool IborCoupon::usingAtParCoupons();
+            must be true. This is not checked in order not to
             kill the engine completely in this case.
 
             Furthermore, the ibor index in the swap rate helpers should not

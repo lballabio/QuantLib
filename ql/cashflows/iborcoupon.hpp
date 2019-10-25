@@ -83,13 +83,13 @@ namespace QuantLib {
         static void createIndexedCoupons();
 
         /*! If true the IborCoupons are created as par coupons and vice versa.
-            The default depends on the compiler flag QL_USE_INDEXED_COUPON and can be overwritten by
-           createAtParCoupons() and createIndexedCoupons()
+         *  The default depends on the compiler flag QL_USE_INDEXED_COUPON and can be overwritten by
+         *  createAtParCoupons() and createIndexedCoupons()
         */
         static bool usingAtParCoupons() { return usingAtParCoupons_; }
 
       private:
-        static bool constructorWasCalled_;
+        static bool constructorWasNotCalled_;
         static bool usingAtParCoupons_;
     };
 
