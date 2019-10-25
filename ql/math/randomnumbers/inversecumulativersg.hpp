@@ -63,6 +63,7 @@ namespace QuantLib {
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const { return x_; }
         Size dimension() const { return dimension_; }
+		USG & uniformSequenceGenerator() { return uniformSequenceGenerator_; }//non const accessor
       private:
         USG uniformSequenceGenerator_;
         Size dimension_;

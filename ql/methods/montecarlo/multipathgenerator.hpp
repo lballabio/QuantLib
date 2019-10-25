@@ -56,6 +56,7 @@ namespace QuantLib {
                            bool brownianBridge = false);
         const sample_type& next() const;
         const sample_type& antithetic() const;
+		GSG & generator() { return generator_; }//non const accessor
       private:
         const sample_type& next(bool antithetic) const;
         bool brownianBridge_;
