@@ -622,10 +622,11 @@ void DividendOptionTest::testFdEuropeanValues() {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-          ext::shared_ptr<PricingEngine> engine(
-              new FDDividendEuropeanEngineMerton73<CrankNicolson>(stochProcess,
-                                                                  timeSteps,
-                                                                  gridPoints));
+          ext::shared_ptr<PricingEngine> engine =
+              MakeFdBlackScholesVanillaEngine(stochProcess)
+              .withTGrid(timeSteps)
+              .withXGrid(gridPoints)
+              .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed);
 
           ext::shared_ptr<PricingEngine> ref_engine(
                             new AnalyticDividendEuropeanEngine(stochProcess));
@@ -674,9 +675,9 @@ void DividendOptionTest::testFdEuropeanValues() {
 
 namespace {
 
-    template <class Engine>
     void testFdGreeks(const Date& today,
-                      const ext::shared_ptr<Exercise>& exercise) {
+                      const ext::shared_ptr<Exercise>& exercise,
+                      FdBlackScholesVanillaEngine::CashDividendModel model) {
 
         std::map<std::string,Real> calculated, expected, tolerance;
         tolerance["delta"] = 5.0e-3;
@@ -719,8 +720,10 @@ namespace {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-                ext::shared_ptr<PricingEngine> engine(
-                                                    new Engine(stochProcess));
+                ext::shared_ptr<PricingEngine> engine =
+                    MakeFdBlackScholesVanillaEngine(stochProcess)
+                    .withCashDividendModel(model);
+                
                 DividendVanillaOption option(payoff, exercise,
                                              dividendDates, dividends);
                 option.setPricingEngine(engine);
@@ -809,8 +812,8 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         Date exDate = today + lengths[i]*Years;
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        testFdGreeks<FDDividendEuropeanEngineMerton73<CrankNicolson> >(today,exercise);
-        testFdGreeks<FdBlackScholesVanillaEngine>(today,exercise);
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
     }
 }
 
@@ -826,19 +829,18 @@ void DividendOptionTest::testFdAmericanGreeks() {
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         Date exDate = today + lengths[i]*Years;
-        ext::shared_ptr<Exercise> exercise(
-                                          new AmericanExercise(today,exDate));
-        testFdGreeks<FDDividendAmericanEngineMerton73<CrankNicolson> >(today,exercise);
-        testFdGreeks<FdBlackScholesVanillaEngine>(today,exercise);
+        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
     }
 }
 
 
 namespace {
 
-    template <class Engine>
     void testFdDegenerate(const Date& today,
-                          const ext::shared_ptr<Exercise>& exercise) {
+                          const ext::shared_ptr<Exercise>& exercise,
+                          FdBlackScholesVanillaEngine::CashDividendModel model) {
 
         DayCounter dc = Actual360();
         ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
@@ -853,8 +855,11 @@ namespace {
         Size timeSteps = 300;
         Size gridPoints = 300;
 
-        ext::shared_ptr<PricingEngine> engine(
-                                    new Engine(process,timeSteps,gridPoints));
+        ext::shared_ptr<PricingEngine> engine =
+              MakeFdBlackScholesVanillaEngine(process)
+              .withTGrid(timeSteps)
+              .withXGrid(gridPoints)
+              .withCashDividendModel(model);
 
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                   new PlainVanillaPayoff(Option::Call, 55.0));
@@ -905,7 +910,8 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
 
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-    testFdDegenerate<FDDividendEuropeanEngineMerton73<CrankNicolson> >(today,exercise);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
 void DividendOptionTest::testFdAmericanDegenerate() {
@@ -921,7 +927,8 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 
     ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
 
-    testFdDegenerate<FDDividendAmericanEngineMerton73<CrankNicolson> >(today,exercise);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
 
@@ -999,23 +1006,6 @@ void DividendOptionTest::testEscrowedDividendModel() {
                    << "\n    calculated: " << pdeNPV
                    << "\n    expected:   " << analyticNPV
                    << "\n    difference: " << std::fabs(pdeNPV - analyticNPV)
-                   << "\n    tolerance:  " << tol);
-    }
-
-    option.setPricingEngine(
-        ext::make_shared<FDDividendEuropeanEngineMerton73<> >(
-            process, 50, 200));
-
-    const Real deprecatedPDENPV = option.NPV();
-
-    if (std::fabs(deprecatedPDENPV - analyticNPV) > tol) {
-        BOOST_FAIL("Failed to reproduce European option values "
-                "with the escrowed dividend model and the "
-                "FDDividendEuropeanEngineMerton73 engine"
-                   << "\n    calculated: " << pdeNPV
-                   << "\n    expected:   " << analyticNPV
-                   << "\n    difference: "
-                   << std::fabs(deprecatedPDENPV - analyticNPV)
                    << "\n    tolerance:  " << tol);
     }
 }
