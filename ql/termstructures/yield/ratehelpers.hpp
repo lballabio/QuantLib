@@ -8,7 +8,6 @@
  Copyright (C) 2015 Maddalena Zanzi
  Copyright (C) 2015 Paolo Mazzocchi
  Copyright (C) 2018 Matthias Lungwitz
- Copyright (C) 2019 nexRates! S.r.l
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
