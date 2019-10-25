@@ -19,6 +19,7 @@
 
 #include "basismodels.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/compounding.hpp>
 #include <ql/experimental/basismodels/swaptioncfs.hpp>
 #include <ql/experimental/basismodels/tenoroptionletvts.hpp>
@@ -230,7 +231,7 @@ namespace {
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
         Real tol2;
-        if (Settings::instance().createIndexedCoupons())
+        if (!IborCoupon::usingAtParCoupons())
             tol2 = 0.02;
         else
             tol2 = tol;

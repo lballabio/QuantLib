@@ -23,6 +23,7 @@
 
 #include "swaption.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -403,7 +404,7 @@ void SwaptionTest::testCachedValue() {
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
     Real cachedNPV;
-    if (!Settings::instance().createIndexedCoupons())
+    if (!!IborCoupon::usingAtParCoupons())
         cachedNPV = 0.036418158579;
     else
         cachedNPV = 0.036421429684;

@@ -32,7 +32,6 @@ class SwapTest {
     static void testRateDependency();
     static void testSpreadDependency();
     static void testInArrears();
-    static void testParVsIndexedCoupons();
     static void testCachedValue();
     static boost::unit_test_framework::test_suite* suite();
 };

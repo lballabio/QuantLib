@@ -40,6 +40,7 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -261,7 +262,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond1.cashflows(),pricer);
 
     Real cachedPrice1;
-    if (Settings::instance().createIndexedCoupons())
+    if (!IborCoupon::usingAtParCoupons())
         cachedPrice1 = 99.874645;
     else
         cachedPrice1 = 99.874646;
@@ -308,7 +309,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond2.cashflows(),pricer);
 
     Real cachedPrice2; 
-    if (Settings::instance().createIndexedCoupons())
+    if (!IborCoupon::usingAtParCoupons())
         cachedPrice2 = 97.955904;
     else
         cachedPrice2 = 97.955904;
@@ -356,7 +357,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond3.cashflows(),pricer);
 
     Real cachedPrice3;
-    if (Settings::instance().createIndexedCoupons())
+    if (!IborCoupon::usingAtParCoupons())
         cachedPrice3 = 98.495458;
     else
         cachedPrice3 = 98.495459;

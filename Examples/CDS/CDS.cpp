@@ -23,6 +23,7 @@
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
@@ -267,7 +268,7 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
 
     // check if indexed coupon is defined (it should not to be 100% consistent with
     // the ISDA spec)
-    if (Settings::instance().createIndexedCoupons()) {
+    if (!IborCoupon::usingAtParCoupons()) {
         std::cout << "Warning: QL_USED_INDEXED_COUPON is defined, which is not "
                   << "precisely consistent with the specification of the ISDA rate "
                   << "curve." << std::endl;

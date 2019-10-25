@@ -295,63 +295,6 @@ void SwapTest::testInArrears() {
                     << "    calculated: " << swap.NPV());
 }
 
-void SwapTest::testParVsIndexedCoupons() {
-
-    BOOST_TEST_MESSAGE(
-        "Testing vanilla-swap calculation with par or indexed coupons against cached value...");
-
-    CommonVars vars;
-
-    vars.today = Date(17, June, 2002);
-    Settings::instance().evaluationDate() = vars.today;
-    vars.settlement = vars.calendar.advance(vars.today, vars.settlementDays, Days);
-    vars.termStructure.linkTo(flatRate(vars.settlement, 0.05, Actual365Fixed()));
-
-    std::vector<ext::shared_ptr<VanillaSwap> > swaps;
-
-    Settings::instance().createIndexedCoupons() = true;
-    swaps.push_back(vars.makeSwap(10, 0.06, 0.001));
-
-    Settings::instance().createIndexedCoupons() = false;
-    swaps.push_back(vars.makeSwap(10, 0.06, 0.001));
-
-    Settings::instance().createIndexedCoupons() = true;
-    swaps.push_back(vars.makeSwap(10, 0.06, 0.001));
-
-    Settings::instance().createIndexedCoupons() = false;
-    swaps.push_back(vars.makeSwap(10, 0.06, 0.001));
-
-    Settings::instance().createIndexedCoupons() = true;
-    swaps.push_back(vars.makeSwap(10, 0.06, 0.001));
-
-    bool isAtPar[] = {false, true, false, true, false};
-    Real cachedNPVs[] = {-5.872342992212, -5.872863313209, -5.872342992212, -5.872863313209,
-                         -5.872342992212};
-
-    for (Size i = 0; i < 5; i++) {
-        Leg floatingLeg = swaps[i]->floatingLeg();
-        for (Size j = 0; j < floatingLeg.size(); j++) {
-            ext::shared_ptr<IborCoupon> iborCoupon =
-                ext::dynamic_pointer_cast<IborCoupon>(floatingLeg[j]);
-            if (iborCoupon->isAtPar() != isAtPar[i]) {
-                if (isAtPar[i]) {
-                    BOOST_ERROR("swap nr. " << i + 1 << " should be an at par coupon.");
-                } else {
-                    BOOST_ERROR("swap nr. " << i + 1 << " should be an indexed coupon.");
-                }
-                break;
-            }
-        }
-
-        if (std::fabs(swaps[i]->NPV() - cachedNPVs[i]) > 1.0e-11)
-            BOOST_ERROR("failed to reproduce cached value of swap nr. "
-                        << i + 1 << ":\n"
-                        << std::fixed << std::setprecision(12)
-                        << "    calculated: " << swaps[i]->NPV() << "\n"
-                        << "    expected:   " << cachedNPVs[i]);
-    }
-}
-
 void SwapTest::testCachedValue() {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation against cached value...");
@@ -367,7 +310,7 @@ void SwapTest::testCachedValue() {
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
 
     Real cachedNPV;  
-    if (!Settings::instance().createIndexedCoupons())
+    if (!!IborCoupon::usingAtParCoupons())
         cachedNPV = -5.872863313209;
     else
         cachedNPV = -5.872342992212;
@@ -387,7 +330,6 @@ test_suite* SwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testRateDependency));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testSpreadDependency));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testInArrears));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testParVsIndexedCoupons));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testCachedValue));
     return suite;
 }

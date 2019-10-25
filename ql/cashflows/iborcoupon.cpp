@@ -30,6 +30,26 @@
 
 namespace QuantLib {
 
+    bool IborCoupon::constructorWasCalled_ = false;
+
+#if defined QL_USE_INDEXED_COUPON
+    bool IborCoupon::usingAtParCoupons_ = false;
+#else
+    bool IborCoupon::usingAtParCoupons_ = true;
+#endif
+
+    void IborCoupon::createAtParCoupons() {
+        QL_ASSERT(!constructorWasCalled_,
+                  "Cannot call this method after the first IborCoupon was created.");
+        usingAtParCoupons_ = true;
+    }
+
+    void IborCoupon::createIndexedCoupons() {
+        QL_ASSERT(!constructorWasCalled_,
+                  "Cannot call this method after the first IborCoupon was created.");
+        usingAtParCoupons_ = false;
+    }
+
     IborCoupon::IborCoupon(const Date& paymentDate,
                            Real nominal,
                            const Date& startDate,
@@ -47,7 +67,8 @@ namespace QuantLib {
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears, exCouponDate),
-      iborIndex_(iborIndex), isAtPar_(!Settings::instance().createIndexedCoupons()) {
+      iborIndex_(iborIndex) {
+        constructorWasCalled_ = true;
 
         fixingDate_ = fixingDate();
 
@@ -57,7 +78,7 @@ namespace QuantLib {
         fixingValueDate_ = fixingCalendar.advance(
             fixingDate_, indexFixingDays, Days);
 
-        if (isAtPar_) {
+        if (usingAtParCoupons_) {
             if (isInArrears_)
                 fixingEndDate_ = index_->maturityDate(fixingValueDate_);
             else { // par coupon approximation

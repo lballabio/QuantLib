@@ -602,7 +602,7 @@ void CapFloorTest::testCachedValue() {
                                                             0.03,0.20);
 
     Real cachedCapNPV, cachedFloorNPV ;
-    if (Settings::instance().createIndexedCoupons()) {
+    if (!IborCoupon::usingAtParCoupons()) {
         // index fixing price
         cachedCapNPV   = 6.87630307745,
         cachedFloorNPV = 2.65796764715;

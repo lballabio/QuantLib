@@ -556,7 +556,7 @@ void AssetSwapTest::testImpliedValue() {
     // directly. The same kind of discrepancy will occur for a multi
     // curve set up, which we do not test here.
     Real tolerance2;
-    if (Settings::instance().createIndexedCoupons())
+    if (!IborCoupon::usingAtParCoupons())
         tolerance2 = 1.0e-2;
     else
         tolerance2 = 1.0e-13;
@@ -927,7 +927,7 @@ void AssetSwapTest::testMarketASWSpread() {
 
     // see comment above
     Real tolerance2;
-    if (Settings::instance().createIndexedCoupons())
+    if (!IborCoupon::usingAtParCoupons())
         tolerance2 = 1.0e-4;
     else
         tolerance2 = 1.0e-13;
@@ -1684,7 +1684,7 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // see comment above
     Real tolerance2;
-    if (Settings::instance().createIndexedCoupons())
+    if (!IborCoupon::usingAtParCoupons())
         tolerance2 = 1.0e-2;
     else
         tolerance2 = 1.0e-13;
@@ -2085,7 +2085,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     // see comment above
     Real tolerance2; 
-    if (Settings::instance().createIndexedCoupons())
+    if (!IborCoupon::usingAtParCoupons())
         tolerance2 = 1.0e-4;
     else
         tolerance2 = 1.0e-13;
