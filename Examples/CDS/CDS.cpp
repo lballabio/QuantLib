@@ -269,9 +269,9 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
     // check if indexed coupon is defined (it should not to be 100% consistent with
     // the ISDA spec)
     if (!IborCoupon::usingAtParCoupons()) {
-        std::cout << "Warning: QL_USED_INDEXED_COUPON is defined, which is not "
-                  << "precisely consistent with the specification of the ISDA rate "
-                  << "curve." << std::endl;
+        std::cout << "Warning: IborCoupon::usingAtParCoupons() == false is used, "
+                  << "which is not precisely consistent with the specification "
+                  << "of the ISDA rate curve." << std::endl;
     }
 
     ext::shared_ptr<SwapRateHelper> sw2y = ext::make_shared<SwapRateHelper>(
