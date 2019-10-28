@@ -39,6 +39,8 @@ namespace QuantLib {
         const Real avgHazardRate = 0.01;
         const Real maxHazardRate = 1.0;
     }
+    template <class Traits, class Interpolator,template <class> class Bootstrap>
+    class PiecewiseDefaultCurve;
 
     //! Survival-Probability-curve traits
     struct SurvivalProbability {
@@ -89,6 +91,13 @@ namespace QuantLib {
             Time dt = c->times()[i] - c->times()[i-1];
             return c->data()[i-1] * std::exp(- detail::maxHazardRate * dt);
         }
+        template <class C, class I, template <class> class B>
+        static Real minValueAfter(Size i,
+                                  const PiecewiseDefaultCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
+
+
         template <class C>
         static Real maxValueAfter(Size i,
                                   const C* c,
@@ -175,6 +184,13 @@ namespace QuantLib {
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxHazardRate;
         }
+        template <class C, class I, template <class> class B>
+        static Real maxValueAfter(Size i,
+                                  const PiecewiseDefaultCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
+
+
         // update with new guess
         static void updateGuess(std::vector<Real>& data,
                                 Real rate,
@@ -251,6 +267,11 @@ namespace QuantLib {
             // We choose as max a value very unlikely to be exceeded.
             return detail::maxHazardRate;
         }
+        template <class C, class I, template <class> class B>
+        static Real maxValueAfter(Size i,
+                                  const PiecewiseDefaultCurve<C,I,B>* c,
+                                  bool validData,
+                                  Size); // firstAliveHelper
 
         // update with new guess
         static void updateGuess(std::vector<Real>& data,

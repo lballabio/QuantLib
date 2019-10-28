@@ -70,9 +70,10 @@ namespace QuantLib {
                const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
                const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i = Interpolator(),
+               Real maxhazardrate = 1.0)
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(instruments), accuracy_(accuracy),maxhazardrate_(maxhazardrate) {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(
@@ -81,10 +82,11 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                Real accuracy,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i = Interpolator(),
+               Real maxhazardrate = 1.0)
         : base_curve(referenceDate, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(instruments), accuracy_(accuracy),maxhazardrate_(maxhazardrate) {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(
@@ -95,7 +97,7 @@ namespace QuantLib {
                const Interpolator& i)
         : base_curve(referenceDate, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(1.0e-12) {
+          instruments_(instruments), accuracy_(1.0e-12),maxhazardrate_(1.0) {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(
@@ -107,9 +109,10 @@ namespace QuantLib {
                const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
                const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i = Interpolator(),
+               Real maxhazardrate = 1.0)
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(instruments), accuracy_(accuracy),maxhazardrate_(maxhazardrate) {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(
@@ -119,10 +122,11 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                Real accuracy,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i = Interpolator(),
+               Real maxhazardrate = 1.0)
         : base_curve(settlementDays, calendar, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(instruments), accuracy_(accuracy),maxhazardrate_(maxhazardrate) {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(
@@ -154,10 +158,24 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             Real accuracy,
             const ext::shared_ptr<OneFactorAffineModel> model,
-            const Interpolator& i = Interpolator())
+            const Interpolator& i = Interpolator(),
+            Real  maxhazardrate = 1.0)
         : base_curve(referenceDate, dayCounter, model,
             std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(instruments), accuracy_(accuracy),maxhazardrate_(maxhazardrate) {
+            bootstrap_.setup(this);
+        }
+        PiecewiseDefaultCurve(
+               const Date& referenceDate,
+               const std::vector<ext::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               const DayCounter& dayCounter,
+                const Real accuracy,
+               const Real maxhazardrate,
+               const Interpolator& i = Interpolator())
+        : base_curve(referenceDate, dayCounter,
+                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+          instruments_(instruments), accuracy_(accuracy),maxhazardrate_(maxhazardrate) {
             bootstrap_.setup(this);
         }
 
@@ -177,6 +195,7 @@ namespace QuantLib {
         //@{
         void update();
         //@}
+        Real maxhazardRate() const;
       private:
         //! \name LazyObject interface
         //@{
@@ -197,6 +216,7 @@ namespace QuantLib {
         friend class Bootstrap<this_curve>;
         friend class BootstrapError<this_curve>;
         Bootstrap<this_curve> bootstrap_;
+        Real maxhazardrate_;
     };
 
 
@@ -272,6 +292,51 @@ namespace QuantLib {
         // just delegate to the bootstrapper
         bootstrap_.calculate();
     }
+    template <class C, class I, template <class> class B>
+    inline Real PiecewiseDefaultCurve<C,I,B>::maxhazardRate() const {
+        return maxhazardrate_;
+    }
+    template <class C, class I, template <class> class B>
+    inline Real SurvivalProbability::minValueAfter(Size i,
+                              const PiecewiseDefaultCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            return c->data().back()/2.0;
+        }
+        Time dt = c->times()[i] - c->times()[i-1];
+        return c->data()[i-1] * std::exp(- c->maxhazardRate() * dt);
+    }
+    template <class C, class I, template <class> class B>
+    inline Real HazardRate::maxValueAfter(Size,
+                              const PiecewiseDefaultCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            Real r = *(std::max_element(c->data().begin(), c->data().end()));
+            return r*2.0;
+        }
+        // no constraints.
+        // We choose as max a value very unlikely to be exceeded.
+        return c->maxhazardRate();
+    }
+    template <class C, class I, template <class> class B>
+    inline Real DefaultDensity::maxValueAfter(Size,
+                              const PiecewiseDefaultCurve<C,I,B>* c,
+                              bool validData,
+                              Size) // firstAliveHelper
+    {
+        if (validData) {
+            Real r = *(std::max_element(c->data().begin(), c->data().end()));
+            return r*2.0;
+        }
+        // no constraints.
+        // We choose as max a value very unlikely to be exceeded.
+        return c->maxhazardRate();
+    }
+
 
 }
 
