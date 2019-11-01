@@ -1002,15 +1002,16 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = ref;
 
-    using namespace boost::assign;
-    std::vector<Date> expiries;
-    expiries += ref + 1 * Months, ref + 3 * Months, ref + 6 * Months,
-                ref + 9 * Months, ref + 1 * Years,  ref + 2 * Years,
-                ref + 3 * Years,  ref + 4 * Years,  ref + 5 * Years,
-                ref + 7 * Years,  ref + 10 * Years;
+    const Date expiries[] = {
+        ref + 1 * Months, ref + 3 * Months, ref + 6 * Months,
+        ref + 9 * Months, ref + 1 * Years,  ref + 2 * Years,
+        ref + 3 * Years,  ref + 4 * Years,  ref + 5 * Years,
+        ref + 7 * Years,  ref + 10 * Years
+    };
 
-    std::vector<Real> moneyness;
-    moneyness += 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5;
+    const Real moneyness[] = {
+        0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5
+    };
 
     const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
     const Handle<YieldTermStructure> rTS(flatRate(ref, 0.02, dc));
@@ -1018,7 +1019,7 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
     const ext::shared_ptr<Quote> vol = ext::make_shared<SimpleQuote>(0.18);
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
-    for (Size i=0; i < expiries.size(); ++i) {
+    for (Size i=0; i < LENGTH(expiries); ++i) {
 
         const Date expiry = expiries[i];
         const ext::shared_ptr<Exercise> exercise =
@@ -1027,7 +1028,7 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
         const Time t = rTS->timeFromReference(expiry);
         const Real fwd = spot->value() / rTS->discount(t) * qTS->discount(t);
 
-        for (Size j=0; j < moneyness.size(); ++j) {
+        for (Size j=0; j < LENGTH(moneyness); ++j) {
             const Real strike = fwd * moneyness[j];
             const Real mn = std::log(fwd/strike)/std::sqrt(t);
 
