@@ -873,10 +873,9 @@ namespace {
                                       dividendDates, dividends);
         option1.setPricingEngine(engine);
 
-        // FLOATING_POINT_EXCEPTION
         Real refValue = option1.NPV();
 
-        for (Size i=0; i<=6; i++) {
+        for (Size i=1; i<=6; i++) {
 
             dividends.push_back(0.0);
             dividendDates.push_back(today+i);
@@ -929,6 +928,81 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Spot);
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
+}
+
+
+namespace {
+
+    void testFdDividendAtTZero(const Date& today,
+                               const ext::shared_ptr<Exercise>& exercise,
+                               FdBlackScholesVanillaEngine::CashDividendModel model) {
+
+        DayCounter dc = Actual360();
+        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
+        Handle<YieldTermStructure> rTS(flatRate(0.052706, dc));
+        Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
+        Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
+
+        ext::shared_ptr<BlackScholesMertonProcess> process(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
+
+        Size timeSteps = 300;
+        Size gridPoints = 300;
+
+        ext::shared_ptr<PricingEngine> engine =
+              MakeFdBlackScholesVanillaEngine(process)
+              .withTGrid(timeSteps)
+              .withXGrid(gridPoints)
+              .withCashDividendModel(model);
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+                                  new PlainVanillaPayoff(Option::Call, 55.0));
+
+        std::vector<Rate> dividends(1, 0.5);
+        std::vector<Date> dividendDates(1, today);
+
+        DividendVanillaOption option(payoff, exercise,
+                                     dividendDates, dividends);
+        option.setPricingEngine(engine);
+        option.NPV();
+    }
+
+}
+
+
+void DividendOptionTest::testFdEuropeanWithDividendToday() {
+
+    BOOST_TEST_MESSAGE(
+         "Testing finite-differences dividend European option with dividend on today's date...");
+
+    SavedSettings backup;
+
+    Date today = Date(27,February,2005);
+    Settings::instance().evaluationDate() = today;
+    Date exDate(13,April,2005);
+
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
+}
+
+void DividendOptionTest::testFdAmericanWithDividendToday() {
+
+    BOOST_TEST_MESSAGE(
+         "Testing finite-differences dividend American option with dividend on today's date...");
+
+    SavedSettings backup;
+
+    Date today = Date(27,February,2005);
+    Settings::instance().evaluationDate() = today;
+    Date exDate(13,April,2005);
+
+    ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
+
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
 
@@ -1019,18 +1093,17 @@ test_suite* DividendOptionTest::suite() {
     // Doesn't quite work.  Need to use discounted values
     //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                               &DividendOptionTest::testFdEuropeanDegenerate));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                               &DividendOptionTest::testFdAmericanDegenerate));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &DividendOptionTest::testFdEuropeanWithDividendToday));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &DividendOptionTest::testFdAmericanWithDividendToday));
     suite->add(QUANTLIB_TEST_CASE(
                  &DividendOptionTest::testEscrowedDividendModel));
 
