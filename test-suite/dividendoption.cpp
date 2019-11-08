@@ -575,15 +575,13 @@ void DividendOptionTest::testFdEuropeanValues() {
     SavedSettings backup;
 
     Real tolerance = 1.0e-2;
-    Size gridPoints = 300;
+    Size gridPoints = 400;
     Size timeSteps = 40;
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     Real underlyings[] = { 100.0 };
-    // Rate qRates[] = { 0.00, 0.10, 0.30 };
-    // Analytic dividend may not be handling q correctly
-    Rate qRates[] = { 0.00 };
+    Rate qRates[] = { 0.00, 0.10, 0.30 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Integer lengths[] = { 1, 2 };
     Volatility vols[] = { 0.05, 0.20, 0.40 };
@@ -691,7 +689,7 @@ namespace {
         Rate rRates[] = { 0.01, 0.05, 0.15 };
         Volatility vols[] = { 0.05, 0.20, 0.50 };
 
-        DayCounter dc = Actual360();
+        DayCounter dc = Actual365Fixed();
 
         ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
         ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -723,7 +721,7 @@ namespace {
                 ext::shared_ptr<PricingEngine> engine =
                     MakeFdBlackScholesVanillaEngine(stochProcess)
                     .withCashDividendModel(model);
-                
+
                 DividendVanillaOption option(payoff, exercise,
                                              dividendDates, dividends);
                 option.setPricingEngine(engine);
@@ -852,7 +850,7 @@ namespace {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-        Size timeSteps = 300;
+        Size timeSteps = 100;
         Size gridPoints = 300;
 
         ext::shared_ptr<PricingEngine> engine =
@@ -939,16 +937,15 @@ namespace {
 
         DayCounter dc = Actual360();
         ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
-        Handle<YieldTermStructure> rTS(flatRate(0.052706, dc));
-        Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
+        Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
         Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
 
         ext::shared_ptr<BlackScholesMertonProcess> process(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          qTS, rTS, volTS));
+                                                          rTS, rTS, volTS));
 
-        Size timeSteps = 300;
-        Size gridPoints = 300;
+        Size timeSteps = 50;
+        Size gridPoints = 400;
 
         ext::shared_ptr<PricingEngine> engine =
               MakeFdBlackScholesVanillaEngine(process)
@@ -959,15 +956,35 @@ namespace {
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                   new PlainVanillaPayoff(Option::Call, 55.0));
 
-        std::vector<Rate> dividends(1, 0.5);
+        // today's dividend must by taken into account
+        std::vector<Rate> dividends(1, 1.0);
         std::vector<Date> dividendDates(1, today);
 
         DividendVanillaOption option(payoff, exercise,
                                      dividendDates, dividends);
         option.setPricingEngine(engine);
-        option.NPV();
-    }
+        Real calculated = option.NPV();
 
+        DividendVanillaOption europeanOption(
+            payoff, 
+            ext::make_shared<EuropeanExercise>(exercise->lastDate()), 
+            dividendDates, dividends);
+
+        europeanOption.setPricingEngine(
+            ext::make_shared<AnalyticDividendEuropeanEngine>(process));
+
+        Real expected = europeanOption.NPV();
+
+        const Real tol = 1e-4;
+
+        if (std::fabs(calculated-expected) > tol) {
+            BOOST_ERROR("Can not reproduce reference values "
+                        "from analytic dividend engine :\n"
+                       << "    calculated: " << calculated << "\n"
+                       << "    expected  : " << expected << "\n"
+                       << "    diff:       " << tol);
+        }
+    }
 }
 
 
