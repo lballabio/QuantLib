@@ -743,7 +743,6 @@ namespace {
                         Real value = option.NPV();
                         calculated["delta"]  = option.delta();
                         calculated["gamma"]  = option.gamma();
-                        // calculated["theta"]  = option.theta();
 
                         if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
@@ -965,10 +964,10 @@ namespace {
         option.setPricingEngine(engine);
         Real calculated = option.NPV();
 
+        ext::shared_ptr<Exercise> europeanExercise =
+            ext::make_shared<EuropeanExercise>(exercise->lastDate());
         DividendVanillaOption europeanOption(
-            payoff, 
-            ext::make_shared<EuropeanExercise>(exercise->lastDate()), 
-            dividendDates, dividends);
+            payoff, europeanExercise, dividendDates, dividends);
 
         europeanOption.setPricingEngine(
             ext::make_shared<AnalyticDividendEuropeanEngine>(process));
