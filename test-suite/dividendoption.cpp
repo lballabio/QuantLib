@@ -964,6 +964,17 @@ namespace {
         option.setPricingEngine(engine);
         Real calculated = option.NPV();
 
+        switch(model) {
+          case FdBlackScholesVanillaEngine::Spot:
+            BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
+            break;
+          case FdBlackScholesVanillaEngine::Escrowed:
+            BOOST_CHECK_NO_THROW(option.theta());
+            break;
+          default:
+            QL_FAIL("unknown dividend model type");
+        }
+
         ext::shared_ptr<Exercise> europeanExercise =
             ext::make_shared<EuropeanExercise>(exercise->lastDate());
         DividendVanillaOption europeanOption(
