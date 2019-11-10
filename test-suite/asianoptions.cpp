@@ -537,8 +537,6 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     BOOST_TEST_MESSAGE(
            "Testing Monte Carlo discrete arithmetic average-price Asians...");
 
-    QL_TEST_START_TIMING
-
     // data from "Asian Option", Levy, 1997
     // in "Exotic Options: The State of the Art",
     // edited by Clewlow, Strickland
@@ -691,8 +689,6 @@ void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
 
     BOOST_TEST_MESSAGE(
           "Testing Monte Carlo discrete arithmetic average-strike Asians...");
-
-    QL_TEST_START_TIMING
 
     // data from "Asian Option", Levy, 1997
     // in "Exotic Options: The State of the Art",

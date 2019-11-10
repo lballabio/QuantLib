@@ -27,6 +27,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/cranknicolsonscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
@@ -45,6 +46,10 @@ namespace QuantLib {
         return FdmSchemeDesc(FdmSchemeDesc::DouglasType, 0.5, 0.0);
     }
     
+    FdmSchemeDesc FdmSchemeDesc::CrankNicolson() {
+        return FdmSchemeDesc(FdmSchemeDesc::CrankNicolsonType, 0.5, 0.0);
+    }
+
     FdmSchemeDesc FdmSchemeDesc::CraigSneyd() {
         return FdmSchemeDesc(FdmSchemeDesc::CraigSneydType,0.5, 0.5);
     }
@@ -127,6 +132,15 @@ namespace QuantLib {
                 FiniteDifferenceModel<DouglasScheme> 
                                dsModel(dsEvolver, condition_->stoppingTimes());
                 dsModel.rollback(rhs, dampingTo, to, steps, *condition_);
+            }
+            break;
+          case FdmSchemeDesc::CrankNicolsonType:
+            {
+              CrankNicolsonScheme cnEvolver(schemeDesc_.theta, map_, bcSet_);
+              FiniteDifferenceModel<CrankNicolsonScheme>
+                             cnModel(cnEvolver, condition_->stoppingTimes());
+              cnModel.rollback(rhs, dampingTo, to, steps, *condition_);
+
             }
             break;
           case FdmSchemeDesc::CraigSneydType:

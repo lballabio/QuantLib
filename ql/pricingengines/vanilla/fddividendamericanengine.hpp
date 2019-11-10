@@ -32,7 +32,12 @@
 namespace QuantLib {
 
     //! Finite-differences pricing engine for dividend American options
-    /*! \ingroup vanillaengines
+    /*! \deprecated Use FDDividendAmericanEngineMerton73 instead if you
+                    want to use the Merton 73 escowed dividend model;
+                    use FdBlackScholesVanillaEngine otherwise.
+                    Deprecated in version 1.17.
+
+        \ingroup vanillaengines
 
         \test
         - the correctness of the returned greeks is tested by
@@ -41,7 +46,7 @@ namespace QuantLib {
           dividends is tested.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendAmericanEngine
+    class QL_DEPRECATED FDDividendAmericanEngine
         : public FDEngineAdapter<FDAmericanCondition<FDDividendEngine<Scheme> >,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngine<Scheme> >,
@@ -55,6 +60,8 @@ namespace QuantLib {
     };
 
 
+    //! Finite-differences pricing engine for dividend American options
+    /*! This engine uses the Merton 73 escowed dividend model. */
     template <template <class> class Scheme = CrankNicolson>
     class FDDividendAmericanEngineMerton73
         : public FDEngineAdapter<FDAmericanCondition<
@@ -71,8 +78,12 @@ namespace QuantLib {
         : super(process, timeSteps, gridPoints,timeDependent) {}
     };
 
+
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendAmericanEngineShiftScale
+    class QL_DEPRECATED FDDividendAmericanEngineShiftScale
         : public FDEngineAdapter<FDAmericanCondition<
                                      FDDividendEngineShiftScale<Scheme> >,
                                  DividendVanillaOption::engine> {

@@ -26,7 +26,7 @@
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdshoutengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -403,7 +403,6 @@ void AmericanOptionTest::testFdValues() {
         ext::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(juValues[i].type, juValues[i].strike));
 
-        // FLOATING_POINT_EXCEPTION
         Date exDate = today + Integer(juValues[i].t*360+0.5);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
@@ -413,14 +412,14 @@ void AmericanOptionTest::testFdValues() {
         rRate->setValue(juValues[i].r);
         vol  ->setValue(juValues[i].v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
-                                      Handle<YieldTermStructure>(qTS),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+            ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
+                                                        Handle<YieldTermStructure>(qTS),
+                                                        Handle<YieldTermStructure>(rTS),
+                                                        Handle<BlackVolTermStructure>(volTS));
 
-        ext::shared_ptr<PricingEngine> engine(
-                  new FDAmericanEngine<CrankNicolson>(stochProcess, 100,100));
+        ext::shared_ptr<PricingEngine> engine =
+            ext::make_shared<FdBlackScholesVanillaEngine>(stochProcess, 100, 100);
 
         VanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);
@@ -561,7 +560,7 @@ namespace {
 
 void AmericanOptionTest::testFdAmericanGreeks() {
     BOOST_TEST_MESSAGE("Testing finite-differences American option greeks...");
-    testFdGreeks<FDAmericanEngine<CrankNicolson> >();
+    testFdGreeks<FdBlackScholesVanillaEngine>();
 }
 
 void AmericanOptionTest::testFdShoutGreeks() {

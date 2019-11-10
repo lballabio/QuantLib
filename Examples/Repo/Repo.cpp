@@ -40,7 +40,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 
-#include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -59,7 +58,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         Date repoSettlementDate(14,February,2000);;
@@ -224,19 +222,6 @@ int main(int, char* []) {
              << "and 0 settlement days."
              << endl;
 
-
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        cout << " \nRun completed in ";
-        if (hours > 0)
-            cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            cout << minutes << " m ";
-        cout << fixed << setprecision(0)
-             << seconds << " s\n" << endl;
 
         return 0;
 

@@ -109,8 +109,8 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        const ext::shared_ptr<FdmOrnsteinUhlenbackOp> op(
-            new FdmOrnsteinUhlenbackOp(mesher, process_, rTS_, 0));
+        const ext::shared_ptr<FdmOrnsteinUhlenbeckOp> op(
+            new FdmOrnsteinUhlenbeckOp(mesher, process_, rTS_, 0));
 
         const ext::shared_ptr<Fdm1DimSolver> solver(
                 new Fdm1DimSolver(solverDesc, schemeDesc_, op));

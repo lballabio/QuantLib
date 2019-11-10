@@ -36,7 +36,7 @@ namespace QuantLib {
     class YieldTermStructure;
     class LinearInterpolation;
     class ExtOUWithJumpsProcess;
-    class FdmExtendedOrnsteinUhlenbackOp;
+    class FdmExtendedOrnsteinUhlenbeckOp;
     
     /*! References:
         Kluge, Timo L., 2008. Pricing Swing Options and other 
@@ -76,7 +76,7 @@ namespace QuantLib {
         GaussLaguerreIntegration gaussLaguerreIntegration_;
 
         const Array x_;
-        const ext::shared_ptr<FdmExtendedOrnsteinUhlenbackOp> ouOp_;
+        const ext::shared_ptr<FdmExtendedOrnsteinUhlenbeckOp> ouOp_;
 
         const TripleBandLinearOp dyMap_;
 

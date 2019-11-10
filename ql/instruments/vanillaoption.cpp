@@ -22,8 +22,7 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
-#include <ql/pricingengines/vanilla/fdbermudanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/exercise.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -57,10 +56,8 @@ namespace QuantLib {
             engine.reset(new AnalyticEuropeanEngine(newProcess));
             break;
           case Exercise::American:
-            engine.reset(new FDAmericanEngine<CrankNicolson>(newProcess));
-            break;
           case Exercise::Bermudan:
-            engine.reset(new FDBermudanEngine<CrankNicolson>(newProcess));
+            engine.reset(new FdBlackScholesVanillaEngine(newProcess));
             break;
           default:
             QL_FAIL("unknown exercise type");

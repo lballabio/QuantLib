@@ -50,7 +50,8 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false);
+                  bool isInArrears = false,
+                  const Date& exCouponDate = Date());
         //! \name Inspectors
         //@{
         const ext::shared_ptr<SwapSpreadIndex>& swapSpreadIndex() const {
@@ -81,11 +82,12 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false)
+                  bool isInArrears = false,
+                  const Date& exCouponDate = Date())
         : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
-                      dayCounter, isInArrears)), cap, floor) {}
+                      dayCounter, isInArrears, exCouponDate)), cap, floor) {}
 
         virtual void accept(AcyclicVisitor& v) {
             Visitor<CappedFlooredCmsSpreadCoupon>* v1 =

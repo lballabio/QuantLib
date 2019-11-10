@@ -71,7 +71,11 @@ namespace QuantLib {
                     bool isInArrears,
                     bool isZero,
                     Natural paymentLag = 0,
-                    Calendar paymentCalendar = Calendar()) {
+                    Calendar paymentCalendar = Calendar(),
+                    Period exCouponPeriod = Period(),
+                    Calendar exCouponCalendar = Calendar(),
+                    BusinessDayConvention exCouponAdjustment = Unadjusted,
+                    bool exCouponEndOfMonth = false) {
 
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
@@ -102,6 +106,7 @@ namespace QuantLib {
             paymentCalendar = calendar;
         }
         Date refStart, start, refEnd, end;
+        Date exCouponDate;
         Date lastPaymentDate = paymentCalendar.advance(schedule.date(n), paymentLag, Days, paymentAdj);
 
         for (Size i=0; i<n; ++i) {
@@ -117,6 +122,13 @@ namespace QuantLib {
                 BusinessDayConvention bdc = schedule.businessDayConvention();
                 refEnd = calendar.adjust(start + schedule.tenor(), bdc);
             }
+            if (exCouponPeriod != Period()) {
+                if (exCouponCalendar.empty()) {
+                    exCouponCalendar = calendar;
+                }
+                exCouponDate = exCouponCalendar.advance(paymentDate, -exCouponPeriod,
+                                                         exCouponAdjustment, exCouponEndOfMonth);
+            }
             if (detail::get(gearings, i, 1.0) == 0.0) { // fixed coupon
                 leg.push_back(ext::shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate,
@@ -124,7 +136,8 @@ namespace QuantLib {
                                     detail::effectiveFixedRate(spreads,caps,
                                                                floors,i),
                                     paymentDayCounter,
-                                    start, end, refStart, refEnd)));
+                                    start, end, refStart, refEnd, 
+						            exCouponDate)));
             } else { // floating coupon
                 if (detail::noOption(caps, floors, i))
                     leg.push_back(ext::shared_ptr<CashFlow>(new
@@ -137,7 +150,7 @@ namespace QuantLib {
                             detail::get(gearings, i, 1.0),
                             detail::get(spreads, i, 0.0),
                             refStart, refEnd,
-                            paymentDayCounter, isInArrears)));
+                            paymentDayCounter, isInArrears, exCouponDate)));
                 else {
                     leg.push_back(ext::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(
@@ -152,7 +165,7 @@ namespace QuantLib {
                                detail::get(floors, i, Null<Rate>()),
                                refStart, refEnd,
                                paymentDayCounter,
-                               isInArrears)));
+                               isInArrears, exCouponDate)));
                 }
             }
         }

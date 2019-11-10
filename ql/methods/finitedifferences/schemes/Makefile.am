@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	boundaryconditionschemehelper.hpp \
 	craigsneydscheme.hpp \
+	cranknicolsonscheme.hpp \
 	douglasscheme.hpp \
 	expliciteulerscheme.hpp \
 	hundsdorferscheme.hpp \
@@ -16,6 +17,7 @@ this_include_HEADERS = \
 
 cpp_files = \
 	craigsneydscheme.cpp \
+	cranknicolsonscheme.cpp \
 	douglasscheme.cpp \
 	expliciteulerscheme.cpp \
 	hundsdorferscheme.cpp \

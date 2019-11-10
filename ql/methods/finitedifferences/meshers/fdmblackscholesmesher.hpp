@@ -50,7 +50,8 @@ namespace QuantLib {
                 = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
             const DividendSchedule& dividendSchedule = DividendSchedule(),
             const ext::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper
-                = ext::shared_ptr<FdmQuantoHelper>());
+                = ext::shared_ptr<FdmQuantoHelper>(),
+            Real spotAdjustment = 0.0);
 
         static ext::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
              const Handle<Quote>& s0,

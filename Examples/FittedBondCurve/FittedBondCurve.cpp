@@ -39,7 +39,6 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 
-#include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -86,8 +85,6 @@ void printOutput(const std::string& tag,
 int main(int, char* []) {
 
     try {
-
-        boost::timer timer;
 
         const Size numberOfBonds = 15;
         Real cleanPrice[numberOfBonds];
@@ -650,20 +647,6 @@ int main(int, char* []) {
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts66,keyDates,dc) << endl;
         }
-
-
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        std::cout << " \nRun completed in ";
-        if (hours > 0)
-            std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
 
         return 0;
 

@@ -114,8 +114,8 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">bin\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">true</GenerateManifest>
@@ -126,8 +126,8 @@
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">false</PostBuildEventUseInBuild>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">bin\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">true</GenerateManifest>
@@ -138,8 +138,8 @@
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">true</PostBuildEventUseInBuild>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bin\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
@@ -150,8 +150,8 @@
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bin\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
@@ -160,18 +160,18 @@
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</EmbedManifest>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PostBuildEventUseInBuild>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PostBuildEventUseInBuild>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">QuantLib-test-suite-$(qlCompilerTag)-mt</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QuantLib-test-suite-$(qlCompilerTag)-x64-mt</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">QuantLib-test-suite-$(qlCompilerTag)-mt-s</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">QuantLib-test-suite-$(qlCompilerTag)-x64-mt-s</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">QuantLib-test-suite-$(qlCompilerTag)-mt-gd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">QuantLib-test-suite-$(qlCompilerTag)-x64-mt-gd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">QuantLib-test-suite-$(qlCompilerTag)-mt-sgd</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">QuantLib-test-suite-$(qlCompilerTag)-x64-mt-sgd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">QuantLib-test-suite-mt</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QuantLib-test-suite-x64-mt</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">QuantLib-test-suite-mt-s</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">QuantLib-test-suite-x64-mt-s</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">QuantLib-test-suite-mt-gd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">QuantLib-test-suite-x64-mt-gd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">QuantLib-test-suite-mt-sgd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">QuantLib-test-suite-x64-mt-sgd</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -187,13 +187,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -229,7 +229,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -245,13 +245,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -285,7 +285,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -304,13 +304,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -344,7 +344,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -363,13 +363,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -402,7 +402,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -418,13 +418,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -458,7 +458,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -474,13 +474,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -512,7 +512,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -531,13 +531,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -571,7 +571,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
-      <TypeLibraryName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
+      <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -590,13 +590,13 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</AssemblerListingLocation>
+      <ObjectFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ObjectFileName>
+      <ProgramDataBaseFileName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <BrowseInformationFile>.\build\$(qlCompilerTag)\$(Platform)\$(Configuration)\</BrowseInformationFile>
+      <BrowseInformationFile>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -658,6 +658,7 @@
     <ClCompile Include="cms.cpp" />
     <ClCompile Include="cmsspread.cpp" />
     <ClCompile Include="commodityunitofmeasure.cpp" />
+    <ClCompile Include="compiledboostversion.cpp" />
     <ClCompile Include="compoundoption.cpp" />
     <ClCompile Include="convertiblebonds.cpp" />
     <ClCompile Include="covariance.cpp" />
@@ -810,6 +811,7 @@
     <ClInclude Include="cms.hpp" />
     <ClInclude Include="cmsspread.hpp" />
     <ClInclude Include="commodityunitofmeasure.hpp" />
+    <ClInclude Include="compiledboostversion.hpp" />
     <ClInclude Include="compoundoption.hpp" />
     <ClInclude Include="convertiblebonds.hpp" />
     <ClInclude Include="covariance.hpp" />
