@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Roland Lichters
- Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2019 Aprexo Limited
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,25 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_overnight_indexed_swap_hpp
-#define quantlib_test_overnight_indexed_swap_hpp
+#include "compiledboostversion.hpp"
+#include "utilities.hpp"
 
-#include <boost/test/unit_test.hpp>
+#include <ql/version.hpp>
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <boost/version.hpp>
 
-class OvernightIndexedSwapTest {
-  public:
-    static void testFairRate();
-    static void testFairSpread();
-    static void testCachedValue();
-    static void testBootstrap();
-    static void testBootstrapWithTelescopicDates();
-    static void testSeasonedSwaps();
-    static void testBootstrapRegression();
-    static boost::unit_test_framework::test_suite* suite();
-};
+using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+void CompiledBoostVersionTest::test() {
+
+    BOOST_TEST_MESSAGE("Testing compiled boost version...");
+
+    // this will fail if the test suite is being built with a different boost version than the library was
+    BOOST_CHECK(QuantLib::compiledBoostVersion() == BOOST_VERSION);
+}
 
 
-#endif
+test_suite* CompiledBoostVersionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Compiled boost version test");
+    suite->add(QUANTLIB_TEST_CASE(&CompiledBoostVersionTest::test));
+    return suite;
+}
+

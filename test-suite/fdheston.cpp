@@ -666,7 +666,8 @@ void FdHestonTest::testFdmHestonConvergence() {
         FdmSchemeDesc::ModifiedCraigSneyd(),
         FdmSchemeDesc::ModifiedHundsdorfer(),
         FdmSchemeDesc::CraigSneyd(),
-        FdmSchemeDesc::TrBDF2()
+        FdmSchemeDesc::TrBDF2(),
+        FdmSchemeDesc::CrankNicolson(),
     };
     
     Size tn[] = { 60 };
@@ -798,7 +799,7 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 #endif
 }
 
-void FdHestonTest::testMethodOfLines() {
+void FdHestonTest::testMethodOfLinesAndCN() {
     BOOST_TEST_MESSAGE("Testing method of lines to solve Heston PDEs...");
 
     SavedSettings backup;
@@ -842,19 +843,35 @@ void FdHestonTest::testMethodOfLines() {
         payoff, ext::make_shared<AmericanExercise>(maturity));
 
     option.setPricingEngine(fdmMol);
-    const Real calculated = option.NPV();
+    const Real calculatedMoL = option.NPV();
 
     option.setPricingEngine(fdmDefault);
     const Real expected = option.NPV();
 
     const Real tol = 0.005;
-    const Real diff = std::fabs(expected - calculated);
+    const Real diffMoL = std::fabs(expected - calculatedMoL);
 
-    if (diff > tol) {
+    if (diffMoL > tol) {
         BOOST_FAIL("Failed to reproduce european option values with MOL"
-                   << "\n    calculated: " << calculated
+                   << "\n    calculated: " << calculatedMoL
                    << "\n    expected:   " << expected
-                   << "\n    difference: " << diff
+                   << "\n    difference: " << diffMoL
+                   << "\n    tolerance:  " << tol);
+    }
+
+    const ext::shared_ptr<PricingEngine> fdmCN(
+        ext::make_shared<FdHestonVanillaEngine>(
+            model, 10, xGrid, vGrid, 0, FdmSchemeDesc::CrankNicolson()));
+    option.setPricingEngine(fdmCN);
+
+    const Real calculatedCN = option.NPV();
+    const Real diffCN = std::fabs(expected - calculatedCN);
+
+    if (diffCN > tol) {
+        BOOST_FAIL("Failed to reproduce european option values with Crank-Nicolson"
+                   << "\n    calculated: " << calculatedCN
+                   << "\n    expected:   " << expected
+                   << "\n    difference: " << diffCN
                    << "\n    tolerance:  " << tol);
     }
 
@@ -871,16 +888,31 @@ void FdHestonTest::testMethodOfLines() {
         ext::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
             FdmSchemeDesc::MethodOfLines()));
 
-    const Real calculatedBarrier = barrierOption.NPV();
+    const Real calculatedBarrierMoL = barrierOption.NPV();
 
     const Real barrierTol = 0.01;
-    const Real barrierDiff = std::fabs(expectedBarrier - calculatedBarrier);
+    const Real barrierDiffMoL = std::fabs(expectedBarrier - calculatedBarrierMoL);
 
-    if (barrierDiff > barrierTol) {
+    if (barrierDiffMoL > barrierTol) {
         BOOST_FAIL("Failed to reproduce barrier option values with MOL"
-                   << "\n    calculated: " << calculatedBarrier
+                   << "\n    calculated: " << calculatedBarrierMoL
                    << "\n    expected:   " << expectedBarrier
-                   << "\n    difference: " << barrierDiff
+                   << "\n    difference: " << barrierDiffMoL
+                   << "\n    tolerance:  " << barrierTol);
+    }
+
+    barrierOption.setPricingEngine(
+        ext::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
+            FdmSchemeDesc::CrankNicolson()));
+
+    const Real calculatedBarrierCN = barrierOption.NPV();
+    const Real barrierDiffCN = std::fabs(expectedBarrier - calculatedBarrierCN);
+
+    if (barrierDiffCN > barrierTol) {
+        BOOST_FAIL("Failed to reproduce barrier option values with Crank-Nicolson"
+                   << "\n    calculated: " << calculatedBarrierCN
+                   << "\n    expected:   " << expectedBarrier
+                   << "\n    difference: " << barrierDiffCN
                    << "\n    tolerance:  " << barrierTol);
     }
 }
@@ -931,6 +963,7 @@ void FdHestonTest::testSpuriousOscillations() {
         boost::make_tuple(
            FdmSchemeDesc::ModifiedHundsdorfer(), "Mod. Hundsdorfer", true),
         boost::make_tuple(FdmSchemeDesc::Douglas(), "Douglas", true),
+        boost::make_tuple(FdmSchemeDesc::CrankNicolson(), "Crank-Nicolson", true),
         boost::make_tuple(FdmSchemeDesc::ImplicitEuler(), "Implicit", false),
         boost::make_tuple(FdmSchemeDesc::TrBDF2(), "TR-BDF2", false)
     };
@@ -979,7 +1012,7 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
         &FdHestonTest::testFdmHestonEuropeanWithDividends));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testFdmHestonIntradayPricing));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLines));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
 
     if (speed <= Fast) {

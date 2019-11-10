@@ -78,7 +78,8 @@ libQuantLib_la_SOURCES = \
     settings.cpp \
 	stochasticprocess.cpp \
 	termstructure.cpp \
-	timegrid.cpp
+	timegrid.cpp \
+	version.cpp
 
 lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -version-info 0:0:0

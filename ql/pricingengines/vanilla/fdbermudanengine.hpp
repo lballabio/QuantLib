@@ -31,10 +31,14 @@
 namespace QuantLib {
 
     //! Finite-differences Bermudan engine
-    /*! \ingroup vanillaengines */
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
+
+        \ingroup vanillaengines
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDBermudanEngine : public VanillaOption::engine,
-                             public FDMultiPeriodEngine<Scheme> {
+    class QL_DEPRECATED FDBermudanEngine : public VanillaOption::engine,
+                                           public FDMultiPeriodEngine<Scheme> {
       public:
         // constructor
         FDBermudanEngine(

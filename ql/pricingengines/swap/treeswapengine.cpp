@@ -18,27 +18,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/swap/treeswapengine.hpp>
 #include <ql/pricingengines/swap/discretizedswap.hpp>
+#include <ql/pricingengines/swap/treeswapengine.hpp>
 
 namespace QuantLib {
 
-    TreeVanillaSwapEngine::TreeVanillaSwapEngine(
-                               const ext::shared_ptr<ShortRateModel>& model,
-                              Size timeSteps,
-                              const Handle<YieldTermStructure>& termStructure)
-    : LatticeShortRateModelEngine<VanillaSwap::arguments,
-                                  VanillaSwap::results>(model, timeSteps),
+    TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
+                                                 Size timeSteps,
+                                                 const Handle<YieldTermStructure>& termStructure)
+    : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeSteps),
       termStructure_(termStructure) {
         registerWith(termStructure_);
     }
 
-    TreeVanillaSwapEngine::TreeVanillaSwapEngine(
-                               const ext::shared_ptr<ShortRateModel>& model,
-                              const TimeGrid& timeGrid,
-                              const Handle<YieldTermStructure>& termStructure)
-    : LatticeShortRateModelEngine<VanillaSwap::arguments,
-                                  VanillaSwap::results>(model, timeGrid),
+    TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
+                                                 const TimeGrid& timeGrid,
+                                                 const Handle<YieldTermStructure>& termStructure)
+    : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeGrid),
       termStructure_(termStructure) {
         registerWith(termStructure_);
     }
@@ -71,11 +67,11 @@ namespace QuantLib {
             lattice = model_->tree(timeGrid);
         }
 
-        swap.initialize(lattice, times.back());
+        Time maxTime = *std::max_element(times.begin(), times.end());
+        swap.initialize(lattice, maxTime);
         swap.rollback(0.0);
 
         results_.value = swap.presentValue();
     }
 
 }
-

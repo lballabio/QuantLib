@@ -34,6 +34,7 @@
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/fedfunds.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
@@ -428,6 +429,74 @@ void OvernightIndexedSwapTest::testSeasonedSwaps() {
 }
 
 
+void OvernightIndexedSwapTest::testBootstrapRegression() {
+    BOOST_TEST_MESSAGE("Testing 1.16 regression with OIS bootstrap...");
+
+    SavedSettings backup;
+
+    Datum data[] = {
+        { 0,  1, Days,   0.0066   },
+        { 2,  1, Weeks,  0.006445 },
+        { 2,  2, Weeks,  0.006455 },
+        { 2,  3, Weeks,  0.00645  },
+        { 2,  1, Months, 0.00675  },
+        { 2,  2, Months, 0.007    },
+        { 2,  3, Months, 0.00724  },
+        { 2,  4, Months, 0.007533 },
+        { 2,  5, Months, 0.00785  },
+        { 2,  6, Months, 0.00814  },
+        { 2,  9, Months, 0.00889  },
+        { 2,  1, Years,  0.00967  },
+        { 2,  2, Years,  0.01221  },
+        { 2,  3, Years,  0.01413  },
+        { 2,  4, Years,  0.01555  },
+        { 2,  5, Years,  0.01672  },
+        { 2, 10, Years,  0.02005  },
+        { 2, 12, Years,  0.0208   },
+        { 2, 15, Years,  0.02152  },
+        { 2, 20, Years,  0.02215  },
+        { 2, 25, Years,  0.02233  },
+        { 2, 30, Years,  0.02234  },
+        { 2, 40, Years,  0.02233  }
+    };
+
+    Settings::instance().evaluationDate() = Date(21, February, 2017);
+
+    std::vector<ext::shared_ptr<RateHelper> > helpers;
+    ext::shared_ptr<FedFunds> index(new FedFunds);
+
+    helpers.push_back(
+        ext::make_shared<DepositRateHelper>(data[0].rate,
+                                            Period(data[0].n, data[0].unit),
+                                            index->fixingDays(),
+                                            index->fixingCalendar(),
+                                            index->businessDayConvention(),
+                                            index->endOfMonth(),
+                                            index->dayCounter()));
+
+    for (Size i=1; i<LENGTH(data); ++i) {
+        helpers.push_back(
+            ext::shared_ptr<RateHelper>(
+                new OISRateHelper(data[i].settlementDays,
+                                  Period(data[i].n, data[i].unit),
+                                  Handle<Quote>(ext::make_shared<SimpleQuote>(data[i].rate)),
+                                  index,
+                                  Handle<YieldTermStructure>(),
+                                  false, 2,
+                                  Following, Annual, Calendar(), 0*Days, 0.0,
+                                  // this bootstrap fails with the default LastRelevantDate choice
+                                  Pillar::MaturityDate)));
+    }
+
+    PiecewiseYieldCurve<Discount,LogCubic> curve(0, UnitedStates(), helpers, Actual365Fixed(),
+                                                 LogCubic(CubicInterpolation::Spline, true,
+                                                          CubicInterpolation::SecondDerivative, 0.0,
+                                                          CubicInterpolation::SecondDerivative, 0.0));
+
+    BOOST_CHECK_NO_THROW(curve.discount(1.0));
+}
+
+
 test_suite* OvernightIndexedSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Overnight-indexed swap tests");
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairRate));
@@ -437,5 +506,6 @@ test_suite* OvernightIndexedSwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &OvernightIndexedSwapTest::testBootstrapWithTelescopicDates));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testSeasonedSwaps));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapRegression));
     return suite;
 }

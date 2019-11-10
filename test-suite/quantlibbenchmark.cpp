@@ -87,7 +87,7 @@
 #include <ql/types.hpp>
 #include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 #include <iostream>
 #include <iomanip>
 #include <list>
@@ -104,6 +104,15 @@
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
 #  define BOOST_LIB_NAME boost_unit_test_framework
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_timer
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_chrono
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_system
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
 
@@ -141,7 +150,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    boost::timer t;
+    boost::timer::cpu_timer t;
     std::list<double> runTimes;
 
     /* PAPI code
@@ -155,7 +164,7 @@ namespace {
         explicit TimedCase(fct_ptr f) : f_(f) {}
 
         void startTimer() const {
-            t.restart();
+            t.start();
 
             /* PAPI code
                lflop = flop;
@@ -164,7 +173,8 @@ namespace {
         }
 
         void stopTimer() const {
-            runTimes.push_back(t.elapsed());
+            t.stop();
+            runTimes.push_back(t.elapsed().wall * 1e-9);
 
             /* PAPI code
                PAPI_flops(&real_time, &proc_time, &flop, &mflops);
@@ -290,8 +300,6 @@ test_suite* init_unit_test_suite(int, char*[]) {
         &EuropeanOptionTest::testImpliedVol, 131.51));
     bm.push_back(Benchmark("EuropeanOption::FdEngines",
         &EuropeanOptionTest::testFdEngines, 148.43));
-    bm.push_back(Benchmark("EuropeanOption::PriceCurve",
-        &EuropeanOptionTest::testPriceCurve, 414.76));
     bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
         &FdHestonTest::testFdmHestonAmerican, 234.21));
     bm.push_back(Benchmark("HestonModel::DAXCalibration",

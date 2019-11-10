@@ -215,14 +215,6 @@ namespace QuantLib {
         int i = locate (a);
         int j = locate (b);
         return cumulativeExcessProbability_[j]-cumulativeExcessProbability_[i];
-
-        Real integral = 0.0;
-        for (int i = 0; i < size_; i++) {
-            if (x_[i] >= b) break;
-            if (x_[i] >= a)
-                integral += dx_[i] * excessProbability_[i];
-        }
-        return integral;
     }
 
     //-------------------------------------------------------------------------

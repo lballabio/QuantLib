@@ -92,6 +92,9 @@
     <ClCompile Include="commodityunitofmeasure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="compiledboostversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="compoundoption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -540,6 +543,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="commodityunitofmeasure.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compiledboostversion.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="compoundoption.hpp">

@@ -99,7 +99,7 @@ namespace QuantLib {
         //! Basket counterparties notionals at inception.
         const std::vector<Real>& notionals() const;
         //! Basket total notional at inception.
-        Real notional();
+        Real notional() const;
         //! Returns the total expected exposures for that name.
         Real exposure(const std::string& name, const Date& = Date()) const;
         //! Underlying pool

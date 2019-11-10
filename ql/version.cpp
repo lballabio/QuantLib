@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Roland Lichters
- Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2019 Aprexo Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,25 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_overnight_indexed_swap_hpp
-#define quantlib_test_overnight_indexed_swap_hpp
+#include <ql/version.hpp>
+#include <boost/version.hpp>
 
-#include <boost/test/unit_test.hpp>
-
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class OvernightIndexedSwapTest {
-  public:
-    static void testFairRate();
-    static void testFairSpread();
-    static void testCachedValue();
-    static void testBootstrap();
-    static void testBootstrapWithTelescopicDates();
-    static void testSeasonedSwaps();
-    static void testBootstrapRegression();
-    static boost::unit_test_framework::test_suite* suite();
-};
-
-
+// Macros for forcing the compiler not to inline code
+// For now only used here, but could move this to a common header if necessary
+#if defined(BOOST_MSVC)       // Microsoft Visual C++
+#define QL_FORCE_NONINLINE __declspec(noinline)
+#elif defined(__GNUC__) || defined(__clang__)
+#define QL_FORCE_NONINLINE __attribute__((noinline))
+#else
+// we don't know how to enable it, just define the macro away and emit a warning
+#define QL_FORCE_NONINLINE
+#warning QL_FORCE_NONINLINE is not implemented on this platform
 #endif
+
+
+namespace QuantLib {
+
+    QL_FORCE_NONINLINE std::size_t compiledBoostVersion()
+    {
+        return static_cast<std::size_t>(BOOST_VERSION);
+    }
+
+}
