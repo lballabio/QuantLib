@@ -23,6 +23,7 @@
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
@@ -41,7 +42,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <boost/timer.hpp>
+
 #include <iostream>
 #include <iomanip>
 
@@ -57,7 +58,6 @@ namespace QuantLib {
 
 void example01() {
 
-    boost::timer timer;
     std::cout << std::endl;
 
     /*********************
@@ -209,17 +209,6 @@ void example01() {
 
     cout << endl << endl;
 
-    Real seconds = timer.elapsed();
-    Integer hours = Integer(seconds / 3600);
-    seconds -= hours * 3600;
-    Integer minutes = Integer(seconds / 60);
-    seconds -= minutes * 60;
-    cout << "Run completed in ";
-    if (hours > 0)
-        cout << hours << " h ";
-    if (hours > 0 || minutes > 0)
-        cout << minutes << " m ";
-    cout << fixed << setprecision(0) << seconds << " s" << endl;
 }
 
 void example02() {
@@ -277,14 +266,13 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
     ext::shared_ptr<IborIndex> euribor6m =
         ext::make_shared<Euribor>(Euribor(6 * Months));
 
-// check if indexed coupon is defined (it should not to be 100% consistent with
-// the ISDA spec)
-
-#ifdef QL_USE_INDEXED_COUPON
-    std::cout << "Warning: QL_USED_INDEXED_COUPON is defined, which is not "
-              << "precisely consistent with the specification of the ISDA rate "
-              << "curve." << std::endl;
-#endif
+    // check if indexed coupon is defined (it should not to be 100% consistent with
+    // the ISDA spec)
+    if (!IborCoupon::usingAtParCoupons()) {
+        std::cout << "Warning: IborCoupon::usingAtParCoupons() == false is used, "
+                  << "which is not precisely consistent with the specification "
+                  << "of the ISDA rate curve." << std::endl;
+    }
 
     ext::shared_ptr<SwapRateHelper> sw2y = ext::make_shared<SwapRateHelper>(
         0.002230, 2 * Years, TARGET(), Annual, ModifiedFollowing, Thirty360(),
@@ -491,7 +479,8 @@ void example03() {
                                               false, Actual360());
 
     // this index is probably not important since we are not using
-    // QL_USE_INDEXED_COUPON - define it "isda compliant" anyway
+    // IborCoupon::usingAtParCoupons() == false 
+    // - define it "isda compliant" anyway
     ext::shared_ptr<IborIndex> euribor6m = ext::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());

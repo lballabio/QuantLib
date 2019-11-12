@@ -67,6 +67,7 @@ namespace QuantLib {
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
+        typedef Bootstrap<this_curve> bootstrap_type;
         //! \name Constructors
         //@{
         PiecewiseYieldCurve(
@@ -79,7 +80,7 @@ namespace QuantLib {
                const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
@@ -92,7 +93,7 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                Real accuracy,
                const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(referenceDate, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
@@ -105,7 +106,7 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                const Interpolator& i,
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(referenceDate, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
@@ -122,7 +123,7 @@ namespace QuantLib {
                const std::vector<Date>& jumpDates = std::vector<Date>(),
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
           instruments_(instruments),
           accuracy_(accuracy), bootstrap_(bootstrap) {
@@ -136,7 +137,7 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                Real accuracy,
                const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(settlementDays, calendar, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),
@@ -150,7 +151,7 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                const Interpolator& i,
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(settlementDays, calendar, dayCounter,
                      std::vector<Handle<Quote> >(), std::vector<Date>(), i),
           instruments_(instruments),

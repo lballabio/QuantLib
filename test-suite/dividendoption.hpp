@@ -37,6 +37,8 @@ class DividendOptionTest {
     static void testFdAmericanGreeks();
     static void testFdEuropeanDegenerate();
     static void testFdAmericanDegenerate();
+    static void testEscrowedDividendModel();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

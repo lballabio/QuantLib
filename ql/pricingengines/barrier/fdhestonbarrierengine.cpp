@@ -55,9 +55,11 @@ namespace QuantLib {
 
         // 1.1 The variance mesher
         const Size tGridMin = 5;
-        const ext::shared_ptr<FdmHestonVarianceMesher> varianceMesher(
-			ext::make_shared<FdmHestonVarianceMesher>(vGrid_, process, maturity,
-                                        std::max(tGridMin, tGrid_/50)));
+        const Size tGridAvgSteps = std::max(tGridMin, tGrid_/50);
+
+        const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> vMesher
+            = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
+                  vGrid_, process, leverageFct_, maturity, tGridAvgSteps);
 
         // 1.2 The equity mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
@@ -79,14 +81,14 @@ namespace QuantLib {
                 xGrid_,
                 FdmBlackScholesMesher::processHelper(
                     process->s0(), process->dividendYield(),
-                    process->riskFreeRate(), varianceMesher->volaEstimate()),
+                    process->riskFreeRate(), vMesher->volaEstimate()),
                 maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
                 arguments_.cashFlow));
 
         const ext::shared_ptr<FdmMesher> mesher (
-			ext::make_shared<FdmMesherComposite>(equityMesher, varianceMesher));
+			ext::make_shared<FdmMesherComposite>(equityMesher, vMesher));
 
         // 2. Calculator
         ext::shared_ptr<FdmInnerValueCalculator> calculator(

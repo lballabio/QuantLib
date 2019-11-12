@@ -62,6 +62,14 @@ void CalendarTest::testModifiedCalendars() {
     c1.addHoliday(d2);
 
     // test
+    std::set<Date> addedHolidays(c1.addedHolidays());
+    std::set<Date> removedHolidays(c1.removedHolidays());
+
+    QL_REQUIRE(addedHolidays.find(d1) == addedHolidays.end(), "did not expect to find date in addedHolidays");
+    QL_REQUIRE(addedHolidays.find(d2) != addedHolidays.end(), "expected to find date in addedHolidays");
+    QL_REQUIRE(removedHolidays.find(d1) != removedHolidays.end(), "expected to find date in removedHolidays");
+    QL_REQUIRE(removedHolidays.find(d2) == removedHolidays.end(), "did not expect to find date in removedHolidays");
+
     if (c1.isHoliday(d1))
         BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
     if (c1.isBusinessDay(d2))
@@ -229,6 +237,7 @@ void CalendarTest::testUSGovernmentBondMarket() {
     expectedHol.push_back(Date(16,February,2004));
     expectedHol.push_back(Date(9,April,2004));
     expectedHol.push_back(Date(31,May,2004));
+    expectedHol.push_back(Date(11,June,2004)); // Reagan's funeral
     expectedHol.push_back(Date(5,July,2004));
     expectedHol.push_back(Date(6,September,2004));
     expectedHol.push_back(Date(11,October,2004));
@@ -1671,11 +1680,11 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(3, May, 2019));
     expectedHol.push_back(Date(7, June, 2019));
     expectedHol.push_back(Date(13, September, 2019));
-    expectedHol.push_back(Date(30, September, 2019));
     expectedHol.push_back(Date(1, October, 2019));
     expectedHol.push_back(Date(2, October, 2019));
     expectedHol.push_back(Date(3, October, 2019));
     expectedHol.push_back(Date(4, October, 2019));
+    expectedHol.push_back(Date(7, October, 2019));
 
     Calendar c = China(China::SSE);
     std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),

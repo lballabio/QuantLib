@@ -31,7 +31,6 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -688,8 +687,6 @@ void DigitalOptionTest::testMCCashAtHit() {
                        "American engine...");
 
     SavedSettings backup;
-
-    QL_TEST_START_TIMING
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol

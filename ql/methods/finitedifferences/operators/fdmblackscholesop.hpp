@@ -28,6 +28,7 @@
 
 #include <ql/payoff.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
@@ -42,7 +43,9 @@ namespace QuantLib {
             Real strike,
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>(),
-            Size direction = 0);
+            Size direction = 0,
+            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+                = ext::shared_ptr<FdmQuantoHelper>());
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -70,6 +73,7 @@ namespace QuantLib {
         const Real strike_;
         const Real illegalLocalVolOverwrite_;
         const Size direction_;
+        const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 }
 

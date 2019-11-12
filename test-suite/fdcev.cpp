@@ -51,7 +51,7 @@ namespace {
 
 void FdCevTest::testLocalMartingale() {
     BOOST_TEST_MESSAGE(
-        "Testing local martingale property of CEV process with PDF ...");
+        "Testing local martingale property of CEV process with PDF...");
 
     const Time t = 1.0;
 

@@ -22,7 +22,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-#include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
 
 namespace QuantLib {
 

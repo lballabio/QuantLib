@@ -781,13 +781,12 @@ void OptionletStripperTest::testSwitchStrike() {
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
-
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real expected = 0.02981258;
-    #else
-    Real expected = 0.02981223;
-    #endif
-
+    Real expected;
+    if (!IborCoupon::usingAtParCoupons())
+        expected = 0.02981258;
+    else
+        expected = 0.02981223;
+    
     Real error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
         BOOST_FAIL("\nSwitchstrike not correctly computed:  "
@@ -800,11 +799,10 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    expected = 0.0499381;
-    #else
-    expected = 0.0499371;
-    #endif
+    if (!IborCoupon::usingAtParCoupons())
+        expected = 0.0499381;
+    else
+        expected = 0.0499371;
 
     error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)

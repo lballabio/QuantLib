@@ -48,7 +48,7 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
-            || ((d == 1 || (d == 2 && w == Monday)) && m == January)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == January)
             // Family Day (third Monday in February, since 2008)
             || ((d >= 15 && d <= 21) && w == Monday && m == February
                 && y >= 2008)
@@ -86,7 +86,7 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
-            || ((d == 1 || (d == 2 && w == Monday)) && m == January)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == January)
             // Family Day (third Monday in February, since 2008)
             || ((d >= 15 && d <= 21) && w == Monday && m == February
                 && y >= 2008)
@@ -114,4 +114,3 @@ namespace QuantLib {
     }
 
 }
-

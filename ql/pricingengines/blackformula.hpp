@@ -10,6 +10,7 @@
  Copyright (C) 2013 Gary Kennedy
  Copyright (C) 2015 Peter Caspers
  Copyright (C) 2017 Klaus Spanderen
+ Copyright (C) 2019 Wojciech Ślusarski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -235,6 +236,27 @@ namespace QuantLib {
                         Real stdDev,
                         Real displacement = 0.0);
 
+    /*! Black 1976 probability of being in the money in the asset martingale
+        measure, i.e. N(d1).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real blackFormulaAssetItmProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement = 0.0);
+
+    /*! Black 1976 probability of being in the money in the asset martingale
+        measure, i.e. N(d1).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real blackFormulaAssetItmProbability(
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement = 0.0);
+    
     /*! Black 1976 formula for standard deviation derivative
         \warning instead of volatility it uses standard deviation, i.e.
                  volatility*sqrt(timeToMaturity), and it returns the
@@ -352,6 +374,25 @@ namespace QuantLib {
                                                 Real forward,
                                                 Real stdDev,
                                                 Real discount = 1.0);
+
+    /*! Bachelier formula for probability of being in the money in the asset martingale
+        measure, i.e. N(d).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real bachelierBlackFormulaAssetItmProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev);
+
+    /*! Bachelier formula for of being in the money in the asset martingale
+        measure, i.e. N(d).
+        It is a risk-neutral probability, not the real world one.
+    */
+    Real bachelierBlackFormulaAssetItmProbability(
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev);                                                
 
 }
 

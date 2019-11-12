@@ -21,6 +21,7 @@
 #include "fdheston.hpp"
 #include "utilities.hpp"
 
+#include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -31,6 +32,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
@@ -41,7 +43,6 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
 #include <boost/assign/std/vector.hpp>
-
 #include <boost/tuple/tuple.hpp>
 
 using namespace QuantLib;
@@ -62,6 +63,33 @@ namespace {
         Time t;        // time to maturity
         Volatility v;  // volatility
     };
+
+    class ParableLocalVolatility : public LocalVolTermStructure {
+      public:
+        ParableLocalVolatility(
+            const Date& referenceDate,
+            Real s0,
+            Real alpha,
+            const DayCounter& dayCounter)
+        : LocalVolTermStructure(
+              referenceDate, NullCalendar(), Following, dayCounter),
+          referenceDate_(referenceDate),
+          s0_(s0),
+          alpha_(alpha) {}
+
+        Date maxDate() const   { return Date::maxDate(); }
+        Real minStrike() const { return 0.0; }
+        Real maxStrike() const { return std::numeric_limits<Real>::max(); }
+
+      protected:
+        Volatility localVolImpl(Time t, Real s) const {
+            return alpha_*(square<Real>()(s0_ - s) + 25.0);
+        }
+
+      private:
+        const Date referenceDate_;
+        const Real s0_, alpha_;
+    };
 }
 
 void FdHestonTest::testFdmHestonVarianceMesher() {
@@ -80,8 +108,10 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
             Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
             0.09, 1.0, 0.09, 0.2, -0.5));
 
-    const std::vector<Real> locations =
-        FdmHestonVarianceMesher(5, process, 1.0).locations();
+    const ext::shared_ptr<FdmHestonVarianceMesher> mesher
+        = ext::make_shared<FdmHestonVarianceMesher>(5, process, 1.0);
+
+    const std::vector<Real> locations = mesher->locations();
 
     const Real expected[] = {
         0.0, 6.652314e-02, 9.000000e-02, 1.095781e-01, 2.563610e-01
@@ -99,6 +129,64 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
                         << "\n    difference  " << diff
                         << "\n    tolerance:  " << tol);
         }
+    }
+
+    const ext::shared_ptr<LocalVolTermStructure> lVol =
+        ext::make_shared<LocalConstantVol>(today, 2.5, dc);
+
+    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> constSlvMesher
+        = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>
+              (5, process, lVol, 1.0);
+
+    const Real expectedVol = 2.5 * mesher->volaEstimate();
+    const Real calculatedVol = constSlvMesher->volaEstimate();
+
+    const Real diff = std::fabs(calculatedVol - expectedVol);
+    if (diff > tol) {
+        BOOST_ERROR("Failed to reproduce Heston local volatility "
+                "variance estimate"
+                    << "\n    calculated: " << calculatedVol
+                    << "\n    expected:   " << expectedVol
+                    << std::scientific
+                    << "\n    difference  " << diff
+                    << "\n    tolerance:  " << tol);
+    }
+
+    const Real alpha = 0.01;
+    const ext::shared_ptr<LocalVolTermStructure> leverageFct
+        = ext::make_shared<ParableLocalVolatility>(today, 100.0, alpha, dc);
+
+    const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> slvMesher
+        = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
+              5, process, leverageFct, 0.5, 1, 0.01);
+
+    const Real initialVolEstimate =
+        ext::make_shared<FdmHestonVarianceMesher>(5, process, 0.5, 1, 0.01)->
+            volaEstimate();
+
+    // const Real vEst = leverageFct->localVol(0, 100) * initialVolEstimate;
+    // Mathematica solution
+    //    N[Integrate[
+    //      alpha*((100*Exp[vEst*x*Sqrt[0.5]] - 100)^2 + 25)*
+    //       PDF[NormalDistribution[0, 1], x], {x ,
+    //       InverseCDF[NormalDistribution[0, 1], 0.01],
+    //       InverseCDF[NormalDistribution[0, 1], 0.99]}]]
+
+    const Real leverageAvg = 0.455881 / (1-0.02);
+
+    const Real volaEstExpected =
+        0.5*(leverageAvg + leverageFct->localVol(0, 100)) * initialVolEstimate;
+
+    const Real volaEstCalculated = slvMesher->volaEstimate();
+
+    if (std::fabs(volaEstExpected - volaEstCalculated) > 0.001) {
+        BOOST_ERROR("Failed to reproduce Heston local volatility "
+                "variance estimate"
+                    << "\n    calculated: " << calculatedVol
+                    << "\n    expected:   " << expectedVol
+                    << std::scientific
+                    << "\n    difference  " << std::fabs(volaEstExpected - volaEstCalculated)
+                    << "\n    tolerance:  " << tol);
     }
 }
 
@@ -578,7 +666,8 @@ void FdHestonTest::testFdmHestonConvergence() {
         FdmSchemeDesc::ModifiedCraigSneyd(),
         FdmSchemeDesc::ModifiedHundsdorfer(),
         FdmSchemeDesc::CraigSneyd(),
-        FdmSchemeDesc::TrBDF2()
+        FdmSchemeDesc::TrBDF2(),
+        FdmSchemeDesc::CrankNicolson(),
     };
     
     Size tn[] = { 60 };
@@ -710,7 +799,7 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 #endif
 }
 
-void FdHestonTest::testMethodOfLines() {
+void FdHestonTest::testMethodOfLinesAndCN() {
     BOOST_TEST_MESSAGE("Testing method of lines to solve Heston PDEs...");
 
     SavedSettings backup;
@@ -754,19 +843,35 @@ void FdHestonTest::testMethodOfLines() {
         payoff, ext::make_shared<AmericanExercise>(maturity));
 
     option.setPricingEngine(fdmMol);
-    const Real calculated = option.NPV();
+    const Real calculatedMoL = option.NPV();
 
     option.setPricingEngine(fdmDefault);
     const Real expected = option.NPV();
 
     const Real tol = 0.005;
-    const Real diff = std::fabs(expected - calculated);
+    const Real diffMoL = std::fabs(expected - calculatedMoL);
 
-    if (diff > tol) {
+    if (diffMoL > tol) {
         BOOST_FAIL("Failed to reproduce european option values with MOL"
-                   << "\n    calculated: " << calculated
+                   << "\n    calculated: " << calculatedMoL
                    << "\n    expected:   " << expected
-                   << "\n    difference: " << diff
+                   << "\n    difference: " << diffMoL
+                   << "\n    tolerance:  " << tol);
+    }
+
+    const ext::shared_ptr<PricingEngine> fdmCN(
+        ext::make_shared<FdHestonVanillaEngine>(
+            model, 10, xGrid, vGrid, 0, FdmSchemeDesc::CrankNicolson()));
+    option.setPricingEngine(fdmCN);
+
+    const Real calculatedCN = option.NPV();
+    const Real diffCN = std::fabs(expected - calculatedCN);
+
+    if (diffCN > tol) {
+        BOOST_FAIL("Failed to reproduce european option values with Crank-Nicolson"
+                   << "\n    calculated: " << calculatedCN
+                   << "\n    expected:   " << expected
+                   << "\n    difference: " << diffCN
                    << "\n    tolerance:  " << tol);
     }
 
@@ -783,16 +888,31 @@ void FdHestonTest::testMethodOfLines() {
         ext::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
             FdmSchemeDesc::MethodOfLines()));
 
-    const Real calculatedBarrier = barrierOption.NPV();
+    const Real calculatedBarrierMoL = barrierOption.NPV();
 
     const Real barrierTol = 0.01;
-    const Real barrierDiff = std::fabs(expectedBarrier - calculatedBarrier);
+    const Real barrierDiffMoL = std::fabs(expectedBarrier - calculatedBarrierMoL);
 
-    if (barrierDiff > barrierTol) {
+    if (barrierDiffMoL > barrierTol) {
         BOOST_FAIL("Failed to reproduce barrier option values with MOL"
-                   << "\n    calculated: " << calculatedBarrier
+                   << "\n    calculated: " << calculatedBarrierMoL
                    << "\n    expected:   " << expectedBarrier
-                   << "\n    difference: " << barrierDiff
+                   << "\n    difference: " << barrierDiffMoL
+                   << "\n    tolerance:  " << barrierTol);
+    }
+
+    barrierOption.setPricingEngine(
+        ext::make_shared<FdHestonBarrierEngine>(model, 100, 31, 11, 0,
+            FdmSchemeDesc::CrankNicolson()));
+
+    const Real calculatedBarrierCN = barrierOption.NPV();
+    const Real barrierDiffCN = std::fabs(expectedBarrier - calculatedBarrierCN);
+
+    if (barrierDiffCN > barrierTol) {
+        BOOST_FAIL("Failed to reproduce barrier option values with Crank-Nicolson"
+                   << "\n    calculated: " << calculatedBarrierCN
+                   << "\n    expected:   " << expectedBarrier
+                   << "\n    difference: " << barrierDiffCN
                    << "\n    tolerance:  " << barrierTol);
     }
 }
@@ -843,6 +963,7 @@ void FdHestonTest::testSpuriousOscillations() {
         boost::make_tuple(
            FdmSchemeDesc::ModifiedHundsdorfer(), "Mod. Hundsdorfer", true),
         boost::make_tuple(FdmSchemeDesc::Douglas(), "Douglas", true),
+        boost::make_tuple(FdmSchemeDesc::CrankNicolson(), "Crank-Nicolson", true),
         boost::make_tuple(FdmSchemeDesc::ImplicitEuler(), "Implicit", false),
         boost::make_tuple(FdmSchemeDesc::TrBDF2(), "TR-BDF2", false)
     };
@@ -891,7 +1012,7 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
         &FdHestonTest::testFdmHestonEuropeanWithDividends));
     suite->add(QUANTLIB_TEST_CASE(
         &FdHestonTest::testFdmHestonIntradayPricing));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLines));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
 
     if (speed <= Fast) {

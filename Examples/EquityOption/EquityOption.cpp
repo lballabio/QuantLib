@@ -29,15 +29,13 @@
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/batesengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
-#include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fdbermudanengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
-#include <boost/timer.hpp>
+
 #include <iostream>
 #include <iomanip>
 
@@ -56,7 +54,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         // set up dates
@@ -219,15 +216,13 @@ int main(int, char* []) {
         // Finite differences
         Size timeSteps = 801;
         method = "Finite differences";
-        europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                 new FDEuropeanEngine<CrankNicolson>(bsmProcess,
-                                                     timeSteps,timeSteps-1)));
-        bermudanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                 new FDBermudanEngine<CrankNicolson>(bsmProcess,
-                                                     timeSteps,timeSteps-1)));
-        americanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                 new FDAmericanEngine<CrankNicolson>(bsmProcess,
-                                                     timeSteps,timeSteps-1)));
+        ext::shared_ptr<PricingEngine> fdengine =
+            ext::make_shared<FdBlackScholesVanillaEngine>(bsmProcess,
+                                                          timeSteps,
+                                                          timeSteps-1);
+        europeanOption.setPricingEngine(fdengine);
+        bermudanOption.setPricingEngine(fdengine);
+        americanOption.setPricingEngine(fdengine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
@@ -396,18 +391,6 @@ int main(int, char* []) {
                   << std::endl;
 
         // End test
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        std::cout << " \nRun completed in ";
-        if (hours > 0)
-            std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
         return 0;
 
     } catch (std::exception& e) {

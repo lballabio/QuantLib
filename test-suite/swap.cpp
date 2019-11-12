@@ -308,11 +308,12 @@ void SwapTest::testCachedValue() {
     vars.termStructure.linkTo(flatRate(vars.settlement,0.05,Actual365Fixed()));
 
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
-    #ifndef QL_USE_INDEXED_COUPON
-    Real cachedNPV   = -5.872863313209;
-    #else
-    Real cachedNPV   = -5.872342992212;
-    #endif
+
+    Real cachedNPV;  
+    if (IborCoupon::usingAtParCoupons())
+        cachedNPV = -5.872863313209;
+    else
+        cachedNPV = -5.872342992212;
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_ERROR("failed to reproduce cached swap value:\n"

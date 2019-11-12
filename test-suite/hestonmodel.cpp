@@ -31,9 +31,6 @@
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
-#include <ql/pricingengines/vanilla/fddividendeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
@@ -610,11 +607,12 @@ void HestonModelTest::testFdVanillaVsCached() {
 		ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
 
-    ext::shared_ptr<PricingEngine> engine;
-    engine = ext::make_shared<FdHestonVanillaEngine>(
-				ext::make_shared<HestonModel>(process),
-                    100,200,100);
-    option.setPricingEngine(engine);
+    option.setPricingEngine(
+        MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
+            .withTGrid(100)
+            .withXGrid(200)
+            .withVGrid(100)
+        );
 
     Real expected = 0.06325;
     Real calculated = option.NPV();
@@ -652,10 +650,12 @@ void HestonModelTest::testFdVanillaVsCached() {
                                     dividendDates, dividends);
     process = ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.04, 1.0, 0.04, 0.001, 0.0);
-    engine = ext::make_shared<FdHestonVanillaEngine>(
-				ext::make_shared<HestonModel>(process),
-                    200,400,100);
-    divOption.setPricingEngine(engine);
+    divOption.setPricingEngine(
+        MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
+            .withTGrid(200)
+            .withXGrid(400)
+            .withVGrid(100)
+        );
     calculated = divOption.NPV();
     // Value calculated with an independent FD framework, validated with
     // an independent MC framework
@@ -675,14 +675,16 @@ void HestonModelTest::testFdVanillaVsCached() {
     dividendTS = Handle<YieldTermStructure>(flatRate(0.03, dayCounter));
     process = ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.04, 1.0, 0.04, 0.001, 0.0);
-    engine = ext::make_shared<FdHestonVanillaEngine>(
-				ext::make_shared<HestonModel>(process),
-                    200,400,100);
     payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 95.0);
     exercise = ext::make_shared<AmericanExercise>(
             settlementDate, exerciseDate);
     option = VanillaOption(payoff, exercise);
-    option.setPricingEngine(engine);
+    option.setPricingEngine(
+        MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
+            .withTGrid(200)
+            .withXGrid(400)
+            .withVGrid(100)
+        );
     calculated = option.NPV();
 
     Handle<BlackVolTermStructure> volTS(flatVol(settlementDate, 0.2,
@@ -690,7 +692,7 @@ void HestonModelTest::testFdVanillaVsCached() {
     ext::shared_ptr<BlackScholesMertonProcess> ref_process(
 		ext::make_shared<BlackScholesMertonProcess>(s0, dividendTS, riskFreeTS, volTS));
     ext::shared_ptr<PricingEngine> ref_engine(
-		ext::make_shared<FDAmericanEngine<CrankNicolson> >(ref_process, 200, 400));
+		ext::make_shared<FdBlackScholesVanillaEngine>(ref_process, 200, 400));
     option.setPricingEngine(ref_engine);
     expected = option.NPV();
 
