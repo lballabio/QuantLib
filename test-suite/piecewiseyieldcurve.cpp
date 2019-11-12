@@ -268,7 +268,15 @@ namespace {
                                   euribor3m->fixingCalendar(),
                                   euribor3m->businessDayConvention(),
                                   euribor3m->endOfMonth(),
-                                  euribor3m->dayCounter()));
+                                  euribor3m->dayCounter(),
+                                  Pillar::LastRelevantDate,
+                                  Date(),
+#ifdef QL_USE_INDEXED_COUPON
+                                  false
+#else
+                                  true
+#endif
+));
             }
             Date immDate = Date();
             for (Size i = 0; i<immFuts; i++) {
