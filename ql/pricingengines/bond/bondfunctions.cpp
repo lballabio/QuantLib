@@ -367,12 +367,12 @@ namespace QuantLib {
                               Real accuracy,
                               Size maxIterations,
                               Rate guess,
-                              const bool priceIsClean) {
+                              Bond::Price::Type priceType) {
         NewtonSafe solver;
         solver.setMaxEvaluations(maxIterations);
         return yield<NewtonSafe>(solver, bond, price, dayCounter,
                                  compounding, frequency, settlement,
-                                 accuracy, guess, priceIsClean);
+                                 accuracy, guess, priceType);
     }
 
     Time BondFunctions::duration(const Bond& bond,

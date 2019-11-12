@@ -155,7 +155,7 @@ namespace QuantLib {
                           Real accuracy = 1.0e-10,
                           Size maxIterations = 100,
                           Rate guess = 0.05,
-                          const bool priceIsClean = true);
+                          Bond::Price::Type priceType = Bond::Price::Clean);
         template <typename Solver>
         static Rate yield(const Solver& solver,
                           const Bond& bond,
@@ -166,7 +166,7 @@ namespace QuantLib {
                           Date settlementDate = Date(),
                           Real accuracy = 1.0e-10,
                           Rate guess = 0.05,
-                          const bool priceIsClean = true) {
+                          Bond::Price::Type priceType = Bond::Price::Clean) {
             if (settlementDate == Date())
                 settlementDate = bond.settlementDate();
 
@@ -176,7 +176,7 @@ namespace QuantLib {
 
             Real dirtyPrice = price;
 
-            if (priceIsClean)
+            if (priceType == Bond::Price::Clean)
                 dirtyPrice += bond.accruedAmount(settlementDate);
 
             dirtyPrice /= 100.0 / bond.notional(settlementDate);

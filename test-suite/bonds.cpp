@@ -148,7 +148,7 @@ void BondTest::testYield() {
                                                        frequencies[l],
                                                        Date(),
                                                        tolerance, maxEvaluations,
-                                                       0.05, true);
+                                                       0.05, Bond::Price::Clean);
 
                 if (std::fabs(yields[m]-calculated) > tolerance) {
                   // the difference might not matter
@@ -182,7 +182,7 @@ void BondTest::testYield() {
                                                   frequencies[l],
                                                   Date(),
                                                   tolerance, maxEvaluations,
-                                                  0.05, false);
+                                                  0.05, Bond::Price::Dirty);
 
                 if (std::fabs(yields[m]-calculated) > tolerance) {
                   // the difference might not matter
