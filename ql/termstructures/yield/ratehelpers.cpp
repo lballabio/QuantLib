@@ -380,9 +380,10 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd (" << monthsToEnd <<
                    ") must be grater than monthsToStart (" << monthsToStart <<
@@ -407,9 +408,10 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
                    "monthsToEnd (" << monthsToEnd <<
                    ") must be grater than monthsToStart (" << monthsToStart <<
@@ -429,9 +431,10 @@ namespace QuantLib {
                                  Natural monthsToStart,
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
         iborIndex_ = i->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -447,9 +450,10 @@ namespace QuantLib {
                                  Natural monthsToStart,
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
         iborIndex_ = i->clone(termStructureHandle_);
         // see above
@@ -468,9 +472,10 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // no way to take fixing into account,
         // even if we would like to for FRA over today
         iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
@@ -491,9 +496,10 @@ namespace QuantLib {
                                  bool endOfMonth,
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // no way to take fixing into account,
         // even if we would like to for FRA over today
         iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
@@ -509,9 +515,10 @@ namespace QuantLib {
                                  Period periodToStart,
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
         iborIndex_ = i->clone(termStructureHandle_);
         // see above
@@ -525,9 +532,10 @@ namespace QuantLib {
                                  Period periodToStart,
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
         iborIndex_ = i->clone(termStructureHandle_);
         // see above
@@ -542,9 +550,10 @@ namespace QuantLib {
                                  Natural immOffsetEnd,
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), immOffsetStart_(immOffsetStart), immOffsetEnd_(immOffsetEnd),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
         iborIndex_ = i->clone(termStructureHandle_);
         // see above
@@ -559,9 +568,10 @@ namespace QuantLib {
                                  Natural immOffsetEnd,
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
-                                 Date customPillarDate)
+                                 Date customPillarDate,
+                                 const bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), immOffsetStart_(immOffsetStart), immOffsetEnd_(immOffsetEnd),
-      pillarChoice_(pillarChoice) {
+      pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
         iborIndex_ = i->clone(termStructureHandle_);
         // see above
@@ -573,12 +583,13 @@ namespace QuantLib {
 
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-#ifdef QL_USE_INDEXED_COUPON
-        return iborIndex_->fixing(fixingDate_, true);
-#else
-        return (termStructure_->discount(earliestDate_) / termStructure_->discount(maturityDate_) - 1.0) /
-               spanningTime_;
-#endif
+        if (useIndexedCoupon_)
+            return iborIndex_->fixing(fixingDate_, true);
+        else
+            return (termStructure_->discount(earliestDate_) /
+                        termStructure_->discount(maturityDate_) -
+                    1.0) /
+                   spanningTime_;
     }
 
     void FraRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -624,13 +635,13 @@ namespace QuantLib {
             QL_FAIL("neither periodToStart nor immOffsetStart/End given");
         }
 
-#ifdef QL_USE_INDEXED_COUPON
-        // latest relevant date is calculated from earliestDate_
-        latestRelevantDate_ = iborIndex_->maturityDate(earliestDate_);
-#else
-        latestRelevantDate_ = maturityDate_;
-        spanningTime_ = iborIndex_->dayCounter().yearFraction(earliestDate_, maturityDate_);
-#endif
+        if (useIndexedCoupon_)
+            // latest relevant date is calculated from earliestDate_
+            latestRelevantDate_ = iborIndex_->maturityDate(earliestDate_);
+        else {
+            latestRelevantDate_ = maturityDate_;
+            spanningTime_ = iborIndex_->dayCounter().yearFraction(earliestDate_, maturityDate_);
+        }
 
         switch (pillarChoice_) {
           case Pillar::MaturityDate:
