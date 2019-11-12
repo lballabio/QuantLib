@@ -82,8 +82,8 @@ namespace QuantLib {
             dividendSchedule = arguments_.cashFlow;
             break;
           case Escrowed:
-            for (DividendSchedule::const_iterator divIter
-                     = arguments_.cashFlow.begin();
+            for (DividendSchedule::const_iterator
+                    divIter = arguments_.cashFlow.begin();
                  divIter != arguments_.cashFlow.end(); ++divIter) {
 
                 const Date divDate = (*divIter)->date();

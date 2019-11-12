@@ -575,15 +575,13 @@ void DividendOptionTest::testFdEuropeanValues() {
     SavedSettings backup;
 
     Real tolerance = 1.0e-2;
-    Size gridPoints = 300;
+    Size gridPoints = 400;
     Size timeSteps = 40;
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     Real underlyings[] = { 100.0 };
-    // Rate qRates[] = { 0.00, 0.10, 0.30 };
-    // Analytic dividend may not be handling q correctly
-    Rate qRates[] = { 0.00 };
+    Rate qRates[] = { 0.00, 0.10, 0.30 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Integer lengths[] = { 1, 2 };
     Volatility vols[] = { 0.05, 0.20, 0.40 };
@@ -622,10 +620,11 @@ void DividendOptionTest::testFdEuropeanValues() {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-          ext::shared_ptr<PricingEngine> engine(
-              new FDDividendEuropeanEngineMerton73<CrankNicolson>(stochProcess,
-                                                                  timeSteps,
-                                                                  gridPoints));
+          ext::shared_ptr<PricingEngine> engine =
+              MakeFdBlackScholesVanillaEngine(stochProcess)
+              .withTGrid(timeSteps)
+              .withXGrid(gridPoints)
+              .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed);
 
           ext::shared_ptr<PricingEngine> ref_engine(
                             new AnalyticDividendEuropeanEngine(stochProcess));
@@ -674,9 +673,9 @@ void DividendOptionTest::testFdEuropeanValues() {
 
 namespace {
 
-    template <class Engine>
     void testFdGreeks(const Date& today,
-                      const ext::shared_ptr<Exercise>& exercise) {
+                      const ext::shared_ptr<Exercise>& exercise,
+                      FdBlackScholesVanillaEngine::CashDividendModel model) {
 
         std::map<std::string,Real> calculated, expected, tolerance;
         tolerance["delta"] = 5.0e-3;
@@ -690,7 +689,7 @@ namespace {
         Rate rRates[] = { 0.01, 0.05, 0.15 };
         Volatility vols[] = { 0.05, 0.20, 0.50 };
 
-        DayCounter dc = Actual360();
+        DayCounter dc = Actual365Fixed();
 
         ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
         ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -719,8 +718,10 @@ namespace {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-                ext::shared_ptr<PricingEngine> engine(
-                                                    new Engine(stochProcess));
+                ext::shared_ptr<PricingEngine> engine =
+                    MakeFdBlackScholesVanillaEngine(stochProcess)
+                    .withCashDividendModel(model);
+
                 DividendVanillaOption option(payoff, exercise,
                                              dividendDates, dividends);
                 option.setPricingEngine(engine);
@@ -742,7 +743,6 @@ namespace {
                         Real value = option.NPV();
                         calculated["delta"]  = option.delta();
                         calculated["gamma"]  = option.gamma();
-                        // calculated["theta"]  = option.theta();
 
                         if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
@@ -809,8 +809,8 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         Date exDate = today + lengths[i]*Years;
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        testFdGreeks<FDDividendEuropeanEngineMerton73<CrankNicolson> >(today,exercise);
-        testFdGreeks<FdBlackScholesVanillaEngine>(today,exercise);
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
     }
 }
 
@@ -826,19 +826,18 @@ void DividendOptionTest::testFdAmericanGreeks() {
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         Date exDate = today + lengths[i]*Years;
-        ext::shared_ptr<Exercise> exercise(
-                                          new AmericanExercise(today,exDate));
-        testFdGreeks<FDDividendAmericanEngineMerton73<CrankNicolson> >(today,exercise);
-        testFdGreeks<FdBlackScholesVanillaEngine>(today,exercise);
+        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
+        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
     }
 }
 
 
 namespace {
 
-    template <class Engine>
     void testFdDegenerate(const Date& today,
-                          const ext::shared_ptr<Exercise>& exercise) {
+                          const ext::shared_ptr<Exercise>& exercise,
+                          FdBlackScholesVanillaEngine::CashDividendModel model) {
 
         DayCounter dc = Actual360();
         ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
@@ -850,11 +849,14 @@ namespace {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-        Size timeSteps = 300;
+        Size timeSteps = 100;
         Size gridPoints = 300;
 
-        ext::shared_ptr<PricingEngine> engine(
-                                    new Engine(process,timeSteps,gridPoints));
+        ext::shared_ptr<PricingEngine> engine =
+              MakeFdBlackScholesVanillaEngine(process)
+              .withTGrid(timeSteps)
+              .withXGrid(gridPoints)
+              .withCashDividendModel(model);
 
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                   new PlainVanillaPayoff(Option::Call, 55.0));
@@ -868,10 +870,9 @@ namespace {
                                       dividendDates, dividends);
         option1.setPricingEngine(engine);
 
-        // FLOATING_POINT_EXCEPTION
         Real refValue = option1.NPV();
 
-        for (Size i=0; i<=6; i++) {
+        for (Size i=1; i<=6; i++) {
 
             dividends.push_back(0.0);
             dividendDates.push_back(today+i);
@@ -905,7 +906,8 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
 
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-    testFdDegenerate<FDDividendEuropeanEngineMerton73<CrankNicolson> >(today,exercise);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
 void DividendOptionTest::testFdAmericanDegenerate() {
@@ -921,7 +923,113 @@ void DividendOptionTest::testFdAmericanDegenerate() {
 
     ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
 
-    testFdDegenerate<FDDividendAmericanEngineMerton73<CrankNicolson> >(today,exercise);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
+}
+
+
+namespace {
+
+    void testFdDividendAtTZero(const Date& today,
+                               const ext::shared_ptr<Exercise>& exercise,
+                               FdBlackScholesVanillaEngine::CashDividendModel model) {
+
+        DayCounter dc = Actual360();
+        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(54.625));
+        Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
+        Handle<BlackVolTermStructure> volTS(flatVol(0.282922, dc));
+
+        ext::shared_ptr<BlackScholesMertonProcess> process(
+                            new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                          rTS, rTS, volTS));
+
+        Size timeSteps = 50;
+        Size gridPoints = 400;
+
+        ext::shared_ptr<PricingEngine> engine =
+              MakeFdBlackScholesVanillaEngine(process)
+              .withTGrid(timeSteps)
+              .withXGrid(gridPoints)
+              .withCashDividendModel(model);
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+                                  new PlainVanillaPayoff(Option::Call, 55.0));
+
+        // today's dividend must by taken into account
+        std::vector<Rate> dividends(1, 1.0);
+        std::vector<Date> dividendDates(1, today);
+
+        DividendVanillaOption option(payoff, exercise,
+                                     dividendDates, dividends);
+        option.setPricingEngine(engine);
+        Real calculated = option.NPV();
+
+        switch(model) {
+          case FdBlackScholesVanillaEngine::Spot:
+            BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
+            break;
+          case FdBlackScholesVanillaEngine::Escrowed:
+            BOOST_CHECK_NO_THROW(option.theta());
+            break;
+          default:
+            QL_FAIL("unknown dividend model type");
+        }
+
+        ext::shared_ptr<Exercise> europeanExercise =
+            ext::make_shared<EuropeanExercise>(exercise->lastDate());
+        DividendVanillaOption europeanOption(
+            payoff, europeanExercise, dividendDates, dividends);
+
+        europeanOption.setPricingEngine(
+            ext::make_shared<AnalyticDividendEuropeanEngine>(process));
+
+        Real expected = europeanOption.NPV();
+
+        const Real tol = 1e-4;
+
+        if (std::fabs(calculated-expected) > tol) {
+            BOOST_ERROR("Can not reproduce reference values "
+                        "from analytic dividend engine :\n"
+                       << "    calculated: " << calculated << "\n"
+                       << "    expected  : " << expected << "\n"
+                       << "    diff:       " << tol);
+        }
+    }
+}
+
+
+void DividendOptionTest::testFdEuropeanWithDividendToday() {
+
+    BOOST_TEST_MESSAGE(
+         "Testing finite-differences dividend European option with dividend on today's date...");
+
+    SavedSettings backup;
+
+    Date today = Date(27,February,2005);
+    Settings::instance().evaluationDate() = today;
+    Date exDate(13,April,2005);
+
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
+}
+
+void DividendOptionTest::testFdAmericanWithDividendToday() {
+
+    BOOST_TEST_MESSAGE(
+         "Testing finite-differences dividend American option with dividend on today's date...");
+
+    SavedSettings backup;
+
+    Date today = Date(27,February,2005);
+    Settings::instance().evaluationDate() = today;
+    Date exDate(13,April,2005);
+
+    ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
+
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
+    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
 
@@ -1001,23 +1109,6 @@ void DividendOptionTest::testEscrowedDividendModel() {
                    << "\n    difference: " << std::fabs(pdeNPV - analyticNPV)
                    << "\n    tolerance:  " << tol);
     }
-
-    option.setPricingEngine(
-        ext::make_shared<FDDividendEuropeanEngineMerton73<> >(
-            process, 50, 200));
-
-    const Real deprecatedPDENPV = option.NPV();
-
-    if (std::fabs(deprecatedPDENPV - analyticNPV) > tol) {
-        BOOST_FAIL("Failed to reproduce European option values "
-                "with the escrowed dividend model and the "
-                "FDDividendEuropeanEngineMerton73 engine"
-                   << "\n    calculated: " << pdeNPV
-                   << "\n    expected:   " << analyticNPV
-                   << "\n    difference: "
-                   << std::fabs(deprecatedPDENPV - analyticNPV)
-                   << "\n    tolerance:  " << tol);
-    }
 }
 
 test_suite* DividendOptionTest::suite() {
@@ -1029,18 +1120,17 @@ test_suite* DividendOptionTest::suite() {
     // Doesn't quite work.  Need to use discounted values
     //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                               &DividendOptionTest::testFdEuropeanDegenerate));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                               &DividendOptionTest::testFdAmericanDegenerate));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &DividendOptionTest::testFdEuropeanWithDividendToday));
+    suite->add(QUANTLIB_TEST_CASE(
+                              &DividendOptionTest::testFdAmericanWithDividendToday));
     suite->add(QUANTLIB_TEST_CASE(
                  &DividendOptionTest::testEscrowedDividendModel));
 
