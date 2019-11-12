@@ -21,6 +21,7 @@
 
 #include "bonds.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
@@ -923,12 +924,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond1.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice1 = 99.874645;
-    #else
-    Real cachedPrice1 = 99.874646;
-    #endif
-
+    Real cachedPrice1;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice1 = 99.874645;
+    else
+        cachedPrice1 = 99.874646;
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -955,11 +955,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond2.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice2 = 97.955904;
-    #else
-    Real cachedPrice2 = 97.955904;
-    #endif
+    Real cachedPrice2;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice2 = 97.955904;
+    else
+        cachedPrice2 = 97.955904;
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -990,11 +990,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond3.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice3 = 98.495458;
-    #else
-    Real cachedPrice3 = 98.495459;
-    #endif
+    Real cachedPrice3;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice3 = 98.495458;
+    else
+        cachedPrice3 = 98.495459;
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {
@@ -1017,11 +1017,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond4.cashflows(), pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-        Real cachedPrice4 = 98.892346;
-    #else
-        Real cachedPrice4 = 98.892055;
-    #endif
+    Real cachedPrice4;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice4 = 98.892346;
+    else
+        cachedPrice4 = 98.892055;
 
     price = bond4.cleanPrice();
     if (std::fabs(price - cachedPrice4) > tolerance) {

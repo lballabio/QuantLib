@@ -600,15 +600,18 @@ void CapFloorTest::testCachedValue() {
                                                           0.07,0.20);
     ext::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
                                                             0.03,0.20);
-#ifndef QL_USE_INDEXED_COUPON
-    // par coupon price
-    Real cachedCapNPV   = 6.87570026732,
-         cachedFloorNPV = 2.65812927959;
-#else
-    // index fixing price
-    Real cachedCapNPV   = 6.87630307745,
-         cachedFloorNPV = 2.65796764715;
-#endif
+
+    Real cachedCapNPV, cachedFloorNPV ;
+    if (!IborCoupon::usingAtParCoupons()) {
+        // index fixing price
+        cachedCapNPV   = 6.87630307745,
+        cachedFloorNPV = 2.65796764715;
+    } else {
+        // par coupon price
+        cachedCapNPV   = 6.87570026732;
+        cachedFloorNPV = 2.65812927959;
+    }
+
     // test Black cap price against cached value
     if (std::fabs(cap->NPV()-cachedCapNPV) > 1.0e-11)
         BOOST_ERROR(
@@ -647,15 +650,15 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     Real calculatedCapletsNPV = 0.0,
          calculatedFloorletsNPV = 0.0;
 
-#ifndef QL_USE_INDEXED_COUPON
-    // par coupon price
-    Real cachedCapNPV   = 6.87570026732,
-         cachedFloorNPV = 2.65812927959;
-#else
-    // index fixing price
-    Real cachedCapNPV   = 6.87630307745,
-         cachedFloorNPV = 2.65796764715;
-#endif
+    Real cachedCapNPV, cachedFloorNPV;
+    if (IborCoupon::usingAtParCoupons()) {
+        cachedCapNPV = 6.87570026732;
+        cachedFloorNPV = 2.65812927959;
+    } else {
+        cachedCapNPV = 6.87630307745;
+        cachedFloorNPV = 2.65796764715;
+    }
+
     // test Black floor price against cached value
     std::vector<Real> capletPrices;
     std::vector<Real> floorletPrices;

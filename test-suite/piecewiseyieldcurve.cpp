@@ -19,6 +19,7 @@
 
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
@@ -1171,11 +1172,11 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
 
-    #if !defined(QL_USE_INDEXED_COUPON)
-    // This regression test didn't work with indexed coupons anyway.
-    suite->add(QUANTLIB_TEST_CASE(
-                             &PiecewiseYieldCurveTest::testBadPreviousCurve));
-    #endif
+    if (IborCoupon::usingAtParCoupons()) {
+        // This regression test didn't work with indexed coupons anyway.
+        suite->add(QUANTLIB_TEST_CASE(
+               &PiecewiseYieldCurveTest::testBadPreviousCurve));
+    }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
 
