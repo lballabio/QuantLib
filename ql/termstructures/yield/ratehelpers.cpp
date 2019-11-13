@@ -380,7 +380,7 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
@@ -408,7 +408,7 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         QL_REQUIRE(monthsToEnd>monthsToStart,
@@ -431,7 +431,7 @@ namespace QuantLib {
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
@@ -450,7 +450,7 @@ namespace QuantLib {
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(monthsToStart*Months),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
@@ -472,7 +472,7 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // no way to take fixing into account,
@@ -496,7 +496,7 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // no way to take fixing into account,
@@ -515,7 +515,7 @@ namespace QuantLib {
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account
@@ -532,7 +532,7 @@ namespace QuantLib {
                                  const ext::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
-                                 const bool useIndexedCoupon)
+                                 bool useIndexedCoupon)
     : RelativeDateRateHelper(rate), periodToStart_(periodToStart),
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // take fixing into account

@@ -159,7 +159,7 @@ namespace QuantLib {
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
                       Natural monthsToEnd,
@@ -170,19 +170,19 @@ namespace QuantLib {
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         FraRateHelper(const Handle<Quote>& rate,
                       Natural monthsToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         FraRateHelper(const Handle<Quote>& rate,
                       Period periodToStart,
                       Natural lengthInMonths,
@@ -193,7 +193,7 @@ namespace QuantLib {
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Period periodToStart,
                       Natural lengthInMonths,
@@ -204,19 +204,19 @@ namespace QuantLib {
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         FraRateHelper(const Handle<Quote>& rate,
                       Period periodToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Period periodToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
-                      const bool useIndexedCoupon = true);
+                      bool useIndexedCoupon = true);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -233,7 +233,7 @@ namespace QuantLib {
         Pillar::Choice pillarChoice_;
         ext::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
-        const bool useIndexedCoupon_;
+        bool useIndexedCoupon_;
         Real spanningTime_;
     };
 
