@@ -432,6 +432,12 @@ namespace {
                                      interpolator));
         curveHandle.linkTo(vars.termStructure);
 
+#ifdef QL_USE_INDEXED_COUPON
+        bool useIndexedFra = false;
+#else
+        bool useIndexedFra = true;
+#endif
+
         ext::shared_ptr<IborIndex> euribor3m(new Euribor3M(curveHandle));
         for (Size i=0; i<vars.fras; i++) {
             Date start =
@@ -447,7 +453,8 @@ namespace {
 
             ForwardRateAgreement fra(start, end, Position::Long,
                                      fraData[i].rate/100, 100.0,
-                                     euribor3m, curveHandle);
+                                     euribor3m, curveHandle,
+                                     useIndexedFra);
             Rate expectedRate = fraData[i].rate/100,
                  estimatedRate = fra.forwardRate();
             if (std::fabs(expectedRate-estimatedRate) > tolerance) {
