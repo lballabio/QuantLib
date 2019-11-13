@@ -259,6 +259,13 @@ namespace {
                                    fixedLegDayCounter, euribor6m));
             }
 
+
+#ifdef QL_USE_INDEXED_COUPON
+            bool useIndexedFra = false;
+#else
+            bool useIndexedFra = true;
+#endif
+
             ext::shared_ptr<IborIndex> euribor3m(new Euribor3M());
             for (Size i=0; i<fras; i++) {
                 Handle<Quote> r(fraRates[i]);
@@ -271,12 +278,7 @@ namespace {
                                   euribor3m->dayCounter(),
                                   Pillar::LastRelevantDate,
                                   Date(),
-#ifdef QL_USE_INDEXED_COUPON
-                                  false
-#else
-                                  true
-#endif
-));
+                                  useIndexedFra));
             }
             Date immDate = Date();
             for (Size i = 0; i<immFuts; i++) {

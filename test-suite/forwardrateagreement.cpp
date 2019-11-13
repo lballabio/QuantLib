@@ -48,35 +48,26 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
         quotes.push_back(ext::make_shared<SimpleQuote>());
         quotes.push_back(ext::make_shared<SimpleQuote>());
 
+#ifdef QL_USE_INDEXED_COUPON
+        bool useIndexedFra = false;
+#else
+        bool useIndexedFra = true;
+#endif
+
         // set up the curve (this bit is a very rough sketch - i'm actually using swaps !)
         std::vector<ext::shared_ptr<RateHelper> > helpers;
         helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[0]),
                                                           Period(1, Years), index,
                                                           Pillar::LastRelevantDate, Date(),
-#ifdef QL_USE_INDEXED_COUPON
-                                                          false
-#else
-                                                          true
-#endif
-));
+                                                          useIndexedFra));
         helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]),
                                                           Period(2, Years), index,
                                                           Pillar::LastRelevantDate, Date(),
-#ifdef QL_USE_INDEXED_COUPON
-                                                          false
-#else
-                                                          true
-#endif
-));
+                                                          useIndexedFra));
         helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]),
                                                           Period(3, Years), index,
                                                           Pillar::LastRelevantDate, Date(),
-#ifdef QL_USE_INDEXED_COUPON
-                                                          false
-#else
-                                                          true
-#endif
-));
+                                                          useIndexedFra));
         ext::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve =
             ext::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(
                 today, helpers, index->dayCounter());
@@ -91,12 +82,7 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
                                  1,
                                  index,
                                  curveHandle,
-#ifdef QL_USE_INDEXED_COUPON
-                                 false
-#else
-                                 true
-#endif
-);
+                                 useIndexedFra);
 
         // finally put values in the quotes
         quotes[0]->setValue(0.01);
