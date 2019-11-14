@@ -30,7 +30,7 @@ namespace QuantLib {
     BondHelper::BondHelper(const Handle<Quote>& price,
                            const ext::shared_ptr<Bond>& bond,
                            const bool useCleanPrice)
-    : RateHelper(price), bond_(ext::make_shared<Bond>(*bond)) {
+    : RateHelper(price), bond_(bond) {
 
         // the bond's last cashflow date, which can be later than
         // bond's maturity date because of adjustment
