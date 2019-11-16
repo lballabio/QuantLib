@@ -37,5 +37,5 @@ def updateFileLists(directory, lists):
     outputFile.close()
 
 updateFileLists("ql", [("QuantLib_SRC", "*.cpp", []),
-                                 ("QuantLib_HDR", "*.hpp", ["quantlib.hpp", "all.hpp", "config.hpp"])])
+                       ("QuantLib_HDR", "*.hpp", ["quantlib.hpp", "all.hpp", "config.hpp"])])
 updateFileLists("test-suite", [("QuantLib-Test_SRC", "*.cpp", ["quantlibbenchmark.cpp"])])
