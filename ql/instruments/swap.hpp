@@ -102,7 +102,7 @@ namespace QuantLib {
         }
         bool payer(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
-            return payer_[j];
+            return payer_[j] < 0.0;
         }
         //@}
       protected:
