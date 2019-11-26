@@ -515,11 +515,9 @@ void SwingOptionTest::testKlugeChFVanillaPricing() {
 
     shape->push_back(Shape::value_type(t, ps));
 
-    const Real expected = RichardsonExtrapolation(
+    const Real expected =
+        RichardsonExtrapolation(
             SwingPdePricing(klugeProcess, option, shape), 4.0)(2.0, 1.5);
-
-    // calculate distribution moments
-    const Real f_t = shape->back().second;
 
     const Real stdDev = std::sqrt((((2 - 2*std::exp(-2*beta*t))*lambda)
             /(beta*eta*eta) + ((1 - std::exp(-2*alpha*t))*sig*sig)/alpha)/2.);
