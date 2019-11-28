@@ -28,8 +28,6 @@
 #include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
 #include <ql/functional.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
     ExponentialJump1dMesher::ExponentialJump1dMesher(
           Size steps, Real beta, Real jumpIntensity, Real eta, Real eps)
