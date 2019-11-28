@@ -2211,21 +2211,26 @@ void HestonModelTest::testAndersenPiterbargControlVariateIntegrand() {
 
     const Date settlementDate(17, April, 2017);
     Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate = settlementDate + Period(2, Years);
 
     const DayCounter dayCounter = Actual365Fixed();
-    const Handle<YieldTermStructure> rTS(flatRate(0.075, dayCounter));
-    const Handle<YieldTermStructure> qTS(flatRate(0.05, dayCounter));
+    const Rate r = 0.075;
+    const Rate q = 0.05;
+    const Handle<YieldTermStructure> rTS(flatRate(r, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(q, dayCounter));
+
+    const Time maturity = dayCounter.yearFraction(settlementDate, maturityDate);
+    const DiscountFactor df = rTS->discount(maturity);
 
     const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    const Real fwd = s0->value()*qTS->discount(maturity)/df;
 
-    const Time maturity = 2.0;
-
-    const Real sx = std::log(200.0);
-    const Real dd = std::log(s0->value()
-        *qTS->discount(maturity)/rTS->discount(maturity));
+    const Real strike = 150;
+    const Real sx = std::log(strike);
+    const Real dd = std::log(s0->value()*qTS->discount(maturity)/df);
 
     const Real v0    =  0.08;
-    const Real rho   =  -0.80;
+    const Real rho   =  -0.8;
     const Real sigma =  0.5;
     const Real kappa =  4.0;
     const Real theta =  0.05;
@@ -2244,17 +2249,65 @@ void HestonModelTest::testAndersenPiterbargControlVariateIntegrand() {
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::gaussLaguerre()));
 
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        ext::make_shared<EuropeanExercise>(maturityDate));
+    option.setPricingEngine(engine);
+
+    const Real refNPV = option.NPV();
+
+    const Volatility implStdDev = blackFormulaImpliedStdDev(
+            Option::Call, strike, fwd, refNPV, df);
+
+    const Real var = cosEngine->var(maturity);
+    const Real stdDev = std::sqrt(var);
+
+    const Real d = (std::log(s0->value()/strike)
+        + (r-q)*maturity+ 0.5*var)/stdDev;
+
+    const Real skew = cosEngine->skew(maturity);
+    const Real kurt = cosEngine->kurtosis(maturity);
+
+    const NormalDistribution n;
+
+    const Real q3 = 1/6.*s0->value()*stdDev*(2*stdDev - d)*n(d);
+    const Real q4 = 1/24.*s0->value()*stdDev*(d*d - 3*d*stdDev - 1)*n(d);
+    const Real q5 = 1/72.*s0->value()*stdDev*(
+        d*d*d*d - 5*d*d*d*stdDev - 6*d*d + 15*d*stdDev + 3)*n(d);
+
+    const Real bsNPV = blackFormula(Option::Call, strike, fwd, stdDev, df);
+
+    // different variance values for the control variate
     const Real variances[] = {
         v0*maturity,
         ((1-std::exp(-kappa*maturity))*(v0-theta)/(kappa*maturity) + theta)
             *maturity,
-        cosEngine->c2(maturity)
+        // second moment as control variate
+        var,
+        // third and fourth moment pricing based on
+        // Corrado C. and T. Su, (1996-b),
+        // “Skewness and Kurtosis in S&P 500 IndexReturns Implied by Option Prices”,
+        // Journal of Financial Research 19 (2), 175-192.
+        square<Real>()(blackFormulaImpliedStdDev(
+            Option::Call, strike, fwd, bsNPV + skew*q3, df)),
+        square<Real>()(blackFormulaImpliedStdDev(
+            Option::Call, strike, fwd, bsNPV + skew*q3 + kurt*q4, df)),
+        // Moment matching based on
+        // Rubinstein M., (1998), “Edgeworth Binomial Trees”,
+        // Journal of Derivatives 5 (3), 20-27.
+        square<Real>()(blackFormulaImpliedStdDev(
+            Option::Call, strike, fwd,
+            bsNPV + skew*q3 + kurt*q4 + skew*skew*q5, df)),
+        // implied vol as control variate
+        square<Real>()(implStdDev),
+        // remaining function becomes zero for u -> 0
+        -8.0*std::log(engine->chF(std::complex<Real>(0, -0.5), maturity).real())
     };
 
     for (Size i=0; i < LENGTH(variances); ++i) {
         const Real sigmaBS = std::sqrt(variances[i]/maturity);
 
-        for (Real u =0.001; u < 10; u*=1.05) {
+        for (Real u =0.001; u < 15; u*=1.05) {
             const std::complex<Real> z(u, -0.5);
 
             const std::complex<Real> phiBS

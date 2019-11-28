@@ -69,6 +69,11 @@ namespace QuantLib {
         Real c3(Time t) const;
         Real c4(Time t) const;
 
+        Real mu(Time t) const;
+        Real var(Time t) const;
+        Real skew(Time t) const;
+        Real kurtosis(Time t) const;
+
       private:
         Real muT(Time t) const;
 
