@@ -1,0 +1,17 @@
+image: Visual Studio 2019
+
+platform: x64
+configuration: Release
+
+version: ci.{build}
+
+build:
+  parallel: true
+  project: QuantLib.sln
+  verbosity: normal
+
+before_build:
+  - COPY .appveyor\Directory.Build.props .
+
+test_script:
+  - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes -- --faster

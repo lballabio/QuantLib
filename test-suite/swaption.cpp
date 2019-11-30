@@ -23,6 +23,7 @@
 
 #include "swaption.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -401,11 +402,12 @@ void SwaptionTest::testCachedValue() {
 
     ext::shared_ptr<Swaption> swaption =
         vars.makeSwaption(swap, exerciseDate, 0.20);
-    #ifndef QL_USE_INDEXED_COUPON
-    Real cachedNPV = 0.036418158579;
-    #else
-    Real cachedNPV = 0.036421429684;
-    #endif
+
+    Real cachedNPV;
+    if (IborCoupon::usingAtParCoupons())
+        cachedNPV = 0.036418158579;
+    else
+        cachedNPV = 0.036421429684;
 
     // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)
