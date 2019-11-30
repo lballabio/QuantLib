@@ -462,6 +462,9 @@
     <ClCompile Include="fdsabr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fittedbonddiscountcurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp">
@@ -921,6 +924,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fdsabr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fittedbonddiscountcurve.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

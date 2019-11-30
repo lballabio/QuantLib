@@ -30,18 +30,8 @@
 namespace QuantLib {
 
     //! Finite-differences pricing engine for dividend European options
-    /*! \deprecated Use FDDividendEuropeanEngineMerton73 instead if you
-                    want to use the Merton 73 escowed dividend model;
-                    use FdBlackScholesVanillaEngine otherwise.
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
                     Deprecated in version 1.17.
-
-        \ingroup vanillaengines
-
-        \test
-        - the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-        - the invariance of the results upon addition of null
-          dividends is tested.
     */
     template <template <class> class Scheme = CrankNicolson>
     class QL_DEPRECATED FDDividendEuropeanEngine
@@ -59,9 +49,11 @@ namespace QuantLib {
 
 
     //! Finite-differences pricing engine for dividend European options
-    /*! This engine uses the Merton 73 escowed dividend model. */
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEuropeanEngineMerton73
+    class QL_DEPRECATED FDDividendEuropeanEngineMerton73
         : public FDEngineAdapter<FDDividendEngineMerton73<Scheme>,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDDividendEngineMerton73<Scheme>,

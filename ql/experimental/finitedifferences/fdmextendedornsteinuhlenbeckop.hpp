@@ -74,11 +74,5 @@ namespace QuantLib {
 
     };
 
-    /*! \deprecated Renamed to FdmExtendedOrnsteinUhlenbeckOp.
-                    Deprecated in version 1.17.
-    */
-    QL_DEPRECATED
-    typedef FdmExtendedOrnsteinUhlenbeckOp FdmExtendedOrnsteinUhlenbackOp;
-
 }
 #endif

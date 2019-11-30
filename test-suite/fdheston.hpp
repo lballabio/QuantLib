@@ -38,7 +38,7 @@ public:
     static void testFdmHestonConvergence();
     static void testFdmHestonBlackScholes();
     static void testFdmHestonIntradayPricing();
-    static void testMethodOfLines();
+    static void testMethodOfLinesAndCN();
     static void testSpuriousOscillations();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
