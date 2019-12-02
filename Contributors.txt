@@ -118,8 +118,10 @@ Tomoya Kawanishi
 Gary Kennedy
 Chris Kenyon
 Oleksandr Khomenko
+Joel King
 Matt Knox
 Andrew Kolesnikov
+Ralf Konrad
 Silakhdar Krikeb
 Nathan Kruck
 Yan Kuang
@@ -207,6 +209,7 @@ Eugene Shevkoplyas
 Enrico Sirola
 Leon Sit
 Wojciech Slusarski
+Andrew Smith
 Dale Smith
 Tim Smith
 Maxim Sokolov
@@ -222,6 +225,7 @@ Eisuke Tani
 Marco Tarenghi
 Ryan Taylor
 Yue Tian
+Steven Van Haren
 Jayanth R. Varma
 François du Vignaud
 Joseph Wang
