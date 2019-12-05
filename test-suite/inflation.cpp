@@ -592,7 +592,7 @@ void InflationTest::testZeroTermStructure() {
     // Perform checks on the seasonality for this interpolated index
     checkSeasonality(hz, iiyes);
 
-    // remove circular refernce
+    // remove circular reference
     hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
@@ -949,7 +949,7 @@ void InflationTest::testYYTermStructure() {
                             <<", legs "<< yyS3.legNPV(0) << " and " << yyS3.legNPV(1)
                             );
     }
-    // remove circular refernce
+    // remove circular reference
     hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 

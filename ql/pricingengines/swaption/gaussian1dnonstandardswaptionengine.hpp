@@ -39,7 +39,7 @@ namespace QuantLib {
        exercise into right.
 
        All float coupons with start date greater or equal to the
-       respective option expiry are consideres to be part of the
+       respective option expiry are considered to be part of the
        exercise into right.
 
        For redemption flows an associated start date is considered

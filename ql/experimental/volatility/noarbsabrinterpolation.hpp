@@ -43,7 +43,7 @@ struct NoArbSabrSpecs {
                        std::vector<bool> &paramIsFixed, const Real &forward,
                        const Real expiryTime, const std::vector<Real> &addParams) {
         SABRSpecs().defaultValues(params, paramIsFixed, forward, expiryTime, addParams);
-        // check if alpha / beta is admissable, otherwise adjust
+        // check if alpha / beta is admissible, otherwise adjust
         // if possible (i.e. not fixed, otherwise an exception will
         // be thrown from the model constructor anyway)
         Real sigmaI = params[0] * std::pow(forward, params[1] - 1.0);
@@ -138,7 +138,7 @@ struct NoArbSabrSpecs {
                     detail::NoArbSabrModel::beta_min) *
                        (std::atan(x[1]) + M_PI / 2.0) / M_PI;
         // we compute alpha from sigmaI using beta
-        // if alpha is fixed we have to check if beta is admissable
+        // if alpha is fixed we have to check if beta is admissible
         // and adjust if need be
         if (paramIsFixed[0]) {
             y[0] = params[0];

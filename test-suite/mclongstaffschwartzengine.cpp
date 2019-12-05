@@ -106,7 +106,7 @@ namespace {
             ext::shared_ptr<GeneralizedBlackScholesProcess> process =
                 ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                     processArray->process(0));
-            QL_REQUIRE(process, "generalized Black-Scholes proces required");
+            QL_REQUIRE(process, "generalized Black-Scholes process required");
 
             ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
                           new AmericanMaxPathPricer(this->arguments_.payoff));

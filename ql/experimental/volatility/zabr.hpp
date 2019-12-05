@@ -71,7 +71,7 @@ class ZabrModel {
   private:
     const Real expiryTime_, forward_;
     const Real alpha_, beta_, nu_, rho_,
-        gamma_; // nu_ here is a tranformed version of the input nu !
+        gamma_; // nu_ here is a transformed version of the input nu !
 
     Real x(const Real strike) const;
     Disposable<std::vector<Real> > x(const std::vector<Real> &strikes) const;

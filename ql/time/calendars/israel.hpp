@@ -39,7 +39,7 @@ namespace QuantLib {
         <li>Friday</li>
         <li>Saturday</li>
         </ul>
-        Other holidays for wich no rule is given
+        Other holidays for which no rule is given
         (data available for 2013-2044 only:)
         <ul>
         <li>Purim, Adar 14th (between Feb 24th & Mar 26th)</li>

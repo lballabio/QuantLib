@@ -49,7 +49,7 @@ namespace QuantLib {
             QL_REQUIRE(!constraint.empty(), "empty constraint given");
         }
 
-        /*! \warning it does not reset the current minumum to any initial value
+        /*! \warning it does not reset the current minimum to any initial value
         */
         void reset();
 

@@ -31,7 +31,7 @@ namespace QuantLib {
     //! %Thailand calendars
     /*! Holidays for the Thailand exchange
         Holidays observed by financial institutions (not to be confused with bank holidays in the United Kingdom) are regulated by the Bank of Thailand.
-        If a holiday fall on a weekend the government will annouce a replacement day (usally the following monday).
+        If a holiday fall on a weekend the government will annouce a replacement day (usually the following monday).
 
         Sometimes the government add one or two extra holidays in a year.
 

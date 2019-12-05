@@ -203,7 +203,7 @@ int main(int, char* []) {
             .withType(swapType));
 
         cout << "-- Correction in the contract fix rate in bp --" << endl;
-        /* The paper plots correction to be substracted, here is printed
+        /* The paper plots correction to be subtracted, here is printed
            with its sign 
         */
         for(Size i=0; i<riskySwaps.size(); i++) {

@@ -374,7 +374,7 @@ void CPISwapTest::consistency() {
     QL_REQUIRE(diff<max_diff,
                "failed stored consistency value test, ratio = " << diff);
 
-    // remove circular refernce
+    // remove circular reference
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
@@ -429,7 +429,7 @@ void CPISwapTest::zciisconsistency() {
     for (Size i=0; i<2; i++) {
         QL_REQUIRE(fabs(cS.legNPV(i)-zciis.legNPV(i))<1e-3,"zciis leg does not equal CPISwap leg");
     }
-    // remove circular refernce
+    // remove circular reference
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
@@ -521,7 +521,7 @@ void CPISwapTest::cpibondconsistency() {
     cpiB.setPricingEngine(dbe);
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");
-    // remove circular refernce
+    // remove circular reference
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 

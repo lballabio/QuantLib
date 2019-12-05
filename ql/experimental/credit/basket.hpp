@@ -297,7 +297,7 @@ namespace QuantLib {
         mutable Real trancheNotional_;
         /* Caches. Most of the times one wants statistics on the distribution of
         futures losses at arbitrary dates but some problems (e.g. derivatives 
-        pricing) work with todays (evalDate) magnitudes which do not require a 
+        pricing) work with today's (evalDate) magnitudes which do not require a 
         loss model and would be too expensive to recompute on every call.
         */
         mutable Real evalDateSettledLoss_,

@@ -203,7 +203,7 @@ namespace QuantLib {
         averarage recovery with a time dependence: 
         $\hat{R}(t) = \frac{\sum_i R_i N_i P_i(t)}{\sum_i N_i P_i(t)}$
         But the date dependence increases significantly the calculations cost.
-        Notice that this problem dissapears if the recoveries are all equal.
+        Notice that this problem disappears if the recoveries are all equal.
         */
         
         Real beta_;

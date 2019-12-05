@@ -724,13 +724,13 @@ void BondTest::testCached() {
         BondFunctions::cleanPrice(bond3, marketYield3, bondDayCount3, Compounded, freq),
         cachedPrice3,
         tolerance,
-        "Failed to reproduce the cached price for bond 3 with schedule and the earlierst possible settlment date"
+        "Failed to reproduce the cached price for bond 3 with schedule and the earlierst possible settlement date"
     );
     checkValue(
         BondFunctions::cleanPrice(bond3NoSchedule, marketYield3, bondDayCount3NoSchedule, Compounded, freq),
         cachedPrice3,
         tolerance,
-        "Failed to reproduce the cached price for bond 3 with no schedule and the earlierst possible settlment date"
+        "Failed to reproduce the cached price for bond 3 with no schedule and the earlierst possible settlement date"
     );
 }
 

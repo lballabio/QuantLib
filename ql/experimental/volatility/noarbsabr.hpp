@@ -38,7 +38,7 @@
     For tau < 0.25 phi is extrapolated flat.
     For rho outside [-0.75, 0.75] phi is extrapolated linearly.
 
-    There are some parameter sets that are admissable, yet do
+    There are some parameter sets that are admissible, yet do
     not allow for the adjustment procedure as suggested in the
     paper to force the model implied forward to the correct
     value. In this case, no adjustment is done, leading to a

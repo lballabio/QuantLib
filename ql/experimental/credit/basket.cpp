@@ -66,7 +66,7 @@ namespace QuantLib {
         // At this point Issuers in the pool might or might not have
         //   probability term structures for the defultKeys(eventType+
         //   currency+seniority) entering in this basket. This is not
-        //   neccessarily a problem.
+        //   necessarily a problem.
         for (Size i = 0; i < notionals_.size(); i++) {
             basketNotional_ += notionals_[i];
             attachmentAmount_ += notionals_[i] * attachmentRatio_;

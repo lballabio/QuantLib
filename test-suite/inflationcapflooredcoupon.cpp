@@ -687,7 +687,7 @@ void InflationCapFlooredCouponTest::testDecomposition() {
                     << "\n" <<
                     "  Diff: " << error );
     }
-    // remove circular refernce
+    // remove circular reference
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
@@ -795,7 +795,7 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
             }
         }
     }
-    // remove circular refernce
+    // remove circular reference
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 

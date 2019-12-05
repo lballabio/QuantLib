@@ -53,7 +53,7 @@ namespace QuantLib {
         different.
 
         This swap can mimic a ZCIIS where [(1+q)^n - 1] is exchanged
-        against (cpi ratio - 1), by using differnt nominals on each
+        against (cpi ratio - 1), by using different nominals on each
         leg and setting subtractInflationNominal to true.  ALSO -
         there must be just one date in each schedule.
 

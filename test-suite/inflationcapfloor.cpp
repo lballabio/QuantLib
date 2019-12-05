@@ -392,7 +392,7 @@ void InflationCapFloorTest::testConsistency() {
         }
     }
     } // pricer loop
-    // remove circular refernce
+    // remove circular reference
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
@@ -472,7 +472,7 @@ void InflationCapFloorTest::testParity() {
             }
         }
     }
-    // remove circular refernce
+    // remove circular reference
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
@@ -547,7 +547,7 @@ void InflationCapFloorTest::testCachedValue() {
                         <<floor->NPV()<<" should be "<<cachedFloorNPVbac<<" bac Black pricer"
                         <<" diff was "<<(fabs(floor->NPV()-cachedFloorNPVbac)));
 
-    // remove circular refernce
+    // remove circular reference
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 

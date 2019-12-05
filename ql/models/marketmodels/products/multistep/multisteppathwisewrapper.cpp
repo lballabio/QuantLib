@@ -63,7 +63,7 @@ namespace QuantLib
         {
             bool done = innerProduct_->nextTimeStep(currentState, numberCashFlowsThisStep,cashFlowsGenerated_);
 
-            // tranform the data
+            // transform the data
             for (Size i=0; i < numberOfProducts_; ++i)
                 for (Size j=0; j< numberCashFlowsThisStep[i]; ++j)
                 {

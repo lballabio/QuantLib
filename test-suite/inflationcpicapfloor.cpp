@@ -388,7 +388,7 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
             << ", does not equal the expected premium, " << expPremium << ".");
     }
 
-    // remove circular refernce
+    // remove circular reference
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
@@ -449,7 +449,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
     QL_REQUIRE(fabs(cached - aCap.NPV())<1e-10,"InterpolatingCPICapFloorEngine does not reproduce cached price: "
                << cached << " vs " << aCap.NPV());
 
-    // remove circular refernce
+    // remove circular reference
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 

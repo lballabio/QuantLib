@@ -91,7 +91,7 @@ namespace QuantLib {
         /* vector of, functions returning reals And taking as argument: 
         1.- a const ref to a function taking vectors 
         2.- a vector, 3. another vector. typedefs eventually...
-         at first sight this might look like mimicking a virtual table, it isnt 
+         at first sight this might look like mimicking a virtual table, it isn't 
          that. The reason is to be able to select the correct integration 
          dimension at run time, this can not be done before because of the 
          template argument restriction to be constant known at compilation.

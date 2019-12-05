@@ -261,7 +261,7 @@ namespace QuantLib {
 
         if(dist.begin()->second >=1.) return dist.begin()->first;
 
-        // deterministic case (e.g. date requested is todays date)
+        // deterministic case (e.g. date requested is today's date)
         if(dist.size() == 1) return dist.begin()->first;
 
         if(percentile == 1.) return dist.rbegin()->second;

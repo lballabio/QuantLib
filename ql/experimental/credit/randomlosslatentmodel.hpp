@@ -197,7 +197,7 @@ namespace QuantLib {
                 // Determine the realized recovery rate:
                 /* For this; 'conditionalRecovery' needs to compute the pdef on 
                 the realized def event date from the simulation. Yet, this might
-                have fallen between todays date and the default TS reference 
+                have fallen between today's date and the default TS reference 
                 date(usually a two day gap) To avoid requesting a negative time
                 probability the date is moved to the TS date 
                 Unless the gap is ridiculous this has no practical effect for 

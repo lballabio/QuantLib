@@ -43,7 +43,7 @@ namespace QuantLib {
          values with act/act convention within a period.
          Note that stored "fixings" are always flat (constant)
          within a period and interpolated as needed.  This
-         is because interpolation adds an addional availability
+         is because interpolation adds an additional availability
          lag (because you always need the next period to
          give the previous period's value)
          and enables storage of the most recent uninterpolated value.

@@ -123,7 +123,7 @@ namespace QuantLib {
             \f[
             \int_0^{\infty} \frac{e^{-ax}sin(bx)}{x} dx = arctg2(b/a)
             \f]
-            The GP complex integration is simplified thanks to the symetry of
+            The GP complex integration is simplified thanks to the symmetry of
             the distribution.
         */
         Probability operator()(const Real x) const;

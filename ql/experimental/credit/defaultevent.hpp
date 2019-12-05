@@ -143,7 +143,7 @@ namespace QuantLib {
 
         /*! matches the event if this event would trigger a contract
             related to the requested event type.  Notice the
-            contractual event types are not neccesarily atomic.
+            contractual event types are not necessarily atomic.
             Notice it does not check seniority or currency only event
             type.  typically used from Issuer
         */
