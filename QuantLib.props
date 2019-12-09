@@ -9,4 +9,5 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '16.0'">v142</PlatformToolset>
   </PropertyGroup>
+  <Import Project=".\User.props" Condition="Exists('.\User.props')"/>
 </Project>
