@@ -17,18 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/time/calendars/italy.hpp>
+#include <ql/time/calendars/austria.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    Italy::Italy(Italy::Market market) {
+    Austria::Austria(Austria::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
         static ext::shared_ptr<Calendar::Impl> settlementImpl(
-                                                   new Italy::SettlementImpl);
+                                                   new Austria::SettlementImpl);
         static ext::shared_ptr<Calendar::Impl> exchangeImpl(
-                                                   new Italy::ExchangeImpl);
+                                                   new Austria::ExchangeImpl);
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
@@ -42,7 +42,7 @@ namespace QuantLib {
     }
 
 
-    bool Italy::SettlementImpl::isBusinessDay(const Date& date) const {
+    bool Austria::SettlementImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
