@@ -54,6 +54,8 @@ class PiecewiseYieldCurveTest {
 
     static void testBadPreviousCurve();
 
+    static void testConstructionWithExplicitBootstrap();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

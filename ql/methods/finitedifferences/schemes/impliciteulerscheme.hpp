@@ -55,7 +55,10 @@ namespace QuantLib {
 
         Size numberOfIterations() const;
       protected:
-        Disposable<Array> apply(const Array& r) const;   
+        friend class CrankNicolsonScheme;
+        void step(array_type& a, Time t, Real theta);
+
+        Disposable<Array> apply(const Array& r, Real theta) const;
           
         Time dt_;
         ext::shared_ptr<Size> iterations_;

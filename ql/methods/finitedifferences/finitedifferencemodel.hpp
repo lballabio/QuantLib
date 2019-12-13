@@ -103,7 +103,11 @@ namespace QuantLib {
                     condition->applyTo(a,from);
             }
             for (Size i=0; i<steps; ++i, t -= dt) {
-                Time now = t, next = t-dt;
+                Time now = t;
+                // make sure last step ends exactly on "to" in order to not
+                // miss a stopping time at "to" due to numerical issues
+                Time next = (i < steps -1)? t-dt : to;
+
                 if (std::fabs(to-next) < std::sqrt(QL_EPSILON)) next = to;
                 bool hit = false;
                 for (Integer j = static_cast<Integer>(stoppingTimes_.size())-1; j >= 0 ; --j) {

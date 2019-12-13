@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    FdmExtendedOrnsteinUhlenbackOp::FdmExtendedOrnsteinUhlenbackOp(
+    FdmExtendedOrnsteinUhlenbeckOp::FdmExtendedOrnsteinUhlenbeckOp(
             const ext::shared_ptr<FdmMesher>& mesher,
             const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
             const ext::shared_ptr<YieldTermStructure>& rTS,
@@ -50,11 +50,11 @@ namespace QuantLib {
       mapX_     (direction, mesher) {
     }
 
-    Size FdmExtendedOrnsteinUhlenbackOp::size() const {
+    Size FdmExtendedOrnsteinUhlenbeckOp::size() const {
         return mesher_->layout()->dim().size();;
     }
 
-    void FdmExtendedOrnsteinUhlenbackOp::setTime(Time t1, Time t2) {
+    void FdmExtendedOrnsteinUhlenbeckOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
 
         const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
@@ -69,18 +69,18 @@ namespace QuantLib {
         mapX_.axpyb(drift, dxMap_, dxxMap_, Array(1, -r));
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::apply(
+    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::apply(
                                                     const Array& r) const {
         return mapX_.apply(r);
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::apply_mixed(
+    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::apply_mixed(
                                                     const Array& r) const {
         Array retVal(r.size(), 0.0);
         return retVal;
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::apply_direction(
+    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::apply_direction(
                                     Size direction, const Array& r) const {
         if (direction == direction_) {
             return mapX_.apply(r);
@@ -91,7 +91,7 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::solve_splitting(
+    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::solve_splitting(
                             Size direction, const Array& r, Real a) const {
         if (direction == direction_) {
             return mapX_.solve_splitting(r, a, 1.0);
@@ -102,14 +102,14 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbackOp::preconditioner(
+    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::preconditioner(
                                             const Array& r, Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
-    FdmExtendedOrnsteinUhlenbackOp::toMatrixDecomp() const {
+    FdmExtendedOrnsteinUhlenbeckOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapX_.toMatrix());
         return retVal;
     }

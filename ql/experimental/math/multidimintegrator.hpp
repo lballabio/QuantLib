@@ -41,11 +41,9 @@ namespace QuantLib {
         explicit MultidimIntegral(
             const std::vector<ext::shared_ptr<Integrator> >& integrators);
 
-        // scalar variant:
-        /*!
-            @param f Integrand function.
-            @param a Lower integration limit domain for each dimension.
-            @param b Upper integration limit domain for each dimension.
+        // scalar variant
+        /*! f is the integrand function; a and b are the lower and
+            upper integration limit domain for each dimension.
         */
         Real operator()(
             const ext::function<Real (const std::vector<Real>&)>& f,

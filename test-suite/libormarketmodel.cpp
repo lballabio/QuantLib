@@ -195,11 +195,11 @@ void LiborMarketModelTest::testCapletPricing() {
     SavedSettings backup;
 
     const Size size = 10;
-    #if defined(QL_USE_INDEXED_COUPON)
-    const Real tolerance = 1e-5;
-    #else
-    const Real tolerance = 1e-12;
-    #endif
+    Real tolerance;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance = 1e-5;
+    else
+        tolerance = 1e-12;
 
     ext::shared_ptr<IborIndex> index = makeIndex();
     ext::shared_ptr<LiborForwardModelProcess> process(
@@ -353,11 +353,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     const Size size  = 10;
     const Size steps = 8*size;
-    #if defined(QL_USE_INDEXED_COUPON)
-    const Real tolerance = 1e-6;
-    #else
-    const Real tolerance = 1e-12;
-    #endif
+
+    Real tolerance;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance = 1e-6;
+    else
+        tolerance = 1e-12;
 
     std::vector<Date> dates;
     std::vector<Rate> rates;

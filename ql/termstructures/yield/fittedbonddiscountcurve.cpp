@@ -200,16 +200,24 @@ namespace QuantLib {
             x = curve_->guessSolution_;
         }
 
-        if(curve_->maxEvaluations_ == 0)
+        if (curve_->maxEvaluations_ == 0)
         {
-            //Don't calculate, simply use given parameters to provide a fitted curve.
-            //This turns the fittedbonddiscountcurve into an evaluator of the parametric
-            //curve, for example allowing to use the parameters for a credit spread curve
-            //calculated with bonds in one currency to be coupled to a discount curve in 
-            //another currency. 
+            // Don't calculate, simply use the given parameters to provide a fitted curve.
+            // This turns the fittedbonddiscountcurve into an evaluator of the parametric
+            // curve, for example allowing to use the parameters for a credit spread curve
+            // calculated with bonds in one currency to be coupled to a discount curve in
+            // another currency.
+
+            QL_REQUIRE(!curve_->guessSolution_.empty(), "no guess provided");
+
+            solution_ = curve_->guessSolution_;
+
+            numberOfIterations_ = 0;
+            costValue_ = costFunction.value(solution_);
+
             return;
         }
-        
+
         //workaround for backwards compatibility
         ext::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
         if(!optimization){

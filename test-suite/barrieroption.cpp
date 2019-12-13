@@ -1204,6 +1204,10 @@ void BarrierOptionTest::testDividendBarrierOption() {
         ext::make_shared<FdBlackScholesBarrierEngine>(
             bsProcess, 100, 100, 0, FdmSchemeDesc::Douglas());
 
+    const ext::shared_ptr<PricingEngine> crankNicolson =
+        ext::make_shared<FdBlackScholesBarrierEngine>(
+            bsProcess, 100, 100, 0, FdmSchemeDesc::CrankNicolson());
+
     const ext::shared_ptr<PricingEngine> craigSnyed =
         ext::make_shared<FdBlackScholesBarrierEngine>(
             bsProcess, 100, 100, 0, FdmSchemeDesc::CraigSneyd());
@@ -1227,7 +1231,8 @@ void BarrierOptionTest::testDividendBarrierOption() {
                     rTS, qTS, s0, v*v, 1.0, v*v, 0.005, 0.0)), 50, 101, 3);
 
     const ext::shared_ptr<PricingEngine> engines[] = {
-        douglas, trPDF2, craigSnyed, hundsdorfer, mol, hestonEngine
+        douglas, crankNicolson,
+        trPDF2, craigSnyed, hundsdorfer, mol, hestonEngine
     };
 
     const ext::shared_ptr<StrikedTypePayoff> payoff =
