@@ -111,3 +111,8 @@ test-suite/.unit_test_profile.txt
 cmake-build-debug
 nbproject
 .cproject
+
+# User customizations
+.dir-locals.el
+Build.props
+Directory.Build.props
