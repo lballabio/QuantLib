@@ -46,7 +46,7 @@ namespace QuantLib {
             issueDate),      
       dayCounter_(accrualDayCounter) {
 
-		schedule.hasTenor() ? frequency_ = schedule.tenor().frequency() : frequency_ = Frequency::NoFrequency;
+		schedule.hasTenor() ? frequency_ = schedule.tenor().frequency() : frequency_ = NoFrequency;
 
         maturityDate_ = schedule.endDate();
 
