@@ -336,16 +336,33 @@ namespace QuantLib {
         const Array &volatility() const { return sigma_.params(); }
 
         void calibrate(
-            const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helper,
+            const std::vector<ext::shared_ptr<CalibrationHelper> > &helpers,
             OptimizationMethod &method, const EndCriteria &endCriteria,
             const Constraint &constraint = Constraint(),
             const std::vector<Real> &weights = std::vector<Real>(),
             const std::vector<bool> &fixParameters = std::vector<bool>()) {
 
-            CalibratedModel::calibrate(helper, method, endCriteria, constraint,
+            CalibratedModel::calibrate(helpers, method, endCriteria, constraint,
                                        weights, fixParameters.size() == 0
                                                     ? FixedFirstVolatility()
                                                     : fixParameters);
+        }
+
+        /*! \deprecated Use the other overload.
+                        Deprecated in version 1.18.
+        */
+        void calibrate(
+            const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helpers,
+            OptimizationMethod &method, const EndCriteria &endCriteria,
+            const Constraint &constraint = Constraint(),
+            const std::vector<Real> &weights = std::vector<Real>(),
+            const std::vector<bool> &fixParameters = std::vector<bool>()) {
+
+            std::vector<ext::shared_ptr<CalibrationHelper> > tmp(helpers.size());
+            for (Size i=0; i<helpers.size(); ++i)
+                tmp[i] = ext::static_pointer_cast<CalibrationHelper>(helpers[i]);
+
+            calibrate(tmp, method, endCriteria, constraint, weights, fixParameters);
         }
 
         void update() {

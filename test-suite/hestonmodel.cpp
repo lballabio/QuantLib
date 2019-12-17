@@ -63,7 +63,7 @@ namespace {
     struct CalibrationMarketData {
         Handle<Quote> s0;
         Handle<YieldTermStructure> riskFreeTS, dividendYield;
-        std::vector<ext::shared_ptr<BlackCalibrationHelper> > options;
+        std::vector<ext::shared_ptr<CalibrationHelper> > options;
     };
 
     CalibrationMarketData getDAXCalibrationMarketData() {
@@ -116,7 +116,7 @@ namespace {
         Real strike[] = { 3400,3600,3800,4000,4200,4400,
                           4500,4600,4800,5000,5200,5400,5600 };
         
-        std::vector<ext::shared_ptr<BlackCalibrationHelper> > options;
+        std::vector<ext::shared_ptr<CalibrationHelper> > options;
         
         for (Size s = 0; s < 13; ++s) {
             for (Size m = 0; m < 8; ++m) {
@@ -130,8 +130,7 @@ namespace {
             }
         }
         
-        CalibrationMarketData marketData
-                                    ={ s0, riskFreeTS, dividendYield, options };
+        CalibrationMarketData marketData = { s0, riskFreeTS, dividendYield, options };
         
         return marketData;
     }
@@ -167,7 +166,7 @@ void HestonModelTest::testBlackCalibration() {
     optionMaturities.push_back(Period(1, Years));
     optionMaturities.push_back(Period(2, Years));
 
-    std::vector<ext::shared_ptr<BlackCalibrationHelper> > options;
+    std::vector<ext::shared_ptr<CalibrationHelper> > options;
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
     Handle<Quote> vol(ext::make_shared<SimpleQuote>(0.1));
     Volatility volatility = vol->value();
@@ -205,7 +204,7 @@ void HestonModelTest::testBlackCalibration() {
 			ext::make_shared<AnalyticHestonEngine>(model, 96));
 
         for (Size i = 0; i < options.size(); ++i)
-            options[i]->setPricingEngine(engine);
+            ext::dynamic_pointer_cast<BlackCalibrationHelper>(options[i])->setPricingEngine(engine);
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
         model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8,
@@ -252,8 +251,7 @@ void HestonModelTest::testDAXCalibration() {
     const Handle<YieldTermStructure> dividendTS = marketData.dividendYield;
     const Handle<Quote> s0 = marketData.s0;
 
-    const std::vector<ext::shared_ptr<BlackCalibrationHelper> > options
-                                                    = marketData.options;
+    const std::vector<ext::shared_ptr<CalibrationHelper> >& options = marketData.options;
 
     const Real v0=0.1;
     const Real kappa=1.0;
@@ -277,7 +275,7 @@ void HestonModelTest::testDAXCalibration() {
     for (Size j=0; j < LENGTH(engines); ++j) {
         model->setParams(params);
         for (Size i = 0; i < options.size(); ++i)
-            options[i]->setPricingEngine(engines[j]);
+            ext::dynamic_pointer_cast<BlackCalibrationHelper>(options[i])->setPricingEngine(engines[j]);
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
         model->calibrate(options, om,
@@ -1169,8 +1167,7 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
     const Handle<YieldTermStructure> dividendTS = marketData.dividendYield;
     const Handle<Quote> s0 = marketData.s0;
 
-    const std::vector<ext::shared_ptr<BlackCalibrationHelper> > options
-                                                    = marketData.options;
+    const std::vector<ext::shared_ptr<CalibrationHelper> >& options = marketData.options;
 
     std::vector<Time> modelTimes;
     modelTimes.push_back(0.25);
@@ -1211,7 +1208,7 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
         const ext::shared_ptr<PricingEngine> engine = engines[j];
 
         for (Size i=0; i < options.size(); ++i)
-            options[i]->setPricingEngine(engine);
+            ext::dynamic_pointer_cast<BlackCalibrationHelper>(options[i])->setPricingEngine(engine);
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
         model->calibrate(options, om,
