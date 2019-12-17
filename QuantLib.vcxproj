@@ -1164,7 +1164,6 @@
     <ClInclude Include="ql\methods\finitedifferences\meshers\uniformgridmesher.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\mixedscheme.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\onefactoroperator.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\operatorfactory.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdm2dblackscholesop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmbatesop.hpp" />
