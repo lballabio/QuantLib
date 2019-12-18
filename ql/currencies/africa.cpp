@@ -39,4 +39,27 @@ namespace QuantLib {
         data_ = zarData;
     }
 
+    // Algerian Dinar
+    /* The ISO three-letter code is DZD; the numeric code is 012.
+       It is divided into 100 centimes.
+    */
+    DZDCurrency::DZDCurrency(){
+        static ext::shared_ptr<Data> dzdData(
+                                new Data("Algerian Dinar", "DZD", 012,
+                                        "DA", "", 100,
+                                        Rounding(), "%3% %1$.2f"));
+        data_ = dzdData;
+    }
+
+    // Angolan Kwanza
+    /* The ISO three-letter code is AOA; the numeric code is 973.
+       It is divided into 100 Centimos.
+    */
+    AOACurrency::AOACurrency(){
+        static ext::shared_ptr<Data> aoaData(
+                                new Data("Angolan Kwanza", "AOA", 973,
+                                        "Kz", "", 100,
+                                        Rounding(), "%3% %1$.2f"));
+    }
+
 }

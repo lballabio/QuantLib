@@ -47,6 +47,28 @@ namespace QuantLib {
         ZARCurrency();
     };
 
+    //! Algerian Dinar
+    /*! The ISO three-letter code is DZD; the numeric code is 012.
+        It is divided into 100 Centimes.
+
+        However, centimes are now obsolete due to their exteremely small value.
+
+        \ingroup currencies
+     */
+     class DZDCurrency : public Currency {
+        public:
+         DZDCurrency();
+     };
+
+     //! Algolan Kwanza
+     /*! The ISO three-letter code is AOA; the numeric code is 973.
+         It is divided into 100 Centimos.
+      */
+      class AOACurrency : public Currency {
+      public:
+          AOACurrency();
+      };
+
 }
 
 #if defined(QL_PATCH_MSVC)
