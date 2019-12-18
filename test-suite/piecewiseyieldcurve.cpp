@@ -579,7 +579,6 @@ namespace {
         vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.today, vars.bmaHelpers,
                                        Actual360(),
-                                       1.0e-12,
                                        interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
@@ -934,8 +933,7 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     vars.termStructure = ext::shared_ptr<YieldTermStructure>(
         new PiecewiseYieldCurve<Discount,LogLinear>(
                                        vars.settlement, vars.instruments,
-                                       Actual360(),
-                                       1.0e-12));
+                                       Actual360()));
 
     RelinkableHandle<YieldTermStructure> curveHandle;
     curveHandle.linkTo(vars.termStructure);
@@ -978,7 +976,6 @@ namespace {
 
         PiecewiseYieldCurve<T,I> curve(vars.settlement, vars.instruments,
                                        Actual360(),
-                                       1.0e-12,
                                        interpolator);
         // necessary to trigger bootstrap
         curve.recalculate();
@@ -1174,6 +1171,7 @@ void PiecewiseYieldCurveTest::testLargeRates() {
 
     Settings::instance().evaluationDate() = today;
 
+    Real accuracy = Null<Real>(); // use the default
     Real minValue = Null<Real>(); // use the default
     Real maxValue = 3.0;          // override
 
@@ -1181,7 +1179,7 @@ void PiecewiseYieldCurveTest::testLargeRates() {
     ext::shared_ptr<YieldTermStructure> curve =
         ext::make_shared<PiecewiseCurve>(
                                   today, helpers, Actual360(), BackwardFlat(),
-                                  PiecewiseCurve::bootstrap_type(minValue, maxValue));
+                                  PiecewiseCurve::bootstrap_type(accuracy, minValue, maxValue));
 
     // force bootstrap and check it worked
     curve->discount(0.01);
