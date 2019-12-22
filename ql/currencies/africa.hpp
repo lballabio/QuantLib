@@ -69,6 +69,57 @@ namespace QuantLib {
           AOACurrency();
       };
 
+
+      //! CFA Franc
+      /*! Note: there's 2 CFA francs, the West african franc and
+          the Central African CFA franc. Benin, Burkina Faso,
+          Guinea-Bissau, Ivory Coast, Mali, Niger, Senegal, and Togo
+          use the west African Version.
+
+          The ISO three-letter code is XOF; the numeric code is 952
+          It is divided into 100 Centimes
+
+          This is the West African Version
+       */
+       class XOFCurrency : public Currency {
+       public:
+           XOFCurrency();
+       };
+
+       //! Botswana Pula
+       /*! The ISO three-letter code is BWP; the numeric code is 072
+           It is divided into 100 Thebe
+        */
+        class BWPCurrency : public Currency {
+        public:
+            BWPCurrency();
+        };
+
+        //! Burundi Franc
+        /*! The ISO three-letter code is BIF; the numeric code is 108
+            It is divided into 100 Centimes
+        */
+        class BIFCurrency : public Currency {
+        public:
+            BIFCurrency();
+        };
+    //! CFA Franc
+    /*! Note: there's 2 CFA francs, the West african franc and
+        the Central African CFA franc. Cameroon, Central African Republic,
+        Chad, Republic of the Congo, Equatorial Guinea and Gabon
+        use the Central African Version.
+
+        The ISO three-letter code is XAF; the numeric code is 950
+        It is divided into 100 Centimes
+
+        This is the Central Arican version
+     */
+     class XAFCurrency : public Currency {
+     public:
+         XAFCurrency();
+     };
+
+
 }
 
 #if defined(QL_PATCH_MSVC)

@@ -62,4 +62,47 @@ namespace QuantLib {
                                         Rounding(), "%3% %1$.2f"));
     }
 
+    // CFA Franc BCEAO
+    /* The ISO three-letter code is XOF; the numeric code is 952.
+       It is divided into 100 centimes.
+    */
+    XOFCurrency::XOFCurrency(){
+        static ext::shared_ptr<Data> xofData(
+                                new Data("CFA Franc BCEAO", "XOF", 952,
+                                        "CFA", "c", 100,
+                                        Rounding(), "%3% %1$.2f"));
+    }
+
+    // Botswana Pula
+    /* This ISO three-letter code is BWP; the numeric code is 072.
+       It is divided into 100 Thebe
+     */
+    BWPCurrency::BWPCurrency(){
+        static ext::shared_ptr<Data> bwpData(
+                                new Data("Botswanan Pula", "BWP", 072,
+                                        "P", "", 100,
+                                        Rounding(), "%3% %1$.2f"));
+    }
+    // Burundi Franc
+    /* This ISO three-letter code is BIF; the numeric code is 108.
+       It is divided into 100 Centimes
+     */
+    BIFCurrency::BIFCurrency(){
+        static ext::shared_ptr<Data> bifData(
+                                new Data("Burundi Franc", "BIF", 108,
+                                        "FBu", "", 100,
+                                        Rounding(), "%3% %1$.2f"));
+    }
+
+    // CFA Franc BEAC
+    /* This ISO three-letter code is XAF; the numeric code is 950.
+       It is divided into 100 Centimes
+     */
+    XAFCurrency::XAFCurrency(){
+        static ext::shared_ptr<Data> xafData(
+                                    new Data("CFA Franc BEAC", "XAF", 950,
+                                            "FCFA", "c", 100,
+                                            Rounding(), "%3% %1$.2f"));
+    }
+
 }
