@@ -441,9 +441,6 @@
     <ClInclude Include="ql\methods\finitedifferences\onefactoroperator.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\operatorfactory.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\operatortraits.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
