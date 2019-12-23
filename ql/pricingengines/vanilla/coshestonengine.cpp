@@ -270,6 +270,19 @@ namespace QuantLib {
            3*kappa_*sigma3*(sigma_*t*(-9*theta_ + v0_) + 10*rho_*(6*theta_
            + v0_)))))/(64.*std::exp(4*kappa_*t)*kappa7);
    }
+
+   Real COSHestonEngine::mu(Time t) const {
+       return c1(t);
+   }
+   Real COSHestonEngine::var(Time t) const {
+       return c2(t);
+   }
+   Real COSHestonEngine::skew(Time t) const {
+       return c3(t)/std::pow(c2(t), 1.5);
+   }
+   Real COSHestonEngine::kurtosis(Time t) const {
+       return c4(t)/square<Real>()(c2(t));
+   }
 }
 
 
