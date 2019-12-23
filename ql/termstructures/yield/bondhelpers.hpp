@@ -83,6 +83,7 @@ namespace QuantLib {
         Bond::Price::Type priceType_;
     };
 
+
     //! Fixed-coupon bond helper for curve bootstrap
     class FixedRateBondHelper : public BondHelper {
       public:
@@ -134,25 +135,6 @@ namespace QuantLib {
         ext::shared_ptr<FixedRateBond> fixedRateBond_;
     };
 
-
-    // inline
-
-    inline ext::shared_ptr<Bond> BondHelper::bond() const {
-        return bond_;
-    }
-
-    inline bool BondHelper::useCleanPrice() const {
-        return priceType_ == Bond::Price::Clean;
-    }
-
-    inline Bond::Price::Type BondHelper::priceType() const {
-        return priceType_;
-    }
-
-    inline ext::shared_ptr<FixedRateBond>
-    FixedRateBondHelper::fixedRateBond() const {
-        return fixedRateBond_;
-    }
 
     //! CPI bond helper for curve bootstrap
     class CPIBondHelper : public BondHelper {
@@ -211,6 +193,26 @@ namespace QuantLib {
       protected:
         ext::shared_ptr<CPIBond> cpiBond_;
     };
+
+
+    // inline
+
+    inline ext::shared_ptr<Bond> BondHelper::bond() const {
+        return bond_;
+    }
+
+    inline bool BondHelper::useCleanPrice() const {
+        return priceType_ == Bond::Price::Clean;
+    }
+
+    inline Bond::Price::Type BondHelper::priceType() const {
+        return priceType_;
+    }
+
+    inline ext::shared_ptr<FixedRateBond>
+    FixedRateBondHelper::fixedRateBond() const {
+        return fixedRateBond_;
+    }
 
     inline ext::shared_ptr<CPIBond>
     CPIBondHelper::cpiBond() const {
