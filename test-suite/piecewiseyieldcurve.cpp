@@ -26,6 +26,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/japan.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
@@ -1148,6 +1149,45 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
     BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
 }
 
+void PiecewiseYieldCurveTest::testLargeRates() {
+    BOOST_TEST_MESSAGE("Testing bootstrap with large input rates...");
+
+    SavedSettings backup;
+
+    Datum data[] = {
+        {  1, Weeks,  2.418633 },
+        {  2, Weeks,  1.361540 },
+        {  3, Weeks,  1.195362 },
+        {  1, Months, 0.829009 }
+    };
+
+    std::vector<ext::shared_ptr<RateHelper> > helpers;
+    for (Size i=0; i<LENGTH(data); ++i) {
+        helpers.push_back(
+           ext::make_shared<DepositRateHelper>(data[i].rate,
+                                               Period(data[i].n, data[i].units),
+                                               0, WeekendsOnly(), Following,
+                                               false, Actual360()));
+    }
+
+    Date today = Date(12, October, 2017);
+
+    Settings::instance().evaluationDate() = today;
+
+    Real minValue = Null<Real>(); // use the default
+    Real maxValue = 3.0;          // override
+
+    typedef PiecewiseYieldCurve<ForwardRate, BackwardFlat> PiecewiseCurve;
+    ext::shared_ptr<YieldTermStructure> curve =
+        ext::make_shared<PiecewiseCurve>(
+                                  today, helpers, Actual360(), BackwardFlat(),
+                                  PiecewiseCurve::bootstrap_type(minValue, maxValue));
+
+    // force bootstrap and check it worked
+    curve->discount(0.01);
+    BOOST_CHECK_NO_THROW(curve->discount(0.01));
+}
+
 test_suite* PiecewiseYieldCurveTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
@@ -1197,6 +1237,7 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
 
     return suite;
 }
