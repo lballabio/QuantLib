@@ -36,15 +36,21 @@ namespace QuantLib {
     class PricingEngine;
 
     //! abstract base class for calibration helpers
-    class CalibrationHelperBase {
+    class CalibrationHelper {
       public:
-        virtual ~CalibrationHelperBase() {}
+        virtual ~CalibrationHelper() {}
         //! returns the error resulting from the model valuation
         virtual Real calibrationError() = 0;
     };
 
+    /*! \deprecated Renamed to CalibrationHelper.
+                    Deprecated in version 1.18.
+    */
+    QL_DEPRECATED
+    typedef CalibrationHelper CalibrationHelperBase;
+
     //! liquid Black76 market instrument used during calibration
-    class BlackCalibrationHelper : public LazyObject, public CalibrationHelperBase {
+    class BlackCalibrationHelper : public LazyObject, public CalibrationHelper {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
@@ -108,12 +114,6 @@ namespace QuantLib {
         class ImpliedVolatilityHelper;
         const CalibrationErrorType calibrationErrorType_;
     };
-
-    /*! \deprecated Use BlackCalibrationHelper instead.
-                    Deprecated in version 1.14.
-    */
-    QL_DEPRECATED
-    typedef BlackCalibrationHelper CalibrationHelper;
 
 }
 

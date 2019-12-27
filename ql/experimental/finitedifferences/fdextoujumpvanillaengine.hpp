@@ -28,6 +28,7 @@
 #include <ql/pricingengine.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
 
 namespace QuantLib {
 
@@ -38,17 +39,20 @@ namespace QuantLib {
         : public GenericEngine<VanillaOption::arguments,
                                VanillaOption::results> {
       public:
-          FdExtOUJumpVanillaEngine(
-                  const ext::shared_ptr<ExtOUWithJumpsProcess>& p,
-                  const ext::shared_ptr<YieldTermStructure>& rTS,
-                  Size tGrid = 50, Size xGrid = 200, Size yGrid = 50,
-                  const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Hundsdorfer());
+        typedef FdmExtOUJumpModelInnerValue::Shape Shape;
+        FdExtOUJumpVanillaEngine(
+            const ext::shared_ptr<ExtOUWithJumpsProcess>& p,
+            const ext::shared_ptr<YieldTermStructure>& rTS,
+            Size tGrid = 50, Size xGrid = 200, Size yGrid = 50,
+            const ext::shared_ptr<Shape>& shape = ext::shared_ptr<Shape>(),
+            const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Hundsdorfer());
     
         void calculate() const;
     
       private:
         const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
         const ext::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<Shape> shape_;
         const Size tGrid_, xGrid_, yGrid_;
         const FdmSchemeDesc schemeDesc_;
     };

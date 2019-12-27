@@ -42,11 +42,13 @@ namespace QuantLib {
         typedef typename Curve::traits_type Traits;
         typedef typename Curve::interpolator_type Interpolator;
       public:
-        IterativeBootstrap();
+        IterativeBootstrap(Real minValue = Null<Real>(),
+                           Real maxValue = Null<Real>());
         void setup(Curve* ts);
         void calculate() const;
       private:
         void initialize() const;
+        Real minValue_, maxValue_;
         Curve* ts_;
         Size n_;
         Brent firstSolver_;
@@ -61,13 +63,12 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    IterativeBootstrap<Curve>::IterativeBootstrap()
-        : ts_(0), initialized_(false), validCurve_(false), 
-          loopRequired_(Interpolator::global) {}
+    IterativeBootstrap<Curve>::IterativeBootstrap(Real minValue, Real maxValue)
+    : minValue_(minValue), maxValue_(maxValue), ts_(0), initialized_(false), validCurve_(false), 
+      loopRequired_(Interpolator::global) {}
 
     template <class Curve>
     void IterativeBootstrap<Curve>::setup(Curve* ts) {
-
         ts_ = ts;
         n_ = ts_->instruments_.size();
         QL_REQUIRE(n_ > 0, "no bootstrap helpers given")
@@ -191,12 +192,12 @@ namespace QuantLib {
             for (Size i=1; i<=alive_; ++i) { // pillar loop
 
                 // bracket root and calculate guess
-                Real min = Traits::minValueAfter(i, ts_, validData,
-                                                            firstAliveHelper_);
-                Real max = Traits::maxValueAfter(i, ts_, validData,
-                                                            firstAliveHelper_);
-                Real guess = Traits::guess(i, ts_, validData,
-                                                            firstAliveHelper_);
+                Real min = minValue_ != Null<Real>() ? minValue_ :
+                    Traits::minValueAfter(i, ts_, validData, firstAliveHelper_);
+                Real max = maxValue_ != Null<Real>() ? maxValue_ :
+                    Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_);
+
+                Real guess = Traits::guess(i, ts_, validData, firstAliveHelper_);
                 // adjust guess if needed
                 if (guess>=max)
                     guess = max - (max-min)/5.0;

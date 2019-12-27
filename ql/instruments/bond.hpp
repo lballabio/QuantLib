@@ -58,6 +58,22 @@ namespace QuantLib {
     */
     class Bond : public Instrument {
       public:
+        //! Bond price information
+        class Price {
+          public:
+            enum Type { Dirty, Clean };
+            Price() : amount_(Null<Real>()) {}
+            Price(Real amount, Type type) : amount_(amount), type_(type) {}
+            Real amount() const {
+                QL_REQUIRE(amount_ != Null<Real>(), "no amount given");
+                return amount_;
+            }
+            Type type() const { return type_; }
+          private:
+            Real amount_;
+            Type type_;
+        };
+
         //! constructor for amortizing or non-amortizing bonds.
         /*! Redemptions and maturity are calculated from the coupon
             data, if available.  Therefore, redemptions must not be

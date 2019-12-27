@@ -49,7 +49,8 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false);
+                  bool isInArrears = false,
+                  const Date& exCouponDate = Date());
         //! \name Inspectors
         //@{
         const ext::shared_ptr<SwapIndex>& swapIndex() const {

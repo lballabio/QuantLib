@@ -35,21 +35,23 @@
                   4. Core2 Q9300@2.5Ghz     : 2272.6 mflops
                   5. Core2 Q6600@2.4Ghz     : 1984.0 mflops
                   6. i3 540@3.1Ghz          : 1755.3 mflops
-                  7. Core2 Dual@2.0Ghz      :  835.9 mflops
-                  8. Athlon 64 X2 4400+     :  824.2 mflops
-                  9. Cortex-A57@2.0GHz      :  821.7 mflops
-                 10. Core2 Dual@2.0Ghz      :  754.1 mflops
-                 11. Pentium4 Dual@2.8Ghz   :  423.8 mflops
-                 12. Raspberry Pi3@1.2GHz   :  309.2 mflops
-                 13. Pentium4@3.0Ghz        :  266.3 mflops
-                 14. PentiumIII@1.1Ghz      :  146.2 mflops
-                 15. Alpha 2xEV68@833Mhz    :  184.6 mflops
-                 16. Wii PowerPC 750@729MHz :   46.1 mflops
-                 17. Raspberry Pi ARM@700Mhz:   28.3 mflops
-                 18. Strong ARM@206Mhz      :    1.4 mflops
+                  7. Raspberry Pi4@1.5GHz   : 1704.2 mflops
+                  8. Core2 Dual@2.0Ghz      :  835.9 mflops
+                  9. Athlon 64 X2 4400+     :  824.2 mflops
+                 10. Cortex-A57@2.0GHz      :  821.7 mflops
+                 11. Core2 Dual@2.0Ghz      :  754.1 mflops
+                 12. Pentium4 Dual@2.8Ghz   :  423.8 mflops
+                 13. Raspberry Pi3@1.2GHz   :  309.2 mflops
+                 14. Pentium4@3.0Ghz        :  266.3 mflops
+                 15. PentiumIII@1.1Ghz      :  146.2 mflops
+                 16. Alpha 2xEV68@833Mhz    :  184.6 mflops
+                 17. Wii PowerPC 750@729MHz :   46.1 mflops
+                 18. Raspberry Pi ARM@700Mhz:   28.3 mflops
+                 19. RISC-V on FPGA@25Mhz   :    2.4 mflops
+                 20. Strong ARM@206Mhz      :    1.4 mflops
 
  Remarks: OS: Linux, static libs
-  2. g++-6.3.0 -O3 -ffast-math -march=core-avx2
+  1. g++-6.3.0 -O3 -ffast-math -march=core-avx2
       Remark: 16 processes
   2. g++-4.8.1 -O3 -ffast-math -march=core-avx2
       Remark: eight processes
@@ -61,24 +63,27 @@
       Remark: four processes
   6. gcc-4.4.5, -O3 -ffast-math -mfpmath=sse,387 -msse4.2 -march=core2
       Remark: four processes
-  7. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
+  7. gcc-8.3.0, -O3 -ffast-math -mcpu=cortx-a8 -mfpu=neon-fp-armv8
+      Remark: four processes
+  8. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: two processes
-  8. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
+  9. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
                 -fp-model fast=2 -ipo-jobs2, Remark: two processes
-  9. clang++-6.0.1 -O2, Remark: four processes
- 10. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
+ 10. clang++-6.0.1 -O2, Remark: four processes
+ 11. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
       Remark: two processes
- 11. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+ 12. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
       -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
- 12. gcc-4.9.2  -O2, Remark: four processes
- 13. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+ 13. gcc-4.9.2  -O2, Remark: four processes
+ 14. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
- 14. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+ 15. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
- 15. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 16. gcc-4.9.2, -O2 -g on a Nintendo Wii
- 17. gcc-4.6.3, -O3
- 18. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 16. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
+ 17. gcc-4.9.2, -O2 -g on a Nintendo Wii
+ 18. gcc-4.6.3, -O3
+ 19. gcc-9.2,   -O2 on RISC-V softcore on an Artix7 100T FPGA
+ 20. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
@@ -87,7 +92,7 @@
 #include <ql/types.hpp>
 #include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 #include <iostream>
 #include <iomanip>
 #include <list>
@@ -104,6 +109,15 @@
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
 #  define BOOST_LIB_NAME boost_unit_test_framework
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_timer
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_chrono
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_system
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
 
@@ -141,7 +155,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    boost::timer t;
+    boost::timer::cpu_timer t;
     std::list<double> runTimes;
 
     /* PAPI code
@@ -155,7 +169,7 @@ namespace {
         explicit TimedCase(fct_ptr f) : f_(f) {}
 
         void startTimer() const {
-            t.restart();
+            t.start();
 
             /* PAPI code
                lflop = flop;
@@ -164,7 +178,8 @@ namespace {
         }
 
         void stopTimer() const {
-            runTimes.push_back(t.elapsed());
+            t.stop();
+            runTimes.push_back(t.elapsed().wall * 1e-9);
 
             /* PAPI code
                PAPI_flops(&real_time, &proc_time, &flop, &mflops);
@@ -259,7 +274,6 @@ namespace QuantLib {
 #endif
 
 test_suite* init_unit_test_suite(int, char*[]) {
-
     bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
         &AmericanOptionTest::testFdAmericanGreeks, 518.31));
     bm.push_back(Benchmark("AmericanOption::FdShoutGreeks",
@@ -290,8 +304,6 @@ test_suite* init_unit_test_suite(int, char*[]) {
         &EuropeanOptionTest::testImpliedVol, 131.51));
     bm.push_back(Benchmark("EuropeanOption::FdEngines",
         &EuropeanOptionTest::testFdEngines, 148.43));
-    bm.push_back(Benchmark("EuropeanOption::PriceCurve",
-        &EuropeanOptionTest::testPriceCurve, 414.76));
     bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
         &FdHestonTest::testFdmHestonAmerican, 234.21));
     bm.push_back(Benchmark("HestonModel::DAXCalibration",

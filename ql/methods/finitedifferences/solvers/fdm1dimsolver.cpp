@@ -79,8 +79,8 @@ namespace QuantLib {
     }
 
     Real Fdm1DimSolver::thetaAt(Real x) const {
-        QL_REQUIRE(conditions_->stoppingTimes().front() > 0.0,
-                   "stopping time at zero-> can't calculate theta");
+        if (conditions_->stoppingTimes().front() == 0.0)
+            return Null<Real>();
 
         calculate();
         Array thetaValues(resultValues_.size());

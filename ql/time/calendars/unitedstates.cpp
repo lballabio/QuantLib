@@ -98,7 +98,7 @@ namespace QuantLib {
                                         new UnitedStates::GovernmentBondImpl);
         static ext::shared_ptr<Calendar::Impl> nercImpl(
                                         new UnitedStates::NercImpl);
-        static ext::shared_ptr<Calendar::Impl> federalreserveImpl(
+        static ext::shared_ptr<Calendar::Impl> federalReserveImpl(
                                         new UnitedStates::FederalReserveImpl);
         switch (market) {
           case Settlement:
@@ -117,7 +117,7 @@ namespace QuantLib {
             impl_ = nercImpl;
             break;
           case FederalReserve:
-            impl_ = federalreserveImpl;
+            impl_ = federalReserveImpl;
             break;
           default:
             QL_FAIL("unknown market");
@@ -272,8 +272,8 @@ namespace QuantLib {
                 && y >= 1983)
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
-            // Good Friday
-            || (dd == em-3)
+            // Good Friday (2015 was half day due to NFP report)
+            || (dd == em-3 && y != 2015)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
             // Independence Day (Monday if Sunday or Friday if Saturday)
@@ -291,6 +291,16 @@ namespace QuantLib {
             || ((d == 25 || (d == 26 && w == Monday) ||
                  (d == 24 && w == Friday)) && m == December))
             return false;
+             
+        // Special closings
+        if (// President Bush's Funeral
+            (y == 2018 && m == December && d == 5)
+            // Hurricane Sandy
+            || (y == 2012 && m == October && (d == 30))
+            // President Reagan's funeral
+            || (y == 2004 && m == June && d == 11)
+            ) return false;
+     
         return true;
     }
 

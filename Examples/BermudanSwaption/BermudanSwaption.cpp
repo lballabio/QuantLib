@@ -41,7 +41,6 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
-#include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -72,8 +71,9 @@ Volatility swaptionVols[] = {
 
 void calibrateModel(
           const ext::shared_ptr<ShortRateModel>& model,
-          const std::vector<ext::shared_ptr<BlackCalibrationHelper> >& helpers) {
+          const std::vector<ext::shared_ptr<BlackCalibrationHelper> >& swaptions) {
 
+    std::vector<ext::shared_ptr<CalibrationHelper> > helpers(swaptions.begin(), swaptions.end());
     LevenbergMarquardt om;
     model->calibrate(helpers, om,
                      EndCriteria(400, 100, 1.0e-8, 1.0e-8, 1.0e-8));
@@ -82,9 +82,9 @@ void calibrateModel(
     for (Size i=0; i<numRows; i++) {
         Size j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1
         Size k = i*numCols + j;
-        Real npv = helpers[i]->modelValue();
-        Volatility implied = helpers[i]->impliedVolatility(npv, 1e-4,
-                                                           1000, 0.05, 0.50);
+        Real npv = swaptions[i]->modelValue();
+        Volatility implied = swaptions[i]->impliedVolatility(npv, 1e-4,
+                                                             1000, 0.05, 0.50);
         Volatility diff = implied - swaptionVols[k];
 
         std::cout << i+1 << "x" << swapLenghts[j]
@@ -101,7 +101,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         Date todaysDate(15, February, 2002);
@@ -390,19 +389,6 @@ int main(int, char* []) {
             new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:              " << itmBermudanSwaption.NPV()
                   << std::endl;
-
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        std::cout << " \nRun completed in ";
-        if (hours > 0)
-            std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
 
         return 0;
     } catch (std::exception& e) {
