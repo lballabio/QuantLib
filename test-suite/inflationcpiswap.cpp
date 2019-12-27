@@ -27,6 +27,7 @@
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
@@ -363,11 +364,13 @@ void CPISwapTest::consistency() {
                testInfLegNPV << " vs " << zisV.legNPV(0));
 
     Real diff = fabs(1-zisV.NPV()/4191660.0);
-    #ifndef QL_USE_INDEXED_COUPON
-    Real max_diff = 1e-5;
-    #else
-    Real max_diff = 3e-5;
-    #endif
+    
+    Real max_diff;
+    if (IborCoupon::usingAtParCoupons())
+        max_diff = 1e-5;
+    else
+        max_diff = 3e-5;
+
     QL_REQUIRE(diff<max_diff,
                "failed stored consistency value test, ratio = " << diff);
 

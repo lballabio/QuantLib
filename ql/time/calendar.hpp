@@ -197,22 +197,22 @@ namespace QuantLib {
     }
 
     inline std::string Calendar::name() const {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
         return impl_->name();
     }
 
     inline const std::set<Date>& Calendar::addedHolidays() const {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
         return impl_->addedHolidays;
     }
 
     inline const std::set<Date>& Calendar::removedHolidays() const {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
         return impl_->removedHolidays;
     }
 
     inline bool Calendar::isBusinessDay(const Date& d) const {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
 
 #ifdef QL_HIGH_RESOLUTION_DATE
         const Date _d(d.dayOfMonth(), d.month(), d.year());
@@ -241,7 +241,7 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isWeekend(Weekday w) const {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
         return impl_->isWeekend(w);
     }
 

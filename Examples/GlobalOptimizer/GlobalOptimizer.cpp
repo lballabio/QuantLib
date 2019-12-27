@@ -174,7 +174,7 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
     Real val = printFunction(p, p.currentValue());
     if(!optimum.empty())
     {
-        std::cout << "Global optimium: ";
+        std::cout << "Global optimum: ";
         Real optimVal = printFunction(p, optimum);
         if(std::abs(optimVal) < 1e-13)
             return std::abs(val-optimVal) < 1e-6;

@@ -16,7 +16,6 @@
 #include <ql/methods/finitedifferences/impliciteuler.hpp>
 #include <ql/methods/finitedifferences/mixedscheme.hpp>
 #include <ql/methods/finitedifferences/onefactoroperator.hpp>
-#include <ql/methods/finitedifferences/operatorfactory.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
 #include <ql/methods/finitedifferences/parallelevolver.hpp>
 #include <ql/methods/finitedifferences/pde.hpp>

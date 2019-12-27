@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 StatPro Italia srl, 2019 Aprexo Limited
+ Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2019 Aprexo Limited
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,15 +32,15 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "1.17-debug"
+    #define QL_VERSION "1.18-debug"
 #else
-    #define QL_VERSION "1.17"
+    #define QL_VERSION "1.18"
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x011700f0
+#define QL_HEX_VERSION 0x011800f0
 //! version string for output lib name
-#define QL_LIB_VERSION "1_17"
+#define QL_LIB_VERSION "1_18"
 
 /*! @}  */
 

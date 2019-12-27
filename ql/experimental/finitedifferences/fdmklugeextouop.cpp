@@ -50,7 +50,7 @@ namespace QuantLib {
       bcSet_  (bcSet),
       klugeOp_(new FdmExtOUJumpOp(mesher, kluge_, rTS, bcSet,
                                   integroIntegrationOrder)),
-      ouOp_   (new FdmExtendedOrnsteinUhlenbackOp(
+      ouOp_   (new FdmExtendedOrnsteinUhlenbeckOp(
                   mesher, extOU_,
                   ext::shared_ptr<YieldTermStructure>(
                       new FlatForward(rTS->referenceDate(),

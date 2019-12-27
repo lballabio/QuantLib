@@ -36,9 +36,9 @@ namespace QuantLib {
     class YieldTermStructure;
     class OrnsteinUhlenbeckProcess;
 
-    class FdmOrnsteinUhlenbackOp : public FdmLinearOpComposite {
+    class FdmOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
       public:
-        FdmOrnsteinUhlenbackOp(
+        FdmOrnsteinUhlenbeckOp(
             const ext::shared_ptr<FdmMesher>& mesher,
             const ext::shared_ptr<OrnsteinUhlenbeckProcess>& p,
             const ext::shared_ptr<YieldTermStructure>& rTS,
@@ -48,7 +48,7 @@ namespace QuantLib {
                         Deprecated in version 1.16.
         */
         QL_DEPRECATED
-        FdmOrnsteinUhlenbackOp(
+        FdmOrnsteinUhlenbeckOp(
             const ext::shared_ptr<FdmMesher>& mesher,
             const ext::shared_ptr<OrnsteinUhlenbeckProcess>& p,
             const ext::shared_ptr<YieldTermStructure>& rTS,
@@ -78,5 +78,12 @@ namespace QuantLib {
 
         TripleBandLinearOp m_, mapX_;
     };
+
+    /*! \deprecated Renamed to FdmOrnsteinUhlenbeckOp.
+                    Deprecated in version 1.17.
+    */
+    QL_DEPRECATED
+    typedef FdmOrnsteinUhlenbeckOp FdmOrnsteinUhlenbackOp;
+
 }
 #endif

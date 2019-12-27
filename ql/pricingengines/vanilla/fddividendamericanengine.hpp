@@ -32,16 +32,11 @@
 namespace QuantLib {
 
     //! Finite-differences pricing engine for dividend American options
-    /*! \ingroup vanillaengines
-
-        \test
-        - the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-        - the invariance of the results upon addition of null
-          dividends is tested.
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendAmericanEngine
+    class QL_DEPRECATED FDDividendAmericanEngine
         : public FDEngineAdapter<FDAmericanCondition<FDDividendEngine<Scheme> >,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDAmericanCondition<FDDividendEngine<Scheme> >,
@@ -55,8 +50,12 @@ namespace QuantLib {
     };
 
 
+    //! Finite-differences pricing engine for dividend American options
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendAmericanEngineMerton73
+    class QL_DEPRECATED FDDividendAmericanEngineMerton73
         : public FDEngineAdapter<FDAmericanCondition<
                                      FDDividendEngineMerton73<Scheme> >,
                                  DividendVanillaOption::engine> {
@@ -71,8 +70,12 @@ namespace QuantLib {
         : super(process, timeSteps, gridPoints,timeDependent) {}
     };
 
+
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendAmericanEngineShiftScale
+    class QL_DEPRECATED FDDividendAmericanEngineShiftScale
         : public FDEngineAdapter<FDAmericanCondition<
                                      FDDividendEngineShiftScale<Scheme> >,
                                  DividendVanillaOption::engine> {

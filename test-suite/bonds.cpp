@@ -21,6 +21,7 @@
 
 #include "bonds.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
@@ -138,21 +139,23 @@ void BondTest::testYield() {
               for (Size m=0; m<LENGTH(yields); m++) {
 
                 Real price = BondFunctions::cleanPrice(bond, yields[m],
-                                                 bondDayCount,
-                                                 compounding[n],
-                                                 frequencies[l]);
+                                                       bondDayCount,
+                                                       compounding[n],
+                                                       frequencies[l]);
+
                 Rate calculated = BondFunctions::yield(bond, price,
-                                             bondDayCount, compounding[n],
-                                             frequencies[l],
-                                             Date(),
-                                             tolerance, maxEvaluations);
+                                                       bondDayCount, compounding[n],
+                                                       frequencies[l],
+                                                       Date(),
+                                                       tolerance, maxEvaluations,
+                                                       0.05, Bond::Price::Clean);
 
                 if (std::fabs(yields[m]-calculated) > tolerance) {
                   // the difference might not matter
                   Real price2 = BondFunctions::cleanPrice(bond, calculated,
-                                                    bondDayCount,
-                                                    compounding[n],
-                                                    frequencies[l]);
+                                                          bondDayCount,
+                                                          compounding[n],
+                                                          frequencies[l]);
                   if (std::fabs(price-price2)/price > tolerance) {
                       BOOST_ERROR("\nyield recalculation failed:"
                           "\n    issue:     " << issue <<
@@ -163,9 +166,43 @@ void BondTest::testYield() {
                           (compounding[n] == Compounded ?
                                 " compounded" : " continuous") <<
                           std::setprecision(7) <<
-                          "\n    price:   " << price <<
+                          "\n    clean price:   " << price <<
                           "\n    yield': " << io::rate(calculated) <<
-                          "\n    price': " << price2);
+                          "\n    clean price': " << price2);
+                  }
+                }
+
+                price = BondFunctions::dirtyPrice(bond, yields[m],
+                                                  bondDayCount,
+                                                  compounding[n],
+                                                  frequencies[l]);
+
+                calculated = BondFunctions::yield(bond, price,
+                                                  bondDayCount, compounding[n],
+                                                  frequencies[l],
+                                                  Date(),
+                                                  tolerance, maxEvaluations,
+                                                  0.05, Bond::Price::Dirty);
+
+                if (std::fabs(yields[m]-calculated) > tolerance) {
+                  // the difference might not matter
+                  Real price2 = BondFunctions::dirtyPrice(bond, calculated,
+                                                          bondDayCount,
+                                                          compounding[n],
+                                                          frequencies[l]);
+                  if (std::fabs(price-price2)/price > tolerance) {
+                      BOOST_ERROR("\nyield recalculation failed:"
+                          "\n    issue:     " << issue <<
+                          "\n    maturity:  " << maturity <<
+                          "\n    coupon:    " << io::rate(coupons[k]) <<
+                          "\n    frequency: " << frequencies[l] <<
+                          "\n    yield:   " << io::rate(yields[m]) <<
+                          (compounding[n] == Compounded ?
+                                " compounded" : " continuous") <<
+                          std::setprecision(7) <<
+                          "\n    dirty price:   " << price <<
+                          "\n    yield': " << io::rate(calculated) <<
+                          "\n    dirty price': " << price2);
                   }
                 }
               }
@@ -923,12 +960,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond1.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice1 = 99.874645;
-    #else
-    Real cachedPrice1 = 99.874646;
-    #endif
-
+    Real cachedPrice1;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice1 = 99.874645;
+    else
+        cachedPrice1 = 99.874646;
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -955,11 +991,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond2.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice2 = 97.955904;
-    #else
-    Real cachedPrice2 = 97.955904;
-    #endif
+    Real cachedPrice2;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice2 = 97.955904;
+    else
+        cachedPrice2 = 97.955904;
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -990,11 +1026,11 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond3.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice3 = 98.495458;
-    #else
-    Real cachedPrice3 = 98.495459;
-    #endif
+    Real cachedPrice3;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice3 = 98.495458;
+    else
+        cachedPrice3 = 98.495459;
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {
@@ -1003,6 +1039,32 @@ void BondTest::testCachedFloating() {
                    << "    calculated: " << price << "\n"
                    << "    expected:   " << cachedPrice3 << "\n"
                    << "    error:      " << price-cachedPrice3);
+    }
+
+    Schedule sch2(Date(26, November, 2003), Date(26, November, 2007), Period(Semiannual),
+                 UnitedStates(UnitedStates::GovernmentBond), ModifiedFollowing, ModifiedFollowing,
+                 DateGeneration::Backward, false);
+    FloatingRateBond bond4(settlementDays, vars.faceAmount, sch2, index,
+                           ActualActual(ActualActual::ISMA), ModifiedFollowing, fixingDays,
+                           std::vector<Real>(), spreads, std::vector<Rate>(), std::vector<Rate>(), false, 100.0, Date(29, October, 2004), Period(6*Days));
+
+    index->addFixing(Date(25, May, 2004), 0.0402);
+    bond4.setPricingEngine(bondEngine2);
+
+    setCouponPricer(bond4.cashflows(), pricer);
+
+    Real cachedPrice4;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice4 = 98.892346;
+    else
+        cachedPrice4 = 98.892055;
+
+    price = bond4.cleanPrice();
+    if (std::fabs(price - cachedPrice4) > tolerance) {
+        BOOST_FAIL("failed to reproduce cached price:\n"
+                   << std::fixed << "    calculated: " << price << "\n"
+                   << "    expected:   " << cachedPrice4 << "\n"
+                   << "    error:      " << price - cachedPrice4);
     }
 }
 

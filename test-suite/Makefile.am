@@ -58,6 +58,7 @@ QL_TESTS = \
 	fdmlinearop.hpp fdmlinearop.cpp \
 	fdcev.hpp fdcev.cpp \
 	fdsabr.hpp fdsabr.cpp \
+	fittedbonddiscountcurve.hpp fittedbonddiscountcurve.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	forwardrateagreement.hpp forwardrateagreement.cpp \
 	functions.hpp functions.cpp \
