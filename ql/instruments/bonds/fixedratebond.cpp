@@ -43,10 +43,9 @@ namespace QuantLib {
                                  bool exCouponEndOfMonth)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
-            issueDate),      
-      dayCounter_(accrualDayCounter) {
-
-		schedule.hasTenor() ? frequency_ = schedule.tenor().frequency() : frequency_ = NoFrequency;
+            issueDate),
+       frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency),
+       dayCounter_(accrualDayCounter) {
 
         maturityDate_ = schedule.endDate();
 
