@@ -99,6 +99,19 @@ namespace QuantLib {
             Payoff::accept(v);
     }
 
+    Real CappedPayoff::operator()(Real price) const {
+        return std::min<Real>(PlainVanillaPayoff::operator()(price), cap_);
+    }
+
+    void CappedPayoff::accept(AcyclicVisitor& v) {
+        Visitor<CappedPayoff>* v1 =
+            dynamic_cast<Visitor<CappedPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
     Real PercentageStrikePayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:

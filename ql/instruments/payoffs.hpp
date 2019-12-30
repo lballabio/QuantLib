@@ -114,6 +114,20 @@ namespace QuantLib {
         //@}
     };
 
+    //! Capped payoff
+    class CappedPayoff : public PlainVanillaPayoff {
+      public:
+        CappedPayoff(Option::Type type,
+                     Real strike,
+                     Real cap)
+        : PlainVanillaPayoff(type, strike), cap_(cap) {}
+        std::string name() const { return "Capped";}
+        Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
+      protected:
+        Real cap_;
+    };
+
     //! %Payoff with strike expressed as percentage
     class PercentageStrikePayoff : public StrikedTypePayoff {
       public:
