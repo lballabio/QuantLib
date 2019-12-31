@@ -3,9 +3,10 @@ coverage:
   # We put red at 50 to have a chance at some non-red build.
   # I would be happy with 80 right now, so that's where the target is.
   range: 50...80
-  ignore:
-    - "test-suite/*"
-    - "Examples/*"
+
+ignore:
+  - "test-suite/*"
+  - "Examples/**/*"
 
 
 # The process to get a correct report is a bit fiddly.
