@@ -1552,7 +1552,7 @@ void BondTest::testFixedRateBondWithArbitrarySchedule() {
     }
 
     Handle<YieldTermStructure> discountCurve(flatRate(today, 0.03, Actual360()));
-    bond.setPricingEngine(boost::shared_ptr<PricingEngine>(new DiscountingBondEngine(discountCurve)));
+    bond.setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingBondEngine(discountCurve)));
 
     BOOST_CHECK_NO_THROW(bond.cleanPrice());
 }
