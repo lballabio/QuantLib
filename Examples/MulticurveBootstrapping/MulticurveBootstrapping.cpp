@@ -268,9 +268,6 @@ int main(int, char* []) {
 
         DayCounter termStructureDayCounter = Actual365Fixed();
 
-
-        double tolerance = 1.0e-15;
-
         // Eonia curve
         std::vector<ext::shared_ptr<RateHelper> > eoniaInstruments;
         eoniaInstruments.push_back(dON);
@@ -304,12 +301,10 @@ int main(int, char* []) {
         eoniaInstruments.push_back(ois25Y);
         eoniaInstruments.push_back(ois30Y);
 
-
         ext::shared_ptr<YieldTermStructure> eoniaTermStructure(
             new PiecewiseYieldCurve<Discount, Cubic>(
                 todaysDate, eoniaInstruments,
-                termStructureDayCounter,
-                tolerance) );
+                termStructureDayCounter) );
 
         eoniaTermStructure->enableExtrapolation();
 
@@ -599,11 +594,17 @@ int main(int, char* []) {
         euribor6MInstruments.push_back(s50y);
         euribor6MInstruments.push_back(s60y);
 
+
+        // If needed, it's possible to change the tolerance; the default is 1.0e-12.
+        double tolerance = 1.0e-15;
+
+        // The tolerance is passed in an explicit bootstrap object. Depending on
+        // the bootstrap algorithm, it's possible to pass other parameters.
         ext::shared_ptr<YieldTermStructure> euribor6MTermStructure(
             new PiecewiseYieldCurve<Discount, Cubic>(
                 settlementDate, euribor6MInstruments,
                 termStructureDayCounter,
-                tolerance));
+                PiecewiseYieldCurve<Discount, Cubic>::bootstrap_type(tolerance)));
 
 
         /*********************

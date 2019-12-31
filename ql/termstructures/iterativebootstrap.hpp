@@ -42,12 +42,14 @@ namespace QuantLib {
         typedef typename Curve::traits_type Traits;
         typedef typename Curve::interpolator_type Interpolator;
       public:
-        IterativeBootstrap(Real minValue = Null<Real>(),
+        IterativeBootstrap(Real accuracy = Null<Real>(),
+                           Real minValue = Null<Real>(),
                            Real maxValue = Null<Real>());
         void setup(Curve* ts);
         void calculate() const;
       private:
         void initialize() const;
+        Real accuracy_;
         Real minValue_, maxValue_;
         Curve* ts_;
         Size n_;
@@ -63,8 +65,9 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    IterativeBootstrap<Curve>::IterativeBootstrap(Real minValue, Real maxValue)
-    : minValue_(minValue), maxValue_(maxValue), ts_(0), initialized_(false), validCurve_(false), 
+    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue)
+    : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue),
+      ts_(0), initialized_(false), validCurve_(false), 
       loopRequired_(Interpolator::global) {}
 
     template <class Curve>
@@ -179,7 +182,7 @@ namespace QuantLib {
 
         const std::vector<Time>& times = ts_->times_;
         const std::vector<Real>& data = ts_->data_;
-        Real accuracy = ts_->accuracy_;
+        Real accuracy = accuracy_ != Null<Real>() ? accuracy_ : ts_->accuracy_;
 
         Size maxIterations = Traits::maxIterations()-1;
 
@@ -226,7 +229,7 @@ namespace QuantLib {
                     if (validData)
                         solver_.solve(*errors_[i], accuracy, guess, min, max);
                     else
-                        firstSolver_.solve(*errors_[i], accuracy,guess,min,max);
+                        firstSolver_.solve(*errors_[i], accuracy, guess, min, max);
                 } catch (std::exception &e) {
                     if (validCurve_) {
                         // the previous curve state might have been a
