@@ -458,7 +458,7 @@ namespace {
             option_->setPricingEngine(
                 ext::make_shared<FdExtOUJumpVanillaEngine>(
                     process_, rTS,
-                    Size(gridT)/x, Size(gridX/x), Size(gridY/x), shape_));
+                    Size(gridT/x), Size(gridX/x), Size(gridY/x), shape_));
 
             return option_->NPV();
         }
