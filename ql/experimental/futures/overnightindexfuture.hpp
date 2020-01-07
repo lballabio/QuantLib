@@ -35,8 +35,9 @@ namespace QuantLib {
     SOFR futures and Sonia futures available on CME and ICE exchanges.
     */
     class OvernightIndexFuture : public Forward {
-    public:
-        enum SubPeriodsNettingType { Averaging, Compounding };
+      public:
+        enum NettingType { Averaging, Compounding };
+
         OvernightIndexFuture(
             const ext::shared_ptr<OvernightIndex>& overnightIndex,
             const ext::shared_ptr<Payoff>& payoff,
@@ -44,11 +45,7 @@ namespace QuantLib {
             const Date& maturityDate,
             const Handle<YieldTermStructure>& discountCurve,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            const SubPeriodsNettingType subPeriodsNettingType = Compounding);
-
-        virtual Real spotValueByArithmeticAveraging() const;
-
-        virtual Real spotValueByCompounding() const;
+            const NettingType subPeriodsNettingType = Compounding);
 
         //! returns spot value/price of an underlying financial instrument
         virtual Real spotValue() const;
@@ -60,10 +57,12 @@ namespace QuantLib {
 
         Real convexityAdjustment() const;
 
-    protected:
+      private:
+        Real averagedSpotValue() const;
+        Real compoundedSpotValue() const;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Handle<Quote> convexityAdjustment_;
-        SubPeriodsNettingType subPeriodsNettingType_;
+        NettingType subPeriodsNettingType_;
     };
 
 }

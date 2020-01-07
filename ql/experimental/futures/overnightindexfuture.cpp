@@ -30,20 +30,19 @@ namespace QuantLib {
         const Date& maturityDate,
         const Handle<YieldTermStructure>& discountCurve,
         const Handle<Quote>& convexityAdjustment,
-        const SubPeriodsNettingType subPeriodsNettingType)
-        :Forward(overnightIndex->dayCounter(),
-            overnightIndex->fixingCalendar(),
-            overnightIndex->businessDayConvention(),
-            0,
-            payoff,
-            valueDate,
-            maturityDate,
-            discountCurve),
-        overnightIndex_(overnightIndex),
-        convexityAdjustment_(convexityAdjustment),
-        subPeriodsNettingType_(subPeriodsNettingType) {}
+        const NettingType subPeriodsNettingType)
+    : Forward(overnightIndex->dayCounter(),
+              overnightIndex->fixingCalendar(),
+              overnightIndex->businessDayConvention(),
+              0,
+              payoff,
+              valueDate,
+              maturityDate,
+              discountCurve),
+      overnightIndex_(overnightIndex), convexityAdjustment_(convexityAdjustment),
+      subPeriodsNettingType_(subPeriodsNettingType) {}
 
-    Real OvernightIndexFuture::spotValueByArithmeticAveraging() const {
+    Real OvernightIndexFuture::averagedSpotValue() const {
         Date today = Settings::instance().evaluationDate();
         Real avg = 0;
         Date d1 = valueDate_;
@@ -67,11 +66,10 @@ namespace QuantLib {
             convexityAdjustment_->value();
         Real R = convAdj + avg /
             dayCounter_.yearFraction(valueDate_, maturityDate_);
-        Real underlyingSpotValueByArithmeticAveraging = 100.0 * (1.0 - R);
-        return underlyingSpotValueByArithmeticAveraging;
+        return 100.0 * (1.0 - R);
     }
 
-    Real OvernightIndexFuture::spotValueByCompounding() const {
+    Real OvernightIndexFuture::compoundedSpotValue() const {
         Date today = Settings::instance().evaluationDate();
         Real prod = 1;
         if (today > valueDate_) {
@@ -103,20 +101,19 @@ namespace QuantLib {
             convexityAdjustment_->value();
         Real R = convAdj + (prod - 1) /
             dayCounter_.yearFraction(valueDate_, maturityDate_);
-        Real underlyingSpotValueByCompounding = 100.0 * (1.0 - R);
-        return underlyingSpotValueByCompounding;
+        return 100.0 * (1.0 - R);
     }
 
     Real OvernightIndexFuture::spotValue() const {
         switch (subPeriodsNettingType_) {
-            case Averaging:
-                underlyingSpotValue_ = spotValueByArithmeticAveraging();
-                break;
-            case Compounding:
-                underlyingSpotValue_ = spotValueByCompounding();
-                break;
-            default:
-                QL_FAIL("unknown compounding convention ("
+          case Averaging:
+            underlyingSpotValue_ = averagedSpotValue();
+            break;
+          case Compounding:
+            underlyingSpotValue_ = compoundedSpotValue();
+            break;
+          default:
+            QL_FAIL("unknown compounding convention ("
                     << Integer(subPeriodsNettingType_) << ")");
         }
         return underlyingSpotValue_;

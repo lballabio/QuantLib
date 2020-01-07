@@ -44,11 +44,11 @@ namespace QuantLib {
         const Date& maturityDate,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment,
-        const OvernightIndexFuture::SubPeriodsNettingType subPeriodsNettingType)
-        :RateHelper(price) {
+        const OvernightIndexFuture::NettingType subPeriodsNettingType)
+    : RateHelper(price) {
         ext::shared_ptr<Payoff> payoff;
-        future_ = ext::make_shared<OvernightIndexFuture>(overnightIndex,
-            payoff, valueDate, maturityDate, termStructureHandle_,
+        future_ = ext::make_shared<OvernightIndexFuture>(
+            overnightIndex, payoff, valueDate, maturityDate, termStructureHandle_,
             convexityAdjustment, subPeriodsNettingType);
         earliestDate_ = valueDate;
         latestDate_ = maturityDate;
@@ -89,17 +89,19 @@ namespace QuantLib {
         Frequency referenceFreq,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment,
-        const OvernightIndexFuture::SubPeriodsNettingType subPeriodsNettingType)
-        :OvernightIndexFutureRateHelper(price,
-            getValidSofrStart(referenceMonth, referenceYear),
-            getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
-            overnightIndex, convexityAdjustment, subPeriodsNettingType) {
+        const OvernightIndexFuture::NettingType subPeriodsNettingType)
+    : OvernightIndexFutureRateHelper(price,
+                                     getValidSofrStart(referenceMonth, referenceYear),
+                                     getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
+                                     overnightIndex,
+                                     convexityAdjustment,
+                                     subPeriodsNettingType) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
-            "only monthly and quarterly SOFR futures accepted");
+                   "only monthly and quarterly SOFR futures accepted");
         if (referenceFreq == Quarterly) {
-            QL_REQUIRE(referenceMonth == Mar || referenceMonth == Jun ||
-                referenceMonth == Sep || referenceMonth == Dec,
-                "quarterly SOFR futures can only start in Mar,Jun,Sep,Dec");
+            QL_REQUIRE(referenceMonth == Mar || referenceMonth == Jun || referenceMonth == Sep ||
+                           referenceMonth == Dec,
+                       "quarterly SOFR futures can only start in Mar,Jun,Sep,Dec");
         }
     }
 
@@ -110,20 +112,20 @@ namespace QuantLib {
         Frequency referenceFreq,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         Real convexityAdjustment,
-        const OvernightIndexFuture::SubPeriodsNettingType subPeriodsNettingType)
-        :OvernightIndexFutureRateHelper(
-            Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
-            getValidSofrStart(referenceMonth, referenceYear),
-            getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
-            overnightIndex,
-            Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
-            subPeriodsNettingType) {
+        const OvernightIndexFuture::NettingType subPeriodsNettingType)
+    : OvernightIndexFutureRateHelper(
+          Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
+          getValidSofrStart(referenceMonth, referenceYear),
+          getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
+          overnightIndex,
+          Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
+          subPeriodsNettingType) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
-            "only monthly and quarterly SOFR futures accepted");
+                   "only monthly and quarterly SOFR futures accepted");
         if (referenceFreq == Quarterly) {
-            QL_REQUIRE(referenceMonth == Mar || referenceMonth == Jun ||
-                referenceMonth == Sep || referenceMonth == Dec,
-                "quarterly SOFR futures can only start in Mar,Jun,Sep,Dec");
+            QL_REQUIRE(referenceMonth == Mar || referenceMonth == Jun || referenceMonth == Sep ||
+                           referenceMonth == Dec,
+                       "quarterly SOFR futures can only start in Mar,Jun,Sep,Dec");
         }
     }
 

@@ -36,15 +36,14 @@ namespace {
         Month month;
         Year year;
         Real price;
-        OvernightIndexFuture::SubPeriodsNettingType subPeriodsNettingType;
+        OvernightIndexFuture::NettingType subPeriodsNettingType;
     };
 
 }
 
 
 void SofrFuturesTest::testBootstrap() {
-    BOOST_TEST_MESSAGE(
-        "Testing bootstrap over SOFR futures...");
+    BOOST_TEST_MESSAGE("Testing bootstrap over SOFR futures...");
 
     SavedSettings backup;
 
@@ -88,13 +87,13 @@ void SofrFuturesTest::testBootstrap() {
 
     ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =
         ext::make_shared<PiecewiseYieldCurve<Discount, Linear> >(today, helpers,
-            Actual365Fixed());
+                                                                 Actual365Fixed());
 
     // test curve with one of the futures
     ext::shared_ptr<Payoff> payoff(new ForwardTypePayoff(Position::Long, 97.440));
     OvernightIndexFuture sf(index, payoff,
-        Date(20, Mar, 2019), Date(19, Jun, 2019),
-        Handle<YieldTermStructure>(curve));
+                            Date(20, Mar, 2019), Date(19, Jun, 2019),
+                            Handle<YieldTermStructure>(curve));
 
     Real expected_price = 97.44;
     Real expected_npv = 0.0;
@@ -103,21 +102,21 @@ void SofrFuturesTest::testBootstrap() {
     Real error = std::fabs(sf.spotValue() - expected_price);
     if (error > tolerance) {
         BOOST_ERROR("sample futures:\n"
-            << std::setprecision(8)
-            << "\n estimated price: " << sf.spotValue()
-            << "\n expected price:  " << expected_price
-            << "\n error:           " << error
-            << "\n tolerance:       " << tolerance);
+                    << std::setprecision(8)
+                    << "\n estimated price: " << sf.spotValue()
+                    << "\n expected price:  " << expected_price
+                    << "\n error:           " << error
+                    << "\n tolerance:       " << tolerance);
     }
 
     error = std::fabs(sf.NPV() - expected_npv);
     if (error > tolerance) {
         BOOST_ERROR("sample futures:\n"
-            << std::setprecision(8)
-            << "\n estimated NPV: " << sf.NPV()
-            << "\n expected NPV:  " << expected_npv
-            << "\n error:         " << error
-            << "\n tolerance:     " << tolerance);
+                    << std::setprecision(8)
+                    << "\n estimated NPV: " << sf.NPV()
+                    << "\n expected NPV:  " << expected_npv
+                    << "\n error:         " << error
+                    << "\n tolerance:     " << tolerance);
     }
 
 }
