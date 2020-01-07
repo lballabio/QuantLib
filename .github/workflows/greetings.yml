@@ -1,0 +1,13 @@
+name: Greetings
+
+on: [pull_request, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: 'Thanks for contributing!  It might take a while before we look at your issue.  We''ll get to it, though.'
+        pr-message: 'Thanks for contributing!  It might take a while before we look at your pull request.  We''ll get there, though.'
