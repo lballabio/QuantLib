@@ -9,25 +9,25 @@ def updateFileLists(directory, lists):
     text = inputFile.read()
     inputFile.close()
     # update lists
-    for list in lists:
-        filelist = glob.glob(directory + "/**/" + list[1], recursive=True)
+    for name, pattern, excluded in lists:
+        filelist = glob.glob(directory + "/**/" + pattern, recursive=True)
         filelist.sort()
         filelistStr = ""
         for l in filelist:
             isException = False
-            for e in list[2]:
+            for e in excluded:
                 isException |= l.find("/" + e) != -1
             if not isException:
                 filelistStr += "\n    "
                 filelistStr += l[len(directory) + 1 :]
-        index = text.find("set(" + list[0])
+        index = text.find("set(" + name)
         if index == -1:
-            print("Error: set(" + list[0] + "... in " + directory + "/CMakeLists.txt not found")
+            print("Error: set(" + name + "... in " + directory + "/CMakeLists.txt not found")
             return
         indexEnd = text.find(")", index)
         if index == -1:
-            print("Error: set" + list[0] + "... in " + directory + "/CMakeLists.txt: no closing bracket found")
-        text = text[:index] + "set(" + list[0] + filelistStr + "\n" + text[indexEnd:]
+            print("Error: set" + name + "... in " + directory + "/CMakeLists.txt: no closing bracket found")
+        text = text[:index] + "set(" + name + filelistStr + "\n" + text[indexEnd:]
     # write CMakeLists.txt
     outputFile = open(directory + "/CMakeLists.txt", "w")
     outputFile.write(text)
