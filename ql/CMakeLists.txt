@@ -832,6 +832,7 @@ time/businessdayconvention.cpp
 time/calendar.cpp
 time/calendars/argentina.cpp
 time/calendars/australia.cpp
+time/calendars/austria.cpp
 time/calendars/bespokecalendar.cpp
 time/calendars/botswana.cpp
 time/calendars/brazil.cpp
@@ -1583,7 +1584,6 @@ methods/finitedifferences/meshers/uniform1dmesher.hpp
 methods/finitedifferences/meshers/uniformgridmesher.hpp
 methods/finitedifferences/mixedscheme.hpp
 methods/finitedifferences/onefactoroperator.hpp
-methods/finitedifferences/operatorfactory.hpp
 methods/finitedifferences/operators/all.hpp
 methods/finitedifferences/operators/fdm2dblackscholesop.hpp
 methods/finitedifferences/operators/fdmbatesop.hpp
@@ -2161,6 +2161,7 @@ time/calendar.hpp
 time/calendars/all.hpp
 time/calendars/argentina.hpp
 time/calendars/australia.hpp
+time/calendars/austria.hpp
 time/calendars/bespokecalendar.hpp
 time/calendars/botswana.hpp
 time/calendars/brazil.hpp
