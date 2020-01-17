@@ -345,11 +345,12 @@ void NthToDefaultTest::testStudent() {
     QL_REQUIRE (LENGTH(hwCorrelation) == 3,
                 "correlation length does not match");
 
-    Real diff, maxDiff = 0;
+    Real maxDiff = 0;
 
     basket->setLossModel(copula);
 
     // This is the necessary code, but a proper hwData for the t copula is needed.
+    // Real diff;
     // for (Size j = 0; j < LENGTH(hwCorrelation); j++) {
     //     simpleQuote->setValue (hwCorrelation[j]);
     //     for (Size i = 0; i < ntd.size(); i++) {
