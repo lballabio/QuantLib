@@ -13,16 +13,12 @@ def updateFileLists(directory, lists):
         filelist = glob.glob(directory + "/**/" + list[1], recursive=True)
         filelist.sort()
         filelistStr = ""
-        firstFile = True
         for l in filelist:
             isException = False
             for e in list[2]:
                 isException |= l.find("/" + e) != -1
             if not isException:
-                if firstFile:
-                    firstFile = False
-                else:
-                    filelistStr += "\n"
+                filelistStr += "\n    "
                 filelistStr += l[len(directory) + 1 :]
         index = text.find("set(" + list[0])
         if index == -1:
@@ -31,7 +27,7 @@ def updateFileLists(directory, lists):
         indexEnd = text.find(")", index)
         if index == -1:
             print("Error: set" + list[0] + "... in " + directory + "/CMakeLists.txt: no closing bracket found")
-        text = text[:index] + "set(" + list[0] + " " + filelistStr + text[indexEnd:]
+        text = text[:index] + "set(" + list[0] + filelistStr + "\n" + text[indexEnd:]
     # write CMakeLists.txt
     outputFile = open(directory + "/CMakeLists.txt", "w")
     outputFile.write(text)

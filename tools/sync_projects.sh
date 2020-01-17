@@ -48,6 +48,7 @@ grep -o -E '[a-zA-Z0-9_/\.]*\.cpp' test-suite/CMakeLists.txt \
 echo 'CMake:'
 diff -b ql.cmake.files ql.ref.files
 diff -b test-suite.cmake.files test-suite-cpp.ref.files
+echo
 
 echo 'Visual Studio:'
 echo 'project:'
