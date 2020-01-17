@@ -42,11 +42,15 @@ namespace QuantLib {
         typedef typename Curve::traits_type Traits;
         typedef typename Curve::interpolator_type Interpolator;
       public:
-        IterativeBootstrap();
+        IterativeBootstrap(Real accuracy = Null<Real>(),
+                           Real minValue = Null<Real>(),
+                           Real maxValue = Null<Real>());
         void setup(Curve* ts);
         void calculate() const;
       private:
         void initialize() const;
+        Real accuracy_;
+        Real minValue_, maxValue_;
         Curve* ts_;
         Size n_;
         Brent firstSolver_;
@@ -61,13 +65,13 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    IterativeBootstrap<Curve>::IterativeBootstrap()
-        : ts_(0), initialized_(false), validCurve_(false), 
-          loopRequired_(Interpolator::global) {}
+    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue)
+    : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue),
+      ts_(0), initialized_(false), validCurve_(false), 
+      loopRequired_(Interpolator::global) {}
 
     template <class Curve>
     void IterativeBootstrap<Curve>::setup(Curve* ts) {
-
         ts_ = ts;
         n_ = ts_->instruments_.size();
         QL_REQUIRE(n_ > 0, "no bootstrap helpers given")
@@ -178,7 +182,7 @@ namespace QuantLib {
 
         const std::vector<Time>& times = ts_->times_;
         const std::vector<Real>& data = ts_->data_;
-        Real accuracy = ts_->accuracy_;
+        Real accuracy = accuracy_ != Null<Real>() ? accuracy_ : ts_->accuracy_;
 
         Size maxIterations = Traits::maxIterations()-1;
 
@@ -191,12 +195,12 @@ namespace QuantLib {
             for (Size i=1; i<=alive_; ++i) { // pillar loop
 
                 // bracket root and calculate guess
-                Real min = Traits::minValueAfter(i, ts_, validData,
-                                                            firstAliveHelper_);
-                Real max = Traits::maxValueAfter(i, ts_, validData,
-                                                            firstAliveHelper_);
-                Real guess = Traits::guess(i, ts_, validData,
-                                                            firstAliveHelper_);
+                Real min = minValue_ != Null<Real>() ? minValue_ :
+                    Traits::minValueAfter(i, ts_, validData, firstAliveHelper_);
+                Real max = maxValue_ != Null<Real>() ? maxValue_ :
+                    Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_);
+
+                Real guess = Traits::guess(i, ts_, validData, firstAliveHelper_);
                 // adjust guess if needed
                 if (guess>=max)
                     guess = max - (max-min)/5.0;
@@ -225,7 +229,7 @@ namespace QuantLib {
                     if (validData)
                         solver_.solve(*errors_[i], accuracy, guess, min, max);
                     else
-                        firstSolver_.solve(*errors_[i], accuracy,guess,min,max);
+                        firstSolver_.solve(*errors_[i], accuracy, guess, min, max);
                 } catch (std::exception &e) {
                     if (validCurve_) {
                         // the previous curve state might have been a

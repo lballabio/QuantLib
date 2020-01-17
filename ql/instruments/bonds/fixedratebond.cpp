@@ -44,8 +44,8 @@ namespace QuantLib {
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
             issueDate),
-      frequency_(schedule.tenor().frequency()),
-      dayCounter_(accrualDayCounter) {
+       frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency),
+       dayCounter_(accrualDayCounter) {
 
         maturityDate_ = schedule.endDate();
 

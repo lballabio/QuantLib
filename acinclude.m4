@@ -130,7 +130,7 @@ AC_DEFUN([QL_CHECK_BOOST_UBLAS],
 # ------------------------
 # Check whether the Boost unit-test framework is available
 AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
-[AC_MSG_CHECKING([for Boost unit-test framework and Boost timer])
+[AC_MSG_CHECKING([for Boost Test, Boost Timer and Boost System])
  AC_REQUIRE([AC_PROG_CC])
  ql_original_LIBS=$LIBS
  ql_original_CXXFLAGS=$CXXFLAGS

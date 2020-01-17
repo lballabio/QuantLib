@@ -90,7 +90,11 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         class Integration;
-        enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
+        enum ComplexLogFormula {
+            Gatheral, BranchCorrection, AndersenPiterbarg,
+            // same as above but with a slightly better control variate
+            AndersenPiterbargOptCV
+        };
 
         // Simple to use constructor: Using adaptive
         // Gauss-Lobatto integration and Gatheral's version of complex log.

@@ -86,13 +86,13 @@ namespace QuantLib {
         operator ext::shared_ptr<Observable>() const;
         //! equality test
         template <class U>
-        bool operator==(const Handle<U>& other) { return link_==other.link_; }
+        bool operator==(const Handle<U>& other) const { return link_==other.link_; }
         //! disequality test
         template <class U>
-        bool operator!=(const Handle<U>& other) { return link_!=other.link_; }
+        bool operator!=(const Handle<U>& other) const { return link_!=other.link_; }
         //! strict weak ordering
         template <class U>
-        bool operator<(const Handle<U>& other) { return link_ < other.link_; }
+        bool operator<(const Handle<U>& other) const { return link_ < other.link_; }
     };
 
     //! Relinkable handle to an observable
