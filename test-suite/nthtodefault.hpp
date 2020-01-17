@@ -29,7 +29,7 @@
 class NthToDefaultTest {
   public:
     static void testGauss();
-    static void testGaussStudent();
+    static void testStudent();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
