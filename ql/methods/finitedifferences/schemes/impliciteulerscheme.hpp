@@ -44,7 +44,7 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        ImplicitEulerScheme(
+        explicit ImplicitEulerScheme(
             const ext::shared_ptr<FdmLinearOpComposite>& map,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,

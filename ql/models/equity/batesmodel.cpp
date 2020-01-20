@@ -32,7 +32,7 @@ namespace QuantLib {
         arguments_[7] 
                 = ConstantParameter(process->lambda(), PositiveConstraint());
         
-        generateArguments();
+        BatesModel::generateArguments();
     }
 
     void BatesModel::generateArguments() {

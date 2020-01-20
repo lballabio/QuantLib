@@ -60,7 +60,6 @@ namespace QuantLib {
         }
 
         std::vector<Volatility> lambda;
-        const DayCounter dayCounter = process->index()->dayCounter();
         const std::vector<Time> fixingTimes = process->fixingTimes();
         const std::vector<Date> fixingDates = process->fixingDates();
 

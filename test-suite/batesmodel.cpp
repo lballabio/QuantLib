@@ -439,8 +439,6 @@ void BatesModelTest::testDAXCalibration() {
 
     Real v0 = 0.0433;
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
-    ext::shared_ptr<BlackVolTermStructure> volTS =
-        flatVol(settlementDate, vol, dayCounter);
 
     const Real kappa = 1.0;
     const Real theta = v0;

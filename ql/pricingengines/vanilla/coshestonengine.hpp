@@ -55,7 +55,7 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        COSHestonEngine(const ext::shared_ptr<HestonModel>& model,
+        explicit COSHestonEngine(const ext::shared_ptr<HestonModel>& model,
             Real L = 16, Size N=200);
 
         void update();
