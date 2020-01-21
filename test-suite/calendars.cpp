@@ -6,6 +6,7 @@
  Copyright (C) 2006 Piter Dias
  Copyright (C) 2008 Charles Chongseok Hyun
  Copyright (C) 2015 Dmitri Nesteruk
+ Copyright (C) 2020 Piotr Siejda
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -106,14 +107,19 @@ void CalendarTest::testJointCalendars() {
     Calendar c1 = TARGET(),
              c2 = UnitedKingdom(),
              c3 = UnitedStates(UnitedStates::NYSE),
-             c4 = Japan();
+             c4 = Japan(),
+             c5 = Germany();
+
+    std::vector<Calendar> calendar_vect{c1, c2, c3, c4, c5}; 
+ 
 
     Calendar c12h = JointCalendar(c1,c2,JoinHolidays),
              c12b = JointCalendar(c1,c2,JoinBusinessDays),
              c123h = JointCalendar(c1,c2,c3,JoinHolidays),
              c123b = JointCalendar(c1,c2,c3,JoinBusinessDays),
              c1234h = JointCalendar(c1,c2,c3,c4,JoinHolidays),
-             c1234b = JointCalendar(c1,c2,c3,c4,JoinBusinessDays);
+             c1234b = JointCalendar(c1,c2,c3,c4,JoinBusinessDays),
+             cvh = JointCalendar(calendar_vect,JoinHolidays);
 
     // test one year, starting today
     Date firstDate = Date::todaysDate(),
@@ -124,7 +130,8 @@ void CalendarTest::testJointCalendars() {
         bool b1 = c1.isBusinessDay(d),
              b2 = c2.isBusinessDay(d),
              b3 = c3.isBusinessDay(d),
-             b4 = c4.isBusinessDay(d);
+             b4 = c4.isBusinessDay(d),
+             b5 = c5.isBusinessDay(d);
 
         if ((b1 && b2) != c12h.isBusinessDay(d))
             BOOST_FAIL("At date " << d << ":\n"
@@ -160,6 +167,12 @@ void CalendarTest::testJointCalendars() {
             BOOST_FAIL("At date " << d << ":\n"
                        << "    inconsistency between joint calendar "
                        << c1234b.name() << " (joining business days)\n"
+                       << "    and its components");
+
+        if ((b1 && b2 && b3 && b4 && b5) != cvh.isBusinessDay(d))
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << cvh.name() << " (joining holidays)\n"
                        << "    and its components");
 
     }
