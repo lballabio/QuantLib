@@ -1,0 +1,19 @@
+name: CMake build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup
+      run: |
+        sudo apt install -y libboost-all-dev
+    - name: Compile
+      env:
+        CXXFLAGS: -O2
+      run: |
+        cmake -DBOOST_ROOT=/usr .
+        make -j 2
+    - name: Test
+      run: |
+        ./test-suite/quantlib-test-suite --log_level=message
