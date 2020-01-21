@@ -12,7 +12,7 @@ jobs:
       env:
         CXXFLAGS: -O2
       run: |
-        cmake .
+        cmake -DBOOST_ROOT=/usr .
         make -j 2
     - name: Test
       run: |
