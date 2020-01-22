@@ -89,7 +89,7 @@ namespace QuantLib {
     */
     class GaussLaguerreIntegration : public GaussianQuadrature {
       public:
-        GaussLaguerreIntegration(Size n, Real s = 0.0)
+        explicit GaussLaguerreIntegration(Size n, Real s = 0.0)
         : GaussianQuadrature(n, GaussLaguerrePolynomial(s)) {}
     };
 
@@ -106,7 +106,7 @@ namespace QuantLib {
     */
     class GaussHermiteIntegration : public GaussianQuadrature {
       public:
-        GaussHermiteIntegration(Size n, Real mu = 0.0)
+        explicit GaussHermiteIntegration(Size n, Real mu = 0.0)
         : GaussianQuadrature(n, GaussHermitePolynomial(mu)) {}
     };
 

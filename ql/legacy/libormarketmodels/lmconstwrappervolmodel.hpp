@@ -31,7 +31,7 @@ namespace QuantLib {
     //! caplet const volatility model
     class LmConstWrapperVolatilityModel : public LmVolatilityModel {
       public:
-        LmConstWrapperVolatilityModel(
+        explicit LmConstWrapperVolatilityModel(
             const ext::shared_ptr<LmVolatilityModel> & volaModel)
         : LmVolatilityModel(volaModel->size(), 0),
           volaModel_(volaModel) {

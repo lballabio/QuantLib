@@ -54,7 +54,7 @@ namespace QuantLib {
     class SVD {
       public:
         // constructor
-        SVD(const Matrix&);
+        explicit SVD(const Matrix&);
         // results
         const Matrix& U() const;
         const Matrix& V() const;
