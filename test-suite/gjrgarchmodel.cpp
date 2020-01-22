@@ -251,20 +251,6 @@ void GJRGARCHModelTest::testDAXCalibration() {
 
     std::vector<ext::shared_ptr<CalibrationHelper> > options;
 
-    for (Size s = 3; s < 10; ++s) {
-        for (Size m = 0; m < 3; ++m) {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                  new SimpleQuote(v[s*8+m])));
-
-            Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
-            options.push_back(ext::shared_ptr<CalibrationHelper>(
-                    new HestonModelHelper(maturity, calendar,
-                                          s0->value(), strike[s], vol,
-                                          riskFreeTS, dividendTS, 
-                                          CalibrationHelper::ImpliedVolError)));
-        }
-    }
-
     const Real omega = 2.0e-6;
     const Real alpha = 0.024;
     const Real beta = 0.93;
@@ -284,8 +270,21 @@ void GJRGARCHModelTest::testDAXCalibration() {
     ext::shared_ptr<PricingEngine> engine(
         new AnalyticGJRGARCHEngine(ext::shared_ptr<GJRGARCHModel>(model)));
 
-    for (i = 0; i < options.size(); ++i)
-        options[i]->setPricingEngine(engine);
+    for (Size s = 3; s < 10; ++s) {
+        for (Size m = 0; m < 3; ++m) {
+            Handle<Quote> vol(ext::shared_ptr<Quote>(
+                                                  new SimpleQuote(v[s*8+m])));
+
+            Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
+            ext::shared_ptr<BlackCalibrationHelper> option(
+                    new HestonModelHelper(maturity, calendar,
+                                          s0->value(), strike[s], vol,
+                                          riskFreeTS, dividendTS,
+                                          BlackCalibrationHelper::ImpliedVolError));
+            option->setPricingEngine(engine);
+            options.push_back(option);
+        }
+    }
 
     Simplex om(0.05);
     model->calibrate(options, om,
@@ -317,4 +316,3 @@ test_suite* GJRGARCHModelTest::suite(SpeedLevel speed) {
 
     return suite;
 }
-

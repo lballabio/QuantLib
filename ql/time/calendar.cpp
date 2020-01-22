@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     void Calendar::addHoliday(const Date& d) {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
 
 #ifdef QL_HIGH_RESOLUTION_DATE
         const Date _d(d.dayOfMonth(), d.month(), d.year());
@@ -43,7 +43,7 @@ namespace QuantLib {
     }
 
     void Calendar::removeHoliday(const Date& d) {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
 
 #ifdef QL_HIGH_RESOLUTION_DATE
         const Date _d(d.dayOfMonth(), d.month(), d.year());
@@ -182,6 +182,8 @@ namespace QuantLib {
 
             if (from > to)
                 wd = -wd;
+        } else if (includeFirst && includeLast && isBusinessDay(from)) {
+            wd = 1;
         }
 
         return wd;

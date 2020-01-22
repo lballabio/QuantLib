@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,17 +27,18 @@ namespace QuantLib {
                  const_cast<Swaption &>(fromSwaption).exercise()),
           swap_(ext::make_shared<NonstandardSwap>(
               *fromSwaption.underlyingSwap())),
-          settlementType_(fromSwaption.settlementType()) {
+          settlementType_(fromSwaption.settlementType()),
+          settlementMethod_(fromSwaption.settlementMethod()) {
 
         registerWith(swap_);
     }
 
     NonstandardSwaption::NonstandardSwaption(
-        const ext::shared_ptr<NonstandardSwap> &swap,
-        const ext::shared_ptr<Exercise> &exercise, Settlement::Type delivery)
+        const ext::shared_ptr<NonstandardSwap>& swap,
+        const ext::shared_ptr<Exercise>& exercise, Settlement::Type delivery,
+        Settlement::Method settlementMethod)
         : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
-          settlementType_(delivery) {
-
+          settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
         registerWithObservables(swap_);
     }
@@ -61,6 +61,7 @@ namespace QuantLib {
         arguments->swap = swap_;
         arguments->exercise = exercise_;
         arguments->settlementType = settlementType_;
+        arguments->settlementMethod = settlementMethod_;
     }
 
     void NonstandardSwaption::arguments::validate() const {
@@ -68,9 +69,11 @@ namespace QuantLib {
         NonstandardSwap::arguments::validate();
         QL_REQUIRE(swap, "underlying non standard swap not set");
         QL_REQUIRE(exercise, "exercise not set");
+        Settlement::checkTypeAndMethodConsistency(settlementType,
+                                                  settlementMethod);
     }
 
-    Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
+    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
     NonstandardSwaption::calibrationBasket(
         ext::shared_ptr<SwapIndex> standardSwapBase,
         ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,

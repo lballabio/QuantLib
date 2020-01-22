@@ -23,6 +23,7 @@
 
 #include "swaption.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -71,6 +72,7 @@ namespace {
         ext::shared_ptr<Swaption>
         makeSwaption(const ext::shared_ptr<VanillaSwap>& swap, const Date& exercise,
                      Volatility volatility, Settlement::Type settlementType = Settlement::Physical,
+                     Settlement::Method settlementMethod = Settlement::PhysicalOTC,
                      BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) {
             Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
@@ -81,7 +83,7 @@ namespace {
                 Swaption(swap,
                          ext::shared_ptr<Exercise>(
                                               new EuropeanExercise(exercise)),
-                         settlementType));
+                         settlementType, settlementMethod));
             result->setPricingEngine(engine);
             return result;
         }
@@ -149,7 +151,7 @@ void SwaptionTest::testStrikeDependency() {
                     values.push_back(swaption->NPV());
                     ext::shared_ptr<Swaption> swaption_cash =
                         vars.makeSwaption(swap,exerciseDate,vol,
-                                          Settlement::Cash);
+                                          Settlement::Cash, Settlement::ParYieldCurve);
                     values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
@@ -250,7 +252,7 @@ void SwaptionTest::testSpreadDependency() {
                     values.push_back(swaption->NPV());
                     ext::shared_ptr<Swaption> swaption_cash =
                         vars.makeSwaption(swap,exerciseDate,0.20,
-                                          Settlement::Cash);
+                                          Settlement::Cash, Settlement::ParYieldCurve);
                     values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
@@ -351,10 +353,10 @@ void SwaptionTest::testSpreadTreatment() {
                         vars.makeSwaption(equivalentSwap,exerciseDate,0.20);
                     ext::shared_ptr<Swaption> swaption1_cash =
                         vars.makeSwaption(swap,exerciseDate,0.20,
-                                          Settlement::Cash);
+                                          Settlement::Cash, Settlement::ParYieldCurve);
                     ext::shared_ptr<Swaption> swaption2_cash =
                         vars.makeSwaption(equivalentSwap,exerciseDate,0.20,
-                                          Settlement::Cash);
+                                          Settlement::Cash, Settlement::ParYieldCurve);
                     if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-6)
                         BOOST_ERROR("wrong spread treatment:" <<
                             "\nexercise: " << exerciseDate <<
@@ -400,11 +402,12 @@ void SwaptionTest::testCachedValue() {
 
     ext::shared_ptr<Swaption> swaption =
         vars.makeSwaption(swap, exerciseDate, 0.20);
-    #ifndef QL_USE_INDEXED_COUPON
-    Real cachedNPV = 0.036418158579;
-    #else
-    Real cachedNPV = 0.036421429684;
-    #endif
+
+    Real cachedNPV;
+    if (IborCoupon::usingAtParCoupons())
+        cachedNPV = 0.036418158579;
+    else
+        cachedNPV = 0.036421429684;
 
     // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)
@@ -421,6 +424,7 @@ void SwaptionTest::testVega() {
     CommonVars vars;
 
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
+    Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::ParYieldCurve };
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
     Volatility shift = 1e-8;
@@ -441,14 +445,14 @@ void SwaptionTest::testVega() {
                     for (Size u=0; u<LENGTH(vols); u++) {
                         ext::shared_ptr<Swaption> swaption =
                             vars.makeSwaption(swap, exerciseDate,
-                                              vols[u], types[h]);
+                                              vols[u], types[h], methods[h]);
                         // FLOATING_POINT_EXCEPTION
                         ext::shared_ptr<Swaption> swaption1 =
                             vars.makeSwaption(swap, exerciseDate,
-                                              vols[u]-shift, types[h]);
+                                              vols[u]-shift, types[h], methods[h]);
                         ext::shared_ptr<Swaption> swaption2 =
                             vars.makeSwaption(swap, exerciseDate,
-                                              vols[u]+shift, types[h]);
+                                              vols[u]+shift, types[h], methods[h]);
 
                         Real swaptionNPV = swaption->NPV();
                         Real numericalVegaPerPoint =
@@ -638,7 +642,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             ext::shared_ptr<Swaption> swaption_c_u360 =
                 vars.makeSwaption(swap_u360,exerciseDate,0.20,
-                                  Settlement::Cash);
+                                  Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_u360 = swaption_c_u360->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_u360 = value_c_u360 / value_p_u360;
@@ -654,7 +658,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             ext::shared_ptr<Swaption> swaption_c_a365 =
                 vars.makeSwaption(swap_a365,exerciseDate,0.20,
-                                  Settlement::Cash);
+                                  Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_a365 = swaption_c_a365->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_a365 = value_c_a365 / value_p_a365;
@@ -670,7 +674,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             ext::shared_ptr<Swaption> swaption_c_a360 =
                 vars.makeSwaption(swap_a360,exerciseDate,0.20,
-                                  Settlement::Cash);
+                                  Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_a360 = swaption_c_a360->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_a360 = value_c_a360 / value_p_a360;
@@ -686,7 +690,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Cash settled swaption
             ext::shared_ptr<Swaption> swaption_c_u365 =
                 vars.makeSwaption(swap_u365,exerciseDate,0.20,
-                                  Settlement::Cash);
+                                  Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_u365 = swaption_c_u365->NPV();
             // the NPV's ratio must be equal to annuities ratio
             Real npv_ratio_u365 = value_c_u365 / value_p_u365;
@@ -836,6 +840,7 @@ void SwaptionTest::testImpliedVolatility() {
     Real tolerance = 1.0e-08;
 
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
+    Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::ParYieldCurve };
     // test data
     Rate strikes[] = { 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.01, 0.05, 0.10, 0.20, 0.30, 0.70, 0.90 };
@@ -858,8 +863,10 @@ void SwaptionTest::testImpliedVolatility() {
                     for (Size h=0; h<LENGTH(types); h++) {
                         for (Size u=0; u<LENGTH(vols); u++) {
                             ext::shared_ptr<Swaption> swaption =
-                                vars.makeSwaption(swap, exerciseDate,
-                                                  vols[u], types[h], BlackSwaptionEngine::DiscountCurve);
+                                vars.makeSwaption(
+                                    swap, exerciseDate, vols[u], types[h],
+                                    methods[h],
+                                    BlackSwaptionEngine::DiscountCurve);
                             // Black price
                             Real value = swaption->NPV();
                             Volatility implVol = 0.0;

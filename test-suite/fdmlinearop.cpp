@@ -70,6 +70,8 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 #include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
+#include <ql/functional.hpp>
+
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
@@ -78,11 +80,9 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/operation.hpp>
 #endif
-#include <boost/bind.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
-
 
 #include <numeric>
 
@@ -141,7 +141,7 @@ namespace {
     };
 
     template <class T, class U, class V>
-    struct multiplies : public std::binary_function<T, U, V> {
+    struct multiplies {
         V operator()(T t, U u) { return t*u;}
     };
 
@@ -440,7 +440,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 twoPoints[1] = gridPoints.at(indexP1)-gridPoints.at(index);
 
                 const Array ndWeights1st = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 1 , twoPoints).weights();
+                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
 
                 const Real beta1  = dfdx(index, index);
                 const Real gamma1 = dfdx(index, indexP1);
@@ -480,7 +480,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 twoPoints[1] = 0.0;
 
                 const Array ndWeights1st = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 1 , twoPoints).weights();
+                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -521,7 +521,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 threePoints[2] = gridPoints.at(indexP1)-gridPoints.at(index);
 
                 const Array ndWeights1st = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 1 , threePoints).weights();
+                    ext::function<Real(Real)>(), 1 , threePoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -547,7 +547,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 }
 
                 const Array ndWeights2nd = NumericalDifferentiation(
-                    boost::function<Real(Real)>(), 2 , threePoints).weights();
+                    ext::function<Real(Real)>(), 2 , threePoints).weights();
 
                 const Real alpha2 = d2fdx2(index, indexM1);
                 const Real beta2  = d2fdx2(index, index);
@@ -1286,17 +1286,19 @@ void FdmLinearOpTest::testBiCGstab() {
     BOOST_TEST_MESSAGE(
         "Testing bi-conjugated gradient stabilized algorithm...");
 
+    using namespace ext::placeholders;
+
     const Size n=41, m=21;
     const Real theta = 1.0;
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const boost::function<Disposable<Array>(const Array&)> matmult(
-                                                boost::bind(&axpy, a, _1));
+    const ext::function<Disposable<Array>(const Array&)> matmult(
+                                                ext::bind(&axpy, a, _1));
 
     SparseILUPreconditioner ilu(a, 4);
-    boost::function<Disposable<Array>(const Array&)> precond(
-         boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+    ext::function<Disposable<Array>(const Array&)> precond(
+         ext::bind(&SparseILUPreconditioner::apply, &ilu, _1));
 
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);
@@ -1324,17 +1326,19 @@ void FdmLinearOpTest::testGMRES() {
 #if !defined(QL_NO_UBLAS_SUPPORT)
     BOOST_TEST_MESSAGE("Testing GMRES algorithm...");
 
+    using namespace ext::placeholders;
+
     const Size n=41, m=21;
     const Real theta = 1.0;
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const boost::function<Disposable<Array>(const Array&)> matmult(
-                                                boost::bind(&axpy, a, _1));
+    const ext::function<Disposable<Array>(const Array&)> matmult(
+                                                ext::bind(&axpy, a, _1));
     
     SparseILUPreconditioner ilu(a, 4);
-    boost::function<Disposable<Array>(const Array&)> precond(
-         boost::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+    ext::function<Disposable<Array>(const Array&)> precond(
+         ext::bind(&SparseILUPreconditioner::apply, &ilu, _1));
     
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);

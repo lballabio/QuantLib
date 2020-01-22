@@ -22,9 +22,11 @@
 
 #include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/exercise.hpp>
 #include <ql/grid.hpp>
-#include <ql/methods/finitedifferences/operatorfactory.hpp>
 #include <ql/instruments/oneassetoption.hpp>
+#include <ql/methods/finitedifferences/bsmoperator.hpp>
+#include <ql/methods/finitedifferences/bsmtermoperator.hpp>
 
 namespace QuantLib {
 
@@ -90,11 +92,24 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::initializeOperator() const {
-        finiteDifferenceOperator_ =
-            OperatorFactory::getOperator(process_,
-                                         intrinsicValues_.grid(),
-                                         getResidualTime(),
-                                         timeDependent_);
+        if (timeDependent_) {
+            finiteDifferenceOperator_ = BSMTermOperator(intrinsicValues_.grid(),
+                                                        process_, getResidualTime());
+        } else {
+            const YieldTermStructure& R = **(process_->riskFreeRate());
+            Rate r = R.zeroRate(exerciseDate_, R.dayCounter(), Continuous);
+            const YieldTermStructure& Q = **(process_->dividendYield());
+            Rate q = Q.zeroRate(exerciseDate_, Q.dayCounter(), Continuous);
+
+            ext::shared_ptr<StrikedTypePayoff> striked_payoff =
+                ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            Real K = striked_payoff ? striked_payoff->strike() : process_->x0();
+            Volatility sigma =
+                process_->blackVolatility()->blackVol(exerciseDate_, K);
+
+            finiteDifferenceOperator_ = BSMOperator(intrinsicValues_.grid(),
+                                                    r, q, sigma);
+        }
     }
 
     void FDVanillaEngine::initializeBoundaryConditions() const {

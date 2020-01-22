@@ -27,7 +27,7 @@
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 
@@ -56,7 +56,7 @@ namespace {
             return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
         }
 
-        std::vector<boost::function1<Real, StateType> > basisSystem() const {
+        std::vector<ext::function<Real(StateType)> > basisSystem() const {
             return LsmBasisSystem::multiPathBasisSystem(2, 2,
                                                         LsmBasisSystem::Monomial);
         }
@@ -205,8 +205,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
                 americanOption.result<QuantLib::Real>("exerciseProbability");
 
             americanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                        new FDAmericanEngine<CrankNicolson>(stochasticProcess,
-                                                            401, 200)));
+                        new FdBlackScholesVanillaEngine(stochasticProcess, 401, 200)));
             const Real expected = americanOption.NPV();
 
             // Check price

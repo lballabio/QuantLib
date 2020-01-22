@@ -25,6 +25,7 @@
 #include <ql/indexes/ibor/robor.hpp>
 #include <ql/indexes/ibor/seklibor.hpp>
 #include <ql/indexes/ibor/shibor.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/tibor.hpp>
 #include <ql/indexes/ibor/thbfix.hpp>

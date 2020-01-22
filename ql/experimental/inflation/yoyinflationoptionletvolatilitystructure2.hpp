@@ -139,10 +139,10 @@ namespace QuantLib {
         QL_REQUIRE(d.size() > 1,
                    "must have at least two dates: " << d.size());
 
-        for (Size i = 0; i < d.size(); i++ ){
-            this->times_.push_back( this->timeFromReference(dates_[i]) );
-            this->data_.push_back(v[i]),
-            nodes_.push_back( std::make_pair( dates_[i], this->data_[i]) );
+        for (Size j = 0; j < d.size(); j++ ){
+            this->times_.push_back( this->timeFromReference(dates_[j]) );
+            this->data_.push_back(v[j]),
+            nodes_.push_back( std::make_pair( dates_[j], this->data_[j]) );
         }
 
         this->setupInterpolation();

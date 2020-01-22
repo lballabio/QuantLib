@@ -37,11 +37,11 @@ namespace QuantLib {
     void KirkEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not an European Option");
+                   "not a European option");
 
         ext::shared_ptr<EuropeanExercise> exercise =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
-        QL_REQUIRE(exercise, "not an European Option");
+        QL_REQUIRE(exercise, "not a European exercise");
 
         ext::shared_ptr<SpreadBasketPayoff> spreadPayoff =
             ext::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);

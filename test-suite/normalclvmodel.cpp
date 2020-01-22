@@ -42,20 +42,12 @@
 
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
-#include <ql/experimental/finitedifferences/bsmrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/functional.hpp>
 
 #include <boost/assign/std/vector.hpp>
 
@@ -215,7 +207,7 @@ void NormalCLVModelTest::testIllustrative1DExample() {
         today + Period(360, Days) , today + Period(720, Days);
 
     const NormalCLVModel m(bsProcess, ouProcess, maturityDates, 4);
-    const boost::function<Real(Real, Real)> g = m.g();
+    const ext::function<Real(Real, Real)> g = m.g();
 
     // test collocation points in x_ij
     std::vector<Date> maturities;
@@ -282,7 +274,7 @@ namespace {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
         CLVModelPayoff(Option::Type type, Real strike,
-                             const boost::function<Real(Real)> g)
+                             const ext::function<Real(Real)> g)
         : PlainVanillaPayoff(type, strike),
           g_(g) { }
 
@@ -291,12 +283,14 @@ namespace {
         }
 
       private:
-        const boost::function<Real(Real)> g_;
+        const ext::function<Real(Real)> g_;
     };
 }
 
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
+
+    using namespace ext::placeholders;
 
     SavedSettings backup;
 
@@ -339,7 +333,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     maturities += today + Period(6, Months), maturity;
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
-    const boost::function<Real(Real, Real)> g = m.g();
+    const ext::function<Real(Real, Real)> g = m.g();
 
     const Size nSims = 32767;
     const LowDiscrepancy::rsg_type ld
@@ -374,7 +368,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     VanillaOption fdmOption(
          ext::make_shared<CLVModelPayoff>(
-             payoff->optionType(), payoff->strike(), boost::bind(g, t, _1)),
+             payoff->optionType(), payoff->strike(), ext::bind(g, t, _1)),
          exercise);
 
     fdmOption.setPricingEngine(
@@ -475,7 +469,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
         maturities.push_back(maturities.back() + Period(2, Weeks));
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
-    const boost::function<Real(Real, Real)> g = m.g();
+    const ext::function<Real(Real, Real)> g = m.g();
 
     const Size n = 18;
     Array barrier_lo(n), barrier_hi(n), bsNPV(n);

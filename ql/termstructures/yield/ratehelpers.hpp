@@ -38,6 +38,8 @@
 #include <ql/time/daycounter.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 
+#include <boost/optional.hpp>
+
 namespace QuantLib {
 
     class SwapIndex;
@@ -158,7 +160,8 @@ namespace QuantLib {
                       bool endOfMonth,
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
                       Natural monthsToEnd,
@@ -168,17 +171,20 @@ namespace QuantLib {
                       bool endOfMonth,
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         FraRateHelper(const Handle<Quote>& rate,
                       Natural monthsToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Natural monthsToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         FraRateHelper(const Handle<Quote>& rate,
                       Period periodToStart,
                       Natural lengthInMonths,
@@ -188,7 +194,8 @@ namespace QuantLib {
                       bool endOfMonth,
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Period periodToStart,
                       Natural lengthInMonths,
@@ -198,17 +205,34 @@ namespace QuantLib {
                       bool endOfMonth,
                       const DayCounter& dayCounter,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         FraRateHelper(const Handle<Quote>& rate,
                       Period periodToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         FraRateHelper(Rate rate,
                       Period periodToStart,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
+        FraRateHelper(const Handle<Quote>& rate,
+                      Natural immOffsetStart,
+                      Natural immOffsetEnd,
+                      const ext::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
+        FraRateHelper(Rate rate,
+                      Natural immOffsetStart,
+                      Natural immOffsetEnd,
+                      const ext::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -221,10 +245,13 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Period periodToStart_;
+        boost::optional<Period> periodToStart_;
+        boost::optional<Natural> immOffsetStart_, immOffsetEnd_;
         Pillar::Choice pillarChoice_;
         ext::shared_ptr<IborIndex> iborIndex_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
+        bool useIndexedCoupon_;
+        Real spanningTime_;
     };
 
 

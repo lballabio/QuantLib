@@ -75,24 +75,8 @@ namespace QuantLib {
         virtual Rate capletRate(Rate effectiveCap) const;
         virtual Real floorletPrice(Rate effectiveFloor) const;
         virtual Rate floorletRate(Rate effectiveFloor) const;
-        /* */
-        void flushCache();
 
       private:
-        class PrivateObserver : public Observer {
-          public:
-            explicit PrivateObserver(LognormalCmsSpreadPricer *t) : t_(t) {}
-            void update() { t_->flushCache(); }
-
-          private:
-            LognormalCmsSpreadPricer *t_;
-        };
-
-        ext::shared_ptr<PrivateObserver> privateObserver_;
-
-        typedef std::map<std::pair<std::string, Date>, std::pair<Real, Real> >
-        CacheType;
-
         void initialize(const FloatingRateCoupon &coupon);
         Real optionletPrice(Option::Type optionType, Real strike) const;
 
@@ -136,8 +120,6 @@ namespace QuantLib {
         mutable Option::Type optionType_;
 
         ext::shared_ptr<CmsCoupon> c1_, c2_;
-
-        CacheType cache_;
     };
 }
 

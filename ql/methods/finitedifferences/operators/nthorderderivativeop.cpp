@@ -56,7 +56,7 @@ namespace QuantLib {
              "inconsistent number of points");
 
         Array xOffsets(nPoints);
-        const boost::function<Real(Real)> emptyFct;
+        const ext::function<Real(Real)> emptyFct;
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
             const Integer ix = Integer(iter.coordinates()[direction]);

@@ -26,6 +26,10 @@ namespace QuantLib {
 
     void Gaussian1dFloatFloatSwaptionEngine::calculate() const {
 
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "Gaussian1dFloatFloatSwaptionEngine");
+
         Date settlement = model_->termStructure()->referenceDate();
 
         if (arguments_.exercise->dates().back() <=

@@ -283,7 +283,7 @@ namespace QuantLib {
             std::vector<std::size_t> idx;
             std::size_t nCov = acf.size() - 1;
             for (std::size_t i = 0; i <= nCov; ++i) {
-                if (i < 2 || (i > 1 && acf[i] > 0 && acf[i-1] > 0 && acf[i-1] > acf[i])) {
+                if (i < 2 || (acf[i] > 0 && acf[i-1] > 0 && acf[i-1] > acf[i])) {
                     idx.push_back(i);
                 }
             }

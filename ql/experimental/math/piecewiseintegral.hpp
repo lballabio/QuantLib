@@ -30,7 +30,7 @@
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/shared_ptr.hpp>
-
+#include <algorithm>
 #include <vector>
 
 namespace QuantLib {
@@ -42,10 +42,10 @@ class PiecewiseIntegral : public Integrator {
                       const bool avoidCriticalPoints = true);
 
   protected:
-    Real integrate(const boost::function<Real(Real)> &f, Real a, Real b) const;
+    Real integrate(const ext::function<Real(Real)> &f, Real a, Real b) const;
 
   private:
-    Real integrate_h(const boost::function<Real(Real)> &f, Real a,
+    Real integrate_h(const ext::function<Real(Real)> &f, Real a,
                      Real b) const;
     const ext::shared_ptr<Integrator> integrator_;
     std::vector<Real> criticalPoints_;
@@ -54,7 +54,7 @@ class PiecewiseIntegral : public Integrator {
 
 // inline
 
-inline Real PiecewiseIntegral::integrate_h(const boost::function<Real(Real)> &f,
+inline Real PiecewiseIntegral::integrate_h(const ext::function<Real(Real)> &f,
                                            Real a, Real b) const {
 
     if (!close_enough(a, b))
@@ -63,7 +63,7 @@ inline Real PiecewiseIntegral::integrate_h(const boost::function<Real(Real)> &f,
         return 0.0;
 }
 
-inline Real PiecewiseIntegral::integrate(const boost::function<Real(Real)> &f,
+inline Real PiecewiseIntegral::integrate(const ext::function<Real(Real)> &f,
                                          Real a, Real b) const {
 
     std::vector<Real>::const_iterator a0 =

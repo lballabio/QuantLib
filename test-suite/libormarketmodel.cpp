@@ -195,11 +195,11 @@ void LiborMarketModelTest::testCapletPricing() {
     SavedSettings backup;
 
     const Size size = 10;
-    #if defined(QL_USE_INDEXED_COUPON)
-    const Real tolerance = 1e-5;
-    #else
-    const Real tolerance = 1e-12;
-    #endif
+    Real tolerance;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance = 1e-5;
+    else
+        tolerance = 1e-12;
 
     ext::shared_ptr<IborIndex> index = makeIndex();
     ext::shared_ptr<LiborForwardModelProcess> process(
@@ -288,7 +288,7 @@ void LiborMarketModelTest::testCalibration() {
     DayCounter dayCounter=index->forwardingTermStructure()->dayCounter();
 
     // set-up calibration helper
-    std::vector<ext::shared_ptr<CalibrationHelper> > calibrationHelper;
+    std::vector<ext::shared_ptr<CalibrationHelper> > calibrationHelpers;
 
     Size i;
     for (i=2; i < size; ++i) {
@@ -296,15 +296,15 @@ void LiborMarketModelTest::testCalibration() {
         Handle<Quote> capVol(
             ext::shared_ptr<Quote>(new SimpleQuote(capVols[i-2])));
 
-        ext::shared_ptr<CalibrationHelper> caphelper(
+        ext::shared_ptr<BlackCalibrationHelper> caphelper(
             new CapHelper(maturity, capVol, index, Annual,
                           index->dayCounter(), true, termStructure,
-                          CalibrationHelper::ImpliedVolError));
+                          BlackCalibrationHelper::ImpliedVolError));
 
         caphelper->setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new AnalyticCapFloorEngine(model, termStructure)));
 
-        calibrationHelper.push_back(caphelper);
+        calibrationHelpers.push_back(caphelper);
 
         if (i<= size/2) {
             // add a few swaptions to test swaption calibration as well
@@ -314,29 +314,29 @@ void LiborMarketModelTest::testCalibration() {
                     ext::shared_ptr<Quote>(
                         new SimpleQuote(swaptionVols[swapVolIndex++])));
 
-                ext::shared_ptr<CalibrationHelper> swaptionHelper(
+                ext::shared_ptr<BlackCalibrationHelper> swaptionHelper(
                     new SwaptionHelper(maturity, len, swaptionVol, index,
                                        index->tenor(), dayCounter,
                                        index->dayCounter(),
                                        termStructure,
-                                       CalibrationHelper::ImpliedVolError));
+                                       BlackCalibrationHelper::ImpliedVolError));
 
                 swaptionHelper->setPricingEngine(
                      ext::shared_ptr<PricingEngine>(
                                  new LfmSwaptionEngine(model,termStructure)));
 
-                calibrationHelper.push_back(swaptionHelper);
+                calibrationHelpers.push_back(swaptionHelper);
             }
         }
     }
 
     LevenbergMarquardt om(1e-6, 1e-6, 1e-6);
-    model->calibrate(calibrationHelper, om, EndCriteria(2000, 100, 1e-6, 1e-6, 1e-6));
+    model->calibrate(calibrationHelpers, om, EndCriteria(2000, 100, 1e-6, 1e-6, 1e-6));
 
     // measure the calibration error
     Real calculated = 0.0;
-    for (i=0; i<calibrationHelper.size(); ++i) {
-        Real diff = calibrationHelper[i]->calibrationError();
+    for (i=0; i<calibrationHelpers.size(); ++i) {
+        Real diff = calibrationHelpers[i]->calibrationError();
         calculated += diff*diff;
     }
 
@@ -353,11 +353,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     const Size size  = 10;
     const Size steps = 8*size;
-    #if defined(QL_USE_INDEXED_COUPON)
-    const Real tolerance = 1e-6;
-    #else
-    const Real tolerance = 1e-12;
-    #endif
+
+    Real tolerance;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance = 1e-6;
+    else
+        tolerance = 1e-12;
 
     std::vector<Date> dates;
     std::vector<Rate> rates;
@@ -411,9 +412,6 @@ void LiborMarketModelTest::testSwaptionPricing() {
     BusinessDayConvention convention = index->businessDayConvention();
 
     Date settlement  = index->forwardingTermStructure()->referenceDate();
-
-    ext::shared_ptr<SwaptionVolatilityMatrix> m =
-                liborModel->getSwaptionVolatilityMatrix();
 
     for (i=1; i < size; ++i) {
         for (Size j=1; j <= size-i; ++j) {

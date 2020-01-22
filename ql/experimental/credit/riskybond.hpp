@@ -154,7 +154,7 @@ namespace QuantLib {
                           Currency ccy,
                           Real recoveryRate,
                           Handle<DefaultProbabilityTermStructure> defaultTS,
-                          Schedule schedule,
+                          const Schedule& schedule,
                           ext::shared_ptr<IborIndex> index,
                           Integer fixingDays,
                           Real spread,

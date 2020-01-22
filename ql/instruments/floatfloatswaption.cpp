@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,11 +23,13 @@
 namespace QuantLib {
 
     FloatFloatSwaption::FloatFloatSwaption(
-        const ext::shared_ptr<FloatFloatSwap> &swap,
-        const ext::shared_ptr<Exercise> &exercise)
-        : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap) {
-        registerWith(swap_);
-        registerWithObservables(swap_);
+        const ext::shared_ptr<FloatFloatSwap>& swap,
+        const ext::shared_ptr<Exercise>& exercise, Settlement::Type delivery,
+        Settlement::Method settlementMethod)
+    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
+      settlementType_(delivery), settlementMethod_(settlementMethod) {
+    registerWith(swap_);
+    registerWithObservables(swap_);
     }
 
     bool FloatFloatSwaption::isExpired() const {
@@ -47,15 +48,19 @@ namespace QuantLib {
 
         arguments->swap = swap_;
         arguments->exercise = exercise_;
+        arguments->settlementType = settlementType_;
+        arguments->settlementMethod = settlementMethod_;
     }
 
     void FloatFloatSwaption::arguments::validate() const {
         FloatFloatSwap::arguments::validate();
         QL_REQUIRE(swap, "underlying cms swap not set");
         QL_REQUIRE(exercise, "exercise not set");
+        Settlement::checkTypeAndMethodConsistency(settlementType,
+                                                  settlementMethod);
     }
 
-    Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
+    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
     FloatFloatSwaption::calibrationBasket(
         ext::shared_ptr<SwapIndex> standardSwapBase,
         ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,

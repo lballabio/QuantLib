@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,9 +44,11 @@ namespace QuantLib {
         class arguments;
         class engine;
         NonstandardSwaption(const Swaption &fromSwaption);
-        NonstandardSwaption(const ext::shared_ptr<NonstandardSwap> &swap,
-                            const ext::shared_ptr<Exercise> &exercise,
-                            Settlement::Type delivery = Settlement::Physical);
+        NonstandardSwaption(
+            const ext::shared_ptr<NonstandardSwap>& swap,
+            const ext::shared_ptr<Exercise>& exercise,
+            Settlement::Type delivery = Settlement::Physical,
+            Settlement::Method settlementMethod = Settlement::PhysicalOTC);
 
         //! \name Instrument interface
         //@{
@@ -55,13 +57,17 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
+        Settlement::Type settlementType() const { return settlementType_; }
+        Settlement::Method settlementMethod() const {
+            return settlementMethod_;
+        }
         VanillaSwap::Type type() const { return swap_->type(); }
 
         const ext::shared_ptr<NonstandardSwap> &underlyingSwap() const {
             return swap_;
         }
         //@}
-        Disposable<std::vector<ext::shared_ptr<CalibrationHelper> > >
+        Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
         calibrationBasket(
             ext::shared_ptr<SwapIndex> standardSwapBase,
             ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
@@ -72,6 +78,7 @@ namespace QuantLib {
         // arguments
         ext::shared_ptr<NonstandardSwap> swap_;
         Settlement::Type settlementType_;
+        Settlement::Method settlementMethod_;
     };
 
     //! %Arguments for nonstandard swaption calculation
@@ -81,6 +88,7 @@ namespace QuantLib {
         arguments() {}
         ext::shared_ptr<NonstandardSwap> swap;
         Settlement::Type settlementType;
+        Settlement::Method settlementMethod;
         void validate() const;
     };
 

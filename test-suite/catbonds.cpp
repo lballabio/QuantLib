@@ -20,7 +20,9 @@
 #include "catbonds.hpp"
 #include "utilities.hpp"
 #include <ql/types.hpp>
-#include <ql/experimental/catbonds/all.hpp>
+#include <ql/experimental/catbonds/catbond.hpp>
+#include <ql/experimental/catbonds/catrisk.hpp>
+#include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
@@ -38,6 +40,7 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -57,56 +60,56 @@ namespace {
 void CatBondTest::testEventSetForWholeYears() {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly for periods of whole years...");
 
-	EventSet catRisk(sampleEvents, eventsStart, eventsEnd);
-	ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(1, January, 2015), Date(31, December, 2015));
+    EventSet catRisk(sampleEvents, eventsStart, eventsEnd);
+    ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(1, January, 2015), Date(31, December, 2015));
 
-	BOOST_REQUIRE(simulation);
+    BOOST_REQUIRE(simulation);
 
-	std::vector<std::pair<Date, Real> > path;
+    std::vector<std::pair<Date, Real> > path;
 
-	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(0), path.size());
+    BOOST_REQUIRE(simulation->nextPath(path));
+    BOOST_CHECK_EQUAL(Size(0), path.size());
 
-	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(1), path.size());
-	BOOST_CHECK_EQUAL(Date(1, February, 2015), path.at(0).first);
-	BOOST_CHECK_EQUAL(100, path.at(0).second);
+    BOOST_REQUIRE(simulation->nextPath(path));
+    BOOST_CHECK_EQUAL(Size(1), path.size());
+    BOOST_CHECK_EQUAL(Date(1, February, 2015), path.at(0).first);
+    BOOST_CHECK_EQUAL(100, path.at(0).second);
 
-	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(1), path.size());
-	BOOST_CHECK_EQUAL(Date(1, July, 2015), path.at(0).first);
-	BOOST_CHECK_EQUAL(150, path.at(0).second);
+    BOOST_REQUIRE(simulation->nextPath(path));
+    BOOST_CHECK_EQUAL(Size(1), path.size());
+    BOOST_CHECK_EQUAL(Date(1, July, 2015), path.at(0).first);
+    BOOST_CHECK_EQUAL(150, path.at(0).second);
 
-	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(1), path.size());
-	BOOST_CHECK_EQUAL(Date(5, January, 2015), path.at(0).first);
-	BOOST_CHECK_EQUAL(50, path.at(0).second);
+    BOOST_REQUIRE(simulation->nextPath(path));
+    BOOST_CHECK_EQUAL(Size(1), path.size());
+    BOOST_CHECK_EQUAL(Date(5, January, 2015), path.at(0).first);
+    BOOST_CHECK_EQUAL(50, path.at(0).second);
 
-	BOOST_REQUIRE(!simulation->nextPath(path));
+    BOOST_REQUIRE(!simulation->nextPath(path));
 }
 
 
 void CatBondTest::testEventSetForIrregularPeriods() {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly for irregular periods...");
-	
-	EventSet catRisk(sampleEvents, eventsStart, eventsEnd);
-	ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(2, January, 2015), Date(5, January, 2016));
+    
+    EventSet catRisk(sampleEvents, eventsStart, eventsEnd);
+    ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(2, January, 2015), Date(5, January, 2016));
 
-	BOOST_REQUIRE(simulation);
+    BOOST_REQUIRE(simulation);
 
-	std::vector<std::pair<Date, Real> > path;
+    std::vector<std::pair<Date, Real> > path;
 
-	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(0), path.size());
+    BOOST_REQUIRE(simulation->nextPath(path));
+    BOOST_CHECK_EQUAL(Size(0), path.size());
 
-	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(2), path.size());
-	BOOST_CHECK_EQUAL(Date(1, July, 2015), path.at(0).first);
-	BOOST_CHECK_EQUAL(150, path.at(0).second);
-	BOOST_CHECK_EQUAL(Date(5, January, 2016), path.at(1).first);
-	BOOST_CHECK_EQUAL(50, path.at(1).second);
+    BOOST_REQUIRE(simulation->nextPath(path));
+    BOOST_CHECK_EQUAL(Size(2), path.size());
+    BOOST_CHECK_EQUAL(Date(1, July, 2015), path.at(0).first);
+    BOOST_CHECK_EQUAL(150, path.at(0).second);
+    BOOST_CHECK_EQUAL(Date(5, January, 2016), path.at(1).first);
+    BOOST_CHECK_EQUAL(50, path.at(1).second);
 
-	BOOST_REQUIRE(!simulation->nextPath(path));
+    BOOST_REQUIRE(!simulation->nextPath(path));
 }
 
 
@@ -115,17 +118,17 @@ void CatBondTest::testEventSetForNoEvents () {
 
     ext::shared_ptr<std::vector<std::pair<Date, Real> > > emptyEvents(new std::vector<std::pair<Date, Real> >());
     EventSet catRisk(emptyEvents, eventsStart, eventsEnd);
-	ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(2, January, 2015), Date(5, January, 2016));
+    ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(2, January, 2015), Date(5, January, 2016));
 
-	BOOST_REQUIRE(simulation);
+    BOOST_REQUIRE(simulation);
 
-	std::vector<std::pair<Date, Real> > path;
-
-	BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(0), path.size());
+    std::vector<std::pair<Date, Real> > path;
 
     BOOST_REQUIRE(simulation->nextPath(path));
-	BOOST_CHECK_EQUAL(Size(0), path.size());
+    BOOST_CHECK_EQUAL(Size(0), path.size());
+
+    BOOST_REQUIRE(simulation->nextPath(path));
+    BOOST_CHECK_EQUAL(Size(0), path.size());
 
     BOOST_REQUIRE(!simulation->nextPath(path));
 }
@@ -240,7 +243,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
                            false,
                            100.0, Date(30,November,2004));
 
-	FloatingCatBond catBond1(settlementDays, vars.faceAmount, sch,
+    FloatingCatBond catBond1(settlementDays, vars.faceAmount, sch,
                            index, ActualActual(ActualActual::ISMA),
                            notionalRisk, 
                            ModifiedFollowing, fixingDays,
@@ -258,12 +261,11 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond1.setPricingEngine(catBondEngine);
     setCouponPricer(catBond1.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice1 = 99.874645;
-    #else
-    Real cachedPrice1 = 99.874646;
-    #endif
-
+    Real cachedPrice1;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice1 = 99.874645;
+    else
+        cachedPrice1 = 99.874646;
 
     Real price = bond1.cleanPrice();
     Real catPrice = catBond1.cleanPrice();
@@ -306,11 +308,11 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond2.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond2.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice2 = 97.955904;
-    #else
-    Real cachedPrice2 = 97.955904;
-    #endif
+    Real cachedPrice2; 
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice2 = 97.955904;
+    else
+        cachedPrice2 = 97.955904;
 
     price = bond2.cleanPrice();
     catPrice = catBond2.cleanPrice();
@@ -354,11 +356,11 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond3.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond3.cashflows(),pricer);
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedPrice3 = 98.495458;
-    #else
-    Real cachedPrice3 = 98.495459;
-    #endif
+    Real cachedPrice3;
+    if (!IborCoupon::usingAtParCoupons())
+        cachedPrice3 = 98.495458;
+    else
+        cachedPrice3 = 98.495459;
 
     price = bond3.cleanPrice();
     catPrice = catBond3.cleanPrice();
@@ -626,7 +628,7 @@ void CatBondTest::testCatBondWithGeneratedEventsProportional() {
                  ModifiedFollowing, ModifiedFollowing,
                  DateGeneration::Backward, false);
 
-	ext::shared_ptr<CatRisk> betaCatRisk(new BetaRisk(5000, 50, 500, 500));
+    ext::shared_ptr<CatRisk> betaCatRisk(new BetaRisk(5000, 50, 500, 500));
 
     ext::shared_ptr<CatRisk> noCatRisk(new EventSet(
         ext::make_shared<std::vector<std::pair<Date, Real> > >(), 

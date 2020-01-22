@@ -253,11 +253,8 @@ namespace {
 
         for (int i = 0; i < 18; i++) {
             if (i + 1 != 6 && i + 1 != 12 && i + 1 != 18) {
-#ifndef QL_NEGATIVE_RATES
-                if (i + 10 != 16 && i + 10 != 17)
-#endif
-                    r6m.push_back(ext::make_shared<FraRateHelper>(
-                        Handle<Quote>(q6m[10 + i]), i + 1,
+                r6m.push_back(ext::make_shared<FraRateHelper>(
+                            Handle<Quote>(q6m[10 + i]), i + 1,
                                           i + 7, 2, TARGET(), ModifiedFollowing,
                                           false, Actual360()));
             }
@@ -1455,32 +1452,32 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     ext::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, flatYts_));
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > calibrationHelper1;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationHelper1;
     std::vector<Real> calibrationHelperVols1;
     calibrationHelperVols1.push_back(0.20);
     calibrationHelperVols1.push_back(0.20);
     calibrationHelperVols1.push_back(0.20);
     calibrationHelperVols1.push_back(0.20);
 
-    calibrationHelper1.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(1 * Years, 4 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[0]))),
                            iborIndex1, 1 * Years, Thirty360(), Actual360(),
                            flatYts_)));
-    calibrationHelper1.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[1]))),
                            iborIndex1, 1 * Years, Thirty360(), Actual360(),
                            flatYts_)));
-    calibrationHelper1.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[2]))),
                            iborIndex1, 1 * Years, Thirty360(), Actual360(),
                            flatYts_)));
-    calibrationHelper1.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[3]))),
@@ -1569,7 +1566,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
             .withUpperRateBound(2.0)
             .withSmileMoneynessCheckpoints(money)));
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > calibrationHelper2;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationHelper2;
     std::vector<Real> calibrationHelperVols2;
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         1 * Years, 4 * Years,
@@ -1588,25 +1585,25 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(4 * Years, 1 * Years)));
 
-    calibrationHelper2.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(1 * Years, 4 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[0]))),
                            iborIndex2, 1 * Years, Thirty360(), Actual360(),
                            md0Yts_)));
-    calibrationHelper2.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[1]))),
                            iborIndex2, 1 * Years, Thirty360(), Actual360(),
                            md0Yts_)));
-    calibrationHelper2.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[2]))),
                            iborIndex2, 1 * Years, Thirty360(), Actual360(),
                            md0Yts_)));
-    calibrationHelper2.push_back(ext::shared_ptr<CalibrationHelper>(
+    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[3]))),

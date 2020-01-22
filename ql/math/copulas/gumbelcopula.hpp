@@ -30,8 +30,12 @@
 namespace QuantLib {
 
     //! Gumbel copula
-    class GumbelCopula : public std::binary_function<Real,Real,Real> {
+    class GumbelCopula {
       public:
+        typedef Real first_argument_type;
+        typedef Real second_argument_type;
+        typedef Real result_type;
+
         GumbelCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:

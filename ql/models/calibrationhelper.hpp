@@ -35,17 +35,31 @@ namespace QuantLib {
 
     class PricingEngine;
 
-    //! liquid market instrument used during calibration
-    class CalibrationHelper : public LazyObject {
+    //! abstract base class for calibration helpers
+    class CalibrationHelper {
+      public:
+        virtual ~CalibrationHelper() {}
+        //! returns the error resulting from the model valuation
+        virtual Real calibrationError() = 0;
+    };
+
+    /*! \deprecated Renamed to CalibrationHelper.
+                    Deprecated in version 1.18.
+    */
+    QL_DEPRECATED
+    typedef CalibrationHelper CalibrationHelperBase;
+
+    //! liquid Black76 market instrument used during calibration
+    class BlackCalibrationHelper : public LazyObject, public CalibrationHelper {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
-        CalibrationHelper(const Handle<Quote>& volatility,
-                          const Handle<YieldTermStructure>& termStructure,
-                          CalibrationErrorType calibrationErrorType
+        BlackCalibrationHelper(const Handle<Quote>& volatility,
+                               const Handle<YieldTermStructure>& termStructure,
+                               CalibrationErrorType calibrationErrorType
                                                          = RelativePriceError,
-                          const VolatilityType type = ShiftedLognormal,
-                          const Real shift = 0.0)
+                               const VolatilityType type = ShiftedLognormal,
+                               const Real shift = 0.0)
         : volatility_(volatility), termStructure_(termStructure),
           volatilityType_(type), shift_(shift),
           calibrationErrorType_(calibrationErrorType) {
@@ -70,7 +84,7 @@ namespace QuantLib {
         virtual Real modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
-        virtual Real calibrationError();
+        Real calibrationError();
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;
 

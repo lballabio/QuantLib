@@ -83,7 +83,8 @@ namespace QuantLib {
                              Real notionalAmount,
                              const ext::shared_ptr<IborIndex>& index,
                              const Handle<YieldTermStructure>& discountCurve =
-                                                 Handle<YieldTermStructure>());
+                                                 Handle<YieldTermStructure>(),
+                             bool useIndexedCoupon = true);
         //! \name Calculations
         //@{
         /*! A FRA expires/settles on the valueDate */
@@ -113,6 +114,10 @@ namespace QuantLib {
         InterestRate strikeForwardRate_;
         Real notionalAmount_;
         ext::shared_ptr<IborIndex> index_;
+        bool useIndexedCoupon_;
+
+      private:
+        void calculateForwardRate() const;
     };
 
 }

@@ -29,7 +29,7 @@ namespace QuantLib {
 
     namespace {
 
-        class Integrand : std::unary_function<Real,Real> {
+        class Integrand {
         public:
             Integrand(const ext::shared_ptr<StrikedTypePayoff>& payoff,
                 Real s0, Real t, Real riskFreeDiscount, Real dividendDiscount,

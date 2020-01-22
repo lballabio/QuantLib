@@ -36,8 +36,8 @@ namespace QuantLib {
 
     void LfmSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
-                   "cash-settled swaptions not priced with Lfm engine");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with Lfm engine");
 
         static const Spread basisPoint = 1.0e-4;
 

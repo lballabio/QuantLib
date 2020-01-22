@@ -11,6 +11,7 @@ Mario Aleppo
 Ferdinando Ametrano
 Tom Anderson
 Grzegorz Andruszkiewicz
+Fanis Antoniou
 Driss Aouad
 Jose Aparicio
 Sercan Atalik
@@ -54,13 +55,16 @@ Daniele De Francesco
 Frédéric Degraeve
 Piero Del Boca
 Mike DelMedico
+Barry Devlin
 Nicolas Di Césaré
 Piter Dias
 Michael von den Driesch
 Francis Duffy
 Cristina Duminuco
+Jan Ladislav Dussek
 Dirk Eddelbuettel
 Faycal El Karaa
+Joshua Engelman
 Bernd Engelmann
 Giorgio Facchinetti
 Matt Fair
@@ -73,6 +77,7 @@ Chiara Fornarola
 Silvia Frasson
 Andreas Gaida
 Matteo Gallivanoni
+Jose Garcia
 Lakshay Garg
 Riccardo Ghetta
 Paul Giltinan
@@ -100,6 +105,7 @@ Daniel Hrabovcak
 Shen Hui
 Charles Chongseok Hyun
 Simon Ibbotson
+Alexey Indiryakov
 Norbert Irmer
 Mike Jake
 Nicola Jean
@@ -112,8 +118,10 @@ Tomoya Kawanishi
 Gary Kennedy
 Chris Kenyon
 Oleksandr Khomenko
+Joel King
 Matt Knox
 Andrew Kolesnikov
+Ralf Konrad
 Silakhdar Krikeb
 Nathan Kruck
 Yan Kuang
@@ -132,6 +140,7 @@ Patrick Lewis
 Cheng Li
 Gang Liang
 Roland Lichters
+Hank Liu
 Robert Lopez
 André Louw
 Matthias Lungwitz
@@ -179,6 +188,7 @@ J. Erik Radmall
 Ilyas Rahbaoui
 Fabio Ramponi
 Maria Cristina Recchioni
+Simon Rees
 Dimitri Reiswich
 Sadruddin Rejeb
 Martin Ross
@@ -187,6 +197,7 @@ Mohamed Amine Sadaoui
 Amine Samani
 Alpha Sanou Toure
 Tamas Sashalmi
+Sebastian Schlenkrich
 Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
@@ -198,6 +209,7 @@ Eugene Shevkoplyas
 Enrico Sirola
 Leon Sit
 Wojciech Slusarski
+Andrew Smith
 Dale Smith
 Tim Smith
 Maxim Sokolov
@@ -206,11 +218,14 @@ Klaus Spanderen
 Andreas Spengler
 Roland Stamm
 Weston Steimel
+Philip Stephens
+Kai Striega
 Edouard Tallent
 Eisuke Tani
 Marco Tarenghi
 Ryan Taylor
 Yue Tian
+Steven Van Haren
 Jayanth R. Varma
 François du Vignaud
 Joseph Wang

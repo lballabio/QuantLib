@@ -56,8 +56,9 @@ namespace QuantLib {
 
     void TreeSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType==Settlement::Physical,
-                   "cash-settled swaptions not priced with tree engine");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "TreeSwaptionEngine");
         QL_REQUIRE(!model_.empty(), "no model specified");
 
         Date referenceDate;

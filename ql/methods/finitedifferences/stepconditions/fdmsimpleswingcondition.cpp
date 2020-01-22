@@ -36,6 +36,7 @@ namespace QuantLib {
     }
     
     void FdmSimpleSwingCondition::applyTo(Array& a, Time t) const {
+
         const std::vector<Time>::const_iterator iter
             = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
         const Size maxExerciseValue=mesher_->layout()->dim()[swingDirection_]-1;
@@ -46,6 +47,10 @@ namespace QuantLib {
             const Size d = std::distance(iter, exerciseTimes_.end());
 
             const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+
+            QL_REQUIRE(layout->size() == a.size(),
+                       "inconsistent array dimensions");
+
             const FdmLinearOpIterator endIter = layout->end();
             
             for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;

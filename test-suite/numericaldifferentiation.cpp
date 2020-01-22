@@ -79,7 +79,7 @@ namespace {
 void NumericalDifferentiationTest::testTabulatedCentralScheme() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the central scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const NumericalDifferentiation::Scheme central
         = NumericalDifferentiation::Central;
@@ -111,7 +111,7 @@ void NumericalDifferentiationTest::testTabulatedCentralScheme() {
 void NumericalDifferentiationTest::testTabulatedBackwardScheme() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the backward scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const NumericalDifferentiation::Scheme backward
         = NumericalDifferentiation::Backward;
@@ -138,7 +138,7 @@ void NumericalDifferentiationTest::testTabulatedBackwardScheme() {
 void NumericalDifferentiationTest::testTabulatedForwardScheme() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the Forward scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const NumericalDifferentiation::Scheme forward
         = NumericalDifferentiation::Forward;
@@ -166,7 +166,7 @@ void NumericalDifferentiationTest::testTabulatedForwardScheme() {
 void NumericalDifferentiationTest::testIrregularSchemeFirstOrder() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "of first order using an irregular scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const Real h1 = 5e-7;
     const Real h2 = 3e-6;
@@ -186,7 +186,7 @@ void NumericalDifferentiationTest::testIrregularSchemeFirstOrder() {
 void NumericalDifferentiationTest::testIrregularSchemeSecondOrder() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "of second order using an irregular scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const Real h1 = 2e-7;
     const Real h2 = 8e-8;
@@ -208,17 +208,17 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation"
                        " of sin function...");
 
-    const boost::function<Real(Real)> f = static_cast<Real(*)(Real)>(std::sin);
+    const ext::function<Real(Real)> f = static_cast<Real(*)(Real)>(std::sin);
 
-    const boost::function<Real(Real)> df_central
+    const ext::function<Real(Real)> df_central
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,
                                    NumericalDifferentiation::Central);
 
-    const boost::function<Real(Real)> df_backward
+    const ext::function<Real(Real)> df_backward
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,
                                    NumericalDifferentiation::Backward);
 
-    const boost::function<Real(Real)> df_forward
+    const ext::function<Real(Real)> df_forward
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,
                                    NumericalDifferentiation::Forward);
 
@@ -233,13 +233,13 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
         singleValueTest("forward first", calculatedForward, expected, 1e-6);
     }
 
-    const boost::function<Real(Real)> df4_central
+    const ext::function<Real(Real)> df4_central
         = NumericalDifferentiation(f, 4, 1e-2, 7,
                                    NumericalDifferentiation::Central);
-    const boost::function<Real(Real)> df4_backward
+    const ext::function<Real(Real)> df4_backward
         = NumericalDifferentiation(f, 4, 1e-2, 7,
                                    NumericalDifferentiation::Backward);
-    const boost::function<Real(Real)> df4_forward
+    const ext::function<Real(Real)> df4_forward
         = NumericalDifferentiation(f, 4, 1e-2, 7,
                                    NumericalDifferentiation::Forward);
 
@@ -292,7 +292,7 @@ void NumericalDifferentiationTest::testCoefficientBasedOnVandermonde() {
     BOOST_TEST_MESSAGE("Testing coefficients from numerical differentiation"
                        " by comparison with results from"
                        " Vandermonde matrix inversion...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     for (Natural order=0; order < 5; ++order) {
         for (Natural nGridPoints = order + 1;

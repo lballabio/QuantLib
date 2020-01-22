@@ -2,6 +2,7 @@ cmake_minimum_required()
 
 project(QuantLib)
 
+include(CTest)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/quantlib.cmake)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ${UNIX})
@@ -38,7 +39,7 @@ endif()
 # directory of the project to includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package(Boost)
+find_package(Boost 1.48.0)
 if (Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif (Boost_FOUND)

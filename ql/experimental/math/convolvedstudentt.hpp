@@ -58,8 +58,7 @@ namespace QuantLib {
         independent Student t-random vectors' C.Berg, C.Vignat; June 2009;
         eprint arXiv:0906.3037
     */
-    class CumulativeBehrensFisher // ODD orders only by now, rename?
-        : public std::unary_function<Real, Probability> {
+    class CumulativeBehrensFisher { // ODD orders only by now, rename?
     public:
         typedef Probability result_type;
         typedef Real argument_type;
@@ -161,8 +160,7 @@ namespace QuantLib {
     is used.
     Also the fact that the combination is symmetric is used.
      */
-    class InverseCumulativeBehrensFisher
-        : public std::unary_function<Probability, Real> {
+    class InverseCumulativeBehrensFisher {
     public:
         typedef Real result_type;
         typedef Probability argument_type;

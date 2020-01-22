@@ -20,13 +20,13 @@ EXTRA_DIST = \
 	CMakeLists.txt \
 	Contributors.txt \
 	LICENSE.TXT \
-	News.txt \
+	News.md \
 	QuantLib.props \
 	QuantLib.spec \
 	QuantLib.sln \
 	QuantLib.vcxproj \
 	QuantLib.vcxproj.filters \
-	Readme.txt \
+	README.md \
 	autogen.sh
 
 .PHONY: examples check-examples

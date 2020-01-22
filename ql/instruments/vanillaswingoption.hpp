@@ -36,8 +36,8 @@ namespace QuantLib {
     */
     class SwingExercise : public BermudanExercise {
       public:
-        SwingExercise(const std::vector<Date>& dates,
-                      const std::vector<Size>& seconds = std::vector<Size>());
+        explicit SwingExercise(const std::vector<Date>& dates,
+                               const std::vector<Size>& seconds = std::vector<Size>());
         SwingExercise(const Date& from, const Date& to, Size stepSizeSecs);
 
         const std::vector<Size>& seconds() const;
@@ -49,6 +49,15 @@ namespace QuantLib {
         const std::vector<Size> seconds_;
     };
 
+    class VanillaForwardPayoff : public StrikedTypePayoff {
+      public:
+        VanillaForwardPayoff(Option::Type type, Real strike)
+          : StrikedTypePayoff(type, strike) {}
+
+        std::string name() const { return "ForwardTypePayoff";}
+        Real operator()(Real price) const;
+        virtual void accept(AcyclicVisitor&);
+    };
 
     //! base option class
     class VanillaSwingOption : public OneAssetOption {

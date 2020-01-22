@@ -27,6 +27,7 @@
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
@@ -59,7 +60,8 @@ namespace {
         const ext::shared_ptr<I> &ii, const Period &observationLag,
         const Calendar &calendar,
         const BusinessDayConvention &bdc,
-        const DayCounter &dc) {
+        const DayCounter &dc,
+        const Handle<YieldTermStructure>& discountCurve) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
@@ -68,7 +70,7 @@ namespace {
                                 new SimpleQuote(iiData[i].rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                                 quote, observationLag, maturity,
-                                calendar, bdc, dc, ii));
+                                calendar, bdc, dc, ii, discountCurve));
             instruments.push_back(anInstrument);
         }
 
@@ -237,7 +239,8 @@ namespace {
             makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
             ZeroInflationIndex>(zciisData, zciisDataLength, ii,
                                 observationLag,
-                                calendar, convention, dcZCIIS);
+                                calendar, convention, dcZCIIS,
+                                Handle<YieldTermStructure>(nominalTS));
 
             // we can use historical or first ZCIIS for this
             // we know historical is WAY off market-implied, so use market implied flat.
@@ -361,11 +364,13 @@ void CPISwapTest::consistency() {
                testInfLegNPV << " vs " << zisV.legNPV(0));
 
     Real diff = fabs(1-zisV.NPV()/4191660.0);
-    #ifndef QL_USE_INDEXED_COUPON
-    Real max_diff = 1e-5;
-    #else
-    Real max_diff = 3e-5;
-    #endif
+    
+    Real max_diff;
+    if (IborCoupon::usingAtParCoupons())
+        max_diff = 1e-5;
+    else
+        max_diff = 3e-5;
+
     QL_REQUIRE(diff<max_diff,
                "failed stored consistency value test, ratio = " << diff);
 

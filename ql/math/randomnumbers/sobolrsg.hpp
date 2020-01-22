@@ -115,9 +115,9 @@ namespace QuantLib {
             JoeKuoD5, JoeKuoD6, JoeKuoD7,
             Kuo, Kuo2, Kuo3 };
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */
-        SobolRsg(Size dimensionality,
-                 unsigned long seed = 0,
-                 DirectionIntegers directionIntegers = Jaeckel);
+        explicit SobolRsg(Size dimensionality,
+                          unsigned long seed = 0,
+                          DirectionIntegers directionIntegers = Jaeckel);
         /*! skip to the n-th sample in the low-discrepancy sequence */
         void skipTo(boost::uint_least32_t n);
         const std::vector<boost::uint_least32_t>& nextInt32Sequence() const;

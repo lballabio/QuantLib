@@ -316,7 +316,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        class Integrand : std::unary_function<Real,Real> {
+        class Integrand {
           public:
             Integrand(const Path& path,
                       const ext::shared_ptr<GeneralizedBlackScholesProcess>&

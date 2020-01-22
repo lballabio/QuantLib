@@ -90,10 +90,6 @@ namespace QuantLib {
             = hestonModel_->process();
         const ext::shared_ptr<Quote> spot
             = hestonProcess->s0().currentLink();
-        const ext::shared_ptr<YieldTermStructure> rTS
-            = hestonProcess->riskFreeRate().currentLink();
-        const ext::shared_ptr<YieldTermStructure> qTS
-            = hestonProcess->dividendYield().currentLink();
 
         const Real v0            = hestonProcess->v0();
         const DayCounter dc      = hestonProcess->riskFreeRate()->dayCounter();

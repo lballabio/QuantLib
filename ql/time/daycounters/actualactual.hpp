@@ -68,6 +68,16 @@ namespace QuantLib {
           private:
             Schedule schedule_;
         };
+        class Old_ISMA_Impl : public DayCounter::Impl {
+          public:
+            std::string name() const {
+                return std::string("Actual/Actual (ISMA)");
+            }
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date& refPeriodStart,
+                              const Date& refPeriodEnd) const;
+        };
         class ISDA_Impl : public DayCounter::Impl {
           public:
             std::string name() const {

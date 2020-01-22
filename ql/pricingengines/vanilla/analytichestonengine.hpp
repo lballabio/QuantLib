@@ -31,8 +31,7 @@
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 #include <complex>
 
 namespace QuantLib {
@@ -91,7 +90,11 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         class Integration;
-        enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
+        enum ComplexLogFormula {
+            Gatheral, BranchCorrection, AndersenPiterbarg,
+            // same as above but with a slightly better control variate
+            AndersenPiterbargOptCV
+        };
 
         // Simple to use constructor: Using adaptive
         // Gauss-Lobatto integration and Gatheral's version of complex log.
@@ -179,7 +182,7 @@ namespace QuantLib {
             Real c_inf, Real epsilon, Real v0, Real t);
 
         Real calculate(Real c_inf,
-                       const boost::function1<Real, Real>& f,
+                       const ext::function<Real(Real)>& f,
                        Real maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;

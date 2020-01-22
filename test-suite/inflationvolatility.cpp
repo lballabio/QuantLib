@@ -298,7 +298,7 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     ext::shared_ptr<YoYOptionletVolatilitySurface> pVS;
     Handle<YoYOptionletVolatilitySurface> hVS(pVS, false); // pVS does NOT own whatever it points to later, hence the handle does not either
     ext::shared_ptr<YoYInflationUnitDisplacedBlackCapFloorEngine>
-        yoyPricerUD(new YoYInflationUnitDisplacedBlackCapFloorEngine(yoyIndexEU,hVS)); //hVS
+        yoyPricerUD(new YoYInflationUnitDisplacedBlackCapFloorEngine(yoyIndexEU,hVS,nominalEUR)); //hVS
     // N.B. the vol gets set in the stripper ... else no point!
 
     // cap stripper

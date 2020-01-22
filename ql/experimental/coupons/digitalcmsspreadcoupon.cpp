@@ -32,10 +32,11 @@ namespace QuantLib {
                       Position::Type putPosition,
                       bool isPutATMIncluded,
                       Rate putDigitalPayoff,
-                      const ext::shared_ptr<DigitalReplication>& replication)
+                      const ext::shared_ptr<DigitalReplication>& replication,
+                      bool nakedOption)
     : DigitalCoupon(underlying, callStrike, callPosition, isCallATMIncluded,
                     callDigitalPayoff, putStrike, putPosition,
-                    isPutATMIncluded, putDigitalPayoff, replication) {}
+                    isPutATMIncluded, putDigitalPayoff, replication, nakedOption) {}
 
     void DigitalCmsSpreadCoupon::accept(AcyclicVisitor& v) {
         typedef DigitalCoupon super;
@@ -187,6 +188,11 @@ namespace QuantLib {
         return *this;
     }
 
+    DigitalCmsSpreadLeg& DigitalCmsSpreadLeg::withNakedOption(bool nakedOption) {
+        nakedOption_ = nakedOption;
+        return *this;
+    }
+
     DigitalCmsSpreadLeg::operator Leg() const {
         return FloatingDigitalLeg<SwapSpreadIndex, CmsSpreadCoupon, DigitalCmsSpreadCoupon>(
                             schedule_, notionals_, index_, paymentDayCounter_,
@@ -196,7 +202,7 @@ namespace QuantLib {
                             callATM_, callPayoffs_,
                             putStrikes_, longPutOption_,
                             putATM_, putPayoffs_,
-                            replication_);
+                            replication_, nakedOption_);
     }
 
 }

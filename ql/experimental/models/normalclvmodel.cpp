@@ -31,7 +31,7 @@
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
 
 
 namespace QuantLib {
@@ -95,7 +95,7 @@ namespace QuantLib {
     }
 
 
-    boost::function<Real(Time, Real)> NormalCLVModel::g() const {
+    ext::function<Real(Time, Real)> NormalCLVModel::g() const {
         calculate();
         return g_;
     }
@@ -136,6 +136,6 @@ namespace QuantLib {
     }
 
     void NormalCLVModel::performCalculations() const {
-        g_ = boost::function<Real(Time, Real)>(MappingFunction(*this));
+        g_ = ext::function<Real(Time, Real)>(MappingFunction(*this));
     }
 }

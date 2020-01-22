@@ -104,10 +104,11 @@ namespace QuantLib {
     /* partial specialization for shared pointers, forwarding to their
        pointees. */
     template <class T>
-    struct earlier_than<ext::shared_ptr<T> >
-        : std::binary_function<ext::shared_ptr<T>,
-                               ext::shared_ptr<T>,
-                               bool> {
+    struct earlier_than<ext::shared_ptr<T> > {
+        typedef ext::shared_ptr<T> first_argument_type;
+        typedef ext::shared_ptr<T> second_argument_type;
+        typedef bool result_type;
+
         bool operator()(const ext::shared_ptr<T>& x,
                         const ext::shared_ptr<T>& y) const {
             return earlier_than<T>()(*x,*y);

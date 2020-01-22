@@ -31,6 +31,8 @@
 #define quantlib_parallel_test_runner_hpp
 
 #include <ql/types.hpp>
+#include <ql/errors.hpp>
+#include <ql/functional.hpp>
 
 #ifdef VERSION
 /* This comes from ./configure, and for some reason it interferes with
@@ -38,7 +40,7 @@
 #undef VERSION
 #endif
 
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -61,6 +63,12 @@
 #include <cstdlib>
 
 #ifdef BOOST_MSVC
+#  define BOOST_LIB_NAME boost_timer
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_chrono
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
 #  define BOOST_LIB_NAME boost_system
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
@@ -204,7 +212,7 @@ int main( int argc, char* argv[] )
             if (in.good()) {
                 for (std::string line; std::getline(in, line);) {
                     std::vector<std::string> tok;
-                    boost::split(tok, line, boost::is_any_of(" "));
+                    boost::split(tok, line, boost::is_any_of(":"));
 
                     QL_REQUIRE(tok.size() == 2,
                         "every line should consists of two entries");
@@ -274,7 +282,7 @@ int main( int argc, char* argv[] )
             // fork worker processes
             boost::thread_group threadGroup;
             for (unsigned i=0; i < nProc; ++i) {
-                threadGroup.create_thread(boost::bind(worker, cmd.str()));
+                threadGroup.create_thread(QuantLib::ext::bind(worker, cmd.str()));
             }
 
             struct mutex_remove {
@@ -367,7 +375,7 @@ int main( int argc, char* argv[] )
             out << std::setprecision(6);
             for (std::map<std::string, QuantLib::Time>::const_iterator
                 iter = runTimeLog.begin(); iter != runTimeLog.end(); ++iter) {
-                out << iter->first << " " << iter->second << std::endl;
+                out << iter->first << ":" << iter->second << std::endl;
             }
             out.close();
 
@@ -398,13 +406,13 @@ int main( int argc, char* argv[] )
             message_queue rq(open_only, testResultQueueName);
 
             while (!id.terminate) {
-                boost::timer t;
+                boost::timer::cpu_timer t;
 
                 #if BOOST_VERSION < 106200
                     BOOST_TEST_FOREACH( test_observer*, to,
                         framework::impl::s_frk_state().m_observers )
                         framework::impl::s_frk_state().m_aux_em.vexecute(
-                            boost::bind( &test_observer::test_start, to, 1 ) );
+                            ext::bind( &test_observer::test_start, to, 1 ) );
 
                     framework::impl::s_frk_state().execute_test_tree( id.id );
 
@@ -417,7 +425,7 @@ int main( int argc, char* argv[] )
                 #endif
 
                 runTimeLogs.push_back(std::make_pair(
-                    framework::get(id.id, TUT_ANY).p_name, t.elapsed()));
+                    framework::get(id.id, TUT_ANY).p_name, t.elapsed().wall));
 
                 output_logstream(log_stream(), oldBuf, logBuf);
 

@@ -89,6 +89,19 @@ namespace QuantLib {
 
 #else
 
+#include <ql/functional.hpp>
+
+#if defined(QL_USE_STD_FUNCTION)
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
+#include <boost/bind.hpp>
+#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
+#pragma GCC diagnostic pop
+#endif
+#endif
+
 #include <boost/signals2/signal_type.hpp>
 
 namespace QuantLib {
@@ -129,7 +142,11 @@ namespace QuantLib {
 
         detail::Signal::signal_type::slot_type slot(&Observer::Proxy::update,
                                     observerProxy.get());
+        #if defined(QL_USE_STD_SHARED_PTR)
+        sig_->connect(slot.track_foreign(observerProxy));
+        #else
         sig_->connect(slot.track(observerProxy));
+        #endif
     }
 
     void Observable::unregisterObserver(
@@ -146,6 +163,7 @@ namespace QuantLib {
             }
         }
 
+        // signals2 needs boost::bind, std::bind does not work
         sig_->disconnect(boost::bind(&Observer::Proxy::update,
                              observerProxy.get()));
     }

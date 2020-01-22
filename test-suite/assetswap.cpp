@@ -555,11 +555,11 @@ void AssetSwapTest::testImpliedValue() {
     // correct though, only we can not compare it to the bond price
     // directly. The same kind of discrepancy will occur for a multi
     // curve set up, which we do not test here.
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-2;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-2;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -926,11 +926,11 @@ void AssetSwapTest::testMarketASWSpread() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-4;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-4;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -1683,11 +1683,11 @@ void AssetSwapTest::testGenericBondImplied() {
     Real tolerance = 1.0e-13;
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-2;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-2;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -2008,7 +2008,7 @@ void AssetSwapTest::testGenericBondImplied() {
                                 parAssetSwap);
     zeroCpnAssetSwap2.setPricingEngine(swapEngine);
     Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairCleanPrice();
-    Real error9 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
+    Real error9 = std::fabs(zeroCpnBondAssetSwapPrice2-zeroCpnBondPrice2);
 
     if (error9>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for zero cpn bond:"
@@ -2084,11 +2084,11 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-4;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2; 
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-4;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -4203,7 +4203,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                zeroCpnSpecializedBondAssetSwap2.fairCleanPrice();
     Real error15 = std::fabs(zeroCpnBondAssetSwapPrice2
                              -zeroCpnSpecializedBondAssetSwapPrice2);
-    if (error8>tolerance) {
+    if (error15>tolerance) {
         BOOST_FAIL("wrong clean price for zerocpn bond:"
                     << std::fixed << std::setprecision(4)
                     << "\n  generic zero cpn bond's clean price: "

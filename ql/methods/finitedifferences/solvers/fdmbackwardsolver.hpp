@@ -33,10 +33,11 @@ namespace QuantLib {
     class FdmStepConditionComposite;
 
     struct FdmSchemeDesc {
-        enum FdmSchemeType { HundsdorferType, DouglasType, 
+        enum FdmSchemeType { HundsdorferType, DouglasType,
                              CraigSneydType, ModifiedCraigSneydType, 
                              ImplicitEulerType, ExplicitEulerType,
-                             MethodOfLinesType, TrBDF2Type };
+                             MethodOfLinesType, TrBDF2Type,
+                             CrankNicolsonType };
 
         FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
 
@@ -44,7 +45,8 @@ namespace QuantLib {
         const Real theta, mu;
 
         // some default scheme descriptions
-        static FdmSchemeDesc Douglas();
+        static FdmSchemeDesc Douglas(); //same as Crank-Nicolson in 1 dimension
+        static FdmSchemeDesc CrankNicolson();
         static FdmSchemeDesc ImplicitEuler();
         static FdmSchemeDesc ExplicitEuler();
         static FdmSchemeDesc CraigSneyd();

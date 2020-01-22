@@ -36,9 +36,7 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
-
-#include <boost/progress.hpp>
-#include <boost/bind.hpp>
+#include <ql/functional.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;
@@ -408,8 +406,6 @@ void BasketOptionTest::testBarraquandThreeValues() {
     BOOST_TEST_MESSAGE("Testing three-asset basket options "
                        "against Barraquand's values...");
 
-    QL_TEST_START_TIMING
-
     /*
         Data from:
         "Numerical Valuation of High Dimensional American Securities"
@@ -625,8 +621,6 @@ void BasketOptionTest::testTavellaValues() {
     BOOST_TEST_MESSAGE("Testing three-asset American basket options "
                        "against Tavella's values...");
 
-    QL_TEST_START_TIMING
-
     /*
         Data from:
         "Quantitative Methods in Derivatives Pricing"
@@ -783,12 +777,10 @@ namespace {
     };
 }
 
-void BasketOptionTest::testOneDAmericanValues(unsigned from, unsigned to) {
+void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) {
 
     BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
                        "from " << from << " to " << to-1 <<  "...");
-
-    QL_TEST_START_TIMING
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -871,7 +863,6 @@ void BasketOptionTest::testOddSamples() {
 
     BOOST_TEST_MESSAGE("Testing antithetic engine using odd sample number...");
 
-    QL_TEST_START_TIMING
     Size requiredSamples = 10001; // The important line
     Size timeSteps = 53;
     BasketOptionOneData values[] = {
@@ -1107,7 +1098,7 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
         #define N_TEST_CASES 5
         #define BOOST_PP_LOCAL_MACRO(n)                                \
             suite->add(QUANTLIB_TEST_CASE(                             \
-                boost::bind(&BasketOptionTest::testOneDAmericanValues, \
+                ext::bind(&BasketOptionTest::testOneDAmericanValues, \
                     (n    *LENGTH(oneDataValues))/N_TEST_CASES,        \
                     ((n+1)*LENGTH(oneDataValues))/N_TEST_CASES)));
 

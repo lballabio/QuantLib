@@ -28,7 +28,6 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
-#include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -49,7 +48,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         Option::Type type(Option::Put);
@@ -99,22 +97,18 @@ int main(int, char* []) {
         // Load call schedules
         for (Size i=0; i<LENGTH(callLength); i++) {
             callability.push_back(
-                   ext::shared_ptr<Callability>(
-                       new SoftCallability(Callability::Price(
-                                                   callPrices[i],
-                                                   Callability::Price::Clean),
-                                           schedule.date(callLength[i]),
-                                           1.20)));
+                   ext::make_shared<SoftCallability>(Bond::Price(callPrices[i],
+                                                                 Bond::Price::Clean),
+                                                     schedule.date(callLength[i]),
+                                                     1.20));
         }
 
         for (Size j=0; j<LENGTH(putLength); j++) {
             callability.push_back(
-                   ext::make_shared<Callability>(
-                           Callability::Price(
-                                                   putPrices[j],
-                                                   Callability::Price::Clean),
-                                           Callability::Put,
-                                           schedule.date(putLength[j])));
+                   ext::make_shared<Callability>(Bond::Price(putPrices[j],
+                                                             Bond::Price::Clean),
+                                                 Callability::Put,
+                                                 schedule.date(putLength[j])));
         }
 
         // Assume dividends are paid every 6 months.
@@ -307,19 +301,6 @@ int main(int, char* []) {
                   << std::endl;
 
         std::cout << dblrule << std::endl;
-
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        std::cout << " \nRun completed in ";
-        if (hours > 0)
-            std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
 
         return 0;
     } catch (std::exception& e) {
