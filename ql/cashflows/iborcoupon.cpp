@@ -66,6 +66,8 @@ namespace QuantLib {
                 accrualEndDate_, -static_cast<Integer>(fixingDays_), Days);
             fixingEndDate_ = fixingCalendar.advance(
                 nextFixingDate, indexFixingDays, Days);
+            // make sure the estimation period contains at least one day
+            fixingEndDate_ = std::max(fixingEndDate_, fixingValueDate_ + 1);
         }
         #endif
 
