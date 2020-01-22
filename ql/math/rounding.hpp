@@ -70,8 +70,8 @@ namespace QuantLib {
         Rounding()
         : type_(None) {}
         explicit Rounding(Integer precision,
-                 Type type = Closest,
-                 Integer digit = 5)
+                          Type type = Closest,
+                          Integer digit = 5)
         : precision_(precision), type_(type), digit_(digit) {}
         //! perform rounding
         Decimal operator()(Decimal value) const;
@@ -91,7 +91,7 @@ namespace QuantLib {
     class UpRounding : public Rounding {
       public:
         explicit UpRounding(Integer precision,
-                   Integer digit = 5)
+                            Integer digit = 5)
         : Rounding(precision,Up,digit) {}
     };
 
@@ -99,7 +99,7 @@ namespace QuantLib {
     class DownRounding : public Rounding {
       public:
         explicit DownRounding(Integer precision,
-                     Integer digit = 5)
+                              Integer digit = 5)
         : Rounding(precision,Down,digit) {}
     };
 
@@ -107,7 +107,7 @@ namespace QuantLib {
     class ClosestRounding : public Rounding {
       public:
         explicit ClosestRounding(Integer precision,
-                        Integer digit = 5)
+                                 Integer digit = 5)
         : Rounding(precision,Closest,digit) {}
     };
 
@@ -115,7 +115,7 @@ namespace QuantLib {
     class CeilingTruncation : public Rounding {
       public:
         explicit CeilingTruncation(Integer precision,
-                          Integer digit = 5)
+                                   Integer digit = 5)
         : Rounding(precision,Ceiling,digit) {}
     };
 
@@ -123,7 +123,7 @@ namespace QuantLib {
     class FloorTruncation : public Rounding {
       public:
         explicit FloorTruncation(Integer precision,
-                        Integer digit = 5)
+                                 Integer digit = 5)
         : Rounding(precision,Floor,digit) {}
     };
 

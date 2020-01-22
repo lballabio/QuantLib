@@ -35,7 +35,7 @@ namespace QuantLib {
         ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
 
         QL_REQUIRE(layout->size() == a.size(),
-            "inconsistent array dimensions");
+                   "inconsistent array dimensions");
 
         const FdmLinearOpIterator endIter = layout->end();
 

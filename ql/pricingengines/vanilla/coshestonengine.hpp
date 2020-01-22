@@ -56,7 +56,7 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         explicit COSHestonEngine(const ext::shared_ptr<HestonModel>& model,
-            Real L = 16, Size N=200);
+                                 Real L = 16, Size N=200);
 
         void update();
         void calculate() const;
