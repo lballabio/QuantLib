@@ -110,8 +110,13 @@ void CalendarTest::testJointCalendars() {
              c4 = Japan(),
              c5 = Germany();
 
-    std::vector<Calendar> calendar_vect{c1, c2, c3, c4, c5}; 
- 
+    std::vector<Calendar> calendar_vect;
+    calendar_vect.reserve( 5 );
+    calendar_vect.push_back(c1);
+    calendar_vect.push_back(c2);
+    calendar_vect.push_back(c3);
+    calendar_vect.push_back(c4);
+    calendar_vect.push_back(c5);
 
     Calendar c12h = JointCalendar(c1,c2,JoinHolidays),
              c12b = JointCalendar(c1,c2,JoinBusinessDays),
