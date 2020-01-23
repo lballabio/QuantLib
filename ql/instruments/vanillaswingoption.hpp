@@ -36,8 +36,8 @@ namespace QuantLib {
     */
     class SwingExercise : public BermudanExercise {
       public:
-        SwingExercise(const std::vector<Date>& dates,
-                      const std::vector<Size>& seconds = std::vector<Size>());
+        explicit SwingExercise(const std::vector<Date>& dates,
+                               const std::vector<Size>& seconds = std::vector<Size>());
         SwingExercise(const Date& from, const Date& to, Size stepSizeSecs);
 
         const std::vector<Size>& seconds() const;

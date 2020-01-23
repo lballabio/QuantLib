@@ -43,10 +43,10 @@ namespace QuantLib {
     class HaltonRsg {
       public:
         typedef Sample<std::vector<Real> > sample_type;
-        HaltonRsg(Size dimensionality,
-                  unsigned long seed = 0,
-                  bool randomStart = true,
-                  bool randomShift = false);
+        explicit HaltonRsg(Size dimensionality,
+                           unsigned long seed = 0,
+                           bool randomStart = true,
+                           bool randomShift = false);
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const {
             return sequence_;

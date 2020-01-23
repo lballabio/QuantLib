@@ -69,9 +69,9 @@ namespace QuantLib {
         */
         Rounding()
         : type_(None) {}
-        Rounding(Integer precision,
-                 Type type = Closest,
-                 Integer digit = 5)
+        explicit Rounding(Integer precision,
+                          Type type = Closest,
+                          Integer digit = 5)
         : precision_(precision), type_(type), digit_(digit) {}
         //! perform rounding
         Decimal operator()(Decimal value) const;
@@ -90,40 +90,40 @@ namespace QuantLib {
     //! Up-rounding.
     class UpRounding : public Rounding {
       public:
-        UpRounding(Integer precision,
-                   Integer digit = 5)
+        explicit UpRounding(Integer precision,
+                            Integer digit = 5)
         : Rounding(precision,Up,digit) {}
     };
 
     //! Down-rounding.
     class DownRounding : public Rounding {
       public:
-        DownRounding(Integer precision,
-                     Integer digit = 5)
+        explicit DownRounding(Integer precision,
+                              Integer digit = 5)
         : Rounding(precision,Down,digit) {}
     };
 
     //! Closest rounding.
     class ClosestRounding : public Rounding {
       public:
-        ClosestRounding(Integer precision,
-                        Integer digit = 5)
+        explicit ClosestRounding(Integer precision,
+                                 Integer digit = 5)
         : Rounding(precision,Closest,digit) {}
     };
 
     //! Ceiling truncation.
     class CeilingTruncation : public Rounding {
       public:
-        CeilingTruncation(Integer precision,
-                          Integer digit = 5)
+        explicit CeilingTruncation(Integer precision,
+                                   Integer digit = 5)
         : Rounding(precision,Ceiling,digit) {}
     };
 
     //! %Floor truncation.
     class FloorTruncation : public Rounding {
       public:
-        FloorTruncation(Integer precision,
-                        Integer digit = 5)
+        explicit FloorTruncation(Integer precision,
+                                 Integer digit = 5)
         : Rounding(precision,Floor,digit) {}
     };
 

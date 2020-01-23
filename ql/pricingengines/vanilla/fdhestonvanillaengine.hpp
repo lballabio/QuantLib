@@ -51,7 +51,7 @@ namespace QuantLib {
                                     DividendVanillaOption::results> {
       public:
         // Constructor
-        FdHestonVanillaEngine(
+        explicit FdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,

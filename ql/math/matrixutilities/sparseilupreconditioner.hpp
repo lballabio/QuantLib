@@ -39,7 +39,7 @@ namespace QuantLib {
     */
     class SparseILUPreconditioner  {
       public:
-        SparseILUPreconditioner(const SparseMatrix& A, Integer lfil = 1);
+        explicit SparseILUPreconditioner(const SparseMatrix& A, Integer lfil = 1);
 
         const SparseMatrix& L() const;
         const SparseMatrix& U() const;

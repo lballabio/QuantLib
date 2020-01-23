@@ -297,7 +297,6 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 
     SavedSettings backup;
 
-    const Calendar nullCalendar = NullCalendar();
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Date(28, Dec, 2012);
     Settings::instance().evaluationDate() = todaysDate;

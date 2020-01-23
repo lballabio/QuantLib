@@ -32,7 +32,7 @@ namespace QuantLib {
 
     class AndreasenHugeVolatilityAdapter : public BlackVarianceTermStructure {
       public:
-        AndreasenHugeVolatilityAdapter(
+        explicit AndreasenHugeVolatilityAdapter(
             const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
             Real eps = 1e-6);
 
