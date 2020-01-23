@@ -68,7 +68,7 @@ namespace QuantLib {
 
         // Constructor using Laguerre integration
         // and Gatheral's version of complex log.
-        AnalyticPTDHestonEngine(
+        explicit AnalyticPTDHestonEngine(
             const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Size integrationOrder = 144);
 

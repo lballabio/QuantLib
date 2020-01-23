@@ -48,7 +48,7 @@ namespace QuantLib {
         enum CashDividendModel { Spot, Escrowed };
 
         // Constructor
-        FdBlackScholesVanillaEngine(
+        explicit FdBlackScholesVanillaEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
             Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),

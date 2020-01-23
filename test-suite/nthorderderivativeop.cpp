@@ -534,9 +534,6 @@ namespace {
                 ext::make_shared<FdmMesherComposite>(
                     ext::make_shared<Predefined1dMesher>(loc));
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout =
-                mesher->layout();
-
             const Array g = mesher->locations(0);
             const Array sT = Exp(g - 0.5*vol*vol*T)*df;
 

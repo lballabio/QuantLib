@@ -85,8 +85,8 @@ namespace QuantLib {
     */
     class GaussKronrodAdaptive : public Integrator {
       public:
-          GaussKronrodAdaptive(Real tolerance,
-                               Size maxFunctionEvaluations = Null<Size>());
+        explicit GaussKronrodAdaptive(Real tolerance,
+                                      Size maxFunctionEvaluations = Null<Size>());
       protected:
           Real integrate(const ext::function<Real (Real)>& f,
                          Real a,

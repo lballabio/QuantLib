@@ -413,9 +413,6 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     Date settlement  = index->forwardingTermStructure()->referenceDate();
 
-    ext::shared_ptr<SwaptionVolatilityMatrix> m =
-                liborModel->getSwaptionVolatilityMatrix();
-
     for (i=1; i < size; ++i) {
         for (Size j=1; j <= size-i; ++j) {
             Date fwdStart    = settlement + Period(6*i, Months);

@@ -19,7 +19,7 @@
 */
 
 /*! \file bicgstab.hpp
-    \brief bi-conjugated gradient stableized algorithm
+    \brief Biconjugate gradient stabilized method
 */
 
 #ifndef quantlib_bicgstab_hpp

@@ -35,7 +35,7 @@ namespace QuantLib {
         typedef Real argument_type;
         typedef Real result_type;
 
-        CumulativeChiSquareDistribution(Real df) : df_(df) {}
+        explicit CumulativeChiSquareDistribution(Real df) : df_(df) {}
         Real operator()(Real x) const;
       private:
         Real df_;

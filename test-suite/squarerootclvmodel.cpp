@@ -432,10 +432,6 @@ namespace {
                 }
             }
 
-            Real s = 0.0;
-            for (Size i=0; i < retVal.size(); ++i)
-                s+=retVal[i]*retVal[i];
-
             return retVal;
         }
 

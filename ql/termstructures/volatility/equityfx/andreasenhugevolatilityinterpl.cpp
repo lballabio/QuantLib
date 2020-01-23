@@ -50,7 +50,7 @@ namespace QuantLib {
         struct close_enough_to {
             Real y;
             Size n;
-            close_enough_to(Real y, Size n=42) : y(y), n(n) {}
+            explicit close_enough_to(Real y, Size n=42) : y(y), n(n) {}
             bool operator()(Real x) const { return close_enough(x, y, n); }
         };
 

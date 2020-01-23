@@ -148,7 +148,7 @@ namespace QuantLib {
         template <class T>
         struct OdeFctWrapper {
             typedef typename AdaptiveRungeKutta<T>::OdeFct1d OdeFct1d;
-            OdeFctWrapper(const OdeFct1d& ode1d)
+            explicit OdeFctWrapper(const OdeFct1d& ode1d)
             : ode1d_(ode1d) {}
             Disposable<std::vector<T> > operator()(const Real x,
                                                    const std::vector<T>& y) {

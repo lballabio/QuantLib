@@ -488,8 +488,6 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
 			ext::make_shared<FdmSquareRootFwdOp>(mesher, kappa, theta,
                                    sigma, 0, transform));
 
-        const Array eP = p;
-
         const Size n = 100;
         const Time dt = 0.01;
         DouglasScheme evolver(0.5, op);
@@ -1400,7 +1398,6 @@ namespace {
         Settings::instance().evaluationDate() = todaysDate;
         const Date finalDate(2, June, 2020);
 
-        const Calendar calendar = TARGET();
         const DayCounter dc = Actual365Fixed();
 
         const Real s0 = 100;
@@ -1551,7 +1548,6 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
     BOOST_TEST_MESSAGE("Testing local volatility vs SLV model...");
 
     SavedSettings backup;
-    const DayCounter dc = ActualActual();
     const Date todaysDate(5, Oct, 2015);
     const Date finalDate = todaysDate + Period(1, Years);
     Settings::instance().evaluationDate() = todaysDate;
@@ -2131,18 +2127,12 @@ void HestonSLVModelTest::testForwardSkewSLV() {
     const Size nSim = 40000;
     const Size xGrid = 200;
 
-    const bool sobol = true;
-
     const ext::shared_ptr<LocalVolTermStructure> leverageFctMC =
         HestonSLVMCModel(
             localVol,
             hestonModel,
-            sobol ? ext::shared_ptr<BrownianGeneratorFactory>(
-                        new SobolBrownianGeneratorFactory(
-                            SobolBrownianGenerator::Diagonal,
-                            1234ul, SobolRsg::JoeKuoD7))
-                  : ext::shared_ptr<BrownianGeneratorFactory>(
-                          new MTBrownianGeneratorFactory(1234ul)),
+            ext::shared_ptr<BrownianGeneratorFactory>(
+                 new MTBrownianGeneratorFactory(1234ul)),
             maturityDate, 182, xGrid, nSim).leverageFunction();
 
     const ext::shared_ptr<HestonSLVProcess> mcSlvProcess(

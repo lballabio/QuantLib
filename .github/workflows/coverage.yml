@@ -16,7 +16,7 @@ jobs:
         CXXFLAGS: -O1 -fprofile-arcs -ftest-coverage
         LDFLAGS: -lgcov
       run: |
-        cmake .
+        cmake -DBOOST_ROOT=/usr .
         make -j 2
     - name: Test
       run: |
