@@ -115,11 +115,24 @@ namespace QuantLib {
         /*! Removes a date from the set of holidays for the given calendar. */
         void removeHoliday(const Date&);
 
-        //! Returns the holidays between two dates
+        /*! Returns the holidays between two dates. Set as deprecated as 
+            requires Impl to be passed as the first argument.
+        */
         static std::vector<Date> holidayList(const Calendar& calendar,
                                              const Date& from,
                                              const Date& to,
                                              bool includeWeekEnds = false);
+        /*! Returns the holidays between two dates. Since set find is log(n)
+            complexity, operation takes k log(n) time.
+        */
+        std::vector<Date> holidayList(const Date& from,
+                                             const Date& to,
+                                             bool includeWeekEnds = false) const;
+        /*! Returns the business days between two dates. Since set find is log(n)
+            complexity, operation takes k log(n) time.
+        */
+        std::vector<Date> businessDaysList(const Date& from,
+                                                  const Date& to) const;
 
         /*! Adjusts a non-business day to the appropriate near business day
             with respect to the given convention.

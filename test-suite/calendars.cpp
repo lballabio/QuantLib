@@ -2175,6 +2175,36 @@ void CalendarTest::testIntradayAddHolidays() {
 #endif
 }
 
+void CalendarTest::testDaysLists() {
+
+    BOOST_TEST_MESSAGE("Testing holidayList and businessDaysList...");
+    Calendar germany = Germany();
+    Date firstDate = Date::todaysDate(),
+         endDate = firstDate + 1*Years;
+
+    std::vector<Date> holidays = germany.holidayList(firstDate, endDate, true);
+    std::vector<Date> businessDays = germany.businessDaysList(firstDate, endDate);
+
+
+    std::vector<Date>::iterator it_holidays = holidays.begin(),
+                                it_businessDays = businessDays.begin();
+    for (Date d = firstDate; d < endDate; d++) {
+        if(d == *it_holidays && d == *it_businessDays) {
+            BOOST_FAIL("Data " << d << "is both holiday and business day.");
+            it_holidays++;
+            it_businessDays++;
+        } else if(d == *it_holidays){
+            it_holidays++;
+        } else if(d == *it_businessDays) {
+            it_businessDays++;
+        } else {
+            BOOST_FAIL( "Data " << d << "is neither holiday nor business day.";
+        }
+
+    }
+
+}
+
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
 
@@ -2213,6 +2243,7 @@ test_suite* CalendarTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testIntradayAddHolidays));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDaysLists));
 
     return suite;
 }
