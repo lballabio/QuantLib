@@ -126,13 +126,13 @@ namespace QuantLib {
             complexity, operation takes k log(n) time.
         */
         std::vector<Date> holidayList(const Date& from,
-                                             const Date& to,
-                                             bool includeWeekEnds = false) const;
+                                      const Date& to,
+                                      bool includeWeekEnds = false) const;
         /*! Returns the business days between two dates. Since set find is log(n)
             complexity, operation takes k log(n) time.
         */
         std::vector<Date> businessDaysList(const Date& from,
-                                                  const Date& to) const;
+                                           const Date& to) const;
 
         /*! Adjusts a non-business day to the appropriate near business day
             with respect to the given convention.
