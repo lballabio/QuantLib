@@ -81,8 +81,8 @@ namespace QuantLib {
         JointCalendar(const Calendar&, const Calendar&,
                       const Calendar&, const Calendar&,
                       JointCalendarRule = JoinHolidays);
-        JointCalendar(const std::vector<Calendar>&,
-                      JointCalendarRule = JoinHolidays);
+        explicit JointCalendar(const std::vector<Calendar>&,
+                               JointCalendarRule = JoinHolidays);
     };
 
 }
