@@ -768,6 +768,26 @@ void DayCounterTest::testThirty360_EurobondBasis() {
 }
 
 
+void DayCounterTest::testThirty360_German() {
+    BOOST_TEST_MESSAGE("Testing 30/360 (German) day counter...");
+
+    Thirty360 dayCounter(Thirty360::German);
+
+    Date start(5, February, 2020);
+    Date end(29, February, 2020);
+
+    Date::serial_type calculated = dayCounter.dayCount(start, end);
+    Date::serial_type expected = 25;  // 30 - 5, as 29 is adjusted
+
+    if (calculated != expected) {
+        BOOST_ERROR("Day count from " << start
+                    << " to " << end << ":\n"
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
+    }
+}
+
+
 void DayCounterTest::testActual365_Canadian() {
 
     BOOST_TEST_MESSAGE("Testing that Actual 365 (Canadian) throws when needed...");
@@ -842,6 +862,7 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_German));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActual365_Canadian));
 
 #ifdef QL_HIGH_RESOLUTION_DATE
