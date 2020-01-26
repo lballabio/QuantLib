@@ -2191,14 +2191,14 @@ void CalendarTest::testDaysLists() {
     for (Date d = firstDate; d < endDate; d++) {
         if(d == *it_holidays && d == *it_businessDays) {
             BOOST_FAIL("Date " << d << "is both holiday and business day.");
-            it_holidays++;
-            it_businessDays++;
+            it_holidays = it_holidays + 1;
+            it_businessDays = it_businessDays + 1;
         } else if(d == *it_holidays){
-            it_holidays++;
+            it_holidays = it_holidays + 1;
         } else if(d == *it_businessDays) {
-            it_businessDays++;
+            it_businessDays = it_businessDays + 1;
         } else {
-            BOOST_FAIL( "Date " << d << "is neither holiday nor business day.";)
+            BOOST_FAIL( "Date " << d << "is neither holiday nor business day.");
         }
 
     }
