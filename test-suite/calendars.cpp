@@ -6,6 +6,7 @@
  Copyright (C) 2006 Piter Dias
  Copyright (C) 2008 Charles Chongseok Hyun
  Copyright (C) 2015 Dmitri Nesteruk
+ Copyright (C) 2020 Piotr Siejda
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -106,14 +107,24 @@ void CalendarTest::testJointCalendars() {
     Calendar c1 = TARGET(),
              c2 = UnitedKingdom(),
              c3 = UnitedStates(UnitedStates::NYSE),
-             c4 = Japan();
+             c4 = Japan(),
+             c5 = Germany();
+
+    std::vector<Calendar> calendar_vect;
+    calendar_vect.reserve( 5 );
+    calendar_vect.push_back(c1);
+    calendar_vect.push_back(c2);
+    calendar_vect.push_back(c3);
+    calendar_vect.push_back(c4);
+    calendar_vect.push_back(c5);
 
     Calendar c12h = JointCalendar(c1,c2,JoinHolidays),
              c12b = JointCalendar(c1,c2,JoinBusinessDays),
              c123h = JointCalendar(c1,c2,c3,JoinHolidays),
              c123b = JointCalendar(c1,c2,c3,JoinBusinessDays),
              c1234h = JointCalendar(c1,c2,c3,c4,JoinHolidays),
-             c1234b = JointCalendar(c1,c2,c3,c4,JoinBusinessDays);
+             c1234b = JointCalendar(c1,c2,c3,c4,JoinBusinessDays),
+             cvh = JointCalendar(calendar_vect,JoinHolidays);
 
     // test one year, starting today
     Date firstDate = Date::todaysDate(),
@@ -124,7 +135,8 @@ void CalendarTest::testJointCalendars() {
         bool b1 = c1.isBusinessDay(d),
              b2 = c2.isBusinessDay(d),
              b3 = c3.isBusinessDay(d),
-             b4 = c4.isBusinessDay(d);
+             b4 = c4.isBusinessDay(d),
+             b5 = c5.isBusinessDay(d);
 
         if ((b1 && b2) != c12h.isBusinessDay(d))
             BOOST_FAIL("At date " << d << ":\n"
@@ -160,6 +172,12 @@ void CalendarTest::testJointCalendars() {
             BOOST_FAIL("At date " << d << ":\n"
                        << "    inconsistency between joint calendar "
                        << c1234b.name() << " (joining business days)\n"
+                       << "    and its components");
+
+        if ((b1 && b2 && b3 && b4 && b5) != cvh.isBusinessDay(d))
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << cvh.name() << " (joining holidays)\n"
                        << "    and its components");
 
     }
@@ -1686,9 +1704,29 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(4, October, 2019));
     expectedHol.push_back(Date(7, October, 2019));
 
+    // China Shanghai Securities Exchange holiday list in the year 2020
+    expectedHol.push_back(Date(1, Jan, 2020));
+    expectedHol.push_back(Date(24, Jan, 2020));
+    expectedHol.push_back(Date(27, Jan, 2020));
+    expectedHol.push_back(Date(28, Jan, 2020));
+    expectedHol.push_back(Date(29, Jan, 2020));
+    expectedHol.push_back(Date(30, Jan, 2020));
+    expectedHol.push_back(Date(6, April, 2020));
+    expectedHol.push_back(Date(1, May, 2020));
+    expectedHol.push_back(Date(4, May, 2020));
+    expectedHol.push_back(Date(5, May, 2020));
+    expectedHol.push_back(Date(25, June, 2020));
+    expectedHol.push_back(Date(26, June, 2020));
+    expectedHol.push_back(Date(1, October, 2020));
+    expectedHol.push_back(Date(2, October, 2020));
+    expectedHol.push_back(Date(5, October, 2020));
+    expectedHol.push_back(Date(6, October, 2020));
+    expectedHol.push_back(Date(7, October, 2020));
+    expectedHol.push_back(Date(8, October, 2020));
+
     Calendar c = China(China::SSE);
     std::vector<Date> hol = Calendar::holidayList(c, Date(1, January, 2014),
-        Date(31, December, 2019));
+        Date(31, December, 2020));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -1752,9 +1790,18 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.push_back(Date(29, September, 2019));
     expectedWorkingWeekEnds.push_back(Date(12, October, 2019));
 
+    // China Inter Bank working weekends list in the year 2020
+    expectedWorkingWeekEnds.push_back(Date(19, January, 2020));
+    expectedWorkingWeekEnds.push_back(Date(1, Feb, 2020));
+    expectedWorkingWeekEnds.push_back(Date(26, April, 2020));
+    expectedWorkingWeekEnds.push_back(Date(9, May, 2020));
+    expectedWorkingWeekEnds.push_back(Date(28, June, 2020));
+    expectedWorkingWeekEnds.push_back(Date(27, September, 2020));
+    expectedWorkingWeekEnds.push_back(Date(10, October, 2020));
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2019);
+    Date end(31, Dec, 2020);
 
     Size k = 0;
 

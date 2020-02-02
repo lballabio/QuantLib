@@ -58,40 +58,45 @@ env:
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
+    - INFO="Clang 9"
+      DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+      CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+      CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    #
     - INFO="C++03 mode"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:disco
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     #
     - INFO="C++11 mode"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:disco
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++11"
     #
     - INFO="C++14 mode"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:disco
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
     #
     - INFO="C++17 mode"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:disco
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++17"
     #
     - INFO="Intraday calculations enabled"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CONFIGURE_FLAGS="--enable-intraday"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
     - INFO="Indexed coupons enabled"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CONFIGURE_FLAGS="--enable-indexed-coupons"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
     - INFO="C++11 classes enabled"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CONFIGURE_FLAGS="--enable-std-classes"
       CXXFLAGS="-O2 -g0 -std=c++11 -Wall -Wno-unknown-pragmas -Werror"

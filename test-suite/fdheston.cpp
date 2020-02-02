@@ -741,7 +741,6 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 
     SavedSettings backup;
 
-    const Calendar calendar = TARGET();
     const Option::Type type(Option::Put);
     const Real underlying = 36;
     const Real strike = underlying;

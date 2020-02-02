@@ -45,7 +45,7 @@ namespace QuantLib {
                                     DoubleBarrierOption::results> {
       public:
         // Constructor
-        FdHestonDoubleBarrierEngine(
+        explicit FdHestonDoubleBarrierEngine(
             const ext::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid = 50, Size dampingSteps = 0,

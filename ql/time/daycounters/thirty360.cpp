@@ -85,9 +85,8 @@ namespace QuantLib {
 
         if (mm1 == 2 && dd1 == 28 + (Date::isLeap(yy1) ? 1 : 0))
             dd1 = 30;
-        if (!isLastPeriod_ && mm2 == 2 &&
-            dd2 == 28 + (Date::isLeap(yy2) ? 1 : 0))
-            dd1 = 30;
+        if (!isLastPeriod_ && mm2 == 2 && dd2 == 28 + (Date::isLeap(yy2) ? 1 : 0))
+            dd2 = 30;
 
         return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
             std::max(Integer(0),30-dd1) + std::min(Integer(30),dd2);

@@ -1517,6 +1517,47 @@ void BondTest::testBondFromScheduleWithDateVector()
     }
 }
 
+void BondTest::testFixedRateBondWithArbitrarySchedule() {
+    BOOST_TEST_MESSAGE("Testing fixed-rate bond with arbitrary schedule...");
+    SavedSettings backup;
+
+    Calendar calendar = NullCalendar();
+
+    Natural settlementDays = 3;
+
+    Date today(1, January, 2019);
+    Settings::instance().evaluationDate() = today;
+
+    // For the schedule to generate correctly for Feb-28's, make maturity date on Feb 29
+    std::vector<Date> dates(4);
+    dates[0] = Date(1, February, 2019);
+    dates[1] = Date(7, February, 2019);
+    dates[2] = Date(1, April, 2019);
+    dates[3] = Date(27, May, 2019);
+
+    Schedule schedule(dates, calendar, Unadjusted);
+
+    Rate coupon = 0.01;
+    DayCounter dc = Actual365Fixed();
+
+    FixedRateBond bond(
+        settlementDays,
+        100.0,
+        schedule,
+        std::vector<Rate>(1, coupon),
+        dc, Following, 100.0);
+
+    if (bond.frequency() != NoFrequency) {
+        BOOST_ERROR("unexpected frequency: " << bond.frequency());
+    }
+
+    Handle<YieldTermStructure> discountCurve(flatRate(today, 0.03, Actual360()));
+    bond.setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingBondEngine(discountCurve)));
+
+    BOOST_CHECK_NO_THROW(bond.cleanPrice());
+}
+
+
 void BondTest::testThirty360BondWithSettlementOn31st(){
     BOOST_TEST_MESSAGE(
         "Testing Thirty/360 bond with settlement on 31st of the month...");
@@ -1577,6 +1618,7 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testFixedRateBondWithArbitrarySchedule));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testThirty360BondWithSettlementOn31st));
     return suite;
 }

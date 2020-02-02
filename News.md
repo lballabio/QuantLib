@@ -1,82 +1,100 @@
-
-Changes for QuantLib 1.16:
+Changes for QuantLib 1.17:
 ==========================
 
-QuantLib 1.16 includes 34 pull requests from several contributors.
+QuantLib 1.17 includes 30 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/12?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/13?closed=1>.
 
 Portability
 -----------
 
-- Added support for Visual Studio 2019 (thanks to Paul Giltinan).
+- As of this release, support of Visual C++ 2010 is deprecated; it
+  will be dropped in next release.  Also, we'll probably deprecate
+  Visual C++ 2012 in one of the next few releases in order to drop it
+  around the end of 2020.
 
 Configuration
 -------------
 
-- As announced in past release, the compile-time switch to force
-  non-negative rates was removed.
+- A new function `compiledBoostVersion()` is available, (thanks to
+  Andrew Smith).  It returns the version of Boost used to compile the
+  library, as reported by the `BOOST_VERSION` macro.  This can help
+  avoid linking the library with user code compiled with a different
+  Boost version (which can result in erratic behavior).
+
+- It is now possible to specify at run time whether to use indexed
+  coupons (thanks to Ralf Konrad).  The compile-time configuration is
+  still used as a default, but it is also possible to call either of
+  the static methods `IborCoupon::createAtParCoupons` or
+  `IborCoupon::createIndexedCoupons` to specify your preference.  For
+  the time being, the methods above must necessarily be called before
+  creating any instance of `IborCoupon` or of its derived classes.
+
+Build
+-----
+
+- As of this version, the names of the binaries produced by the
+  included Visual C++ solution no longer contain the toolset version
+  (e.g., v142).
+
+Instruments
+-----------
+
+- Added ex-coupon functionality to floating-rate bonds (thanks to
+  Steven Van Haren).
+
+- The inner structure `Callability::Price` was moved to the class
+  `Bond` and can now be used to specify what kind of price was passed
+  to the `BondFunctions::yield` method (thanks to Francois Botha).
+
+- It is now possible to use a par-coupon approximation for FRAs like
+  the one used in Ibor coupons (thanks to Peter Caspers).
 
 Pricing engines
 ---------------
 
-- Added constant elasticity of variance (CEV) pricing engines for
-  vanilla options.  Analytic, FD and SABR engines are available
-  (thanks to Klaus Spanderen).
+- Added escrowed dividend model to the new-style FD engine for
+  `DividendVanillaOption` (thanks to Klaus Spanderen).
 
-- Added quanto pricing functionality to a couple of FD engines for
-  DividendVanillaOption (thanks to Klaus Spanderen).
-
-Cash flows
-----------
-
-- Digital coupons can now optionally return the value of the naked
-  option (thanks to Peter Caspers).
-
-Date/time
----------
-
-- Updated Taiwan holidays for 2019 (thanks to Hank Liu).
-
-- Added two newly announced holidays to Chinese calendar (thanks to
-  Cheng Li).
-
-- Updated Japan calendar (thanks to Eisuke Tani).
-
-- Fixed New Year's day adjustment for Canadian calendar (thanks to Roy
-  Zywina).
-
-- Added a couple of exceptions for UK bank holidays (thanks to GitHub
-  user Vililikku for the heads-up).
-
-- Added French calendar (thanks to GitHub user NJeanray).
-
-- Added public methods to expose a calendar's added and removed
-  holidays (thanks to Francois Botha).
-
-- Allow the stub date of a schedule to equal the maturity.
-
-
-Deprecated features
--------------------
-
-- Deprecated a constructor of the SwaptionVolatilityMatrix class that
-  didn't take a calendar.
-
-- Removed typedefs GammaDistribution, ChiSquareDistribution,
-  NonCentralChiSquareDistribution and
-  InverseNonCentralChiSquareDistribution, deprecated in version 1.12.
-  Use CumulativeGammaDistribution, CumulativeChiSquareDistribution,
-  NonCentralCumulativeChiSquareDistribution and
-  InverseNonCentralCumulativeChiSquareDistribution instead.
-
-- Removed Actual365NoLeap class, deprecated in version 1.11.  It was
-  folded into Actual365Fixed.
+- Black cap/floor engine now also returns caplet deltas (thanks to
+  Wojciech Slusarski).
 
 Term structures
 ---------------
 
-- Take payment days into account when calculating the nodes of a
-  bootstrapped curve based on overnight swaps.
+- OIS rate helpers can now choose whether to use as a pillar for the
+  bootstrap either their maturity date or the end date of the last
+  underlying fixing.  This provides an alternative if the bootstrap
+  should fail.  (Thanks to Drew Saunders for the heads-up.)
+
+- Instances of the `FittedBondDiscountCurve` class now behave as
+  simple evaluators (that is, they use the given paramters without
+  performing root-solving) when the `maxIterations` parameter is set
+  to 0.  (Thanks to Nick Firoozye for the heads-up.)
+
+Date/time
+---------
+
+- Added a few special closing days to the US government bond calendar
+  (thanks to Mike DelMedico).
+
+- Fixed an incorrect 2019 holiday in Chinese calendar (thanks to Cheng Li).
+
+- Added missing holiday to Swedish calendar (thanks to GitHub users
+  `periculus` and `tonyzhipengzhou`).
+
+Deprecated features
+-------------------
+
+- The classes `FDEuropeanEngine`, `FDAmericanEngine`,
+  `FDBermudanEngine`, `FDDividendEuropeanEngine`,
+  `FDDividendEuropeanEngineShiftScale`, `FDDividendAmericanEngine`,
+  `FDDividendAmericanEngineShiftScale` are now deprecated.  They are
+  superseded by `FdBlackScholesVanillaEngine`.
+
+
+Thanks go also to Joel King, Kai Striega, Francis Duffy, Tom Anderson
+and GitHub user `lab4quant` for smaller fixes, enhancements, and bug
+reports.

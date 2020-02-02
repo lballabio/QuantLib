@@ -41,7 +41,7 @@ namespace QuantLib {
       public:
         typedef typename Stat::value_type value_type;
         GenericGaussianStatistics() {}
-        GenericGaussianStatistics(const Stat& s) : Stat(s) {}
+        explicit GenericGaussianStatistics(const Stat& s) : Stat(s) {}
         //! \name Gaussian risk measures
         //@{
         /*! returns the downside variance, defined as

@@ -1,0 +1,28 @@
+name: Coverage report
+on:
+  push:
+    branches:
+      - master
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup
+      run: |
+        sudo apt install -y lcov libboost-all-dev
+    - name: Compile
+      env:
+        CXXFLAGS: -O1 -fprofile-arcs -ftest-coverage
+        LDFLAGS: -lgcov
+      run: |
+        cmake -DBOOST_ROOT=/usr .
+        make -j 2
+    - name: Test
+      run: |
+        ./test-suite/quantlib-test-suite --log_level=message
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        yml: ./.codecov.yml
