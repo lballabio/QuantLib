@@ -265,9 +265,11 @@ namespace QuantLib {
         this->times_.resize(dates_.size());
         this->times_[0]=0.0;
         for (Size i=1; i<dates_.size(); ++i) {
-            QL_REQUIRE(dates_[i] > dates_[i-1],
-                       "invalid date (" << dates_[i] << ", vs "
-                       << dates_[i-1] << ")");
+            { // add new scope to work around a misleading-indentation warning
+                QL_REQUIRE(dates_[i] > dates_[i-1],
+                           "invalid date (" << dates_[i] << ", vs "
+                           << dates_[i-1] << ")");
+            }
             this->times_[i] = dayCounter().yearFraction(dates_[0], dates_[i]);
             QL_REQUIRE(!close(this->times_[i], this->times_[i-1]),
                        "two dates correspond to the same time "
