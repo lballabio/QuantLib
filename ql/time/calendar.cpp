@@ -275,7 +275,6 @@ namespace QuantLib {
         return EasterMonday[y-1901];
     }
 
-    QL_DEPRECATED
     std::vector<Date> Calendar::holidayList(const Calendar& calendar,
         const Date& from, const Date& to, bool includeWeekEnds) {
 
@@ -305,7 +304,7 @@ namespace QuantLib {
        return result;
     }
 
-    std::vector<Date> Calendar::businessDaysList(
+    std::vector<Date> Calendar::businessDayList(
         const Date& from, const Date& to) const {
 
         QL_REQUIRE(to>from, "'from' date ("
