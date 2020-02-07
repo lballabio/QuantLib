@@ -101,7 +101,7 @@ namespace QuantLib {
     }
 
     namespace {
-    void adjustToNextValidFixingDate(Date& d, const ext::shared_ptr<BMAIndex>& index) {
+    void adjustToPreviousValidFixingDate(Date& d, const ext::shared_ptr<BMAIndex>& index) {
         while (!index->isValidFixingDate(d) && d > Date::minDate())
             d--;
     }
@@ -126,9 +126,9 @@ namespace QuantLib {
         Date fixingStart = cal.advance(startDate, -fixingDays*Days, Preceding);
 
         // make sure that the value date associated to fixingStart is <= startDate
-        adjustToNextValidFixingDate(fixingStart, index);
+        adjustToPreviousValidFixingDate(fixingStart, index);
         while (index->valueDate(fixingStart) > startDate && fixingStart > Date::minDate()) {
-            adjustToNextValidFixingDate(--fixingStart, index);
+            adjustToPreviousValidFixingDate(--fixingStart, index);
         }
 
         fixingSchedule_ = index->fixingSchedule(fixingStart, endDate);
