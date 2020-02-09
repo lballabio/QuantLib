@@ -1249,8 +1249,6 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     // global bootstrap contraints (bbg 'special serial FRA treatment')
     std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
-    boost::function<std::vector<Date>()> additionalDates;
-    boost::function<Array()> additionalErrors;
 
     // set up the additional rate helpers we need in the cost function
     for (Size i = 0; i < 7; ++i) {
@@ -1261,7 +1259,8 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     // functor returning the additional error terms for the cost function
     struct additionalErrors {
         additionalErrors(const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
-                             additionalHelpers) {}
+                             additionalHelpers)
+        : additionalHelpers(additionalHelpers) {}
         std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
         Array operator()() {
             Array errors(5);
@@ -1291,7 +1290,8 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     boost::shared_ptr<bbgCurve> curve = boost::make_shared<bbgCurve>(
         2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
         1.0E-12, Linear(),
-        bbgCurve::bootstrap_type(additionalHelpers, additionalDates, additionalErrors));
+        bbgCurve::bootstrap_type(additionalHelpers, additionalDates(),
+                                 additionalErrors(additionalHelpers)));
     curve->enableExtrapolation();
 
     // check ql vs bbg curve pillar dates
