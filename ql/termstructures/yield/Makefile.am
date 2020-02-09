@@ -22,8 +22,10 @@ this_include_HEADERS = \
     quantotermstructure.hpp \
     ratehelpers.hpp \
     zerocurve.hpp \
+    zerocurve_simple.hpp \
     zerospreadedtermstructure.hpp \
-    zeroyieldstructure.hpp
+    zeroyieldstructure.hpp \
+    zeroyieldstructure_simple.hpp
 
 cpp_files = \
     bondhelpers.cpp \
@@ -33,7 +35,8 @@ cpp_files = \
     nonlinearfittingmethods.cpp \
     oisratehelper.cpp \
     ratehelpers.cpp \
-    zeroyieldstructure.cpp
+    zeroyieldstructure.cpp \
+    zeroyieldstructure_simple.cpp
 
 if UNITY_BUILD
 

@@ -827,6 +827,7 @@ set(QuantLib_SRC
     termstructures/yield/oisratehelper.cpp
     termstructures/yield/ratehelpers.cpp
     termstructures/yield/zeroyieldstructure.cpp
+    termstructures/yield/zeroyieldstructure_simple.cpp
     termstructures/yieldtermstructure.cpp
     time/asx.cpp
     time/businessdayconvention.cpp
@@ -2057,6 +2058,7 @@ set(QuantLib_HDR
     termstructures/credit/probabilitytraits.hpp
     termstructures/credit/survivalprobabilitystructure.hpp
     termstructures/defaulttermstructure.hpp
+    termstructures/globalbootstrap.hpp
     termstructures/inflation/all.hpp
     termstructures/inflation/inflationhelpers.hpp
     termstructures/inflation/inflationtraits.hpp
@@ -2154,8 +2156,10 @@ set(QuantLib_HDR
     termstructures/yield/quantotermstructure.hpp
     termstructures/yield/ratehelpers.hpp
     termstructures/yield/zerocurve.hpp
+    termstructures/yield/zerocurve_simple.hpp
     termstructures/yield/zerospreadedtermstructure.hpp
     termstructures/yield/zeroyieldstructure.hpp
+    termstructures/yield/zeroyieldstructure_simple.hpp
     termstructures/yieldtermstructure.hpp
     time/all.hpp
     time/asx.hpp

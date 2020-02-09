@@ -14,7 +14,8 @@ this_include_HEADERS = \
 	iterativebootstrap.hpp \
 	localbootstrap.hpp \
 	voltermstructure.hpp \
-	yieldtermstructure.hpp
+	yieldtermstructure.hpp \
+	globalbootstrap.hpp
 
 cpp_files = \
 	defaulttermstructure.cpp \
