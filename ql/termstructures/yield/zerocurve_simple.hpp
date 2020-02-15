@@ -197,16 +197,6 @@ template <class T> void InterpolatedZeroCurveSimple<T>::initialize() {
         this->times_[i] = dayCounter().yearFraction(dates_[0], dates_[i]);
         QL_REQUIRE(!close(this->times_[i], this->times_[i - 1]), "two dates correspond to the same time "
                                                                  "under this curve's day count convention");
-#if !defined(QL_NEGATIVE_RATES)
-        QL_REQUIRE(this->data_[i] > 0.0, "non-positive yield");
-        // positive yields are not enough to ensure non-negative fwd rates
-        // so here's a stronger requirement
-        QL_REQUIRE(this->data_[i] * this->times_[i] - this->data_[i - 1] * this->times_[i - 1] >= 0.0,
-                   "negative forward rate implied by the zero yield "
-                       << io::rate(this->data_[i]) << " at " << dates_[i] << " (t=" << this->times_[i]
-                       << ") after the zero yield " << io::rate(this->data_[i - 1]) << " at " << dates_[i - 1]
-                       << " (t=" << this->times_[i - 1] << ")");
-#endif
     }
 
     this->interpolation_ =

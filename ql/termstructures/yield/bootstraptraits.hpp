@@ -338,11 +338,7 @@ namespace QuantLib {
         {
             if (validData) {
                 Real r = *(std::max_element(c->data().begin(), c->data().end()));
-                #if defined(QL_NEGATIVE_RATES)
                 return r<0.0 ? r/2.0 : r*2.0;
-                #else
-                return r*2.0;
-                #endif
             }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
