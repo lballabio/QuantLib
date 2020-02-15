@@ -123,7 +123,7 @@ template <class T> Rate InterpolatedZeroCurveSimple<T>::simpleZeroYieldImpl(Time
     }
     else {
         // flat fwd extrapolation after last pillar,
-        // TODO BBG uses flat extrapolation of non-annualized zero instead
+        // Notice that bbg uses flat extrapolation of non-annualized zero instead
         Time tMax = this->times_.back();
         Rate zMax = this->data_.back();
         Rate instFwdMax = zMax + tMax * this->interpolation_.derivative(tMax);

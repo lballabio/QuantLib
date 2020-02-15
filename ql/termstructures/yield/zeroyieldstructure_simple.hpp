@@ -98,14 +98,6 @@ inline DiscountFactor ZeroYieldStructureSimple::discountImpl(Time t) const {
 	return DiscountFactor(1.0 / (1.0 + r * t));
 }
 
-inline DiscountFactor ZeroYieldStructureSimple::discountImpl(const Date& d) const {
-    if (d == referenceDate()) // this acts as a safe guard in cases where
-        return 1.0;           // zeroYieldImpl(refDate) would throw.
-
-    Rate r = simpleZeroYieldImpl(d);
-    return DiscountFactor(1.0 / (1.0 + r * timeFromReference(d)));
-}
-
 } // namespace QuantLib
 
 #endif

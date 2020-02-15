@@ -1197,11 +1197,12 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     Settings::instance().evaluationDate() = today;
 
     // Here we compare zero rates from bbg curve S45 (EUR-EURIBOR-6M) with QL. We assume the
-    // following settings in bbg's SWDF screen (which are sort of the "factory" settings): Curve
-    // Defaults                            : Pay = Mid, Rec = Mid Interpolation Method : Piecewise
-    // linear (Simple-comp) Enable OIS Discount/Dual Curve Stripping  : not enabled We get a quite
-    // good match (1/100 bp), yet above numerical accuracy that might have to do with details of
-    // bbg's "special FRA treatment" which is not fully disclosed
+    // following settings in bbg's SWDF screen (which are sort of the "factory" settings):
+    // Curve Defaults                            : Pay = Mid, Rec = Mid
+    // Interpolation Method                      : Piecewise linear (Simple-comp)
+    // Enable OIS Discount/Dual Curve Stripping  : not enabled
+    // We get a quite good match (1/100 bp), yet above numerical accuracy that might have to do
+    // with details of bbg's "special FRA treatment" which is not fully disclosed
 
     // bbg maturity date
     Date bbgDate[] = {
@@ -1242,7 +1243,7 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
     for (Size i = 0; i < 19; ++i) {
-        helpers.push_back(ext::make_shared<SwapRateHelper>(bbgMktRate[12 + i] / 100.0,
+        helpers.push_back(ext::make_shared<SwapRateHelper>(bbgMktRate[13 + i] / 100.0,
                                                            swapTenors[i] * Years, TARGET(), Annual,
                                                            ModifiedFollowing, Thirty360(), index));
     }
@@ -1311,10 +1312,10 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
             dc = Thirty360();
             comp = SimpleThenCompounded;
         }
-        BOOST_TEST_MESSAGE(std::setw(10) << bbgZeroRate[i] << std::setw(10)
-                                         << curve->zeroRate(bbgDate[i], dc, comp, Annual).rate());
-        // BOOST_CHECK_CLOSE(bbgZeroRate[i], curve->zeroRate(bbgDate[i], dc, comp, Annual).rate(),
-        //                   2E-6);
+        // 0.01 basis points tolerance
+        BOOST_CHECK_SMALL(std::fabs(bbgZeroRate[i] / 100.0 -
+                                    curve->zeroRate(bbgDate[i], dc, comp, Annual).rate()),
+                          1E-6);
     }
 }
 

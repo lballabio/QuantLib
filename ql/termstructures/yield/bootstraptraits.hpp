@@ -321,19 +321,12 @@ namespace QuantLib {
             Real result;
             if (validData) {
                 Real r = *(std::min_element(c->data().begin(), c->data().end()));
-                #if defined(QL_NEGATIVE_RATES)
                 result = r<0.0 ? r*2.0 : r/2.0;
-                #else
-                result = r/2.0;
-                #endif
+            } else {
+                // no constraints.
+                // We choose as min a value very unlikely to be exceeded.
+                result = -detail::maxRate;
             }
-            #if defined(QL_NEGATIVE_RATES)
-            // no constraints.
-            // We choose as min a value very unlikely to be exceeded.
-            result = -detail::maxRate;
-            #else
-            result = QL_EPSILON;
-            #endif
             Real t = c->timeFromReference(c->dates()[i]);
 			return std::max(result, -1.0 / t + 1E-8);
         }
