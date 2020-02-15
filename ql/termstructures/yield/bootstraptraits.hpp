@@ -145,7 +145,7 @@ namespace QuantLib {
                 return detail::avgRate;
 
             // extrapolate
-            Date d = c->dates()[i]; 
+            Date d = c->dates()[i];
             return c->zeroRate(d, c->dayCounter(),
                                Continuous, Annual, true);
         }
@@ -328,7 +328,7 @@ namespace QuantLib {
                 result = -detail::maxRate;
             }
             Real t = c->timeFromReference(c->dates()[i]);
-			return std::max(result, -1.0 / t + 1E-8);
+            return std::max(result, -1.0 / t + 1E-8);
         }
         template <class C>
         static Real maxValueAfter(Size,
