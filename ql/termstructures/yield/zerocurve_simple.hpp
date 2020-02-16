@@ -64,7 +64,7 @@ class InterpolatedZeroCurveSimple : public ZeroYieldStructureSimple, protected I
     std::vector<std::pair<Date, Real> > nodes() const;
     //@}
   protected:
-    InterpolatedZeroCurveSimple(const DayCounter &,
+    explicit InterpolatedZeroCurveSimple(const DayCounter &,
                                 const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
                                 const std::vector<Date> &jumpDates = std::vector<Date>(),
                                 const Interpolator &interpolator = Interpolator());
