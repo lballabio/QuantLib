@@ -1187,6 +1187,40 @@ void PiecewiseYieldCurveTest::testLargeRates() {
     BOOST_CHECK_NO_THROW(curve->discount(0.01));
 }
 
+namespace {
+    // helper classes for testGlobalBootstrap() below:
+
+    // functor returning the additional error terms for the cost function
+    struct additionalErrors {
+        explicit additionalErrors(
+            const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
+                additionalHelpers)
+        : additionalHelpers(additionalHelpers) {}
+        std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
+        Array operator()() {
+            Array errors(5);
+            Real a = additionalHelpers[0]->impliedQuote();
+            Real b = additionalHelpers[6]->impliedQuote();
+            for (Size k = 0; k < 5; ++k) {
+                errors[k] = (5.0 - k) / 6.0 * a + (1.0 + k) / 6.0 * b -
+                            additionalHelpers[1 + k]->impliedQuote();
+            }
+            return errors;
+        }
+    };
+
+    // functor returning additional dates used in the bootstrap
+    struct additionalDates {
+        std::vector<Date> operator()() {
+            Date settl = TARGET().advance(Settings::instance().evaluationDate(), 2 * Days);
+            std::vector<Date> dates;
+            for (Size i = 0; i < 5; ++i)
+                dates.push_back(TARGET().advance(settl, (1 + i) * Months));
+            return dates;
+        }
+    };
+}
+
 void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     BOOST_TEST_MESSAGE("Testing global bootstrap...");
@@ -1231,14 +1265,14 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     // build ql helpers
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    ext::shared_ptr<IborIndex> index = boost::make_shared<Euribor>(6 * Months);
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor>(6 * Months);
 
-    helpers.push_back(boost::make_shared<DepositRateHelper>(
+    helpers.push_back(ext::make_shared<DepositRateHelper>(
         bbgMktRate[0] / 100.0, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
 
     for (Size i = 0; i < 12; ++i) {
         helpers.push_back(
-            boost::make_shared<FraRateHelper>(bbgMktRate[1 + i] / 100.0, (i + 1) * Months, index));
+            ext::make_shared<FraRateHelper>(bbgMktRate[1 + i] / 100.0, (i + 1) * Months, index));
     }
 
     Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
@@ -1254,42 +1288,12 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     // set up the additional rate helpers we need in the cost function
     for (Size i = 0; i < 7; ++i) {
         additionalHelpers.push_back(
-            boost::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
+            ext::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
     }
-
-    // functor returning the additional error terms for the cost function
-    struct additionalErrors {
-        explicit additionalErrors(
-            const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
-                additionalHelpers)
-        : additionalHelpers(additionalHelpers) {}
-        std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
-        Array operator()() {
-            Array errors(5);
-            Real a = additionalHelpers[0]->impliedQuote();
-            Real b = additionalHelpers[6]->impliedQuote();
-            for (Size k = 0; k < 5; ++k) {
-                errors[k] = (5.0 - k) / 6.0 * a + (1.0 + k) / 6.0 * b -
-                            additionalHelpers[1 + k]->impliedQuote();
-            }
-            return errors;
-        }
-    };
-
-    // additional dates used in the bootstrap
-    struct additionalDates {
-        std::vector<Date> operator()() {
-            Date settl = TARGET().advance(Settings::instance().evaluationDate(), 2 * Days);
-            std::vector<Date> dates;
-            for (Size i = 0; i < 5; ++i)
-                dates.push_back(TARGET().advance(settl, (1 + i) * Months));
-            return dates;
-        }
-    };
 
     // build curve with additional dates and constraints using a global bootstrapper
     typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> bbgCurve;
-    boost::shared_ptr<bbgCurve> curve = boost::make_shared<bbgCurve>(
+    ext::shared_ptr<bbgCurve> curve = ext::make_shared<bbgCurve>(
         2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
         1.0E-12, Linear(),
         bbgCurve::bootstrap_type(additionalHelpers, additionalDates(),
