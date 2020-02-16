@@ -2652,6 +2652,7 @@
     <ClCompile Include="ql\termstructures\yield\oisratehelper.cpp" />
     <ClCompile Include="ql\termstructures\yield\ratehelpers.cpp" />
     <ClCompile Include="ql\termstructures\yield\zeroyieldstructure.cpp" />
+    <ClCompile Include="ql\termstructures\yield\zeroyieldstructure_simple.cpp" />
     <ClCompile Include="ql\termstructures\yieldtermstructure.cpp" />
     <ClCompile Include="ql\time\asx.cpp" />
     <ClCompile Include="ql\time\businessdayconvention.cpp" />

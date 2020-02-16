@@ -5364,6 +5364,9 @@
     <ClCompile Include="ql\termstructures\yield\zeroyieldstructure.cpp">
       <Filter>termstructures\yield</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\yield\zeroyieldstructure_simple.cpp">
+      <Filter>termstructures\yield</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\inflation\inflationhelpers.cpp">
       <Filter>termstructures\inflation</Filter>
     </ClCompile>
