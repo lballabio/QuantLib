@@ -1259,8 +1259,9 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     // functor returning the additional error terms for the cost function
     struct additionalErrors {
-        additionalErrors(const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
-                             additionalHelpers)
+        explicit additionalErrors(
+            const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
+                additionalHelpers)
         : additionalHelpers(additionalHelpers) {}
         std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
         Array operator()() {
