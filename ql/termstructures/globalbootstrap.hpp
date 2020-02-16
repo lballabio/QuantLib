@@ -58,7 +58,7 @@ template <class Curve> class GlobalBootstrap {
       in QL), it might fail for other traits - check the usage of Traits::updateGuess(), Traits::guess(),
       Traits::minValueAfter(), Traits::maxValueAfter() in this class against them.
     */
-    GlobalBootstrap(const std::vector<boost::shared_ptr<typename Traits::helper> > &additionalHelpers,
+    GlobalBootstrap(const std::vector<ext::shared_ptr<typename Traits::helper> > &additionalHelpers,
                     const boost::function<std::vector<Date>()> &additionalDates,
                     const boost::function<Array()> &additionalErrors);
     void setup(Curve *ts);
@@ -67,7 +67,7 @@ template <class Curve> class GlobalBootstrap {
   private:
     void initialize() const;
     Curve *ts_;
-    mutable std::vector<boost::shared_ptr<typename Traits::helper> > additionalHelpers_;
+    mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
     boost::function<std::vector<Date>()> additionalDates_;
     boost::function<Array()> additionalErrors_;
     mutable bool initialized_, validCurve_;
@@ -83,7 +83,7 @@ template <class Curve> GlobalBootstrap<Curve>::GlobalBootstrap() : ts_(0), initi
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    const std::vector<boost::shared_ptr<typename Traits::helper> > &additionalHelpers,
+    const std::vector<ext::shared_ptr<typename Traits::helper> > &additionalHelpers,
     const boost::function<std::vector<Date>()> &additionalDates, const boost::function<Array()> &additionalErrors)
     : ts_(0), additionalHelpers_(additionalHelpers), additionalDates_(additionalDates), additionalErrors_(additionalErrors),
       initialized_(false), validCurve_(false) {}
@@ -192,7 +192,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
     // setup helpers
     for (Size j = 0; j < numberHelpers_; ++j) {
-        const boost::shared_ptr<typename Traits::helper> &helper = ts_->instruments_[firstHelper_ + j];
+        const ext::shared_ptr<typename Traits::helper> &helper = ts_->instruments_[firstHelper_ + j];
         // check for valid quote
         QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
                                                    << " instrument (maturity: " << helper->maturityDate()
@@ -205,7 +205,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
     // setup additional helpers
     for (Size j = 0; j < numberAdditionalHelpers_; ++j) {
-        const boost::shared_ptr<typename Traits::helper> &helper = additionalHelpers_[firstAdditionalHelper_ + j];
+        const ext::shared_ptr<typename Traits::helper> &helper = additionalHelpers_[firstAdditionalHelper_ + j];
         QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
                                                    << " additional instrument (maturity: " << helper->maturityDate()
                                                    << ") has an invalid quote");
@@ -213,7 +213,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     }
 
     // setup optimizer and EndCriteria
-	Real optEps = ts_->accuracy_;
+    Real optEps = ts_->accuracy_;
     LevenbergMarquardt optimizer(optEps, optEps, optEps); // FIXME hardcoded tolerances
     EndCriteria ec(1000, 10, optEps, optEps, optEps);      // FIXME hardcoded values here as well
 
