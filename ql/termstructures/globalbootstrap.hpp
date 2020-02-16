@@ -85,8 +85,8 @@ template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
     const std::vector<boost::shared_ptr<typename Traits::helper> > &additionalHelpers,
     const boost::function<std::vector<Date>()> &additionalDates, const boost::function<Array()> &additionalErrors)
-    : additionalHelpers_(additionalHelpers), additionalDates_(additionalDates), additionalErrors_(additionalErrors),
-      ts_(0), initialized_(false), validCurve_(false) {}
+    : ts_(0), additionalHelpers_(additionalHelpers), additionalDates_(additionalDates), additionalErrors_(additionalErrors),
+      initialized_(false), validCurve_(false) {}
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
     ts_ = ts;
