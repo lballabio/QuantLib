@@ -174,11 +174,12 @@ namespace QuantLib {
     It is divided in 100 tijin.
     */
     KZTCurrency::KZTCurrency() {
-     static ext::shared_ptr<Data> kztData("Kazakstani Tenge",
-                                          "KZT, 398,
-                                          "Kzt", "", 100,
-                                          Rounding(),
-                                          "%3% %1$.2f"));
+        static ext::shared_ptr<Data> kztData(
+                                     new Data("Kazakstanti Tenge", "KZT", 398,
+                                              "Kzt", "", 100,
+                                              Rounding(),
+                                              "%3% %1$.3f"));
+        data_ = kztData;
     }
     // Malaysian Ringgit
     /* The ISO three-letter code is MYR; the numeric code is 458.
