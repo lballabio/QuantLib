@@ -1711,6 +1711,7 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(28, Jan, 2020));
     expectedHol.push_back(Date(29, Jan, 2020));
     expectedHol.push_back(Date(30, Jan, 2020));
+    expectedHol.push_back(Date(31, Jan, 2020));
     expectedHol.push_back(Date(6, April, 2020));
     expectedHol.push_back(Date(1, May, 2020));
     expectedHol.push_back(Date(4, May, 2020));
@@ -1792,7 +1793,6 @@ void CalendarTest::testChinaIB() {
 
     // China Inter Bank working weekends list in the year 2020
     expectedWorkingWeekEnds.push_back(Date(19, January, 2020));
-    expectedWorkingWeekEnds.push_back(Date(1, Feb, 2020));
     expectedWorkingWeekEnds.push_back(Date(26, April, 2020));
     expectedWorkingWeekEnds.push_back(Date(9, May, 2020));
     expectedWorkingWeekEnds.push_back(Date(28, June, 2020));
