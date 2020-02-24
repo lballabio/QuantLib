@@ -44,7 +44,6 @@ namespace QuantLib {
         <li>Christmas Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Boxing Day, December 26th</li>
-        <li>New Year's Eve, December 31st</li>
         </ul>
 
         Holidays for the Frankfurt Stock exchange
@@ -59,7 +58,6 @@ namespace QuantLib {
         <li>Christmas' Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Christmas Holiday, December 26th</li>
-        <li>New Year's Eve, December 31st</li>
         </ul>
 
         Holidays for the Xetra exchange
@@ -74,7 +72,6 @@ namespace QuantLib {
         <li>Christmas' Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Christmas Holiday, December 26th</li>
-        <li>New Year's Eve, December 31st</li>
         </ul>
 
         Holidays for the Eurex exchange
@@ -89,7 +86,6 @@ namespace QuantLib {
         <li>Christmas' Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Christmas Holiday, December 26th</li>
-        <li>New Year's Eve, December 31st</li>
         </ul>
 
         Holidays for the Euwax exchange
@@ -105,7 +101,6 @@ namespace QuantLib {
         <li>Christmas' Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Christmas Holiday, December 26th</li>
-        <li>New Year's Eve, December 31st</li>
         </ul>
 
         \ingroup calendars

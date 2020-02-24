@@ -454,13 +454,11 @@ void CalendarTest::testGermanyFrankfurt() {
     expectedHol.push_back(Date(24,December,2003));
     expectedHol.push_back(Date(25,December,2003));
     expectedHol.push_back(Date(26,December,2003));
-    expectedHol.push_back(Date(31,December,2003));
 
     expectedHol.push_back(Date(1,January,2004));
     expectedHol.push_back(Date(9,April,2004));
     expectedHol.push_back(Date(12,April,2004));
     expectedHol.push_back(Date(24,December,2004));
-    expectedHol.push_back(Date(31,December,2004));
 
     Calendar c = Germany(Germany::FrankfurtStockExchange);
     std::vector<Date> hol = c.holidayList(Date(1,January,2003),
@@ -488,13 +486,11 @@ void CalendarTest::testGermanyEurex() {
     expectedHol.push_back(Date(24,December,2003));
     expectedHol.push_back(Date(25,December,2003));
     expectedHol.push_back(Date(26,December,2003));
-    expectedHol.push_back(Date(31,December,2003));
 
     expectedHol.push_back(Date(1,January,2004));
     expectedHol.push_back(Date(9,April,2004));
     expectedHol.push_back(Date(12,April,2004));
     expectedHol.push_back(Date(24,December,2004));
-    expectedHol.push_back(Date(31,December,2004));
 
     Calendar c = Germany(Germany::Eurex);
     std::vector<Date> hol = c.holidayList(Date(1,January,2003),
@@ -522,13 +518,11 @@ void CalendarTest::testGermanyXetra() {
     expectedHol.push_back(Date(24,December,2003));
     expectedHol.push_back(Date(25,December,2003));
     expectedHol.push_back(Date(26,December,2003));
-    expectedHol.push_back(Date(31,December,2003));
 
     expectedHol.push_back(Date(1,January,2004));
     expectedHol.push_back(Date(9,April,2004));
     expectedHol.push_back(Date(12,April,2004));
     expectedHol.push_back(Date(24,December,2004));
-    expectedHol.push_back(Date(31,December,2004));
 
     Calendar c = Germany(Germany::Xetra);
     std::vector<Date> hol = c.holidayList(Date(1,January,2003),
