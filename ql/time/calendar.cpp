@@ -275,7 +275,6 @@ namespace QuantLib {
         return EasterMonday[y-1901];
     }
 
-
     std::vector<Date> Calendar::holidayList(const Calendar& calendar,
         const Date& from, const Date& to, bool includeWeekEnds) {
 
@@ -286,6 +285,34 @@ namespace QuantLib {
         for (Date d = from; d <= to; ++d) {
             if (calendar.isHoliday(d)
                 && (includeWeekEnds || !calendar.isWeekend(d.weekday())))
+                result.push_back(d);
+       }
+       return result;
+    }
+
+    std::vector<Date> Calendar::holidayList(
+        const Date& from, const Date& to, bool includeWeekEnds) const {
+
+        QL_REQUIRE(to>from, "'from' date ("
+            << from << ") must be earlier than 'to' date ("
+            << to << ")");
+        std::vector<Date> result;
+        for (Date d = from; d <= to; ++d) {
+            if (isHoliday(d) && (includeWeekEnds || !isWeekend(d.weekday())))
+                result.push_back(d);
+       }
+       return result;
+    }
+
+    std::vector<Date> Calendar::businessDayList(
+        const Date& from, const Date& to) const {
+
+        QL_REQUIRE(to>from, "'from' date ("
+            << from << ") must be earlier than 'to' date ("
+            << to << ")");
+        std::vector<Date> result;
+        for (Date d = from; d <= to; ++d) {
+            if (isBusinessDay(d))
                 result.push_back(d);
        }
        return result;
