@@ -168,7 +168,19 @@ namespace QuantLib {
                                               "%3% %1$.3f"));
         data_ = kwdData;
     }
-
+ 
+    // Kazakstani Tenge
+    /* The ISO three-letter code is KZT; the numeric code is 398.
+    It is divided in 100 tijin.
+    */
+    KZTCurrency::KZTCurrency() {
+        static ext::shared_ptr<Data> kztData(
+                                     new Data("Kazakstanti Tenge", "KZT", 398,
+                                              "Kzt", "", 100,
+                                              Rounding(),
+                                              "%3% %1$.3f"));
+        data_ = kztData;
+    }
     // Malaysian Ringgit
     /* The ISO three-letter code is MYR; the numeric code is 458.
        It is divided in 100 sen.
@@ -183,6 +195,7 @@ namespace QuantLib {
         data_ = myrData;
     }
 
+    
     // Nepal rupee
     /* The ISO three-letter code is NPR; the numeric code is 524.
        It is divided in 100 paise.

@@ -156,6 +156,11 @@ namespace QuantLib {
       public:
         KWDCurrency();
     };
+ 
+    class KZTCurrency : public Currency {
+      public:
+       KZTCurrency();
+    };
 
     //! Malaysian Ringgit
     /*! The ISO three-letter code is MYR; the numeric code is 458.
