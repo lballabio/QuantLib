@@ -7,6 +7,9 @@ coverage:
 ignore:
   - "test-suite/*"
   - "Examples/**/*"
+  - ".github/*"
+  - ".github/**/*"
+
 
 
 # The process to get a correct report is a bit fiddly.
