@@ -5,10 +5,8 @@ coverage:
   range: 50...80
 
 ignore:
-  - "test-suite/*"
-  - "Examples/**/*"
-  - ".github/*"
-  - ".github/**/*"
+  - "test-suite"
+  - "Examples"
 
 
 
