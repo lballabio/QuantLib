@@ -9,13 +9,13 @@ this_include_HEADERS = \
 	bootstraperror.hpp \
 	bootstraphelper.hpp \
 	defaulttermstructure.hpp \
+	globalbootstrap.hpp \
 	inflationtermstructure.hpp \
 	interpolatedcurve.hpp \
 	iterativebootstrap.hpp \
 	localbootstrap.hpp \
 	voltermstructure.hpp \
-	yieldtermstructure.hpp \
-	globalbootstrap.hpp
+	yieldtermstructure.hpp
 
 cpp_files = \
 	defaulttermstructure.cpp \
