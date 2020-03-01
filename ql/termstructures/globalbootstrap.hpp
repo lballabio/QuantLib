@@ -41,7 +41,7 @@ template <class Curve> class GlobalBootstrap {
     typedef typename Curve::interpolator_type Interpolator; // Linear, LogLinear, ...
 
   public:
-    GlobalBootstrap();
+    GlobalBootstrap(Real accuracy = Null<Real>());
     /*! The set of (alive) additional dates is added to the interpolation grid. The set of additional dates must only
       depend on the current global evaluation date.  The additionalErrors functor must yield at least as many values
       such that
@@ -60,13 +60,15 @@ template <class Curve> class GlobalBootstrap {
     */
     GlobalBootstrap(const std::vector<ext::shared_ptr<typename Traits::helper> > &additionalHelpers,
                     const boost::function<std::vector<Date>()> &additionalDates,
-                    const boost::function<Array()> &additionalErrors);
+                    const boost::function<Array()> &additionalErrors,
+                    Real accuracy = Null<Real>());
     void setup(Curve *ts);
     void calculate() const;
 
   private:
     void initialize() const;
     Curve *ts_;
+    Real accuracy_;
     mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
     boost::function<std::vector<Date>()> additionalDates_;
     boost::function<Array()> additionalErrors_;
@@ -79,13 +81,18 @@ template <class Curve> class GlobalBootstrap {
 
 // template definitions
 
-template <class Curve> GlobalBootstrap<Curve>::GlobalBootstrap() : ts_(0), initialized_(false), validCurve_(false) {}
+template <class Curve>
+GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy)
+: ts_(0), accuracy_(accuracy), initialized_(false), validCurve_(false) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
     const std::vector<ext::shared_ptr<typename Traits::helper> > &additionalHelpers,
-    const boost::function<std::vector<Date>()> &additionalDates, const boost::function<Array()> &additionalErrors)
-    : ts_(0), additionalHelpers_(additionalHelpers), additionalDates_(additionalDates), additionalErrors_(additionalErrors),
+    const boost::function<std::vector<Date>()> &additionalDates,
+    const boost::function<Array()> &additionalErrors,
+    Real accuracy)
+    : ts_(0), accuracy_(accuracy), additionalHelpers_(additionalHelpers),
+      additionalDates_(additionalDates), additionalErrors_(additionalErrors),
       initialized_(false), validCurve_(false) {}
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
@@ -212,8 +219,10 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
         helper->setTermStructure(const_cast<Curve *>(ts_));
     }
 
+    Real accuracy = accuracy_ != Null<Real>() ? accuracy_ : ts_->accuracy_;
+
     // setup optimizer and EndCriteria
-    Real optEps = ts_->accuracy_;
+    Real optEps = accuracy;
     LevenbergMarquardt optimizer(optEps, optEps, optEps); // FIXME hardcoded tolerances
     EndCriteria ec(1000, 10, optEps, optEps, optEps);      // FIXME hardcoded values here as well
 
@@ -301,8 +310,8 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     Real finalTargetError = cost.value(problem.currentValue());
 
     // check final error
-    QL_REQUIRE(finalTargetError <= ts_->accuracy_,
-               "global bootstrap failed, error is " << finalTargetError << ", accuracy is " << ts_->accuracy_);
+    QL_REQUIRE(finalTargetError <= accuracy,
+               "global bootstrap failed, error is " << finalTargetError << ", accuracy is " << accuracy);
 
     // set valid flag
     validCurve_ = true;

@@ -1295,9 +1295,9 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> bbgCurve;
     ext::shared_ptr<bbgCurve> curve = ext::make_shared<bbgCurve>(
         2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
-        1.0E-12, Linear(),
+        Linear(),
         bbgCurve::bootstrap_type(additionalHelpers, additionalDates(),
-                                 additionalErrors(additionalHelpers)));
+                                 additionalErrors(additionalHelpers), 1.0e-12));
     curve->enableExtrapolation();
 
     // check ql vs bbg curve pillar dates
