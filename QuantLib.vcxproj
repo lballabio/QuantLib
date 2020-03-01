@@ -1619,6 +1619,7 @@
     <ClInclude Include="ql\termstructures\credit\probabilitytraits.hpp" />
     <ClInclude Include="ql\termstructures\credit\survivalprobabilitystructure.hpp" />
     <ClInclude Include="ql\termstructures\defaulttermstructure.hpp" />
+    <ClInclude Include="ql\termstructures\globalbootstrap.hpp" />
     <ClInclude Include="ql\termstructures\inflation\all.hpp" />
     <ClInclude Include="ql\termstructures\inflation\inflationhelpers.hpp" />
     <ClInclude Include="ql\termstructures\inflation\inflationtraits.hpp" />

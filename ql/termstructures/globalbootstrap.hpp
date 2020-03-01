@@ -22,7 +22,8 @@
     \ingroup termstructures
 */
 
-#pragma once
+#ifndef quantlib_global_bootstrap_hpp
+#define quantlib_global_bootstrap_hpp
 
 #include <ql/math/functional.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
@@ -318,3 +319,5 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 }
 
 } // namespace QuantLib
+
+#endif
