@@ -19,8 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file zerocurve_simple.hpp
-    \brief interpolated simple zero-rates structure
+/*! \file interpolatedsimplezerocurve.hpp
+    \brief interpolated simply-compounded zero-rates structure
 */
 
 #ifndef quantlib_zero_curve_simple_hpp
@@ -38,18 +38,18 @@ namespace QuantLib {
 //! YieldTermStructure based on interpolation of zero rates
 /*! \ingroup yieldtermstructures */
 template <class Interpolator>
-class InterpolatedZeroCurveSimple : public ZeroYieldStructureSimple, protected InterpolatedCurve<Interpolator> {
+class InterpolatedSimpleZeroCurve : public ZeroYieldStructureSimple, protected InterpolatedCurve<Interpolator> {
   public:
     // constructor
-    InterpolatedZeroCurveSimple(const std::vector<Date> &dates, const std::vector<Rate> &yields,
+    InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
                                 const DayCounter &dayCounter, const Calendar &calendar = Calendar(),
                                 const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
                                 const std::vector<Date> &jumpDates = std::vector<Date>(),
                                 const Interpolator &interpolator = Interpolator());
-    InterpolatedZeroCurveSimple(const std::vector<Date> &dates, const std::vector<Rate> &yields,
+    InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
                                 const DayCounter &dayCounter, const Calendar &calendar,
                                 const Interpolator &interpolator);
-    InterpolatedZeroCurveSimple(const std::vector<Date> &dates, const std::vector<Rate> &yields,
+    InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
                                 const DayCounter &dayCounter, const Interpolator &interpolator);
     //! \name TermStructure interface
     //@{
@@ -64,15 +64,15 @@ class InterpolatedZeroCurveSimple : public ZeroYieldStructureSimple, protected I
     std::vector<std::pair<Date, Real> > nodes() const;
     //@}
   protected:
-    explicit InterpolatedZeroCurveSimple(const DayCounter &,
+    explicit InterpolatedSimpleZeroCurve(const DayCounter &,
                                 const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
                                 const std::vector<Date> &jumpDates = std::vector<Date>(),
                                 const Interpolator &interpolator = Interpolator());
-    InterpolatedZeroCurveSimple(const Date &referenceDate, const DayCounter &,
+    InterpolatedSimpleZeroCurve(const Date &referenceDate, const DayCounter &,
                                 const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
                                 const std::vector<Date> &jumpDates = std::vector<Date>(),
                                 const Interpolator &interpolator = Interpolator());
-    InterpolatedZeroCurveSimple(Natural settlementDays, const Calendar &, const DayCounter &,
+    InterpolatedSimpleZeroCurve(Natural settlementDays, const Calendar &, const DayCounter &,
                                 const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
                                 const std::vector<Date> &jumpDates = std::vector<Date>(),
                                 const Interpolator &interpolator = Interpolator());
@@ -88,25 +88,25 @@ class InterpolatedZeroCurveSimple : public ZeroYieldStructureSimple, protected I
 
 //! Term structure based on linear interpolation of zero yields
 /*! \ingroup yieldtermstructures */
-typedef InterpolatedZeroCurveSimple<Linear> ZeroCurveSimple;
+typedef InterpolatedSimpleZeroCurve<Linear> ZeroCurveSimple;
 
 // inline definitions
 
-template <class T> inline Date InterpolatedZeroCurveSimple<T>::maxDate() const { return dates_.back(); }
+template <class T> inline Date InterpolatedSimpleZeroCurve<T>::maxDate() const { return dates_.back(); }
 
-template <class T> inline const std::vector<Time> &InterpolatedZeroCurveSimple<T>::times() const {
+template <class T> inline const std::vector<Time> &InterpolatedSimpleZeroCurve<T>::times() const {
     return this->times_;
 }
 
-template <class T> inline const std::vector<Date> &InterpolatedZeroCurveSimple<T>::dates() const { return dates_; }
+template <class T> inline const std::vector<Date> &InterpolatedSimpleZeroCurve<T>::dates() const { return dates_; }
 
-template <class T> inline const std::vector<Real> &InterpolatedZeroCurveSimple<T>::data() const { return this->data_; }
+template <class T> inline const std::vector<Real> &InterpolatedSimpleZeroCurve<T>::data() const { return this->data_; }
 
-template <class T> inline const std::vector<Rate> &InterpolatedZeroCurveSimple<T>::zeroRates() const {
+template <class T> inline const std::vector<Rate> &InterpolatedSimpleZeroCurve<T>::zeroRates() const {
     return this->data_;
 }
 
-template <class T> inline std::vector<std::pair<Date, Real> > InterpolatedZeroCurveSimple<T>::nodes() const {
+template <class T> inline std::vector<std::pair<Date, Real> > InterpolatedSimpleZeroCurve<T>::nodes() const {
     std::vector<std::pair<Date, Real> > results(dates_.size());
     for (Size i = 0; i < dates_.size(); ++i)
         results[i] = std::make_pair(dates_[i], this->data_[i]);
@@ -117,7 +117,7 @@ template <class T> inline std::vector<std::pair<Date, Real> > InterpolatedZeroCu
 
 // template definitions
 
-template <class T> Rate InterpolatedZeroCurveSimple<T>::simpleZeroYieldImpl(Time t) const {
+template <class T> Rate InterpolatedSimpleZeroCurve<T>::simpleZeroYieldImpl(Time t) const {
     if (t <= this->times_.back()) {
         return this->interpolation_(t, true);
     }
@@ -132,20 +132,20 @@ template <class T> Rate InterpolatedZeroCurveSimple<T>::simpleZeroYieldImpl(Time
 }
 
 template <class T>
-InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const DayCounter &dayCounter,
+InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const DayCounter &dayCounter,
                                                             const std::vector<Handle<Quote> > &jumps,
                                                             const std::vector<Date> &jumpDates, const T &interpolator)
     : ZeroYieldStructureSimple(dayCounter, jumps, jumpDates), InterpolatedCurve<T>(interpolator) {}
 
 template <class T>
-InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const Date &referenceDate, const DayCounter &dayCounter,
+InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const Date &referenceDate, const DayCounter &dayCounter,
                                                             const std::vector<Handle<Quote> > &jumps,
                                                             const std::vector<Date> &jumpDates, const T &interpolator)
     : ZeroYieldStructureSimple(referenceDate, Calendar(), dayCounter, jumps, jumpDates), InterpolatedCurve<T>(
                                                                                              interpolator) {}
 
 template <class T>
-InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(Natural settlementDays, const Calendar &calendar,
+InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(Natural settlementDays, const Calendar &calendar,
                                                             const DayCounter &dayCounter,
                                                             const std::vector<Handle<Quote> > &jumps,
                                                             const std::vector<Date> &jumpDates, const T &interpolator)
@@ -153,7 +153,7 @@ InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(Natural settlementDa
                                                                                             interpolator) {}
 
 template <class T>
-InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const std::vector<Date> &dates,
+InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const std::vector<Date> &dates,
                                                             const std::vector<Rate> &yields,
                                                             const DayCounter &dayCounter, const Calendar &calendar,
                                                             const std::vector<Handle<Quote> > &jumps,
@@ -164,7 +164,7 @@ InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const std::vector<Da
 }
 
 template <class T>
-InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const std::vector<Date> &dates,
+InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const std::vector<Date> &dates,
                                                             const std::vector<Rate> &yields,
                                                             const DayCounter &dayCounter, const Calendar &calendar,
                                                             const T &interpolator)
@@ -175,7 +175,7 @@ InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const std::vector<Da
 }
 
 template <class T>
-InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const std::vector<Date> &dates,
+InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const std::vector<Date> &dates,
                                                             const std::vector<Rate> &yields,
                                                             const DayCounter &dayCounter, const T &interpolator)
     : ZeroYieldStructureSimple(dates.at(0), Calendar(), dayCounter), InterpolatedCurve<T>(std::vector<Time>(), yields,
@@ -186,7 +186,7 @@ InterpolatedZeroCurveSimple<T>::InterpolatedZeroCurveSimple(const std::vector<Da
 
 #endif
 
-template <class T> void InterpolatedZeroCurveSimple<T>::initialize() {
+template <class T> void InterpolatedSimpleZeroCurve<T>::initialize() {
     QL_REQUIRE(dates_.size() >= T::requiredPoints, "not enough input dates given");
     QL_REQUIRE(this->data_.size() == dates_.size(), "dates/data count mismatch");
 

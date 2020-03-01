@@ -2149,6 +2149,7 @@ set(QuantLib_HDR
     termstructures/yield/forwardspreadedtermstructure.hpp
     termstructures/yield/forwardstructure.hpp
     termstructures/yield/impliedtermstructure.hpp
+    termstructures/yield/interpolatedsimplezerocurve.hpp
     termstructures/yield/nonlinearfittingmethods.hpp
     termstructures/yield/oisratehelper.hpp
     termstructures/yield/piecewiseyieldcurve.hpp
@@ -2156,7 +2157,6 @@ set(QuantLib_HDR
     termstructures/yield/quantotermstructure.hpp
     termstructures/yield/ratehelpers.hpp
     termstructures/yield/zerocurve.hpp
-    termstructures/yield/zerocurve_simple.hpp
     termstructures/yield/zerospreadedtermstructure.hpp
     termstructures/yield/zeroyieldstructure.hpp
     termstructures/yield/zeroyieldstructure_simple.hpp

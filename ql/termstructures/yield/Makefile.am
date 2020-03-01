@@ -15,6 +15,7 @@ this_include_HEADERS = \
     forwardspreadedtermstructure.hpp \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
+    interpolatedsimplezerocurve.hpp \
     nonlinearfittingmethods.hpp \
     oisratehelper.hpp \
     piecewiseyieldcurve.hpp \
@@ -22,7 +23,6 @@ this_include_HEADERS = \
     quantotermstructure.hpp \
     ratehelpers.hpp \
     zerocurve.hpp \
-    zerocurve_simple.hpp \
     zerospreadedtermstructure.hpp \
     zeroyieldstructure.hpp \
     zeroyieldstructure_simple.hpp

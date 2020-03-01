@@ -2085,6 +2085,9 @@
     <ClInclude Include="ql\termstructures\yield\impliedtermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\interpolatedsimplezerocurve.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\nonlinearfittingmethods.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>

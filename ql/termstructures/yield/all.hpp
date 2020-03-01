@@ -12,6 +12,7 @@
 #include <ql/termstructures/yield/forwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/forwardstructure.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
+#include <ql/termstructures/yield/interpolatedsimplezerocurve.hpp>
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
@@ -21,4 +22,5 @@
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
+#include <ql/termstructures/yield/zeroyieldstructure_simple.hpp>
 
