@@ -4,6 +4,7 @@
  Copyright (C) 2005, 2007 StatPro Italia srl
  Copyright (C) 2011 Ferdinando Ametrano
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2019 SoftSolutions! S.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,7 @@
 
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/termstructures/yield/interpolatedsimplezerocurve.hpp>
 #include <ql/termstructures/yield/forwardcurve.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 
@@ -143,7 +145,7 @@ namespace QuantLib {
                 return detail::avgRate;
 
             // extrapolate
-            Date d = c->dates()[i]; 
+            Date d = c->dates()[i];
             return c->zeroRate(d, c->dayCounter(),
                                Continuous, Annual, true);
         }
@@ -270,6 +272,91 @@ namespace QuantLib {
         // upper bound for convergence loop
         static Size maxIterations() { return 100; }
     };
+
+    //! Simple Zero-curve traits
+    struct SimpleZeroYield {
+        // interpolated curve type
+        template <class Interpolator>
+        struct curve {
+            typedef InterpolatedSimpleZeroCurve<Interpolator> type;
+        };
+        // helper class
+        typedef BootstrapHelper<YieldTermStructure> helper;
+
+        // start of curve data
+        static Date initialDate(const YieldTermStructure* c) {
+            return c->referenceDate();
+        }
+        // dummy value at reference date
+        static Real initialValue(const YieldTermStructure*) {
+            return detail::avgRate;
+        }
+
+        // guesses
+        template <class C>
+        static Real guess(Size i,
+                          const C* c,
+                          bool validData,
+                          Size) // firstAliveHelper
+        {
+            if (validData) // previous iteration value
+                return c->data()[i];
+
+            if (i==1) // first pillar
+                return detail::avgRate;
+
+            // extrapolate
+            Date d = c->dates()[i];
+            return c->zeroRate(d, c->dayCounter(),
+                               Simple, Annual, true);
+        }
+
+        // possible constraints based on previous values
+        template <class C>
+        static Real minValueAfter(Size i,
+                                  const C* c,
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
+            Real result;
+            if (validData) {
+                Real r = *(std::min_element(c->data().begin(), c->data().end()));
+                result = r<0.0 ? r*2.0 : r/2.0;
+            } else {
+                // no constraints.
+                // We choose as min a value very unlikely to be exceeded.
+                result = -detail::maxRate;
+            }
+            Real t = c->timeFromReference(c->dates()[i]);
+            return std::max(result, -1.0 / t + 1E-8);
+        }
+        template <class C>
+        static Real maxValueAfter(Size,
+                                  const C* c,
+                                  bool validData,
+                                  Size) // firstAliveHelper
+        {
+            if (validData) {
+                Real r = *(std::max_element(c->data().begin(), c->data().end()));
+                return r<0.0 ? r/2.0 : r*2.0;
+            }
+            // no constraints.
+            // We choose as max a value very unlikely to be exceeded.
+            return detail::maxRate;
+        }
+
+        // root-finding update
+        static void updateGuess(std::vector<Real>& data,
+                                Real rate,
+                                Size i) {
+            data[i] = rate;
+            if (i==1)
+                data[0] = rate; // first point is updated as well
+        }
+        // upper bound for convergence loop
+        static Size maxIterations() { return 100; }
+    };
+
 
 }
 

@@ -20,6 +20,7 @@
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
@@ -1186,6 +1187,143 @@ void PiecewiseYieldCurveTest::testLargeRates() {
     BOOST_CHECK_NO_THROW(curve->discount(0.01));
 }
 
+namespace {
+    // helper classes for testGlobalBootstrap() below:
+
+    // functor returning the additional error terms for the cost function
+    struct additionalErrors {
+        explicit additionalErrors(
+            const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
+                additionalHelpers)
+        : additionalHelpers(additionalHelpers) {}
+        std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
+        Array operator()() {
+            Array errors(5);
+            Real a = additionalHelpers[0]->impliedQuote();
+            Real b = additionalHelpers[6]->impliedQuote();
+            for (Size k = 0; k < 5; ++k) {
+                errors[k] = (5.0 - k) / 6.0 * a + (1.0 + k) / 6.0 * b -
+                            additionalHelpers[1 + k]->impliedQuote();
+            }
+            return errors;
+        }
+    };
+
+    // functor returning additional dates used in the bootstrap
+    struct additionalDates {
+        std::vector<Date> operator()() {
+            Date settl = TARGET().advance(Settings::instance().evaluationDate(), 2 * Days);
+            std::vector<Date> dates;
+            for (Size i = 0; i < 5; ++i)
+                dates.push_back(TARGET().advance(settl, (1 + i) * Months));
+            return dates;
+        }
+    };
+}
+
+void PiecewiseYieldCurveTest::testGlobalBootstrap() {
+
+    BOOST_TEST_MESSAGE("Testing global bootstrap...");
+
+    SavedSettings backup;
+
+    Date today(26, Sep, 2019);
+    Settings::instance().evaluationDate() = today;
+
+    // Here we compare zero rates from bbg curve S45 (EUR-EURIBOR-6M) with QL. We assume the
+    // following settings in bbg's SWDF screen (which are sort of the "factory" settings):
+    // Curve Defaults                            : Pay = Mid, Rec = Mid
+    // Interpolation Method                      : Piecewise linear (Simple-comp)
+    // Enable OIS Discount/Dual Curve Stripping  : not enabled
+    // We get a quite good match (1/100 bp), yet above numerical accuracy that might have to do
+    // with details of bbg's "special FRA treatment" which is not fully disclosed
+
+    // bbg maturity date
+    Date bbgDate[] = {
+        Date(31, Mar, 2020), Date(30, Apr, 2020), Date(29, May, 2020), Date(30, Jun, 2020),
+        Date(31, Jul, 2020), Date(31, Aug, 2020), Date(30, Sep, 2020), Date(30, Oct, 2020),
+        Date(30, Nov, 2020), Date(31, Dec, 2020), Date(29, Jan, 2021), Date(26, Feb, 2021),
+        Date(31, Mar, 2021), Date(30, Sep, 2021), Date(30, Sep, 2022), Date(29, Sep, 2023),
+        Date(30, Sep, 2024), Date(30, Sep, 2025), Date(30, Sep, 2026), Date(30, Sep, 2027),
+        Date(29, Sep, 2028), Date(28, Sep, 2029), Date(30, Sep, 2030), Date(30, Sep, 2031),
+        Date(29, Sep, 2034), Date(30, Sep, 2039), Date(30, Sep, 2044), Date(30, Sep, 2049),
+        Date(30, Sep, 2054), Date(30, Sep, 2059), Date(30, Sep, 2064), Date(30, Sep, 2069)};
+
+    // bbg market rate
+    Real bbgMktRate[] = {-0.373,   -0.388,   -0.402,   -0.418,   -0.431,  -0.441,   -0.45,
+                         -0.457,   -0.463,   -0.469,   -0.461,   -0.463,  -0.479,   -0.4511,
+                         -0.45418, -0.439,   -0.4124,  -0.37703, -0.3335, -0.28168, -0.22725,
+                         -0.1745,  -0.12425, -0.07746, 0.0385,   0.1435,  0.17525,  0.17275,
+                         0.1515,   0.1225,   0.095,    0.0644};
+
+    // bbg zero rate
+    Real bbgZeroRate[] = {-0.373,   -0.38058, -0.38718, -0.39353, -0.407,   -0.41274, -0.41107,
+                          -0.41542, -0.41951, -0.42329, -0.42658, -0.42959, -0.43297, -0.45103,
+                          -0.4541,  -0.43905, -0.41266, -0.3775,  -0.33434, -0.2828,  -0.2285,
+                          -0.17582, -0.1254,  -0.0783,  0.03913,  0.14646,  0.17874,  0.17556,
+                          0.1531,   0.12299,  0.0948,   0.06383};
+
+    // build ql helpers
+    std::vector<ext::shared_ptr<RateHelper> > helpers;
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor>(6 * Months);
+
+    helpers.push_back(ext::make_shared<DepositRateHelper>(
+        bbgMktRate[0] / 100.0, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
+
+    for (Size i = 0; i < 12; ++i) {
+        helpers.push_back(
+            ext::make_shared<FraRateHelper>(bbgMktRate[1 + i] / 100.0, (i + 1) * Months, index));
+    }
+
+    Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
+    for (Size i = 0; i < 19; ++i) {
+        helpers.push_back(ext::make_shared<SwapRateHelper>(bbgMktRate[13 + i] / 100.0,
+                                                           swapTenors[i] * Years, TARGET(), Annual,
+                                                           ModifiedFollowing, Thirty360(), index));
+    }
+
+    // global bootstrap contraints (bbg 'special serial FRA treatment')
+    std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
+
+    // set up the additional rate helpers we need in the cost function
+    for (Size i = 0; i < 7; ++i) {
+        additionalHelpers.push_back(
+            ext::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
+    }
+
+    // build curve with additional dates and constraints using a global bootstrapper
+    typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> bbgCurve;
+    ext::shared_ptr<bbgCurve> curve = ext::make_shared<bbgCurve>(
+        2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
+        Linear(),
+        bbgCurve::bootstrap_type(additionalHelpers, additionalDates(),
+                                 additionalErrors(additionalHelpers), 1.0e-12));
+    curve->enableExtrapolation();
+
+    // check ql vs bbg curve pillar dates
+    for (Size i = 0; i < LENGTH(bbgDate); ++i) {
+        BOOST_CHECK_EQUAL(bbgDate[i], helpers[i]->pillarDate());
+    }
+
+    // check ql vs bbg zero rates
+    for (Size i = 0; i < LENGTH(bbgZeroRate); ++i) {
+        // account for the way bbg displays zero rates
+        DayCounter dc;
+        Compounding comp;
+        if (i < 13) {
+            dc = Actual360();
+            comp = Simple;
+        } else {
+            dc = Thirty360();
+            comp = SimpleThenCompounded;
+        }
+        // 0.01 basis points tolerance
+        BOOST_CHECK_SMALL(std::fabs(bbgZeroRate[i] / 100.0 -
+                                    curve->zeroRate(bbgDate[i], dc, comp, Annual).rate()),
+                          1E-6);
+    }
+}
+
 test_suite* PiecewiseYieldCurveTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
@@ -1236,6 +1374,10 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
+
+#ifndef QL_USE_INDEXED_COUPON
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
+#endif
 
     return suite;
 }

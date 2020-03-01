@@ -9,6 +9,7 @@ this_include_HEADERS = \
 	bootstraperror.hpp \
 	bootstraphelper.hpp \
 	defaulttermstructure.hpp \
+	globalbootstrap.hpp \
 	inflationtermstructure.hpp \
 	interpolatedcurve.hpp \
 	iterativebootstrap.hpp \
