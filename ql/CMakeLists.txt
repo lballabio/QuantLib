@@ -827,7 +827,6 @@ set(QuantLib_SRC
     termstructures/yield/oisratehelper.cpp
     termstructures/yield/ratehelpers.cpp
     termstructures/yield/zeroyieldstructure.cpp
-    termstructures/yield/zeroyieldstructure_simple.cpp
     termstructures/yieldtermstructure.cpp
     time/asx.cpp
     time/businessdayconvention.cpp
@@ -2159,7 +2158,6 @@ set(QuantLib_HDR
     termstructures/yield/zerocurve.hpp
     termstructures/yield/zerospreadedtermstructure.hpp
     termstructures/yield/zeroyieldstructure.hpp
-    termstructures/yield/zeroyieldstructure_simple.hpp
     termstructures/yieldtermstructure.hpp
     time/all.hpp
     time/asx.hpp
