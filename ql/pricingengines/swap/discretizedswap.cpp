@@ -35,8 +35,8 @@ namespace QuantLib {
                                      const Date& referenceDate,
                                      const DayCounter& dayCounter)
     : arguments_(args) {
-        includeTodaysCashFlows_ = Settings::instance().includeTodaysCashFlows().has_value() &&
-                                  Settings::instance().includeTodaysCashFlows().value();
+        includeTodaysCashFlows_ = Settings::instance().includeTodaysCashFlows() &&
+                                  *Settings::instance().includeTodaysCashFlows();
 
         fixedResetTimes_.resize(args.fixedResetDates.size());
         for (Size i=0; i<fixedResetTimes_.size(); ++i)
