@@ -25,7 +25,7 @@ namespace QuantLib {
     namespace {
         inline bool useCouponInPostAdjust(const Time& resetTime,
                                           const Time& payTime,
-                                          const boost::optional<bool>& includeTodaysCashFlows) {
+                                          const bool& includeTodaysCashFlows) {
             return (resetTime < 0.0) &&
                    ((payTime > 0.0) || (includeTodaysCashFlows && (payTime == 0.0)));
         }
@@ -35,6 +35,8 @@ namespace QuantLib {
                                      const Date& referenceDate,
                                      const DayCounter& dayCounter)
     : arguments_(args) {
+        includeTodaysCashFlows_ = Settings::instance().includeTodaysCashFlows().has_value() &&
+                                  Settings::instance().includeTodaysCashFlows().value();
 
         fixedResetTimes_.resize(args.fixedResetDates.size());
         for (Size i=0; i<fixedResetTimes_.size(); ++i)
@@ -135,15 +137,12 @@ namespace QuantLib {
     }
 
     void DiscretizedSwap::postAdjustValuesImpl() {
-        const boost::optional<bool>& includeTodaysCashFlows =
-            Settings::instance().includeTodaysCashFlows();
-
         // fixed coupons whose reset time is in the past won't be managed
         // in preAdjustValues()
         for (Size i=0; i<fixedPayTimes_.size(); i++) {
             Time t = fixedPayTimes_[i];
             Time reset = fixedResetTimes_[i];
-            if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows) && isOnTime(t)) {
+            if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
                 if (arguments_.type==VanillaSwap::Payer)
                     values_ -= fixedCoupon;
@@ -156,7 +155,7 @@ namespace QuantLib {
         for (Size i=0; i<floatingPayTimes_.size(); i++) {
             Time t = floatingPayTimes_[i];
             Time reset = floatingResetTimes_[i];
-            if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows) && isOnTime(t)) {
+            if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real currentFloatingCoupon = arguments_.floatingCoupons[i];
                 QL_REQUIRE(currentFloatingCoupon != Null<Real>(),
                            "current floating coupon not given");
