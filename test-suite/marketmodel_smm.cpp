@@ -51,18 +51,13 @@
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <sstream>
 
-#if defined(BOOST_MSVC)
-#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-#endif
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
-namespace {
+namespace market_model_smm_test {
 
     Date todaysDate, startDate, endDate;
     std::vector<Time> rateTimes;
@@ -432,6 +427,8 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step coterminal swaps and swaptions "
                        "in a lognormal coterminal swap rate market model...");
+
+    using namespace market_model_smm_test;
 
     setup();
 

@@ -32,7 +32,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace piecewise_zero_spreaded_term_structure_test {
 
     struct Datum {
         Integer n;
@@ -82,6 +82,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation before the first spreaded date...");
 
+    using namespace piecewise_zero_spreaded_term_structure_test;
+
     CommonVars vars;
 
     std::vector<Handle<Quote> > spreads;
@@ -120,6 +122,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
 void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation after the last spreaded date...");
+
+    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -160,6 +164,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
 void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpreads() {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation with more than two spreaded dates...");
+
+    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -206,6 +212,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation between two dates...");
 
+    using namespace piecewise_zero_spreaded_term_structure_test;
+
     CommonVars vars;
 
     std::vector<Handle<Quote> > spreads;
@@ -250,6 +258,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
 
     BOOST_TEST_MESSAGE("Testing forward flat interpolation between two dates...");
 
+    using namespace piecewise_zero_spreaded_term_structure_test;
+
     CommonVars vars;
 
     std::vector<Handle<Quote> > spreads;
@@ -288,6 +298,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
 void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
 
     BOOST_TEST_MESSAGE("Testing backward flat interpolation between two dates...");
+
+    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -331,6 +343,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
 
     BOOST_TEST_MESSAGE("Testing default interpolation between two dates...");
 
+    using namespace piecewise_zero_spreaded_term_structure_test;
+
     CommonVars vars;
 
     std::vector<Handle<Quote> > spreads;
@@ -369,6 +383,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
 void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
 
     BOOST_TEST_MESSAGE("Testing factory constructor with additional parameters...");
+
+    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -420,6 +436,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
 
     BOOST_TEST_MESSAGE("Testing term structure max date...");
 
+    using namespace piecewise_zero_spreaded_term_structure_test;
+
     CommonVars vars;
 
     std::vector<Handle<Quote> > spreads;
@@ -453,6 +471,8 @@ void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
 void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
 
     BOOST_TEST_MESSAGE("Testing quote update...");
+
+    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 

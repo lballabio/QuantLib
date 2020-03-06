@@ -45,7 +45,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace convertible_bonds_test {
 
     struct CommonVars {
         // global data
@@ -114,6 +114,8 @@ void ConvertibleBondTest::testBond() {
 
     BOOST_TEST_MESSAGE(
        "Testing out-of-the-money convertible bonds against vanilla bonds...");
+
+    using namespace convertible_bonds_test;
 
     CommonVars vars;
 
@@ -306,6 +308,8 @@ void ConvertibleBondTest::testOption() {
 
     BOOST_TEST_MESSAGE(
        "Testing zero-coupon convertible bonds against vanilla option...");
+
+    using namespace convertible_bonds_test;
 
     CommonVars vars;
 

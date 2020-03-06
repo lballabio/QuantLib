@@ -42,7 +42,7 @@ using namespace boost::unit_test_framework;
 
 #include <iostream>
 
-namespace {
+namespace inflation_cpi_bond_test {
 
     struct Datum {
         Date date;
@@ -175,6 +175,8 @@ namespace {
 
 void InflationCPIBondTest::testCleanPrice() {
     IndexManager::instance().clearHistories();
+
+    using namespace inflation_cpi_bond_test;
   
     CommonVars common;
 

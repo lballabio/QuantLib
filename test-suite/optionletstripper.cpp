@@ -41,9 +41,8 @@
 using namespace QuantLib;
 using namespace boost::assign;
 using namespace boost::unit_test_framework;
-using ext::shared_ptr;
 
-namespace {
+namespace optionlet_stripper_test {
 
 struct CommonVars {
         // global data
@@ -382,12 +381,14 @@ void OptionletStripperTest::testFlatTermVolatilityStripping1() {
         "Testing forward/forward vol stripping from flat term vol "
         "surface using OptionletStripper1 class...");
 
+    using namespace optionlet_stripper_test;
+
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
 
     vars.setFlatTermVolSurface();
 
-    shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+    ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
 
     ext::shared_ptr<OptionletStripper> optionletStripper1(new
         OptionletStripper1(vars.flatTermVolSurface,
@@ -443,12 +444,14 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
         "Testing forward/forward vol stripping from non-flat term "
         "vol surface using OptionletStripper1 class...");
 
+    using namespace optionlet_stripper_test;
+
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
 
     vars.setCapFloorTermVolSurface();
 
-    shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+    ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
 
     ext::shared_ptr<OptionletStripper> optionletStripper1(new
         OptionletStripper1(vars.capFloorVolSurface,
@@ -504,12 +507,14 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
         "Testing forward/forward vol stripping from non-flat normal vol term "
         "vol surface for normal vol setup using OptionletStripper1 class...");
 
+    using namespace optionlet_stripper_test;
+
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(30, April, 2015);
 
     vars.setRealCapFloorTermVolSurface();
 
-    shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
+    ext::shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
 
     ext::shared_ptr< OptionletStripper > optionletStripper1(
         new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
@@ -570,13 +575,15 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
         "Testing forward/forward vol stripping from non-flat normal vol term "
         "vol surface for normal vol setup using OptionletStripper1 class...");
 
+    using namespace optionlet_stripper_test;
+
     CommonVars vars;
     Real shift = 0.03;
     Settings::instance().evaluationDate() = Date(30, April, 2015);
 
     vars.setRealCapFloorTermVolSurface();
 
-    shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
+    ext::shared_ptr< IborIndex > iborIndex(new Euribor6M(vars.forwardingYTS));
 
     ext::shared_ptr< OptionletStripper > optionletStripper1(
         new OptionletStripper1(vars.capFloorVolRealSurface, iborIndex,
@@ -637,16 +644,18 @@ void OptionletStripperTest::testFlatTermVolatilityStripping2() {
         "Testing forward/forward vol stripping from flat term vol "
         "surface using OptionletStripper2 class...");
 
+  using namespace optionlet_stripper_test;
+
   CommonVars vars;
   Settings::instance().evaluationDate() = Date::todaysDate();
 
   vars.setFlatTermVolCurve();
   vars.setFlatTermVolSurface();
 
-  shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+  ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
 
   // optionletstripper1
-  shared_ptr<OptionletStripper1> optionletStripper1(new
+  ext::shared_ptr<OptionletStripper1> optionletStripper1(new
         OptionletStripper1(vars.flatTermVolSurface,
                            iborIndex,
                            Null<Rate>(),
@@ -660,10 +669,10 @@ void OptionletStripperTest::testFlatTermVolatilityStripping2() {
   vol1->enableExtrapolation();
 
   // optionletstripper2
-  shared_ptr<OptionletStripper> optionletStripper2(new
+  ext::shared_ptr<OptionletStripper> optionletStripper2(new
         OptionletStripper2(optionletStripper1, vars.flatTermVolCurve));
 
-  shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2(new
+  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter2(new
         StrippedOptionletAdapter(optionletStripper2));
 
   Handle<OptionletVolatilityStructure> vol2(strippedOptionletAdapter2);
@@ -704,13 +713,15 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
         "Testing forward/forward vol stripping from non-flat term vol "
         "surface using OptionletStripper2 class...");
 
+  using namespace optionlet_stripper_test;
+
   CommonVars vars;
   Settings::instance().evaluationDate() = Date::todaysDate();
 
   vars.setCapFloorTermVolCurve();
   vars.setCapFloorTermVolSurface();
 
-  shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
+  ext::shared_ptr<IborIndex> iborIndex(new Euribor6M(vars.yieldTermStructure));
 
   // optionletstripper1
   ext::shared_ptr<OptionletStripper1> optionletStripper1(new
@@ -767,6 +778,8 @@ void OptionletStripperTest::testSwitchStrike() {
     BOOST_TEST_MESSAGE("Testing switch strike level and recalibration of level "
                        "in case of curve relinking...");
 
+    using namespace optionlet_stripper_test;
+
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
     vars.setCapFloorTermVolSurface();
@@ -775,7 +788,7 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.03, vars.dayCounter));
 
-    shared_ptr< IborIndex > iborIndex(new Euribor6M(yieldTermStructure));
+    ext::shared_ptr< IborIndex > iborIndex(new Euribor6M(yieldTermStructure));
 
     ext::shared_ptr< OptionletStripper1 > optionletStripper1(
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,

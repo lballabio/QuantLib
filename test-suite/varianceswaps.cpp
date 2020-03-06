@@ -36,6 +36,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, isLong, varStrike, nominal, s, q, r, today, \
                        exDate, v, expected, calculated, error, tolerance) \
     BOOST_ERROR( \

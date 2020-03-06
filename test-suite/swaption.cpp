@@ -39,7 +39,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace swaption_test {
 
     Period exercises[] = { 1*Years, 2*Years, 3*Years,
                            5*Years, 7*Years, 10*Years };
@@ -120,6 +120,8 @@ namespace {
 void SwaptionTest::testStrikeDependency() {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on strike...");
+
+    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -223,6 +225,8 @@ void SwaptionTest::testSpreadDependency() {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on spread...");
 
+    using namespace swaption_test;
+
     CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -316,6 +320,8 @@ void SwaptionTest::testSpreadTreatment() {
 
     BOOST_TEST_MESSAGE("Testing swaption treatment of spread...");
 
+    using namespace swaption_test;
+
     CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -385,6 +391,8 @@ void SwaptionTest::testCachedValue() {
 
     BOOST_TEST_MESSAGE("Testing swaption value against cached value...");
 
+    using namespace swaption_test;
+
     CommonVars vars;
 
     vars.today = Date(13, March, 2002);
@@ -420,6 +428,8 @@ void SwaptionTest::testCachedValue() {
 void SwaptionTest::testVega() {
 
     BOOST_TEST_MESSAGE("Testing swaption vega...");
+
+    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -492,6 +502,8 @@ void SwaptionTest::testVega() {
 void SwaptionTest::testCashSettledSwaptions() {
 
     BOOST_TEST_MESSAGE("Testing cash settled swaptions modified annuity...");
+
+    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -833,6 +845,8 @@ void SwaptionTest::testCashSettledSwaptions() {
 void SwaptionTest::testImpliedVolatility() {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
+
+    using namespace swaption_test;
 
     CommonVars vars;
 

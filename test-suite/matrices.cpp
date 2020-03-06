@@ -42,7 +42,7 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace {
+namespace matrices_test {
 
     Size N;
     Matrix M1, M2, M3, M4, M5, M6, M7, I;
@@ -112,6 +112,8 @@ void MatricesTest::testEigenvectors() {
 
     BOOST_TEST_MESSAGE("Testing eigenvalues and eigenvectors calculation...");
 
+    using namespace matrices_test;
+
     setup();
 
     Matrix testMatrices[] = { M1, M2 };
@@ -151,6 +153,8 @@ void MatricesTest::testSqrt() {
 
     BOOST_TEST_MESSAGE("Testing matricial square root...");
 
+    using namespace matrices_test;
+
     setup();
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
@@ -169,6 +173,8 @@ void MatricesTest::testSqrt() {
 
 void MatricesTest::testHighamSqrt() {
     BOOST_TEST_MESSAGE("Testing Higham matricial square root...");
+
+    using namespace matrices_test;
 
     setup();
 
@@ -189,6 +195,8 @@ void MatricesTest::testHighamSqrt() {
 void MatricesTest::testSVD() {
 
     BOOST_TEST_MESSAGE("Testing singular value decomposition...");
+
+    using namespace matrices_test;
 
     setup();
 
@@ -235,6 +243,8 @@ void MatricesTest::testQRDecomposition() {
 
     BOOST_TEST_MESSAGE("Testing QR decomposition...");
 
+    using namespace matrices_test;
+
     setup();
 
     Real tol = 1.0e-12;
@@ -271,6 +281,8 @@ void MatricesTest::testQRDecomposition() {
 void MatricesTest::testQRSolve() {
 
     BOOST_TEST_MESSAGE("Testing QR solve...");
+
+    using namespace matrices_test;
 
     setup();
 
@@ -343,6 +355,8 @@ void MatricesTest::testInverse() {
 
     BOOST_TEST_MESSAGE("Testing LU inverse calculation...");
 
+    using namespace matrices_test;
+
     setup();
 
     Real tol = 1.0e-12;
@@ -371,6 +385,8 @@ void MatricesTest::testInverse() {
 void MatricesTest::testDeterminant() {
 
     BOOST_TEST_MESSAGE("Testing LU determinant calculation...");
+
+    using namespace matrices_test;
 
     setup();
     Real tol = 1e-10;
@@ -607,7 +623,8 @@ void MatricesTest::testMoorePenroseInverse() {
 
 }
 
-namespace {
+
+namespace matrices_test {
     class MatrixMult {
       public:
         explicit MatrixMult(const Matrix& m) : m_(m) {}
@@ -627,6 +644,8 @@ namespace {
 
 void MatricesTest::testIterativeSolvers() {
     BOOST_TEST_MESSAGE("Testing iterative solvers...");
+
+    using namespace matrices_test;
 
     setup();
 

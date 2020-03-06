@@ -42,7 +42,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace bates_model_test {
 
     Real getCalibrationError(
                std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
@@ -270,7 +270,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
     }
 }
 
-namespace {
+namespace bates_model_test {
     struct HestonModelData {
         const char* const name;
         Real v0;
@@ -300,6 +300,8 @@ namespace {
 void BatesModelTest::testAnalyticVsMCPricing() {
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
                        "engine...");
+
+    using namespace bates_model_test;
 
     SavedSettings backup;
 
@@ -389,6 +391,8 @@ void BatesModelTest::testDAXCalibration() {
 
     BOOST_TEST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
+
+    using namespace bates_model_test;
 
     SavedSettings backup;
 

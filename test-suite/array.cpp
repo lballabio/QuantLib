@@ -25,14 +25,18 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-class FSquared {
-  public:
-    Real operator()(Real x) const { return x*x; }
-};
+namespace array_test {
+    class FSquared {
+      public:
+        Real operator()(Real x) const { return x*x; }
+    };
+}
 
 void ArrayTest::testConstruction() {
 
     BOOST_TEST_MESSAGE("Testing array construction...");
+
+    using namespace array_test;
 
     // empty array
     Array a1;

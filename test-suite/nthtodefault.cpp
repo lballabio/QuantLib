@@ -40,7 +40,7 @@ using namespace boost::unit_test_framework;
 
 #ifndef QL_PATCH_SOLARIS
 
-namespace {
+namespace nth_to_default_test {
 
     struct hwDatum {
         Size rank;
@@ -100,6 +100,8 @@ void NthToDefaultTest::testGauss() {
     #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian copula...");
+
+    using namespace nth_to_default_test;
 
     SavedSettings backup;
 
@@ -228,7 +230,7 @@ void NthToDefaultTest::testGauss() {
             QL_REQUIRE (LENGTH(hwCorrelation) == LENGTH(hwData[i].spread),
                         "vector length does not match");
             diff = 1e4 * ntd[i].fairPremium() - hwData[i].spread[j];
-            maxDiff = max (maxDiff, fabs (diff));
+            maxDiff = std::max(maxDiff, fabs (diff));
             BOOST_CHECK_MESSAGE (fabs(diff/hwData[i].spread[j]) < relTolerance
                                  || fabs(diff) < absTolerance,
                                  "tolerance " << relTolerance << "|"
@@ -243,6 +245,8 @@ void NthToDefaultTest::testStudent() {
     #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Student copula...");
+
+    using namespace nth_to_default_test;
 
     SavedSettings backup;
 
@@ -358,7 +362,7 @@ void NthToDefaultTest::testStudent() {
     //         QL_REQUIRE (LENGTH(hwCorrelation) == LENGTH(hwData[i].spread),
     //                     "vector length does not match");
     //         diff = 1e4 * ntd[i].fairPremium() - hwData[i].spread[j];
-    //         maxDiff = max (maxDiff, fabs (diff));
+    //         maxDiff = std::max(maxDiff, fabs (diff));
     //         BOOST_CHECK_MESSAGE (fabs(diff/hwData[i].spread[j]) < relTolerance
     //                              || fabs(diff) < absTolerance,
     //                              "tolerance2 " << relTolerance << "|"
@@ -373,7 +377,7 @@ void NthToDefaultTest::testStudent() {
         QL_REQUIRE (ntd[i].rank() == hwDataDist[i].rank, "rank does not match");
 
         Real diff = 1e4 * ntd[i].fairPremium() - hwDataDist[i].spread[3];
-        maxDiff = max (maxDiff, fabs (diff));
+        maxDiff = std::max(maxDiff, fabs (diff));
         BOOST_CHECK_MESSAGE (fabs(diff / hwDataDist[i].spread[3]) < relTolerance ||
                              fabs(diff) < absTolerance,
                              "tolerance " << relTolerance << "|"

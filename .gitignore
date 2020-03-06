@@ -45,6 +45,7 @@ test-suite/*.trs
 Makefile
 Makefile.in
 unity.cpp
+unity_*.cpp
 testCaseCollection.xml
 .deps
 .libs

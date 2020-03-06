@@ -46,6 +46,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef QUANTO_REPORT_FAILURE
 #define QUANTO_REPORT_FAILURE(greekName, payoff, exercise, s, q, r, \
                         today, v, fxr, fxv, corr, expected, \
                         calculated, error, tolerance) \
@@ -67,6 +68,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
+#undef QUANTO_FORWARD_REPORT_FAILURE
 #define QUANTO_FORWARD_REPORT_FAILURE(greekName, payoff, moneyness, \
                         exercise, s, q, r, \
                         today, reset, v, fxr, fxv, corr, expected, \
@@ -91,6 +93,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
+#undef QUANTO_BARRIER_REPORT_FAILURE
 #define QUANTO_BARRIER_REPORT_FAILURE(greekName, payoff, \
                         barrierType, barrier, rebate, \
                         exercise, s, q, r, \
@@ -117,6 +120,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
+#undef QUANTO_DOUBLE_BARRIER_REPORT_FAILURE
 #define QUANTO_DOUBLE_BARRIER_REPORT_FAILURE(greekName, payoff, \
                         barrierType, barrier_lo, barrier_hi, rebate, \
                         exercise, s, q, r, \

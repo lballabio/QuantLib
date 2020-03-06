@@ -547,7 +547,7 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
 
         const ext::shared_ptr<FdmMesherComposite> mesher(
 			ext::make_shared<FdmMesherComposite>(
-				ext::make_shared<Uniform1dMesher>(log(vMin), log(vMax), vGrid)));
+				ext::make_shared<Uniform1dMesher>(std::log(vMin), std::log(vMax), vGrid)));
 
         const Array v = mesher->locations(0);
 
@@ -2246,7 +2246,7 @@ void HestonSLVModelTest::testForwardSkewSLV() {
                     strike, resetDate, payoff, exercise));
 
             const Volatility implVol =
-                detail::ImpliedVolatilityHelper::calculate(
+                QuantLib::detail::ImpliedVolatilityHelper::calculate(
                     *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
 
             const Real tol = 0.001;

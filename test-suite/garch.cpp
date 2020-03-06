@@ -29,7 +29,7 @@
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
 
-namespace {
+namespace garch_test {
 
     class DummyOptimizationMethod : public OptimizationMethod {
       public:
@@ -64,6 +64,8 @@ namespace {
 void GARCHTest::testCalibration() {
 
     BOOST_TEST_MESSAGE("Testing GARCH model calibration...");
+
+    using namespace garch_test;
 
     Date start(7, July, 1962), d = start;
     TimeSeries<Volatility> ts;
@@ -145,7 +147,7 @@ void GARCHTest::testCalibration() {
     CHECK(expected3, cgarch4, logLikelihood, tolerance);
 }
 
-namespace {
+namespace garch_test {
 
     static Real expected_calc[] = {
         0.452769, 0.513323, 0.530141, 0.5350841, 0.536558,
@@ -173,6 +175,9 @@ namespace {
 
 void GARCHTest::testCalculation() {
     BOOST_TEST_MESSAGE("Testing GARCH model calculation...");
+
+    using namespace garch_test;
+
     Date d(7, July, 1962);
     TimeSeries<Volatility> ts;
     Garch11 garch(0.2, 0.3, 0.4);

@@ -56,7 +56,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace piecewise_yield_curve_test {
 
     struct Datum {
         Integer n;
@@ -638,6 +638,8 @@ void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-cubic discount curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<Discount,LogCubic,IterativeBootstrap>(
@@ -657,6 +659,8 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<Discount,LogLinear,IterativeBootstrap>(vars);
@@ -667,6 +671,8 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -679,6 +685,8 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<ZeroYield,Linear,IterativeBootstrap>(vars);
@@ -689,6 +697,8 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic zero-yield curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -709,6 +719,8 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<ForwardRate,Linear,IterativeBootstrap>(vars);
@@ -720,6 +732,8 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<ForwardRate,BackwardFlat,IterativeBootstrap>(vars);
@@ -730,6 +744,8 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic forward-rate curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -749,6 +765,8 @@ void PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of convex monotone forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveConsistency<ForwardRate,ConvexMonotone,IterativeBootstrap>(vars);
 
@@ -761,6 +779,8 @@ void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of local-bootstrap algorithm...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveConsistency<ForwardRate,ConvexMonotone,LocalBootstrap>(
                                               vars, ConvexMonotone(), 1.0e-6);
@@ -772,6 +792,8 @@ void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
 void PiecewiseYieldCurveTest::testObservability() {
 
     BOOST_TEST_MESSAGE("Testing observability of piecewise yield curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -816,6 +838,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
     BOOST_TEST_MESSAGE(
         "Testing use of today's LIBOR fixings in swap curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -902,6 +926,8 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     BOOST_TEST_MESSAGE(
         "Testing bootstrap over JPY LIBOR swaps...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     vars.today = Date(4, October, 2007);
@@ -969,7 +995,7 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     }
 }
 
-namespace {
+namespace piecewise_yield_curve_test {
 
     template <class T, class I>
     void testCurveCopy(CommonVars& vars,
@@ -1016,6 +1042,8 @@ namespace {
 void PiecewiseYieldCurveTest::testDiscountCopy() {
     BOOST_TEST_MESSAGE("Testing copying of discount curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveCopy<Discount,LogLinear>(vars);
 }
@@ -1023,12 +1051,16 @@ void PiecewiseYieldCurveTest::testDiscountCopy() {
 void PiecewiseYieldCurveTest::testForwardCopy() {
     BOOST_TEST_MESSAGE("Testing copying of forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveCopy<ForwardRate,BackwardFlat>(vars);
 }
 
 void PiecewiseYieldCurveTest::testZeroCopy() {
     BOOST_TEST_MESSAGE("Testing copying of zero-rate curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
     testCurveCopy<ZeroYield,Linear>(vars);
@@ -1057,6 +1089,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
 
 void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
+
+    using namespace piecewise_yield_curve_test;
 
     SavedSettings backup;
 
@@ -1126,6 +1160,8 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
 
     BOOST_TEST_MESSAGE("Testing that construction with an explicit bootstrap succeeds...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     // With an explicit IterativeBootstrap object
@@ -1149,6 +1185,8 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
 
 void PiecewiseYieldCurveTest::testLargeRates() {
     BOOST_TEST_MESSAGE("Testing bootstrap with large input rates...");
+
+    using namespace piecewise_yield_curve_test;
 
     SavedSettings backup;
 
@@ -1187,7 +1225,7 @@ void PiecewiseYieldCurveTest::testLargeRates() {
     BOOST_CHECK_NO_THROW(curve->discount(0.01));
 }
 
-namespace {
+namespace piecewise_yield_curve_test {
     // helper classes for testGlobalBootstrap() below:
 
     // functor returning the additional error terms for the cost function
@@ -1224,6 +1262,8 @@ namespace {
 void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     BOOST_TEST_MESSAGE("Testing global bootstrap...");
+
+    using namespace piecewise_yield_curve_test;
 
     SavedSettings backup;
 

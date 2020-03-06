@@ -49,7 +49,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 
-namespace {
+namespace swing_option_test {
     ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
         Array x0(2);
         x0[0] = 3.0; x0[1] = 0.0;
@@ -177,6 +177,8 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
 void SwingOptionTest::testExtOUJumpVanillaEngine() {
 
     BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model...");
+
+    using namespace swing_option_test;
 
     SavedSettings backup;
 
@@ -318,6 +320,8 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 
     BOOST_TEST_MESSAGE("Testing simple swing option pricing for Kluge model...");
 
+    using namespace swing_option_test;
+
     SavedSettings backup;
 
     Date settlementDate = Date::todaysDate();
@@ -437,7 +441,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     }
 }
 
-namespace {
+namespace swing_option_test {
     class SwingPdePricing {
       public:
         typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
@@ -473,6 +477,8 @@ namespace {
 void SwingOptionTest::testKlugeChFVanillaPricing() {
     BOOST_TEST_MESSAGE("Testing Kluge PDE Vanilla Pricing in"
             " comparison to moment matching...");
+
+    using namespace swing_option_test;
 
     SavedSettings backup;
 

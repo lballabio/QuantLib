@@ -34,6 +34,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoffM, payoffD, exerciseM,    \
                        exerciseD, s, q, r, today,                 \
                        v, expected, calculated, error, tolerance) \
@@ -54,7 +55,7 @@ using namespace boost::unit_test_framework;
                "\nerror:                " << error << \
                "\ntolerance:            " << tolerance);
 
-namespace {
+namespace compound_option_test {
 
     Integer timeToDays(Time t) {
         return Integer(t*360+0.5);
@@ -85,6 +86,8 @@ namespace {
 void CompoundOptionTest::testPutCallParity(){
 
     BOOST_TEST_MESSAGE("Testing compound-option put-call parity...");
+
+    using namespace compound_option_test;
 
     // Test Put Call Parity for compound options.
     // Formula taken from: "Foreign Exchange Risk", Wystup, Risk 2002
@@ -204,6 +207,8 @@ void CompoundOptionTest::testPutCallParity(){
 void CompoundOptionTest::testValues(){
 
     BOOST_TEST_MESSAGE("Testing compound-option values and greeks...");
+
+    using namespace compound_option_test;
 
     CompoundOptionData values[] = {
         // type Mother, typeDaughter, strike Mother, strike Daughter,  spot,    q,    r,    t Mother, t Daughter,  vol,   value,    tol, delta, gamma, vega, theta
