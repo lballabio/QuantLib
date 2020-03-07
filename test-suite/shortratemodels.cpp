@@ -44,7 +44,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace short_rate_models_test {
 
     struct CalibrationData {
         Integer start;
@@ -57,6 +57,8 @@ namespace {
 
 void ShortRateModelTest::testCachedHullWhite() {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions with start delay...");
+
+    using namespace short_rate_models_test;
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -134,6 +136,8 @@ void ShortRateModelTest::testCachedHullWhite() {
 
 void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration with fixed reversion against cached values...");
+
+    using namespace short_rate_models_test;
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -213,6 +217,8 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
 void ShortRateModelTest::testCachedHullWhite2() {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached "
                        "values using swaptions without start delay...");
+
+    using namespace short_rate_models_test;
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;

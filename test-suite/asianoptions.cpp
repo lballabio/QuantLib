@@ -41,6 +41,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, averageType, \
                        runningAccumulator, pastFixings, \
                        fixingDates, payoff, exercise, s, q, r, today, v, \

@@ -58,7 +58,7 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace {
+namespace inflation_capfloored_coupon_test {
     struct Datum {
         Date date;
         Rate rate;
@@ -380,6 +380,8 @@ void InflationCapFlooredCouponTest::testDecomposition() {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
 
+    using namespace inflation_capfloored_coupon_test;
+
     CommonVars vars;
 
     Real tolerance = 1e-10;
@@ -696,6 +698,8 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
 
     BOOST_TEST_MESSAGE("Testing inflation capped/floored coupon against"
                        " inflation capfloor instrument...");
+
+    using namespace inflation_capfloored_coupon_test;
 
     CommonVars vars;
 

@@ -39,7 +39,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace swap_test {
 
     struct CommonVars {
         // global data
@@ -105,6 +105,8 @@ void SwapTest::testFairRate() {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
 
+    using namespace swap_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
@@ -133,6 +135,8 @@ void SwapTest::testFairSpread() {
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of "
                        "fair floating spread...");
 
+    using namespace swap_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
@@ -158,6 +162,8 @@ void SwapTest::testFairSpread() {
 void SwapTest::testRateDependency() {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
+
+    using namespace swap_test;
 
     CommonVars vars;
 
@@ -196,6 +202,8 @@ void SwapTest::testSpreadDependency() {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
 
+    using namespace swap_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
@@ -232,6 +240,8 @@ void SwapTest::testSpreadDependency() {
 void SwapTest::testInArrears() {
 
     BOOST_TEST_MESSAGE("Testing in-arrears swap calculation...");
+
+    using namespace swap_test;
 
     CommonVars vars;
 
@@ -298,6 +308,8 @@ void SwapTest::testInArrears() {
 void SwapTest::testCachedValue() {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation against cached value...");
+
+    using namespace swap_test;
 
     CommonVars vars;
 

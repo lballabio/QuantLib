@@ -114,11 +114,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/functional.hpp>
 #include <sstream>
 
-#if defined(BOOST_MSVC)
-#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-#endif
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -128,7 +123,7 @@ using std::sqrt;
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
-namespace {
+namespace market_model_test {
 
     Date todaysDate, startDate, endDate;
     Schedule dates;
@@ -721,6 +716,8 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                        "one-step forwards and optionlets "
                        "in a lognormal forward rate market model...");
 
+    using namespace market_model_test;
+
     setup();
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
@@ -813,6 +810,8 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                        "one-step forwards and optionlets "
                        "in a normal forward rate market model...");
 
+    using namespace market_model_test;
+
     setup();
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
@@ -904,6 +903,8 @@ void MarketModelTest::testInverseFloater()
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "inverse floater "
                        "in forward rate market model...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -1044,8 +1045,10 @@ void MarketModelTest::testInverseFloater()
 }
 
 void testMultiProductComposite(const MarketModelMultiProduct& product,
-                               const std::vector<SubProductExpectedValues>& subProductExpectedValues,
+                               const std::vector<market_model_test::SubProductExpectedValues>& subProductExpectedValues,
                                const std::string& testDescription) {
+
+    using namespace market_model_test;
 
                                    BOOST_TEST_MESSAGE(
                                        "Testing exact repricing of "
@@ -1118,7 +1121,9 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
 }
 
 void addForwards(MultiProductComposite& product,
-                 std::vector<SubProductExpectedValues>& subProductExpectedValues) {
+                 std::vector<market_model_test::SubProductExpectedValues>& subProductExpectedValues) {
+
+    using namespace market_model_test;
 
                      // create forwards and add them to the product...
                      std::vector<Rate> forwardStrikes(todaysForwards.size());
@@ -1141,7 +1146,9 @@ void addForwards(MultiProductComposite& product,
 }
 
 void addOptionLets(MultiProductComposite& product,
-                   std::vector<SubProductExpectedValues>& subProductExpectedValues) {
+                   std::vector<market_model_test::SubProductExpectedValues>& subProductExpectedValues) {
+
+    using namespace market_model_test;
 
                        // create the products...
                        std::vector<ext::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
@@ -1175,7 +1182,9 @@ void addOptionLets(MultiProductComposite& product,
 
 
 void addCoinitialSwaps(MultiProductComposite& product,
-                       std::vector<SubProductExpectedValues>& subProductExpectedValues) {
+                       std::vector<market_model_test::SubProductExpectedValues>& subProductExpectedValues) {
+
+    using namespace market_model_test;
 
                            // create the products...
                            Real fixedRate = 0.04;
@@ -1195,7 +1204,10 @@ void addCoinitialSwaps(MultiProductComposite& product,
 }
 
 void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
-                                    std::vector<SubProductExpectedValues>& subProductExpectedValues) {
+                                    std::vector<market_model_test::SubProductExpectedValues>& subProductExpectedValues) {
+
+    using namespace market_model_test;
+
                                         Real fixedRate = 0.04;
                                         MultiStepCoterminalSwaps swaps(rateTimes, accruals, accruals,
                                             paymentTimes, fixedRate);
@@ -1259,6 +1271,8 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
 void MarketModelTest::testAllMultiStepProducts() {
     std::string testDescription = "all multi-step products ";
 
+    using namespace market_model_test;
+
     setup();
 
     MultiProductComposite product;
@@ -1276,6 +1290,8 @@ void MarketModelTest::testAllMultiStepProducts() {
 void MarketModelTest::testPeriodAdapter() {
 
     BOOST_TEST_MESSAGE("Testing period-adaptation routines in LIBOR market model...");
+
+    using namespace market_model_test;
 
     setup();
     LMMCurveState cs(rateTimes);
@@ -1427,6 +1443,8 @@ void MarketModelTest::testPeriodAdapter() {
 void MarketModelTest::testCallableSwapNaif() {
 
     BOOST_TEST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -1596,6 +1614,8 @@ void MarketModelTest::testCallableSwapNaif() {
 void MarketModelTest::testCallableSwapLS() {
 
     BOOST_TEST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -1774,6 +1794,8 @@ void MarketModelTest::testCallableSwapLS() {
 void MarketModelTest::testCallableSwapAnderson(
     MarketModelType marketModelType, unsigned testedFactor) {
 
+    using namespace market_model_test;
+
     BOOST_TEST_MESSAGE("Pricing callable swap with Anderson exercise "
                        "strategy in a LIBOR market model for test factor "
                         << testedFactor << " and model type "
@@ -1936,6 +1958,8 @@ void MarketModelTest::testCallableSwapAnderson(
 void MarketModelTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing caplet greeks in a lognormal forward rate market model using partial proxy simulation...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -2176,6 +2200,8 @@ void MarketModelTest::testPathwiseGreeks()
 {
 
     BOOST_TEST_MESSAGE("Testing caplet deltas in a lognormal forward rate market model using pathwise method...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -2433,10 +2459,9 @@ void MarketModelTest::testPathwiseVegas()
     BOOST_TEST_MESSAGE(
         "Testing pathwise vegas in a lognormal forward rate market model...");
 
+    using namespace market_model_test;
+
     setup();
-
-
-
 
 
     std::vector<ext::shared_ptr<Payoff> > payoffs(todaysForwards.size());
@@ -3633,6 +3658,8 @@ void MarketModelTest::testPathwiseMarketVegas()
 
     BOOST_TEST_MESSAGE("Testing pathwise market vegas in a lognormal forward rate market model...");
 
+    using namespace market_model_test;
+
     setup();
 
     // specify collection of caps and swaptions and then see if their vegas are correct
@@ -4326,6 +4353,8 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 
     BOOST_TEST_MESSAGE("Testing Abcd-volatility integration...");
 
+    using namespace market_model_test;
+
     setup();
 
     Real a = -0.0597;
@@ -4379,6 +4408,8 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
     BOOST_TEST_MESSAGE("Testing different implementations of Abcd-volatility...");
 
+    using namespace market_model_test;
+
     setup();
 
     /*
@@ -4426,6 +4457,8 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 void MarketModelTest::testAbcdVolatilityFit() {
 
     BOOST_TEST_MESSAGE("Testing Abcd-volatility fit...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -4479,6 +4512,8 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
         "Testing exact repricing of "
         "forwards and optionlets "
         "in a stochastic vol displaced diffusion forward rate market model...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -4683,6 +4718,8 @@ void MarketModelTest::testDriftCalculator() {
 
     BOOST_TEST_MESSAGE("Testing drift calculation...");
 
+    using namespace market_model_test;
+
     setup();
 
     Real tolerance = 1.0e-16;
@@ -4736,6 +4773,8 @@ void MarketModelTest::testIsInSubset() {
     // Performance test for isInSubset function (temporary)
 
     BOOST_TEST_MESSAGE("Testing isInSubset function...");
+
+    using namespace market_model_test;
 
     setup();
 
@@ -4889,6 +4928,8 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
+
+        using namespace market_model_test;
 
         setup();
 

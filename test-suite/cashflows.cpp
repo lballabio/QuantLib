@@ -36,7 +36,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using ext::shared_ptr;
 using boost::none;
 
 void CashFlowsTest::testSettings() {
@@ -49,9 +48,9 @@ void CashFlowsTest::testSettings() {
     Settings::instance().evaluationDate() = today;
 
     // cash flows at T+0, T+1, T+2
-    std::vector<shared_ptr<CashFlow> > leg;
+    std::vector<ext::shared_ptr<CashFlow> > leg;
     for (Integer i=0; i<3; ++i)
-        leg.push_back(shared_ptr<CashFlow>(new SimpleCashFlow(1.0, today+i)));
+        leg.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(1.0, today+i)));
 
 
     #define CHECK_INCLUSION(n, days, expected) \

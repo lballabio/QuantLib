@@ -38,7 +38,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace term_structures_test {
 
     struct Datum {
         Integer n;
@@ -122,6 +122,8 @@ void TermStructureTest::testReferenceChange() {
 
     BOOST_TEST_MESSAGE("Testing term structure against evaluation date change...");
 
+    using namespace term_structures_test;
+
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
@@ -157,6 +159,8 @@ void TermStructureTest::testImplied() {
 
     BOOST_TEST_MESSAGE("Testing consistency of implied term structure...");
 
+    using namespace term_structures_test;
+
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
@@ -183,6 +187,8 @@ void TermStructureTest::testImpliedObs() {
 
     BOOST_TEST_MESSAGE("Testing observability of implied term structure...");
 
+    using namespace term_structures_test;
+
     CommonVars vars;
 
     Date today = Settings::instance().evaluationDate();
@@ -202,6 +208,8 @@ void TermStructureTest::testImpliedObs() {
 void TermStructureTest::testFSpreaded() {
 
     BOOST_TEST_MESSAGE("Testing consistency of forward-spreaded term structure...");
+
+    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -232,6 +240,8 @@ void TermStructureTest::testFSpreadedObs() {
     BOOST_TEST_MESSAGE("Testing observability of forward-spreaded "
                        "term structure...");
 
+    using namespace term_structures_test;
+
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
@@ -253,6 +263,8 @@ void TermStructureTest::testFSpreadedObs() {
 void TermStructureTest::testZSpreaded() {
 
     BOOST_TEST_MESSAGE("Testing consistency of zero-spreaded term structure...");
+
+    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -280,6 +292,8 @@ void TermStructureTest::testZSpreadedObs() {
 
     BOOST_TEST_MESSAGE("Testing observability of zero-spreaded term structure...");
 
+    using namespace term_structures_test;
+
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
@@ -304,6 +318,8 @@ void TermStructureTest::testCreateWithNullUnderlying() {
         "Testing that a zero-spreaded curve can be created with "
         "a null underlying curve...");
 
+    using namespace term_structures_test;
+
     CommonVars vars;
 
     Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
@@ -322,6 +338,8 @@ void TermStructureTest::testLinkToNullUnderlying() {
         "Testing that an underlying curve can be relinked to "
         "a null underlying curve...");
 
+    using namespace term_structures_test;
+
     CommonVars vars;
 
     Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
@@ -338,6 +356,8 @@ void TermStructureTest::testLinkToNullUnderlying() {
 void TermStructureTest::testCompositeZeroYieldStructures() {
     BOOST_TEST_MESSAGE(
         "Testing composite zero yield structures...");
+
+    using namespace term_structures_test;
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = Date(10, Nov, 2017);

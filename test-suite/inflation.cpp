@@ -52,13 +52,14 @@ using std::fabs;
 using std::pow;
 using std::vector;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(d, res, periodName) \
     BOOST_ERROR("wrong " << periodName << " inflation period for Date (1 " \
         << d << "), Start Date ( " \
         << res.first << "), End Date (" \
         << res.second << ")"); \
 
-namespace {
+namespace inflation_test {
 
     struct Datum {
         Date date;
@@ -99,7 +100,7 @@ namespace {
 // zero inflation tests, index, termstructure, and swaps
 //===========================================================================================
 
-namespace {
+namespace inflation_test {
 
 void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz, 
     const ext::shared_ptr<ZeroInflationIndex>& ii) {
@@ -305,6 +306,8 @@ void InflationTest::testZeroIndex() {
 
 void InflationTest::testZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
+
+    using namespace inflation_test;
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -794,6 +797,8 @@ void InflationTest::testYYIndex() {
 
 void InflationTest::testYYTermStructure() {
     BOOST_TEST_MESSAGE("Testing year-on-year inflation term structure...");
+
+    using namespace inflation_test;
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;

@@ -45,6 +45,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrierlo, barrierhi, \
                        payoff, exercise, s, q, r, today, v, expected, \
                        calculated, error, tolerance) \
@@ -66,6 +67,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
+#undef REPORT_FAILURE_VANNAVOLGA
 #define REPORT_FAILURE_VANNAVOLGA(greekName, barrierType, \
                                   barrier1, barrier2, rebate, payoff, \
                                   exercise, s, q, r, today, \
@@ -94,7 +96,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+namespace double_barrier_option_test {
 
     struct NewBarrierOptionData {
         DoubleBarrier::Type barrierType;
@@ -137,6 +139,8 @@ namespace {
 void DoubleBarrierOptionTest::testEuropeanHaugValues() {
 
     BOOST_TEST_MESSAGE("Testing double barrier european options against Haug's values...");
+
+    using namespace double_barrier_option_test;
 
     Exercise::Type european = Exercise::European;
     NewBarrierOptionData values[] = {
@@ -387,6 +391,8 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
 void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
     BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");
+
+    using namespace double_barrier_option_test;
 
     SavedSettings backup;
 

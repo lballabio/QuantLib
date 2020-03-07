@@ -48,7 +48,7 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace {
+namespace inflation_cpi_swap_test {
     struct Datum {
         Date date;
         Rate rate;
@@ -264,6 +264,9 @@ namespace {
 
 
 void CPISwapTest::consistency() {
+    BOOST_TEST_MESSAGE("Checking CPI swap against inflation term structure...");
+
+    using namespace inflation_cpi_swap_test;
 
     // check inflation leg vs calculation directly from inflation TS
     CommonVars common;
@@ -380,6 +383,10 @@ void CPISwapTest::consistency() {
 
 
 void CPISwapTest::zciisconsistency() {
+    BOOST_TEST_MESSAGE("Checking CPI swap against zero-coupon inflation swap...");
+
+    using namespace inflation_cpi_swap_test;
+
     CommonVars common;
 
     ZeroCouponInflationSwap::Type ztype = ZeroCouponInflationSwap::Payer;
@@ -435,6 +442,10 @@ void CPISwapTest::zciisconsistency() {
 
 
 void CPISwapTest::cpibondconsistency() {
+    BOOST_TEST_MESSAGE("Checking CPI swap against CPI bond...");
+
+    using namespace inflation_cpi_swap_test;
+
     CommonVars common;
 
     // ZeroInflationSwap aka CPISwap

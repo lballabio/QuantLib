@@ -69,7 +69,7 @@ using namespace boost::assign;
 using namespace boost::unit_test_framework;
 
 
-namespace {
+namespace square_root_clv_model {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
         CLVModelPayoff(Option::Type type, Real strike,
@@ -107,6 +107,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
         "Testing vanilla option pricing with square root kernel process...");
 
     using namespace ext::placeholders;
+    using namespace square_root_clv_model;
 
     SavedSettings backup;
 
@@ -191,6 +192,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
         "Testing mapping function of the square root kernel process...");
 
     using namespace ext::placeholders;
+    using namespace square_root_clv_model;
 
     SavedSettings backup;
 
@@ -288,7 +290,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
     }
 }
 
-namespace {
+namespace square_root_clv_model {
     class SquareRootCLVCalibrationFunction : public CostFunction {
       public:
         SquareRootCLVCalibrationFunction(
@@ -424,7 +426,7 @@ namespace {
                             strike, resetDate, payoff, exercise));
 
                     const Volatility implVol =
-                        detail::ImpliedVolatilityHelper::calculate(
+                        QuantLib::detail::ImpliedVolatilityHelper::calculate(
                             *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
 
                     const Size idx = k + i*strikes_.size();
@@ -482,6 +484,8 @@ namespace {
 void SquareRootCLVModelTest::testForwardSkew() {
     BOOST_TEST_MESSAGE(
         "Testing forward skew dynamics with square root kernel process...");
+
+    using namespace square_root_clv_model;
 
     SavedSettings backup;
 
@@ -676,7 +680,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
                     strike, resetDate, payoff, exercise));
 
             const Volatility implVol =
-                detail::ImpliedVolatilityHelper::calculate(
+                QuantLib::detail::ImpliedVolatilityHelper::calculate(
                     *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
 
             const Size idx = j + i*LENGTH(strikes);

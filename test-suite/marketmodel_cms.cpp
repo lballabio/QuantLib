@@ -49,18 +49,13 @@
 #include <iostream>
 #include <sstream>
 
-#if defined(BOOST_MSVC)
-#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-#endif
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
-namespace {
+namespace market_model_cms_test {
 
     Date todaysDate, startDate, endDate;
     std::vector<Time> rateTimes;
@@ -440,6 +435,8 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step constant maturity swaps and swaptions "
                        "in a lognormal constant maturity swap market model...");
+
+    using namespace market_model_cms_test;
 
     setup();
 

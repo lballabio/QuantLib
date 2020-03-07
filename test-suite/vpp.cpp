@@ -57,7 +57,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace vpp_test {
     ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
         Array x0(2);
         x0[0] = 3.0; x0[1] = 0.0;
@@ -99,6 +99,8 @@ void VPPTest::testGemanRoncoroniProcess() {
        http://semeq.unipmn.it/files/Ch19_spark_spread.zip
     */
 
+    using namespace vpp_test;
+
     SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
@@ -137,7 +139,7 @@ void VPPTest::testGemanRoncoroniProcess() {
     const Real alphaG    = 1.0;
     const Real x0G       = 1.1;
 
-    ext::function<Real (Real)> f = linear(alphaG, betaG);
+    ext::function<Real (Real)> f = vpp_test::linear(alphaG, betaG);
 
     ext::shared_ptr<StochasticProcess1D> eouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -265,6 +267,8 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 
     BOOST_TEST_MESSAGE("Testing simple Kluge ext-Ornstein-Uhlenbeck spread option...");
 
+    using namespace vpp_test;
+
     SavedSettings backup;
 
     Date settlementDate = Date(18, December, 2011);
@@ -286,7 +290,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 
     ext::shared_ptr<ExtOUWithJumpsProcess>
                                            klugeProcess = createKlugeProcess();
-    ext::function<Real (Real)> f = linear(alphaG, betaG);
+    ext::function<Real (Real)> f = vpp_test::linear(alphaG, betaG);
 
     ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOUProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -346,7 +350,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     }
 }
 
-namespace {
+namespace vpp_test {
     // for a "real" gas and power forward curve
     // please see. e.g. http://www.kyos.com/?content=64
     const Real fuelPrices[] = {20.74,21.65,20.78,21.58,21.43,20.82,22.02,21.52,
@@ -398,6 +402,8 @@ void VPPTest::testVPPIntrinsicValue() {
 
     BOOST_TEST_MESSAGE("Testing VPP step condition...");
 
+    using namespace vpp_test;
+
     SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
@@ -447,7 +453,7 @@ void VPPTest::testVPPIntrinsicValue() {
     }
 }
 
-namespace {
+namespace vpp_test {
 
     class PathFuelPrice : public FdmInnerValueCalculator {
       public:
@@ -517,7 +523,7 @@ namespace {
 }
 
 
-namespace {
+namespace vpp_test {
     ext::shared_ptr<KlugeExtOUProcess> createKlugeExtOUProcess() {
         // model definition
         const Real beta         = 200;
@@ -553,6 +559,8 @@ namespace {
 
 void VPPTest::testVPPPricing() {
     BOOST_TEST_MESSAGE("Testing VPP pricing using perfect foresight or FDM...");
+
+    using namespace vpp_test;
 
     SavedSettings backup;
 
@@ -873,6 +881,8 @@ void VPPTest::testVPPPricing() {
 void VPPTest::testKlugeExtOUMatrixDecomposition() {
 #ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
+
+    using namespace vpp_test;
 
     SavedSettings backup;
 

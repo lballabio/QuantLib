@@ -50,7 +50,7 @@ using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 
-namespace {
+namespace fd_heston_test {
     struct NewBarrierOptionData {
         Barrier::Type barrierType;
         Real barrier;
@@ -94,6 +94,8 @@ namespace {
 
 void FdHestonTest::testFdmHestonVarianceMesher() {
     BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher...");
+
+    using namespace fd_heston_test;
 
     SavedSettings backup;
 
@@ -193,6 +195,8 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
 void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
+
+    using namespace fd_heston_test;
 
     SavedSettings backup;
 
