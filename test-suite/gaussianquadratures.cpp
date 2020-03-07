@@ -34,13 +34,11 @@ using namespace boost::unit_test_framework;
 
 namespace gaussian_quadratures_test {
 
-    Real tolerance = 1.0e-4;
-
     template <class T, class F>
     void testSingle(const T& I, const std::string& tag,
                     const F& f, Real expected) {
         Real calculated = I(f);
-        if (std::fabs(calculated-expected) > tolerance) {
+        if (std::fabs(calculated-expected) > 1.0e-4) {
             BOOST_ERROR("integrating" << tag << "\n"
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected);

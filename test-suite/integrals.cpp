@@ -49,7 +49,7 @@ namespace integrals_test {
                     const ext::function<Real (Real)>& f,
                     Real xMin, Real xMax, Real expected) {
         Real calculated = I(f,xMin,xMax);
-        if (std::fabs(calculated-expected) > tolerance) {
+        if (std::fabs(calculated-expected) > integrals_test::tolerance) {
             BOOST_FAIL(std::setprecision(10)
                        << "integrating " << tag
                        << "    calculated: " << calculated
@@ -101,8 +101,8 @@ void IntegralTest::testTrapezoid() {
 
     using namespace integrals_test;
 
-    testSeveral(TrapezoidIntegral<Default>(tolerance, 10000));
-    testDegeneratedDomain(TrapezoidIntegral<Default>(tolerance, 10000));
+    testSeveral(TrapezoidIntegral<Default>(integrals_test::tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<Default>(integrals_test::tolerance, 10000));
 }
 
 void IntegralTest::testMidPointTrapezoid() {
@@ -110,8 +110,8 @@ void IntegralTest::testMidPointTrapezoid() {
 
     using namespace integrals_test;
 
-    testSeveral(TrapezoidIntegral<MidPoint>(tolerance, 10000));
-    testDegeneratedDomain(TrapezoidIntegral<MidPoint>(tolerance, 10000));
+    testSeveral(TrapezoidIntegral<MidPoint>(integrals_test::tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<MidPoint>(integrals_test::tolerance, 10000));
 }
 
 void IntegralTest::testSimpson() {
@@ -119,8 +119,8 @@ void IntegralTest::testSimpson() {
 
     using namespace integrals_test;
 
-    testSeveral(SimpsonIntegral(tolerance, 10000));
-    testDegeneratedDomain(SimpsonIntegral(tolerance, 10000));
+    testSeveral(SimpsonIntegral(integrals_test::tolerance, 10000));
+    testDegeneratedDomain(SimpsonIntegral(integrals_test::tolerance, 10000));
 }
 
 void IntegralTest::testGaussKronrodAdaptive() {
@@ -129,8 +129,8 @@ void IntegralTest::testGaussKronrodAdaptive() {
     using namespace integrals_test;
 
     Size maxEvaluations = 1000;
-    testSeveral(GaussKronrodAdaptive(tolerance, maxEvaluations));
-    testDegeneratedDomain(GaussKronrodAdaptive(tolerance, maxEvaluations));
+    testSeveral(GaussKronrodAdaptive(integrals_test::tolerance, maxEvaluations));
+    testDegeneratedDomain(GaussKronrodAdaptive(integrals_test::tolerance, maxEvaluations));
 }
 
 void IntegralTest::testGaussLobatto() {
@@ -139,7 +139,7 @@ void IntegralTest::testGaussLobatto() {
     using namespace integrals_test;
 
     Size maxEvaluations = 1000;
-    testSeveral(GaussLobattoIntegral(maxEvaluations, tolerance));
+    testSeveral(GaussLobattoIntegral(maxEvaluations, integrals_test::tolerance));
     // on degenerated domain [1,1+macheps] an exception is thrown
     // which is also ok, but not tested here
 }
@@ -149,9 +149,9 @@ void IntegralTest::testGaussKronrodNonAdaptive() {
 
     using namespace integrals_test;
 
-    Real precision = tolerance;
+    Real precision = integrals_test::tolerance;
     Size maxEvaluations = 100;
-    Real relativeAccuracy = tolerance;
+    Real relativeAccuracy = integrals_test::tolerance;
     GaussKronrodNonAdaptive gaussKronrodNonAdaptive(precision, maxEvaluations,
                                                     relativeAccuracy);
     testSeveral(gaussKronrodNonAdaptive);
@@ -167,14 +167,14 @@ void IntegralTest::testTwoDimensionalIntegration() {
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
         ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
+            new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)),
         ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
+            new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)))(
         std::multiplies<Real>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
 
     const Real expected = 1.0;
-    if (std::fabs(calculated-expected) > tolerance) {
+    if (std::fabs(calculated-expected) > integrals_test::tolerance) {
         BOOST_FAIL(std::setprecision(10)
                    << "two dimensional integration: "
                    << "\n    calculated: " << calculated

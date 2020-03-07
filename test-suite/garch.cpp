@@ -50,12 +50,10 @@ namespace garch_test {
     typedef InverseCumulativeRng<MersenneTwisterUniformRng,
                                  InverseCumulativeNormal>
         GaussianGenerator;
-
-    static Real tolerance = 1e-6;
 }
 
-#define CHECK(results, garch, member, tolerance) \
-    if (std::fabs(results.member - garch.member()) > tolerance) { \
+#define CHECK(results, garch, member) \
+    if (std::fabs(results.member - garch.member()) > 1.0e-6) { \
         BOOST_ERROR("Failed to reproduce expected " #member \
                     << "\n    calculated: " << garch.member() \
                     << "\n    expected:   " << results.member); \
@@ -84,10 +82,10 @@ void GARCHTest::testCalibration() {
 
     Results calibrated = { 0.207592, 0.281979, 0.204647, -0.0217413 };
 
-    CHECK(calibrated, cgarch1, alpha, tolerance);
-    CHECK(calibrated, cgarch1, beta, tolerance);
-    CHECK(calibrated, cgarch1, omega, tolerance);
-    CHECK(calibrated, cgarch1, logLikelihood, tolerance);
+    CHECK(calibrated, cgarch1, alpha);
+    CHECK(calibrated, cgarch1, beta);
+    CHECK(calibrated, cgarch1, omega);
+    CHECK(calibrated, cgarch1, logLikelihood);
 
     // Type 1 initial guess - no further optimization
     Garch11 cgarch2(ts, Garch11::MomentMatchingGuess);
@@ -95,45 +93,45 @@ void GARCHTest::testCalibration() {
     cgarch2.calibrate(ts, m, EndCriteria (3, 2, 0.0, 0.0, 0.0));
     Results expected1 = { 0.265749, 0.156956, 0.230964, -0.0227179 };
 
-    CHECK(expected1, cgarch2, alpha, tolerance);
-    CHECK(expected1, cgarch2, beta, tolerance);
-    CHECK(expected1, cgarch2, omega, tolerance);
-    CHECK(expected1, cgarch2, logLikelihood, tolerance);
+    CHECK(expected1, cgarch2, alpha);
+    CHECK(expected1, cgarch2, beta);
+    CHECK(expected1, cgarch2, omega);
+    CHECK(expected1, cgarch2, logLikelihood);
 
     // Optimization from this initial guess
     cgarch2.calibrate(ts);
 
-    CHECK(calibrated, cgarch2, alpha, tolerance);
-    CHECK(calibrated, cgarch2, beta, tolerance);
-    CHECK(calibrated, cgarch2, omega, tolerance);
-    CHECK(calibrated, cgarch2, logLikelihood, tolerance);
+    CHECK(calibrated, cgarch2, alpha);
+    CHECK(calibrated, cgarch2, beta);
+    CHECK(calibrated, cgarch2, omega);
+    CHECK(calibrated, cgarch2, logLikelihood);
 
     // Type 2 initial guess - no further optimization
     Garch11 cgarch3(ts, Garch11::GammaGuess);
     cgarch3.calibrate(ts, m, EndCriteria (3, 2, 0.0, 0.0, 0.0));
     Results expected2 = { 0.269896, 0.211373, 0.207534, -0.022798 };
 
-    CHECK(expected2, cgarch3, alpha, tolerance);
-    CHECK(expected2, cgarch3, beta, tolerance);
-    CHECK(expected2, cgarch3, omega, tolerance);
-    CHECK(expected2, cgarch3, logLikelihood, tolerance);
+    CHECK(expected2, cgarch3, alpha);
+    CHECK(expected2, cgarch3, beta);
+    CHECK(expected2, cgarch3, omega);
+    CHECK(expected2, cgarch3, logLikelihood);
 
     // Optimization from this initial guess
     cgarch3.calibrate(ts);
 
-    CHECK(calibrated, cgarch3, alpha, tolerance);
-    CHECK(calibrated, cgarch3, beta, tolerance);
-    CHECK(calibrated, cgarch3, omega, tolerance);
-    CHECK(calibrated, cgarch3, logLikelihood, tolerance);
+    CHECK(calibrated, cgarch3, alpha);
+    CHECK(calibrated, cgarch3, beta);
+    CHECK(calibrated, cgarch3, omega);
+    CHECK(calibrated, cgarch3, logLikelihood);
 
     // Double optimization using type 1 and 2 initial guesses
     Garch11 cgarch4(ts,  Garch11::DoubleOptimization);
     cgarch4.calibrate(ts);
 
-    CHECK(calibrated, cgarch4, alpha, tolerance);
-    CHECK(calibrated, cgarch4, beta, tolerance);
-    CHECK(calibrated, cgarch4, omega, tolerance);
-    CHECK(calibrated, cgarch4, logLikelihood, tolerance);
+    CHECK(calibrated, cgarch4, alpha);
+    CHECK(calibrated, cgarch4, beta);
+    CHECK(calibrated, cgarch4, omega);
+    CHECK(calibrated, cgarch4, logLikelihood);
 
     // Alternative, gradient based optimization - usually gives worse
     // results than simplex
@@ -141,10 +139,10 @@ void GARCHTest::testCalibration() {
     cgarch4.calibrate(ts, lm, EndCriteria (100000, 500, 1e-8, 1e-8, 1e-8));
     Results expected3 = { 0.265196, 0.277364, 0.678812, -0.216313 };
 
-    CHECK(expected3, cgarch4, alpha, tolerance);
-    CHECK(expected3, cgarch4, beta, tolerance);
-    CHECK(expected3, cgarch4, omega, tolerance);
-    CHECK(expected3, cgarch4, logLikelihood, tolerance);
+    CHECK(expected3, cgarch4, alpha);
+    CHECK(expected3, cgarch4, beta);
+    CHECK(expected3, cgarch4, omega);
+    CHECK(expected3, cgarch4, logLikelihood);
 }
 
 namespace garch_test {
@@ -162,7 +160,7 @@ namespace garch_test {
         }
         Real error =
             std::fabs(x.second - expected_calc[x.first.serialNumber()-22835]);
-        if (error > tolerance) {
+        if (error > 1.0e-6) {
             BOOST_ERROR("Failed to reproduce calculated GARCH value at "
                         << x.first.serialNumber() << ": "
                         << "\n    calculated: " << x.second
