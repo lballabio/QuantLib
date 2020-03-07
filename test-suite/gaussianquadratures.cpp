@@ -34,9 +34,9 @@ using namespace boost::unit_test_framework;
 
 namespace gaussian_quadratures_test {
 
-    template <class T, class F>
+    template <class T>
     void testSingle(const T& I, const std::string& tag,
-                    const F& f, Real expected) {
+                    const boost::function<Real(Real)>& f, Real expected) {
         Real calculated = I(f);
         if (std::fabs(calculated-expected) > 1.0e-4) {
             BOOST_ERROR("integrating" << tag << "\n"
@@ -110,8 +110,8 @@ namespace gaussian_quadratures_test {
                    NormalDistribution(), 0.5);
     }
 
-    template <class F>
-    void testSingleTabulated(const F& f, const std::string& tag,
+    void testSingleTabulated(const boost::function<Real(Real)>& f,
+                             const std::string& tag,
                              Real expected, Real tolerance) {
         const Size order[] = { 6, 7, 12, 20 };
         TabulatedGaussLegendre quad;
