@@ -1,8 +1,13 @@
 image:
   - Visual Studio 2013
+  - Visual Studio 2015
+  - Visual Studio 2017
   - Visual Studio 2019
 
-platform: x64
+platform:
+  - x64
+  - Win32
+
 configuration: Release
 
 version: ci.{build}
@@ -18,16 +23,28 @@ for:
     only:
       - image: Visual Studio 2013
   before_build:
+    - COPY .appveyor\userconfig2013.hpp .\ql\userconfig.hpp
     - COPY .appveyor\VS2013.props .\Build.props
-  test_script:
-    - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes -- --faster
+-
+  matrix:
+    only:
+      - image: Visual Studio 2015
+  before_build:
+    - COPY .appveyor\userconfig2015.hpp .\ql\userconfig.hpp
+    - COPY .appveyor\VS2015.props .\Build.props
+-
+  matrix:
+    only:
+      - image: Visual Studio 2017
+  before_build:
+    - COPY .appveyor\userconfig2017.hpp .\ql\userconfig.hpp
+    - COPY .appveyor\VS2017.props .\Build.props
 -
   matrix:
     only:
       - image: Visual Studio 2019
   before_build:
+    - COPY .appveyor\userconfig2019.hpp .\ql\userconfig.hpp
     - COPY .appveyor\VS2019.props .\Build.props
     - COPY .appveyor\Unity.props .\Directory.Build.props
-  test_script:
-    - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes
 

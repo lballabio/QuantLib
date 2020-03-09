@@ -134,8 +134,8 @@
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">true</GenerateManifest>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">false</EmbedManifest>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">false</EmbedManifest>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">false</PostBuildEventUseInBuild>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">true</PostBuildEventUseInBuild>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bin\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
@@ -158,8 +158,8 @@
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</EmbedManifest>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</EmbedManifest>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</PostBuildEventUseInBuild>
-    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PostBuildEventUseInBuild>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">QuantLib-test-suite-mt</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QuantLib-test-suite-x64-mt</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">QuantLib-test-suite-mt-s</TargetName>
@@ -224,8 +224,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">
@@ -281,8 +281,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">
@@ -341,8 +341,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">
@@ -400,8 +400,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -457,8 +457,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -512,8 +512,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -572,8 +572,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -631,8 +631,8 @@
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Auto run test</Message>
-      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=no --report_level=short</Command>
+      <Message>Run tests</Message>
+      <Command>"$(TargetDir)$(TargetName).exe" --log_level=message --build_info=yes --result_code=yes -- --faster</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
