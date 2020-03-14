@@ -130,7 +130,7 @@ AC_DEFUN([QL_CHECK_BOOST_UBLAS],
 # ------------------------
 # Check whether the Boost unit-test framework is available
 AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
-[AC_MSG_CHECKING([for Boost Test, Boost Timer and Boost System])
+[AC_MSG_CHECKING([for Boost.Test, Boost.Timer, Boost.Chrono and Boost.System])
  AC_REQUIRE([AC_PROG_CC])
  ql_original_LIBS=$LIBS
  ql_original_CXXFLAGS=$CXXFLAGS
@@ -146,6 +146,45 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
                "-$CC_BASENAME-mt" \
                "-mt" ; do
      boost_libs="-lboost_unit_test_framework$suffix -lboost_timer$suffix -lboost_system$suffix"
+     LIBS="$ql_original_LIBS $boost_libs"
+     # static version
+     CXXFLAGS="$ql_original_CXXFLAGS"
+     boost_unit_found=no
+     AC_LINK_IFELSE([AC_LANG_SOURCE(
+         [@%:@include <boost/test/unit_test.hpp>
+          @%:@include <boost/timer/timer.hpp>
+          using namespace boost::unit_test_framework;
+          test_suite*
+          init_unit_test_suite(int argc, char** argv)
+          {
+              boost::timer::auto_cpu_timer t;
+              return (test_suite*) 0;
+          }
+         ])],
+         [boost_unit_found=$boost_libs
+          boost_defines=""
+          break],
+         [])
+     # shared version
+     CXXFLAGS="$ql_original_CXXFLAGS -DBOOST_TEST_MAIN -DBOOST_TEST_DYN_LINK"
+     boost_unit_found=no
+     AC_LINK_IFELSE([AC_LANG_SOURCE(
+         [@%:@include <boost/test/unit_test.hpp>
+          @%:@include <boost/timer/timer.hpp>
+          using namespace boost::unit_test_framework;
+          test_suite*
+          init_unit_test_suite(int argc, char** argv)
+          {
+              boost::timer::auto_cpu_timer t;
+              return (test_suite*) 0;
+          }
+         ])],
+         [boost_unit_found=$boost_libs
+          boost_defines="-DBOOST_TEST_DYN_LINK"
+          break],
+         [])
+     # Boost.Timer might require Boost.Chrono
+     boost_libs="-lboost_unit_test_framework$suffix -lboost_timer$suffix -lboost_chrono$suffix -lboost_system$suffix"
      LIBS="$ql_original_LIBS $boost_libs"
      # static version
      CXXFLAGS="$ql_original_CXXFLAGS"

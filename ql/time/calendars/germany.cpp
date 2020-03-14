@@ -86,9 +86,7 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December)
-            // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 26 && m == December))
             return false;
         return true;
     }
@@ -114,9 +112,7 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December)
-            // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 26 && m == December))
             return false;
         return true;
     }
@@ -141,9 +137,7 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December)
-            // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 26 && m == December))
             return false;
         return true;
     }
@@ -168,9 +162,7 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December)
-            // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 26 && m == December))
             return false;
         return true;
     }
@@ -197,9 +189,7 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December)
-            // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 26 && m == December))
             return false;
         return true;
     }

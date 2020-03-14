@@ -26,6 +26,7 @@
 
 #include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/capfloor.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -42,7 +43,9 @@ namespace QuantLib {
                   bool includeFirstSwaplet,
                   const Handle<YieldTermStructure>& termStructure,
                   BlackCalibrationHelper::CalibrationErrorType errorType
-                                    = BlackCalibrationHelper::RelativePriceError);
+                                    = BlackCalibrationHelper::RelativePriceError,
+                  const VolatilityType type = ShiftedLognormal,
+                  const Real shift = 0.0);
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;

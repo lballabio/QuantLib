@@ -88,7 +88,7 @@ namespace QuantLib {
                               (d <= 2 && m == February)))
             || (y == 2018 && (d >= 15 && d <= 21 && m == February))
             || (y == 2019 && d >= 4 && d <= 8 && m == February)
-            || (y == 2020 && (d == 24 || (d >= 27 && d <= 30)) && m == January)
+            || (y == 2020 && (d == 24 || (d >= 27 && d <= 31)) && m == January)
             // Ching Ming Festival
             || (y <= 2008 && d == 4 && m == April)
             || (y == 2009 && d == 6 && m == April)
@@ -289,7 +289,6 @@ namespace QuantLib {
             Date(12, October, 2019),
             // 2020
             Date(19, January, 2020),
-            Date(1, February, 2020),
             Date(26, April, 2020),
             Date(9, May, 2020),
             Date(28, June, 2020),

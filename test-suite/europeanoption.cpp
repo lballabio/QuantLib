@@ -44,6 +44,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
     BOOST_ERROR(exerciseTypeToString(exercise) << " " \
@@ -61,7 +62,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+namespace european_option_test {
 
     // utilities
 
@@ -197,6 +198,8 @@ void EuropeanOptionTest::testValues() {
 
     BOOST_TEST_MESSAGE("Testing European option values...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     /* The data below are from
@@ -318,6 +321,8 @@ void EuropeanOptionTest::testValues() {
 void EuropeanOptionTest::testGreekValues() {
 
     BOOST_TEST_MESSAGE("Testing European option greek values...");
+
+    using namespace european_option_test;
 
     SavedSettings backup;
 
@@ -608,6 +613,8 @@ void EuropeanOptionTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing analytic European option greeks...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
@@ -768,6 +775,8 @@ void EuropeanOptionTest::testGreeks() {
 void EuropeanOptionTest::testImpliedVol() {
 
     BOOST_TEST_MESSAGE("Testing European option implied volatility...");
+
+    using namespace european_option_test;
 
     SavedSettings backup;
 
@@ -973,11 +982,13 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
 namespace {
 
-    void testEngineConsistency(EngineType engine,
+    void testEngineConsistency(european_option_test::EngineType engine,
                                Size binomialSteps,
                                Size samples,
                                std::map<std::string,Real> tolerance,
                                bool testGreeks = false) {
+
+        using namespace european_option_test;
 
         std::map<std::string,Real> calculated, expected;
 
@@ -1079,6 +1090,8 @@ void EuropeanOptionTest::testJRBinomialEngines() {
     BOOST_TEST_MESSAGE("Testing JR binomial European engines "
                        "against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = JR;
@@ -1096,6 +1109,8 @@ void EuropeanOptionTest::testCRRBinomialEngines() {
 
     BOOST_TEST_MESSAGE("Testing CRR binomial European engines "
                        "against analytic results...");
+
+    using namespace european_option_test;
 
     SavedSettings backup;
 
@@ -1115,6 +1130,8 @@ void EuropeanOptionTest::testEQPBinomialEngines() {
     BOOST_TEST_MESSAGE("Testing EQP binomial European engines "
                        "against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = EQP;
@@ -1132,6 +1149,8 @@ void EuropeanOptionTest::testTGEOBinomialEngines() {
 
     BOOST_TEST_MESSAGE("Testing TGEO binomial European engines "
                        "against analytic results...");
+
+    using namespace european_option_test;
 
     SavedSettings backup;
 
@@ -1151,6 +1170,8 @@ void EuropeanOptionTest::testTIANBinomialEngines() {
     BOOST_TEST_MESSAGE("Testing TIAN binomial European engines "
                        "against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = TIAN;
@@ -1168,6 +1189,8 @@ void EuropeanOptionTest::testLRBinomialEngines() {
 
     BOOST_TEST_MESSAGE("Testing LR binomial European engines "
                        "against analytic results...");
+
+    using namespace european_option_test;
 
     SavedSettings backup;
 
@@ -1187,6 +1210,8 @@ void EuropeanOptionTest::testJOSHIBinomialEngines() {
     BOOST_TEST_MESSAGE("Testing Joshi binomial European engines "
                        "against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = JOSHI;
@@ -1205,6 +1230,8 @@ void EuropeanOptionTest::testFdEngines() {
     BOOST_TEST_MESSAGE("Testing finite-difference European engines "
                        "against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = FiniteDifferences;
@@ -1222,6 +1249,8 @@ void EuropeanOptionTest::testIntegralEngines() {
 
     BOOST_TEST_MESSAGE("Testing integral engines against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = Integral;
@@ -1236,6 +1265,8 @@ void EuropeanOptionTest::testMcEngines() {
 
     BOOST_TEST_MESSAGE("Testing Monte Carlo European engines "
                        "against analytic results...");
+
+    using namespace european_option_test;
 
     SavedSettings backup;
 
@@ -1252,6 +1283,8 @@ void EuropeanOptionTest::testQmcEngines() {
     BOOST_TEST_MESSAGE("Testing Quasi Monte Carlo European engines "
                        "against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = QuasiMonteCarlo;
@@ -1267,6 +1300,8 @@ void EuropeanOptionTest::testFFTEngines() {
     BOOST_TEST_MESSAGE("Testing FFT European engines "
                        "against analytic results...");
 
+    using namespace european_option_test;
+
     SavedSettings backup;
 
     EngineType engine = FFT;
@@ -1280,6 +1315,8 @@ void EuropeanOptionTest::testFFTEngines() {
 
 void EuropeanOptionTest::testLocalVolatility() {
     BOOST_TEST_MESSAGE("Testing finite-differences with local volatility...");
+
+    using namespace european_option_test;
 
     SavedSettings backup;
 

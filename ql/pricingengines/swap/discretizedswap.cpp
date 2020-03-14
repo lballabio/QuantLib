@@ -19,13 +19,24 @@
 */
 
 #include <ql/pricingengines/swap/discretizedswap.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
+    namespace {
+        inline bool useCouponInPostAdjust(const Time& resetTime,
+                                          const Time& payTime,
+                                          const bool& includeTodaysCashFlows) {
+            return (resetTime < 0.0) &&
+                   ((payTime > 0.0) || (includeTodaysCashFlows && (payTime == 0.0)));
+        }
+    }
 
     DiscretizedSwap::DiscretizedSwap(const VanillaSwap::arguments& args,
                                      const Date& referenceDate,
                                      const DayCounter& dayCounter)
     : arguments_(args) {
+        includeTodaysCashFlows_ = Settings::instance().includeTodaysCashFlows() &&
+                                  *Settings::instance().includeTodaysCashFlows();
 
         fixedResetTimes_.resize(args.fixedResetDates.size());
         for (Size i=0; i<fixedResetTimes_.size(); ++i)
@@ -131,7 +142,7 @@ namespace QuantLib {
         for (Size i=0; i<fixedPayTimes_.size(); i++) {
             Time t = fixedPayTimes_[i];
             Time reset = fixedResetTimes_[i];
-            if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
+            if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
                 if (arguments_.type==VanillaSwap::Payer)
                     values_ -= fixedCoupon;
@@ -139,11 +150,12 @@ namespace QuantLib {
                     values_ += fixedCoupon;
             }
         }
+
         // the same applies to floating payments whose rate is already fixed
         for (Size i=0; i<floatingPayTimes_.size(); i++) {
             Time t = floatingPayTimes_[i];
             Time reset = floatingResetTimes_[i];
-            if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
+            if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real currentFloatingCoupon = arguments_.floatingCoupons[i];
                 QL_REQUIRE(currentFloatingCoupon != Null<Real>(),
                            "current floating coupon not given");
@@ -154,5 +166,4 @@ namespace QuantLib {
             }
         }
     }
-
 }

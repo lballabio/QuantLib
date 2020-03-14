@@ -40,7 +40,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace day_counters_test {
 
     struct SingleCase {
         SingleCase(ActualActual::Convention convention,
@@ -104,6 +104,8 @@ namespace {
 void DayCounterTest::testActualActual() {
 
     BOOST_TEST_MESSAGE("Testing actual/actual day counters...");
+
+    using namespace day_counters_test;
 
     SingleCase testCases[] = {
         // first example
@@ -213,6 +215,8 @@ void DayCounterTest::testActualActualWithSemiannualSchedule() {
 
     BOOST_TEST_MESSAGE("Testing actual/actual with schedule "
                        "for undefined semiannual reference periods...");
+
+    using namespace day_counters_test;
 
     Calendar calendar = UnitedStates();
     Date fromDate = Date(10, January, 2017);
@@ -330,6 +334,8 @@ void DayCounterTest::testActualActualWithAnnualSchedule(){
     BOOST_TEST_MESSAGE("Testing actual/actual with schedule "
                        "for undefined annual reference periods...");
 
+    using namespace day_counters_test;
+
     // Now do an annual schedule
     Calendar calendar = UnitedStates();
     Schedule schedule = MakeSchedule()
@@ -368,6 +374,8 @@ void DayCounterTest::testActualActualWithAnnualSchedule(){
 void DayCounterTest::testActualActualWithSchedule() {
 
     BOOST_TEST_MESSAGE("Testing actual/actual day counter with schedule...");
+
+    using namespace day_counters_test;
 
     // long first coupon
     Date issueDateExpected = Date(17, January, 2017);

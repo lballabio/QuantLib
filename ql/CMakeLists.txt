@@ -2057,6 +2057,7 @@ set(QuantLib_HDR
     termstructures/credit/probabilitytraits.hpp
     termstructures/credit/survivalprobabilitystructure.hpp
     termstructures/defaulttermstructure.hpp
+    termstructures/globalbootstrap.hpp
     termstructures/inflation/all.hpp
     termstructures/inflation/inflationhelpers.hpp
     termstructures/inflation/inflationtraits.hpp
@@ -2147,6 +2148,7 @@ set(QuantLib_HDR
     termstructures/yield/forwardspreadedtermstructure.hpp
     termstructures/yield/forwardstructure.hpp
     termstructures/yield/impliedtermstructure.hpp
+    termstructures/yield/interpolatedsimplezerocurve.hpp
     termstructures/yield/nonlinearfittingmethods.hpp
     termstructures/yield/oisratehelper.hpp
     termstructures/yield/piecewiseyieldcurve.hpp

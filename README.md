@@ -8,9 +8,10 @@
 
 [![Build Status](https://travis-ci.org/lballabio/QuantLib.svg?branch=master)](https://travis-ci.org/lballabio/QuantLib)
 [![Build status](https://ci.appveyor.com/api/projects/status/bmpiucu74eldfkm0/branch/master?svg=true)](https://ci.appveyor.com/project/lballabio/quantlib/branch/master)
+[![CMake build](https://github.com/lballabio/QuantLib/workflows/CMake%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4bc1058db994f24aa931b119a885eea)](https://www.codacy.com/app/lballabio/QuantLib)
 [![Code Quality: Cpp](https://img.shields.io/lgtm/grade/cpp/g/lballabio/QuantLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/lballabio/QuantLib/context:cpp)
-[![codecov](https://codecov.io/gh/lballabio/QuantLib/branch/master/graph/badge.svg)](https://codecov.io/gh/lballabio/QuantLib)
+[![Coverage Status](https://coveralls.io/repos/github/lballabio/QuantLib/badge.svg?branch=master)](https://coveralls.io/github/lballabio/QuantLib?branch=master)
 
 ---
 

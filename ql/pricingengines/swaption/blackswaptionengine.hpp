@@ -271,6 +271,10 @@ namespace QuantLib {
 
         Time swapLength =  vol_->swapLength(swap.floatingSchedule().dates().front(),
                                             swap.floatingSchedule().dates().back());
+
+        // swapLength is rounded to whole months. To ensure we can read a variance
+        // and a shift from vol_ we floor swapLength at 1/12 here therefore.
+        swapLength = std::max(swapLength, 1.0 / 12.0);
         results_.additionalResults["swapLength"] = swapLength;
 
         Real variance = vol_->blackVariance(exerciseDate,

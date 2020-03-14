@@ -40,7 +40,7 @@ using namespace QuantLib;
 using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
-namespace {
+namespace integrals_test {
 
     Real tolerance = 1.0e-6;
 
@@ -49,7 +49,7 @@ namespace {
                     const ext::function<Real (Real)>& f,
                     Real xMin, Real xMax, Real expected) {
         Real calculated = I(f,xMin,xMax);
-        if (std::fabs(calculated-expected) > tolerance) {
+        if (std::fabs(calculated-expected) > integrals_test::tolerance) {
             BOOST_FAIL(std::setprecision(10)
                        << "integrating " << tag
                        << "    calculated: " << calculated
@@ -89,48 +89,69 @@ namespace {
 
 void IntegralTest::testSegment() {
     BOOST_TEST_MESSAGE("Testing segment integration...");
+
+    using namespace integrals_test;
+
     testSeveral(SegmentIntegral(10000));
     testDegeneratedDomain(SegmentIntegral(10000));
 }
 
 void IntegralTest::testTrapezoid() {
     BOOST_TEST_MESSAGE("Testing trapezoid integration...");
-    testSeveral(TrapezoidIntegral<Default>(tolerance, 10000));
-    testDegeneratedDomain(TrapezoidIntegral<Default>(tolerance, 10000));
+
+    using namespace integrals_test;
+
+    testSeveral(TrapezoidIntegral<Default>(integrals_test::tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<Default>(integrals_test::tolerance, 10000));
 }
 
 void IntegralTest::testMidPointTrapezoid() {
     BOOST_TEST_MESSAGE("Testing mid-point trapezoid integration...");
-    testSeveral(TrapezoidIntegral<MidPoint>(tolerance, 10000));
-    testDegeneratedDomain(TrapezoidIntegral<MidPoint>(tolerance, 10000));
+
+    using namespace integrals_test;
+
+    testSeveral(TrapezoidIntegral<MidPoint>(integrals_test::tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<MidPoint>(integrals_test::tolerance, 10000));
 }
 
 void IntegralTest::testSimpson() {
     BOOST_TEST_MESSAGE("Testing Simpson integration...");
-    testSeveral(SimpsonIntegral(tolerance, 10000));
-    testDegeneratedDomain(SimpsonIntegral(tolerance, 10000));
+
+    using namespace integrals_test;
+
+    testSeveral(SimpsonIntegral(integrals_test::tolerance, 10000));
+    testDegeneratedDomain(SimpsonIntegral(integrals_test::tolerance, 10000));
 }
 
 void IntegralTest::testGaussKronrodAdaptive() {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration...");
+
+    using namespace integrals_test;
+
     Size maxEvaluations = 1000;
-    testSeveral(GaussKronrodAdaptive(tolerance, maxEvaluations));
-    testDegeneratedDomain(GaussKronrodAdaptive(tolerance, maxEvaluations));
+    testSeveral(GaussKronrodAdaptive(integrals_test::tolerance, maxEvaluations));
+    testDegeneratedDomain(GaussKronrodAdaptive(integrals_test::tolerance, maxEvaluations));
 }
 
 void IntegralTest::testGaussLobatto() {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
+
+    using namespace integrals_test;
+
     Size maxEvaluations = 1000;
-    testSeveral(GaussLobattoIntegral(maxEvaluations, tolerance));
+    testSeveral(GaussLobattoIntegral(maxEvaluations, integrals_test::tolerance));
     // on degenerated domain [1,1+macheps] an exception is thrown
     // which is also ok, but not tested here
 }
 
 void IntegralTest::testGaussKronrodNonAdaptive() {
     BOOST_TEST_MESSAGE("Testing non-adaptive Gauss-Kronrod integration...");
-    Real precision = tolerance;
+
+    using namespace integrals_test;
+
+    Real precision = integrals_test::tolerance;
     Size maxEvaluations = 100;
-    Real relativeAccuracy = tolerance;
+    Real relativeAccuracy = integrals_test::tolerance;
     GaussKronrodNonAdaptive gaussKronrodNonAdaptive(precision, maxEvaluations,
                                                     relativeAccuracy);
     testSeveral(gaussKronrodNonAdaptive);
@@ -141,17 +162,19 @@ void IntegralTest::testTwoDimensionalIntegration() {
     BOOST_TEST_MESSAGE("Testing two dimensional adaptive "
                        "Gauss-Lobatto integration...");
 
+    using namespace integrals_test;
+
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
         ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
+            new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)),
         ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
+            new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)))(
         std::multiplies<Real>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
 
     const Real expected = 1.0;
-    if (std::fabs(calculated-expected) > tolerance) {
+    if (std::fabs(calculated-expected) > integrals_test::tolerance) {
         BOOST_FAIL(std::setprecision(10)
                    << "two dimensional integration: "
                    << "\n    calculated: " << calculated
@@ -159,7 +182,7 @@ void IntegralTest::testTwoDimensionalIntegration() {
     }
 }
 
-namespace {
+namespace integrals_test {
 
     class sineF {
       public:
@@ -179,6 +202,8 @@ namespace {
 
 void IntegralTest::testFolinIntegration() {
     BOOST_TEST_MESSAGE("Testing Folin's integral formulae...");
+
+    using namespace integrals_test;
 
     // Examples taken from
     // http://www.tat.physik.uni-tuebingen.de/~kokkotas/Teaching/Num_Methods_files/Comp_Phys5.pdf
@@ -215,7 +240,7 @@ void IntegralTest::testFolinIntegration() {
     }
 }
 
-namespace {
+namespace integrals_test {
 
     Real f1(Real x) {
         return 1.2*x*x+3.2*x+3.1;
@@ -229,6 +254,8 @@ namespace {
 
 void IntegralTest::testDiscreteIntegrals() {
     BOOST_TEST_MESSAGE("Testing discrete integral formulae...");
+
+    using namespace integrals_test;
 
     Array x(6), f(6);
     x[0] = 1.0; x[1] = 2.02; x[2] = 2.34; x[3] = 3.3; x[4] = 4.2; x[5] = 4.6;
@@ -267,11 +294,13 @@ void IntegralTest::testDiscreteIntegrals() {
 void IntegralTest::testDiscreteIntegrator() {
     BOOST_TEST_MESSAGE("Testing discrete integrator formulae...");
 
+    using namespace integrals_test;
+
     testSeveral(DiscreteSimpsonIntegrator(300));
     testSeveral(DiscreteTrapezoidIntegrator(3000));
 }
 
-namespace {
+namespace integrals_test{
 
 std::vector<Real> x, y;
 
@@ -292,6 +321,9 @@ void pw_check(const Integrator &in, const Real a, const Real b,
 
 void IntegralTest::testPiecewiseIntegral() {
     BOOST_TEST_MESSAGE("Testing piecewise integral...");
+
+    using namespace integrals_test;
+
     x += 1.0, 2.0, 3.0, 4.0, 5.0;
     y += 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
     ext::shared_ptr<Integrator> segment =

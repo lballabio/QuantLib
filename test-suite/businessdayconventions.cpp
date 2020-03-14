@@ -25,7 +25,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace business_day_conventions_test {
     struct SingleCase {
         SingleCase(const Calendar& calendar,
                    const BusinessDayConvention& convention,
@@ -48,6 +48,8 @@ namespace {
 void BusinessDayConventionTest::testConventions() {
 
     BOOST_TEST_MESSAGE("Testing business day conventions...");
+
+    using namespace business_day_conventions_test;
 
     SingleCase testCases[] = {
         // Following

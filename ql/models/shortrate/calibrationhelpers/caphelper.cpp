@@ -20,6 +20,7 @@
 
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/time/schedule.hpp>
@@ -35,15 +36,15 @@ namespace QuantLib {
                          const DayCounter& fixedLegDayCounter,
                          bool includeFirstSwaplet,
                          const Handle<YieldTermStructure>& termStructure,
-                         BlackCalibrationHelper::CalibrationErrorType errorType)
-        : BlackCalibrationHelper(volatility,termStructure,errorType),
+                         BlackCalibrationHelper::CalibrationErrorType errorType,
+                         const VolatilityType type,
+                         const Real shift)
+    : BlackCalibrationHelper(volatility, termStructure, errorType, type, shift),
         length_(length), index_(index), fixedLegFrequency_(fixedLegFrequency),
         fixedLegDayCounter_(fixedLegDayCounter),
         includeFirstSwaplet_(includeFirstSwaplet)
     {
-
         registerWith(index_);
-
     }
 
     void CapHelper::addTimesTo(std::list<Time>& times) const {
@@ -66,11 +67,21 @@ namespace QuantLib {
 
     Real CapHelper::blackPrice(Volatility sigma) const {
         calculate();
-        ext::shared_ptr<Quote> vol(new SimpleQuote(sigma));
-        ext::shared_ptr<PricingEngine> black(
-                                 new BlackCapFloorEngine(termStructure_,
-                                                         Handle<Quote>(vol)));
-        cap_->setPricingEngine(black);
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        ext::shared_ptr<PricingEngine> engine;
+        switch(volatilityType_) {
+          case ShiftedLognormal:
+            engine = ext::make_shared<BlackCapFloorEngine>(
+                termStructure_, vol, Actual365Fixed(), shift_);
+            break;
+          case Normal:
+            engine = ext::make_shared<BachelierCapFloorEngine>(
+                termStructure_, vol, Actual365Fixed());
+            break;
+          default:
+            QL_FAIL("unknown volatility type: " << volatilityType_);
+        }
+        cap_->setPricingEngine(engine);
         Real value = cap_->NPV();
         cap_->setPricingEngine(engine_);
         return value;

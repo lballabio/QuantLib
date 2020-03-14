@@ -41,7 +41,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace range_accrual_test {
 
     struct CommonVars {
         // General settings
@@ -640,6 +640,8 @@ void RangeAccrualTest::testInfiniteRange()  {
 
     BOOST_TEST_MESSAGE("Testing infinite range accrual floaters...");
 
+    using namespace range_accrual_test;
+
     CommonVars vars;
 
     //Coupon
@@ -692,6 +694,8 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike() {
 
     BOOST_TEST_MESSAGE(
             "Testing price monotonicity with respect to the lower strike...");
+
+    using namespace range_accrual_test;
 
     CommonVars vars;
 
@@ -748,6 +752,8 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
 
     BOOST_TEST_MESSAGE(
             "Testing price monotonicity with respect to the upper strike...");
+
+    using namespace range_accrual_test;
 
     CommonVars vars;
 

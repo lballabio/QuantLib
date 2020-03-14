@@ -37,7 +37,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace bermudan_swaption_test {
 
     struct CommonVars {
         // global data
@@ -111,6 +111,8 @@ void BermudanSwaptionTest::testCachedValues() {
 
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with HW model against cached values...");
+
+    using namespace bermudan_swaption_test;
 
     CommonVars vars;
 
@@ -235,6 +237,8 @@ void BermudanSwaptionTest::testCachedValues() {
 void BermudanSwaptionTest::testCachedG2Values() {
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with G2 model against cached values...");
+
+    using namespace bermudan_swaption_test;
 
     CommonVars vars;
 

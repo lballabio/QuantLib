@@ -35,6 +35,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE_FLOATING
 #define REPORT_FAILURE_FLOATING(greekName, minmax, payoff, exercise, \
                                 s, q, r, today, v, \
                                 expected, calculated, error, tolerance) \
@@ -53,6 +54,7 @@ using namespace boost::unit_test_framework;
         << "    error:            " << error << "\n" \
         << "    tolerance:        " << tolerance);
 
+#undef REPORT_FAILURE_FIXED
 #define REPORT_FAILURE_FIXED(greekName, minmax, payoff, exercise, \
                              s, q, r, today, v, \
                              expected, calculated, error, tolerance) \

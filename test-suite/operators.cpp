@@ -32,12 +32,6 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
-
-Real average = 0.0, sigma = 1.0;
-
-}
-
 
 void OperatorTest::testTridiagonal() {
 
@@ -124,6 +118,8 @@ void OperatorTest::testTridiagonal() {
 void OperatorTest::testConsistency() {
 
     BOOST_TEST_MESSAGE("Testing differential operators...");
+
+    Real average = 0.0, sigma = 1.0;
 
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);

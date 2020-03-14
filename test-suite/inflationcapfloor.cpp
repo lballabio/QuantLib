@@ -54,7 +54,7 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace {
+namespace inflation_capfloor_test {
 
     struct Datum {
         Date date;
@@ -281,6 +281,8 @@ void InflationCapFloorTest::testConsistency() {
     BOOST_TEST_MESSAGE("Testing consistency between yoy inflation cap,"
                        " floor and collar...");
 
+    using namespace inflation_capfloor_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -408,6 +410,8 @@ void InflationCapFloorTest::testParity() {
 
     BOOST_TEST_MESSAGE("Testing yoy inflation cap/floor parity...");
 
+    using namespace inflation_capfloor_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -483,6 +487,8 @@ void InflationCapFloorTest::testCachedValue() {
 
     BOOST_TEST_MESSAGE("Testing Black yoy inflation cap/floor price"
                        " against cached values...");
+
+    using namespace inflation_capfloor_test;
 
     CommonVars vars;
 

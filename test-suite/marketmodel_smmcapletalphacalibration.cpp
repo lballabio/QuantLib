@@ -60,18 +60,13 @@
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <sstream>
 
-#if defined(BOOST_MSVC)
-#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-#endif
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
-namespace {
+namespace market_model_smm_caplet_alpha_calibration_test {
 
     Date todaysDate_, startDate_, endDate_;
     std::vector<Time> rateTimes_;
@@ -225,6 +220,8 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
 
     BOOST_TEST_MESSAGE("Testing alpha caplet calibration "
                        "in a lognormal coterminal swap market model...");
+
+    using namespace market_model_smm_caplet_alpha_calibration_test;
 
     setup();
 

@@ -45,7 +45,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace distributions_test {
 
     Real average = 1.0, sigma = 2.0;
 
@@ -222,6 +222,8 @@ void DistributionTest::testNormal() {
 
     BOOST_TEST_MESSAGE("Testing normal distributions...");
 
+    using namespace distributions_test;
+
     InverseCumulativeNormal invCumStandardNormal;
     Real check = invCumStandardNormal(0.5);
     if (check != 0.0e0) {
@@ -312,6 +314,8 @@ void DistributionTest::testNormal() {
 void DistributionTest::testBivariate() {
 
     BOOST_TEST_MESSAGE("Testing bivariate cumulative normal distribution...");
+
+    using namespace distributions_test;
 
     checkBivariateAtZero<BivariateCumulativeNormalDistributionDr78>(
                                                       "Drezner 1978", 1.0e-6);
@@ -441,6 +445,8 @@ void DistributionTest::testInverseCumulativePoisson() {
 void DistributionTest::testBivariateCumulativeStudent() {
     BOOST_TEST_MESSAGE(
         "Testing bivariate cumulative Student t distribution...");
+
+    using namespace distributions_test;
 
     Real xs[14] = { 0.00,  0.50,  1.00,  1.50,  2.00,  2.50, 3.00, 4.00,  5.00,  6.00,  7.00,  8.00, 9.00, 10.00 };
     Natural ns[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 60, 90, 120, 150, 300, 600 };
@@ -637,7 +643,7 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
 }
     
 
-namespace {
+namespace distributions_test {
     class InverseNonCentralChiSquared {
       public:
         InverseNonCentralChiSquared(Real df, Real ncp)
@@ -654,6 +660,8 @@ namespace {
 void DistributionTest::testInvCDFviaStochasticCollocation() {
     BOOST_TEST_MESSAGE(
         "Testing inverse CDF based on stochastic collocation...");
+
+    using namespace distributions_test;
 
     const Real k = 3.0;
     const Real lambda = 1.0;

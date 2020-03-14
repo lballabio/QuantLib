@@ -35,13 +35,13 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
     Real forward = 0.03; // does not matter in the end
     Real alpha = sigmaI / std::pow(forward, beta - 1.0);
 
-    detail::D0Interpolator d(forward, tau, alpha, beta, nu, rho);
+    QuantLib::detail::D0Interpolator d(forward, tau, alpha, beta, nu, rho);
 
-    if (std::fabs(d() * detail::NoArbSabrModel::nsim - (Real)absorptions) > 0.1)
+    if (std::fabs(d() * QuantLib::detail::NoArbSabrModel::nsim - (Real)absorptions) > 0.1)
         BOOST_ERROR("failed to reproduce number of absorptions at sigmaI="
                     << sigmaI << ", beta=" << beta << ", rho=" << rho << ", nu="
                     << nu << " tau=" << tau << ": D0Interpolator says "
-                    << d() * detail::NoArbSabrModel::nsim
+                    << d() * QuantLib::detail::NoArbSabrModel::nsim
                     << " while the reference value is " << absorptions);
 
     return;

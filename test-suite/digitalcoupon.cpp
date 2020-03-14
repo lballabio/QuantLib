@@ -36,7 +36,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace digital_coupon_test {
 
     struct CommonVars {
         // global data
@@ -73,6 +73,8 @@ namespace {
 void DigitalCouponTest::testAssetOrNothing() {
 
     BOOST_TEST_MESSAGE("Testing European asset-or-nothing digital coupon...");
+
+    using namespace digital_coupon_test;
 
     /*  Call Payoff = (aL+b)Heaviside(aL+b-X) =  a Max[L-X'] + (b+aX')Heaviside(L-X')
         Value Call = aF N(d1') + bN(d2')
@@ -264,6 +266,8 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
     BOOST_TEST_MESSAGE("Testing European deep in-the-money asset-or-nothing "
                        "digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -375,6 +379,8 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
 
     BOOST_TEST_MESSAGE("Testing European deep out-the-money asset-or-nothing "
                        "digital coupon...");
+
+    using namespace digital_coupon_test;
 
     CommonVars vars;
 
@@ -492,6 +498,8 @@ void DigitalCouponTest::testCashOrNothing() {
         where:
         d2' = ln(F/X')/stdDev - 0.5*stdDev;
     */
+
+    using namespace digital_coupon_test;
 
     CommonVars vars;
 
@@ -641,6 +649,8 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
     BOOST_TEST_MESSAGE("Testing European deep in-the-money cash-or-nothing "
                        "digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -750,6 +760,8 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
 
     BOOST_TEST_MESSAGE("Testing European deep out-the-money cash-or-nothing "
                        "digital coupon...");
+
+    using namespace digital_coupon_test;
 
     CommonVars vars;
 
@@ -862,6 +874,8 @@ void DigitalCouponTest::testCallPutParity() {
 
     BOOST_TEST_MESSAGE("Testing call/put parity for European digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Volatility vols[] = { 0.05, 0.15, 0.30 };
@@ -964,6 +978,8 @@ void DigitalCouponTest::testCallPutParity() {
 void DigitalCouponTest::testReplicationType() {
 
     BOOST_TEST_MESSAGE("Testing replication type for European digital coupon...");
+
+    using namespace digital_coupon_test;
 
     CommonVars vars;
 

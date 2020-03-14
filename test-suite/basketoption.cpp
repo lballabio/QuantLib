@@ -42,6 +42,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE_2
 #define REPORT_FAILURE_2(greekName, basketType, payoff, exercise, \
                          s1, s2, q1, q2, r, today, v1, v2, rho, \
                          expected, calculated, error, tolerance) \
@@ -66,6 +67,7 @@ using namespace boost::unit_test_framework;
         << "    error:            " << error << "\n" \
         << "    tolerance:        " << tolerance);
 
+#undef REPORT_FAILURE_3
 #define REPORT_FAILURE_3(greekName, basketType, payoff, exercise, \
                          s1, s2, s3, r, today, v1, v2, v3, rho, \
                          expected, calculated, error, tolerance) \

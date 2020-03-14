@@ -11,7 +11,7 @@ cache: ccache
 env:
   global:
     - DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
-  matrix:
+  jobs:
     #
     - INFO="gcc 4.8 (Boost 1.48)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:1.48.0-trusty
@@ -82,6 +82,12 @@ env:
       DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++17"
+    #
+    - INFO="Unity build enabled"
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
+      CONFIGURE_FLAGS="--enable-unity-build"
+      CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
     - INFO="Intraday calculations enabled"
       DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
