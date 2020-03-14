@@ -2259,8 +2259,10 @@ else()
 endif()
 set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME} PARENT_SCOPE)
 
-
-install(FILES ${QuantLib_HDR} DESTINATION include/ql)
+foreach(file ${QuantLib_HDR})
+    get_filename_component(dir ${file} DIRECTORY)
+    install(FILES ${file} DESTINATION include/ql/${dir})
+endforeach()
 
 install(TARGETS ${QL_OUTPUT_NAME}
         ARCHIVE DESTINATION lib
