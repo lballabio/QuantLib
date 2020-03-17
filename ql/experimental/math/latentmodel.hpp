@@ -591,14 +591,16 @@ namespace QuantLib {
         */
         Real integratedExpectedValue(
             const ext::function<Real(const std::vector<Real>& v1)>& f) const {
-            using namespace ext::placeholders;
+
             // function composition: composes the integrand with the density 
             //   through a product.
             return 
                 integration()->integrate(
                     ext::bind(std::multiplies<Real>(), 
-                    ext::bind(&copulaPolicyImpl::density, copula_, _1),
-                              ext::bind(ext::cref(f), _1)));   
+                    ext::bind(&copulaPolicyImpl::density, copula_,
+                              ext::placeholders::_1),
+                              ext::bind(ext::cref(f),
+                                        ext::placeholders::_1)));   
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
@@ -607,13 +609,13 @@ namespace QuantLib {
             // const ext::function<std::vector<Real>(
             const ext::function<Disposable<std::vector<Real> >(
                 const std::vector<Real>& v1)>& f ) const {
-            using namespace ext::placeholders;
             return 
                 integration()->integrateV(//see note in LMIntegrators base class
                     ext::bind<Disposable<std::vector<Real> > >(
                         detail::multiplyV(),
-                        ext::bind(&copulaPolicyImpl::density, copula_, _1),
-                        ext::bind(ext::cref(f), _1)));
+                        ext::bind(&copulaPolicyImpl::density, copula_,
+                                  ext::placeholders::_1),
+                        ext::bind(ext::cref(f), ext::placeholders::_1)));
         }
     protected:
         // Integrable models must provide their integrator.

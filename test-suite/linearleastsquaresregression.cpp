@@ -109,10 +109,16 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     }
 }
 
-namespace {
-    Real f(const Array& a, Size i) {
-        return a[i];
-    }
+namespace linear_least_square_regression_test {
+
+    struct get_item {
+        Size i;
+        explicit get_item(Size i) : i(i) {}
+        Real operator()(const Array& a) const {
+            return a[i];
+        }
+    };
+
 }
 
 void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
@@ -121,6 +127,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
         "Testing multi-dimensional linear least-squares regression...");
 
     using namespace ext::placeholders;
+    using namespace linear_least_square_regression_test;
 
     SavedSettings backup;
 
@@ -132,7 +139,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     std::vector<ext::function<Real(Array)> > v;
     v.push_back(constant<Array, Real>(1.0));
     for (Size i=0; i < dims; ++i) {
-        v.push_back(ext::bind(f, _1, i));
+        v.push_back(get_item(i));
     }
 
     Array coeff(v.size());
