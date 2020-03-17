@@ -113,7 +113,7 @@ namespace linear_least_square_regression_test {
 
     struct get_item {
         Size i;
-        get_item(Size i) : i(i) {}
+        explicit get_item(Size i) : i(i) {}
         Real operator()(const Array& a) const {
             return a[i];
         }
