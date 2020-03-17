@@ -191,7 +191,6 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
     BOOST_TEST_MESSAGE(
         "Testing mapping function of the square root kernel process...");
 
-    using namespace ext::placeholders;
     using namespace square_root_clv_model;
 
     SavedSettings backup;
@@ -269,7 +268,8 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
                 rTS->discount(m)).value();
 
             const CLVModelPayoff clvModelPayoff(
-                optionType, strike, ext::bind(g, t, _1));
+                optionType, strike,
+                ext::bind(g, t, ext::placeholders::_1));
 
             const ext::function<Real(Real)> f = integrand(clvModelPayoff, dist);
 
