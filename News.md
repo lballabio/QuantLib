@@ -1,100 +1,128 @@
-Changes for QuantLib 1.17:
+Changes for QuantLib 1.18:
 ==========================
 
-QuantLib 1.17 includes 30 pull requests from several contributors.
+QuantLib 1.18 includes 34 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/13?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/14?closed=1>.
 
 Portability
 -----------
 
-- As of this release, support of Visual C++ 2010 is deprecated; it
-  will be dropped in next release.  Also, we'll probably deprecate
-  Visual C++ 2012 in one of the next few releases in order to drop it
-  around the end of 2020.
-
-Configuration
--------------
-
-- A new function `compiledBoostVersion()` is available, (thanks to
-  Andrew Smith).  It returns the version of Boost used to compile the
-  library, as reported by the `BOOST_VERSION` macro.  This can help
-  avoid linking the library with user code compiled with a different
-  Boost version (which can result in erratic behavior).
-
-- It is now possible to specify at run time whether to use indexed
-  coupons (thanks to Ralf Konrad).  The compile-time configuration is
-  still used as a default, but it is also possible to call either of
-  the static methods `IborCoupon::createAtParCoupons` or
-  `IborCoupon::createIndexedCoupons` to specify your preference.  For
-  the time being, the methods above must necessarily be called before
-  creating any instance of `IborCoupon` or of its derived classes.
+- As announced in the past release, support of Visual C++ 2010 is
+  dropped.  Also, we'll probably deprecate Visual C++ 2012 in the next
+  release in order to drop it around the end of 2020.
 
 Build
 -----
 
-- As of this version, the names of the binaries produced by the
-  included Visual C++ solution no longer contain the toolset version
-  (e.g., v142).
+- Cmake now installs headers with the correct folder hierarchy (thanks
+  to Cheng Li).
 
-Instruments
------------
+- The `--enable-unity-build` flag passed to configure now also causes
+  the test suite to be built as a single source file.
 
-- Added ex-coupon functionality to floating-rate bonds (thanks to
-  Steven Van Haren).
-
-- The inner structure `Callability::Price` was moved to the class
-  `Bond` and can now be used to specify what kind of price was passed
-  to the `BondFunctions::yield` method (thanks to Francois Botha).
-
-- It is now possible to use a par-coupon approximation for FRAs like
-  the one used in Ibor coupons (thanks to Peter Caspers).
-
-Pricing engines
----------------
-
-- Added escrowed dividend model to the new-style FD engine for
-  `DividendVanillaOption` (thanks to Klaus Spanderen).
-
-- Black cap/floor engine now also returns caplet deltas (thanks to
-  Wojciech Slusarski).
+- The Visual Studio projects now allow enabling unity builds as
+  described at
+  <https://devblogs.microsoft.com/cppblog/support-for-unity-jumbo-files-in-visual-studio-2017-15-8-experimental/>
 
 Term structures
 ---------------
 
-- OIS rate helpers can now choose whether to use as a pillar for the
-  bootstrap either their maturity date or the end date of the last
-  underlying fixing.  This provides an alternative if the bootstrap
-  should fail.  (Thanks to Drew Saunders for the heads-up.)
+- A new `GlobalBootstrap` class can now be used with
+  `PiecewiseYieldCurve` and other bootstrapped curves (thanks to Peter
+  Caspers).  It allows to produce curves close to Bloomberg's.
 
-- Instances of the `FittedBondDiscountCurve` class now behave as
-  simple evaluators (that is, they use the given paramters without
-  performing root-solving) when the `maxIterations` parameter is set
-  to 0.  (Thanks to Nick Firoozye for the heads-up.)
+- The experimental `SofrFutureRateHelper` class and its parent
+  `OvernightIndexFutureRateHelper` can now choose to use either
+  compounding or averaging, in order to accommodate different
+  conventions for 1M and 3M SOFR futures (thanks to GitHub user
+  `tani3010`).
+
+- The `FraRateHelper` class has new constructors that take IMM start /
+  end offsets (thanks to Peter Caspers).
+
+- It is now possible to pass explicit minimum and maximum values to
+  the `IterativeBootstrap` class.  The accuracy parameter was also
+  moved to the same class; passing it to the curve constructor is now
+  deprecated.
+
+Instruments
+-----------
+
+- It is now possible to build fixed-rate bonds with an arbitrary
+  schedule, even without a regular tenor (thanks to Steven Van Haren).
+
+Models
+------
+
+- It is now possible to use normal volatilities to calibrate a
+  short-rate model over caps.
 
 Date/time
 ---------
 
-- Added a few special closing days to the US government bond calendar
-  (thanks to Mike DelMedico).
+- The Austrian calendar was added (thanks to Benjamin Schwendinger).
 
-- Fixed an incorrect 2019 holiday in Chinese calendar (thanks to Cheng Li).
+- The German calendar incorrectly listed December 31st as a holiday;
+  this is now fixed (thanks to Prasad Somwanshi).
 
-- Added missing holiday to Swedish calendar (thanks to GitHub users
-  `periculus` and `tonyzhipengzhou`).
+- Chinese holidays were updated for 2020 and the coronavirus event
+  (thanks to Cheng Li).
+
+- South Korea holidays were updated for 2016-2020 (thanks to GitHub
+  user `fayce66`).
+
+- In the calendar class, `holidayList` is now an instance method; the
+  static version is deprecated.  The `businessDayList` method was also
+  added.  (Thanks to Piotr Siejda.)
+
+- A bug in the 30/360 German day counter was fixed (thanks to Kobe
+  Young for the heads-up).
+
+Optimizers
+----------
+
+- The differential evolution optimizer was updated (thanks to Peter
+  Caspers).
+
+Currencies
+----------
+
+- Added Kazakstani Tenge to currencies (thanks to Jonathan Barber).
 
 Deprecated features
 -------------------
 
-- The classes `FDEuropeanEngine`, `FDAmericanEngine`,
-  `FDBermudanEngine`, `FDDividendEuropeanEngine`,
-  `FDDividendEuropeanEngineShiftScale`, `FDDividendAmericanEngine`,
-  `FDDividendAmericanEngineShiftScale` are now deprecated.  They are
-  superseded by `FdBlackScholesVanillaEngine`.
+- Features deprecate in version 1.14 were removed: one of the
+  constructors of the `BSMOperator` class, the whole `OperatorFactory`
+  class, and the typedef `CalibrationHelper` which was used to alias
+  the `BlackCalibrationHelper` class.
+
+- The `CalibrationHelperBase` class is now called
+  `CalibrationHelper`. The old name remains as a typedef but is
+  deprecated.
+
+- The overload of `CalibratedModel::calibrate` and
+  `CalibratedModel::value` taking a vector of
+  `BlackCalibrationHelper`s are deprecated in favor of the ones taking
+  a vector of `CalibrationHelper`s.
+
+- The static method `Calendar::holidayList` is deprecated in favor of
+  the instance method by the same name.
+
+- The constructors of `PiecewiseDefaultCurve` and
+  `PiecewiseYieldCurve` taking an accuracy parameter are deprecated in
+  favor of passing the parameter to an instance of the bootstrap
+  class.
+
+- The constructors of `BondHelper` and derived classes taking a
+  boolean flag to choose between clean and dirty price are deprecated
+  in favor of the ones taking a `Bond::Price::Type` argument.  The
+  `useCleanPrice` method is also deprecated in favor of `priceType`.
 
 
-Thanks go also to Joel King, Kai Striega, Francis Duffy, Tom Anderson
-and GitHub user `lab4quant` for smaller fixes, enhancements, and bug
-reports.
+Thanks go also to Ralf Konrad, Klaus Spanderen, Carlos Fidel Selva
+Ochoa, F. Eugene Aumson and Francois Botha for smaller fixes,
+enhancements, and bug reports.

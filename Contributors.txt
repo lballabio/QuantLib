@@ -15,10 +15,12 @@ Fanis Antoniou
 Driss Aouad
 Jose Aparicio
 Sercan Atalik
+F. Eugene Aumson
 Ahmed Ayadi
 Lluis Pujol Bajador
 Gerardo Ballabio
 Luigi Ballabio
+Jonathan Barber
 Nabila Barkati
 Riccardo Barone
 Clément Barret
@@ -201,11 +203,14 @@ Sebastian Schlenkrich
 Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
+Benjamin Schwendinger
+Carlos Fidel Selva Ochoa
 Giacomo Sergio
 Simon Shakeshaft
 Michael Sharpe
 Kirill Shemyakin
 Eugene Shevkoplyas
+Piotr Siejda
 Enrico Sirola
 Leon Sit
 Wojciech Slusarski
@@ -213,6 +218,7 @@ Andrew Smith
 Dale Smith
 Tim Smith
 Maxim Sokolov
+Prasad Somwanshi
 Niels Elken Sønderby
 Klaus Spanderen
 Andreas Spengler
