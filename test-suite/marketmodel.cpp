@@ -1792,7 +1792,7 @@ void MarketModelTest::testCallableSwapLS() {
 }
 
 void MarketModelTest::testCallableSwapAnderson(
-    MarketModelType marketModelType, unsigned testedFactor) {
+    MarketModelType marketModelType, Size testedFactor) {
 
     using namespace market_model_test;
 

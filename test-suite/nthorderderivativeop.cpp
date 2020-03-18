@@ -395,7 +395,7 @@ namespace {
         : vol2_(0.5*vol*vol),
           direction_(direction),
           map_(ext::make_shared<NthOrderDerivativeOp>(
-              direction, 2, nPoints, mesher)),
+              direction, 2, Integer(nPoints), mesher)),
           preconditioner_(SecondDerivativeOp(direction, mesher)
               .mult(Array(mesher->layout()->size(), vol2_))) { }
 
