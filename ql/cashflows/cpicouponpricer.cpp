@@ -24,12 +24,6 @@ namespace QuantLib {
     CPICouponPricer::CPICouponPricer() {}
 
     CPICouponPricer::CPICouponPricer(
-                       const Handle<CPIVolatilitySurface>& capletVol)
-    : capletVol_(capletVol) {
-        registerWith(capletVol_);
-    }
-
-    CPICouponPricer::CPICouponPricer(
                        const Handle<CPIVolatilitySurface>& capletVol,
                        const Handle<YieldTermStructure>& nominalTermStructure)
     : capletVol_(capletVol), nominalTermStructure_(nominalTermStructure) {

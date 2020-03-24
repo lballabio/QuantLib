@@ -26,12 +26,6 @@ namespace QuantLib {
     YoYInflationCouponPricer::YoYInflationCouponPricer() {}
 
     YoYInflationCouponPricer::YoYInflationCouponPricer(
-                       const Handle<YoYOptionletVolatilitySurface>& capletVol)
-    : capletVol_(capletVol) {
-        registerWith(capletVol_);
-    }
-
-    YoYInflationCouponPricer::YoYInflationCouponPricer(
                        const Handle<YoYOptionletVolatilitySurface>& capletVol,
                        const Handle<YieldTermStructure>& nominalTermStructure)
     : capletVol_(capletVol), nominalTermStructure_(nominalTermStructure) {
@@ -206,7 +200,5 @@ namespace QuantLib {
                                      forward,
                                      stdDev);
     }
-
-
 
 }

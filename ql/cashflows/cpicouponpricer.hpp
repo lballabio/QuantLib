@@ -39,12 +39,6 @@ namespace QuantLib {
     class CPICouponPricer : public InflationCouponPricer {
       public:
         CPICouponPricer();
-        /*! \deprecated Use the constructor also taking an explicit
-                        nominal term structure.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        explicit CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol);
         CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol,
                         const Handle<YieldTermStructure>& nominalTermStructure);
 
