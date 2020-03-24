@@ -82,13 +82,6 @@ namespace QuantLib {
     class YoYInflationCouponPricer : public InflationCouponPricer {
       public:
         YoYInflationCouponPricer();
-        /*! \deprecated Use the constructor also taking an explicit
-                        nominal term structure.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        explicit YoYInflationCouponPricer(
-            const Handle<YoYOptionletVolatilitySurface>& capletVol);
         YoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure);
@@ -145,14 +138,6 @@ namespace QuantLib {
     class BlackYoYInflationCouponPricer : public YoYInflationCouponPricer {
       public:
         BlackYoYInflationCouponPricer() {}
-        /*! \deprecated Use the constructor also taking an explicit
-                        nominal term structure.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        explicit BlackYoYInflationCouponPricer(
-            const Handle<YoYOptionletVolatilitySurface>& capletVol)
-        : YoYInflationCouponPricer(capletVol, Handle<YieldTermStructure>()) {}
         BlackYoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure)
@@ -167,14 +152,6 @@ namespace QuantLib {
     class UnitDisplacedBlackYoYInflationCouponPricer : public YoYInflationCouponPricer {
       public:
         UnitDisplacedBlackYoYInflationCouponPricer() {}
-        /*! \deprecated Use the constructor also taking an explicit
-                        nominal term structure.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        explicit UnitDisplacedBlackYoYInflationCouponPricer(
-            const Handle<YoYOptionletVolatilitySurface>& capletVol)
-        : YoYInflationCouponPricer(capletVol, Handle<YieldTermStructure>()) {}
         UnitDisplacedBlackYoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure)
@@ -189,14 +166,6 @@ namespace QuantLib {
     class BachelierYoYInflationCouponPricer : public YoYInflationCouponPricer {
       public:
         BachelierYoYInflationCouponPricer() {}
-        /*! \deprecated Use the constructor also taking an explicit
-                        nominal term structure.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        explicit BachelierYoYInflationCouponPricer(
-            const Handle<YoYOptionletVolatilitySurface>& capletVol)
-        : YoYInflationCouponPricer(capletVol, Handle<YieldTermStructure>()) {}
         BachelierYoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure)

@@ -37,15 +37,6 @@ namespace QuantLib {
     }
 
 
-    YoYInflationCapFloorEngine::YoYInflationCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>& index,
-                    const Handle<YoYOptionletVolatilitySurface>& volatility)
-    : index_(index), volatility_(volatility) {
-        registerWith(index_);
-        registerWith(volatility_);
-    }
-
-
     void YoYInflationCapFloorEngine::setVolatility(
             const Handle<YoYOptionletVolatilitySurface> &v) {
         if (!volatility_.empty())
@@ -150,12 +141,6 @@ namespace QuantLib {
                     const Handle<YieldTermStructure>& nominalTermStructure)
     : YoYInflationCapFloorEngine(index, volatility, nominalTermStructure) {}
 
-    YoYInflationBlackCapFloorEngine::YoYInflationBlackCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>& index,
-                    const Handle<YoYOptionletVolatilitySurface>& volatility)
-    : YoYInflationCapFloorEngine(index, volatility,
-                                 Handle<YieldTermStructure>()) {}
-
 
     Real YoYInflationBlackCapFloorEngine::optionletImpl(Option::Type type, Rate strike,
                                                         Rate forward, Real stdDev,
@@ -173,13 +158,6 @@ namespace QuantLib {
                     const Handle<YoYOptionletVolatilitySurface>& volatility,
                     const Handle<YieldTermStructure>& nominalTermStructure)
     : YoYInflationCapFloorEngine(index, volatility, nominalTermStructure) {}
-
-    YoYInflationUnitDisplacedBlackCapFloorEngine
-    ::YoYInflationUnitDisplacedBlackCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>& index,
-                    const Handle<YoYOptionletVolatilitySurface>& volatility)
-    : YoYInflationCapFloorEngine(index, volatility,
-                                 Handle<YieldTermStructure>()) {}
 
 
     Real YoYInflationUnitDisplacedBlackCapFloorEngine::optionletImpl(
@@ -199,12 +177,6 @@ namespace QuantLib {
                     const Handle<YieldTermStructure>& nominalTermStructure)
     : YoYInflationCapFloorEngine(index, volatility, nominalTermStructure) {}
 
-    YoYInflationBachelierCapFloorEngine::YoYInflationBachelierCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>& index,
-                    const Handle<YoYOptionletVolatilitySurface>& volatility)
-    : YoYInflationCapFloorEngine(index, volatility,
-                                 Handle<YieldTermStructure>()) {}
-
 
     Real YoYInflationBachelierCapFloorEngine::optionletImpl(Option::Type type, Rate strike,
                                                         Rate forward, Real stdDev,
@@ -213,14 +185,6 @@ namespace QuantLib {
         return bachelierBlackFormula(type, strike,
                                      forward, stdDev, d);
     }
-
-
-
-
-
-
-
-
 
 }
 
