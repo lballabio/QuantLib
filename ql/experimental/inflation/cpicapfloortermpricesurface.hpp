@@ -140,6 +140,7 @@ namespace QuantLib {
 
 
         Handle<ZeroInflationIndex> zii_;
+        Handle<YieldTermStructure> nominalTS_;
         // data
         std::vector<Rate> cStrikes_;
         std::vector<Rate> fStrikes_;
@@ -255,7 +256,7 @@ namespace QuantLib {
             Matrix(cfStrikes_.size(), cfMaturities_.size(), Null<Real>());
 
         Handle<ZeroInflationTermStructure> zts = zii_->zeroInflationTermStructure();
-        Handle<YieldTermStructure> yts = this->nominalTermStructure();
+        Handle<YieldTermStructure> yts = nominalTS_;
         QL_REQUIRE(!zts.empty(), "Zts is empty!!!");
         QL_REQUIRE(!yts.empty(), "Yts is empty!!!");
 

@@ -40,9 +40,41 @@ namespace QuantLib {
                                const Period& observationLag,
                                Frequency frequency,
                                bool indexIsInterpolated,
+                               const DayCounter& dayCounter = DayCounter(),
+                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        InflationTermStructure(const Date& referenceDate,
+                               Rate baseRate,
+                               const Period& observationLag,
+                               Frequency frequency,
+                               bool indexIsInterpolated,
+                               const Calendar& calendar = Calendar(),
+                               const DayCounter& dayCounter = DayCounter(),
+                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        InflationTermStructure(Natural settlementDays,
+                               const Calendar& calendar,
+                               Rate baseRate,
+                               const Period& observationLag,
+                               Frequency frequency,
+                               bool indexIsInterpolated,
+                               const DayCounter& dayCounter = DayCounter(),
+                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        InflationTermStructure(Rate baseRate,
+                               const Period& observationLag,
+                               Frequency frequency,
+                               bool indexIsInterpolated,
                                const Handle<YieldTermStructure>& yTS,
                                const DayCounter& dayCounter = DayCounter(),
                                const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         InflationTermStructure(const Date& referenceDate,
                                Rate baseRate,
                                const Period& observationLag,
@@ -52,6 +84,11 @@ namespace QuantLib {
                                const Calendar& calendar = Calendar(),
                                const DayCounter& dayCounter = DayCounter(),
                                const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         InflationTermStructure(Natural settlementDays,
                                const Calendar& calendar,
                                Rate baseRate,
@@ -103,7 +140,7 @@ namespace QuantLib {
         // instruments to build the term structure, since the rate at
         // time 0-lag is non-zero, since we deal (effectively) with
         // "forwards".
-        virtual void setBaseRate(const Rate &r){baseRate_=r;}
+        virtual void setBaseRate(const Rate &r) { baseRate_ = r; }
 
 
         // range-checking
@@ -133,9 +170,44 @@ namespace QuantLib {
                                    const Period& lag,
                                    Frequency frequency,
                                    bool indexIsInterpolated,
+                                   const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+
+        ZeroInflationTermStructure(const Date& referenceDate,
+                                   const Calendar& calendar,
+                                   const DayCounter& dayCounter,
+                                   Rate baseZeroRate,
+                                   const Period& lag,
+                                   Frequency frequency,
+                                   const bool indexIsInterpolated,
+                                   const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+
+        ZeroInflationTermStructure(Natural settlementDays,
+                                   const Calendar& calendar,
+                                   const DayCounter& dayCounter,
+                                   Rate baseZeroRate,
+                                   const Period& lag,
+                                   Frequency frequency,
+                                   bool indexIsInterpolated,
+                                   const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        ZeroInflationTermStructure(const DayCounter& dayCounter,
+                                   Rate baseZeroRate,
+                                   const Period& lag,
+                                   Frequency frequency,
+                                   bool indexIsInterpolated,
                                    const Handle<YieldTermStructure>& yTS,
                                    const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
 
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         ZeroInflationTermStructure(const Date& referenceDate,
                                    const Calendar& calendar,
                                    const DayCounter& dayCounter,
@@ -146,6 +218,11 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& yTS,
                                    const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
 
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         ZeroInflationTermStructure(Natural settlementDays,
                                    const Calendar& calendar,
                                    const DayCounter& dayCounter,
@@ -198,9 +275,44 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   bool indexIsInterpolated,
+                                  const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+
+        YoYInflationTermStructure(const Date& referenceDate,
+                                  const Calendar& calendar,
+                                  const DayCounter& dayCounter,
+                                  Rate baseYoYRate,
+                                  const Period& lag,
+                                  Frequency frequency,
+                                  bool indexIsInterpolated,
+                                  const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+
+        YoYInflationTermStructure(Natural settlementDays,
+                                  const Calendar& calendar,
+                                  const DayCounter& dayCounter,
+                                  Rate baseYoYRate,
+                                  const Period& lag,
+                                  Frequency frequency,
+                                  bool indexIsInterpolated,
+                                  const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        YoYInflationTermStructure(const DayCounter& dayCounter,
+                                  Rate baseYoYRate,
+                                  const Period& lag,
+                                  Frequency frequency,
+                                  bool indexIsInterpolated,
                                   const Handle<YieldTermStructure>& yieldTS,
                                   const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
 
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         YoYInflationTermStructure(const Date& referenceDate,
                                   const Calendar& calendar,
                                   const DayCounter& dayCounter,
@@ -211,6 +323,11 @@ namespace QuantLib {
                                   const Handle<YieldTermStructure>& yieldTS,
                                   const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
 
+        /*! \deprecated Use one of the constructors not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         YoYInflationTermStructure(Natural settlementDays,
                                   const Calendar& calendar,
                                   const DayCounter& dayCounter,

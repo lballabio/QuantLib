@@ -193,7 +193,7 @@ namespace inflation_capfloored_coupon_test {
                             new PiecewiseYoYInflationCurve<Linear>(
                                 evaluationDate, calendar, dc, observationLag,
                                 iir->frequency(),iir->interpolated(), baseYYRate,
-                                Handle<YieldTermStructure>(nominalTS), helpers));
+                                helpers));
             pYYTS->recalculate();
             yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
@@ -216,12 +216,16 @@ namespace inflation_capfloored_coupon_test {
             std::vector<Rate> gearingVector(length, gearing);
             std::vector<Spread> spreadVector(length, spread);
 
-            return yoyInflationLeg(schedule, calendar, ii, observationLag)
+            Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withGearings(gearingVector)
             .withSpreads(spreadVector)
             .withPaymentAdjustment(convention);
+
+            setCouponPricer(yoyLeg, ext::make_shared<YoYInflationCouponPricer>(nominalTS));
+
+            return yoyLeg;
         }
 
         Leg makeFixedLeg(const Date& startDate,
@@ -298,12 +302,9 @@ namespace inflation_capfloored_coupon_test {
             .withCaps(caps)
             .withFloors(floors);
 
-            for(Size i=0; i<yoyLeg.size(); i++) {
-                ext::dynamic_pointer_cast<YoYInflationCoupon>(yoyLeg[i])->setPricer(pricer);
-            }
-
-
+            setCouponPricer(yoyLeg, pricer);
             //setCouponPricer(iborLeg, pricer);
+
             return yoyLeg;
         }
 
@@ -751,6 +752,7 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
+                    setCouponPricer(swap.yoyLeg(), ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from,
                                                          lengths[i],

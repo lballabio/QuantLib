@@ -195,7 +195,7 @@ namespace inflation_volatility_test {
         ext::shared_ptr<InterpolatedYoYInflationCurve<Linear> >
             pYTSEU( new InterpolatedYoYInflationCurve<Linear>(
                     eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly,
-                    indexIsInterpolated, nominalGBP, d, r) );
+                    indexIsInterpolated, d, r) );
         yoyEU.linkTo(pYTSEU);
 
         // price data

@@ -127,6 +127,7 @@ namespace QuantLib {
         Natural fixingDays_;
         BusinessDayConvention bdc_;
         ext::shared_ptr<YoYInflationIndex> yoyIndex_;
+        Handle<YieldTermStructure> nominalTS_;
         // data
         std::vector<Rate> cStrikes_;
         std::vector<Rate> fStrikes_;
@@ -377,7 +378,7 @@ namespace QuantLib {
             Size numYears = (Size)(t + 0.5);
             Real sumDiscount = 0.0;
             for (Size j=0; j<numYears; ++j)
-                sumDiscount += nominalTermStructure()->discount(j + 1.0);
+                sumDiscount += nominalTS_->discount(j + 1.0);
             // determine the minimum value of the ATM swap point
             Real tmpMinSwapRateIntersection = -1.e10;
             Real tmpMaxSwapRateIntersection = 1.e10;
@@ -508,15 +509,13 @@ namespace QuantLib {
     void InterpolatedYoYCapFloorTermPriceSurface<I2D,I1D>::
     calculateYoYTermStructure() const {
 
-        Handle<YieldTermStructure> nominalH( nominalTermStructure() );
-
         // which yoy-swap points to use in building the yoy-fwd curve?
         // for now pick every year
         Size nYears = (Size)(0.5+timeFromReference(referenceDate()+cfMaturities_.back()));
 
         std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > YYhelpers;
         for (Size i=1; i<=nYears; i++) {
-            Date maturity = nominalTermStructure()->referenceDate() + Period(i,Years);
+            Date maturity = nominalTS_->referenceDate() + Period(i,Years);
             Handle<Quote> quote(ext::shared_ptr<Quote>(
                                new SimpleQuote( atmYoYSwapRate( maturity ) )));//!
             ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> >
@@ -524,7 +523,7 @@ namespace QuantLib {
                 new YearOnYearInflationSwapHelper(
                                 quote, observationLag(), maturity,
                                 calendar(), bdc_, dayCounter(),
-                                yoyIndex(), nominalH));
+                                yoyIndex(), nominalTS_));
             YYhelpers.push_back (anInstrument);
         }
 
@@ -536,10 +535,10 @@ namespace QuantLib {
         // Linear is OK because we have every year
         ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> >   pYITS(
               new PiecewiseYoYInflationCurve<Linear>(
-                      nominalTermStructure()->referenceDate(),
+                      nominalTS_->referenceDate(),
                       calendar(), dayCounter(), observationLag(), yoyIndex()->frequency(),
                       yoyIndex()->interpolated(), baseYoYRate,
-                      nominalH, YYhelpers));
+                      YYhelpers));
         pYITS->recalculate();
         yoy_ = pYITS;   // store
 

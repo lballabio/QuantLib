@@ -19,6 +19,7 @@
  */
 
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
@@ -216,12 +217,16 @@ namespace QuantLib {
                                                     paymentConvention_));
 
 
-        // Because very simple instrument only takes
-        // standard discounting swap engine.
+        // The instrument takes a standard discounting swap engine.
+        // The inflation-related work is done by the coupons via the pricer.
+        Handle<YieldTermStructure> nominalTS =
+            !nominalTermStructure_.empty() ?
+            nominalTermStructure_ :
+            y->nominalTermStructure(); 
         yyiis_->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                    new DiscountingSwapEngine(!nominalTermStructure_.empty() ?
-                                              nominalTermStructure_ :
-                                              y->nominalTermStructure())));
+                    new DiscountingSwapEngine(nominalTS)));
+        setCouponPricer(yyiis_->yoyLeg(),
+                        ext::make_shared<YoYInflationCouponPricer>(nominalTS));
     }
 
 }
