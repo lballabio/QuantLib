@@ -81,7 +81,12 @@ namespace QuantLib {
     */
     class YoYInflationCouponPricer : public InflationCouponPricer {
       public:
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         YoYInflationCouponPricer();
+
         YoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure);
@@ -137,7 +142,14 @@ namespace QuantLib {
     //! Black-formula pricer for capped/floored yoy inflation coupons
     class BlackYoYInflationCouponPricer : public YoYInflationCouponPricer {
       public:
-        BlackYoYInflationCouponPricer() {}
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        BlackYoYInflationCouponPricer()
+        : YoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface>(),
+                                   Handle<YieldTermStructure>()) {}
+
         BlackYoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure)
@@ -151,7 +163,14 @@ namespace QuantLib {
     //! Unit-Displaced-Black-formula pricer for capped/floored yoy inflation coupons
     class UnitDisplacedBlackYoYInflationCouponPricer : public YoYInflationCouponPricer {
       public:
-        UnitDisplacedBlackYoYInflationCouponPricer() {}
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        UnitDisplacedBlackYoYInflationCouponPricer()
+        : YoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface>(),
+                                   Handle<YieldTermStructure>()) {}
+
         UnitDisplacedBlackYoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure)
@@ -165,7 +184,14 @@ namespace QuantLib {
     //! Bachelier-formula pricer for capped/floored yoy inflation coupons
     class BachelierYoYInflationCouponPricer : public YoYInflationCouponPricer {
       public:
-        BachelierYoYInflationCouponPricer() {}
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        BachelierYoYInflationCouponPricer()
+        : YoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface>(),
+                                   Handle<YieldTermStructure>()) {}
+
         BachelierYoYInflationCouponPricer(
             const Handle<YoYOptionletVolatilitySurface>& capletVol,
             const Handle<YieldTermStructure>& nominalTermStructure)
