@@ -205,14 +205,19 @@ namespace QuantLib {
                      Compounding comp,
                      Frequency freq,
                      Real accuracy,
-                     Size maxEvaluations) const {
+                     Size maxEvaluations,
+                     Real guess,
+                     Bond::Price::Type priceType) const {
         Real currentNotional = notional(settlementDate());
         if (currentNotional == 0.0)
             return 0.0;
 
-        return BondFunctions::yield(*this, cleanPrice(), dc, comp, freq,
+        Real price = priceType == Bond::Price::Clean ? cleanPrice() : dirtyPrice();
+
+        return BondFunctions::yield(*this, price, dc, comp, freq,
                                     settlementDate(),
-                                    accuracy, maxEvaluations);
+                                    accuracy, maxEvaluations,
+                                    guess, priceType);
     }
 
     Real Bond::cleanPrice(Rate y,
@@ -236,19 +241,22 @@ namespace QuantLib {
             + accruedAmount(settlement);
     }
 
-    Rate Bond::yield(Real cleanPrice,
+    Rate Bond::yield(Real price,
                      const DayCounter& dc,
                      Compounding comp,
                      Frequency freq,
                      Date settlement,
                      Real accuracy,
-                     Size maxEvaluations) const {
+                     Size maxEvaluations,
+                     Real guess,
+                     Bond::Price::Type priceType) const {
         Real currentNotional = notional(settlement);
         if (currentNotional == 0.0)
             return 0.0;
 
-        return BondFunctions::yield(*this, cleanPrice, dc, comp, freq,
-                                    settlement, accuracy, maxEvaluations);
+        return BondFunctions::yield(*this, price, dc, comp, freq,
+                                    settlement, accuracy, maxEvaluations,
+                                    guess, priceType);
     }
 
     Real Bond::accruedAmount(Date settlement) const {
