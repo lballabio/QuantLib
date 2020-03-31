@@ -321,8 +321,9 @@ namespace QuantLib {
 
                         // in this case you can set a pricer
                         // straight away because it only provides computation - not data
-                        ext::shared_ptr<CPICouponPricer> pricer
-                            (new CPICouponPricer);
+                        ext::shared_ptr<CPICouponPricer> pricer =
+                            ext::make_shared<CPICouponPricer>(Handle<CPIVolatilitySurface>(),
+                                                              Handle<YieldTermStructure>());
                         coup->setPricer(pricer);
                         leg.push_back(ext::dynamic_pointer_cast<CashFlow>(coup));
 

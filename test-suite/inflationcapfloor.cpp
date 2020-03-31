@@ -41,6 +41,7 @@
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
@@ -183,7 +184,7 @@ namespace inflation_capfloor_test {
                 new PiecewiseYoYInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
                         iir->frequency(),iir->interpolated(), baseYYRate,
-                        Handle<YieldTermStructure>(nominalTS), helpers));
+                        helpers));
             pYYTS->recalculate();
             yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
@@ -460,6 +461,8 @@ void InflationCapFloorTest::testParity() {
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
+                    setCouponPricer(swap.yoyLeg(),
+                                    ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     // N.B. nominals are 10e6
                     if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-6) {

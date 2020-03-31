@@ -24,6 +24,12 @@ namespace QuantLib {
     CPICouponPricer::CPICouponPricer() {}
 
     CPICouponPricer::CPICouponPricer(
+                       const Handle<YieldTermStructure>& nominalTermStructure)
+    : nominalTermStructure_(nominalTermStructure) {
+        registerWith(nominalTermStructure_);
+    }
+
+    CPICouponPricer::CPICouponPricer(
                        const Handle<CPIVolatilitySurface>& capletVol,
                        const Handle<YieldTermStructure>& nominalTermStructure)
     : capletVol_(capletVol), nominalTermStructure_(nominalTermStructure) {
@@ -154,14 +160,5 @@ namespace QuantLib {
         // with a different yield curve
         return gearing_ * adjustedFixing() + spread_;
     }
-
-
-    //=========================================================================
-    // vol-dependent pricers, note that these do not discount
-    //=========================================================================
-
-/*
-    NOT IMPLEMENTED
-*/
 
 }

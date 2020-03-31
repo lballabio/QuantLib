@@ -46,8 +46,32 @@ namespace QuantLib {
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
+
         //! \name Constructors
         //@{
+        PiecewiseZeroInflationCurve(
+               const Date& referenceDate,
+               const Calendar& calendar,
+               const DayCounter& dayCounter,
+               const Period& lag,
+               Frequency frequency,
+               bool indexIsInterpolated,
+               Rate baseZeroRate,
+               const std::vector<ext::shared_ptr<typename Traits::helper> >&
+                                                                  instruments,
+               Real accuracy = 1.0e-12,
+               const Interpolator& i = Interpolator())
+        : base_curve(referenceDate, calendar, dayCounter,
+                     lag, frequency, indexIsInterpolated, baseZeroRate, i),
+          instruments_(instruments), accuracy_(accuracy) {
+            bootstrap_.setup(this);
+        }
+
+        /*! \deprecated Use the constructor not taking a yield
+                        term structure.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         PiecewiseZeroInflationCurve(
                const Date& referenceDate,
                const Calendar& calendar,
@@ -68,6 +92,7 @@ namespace QuantLib {
             bootstrap_.setup(this);
         }
         //@}
+
         //! \name Inflation interface
         //@{
         Date baseDate() const;
