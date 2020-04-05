@@ -20,6 +20,7 @@ this_include_HEADERS = \
     bjerksundstenslandengine.hpp \
     coshestonengine.hpp \
     discretizedvanillaoption.hpp \
+    exponentialfittinghestonengine.hpp \
     hestonexpansionengine.hpp \
     integralengine.hpp \
     jumpdiffusionengine.hpp \
@@ -67,6 +68,7 @@ cpp_files = \
     bjerksundstenslandengine.cpp \
     coshestonengine.cpp \
     discretizedvanillaoption.cpp \
+    exponentialfittinghestonengine.cpp \
     hestonexpansionengine.cpp \
     integralengine.cpp \
     jumpdiffusionengine.cpp \
