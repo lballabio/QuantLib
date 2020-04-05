@@ -716,6 +716,7 @@ set(QuantLib_SRC
     pricingengines/vanilla/bjerksundstenslandengine.cpp
     pricingengines/vanilla/coshestonengine.cpp
     pricingengines/vanilla/discretizedvanillaoption.cpp
+    pricingengines/vanilla/exponentialfittinghestonengine.cpp    
     pricingengines/vanilla/fdbatesvanillaengine.cpp
     pricingengines/vanilla/fdblackscholesvanillaengine.cpp
     pricingengines/vanilla/fdcevvanillaengine.cpp

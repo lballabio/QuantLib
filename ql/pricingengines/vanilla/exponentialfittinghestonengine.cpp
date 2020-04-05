@@ -575,8 +575,8 @@ namespace QuantLib {
     ExponentialFittingHestonEngine::ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model,
 		Real k)
-    : model_(model),
-	  k_(k) {
+    : k_(k),
+	  model_(model) {
     	if (moneyness_.empty()) {
     		const Size n = sizeof(values4)/sizeof(values4[0]);
     		moneyness_.reserve(n);
