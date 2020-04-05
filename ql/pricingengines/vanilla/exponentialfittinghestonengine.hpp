@@ -47,13 +47,12 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         ExponentialFittingHestonEngine(
-            const ext::shared_ptr<HestonModel>& model,
-			Real k = 1.0);
+            const ext::shared_ptr<HestonModel>& model, bool scaling = true);
 
         void calculate() const;
 
       private:
-        const Real k_;
+        const bool scaling_;
         const ext::shared_ptr<HestonModel> model_;
         static std::vector<Real> moneyness_;
     };

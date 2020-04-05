@@ -75,11 +75,11 @@ namespace QuantLib {
     mp_real MomentBasedGaussianPolynomial<mp_real>::z(Integer k, Integer i) const {
         if (k == -1) return mp_real(0.0);
 
-        const Size rows = z_.size();
-        const Size cols = z_[0].size();
+        const Integer rows = z_.size();
+        const Integer cols = z_[0].size();
 
         if (cols <= i) {
-            for (Size l=0; l<rows; ++l)
+            for (Integer l=0; l<rows; ++l)
                 z_[l].resize(i+1, std::numeric_limits<mp_real>::quiet_NaN());
         }
         if (rows <= k) {
