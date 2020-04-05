@@ -2726,6 +2726,8 @@ void HestonModelTest::testExponentialFittingHestonEngine() {
     BOOST_TEST_MESSAGE("Testing exponential fitting Laguerre "
             "integration for the Heston model...");
 
+    SavedSettings backup;
+
     const Date todaysDate(13, March, 2020);
     Settings::instance().evaluationDate() = todaysDate;
     const DayCounter dayCounter = Actual365Fixed();

@@ -29,27 +29,6 @@
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
-// Define this to enable higher order Gaussian quadrature based on moments
-// by utilizing the boost multi-precision library. Needs boost version > 1.52.
-#ifndef USE_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
-//#define USE_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
-#endif
-
-#ifdef USE_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
-    #if BOOST_VERSION < 105300
-        #error This boost version is too old to support boost multi precision
-    #endif
-
-    #include <boost/multiprecision/cpp_dec_float.hpp>
-
-    namespace QuantLib {
-        typedef boost::multiprecision::number<
-                    boost::multiprecision::cpp_dec_float<200> > MP_Real;
-    }
-#else
-    namespace QuantLib { typedef Real MP_Real; }
-#endif
-
 #include <vector>
 
 namespace QuantLib {

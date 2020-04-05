@@ -31,6 +31,18 @@
 
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
+#ifndef TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
+//#define TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
+#endif
+
+#ifdef TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
+    #if BOOST_VERSION < 105300
+        #error This boost version is too old to support boost multi precision
+    #endif
+
+    #include <boost/multiprecision/cpp_dec_float.hpp>
+#endif
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -288,7 +300,7 @@ void GaussianQuadraturesTest::testMomentBasedGaussianPolynomial() {
      ml.push_back(
          ext::make_shared<MomentBasedGaussLaguerrePolynomial<Real> >());
 
-#if defined(USE_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE)
+#ifdef TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
      ml.push_back(
          ext::make_shared<MomentBasedGaussLaguerrePolynomial<
              boost::multiprecision::number<
