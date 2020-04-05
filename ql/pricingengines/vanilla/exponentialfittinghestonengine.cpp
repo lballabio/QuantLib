@@ -573,15 +573,16 @@ namespace QuantLib {
     std::vector<Real> ExponentialFittingHestonEngine::moneyness_;
 
     ExponentialFittingHestonEngine::ExponentialFittingHestonEngine(
-        const ext::shared_ptr<HestonModel>& model, bool scaling)
+        const ext::shared_ptr<HestonModel>& model, Real scaling)
     : scaling_(scaling),
 	  model_(model) {
     	if (moneyness_.empty()) {
+
     		const Size n = sizeof(values4)/sizeof(values4[0]);
     		moneyness_.reserve(n);
-    		for (Size i=0; i < n; ++i) {
+
+    		for (Size i=0; i < n; ++i)
     			moneyness_.push_back(values4[i][0]);
-    		}
     	}
     }
 
@@ -625,7 +626,7 @@ namespace QuantLib {
         const HestonCvChF helper(
         	kappa, sigma, theta, rho, v0, t, freq, std::sqrt(vAvg));
 
-        const Real scalingFactor = (scaling_)
+        const Real scalingFactor = (scaling_ != 1.0)
         	? std::max(0.01, std::min(5.0, 0.1/std::sqrt(0.5*vAvg*t)))
         	: 1.0;
 

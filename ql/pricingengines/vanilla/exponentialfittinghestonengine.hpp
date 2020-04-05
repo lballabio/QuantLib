@@ -28,7 +28,7 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 
-#include <map>
+#include <vector>
 
 namespace QuantLib {
 
@@ -47,12 +47,12 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         ExponentialFittingHestonEngine(
-            const ext::shared_ptr<HestonModel>& model, bool scaling = true);
+            const ext::shared_ptr<HestonModel>& model, Real scaling = 1.0);
 
         void calculate() const;
 
       private:
-        const bool scaling_;
+        const Real scaling_;
         const ext::shared_ptr<HestonModel> model_;
         static std::vector<Real> moneyness_;
     };

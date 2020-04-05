@@ -1975,6 +1975,7 @@ set(QuantLib_HDR
     pricingengines/vanilla/bjerksundstenslandengine.hpp
     pricingengines/vanilla/coshestonengine.hpp
     pricingengines/vanilla/discretizedvanillaoption.hpp
+    pricingengines/vanilla/exponentialfittinghestonengine.hpp
     pricingengines/vanilla/fdamericanengine.hpp
     pricingengines/vanilla/fdbatesvanillaengine.hpp
     pricingengines/vanilla/fdbermudanengine.hpp
