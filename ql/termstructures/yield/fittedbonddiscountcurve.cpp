@@ -248,7 +248,10 @@ namespace QuantLib {
 
     FittedBondDiscountCurve::FittingMethod::FittingCost::FittingCost(
                         FittedBondDiscountCurve::FittingMethod* fittingMethod)
-    : fittingMethod_(fittingMethod) {}
+    : fittingMethod_(fittingMethod) {
+        for (Size i = 0; i < fittingMethod_->curve_->bondHelpers_.size(); ++i)
+            fittingMethod_->curve_->bondHelpers_[i]->setTermStructure(fittingMethod_->curve_);
+    }
 
 
     Real FittedBondDiscountCurve::FittingMethod::FittingCost::value(
@@ -264,37 +267,17 @@ namespace QuantLib {
     Disposable<Array>
     FittedBondDiscountCurve::FittingMethod::FittingCost::values(
                                                        const Array &x) const {
-        Date refDate  = fittingMethod_->curve_->referenceDate();
-        const DayCounter& dc = fittingMethod_->curve_->dayCounter();
         Size n = fittingMethod_->curve_->bondHelpers_.size();
         Size N = fittingMethod_->l2_.size();
 
+        // set solution so that fittingMethod_->curve_ represents the current trial
+        // the final solution will be set in FittingMethod::calculate() later on
+        fittingMethod_->solution_ = x;
+
         Array values(n + N);
         for (Size i=0; i<n; ++i) {
-            ext::shared_ptr<BondHelper> helper =
-                fittingMethod_->curve_->bondHelpers_[i];
-
-            ext::shared_ptr<Bond> bond = helper->bond();
-            Date bondSettlement = bond->settlementDate();
-
-            // CleanPrice_i = sum( cf_k * d(t_k) ) - accruedAmount
-            Real modelPrice = 0.0;
-            const Leg& cf = bond->cashflows();
-            for (Size k=firstCashFlow_[i]; k<cf.size(); ++k) {
-                Time tenor = dc.yearFraction(refDate, cf[k]->date());
-                modelPrice += cf[k]->amount() *
-                                    fittingMethod_->discountFunction(x, tenor);
-            }
-            if (helper->priceType() == Bond::Price::Clean)
-                modelPrice -= bond->accruedAmount(bondSettlement);
-
-            // adjust price (NPV) for forward settlement
-            if (bondSettlement != refDate ) {
-                Time tenor = dc.yearFraction(refDate, bondSettlement);
-                modelPrice /= fittingMethod_->discountFunction(x, tenor);
-            }
-            Real marketPrice = helper->quote()->value();
-            Real error = modelPrice - marketPrice;
+            ext::shared_ptr<BondHelper> helper = fittingMethod_->curve_->bondHelpers_[i];
+            Real error = helper->impliedQuote() - helper->quote()->value();
             Real weightedError = fittingMethod_->weights_[i] * error;
             values[i] = weightedError * weightedError;
         }
