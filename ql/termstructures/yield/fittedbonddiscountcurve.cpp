@@ -41,7 +41,6 @@ namespace QuantLib {
         Disposable<Array> values(const Array& x) const;
       private:
         FittedBondDiscountCurve::FittingMethod* fittingMethod_;
-        mutable vector<Size> firstCashFlow_;
     };
 
 
@@ -141,18 +140,9 @@ namespace QuantLib {
 
         Size n = curve_->bondHelpers_.size();
         costFunction_ = ext::make_shared<FittingCost>(this);
-        costFunction_->firstCashFlow_.resize(n);
 
         for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
-            ext::shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
-            const Leg& cf = bond->cashflows();
-            Date bondSettlement = bond->settlementDate();
-            for (Size k=0; k<cf.size(); ++k) {
-                if (!cf[k]->hasOccurred(bondSettlement, false)) {
-                    costFunction_->firstCashFlow_[i] = k;
-                    break;
-                }
-            }
+            curve_->bondHelpers_[i]->setTermStructure(curve_);
         }
 
         if (calculateWeights_) {
@@ -248,10 +238,7 @@ namespace QuantLib {
 
     FittedBondDiscountCurve::FittingMethod::FittingCost::FittingCost(
                         FittedBondDiscountCurve::FittingMethod* fittingMethod)
-    : fittingMethod_(fittingMethod) {
-        for (Size i = 0; i < fittingMethod_->curve_->bondHelpers_.size(); ++i)
-            fittingMethod_->curve_->bondHelpers_[i]->setTermStructure(fittingMethod_->curve_);
-    }
+    : fittingMethod_(fittingMethod) {}
 
 
     Real FittedBondDiscountCurve::FittingMethod::FittingCost::value(
