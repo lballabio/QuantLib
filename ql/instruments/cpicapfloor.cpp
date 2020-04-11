@@ -67,7 +67,7 @@ namespace QuantLib {
             (observationInterpolation_ == CPI::AsIndex && infIndex_->interpolated())
             ) {
             QL_REQUIRE(observationLag_ > infIndex_->availabilityLag(),
-                       "CPIcapfloor's observationLag must be greater then availabilityLag of inflation index: "
+                       "CPIcapfloor's observationLag must be greater than availabilityLag of inflation index: "
                        <<"when the observation is effectively linear"
                        << observationLag_ << " vs " << infIndex_->availabilityLag());
         }

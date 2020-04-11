@@ -157,7 +157,7 @@
       bootstrap should fail.  (Thanks to Drew Saunders for the
       heads-up.)
     - Instances of the `FittedBondDiscountCurve` class now behave as
-      simple evaluators (that is, they use the given paramters without
+      simple evaluators (that is, they use the given parameters without
       performing root-solving) when the `maxIterations` parameter is
       set to 0.  (Thanks to Nick Firoozye for the heads-up.)
 

@@ -568,7 +568,7 @@ void VPPTest::testVPPPricing() {
     const DayCounter dc = ActualActual();
     Settings::instance().evaluationDate() = today;
 
-    // vpp paramter
+    // vpp parameter
     const Real heatRate       = 2.5;
     const Real pMin           = 8;
     const Real pMax           = 40;
