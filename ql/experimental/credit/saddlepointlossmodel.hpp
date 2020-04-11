@@ -1317,7 +1317,7 @@ namespace QuantLib {
         Probability percentile,
         const std::vector<Real>& mktFactor) const 
     {
-        /* TO DO: this is too crude, a general expresion valid for all 
+        /* TO DO: this is too crude, a general expression valid for all 
         situations is possible (with no extra cost as long as the loss limits 
         are checked).
         */

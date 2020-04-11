@@ -46,7 +46,7 @@ namespace QuantLib {
             of having any of its bonds with the given seniority,
             currency incurring in that particular event.  The second
             argument represents the history of past events.  Theres no
-            check on wether the event list makes sense, events can
+            check on whether the event list makes sense, events can
             occur several times and several of them can take place on
             the same date.
 
