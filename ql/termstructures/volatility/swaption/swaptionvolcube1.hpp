@@ -857,7 +857,7 @@ namespace QuantLib {
         QL_REQUIRE(beta.size() == swapLengths.size(),
                    "beta size ("
                        << beta.size()
-                       << ") must be equal to number of swap lenghts ("
+                       << ") must be equal to number of swap lengths ("
                        << swapLengths.size() << ")");
 
         std::vector<Time> betaTimes;

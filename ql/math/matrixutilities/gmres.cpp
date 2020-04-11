@@ -36,7 +36,7 @@ namespace QuantLib {
     : A_(A), M_(preConditioner),
       maxIter_(maxIter), relTol_(relTol) {
 
-        QL_REQUIRE(maxIter_ > 0, "maxIter must be greater then zero");
+        QL_REQUIRE(maxIter_ > 0, "maxIter must be greater than zero");
     }
 
     GMRESResult GMRES::solve(const Array& b, const Array& x0) const {
