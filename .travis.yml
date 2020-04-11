@@ -119,4 +119,7 @@ script:
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} make -j 2
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --show-stats
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./test-suite/quantlib-test-suite --log_level=message -- --faster
+  - echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
+  - echo "#include <ql/quantlib.hpp>" > test2.cpp
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} bash -c "make install && ${CACHEDCXX} ${CXXFLAGS} test1.cpp test2.cpp -lQuantLib"
 

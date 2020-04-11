@@ -59,7 +59,7 @@ namespace QuantLib {
 
     Real shiftedSabrVolatility(Rate strike,
                                  Rate forward,
-                                 Time expriyTime,
+                                 Time expiryTime,
                                  Real alpha,
                                  Real beta,
                                  Real nu,
