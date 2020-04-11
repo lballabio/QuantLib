@@ -37,7 +37,7 @@ namespace QuantLib {
                 vals.tOrders[iFactor]));
             // inverses T variaces used in normalization of the random factors
             // For low values of the T order this number is very close to zero 
-            // and it enters the expresions dividing them, which introduces 
+            // and it enters the expressions dividing them, which introduces 
             // numerical errors.
             varianceFactors_.push_back(std::sqrt(
                 (vals.tOrders[iFactor]-2.)/vals.tOrders[iFactor]));
