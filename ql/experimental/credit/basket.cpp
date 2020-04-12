@@ -101,7 +101,7 @@ namespace QuantLib {
         /* The model must notify us if the another basket calls it for 
         reasignment. The basket works as an argument to the deafult loss models 
         so, even if the models dont cache anything, they will be using the wrong
-        defaultl TS. \todo: This has a possible optimization: the basket 
+        default TS. \todo: This has a possible optimization: the basket 
         incorporates trancheability and many models do their compuations 
         independently of that (some do but do it inefficiently when asked for 
         two tranches on the same basket; e,g, recursive model) so it might be 
@@ -384,4 +384,3 @@ namespace QuantLib {
     }
 
 }
-
