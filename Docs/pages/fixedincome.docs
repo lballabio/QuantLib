@@ -112,7 +112,7 @@
     return a trinomial tree. For yield-curve consistent models, the fitting
     parameter can be determined either analytically (when possible) or 
     numerically. When a tree is built, it is then pretty straightforward to 
-    implement a pricer for any path-independant derivative. Just implement
+    implement a pricer for any path-independent derivative. Just implement
     a class derived from NumericalDerivative (see 
     QuantLib::NumericalSwaption for example) and roll it back until 
     the present time...

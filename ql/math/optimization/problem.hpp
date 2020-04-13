@@ -107,7 +107,7 @@ namespace QuantLib {
         Constraint& constraint_;
         //! current value of the local minimum
         Array currentValue_;
-        //! function and gradient norm values at the curentValue_ (i.e. the last step)
+        //! function and gradient norm values at the currentValue_ (i.e. the last step)
         Real functionValue_, squaredNorm_;
         //! number of evaluation of cost function and its gradient
         Integer functionEvaluation_, gradientEvaluation_;
