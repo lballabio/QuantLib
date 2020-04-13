@@ -550,15 +550,6 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     IterativeBootstrap<SPCurve> ibNoThrow(Null<Real>(), Null<Real>(), Null<Real>(), 5, 1.0, 10.0, true, 3);
     dpts = ext::make_shared<SPCurve>(asof, instruments, tsDayCounter, ibNoThrow);
     BOOST_CHECK_NO_THROW(dpts->survivalProbability(testDate));
-
-    for (const auto inst : instruments) {
-        Date latestDate = inst->latestDate();
-        Date pillarDate = inst->pillarDate();
-        Date latestRelevantDate = inst->latestRelevantDate();
-        Real sp = dpts->survivalProbability(pillarDate);
-        BOOST_TEST_MESSAGE(io::iso_date(latestDate) << "," << io::iso_date(pillarDate) << "," <<
-            io::iso_date(latestRelevantDate) << "," << std::fixed << std::setprecision(12) << sp);
-    }
 }
 
 
