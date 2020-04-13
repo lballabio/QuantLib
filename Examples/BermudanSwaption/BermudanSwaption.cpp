@@ -60,7 +60,7 @@ namespace QuantLib {
 Size numRows = 5;
 Size numCols = 5;
 
-Integer swapLenghts[] = {
+Integer swapLengths[] = {
       1,     2,     3,     4,     5};
 Volatility swaptionVols[] = {
   0.1490, 0.1340, 0.1228, 0.1189, 0.1148,
@@ -87,7 +87,7 @@ void calibrateModel(
                                                              1000, 0.05, 0.50);
         Volatility diff = implied - swaptionVols[k];
 
-        std::cout << i+1 << "x" << swapLenghts[j]
+        std::cout << i+1 << "x" << swapLengths[j]
                   << std::setprecision(5) << std::noshowpos
                   << ": model " << std::setw(7) << io::volatility(implied)
                   << ", market " << std::setw(7)
@@ -184,7 +184,7 @@ int main(int, char* []) {
             ext::shared_ptr<Quote> vol(new SimpleQuote(swaptionVols[k]));
             swaptions.push_back(ext::shared_ptr<BlackCalibrationHelper>(new
                 SwaptionHelper(swaptionMaturities[i],
-                               Period(swapLenghts[j], Years),
+                               Period(swapLengths[j], Years),
                                Handle<Quote>(vol),
                                indexSixMonths,
                                indexSixMonths->tenor(),

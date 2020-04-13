@@ -1322,7 +1322,7 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
                                                            ModifiedFollowing, Thirty360(), index));
     }
 
-    // global bootstrap contraints (bbg 'special serial FRA treatment')
+    // global bootstrap constraints (bbg 'special serial FRA treatment')
     std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
 
     // set up the additional rate helpers we need in the cost function
