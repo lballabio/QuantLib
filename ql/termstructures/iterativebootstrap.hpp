@@ -42,15 +42,30 @@ namespace QuantLib {
         typedef typename Curve::traits_type Traits;
         typedef typename Curve::interpolator_type Interpolator;
       public:
+        /*! Constructor
+            \param accuracy       Accuracy for the bootstrap stopping criterion. If it is set to
+                                  \c Null<Real>(), its value is taken from the termstructure's accuracy.
+            \param minValue       Allow to override the initial minimum value coming from traits.
+            \param maxValue       Allow to override the initial maximum value coming from traits.
+            \param maxAttempts    Number of attempts on each iteration. A number greater than 1 implies retries.
+            \param maxFactor      Factor for max value retry on each iteration if there is a failure.
+            \param minFactor      Factor for min value retry on each iteration if there is a failure.
+        */
         IterativeBootstrap(Real accuracy = Null<Real>(),
                            Real minValue = Null<Real>(),
-                           Real maxValue = Null<Real>());
+                           Real maxValue = Null<Real>(),
+                           Size maxAttempts = 1,
+                           Real maxFactor = 2.0,
+                           Real minFactor = 2.0);
         void setup(Curve* ts);
         void calculate() const;
       private:
         void initialize() const;
         Real accuracy_;
         Real minValue_, maxValue_;
+        Size maxAttempts_;
+        Real maxFactor_;
+        Real minFactor_;
         Curve* ts_;
         Size n_;
         Brent firstSolver_;
@@ -65,8 +80,10 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue)
+    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue,
+        Size maxAttempts, Real maxFactor, Real minFactor)
     : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue),
+      maxAttempts_(maxAttempts), maxFactor_(maxFactor), minFactor_(minFactor),
       ts_(0), initialized_(false), validCurve_(false), 
       loopRequired_(Interpolator::global) {}
 
@@ -192,20 +209,35 @@ namespace QuantLib {
         for (Size iteration=0; ; ++iteration) {
             previousData_ = ts_->data_;
 
+            // Store min value and max value at each pillar so that we can expand search if necessary.
+            std::vector<Real> minValues(alive_, Null<Real>());
+            std::vector<Real> maxValues(alive_, Null<Real>());
+            std::vector<Size> attempts(alive_, 1);
+
             for (Size i=1; i<=alive_; ++i) { // pillar loop
 
                 // bracket root and calculate guess
-                Real min = minValue_ != Null<Real>() ? minValue_ :
-                    Traits::minValueAfter(i, ts_, validData, firstAliveHelper_);
-                Real max = maxValue_ != Null<Real>() ? maxValue_ :
-                    Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_);
-
+                if (minValues[i - 1] == Null<Real>()) {
+                    minValues[i - 1] = minValue_ != Null<Real>() ? minValue_ :
+                        Traits::minValueAfter(i, ts_, validData, firstAliveHelper_);
+                } else {
+                    minValues[i - 1] = minValues[i - 1] < 0.0 ?
+                        minFactor_ * minValues[i - 1] : minValues[i - 1] / minFactor_;
+                }
+                if (maxValues[i - 1] == Null<Real>()) {
+                    maxValues[i - 1] = maxValue_ != Null<Real>() ? maxValue_ :
+                        Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_);
+                } else {
+                    maxValues[i - 1] = maxValues[i - 1] > 0.0 ?
+                        maxFactor_ * maxValues[i - 1] : maxValues[i - 1] / maxFactor_;
+                }
                 Real guess = Traits::guess(i, ts_, validData, firstAliveHelper_);
+
                 // adjust guess if needed
-                if (guess>=max)
-                    guess = max - (max-min)/5.0;
-                else if (guess<=min)
-                    guess = min + (max-min)/5.0;
+                if (guess >= maxValues[i - 1])
+                    guess = maxValues[i - 1] - (maxValues[i - 1] - minValues[i - 1]) / 5.0;
+                else if (guess <= minValues[i - 1])
+                    guess = minValues[i - 1] + (maxValues[i - 1] - minValues[i - 1]) / 5.0;
 
                 // extend interpolation if needed
                 if (!validData) {
@@ -227,9 +259,9 @@ namespace QuantLib {
 
                 try {
                     if (validData)
-                        solver_.solve(*errors_[i], accuracy, guess, min, max);
+                        solver_.solve(*errors_[i], accuracy, guess, minValues[i - 1], maxValues[i - 1]);
                     else
-                        firstSolver_.solve(*errors_[i], accuracy, guess, min, max);
+                        firstSolver_.solve(*errors_[i], accuracy, guess, minValues[i - 1], maxValues[i - 1]);
                 } catch (std::exception &e) {
                     if (validCurve_) {
                         // the previous curve state might have been a
@@ -242,7 +274,16 @@ namespace QuantLib {
                         calculate();
                         return;
                     }
-                    QL_FAIL(io::ordinal(iteration+1) << " iteration: failed "
+
+                    // If we have more attempts left on this iteration, try again. Note that the max and min 
+                    // bounds will be widened on the retry.
+                    if (attempts[i - 1] < maxAttempts_) {
+                        attempts[i - 1]++;
+                        i--;
+                        continue;
+                    }
+
+                    QL_FAIL(io::ordinal(iteration + 1) << " iteration: failed "
                             "at " << io::ordinal(i) << " alive instrument, "
                             "pillar " << errors_[i]->helper()->pillarDate() <<
                             ", maturity " << errors_[i]->helper()->maturityDate() <<
