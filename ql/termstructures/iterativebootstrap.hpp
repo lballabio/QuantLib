@@ -130,7 +130,10 @@ namespace detail {
     : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue),
       maxAttempts_(maxAttempts), maxFactor_(maxFactor), minFactor_(minFactor), dontThrow_(dontThrow),
       dontThrowSteps_(dontThrowSteps), ts_(0), initialized_(false), validCurve_(false),
-      loopRequired_(Interpolator::global) {}
+      loopRequired_(Interpolator::global) {
+        QL_REQUIRE(maxFactor_ >= 1.0, "Expected that maxFactor would be at least 1.0 but got " << maxFactor_);
+        QL_REQUIRE(minFactor_ >= 1.0, "Expected that minFactor would be at least 1.0 but got " << minFactor_);
+    }
 
     template <class Curve>
     void IterativeBootstrap<Curve>::setup(Curve* ts) {
