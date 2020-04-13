@@ -36,6 +36,43 @@
 
 namespace QuantLib {
 
+namespace detail {
+
+    /*! If \c dontThrow is \c true in IterativeBootstrap and on a given pillar the bootstrap fails when
+        searching for a helper root between \c xMin and \c xMax, we use this function to return the value that 
+        gives the minimum absolute helper error in the interval between \c xMin and \c xMax inclusive.
+    */
+    template <class Curve>
+    Real dontThrowFallback(const BootstrapError<Curve>& error,
+        Real xMin, Real xMax, Size steps) {
+
+        QL_REQUIRE(xMin < xMax, "Expected xMin to be less than xMax");
+
+        // Set the initial value of the result to xMin and store the absolute bootstrap error at xMin
+        Real result = xMin;
+        Real absError = std::abs(error(xMin));
+        Real minError = absError;
+
+        // Step out to xMax
+        Real stepSize = (xMax - xMin) / steps;
+        for (Size i = 0; i < steps; i++) {
+
+            // Get absolute bootstrap error at updated x value
+            xMin += stepSize;
+            absError = std::abs(error(xMin));
+
+            // If this absolute bootstrap error is less than the minimum, update result and minError
+            if (absError < minError) {
+                result = xMin;
+                minError = absError;
+            }
+        }
+
+        return result;
+    }
+
+}
+
     //! Universal piecewise-term-structure boostrapper.
     template <class Curve>
     class IterativeBootstrap {
@@ -50,13 +87,19 @@ namespace QuantLib {
             \param maxAttempts    Number of attempts on each iteration. A number greater than 1 implies retries.
             \param maxFactor      Factor for max value retry on each iteration if there is a failure.
             \param minFactor      Factor for min value retry on each iteration if there is a failure.
+            \param dontThrow      If set to \c true, the bootstrap doesn't throw and returns a <em>fall back</em>
+                                  result.
+            \param dontThrowSteps If \p dontThrow is \c true, this gives the number of steps to use when searching
+                                  for a fallback curve pillar value that gives the minimum bootstrap helper error.
         */
         IterativeBootstrap(Real accuracy = Null<Real>(),
                            Real minValue = Null<Real>(),
                            Real maxValue = Null<Real>(),
                            Size maxAttempts = 1,
                            Real maxFactor = 2.0,
-                           Real minFactor = 2.0);
+                           Real minFactor = 2.0,
+                           bool dontThrow = false,
+                           Size dontThrowSteps = 10);
         void setup(Curve* ts);
         void calculate() const;
       private:
@@ -66,6 +109,8 @@ namespace QuantLib {
         Size maxAttempts_;
         Real maxFactor_;
         Real minFactor_;
+        bool dontThrow_;
+        Size dontThrowSteps_;
         Curve* ts_;
         Size n_;
         Brent firstSolver_;
@@ -81,10 +126,10 @@ namespace QuantLib {
 
     template <class Curve>
     IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue,
-        Size maxAttempts, Real maxFactor, Real minFactor)
+        Size maxAttempts, Real maxFactor, Real minFactor, bool dontThrow, Size dontThrowSteps)
     : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue),
-      maxAttempts_(maxAttempts), maxFactor_(maxFactor), minFactor_(minFactor),
-      ts_(0), initialized_(false), validCurve_(false), 
+      maxAttempts_(maxAttempts), maxFactor_(maxFactor), minFactor_(minFactor), dontThrow_(dontThrow),
+      dontThrowSteps_(dontThrowSteps), ts_(0), initialized_(false), validCurve_(false),
       loopRequired_(Interpolator::global) {}
 
     template <class Curve>
@@ -283,12 +328,22 @@ namespace QuantLib {
                         continue;
                     }
 
-                    QL_FAIL(io::ordinal(iteration + 1) << " iteration: failed "
-                            "at " << io::ordinal(i) << " alive instrument, "
-                            "pillar " << errors_[i]->helper()->pillarDate() <<
-                            ", maturity " << errors_[i]->helper()->maturityDate() <<
-                            ", reference date " << ts_->dates_[0] <<
-                            ": " << e.what());
+                    if (dontThrow_) {
+                        // Use the fallback value
+                        ts_->data_[i] = detail::dontThrowFallback(*errors_[i], minValues[i - 1],
+                            maxValues[i - 1], dontThrowSteps_);
+
+                        // Remember to update the interpolation. If we don't and we are on the last "i", we will still 
+                        // have the last attempted value in the solver being used in ts_->interpolation_.
+                        ts_->interpolation_.update();
+                    } else {
+                        QL_FAIL(io::ordinal(iteration + 1) << " iteration: failed "
+                                "at " << io::ordinal(i) << " alive instrument, "
+                                "pillar " << errors_[i]->helper()->pillarDate() <<
+                                ", maturity " << errors_[i]->helper()->maturityDate() <<
+                                ", reference date " << ts_->dates_[0] <<
+                                ": " << e.what());
+                    }
                 }
             }
 
@@ -302,10 +357,16 @@ namespace QuantLib {
             if (change<=accuracy)  // convergence reached
                 break;
 
-            QL_REQUIRE(iteration<maxIterations,
-                       "convergence not reached after " << iteration <<
-                       " iterations; last improvement " << change <<
-                       ", required accuracy " << accuracy);
+            // If we hit the max number of iterations and dontThrow is true, just use what we have
+            if (iteration == maxIterations) {
+                if (dontThrow_) {
+                    break;
+                } else {
+                    QL_FAIL("convergence not reached after " << iteration <<
+                            " iterations; last improvement " << change <<
+                            ", required accuracy " << accuracy);
+                }
+            }
 
             validData = true;
         }
