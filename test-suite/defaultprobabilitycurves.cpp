@@ -547,7 +547,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
         ExpErrorPred("1st iteration: failed at 3rd alive instrument"));
 
     // Create the default curve with an IterativeBootstrap that allows for 4 retries and does not throw.
-    IterativeBootstrap<SPCurve> ibNoThrow(Null<Real>(), Null<Real>(), Null<Real>(), 5, 1.0, 10.0, true, 3);
+    IterativeBootstrap<SPCurve> ibNoThrow(Null<Real>(), Null<Real>(), Null<Real>(), 5, 1.0, 10.0, true, 2);
     dpts = ext::make_shared<SPCurve>(asof, instruments, tsDayCounter, ibNoThrow);
     BOOST_CHECK_NO_THROW(dpts->survivalProbability(testDate));
 }
