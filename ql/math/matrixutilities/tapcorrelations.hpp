@@ -67,7 +67,7 @@ namespace QuantLib {
 
     //! Returns the rank reduced Triangular Angles Parametrized correlation matrix
     /*! The matrix \f$ m \f$ is filled with values corresponding to angles
-        corresponding  to the 3D spherical spiral paramterized by
+        corresponding  to the 3D spherical spiral parameterized by
         \f$ alpha \f$, \f$ t0 \f$, \f$ epsilon \f$ values. See equation (32) in
         "Parameterizing correlations: a geometric interpretation"
         by Francesco Rapisarda, Damiano Brigo, Fabio Mercurio
@@ -86,7 +86,7 @@ namespace QuantLib {
 
     // the same function with parameters packed in an Array
     Disposable<Matrix>
-    triangularAnglesParametrizationRankThreeVectorial(const Array& paramters,
+    triangularAnglesParametrizationRankThreeVectorial(const Array& parameters,
                                                       Size nbRows);
 
     // Cost function associated with Frobenius norm.

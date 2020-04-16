@@ -161,7 +161,7 @@ namespace QuantLib {
 
         Size nSwaps_;
         mutable std::vector<ext::shared_ptr<VanillaSwap> > swaps_;
-        std::vector<Time> swapLenghts_;
+        std::vector<Time> swapLengths_;
         mutable std::vector<Time> swapBondDurations_;
         mutable std::vector<Rate> swapBondYields_, swapRates_;
     };
@@ -232,7 +232,7 @@ namespace QuantLib {
     }
 
     inline const std::vector<Time>& RendistatoCalculator::swapLengths() const {
-        return swapLenghts_;
+        return swapLengths_;
     }
 
     inline const std::vector<Rate>& RendistatoCalculator::swapRates() const {
@@ -273,7 +273,7 @@ namespace QuantLib {
 
     inline Time RendistatoCalculator::equivalentSwapLength() const {
         calculate();
-        return swapLenghts_[equivalentSwapIndex_];
+        return swapLengths_[equivalentSwapIndex_];
     }
 
     inline Spread RendistatoCalculator::equivalentSwapSpread() const {

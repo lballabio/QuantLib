@@ -257,7 +257,7 @@ namespace QuantLib {
                         Date npvDate = Date());
         //! Implied internal rate of return.
         /*! The function verifies
-            the theoretical existance of an IRR and numerically
+            the theoretical existence of an IRR and numerically
             establishes the IRR to the desired precision.
         */
         static Rate yield(const Leg& leg,
