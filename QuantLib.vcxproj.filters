@@ -4294,6 +4294,12 @@
     <ClInclude Include="ql\methods\finitedifferences\schemes\cranknicolsonscheme.hpp">
       <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\gausslaguerrecosinepolynomial.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\integrals\momentbasedgaussianpolynomial.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">

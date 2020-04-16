@@ -224,7 +224,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
         ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, sabrVol));
 
-    std::vector<Date> calibrationDates(1, todaysDate + Period(1, Weeks));
+    std::vector<Date> calibrationDates(1, todaysDate + Period(3, Months));
     calibrationDates.reserve(Size(daysBetween(todaysDate, maturityDate)/7 + 1));
     while (calibrationDates.back() < maturityDate)
         calibrationDates.push_back(calibrationDates.back() + Period(1, Weeks));
@@ -239,12 +239,12 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
         ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0));
 
     const SquareRootCLVModel model(
-        bsProcess, sqrtProcess, calibrationDates, 18, 1-1e-14, 1e-14);
+        bsProcess, sqrtProcess, calibrationDates, 14, 1-1e-10, 1e-10);
 
     const ext::function<Real(Time, Real)> g = model.g();
 
     const Real strikes[] = { 80, 100, 120 };
-    const Size offsets[] = { 7, 14, 28, 91, 182, 183, 184, 185, 186, 365 };
+    const Size offsets[] = { 92, 182, 183, 184, 185, 186, 365 };
     for (Size i=0; i < LENGTH(offsets); ++i) {
         const Date m = todaysDate + Period(offsets[i], Days);
         const Time t = dc.yearFraction(todaysDate, m);
@@ -274,12 +274,14 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
             const ext::function<Real(Real)> f = integrand(clvModelPayoff, dist);
 
             const Array x = model.collocationPointsX(m);
+
             const Real calculated = GaussLobattoIntegral(1000, 1e-3)(
                 f, x.front(), x.back()) * rTS->discount(m);
 
-            const Real tol = 1.5e-2;
+            const Real tol = 0.075;
 
-            if (std::fabs(calculated - expected) > tol) {
+            if (std::fabs(expected) > 0.01
+                    && std::fabs((calculated - expected)/calculated) > tol) {
                 BOOST_FAIL("failed to reproduce option SquaredCLVMOdel prices"
                         << "\n    time:       " << m
                         << "\n    strike:     " << strike
@@ -847,7 +849,6 @@ void SquareRootCLVModelTest::testForwardSkew() {
     }
 }
 
-
  
 test_suite* SquareRootCLVModelTest::experimental() {
     test_suite* suite = BOOST_TEST_SUITE("SquareRootCLVModel tests");
@@ -855,14 +856,12 @@ test_suite* SquareRootCLVModelTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &SquareRootCLVModelTest::testSquareRootCLVVanillaPricing));
 
-#ifdef MULTIPRECISION_NON_CENTRAL_CHI_SQUARED_QUADRATURE
     suite->add(QUANTLIB_TEST_CASE(
         &SquareRootCLVModelTest::testSquareRootCLVMappingFunction));
 
 //    this test takes very long
 //    suite->add(QUANTLIB_TEST_CASE(
 //        &SquareRootCLVModelTest::testForwardSkew));
-#endif
 
     return suite;
 }
