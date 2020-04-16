@@ -716,7 +716,6 @@ set(QuantLib_SRC
     pricingengines/vanilla/bjerksundstenslandengine.cpp
     pricingengines/vanilla/coshestonengine.cpp
     pricingengines/vanilla/discretizedvanillaoption.cpp
-    pricingengines/vanilla/exponentialfittinghestonengine.cpp    
     pricingengines/vanilla/fdbatesvanillaengine.cpp
     pricingengines/vanilla/fdblackscholesvanillaengine.cpp
     pricingengines/vanilla/fdcevvanillaengine.cpp
@@ -1975,7 +1974,6 @@ set(QuantLib_HDR
     pricingengines/vanilla/bjerksundstenslandengine.hpp
     pricingengines/vanilla/coshestonengine.hpp
     pricingengines/vanilla/discretizedvanillaoption.hpp
-    pricingengines/vanilla/exponentialfittinghestonengine.hpp
     pricingengines/vanilla/fdamericanengine.hpp
     pricingengines/vanilla/fdbatesvanillaengine.hpp
     pricingengines/vanilla/fdbermudanengine.hpp

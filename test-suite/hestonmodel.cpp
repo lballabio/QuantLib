@@ -32,7 +32,6 @@
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
-#include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
@@ -2722,52 +2721,6 @@ void HestonModelTest::testPiecewiseTimeDependentChFAsymtotic() {
     }
 }
 
-void HestonModelTest::testExponentialFittingHestonEngine() {
-    BOOST_TEST_MESSAGE("Testing exponential fitting Laguerre "
-            "integration for the Heston model...");
-
-    SavedSettings backup;
-
-    const Date todaysDate(13, March, 2020);
-    Settings::instance().evaluationDate() = todaysDate;
-    const DayCounter dayCounter = Actual365Fixed();
-
-    const Date maturityDate(15, February, 2021);
-    const Time maturity = dayCounter.yearFraction(todaysDate, maturityDate);
-
-    const Handle<YieldTermStructure> rTS(flatRate(0.05, dayCounter));
-    const Handle<YieldTermStructure> qTS(flatRate(0.075, dayCounter));
-
-    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
-
-    const Real v0    =  0.04;
-    const Real rho   = -0.5;
-    const Real sigma =  1.0;
-    const Real kappa =  4.0;
-    const Real theta =  0.25;
-
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
-            ext::make_shared<HestonProcess>(
-                rTS, qTS, s0, v0, kappa, theta, sigma, rho)));
-
-    const Real fwd = s0->value()
-        * qTS->discount(maturity)/rTS->discount(maturity);
-
-    const Real moneyness = 3.0;
-    const Real strike = std::exp(-moneyness*std::sqrt(theta*maturity))*fwd;
-
-    VanillaOption option(
-        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-        ext::make_shared<EuropeanExercise>(maturityDate));
-
-    option.setPricingEngine(
-        ext::make_shared<ExponentialFittingHestonEngine>(hestonModel));
-
-    std::cout << option.NPV() << std::endl;
-}
-
-
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -2806,8 +2759,6 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
         &HestonModelTest::testPiecewiseTimeDependentComparison));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
-    suite->add(QUANTLIB_TEST_CASE(
-            &HestonModelTest::testExponentialFittingHestonEngine));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
