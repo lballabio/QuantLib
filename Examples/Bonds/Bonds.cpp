@@ -41,7 +41,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 
-#include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
 
@@ -60,7 +59,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         /*********************
@@ -216,8 +214,6 @@ int main(int, char* []) {
          DayCounter termStructureDayCounter =
              ActualActual(ActualActual::ISDA);
 
-         double tolerance = 1.0e-15;
-
          // A depo-bond curve
          std::vector<ext::shared_ptr<RateHelper> > bondInstruments;
 
@@ -234,8 +230,7 @@ int main(int, char* []) {
          ext::shared_ptr<YieldTermStructure> bondDiscountingTermStructure(
                  new PiecewiseYieldCurve<Discount,LogLinear>(
                          settlementDate, bondInstruments,
-                         termStructureDayCounter,
-                         tolerance));
+                         termStructureDayCounter));
 
          // Building of the Libor forecasting curve
          // deposits
@@ -376,8 +371,7 @@ int main(int, char* []) {
          ext::shared_ptr<YieldTermStructure> depoSwapTermStructure(
                  new PiecewiseYieldCurve<Discount,LogLinear>(
                          settlementDate, depoSwapInstruments,
-                         termStructureDayCounter,
-                         tolerance));
+                         termStructureDayCounter));
 
          // Term structures that will be used for pricing:
          // the one used for discounting cash flows
@@ -568,19 +562,6 @@ int main(int, char* []) {
 
          /* "Yield to Price"
             "Price to Yield" */
-
-         double seconds = timer.elapsed();
-         Integer hours = int(seconds/3600);
-         seconds -= hours * 3600;
-         Integer minutes = int(seconds/60);
-         seconds -= minutes * 60;
-         std::cout << " \nRun completed in ";
-         if (hours > 0)
-             std::cout << hours << " h ";
-         if (hours > 0 || minutes > 0)
-             std::cout << minutes << " m ";
-         std::cout << std::fixed << std::setprecision(0)
-         << seconds << " s\n" << std::endl;
 
          return 0;
 

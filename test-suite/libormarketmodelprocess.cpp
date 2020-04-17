@@ -34,7 +34,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace libor_market_model_process_test {
 
     Size len = 10;
 
@@ -154,6 +154,8 @@ void LiborMarketModelProcessTest::testInitialisation() {
 void LiborMarketModelProcessTest::testLambdaBootstrapping() {
     BOOST_TEST_MESSAGE("Testing caplet LMM lambda bootstrapping...");
 
+    using namespace libor_market_model_process_test;
+
     SavedSettings backup;
 
     Real tolerance = 1e-10;
@@ -200,6 +202,8 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
 
 void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
     BOOST_TEST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
+
+    using namespace libor_market_model_process_test;
 
     SavedSettings backup;
 

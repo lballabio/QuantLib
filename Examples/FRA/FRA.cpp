@@ -31,7 +31,6 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 
-#include <boost/timer.hpp>
 #include <iostream>
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
@@ -51,7 +50,6 @@ int main(int, char* []) {
 
     try {
 
-        boost::timer timer;
         std::cout << std::endl;
 
         /*********************
@@ -160,8 +158,6 @@ int main(int, char* []) {
         DayCounter termStructureDayCounter =
             ActualActual(ActualActual::ISDA);
 
-        double tolerance = 1.0e-15;
-
         // A FRA curve
         std::vector<ext::shared_ptr<RateHelper> > fraInstruments;
 
@@ -174,8 +170,7 @@ int main(int, char* []) {
         ext::shared_ptr<YieldTermStructure> fraTermStructure(
                      new PiecewiseYieldCurve<Discount,LogLinear>(
                                          settlementDate, fraInstruments,
-                                         termStructureDayCounter,
-                                         tolerance));
+                                         termStructureDayCounter));
 
 
         // Term structures used for pricing/discounting
@@ -335,19 +330,6 @@ int main(int, char* []) {
                  << endl
                  << endl;
         }
-
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        cout << " \nRun completed in ";
-        if (hours > 0)
-            cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            cout << minutes << " m ";
-        cout << fixed << setprecision(0)
-             << seconds << " s\n" << endl;
 
         return 0;
 

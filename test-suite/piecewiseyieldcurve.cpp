@@ -19,12 +19,15 @@
 
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/japan.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
@@ -53,7 +56,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace piecewise_yield_curve_test {
 
     struct Datum {
         Integer n;
@@ -259,6 +262,13 @@ namespace {
                                    fixedLegDayCounter, euribor6m));
             }
 
+
+#ifdef QL_USE_INDEXED_COUPON
+            bool useIndexedFra = false;
+#else
+            bool useIndexedFra = true;
+#endif
+
             ext::shared_ptr<IborIndex> euribor3m(new Euribor3M());
             for (Size i=0; i<fras; i++) {
                 Handle<Quote> r(fraRates[i]);
@@ -268,7 +278,10 @@ namespace {
                                   euribor3m->fixingCalendar(),
                                   euribor3m->businessDayConvention(),
                                   euribor3m->endOfMonth(),
-                                  euribor3m->dayCounter()));
+                                  euribor3m->dayCounter(),
+                                  Pillar::LastRelevantDate,
+                                  Date(),
+                                  useIndexedFra));
             }
             Date immDate = Date();
             for (Size i = 0; i<immFuts; i++) {
@@ -421,6 +434,12 @@ namespace {
                                      interpolator));
         curveHandle.linkTo(vars.termStructure);
 
+#ifdef QL_USE_INDEXED_COUPON
+        bool useIndexedFra = false;
+#else
+        bool useIndexedFra = true;
+#endif
+
         ext::shared_ptr<IborIndex> euribor3m(new Euribor3M(curveHandle));
         for (Size i=0; i<vars.fras; i++) {
             Date start =
@@ -429,13 +448,15 @@ namespace {
                                       fraData[i].units,
                                       euribor3m->businessDayConvention(),
                                       euribor3m->endOfMonth());
-            Date end = vars.calendar.advance(start, 3, Months,
+            BOOST_REQUIRE(fraData[i].units == Months);
+            Date end = vars.calendar.advance(vars.settlement, 3 + fraData[i].n, Months,
                                              euribor3m->businessDayConvention(),
                                              euribor3m->endOfMonth());
 
             ForwardRateAgreement fra(start, end, Position::Long,
                                      fraData[i].rate/100, 100.0,
-                                     euribor3m, curveHandle);
+                                     euribor3m, curveHandle,
+                                     useIndexedFra);
             Rate expectedRate = fraData[i].rate/100,
                  estimatedRate = fra.forwardRate();
             if (std::fabs(expectedRate-estimatedRate) > tolerance) {
@@ -559,7 +580,6 @@ namespace {
         vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.today, vars.bmaHelpers,
                                        Actual360(),
-                                       1.0e-12,
                                        interpolator));
 
         RelinkableHandle<YieldTermStructure> curveHandle;
@@ -618,6 +638,8 @@ void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-cubic discount curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<Discount,LogCubic,IterativeBootstrap>(
@@ -637,6 +659,8 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<Discount,LogLinear,IterativeBootstrap>(vars);
@@ -647,6 +671,8 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -659,6 +685,8 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<ZeroYield,Linear,IterativeBootstrap>(vars);
@@ -669,6 +697,8 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic zero-yield curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -689,6 +719,8 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<ForwardRate,Linear,IterativeBootstrap>(vars);
@@ -700,6 +732,8 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     testCurveConsistency<ForwardRate,BackwardFlat,IterativeBootstrap>(vars);
@@ -710,6 +744,8 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic forward-rate curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -729,6 +765,8 @@ void PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of convex monotone forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveConsistency<ForwardRate,ConvexMonotone,IterativeBootstrap>(vars);
 
@@ -741,6 +779,8 @@ void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
     BOOST_TEST_MESSAGE(
         "Testing consistency of local-bootstrap algorithm...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveConsistency<ForwardRate,ConvexMonotone,LocalBootstrap>(
                                               vars, ConvexMonotone(), 1.0e-6);
@@ -752,6 +792,8 @@ void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
 void PiecewiseYieldCurveTest::testObservability() {
 
     BOOST_TEST_MESSAGE("Testing observability of piecewise yield curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -796,6 +838,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
     BOOST_TEST_MESSAGE(
         "Testing use of today's LIBOR fixings in swap curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -882,6 +926,8 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     BOOST_TEST_MESSAGE(
         "Testing bootstrap over JPY LIBOR swaps...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
 
     vars.today = Date(4, October, 2007);
@@ -914,8 +960,7 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     vars.termStructure = ext::shared_ptr<YieldTermStructure>(
         new PiecewiseYieldCurve<Discount,LogLinear>(
                                        vars.settlement, vars.instruments,
-                                       Actual360(),
-                                       1.0e-12));
+                                       Actual360()));
 
     RelinkableHandle<YieldTermStructure> curveHandle;
     curveHandle.linkTo(vars.termStructure);
@@ -950,7 +995,7 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     }
 }
 
-namespace {
+namespace piecewise_yield_curve_test {
 
     template <class T, class I>
     void testCurveCopy(CommonVars& vars,
@@ -958,7 +1003,6 @@ namespace {
 
         PiecewiseYieldCurve<T,I> curve(vars.settlement, vars.instruments,
                                        Actual360(),
-                                       1.0e-12,
                                        interpolator);
         // necessary to trigger bootstrap
         curve.recalculate();
@@ -998,6 +1042,8 @@ namespace {
 void PiecewiseYieldCurveTest::testDiscountCopy() {
     BOOST_TEST_MESSAGE("Testing copying of discount curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveCopy<Discount,LogLinear>(vars);
 }
@@ -1005,12 +1051,16 @@ void PiecewiseYieldCurveTest::testDiscountCopy() {
 void PiecewiseYieldCurveTest::testForwardCopy() {
     BOOST_TEST_MESSAGE("Testing copying of forward-rate curve...");
 
+    using namespace piecewise_yield_curve_test;
+
     CommonVars vars;
     testCurveCopy<ForwardRate,BackwardFlat>(vars);
 }
 
 void PiecewiseYieldCurveTest::testZeroCopy() {
     BOOST_TEST_MESSAGE("Testing copying of zero-rate curve...");
+
+    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
     testCurveCopy<ZeroYield,Linear>(vars);
@@ -1039,6 +1089,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
 
 void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
+
+    using namespace piecewise_yield_curve_test;
 
     SavedSettings backup;
 
@@ -1104,6 +1156,213 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     }
 }
 
+void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
+
+    BOOST_TEST_MESSAGE("Testing that construction with an explicit bootstrap succeeds...");
+
+    using namespace piecewise_yield_curve_test;
+
+    CommonVars vars;
+
+    // With an explicit IterativeBootstrap object
+    typedef PiecewiseYieldCurve<ForwardRate, Linear, IterativeBootstrap> PwLinearForward;
+    ext::shared_ptr<YieldTermStructure> yts = 
+        ext::make_shared<PwLinearForward>(
+            vars.settlement, vars.instruments, Actual360(), Linear(),
+            PwLinearForward::bootstrap_type());
+
+    // Check anything to show that the construction succeeded
+    BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
+
+    // With an explicit LocalBootstrap object
+    typedef PiecewiseYieldCurve<ForwardRate, ConvexMonotone, LocalBootstrap> PwCmForward;
+    yts = ext::make_shared<PwCmForward>(
+        vars.settlement, vars.instruments, Actual360(), ConvexMonotone(), 
+        PwCmForward::bootstrap_type());
+
+    BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
+}
+
+void PiecewiseYieldCurveTest::testLargeRates() {
+    BOOST_TEST_MESSAGE("Testing bootstrap with large input rates...");
+
+    using namespace piecewise_yield_curve_test;
+
+    SavedSettings backup;
+
+    Datum data[] = {
+        {  1, Weeks,  2.418633 },
+        {  2, Weeks,  1.361540 },
+        {  3, Weeks,  1.195362 },
+        {  1, Months, 0.829009 }
+    };
+
+    std::vector<ext::shared_ptr<RateHelper> > helpers;
+    for (Size i=0; i<LENGTH(data); ++i) {
+        helpers.push_back(
+           ext::make_shared<DepositRateHelper>(data[i].rate,
+                                               Period(data[i].n, data[i].units),
+                                               0, WeekendsOnly(), Following,
+                                               false, Actual360()));
+    }
+
+    Date today = Date(12, October, 2017);
+
+    Settings::instance().evaluationDate() = today;
+
+    Real accuracy = Null<Real>(); // use the default
+    Real minValue = Null<Real>(); // use the default
+    Real maxValue = 3.0;          // override
+
+    typedef PiecewiseYieldCurve<ForwardRate, BackwardFlat> PiecewiseCurve;
+    ext::shared_ptr<YieldTermStructure> curve =
+        ext::make_shared<PiecewiseCurve>(
+                                  today, helpers, Actual360(), BackwardFlat(),
+                                  PiecewiseCurve::bootstrap_type(accuracy, minValue, maxValue));
+
+    // force bootstrap and check it worked
+    curve->discount(0.01);
+    BOOST_CHECK_NO_THROW(curve->discount(0.01));
+}
+
+namespace piecewise_yield_curve_test {
+    // helper classes for testGlobalBootstrap() below:
+
+    // functor returning the additional error terms for the cost function
+    struct additionalErrors {
+        explicit additionalErrors(
+            const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
+                additionalHelpers)
+        : additionalHelpers(additionalHelpers) {}
+        std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
+        Array operator()() {
+            Array errors(5);
+            Real a = additionalHelpers[0]->impliedQuote();
+            Real b = additionalHelpers[6]->impliedQuote();
+            for (Size k = 0; k < 5; ++k) {
+                errors[k] = (5.0 - k) / 6.0 * a + (1.0 + k) / 6.0 * b -
+                            additionalHelpers[1 + k]->impliedQuote();
+            }
+            return errors;
+        }
+    };
+
+    // functor returning additional dates used in the bootstrap
+    struct additionalDates {
+        std::vector<Date> operator()() {
+            Date settl = TARGET().advance(Settings::instance().evaluationDate(), 2 * Days);
+            std::vector<Date> dates;
+            for (Size i = 0; i < 5; ++i)
+                dates.push_back(TARGET().advance(settl, (1 + i) * Months));
+            return dates;
+        }
+    };
+}
+
+void PiecewiseYieldCurveTest::testGlobalBootstrap() {
+
+    BOOST_TEST_MESSAGE("Testing global bootstrap...");
+
+    using namespace piecewise_yield_curve_test;
+
+    SavedSettings backup;
+
+    Date today(26, Sep, 2019);
+    Settings::instance().evaluationDate() = today;
+
+    // Here we compare zero rates from bbg curve S45 (EUR-EURIBOR-6M) with QL. We assume the
+    // following settings in bbg's SWDF screen (which are sort of the "factory" settings):
+    // Curve Defaults                            : Pay = Mid, Rec = Mid
+    // Interpolation Method                      : Piecewise linear (Simple-comp)
+    // Enable OIS Discount/Dual Curve Stripping  : not enabled
+    // We get a quite good match (1/100 bp), yet above numerical accuracy that might have to do
+    // with details of bbg's "special FRA treatment" which is not fully disclosed
+
+    // bbg maturity date
+    Date bbgDate[] = {
+        Date(31, Mar, 2020), Date(30, Apr, 2020), Date(29, May, 2020), Date(30, Jun, 2020),
+        Date(31, Jul, 2020), Date(31, Aug, 2020), Date(30, Sep, 2020), Date(30, Oct, 2020),
+        Date(30, Nov, 2020), Date(31, Dec, 2020), Date(29, Jan, 2021), Date(26, Feb, 2021),
+        Date(31, Mar, 2021), Date(30, Sep, 2021), Date(30, Sep, 2022), Date(29, Sep, 2023),
+        Date(30, Sep, 2024), Date(30, Sep, 2025), Date(30, Sep, 2026), Date(30, Sep, 2027),
+        Date(29, Sep, 2028), Date(28, Sep, 2029), Date(30, Sep, 2030), Date(30, Sep, 2031),
+        Date(29, Sep, 2034), Date(30, Sep, 2039), Date(30, Sep, 2044), Date(30, Sep, 2049),
+        Date(30, Sep, 2054), Date(30, Sep, 2059), Date(30, Sep, 2064), Date(30, Sep, 2069)};
+
+    // bbg market rate
+    Real bbgMktRate[] = {-0.373,   -0.388,   -0.402,   -0.418,   -0.431,  -0.441,   -0.45,
+                         -0.457,   -0.463,   -0.469,   -0.461,   -0.463,  -0.479,   -0.4511,
+                         -0.45418, -0.439,   -0.4124,  -0.37703, -0.3335, -0.28168, -0.22725,
+                         -0.1745,  -0.12425, -0.07746, 0.0385,   0.1435,  0.17525,  0.17275,
+                         0.1515,   0.1225,   0.095,    0.0644};
+
+    // bbg zero rate
+    Real bbgZeroRate[] = {-0.373,   -0.38058, -0.38718, -0.39353, -0.407,   -0.41274, -0.41107,
+                          -0.41542, -0.41951, -0.42329, -0.42658, -0.42959, -0.43297, -0.45103,
+                          -0.4541,  -0.43905, -0.41266, -0.3775,  -0.33434, -0.2828,  -0.2285,
+                          -0.17582, -0.1254,  -0.0783,  0.03913,  0.14646,  0.17874,  0.17556,
+                          0.1531,   0.12299,  0.0948,   0.06383};
+
+    // build ql helpers
+    std::vector<ext::shared_ptr<RateHelper> > helpers;
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor>(6 * Months);
+
+    helpers.push_back(ext::make_shared<DepositRateHelper>(
+        bbgMktRate[0] / 100.0, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
+
+    for (Size i = 0; i < 12; ++i) {
+        helpers.push_back(
+            ext::make_shared<FraRateHelper>(bbgMktRate[1 + i] / 100.0, (i + 1) * Months, index));
+    }
+
+    Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
+    for (Size i = 0; i < 19; ++i) {
+        helpers.push_back(ext::make_shared<SwapRateHelper>(bbgMktRate[13 + i] / 100.0,
+                                                           swapTenors[i] * Years, TARGET(), Annual,
+                                                           ModifiedFollowing, Thirty360(), index));
+    }
+
+    // global bootstrap constraints (bbg 'special serial FRA treatment')
+    std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
+
+    // set up the additional rate helpers we need in the cost function
+    for (Size i = 0; i < 7; ++i) {
+        additionalHelpers.push_back(
+            ext::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
+    }
+
+    // build curve with additional dates and constraints using a global bootstrapper
+    typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> bbgCurve;
+    ext::shared_ptr<bbgCurve> curve = ext::make_shared<bbgCurve>(
+        2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
+        Linear(),
+        bbgCurve::bootstrap_type(additionalHelpers, additionalDates(),
+                                 additionalErrors(additionalHelpers), 1.0e-12));
+    curve->enableExtrapolation();
+
+    // check ql vs bbg curve pillar dates
+    for (Size i = 0; i < LENGTH(bbgDate); ++i) {
+        BOOST_CHECK_EQUAL(bbgDate[i], helpers[i]->pillarDate());
+    }
+
+    // check ql vs bbg zero rates
+    for (Size i = 0; i < LENGTH(bbgZeroRate); ++i) {
+        // account for the way bbg displays zero rates
+        DayCounter dc;
+        Compounding comp;
+        if (i < 13) {
+            dc = Actual360();
+            comp = Simple;
+        } else {
+            dc = Thirty360();
+            comp = SimpleThenCompounded;
+        }
+        // 0.01 basis points tolerance
+        BOOST_CHECK_SMALL(std::fabs(bbgZeroRate[i] / 100.0 -
+                                    curve->zeroRate(bbgDate[i], dc, comp, Annual).rate()),
+                          1E-6);
+    }
+}
 
 test_suite* PiecewiseYieldCurveTest::suite() {
 
@@ -1147,11 +1406,18 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
 
-    #if !defined(QL_USE_INDEXED_COUPON)
-    // This regression test didn't work with indexed coupons anyway.
-    suite->add(QUANTLIB_TEST_CASE(
-                             &PiecewiseYieldCurveTest::testBadPreviousCurve));
-    #endif
+    if (IborCoupon::usingAtParCoupons()) {
+        // This regression test didn't work with indexed coupons anyway.
+        suite->add(QUANTLIB_TEST_CASE(
+               &PiecewiseYieldCurveTest::testBadPreviousCurve));
+    }
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
+
+#ifndef QL_USE_INDEXED_COUPON
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
+#endif
 
     return suite;
 }

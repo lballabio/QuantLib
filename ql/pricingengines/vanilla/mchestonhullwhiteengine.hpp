@@ -70,7 +70,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCHestonHullWhiteEngine {
       public:
-        MakeMCHestonHullWhiteEngine(
+        explicit MakeMCHestonHullWhiteEngine(
                     const ext::shared_ptr<HybridHestonHullWhiteProcess>&);
         // named parameters
         MakeMCHestonHullWhiteEngine& withSteps(Size steps);

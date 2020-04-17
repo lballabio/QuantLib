@@ -31,6 +31,7 @@ using namespace std;
 
 //namespace QuantLib {
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE( \
     greekName,  \
     payoff, exercise, \

@@ -297,7 +297,6 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 
     SavedSettings backup;
 
-    const Calendar nullCalendar = NullCalendar();
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Date(28, Dec, 2012);
     Settings::instance().evaluationDate() = todaysDate;
@@ -483,8 +482,6 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
     BOOST_TEST_MESSAGE("Testing probability density for a square root process...");
 
-    using namespace ext::placeholders;
-
     struct SquareRootProcessParams {
         const Real v0, kappa, theta, sigma;
     };
@@ -507,7 +504,7 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
             const Real cdfCalculated = rndCalculator.cdf(v, t);
             const Real cdfExpected = GaussLobattoIntegral(10000, 0.01*tol)(
                 ext::bind(&SquareRootProcessRNDCalculator::pdf,
-                    &rndCalculator, _1, t), 0, v);
+                          &rndCalculator, ext::placeholders::_1, t), 0, v);
 
             if (std::fabs(cdfCalculated - cdfExpected) > tol) {
                 BOOST_FAIL("failed to calculate cdf"
@@ -734,9 +731,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
 
 void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
     BOOST_TEST_MESSAGE("Testing the mass at zero for a "
-        "constant elasticity of variance (CEV) process ...");
-
-    using namespace ext::placeholders;
+                       "constant elasticity of variance (CEV) process...");
 
     const Real f0 = 100.0;
     const Time t = 2.75;
@@ -760,7 +755,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
         const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-8)(
-            ext::bind(&CEVRNDCalculator::pdf, calculator, _1, t),
+            ext::bind(&CEVRNDCalculator::pdf, calculator, ext::placeholders::_1, t),
                       std::max(QL_EPSILON, f0-ax), f0+ax) +
             calculator->massAtZero(t);
 
@@ -776,7 +771,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
 
 void RiskNeutralDensityCalculatorTest::testCEVCDF() {
     BOOST_TEST_MESSAGE("Testing CDF for a "
-        "constant elasticity of variance (CEV) process ...");
+                       "constant elasticity of variance (CEV) process...");
 
     const Real f0 = 2.1;
     const Time t = 0.75;

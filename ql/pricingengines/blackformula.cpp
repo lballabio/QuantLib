@@ -10,6 +10,7 @@
  Copyright (C) 2013 Gary Kennedy
  Copyright (C) 2015 Peter Caspers
  Copyright (C) 2017 Klaus Spanderen
+ Copyright (C) 2019 Wojciech Ślusarski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -548,6 +549,34 @@ namespace QuantLib {
             payoff->strike(), forward, stdDev , displacement);
     }
 
+    Real blackFormulaAssetItmProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement) {
+        checkParameters(strike, forward, displacement);
+        if (stdDev==0.0)
+            return (forward*optionType < strike*optionType ? 1.0 : 0.0);
+
+        forward = forward + displacement;
+        strike = strike + displacement;
+        if (strike==0.0)
+            return (optionType==Option::Call ? 1.0 : 0.0);
+        Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
+        CumulativeNormalDistribution phi;
+        return phi(optionType*d1);
+    }
+
+    Real blackFormulaAssetItmProbability(
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement) {
+        return blackFormulaAssetItmProbability(payoff->optionType(),
+            payoff->strike(), forward, stdDev , displacement);
+    }
+
     Real blackFormulaVolDerivative(Rate strike,
                                       Rate forward,
                                       Real stdDev,
@@ -764,5 +793,26 @@ namespace QuantLib {
                                      stdDev, discount);
     }
 
+    Real bachelierBlackFormulaAssetItmProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev) {
+        QL_REQUIRE(stdDev>=0.0,
+                   "stdDev (" << stdDev << ") must be non-negative");
+        Real d = (forward-strike)*optionType, h = d/stdDev;
+        if (stdDev==0.0)
+            return std::max(d, 0.0);
+        CumulativeNormalDistribution phi;
+        Real result = phi(h);
+        return result;
+    }
 
+    Real bachelierBlackFormulaAssetItmProbability(
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev) {
+        return bachelierBlackFormulaAssetItmProbability(payoff->optionType(),
+            payoff->strike(), forward, stdDev);
+    }
 }

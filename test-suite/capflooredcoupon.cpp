@@ -40,7 +40,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace capfloored_coupon_test {
 
     struct CommonVars {
         // global data
@@ -194,6 +194,8 @@ void CapFlooredCouponTest::testLargeRates() {
 
     BOOST_TEST_MESSAGE("Testing degenerate collared coupon...");
 
+    using namespace capfloored_coupon_test;
+
     CommonVars vars;
 
     /* A vanilla floating leg and a capped floating leg with strike
@@ -222,7 +224,7 @@ void CapFlooredCouponTest::testLargeRates() {
     collarLeg.setPricingEngine(engine);
 
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
-        BOOST_ERROR("Lenght: " << vars.length << " y" << "\n" <<
+        BOOST_ERROR("Length: " << vars.length << " y" << "\n" <<
                     "Volatility: " << vars.volatility*100 << "%\n" <<
                     "Notional: " << vars.nominal << "\n" <<
                     "Vanilla floating leg NPV: " << vanillaLeg.NPV()
@@ -237,6 +239,8 @@ void CapFlooredCouponTest::testLargeRates() {
 void CapFlooredCouponTest::testDecomposition() {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
+
+    using namespace capfloored_coupon_test;
 
     CommonVars vars;
 

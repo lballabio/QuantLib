@@ -58,6 +58,22 @@ namespace QuantLib {
     */
     class Bond : public Instrument {
       public:
+        //! Bond price information
+        class Price {
+          public:
+            enum Type { Dirty, Clean };
+            Price() : amount_(Null<Real>()) {}
+            Price(Real amount, Type type) : amount_(amount), type_(type) {}
+            Real amount() const {
+                QL_REQUIRE(amount_ != Null<Real>(), "no amount given");
+                return amount_;
+            }
+            Type type() const { return type_; }
+          private:
+            Real amount_;
+            Type type_;
+        };
+
         //! constructor for amortizing or non-amortizing bonds.
         /*! Redemptions and maturity are calculated from the coupon
             data, if available.  Therefore, redemptions must not be
@@ -154,7 +170,9 @@ namespace QuantLib {
                    Compounding comp,
                    Frequency freq,
                    Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100) const;
+                   Size maxEvaluations = 100,
+                   Real guess = 0.05,
+                   Bond::Price::Type priceType = Bond::Price::Clean) const;
 
         //! clean price given a yield and settlement date
         /*! The default bond settlement is used if no date is given. */
@@ -184,7 +202,9 @@ namespace QuantLib {
                    Frequency freq,
                    Date settlementDate = Date(),
                    Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100) const;
+                   Size maxEvaluations = 100,
+                   Real guess = 0.05,
+                   Bond::Price::Type priceType = Bond::Price::Clean) const;
 
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */

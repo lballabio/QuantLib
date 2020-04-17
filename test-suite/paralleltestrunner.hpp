@@ -31,6 +31,7 @@
 #define quantlib_parallel_test_runner_hpp
 
 #include <ql/types.hpp>
+#include <ql/errors.hpp>
 #include <ql/functional.hpp>
 
 #ifdef VERSION
@@ -39,7 +40,7 @@
 #undef VERSION
 #endif
 
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -62,6 +63,12 @@
 #include <cstdlib>
 
 #ifdef BOOST_MSVC
+#  define BOOST_LIB_NAME boost_timer
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
+#  define BOOST_LIB_NAME boost_chrono
+#  include <boost/config/auto_link.hpp>
+#  undef BOOST_LIB_NAME
 #  define BOOST_LIB_NAME boost_system
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
@@ -399,7 +406,7 @@ int main( int argc, char* argv[] )
             message_queue rq(open_only, testResultQueueName);
 
             while (!id.terminate) {
-                boost::timer t;
+                boost::timer::cpu_timer t;
 
                 #if BOOST_VERSION < 106200
                     BOOST_TEST_FOREACH( test_observer*, to,
@@ -418,7 +425,7 @@ int main( int argc, char* argv[] )
                 #endif
 
                 runTimeLogs.push_back(std::make_pair(
-                    framework::get(id.id, TUT_ANY).p_name, t.elapsed()));
+                    framework::get(id.id, TUT_ANY).p_name, t.elapsed().wall));
 
                 output_logstream(log_stream(), oldBuf, logBuf);
 

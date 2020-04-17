@@ -49,7 +49,7 @@ namespace QuantLib {
                                    VanillaOption::arguments,
                                    VanillaOption::results> {
       public:
-        AnalyticPDFHestonEngine(
+        explicit AnalyticPDFHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
             Real gaussLobattoEps = 1e-6,
             Size gaussLobattoIntegrationOrder = 10000ul);

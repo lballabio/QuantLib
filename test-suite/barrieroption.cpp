@@ -53,6 +53,7 @@ using namespace boost::unit_test_framework;
 
 using std::sqrt;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
                        exercise, s, q, r, today, v, expected, calculated, \
                        error, tolerance) \
@@ -74,6 +75,7 @@ using std::sqrt;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
+#undef REPORT_FX_FAILURE
 #define REPORT_FX_FAILURE(greekName, barrierType, barrier, \
                           rebate, payoff, exercise, s, q, r, today, \
                           vol25Put, atmVol, vol25Call, v, \
@@ -100,7 +102,7 @@ using std::sqrt;
                << "    tolerance:        " << tolerance);
 
 
-namespace {
+namespace barrier_option_test {
 
     std::string barrierTypeToString(Barrier::Type type) {
         switch(type){
@@ -241,6 +243,8 @@ void BarrierOptionTest::testParity() {
 void BarrierOptionTest::testHaugValues() {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Haug's values...");
+
+    using namespace barrier_option_test;
 
     Exercise::Type european = Exercise::European;
     Exercise::Type american = Exercise::American;
@@ -489,6 +493,8 @@ void BarrierOptionTest::testBabsiriValues() {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Babsiri's values...");
 
+    using namespace barrier_option_test;
+
     /*
         Data from
         "Simulating Path-Dependent Options: A New Approach"
@@ -598,6 +604,7 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Beaglehole's values...");
 
+    using namespace barrier_option_test;
 
     /*
         Data from
@@ -929,6 +936,8 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
 void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
     BOOST_TEST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
 
+    using namespace barrier_option_test;
+
     SavedSettings backup;
 
     BarrierFxOptionData values[] = {
@@ -1204,6 +1213,10 @@ void BarrierOptionTest::testDividendBarrierOption() {
         ext::make_shared<FdBlackScholesBarrierEngine>(
             bsProcess, 100, 100, 0, FdmSchemeDesc::Douglas());
 
+    const ext::shared_ptr<PricingEngine> crankNicolson =
+        ext::make_shared<FdBlackScholesBarrierEngine>(
+            bsProcess, 100, 100, 0, FdmSchemeDesc::CrankNicolson());
+
     const ext::shared_ptr<PricingEngine> craigSnyed =
         ext::make_shared<FdBlackScholesBarrierEngine>(
             bsProcess, 100, 100, 0, FdmSchemeDesc::CraigSneyd());
@@ -1227,7 +1240,8 @@ void BarrierOptionTest::testDividendBarrierOption() {
                     rTS, qTS, s0, v*v, 1.0, v*v, 0.005, 0.0)), 50, 101, 3);
 
     const ext::shared_ptr<PricingEngine> engines[] = {
-        douglas, trPDF2, craigSnyed, hundsdorfer, mol, hestonEngine
+        douglas, crankNicolson,
+        trPDF2, craigSnyed, hundsdorfer, mol, hestonEngine
     };
 
     const ext::shared_ptr<StrikedTypePayoff> payoff =

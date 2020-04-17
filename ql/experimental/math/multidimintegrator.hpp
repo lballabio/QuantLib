@@ -41,11 +41,9 @@ namespace QuantLib {
         explicit MultidimIntegral(
             const std::vector<ext::shared_ptr<Integrator> >& integrators);
 
-        // scalar variant:
-        /*!
-            @param f Integrand function.
-            @param a Lower integration limit domain for each dimension.
-            @param b Upper integration limit domain for each dimension.
+        // scalar variant
+        /*! f is the integrand function; a and b are the lower and
+            upper integration limit domain for each dimension.
         */
         Real operator()(
             const ext::function<Real (const std::vector<Real>&)>& f,
@@ -127,9 +125,9 @@ namespace QuantLib {
 
     template<>
     void inline MultidimIntegral::spawnFcts<1>() const {
-        using namespace ext::placeholders;
         integrationLevelEntries_[0] = 
-            ext::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
+            ext::bind(&MultidimIntegral::integrate<0>, this,
+                      ext::placeholders::_1, ext::placeholders::_2, ext::placeholders::_3);
     }
 
     template<int nT>
@@ -138,11 +136,10 @@ namespace QuantLib {
         const std::vector<Real>& a,
         const std::vector<Real>& b) const 
     {
-        using namespace ext::placeholders;
         return 
             (*integrators_[nT])(
                 ext::bind(&MultidimIntegral::vectorBinder<nT>, this, f, 
-                    _1, ext::cref(a), ext::cref(b)), a[nT], b[nT]);
+                    ext::placeholders::_1, ext::cref(a), ext::cref(b)), a[nT], b[nT]);
     }
 
     template<int T_N> 
@@ -158,10 +155,9 @@ namespace QuantLib {
 
     template<Size depth>
     void MultidimIntegral::spawnFcts() const {
-        using namespace ext::placeholders;
         integrationLevelEntries_[depth-1] =
           ext::bind(&MultidimIntegral::integrate<depth-1>, this, 
-            _1, _2, _3);
+            ext::placeholders::_1, ext::placeholders::_2, ext::placeholders::_3);
         spawnFcts<depth-1>();
     }
 

@@ -149,10 +149,10 @@ namespace QuantLib {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
                 QL_REQUIRE(firstDate_ > effectiveDate &&
-                           firstDate_ < terminationDate,
+                           firstDate_ <= terminationDate,
                            "first date (" << firstDate_ <<
-                           ") out of effective-termination date range [" <<
-                           effectiveDate << ", " << terminationDate << ")");
+                           ") out of effective-termination date range (" <<
+                           effectiveDate << ", " << terminationDate << "]");
                 // we should ensure that the above condition is still
                 // verified after adjustment
                 break;
@@ -177,11 +177,11 @@ namespace QuantLib {
             switch (*rule_) {
               case DateGeneration::Backward:
               case DateGeneration::Forward:
-                QL_REQUIRE(nextToLastDate_ > effectiveDate &&
+                QL_REQUIRE(nextToLastDate_ >= effectiveDate &&
                            nextToLastDate_ < terminationDate,
                            "next to last date (" << nextToLastDate_ <<
-                           ") out of effective-termination date range (" <<
-                           effectiveDate << ", " << terminationDate << "]");
+                           ") out of effective-termination date range [" <<
+                           effectiveDate << ", " << terminationDate << ")");
                 // we should ensure that the above condition is still
                 // verified after adjustment
                 break;
@@ -463,6 +463,39 @@ namespace QuantLib {
 
     }
 
+    Schedule Schedule::after(const Date& truncationDate) const {
+        Schedule result = *this;
+
+        QL_REQUIRE(truncationDate < result.dates_.back(),
+            "truncation date " << truncationDate <<
+            " must be before the last schedule date " <<
+            result.dates_.back());
+        if (truncationDate > result.dates_[0]) {
+            // remove earlier dates
+            while (result.dates_[0] < truncationDate) {
+                result.dates_.erase(result.dates_.begin());
+                if (!result.isRegular_.empty())
+                    result.isRegular_.erase(result.isRegular_.begin());
+            }
+
+            // add truncationDate if missing
+            if (truncationDate != result.dates_.front()) {
+                result.dates_.insert(result.dates_.begin(), truncationDate);
+                result.isRegular_.insert(result.isRegular_.begin(), false);
+                result.terminationDateConvention_ = Unadjusted;
+            }
+            else {
+                result.terminationDateConvention_ = convention_;
+            }
+
+            if (result.nextToLastDate_ <= truncationDate)
+                result.nextToLastDate_ = Date();
+            if (result.firstDate_ <= truncationDate)
+                result.firstDate_ = Date();
+        }
+
+        return result;
+    }
 
     Schedule Schedule::until(const Date& truncationDate) const {
         Schedule result = *this;

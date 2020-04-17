@@ -31,12 +31,12 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance, knockin) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
@@ -688,8 +688,6 @@ void DigitalOptionTest::testMCCashAtHit() {
                        "American engine...");
 
     SavedSettings backup;
-
-    QL_TEST_START_TIMING
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol

@@ -755,7 +755,7 @@ namespace QuantLib {
     context of default
     See default transition models for another instance of this inversion.
     Alternatively use the faster trick (flat HR) mentioned in the code or make
-    the algorithm parametric on the type of interpolation in the DefautlTS
+    the algorithm parametric on the type of interpolation in the default TS.
     */
     namespace detail {// not template dependent .....move it
         //! Utility for the numerical time solver

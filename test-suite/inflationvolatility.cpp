@@ -46,9 +46,9 @@
 #include <iostream>
 
 
-// anonymous local namespace for data
+// local namespace for data
 //*************************************************************************
-namespace {
+namespace inflation_volatility_test {
 
     using namespace std;
     using namespace QuantLib;
@@ -195,7 +195,7 @@ namespace {
         ext::shared_ptr<InterpolatedYoYInflationCurve<Linear> >
             pYTSEU( new InterpolatedYoYInflationCurve<Linear>(
                     eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly,
-                    indexIsInterpolated, nominalGBP, d, r) );
+                    indexIsInterpolated, d, r) );
         yoyEU.linkTo(pYTSEU);
 
         // price data
@@ -284,6 +284,8 @@ namespace {
 void InflationVolTest::testYoYPriceSurfaceToVol() {
     BOOST_TEST_MESSAGE("Testing conversion from YoY price surface "
                        "to YoY volatility surface...");
+
+    using namespace inflation_volatility_test;
 
     SavedSettings backup;
 
@@ -374,6 +376,8 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
 void InflationVolTest::testYoYPriceSurfaceToATM() {
     BOOST_TEST_MESSAGE("Testing conversion from YoY cap-floor surface "
                        "to YoY inflation term structure...");
+
+    using namespace inflation_volatility_test;
 
     SavedSettings backup;
 

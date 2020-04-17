@@ -30,16 +30,11 @@
 namespace QuantLib {
 
     //! Finite-differences pricing engine for dividend European options
-    /*! \ingroup vanillaengines
-
-        \test
-        - the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-        - the invariance of the results upon addition of null
-          dividends is tested.
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEuropeanEngine
+    class QL_DEPRECATED FDDividendEuropeanEngine
         : public FDEngineAdapter<FDDividendEngine<Scheme>,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDDividendEngine<Scheme>,
@@ -53,8 +48,12 @@ namespace QuantLib {
     };
 
 
+    //! Finite-differences pricing engine for dividend European options
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEuropeanEngineMerton73
+    class QL_DEPRECATED FDDividendEuropeanEngineMerton73
         : public FDEngineAdapter<FDDividendEngineMerton73<Scheme>,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDDividendEngineMerton73<Scheme>,
@@ -68,9 +67,11 @@ namespace QuantLib {
     };
 
 
-
+    /*! \deprecated Use FdBlackScholesVanillaEngine instead.
+                    Deprecated in version 1.17.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEuropeanEngineShiftScale
+    class QL_DEPRECATED FDDividendEuropeanEngineShiftScale
         : public FDEngineAdapter<FDDividendEngineShiftScale<Scheme>,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDDividendEngineShiftScale<Scheme>,

@@ -44,7 +44,7 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        ImplicitEulerScheme(
+        explicit ImplicitEulerScheme(
             const ext::shared_ptr<FdmLinearOpComposite>& map,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,
@@ -55,7 +55,10 @@ namespace QuantLib {
 
         Size numberOfIterations() const;
       protected:
-        Disposable<Array> apply(const Array& r) const;   
+        friend class CrankNicolsonScheme;
+        void step(array_type& a, Time t, Real theta);
+
+        Disposable<Array> apply(const Array& r, Real theta) const;
           
         Time dt_;
         ext::shared_ptr<Size> iterations_;

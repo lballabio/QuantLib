@@ -52,13 +52,14 @@ using std::fabs;
 using std::pow;
 using std::vector;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(d, res, periodName) \
     BOOST_ERROR("wrong " << periodName << " inflation period for Date (1 " \
         << d << "), Start Date ( " \
         << res.first << "), End Date (" \
         << res.second << ")"); \
 
-namespace {
+namespace inflation_test {
 
     struct Datum {
         Date date;
@@ -99,7 +100,7 @@ namespace {
 // zero inflation tests, index, termstructure, and swaps
 //===========================================================================================
 
-namespace {
+namespace inflation_test {
 
 void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz, 
     const ext::shared_ptr<ZeroInflationIndex>& ii) {
@@ -306,6 +307,8 @@ void InflationTest::testZeroIndex() {
 void InflationTest::testZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
 
+    using namespace inflation_test;
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -374,7 +377,7 @@ void InflationTest::testZeroTermStructure() {
                         new PiecewiseZeroInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
                         frequency, ii->interpolated(), baseZeroRate,
-                        Handle<YieldTermStructure>(nominalTS), helpers));
+                        helpers));
     pZITS->recalculate();
 
     // first check that the zero rates on the curve match the data
@@ -509,7 +512,7 @@ void InflationTest::testZeroTermStructure() {
             new PiecewiseZeroInflationCurve<Linear>(
             evaluationDate, calendar, dc, observationLagyes,
             frequency, iiyes->interpolated(), baseZeroRate,
-            Handle<YieldTermStructure>(nominalTS), helpersyes));
+            helpersyes));
     pZITSyes->recalculate();
 
     // first check that the zero rates on the curve match the data
@@ -795,6 +798,8 @@ void InflationTest::testYYIndex() {
 void InflationTest::testYYTermStructure() {
     BOOST_TEST_MESSAGE("Testing year-on-year inflation term structure...");
 
+    using namespace inflation_test;
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -866,7 +871,7 @@ void InflationTest::testYYTermStructure() {
         new PiecewiseYoYInflationCurve<Linear>(
                 evaluationDate, calendar, dc, observationLag,
                 iir->frequency(),iir->interpolated(), baseYYRate,
-                Handle<YieldTermStructure>(nominalTS), helpers));
+                helpers));
     pYYTS->recalculate();
 
     // validation
@@ -876,6 +881,8 @@ void InflationTest::testYYTermStructure() {
     // usual swap engine
     Handle<YieldTermStructure> hTS(nominalTS);
     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+    ext::shared_ptr<InflationCouponPricer> pricer =
+        ext::make_shared<YoYInflationCouponPricer>(hTS);
 
     // make sure that the index has the latest yoy term structure
     hy.linkTo(pYYTS);
@@ -904,7 +911,7 @@ void InflationTest::testYYTermStructure() {
                                         UnitedKingdom());
 
         yyS2.setPricingEngine(sppe);
-
+        setCouponPricer(yyS2.yoyLeg(), pricer);
 
 
         BOOST_CHECK_MESSAGE(fabs(yyS2.NPV())<eps,"fresh yoy swap NPV!=0 from TS "
@@ -942,6 +949,7 @@ void InflationTest::testYYTermStructure() {
                                     UnitedKingdom());
 
         yyS3.setPricingEngine(sppe);
+        setCouponPricer(yyS3.yoyLeg(), pricer);
 
         BOOST_CHECK_MESSAGE(fabs(yyS3.NPV())< 20000.0,
                             "unexpected size of aged YoY swap, aged "

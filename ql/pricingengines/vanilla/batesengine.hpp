@@ -105,8 +105,8 @@ namespace QuantLib {
     */
     class BatesEngine : public AnalyticHestonEngine {
       public:
-        BatesEngine(const ext::shared_ptr<BatesModel>& model,
-                    Size integrationOrder = 144);
+        explicit BatesEngine(const ext::shared_ptr<BatesModel>& model,
+                             Size integrationOrder = 144);
         BatesEngine(const ext::shared_ptr<BatesModel>& model,
                     Real relTolerance, Size maxEvaluations);
 
@@ -117,8 +117,8 @@ namespace QuantLib {
 
     class BatesDetJumpEngine : public BatesEngine {
       public:
-        BatesDetJumpEngine(const ext::shared_ptr<BatesDetJumpModel>& model,
-                           Size integrationOrder = 144);
+        explicit BatesDetJumpEngine(const ext::shared_ptr<BatesDetJumpModel>& model,
+                                    Size integrationOrder = 144);
         BatesDetJumpEngine(const ext::shared_ptr<BatesDetJumpModel>& model,
                            Real relTolerance, Size maxEvaluations);
 
@@ -129,7 +129,7 @@ namespace QuantLib {
 
     class BatesDoubleExpEngine : public AnalyticHestonEngine {
       public:
-        BatesDoubleExpEngine(
+        explicit BatesDoubleExpEngine(
             const ext::shared_ptr<BatesDoubleExpModel>& model,
             Size integrationOrder = 144);
         BatesDoubleExpEngine(
@@ -143,7 +143,7 @@ namespace QuantLib {
 
     class BatesDoubleExpDetJumpEngine : public BatesDoubleExpEngine {
       public:
-        BatesDoubleExpDetJumpEngine(
+        explicit BatesDoubleExpDetJumpEngine(
             const ext::shared_ptr<BatesDoubleExpDetJumpModel>& model,
             Size integrationOrder = 144);
         BatesDoubleExpDetJumpEngine(

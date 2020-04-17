@@ -1,0 +1,37 @@
+name: Coverage report
+on:
+  push:
+    branches:
+      - master
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      run: |
+        sudo apt install -y lcov libboost-all-dev
+        pip install --user wheel
+        pip install --user cpp-coveralls
+    - name: Compile
+      env:
+        CXXFLAGS: -O1 -fprofile-arcs -ftest-coverage
+        LDFLAGS: -lgcov
+      run: |
+        cmake -DBOOST_ROOT=/usr .
+        make -j 2
+    - name: Test
+      run: |
+        ./test-suite/quantlib-test-suite --log_level=message
+    - name: Upload coverage to Coveralls
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALL_TOKEN }}
+        TRAVIS_JOB_ID: "#${{ github.run_id }}"
+      run: |
+        echo "service_name: github-actions" > .coveralls.yml
+        ~/.local/bin/coveralls --exclude Examples --exclude test-suite --exclude CMakeFiles --gcov-options '\-lp'
+    - name: Upload coverage to Codecov
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run:
+        bash <(curl -s https://codecov.io/bash) -y .codecov.yml -X gcov -f '!*usr*.gcov'

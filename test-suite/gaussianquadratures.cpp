@@ -32,15 +32,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace gaussian_quadratures_test {
 
-    Real tolerance = 1.0e-4;
-
-    template <class T, class F>
+    template <class T>
     void testSingle(const T& I, const std::string& tag,
-                    const F& f, Real expected) {
+                    const boost::function<Real(Real)>& f, Real expected) {
         Real calculated = I(f);
-        if (std::fabs(calculated-expected) > tolerance) {
+        if (std::fabs(calculated-expected) > 1.0e-4) {
             BOOST_ERROR("integrating" << tag << "\n"
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected);
@@ -112,8 +110,8 @@ namespace {
                    NormalDistribution(), 0.5);
     }
 
-    template <class F>
-    void testSingleTabulated(const F& f, const std::string& tag,
+    void testSingleTabulated(const boost::function<Real(Real)>& f,
+                             const std::string& tag,
                              Real expected, Real tolerance) {
         const Size order[] = { 6, 7, 12, 20 };
         TabulatedGaussLegendre quad;
@@ -135,6 +133,8 @@ namespace {
 void GaussianQuadraturesTest::testJacobi() {
     BOOST_TEST_MESSAGE("Testing Gauss-Jacobi integration...");
 
+    using namespace gaussian_quadratures_test;
+
     testSingleJacobi(GaussLegendreIntegration(16));
     testSingleJacobi(GaussChebyshevIntegration(130));
     testSingleJacobi(GaussChebyshev2ndIntegration(130));
@@ -143,6 +143,8 @@ void GaussianQuadraturesTest::testJacobi() {
 
 void GaussianQuadraturesTest::testLaguerre() {
      BOOST_TEST_MESSAGE("Testing Gauss-Laguerre integration...");
+
+     using namespace gaussian_quadratures_test;
 
      testSingleLaguerre(GaussLaguerreIntegration(16));
      testSingleLaguerre(GaussLaguerreIntegration(150,0.01));
@@ -156,6 +158,8 @@ void GaussianQuadraturesTest::testLaguerre() {
 void GaussianQuadraturesTest::testHermite() {
      BOOST_TEST_MESSAGE("Testing Gauss-Hermite integration...");
 
+     using namespace gaussian_quadratures_test;
+
      testSingle(GaussHermiteIntegration(16), "f(x) = Gaussian(x)",
                 NormalDistribution(), 1.0);
      testSingle(GaussHermiteIntegration(16,0.5), "f(x) = x*Gaussian(x)",
@@ -167,6 +171,8 @@ void GaussianQuadraturesTest::testHermite() {
 void GaussianQuadraturesTest::testHyperbolic() {
      BOOST_TEST_MESSAGE("Testing Gauss hyperbolic integration...");
 
+     using namespace gaussian_quadratures_test;
+
      testSingle(GaussHyperbolicIntegration(16), "f(x) = 1/cosh(x)",
                 inv_cosh, M_PI);
      testSingle(GaussHyperbolicIntegration(16), "f(x) = x/cosh(x)",
@@ -175,6 +181,8 @@ void GaussianQuadraturesTest::testHyperbolic() {
 
 void GaussianQuadraturesTest::testTabulated() {
      BOOST_TEST_MESSAGE("Testing tabulated Gauss-Laguerre integration...");
+
+     using namespace gaussian_quadratures_test;
 
      testSingleTabulated(constant<Real,Real>(1.0), "f(x) = 1",
                          2.0,       1.0e-13);
@@ -192,6 +200,8 @@ void GaussianQuadraturesTest::testNonCentralChiSquared() {
      BOOST_TEST_MESSAGE(
          "Testing Gauss non-central chi-squared integration...");
 
+     using namespace gaussian_quadratures_test;
+
      testSingle(
         GaussianQuadrature(2, GaussNonCentralChiSquaredPolynomial(4.0, 1.0)),
         "f(x) = x^2 * nonCentralChiSquared(4, 1)(x)",
@@ -207,6 +217,8 @@ void GaussianQuadraturesTest::testNonCentralChiSquared() {
 void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes() {
      BOOST_TEST_MESSAGE(
          "Testing Gauss non-central chi-squared sum of notes...");
+
+     using namespace gaussian_quadratures_test;
 
      // Walter Gautschi, How and How not to check Gaussian Quadrature Formulae
      // https://www.cs.purdue.edu/homes/wxg/selected_works/section_08/084.pdf

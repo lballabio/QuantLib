@@ -97,14 +97,17 @@ namespace QuantLib {
             satisfied in addition to the constraints of the model.
         */
         virtual void calibrate(
-                const std::vector<ext::shared_ptr<CalibrationHelperBase> >&,
+                const std::vector<ext::shared_ptr<CalibrationHelper> >&,
                 OptimizationMethod& method,
                 const EndCriteria& endCriteria,
                 const Constraint& constraint = Constraint(),
                 const std::vector<Real>& weights = std::vector<Real>(),
                 const std::vector<bool>& fixParameters = std::vector<bool>());
 
-        // for backward compatibility
+        /*! \deprecated Use the other overload.
+                        Deprecated in version 1.18.
+        */
+        QL_DEPRECATED
         virtual void calibrate(
                 const std::vector<ext::shared_ptr<BlackCalibrationHelper> >&,
                 OptimizationMethod& method,
@@ -114,9 +117,12 @@ namespace QuantLib {
                 const std::vector<bool>& fixParameters = std::vector<bool>());
 
         Real value(const Array& params,
-                   const std::vector<ext::shared_ptr<CalibrationHelperBase> >&);
+                   const std::vector<ext::shared_ptr<CalibrationHelper> >&);
 
-        // for backward compatibility
+        /*! \deprecated Use the other overload.
+                        Deprecated in version 1.18.
+        */
+        QL_DEPRECATED
         Real value(const Array& params,
                    const std::vector<ext::shared_ptr<BlackCalibrationHelper> >&);
 

@@ -15,10 +15,12 @@ Fanis Antoniou
 Driss Aouad
 Jose Aparicio
 Sercan Atalik
+F. Eugene Aumson
 Ahmed Ayadi
 Lluis Pujol Bajador
 Gerardo Ballabio
 Luigi Ballabio
+Jonathan Barber
 Nabila Barkati
 Riccardo Barone
 Clément Barret
@@ -118,8 +120,10 @@ Tomoya Kawanishi
 Gary Kennedy
 Chris Kenyon
 Oleksandr Khomenko
+Joel King
 Matt Knox
 Andrew Kolesnikov
+Ralf Konrad
 Silakhdar Krikeb
 Nathan Kruck
 Yan Kuang
@@ -138,6 +142,7 @@ Patrick Lewis
 Cheng Li
 Gang Liang
 Roland Lichters
+Hank Liu
 Robert Lopez
 André Louw
 Matthias Lungwitz
@@ -198,17 +203,22 @@ Sebastian Schlenkrich
 Peter Schmitteckert
 Ralph Schreyer
 David Schwartz
+Benjamin Schwendinger
+Carlos Fidel Selva Ochoa
 Giacomo Sergio
 Simon Shakeshaft
 Michael Sharpe
 Kirill Shemyakin
 Eugene Shevkoplyas
+Piotr Siejda
 Enrico Sirola
 Leon Sit
 Wojciech Slusarski
+Andrew Smith
 Dale Smith
 Tim Smith
 Maxim Sokolov
+Prasad Somwanshi
 Niels Elken Sønderby
 Klaus Spanderen
 Andreas Spengler
@@ -221,6 +231,7 @@ Eisuke Tani
 Marco Tarenghi
 Ryan Taylor
 Yue Tian
+Steven Van Haren
 Jayanth R. Varma
 François du Vignaud
 Joseph Wang

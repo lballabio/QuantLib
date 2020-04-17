@@ -23,12 +23,23 @@
 
 namespace QuantLib {
 
+    void setCouponPricer(const Leg& leg,
+                         const ext::shared_ptr<InflationCouponPricer>& p) {
+        for (Size i=0; i<leg.size(); ++i) {
+            ext::shared_ptr<InflationCoupon> c =
+                ext::dynamic_pointer_cast<InflationCoupon>(leg[i]);
+            if (c)
+                c->setPricer(p);
+        }
+    }
+
+
     YoYInflationCouponPricer::YoYInflationCouponPricer() {}
 
     YoYInflationCouponPricer::YoYInflationCouponPricer(
-                       const Handle<YoYOptionletVolatilitySurface>& capletVol)
-    : capletVol_(capletVol) {
-        registerWith(capletVol_);
+                       const Handle<YieldTermStructure>& nominalTermStructure)
+    : nominalTermStructure_(nominalTermStructure) {
+        registerWith(nominalTermStructure_);
     }
 
     YoYInflationCouponPricer::YoYInflationCouponPricer(
@@ -206,7 +217,5 @@ namespace QuantLib {
                                      forward,
                                      stdDev);
     }
-
-
 
 }

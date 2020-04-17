@@ -87,6 +87,8 @@ namespace QuantLib {
             Real stepsizeWeight, crossoverProbability;
             unsigned long seed;
             bool applyBounds, crossoverIsAdaptive;
+            std::vector<Array> initialPopulation;
+            Array upperBound, lowerBound;
 
             Configuration()
             : strategy(BestMemberWithJitter),
@@ -114,6 +116,23 @@ namespace QuantLib {
             Configuration& withPopulationMembers(Size n) {
                 QL_REQUIRE(n>0, "Positive number of population members required");
                 populationMembers = n;
+                initialPopulation.clear();
+                return *this;
+            }
+
+            Configuration& withInitialPopulation(const std::vector<Array>& c) {
+                initialPopulation = c;
+                populationMembers = c.size();
+                return *this;
+            }
+
+            Configuration& withUpperBound(const Array& u) {
+                upperBound = u;
+                return *this;
+            }
+            
+            Configuration& withLowerBound(const Array& l) {
+                lowerBound = l;
                 return *this;
             }
 
@@ -179,7 +198,7 @@ namespace QuantLib {
         void adaptCrossover() const;
 
         void calculateNextGeneration(std::vector<Candidate>& population,
-                                     const CostFunction& costFunction) const;
+                                     Problem& costFunction) const;
 
         Array rotateArray(Array inputArray) const;
 
@@ -187,7 +206,7 @@ namespace QuantLib {
                        std::vector<Candidate> & population,
                        const std::vector<Candidate>& mutantPopulation,
                        const std::vector<Candidate>& mirrorPopulation,
-                       const CostFunction& costFunction) const;
+                       Problem& costFunction) const;
     };
 
 }

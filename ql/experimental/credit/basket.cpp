@@ -22,6 +22,7 @@
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
+#include <numeric>
 
 using namespace std;
 
@@ -65,7 +66,7 @@ namespace QuantLib {
         // At this point Issuers in the pool might or might not have
         //   probability term structures for the defultKeys(eventType+
         //   currency+seniority) entering in this basket. This is not
-        //   neccessarily a problem.
+        //   necessarily a problem.
         for (Size i = 0; i < notionals_.size(); i++) {
             basketNotional_ += notionals_[i];
             attachmentAmount_ += notionals_[i] * attachmentRatio_;
@@ -94,19 +95,23 @@ namespace QuantLib {
     void Basket::performCalculations() const {
         // Calculations for status
         computeBasket();// or we might be called from an statistic member 
-                        // without being intialized yet (first called)
+                        // without being initialized yet (first called)
         QL_REQUIRE(lossModel_, "Basket has no default loss model assigned.");
 
         /* The model must notify us if the another basket calls it for 
         reasignment. The basket works as an argument to the deafult loss models 
         so, even if the models dont cache anything, they will be using the wrong
-        defautl TS. \todo: This has a possible optimization: the basket 
+        default TS. \todo: This has a possible optimization: the basket 
         incorporates trancheability and many models do their compuations 
         independently of that (some do but do it inefficiently when asked for 
         two tranches on the same basket; e,g, recursive model) so it might be 
         more efficient sending the pool only; however the modtionals and other 
         basket info are still used.*/
         lossModel_->setBasket(const_cast<Basket*>(this));
+    }
+
+    Real Basket::notional() const {
+        return std::accumulate(notionals_.begin(), notionals_.end(), 0.0);
     }
 
     Disposable<vector<Real> > Basket::probabilities(const Date& d) const {
@@ -280,6 +285,10 @@ namespace QuantLib {
         return evalDateLiveList_.size();
     }
 
+    Size Basket::remainingSize(const Date& d) const {
+        return remainingDefaultKeys(d).size();
+    }
+
     /* computed on the inception values, notice the positions might have 
     amortized or changed in value and the total outstanding notional might 
     differ from the inception one.*/
@@ -318,11 +327,6 @@ namespace QuantLib {
     Real Basket::percentile(const Date& d, Probability prob) const {
         calculate();
         return lossModel_->percentile(d, prob);
-
-        Real percLiveFract = lossModel_->percentile(d, prob);     
-        return (percLiveFract*(detachmentAmount_-evalDateAttachAmount_) 
-            + attachmentAmount_ - evalDateAttachAmount_)
-            /(detachmentAmount_-attachmentAmount_);
     }
 
     Real Basket::expectedTrancheLoss(const Date& d) const {
@@ -380,4 +384,3 @@ namespace QuantLib {
     }
 
 }
-

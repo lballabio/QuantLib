@@ -36,7 +36,7 @@ namespace QuantLib {
     class KlugeExtOUProcess;
     class ExtOUWithJumpsProcess;
     class FdmExtOUJumpOp;
-    class FdmExtendedOrnsteinUhlenbackOp;
+    class FdmExtendedOrnsteinUhlenbeckOp;
     class ExtendedOrnsteinUhlenbeckProcess;
 
     /*! This class describes a correlated Kluge - extended Ornstein-Uhlenbeck
@@ -95,7 +95,7 @@ namespace QuantLib {
         const FdmBoundaryConditionSet bcSet_;
 
         const ext::shared_ptr<FdmExtOUJumpOp> klugeOp_;
-        const ext::shared_ptr<FdmExtendedOrnsteinUhlenbackOp> ouOp_;
+        const ext::shared_ptr<FdmExtendedOrnsteinUhlenbeckOp> ouOp_;
 
         const NinePointLinearOp corrMap_;
     };

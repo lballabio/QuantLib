@@ -61,7 +61,6 @@ namespace QuantLib {
 
             template <class F> // todo: fix copies.
             detail::DispArray operator()(const F& f) const {
-                using namespace ext::placeholders;
                 //first one, we do not know the size of the vector returned by f
                 Integer i = order()-1;
                 std::vector<Real> term = f(x_[i]);// potential copy! @#$%^!!!
@@ -74,8 +73,9 @@ namespace QuantLib {
                     // sum[j] += term[j] * w_[i];
                     std::transform(term.begin(), term.end(), sum.begin(), 
                         sum.begin(), 
-                        ext::bind(std::plus<Real>(), _2,
-                            ext::bind(std::multiplies<Real>(), w_[i], _1)));
+                        ext::bind(std::plus<Real>(), ext::placeholders::_2,
+                            ext::bind(std::multiplies<Real>(), w_[i],
+                                      ext::placeholders::_1)));
                 }
                 return sum;
             }
@@ -136,15 +136,14 @@ namespace QuantLib {
         //    class construction time) handles to the integration entry points
         template<Size levelSpawn>
         void spawnFcts() const {
-            using namespace ext::placeholders;
             integrationEntries_[levelSpawn-1] = 
                 ext::bind(
                 &GaussianQuadMultidimIntegrator::scalarIntegrator<levelSpawn>, 
-                    this, _1, _2);
+                    this, ext::placeholders::_1, ext::placeholders::_2);
             integrationEntriesVR_[levelSpawn-1] = 
                 ext::bind(
                 &GaussianQuadMultidimIntegrator::vectorIntegratorVR<levelSpawn>, 
-                    this, _1, _2);
+                    this, ext::placeholders::_1, ext::placeholders::_2);
             spawnFcts<levelSpawn-1>();
         }
         //@}
@@ -156,13 +155,12 @@ namespace QuantLib {
             ext::function<Real (const std::vector<Real>& arg1)> f, 
             const Real mFctr) const 
         {
-            using namespace ext::placeholders;
             varBuffer_[intgDepth-1] = mFctr;
             return integral_(ext::bind(
                 &GaussianQuadMultidimIntegrator::scalarIntegrator<intgDepth-1>,
                 this,
                 f,
-                _1)
+                ext::placeholders::_1)
             );
         }
 
@@ -171,14 +169,13 @@ namespace QuantLib {
             const ext::function<detail::DispArray(const std::vector<Real>& arg1)>& f,
             const Real mFctr) const 
         {
-            using namespace ext::placeholders;
             varBuffer_[intgDepth-1] = mFctr;
             return 
               integralV_(ext::bind(
                &GaussianQuadMultidimIntegrator::vectorIntegratorVR<intgDepth-1>,
                this,
                f,
-               _1)
+               ext::placeholders::_1)
             );
         }
     private:
@@ -212,12 +209,11 @@ namespace QuantLib {
     inline Real GaussianQuadMultidimIntegrator::operator()(
         const ext::function<Real (const std::vector<Real>& v1)>& f) const
     {
-        using namespace ext::placeholders;
         return integral_(ext::bind(
                    // integration entry level is selected now
                    integrationEntries_[dimension_-1],
                    ext::cref(f),
-                   _1)
+                   ext::placeholders::_1)
                    );
     }
 
@@ -226,7 +222,6 @@ namespace QuantLib {
     inline Real GaussianQuadMultidimIntegrator::integrate<Real>(
         const ext::function<Real (const std::vector<Real>& v1)>& f) const 
     {
-        using namespace ext::placeholders;
         // integration variables
         // call vector quadrature integration with the function and start 
         // values, kicks in recursion over the dimensions of the integration
@@ -235,7 +230,7 @@ namespace QuantLib {
                    // integration entry level is selected now
                    integrationEntries_[dimension_-1],
                    ext::cref(f),
-                   _1)
+                   ext::placeholders::_1)
                    );
     }
 
@@ -244,11 +239,10 @@ namespace QuantLib {
     inline detail::DispArray GaussianQuadMultidimIntegrator::integrate<detail::DispArray>(
         const ext::function<detail::DispArray (const std::vector<Real>& v1)>& f) const
     {
-        using namespace ext::placeholders;
         return integralV_(ext::bind(
                    ext::cref(integrationEntriesVR_[dimension_-1]),
                    ext::cref(f),
-                   _1)
+                   ext::placeholders::_1)
                    );
     } 
 
@@ -276,13 +270,12 @@ namespace QuantLib {
     //! Terminal level:
     template<>
     inline void GaussianQuadMultidimIntegrator::spawnFcts<1>() const {
-        using namespace ext::placeholders;
         integrationEntries_[0] = 
           ext::bind(&GaussianQuadMultidimIntegrator::scalarIntegrator<1>, 
-          this, _1, _2);
+          this, ext::placeholders::_1, ext::placeholders::_2);
         integrationEntriesVR_[0] = 
          ext::bind(&GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>, 
-         this, _1, _2);
+         this, ext::placeholders::_1, ext::placeholders::_2);
     }
 
 }

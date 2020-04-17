@@ -175,13 +175,13 @@ namespace QuantLib {
 
     //! Simple Random Inertia
     /*     Inertia value gets multiplied with a random number
-    between (threshhold, 1)
+    between (threshold, 1)
     */
     class SimpleRandomInertia : public ParticleSwarmOptimization::Inertia {
       public:
-        SimpleRandomInertia(Real threshhold = 0.5, unsigned long seed = SeedGenerator::instance().get())
-            : threshhold_(threshhold), rng_(seed) {
-            QL_REQUIRE(threshhold_ >= 0.0 && threshhold_ < 1.0, "Threshhold must be a Real in [0, 1)");
+        SimpleRandomInertia(Real threshold = 0.5, unsigned long seed = SeedGenerator::instance().get())
+            : threshold_(threshold), rng_(seed) {
+            QL_REQUIRE(threshold_ >= 0.0 && threshold_ < 1.0, "Threshold must be a Real in [0, 1)");
         }
         inline void setSize(Size M, Size N, Real c0, const EndCriteria &endCriteria) {
             M_ = M;
@@ -189,25 +189,25 @@ namespace QuantLib {
         }
         inline void setValues() {
             for (Size i = 0; i < M_; i++) {
-                Real val = c0_*(threshhold_ + (1.0 - threshhold_)*rng_.nextReal());
+                Real val = c0_*(threshold_ + (1.0 - threshold_)*rng_.nextReal());
                 (*V_)[i] *= val;
             }
         }
       private:
-        Real c0_, threshhold_;
+        Real c0_, threshold_;
         Size M_;
         MersenneTwisterUniformRng rng_;
     };
 
     //! Decreasing Inertia
     /*     Inertia value gets decreased every iteration until it reaches
-    a value of threshhold when iteration reaches the maximum level
+    a value of threshold when iteration reaches the maximum level
     */
     class DecreasingInertia : public ParticleSwarmOptimization::Inertia {
       public:
-        DecreasingInertia(Real threshhold = 0.5)
-            : threshhold_(threshhold) {
-            QL_REQUIRE(threshhold_ >= 0.0 && threshhold_ < 1.0, "Threshhold must be a Real in [0, 1)");
+        DecreasingInertia(Real threshold = 0.5)
+            : threshold_(threshold) {
+            QL_REQUIRE(threshold_ >= 0.0 && threshold_ < 1.0, "Threshold must be a Real in [0, 1)");
         }
         inline void setSize(Size M, Size N, Real c0, const EndCriteria &endCriteria) {
             N_ = N;
@@ -216,13 +216,13 @@ namespace QuantLib {
             maxIterations_ = endCriteria.maxIterations();
         }
         inline void setValues() {
-            Real c0 = c0_*(threshhold_ + (1.0 - threshhold_)*(maxIterations_ - iteration_) / maxIterations_);
+            Real c0 = c0_*(threshold_ + (1.0 - threshold_)*(maxIterations_ - iteration_) / maxIterations_);
             for (Size i = 0; i < M_; i++) {
                 (*V_)[i] *= c0;
             }
         }
       private:
-        Real c0_, threshhold_;
+        Real c0_, threshold_;
         Size M_, N_, maxIterations_, iteration_;
     };
 
@@ -261,11 +261,11 @@ namespace QuantLib {
     class LevyFlightInertia : public ParticleSwarmOptimization::Inertia {
       public:
         typedef IsotropicRandomWalk<LevyFlightDistribution, base_generator_type> IsotropicLevyFlight;
-        LevyFlightInertia(Real alpha, Size threshhold,
+        LevyFlightInertia(Real alpha, Size threshold,
                           unsigned long seed = SeedGenerator::instance().get())
             :rng_(seed), flight_(base_generator_type(seed), LevyFlightDistribution(1.0, alpha),
                 1, Array(1, 1.0), seed),
-            threshhold_(threshhold) {};
+            threshold_(threshold) {};
         inline void setSize(Size M, Size N, Real c0, const EndCriteria &endCriteria) {
             M_ = M;
             N_ = N;
@@ -281,12 +281,12 @@ namespace QuantLib {
                 else {
                     adaptiveCounter_[i]++;
                 }
-                if (adaptiveCounter_[i] <= threshhold_) {
+                if (adaptiveCounter_[i] <= threshold_) {
                     //Simple Random Inertia
                     (*V_)[i] *= c0_*(0.5 + 0.5*rng_.nextReal());
                 }
                 else {
-                    //If particle has not found a new personal best after threshhold_ iterations
+                    //If particle has not found a new personal best after threshold_ iterations
                     //then trigger a Levy flight pattern for the speed
                     flight_.nextReal<Real *>(&(*V_)[i][0]);
                 }
@@ -305,7 +305,7 @@ namespace QuantLib {
         std::vector<Size> adaptiveCounter_;
         Real c0_;
         Size M_, N_;
-        Size threshhold_;
+        Size threshold_;
     };
 
     //! Base topology class used to determine the personal and global best

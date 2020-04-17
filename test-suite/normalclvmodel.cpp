@@ -270,7 +270,7 @@ void NormalCLVModelTest::testIllustrative1DExample() {
     }
 }
 
-namespace {
+namespace normal_clv_model_test {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
         CLVModelPayoff(Option::Type type, Real strike,
@@ -291,6 +291,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
     using namespace ext::placeholders;
+    using namespace normal_clv_model_test;
 
     SavedSettings backup;
 

@@ -41,6 +41,7 @@
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
@@ -54,7 +55,7 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace {
+namespace inflation_capfloor_test {
 
     struct Datum {
         Date date;
@@ -183,7 +184,7 @@ namespace {
                 new PiecewiseYoYInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
                         iir->frequency(),iir->interpolated(), baseYYRate,
-                        Handle<YieldTermStructure>(nominalTS), helpers));
+                        helpers));
             pYYTS->recalculate();
             yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
@@ -280,6 +281,8 @@ void InflationCapFloorTest::testConsistency() {
 
     BOOST_TEST_MESSAGE("Testing consistency between yoy inflation cap,"
                        " floor and collar...");
+
+    using namespace inflation_capfloor_test;
 
     CommonVars vars;
 
@@ -408,6 +411,8 @@ void InflationCapFloorTest::testParity() {
 
     BOOST_TEST_MESSAGE("Testing yoy inflation cap/floor parity...");
 
+    using namespace inflation_capfloor_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -456,6 +461,8 @@ void InflationCapFloorTest::testParity() {
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
+                    setCouponPricer(swap.yoyLeg(),
+                                    ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     // N.B. nominals are 10e6
                     if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-6) {
@@ -483,6 +490,8 @@ void InflationCapFloorTest::testCachedValue() {
 
     BOOST_TEST_MESSAGE("Testing Black yoy inflation cap/floor price"
                        " against cached values...");
+
+    using namespace inflation_capfloor_test;
 
     CommonVars vars;
 

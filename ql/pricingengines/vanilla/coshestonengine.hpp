@@ -55,8 +55,8 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        COSHestonEngine(const ext::shared_ptr<HestonModel>& model,
-            Real L = 16, Size N=200);
+        explicit COSHestonEngine(const ext::shared_ptr<HestonModel>& model,
+                                 Real L = 16, Size N=200);
 
         void update();
         void calculate() const;
@@ -68,6 +68,11 @@ namespace QuantLib {
         Real c2(Time t) const;
         Real c3(Time t) const;
         Real c4(Time t) const;
+
+        Real mu(Time t) const;
+        Real var(Time t) const;
+        Real skew(Time t) const;
+        Real kurtosis(Time t) const;
 
       private:
         Real muT(Time t) const;

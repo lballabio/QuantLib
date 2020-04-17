@@ -71,6 +71,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/experimental/models/hestonslvfdmmodel.hpp>
@@ -78,7 +79,6 @@
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmlocalvolfwdop.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
@@ -488,8 +488,6 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
 			ext::make_shared<FdmSquareRootFwdOp>(mesher, kappa, theta,
                                    sigma, 0, transform));
 
-        const Array eP = p;
-
         const Size n = 100;
         const Time dt = 0.01;
         DouglasScheme evolver(0.5, op);
@@ -549,7 +547,7 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
 
         const ext::shared_ptr<FdmMesherComposite> mesher(
 			ext::make_shared<FdmMesherComposite>(
-				ext::make_shared<Uniform1dMesher>(log(vMin), log(vMax), vGrid)));
+				ext::make_shared<Uniform1dMesher>(std::log(vMin), std::log(vMax), vGrid)));
 
         const Array v = mesher->locations(0);
 
@@ -1400,7 +1398,6 @@ namespace {
         Settings::instance().evaluationDate() = todaysDate;
         const Date finalDate(2, June, 2020);
 
-        const Calendar calendar = TARGET();
         const DayCounter dc = Actual365Fixed();
 
         const Real s0 = 100;
@@ -1551,7 +1548,6 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
     BOOST_TEST_MESSAGE("Testing local volatility vs SLV model...");
 
     SavedSettings backup;
-    const DayCounter dc = ActualActual();
     const Date todaysDate(5, Oct, 2015);
     const Date finalDate = todaysDate + Period(1, Years);
     Settings::instance().evaluationDate() = todaysDate;
@@ -1814,7 +1810,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModels() {
 
     const Real localDeltaExpected =  -0.439068;
     const Real hestonDeltaExpected = -0.342059;
-    const Real tol = 0.0001;
+    const Real tol = 0.0005;
     if (std::fabs(hestonDeltaExpected - hestonDeltaCalculated) > tol) {
         BOOST_ERROR("Heston Delta does not match"
                 << "\n calculated : " << hestonDeltaCalculated
@@ -2131,18 +2127,12 @@ void HestonSLVModelTest::testForwardSkewSLV() {
     const Size nSim = 40000;
     const Size xGrid = 200;
 
-    const bool sobol = true;
-
     const ext::shared_ptr<LocalVolTermStructure> leverageFctMC =
         HestonSLVMCModel(
             localVol,
             hestonModel,
-            sobol ? ext::shared_ptr<BrownianGeneratorFactory>(
-                        new SobolBrownianGeneratorFactory(
-                            SobolBrownianGenerator::Diagonal,
-                            1234ul, SobolRsg::JoeKuoD7))
-                  : ext::shared_ptr<BrownianGeneratorFactory>(
-                          new MTBrownianGeneratorFactory(1234ul)),
+            ext::shared_ptr<BrownianGeneratorFactory>(
+                 new MTBrownianGeneratorFactory(1234ul)),
             maturityDate, 182, xGrid, nSim).leverageFunction();
 
     const ext::shared_ptr<HestonSLVProcess> mcSlvProcess(
@@ -2256,7 +2246,7 @@ void HestonSLVModelTest::testForwardSkewSLV() {
                     strike, resetDate, payoff, exercise));
 
             const Volatility implVol =
-                detail::ImpliedVolatilityHelper::calculate(
+                QuantLib::detail::ImpliedVolatilityHelper::calculate(
                     *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
 
             const Real tol = 0.001;

@@ -32,7 +32,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace swaption_volatility_cube_test {
 
     struct CommonVars {
         // global data
@@ -151,6 +151,8 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (atm vols)...");
 
+    using namespace swaption_volatility_cube_test;
+
     CommonVars vars;
 
     SwaptionVolCube2 volCube(vars.atmVolMatrix,
@@ -170,6 +172,8 @@ void SwaptionVolatilityCubeTest::testSmile() {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (smile)...");
 
+    using namespace swaption_volatility_cube_test;
+
     CommonVars vars;
 
     SwaptionVolCube2 volCube(vars.atmVolMatrix,
@@ -188,6 +192,8 @@ void SwaptionVolatilityCubeTest::testSmile() {
 void SwaptionVolatilityCubeTest::testSabrVols() {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (sabr interpolation)...");
+
+    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 
@@ -227,6 +233,8 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
 void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
     BOOST_TEST_MESSAGE("Testing spreaded swaption volatility cube...");
+
+    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 
@@ -314,6 +322,8 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
 void SwaptionVolatilityCubeTest::testObservability() {
     BOOST_TEST_MESSAGE("Testing volatility cube observability...");
+
+    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 

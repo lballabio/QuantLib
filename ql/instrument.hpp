@@ -146,11 +146,13 @@ namespace QuantLib {
     }
 
     inline void Instrument::calculate() const {
-        if (isExpired()) {
-            setupExpired();
-            calculated_ = true;
-        } else {
-            LazyObject::calculate();
+        if (!calculated_) {
+            if (isExpired()) {
+                setupExpired();
+                calculated_ = true;
+            } else {
+                LazyObject::calculate();
+            }
         }
     }
 

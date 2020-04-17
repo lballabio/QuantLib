@@ -45,7 +45,7 @@ using namespace boost::unit_test_framework;
 
 #ifndef QL_PATCH_SOLARIS
 
-namespace {
+namespace cdo_test {
 
     Real hwAttachment[] = { 0.00, 0.03, 0.06, 0.10 };
     Real hwDetachment[] = { 0.03, 0.06, 0.10, 1.00 };
@@ -99,6 +99,8 @@ void CdoTest::testHW(unsigned dataSet) {
 
     BOOST_TEST_MESSAGE ("Testing CDO premiums against Hull-White values"
                         " for data set " << dataSet << "...");
+
+    using namespace cdo_test;
 
     SavedSettings backup;
 

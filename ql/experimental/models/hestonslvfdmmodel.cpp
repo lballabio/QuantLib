@@ -383,7 +383,8 @@ namespace QuantLib {
         for (Size i=1; i < timeGrid->size(); ++i) {
             xMesher.push_back(localVolRND.mesher(timeGrid->at(i)));
 
-            if (i == rescaleSteps[rescaleIdx]) {
+            if ((rescaleIdx < rescaleSteps.size())
+                && (i == rescaleSteps[rescaleIdx])) {
                 ++rescaleIdx;
                 vMesher.push_back(varianceMesher(squareRootRnd,
                     timeGrid->at(rescaleSteps[rescaleIdx-1]),

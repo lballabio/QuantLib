@@ -59,7 +59,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace asset_swap_test {
 
     struct CommonVars {
         // common data
@@ -121,6 +121,8 @@ namespace {
 void AssetSwapTest::testConsistency() {
     BOOST_TEST_MESSAGE(
                  "Testing consistency between fair price and fair spread...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -508,6 +510,8 @@ void AssetSwapTest::testImpliedValue() {
     BOOST_TEST_MESSAGE("Testing implied bond value against asset-swap fair"
                        " price with null spread...");
 
+    using namespace asset_swap_test;
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -555,11 +559,11 @@ void AssetSwapTest::testImpliedValue() {
     // correct though, only we can not compare it to the bond price
     // directly. The same kind of discrepancy will occur for a multi
     // curve set up, which we do not test here.
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-2;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-2;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -876,6 +880,8 @@ void AssetSwapTest::testMarketASWSpread() {
     BOOST_TEST_MESSAGE("Testing relationship between market asset swap"
                        " and par asset swap...");
 
+    using namespace asset_swap_test;
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -926,11 +932,11 @@ void AssetSwapTest::testMarketASWSpread() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-4;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-4;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -1316,6 +1322,8 @@ void AssetSwapTest::testZSpread() {
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
+    using namespace asset_swap_test;
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -1636,6 +1644,8 @@ void AssetSwapTest::testGenericBondImplied() {
     BOOST_TEST_MESSAGE("Testing implied generic-bond value against"
                        " asset-swap fair price with null spread...");
 
+    using namespace asset_swap_test;
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -1683,11 +1693,11 @@ void AssetSwapTest::testGenericBondImplied() {
     Real tolerance = 1.0e-13;
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-2;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2;
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-2;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -2027,6 +2037,8 @@ void AssetSwapTest::testMASWWithGenericBond() {
     BOOST_TEST_MESSAGE("Testing market asset swap against par asset swap "
                        "with generic bond...");
 
+    using namespace asset_swap_test;
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -2084,11 +2096,11 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-4;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2; 
+    if (!IborCoupon::usingAtParCoupons())
+        tolerance2 = 1.0e-4;
+    else
+        tolerance2 = 1.0e-13;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -2502,6 +2514,8 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
+    using namespace asset_swap_test;
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -2866,6 +2880,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty prices for specialized bond"
                        " against equivalent generic bond...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -3425,6 +3441,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 
     BOOST_TEST_MESSAGE("Testing asset-swap prices and spreads for specialized"
                        " bond against equivalent generic bond...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 

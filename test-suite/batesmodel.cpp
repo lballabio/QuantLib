@@ -42,7 +42,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace bates_model_test {
 
     Real getCalibrationError(
                std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
@@ -270,7 +270,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
     }
 }
 
-namespace {
+namespace bates_model_test {
     struct HestonModelData {
         const char* const name;
         Real v0;
@@ -300,6 +300,8 @@ namespace {
 void BatesModelTest::testAnalyticVsMCPricing() {
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
                        "engine...");
+
+    using namespace bates_model_test;
 
     SavedSettings backup;
 
@@ -390,6 +392,8 @@ void BatesModelTest::testDAXCalibration() {
     BOOST_TEST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
 
+    using namespace bates_model_test;
+
     SavedSettings backup;
 
     Date settlementDate(5, July, 2002);
@@ -439,8 +443,6 @@ void BatesModelTest::testDAXCalibration() {
 
     Real v0 = 0.0433;
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
-    ext::shared_ptr<BlackVolTermStructure> volTS =
-        flatVol(settlementDate, vol, dayCounter);
 
     const Real kappa = 1.0;
     const Real theta = v0;
@@ -469,7 +471,6 @@ void BatesModelTest::testDAXCalibration() {
             Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
 
             // this is the calibration helper for the bates models
-            // FLOATING_POINT_EXCEPTION
             options.push_back(ext::shared_ptr<BlackCalibrationHelper>(
                     new HestonModelHelper(maturity, calendar,
                                           s0->value(), strike[s], vol,
@@ -481,8 +482,8 @@ void BatesModelTest::testDAXCalibration() {
 
     // check calibration engine
     LevenbergMarquardt om;
-    batesModel->calibrate(options, om,
-                          EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+    batesModel->calibrate(std::vector<ext::shared_ptr<CalibrationHelper> >(options.begin(), options.end()),
+                          om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
     Real expected = 36.6;
     Real calculated = getCalibrationError(options);

@@ -207,7 +207,6 @@ namespace QuantLib {
         Trivial method for testing
         */
         Probability probOfDefault(Size iName, const Date& d) const {
-            using namespace ext::placeholders;
             QL_REQUIRE(basket_, "No portfolio basket set.");
             const ext::shared_ptr<Pool>& pool = basket_->pool();
             // avoid repeating this in the integration:
@@ -224,7 +223,7 @@ namespace QuantLib {
                 this,
                 inverseCumulativeY(pUncond, iName),
                 iName, 
-                _1)
+                ext::placeholders::_1)
               ));
         }
         /*! Pearsons' default probability correlation. 
@@ -239,7 +238,6 @@ namespace QuantLib {
         defaults in the basket portfolio at a given time.
         */
         Probability probAtLeastNEvents(Size n, const Date& date) const {
-            using namespace ext::placeholders;
             return integratedExpectedValue(
              ext::function<Real (const std::vector<Real>& v1)>(
               ext::bind(
@@ -247,7 +245,7 @@ namespace QuantLib {
               this,
               n,
               ext::cref(date),
-              _1)
+              ext::placeholders::_1)
              ));
         }
     };
@@ -259,7 +257,6 @@ namespace QuantLib {
     Real DefaultLatentModel<CP>::defaultCorrelation(const Date& d, 
         Size iNamei, Size iNamej) const 
     {
-        using namespace ext::placeholders;
         QL_REQUIRE(basket_, "No portfolio basket set.");
 
         const ext::shared_ptr<Pool>& pool = basket_->pool();
@@ -280,7 +277,8 @@ namespace QuantLib {
               ext::function<Real (const std::vector<Real>& v1)>(
                 ext::bind(
                 &DefaultLatentModel<CP>::condProbProduct,
-                this, invPi, invPj, iNamei, iNamej, _1) ));
+                this, invPi, invPj, iNamei, iNamej,
+                ext::placeholders::_1) ));
         }else{
             E1i1j = pi;
         }

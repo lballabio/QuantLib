@@ -33,7 +33,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace swaption_volatility_matrix_test {
 
     struct CommonVars {
         // global data
@@ -262,6 +262,8 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix observability...");
 
+    using namespace swaption_volatility_matrix_test;
+
     CommonVars vars;
 
     ext::shared_ptr<SwaptionVolatilityMatrix> vol;
@@ -321,6 +323,8 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix...");
+
+    using namespace swaption_volatility_matrix_test;
 
     CommonVars vars;
 

@@ -59,7 +59,11 @@ namespace QuantLib {
                                             = std::vector<Rate>(),
                          bool inArrears = false,
                          Real redemption = 100.0,
-                         const Date& issueDate = Date());
+                         const Date& issueDate = Date(),                         
+                         const Period& exCouponPeriod = Period(),
+                         const Calendar& exCouponCalendar = Calendar(),
+                         const BusinessDayConvention exCouponConvention = Unadjusted,
+                         bool exCouponEndOfMonth = false);
         FloatingRateBond(Natural settlementDays,
                          Real faceAmount,
                          const Date& startDate,
@@ -82,7 +86,11 @@ namespace QuantLib {
                          const Date& issueDate = Date(),
                          const Date& stubDate = Date(),
                          DateGeneration::Rule rule = DateGeneration::Backward,
-                         bool endOfMonth = false);
+                         bool endOfMonth = false,
+                         const Period& exCouponPeriod = Period(),
+                         const Calendar& exCouponCalendar = Calendar(),
+                         const BusinessDayConvention exCouponConvention = Unadjusted,
+                         bool exCouponEndOfMonth = false);
     };
 
 }

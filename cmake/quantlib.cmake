@@ -6,23 +6,6 @@ macro(get_quantlib_library_name QL_OUTPUT_NAME)
     # MSVC: Give QuantLib built library different names following code in 'ql/autolink.hpp'
     if(MSVC)
         
-        # - toolset
-        # ...taken from FindBoost.cmake
-        if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.10)
-            set(QL_LIB_TOOLSET "-vc141")
-        elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
-            set(QL_LIB_TOOLSET "-vc140")
-        elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
-            set(QL_LIB_TOOLSET "-vc120")
-        elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17)
-            set(QL_LIB_TOOLSET "-vc110")
-        elseif(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16)
-            set(QL_LIB_TOOLSET "-vc100")
-        else()
-            message(FATAL_ERROR "Compiler below VC++2010 is not supported")
-        endif()
-        message(STATUS " - Toolset: ${QL_LIB_TOOLSET}")
-        
         # - platform
         if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
             set(QL_LIB_PLATFORM "-x64")
@@ -42,7 +25,7 @@ macro(get_quantlib_library_name QL_OUTPUT_NAME)
         endif()
         message(STATUS " - Linkage opt: ${QL_LIB_RT_OPT}")
         
-        set(${QL_OUTPUT_NAME} "QuantLib${QL_LIB_TOOLSET}${QL_LIB_PLATFORM}${QL_LIB_THREAD_OPT}${QL_LIB_RT_OPT}")
+        set(${QL_OUTPUT_NAME} "QuantLib${QL_LIB_PLATFORM}${QL_LIB_THREAD_OPT}${QL_LIB_RT_OPT}")
     else()
         set(${QL_OUTPUT_NAME} "QuantLib")
     endif()

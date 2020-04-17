@@ -36,7 +36,6 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <boost/timer.hpp>
 
 using namespace std;
 using namespace QuantLib;
@@ -81,7 +80,6 @@ int main(int, char* [])
 {
     try {
 
-        boost::timer timer;
 
         Date today = Date(16,October,2007);
         Settings::instance().evaluationDate() = today;
@@ -125,11 +123,10 @@ int main(int, char* [])
         for (Size i=0; i< numberOfCallDates; i++) {
             Calendar nullCalendar = NullCalendar();
 
-            Callability::Price myPrice(callPrice,
-                                       Callability::Price::Clean);
+            Bond::Price myPrice(callPrice, Bond::Price::Clean);
             callSchedule.push_back(
                 ext::make_shared<Callability>(
-                    myPrice,
+                                    myPrice,
                                     Callability::Call,
                                     callDate ));
             callDate = nullCalendar.advance(callDate, 3, Months);
@@ -320,19 +317,6 @@ int main(int, char* [])
         cout << "77.31 / 10.65"
              << endl
              << endl;
-
-        double seconds = timer.elapsed();
-        Integer hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        Integer minutes = int(seconds/60);
-        seconds -= minutes * 60;
-        cout << " \nRun completed in ";
-        if (hours > 0)
-            cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            cout << minutes << " m ";
-        cout << fixed << setprecision(0)
-             << seconds << " s\n" << endl;
 
         return 0;
 

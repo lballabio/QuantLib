@@ -441,9 +441,6 @@
     <ClInclude Include="ql\methods\finitedifferences\onefactoroperator.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\operatorfactory.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\operatortraits.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
@@ -1869,6 +1866,9 @@
     <ClInclude Include="ql\termstructures\defaulttermstructure.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\globalbootstrap.hpp">
+      <Filter>termstructures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\inflationtermstructure.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
@@ -2086,6 +2086,9 @@
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\impliedtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\interpolatedsimplezerocurve.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\nonlinearfittingmethods.hpp">
@@ -2680,6 +2683,9 @@
       <Filter>time\calendars</Filter>
     </ClInclude>
     <ClInclude Include="ql\time\calendars\australia.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\time\calendars\austria.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
     <ClInclude Include="ql\time\calendars\bespokecalendar.hpp">
@@ -4168,8 +4174,8 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmhestongreensfct.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.hpp">
-      <Filter>experimental\finitedifferences</Filter>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
@@ -4284,6 +4290,9 @@
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdsabrvanillaengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\schemes\cranknicolsonscheme.hpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -5715,6 +5724,9 @@
     <ClCompile Include="ql\time\calendars\australia.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\calendars\austria.cpp">
+      <Filter>time\calendars</Filter>
+    </ClCompile>
     <ClCompile Include="ql\time\calendars\bespokecalendar.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
@@ -6464,6 +6476,7 @@
     <ClCompile Include="ql\stochasticprocess.cpp" />
     <ClCompile Include="ql\termstructure.cpp" />
     <ClCompile Include="ql\timegrid.cpp" />
+    <ClCompile Include="ql\version.cpp" />
     <ClCompile Include="ql\cashflows\cpicoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
@@ -6812,8 +6825,8 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdmhestongreensfct.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmlocalvolfwdop.cpp">
-      <Filter>experimental\finitedifferences</Filter>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\polynomialmathfunction.cpp">
       <Filter>math</Filter>
@@ -6913,6 +6926,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\fdsabrvanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\schemes\cranknicolsonscheme.cpp">
+      <Filter>methods\finitedifferences\schemes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

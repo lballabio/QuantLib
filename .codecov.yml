@@ -1,0 +1,27 @@
+coverage:
+  precision: 1
+  # We put red at 50 to have a chance at some non-red build.
+  # I would be happy with 80 right now, so that's where the target is.
+  range: 50...80
+
+ignore:
+  - "test-suite"
+  - "Examples"
+
+
+
+# The process to get a correct report is a bit fiddly.
+# This worked in the past, and is added here for reference:
+#
+# - clone the repo and mount it in a recent quantlib-devenv image;
+# - run the following:
+#
+#       apt update && apt install -y lcov curl git
+#       mkdir build
+#       cd build
+#       CXXFLAGS='-O1 -fprofile-arcs -ftest-coverage' LDFLAGS='-lgcov' cmake ..
+#       CXXFLAGS='-O1 -fprofile-arcs -ftest-coverage' LDFLAGS='-lgcov' make -j 4
+#       ./test-suite/quantlib-test-suite --log_level=message
+#       bash <(curl -s https://codecov.io/bash) -t @cc_token
+#
+#   where the file `cc_token` contains the Codecov upload token.
