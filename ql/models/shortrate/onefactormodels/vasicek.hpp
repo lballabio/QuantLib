@@ -55,6 +55,7 @@ namespace QuantLib {
         Real b() const { return b_(0.0); }
         Real lambda() const { return lambda_(0.0); }
         Real sigma() const { return sigma_(0.0); }
+        Real r0() const { return r0_;}
 
       protected:
         virtual Real A(Time t, Time T) const;

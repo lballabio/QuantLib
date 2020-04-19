@@ -32,9 +32,10 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/utilities/dataformatters.hpp>
-
+#include <ql/models/shortrate/onefactormodels/vasicek.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -139,6 +140,24 @@ int main(int, char* []) {
         method = "Black-Scholes";
         europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
                                      new AnalyticEuropeanEngine(bsmProcess)));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanOption.NPV()
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << "N/A"
+                  << std::endl;
+
+        //Vasicek rates model for European
+        method = "Black Vasicek Model";
+        Real r0 = riskFreeRate;
+        Real a = 0.3;
+        Real b = 0.3;
+        Real sigma_r = 0.15;
+        Real riskPremium = 0.0;
+        Real correlation = 0.5;
+        ext::shared_ptr<Vasicek> vasicekProcess(new Vasicek(r0, a, b, sigma_r, riskPremium));
+        europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                new AnalyticBlackVasicekEngine(bsmProcess, vasicekProcess, correlation)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()

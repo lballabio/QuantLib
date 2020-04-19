@@ -8,6 +8,7 @@ this_include_HEADERS = \
     analyticdigitalamericanengine.hpp \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
+    analyticeuropeanvasicekengine.hpp \
     analyticcevengine.hpp \
     analyticgjrgarchengine.hpp \
     analytich1hwengine.hpp \
@@ -56,6 +57,7 @@ cpp_files = \
     analyticdigitalamericanengine.cpp \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
+    analyticeuropeanvasicekengine.cpp \
     analyticcevengine.cpp \
     analyticgjrgarchengine.cpp \
     analytich1hwengine.cpp \
