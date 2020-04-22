@@ -2721,6 +2721,86 @@ void HestonModelTest::testPiecewiseTimeDependentChFAsymtotic() {
     }
 }
 
+void HestonModelTest::testSmallSigmaExpansion() {
+    BOOST_TEST_MESSAGE("Testing small sigma expansion of "
+    				   "the characteristic function...");
+
+    SavedSettings backup;
+
+    const Date settlementDate(20, March, 2020);
+    Settings::instance().evaluationDate() = settlementDate;
+    const Date maturityDate = settlementDate + Period(2, Years);
+
+    const DayCounter dc = Actual365Fixed();
+    const Time t = dc.yearFraction(settlementDate, maturityDate);
+    const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
+
+    const Real theta = 0.1 * 0.1;
+    const Real v0 = theta + 0.02;
+    const Real kappa = 1.25;
+    const Real sigma = 1e-9;
+    const Real rho = -0.9;
+
+    const ext::shared_ptr<HestonModel> hestonModel =
+    	ext::make_shared<HestonModel>(
+			ext::make_shared<HestonProcess>(
+				rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+
+    const ext::shared_ptr<AnalyticHestonEngine> engine =
+    	ext::make_shared<AnalyticHestonEngine>(hestonModel);
+
+    const std::complex<Real> expectedChF(
+    	0.990463578538352651,2.60693475987521132e-12);
+
+    const std::complex<Real> calculatedChF = engine->chF(
+    	std::complex<Real>(0.55, -0.5), t);
+
+    const Real diffChF = std::abs(expectedChF - calculatedChF);
+    const Real tolChF = 1e-12;
+    if (diffChF > tolChF) {
+        BOOST_ERROR("failed to reproduce normalized characteristic function "
+                "value for small sigma"
+                << "\n  expeceted : " << expectedChF
+                << "\n  calclated : " << calculatedChF
+                << "\n  diff      : " << diffChF
+                << "\n  tolerance : " << tolChF);
+    }
+
+    VanillaOption option(
+    	ext::make_shared<PlainVanillaPayoff>(Option::Call, 120.0),
+		ext::make_shared<EuropeanExercise>(maturityDate));
+
+    option.setPricingEngine(
+    	ext::make_shared<AnalyticHestonEngine>(
+    		hestonModel,
+			AnalyticHestonEngine::AndersenPiterbarg,
+			AnalyticHestonEngine::Integration::gaussLaguerre(192)));
+
+    const Real calculatedNPV = option.NPV();
+
+    const Real stdDev =
+    	std::sqrt(((1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta)*t);
+
+    const Real expectedNPV =
+    	blackFormula(Option::Call, 120.0, 100.0, stdDev);
+
+    const Real diffNPV =std::fabs(calculatedNPV - expectedNPV);
+    const Real tolNPV = 50*sigma;
+
+    if (diffNPV > tolNPV) {
+        BOOST_ERROR("failed to reproduce Black Scholes prices "
+                "for Heston model with very small sigma"
+                << "\n  expeceted : " << expectedNPV
+                << "\n  calclated : " << calculatedNPV
+                << "\n  diff      : " << diffNPV
+                << "\n  tolerance : " << tolNPV);
+    }
+}
+
+
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -2759,6 +2839,8 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
         &HestonModelTest::testPiecewiseTimeDependentComparison));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testSmallSigmaExpansion));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
