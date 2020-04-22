@@ -1010,9 +1010,11 @@
     <ClInclude Include="ql\math\integrals\filonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianquadratures.hpp" />
+    <ClInclude Include="ql\math\integrals\gausslaguerrecosinepolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gausslobattointegral.hpp" />
     <ClInclude Include="ql\math\integrals\integral.hpp" />
     <ClInclude Include="ql\math\integrals\kronrodintegral.hpp" />
+    <ClInclude Include="ql\math\integrals\momentbasedgaussianpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\segmentintegral.hpp" />
     <ClInclude Include="ql\math\integrals\simpsonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\trapezoidintegral.hpp" />

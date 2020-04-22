@@ -25,9 +25,23 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/math/integrals/momentbasedgaussianpolynomial.hpp>
+#include <ql/math/integrals/gausslaguerrecosinepolynomial.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
 
 #include <boost/math/distributions/non_central_chi_squared.hpp>
+
+#ifndef TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
+//#define TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
+#endif
+
+#ifdef TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
+    #if BOOST_VERSION < 105300
+        #error This boost version is too old to support boost multi precision
+    #endif
+
+    #include <boost/multiprecision/cpp_dec_float.hpp>
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -214,9 +228,9 @@ void GaussianQuadraturesTest::testNonCentralChiSquared() {
 }
 
 
-void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes() {
+void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNodes() {
      BOOST_TEST_MESSAGE(
-         "Testing Gauss non-central chi-squared sum of notes...");
+         "Testing Gauss non-central chi-squared sum of nodes...");
 
      using namespace gaussian_quadratures_test;
 
@@ -241,11 +255,8 @@ void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes() {
      const Real lambda=1.0;
      const GaussNonCentralChiSquaredPolynomial orthPoly(nu, lambda);
 
-#ifdef MULTIPRECISION_NON_CENTRAL_CHI_SQUARED_QUADRATURE
-     const Real tol = 1e-12;
-#else
      const Real tol = 1e-5;
-#endif
+
 	 for (Size n = 4; n < 10; ++n) {
 		 const Array x = GaussianQuadrature(n, orthPoly).x();
          const Real calculated = std::accumulate(x.begin(), x.end(), 0.0);
@@ -260,6 +271,86 @@ void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes() {
      }
 }
 
+namespace gaussian_quadratures_test {
+    template <class mp_float>
+    class MomentBasedGaussLaguerrePolynomial
+            : public MomentBasedGaussianPolynomial<mp_float> {
+      public:
+        mp_float moment(Size i) const {
+            if (i == 0)
+                return mp_float(1.0);
+            else
+                return mp_float(i)*moment(i-1);
+        }
+
+        Real w(Real x) const {
+            return std::exp(-x);
+        }
+    };
+}
+
+void GaussianQuadraturesTest::testMomentBasedGaussianPolynomial() {
+     BOOST_TEST_MESSAGE("Testing moment based Gaussian polynomials...");
+
+     using namespace gaussian_quadratures_test;
+
+     GaussLaguerrePolynomial g;
+
+     std::vector<ext::shared_ptr<GaussianOrthogonalPolynomial> > ml;
+     ml.push_back(
+         ext::make_shared<MomentBasedGaussLaguerrePolynomial<Real> >());
+
+#ifdef TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
+     ml.push_back(
+         ext::make_shared<MomentBasedGaussLaguerrePolynomial<
+             boost::multiprecision::number<
+                 boost::multiprecision::cpp_dec_float<20> > > >());
+#endif
+
+     const Real tol = 1e-12;
+     for (Size k=0; k < ml.size(); ++k) {
+
+         for (Size i=0; i < 10; ++i) {
+             const Real diffAlpha = std::fabs(ml[k]->alpha(i)-g.alpha(i));
+             const Real diffBeta = std::fabs(ml[k]->beta(i)-g.beta(i));
+
+             if (diffAlpha > tol) {
+                 BOOST_ERROR("failed to reproduce alpha for Laguerre quadrature"
+                             << "\n    calculated: " << ml[k]->alpha(i)
+                             << "\n    expected  : " << g.alpha(i)
+                             << "\n    diff      : " << diffAlpha);
+             }
+             if (i > 0 && diffBeta > tol) {
+                 BOOST_ERROR("failed to reproduce beta for Laguerre quadrature"
+                             << "\n    calculated: " << ml[k]->beta(i)
+                             << "\n    expected  : " << g.beta(i)
+                             << "\n    diff      : " << diffBeta);
+             }
+         }
+     }
+}
+
+void GaussianQuadraturesTest::testGaussLaguerreCosinePolynomial() {
+    BOOST_TEST_MESSAGE("Testing Gauss-Laguerre-Cosine quadrature...");
+
+    using namespace gaussian_quadratures_test;
+
+    const GaussianQuadrature quadCosine(
+            16, GaussLaguerreCosinePolynomial<Real>(0.2));
+
+    testSingle(quadCosine, "f(x) = exp(-x)",
+               inv_exp, 1.0);
+    testSingle(quadCosine, "f(x) = x*exp(-x)",
+               x_inv_exp, 1.0);
+
+    const GaussianQuadrature quadSine(
+            16, GaussLaguerreSinePolynomial<Real>(0.2));
+
+    testSingle(quadSine, "f(x) = exp(-x)",
+               inv_exp, 1.0);
+    testSingle(quadSine, "f(x) = x*exp(-x)",
+               x_inv_exp, 1.0);
+}
 
 test_suite* GaussianQuadraturesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
@@ -268,6 +359,11 @@ test_suite* GaussianQuadraturesTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testHermite));
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testHyperbolic));
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testTabulated));
+    suite->add(QUANTLIB_TEST_CASE(
+        &GaussianQuadraturesTest::testMomentBasedGaussianPolynomial));
+    suite->add(QUANTLIB_TEST_CASE(
+        &GaussianQuadraturesTest::testGaussLaguerreCosinePolynomial));
+
     return suite;
 }
 
@@ -278,7 +374,7 @@ test_suite* GaussianQuadraturesTest::experimental() {
     suite->add(QUANTLIB_TEST_CASE(
         &GaussianQuadraturesTest::testNonCentralChiSquared));
     suite->add(QUANTLIB_TEST_CASE(
-        &GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNotes));
+        &GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNodes));
 
     return suite;
 }

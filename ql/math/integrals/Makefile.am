@@ -5,11 +5,13 @@ this_include_HEADERS = \
 	all.hpp \
 	discreteintegrals.hpp \
 	filonintegral.hpp \
+	gausslaguerrecosinepolynomial.hpp \
 	gausslobattointegral.hpp \
 	gaussianorthogonalpolynomial.hpp \
 	gaussianquadratures.hpp \
 	integral.hpp \
 	kronrodintegral.hpp \
+	momentbasedgaussianpolynomial.hpp  \
 	segmentintegral.hpp \
 	simpsonintegral.hpp \
 	trapezoidintegral.hpp \

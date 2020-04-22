@@ -1432,9 +1432,11 @@ set(QuantLib_HDR
     math/integrals/filonintegral.hpp
     math/integrals/gaussianorthogonalpolynomial.hpp
     math/integrals/gaussianquadratures.hpp
+    math/integrals/gausslaguerrecosinepolynomial.hpp
     math/integrals/gausslobattointegral.hpp
     math/integrals/integral.hpp
     math/integrals/kronrodintegral.hpp
+    math/integrals/momentbasedgaussianpolynomial.hpp
     math/integrals/segmentintegral.hpp
     math/integrals/simpsonintegral.hpp
     math/integrals/trapezoidintegral.hpp

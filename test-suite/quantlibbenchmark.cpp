@@ -47,8 +47,9 @@
                  16. Alpha 2xEV68@833Mhz    :  184.6 mflops
                  17. Wii PowerPC 750@729MHz :   46.1 mflops
                  18. Raspberry Pi ARM@700Mhz:   28.3 mflops
-                 19. RISC-V on FPGA@25Mhz   :    2.4 mflops
-                 20. Strong ARM@206Mhz      :    1.4 mflops
+                 19. MIPS R5000@150MHz      :   12.6 mflops
+                 20. RISC-V on FPGA@25Mhz   :    2.4 mflops
+                 21. Strong ARM@206Mhz      :    1.4 mflops
 
  Remarks: OS: Linux, static libs
   1. g++-6.3.0 -O3 -ffast-math -march=core-avx2
@@ -82,8 +83,9 @@
  16. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
  17. gcc-4.9.2, -O2 -g on a Nintendo Wii
  18. gcc-4.6.3, -O3
- 19. gcc-9.2,   -O2 on RISC-V softcore on an Artix7 100T FPGA
- 20. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 19. gcc-4-7-4, -O2 on a SGI Indy
+ 20. gcc-9.2,   -O2 on RISC-V softcore on an Artix7 100T FPGA
+ 21. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
