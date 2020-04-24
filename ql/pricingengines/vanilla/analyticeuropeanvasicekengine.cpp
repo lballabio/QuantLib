@@ -25,25 +25,29 @@
 
 namespace QuantLib {
 
-    Real g_k(Real t, Real kappa){
-        return (1 - std::exp(- kappa * t )) / kappa;
-    }
+    namespace {
 
-    class integrand_vasicek {
-    private:
-        const Real sigma_s_;
-        const Real sigma_r_;
-        const Real correlation_;
-        const Real kappa_;
-        const Real T_;
-    public:
-        integrand_vasicek(Real sigma_s, Real sigma_r, Real correlation, Real kappa, Real T)
-                : sigma_s_(sigma_s), sigma_r_(sigma_r), correlation_(correlation), kappa_(kappa), T_(T){}
-        Real operator()(Real u) const {
-            Real g = g_k(T_ - u, kappa_);
-            return (sigma_s_ * sigma_s_) + (2 * correlation_ * sigma_s_ * sigma_r_ * g) + (sigma_r_ * sigma_r_ * g * g);
+        Real g_k(Real t, Real kappa){
+            return (1 - std::exp(- kappa * t )) / kappa;
         }
-    };
+
+        class integrand_vasicek {
+          private:
+            const Real sigma_s_;
+            const Real sigma_r_;
+            const Real correlation_;
+            const Real kappa_;
+            const Real T_;
+          public:
+            integrand_vasicek(Real sigma_s, Real sigma_r, Real correlation, Real kappa, Real T)
+            : sigma_s_(sigma_s), sigma_r_(sigma_r), correlation_(correlation), kappa_(kappa), T_(T){}
+            Real operator()(Real u) const {
+                Real g = g_k(T_ - u, kappa_);
+                return (sigma_s_ * sigma_s_) + (2 * correlation_ * sigma_s_ * sigma_r_ * g) + (sigma_r_ * sigma_r_ * g * g);
+            }
+        };
+
+    }
 
     AnalyticBlackVasicekEngine::AnalyticBlackVasicekEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& blackProcess,
@@ -66,7 +70,7 @@ namespace QuantLib {
         CumulativeNormalDistribution f;
 
         Real t = 0;
-        Real T = blackProcess_->riskFreeRate().currentLink()->dayCounter().yearFraction(blackProcess_->riskFreeRate().currentLink()->referenceDate(),arguments_.exercise->lastDate());
+        Real T = blackProcess_->riskFreeRate()->dayCounter().yearFraction(blackProcess_->riskFreeRate().currentLink()->referenceDate(),arguments_.exercise->lastDate());
         Real kappa = vasicekProcess_->a();
         Real S_t = blackProcess_->x0();
         Real K = payoff->strike();
