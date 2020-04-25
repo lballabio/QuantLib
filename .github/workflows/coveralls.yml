@@ -1,8 +1,5 @@
 name: Coverage report
-on:
-  push:
-    branches:
-      - master
+on: push
 jobs:
   coverage:
     runs-on: ubuntu-latest
@@ -14,15 +11,16 @@ jobs:
         pip install --user wheel
         pip install --user cpp-coveralls
     - name: Compile
-      env:
-        CXXFLAGS: -O1 -fprofile-arcs -ftest-coverage
-        LDFLAGS: -lgcov
       run: |
-        cmake -DBOOST_ROOT=/usr .
+        ./autogen.sh
+        ./configure --disable-shared CXXFLAGS='-O1 -fprofile-arcs -ftest-coverage' LDFLAGS='-lgcov'
         make -j 2
-    - name: Test
+    - name: Run tests
       run: |
         ./test-suite/quantlib-test-suite --log_level=message
+    - name: Run examples
+      run: |
+        make -C Examples check-examples
     - name: Upload coverage to Coveralls
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALL_TOKEN }}
