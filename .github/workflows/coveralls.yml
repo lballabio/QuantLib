@@ -1,5 +1,8 @@
 name: Coverage report
-on: push
+on:
+  push:
+    branches:
+      - master
 jobs:
   coverage:
     runs-on: ubuntu-latest
