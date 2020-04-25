@@ -49,15 +49,10 @@ namespace QuantLib {
         QL_REQUIRE(n>1, "the path cannot be empty");
 
         bool isOptionActive = false;
-        bool lowerBreached = false;
-        bool higherBreached = false;
         Size knockNode = null;
         Real asset_price = path.front();
         Real new_asset_price;
-        Real x, y;
-        Volatility vol;
         TimeGrid timeGrid = path.timeGrid();
-        Time dt;
         std::vector<Real> u = sequenceGen_.nextSequence().value;
         Size i;
 
