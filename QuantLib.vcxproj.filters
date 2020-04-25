@@ -2349,9 +2349,6 @@
     <ClInclude Include="ql\pricingengines\barrier\mcbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
-    <ClInclude Include="ql\pricingengines\barrier\mcdoublebarrierengine.hpp">
-      <Filter>pricingengines\barrier</Filter>
-    </ClInclude>
     <ClInclude Include="ql\pricingengines\basket\all.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
@@ -3547,6 +3544,9 @@
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\mcdoublebarrierengine.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\binomialdoublebarrierengine.hpp">
@@ -5523,9 +5523,6 @@
     <ClCompile Include="ql\pricingengines\barrier\mcbarrierengine.cpp">
       <Filter>pricingengines\barrier</Filter>
     </ClCompile>
-    <ClCompile Include="ql\pricingengines\barrier\mcdoublebarrierengine.cpp">
-      <Filter>pricingengines\barrier</Filter>
-    </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\mcamericanbasketengine.cpp">
       <Filter>pricingengines\basket</Filter>
     </ClCompile>
@@ -6406,6 +6403,9 @@
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\barrieroption\mcdoublebarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp">

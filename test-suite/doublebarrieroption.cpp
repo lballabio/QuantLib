@@ -41,7 +41,7 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
-#include <ql/pricingengines/barrier/mcdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -548,6 +548,7 @@
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\mcdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\binomialdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp" />
@@ -1464,7 +1465,6 @@
     <ClInclude Include="ql\pricingengines\barrier\fdhestonbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\fdhestonrebateengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\mcbarrierengine.hpp" />
-    <ClInclude Include="ql\pricingengines\barrier\mcdoublebarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\all.hpp" />
     <ClInclude Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\kirkengine.hpp" />
@@ -1893,6 +1893,7 @@
     <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\mcdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp" />
@@ -2492,7 +2493,6 @@
     <ClCompile Include="ql\pricingengines\barrier\fdhestonbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\fdhestonrebateengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\mcbarrierengine.cpp" />
-    <ClCompile Include="ql\pricingengines\barrier\mcdoublebarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\kirkengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\mcamericanbasketengine.cpp" />
