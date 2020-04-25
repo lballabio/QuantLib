@@ -91,7 +91,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDoubleBarrierEngine {
       public:
-        MakeMCDoubleBarrierEngine(
+        explicit MakeMCDoubleBarrierEngine(
                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
         // named parameters
         MakeMCDoubleBarrierEngine& withSteps(Size steps);
