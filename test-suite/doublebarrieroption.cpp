@@ -568,7 +568,7 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
     SavedSettings backup;
 
-    Real tolerance = 0.2; //percentage difference between analytical and monte carlo values to be tolerated
+    Real tolerance = 0.3; //percentage difference between analytical and monte carlo values to be tolerated
 
     // set up dates
     Calendar calendar = TARGET();
@@ -613,12 +613,15 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
         new BlackScholesMertonProcess(underlyingH, flatDividendTS,
                                       flatTermStructure, flatVolTS));
 
-    DoubleBarrierOption knockIndoubleBarrierOption(DoubleBarrier::Type::KnockIn,
-                                            underlying * 0.9,
-                                            underlying * 1.1,
-                                            0,
-                                            payoff,
-                                            europeanExercise);
+    Real barrierLow = underlying * 0.9;
+    Real barrierHigh = underlying * 1.1;
+
+    DoubleBarrierOption knockIndoubleBarrierOption(DoubleBarrier::KnockIn,
+                                                   barrierLow,
+                                                   barrierHigh,
+                                                   0,
+                                                   payoff,
+                                                   europeanExercise);
 
     ext::shared_ptr<PricingEngine> analyticdoublebarrierengine(new AnalyticDoubleBarrierEngine(bsmProcess));
     knockIndoubleBarrierOption.setPricingEngine(analyticdoublebarrierengine);
@@ -638,12 +641,12 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
         REPORT_FAILURE_DOUBLE_BARRIER_MC(analytical, monteCarlo, percentageDiff);
     }
 
-    DoubleBarrierOption knockOutDoubleBarrierOption(DoubleBarrier::Type::KnockOut,
-                                            underlying * 0.9,
-                                            underlying * 1.1,
-                                            0,
-                                            payoff,
-                                            europeanExercise);
+    DoubleBarrierOption knockOutDoubleBarrierOption(DoubleBarrier::KnockOut,
+                                                    barrierLow,
+                                                    barrierHigh,
+                                                    0,
+                                                    payoff,
+                                                    europeanExercise);
 
     knockOutDoubleBarrierOption.setPricingEngine(analyticdoublebarrierengine);
     analytical = knockOutDoubleBarrierOption.NPV();
