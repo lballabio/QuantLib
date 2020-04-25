@@ -12,7 +12,8 @@ this_include_HEADERS = \
 	fdblackscholesrebateengine.hpp \
 	fdhestonbarrierengine.hpp \
 	fdhestonrebateengine.hpp \
-    mcbarrierengine.hpp
+    mcbarrierengine.hpp \
+    mcdoublebarrierengine.hpp
 
 cpp_files = \
     analyticbarrierengine.cpp \
@@ -22,7 +23,8 @@ cpp_files = \
 	fdblackscholesrebateengine.cpp \
 	fdhestonbarrierengine.cpp \
 	fdhestonrebateengine.cpp \
-    mcbarrierengine.cpp
+    mcbarrierengine.cpp \
+    mcdoublebarrierengine.cpp
 
 if UNITY_BUILD
 

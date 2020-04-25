@@ -657,6 +657,7 @@ set(QuantLib_SRC
     pricingengines/barrier/fdhestonbarrierengine.cpp
     pricingengines/barrier/fdhestonrebateengine.cpp
     pricingengines/barrier/mcbarrierengine.cpp
+    pricingengines/barrier/mcdoublebarrierengine.cpp
     pricingengines/basket/fd2dblackscholesvanillaengine.cpp
     pricingengines/basket/kirkengine.cpp
     pricingengines/basket/mcamericanbasketengine.cpp
@@ -1895,6 +1896,7 @@ set(QuantLib_HDR
     pricingengines/barrier/fdhestonbarrierengine.hpp
     pricingengines/barrier/fdhestonrebateengine.hpp
     pricingengines/barrier/mcbarrierengine.hpp
+    pricingengines/barrier/mcdoublebarrierengine.hpp
     pricingengines/basket/all.hpp
     pricingengines/basket/fd2dblackscholesvanillaengine.hpp
     pricingengines/basket/kirkengine.hpp

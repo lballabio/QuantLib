@@ -1464,6 +1464,7 @@
     <ClInclude Include="ql\pricingengines\barrier\fdhestonbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\fdhestonrebateengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\mcbarrierengine.hpp" />
+    <ClInclude Include="ql\pricingengines\barrier\mcdoublebarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\all.hpp" />
     <ClInclude Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\kirkengine.hpp" />
@@ -2491,6 +2492,7 @@
     <ClCompile Include="ql\pricingengines\barrier\fdhestonbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\fdhestonrebateengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\mcbarrierengine.cpp" />
+    <ClCompile Include="ql\pricingengines\barrier\mcdoublebarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\fd2dblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\kirkengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\mcamericanbasketengine.cpp" />
