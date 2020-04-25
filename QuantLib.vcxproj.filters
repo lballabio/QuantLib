@@ -2400,6 +2400,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\analyticeuropeanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\analyticeuropeanvasicekengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\analyticgjrgarchengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
@@ -5539,6 +5542,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\analyticeuropeanengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\analyticeuropeanvasicekengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\analyticgjrgarchengine.cpp">

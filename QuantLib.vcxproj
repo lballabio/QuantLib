@@ -1535,6 +1535,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\analyticdigitalamericanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticdividendeuropeanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticeuropeanengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\analyticeuropeanvasicekengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticgjrgarchengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analytich1hwengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analytichestonengine.hpp" />
@@ -2539,6 +2540,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticdividendeuropeanengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticeuropeanengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\analyticeuropeanvasicekengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticgjrgarchengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analytich1hwengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analytichestonengine.cpp" />
