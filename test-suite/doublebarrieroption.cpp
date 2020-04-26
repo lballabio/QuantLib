@@ -568,7 +568,7 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
     SavedSettings backup;
 
-    Real tolerance = 0.3; //percentage difference between analytical and monte carlo values to be tolerated
+    Real tolerance = 0.01; //percentage difference between analytical and monte carlo values to be tolerated
 
     // set up dates
     Calendar calendar = TARGET();
@@ -631,7 +631,8 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
         .withSteps(10000)
         .withAntitheticVariate()
-        .withAbsoluteTolerance(tolerance * analytical);
+        .withAbsoluteTolerance(0.5)
+        .withSeed(1);
     knockIndoubleBarrierOption.setPricingEngine(mcdoublebarrierengine);
     Real monteCarlo = knockIndoubleBarrierOption.NPV();
 
@@ -654,7 +655,8 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
         .withSteps(10000)
         .withAntitheticVariate()
-        .withAbsoluteTolerance(tolerance * analytical);
+        .withAbsoluteTolerance(0.005)
+        .withSeed(3);
     knockOutDoubleBarrierOption.setPricingEngine(mcdoublebarrierengine);
     monteCarlo = knockOutDoubleBarrierOption.NPV();
 
