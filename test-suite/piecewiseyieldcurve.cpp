@@ -642,7 +642,7 @@ namespace piecewise_yield_curve_test {
     // Used to check that the exception message contains the expected message string, expMsg.
     struct ExpErrorPred {
 
-        ExpErrorPred(const string& msg) : expMsg(msg) {}
+        explicit ExpErrorPred(const string& msg) : expMsg(msg) {}
 
         bool operator()(const Error& ex) {
             string errMsg(ex.what());
@@ -1441,7 +1441,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
         (0.985495036)
         (0.984413446);
 
-    Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear>>(
+    Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear> >(
         usdCurveDates, usdCurveDfs, tsDayCounter));
 
     // USD/ARS forward points
@@ -1455,8 +1455,8 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
         (1 * Years, 60.7370);
 
     // Create the FX swap rate helpers for the ARS in USD curve.
-    vector<ext::shared_ptr<RateHelper>> instruments;
-    for (map<Period, Real>::const_iterator it = arsFwdPoints.begin(); it != arsFwdPoints.end(); it++) {
+    vector<ext::shared_ptr<RateHelper> > instruments;
+    for (map<Period, Real>::const_iterator it = arsFwdPoints.begin(); it != arsFwdPoints.end(); ++it) {
         Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(it->second));
         instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, it->first, 2,
             UnitedStates(), Following, false, true, usdYts));
