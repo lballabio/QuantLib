@@ -338,9 +338,13 @@ namespace {
 
         bool operator()(const Error& ex) {
             string errMsg(ex.what());
-            BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
-            BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
-            return errMsg.find(expMsg) != string::npos;
+            if (errMsg.find(expMsg) == string::npos) {
+                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
+                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
+                return false;
+            } else {
+                return true;
+            }
         }
 
         string expMsg;
