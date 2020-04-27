@@ -1479,7 +1479,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     arsYts = ext::make_shared<LLDFCurve>(asof, instruments, tsDayCounter, ib);
     
     // Check that the ARS in USD curve builds and populate the spot ARS discount factor.
-    DiscountFactor spotDfArs;
+    DiscountFactor spotDfArs = 1.0;
     BOOST_REQUIRE_NO_THROW(spotDfArs = arsYts->discount(spotDate));
 
     // Additional dates and discount factors used in the final check i.e. that calculated 1Y FX forward equals input.
