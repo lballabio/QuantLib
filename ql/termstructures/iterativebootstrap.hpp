@@ -39,7 +39,7 @@ namespace QuantLib {
 namespace detail {
 
     /*! If \c dontThrow is \c true in IterativeBootstrap and on a given pillar the bootstrap fails when
-        searching for a helper root between \c xMin and \c xMax, we use this function to return the value that 
+        searching for a helper root between \c xMin and \c xMax, we use this function to return the value that
         gives the minimum absolute helper error in the interval between \c xMin and \c xMax inclusive.
     */
     template <class Curve>
@@ -258,34 +258,38 @@ namespace detail {
             previousData_ = ts_->data_;
 
             // Store min value and max value at each pillar so that we can expand search if necessary.
-            std::vector<Real> minValues(alive_, Null<Real>());
-            std::vector<Real> maxValues(alive_, Null<Real>());
-            std::vector<Size> attempts(alive_, 1);
+            std::vector<Real> minValues(alive_+1, Null<Real>());
+            std::vector<Real> maxValues(alive_+1, Null<Real>());
+            std::vector<Size> attempts(alive_+1, 1);
 
             for (Size i=1; i<=alive_; ++i) { // pillar loop
 
+                // shorter aliases for readability and to avoid duplication
+                Real& min = minValues[i];
+                Real& max = maxValues[i];
+
                 // bracket root and calculate guess
-                if (minValues[i - 1] == Null<Real>()) {
-                    minValues[i - 1] = minValue_ != Null<Real>() ? minValue_ :
-                        Traits::minValueAfter(i, ts_, validData, firstAliveHelper_);
+                if (min == Null<Real>()) {
+                    // First attempt; we take min and max either from
+                    // explicit constructor parameter or from traits
+                    min = (minValue_ != Null<Real>() ? minValue_ :
+                           Traits::minValueAfter(i, ts_, validData, firstAliveHelper_));
+                    max = (maxValue_ != Null<Real>() ? maxValue_ :
+                           Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_));
                 } else {
-                    minValues[i - 1] = minValues[i - 1] < 0.0 ?
-                        minFactor_ * minValues[i - 1] : minValues[i - 1] / minFactor_;
-                }
-                if (maxValues[i - 1] == Null<Real>()) {
-                    maxValues[i - 1] = maxValue_ != Null<Real>() ? maxValue_ :
-                        Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_);
-                } else {
-                    maxValues[i - 1] = maxValues[i - 1] > 0.0 ?
-                        maxFactor_ * maxValues[i - 1] : maxValues[i - 1] / maxFactor_;
+                    // Extending a previous attempt.  A negative min
+                    // is enlarged; a positive one is shrunk towards 0.
+                    min = (min < 0.0 ? min * minFactor_ : min / minFactor_);
+                    // The opposite holds for the max.
+                    max = (max > 0.0 ? max * maxFactor_ : max / maxFactor_);
                 }
                 Real guess = Traits::guess(i, ts_, validData, firstAliveHelper_);
 
                 // adjust guess if needed
-                if (guess >= maxValues[i - 1])
-                    guess = maxValues[i - 1] - (maxValues[i - 1] - minValues[i - 1]) / 5.0;
-                else if (guess <= minValues[i - 1])
-                    guess = minValues[i - 1] + (maxValues[i - 1] - minValues[i - 1]) / 5.0;
+                if (guess >= max)
+                    guess = max - (max - min) / 5.0;
+                else if (guess <= min)
+                    guess = min + (max - min) / 5.0;
 
                 // extend interpolation if needed
                 if (!validData) {
@@ -307,9 +311,9 @@ namespace detail {
 
                 try {
                     if (validData)
-                        solver_.solve(*errors_[i], accuracy, guess, minValues[i - 1], maxValues[i - 1]);
+                        solver_.solve(*errors_[i], accuracy, guess, min, max);
                     else
-                        firstSolver_.solve(*errors_[i], accuracy, guess, minValues[i - 1], maxValues[i - 1]);
+                        firstSolver_.solve(*errors_[i], accuracy, guess, min, max);
                 } catch (std::exception &e) {
                     if (validCurve_) {
                         // the previous curve state might have been a
@@ -323,20 +327,19 @@ namespace detail {
                         return;
                     }
 
-                    // If we have more attempts left on this iteration, try again. Note that the max and min 
+                    // If we have more attempts left on this iteration, try again. Note that the max and min
                     // bounds will be widened on the retry.
-                    if (attempts[i - 1] < maxAttempts_) {
-                        attempts[i - 1]++;
+                    if (attempts[i] < maxAttempts_) {
+                        attempts[i]++;
                         i--;
                         continue;
                     }
 
                     if (dontThrow_) {
                         // Use the fallback value
-                        ts_->data_[i] = detail::dontThrowFallback(*errors_[i], minValues[i - 1],
-                            maxValues[i - 1], dontThrowSteps_);
+                        ts_->data_[i] = detail::dontThrowFallback(*errors_[i], min, max, dontThrowSteps_);
 
-                        // Remember to update the interpolation. If we don't and we are on the last "i", we will still 
+                        // Remember to update the interpolation. If we don't and we are on the last "i", we will still
                         // have the last attempted value in the solver being used in ts_->interpolation_.
                         ts_->interpolation_.update();
                     } else {
