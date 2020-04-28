@@ -14,26 +14,26 @@ env:
   jobs:
     #
     - INFO="gcc 4.8 (Boost 1.48)"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:1.48.0-trusty
+      DOCKER_IMAGE=lballabio/quantlib-devenv:trusty
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror"
     #
     - INFO="gcc 5.4 (Boost 1.66)"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:1.66.0-xenial
+      DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
     - INFO="gcc 6.3 (Boost 1.66)"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:1.66.0-zesty
+      DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="gcc 7.x"
+    - INFO="gcc 7.4 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="gcc 8.x"
+    - INFO="gcc 8.3 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -43,17 +43,22 @@ env:
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="Clang 6"
+    - INFO="gcc 10.x"
+      DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
+      CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    #
+    - INFO="Clang 6 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="Clang 7"
+    - INFO="Clang 7 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="Clang 8"
+    - INFO="Clang 8 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:disco
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -63,8 +68,13 @@ env:
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
+    - INFO="Clang 10"
+      DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+      CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+      CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    #
     - INFO="C++03 mode"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+      DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     #
