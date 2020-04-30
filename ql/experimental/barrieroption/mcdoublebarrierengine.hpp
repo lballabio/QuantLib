@@ -35,13 +35,10 @@ namespace QuantLib {
     class MCDoubleBarrierEngine : public DoubleBarrierOption::engine,
                                   public McSimulation<SingleVariate,RNG,S> {
       public:
-        typedef
-        typename McSimulation<SingleVariate,RNG,S>::path_generator_type
+        typedef typename McSimulation<SingleVariate,RNG,S>::path_generator_type
             path_generator_type;
         typedef typename McSimulation<SingleVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
-            stats_type;
         // constructor
         MCDoubleBarrierEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -121,17 +118,13 @@ namespace QuantLib {
                     Real rebate,
                     Option::Type type,
                     Real strike,
-                    const std::vector<DiscountFactor>& discounts,
-                    const ext::shared_ptr<StochasticProcess1D>& diffProcess,
-                    const PseudoRandom::ursg_type& sequenceGen);
+                    const std::vector<DiscountFactor>& discounts);
         Real operator()(const Path& path) const;
       private:
         DoubleBarrier::Type barrierType_;
         Real barrierLow_;
         Real barrierHigh_;
         Real rebate_;
-        ext::shared_ptr<StochasticProcess1D> diffProcess_;
-        PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
         std::vector<DiscountFactor> discounts_;
     };
@@ -197,9 +190,6 @@ namespace QuantLib {
         for (Size i=0; i<grid.size(); i++)
             discounts[i] = process_->riskFreeRate()->discount(grid[i]);
 
-        // do this with template parameters?
-        PseudoRandom::ursg_type sequenceGen(grid.size()-1,
-                                            PseudoRandom::urng_type(5));
         return ext::shared_ptr<
                     typename MCDoubleBarrierEngine<RNG,S>::path_pricer_type>(
             new DoubleBarrierPathPricer(
@@ -209,9 +199,7 @@ namespace QuantLib {
                 arguments_.rebate,
                 payoff->optionType(),
                 payoff->strike(),
-                discounts,
-                process_,
-                sequenceGen));
+                discounts));
         }
 
     template <class RNG, class S>

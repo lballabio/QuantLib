@@ -28,13 +28,9 @@ namespace QuantLib {
         Real rebate,
         Option::Type type,
         Real strike,
-        const std::vector<DiscountFactor>& discounts,
-        const ext::shared_ptr<StochasticProcess1D>& diffProcess,
-        const PseudoRandom::ursg_type& sequenceGen)
+        const std::vector<DiscountFactor>& discounts)
         : barrierType_(barrierType), barrierLow_(barrierLow), barrierHigh_(barrierHigh),
-          rebate_(rebate), diffProcess_(diffProcess),
-          sequenceGen_(sequenceGen), payoff_(type, strike),
-          discounts_(discounts) {
+          rebate_(rebate), payoff_(type, strike), discounts_(discounts) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
         QL_REQUIRE(barrierLow>0.0,
@@ -50,10 +46,8 @@ namespace QuantLib {
 
         bool isOptionActive = false;
         Size knockNode = null;
-        Real asset_price = path.front();
+        Real terminal_price = path.back();
         Real new_asset_price;
-        TimeGrid timeGrid = path.timeGrid();
-        std::vector<Real> u = sequenceGen_.nextSequence().value;
         Size i;
 
         switch (barrierType_) {
@@ -66,11 +60,8 @@ namespace QuantLib {
                         isOptionActive = false;
                         if (knockNode == null)
                             knockNode = i+1;
-                        asset_price = path.back();
                         break;
                     }
-
-                    asset_price = new_asset_price;
                 }
                 break;
             case DoubleBarrier::KnockIn:
@@ -82,11 +73,8 @@ namespace QuantLib {
                         isOptionActive = true;
                         if (knockNode == null)
                             knockNode = i+1;
-                        asset_price = path.back();
                         break;
                     }
-
-                    asset_price = new_asset_price;
                 }
                 break;
             default:
@@ -94,7 +82,7 @@ namespace QuantLib {
         }
 
         if (isOptionActive) {
-            return payoff_(asset_price) * discounts_.back();
+            return payoff_(terminal_price) * discounts_.back();
         } else {
             switch (barrierType_) {
                 case DoubleBarrier::KnockOut:
