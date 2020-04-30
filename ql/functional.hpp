@@ -34,7 +34,7 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/ref.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
@@ -59,6 +59,9 @@ namespace QuantLib {
         using boost::ref;
         using boost::cref;
         namespace placeholders {
+            #if BOOST_VERSION >= 106000
+            using namespace boost::placeholders;
+            #else
             using ::_1;
             using ::_2;
             using ::_3;
@@ -68,6 +71,7 @@ namespace QuantLib {
             using ::_7;
             using ::_8;
             using ::_9;
+            #endif
         }
         #endif
 
