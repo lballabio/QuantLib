@@ -1,8 +1,5 @@
 name: Coverage report
-on:
-  push:
-    branches:
-      - master
+on: [push, pull_request]
 jobs:
   coverage:
     runs-on: ubuntu-latest
@@ -25,12 +22,9 @@ jobs:
       run: |
         make -C Examples check-examples
     - name: Upload coverage to Coveralls
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALL_TOKEN }}
-        TRAVIS_JOB_ID: "#${{ github.run_id }}"
-      run: |
-        echo "service_name: github-actions" > .coveralls.yml
-        ~/.local/bin/coveralls --exclude Examples --exclude test-suite --exclude CMakeFiles --gcov-options '\-lp'
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Upload coverage to Codecov
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
