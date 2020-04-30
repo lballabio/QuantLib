@@ -36,21 +36,81 @@
 
 namespace QuantLib {
 
+namespace detail {
+
+    /*! If \c dontThrow is \c true in IterativeBootstrap and on a given pillar the bootstrap fails when
+        searching for a helper root between \c xMin and \c xMax, we use this function to return the value that
+        gives the minimum absolute helper error in the interval between \c xMin and \c xMax inclusive.
+    */
+    template <class Curve>
+    Real dontThrowFallback(const BootstrapError<Curve>& error,
+        Real xMin, Real xMax, Size steps) {
+
+        QL_REQUIRE(xMin < xMax, "Expected xMin to be less than xMax");
+
+        // Set the initial value of the result to xMin and store the absolute bootstrap error at xMin
+        Real result = xMin;
+        Real absError = std::abs(error(xMin));
+        Real minError = absError;
+
+        // Step out to xMax
+        Real stepSize = (xMax - xMin) / steps;
+        for (Size i = 0; i < steps; i++) {
+
+            // Get absolute bootstrap error at updated x value
+            xMin += stepSize;
+            absError = std::abs(error(xMin));
+
+            // If this absolute bootstrap error is less than the minimum, update result and minError
+            if (absError < minError) {
+                result = xMin;
+                minError = absError;
+            }
+        }
+
+        return result;
+    }
+
+}
+
     //! Universal piecewise-term-structure boostrapper.
     template <class Curve>
     class IterativeBootstrap {
         typedef typename Curve::traits_type Traits;
         typedef typename Curve::interpolator_type Interpolator;
       public:
+        /*! Constructor
+            \param accuracy       Accuracy for the bootstrap stopping criterion. If it is set to
+                                  \c Null<Real>(), its value is taken from the termstructure's accuracy.
+            \param minValue       Allow to override the initial minimum value coming from traits.
+            \param maxValue       Allow to override the initial maximum value coming from traits.
+            \param maxAttempts    Number of attempts on each iteration. A number greater than 1 implies retries.
+            \param maxFactor      Factor for max value retry on each iteration if there is a failure.
+            \param minFactor      Factor for min value retry on each iteration if there is a failure.
+            \param dontThrow      If set to \c true, the bootstrap doesn't throw and returns a <em>fall back</em>
+                                  result.
+            \param dontThrowSteps If \p dontThrow is \c true, this gives the number of steps to use when searching
+                                  for a fallback curve pillar value that gives the minimum bootstrap helper error.
+        */
         IterativeBootstrap(Real accuracy = Null<Real>(),
                            Real minValue = Null<Real>(),
-                           Real maxValue = Null<Real>());
+                           Real maxValue = Null<Real>(),
+                           Size maxAttempts = 1,
+                           Real maxFactor = 2.0,
+                           Real minFactor = 2.0,
+                           bool dontThrow = false,
+                           Size dontThrowSteps = 10);
         void setup(Curve* ts);
         void calculate() const;
       private:
         void initialize() const;
         Real accuracy_;
         Real minValue_, maxValue_;
+        Size maxAttempts_;
+        Real maxFactor_;
+        Real minFactor_;
+        bool dontThrow_;
+        Size dontThrowSteps_;
         Curve* ts_;
         Size n_;
         Brent firstSolver_;
@@ -65,10 +125,15 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue)
+    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue,
+        Size maxAttempts, Real maxFactor, Real minFactor, bool dontThrow, Size dontThrowSteps)
     : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue),
-      ts_(0), initialized_(false), validCurve_(false), 
-      loopRequired_(Interpolator::global) {}
+      maxAttempts_(maxAttempts), maxFactor_(maxFactor), minFactor_(minFactor), dontThrow_(dontThrow),
+      dontThrowSteps_(dontThrowSteps), ts_(0), initialized_(false), validCurve_(false),
+      loopRequired_(Interpolator::global) {
+        QL_REQUIRE(maxFactor_ >= 1.0, "Expected that maxFactor would be at least 1.0 but got " << maxFactor_);
+        QL_REQUIRE(minFactor_ >= 1.0, "Expected that minFactor would be at least 1.0 but got " << minFactor_);
+    }
 
     template <class Curve>
     void IterativeBootstrap<Curve>::setup(Curve* ts) {
@@ -192,20 +257,39 @@ namespace QuantLib {
         for (Size iteration=0; ; ++iteration) {
             previousData_ = ts_->data_;
 
+            // Store min value and max value at each pillar so that we can expand search if necessary.
+            std::vector<Real> minValues(alive_+1, Null<Real>());
+            std::vector<Real> maxValues(alive_+1, Null<Real>());
+            std::vector<Size> attempts(alive_+1, 1);
+
             for (Size i=1; i<=alive_; ++i) { // pillar loop
 
-                // bracket root and calculate guess
-                Real min = minValue_ != Null<Real>() ? minValue_ :
-                    Traits::minValueAfter(i, ts_, validData, firstAliveHelper_);
-                Real max = maxValue_ != Null<Real>() ? maxValue_ :
-                    Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_);
+                // shorter aliases for readability and to avoid duplication
+                Real& min = minValues[i];
+                Real& max = maxValues[i];
 
+                // bracket root and calculate guess
+                if (min == Null<Real>()) {
+                    // First attempt; we take min and max either from
+                    // explicit constructor parameter or from traits
+                    min = (minValue_ != Null<Real>() ? minValue_ :
+                           Traits::minValueAfter(i, ts_, validData, firstAliveHelper_));
+                    max = (maxValue_ != Null<Real>() ? maxValue_ :
+                           Traits::maxValueAfter(i, ts_, validData, firstAliveHelper_));
+                } else {
+                    // Extending a previous attempt.  A negative min
+                    // is enlarged; a positive one is shrunk towards 0.
+                    min = (min < 0.0 ? min * minFactor_ : min / minFactor_);
+                    // The opposite holds for the max.
+                    max = (max > 0.0 ? max * maxFactor_ : max / maxFactor_);
+                }
                 Real guess = Traits::guess(i, ts_, validData, firstAliveHelper_);
+
                 // adjust guess if needed
-                if (guess>=max)
-                    guess = max - (max-min)/5.0;
-                else if (guess<=min)
-                    guess = min + (max-min)/5.0;
+                if (guess >= max)
+                    guess = max - (max - min) / 5.0;
+                else if (guess <= min)
+                    guess = min + (max - min) / 5.0;
 
                 // extend interpolation if needed
                 if (!validData) {
@@ -242,12 +326,30 @@ namespace QuantLib {
                         calculate();
                         return;
                     }
-                    QL_FAIL(io::ordinal(iteration+1) << " iteration: failed "
-                            "at " << io::ordinal(i) << " alive instrument, "
-                            "pillar " << errors_[i]->helper()->pillarDate() <<
-                            ", maturity " << errors_[i]->helper()->maturityDate() <<
-                            ", reference date " << ts_->dates_[0] <<
-                            ": " << e.what());
+
+                    // If we have more attempts left on this iteration, try again. Note that the max and min
+                    // bounds will be widened on the retry.
+                    if (attempts[i] < maxAttempts_) {
+                        attempts[i]++;
+                        i--;
+                        continue;
+                    }
+
+                    if (dontThrow_) {
+                        // Use the fallback value
+                        ts_->data_[i] = detail::dontThrowFallback(*errors_[i], min, max, dontThrowSteps_);
+
+                        // Remember to update the interpolation. If we don't and we are on the last "i", we will still
+                        // have the last attempted value in the solver being used in ts_->interpolation_.
+                        ts_->interpolation_.update();
+                    } else {
+                        QL_FAIL(io::ordinal(iteration + 1) << " iteration: failed "
+                                "at " << io::ordinal(i) << " alive instrument, "
+                                "pillar " << errors_[i]->helper()->pillarDate() <<
+                                ", maturity " << errors_[i]->helper()->maturityDate() <<
+                                ", reference date " << ts_->dates_[0] <<
+                                ": " << e.what());
+                    }
                 }
             }
 
@@ -261,10 +363,16 @@ namespace QuantLib {
             if (change<=accuracy)  // convergence reached
                 break;
 
-            QL_REQUIRE(iteration<maxIterations,
-                       "convergence not reached after " << iteration <<
-                       " iterations; last improvement " << change <<
-                       ", required accuracy " << accuracy);
+            // If we hit the max number of iterations and dontThrow is true, just use what we have
+            if (iteration == maxIterations) {
+                if (dontThrow_) {
+                    break;
+                } else {
+                    QL_FAIL("convergence not reached after " << iteration <<
+                            " iterations; last improvement " << change <<
+                            ", required accuracy " << accuracy);
+                }
+            }
 
             validData = true;
         }

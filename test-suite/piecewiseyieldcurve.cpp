@@ -52,9 +52,18 @@
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <iomanip>
+#include <map>
+#include <string>
+#include <vector>
+#include <boost/assign/list_of.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+using boost::assign::list_of;
+using boost::assign::map_list_of;
+using std::map;
+using std::vector;
+using std::string;
 
 namespace piecewise_yield_curve_test {
 
@@ -629,6 +638,25 @@ namespace piecewise_yield_curve_test {
             }
         }
     }
+
+    // Used to check that the exception message contains the expected message string, expMsg.
+    struct ExpErrorPred {
+
+        explicit ExpErrorPred(const string& msg) : expMsg(msg) {}
+
+        bool operator()(const Error& ex) {
+            string errMsg(ex.what());
+            if (errMsg.find(expMsg) == string::npos) {
+                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
+                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        string expMsg;
+    };
 
 }
 
@@ -1364,6 +1392,112 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     }
 }
 
+/* This test attempts to build an ARS collateralised in USD curve as of 25 Sep 2019. Using the default 
+   IterativeBootstrap with no retries, the yield curve building fails. Allowing retries, it expands the min and max 
+   bounds and passes.
+*/
+void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
+
+    BOOST_TEST_MESSAGE("Testing iterative boostrap with retries...");
+
+    SavedSettings backup;
+
+    Date asof(25, Sep, 2019);
+    Settings::instance().evaluationDate() = asof;
+    Actual365Fixed tsDayCounter;
+
+    // USD discount curve built out of FedFunds OIS swaps.
+    vector<Date> usdCurveDates = list_of
+        (Date(25, Sep, 2019))
+        (Date(26, Sep, 2019))
+        (Date(8, Oct, 2019))
+        (Date(16, Oct, 2019))
+        (Date(22, Oct, 2019))
+        (Date(30, Oct, 2019))
+        (Date(2, Dec, 2019))
+        (Date(31, Dec, 2019))
+        (Date(29, Jan, 2020))
+        (Date(2, Mar, 2020))
+        (Date(31, Mar, 2020))
+        (Date(29, Apr, 2020))
+        (Date(29, May, 2020))
+        (Date(1, Jul, 2020))
+        (Date(29, Jul, 2020))
+        (Date(31, Aug, 2020))
+        (Date(30, Sep, 2020));
+
+    vector<DiscountFactor> usdCurveDfs = list_of
+        (1.000000000)
+        (0.999940837)
+        (0.999309357)
+        (0.998894646)
+        (0.998574816)
+        (0.998162528)
+        (0.996552511)
+        (0.995197584)
+        (0.993915264)
+        (0.992530008)
+        (0.991329696)
+        (0.990179606)
+        (0.989005698)
+        (0.987751691)
+        (0.986703371)
+        (0.985495036)
+        (0.984413446);
+
+    Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear> >(
+        usdCurveDates, usdCurveDfs, tsDayCounter));
+
+    // USD/ARS forward points
+    Handle<Quote> arsSpot(ext::make_shared<SimpleQuote>(56.881));
+    map<Period, Real> arsFwdPoints = map_list_of
+        (1 * Months, 8.5157)
+        (2 * Months, 12.7180)
+        (3 * Months, 17.8310)
+        (6 * Months, 30.3680)
+        (9 * Months, 45.5520)
+        (1 * Years, 60.7370);
+
+    // Create the FX swap rate helpers for the ARS in USD curve.
+    vector<ext::shared_ptr<RateHelper> > instruments;
+    for (map<Period, Real>::const_iterator it = arsFwdPoints.begin(); it != arsFwdPoints.end(); ++it) {
+        Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(it->second));
+        instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, it->first, 2,
+            UnitedStates(), Following, false, true, usdYts));
+    }
+
+    // Create the ARS in USD curve with the default IterativeBootstrap.
+    typedef PiecewiseYieldCurve<Discount, LogLinear, IterativeBootstrap> LLDFCurve;
+    ext::shared_ptr<YieldTermStructure> arsYts = ext::make_shared<LLDFCurve>(asof, instruments, tsDayCounter);
+
+    // USD/ARS spot date. The date on which we check the ARS discount curve.
+    Date spotDate(27, Sep, 2019);
+
+    // Check that the ARS in USD curve throws by requesting a discount factor.
+    using piecewise_yield_curve_test::ExpErrorPred;
+    BOOST_CHECK_EXCEPTION(arsYts->discount(spotDate), Error,
+        ExpErrorPred("1st iteration: failed at 1st alive instrument"));
+
+    // Create the ARS in USD curve with an IterativeBootstrap allowing for 4 retries.
+    IterativeBootstrap<LLDFCurve> ib(Null<Real>(), Null<Real>(), Null<Real>(), 5);
+    arsYts = ext::make_shared<LLDFCurve>(asof, instruments, tsDayCounter, ib);
+    
+    // Check that the ARS in USD curve builds and populate the spot ARS discount factor.
+    DiscountFactor spotDfArs = 1.0;
+    BOOST_REQUIRE_NO_THROW(spotDfArs = arsYts->discount(spotDate));
+
+    // Additional dates and discount factors used in the final check i.e. that calculated 1Y FX forward equals input.
+    Date oneYearFwdDate(28, Sep, 2020);
+    DiscountFactor spotDfUsd = usdYts->discount(spotDate);
+    DiscountFactor oneYearDfUsd = usdYts->discount(oneYearFwdDate);
+
+    // Given that the ARS in USD curve builds, check that the 1Y USD/ARS forward rate is as expected.
+    DiscountFactor oneYearDfArs = arsYts->discount(oneYearFwdDate);
+    Real calcFwd = (spotDfArs * arsSpot->value() / oneYearDfArs) / (spotDfUsd / oneYearDfUsd);
+    Real expFwd = arsSpot->value() + arsFwdPoints.at(1 * Years);
+    BOOST_CHECK_SMALL(calcFwd - expFwd, 1e-10);
+}
+
 test_suite* PiecewiseYieldCurveTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
@@ -1418,6 +1552,8 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 #ifndef QL_USE_INDEXED_COUPON
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
 #endif
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testIterativeBootstrapRetries));
 
     return suite;
 }
