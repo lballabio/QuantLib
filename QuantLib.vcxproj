@@ -548,6 +548,7 @@
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\mcdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\binomialdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp" />
@@ -1892,6 +1893,7 @@
     <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\mcdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp" />
