@@ -163,16 +163,9 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
     // fitted curve cost1 = 0.0921232
     // fitted curve cost2 = 0.0919438
 
-    Real cost1 = std::sqrt(curve1->fitResults().minimumCostValue());
-    Real cost2 = std::sqrt(curve2->fitResults().minimumCostValue());
+    // Real cost1 = std::sqrt(curve1->fitResults().minimumCostValue());
+    // Real cost2 = std::sqrt(curve2->fitResults().minimumCostValue());
 
-    BOOST_TEST_MESSAGE("fitted curve cost1 = " << cost1);
-    ;
-    BOOST_TEST_MESSAGE("fitted curve cost2 = " << cost2);
-    ;
-
-    // Output the market and model yields as well as the zero yields of the fitted curves.
-    //
     // It turns out that the model yields are quite close for model1 and model2 while the curve
     // yields are hugely different: for model1 the yields are completely off (>> 100%) while for
     // model2 they are close to the bond model yields, as it should be.
@@ -188,24 +181,16 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
     //  2       1.36438     0.0272363     0.0254977     0.0255014       3.56288      0.025524
     //  3       2.61096     0.0268932     0.0277398     0.0277418       1.87629     0.0278147
 
-    BOOST_TEST_MESSAGE(std::setw(10)
-                       << "helper" << std::setw(16) << "maturity" << std::setw(16) << "market yield"
-                       << std::setw(16) << "model yield 1" << std::setw(16) << "model yield 2"
-                       << std::setw(16) << "curve yield 1" << std::setw(16) << "curve yield 2");
-
     for (Size i = 0; i < helpers.size(); ++i) {
         Real t = curve1->timeFromReference(helpers[i]->bond()->maturityDate());
-        Real marketYield = bonds[i]->yield(quotes[i], Actual365Fixed(), Continuous, NoFrequency);
-        Real modelYield1 =
+        // Real marketYield = bonds[i]->yield(quotes[i], Actual365Fixed(), Continuous, NoFrequency);
+        // Real modelYield1 =
             bonds[i]->yield(modelPrices1[i], Actual365Fixed(), Continuous, NoFrequency);
         Real modelYield2 =
             bonds[i]->yield(modelPrices2[i], Actual365Fixed(), Continuous, NoFrequency);
-        Real curveYield1 = curve1->zeroRate(t, Continuous).rate();
+        // Real curveYield1 = curve1->zeroRate(t, Continuous).rate();
         Real curveYield2 = curve2->zeroRate(t, Continuous).rate();
-        BOOST_TEST_MESSAGE(std::setw(10)
-                           << i << std::setw(16) << t << std::setw(16) << marketYield
-                           << std::setw(16) << modelYield1 << std::setw(16) << modelYield2
-                           << std::setw(16) << curveYield1 << std::setw(16) << curveYield2);
+
         BOOST_CHECK_CLOSE(modelYield2, curveYield2, 1.0); // 1.0 percent relative tolerance
     }
 }
