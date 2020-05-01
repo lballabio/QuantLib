@@ -33,8 +33,3 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: ./coverage/lcov.info
-    - name: Upload coverage to Codecov
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run:
-        bash <(curl -s https://codecov.io/bash) -y .codecov.yml -X gcov -f '!*usr*.gcov'
