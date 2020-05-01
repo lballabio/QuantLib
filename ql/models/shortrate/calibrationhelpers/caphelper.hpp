@@ -54,6 +54,7 @@ namespace QuantLib {
         mutable ext::shared_ptr<Cap> cap_;
         const Period length_;
         const ext::shared_ptr<IborIndex> index_;
+        const Handle<YieldTermStructure> termStructure_;
         const Frequency fixedLegFrequency_;
         const DayCounter fixedLegDayCounter_;
         const bool includeFirstSwaplet_;
