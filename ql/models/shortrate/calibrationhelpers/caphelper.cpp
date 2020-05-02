@@ -39,12 +39,14 @@ namespace QuantLib {
                          BlackCalibrationHelper::CalibrationErrorType errorType,
                          const VolatilityType type,
                          const Real shift)
-    : BlackCalibrationHelper(volatility, termStructure, errorType, type, shift),
-        length_(length), index_(index), fixedLegFrequency_(fixedLegFrequency),
-        fixedLegDayCounter_(fixedLegDayCounter),
-        includeFirstSwaplet_(includeFirstSwaplet)
+    : BlackCalibrationHelper(volatility, errorType, type, shift),
+      length_(length), index_(index), termStructure_(termStructure),
+      fixedLegFrequency_(fixedLegFrequency),
+      fixedLegDayCounter_(fixedLegDayCounter),
+      includeFirstSwaplet_(includeFirstSwaplet)
     {
         registerWith(index_);
+        registerWith(termStructure_);
     }
 
     void CapHelper::addTimesTo(std::list<Time>& times) const {

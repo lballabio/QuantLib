@@ -55,6 +55,23 @@ namespace QuantLib {
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
         BlackCalibrationHelper(const Handle<Quote>& volatility,
+                               CalibrationErrorType calibrationErrorType
+                                                         = RelativePriceError,
+                               const VolatilityType type = ShiftedLognormal,
+                               const Real shift = 0.0)
+        : volatility_(volatility),
+          volatilityType_(type), shift_(shift),
+          calibrationErrorType_(calibrationErrorType) {
+            registerWith(volatility_);
+        }
+
+        /*! \deprecated Use the other constructor.  It you're
+                        inheriting from BlackCalibrationHelper, move
+                        `termStructure_` to your derived class.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        BlackCalibrationHelper(const Handle<Quote>& volatility,
                                const Handle<YieldTermStructure>& termStructure,
                                CalibrationErrorType calibrationErrorType
                                                          = RelativePriceError,
