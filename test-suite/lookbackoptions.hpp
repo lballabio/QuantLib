@@ -31,6 +31,7 @@ class LookbackOptionTest {
     static void testAnalyticContinuousFixedLookback();
     static void testAnalyticContinuousPartialFloatingLookback();
     static void testAnalyticContinuousPartialFixedLookback();
+    static void testMonteCarloLookback();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -5,4 +5,8 @@
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
+#include <ql/pricingengines/lookback/mclookbackpartialfixedengine.hpp>
+#include <ql/pricingengines/lookback/mclookbackfixedengine.hpp>
+#include <ql/pricingengines/lookback/mclookbackfloatingengine.hpp>
+#include <ql/pricingengines/lookback/mclookbackpartialfloatingengine.hpp>
 

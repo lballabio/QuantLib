@@ -1508,6 +1508,10 @@
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp" />
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.hpp" />
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp" />
+    <ClInclude Include="ql\pricingengines\lookback\mclookbackfixedengine.hpp" />
+    <ClInclude Include="ql\pricingengines\lookback\mclookbackfloatingengine.hpp" />
+    <ClInclude Include="ql\pricingengines\lookback\mclookbackpartialfixedengine.hpp" />
+    <ClInclude Include="ql\pricingengines\lookback\mclookbackpartialfloatingengine.hpp" />
     <ClInclude Include="ql\pricingengines\mclongstaffschwartzengine.hpp" />
     <ClInclude Include="ql\pricingengines\mcsimulation.hpp" />
     <ClInclude Include="ql\pricingengines\quanto\all.hpp" />
@@ -2522,6 +2526,10 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\mclookbackfixedengine.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\mclookbackfloatingengine.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\mclookbackpartialfixedengine.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\mclookbackpartialfloatingengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discretizedswap.cpp" />

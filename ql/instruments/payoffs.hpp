@@ -78,6 +78,7 @@ namespace QuantLib {
         //! \name Payoff interface
         //@{
         std::string name() const { return "FloatingType";}
+        Real operator()(Real price, Real strike) const;
         Real operator()(Real price) const;
         virtual void accept(AcyclicVisitor&);
         //@}

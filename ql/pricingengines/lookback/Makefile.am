@@ -7,13 +7,21 @@ this_include_HEADERS = \
 	analyticcontinuousfixedlookback.hpp \
 	analyticcontinuousfloatinglookback.hpp \
 	analyticcontinuouspartialfixedlookback.hpp \
-	analyticcontinuouspartialfloatinglookback.hpp
+	analyticcontinuouspartialfloatinglookback.hpp \
+	mclookbackpartialfixedengine.hpp \
+	mclookbackfixedengine.hpp \
+	mclookbackfloatingengine.hpp \
+	mclookbackpartialfloatingengine.hpp
 
 cpp_files = \
 	analyticcontinuousfixedlookback.cpp \
 	analyticcontinuousfloatinglookback.cpp \
 	analyticcontinuouspartialfixedlookback.cpp \
-	analyticcontinuouspartialfloatinglookback.cpp
+	analyticcontinuouspartialfloatinglookback.cpp \
+	mclookbackpartialfixedengine.cpp \
+	mclookbackfixedengine.cpp \
+    mclookbackfloatingengine.cpp \
+    mclookbackpartialfloatingengine.cpp
 
 if UNITY_BUILD
 
