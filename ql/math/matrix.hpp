@@ -53,9 +53,11 @@ namespace QuantLib {
         */
         template <class Iterator>
         Matrix(Size rows, Size columns, Iterator begin, Iterator end);
-        Matrix(const Matrix &);
+        Matrix(const Matrix&);
+        Matrix(Matrix&&);
         Matrix(const Disposable<Matrix>&);
         Matrix& operator=(const Matrix&);
+        Matrix& operator=(Matrix&&);
         Matrix& operator=(const Disposable<Matrix>&);
         //@}
 
@@ -221,6 +223,11 @@ namespace QuantLib {
         std::copy(from.begin(),from.end(),begin());
     }
 
+    inline Matrix::Matrix(Matrix&& from)
+    : data_((Real*)nullptr) {
+        swap(from);
+    }
+
     inline Matrix::Matrix(const Disposable<Matrix>& from)
     : data_((Real*)(0)), rows_(0), columns_(0) {
         swap(const_cast<Disposable<Matrix>&>(from));
@@ -230,6 +237,11 @@ namespace QuantLib {
         // strong guarantee
         Matrix temp(from);
         swap(temp);
+        return *this;
+    }
+
+    inline Matrix& Matrix::operator=(Matrix&& from) {
+        swap(from);
         return *this;
     }
 

@@ -32,6 +32,7 @@
 #include <boost/shared_array.hpp>
 
 namespace QuantLib {
+
     class FdmMesher;
 
     class NinePointLinearOp : public FdmLinearOp {
@@ -39,8 +40,10 @@ namespace QuantLib {
         NinePointLinearOp(Size d0, Size d1,
                 const ext::shared_ptr<FdmMesher>& mesher);
         NinePointLinearOp(const NinePointLinearOp& m);
+        NinePointLinearOp(NinePointLinearOp&& m);
         NinePointLinearOp(const Disposable<NinePointLinearOp>& m);
         NinePointLinearOp& operator=(const NinePointLinearOp& m);
+        NinePointLinearOp& operator=(NinePointLinearOp&& m);
         NinePointLinearOp& operator=(const Disposable<NinePointLinearOp>& m);
 
         Disposable<Array> apply(const Array& r) const;
@@ -65,6 +68,23 @@ namespace QuantLib {
 
         ext::shared_ptr<FdmMesher> mesher_;
     };
+
+
+    inline NinePointLinearOp::NinePointLinearOp(NinePointLinearOp&& m) {
+        swap(m);
+    }
+
+    inline NinePointLinearOp& NinePointLinearOp::operator=(const NinePointLinearOp& m) {
+        NinePointLinearOp temp(m);
+        swap(temp);
+        return *this;
+    }
+
+    inline NinePointLinearOp& NinePointLinearOp::operator=(NinePointLinearOp&& m) {
+        swap(m);
+        return *this;
+    }
+
 }
 
 #endif

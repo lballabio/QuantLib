@@ -63,13 +63,16 @@ namespace QuantLib {
         */
         Array(Size size, Real value, Real increment);
         Array(const Array&);
+        Array(Array&&);
         Array(const Disposable<Array>&);
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
 
         Array& operator=(const Array&);
+        Array& operator=(Array&&);
         Array& operator=(const Disposable<Array>&);
+
         bool operator==(const Array&) const;
         bool operator!=(const Array&) const;
         //@}
@@ -234,6 +237,11 @@ namespace QuantLib {
         std::copy(from.begin(),from.end(),begin());
     }
 
+    inline Array::Array(Array&& from)
+    : data_((Real*)nullptr), n_(0) {
+        swap(from);
+    }
+
     inline Array::Array(const Disposable<Array>& from)
     : data_((Real*)(0)), n_(0) {
         swap(const_cast<Disposable<Array>&>(from));
@@ -291,17 +299,22 @@ namespace QuantLib {
         return *this;
     }
 
+    inline Array& Array::operator=(Array&& from) {
+        swap(from);
+        return *this;
+    }
+
+    inline Array& Array::operator=(const Disposable<Array>& from) {
+        swap(const_cast<Disposable<Array>&>(from));
+        return *this;
+    }
+
     inline bool Array::operator==(const Array& to) const {
         return (n_ == to.n_) && std::equal(begin(), end(), to.begin());
     }
 
     inline bool Array::operator!=(const Array& to) const {
         return !(this->operator==(to));
-    }
-
-    inline Array& Array::operator=(const Disposable<Array>& from) {
-        swap(const_cast<Disposable<Array>&>(from));
-        return *this;
     }
 
     inline const Array& Array::operator+=(const Array& v) {
