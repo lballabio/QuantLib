@@ -18,49 +18,32 @@
 */
 
 #include "mclookbackfloatingengine.hpp"
+#include <algorithm>
 
 namespace QuantLib {
 
     LookbackFloatingPathPricer::LookbackFloatingPathPricer(
         Option::Type type,
-        const std::vector<DiscountFactor>& discounts)
-        : payoff_(type), discounts_(discounts) {
-    }
+        const DiscountFactor discount)
+    : payoff_(type), discount_(discount) {}
 
     Real LookbackFloatingPathPricer::operator()(const Path& path) const {
-        Size n = path.length();
-        QL_REQUIRE(n>1, "the path cannot be empty");
-        Real underlying;
+        QL_REQUIRE(!path.empty(), "the path cannot be empty");
+
         Real terminalPrice = path.back();
-        Size i;
-        Real winnerStrike;
-
+        Real strike;
         switch (payoff_.optionType()) {
-            case Option::Call:
-                winnerStrike = INT_MAX;
-
-                for (i = 0; i < n - 1; i++) {
-                    underlying = path[i + 1];
-                    if (underlying < winnerStrike){
-                        winnerStrike = underlying;
-                    }
-                }
-                break;
-            case Option::Put:
-                winnerStrike = 0;
-
-                for (i = 0; i < n - 1; i++) {
-                    underlying = path[i + 1];
-                    if (underlying > winnerStrike){
-                        winnerStrike = underlying;
-                    }
-                }
-                break;
-            default:
-                QL_FAIL("unknown option type");
+          case Option::Call:
+            strike = *std::min_element(path.begin()+1, path.end());
+            break;
+          case Option::Put:
+            strike = *std::max_element(path.begin()+1, path.end());
+            break;
+          default:
+            QL_FAIL("unknown option type");
         }
 
-        return payoff_(terminalPrice, winnerStrike) * discounts_.back();
+        return payoff_(terminalPrice, strike) * discount_;
     }
 
 }

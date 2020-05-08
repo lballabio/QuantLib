@@ -112,11 +112,11 @@ namespace QuantLib {
       public:
         LookbackFloatingPathPricer(
                     Option::Type type,
-                    const std::vector<DiscountFactor>& discounts);
+                    DiscountFactor discount);
         Real operator()(const Path& path) const;
       private:
         FloatingTypePayoff payoff_;
-        std::vector<DiscountFactor> discounts_;
+        DiscountFactor discount_;
     };
 
     // template definitions
@@ -176,15 +176,13 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         TimeGrid grid = timeGrid();
-        std::vector<DiscountFactor> discounts(grid.size());
-        for (Size i=0; i<grid.size(); i++)
-            discounts[i] = process_->riskFreeRate()->discount(grid[i]);
+        DiscountFactor discount = process_->riskFreeRate()->discount(grid.back());
 
         return ext::shared_ptr<
                     typename MCLookbackFloatingEngine<RNG,S>::path_pricer_type>(
             new LookbackFloatingPathPricer(
                 payoff->optionType(),
-                discounts));
+                discount));
         }
 
     template <class RNG, class S>

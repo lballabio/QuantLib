@@ -18,52 +18,36 @@
 */
 
 #include "mclookbackpartialfloatingengine.hpp"
+#include <algorithm>
 
 namespace QuantLib {
 
     LookbackPartialFloatingPathPricer::LookbackPartialFloatingPathPricer(
         Time lookbackEnd,
         Option::Type type,
-        const std::vector<DiscountFactor>& discounts)
-        : lookbackEnd_(lookbackEnd), payoff_(type), discounts_(discounts) {
-    }
+        DiscountFactor discount)
+        : lookbackEnd_(lookbackEnd), payoff_(type), discount_(discount) {}
 
     Real LookbackPartialFloatingPathPricer::operator()(const Path& path) const {
-        Size n = path.length();
-        QL_REQUIRE(n>1, "the path cannot be empty");
-        Real underlying;
+        QL_REQUIRE(!path.empty(), "the path cannot be empty");
+
         TimeGrid timeGrid = path.timeGrid();
-        Size lookbackEnd = timeGrid.closestIndex(lookbackEnd_);
+        Size endIndex = timeGrid.closestIndex(lookbackEnd_);
         Real terminalPrice = path.back();
-        Size i;
-        Real winnerStrike;
+        Real strike;
 
         switch (payoff_.optionType()) {
-            case Option::Call:
-                winnerStrike = INT_MAX;
-
-                for (i = 0; i < lookbackEnd; i++) {
-                    underlying = path[i + 1];
-                    if (underlying < winnerStrike){
-                        winnerStrike = underlying;
-                    }
-                }
-                break;
-            case Option::Put:
-                winnerStrike = 0;
-
-                for (i = 0; i < lookbackEnd; i++) {
-                    underlying = path[i + 1];
-                    if (underlying > winnerStrike){
-                        winnerStrike = underlying;
-                    }
-                }
-                break;
-            default:
-                QL_FAIL("unknown option type");
+          case Option::Call:
+            strike = *std::min_element(path.begin()+1, path.begin()+endIndex+1);
+            break;
+          case Option::Put:
+            strike = *std::max_element(path.begin()+1, path.begin()+endIndex+1);
+            break;
+          default:
+            QL_FAIL("unknown option type");
         }
 
-        return payoff_(terminalPrice, winnerStrike) * discounts_.back();
+        return payoff_(terminalPrice, strike) * discount_;
     }
 
 }

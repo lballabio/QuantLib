@@ -18,6 +18,7 @@
 */
 
 #include "mclookbackpartialfixedengine.hpp"
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -25,47 +26,30 @@ namespace QuantLib {
         Time lookbackStart,
         Option::Type type,
         Real strike,
-        const std::vector<DiscountFactor>& discounts)
-        : lookbackStart_(lookbackStart), payoff_(type, strike), discounts_(discounts) {
+        const DiscountFactor discount)
+    : lookbackStart_(lookbackStart), payoff_(type, strike), discount_(discount) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
     }
 
     Real LookbackPartialFixedPathPricer::operator()(const Path& path) const {
-        Size n = path.length();
-        QL_REQUIRE(n>1, "the path cannot be empty");
-        Real underlying;
+        QL_REQUIRE(!path.empty(), "the path cannot be empty");
+
         TimeGrid timeGrid = path.timeGrid();
-        Size lookbackStart = timeGrid.closestIndex(lookbackStart_);
-        Size i;
-        Real winnerUnderlying;
-
+        Size startIndex = timeGrid.closestIndex(lookbackStart_);
+        Real underlying;
         switch (payoff_.optionType()) {
-            case Option::Put:
-                winnerUnderlying = INT_MAX;
-
-                for (i = lookbackStart; i < n-1; i++) {
-                    underlying = path[i + 1];
-                    if (underlying < winnerUnderlying){
-                        winnerUnderlying = underlying;
-                    }
-                }
-                break;
-            case Option::Call:
-                winnerUnderlying = 0;
-
-                for (i = lookbackStart; i < n-1; i++) {
-                    underlying = path[i + 1];
-                    if (underlying > winnerUnderlying){
-                        winnerUnderlying = underlying;
-                    }
-                }
-                break;
-            default:
-                QL_FAIL("unknown option type");
+          case Option::Put:
+            underlying = *std::min_element(path.begin()+startIndex+1, path.end());
+            break;
+          case Option::Call:
+            underlying = *std::max_element(path.begin()+startIndex+1, path.end());
+            break;
+          default:
+            QL_FAIL("unknown option type");
         }
 
-        return payoff_(winnerUnderlying) * discounts_.back();
+        return payoff_(underlying) * discount_;
     }
 
 }

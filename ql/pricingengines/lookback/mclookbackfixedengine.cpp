@@ -18,51 +18,35 @@
 */
 
 #include "mclookbackfixedengine.hpp"
+#include <algorithm>
 
 namespace QuantLib {
 
     LookbackFixedPathPricer::LookbackFixedPathPricer(
         Option::Type type,
         Real strike,
-        const std::vector<DiscountFactor>& discounts)
-        : payoff_(type, strike), discounts_(discounts) {
+        DiscountFactor discount)
+    : payoff_(type, strike), discount_(discount) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
     }
 
     Real LookbackFixedPathPricer::operator()(const Path& path) const {
-        Size n = path.length();
-        QL_REQUIRE(n>1, "the path cannot be empty");
+        QL_REQUIRE(!path.empty(), "the path cannot be empty");
+
         Real underlying;
-        Size i;
-        Real winnerUnderlying;
-
         switch (payoff_.optionType()) {
-            case Option::Put:
-                winnerUnderlying = INT_MAX;
-
-                for (i = 0; i < n - 1; i++) {
-                    underlying = path[i + 1];
-                    if (underlying < winnerUnderlying){
-                        winnerUnderlying = underlying;
-                    }
-                }
-                break;
-            case Option::Call:
-                winnerUnderlying = 0;
-
-                for (i = 0; i < n - 1; i++) {
-                    underlying = path[i + 1];
-                    if (underlying > winnerUnderlying){
-                        winnerUnderlying = underlying;
-                    }
-                }
-                break;
-            default:
-                QL_FAIL("unknown option type");
+          case Option::Put:
+            underlying = *std::min_element(path.begin()+1, path.end());
+            break;
+          case Option::Call:
+            underlying = *std::max_element(path.begin()+1, path.end());
+            break;
+          default:
+            QL_FAIL("unknown option type");
         }
 
-        return payoff_(winnerUnderlying) * discounts_.back();
+        return payoff_(underlying) * discount_;
     }
 
 }

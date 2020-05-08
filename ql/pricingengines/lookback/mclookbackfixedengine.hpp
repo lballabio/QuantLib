@@ -112,11 +112,11 @@ namespace QuantLib {
       public:
         LookbackFixedPathPricer(Option::Type type,
                     Real strike,
-                    const std::vector<DiscountFactor>& discounts);
+                    DiscountFactor discount);
         Real operator()(const Path& path) const;
       private:
         PlainVanillaPayoff payoff_;
-        std::vector<DiscountFactor> discounts_;
+        DiscountFactor discount_;
     };
 
     // template definitions
@@ -176,16 +176,14 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         TimeGrid grid = timeGrid();
-        std::vector<DiscountFactor> discounts(grid.size());
-        for (Size i=0; i<grid.size(); i++)
-            discounts[i] = process_->riskFreeRate()->discount(grid[i]);
+        DiscountFactor discount = process_->riskFreeRate()->discount(grid.back());
 
         return ext::shared_ptr<
                     typename MCLookbackFixedEngine<RNG,S>::path_pricer_type>(
             new LookbackFixedPathPricer(
                 payoff->optionType(),
                 payoff->strike(),
-                discounts));
+                discount));
         }
 
     template <class RNG, class S>

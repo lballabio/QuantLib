@@ -508,6 +508,8 @@ void LookbackOptionTest::testAnalyticContinuousPartialFixedLookback() {
 }
 
 void LookbackOptionTest::testMonteCarloLookback() {
+    BOOST_TEST_MESSAGE("Testing Monte Carlo engines for lookback options...");
+
     Real tolerance = 0.1;
 
     DayCounter dc = Actual360();
