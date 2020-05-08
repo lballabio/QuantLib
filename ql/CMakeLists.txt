@@ -687,10 +687,7 @@ set(QuantLib_SRC
     pricingengines/lookback/analyticcontinuousfloatinglookback.cpp
     pricingengines/lookback/analyticcontinuouspartialfixedlookback.cpp
     pricingengines/lookback/analyticcontinuouspartialfloatinglookback.cpp
-    pricingengines/lookback/mclookbackpartialfixedengine.cpp
-    pricingengines/lookback/mclookbackfixedengine.cpp
-    pricingengines/lookback/mclookbackpartialfloatingengine.cpp
-    pricingengines/lookback/mclookbackfloatingengine.cpp
+    pricingengines/lookback/mclookbackengine.cpp
     pricingengines/swap/cvaswapengine.cpp
     pricingengines/swap/discountingswapengine.cpp
     pricingengines/swap/discretizedswap.cpp
@@ -1944,10 +1941,7 @@ set(QuantLib_HDR
     pricingengines/lookback/analyticcontinuousfloatinglookback.hpp
     pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp
     pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp
-    pricingengines/lookback/mclookbackpartialfixedengine.hpp
-    pricingengines/lookback/mclookbackfixedengine.hpp
-    pricingengines/lookback/mclookbackpartialfloatingengine.hpp
-    pricingengines/lookback/mclookbackfloatingengine.hpp
+    pricingengines/lookback/mclookbackengine.hpp
     pricingengines/mclongstaffschwartzengine.hpp
     pricingengines/mcsimulation.hpp
     pricingengines/quanto/all.hpp

@@ -27,10 +27,7 @@
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
-#include <ql/pricingengines/lookback/mclookbackfixedengine.hpp>
-#include <ql/pricingengines/lookback/mclookbackfloatingengine.hpp>
-#include <ql/pricingengines/lookback/mclookbackpartialfixedengine.hpp>
-#include <ql/pricingengines/lookback/mclookbackpartialfloatingengine.hpp>
+#include <ql/pricingengines/lookback/mclookbackengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -564,7 +561,8 @@ void LookbackOptionTest::testMonteCarloLookback() {
         Real analytical = partialFixedLookback.NPV();
 
         ext::shared_ptr<PricingEngine> mcpartialfixedengine =
-            MakeMCLookbackPartialFixedEngine<PseudoRandom>(stochProcess)
+            MakeMCLookbackEngine<ContinuousPartialFixedLookbackOption, PseudoRandom>
+            (stochProcess)
             .withSteps(2000)
             .withAntitheticVariate()
             .withSeed(1)
@@ -595,7 +593,8 @@ void LookbackOptionTest::testMonteCarloLookback() {
         analytical = fixedLookback.NPV();
 
         ext::shared_ptr<PricingEngine> mcfixedengine =
-            MakeMCLookbackFixedEngine<PseudoRandom>(stochProcess)
+            MakeMCLookbackEngine<ContinuousFixedLookbackOption, PseudoRandom>
+            (stochProcess)
             .withSteps(2000)
             .withAntitheticVariate()
             .withSeed(1)
@@ -631,7 +630,8 @@ void LookbackOptionTest::testMonteCarloLookback() {
         analytical = partialFloating.NPV();
 
         ext::shared_ptr<PricingEngine> mcpartialfloatingengine =
-            MakeMCLookbackPartialFloatingEngine<PseudoRandom>(stochProcess)
+            MakeMCLookbackEngine<ContinuousPartialFloatingLookbackOption, PseudoRandom>
+            (stochProcess)
             .withSteps(2000)
             .withAntitheticVariate()
             .withSeed(1)
@@ -660,7 +660,8 @@ void LookbackOptionTest::testMonteCarloLookback() {
         analytical = floating.NPV();
 
         ext::shared_ptr<PricingEngine> mcfloatingengine =
-            MakeMCLookbackFloatingEngine<PseudoRandom>(stochProcess)
+            MakeMCLookbackEngine<ContinuousFloatingLookbackOption, PseudoRandom>
+            (stochProcess)
             .withSteps(2000)
             .withAntitheticVariate()
             .withSeed(1)
