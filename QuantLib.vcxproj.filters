@@ -2568,6 +2568,9 @@
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp">
       <Filter>pricingengines\lookback</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\lookback\mclookbackengine.hpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\bond\all.hpp">
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
@@ -5650,6 +5653,9 @@
       <Filter>pricingengines\lookback</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp">
+      <Filter>pricingengines\lookback</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\lookback\mclookbackengine.cpp">
       <Filter>pricingengines\lookback</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\bondfunctions.cpp">
