@@ -2935,7 +2935,7 @@ void HestonModelTest::testSmallSigmaExpansion4ExpFitting() {
                         if (diff > 1e-10) {
                             BOOST_ERROR("failed to reproduce Black Scholes prices "
                                     "for Heston model with very small sigma"
-                                    << "\n  expeceted : " << expected
+                                    << "\n  expceted  : " << expected
                                     << "\n  calculated: " << calculated
                                     << "\n  diff      : " << diff
                                     << "\n  tolerance : " << 1e-10);
@@ -2980,11 +2980,11 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
     const Real kappa =  2.5;
     const Real theta =  0.06;
 
-    // Reference prices are caclulated using a boost multi-precision
+    // Reference prices are calculated using a boost multi-precision
     // implementation of the AnalyticHestonEngine,
     // https://github.com/klausspanderen/HestonExponentialFitting
 
-    const Real expected[] = {
+    const Real referenceValues[] = {
             1.1631865252540813e-58,
             1.06426822273258466e-49,
             6.92896489110422086e-16,
@@ -3047,33 +3047,48 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
         const ext::shared_ptr<Exercise> exercise =
             ext::make_shared<EuropeanExercise>(maturityDate);
 
-        const Real fwd = s0->value()*qTS->discount(t)/rTS->discount(t);
+        const DiscountFactor df = rTS->discount(t);
+        const Real fwd = s0->value()*qTS->discount(t)/df;
 
         for (Size j=0; j < LENGTH(moneyness); ++j, ++idx) {
             const Real strike =
                 std::exp(-moneyness[j]*std::sqrt(theta*t))*fwd;
 
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::make_shared<PlainVanillaPayoff>(
-                    (fwd > strike) ? Option::Put : Option::Call,
-                    strike);
+            for (Size k=0; k < 2; ++k) {
+                const ext::shared_ptr<PlainVanillaPayoff> payoff =
+                    ext::make_shared<PlainVanillaPayoff>(
+                        (k) ? Option::Put : Option::Call,
+                        strike);
 
-            VanillaOption option(payoff, exercise);
-            option.setPricingEngine(engine);
+                VanillaOption option(payoff, exercise);
+                option.setPricingEngine(engine);
 
-            const Real calculated = option.NPV();
+                const Real calculated = option.NPV();
 
-            const Real diff = std::fabs(calculated - expected[idx]);
-            if (diff > 1e-12) {
-                BOOST_ERROR("failed to reproduce cached extreme "
-                        "Heston model prices with exponential fitted "
-                        "Gaussian-Laguerre integration"
-                        << "\n  forward   : " << fwd
-                        << "\n  strike    : " << strike
-                        << "\n  expeceted : " << expected
-                        << "\n  calculated: " << calculated
-                        << "\n  diff      : " << diff
-                        << "\n  tolerance : " << 1e-12);
+                Real expected;
+                if (payoff->optionType() == Option::Call)
+                    if (fwd < strike)
+                        expected = referenceValues[idx];
+                    else
+                        expected = (fwd - strike)*df + referenceValues[idx];
+                else
+                    if (fwd > strike)
+                        expected = referenceValues[idx];
+                    else
+                        expected = referenceValues[idx] - (fwd - strike)*df;
+
+                const Real diff = std::fabs(calculated - expected);
+                if (diff > 1e-12) {
+                    BOOST_ERROR("failed to reproduce cached extreme "
+                            "Heston model prices with exponential fitted "
+                            "Gaussian-Laguerre integration"
+                            << "\n  forward   : " << fwd
+                            << "\n  strike    : " << strike
+                            << "\n  expected  : " << expected
+                            << "\n  calculated: " << calculated
+                            << "\n  diff      : " << diff
+                            << "\n  tolerance : " << 1e-12);
+                }
             }
         }
     }
