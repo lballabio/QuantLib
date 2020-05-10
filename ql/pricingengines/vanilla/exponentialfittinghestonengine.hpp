@@ -33,7 +33,7 @@
 namespace QuantLib {
 
     //! analytic Heston-model engine based on
-	//  exponentially fitted Gauss-Laguerre quadrature
+    //  exponentially fitted Gauss-Laguerre quadrature
 
     /*! References:
         D. Conte, L. Ixaru, B. Paternoster, G. Santomauro, 2014
@@ -48,7 +48,7 @@ namespace QuantLib {
       public:
         ExponentialFittingHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
-			Real scaling = Null<Real>());
+            Real scaling = Null<Real>());
 
         void calculate() const;
 

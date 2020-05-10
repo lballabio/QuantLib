@@ -239,11 +239,11 @@ namespace QuantLib {
 
         class LewisCV : public ext::function<Real(Real)> {
           public:
-        	LewisCV(const ext::shared_ptr<AnalyticHestonEngine>& engine,
-        	        Real t, Real freq, Real sigmaBS)
+            LewisCV(const ext::shared_ptr<AnalyticHestonEngine>& engine,
+                    Real t, Real freq, Real sigmaBS)
             : analyticEngine_(engine),
               t_(t), freq_(freq),
-			  sigmaBS_(sigmaBS) {}
+              sigmaBS_(sigmaBS) {}
 
             Real operator()(Real u) const {
 
@@ -254,12 +254,12 @@ namespace QuantLib {
                 const std::complex<Real> phiBS = -0.5*sigmaBS_*sigmaBS_*t_
                     *(z*z + std::complex<Real>(-z.imag(), z.real()));
 
-				return (f*(std::exp(phiBS) - analyticEngine_->chF(z, t_))).real()
-						/ (u*u + 0.25);
+                return (f*(std::exp(phiBS) - analyticEngine_->chF(z, t_))).real()
+                        / (u*u + 0.25);
             }
 
             const ext::shared_ptr<AnalyticHestonEngine> analyticEngine_;
-        	const Real t_, freq_, sigmaBS_;
+            const Real t_, freq_, sigmaBS_;
         };
     }
 
@@ -268,17 +268,17 @@ namespace QuantLib {
     ExponentialFittingHestonEngine::ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model, Real scaling)
     : GenericModelEngine<HestonModel,
-						 VanillaOption::arguments,
-						 VanillaOption::results>(model),
-	  scaling_(scaling) {
-    	if (moneyness_.empty()) {
+                         VanillaOption::arguments,
+                         VanillaOption::results>(model),
+      scaling_(scaling) {
+        if (moneyness_.empty()) {
 
-    		const Size n = sizeof(values4)/sizeof(values4[0]);
-    		moneyness_.reserve(n);
+            const Size n = sizeof(values4)/sizeof(values4[0]);
+            moneyness_.reserve(n);
 
-    		for (Size i=0; i < n; ++i)
-    			moneyness_.push_back(values4[i][0]);
-    	}
+            for (Size i=0; i < n; ++i)
+                moneyness_.push_back(values4[i][0]);
+        }
     }
 
     void ExponentialFittingHestonEngine::calculate() const {
@@ -298,9 +298,9 @@ namespace QuantLib {
         const Time t = process->time(maturityDate);
 
         const DiscountFactor rd
-			= process->riskFreeRate()->discount(maturityDate);
+            = process->riskFreeRate()->discount(maturityDate);
         const DiscountFactor dd
-			= process->dividendYield()->discount(maturityDate);
+            = process->dividendYield()->discount(maturityDate);
 
         const Real spot = process->s0()->value();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
@@ -316,56 +316,56 @@ namespace QuantLib {
         const Real vAvg = (1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta;
 
         const Real bsPrice = BlackCalculator(
-        	Option::Call, strike, fwd, std::sqrt(vAvg*t), rd).value();
+            Option::Call, strike, fwd, std::sqrt(vAvg*t), rd).value();
 
         const LewisCV helper(
             ext::make_shared<AnalyticHestonEngine>(model_.currentLink(), 1),
-        	t, freq, std::sqrt(vAvg));
+            t, freq, std::sqrt(vAvg));
 
         const Real scalingFactor = (scaling_ == Null<Real>())
-        	? std::max(0.01, std::min(10.0, 0.25/std::sqrt(0.5*vAvg*t)))
-        	: scaling_;
+            ? std::max(0.01, std::min(10.0, 0.25/std::sqrt(0.5*vAvg*t)))
+            : scaling_;
 
         Size n;
         Real u;
         if (std::fabs(freq) < 0.1) {
-        	n = 0;
-        	u = scalingFactor;
+            n = 0;
+            u = scalingFactor;
         }
         else {
-        	const Real lookup = std::fabs(scalingFactor*freq);
-        	n = std::min(Size(moneyness_.size() - 1),
-        			Size(std::distance(moneyness_.begin(),
-        				std::lower_bound(
-        					moneyness_.begin(),
-							moneyness_.end(), lookup))));
+            const Real lookup = std::fabs(scalingFactor*freq);
+            n = std::min(Size(moneyness_.size() - 1),
+                    Size(std::distance(moneyness_.begin(),
+                        std::lower_bound(
+                            moneyness_.begin(),
+                            moneyness_.end(), lookup))));
 
-        	if (n > 0 && std::fabs(lookup - moneyness_[n])
-        					> std::fabs(lookup - moneyness_[n-1])) {
-        		--n;
-        	}
+            if (n > 0 && std::fabs(lookup - moneyness_[n])
+                            > std::fabs(lookup - moneyness_[n-1])) {
+                --n;
+            }
 
-        	const Real omega = moneyness_[n];
-			u = std::fabs(omega / freq);
+            const Real omega = moneyness_[n];
+            u = std::fabs(omega / freq);
         }
 
         Real s = 0.0;
         for (Size i=0; i < 48; ++i) {
-        	const Real x_i = values4[n][i+1];
-        	const Real w_i = values4[n][49+i];
+            const Real x_i = values4[n][i+1];
+            const Real w_i = values4[n][49+i];
 
-        	s += w_i*u*helper(u*x_i);
+            s += w_i*u*helper(u*x_i);
         }
 
-        const Real h_cv = s	* std::sqrt(strike * fwd)*rd/M_PI;
+        const Real h_cv = s    * std::sqrt(strike * fwd)*rd/M_PI;
 
         switch (payoff->optionType())
         {
           case Option::Call:
-        	  results_.value = bsPrice + h_cv;
+              results_.value = bsPrice + h_cv;
             break;
           case Option::Put:
-        	  results_.value = bsPrice + h_cv - rd*(fwd - strike);
+              results_.value = bsPrice + h_cv - rd*(fwd - strike);
             break;
           default:
             QL_FAIL("unknown option type");
