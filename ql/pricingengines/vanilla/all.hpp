@@ -17,6 +17,7 @@
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
 #include <ql/pricingengines/vanilla/discretizedvanillaoption.hpp>
+#include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>

@@ -4300,6 +4300,9 @@
     <ClInclude Include="ql\math\integrals\momentbasedgaussianpolynomial.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6935,6 +6938,9 @@
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\schemes\cranknicolsonscheme.cpp">
       <Filter>methods\finitedifferences\schemes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

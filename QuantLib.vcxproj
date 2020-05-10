@@ -1546,6 +1546,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\bjerksundstenslandengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\coshestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\discretizedvanillaoption.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdamericanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdbatesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdbermudanengine.hpp" />
@@ -2549,6 +2550,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\bjerksundstenslandengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\coshestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\discretizedvanillaoption.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdbatesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdcevvanillaengine.cpp" />

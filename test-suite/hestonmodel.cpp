@@ -32,6 +32,7 @@
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
+#include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
@@ -268,7 +269,8 @@ void HestonModelTest::testDAXCalibration() {
 
     const ext::shared_ptr<PricingEngine> engines[] = {
         ext::make_shared<AnalyticHestonEngine>(model, 64),
-        ext::make_shared<COSHestonEngine>(model, 12, 75)
+        ext::make_shared<COSHestonEngine>(model, 12, 75),
+        ext::make_shared<ExponentialFittingHestonEngine>(model)
     };
 
     const Array params = model->params();
@@ -856,6 +858,19 @@ void HestonModelTest::testKahlJaeckelCase() {
                    << "\n    expected:   " << expected
                    << "\n    error:      " << std::scientific << error);
     }
+
+    option.setPricingEngine(
+        ext::make_shared<ExponentialFittingHestonEngine>(hestonModel));
+    calculated = option.NPV();
+    error = std::fabs(calculated - expected);
+
+    if (error > 0.00002) {
+        BOOST_FAIL("failed to reproduce cached price with "
+                   "exponential fitting Heston engine"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    error:      " << std::scientific << error);
+    }
 }
 
 namespace {
@@ -1273,6 +1288,9 @@ void HestonModelTest::testAlanLewisReferencePrices() {
     const ext::shared_ptr<PricingEngine> cosEngine(
         ext::make_shared<COSHestonEngine>(model, 20, 400));
 
+    const ext::shared_ptr<PricingEngine> exponentialFittingEngine(
+        ext::make_shared<ExponentialFittingHestonEngine>(model));
+
     const ext::shared_ptr<PricingEngine> andersenPiterbargEngine(
         new AnalyticHestonEngine(
             model,
@@ -1284,7 +1302,7 @@ void HestonModelTest::testAlanLewisReferencePrices() {
     const Option::Type types[] = { Option::Put, Option::Call };
     const ext::shared_ptr<PricingEngine> engines[]
         = { laguerreEngine, gaussLobattoEngine,
-            cosEngine, andersenPiterbargEngine };
+            cosEngine, andersenPiterbargEngine, exponentialFittingEngine };
 
     const Real expectedResults[][2] = {
         { 7.958878113256768285213263077598987193482161301733,
@@ -2136,12 +2154,17 @@ void HestonModelTest::testAndersenPiterbargPricing() {
                 AnalyticHestonEngine::Integration::trapezoid(1e-8, 256),
                 1e-8));
 
-    const ext::shared_ptr<AnalyticHestonEngine> engines[] = {
+    const ext::shared_ptr<ExponentialFittingHestonEngine>
+        andersenPiterbargExponentialFittingEngine(
+            ext::make_shared<ExponentialFittingHestonEngine>(model));
+
+    const ext::shared_ptr<PricingEngine> engines[] = {
         andersenPiterbargLaguerreEngine,
         andersenPiterbargLobattoEngine,
         andersenPiterbargSimpsonEngine,
         andersenPiterbargTrapezoidEngine,
-        andersenPiterbargTrapezoidEngine2
+        andersenPiterbargTrapezoidEngine2,
+        andersenPiterbargExponentialFittingEngine
     };
 
     const std::string algos[] = {
@@ -2734,7 +2757,6 @@ void HestonModelTest::testSmallSigmaExpansion() {
     const DayCounter dc = Actual365Fixed();
     const Time t = dc.yearFraction(settlementDate, maturityDate);
     const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
-    const Handle<YieldTermStructure> qTS(flatRate(0.0, dc));
 
     const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
 
@@ -2747,7 +2769,7 @@ void HestonModelTest::testSmallSigmaExpansion() {
     const ext::shared_ptr<HestonModel> hestonModel =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
-                rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+                rTS, rTS, spot, v0, kappa, theta, sigma, rho));
 
     const ext::shared_ptr<AnalyticHestonEngine> engine =
         ext::make_shared<AnalyticHestonEngine>(hestonModel);
@@ -2800,6 +2822,262 @@ void HestonModelTest::testSmallSigmaExpansion() {
     }
 }
 
+void HestonModelTest::testSmallSigmaExpansion4ExpFitting() {
+    BOOST_TEST_MESSAGE("Testing small sigma expansion for the "
+                       "exponential fitting Heston engine...");
+
+    SavedSettings backup;
+
+    const Date todaysDate(13, March, 2020);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const DayCounter dc = Actual365Fixed();
+    const Handle<YieldTermStructure> rTS(flatRate(0.05, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.075, dc));
+
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+
+    // special case: reduce sigma
+    const Date maturityDate = Date(14, March, 2021);
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+    const Real fwd =
+        spot->value()*qTS->discount(maturity)/rTS->discount(maturity);
+
+    const Real v0 = 0.04;
+    const Real rho = -0.5;
+    const Real kappa = 4.0;
+    const Real theta = 0.04;
+
+    const Real moneyness = 0.1;
+    const Real strike = std::exp(-moneyness*std::sqrt(theta*maturity))*fwd;
+
+    const Real expected = blackFormula(
+        Option::Call, strike, fwd,
+        std::sqrt(v0*maturity), rTS->discount(maturity));
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        ext::make_shared<EuropeanExercise>(maturityDate));
+
+    for (Real sigma = 1e-4; sigma > 1e-12; sigma*=0.1) {
+        option.setPricingEngine(
+            ext::make_shared<ExponentialFittingHestonEngine>(
+                ext::make_shared<HestonModel>(
+                    ext::make_shared<HestonProcess>(
+                        rTS, qTS, spot, v0, kappa, theta, sigma, rho))));
+        const Real calculated = option.NPV();
+
+        const Real diff = std::fabs(expected - calculated);
+
+        if (diff > 0.01*sigma) {
+            BOOST_ERROR("failed to reproduce Black Scholes prices "
+                    "for Heston model with very small sigma"
+                    << "\n  expeceted : " << expected
+                    << "\n  calclated : " << calculated
+                    << "\n  sigma     : " << sigma
+                    << "\n  diff      : " << diff
+                    << "\n  tolerance : " << 10*sigma);
+        }
+    }
+
+
+    // generic cases
+    const Real kappas[] = { 0.5, 1.0, 4.0 };
+    const Real thetas[] = { 0.04, 0.09};
+    const Real v0s[]    = { 0.025, 0.20 };
+    const Real maturities[] = { 1, 31, 182, 1850 };
+
+    for (Size m=0; m < LENGTH(maturities); ++m) {
+        const Date maturityDate = todaysDate + Period(maturities[m], Days);
+        const DiscountFactor df = rTS->discount(maturityDate);
+        const Real fwd = spot->value() * qTS->discount(maturityDate)/df;
+
+        const ext::shared_ptr<Exercise> exercise =
+            ext::make_shared<EuropeanExercise>(maturityDate);
+
+        const Time t = dc.yearFraction(todaysDate, maturityDate);
+
+        Option::Type optionType = Option::Call;
+
+        for (Size i=0; i < LENGTH(kappas); ++i) {
+            const Real kappa = kappas[i];
+
+            for (Size j=0; j < LENGTH(thetas); ++j) {
+                const Real theta = thetas[j];
+
+                for (Size l=0; l < LENGTH(v0s); ++l) {
+                    const Real v0 = v0s[l];
+
+                    const ext::shared_ptr<PricingEngine> engine =
+                        ext::make_shared<ExponentialFittingHestonEngine>(
+                            ext::make_shared<HestonModel>(
+                                ext::make_shared<HestonProcess>(
+                                    rTS, qTS, spot, v0,
+                                    kappa, theta, 1e-13, -0.8)));
+
+                    const Real stdDev =
+                        std::sqrt(((1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta)*t);
+
+                    for (Real strike = spot->value()*exp(-10*stdDev);
+                            strike < spot->value()*exp(10*stdDev); strike*= 1.2) {
+
+                        VanillaOption option(
+                            ext::make_shared<PlainVanillaPayoff>(
+                                optionType, strike), exercise);
+
+                        option.setPricingEngine(engine);
+                        const Real calculated = option.NPV();
+
+                        const Real expected =
+                            blackFormula(optionType, strike, fwd, stdDev, df);
+
+                        const Real diff = std::fabs(expected - calculated);
+                        if (diff > 1e-10) {
+                            BOOST_ERROR("failed to reproduce Black Scholes prices "
+                                    "for Heston model with very small sigma"
+                                    << "\n  expeceted : " << expected
+                                    << "\n  calculated: " << calculated
+                                    << "\n  diff      : " << diff
+                                    << "\n  tolerance : " << 1e-10);
+                        }
+
+                        optionType = (optionType == Option::Call)
+                            ? Option::Put : Option::Call;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
+    BOOST_TEST_MESSAGE("Testing exponential fitting Heston engine "
+            "with high precision results for large moneyness ...");
+
+    SavedSettings backup;
+
+    const Date todaysDate = Date(13, May, 2020);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.0507, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.0469, dc));
+
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
+
+    const Real moneyness[] = { -20, -10, -5, 2.5, 1, 0, 1, 2.5, 5, 10, 20 };
+    const Period maturities[] = {
+            Period(1, Days),
+            Period(1, Months),
+            Period(1, Years),
+            Period(10, Years)
+    };
+
+    const Real v0    =  0.04;
+    const Real rho   = -0.6;
+    const Real sigma =  0.75;
+    const Real kappa =  2.5;
+    const Real theta =  0.06;
+
+    // Reference prices are caclulated using a boost multi-precision
+    // implementation of the AnalyticHestonEngine,
+    // https://github.com/klausspanderen/HestonExponentialFitting
+
+    const Real expected[] = {
+            1.1631865252540813e-58,
+            1.06426822273258466e-49,
+            6.92896489110422086e-16,
+            8.19515526286263236e-06,
+            0.000625608178476390504,
+            0.00417261379371945684,
+            0.000625608178476390504,
+            8.19515526286263236e-06,
+            1.92308901296741414e-10,
+            1.57327901822368115e-23,
+            5.7830515043285098e-58,
+            3.56081886910098813e-48,
+            2.9489071194212509e-23,
+            1.54181757781090727e-11,
+            0.000367960011879847279,
+            0.00493886106106039818,
+            0.0227152343265593776,
+            0.00493886106106039818,
+            0.000367960011879847279,
+            3.06653474407784574e-06,
+            8.86665241279348934e-11,
+            1.51206812371708868e-20,
+            4.18506719865401643e-29,
+            2.46637786897559908e-15,
+            1.75338784910563671e-08,
+            0.00284789176080218294,
+            0.0199133097064688458,
+            0.0776848755698912041,
+            0.0199133097064688458,
+            0.00284789176080218294,
+            0.00012462190796343504,
+            2.59755319566692257e-07,
+            1.13853114743124721e-12,
+            4.27612073892114211e-39,
+            1.08387452075906664e-25,
+            4.15179522944463802e-11,
+            0.00134157732880653131,
+            0.029018582813884912,
+            0.176405213088554197,
+            0.029018582813884912,
+            0.00134157732880653131,
+            5.43674074281991917e-06,
+            6.51443921040230507e-11,
+            9.25756999394709285e-21
+    };
+
+    const ext::shared_ptr<HestonModel> model =
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
+                rTS, qTS, s0, v0, kappa, theta, sigma, rho));
+
+    const ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<ExponentialFittingHestonEngine>(model);
+
+    Size idx = 0;
+    for (Size i=0; i < LENGTH(maturities); ++i) {
+        const Date maturityDate = todaysDate + maturities[i];
+        const Time t = dc.yearFraction(todaysDate, maturityDate);
+
+        const ext::shared_ptr<Exercise> exercise =
+            ext::make_shared<EuropeanExercise>(maturityDate);
+
+        const Real fwd = s0->value()*qTS->discount(t)/rTS->discount(t);
+
+        for (Size j=0; j < LENGTH(moneyness); ++j, ++idx) {
+            const Real strike =
+                std::exp(-moneyness[j]*std::sqrt(theta*t))*fwd;
+
+            const ext::shared_ptr<PlainVanillaPayoff> payoff =
+                ext::make_shared<PlainVanillaPayoff>(
+                    (fwd > strike) ? Option::Put : Option::Call,
+                    strike);
+
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(engine);
+
+            const Real calculated = option.NPV();
+
+            const Real diff = std::fabs(calculated - expected[idx]);
+            if (diff > 1e-12) {
+                BOOST_ERROR("failed to reproduce cached extreme "
+                        "Heston model prices with exponential fitted "
+                        "Gaussian-Laguerre integration"
+                        << "\n  forward   : " << fwd
+                        << "\n  strike    : " << strike
+                        << "\n  expeceted : " << expected
+                        << "\n  calculated: " << calculated
+                        << "\n  diff      : " << diff
+                        << "\n  tolerance : " << 1e-12);
+            }
+        }
+    }
+}
 
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
@@ -2841,6 +3119,10 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
         &HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testSmallSigmaExpansion));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testSmallSigmaExpansion4ExpFitting));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testExponentialFitting4StrikesAndMaturities));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
