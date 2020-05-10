@@ -246,7 +246,6 @@ namespace QuantLib {
               sigmaBS_(sigmaBS) {}
 
             Real operator()(Real u) const {
-
                 const std::complex<Real> z(u, -0.5);
                 const std::complex<Real> f =
                     std::exp(std::complex<Real>(0.0, u*freq_));
@@ -272,7 +271,6 @@ namespace QuantLib {
                          VanillaOption::results>(model),
       scaling_(scaling) {
         if (moneyness_.empty()) {
-
             const Size n = sizeof(values4)/sizeof(values4[0]);
             moneyness_.reserve(n);
 
