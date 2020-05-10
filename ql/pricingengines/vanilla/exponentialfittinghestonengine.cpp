@@ -270,6 +270,7 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       scaling_(scaling) {
+
         if (moneyness_.empty()) {
             const Size n = sizeof(values4)/sizeof(values4[0]);
             moneyness_.reserve(n);
