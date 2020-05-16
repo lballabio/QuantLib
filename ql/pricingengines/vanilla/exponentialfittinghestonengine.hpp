@@ -46,7 +46,7 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        ExponentialFittingHestonEngine(
+        explicit ExponentialFittingHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
             Real scaling = Null<Real>());
 
