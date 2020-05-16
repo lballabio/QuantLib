@@ -348,10 +348,12 @@ namespace QuantLib {
             u = std::fabs(omega / freq);
         }
 
+        const Size order = (sizeof(values4[0])/sizeof(Real) - 1)/2;
+
         Real s = 0.0;
-        for (Size i=0; i < 48; ++i) {
+        for (Size i=0; i < order; ++i) {
             const Real x_i = values4[n][i+1];
-            const Real w_i = values4[n][49+i];
+            const Real w_i = values4[n][order + 1 +i];
 
             s += w_i*u*helper(u*x_i);
         }

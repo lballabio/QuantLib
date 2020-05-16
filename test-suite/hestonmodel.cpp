@@ -3081,7 +3081,7 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
                 if (diff > 1e-12) {
                     BOOST_ERROR("failed to reproduce cached extreme "
                             "Heston model prices with exponential fitted "
-                            "Gaussian-Laguerre integration"
+                            "Gauss-Laguerre quadrature rule"
                             << "\n  forward   : " << fwd
                             << "\n  strike    : " << strike
                             << "\n  expected  : " << expected
