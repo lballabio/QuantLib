@@ -117,7 +117,7 @@ namespace QuantLib {
         const ext::shared_ptr<YieldTermStructure>& rTS,
         Real sigma, Real kappa, Real theta, Real mixingFactor)
     : dyMap_(SecondDerivativeOp(1, mesher)
-                .mult(0.5*mixingFactor*sigma*sigma*mesher->locations(1))
+                .mult(0.5*mixingFactor*mixingFactor*sigma*sigma*mesher->locations(1))
              .add(FirstDerivativeOp(1, mesher)
                   .mult(kappa*(theta - mesher->locations(1))))),
       mapT_(1, mesher),
