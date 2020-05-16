@@ -548,6 +548,7 @@
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\mcdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\binomialdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp" />
@@ -1507,6 +1508,7 @@
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp" />
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.hpp" />
     <ClInclude Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.hpp" />
+    <ClInclude Include="ql\pricingengines\lookback\mclookbackengine.hpp" />
     <ClInclude Include="ql\pricingengines\mclongstaffschwartzengine.hpp" />
     <ClInclude Include="ql\pricingengines\mcsimulation.hpp" />
     <ClInclude Include="ql\pricingengines\quanto\all.hpp" />
@@ -1535,6 +1537,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\analyticdigitalamericanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticdividendeuropeanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticeuropeanengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\analyticeuropeanvasicekengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticgjrgarchengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analytich1hwengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analytichestonengine.hpp" />
@@ -1892,6 +1895,7 @@
     <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\mcdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp" />
@@ -2520,6 +2524,7 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
+    <ClCompile Include="ql\pricingengines\lookback\mclookbackengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discretizedswap.cpp" />
@@ -2540,6 +2545,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticdividendeuropeanengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticeuropeanengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\analyticeuropeanvasicekengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticgjrgarchengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analytich1hwengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analytichestonengine.cpp" />

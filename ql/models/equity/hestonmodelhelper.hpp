@@ -63,6 +63,7 @@ namespace QuantLib {
         const Calendar calendar_;
         const Handle<Quote> s0_;
         const Real strikePrice_;
+        const Handle<YieldTermStructure> riskFreeRate_;
         const Handle<YieldTermStructure> dividendYield_;
         mutable Date exerciseDate_;
         mutable Time tau_;

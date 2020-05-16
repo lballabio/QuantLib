@@ -92,6 +92,7 @@ namespace QuantLib {
         mutable Date exerciseDate_, endDate_;
         const Period maturity_, length_, fixedLegTenor_;
         const ext::shared_ptr<IborIndex> index_;
+        const Handle<YieldTermStructure> termStructure_;
         const DayCounter fixedLegDayCounter_, floatingLegDayCounter_;
         const Real strike_, nominal_;
         mutable Rate exerciseRate_;

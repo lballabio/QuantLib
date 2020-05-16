@@ -1,8 +1,5 @@
 name: Coverage report
-on:
-  push:
-    branches:
-      - master
+on: [push, pull_request]
 jobs:
   coverage:
     runs-on: ubuntu-latest
@@ -11,27 +8,28 @@ jobs:
     - name: Setup
       run: |
         sudo apt install -y lcov libboost-all-dev
-        pip install --user wheel
-        pip install --user cpp-coveralls
     - name: Compile
-      env:
-        CXXFLAGS: -O1 -fprofile-arcs -ftest-coverage
-        LDFLAGS: -lgcov
       run: |
-        cmake -DBOOST_ROOT=/usr .
+        ./autogen.sh
+        ./configure --disable-shared CXXFLAGS='-O1 -fprofile-arcs -ftest-coverage' LDFLAGS='-lgcov'
         make -j 2
-    - name: Test
+    - name: Capture baseline
+      run: |
+        mkdir -p coverage tmp
+        lcov --no-external --capture --initial --directory . --output-file ./tmp/lcov_base.info
+    - name: Run tests
       run: |
         ./test-suite/quantlib-test-suite --log_level=message
-    - name: Upload coverage to Coveralls
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALL_TOKEN }}
-        TRAVIS_JOB_ID: "#${{ github.run_id }}"
+    - name: Run examples
       run: |
-        echo "service_name: github-actions" > .coveralls.yml
-        ~/.local/bin/coveralls --exclude Examples --exclude test-suite --exclude CMakeFiles --gcov-options '\-lp'
-    - name: Upload coverage to Codecov
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run:
-        bash <(curl -s https://codecov.io/bash) -y .codecov.yml -X gcov -f '!*usr*.gcov'
+        make -C Examples check-examples
+    - name: Capture coverage
+      run: |
+        lcov --no-external --capture --directory . --output-file ./tmp/lcov_run.info
+        lcov --add-tracefile ./tmp/lcov_base.info --add-tracefile ./tmp/lcov_run.info --output-file ./tmp/lcov_total.info
+        lcov --remove ./tmp/lcov_total.info "$PWD/Examples/*" "$PWD/test-suite/*" --output-file ./coverage/lcov.info
+    - name: Upload coverage to Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ./coverage/lcov.info

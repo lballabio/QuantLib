@@ -30,6 +30,7 @@ class DoubleBarrierOptionTest {
   public:
     static void testEuropeanHaugValues();
     static void testVannaVolgaDoubleBarrierValues();
+    static void testMonteCarloDoubleBarrierWithAnalytical();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
     static boost::unit_test_framework::test_suite* experimental();
 };
