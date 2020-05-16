@@ -114,7 +114,6 @@ namespace QuantLib {
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;
         FdmHestonEquityPart dxMap_;
-        Real mixingFactor_;
     };
 }
 

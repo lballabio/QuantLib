@@ -151,8 +151,7 @@ namespace QuantLib {
       dxMap_(mesher,
              hestonProcess->riskFreeRate().currentLink(), 
              hestonProcess->dividendYield().currentLink(),
-             quantoHelper, leverageFct),
-      mixingFactor_(mixingFactor){
+             quantoHelper, leverageFct){
     }
 
 
