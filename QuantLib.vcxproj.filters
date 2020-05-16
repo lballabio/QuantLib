@@ -3883,7 +3883,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
-    <ClInclude Include="ql\pricingengines\vanilla\fdhestonvanillaengine.hpp">
+    <ClInclude Include="ql\pricingengines\vanilla\fdhestonmixedvanillaengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\meshers\fdm1dmesher.hpp">
@@ -6603,7 +6603,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
-    <ClCompile Include="ql\pricingengines\vanilla\fdhestonvanillaengine.cpp">
+    <ClCompile Include="ql\pricingengines\vanilla\fdhestonmixedvanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\operators\fdm2dblackscholesop.cpp">

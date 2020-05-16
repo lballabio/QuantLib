@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdhestonvanillaengine.hpp
+/*! \file fdhestonmixedvanillaengine.hpp
     \brief Finite-Differences Heston vanilla option engine
 */
 
@@ -45,28 +45,31 @@ namespace QuantLib {
     */
     class FdmQuantoHelper;
 
-    class FdHestonVanillaEngine
-        : public GenericModelEngine<HestonModel,
+    class FdHestonMixedVanillaEngine : public GenericModelEngine<HestonModel,
                                     DividendVanillaOption::arguments,
                                     DividendVanillaOption::results> {
       public:
         // Constructor
-        explicit FdHestonVanillaEngine(
+        explicit FdHestonMixedVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+                = ext::shared_ptr<LocalVolTermStructure>(),
+            const Real mixingFactor
+                = 1.0);
 
-        FdHestonVanillaEngine(
+        FdHestonMixedVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+                = ext::shared_ptr<LocalVolTermStructure>(),
+            const Real mixingFactor
+                = 1.0);
 
         void calculate() const;
         
@@ -82,6 +85,7 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
         const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        const Real mixingFactor_;
         
         std::vector<Real> strikes_;
         mutable std::vector<std::pair<DividendVanillaOption::arguments,
@@ -89,25 +93,28 @@ namespace QuantLib {
                                                             cachedArgs2results_;
     };
 
-    class MakeFdHestonVanillaEngine {
+    class MakeFdHestonMixedVanillaEngine {
       public:
-        explicit MakeFdHestonVanillaEngine(
+        explicit MakeFdHestonMixedVanillaEngine(
             const ext::shared_ptr<HestonModel>& hestonModel);
 
-        MakeFdHestonVanillaEngine& withQuantoHelper(
+        MakeFdHestonMixedVanillaEngine& withQuantoHelper(
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
-        MakeFdHestonVanillaEngine& withTGrid(Size tGrid);
-        MakeFdHestonVanillaEngine& withXGrid(Size xGrid);
-        MakeFdHestonVanillaEngine& withVGrid(Size vGrid);
-        MakeFdHestonVanillaEngine& withDampingSteps(
+        MakeFdHestonMixedVanillaEngine& withTGrid(Size tGrid);
+        MakeFdHestonMixedVanillaEngine& withXGrid(Size xGrid);
+        MakeFdHestonMixedVanillaEngine& withVGrid(Size vGrid);
+        MakeFdHestonMixedVanillaEngine& withDampingSteps(
             Size dampingSteps);
 
-        MakeFdHestonVanillaEngine& withFdmSchemeDesc(
+        MakeFdHestonMixedVanillaEngine& withFdmSchemeDesc(
             const FdmSchemeDesc& schemeDesc);
 
-        MakeFdHestonVanillaEngine& withLeverageFunction(
+        MakeFdHestonMixedVanillaEngine& withLeverageFunction(
             ext::shared_ptr<LocalVolTermStructure>& leverageFct);
+
+        MakeFdHestonMixedVanillaEngine& withMixingFactor(
+            Real mixingFactor);
 
         operator ext::shared_ptr<PricingEngine>() const;
 
@@ -117,6 +124,7 @@ namespace QuantLib {
         ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
         ext::shared_ptr<LocalVolTermStructure> leverageFct_;
         ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        Real mixingFactor_;
     };
 }
 

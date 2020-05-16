@@ -27,7 +27,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/pricingengines/barrier/fdhestonrebateengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
 
 namespace QuantLib {
 

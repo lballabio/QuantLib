@@ -36,7 +36,7 @@ this_include_HEADERS = \
     fddividendshoutengine.hpp \
     fdeuropeanengine.hpp \
 	fdhestonhullwhitevanillaengine.hpp \
-	fdhestonvanillaengine.hpp \
+	fdhestonmixedvanillaengine.hpp \
     fdmultiperiodengine.hpp \
     fdsabrvanillaengine.hpp \
     fdshoutengine.hpp \
@@ -77,7 +77,7 @@ cpp_files = \
 	fdblackscholesvanillaengine.cpp \
 	fdcevvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
-	fdhestonvanillaengine.cpp \
+	fdhestonmixedvanillaengine.cpp \
 	fdsabrvanillaengine.cpp \
 	fdsimplebsswingengine.cpp \
     fdvanillaengine.cpp \

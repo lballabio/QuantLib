@@ -33,6 +33,7 @@
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/models/shortrate/onefactormodels/vasicek.hpp>
@@ -175,6 +176,21 @@ int main(int, char* []) {
                                               new HestonModel(hestonProcess));
         europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
                                      new AnalyticHestonEngine(hestonModel)));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanOption.NPV()
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << "N/A"
+                  << std::endl;
+
+        method = "Heston FD mixingFactor 0.5";
+        europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+            new FdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(
+                hestonProcess), 100, 400, 3, 0,
+                                           FdmSchemeDesc::Hundsdorfer(),
+                                           ext::shared_ptr<LocalVolTermStructure>(),
+                                               0.5)));
+
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()

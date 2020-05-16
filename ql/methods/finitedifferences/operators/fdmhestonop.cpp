@@ -115,9 +115,9 @@ namespace QuantLib {
     FdmHestonVariancePart::FdmHestonVariancePart(
         const ext::shared_ptr<FdmMesher>& mesher,
         const ext::shared_ptr<YieldTermStructure>& rTS,
-        Real sigma, Real kappa, Real theta)
+        Real sigma, Real kappa, Real theta, Real mixingFactor)
     : dyMap_(SecondDerivativeOp(1, mesher)
-                .mult(0.5*sigma*sigma*mesher->locations(1))
+                .mult(0.5*mixingFactor*sigma*sigma*mesher->locations(1))
              .add(FirstDerivativeOp(1, mesher)
                   .mult(kappa*(theta - mesher->locations(1))))),
       mapT_(1, mesher),
@@ -137,18 +137,22 @@ namespace QuantLib {
         const ext::shared_ptr<FdmMesher>& mesher,
         const ext::shared_ptr<HestonProcess> & hestonProcess,
         const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+        const Real mixingFactor)
     : correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                         .mult(hestonProcess->rho()*hestonProcess->sigma()
+                                *mixingFactor
                                 *mesher->locations(1))),
       dyMap_(mesher, hestonProcess->riskFreeRate().currentLink(),
               hestonProcess->sigma(), 
               hestonProcess->kappa(), 
-              hestonProcess->theta()),
+              hestonProcess->theta(),
+              mixingFactor),
       dxMap_(mesher,
              hestonProcess->riskFreeRate().currentLink(), 
              hestonProcess->dividendYield().currentLink(),
-             quantoHelper, leverageFct) {
+             quantoHelper, leverageFct),
+      mixingFactor_(mixingFactor){
     }
 
 

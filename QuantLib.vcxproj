@@ -1559,7 +1559,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\fddividendshoutengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdeuropeanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fdhestonvanillaengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\fdhestonmixedvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdmultiperiodengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdsabrvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdshoutengine.hpp" />
@@ -2555,7 +2555,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdcevvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.cpp" />
-    <ClCompile Include="ql\pricingengines\vanilla\fdhestonvanillaengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\fdhestonmixedvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdsabrvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdsimplebsswingengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdvanillaengine.cpp" />

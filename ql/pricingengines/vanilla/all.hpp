@@ -33,7 +33,7 @@
 #include <ql/pricingengines/vanilla/fddividendshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdmultiperiodengine.hpp>
 #include <ql/pricingengines/vanilla/fdsabrvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdshoutengine.hpp>

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
@@ -191,8 +191,8 @@ namespace QuantLib {
             option.setPricingEngine(analyticEngine);
             Real analyticNPV = option.NPV();
 
-            ext::shared_ptr<FdHestonVanillaEngine> fdEngine(
-                    new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
+            ext::shared_ptr<FdHestonMixedVanillaEngine> fdEngine(
+                    new FdHestonMixedVanillaEngine(*model_, tGrid_, xGrid_,
                                               vGrid_, dampingSteps_, 
                                               schemeDesc_));
             fdEngine->enableMultipleStrikesCaching(strikes_);

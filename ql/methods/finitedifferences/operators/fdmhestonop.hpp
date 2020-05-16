@@ -70,7 +70,7 @@ namespace QuantLib {
         FdmHestonVariancePart(
             const ext::shared_ptr<FdmMesher>& mesher,
             const ext::shared_ptr<YieldTermStructure>& rTS,
-            Real sigma, Real kappa, Real theta);
+            Real sigma, Real kappa, Real theta, Real mixingFactor);
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;
@@ -91,7 +91,9 @@ namespace QuantLib {
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
                 = ext::shared_ptr<FdmQuantoHelper>(),
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+                = ext::shared_ptr<LocalVolTermStructure>(),
+            const Real mixingFactor
+                = 1.0);
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -112,6 +114,7 @@ namespace QuantLib {
         NinePointLinearOp correlationMap_;
         FdmHestonVariancePart dyMap_;
         FdmHestonEquityPart dxMap_;
+        Real mixingFactor_;
     };
 }
 
