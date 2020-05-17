@@ -39,6 +39,9 @@ namespace QuantLib {
         D. Conte, L. Ixaru, B. Paternoster, G. Santomauro, 2014
         Exponentially-fitted Gauss–Laguerre quadrature rule for
         integrals over an unbounded interval
+
+        For adaptation details see
+        https://wordpress.com/post/hpcquantlib.wordpress.com/4557
     */
 
     class ExponentialFittingHestonEngine
