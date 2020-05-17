@@ -38,10 +38,15 @@ namespace QuantLib {
         virtual void applyTo(array_type& a, Time t) const = 0;
     };
 
-    /* Abstract base class which allows step conditions to use both
-       payoff and array functions */
+    /*  */
+    /*! Abstract base class which allows step conditions to use both
+        payoff and array functions.
+
+        \deprecated Inherit from StepCondition directly instead.
+                    Deprecated in version 1.19.
+    */
     template <class array_type>
-    class CurveDependentStepCondition :
+    class QL_DEPRECATED CurveDependentStepCondition :
         public StepCondition<array_type> {
       public:
         void applyTo(Array &a, Time) const {

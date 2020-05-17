@@ -41,6 +41,12 @@ namespace QuantLib {
 
     //! default choice for step condition
     typedef StepCondition<Array> StandardStepCondition;
+
+
+    /*! \deprecated Inherit from StandardStepCondition directly.
+                    Deprecated in version 1.19.
+    */
+    QL_DEPRECATED
     typedef CurveDependentStepCondition<Array> StandardCurveDependentStepCondition;
 
 }
