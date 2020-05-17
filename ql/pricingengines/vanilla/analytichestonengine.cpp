@@ -415,7 +415,7 @@ namespace QuantLib {
 
         const Real sigma2 = sigma*sigma;
 
-        if (sigma > 1e-3) {
+        if (sigma > 1e-4) {
             const std::complex<Real> g
                 = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
 
