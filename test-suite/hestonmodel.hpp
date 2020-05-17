@@ -54,6 +54,9 @@ class HestonModelTest {
     static void testPiecewiseTimeDependentChFvsHestonChF();
     static void testPiecewiseTimeDependentComparison();
     static void testPiecewiseTimeDependentChFAsymtotic();
+    static void testSmallSigmaExpansion();
+    static void testSmallSigmaExpansion4ExpFitting();
+    static void testExponentialFitting4StrikesAndMaturities();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
     static boost::unit_test_framework::test_suite* experimental();

@@ -404,7 +404,7 @@ namespace QuantLib {
         const AnalyticHestonEngine* const enginePtr_;
     };
 
-    std::complex<Real> AnalyticHestonEngine::lnChF(
+    std::complex<Real> AnalyticHestonEngine::chF(
         const std::complex<Real>& z, Time t) const {
 
         const Real kappa = model_->kappa();
@@ -415,22 +415,50 @@ namespace QuantLib {
 
         const Real sigma2 = sigma*sigma;
 
-        const std::complex<Real> g
-            = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
+        if (sigma > 1e-4) {
+            const std::complex<Real> g
+                = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
 
-        const std::complex<Real> D = std::sqrt(
-            g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
+            const std::complex<Real> D = std::sqrt(
+                g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
 
-        const std::complex<Real> G = (g-D)/(g+D);
+            const std::complex<Real> G = (g-D)/(g+D);
 
-        return v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
-                *(g-D) + kappa*theta/sigma2*((g-D)*t
-                -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)));
+            return std::exp(v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
+                    *(g-D) + kappa*theta/sigma2*((g-D)*t
+                    -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G))));
+        }
+        else {
+            const Real kt = kappa*t;
+            const Real ekt = std::exp(kt);
+            const Real e2kt = std::exp(2*kt);
+            const Real rho2 = rho*rho;
+            const std::complex<Real> zpi = z + std::complex<Real>(0.0, 1.0);
+
+            return std::exp(-(((theta - v0 + ekt*((-1 + kt)*theta + v0))
+                    *z*zpi)/ekt)/(2.*kappa))
+                + (std::exp(-(kt) - ((theta - v0 + ekt
+                    *((-1 + kt)*theta + v0))*z*zpi)
+                /(2.*ekt*kappa))*rho*(2*theta + kt*theta -
+                    v0 - kt*v0 + ekt*((-2 + kt)*theta + v0))
+                *(1.0 - std::complex<Real>(-z.imag(),z.real()))*z*z)
+                    /(2.*kappa*kappa)*sigma
+                   + (std::exp(-2*kt - ((theta - v0 + ekt
+                *((-1 + kt)*theta + v0))*z*zpi)/(2.*ekt*kappa))*z*z*zpi
+                *(-2*rho2*square<Real>()(2*theta + kt*theta - v0 -
+                    kt*v0 + ekt*((-2 + kt)*theta + v0))
+                  *z*z*zpi + 2*kappa*v0*(-zpi
+                    + e2kt*(zpi + 4*rho2*z) - 2*ekt*(2*rho2*z
+                    + kt*(zpi + rho2*(2 + kt)*z))) + kappa*theta*(zpi + e2kt
+                *(-5.0*zpi - 24*rho2*z+ 2*kt*(zpi + 4*rho2*z)) +
+                4*ekt*(zpi + 6*rho2*z + kt*(zpi + rho2*(4 + kt)*z)))))
+                /(16.*square<Real>()(square<Real>()(kappa)))*sigma2;
+        }
     }
 
-    std::complex<Real> AnalyticHestonEngine::chF(
+    std::complex<Real> AnalyticHestonEngine::lnChF(
         const std::complex<Real>& z, Time T) const {
-        return std::exp(lnChF(z, T));
+        return std::log(chF(z, T));
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
