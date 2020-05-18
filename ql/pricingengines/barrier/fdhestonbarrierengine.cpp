@@ -29,7 +29,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/pricingengines/barrier/fdhestonrebateengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 
 namespace QuantLib {
 
@@ -159,7 +159,7 @@ namespace QuantLib {
                                           dividendCondition->dividendDates(), 
                                           dividendCondition->dividends()));
             vanillaOption->setPricingEngine(ext::shared_ptr<PricingEngine>(
-				ext::make_shared<FdHestonMixedVanillaEngine>(*model_, tGrid_, xGrid_,
+				ext::make_shared<FdHestonVanillaEngine>(*model_, tGrid_, xGrid_,
                                               vGrid_, dampingSteps_,
                                               schemeDesc_)));
             // Calculate the rebate value

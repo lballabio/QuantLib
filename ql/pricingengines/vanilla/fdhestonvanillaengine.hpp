@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdhestonmixedvanillaengine.hpp
+/*! \file fdhestonvanillaengine.hpp
     \brief Finite-Differences Heston vanilla option engine
 */
 
@@ -45,12 +45,12 @@ namespace QuantLib {
     */
     class FdmQuantoHelper;
 
-    class FdHestonMixedVanillaEngine : public GenericModelEngine<HestonModel,
+    class FdHestonVanillaEngine : public GenericModelEngine<HestonModel,
                                     DividendVanillaOption::arguments,
                                     DividendVanillaOption::results> {
       public:
         // Constructor
-        explicit FdHestonMixedVanillaEngine(
+        explicit FdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
@@ -60,7 +60,7 @@ namespace QuantLib {
             const Real mixingFactor
                 = 1.0);
 
-        FdHestonMixedVanillaEngine(
+        FdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
             Size tGrid = 100, Size xGrid = 100,
@@ -93,27 +93,27 @@ namespace QuantLib {
                                                             cachedArgs2results_;
     };
 
-    class MakeFdHestonMixedVanillaEngine {
+    class MakeFdHestonVanillaEngine {
       public:
-        explicit MakeFdHestonMixedVanillaEngine(
+        explicit MakeFdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& hestonModel);
 
-        MakeFdHestonMixedVanillaEngine& withQuantoHelper(
+        MakeFdHestonVanillaEngine& withQuantoHelper(
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
-        MakeFdHestonMixedVanillaEngine& withTGrid(Size tGrid);
-        MakeFdHestonMixedVanillaEngine& withXGrid(Size xGrid);
-        MakeFdHestonMixedVanillaEngine& withVGrid(Size vGrid);
-        MakeFdHestonMixedVanillaEngine& withDampingSteps(
+        MakeFdHestonVanillaEngine& withTGrid(Size tGrid);
+        MakeFdHestonVanillaEngine& withXGrid(Size xGrid);
+        MakeFdHestonVanillaEngine& withVGrid(Size vGrid);
+        MakeFdHestonVanillaEngine& withDampingSteps(
             Size dampingSteps);
 
-        MakeFdHestonMixedVanillaEngine& withFdmSchemeDesc(
+        MakeFdHestonVanillaEngine& withFdmSchemeDesc(
             const FdmSchemeDesc& schemeDesc);
 
-        MakeFdHestonMixedVanillaEngine& withLeverageFunction(
+        MakeFdHestonVanillaEngine& withLeverageFunction(
             ext::shared_ptr<LocalVolTermStructure>& leverageFct);
 
-        MakeFdHestonMixedVanillaEngine& withMixingFactor(
+        MakeFdHestonVanillaEngine& withMixingFactor(
             Real mixingFactor);
 
         operator ext::shared_ptr<PricingEngine>() const;

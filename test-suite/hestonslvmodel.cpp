@@ -52,7 +52,7 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
@@ -1449,10 +1449,10 @@ namespace {
 
             const ext::shared_ptr<PricingEngine> slvEngine(
                 (times[t] <= 3) ?
-				ext::make_shared<FdHestonMixedVanillaEngine>(hestonModel.currentLink(),
+				ext::make_shared<FdHestonVanillaEngine>(hestonModel.currentLink(),
                         Size(std::max(101.0, 51*times[t]/12.0)), 401, 101, 0,
                             FdmSchemeDesc::ModifiedCraigSneyd(), l)
-                : ext::make_shared<FdHestonMixedVanillaEngine>(hestonModel.currentLink(),
+                : ext::make_shared<FdHestonVanillaEngine>(hestonModel.currentLink(),
                         Size(std::max(51.0, 51*times[t]/12.0)), 201, 101, 0,
                             FdmSchemeDesc::ModifiedCraigSneyd(), l));
 
@@ -1917,7 +1917,7 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
             .withSeed(1234);
 
     const ext::shared_ptr<PricingEngine> fdEngine
-        = ext::make_shared<FdHestonMixedVanillaEngine>(
+        = ext::make_shared<FdHestonVanillaEngine>(
             hestonModel, 51, 401, 101, 0,
             FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct);
 
@@ -2033,7 +2033,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
             const Time maturityTime = dc.yearFraction(todaysDate, maturity);
 
             const ext::shared_ptr<PricingEngine> fdEngine
-                = ext::make_shared<FdHestonMixedVanillaEngine>(
+                = ext::make_shared<FdHestonVanillaEngine>(
                     hestonModel, std::max(Size(26), Size(maturityTime*51)),
                     201, 51, 0,
                     FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct);

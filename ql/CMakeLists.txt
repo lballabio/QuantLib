@@ -721,7 +721,7 @@ set(QuantLib_SRC
     pricingengines/vanilla/fdblackscholesvanillaengine.cpp
     pricingengines/vanilla/fdcevvanillaengine.cpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.cpp
-    pricingengines/vanilla/fdhestonmixedvanillaengine.cpp
+    pricingengines/vanilla/fdhestonvanillaengine.cpp
     pricingengines/vanilla/fdsabrvanillaengine.cpp
     pricingengines/vanilla/fdsimplebsswingengine.cpp
     pricingengines/vanilla/fdvanillaengine.cpp
@@ -1990,7 +1990,7 @@ set(QuantLib_HDR
     pricingengines/vanilla/fddividendshoutengine.hpp
     pricingengines/vanilla/fdeuropeanengine.hpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp
-    pricingengines/vanilla/fdhestonmixedvanillaengine.hpp
+        pricingengines/vanilla/fdhestonvanillaengine.hpp
     pricingengines/vanilla/fdmultiperiodengine.hpp
     pricingengines/vanilla/fdsabrvanillaengine.hpp
     pricingengines/vanilla/fdshoutengine.hpp

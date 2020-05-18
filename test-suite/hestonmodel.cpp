@@ -35,7 +35,7 @@
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -348,7 +348,7 @@ void HestonModelTest::testAnalyticVsBlack() {
     }
 
     engine = 
-		ext::make_shared<FdHestonMixedVanillaEngine>(
+		ext::make_shared<FdHestonVanillaEngine>(
 			ext::make_shared<HestonModel>(process),
               200,200,100);
     option.setPricingEngine(engine);
@@ -357,7 +357,7 @@ void HestonModelTest::testAnalyticVsBlack() {
     error = std::fabs(calculated - expected);
     tolerance = 1.0e-3;
     if (error > tolerance) {
-        BOOST_FAIL("failed to reproduce Black price with FdHestonMixedVanillaEngine"
+        BOOST_FAIL("failed to reproduce Black price with FdHestonVanillaEngine"
                    << "\n    calculated: " << calculated
                    << "\n    expected:   " << expected
                    << "\n    error:      " << std::scientific << error);
@@ -605,7 +605,7 @@ void HestonModelTest::testFdVanillaVsCached() {
 		ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
 
-    option.setPricingEngine(MakeFdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(process))
+    option.setPricingEngine(MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
             .withTGrid(100)
             .withXGrid(200)
             .withVGrid(100)
@@ -647,8 +647,7 @@ void HestonModelTest::testFdVanillaVsCached() {
                                     dividendDates, dividends);
     process = ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.04, 1.0, 0.04, 0.001, 0.0);
-    divOption.setPricingEngine(
-        MakeFdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(process))
+    divOption.setPricingEngine(MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
             .withTGrid(200)
             .withXGrid(400)
             .withVGrid(100)
@@ -676,7 +675,7 @@ void HestonModelTest::testFdVanillaVsCached() {
     exercise = ext::make_shared<AmericanExercise>(
             settlementDate, exerciseDate);
     option = VanillaOption(payoff, exercise);
-    option.setPricingEngine(MakeFdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(process))
+    option.setPricingEngine(MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
             .withTGrid(200)
             .withXGrid(400)
             .withVGrid(100)
@@ -817,7 +816,7 @@ void HestonModelTest::testKahlJaeckelCase() {
                 kappa, theta, sigma, rho)));
 
     option.setPricingEngine(
-		ext::make_shared<FdHestonMixedVanillaEngine>(hestonModel, 200, 401, 101));
+		ext::make_shared<FdHestonVanillaEngine>(hestonModel, 200, 401, 101));
 
     calculated = option.NPV();
     Real error = std::fabs(calculated - expected);
@@ -1017,10 +1016,10 @@ void HestonModelTest::testMultipleStrikesEngine() {
     strikes.push_back(1.0);  strikes.push_back(0.5);
     strikes.push_back(0.75); strikes.push_back(1.5); strikes.push_back(2.0);
 
-    ext::shared_ptr<FdHestonMixedVanillaEngine> singleStrikeEngine(
-		ext::make_shared<FdHestonMixedVanillaEngine>(model, 20, 400, 50));
-    ext::shared_ptr<FdHestonMixedVanillaEngine> multiStrikeEngine(
-		ext::make_shared<FdHestonMixedVanillaEngine>(model, 20, 400, 50));
+    ext::shared_ptr<FdHestonVanillaEngine> singleStrikeEngine(
+		ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50));
+    ext::shared_ptr<FdHestonVanillaEngine> multiStrikeEngine(
+		ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50));
     multiStrikeEngine->enableMultipleStrikesCaching(strikes);
 
     Real relTol = 5e-3;

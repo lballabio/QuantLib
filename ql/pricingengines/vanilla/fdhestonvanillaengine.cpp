@@ -22,7 +22,7 @@
 
 
 #include <ql/processes/batesprocess.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
@@ -34,7 +34,7 @@
 
 namespace QuantLib {
 
-    FdHestonMixedVanillaEngine::FdHestonMixedVanillaEngine(
+    FdHestonVanillaEngine::FdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc,
@@ -51,7 +51,7 @@ namespace QuantLib {
       mixingFactor_(mixingFactor) {
     }
 
-    FdHestonMixedVanillaEngine::FdHestonMixedVanillaEngine(
+    FdHestonVanillaEngine::FdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
@@ -70,7 +70,7 @@ namespace QuantLib {
     }
 
 
-    FdmSolverDesc FdHestonMixedVanillaEngine::getSolverDesc(Real) const {
+    FdmSolverDesc FdHestonVanillaEngine::getSolverDesc(Real) const {
         // 1. Mesher
         const ext::shared_ptr<HestonProcess> process = model_->process();
         const Time maturity = process->time(arguments_.exercise->lastDate());
@@ -141,7 +141,7 @@ namespace QuantLib {
        return solverDesc;
     }
 
-    void FdHestonMixedVanillaEngine::calculate() const {
+    void FdHestonVanillaEngine::calculate() const {
 
         // cache lookup for precalculated results
         for (Size i=0; i < cachedArgs2results_.size(); ++i) {
@@ -201,20 +201,19 @@ namespace QuantLib {
         }
     }
     
-    void FdHestonMixedVanillaEngine::update() {
+    void FdHestonVanillaEngine::update() {
         cachedArgs2results_.clear();
         GenericModelEngine<HestonModel, DividendVanillaOption::arguments,
                            DividendVanillaOption::results>::update();
     }
     
-    void
-    FdHestonMixedVanillaEngine::enableMultipleStrikesCaching(
+    void FdHestonVanillaEngine::enableMultipleStrikesCaching(
                                         const std::vector<Real>& strikes) {
         strikes_ = strikes;
         cachedArgs2results_.clear();
     }
 
-    MakeFdHestonMixedVanillaEngine::MakeFdHestonMixedVanillaEngine(
+    MakeFdHestonVanillaEngine::MakeFdHestonVanillaEngine(
         const ext::shared_ptr<HestonModel>& hestonModel)
       : hestonModel_(hestonModel),
         tGrid_(100),
@@ -226,56 +225,54 @@ namespace QuantLib {
         leverageFct_(ext::shared_ptr<LocalVolTermStructure>()),
         quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {}
 
-    MakeFdHestonMixedVanillaEngine& MakeFdHestonMixedVanillaEngine::withQuantoHelper(
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withQuantoHelper(
         const ext::shared_ptr<FdmQuantoHelper>& quantoHelper) {
         quantoHelper_ = quantoHelper;
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine& MakeFdHestonMixedVanillaEngine::withTGrid(Size tGrid) {
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withTGrid(Size tGrid) {
         tGrid_ = tGrid;
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine& MakeFdHestonMixedVanillaEngine::withXGrid(Size xGrid) {
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withXGrid(Size xGrid) {
         xGrid_ = xGrid;
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine& MakeFdHestonMixedVanillaEngine::withVGrid(Size vGrid) {
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withVGrid(Size vGrid) {
         vGrid_ = vGrid;
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine&
-    MakeFdHestonMixedVanillaEngine::withDampingSteps(Size dampingSteps) {
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withDampingSteps(Size dampingSteps) {
         dampingSteps_ = dampingSteps;
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine&
-    MakeFdHestonMixedVanillaEngine::withFdmSchemeDesc(
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withFdmSchemeDesc(
         const FdmSchemeDesc& schemeDesc) {
         schemeDesc_ = ext::make_shared<FdmSchemeDesc>(schemeDesc);
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine& MakeFdHestonMixedVanillaEngine::withLeverageFunction(
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withLeverageFunction(
         ext::shared_ptr<LocalVolTermStructure>& leverageFct) {
         leverageFct_ = leverageFct;
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine&
-    MakeFdHestonMixedVanillaEngine::withMixingFactor(
+    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withMixingFactor(
         Real mixingFactor) {
         mixingFactor_ = mixingFactor;
         return *this;
     }
 
-    MakeFdHestonMixedVanillaEngine::operator
+    MakeFdHestonVanillaEngine::operator
     ext::shared_ptr<PricingEngine>() const {
-        return ext::make_shared<FdHestonMixedVanillaEngine>(
+        return ext::make_shared<FdHestonVanillaEngine>(
             hestonModel_,
             quantoHelper_,
             tGrid_, xGrid_, vGrid_, dampingSteps_,

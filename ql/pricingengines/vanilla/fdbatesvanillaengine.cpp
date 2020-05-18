@@ -25,7 +25,7 @@
 
 #include <ql/methods/finitedifferences/solvers/fdmbatessolver.hpp>
 #include <ql/pricingengines/vanilla/fdbatesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +43,7 @@ namespace QuantLib {
     }
 
     void FdBatesVanillaEngine::calculate() const {
-        FdHestonMixedVanillaEngine helperEngine(model_.currentLink(),
+        FdHestonVanillaEngine helperEngine(model_.currentLink(),
                                            tGrid_, xGrid_, vGrid_,
                                            dampingSteps_, schemeDesc_);
 

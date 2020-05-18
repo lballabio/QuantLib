@@ -30,7 +30,7 @@
 #include <ql/experimental/barrieroption/quantodoublebarrieroption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/quanto/quantoengine.hpp>
@@ -1364,7 +1364,7 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
                 domesticTS, divTS, spot, v0, kappa, theta, sigma, rho));
 
     option.setPricingEngine(
-        ext::make_shared<FdHestonMixedVanillaEngine>(
+        ext::make_shared<FdHestonVanillaEngine>(
             hestonModel, quantoHelper, 100, 400, 3, 1));
 
     const Real hestonCalculated = option.NPV();
@@ -1385,7 +1385,7 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
                 domesticTS, divTS, spot, 0.25*v0, kappa, 0.25*theta, sigma, rho));
 
     option.setPricingEngine(
-        ext::make_shared<FdHestonMixedVanillaEngine>(
+        ext::make_shared<FdHestonVanillaEngine>(
             hestonModel05, quantoHelper, 100, 400, 3, 1,
             FdmSchemeDesc::Hundsdorfer(), localConstVol));
 

@@ -38,7 +38,7 @@
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 
@@ -423,7 +423,7 @@ void FdHestonTest::testFdmHestonAmerican() {
 
     VanillaOption option(payoff, exercise);
     ext::shared_ptr<PricingEngine> engine(
-         new FdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(
+         new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                              hestonProcess), 200, 100, 50));
     option.setPricingEngine(engine);
     
@@ -487,7 +487,7 @@ void FdHestonTest::testFdmHestonIkonenToivanen() {
             new HestonProcess(rTS, qTS, s0, 0.0625, 5, 0.16, 0.9, 0.1));
     
         ext::shared_ptr<PricingEngine> engine(
-             new FdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(
+             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                                  hestonProcess), 100, 400));
         option.setPricingEngine(engine);
         
@@ -543,7 +543,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
 
         // Hundsdorfer scheme
         option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-             new FdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(
+             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                                            hestonProcess), 
                                        100, 400, 3)));
         
@@ -558,7 +558,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         
         // Explicit scheme
         option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-             new FdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(
+             new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                                            hestonProcess),
                                        4000, 400, 3, 0,
                                        FdmSchemeDesc::ExplicitEuler())));
@@ -604,7 +604,7 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
     DividendVanillaOption option(payoff, exercise, dividendDates, dividends);
     ext::shared_ptr<PricingEngine> engine(
-         new FdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(
+         new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                              hestonProcess), 50, 100, 50));
     option.setPricingEngine(engine);
     
@@ -709,7 +709,7 @@ void FdHestonTest::testFdmHestonConvergence() {
             
                     VanillaOption option(payoff, exercise);
                     ext::shared_ptr<PricingEngine> engine(
-                         new FdHestonMixedVanillaEngine(
+                         new FdHestonVanillaEngine(
                              ext::make_shared<HestonModel>(
                                  hestonProcess), 
                              tn[j], 101, 51, 0,
@@ -774,7 +774,7 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
               v0, kappa, theta, sigma, rho));
     const ext::shared_ptr<HestonModel> model(new HestonModel(process));
     const ext::shared_ptr<PricingEngine> fdm(
-        new FdHestonMixedVanillaEngine(model, 20, 100, 26, 0));
+        new FdHestonVanillaEngine(model, 20, 100, 26, 0));
     option.setPricingEngine(fdm);
 
     const Real gammaExpected[] = {
@@ -833,10 +833,10 @@ void FdHestonTest::testMethodOfLinesAndCN() {
     const Size vGrid = 7;
 
     const ext::shared_ptr<PricingEngine> fdmDefault(
-        ext::make_shared<FdHestonMixedVanillaEngine>(model, 10, xGrid, vGrid, 0));
+        ext::make_shared<FdHestonVanillaEngine>(model, 10, xGrid, vGrid, 0));
 
     const ext::shared_ptr<PricingEngine> fdmMol(
-        ext::make_shared<FdHestonMixedVanillaEngine>(
+        ext::make_shared<FdHestonVanillaEngine>(
             model, 10, xGrid, vGrid, 0, FdmSchemeDesc::MethodOfLines()));
 
     const ext::shared_ptr<PlainVanillaPayoff> payoff =
@@ -863,7 +863,7 @@ void FdHestonTest::testMethodOfLinesAndCN() {
     }
 
     const ext::shared_ptr<PricingEngine> fdmCN(
-        ext::make_shared<FdHestonMixedVanillaEngine>(
+        ext::make_shared<FdHestonVanillaEngine>(
             model, 10, xGrid, vGrid, 0, FdmSchemeDesc::CrankNicolson()));
     option.setPricingEngine(fdmCN);
 
@@ -950,8 +950,8 @@ void FdHestonTest::testSpuriousOscillations() {
     const ext::shared_ptr<HestonModel> model =
         ext::make_shared<HestonModel>(process);
 
-    const ext::shared_ptr<FdHestonMixedVanillaEngine> hestonEngine(
-        ext::make_shared<FdHestonMixedVanillaEngine>(
+    const ext::shared_ptr<FdHestonVanillaEngine> hestonEngine(
+        ext::make_shared<FdHestonVanillaEngine>(
             model, 6, 200, 13, 0, FdmSchemeDesc::TrBDF2()));
 
     VanillaOption option(

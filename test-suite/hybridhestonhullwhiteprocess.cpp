@@ -48,7 +48,7 @@
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/functional.hpp>
 
@@ -1150,8 +1150,8 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
 
                 Size tSteps = Size(maturity*listOfTimeStepsPerYear[u]);
 
-                ext::shared_ptr<FdHestonMixedVanillaEngine> fdEngine(
-                    new FdHestonMixedVanillaEngine(
+                ext::shared_ptr<FdHestonVanillaEngine> fdEngine(
+                    new FdHestonVanillaEngine(
                         hestonModel, tSteps, 200, 40, 0,
                         schemes[i].schemeDesc));
                 fdEngine->enableMultipleStrikesCaching(

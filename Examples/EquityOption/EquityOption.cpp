@@ -33,7 +33,7 @@
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonmixedvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/models/shortrate/onefactormodels/vasicek.hpp>
@@ -185,7 +185,7 @@ int main(int, char* []) {
 
         method = "Heston FD mixingFactor 0.5";
         europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-            new FdHestonMixedVanillaEngine(ext::make_shared<HestonModel>(
+            new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                 hestonProcess), 100, 400, 3, 0,
                                            FdmSchemeDesc::Hundsdorfer(),
                                            ext::shared_ptr<LocalVolTermStructure>(),
