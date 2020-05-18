@@ -57,12 +57,23 @@ namespace QuantLib {
             }
         }
       protected:
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
+
         CurveDependentStepCondition(Option::Type type, Real strike)
             : curveItem_(new PayoffWrapper(type, strike)) {};
         CurveDependentStepCondition(const Payoff *p)
             : curveItem_(new PayoffWrapper(p)) {};
         CurveDependentStepCondition(const array_type & a)
             : curveItem_(new ArrayWrapper(a)) {};
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
+
         class CurveWrapper;
 
         ext::shared_ptr<CurveWrapper> curveItem_;
