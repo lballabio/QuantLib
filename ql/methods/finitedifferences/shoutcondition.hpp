@@ -87,7 +87,7 @@ namespace QuantLib {
           private:
             Array intrinsicValues_;
           public:
-            ArrayImpl (const Array &a)
+            explicit ArrayImpl(const Array &a)
             : intrinsicValues_(a) {}
 
             Real getValue(const Array&, int i) {
@@ -99,7 +99,7 @@ namespace QuantLib {
           private:
             ext::shared_ptr<const Payoff> payoff_;
           public:
-            PayoffImpl (Option::Type type, Real strike)
+            PayoffImpl(Option::Type type, Real strike)
             : payoff_(new PlainVanillaPayoff(type, strike)) {};
 
             Real getValue(const Array &a, int i) {
