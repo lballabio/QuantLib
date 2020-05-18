@@ -605,7 +605,8 @@ void HestonModelTest::testFdVanillaVsCached() {
 		ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
 
-    option.setPricingEngine(MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
+    option.setPricingEngine(
+        MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
             .withTGrid(100)
             .withXGrid(200)
             .withVGrid(100)
@@ -647,7 +648,8 @@ void HestonModelTest::testFdVanillaVsCached() {
                                     dividendDates, dividends);
     process = ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.04, 1.0, 0.04, 0.001, 0.0);
-    divOption.setPricingEngine(MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
+    divOption.setPricingEngine(
+        MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
             .withTGrid(200)
             .withXGrid(400)
             .withVGrid(100)
@@ -675,7 +677,8 @@ void HestonModelTest::testFdVanillaVsCached() {
     exercise = ext::make_shared<AmericanExercise>(
             settlementDate, exerciseDate);
     option = VanillaOption(payoff, exercise);
-    option.setPricingEngine(MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
+    option.setPricingEngine(
+        MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
             .withTGrid(200)
             .withXGrid(400)
             .withVGrid(100)

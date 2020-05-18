@@ -1990,7 +1990,7 @@ set(QuantLib_HDR
     pricingengines/vanilla/fddividendshoutengine.hpp
     pricingengines/vanilla/fdeuropeanengine.hpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp
-        pricingengines/vanilla/fdhestonvanillaengine.hpp
+    pricingengines/vanilla/fdhestonvanillaengine.hpp
     pricingengines/vanilla/fdmultiperiodengine.hpp
     pricingengines/vanilla/fdsabrvanillaengine.hpp
     pricingengines/vanilla/fdshoutengine.hpp
