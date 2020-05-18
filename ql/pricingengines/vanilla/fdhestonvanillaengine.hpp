@@ -45,7 +45,8 @@ namespace QuantLib {
     */
     class FdmQuantoHelper;
 
-    class FdHestonVanillaEngine : public GenericModelEngine<HestonModel,
+    class FdHestonVanillaEngine
+        : public GenericModelEngine<HestonModel,
                                     DividendVanillaOption::arguments,
                                     DividendVanillaOption::results> {
       public:

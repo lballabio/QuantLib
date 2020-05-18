@@ -213,6 +213,7 @@ namespace QuantLib {
         cachedArgs2results_.clear();
     }
 
+
     MakeFdHestonVanillaEngine::MakeFdHestonVanillaEngine(
         const ext::shared_ptr<HestonModel>& hestonModel)
       : hestonModel_(hestonModel),
@@ -231,22 +232,26 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withTGrid(Size tGrid) {
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withTGrid(Size tGrid) {
         tGrid_ = tGrid;
         return *this;
     }
 
-    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withXGrid(Size xGrid) {
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withXGrid(Size xGrid) {
         xGrid_ = xGrid;
         return *this;
     }
 
-    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withVGrid(Size vGrid) {
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withVGrid(Size vGrid) {
         vGrid_ = vGrid;
         return *this;
     }
 
-    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withDampingSteps(Size dampingSteps) {
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withDampingSteps(Size dampingSteps) {
         dampingSteps_ = dampingSteps;
         return *this;
     }
@@ -258,7 +263,8 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withLeverageFunction(
+    MakeFdHestonVanillaEngine&
+    MakeFdHestonVanillaEngine::withLeverageFunction(
         ext::shared_ptr<LocalVolTermStructure>& leverageFct) {
         leverageFct_ = leverageFct;
         return *this;
