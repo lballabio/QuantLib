@@ -2885,7 +2885,7 @@ void HestonModelTest::testSmallSigmaExpansion4ExpFitting() {
     const Real kappas[] = { 0.5, 1.0, 4.0 };
     const Real thetas[] = { 0.04, 0.09};
     const Real v0s[]    = { 0.025, 0.20 };
-    const Real maturities[] = { 1, 31, 182, 1850 };
+    const Integer maturities[] = { 1, 31, 182, 1850 };
 
     for (Size m=0; m < LENGTH(maturities); ++m) {
         const Date maturityDate = todaysDate + Period(maturities[m], Days);
