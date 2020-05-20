@@ -79,6 +79,7 @@ namespace QuantLib {
         Real theta() const { return theta_; }
         Real sigma() const { return sigma_; }
         Real mixingFactor() const { return mixingFactor_; }
+        Real mixedSigma() const { return mixedSigma_; }
 
         const Handle<Quote>& s0() const;
         const Handle<YieldTermStructure>& dividendYield() const;
@@ -95,7 +96,7 @@ namespace QuantLib {
 
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
-        Real v0_, kappa_, theta_, sigma_, rho_, mixingFactor_;
+        Real v0_, kappa_, theta_, sigma_, rho_, mixingFactor_, mixedSigma_;
         Discretization discretization_;
     };
 }

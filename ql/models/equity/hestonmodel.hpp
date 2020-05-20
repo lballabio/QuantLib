@@ -54,6 +54,8 @@ namespace QuantLib {
         // spot variance
         Real v0()    const { return arguments_[4](0.0); }
 
+        Real mixingFactor() const { return arguments_[5](0.0); }
+
         // underlying process
         ext::shared_ptr<HestonProcess> process() const { return process_; }
 
@@ -71,8 +73,9 @@ namespace QuantLib {
                 const Real theta = params[0];
                 const Real kappa = params[1];
                 const Real sigma = params[2];
+                const Real mixingFactor = params[5];
 
-                return (sigma >= 0.0 && sigma*sigma < 2.0*kappa*theta);
+                return (mixingFactor*sigma >= 0.0 && mixingFactor*mixingFactor*sigma*sigma < 2.0*kappa*theta);
             }
         };
       public:

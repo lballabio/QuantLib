@@ -45,7 +45,7 @@ namespace QuantLib {
                                                     new EulerDiscretization)),
       riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
       v0_(v0), kappa_(kappa), theta_(theta), sigma_(sigma), rho_(rho),
-      mixingFactor_(mixingFactor), discretization_(d) {
+      mixingFactor_(mixingFactor), mixedSigma_(mixingFactor*sigma), discretization_(d) {
 
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -97,7 +97,7 @@ namespace QuantLib {
                          : (discretization_ == Reflection) ? -std::sqrt(-x[1])
                          : 1e-8; // set vol to (almost) zero but still
                                  // expose some correlation information
-        const Real sigma2 = mixingFactor_ * sigma_ * vol;
+        const Real sigma2 = mixedSigma_ * vol;
         const Real sqrhov = std::sqrt(1.0 - rho_*rho_);
 
         tmp[0][0] = vol;          tmp[0][1] = 0.0;
@@ -369,23 +369,23 @@ namespace QuantLib {
 
     Real HestonProcess::pdf(Real x, Real v, Time t, Real eps) const {
          using namespace ext::placeholders;
-         const Real k = mixingFactor_*mixingFactor_*sigma_*sigma_*(1-std::exp(-kappa_*t))/(4*kappa_);
+         const Real k = mixedSigma_*mixedSigma_*(1-std::exp(-kappa_*t))/(4*kappa_);
          const Real a = std::log(  dividendYield_->discount(t)
                                    / riskFreeRate_->discount(t))
-                      + rho_/(mixingFactor_*sigma_)*(v - v0_ - kappa_*theta_*t);
+                      + rho_/(mixedSigma_)*(v - v0_ - kappa_*theta_*t);
 
          const Real x0 = std::log(s0()->value());
-         Real upper = std::max(0.1, -(x-x0-a)/(0.5-rho_*kappa_/(mixingFactor_*sigma_))), f=0, df=1;
+         Real upper = std::max(0.1, -(x-x0-a)/(0.5-rho_*kappa_/(mixedSigma_))), f=0, df=1;
 
          while (df > 0.0 || f > 0.1*eps) {
-             const Real f1 = x-x0-a+upper*(0.5-rho_*kappa_/(mixingFactor_*sigma_));
+             const Real f1 = x-x0-a+upper*(0.5-rho_*kappa_/(mixedSigma_));
              const Real f2 = -0.5*f1*f1/(upper*(1-rho_*rho_));
 
              df = 1/std::sqrt(2*M_PI*(1-rho_*rho_))
                  * ( -0.5/(upper*std::sqrt(upper))*std::exp(f2)
                     + 1/std::sqrt(upper)*std::exp(f2)*(-0.5/(1-rho_*rho_))
                            *(-1/(upper*upper)*f1*f1
-                             + 2/upper*f1*(0.5-rho_*kappa_/(mixingFactor_*sigma_))));
+                             + 2/upper*f1*(0.5-rho_*kappa_/(mixedSigma_))));
 
              f = std::exp(f2)/ std::sqrt(2*M_PI*(1-rho_*rho_)*upper);
              upper*=1.5;
@@ -399,9 +399,9 @@ namespace QuantLib {
                QL_EPSILON, upper)
                * boost::math::pdf(
                      boost::math::non_central_chi_squared_distribution<Real>(
-                         4*theta_*kappa_/(mixingFactor_*mixingFactor_*sigma_*sigma_),
+                         4*theta_*kappa_/(mixedSigma_*mixedSigma_),
                          4*kappa_*std::exp(-kappa_*t)
-                         /((mixingFactor_*mixingFactor_*sigma_*sigma_)*(1-std::exp(-kappa_*t)))*v0_),
+                         /((mixedSigma_*mixedSigma_)*(1-std::exp(-kappa_*t)))*v0_),
                      v/k) / k;
      }
 
@@ -423,7 +423,7 @@ namespace QuantLib {
           // Working Paper, Tinbergen Institute
           case PartialTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-            vol2 = mixingFactor_ * sigma_ * vol;
+            vol2 = mixedSigma_ * vol;
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol * vol;
@@ -434,7 +434,7 @@ namespace QuantLib {
             break;
           case FullTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-            vol2 = mixingFactor_ * sigma_ * vol;
+            vol2 = mixedSigma_ * vol;
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol * vol;
@@ -445,7 +445,7 @@ namespace QuantLib {
             break;
           case Reflection:
             vol = std::sqrt(std::fabs(x0[1]));
-            vol2 = mixingFactor_ * sigma_ * vol;
+            vol2 = mixedSigma_ * vol;
             mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                   - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol*vol;
@@ -467,10 +467,10 @@ namespace QuantLib {
                    - 0.5 * vol*vol;
 
             retVal[1] = varianceDistribution(x0[1], dw[1], dt);
-            dy = (mu - rho_/(mixingFactor_*sigma_)*kappa_
+            dy = (mu - rho_/(mixedSigma_)*kappa_
                           *(theta_-vol*vol)) * dt + vol*sqrhov*dw[0]*sdt;
 
-            retVal[0] = x0[0]*std::exp(dy + rho_/(mixingFactor_*sigma_)*(retVal[1]-x0[1]));
+            retVal[0] = x0[0]*std::exp(dy + rho_/(mixedSigma_)*(retVal[1]-x0[1]));
             break;
           case QuadraticExponential:
           case QuadraticExponentialMartingale:
@@ -481,15 +481,15 @@ namespace QuantLib {
             const Real ex = std::exp(-kappa_*dt);
 
             const Real m  =  theta_+(x0[1]-theta_)*ex;
-            const Real s2 =  x0[1]*mixingFactor_*mixingFactor_*sigma_*sigma_*ex/kappa_*(1-ex)
-                           + theta_*mixingFactor_*mixingFactor_*sigma_*sigma_/(2*kappa_)*(1-ex)*(1-ex);
+            const Real s2 =  x0[1]*mixedSigma_*mixedSigma_*ex/kappa_*(1-ex)
+                           + theta_*mixedSigma_*mixedSigma_/(2*kappa_)*(1-ex)*(1-ex);
             const Real psi = s2/(m*m);
 
             const Real g1 =  0.5;
             const Real g2 =  0.5;
-                  Real k0 = -rho_*kappa_*theta_*dt/(mixingFactor_*sigma_);
-            const Real k1 =  g1*dt*(kappa_*rho_/(mixingFactor_*sigma_)-0.5)-rho_/(mixingFactor_*sigma_);
-            const Real k2 =  g2*dt*(kappa_*rho_/(mixingFactor_*sigma_)-0.5)+rho_/(mixingFactor_*sigma_);
+                  Real k0 = -rho_*kappa_*theta_*dt/(mixedSigma_);
+            const Real k1 =  g1*dt*(kappa_*rho_/(mixedSigma_)-0.5)-rho_/(mixedSigma_);
+            const Real k2 =  g2*dt*(kappa_*rho_/(mixedSigma_)-0.5)+rho_/(mixedSigma_);
             const Real k3 =  g1*dt*(1-rho_*rho_);
             const Real k4 =  g2*dt*(1-rho_*rho_);
             const Real A  =  k2+0.5*k4;
@@ -544,7 +544,7 @@ namespace QuantLib {
                 1e-5, theta_*dt, 0.1*theta_*dt);
 
             const Real vdw
-                = (nu_t - nu_0 - kappa_*theta_*dt + kappa_*vds)/(mixingFactor_*sigma_);
+                = (nu_t - nu_0 - kappa_*theta_*dt + kappa_*vds)/(mixedSigma_);
 
             mu = ( riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
                   -dividendYield_->forwardRate(t0, t0+dt, Continuous))*dt
@@ -582,14 +582,14 @@ namespace QuantLib {
     }
 
     Real HestonProcess::varianceDistribution(Real v, Real dw, Time dt) const {
-        const Real df  = 4*theta_*kappa_/(mixingFactor_*mixingFactor_*sigma_*sigma_);
+        const Real df  = 4*theta_*kappa_/(mixedSigma_*mixedSigma_);
         const Real ncp = 4*kappa_*std::exp(-kappa_*dt)
-            /(mixingFactor_*mixingFactor_*sigma_*sigma_*(1-std::exp(-kappa_*dt)))*v;
+            /(mixedSigma_*mixedSigma_*(1-std::exp(-kappa_*dt)))*v;
 
         const Real p = std::min(1.0-QL_EPSILON,
             std::max(0.0, CumulativeNormalDistribution()(dw)));
 
-        return mixingFactor_*mixingFactor_*sigma_*sigma_*(1-std::exp(-kappa_*dt))/(4*kappa_)
+        return mixedSigma_*mixedSigma_*(1-std::exp(-kappa_*dt))/(4*kappa_)
             *InverseNonCentralCumulativeChiSquareDistribution(df, ncp, 100)(p);
     }
 }

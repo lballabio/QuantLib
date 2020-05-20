@@ -49,6 +49,7 @@ namespace QuantLib {
       rho_  (process->rho()),
       v0_   (process->v0()),
       mixingFactor_ (process->mixingFactor()),
+      mixedSigma_ (mixingFactor_*sigma_),
       rTS_  (process->riskFreeRate().currentLink()),
       qTS_  (process->dividendYield().currentLink()),
       varianceValues_(0.5*mesher->locations(1)),
@@ -60,13 +61,13 @@ namespace QuantLib {
           ))),
       boundary_(ext::make_shared<ModTripleBandLinearOp>(TripleBandLinearOp(SecondDerivativeOp(0, mesher).mult(Array(mesher->locations(0).size(), 0.0))))),
       mapX_  (ext::make_shared<TripleBandLinearOp>(0, mesher)),
-      mapY_  (ext::make_shared<FdmSquareRootFwdOp>(mesher,kappa_,theta_,mixingFactor_*sigma_, 1, type)),
+      mapY_  (ext::make_shared<FdmSquareRootFwdOp>(mesher,kappa_,theta_,mixedSigma_, 1, type)),
       correlation_(ext::make_shared<NinePointLinearOp>(
           type == FdmSquareRootFwdOp::Log ?
               SecondOrderMixedDerivativeOp(0, 1, mesher)
-              .mult(Array(mesher->layout()->size(), rho_*mixingFactor_*sigma_))
+              .mult(Array(mesher->layout()->size(), rho_*mixedSigma_))
             : SecondOrderMixedDerivativeOp(0, 1, mesher)
-              .mult(rho_*mixingFactor_*sigma_*mesher->locations(1))
+              .mult(rho_*mixedSigma_*mesher->locations(1))
            )),
 	   leverageFct_(leverageFct),
 	   mesher_(mesher)
@@ -80,8 +81,8 @@ namespace QuantLib {
         const Real logFacLow = type == FdmSquareRootFwdOp::Log ? exp(mapY_->v(0)) : 1.0;
         const Real logFacUpp = type == FdmSquareRootFwdOp::Log ? exp(mapY_->v(n+1)) : 1.0;
 
-        const Real alpha = -2*rho_/mixingFactor_*sigma_*lowerBoundaryFactor*logFacLow;
-        const Real beta  = -2*rho_/mixingFactor_*sigma_*upperBoundaryFactor*logFacUpp;
+        const Real alpha = -2*rho_/mixedSigma_*lowerBoundaryFactor*logFacLow;
+        const Real beta  = -2*rho_/mixedSigma_*upperBoundaryFactor*logFacUpp;
 
         ModTripleBandLinearOp fDx(FirstDerivativeOp(0, mesher));
 
@@ -126,13 +127,13 @@ namespace QuantLib {
             if (type_ == FdmSquareRootFwdOp::Plain) { 
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
                     dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
-                    .add(dxMap_->multR(rho_*mixingFactor_*sigma_*L_))
+                    .add(dxMap_->multR(rho_*mixedSigma_*L_))
                     .add(dxMap_->mult(varianceValues_).multR(Lsquare)), 
                               Array());
             } else if (type_ == FdmSquareRootFwdOp::Power) {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
                     dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
-                    .add(dxMap_->multR(rho_*2.0*kappa_*theta_/(mixingFactor_*sigma_)*L_))
+                    .add(dxMap_->multR(rho_*2.0*kappa_*theta_/(mixedSigma_)*L_))
                     .add(dxMap_->mult(varianceValues_).multR(Lsquare)), Array());
             } else if (type_ == FdmSquareRootFwdOp::Log) {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
@@ -143,10 +144,10 @@ namespace QuantLib {
         }
         else {
             if (type_ == FdmSquareRootFwdOp::Plain) {
-                mapX_->axpyb( - r + q + rho_*mixingFactor_*sigma_ + varianceValues_, *dxMap_,
+                mapX_->axpyb( - r + q + rho_*mixedSigma_ + varianceValues_, *dxMap_,
                         *dxxMap_, Array());
             } else if (type_ == FdmSquareRootFwdOp::Power) {
-                mapX_->axpyb( - r + q + rho_*2.0*kappa_*theta_/(mixingFactor_*sigma_) + varianceValues_,
+                mapX_->axpyb( - r + q + rho_*2.0*kappa_*theta_/(mixedSigma_) + varianceValues_,
                               *dxMap_, *dxxMap_, Array());
             } else if (type_ == FdmSquareRootFwdOp::Log) {
                 mapX_->axpyb( - r + q + 0.5*Exp(2.0*varianceValues_), *dxMap_,

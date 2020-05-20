@@ -317,7 +317,8 @@ namespace QuantLib {
         const Real theta = hestonProcess->theta();
         const Real sigma = hestonProcess->sigma();
         const Real mixingFactor = hestonProcess->mixingFactor();
-        const Real alpha = 2*kappa*theta/(mixingFactor*mixingFactor*sigma*sigma);
+        const Real mixedSigma = mixingFactor * sigma;
+        const Real alpha = 2*kappa*theta/(mixedSigma*mixedSigma);
 
         const Size xGrid = params_.xGrid;
         const Size vGrid = params_.vGrid;
@@ -367,7 +368,7 @@ namespace QuantLib {
             = localVolRND.rescaleTimeSteps();
 
         const SquareRootProcessRNDCalculator squareRootRnd(
-            v0, kappa, theta, mixingFactor*sigma);
+            v0, kappa, theta, mixedSigma);
 
         const FdmSquareRootFwdOp::TransformationType trafoType
           = params_.trafoType;

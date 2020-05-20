@@ -67,7 +67,7 @@ namespace QuantLib {
       private:
         Disposable<Array> getLeverageFctSlice(Time t1, Time t2) const;
         const FdmSquareRootFwdOp::TransformationType type_;
-        const Real kappa_, theta_, sigma_, rho_, v0_, mixingFactor_;
+        const Real kappa_, theta_, sigma_, rho_, v0_, mixingFactor_, mixedSigma_;
 
         const ext::shared_ptr<YieldTermStructure> rTS_;
         const ext::shared_ptr<YieldTermStructure> qTS_;

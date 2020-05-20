@@ -62,17 +62,18 @@ namespace QuantLib {
         : Fdm1dMesher(size) {
 
         std::vector<Real> vGrid(size, 0.0), pGrid(size, 0.0);
+        const Real mixedSigma = process->sigma()*process->mixingFactor();
         const Real df  = 4*process->theta()*process->kappa()/
-                            square<Real>()(process->mixingFactor()*process->sigma());
+                            square<Real>()(mixedSigma);
         try {
             std::multiset<std::pair<Real, Real> > grid;
             
             for (Size l=1; l<=tAvgSteps; ++l) {
                 const Real t = (maturity*l)/tAvgSteps;
                 const Real ncp = 4*process->kappa()*std::exp(-process->kappa()*t)
-                    /(square<Real>()(process->mixingFactor()*process->sigma())
+                    /(square<Real>()(mixedSigma)
                     *(1-std::exp(-process->kappa()*t)))*process->v0();
-                const Real k = square<Real>()(process->mixingFactor()*process->sigma())
+                const Real k = square<Real>()(mixedSigma)
                     *(1-std::exp(-process->kappa()*t))/(4*process->kappa());
 
                 const Real qMin = 0.0; // v_min = 0.0;
@@ -114,7 +115,7 @@ namespace QuantLib {
         } 
         catch (const Error&) {
             // use default mesh
-            const Real vol = process->mixingFactor()*process->sigma()*
+            const Real vol = mixedSigma*
                 std::sqrt(process->theta()/(2*process->kappa()));
 
             const Real mean = process->theta();
@@ -129,7 +130,7 @@ namespace QuantLib {
         }
 
         Real skewHint = ((process->kappa() != 0.0) 
-                ? std::max(1.0, process->mixingFactor()*process->sigma()/process->kappa()) : 1.0);
+                ? std::max(1.0, mixedSigma/process->kappa()) : 1.0);
 
         std::sort(pGrid.begin(), pGrid.end());
         volaEstimate_ = GaussLobattoIntegral(100000, 1e-4)(

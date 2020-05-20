@@ -70,7 +70,7 @@ namespace QuantLib {
         FdmHestonVariancePart(
             const ext::shared_ptr<FdmMesher>& mesher,
             const ext::shared_ptr<YieldTermStructure>& rTS,
-            Real sigma, Real kappa, Real theta, Real mixingFactor = 1.0);
+            Real mixedSigma, Real kappa, Real theta);
 
         void setTime(Time t1, Time t2);
         const TripleBandLinearOp& getMap() const;

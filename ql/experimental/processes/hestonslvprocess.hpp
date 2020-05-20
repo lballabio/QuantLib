@@ -74,7 +74,7 @@ namespace QuantLib {
         Time time(const Date& d) const { return hestonProcess_->time(d); }
 
       private:
-        Real kappa_, theta_, sigma_, rho_, v0_, mixingFactor_;
+        Real kappa_, theta_, sigma_, rho_, v0_, mixingFactor_, mixedSigma_;
 
         const ext::shared_ptr<HestonProcess> hestonProcess_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;

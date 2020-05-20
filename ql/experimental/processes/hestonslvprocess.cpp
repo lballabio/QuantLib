@@ -45,6 +45,7 @@ namespace QuantLib {
         sigma_ = hestonProcess_->sigma();
         rho_   = hestonProcess_->rho();
         mixingFactor_ = hestonProcess_->mixingFactor();
+        mixedSigma_ = mixingFactor_ * sigma_;
     }
 
     Disposable<Array> HestonSLVProcess::drift(Time t, const Array& x) const {
@@ -70,7 +71,7 @@ namespace QuantLib {
         const Real vol =
             std::min(1e-8, std::sqrt(x[1]*leverageFct_->localVol(t, s, true)));
 
-        const Real sigma2 = mixingFactor_ * sigma_ * vol;
+        const Real sigma2 = mixedSigma_ * vol;
         const Real sqrhov = std::sqrt(1.0 - rho_*rho_);
 
         Matrix tmp(2,2);
@@ -87,8 +88,8 @@ namespace QuantLib {
         const Real ex = std::exp(-kappa_*dt);
 
         const Real m  =  theta_+(x0[1]-theta_)*ex;
-        const Real s2 =  x0[1]*mixingFactor_*mixingFactor_*sigma_*sigma_*ex/kappa_*(1-ex)
-                       + theta_*mixingFactor_*mixingFactor_*sigma_*sigma_/(2*kappa_)*(1-ex)*(1-ex);
+        const Real s2 =  x0[1]*mixedSigma_*mixedSigma_*ex/kappa_*(1-ex)
+                       + theta_*mixedSigma_*mixedSigma_/(2*kappa_)*(1-ex)*(1-ex);
         const Real psi = s2/(m*m);
 
         if (psi < 1.5) {
@@ -115,7 +116,7 @@ namespace QuantLib {
         const Real v_0 = 0.5*(x0[1]+retVal[1])*l_0*l_0;
 
         retVal[0] = x0[0]*std::exp(mu*dt - 0.5*v_0*dt
-            + rho_/mixingFactor_*sigma_*l_0 * (
+            + rho_/mixedSigma_*l_0 * (
                   retVal[1] - kappa_*theta_*dt
                   + 0.5*(x0[1]+retVal[1])*kappa_*dt - x0[1])
             + rho1*std::sqrt(v_0*dt)*dw[0]);
