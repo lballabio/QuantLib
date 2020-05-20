@@ -1,0 +1,8 @@
+---
+Checks:          '-*,readability-*,-readability-else-after-return,-readability-named-parameter,-readability-braces-around-statements,-readability-inconsistent-declaration-parameter-name'
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+AnalyzeTemporaryDtors: false
+FormatStyle:     file
+...
+
