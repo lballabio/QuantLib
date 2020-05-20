@@ -48,9 +48,7 @@ namespace QuantLib {
             const Handle<FdmQuantoHelper>& quantoHelper
                                                 = Handle<FdmQuantoHelper>(),
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>(),
-            const Real mixingFactor
-                = 1.0);
+                = ext::shared_ptr<LocalVolTermStructure>());
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;
@@ -75,7 +73,6 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
         const Handle<FdmQuantoHelper> quantoHelper_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
-        const Real mixingFactor_;
 
         mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };

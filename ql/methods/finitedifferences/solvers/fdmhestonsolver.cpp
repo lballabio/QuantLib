@@ -32,14 +32,12 @@ namespace QuantLib {
         const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
         const Handle<FdmQuantoHelper>& quantoHelper,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-        const Real mixingFactor)
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
     : process_(process),
       solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       quantoHelper_(quantoHelper),
-      leverageFct_(leverageFct),
-      mixingFactor_(mixingFactor){
+      leverageFct_(leverageFct){
 
         registerWith(process_);
         registerWith(quantoHelper_);
@@ -51,7 +49,7 @@ namespace QuantLib {
                 solverDesc_.mesher, process_.currentLink(),
                 (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
                              : ext::shared_ptr<FdmQuantoHelper>(),
-                leverageFct_, mixingFactor_));
+                leverageFct_));
 
         solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }

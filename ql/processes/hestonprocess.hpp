@@ -60,7 +60,8 @@ namespace QuantLib {
                       const Handle<Quote>& s0,
                       Real v0, Real kappa,
                       Real theta, Real sigma, Real rho,
-                      Discretization d = QuadraticExponentialMartingale);
+                      Discretization d = QuadraticExponentialMartingale,
+                      Real mixingFactor = 1.0);
 
         Size size() const;
         Size factors() const;
@@ -77,6 +78,7 @@ namespace QuantLib {
         Real kappa() const { return kappa_; }
         Real theta() const { return theta_; }
         Real sigma() const { return sigma_; }
+        Real mixingFactor() const { return mixingFactor_; }
 
         const Handle<Quote>& s0() const;
         const Handle<YieldTermStructure>& dividendYield() const;
@@ -93,7 +95,7 @@ namespace QuantLib {
 
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
-        Real v0_, kappa_, theta_, sigma_, rho_;
+        Real v0_, kappa_, theta_, sigma_, rho_, mixingFactor_;
         Discretization discretization_;
     };
 }

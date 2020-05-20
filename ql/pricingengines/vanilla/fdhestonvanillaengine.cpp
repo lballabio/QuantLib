@@ -38,8 +38,7 @@ namespace QuantLib {
             const ext::shared_ptr<HestonModel>& model,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-            const Real mixingFactor)
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
     : GenericModelEngine<HestonModel,
                         DividendVanillaOption::arguments,
                         DividendVanillaOption::results>(model),
@@ -47,8 +46,7 @@ namespace QuantLib {
       vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc),
       leverageFct_(leverageFct),
-      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
-      mixingFactor_(mixingFactor) {
+      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {
     }
 
     FdHestonVanillaEngine::FdHestonVanillaEngine(
@@ -56,8 +54,7 @@ namespace QuantLib {
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-            const Real mixingFactor)
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
     : GenericModelEngine<HestonModel,
                         DividendVanillaOption::arguments,
                         DividendVanillaOption::results>(model),
@@ -65,8 +62,7 @@ namespace QuantLib {
       vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc),
       leverageFct_(leverageFct),
-      quantoHelper_(quantoHelper),
-      mixingFactor_(mixingFactor) {
+      quantoHelper_(quantoHelper) {
     }
 
 
@@ -172,7 +168,7 @@ namespace QuantLib {
         ext::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                     Handle<HestonProcess>(process),
                     getSolverDesc(1.5), schemeDesc_,
-                    Handle<FdmQuantoHelper>(quantoHelper_), leverageFct_, mixingFactor_));
+                    Handle<FdmQuantoHelper>(quantoHelper_), leverageFct_));
 
         const Real v0   = process->v0();
         const Real spot = process->s0()->value();
@@ -267,12 +263,6 @@ namespace QuantLib {
     MakeFdHestonVanillaEngine::withLeverageFunction(
         ext::shared_ptr<LocalVolTermStructure>& leverageFct) {
         leverageFct_ = leverageFct;
-        return *this;
-    }
-
-    MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withMixingFactor(
-        Real mixingFactor) {
-        mixingFactor_ = mixingFactor;
         return *this;
     }
 
