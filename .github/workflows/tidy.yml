@@ -12,4 +12,11 @@ jobs:
     - name: Check
       run: |
         find . -name *.[hc]pp | grep -v 'config\.msvc\.hpp$' | sort | xargs -n 1 ./tools/run_tidy.sh 
+    - uses: peter-evans/create-pull-request@v2.4.4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: clang-tidy-${{ github.ref }}
+        commit-message: 'Fixes by clang-tidy'
+        title: 'Possible problems fixed by clang-tidy'
+        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
 

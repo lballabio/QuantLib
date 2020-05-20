@@ -1,5 +1,5 @@
 ---
-Checks:          '-*,readability-*,-readability-else-after-return,-readability-named-parameter'
+Checks:          '-*,readability-braces-around-statements'
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 AnalyzeTemporaryDtors: false
