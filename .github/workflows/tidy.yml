@@ -1,0 +1,13 @@
+name: Test clang-tidy installation
+on:
+  - push
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: test
+      run: |
+        sudo apt-get install -y clang-tidy
+        which clang-tidy
+        clang-tidy --version
