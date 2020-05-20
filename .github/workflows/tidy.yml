@@ -6,8 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: test
+    - name: Setup
       run: |
-        sudo apt-get install -y clang-tidy
-        which clang-tidy
-        clang-tidy --version
+        sudo apt-get install -y clang-tidy libboost-dev
+    - name: Check
+      run: |
+        find . -name *.[hc]pp | grep -v 'config\.msvc\.hpp$' | sort | xargs -n 1 ./tools/run_tidy.sh 
+
