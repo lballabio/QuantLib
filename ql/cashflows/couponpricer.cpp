@@ -57,10 +57,11 @@ namespace QuantLib {
                                             index_->forwardingTermStructure();
 
         Date paymentDate = coupon.date();
-        if (paymentDate > rateCurve->referenceDate())
+        if (paymentDate > rateCurve->referenceDate()) {
             discount_ = rateCurve->discount(paymentDate);
-        else
+        } else {
             discount_ = 1.0;
+        }
 
         spreadLegValue_ = spread_ * accrualPeriod_ * discount_;
 
@@ -103,28 +104,32 @@ namespace QuantLib {
 
     Rate BlackIborCouponPricer::adjustedFixing(Rate fixing) const {
 
-        if (fixing == Null<Rate>())
+        if (fixing == Null<Rate>()) {
             fixing = coupon_->indexFixing();
+        }
 
         // if the pay date is equal to the index estimation end date
         // there is no convexity; in all other cases in principle an
         // adjustment has to be applied, but the Black76 method only
         // applies the standard in arrears adjustment; the bivariate
         // lognormal method is more accurate in this regard.
-        if ((!coupon_->isInArrears() && timingAdjustment_ == Black76))
+        if ((!coupon_->isInArrears() && timingAdjustment_ == Black76)) {
             return fixing;
+        }
         Date d1 = coupon_->fixingDate();
         Date d2 = index_->valueDate(d1);
         Date d3 = index_->maturityDate(d2);
-        if (coupon_->date() == d3)
+        if (coupon_->date() == d3) {
             return fixing;
+        }
 
         QL_REQUIRE(!capletVolatility().empty(),
                    "missing optionlet volatility");
         Date referenceDate = capletVolatility()->referenceDate();
         // no variance has accumulated, so the convexity is zero
-        if (d1 <= referenceDate)
+        if (d1 <= referenceDate) {
             return fixing;
+        }
         Time tau = index_->dayCounter().yearFraction(d2, d3);
         Real variance = capletVolatility()->blackVariance(d1, fixing);
 
@@ -142,8 +147,9 @@ namespace QuantLib {
             Date d4 = coupon_->date();
             Date d5 = d4 >= d3 ? d3 : d2;
             Time tau2 = index_->dayCounter().yearFraction(d5, d4);
-            if (d4 >= d3)
+            if (d4 >= d3) {
                 adjustment = 0.0;
+            }
             // if d4 < d2 (payment before index start) we just apply the
             // Black76 in arrears adjustment
             if (tau2 > 0.0) {

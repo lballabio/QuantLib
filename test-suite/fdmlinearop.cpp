@@ -699,8 +699,9 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
     FirstDerivativeOp copyOfDy(dy);
 
     Array u(layout->size());
-    for (Size i=0; i < layout->size(); ++i)
-        u[i] = std::sin(0.1*i)+std::cos(0.35*i);
+    for (Size i = 0; i < layout->size(); ++i) {
+        u[i] = std::sin(0.1 * i) + std::cos(0.35 * i);
+    }
 
     Array t(dy.solve_splitting(copyOfDy.apply(u), 1.0, 0.0));
     for (Size i=0; i < u.size(); ++i) {
@@ -809,9 +810,11 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     hsModel.rollback(rhs, 1.0, 0.0, 50);
 
     Matrix ret(dims[0], dims[1]);
-    for (Size i=0; i < dims[0]; ++i)
-        for (Size j=0; j < dims[1]; ++j)
-            ret[i][j] = rhs[i+j*dims[0]];
+    for (Size i = 0; i < dims[0]; ++i) {
+        for (Size j = 0; j < dims[1]; ++j) {
+            ret[i][j] = rhs[i + j * dims[0]];
+        }
+    }
 
     std::vector<Real> tx, ty;
     for (FdmLinearOpIterator iter = mesher->layout()->begin();
@@ -903,9 +906,11 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
     hsModel.rollback(rhs, 1.0, 0.0, 50, condition);
 
     Matrix ret(dims[0], dims[1]);
-    for (Size i=0; i < dims[0]; ++i)
-        for (Size j=0; j < dims[1]; ++j)
-            ret[i][j] = rhs[i+j*dims[0]];
+    for (Size i = 0; i < dims[0]; ++i) {
+        for (Size j = 0; j < dims[1]; ++j) {
+            ret[i][j] = rhs[i + j * dims[0]];
+        }
+    }
 
     std::vector<Real> tx, ty;
     for (FdmLinearOpIterator iter = mesher->layout()->begin();
@@ -1179,9 +1184,11 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     const Real r0 = 0;
     for (Size k=0; k < dim[2]; ++k) {
         Matrix ret(dim[0], dim[1]);
-        for (Size i=0; i < dim[0]; ++i)
-            for (Size j=0; j < dim[1]; ++j)
-                ret[i][j] = rhs[ i+j*dim[0]+k*dim[0]*dim[1] ];
+        for (Size i = 0; i < dim[0]; ++i) {
+            for (Size j = 0; j < dim[1]; ++j) {
+                ret[i][j] = rhs[i + j * dim[0] + k * dim[0] * dim[1]];
+            }
+        }
 
         y.push_back(BicubicSpline(ty.begin(), ty.end(),
                                   tx.begin(), tx.end(), ret)(v0, std::log(x0)));

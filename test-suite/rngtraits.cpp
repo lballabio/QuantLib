@@ -35,15 +35,17 @@ void RngTraitsTest::testGaussian() {
 
     const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
-    for (Size i=0; i<values.size(); i++)
+    for (Size i = 0; i < values.size(); i++) {
         sum += values[i];
+    }
 
     Real stored = 4.09916;
     Real tolerance = 1.0e-5;
-    if (std::fabs(sum - stored) > tolerance)
+    if (std::fabs(sum - stored) > tolerance) {
         BOOST_FAIL("the sum of the samples does not match the stored value\n"
                    << "    calculated: " << sum << "\n"
                    << "    expected:   " << stored);
+    }
 }
 
 
@@ -58,14 +60,16 @@ void RngTraitsTest::testDefaultPoisson() {
 
     const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
-    for (Size i=0; i<values.size(); i++)
+    for (Size i = 0; i < values.size(); i++) {
         sum += values[i];
+    }
 
     Real stored = 108.0;
-    if (!close(sum, stored))
+    if (!close(sum, stored)) {
         BOOST_FAIL("the sum of the samples does not match the stored value\n"
                    << "    calculated: " << sum << "\n"
                    << "    expected:   " << stored);
+    }
 }
 
 
@@ -81,14 +85,16 @@ void RngTraitsTest::testCustomPoisson() {
 
     const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
-    for (Size i=0; i<values.size(); i++)
+    for (Size i = 0; i < values.size(); i++) {
         sum += values[i];
+    }
 
     Real stored = 409.0;
-    if (!close(sum, stored))
+    if (!close(sum, stored)) {
         BOOST_FAIL("the sum of the samples does not match the stored value\n"
                    << "    calculated: " << sum << "\n"
                    << "    expected:   " << stored);
+    }
 }
 
 

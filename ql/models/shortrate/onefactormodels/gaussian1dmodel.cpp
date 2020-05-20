@@ -33,8 +33,9 @@ Real Gaussian1dModel::forwardRate(const Date &fixing,
 
     calculate();
 
-    if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
+    if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1))) {
         return iborIdx->fixing(fixing);
+    }
 
     Handle<YieldTermStructure> yts =
         iborIdx->forwardingTermStructure(); // might be empty, then use
@@ -60,8 +61,9 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
 
     calculate();
 
-    if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
+    if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1))) {
         return swapIdx->fixing(fixing);
+    }
 
     Handle<YieldTermStructure> ytsf =
         swapIdx->iborIndex()->forwardingTermStructure();
@@ -186,16 +188,17 @@ Real Gaussian1dModel::zerobondOption(
             price += gaussianShiftedPolynomialIntegral(0.0, 0.0, 0.0, 0.0, p[0],
                                                        z[0], -100.0, z[0]);
         } else {
-            if (type == Option::Call)
+            if (type == Option::Call) {
                 price += gaussianShiftedPolynomialIntegral(
-                    0.0, payoff.cCoefficients()[z.size() - 2],
-                    payoff.bCoefficients()[z.size() - 2],
-                    payoff.aCoefficients()[z.size() - 2], p[z.size() - 2],
-                    z[z.size() - 2], z[z.size() - 1], 100.0);
-            if (type == Option::Put)
+                    0.0, payoff.cCoefficients()[z.size() - 2], payoff.bCoefficients()[z.size() - 2],
+                    payoff.aCoefficients()[z.size() - 2], p[z.size() - 2], z[z.size() - 2],
+                    z[z.size() - 1], 100.0);
+            }
+            if (type == Option::Put) {
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, payoff.cCoefficients()[0], payoff.bCoefficients()[0],
                     payoff.aCoefficients()[0], p[0], z[0], -100.0, z[0]);
+            }
         }
     }
 

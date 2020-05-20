@@ -447,8 +447,9 @@ namespace QuantLib {
     inline Disposable<Array> Matrix::diagonal() const {
         Size arraySize = std::min<Size>(rows(), columns());
         Array tmp(arraySize);
-        for(Size i = 0; i < arraySize; i++)
+        for (Size i = 0; i < arraySize; i++) {
             tmp[i] = (*this)[i][i];
+        }
         return tmp;
     }
 
@@ -531,10 +532,9 @@ namespace QuantLib {
                    << v.size() << ", " << m.rows() << "x" << m.columns() <<
                    ") cannot be multiplied");
         Array result(m.columns());
-        for (Size i=0; i<result.size(); i++)
-            result[i] =
-                std::inner_product(v.begin(),v.end(),
-                                   m.column_begin(i),0.0);
+        for (Size i = 0; i < result.size(); i++) {
+            result[i] = std::inner_product(v.begin(), v.end(), m.column_begin(i), 0.0);
+        }
         return result;
     }
 
@@ -544,9 +544,9 @@ namespace QuantLib {
                    << v.size() << ", " << m.rows() << "x" << m.columns() <<
                    ") cannot be multiplied");
         Array result(m.rows());
-        for (Size i=0; i<result.size(); i++)
-            result[i] =
-                std::inner_product(v.begin(),v.end(),m.row_begin(i),0.0);
+        for (Size i = 0; i < result.size(); i++) {
+            result[i] = std::inner_product(v.begin(), v.end(), m.row_begin(i), 0.0);
+        }
         return result;
     }
 
@@ -573,8 +573,9 @@ namespace QuantLib {
         #if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
         if (!m.empty())
         #endif
-        for (Size i=0; i<m.rows(); i++)
-            std::copy(m.row_begin(i),m.row_end(i),result.column_begin(i));
+            for (Size i = 0; i < m.rows(); i++) {
+                std::copy(m.row_begin(i), m.row_end(i), result.column_begin(i));
+            }
         return result;
     }
 
@@ -597,9 +598,9 @@ namespace QuantLib {
 
         Matrix result(size1, size2);
 
-        for (Size i=0; v1begin!=v1end; i++, v1begin++)
-            std::transform(v2begin, v2end, result.row_begin(i),
-                           multiply_by<Real>(*v1begin));
+        for (Size i = 0; v1begin != v1end; i++, v1begin++) {
+            std::transform(v2begin, v2end, result.row_begin(i), multiply_by<Real>(*v1begin));
+        }
 
         return result;
     }
@@ -612,8 +613,9 @@ namespace QuantLib {
         std::streamsize width = out.width();
         for (Size i=0; i<m.rows(); i++) {
             out << "| ";
-            for (Size j=0; j<m.columns(); j++)
+            for (Size j = 0; j < m.columns(); j++) {
                 out << std::setw(int(width)) << m[i][j] << " ";
+            }
             out << "|\n";
         }
         return out;

@@ -28,8 +28,9 @@ namespace QuantLib {
     LineSearchBasedMethod::LineSearchBasedMethod(
                            const ext::shared_ptr<LineSearch>& lineSearch)
     : lineSearch_(lineSearch) {
-        if (!lineSearch_)
-           lineSearch_ = ext::shared_ptr<LineSearch>(new ArmijoLineSearch);
+        if (!lineSearch_) {
+            lineSearch_ = ext::shared_ptr<LineSearch>(new ArmijoLineSearch);
+        }
     }
 
     EndCriteria::Type
@@ -65,8 +66,9 @@ namespace QuantLib {
         // Loop over iterations
         do {
             // Linesearch
-            if (!first_time)
+            if (!first_time) {
                 prevGradient = lineSearch_->lastGradient();
+            }
             t = (*lineSearch_)(P, ecType, endCriteria, t);
             // don't throw: it can fail just because maxIterations exceeded
             //QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");

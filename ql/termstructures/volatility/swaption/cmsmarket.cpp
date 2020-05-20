@@ -94,7 +94,9 @@ namespace QuantLib {
 
         Period start(0, Years);
         for (Size i=0; i<nExercise_; ++i) {
-            if (i>0) start = swapLengths_[i-1];
+            if (i > 0) {
+                start = swapLengths_[i - 1];
+            }
             for (Size j=0; j<nSwapIndexes_; ++j) {
                 // never evaluate the spot swap, only its ibor floating leg
                 spotSwaps_[i][j] = MakeCms(swapLengths_[i],
@@ -252,14 +254,15 @@ namespace QuantLib {
                 result[j*nExercise_+i][4] = mktSpreads_[i][j]*10000;
                 result[j*nExercise_+i][5] = mdlSpreads_[i][j]*10000;
                 result[j*nExercise_+i][6] = errSpreads_[i][j]*10000;
-                if (mdlSpreads_[i][j]>mktAskSpreads_[i][j])
+                if (mdlSpreads_[i][j] > mktAskSpreads_[i][j]) {
                     result[j*nExercise_+i][7] = (mdlSpreads_[i][j] -
                                                 mktAskSpreads_[i][j])*10000;
-                else if (mdlSpreads_[i][j]<mktBidSpreads_[i][j])
+                } else if (mdlSpreads_[i][j] < mktBidSpreads_[i][j]) {
                     result[j*nExercise_+i][7] = (mktBidSpreads_[i][j] -
                                                 mdlSpreads_[i][j])*10000;
-                else
-                    result[j*nExercise_+i][7] = 0.0;
+                } else {
+                    result[j * nExercise_ + i][7] = 0.0;
+                }
 
                 // spot CMS Leg NPVs
                 result[j*nExercise_+i][ 8] = mktSpotCmsLegNPV_[i][j];

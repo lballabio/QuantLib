@@ -48,27 +48,27 @@ struct NoArbSabrSpecs {
         // be thrown from the model constructor anyway)
         Real sigmaI = params[0] * std::pow(forward, params[1] - 1.0);
         if (sigmaI < detail::NoArbSabrModel::sigmaI_min) {
-            if (!paramIsFixed[0])
+            if (!paramIsFixed[0]) {
                 params[0] = detail::NoArbSabrModel::sigmaI_min * (1.0 + eps()) /
                             std::pow(forward, params[1] - 1.0);
-            else {
-                if (!paramIsFixed[1])
-                    params[1] = 1.0 +
-                                std::log(detail::NoArbSabrModel::sigmaI_min *
-                                         (1.0 + eps()) / params[0]) /
-                                    std::log(forward);
+            } else {
+                if (!paramIsFixed[1]) {
+                    params[1] = 1.0 + std::log(detail::NoArbSabrModel::sigmaI_min * (1.0 + eps()) /
+                                               params[0]) /
+                                          std::log(forward);
+                }
             }
         }
         if (sigmaI > detail::NoArbSabrModel::sigmaI_max) {
-            if (!paramIsFixed[0])
+            if (!paramIsFixed[0]) {
                 params[0] = detail::NoArbSabrModel::sigmaI_max * (1.0 - eps()) /
                             std::pow(forward, params[1] - 1.0);
-            else {
-                if (!paramIsFixed[1])
-                    params[1] = 1.0 +
-                                std::log(detail::NoArbSabrModel::sigmaI_max *
-                                         (1.0 - eps()) / params[0]) /
-                                    std::log(forward);
+            } else {
+                if (!paramIsFixed[1]) {
+                    params[1] = 1.0 + std::log(detail::NoArbSabrModel::sigmaI_max * (1.0 - eps()) /
+                                               params[0]) /
+                                          std::log(forward);
+                }
             }
         }
     }
@@ -76,11 +76,11 @@ struct NoArbSabrSpecs {
                const Real &forward, const Real expiryTime,
                const std::vector<Real> &r, const std::vector<Real> &) {
         Size j = 0;
-        if (!paramIsFixed[1])
-            values[1] = detail::NoArbSabrModel::beta_min +
-                        (detail::NoArbSabrModel::beta_max -
-                         detail::NoArbSabrModel::beta_min) *
-                            r[j++];
+        if (!paramIsFixed[1]) {
+            values[1] =
+                detail::NoArbSabrModel::beta_min +
+                (detail::NoArbSabrModel::beta_max - detail::NoArbSabrModel::beta_min) * r[j++];
+        }
         if (!paramIsFixed[0]) {
             Real sigmaI = detail::NoArbSabrModel::sigmaI_min +
                           (detail::NoArbSabrModel::sigmaI_max -
@@ -90,16 +90,15 @@ struct NoArbSabrSpecs {
             sigmaI += eps() / 2.0;
             values[0] = sigmaI / std::pow(forward, values[1] - 1.0);
         }
-        if (!paramIsFixed[2])
+        if (!paramIsFixed[2]) {
             values[2] = detail::NoArbSabrModel::nu_min +
-                        (detail::NoArbSabrModel::nu_max -
-                         detail::NoArbSabrModel::nu_min) *
-                            r[j++];
-        if (!paramIsFixed[3])
-            values[3] = detail::NoArbSabrModel::rho_min +
-                        (detail::NoArbSabrModel::rho_max -
-                         detail::NoArbSabrModel::rho_min) *
-                            r[j++];
+                        (detail::NoArbSabrModel::nu_max - detail::NoArbSabrModel::nu_min) * r[j++];
+        }
+        if (!paramIsFixed[3]) {
+            values[3] =
+                detail::NoArbSabrModel::rho_min +
+                (detail::NoArbSabrModel::rho_max - detail::NoArbSabrModel::rho_min) * r[j++];
+        }
     }
     Array inverse(const Array &y, const std::vector<bool> &paramIsFixed,
                   const std::vector<Real> &params, const Real forward) {
@@ -130,13 +129,13 @@ struct NoArbSabrSpecs {
     Array direct(const Array &x, const std::vector<bool> &paramIsFixed,
                  const std::vector<Real> &params, const Real forward) {
         Array y(4);
-        if (paramIsFixed[1])
+        if (paramIsFixed[1]) {
             y[1] = params[1];
-        else
+        } else {
             y[1] = detail::NoArbSabrModel::beta_min +
-                   (detail::NoArbSabrModel::beta_max -
-                    detail::NoArbSabrModel::beta_min) *
+                   (detail::NoArbSabrModel::beta_max - detail::NoArbSabrModel::beta_min) *
                        (std::atan(x[1]) + M_PI / 2.0) / M_PI;
+        }
         // we compute alpha from sigmaI using beta
         // if alpha is fixed we have to check if beta is admissable
         // and adjust if need be
@@ -162,20 +161,20 @@ struct NoArbSabrSpecs {
                               (std::atan(x[0]) + M_PI / 2.0) / M_PI;
             y[0] = sigmaI / std::pow(forward, y[1] - 1.0);
         }
-        if (paramIsFixed[2])
+        if (paramIsFixed[2]) {
             y[2] = params[2];
-        else
+        } else {
             y[2] = detail::NoArbSabrModel::nu_min +
-                   (detail::NoArbSabrModel::nu_max -
-                    detail::NoArbSabrModel::nu_min) *
+                   (detail::NoArbSabrModel::nu_max - detail::NoArbSabrModel::nu_min) *
                        (std::atan(x[2]) + M_PI / 2.0) / M_PI;
-        if (paramIsFixed[3])
+        }
+        if (paramIsFixed[3]) {
             y[3] = params[3];
-        else
+        } else {
             y[3] = detail::NoArbSabrModel::rho_min +
-                   (detail::NoArbSabrModel::rho_max -
-                    detail::NoArbSabrModel::rho_min) *
+                   (detail::NoArbSabrModel::rho_max - detail::NoArbSabrModel::rho_min) *
                        (std::atan(x[3]) + M_PI / 2.0) / M_PI;
+        }
         return y;
     }
     Real weight(const Real strike, const Real forward, const Real stdDev,

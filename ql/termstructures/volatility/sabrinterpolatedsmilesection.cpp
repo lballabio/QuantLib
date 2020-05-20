@@ -53,8 +53,9 @@ namespace QuantLib {
 
             LazyObject::registerWith(forward_);
             LazyObject::registerWith(atmVolatility_);
-            for (Size i=0; i<volHandles_.size(); ++i)
+            for (Size i = 0; i < volHandles_.size(); ++i) {
                 LazyObject::registerWith(volHandles_[i]);
+            }
     }
 
     SabrInterpolatedSmileSection::SabrInterpolatedSmileSection(
@@ -84,10 +85,9 @@ namespace QuantLib {
            endCriteria_(endCriteria), method_(method),
            evaluationDate_(Settings::instance().evaluationDate()) {
 
-            for (Size i=0; i<volHandles_.size(); ++i)
-                volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                                        SimpleQuote(volHandles[i])));
-
+        for (Size i = 0; i < volHandles_.size(); ++i) {
+            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
+        }
     }
 
     void SabrInterpolatedSmileSection::createInterpolation() const {

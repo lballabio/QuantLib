@@ -53,9 +53,11 @@ namespace matrices_test {
 
     Real norm(const Matrix& m) {
         Real sum = 0.0;
-        for (Size i=0; i<m.rows(); i++)
-            for (Size j=0; j<m.columns(); j++)
-                sum += m[i][j]*m[i][j];
+        for (Size i = 0; i < m.rows(); i++) {
+            for (Size j = 0; j < m.columns(); j++) {
+                sum += m[i][j] * m[i][j];
+            }
+        }
         return std::sqrt(sum);
     }
 
@@ -128,24 +130,28 @@ void MatricesTest::testEigenvectors() {
 
         for (Size i=0; i<N; i++) {
             Array v(N);
-            for (Size j=0; j<N; j++)
+            for (Size j = 0; j < N; j++) {
                 v[j] = eigenVectors[j][i];
+            }
             // check definition
             Array a = M*v;
             Array b = eigenValues[i]*v;
-            if (norm(a-b) > 1.0e-15)
+            if (norm(a - b) > 1.0e-15) {
                 BOOST_FAIL("Eigenvector definition not satisfied");
+            }
             // check decreasing ordering
             if (eigenValues[i] >= minHolder) {
                 BOOST_FAIL("Eigenvalues not ordered: " << eigenValues);
-            } else
+            } else {
                 minHolder = eigenValues[i];
+            }
         }
 
         // check normalization
         Matrix m = eigenVectors * transpose(eigenVectors);
-        if (norm(m-I) > 1.0e-15)
+        if (norm(m - I) > 1.0e-15) {
             BOOST_FAIL("Eigenvector not normalized");
+        }
     }
 }
 
@@ -217,25 +223,27 @@ void MatricesTest::testSVD() {
         Matrix V = svd.V();
 
         for (Size i=0; i < S.rows(); i++) {
-            if (S[i][i] != s[i])
+            if (S[i][i] != s[i]) {
                 BOOST_FAIL("S not consistent with s");
+            }
         }
 
         // tests
         Matrix U_Utranspose = transpose(U)*U;
-        if (norm(U_Utranspose-I) > tol)
-            BOOST_FAIL("U not orthogonal (norm of U^T*U-I = "
-                       << norm(U_Utranspose-I) << ")");
+        if (norm(U_Utranspose - I) > tol) {
+            BOOST_FAIL("U not orthogonal (norm of U^T*U-I = " << norm(U_Utranspose - I) << ")");
+        }
 
         Matrix V_Vtranspose = transpose(V)*V;
-        if (norm(V_Vtranspose-I) > tol)
-            BOOST_FAIL("V not orthogonal (norm of V^T*V-I = "
-                       << norm(V_Vtranspose-I) << ")");
+        if (norm(V_Vtranspose - I) > tol) {
+            BOOST_FAIL("V not orthogonal (norm of V^T*V-I = " << norm(V_Vtranspose - I) << ")");
+        }
 
         Matrix A_reconstructed = U * S * transpose(V);
-        if (norm(A_reconstructed-A) > tol)
+        if (norm(A_reconstructed - A) > tol) {
             BOOST_FAIL("Product does not recover A: (norm of U*S*V^T-A = "
-                       << norm(A_reconstructed-A) << ")");
+                       << norm(A_reconstructed - A) << ")");
+        }
     }
 }
 
@@ -265,16 +273,16 @@ void MatricesTest::testQRDecomposition() {
             P[ipvt[i]][i] = 1.0;
         }
 
-        if (norm(Q*R - A*P) > tol)
-            BOOST_FAIL("Q*R does not match matrix A*P (norm = "
-                       << norm(Q*R-A*P) << ")");
+        if (norm(Q * R - A * P) > tol) {
+            BOOST_FAIL("Q*R does not match matrix A*P (norm = " << norm(Q * R - A * P) << ")");
+        }
 
         pivot = false;
         qrDecomposition(A, Q, R, pivot);
 
-        if (norm(Q*R - A) > tol)
-            BOOST_FAIL("Q*R does not match matrix A (norm = "
-                       << norm(Q*R-A) << ")");
+        if (norm(Q * R - A) > tol) {
+            BOOST_FAIL("Q*R does not match matrix A (norm = " << norm(Q * R - A) << ")");
+        }
     }
 }
 
@@ -294,9 +302,11 @@ void MatricesTest::testQRSolve() {
     }
 
     Matrix randM(50, 200);
-    for (Size i=0; i < randM.rows(); ++i)
-        for (Size j=0; j < randM.columns(); ++j)
+    for (Size i = 0; i < randM.rows(); ++i) {
+        for (Size j = 0; j < randM.columns(); ++j) {
             randM[i][j] = rng.next().value;
+        }
+    }
 
     Matrix testMatrices[] = {M1, M2, M3, transpose(M3),
                               M4, transpose(M4), M5, I, M7,
@@ -314,9 +324,9 @@ void MatricesTest::testQRSolve() {
             const Array x = qrSolve(A, b, true);
 
             if (A.columns() >= A.rows()) {
-                if (norm(A*x - b) > tol)
-                    BOOST_FAIL("A*x does not match vector b (norm = "
-                               << norm(A*x - b) << ")");
+                if (norm(A * x - b) > tol) {
+                    BOOST_FAIL("A*x does not match vector b (norm = " << norm(A * x - b) << ")");
+                }
             }
             else {
                 // use the SVD to calculate the reference values
@@ -370,15 +380,19 @@ void MatricesTest::testInverse() {
         const Matrix I2 = A*invA;
 
         Matrix identity(A.rows(), A.rows(), 0.0);
-        for (Size i=0; i < A.rows(); ++i) identity[i][i] = 1.0;
+        for (Size i = 0; i < A.rows(); ++i) {
+            identity[i][i] = 1.0;
+        }
 
-        if (norm(I1 - identity) > tol)
-            BOOST_FAIL("inverse(A)*A does not recover unit matrix (norm = "
-                       << norm(I1-identity) << ")");
+        if (norm(I1 - identity) > tol) {
+            BOOST_FAIL("inverse(A)*A does not recover unit matrix (norm = " << norm(I1 - identity)
+                                                                            << ")");
+        }
 
-        if (norm(I2 - identity) > tol)
-            BOOST_FAIL("A*inverse(A) does not recover unit matrix (norm = "
-                       << norm(I1-identity) << ")");
+        if (norm(I2 - identity) > tol) {
+            BOOST_FAIL("A*inverse(A) does not recover unit matrix (norm = " << norm(I1 - identity)
+                                                                            << ")");
+        }
     }
 }
 
@@ -397,18 +411,20 @@ void MatricesTest::testDeterminant() {
 
     for (Size j=0; j<LENGTH(testMatrices); ++j) {
         const Real calculated = determinant(testMatrices[j]);
-        if (std::fabs(expected[j] - calculated) > tol)
+        if (std::fabs(expected[j] - calculated) > tol) {
             BOOST_FAIL("determinant calculation failed "
-                       << "\n matrix     :\n" << testMatrices[j]
-                       << "\n calculated : " << calculated
+                       << "\n matrix     :\n"
+                       << testMatrices[j] << "\n calculated : " << calculated
                        << "\n expected   : " << expected[j]);
+        }
     }
 
     MersenneTwisterUniformRng rng(1234);
     for (Size j=0; j<100; ++j) {
         Matrix m(3, 3, 0.0);
-        for (Matrix::iterator iter = m.begin(); iter != m.end(); ++iter)
+        for (Matrix::iterator iter = m.begin(); iter != m.end(); ++iter) {
             *iter = rng.next().value;
+        }
 
         if (!(j%3)) {
             // every third matrix is a singular matrix
@@ -429,11 +445,11 @@ void MatricesTest::testDeterminant() {
         const Real expected = a*e*i+b*f*g+c*d*h-(g*e*c+h*f*a+i*d*b);
         const Real calculated = determinant(m);
 
-        if (std::fabs(expected-calculated) > tol)
+        if (std::fabs(expected - calculated) > tol) {
             BOOST_FAIL("determinant calculation failed "
-                       << "\n matrix     :\n" << m
-                       << "\n calculated : " << calculated
-                       << "\n expected   : " << expected);
+                       << "\n matrix     :\n"
+                       << m << "\n calculated : " << calculated << "\n expected   : " << expected);
+        }
     }
 }
 
@@ -452,9 +468,11 @@ void MatricesTest::testOrthogonalProjection() {
 
     MersenneTwisterUniformRng rng(seed);
 
-    for (Size i=0; i < numberVectors; ++i)
-        for (Size j=0; j < dimension; ++j)
+    for (Size i = 0; i < numberVectors; ++i) {
+        for (Size j = 0; j < dimension; ++j) {
             test[i][j] = rng.next().value;
+        }
+    }
 
     OrthogonalProjections projector(test,
                                     multiplier,
@@ -469,38 +487,39 @@ void MatricesTest::testOrthogonalProjection() {
 
         if (projector.validVectors()[i])
         {
-            for (Size j=0; j < numberVectors; ++j)
-                  if (projector.validVectors()[j] && i != j)
-                  {
-                      Real dotProduct=0.0;
-                      for (Size k=0; k < dimension; ++k)
-                          dotProduct += test[j][k]*projector.GetVector(i)[k];
+            for (Size j = 0; j < numberVectors; ++j) {
+                if (projector.validVectors()[j] && i != j) {
+                    Real dotProduct = 0.0;
+                    for (Size k = 0; k < dimension; ++k) {
+                        dotProduct += test[j][k] * projector.GetVector(i)[k];
+                    }
 
-                      if (fabs(dotProduct) > errorAcceptable)
-                          ++numberFailures;
+                    if (fabs(dotProduct) > errorAcceptable) {
+                        ++numberFailures;
+                    }
+                }
+            }
 
-                  }
+            Real innerProductWithOriginal = 0.0;
+            Real normSq = 0.0;
 
-           Real innerProductWithOriginal =0.0;
-           Real normSq =0.0;
-
-           for (Size j=0; j < dimension; ++j)
-           {
+            for (Size j = 0; j < dimension; ++j) {
                 innerProductWithOriginal +=   projector.GetVector(i)[j]*test[i][j];
                 normSq += test[i][j]*test[i][j];
            }
 
-           if (fabs(innerProductWithOriginal-normSq) > errorAcceptable)
+           if (fabs(innerProductWithOriginal - normSq) > errorAcceptable) {
                ++failuresTwo;
-
+           }
         }
 
     }
 
-    if (numberFailures > 0 || failuresTwo >0)
-        BOOST_FAIL("OrthogonalProjections test failed with " << numberFailures << " failures  of orthogonality and "
-                    << failuresTwo << " failures of projection size.");
-
+    if (numberFailures > 0 || failuresTwo > 0) {
+        BOOST_FAIL("OrthogonalProjections test failed with "
+                   << numberFailures << " failures  of orthogonality and " << failuresTwo
+                   << " failures of projection size.");
+    }
 }
 
 void MatricesTest::testCholeskyDecomposition() {

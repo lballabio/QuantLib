@@ -87,11 +87,13 @@ namespace QuantLib {
               includeTodaysExercise_(includeTodaysExercise),
               probabilities_(probabilities) {
 
-            if (!discountCurve_.empty())
+            if (!discountCurve_.empty()) {
                 registerWith(discountCurve_);
+            }
 
-            if (!oas_.empty())
+            if (!oas_.empty()) {
                 registerWith(oas_);
+            }
         }
 
         Gaussian1dFloatFloatSwaptionEngine(
@@ -115,11 +117,13 @@ namespace QuantLib {
               includeTodaysExercise_(includeTodaysExercise),
               probabilities_(probabilities) {
 
-            if (!discountCurve_.empty())
+            if (!discountCurve_.empty()) {
                 registerWith(discountCurve_);
+            }
 
-            if (!oas_.empty())
+            if (!oas_.empty()) {
                 registerWith(oas_);
+            }
         }
 
         void calculate() const;

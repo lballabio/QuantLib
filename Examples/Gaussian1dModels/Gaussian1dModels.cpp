@@ -120,8 +120,9 @@ void printModelCalibration(
                   << std::setw(14) << basket[j]->volatility()->value()
                   << std::endl;
     }
-    if (volatility.size() > basket.size()) // only for markov model
+    if (volatility.size() > basket.size()) { // only for markov model
         std::cout << std::setw(20) << " " << volatility.back() << std::endl;
+    }
 }
 
 
@@ -197,9 +198,9 @@ int main(int argc, char *argv[]) {
                 floatingSchedule, euribor6m, 0.00, Actual360()));
 
         std::vector<Date> exerciseDates;
-        for (Size i = 1; i < 10; ++i)
-            exerciseDates.push_back(
-                TARGET().advance(fixedSchedule[i], -2 * Days));
+        for (Size i = 1; i < 10; ++i) {
+            exerciseDates.push_back(TARGET().advance(fixedSchedule[i], -2 * Days));
+        }
 
         ext::shared_ptr<Exercise> exercise =
             ext::make_shared<BermudanExercise>(exerciseDates, false);
@@ -265,8 +266,9 @@ int main(int argc, char *argv[]) {
                "\nthe calibrating vanilla swaptions. The result of this is as "
                "follows:" << std::endl;
 
-        for (Size i = 0; i < basket.size(); ++i)
+        for (Size i = 0; i < basket.size(); ++i) {
             basket[i]->setPricingEngine(swaptionEngine);
+        }
 
         LevenbergMarquardt method;
         EndCriteria ec(1000, 10, 1E-8, 1E-8,
@@ -317,10 +319,11 @@ int main(int argc, char *argv[]) {
         std::cout << "\nLet's see how this affects the exotics npv. The "
                      "\nrecalibrated model is:" << std::endl;
 
-        for (Size i = 0; i < basket.size(); ++i)
+        for (Size i = 0; i < basket.size(); ++i) {
             basket[i]->setPricingEngine(swaptionEngine);
+        }
 
-        
+
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
         
 
@@ -433,10 +436,11 @@ int main(int argc, char *argv[]) {
             << "\nThe npv of the call right is (after recalibrating the model)"
             << std::endl;
 
-        for (Size i = 0; i < basket.size(); i++)
+        for (Size i = 0; i < basket.size(); i++) {
             basket[i]->setPricingEngine(swaptionEngine);
+        }
 
-        
+
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
         Real npv3 = swaption3->NPV();
         
@@ -468,10 +472,11 @@ int main(int argc, char *argv[]) {
 
         std::cout << "\nThe npv becomes:" << std::endl;
 
-        for (Size i = 0; i < basket.size(); i++)
+        for (Size i = 0; i < basket.size(); i++) {
             basket[i]->setPricingEngine(swaptionEngine);
+        }
 
-        
+
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
         Real npv4 = swaption3->NPV();
         
@@ -540,8 +545,9 @@ int main(int argc, char *argv[]) {
         
         basket = swaption4->calibrationBasket(swapBase, *swaptionVol,
                                               BasketGeneratingEngine::Naive);
-        for (Size i = 0; i < basket.size(); ++i)
+        for (Size i = 0; i < basket.size(); ++i) {
             basket[i]->setPricingEngine(swaptionEngine);
+        }
         gsr->calibrateVolatilitiesIterative(basket, method, ec);
         
 
@@ -636,10 +642,11 @@ int main(int argc, char *argv[]) {
                      "\ndepending on your machine, this may take a"
                      "\nwhile now..." << std::endl;
 
-        for (Size i = 0; i < basket.size(); ++i)
+        for (Size i = 0; i < basket.size(); ++i) {
             basket[i]->setPricingEngine(swaptionEngineMarkov);
+        }
 
-        
+
         markov->calibrate(basket, method, ec);
         
 

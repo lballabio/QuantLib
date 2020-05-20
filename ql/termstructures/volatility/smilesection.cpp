@@ -52,8 +52,9 @@ namespace QuantLib {
         if (isFloating_) {
             registerWith(Settings::instance().evaluationDate());
             referenceDate_ = Settings::instance().evaluationDate();
-        } else
+        } else {
             referenceDate_ = referenceDate;
+        }
         initializeExerciseTime();
     }
 
@@ -77,11 +78,12 @@ namespace QuantLib {
         // if lognormal or shifted lognormal,
         // for strike at -shift, return option price even if outside
         // minstrike, maxstrike interval
-        if (volatilityType() == ShiftedLognormal)
+        if (volatilityType() == ShiftedLognormal) {
             return blackFormula(type,strike,atm, std::fabs(strike+shift()) < QL_EPSILON ?
                             0.2 : sqrt(variance(strike)),discount,shift());
-        else
-            return bachelierBlackFormula(type,strike,atm,sqrt(variance(strike)),discount);
+        } else {
+            return bachelierBlackFormula(type, strike, atm, sqrt(variance(strike)), discount);
+        }
     }
 
     Real SmileSection::digitalOptionPrice(Rate strike,
@@ -107,18 +109,20 @@ namespace QuantLib {
         Real atm = atmLevel();
         QL_REQUIRE(atm != Null<Real>(),
                    "smile section must provide atm level to compute option vega");
-        if (volatilityType() == ShiftedLognormal)
+        if (volatilityType() == ShiftedLognormal) {
             return blackFormulaVolDerivative(strike,atmLevel(),
                                              sqrt(variance(strike)),
                                              exerciseTime(),discount,shift())*0.01;
-        else
+        } else {
             QL_FAIL("vega for normal smilesection not yet implemented");
+        }
     }
 
     Real SmileSection::volatility(Rate strike, VolatilityType volatilityType,
                                   Real shift) const {
-        if(volatilityType == volatilityType_ && close(shift,this->shift()))
+        if (volatilityType == volatilityType_ && close(shift, this->shift())) {
             return volatility(strike);
+        }
         Real atm = atmLevel();
         QL_REQUIRE(atm != Null<Real>(),
                    "smile section must provide atm level to compute converted volatilties");

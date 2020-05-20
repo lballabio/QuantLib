@@ -152,12 +152,14 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
             bool done = false;
 
-            if (!wasCalled_ && isStrategyRelevantTime)
+            if (!wasCalled_ && isStrategyRelevantTime) {
                 strategy_->nextStep(currentState);
+            }
 
 
-            if (!wasCalled_ && isExerciseTime && callable_)
+            if (!wasCalled_ && isExerciseTime && callable_) {
                 wasCalled_ = strategy_->exercise(currentState);
+            }
 
             if (wasCalled_) 
             {
@@ -166,21 +168,23 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
                     done = rebate_->nextTimeStep(currentState,
                         numberCashFlowsThisStep,
                         cashFlowsGenerated);
-                    for (Size i=0; i<numberCashFlowsThisStep.size(); ++i)
-                        for (Size j=0; j<numberCashFlowsThisStep[i]; ++j)
+                    for (Size i = 0; i < numberCashFlowsThisStep.size(); ++i) {
+                        for (Size j = 0; j < numberCashFlowsThisStep[i]; ++j) {
                             cashFlowsGenerated[i][j].timeIndex += rebateOffset_;
+                        }
+                    }
                 }
             } 
             else 
             {
-                if (isRebateTime)
-                    rebate_->nextTimeStep(currentState,
-                    dummyCashFlowsThisStep_,
-                    dummyCashFlowsGenerated_);
-                if (isUnderlyingTime)
-                    done = underlying_->nextTimeStep(currentState,
-                    numberCashFlowsThisStep,
-                    cashFlowsGenerated);
+                if (isRebateTime) {
+                    rebate_->nextTimeStep(currentState, dummyCashFlowsThisStep_,
+                                          dummyCashFlowsGenerated_);
+                }
+                if (isUnderlyingTime) {
+                    done = underlying_->nextTimeStep(currentState, numberCashFlowsThisStep,
+                                                     cashFlowsGenerated);
+                }
             }
 
             ++currentIndex_;

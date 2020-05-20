@@ -69,18 +69,22 @@ namespace QuantLib {
         if (  cashFlowsGenerated[currentIndex_][0].amount[0]  >0)
         {
             numberCashFlowsThisStep[currentIndex_] = 1;
-            for (Size i=1; i <= numberRates_; ++i)
-                cashFlowsGenerated[currentIndex_][0].amount[i] =0;
-            
+            for (Size i = 1; i <= numberRates_; ++i) {
+                cashFlowsGenerated[currentIndex_][0].amount[i] = 0;
+            }
+
             for (Size k=currentIndex_; k < numberRates_; ++k)
             {
               cashFlowsGenerated[currentIndex_][0].amount[k+1]  = (rateTimes_[k+1]-rateTimes_[k])*currentState.discountRatio(k+1,currentIndex_); 
 
               Real multiplier = - (rateTimes_[k+1]-rateTimes_[k])*currentState.discountRatio(k+1,k);
 
-              for (Size l=k; l < numberRates_; ++l)
-                 cashFlowsGenerated[currentIndex_][0].amount[k+1]  +=(currentState.forwardRate(l)-strikes_[currentIndex_])*(rateTimes_[l+1]-rateTimes_[l])
-                                                                    * multiplier*currentState.discountRatio(l+1,currentIndex_);
+              for (Size l = k; l < numberRates_; ++l) {
+                  cashFlowsGenerated[currentIndex_][0].amount[k + 1] +=
+                      (currentState.forwardRate(l) - strikes_[currentIndex_]) *
+                      (rateTimes_[l + 1] - rateTimes_[l]) * multiplier *
+                      currentState.discountRatio(l + 1, currentIndex_);
+              }
             }
         }
         ++currentIndex_;
@@ -97,8 +101,9 @@ namespace QuantLib {
     std::vector<Size> MarketModelPathwiseCoterminalSwaptionsDeflated::suggestedNumeraires() const
     {
             std::vector<Size> numeraires(numberRates_);
-            for (Size i=0; i < numberRates_; ++i)
+            for (Size i = 0; i < numberRates_; ++i) {
                 numeraires[i] = i;
+            }
 
             return numeraires;
     }
@@ -178,9 +183,10 @@ namespace QuantLib {
         if (  cashFlowsGenerated[currentIndex_][0].amount[0]  >0)
         {
             numberCashFlowsThisStep[currentIndex_] = 1;
-            for (Size i=1; i <= numberRates_; ++i)
-                cashFlowsGenerated[currentIndex_][0].amount[i] =0;
-            
+            for (Size i = 1; i <= numberRates_; ++i) {
+                cashFlowsGenerated[currentIndex_][0].amount[i] = 0;
+            }
+
             for (Size k=currentIndex_; k < numberRates_; ++k)
             {
                 forwards_ = currentState.forwardRates();
@@ -219,8 +225,9 @@ namespace QuantLib {
     std::vector<Size> MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::suggestedNumeraires() const
     {
             std::vector<Size> numeraires(numberRates_);
-            for (Size i=0; i < numberRates_; ++i)
+            for (Size i = 0; i < numberRates_; ++i) {
                 numeraires[i] = i;
+            }
 
             return numeraires;
     }

@@ -41,14 +41,15 @@ namespace QuantLib {
         Size evaluations = maxEvaluations_;
         Real upper = guess_, lower = guess_;
 
-        if (guessCDF < p)
+        if (guessCDF < p) {
             while (calculator_->cdf(upper*=1.5, t) < p && evaluations > 0) {
                 --evaluations;
             }
-        else
+        } else {
             while (calculator_->cdf(lower*=0.75, t) > p && evaluations > 0) {
                 --evaluations;
             }
+        }
 
         QL_REQUIRE(evaluations, "could not calculate interval");
 

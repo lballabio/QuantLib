@@ -37,8 +37,9 @@ namespace QuantLib {
 
     void Settings::anchorEvaluationDate() {
         // set to today's date if not already set.
-        if (evaluationDate_.value() == Date())
+        if (evaluationDate_.value() == Date()) {
             evaluationDate_ = Date::todaysDate();
+        }
         // If set, no-op since the date is already anchored.
     }
 
@@ -56,8 +57,9 @@ namespace QuantLib {
 
     SavedSettings::~SavedSettings() {
         try {
-            if (Settings::instance().evaluationDate() != evaluationDate_)
+            if (Settings::instance().evaluationDate() != evaluationDate_) {
                 Settings::instance().evaluationDate() = evaluationDate_;
+            }
             Settings::instance().includeReferenceDateEvents() =
                 includeReferenceDateEvents_;
             Settings::instance().includeTodaysCashFlows() =

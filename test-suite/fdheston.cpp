@@ -986,8 +986,9 @@ void FdHestonTest::testSpuriousOscillations() {
         Real maximum = QL_MIN_REAL;
         for (Size i=1; i < gammas.size(); ++i) {
             const Real diff = std::fabs(gammas[i] - gammas[i-1]);
-            if (diff > maximum)
+            if (diff > maximum) {
                 maximum = diff;
+            }
         }
 
         const Real tol = 0.01;

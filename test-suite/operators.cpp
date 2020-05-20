@@ -51,47 +51,52 @@ void OperatorTest::testTridiagonal() {
     Array final(intermediate);
     T.solveFor(final, final);
     for (Size i=0; i<n; ++i) {
-        if (final[i]!=original[i])
+        if (final[i] != original[i]) {
             BOOST_FAIL("\n applyTo + solveFor does not equal identity:"
-                       "\n            original vector: " << original <<
-                       "\n         transformed vector: " << intermediate <<
-                       "\n inverse transformed vector: " << final);
+                       "\n            original vector: "
+                       << original << "\n         transformed vector: " << intermediate
+                       << "\n inverse transformed vector: " << final);
+        }
     }
 
     final = Array(n, 0.0);
     Array temp(intermediate);
     T.solveFor(temp, final);
     for (Size i=0; i<n; ++i) {
-        if (temp[i]!=intermediate[i])
+        if (temp[i] != intermediate[i]) {
             BOOST_FAIL("\n solveFor altered rhs:"
-                       "\n            original vector: " << original <<
-                       "\n         transformed vector: " << intermediate <<
-                       "\n altered transformed vector: " << temp <<
-                       "\n inverse transformed vector: " << final);
+                       "\n            original vector: "
+                       << original << "\n         transformed vector: " << intermediate
+                       << "\n altered transformed vector: " << temp
+                       << "\n inverse transformed vector: " << final);
+        }
     }
     for (Size i=0; i<n; ++i) {
-        if (final[i]!=original[i])
+        if (final[i] != original[i]) {
             BOOST_FAIL("\n applyTo + solveFor does not equal identity:"
-                       "\n            original vector: " << original <<
-                       "\n         transformed vector: " << intermediate <<
-                       "\n inverse transformed vector: " << final);
+                       "\n            original vector: "
+                       << original << "\n         transformed vector: " << intermediate
+                       << "\n inverse transformed vector: " << final);
+        }
     }
 
     final = T.solveFor(temp);
     for (Size i=0; i<n; ++i) {
-        if (temp[i]!=intermediate[i])
+        if (temp[i] != intermediate[i]) {
             BOOST_FAIL("\n solveFor altered rhs:"
-                       "\n            original vector: " << original <<
-                       "\n         transformed vector: " << intermediate <<
-                       "\n altered transformed vector: " << temp <<
-                       "\n inverse transformed vector: " << final);
+                       "\n            original vector: "
+                       << original << "\n         transformed vector: " << intermediate
+                       << "\n altered transformed vector: " << temp
+                       << "\n inverse transformed vector: " << final);
+        }
     }
     for (Size i=0; i<n; ++i) {
-        if (final[i]!=original[i])
+        if (final[i] != original[i]) {
             BOOST_FAIL("\n applyTo + solveFor does not equal identity:"
-                       "\n            original vector: " << original <<
-                       "\n         transformed vector: " << intermediate <<
-                       "\n inverse transformed vector: " << final);
+                       "\n            original vector: "
+                       << original << "\n         transformed vector: " << intermediate
+                       << "\n inverse transformed vector: " << final);
+        }
     }
 
     Real delta, error = 0.0, tolerance = 1e-9;
@@ -99,20 +104,22 @@ void OperatorTest::testTridiagonal() {
     for (Size i=0; i<n; ++i) {
         delta = final[i]-original[i];
         error += delta * delta;
-        if (temp[i]!=intermediate[i])
+        if (temp[i] != intermediate[i]) {
             BOOST_FAIL("\n SOR altered rhs:"
-                       "\n            original vector: " << original <<
-                       "\n         transformed vector: " << intermediate <<
-                       "\n altered transformed vector: " << temp <<
-                       "\n inverse transformed vector: " << final);
+                       "\n            original vector: "
+                       << original << "\n         transformed vector: " << intermediate
+                       << "\n altered transformed vector: " << temp
+                       << "\n inverse transformed vector: " << final);
+        }
     }
-    if (error>tolerance)
+    if (error > tolerance) {
         BOOST_FAIL("\n applyTo + SOR does not equal identity:"
-                   "\n            original vector: " << original <<
-                   "\n         transformed vector: " << intermediate <<
-                   "\n inverse transformed vector: " << final <<
-                   "\n                      error: " << error <<
-                   "\n                  tolerance: " << tolerance);
+                   "\n            original vector: "
+                   << original << "\n         transformed vector: " << intermediate
+                   << "\n inverse transformed vector: " << final
+                   << "\n                      error: " << error
+                   << "\n                  tolerance: " << tolerance);
+    }
 }
 
 void OperatorTest::testConsistency() {
@@ -133,12 +140,14 @@ void OperatorTest::testConsistency() {
     Array x(N), y(N), yi(N), yd(N), temp(N), diff(N);
 
     Size i;
-    for (i=0; i<N; i++)
-        x[i] = xMin+h*i;
+    for (i = 0; i < N; i++) {
+        x[i] = xMin + h * i;
+    }
     std::transform(x.begin(),x.end(),y.begin(),normal);
     std::transform(x.begin(),x.end(),yi.begin(),cum);
-    for (i=0; i<x.size(); i++)
+    for (i = 0; i < x.size(); i++) {
         yd[i] = normal.derivative(x[i]);
+    }
 
     // define the differential operators
     DZero D(N,h);

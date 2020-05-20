@@ -252,10 +252,11 @@ namespace QuantLib {
     inline void BlackVolTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVolTermStructure>* v1 =
             dynamic_cast<Visitor<BlackVolTermStructure>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             QL_FAIL("not a Black-volatility term structure visitor");
+        }
     }
 
     inline
@@ -268,10 +269,11 @@ namespace QuantLib {
     inline void BlackVolatilityTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVolatilityTermStructure>* v1 =
             dynamic_cast<Visitor<BlackVolatilityTermStructure>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             BlackVolTermStructure::accept(v);
+        }
     }
 
     inline
@@ -285,10 +287,11 @@ namespace QuantLib {
     inline void BlackVarianceTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVarianceTermStructure>* v1 =
             dynamic_cast<Visitor<BlackVarianceTermStructure>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             BlackVolTermStructure::accept(v);
+        }
     }
 
 }

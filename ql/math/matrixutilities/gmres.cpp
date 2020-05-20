@@ -101,8 +101,9 @@ namespace QuantLib {
 
             h[j+1][j] = Norm2(w);
 
-            if (h[j+1][j] < QL_EPSILON*QL_EPSILON)
+            if (h[j + 1][j] < QL_EPSILON * QL_EPSILON) {
                 break;
+            }
 
             v.push_back(w / h[j+1][j]);
 

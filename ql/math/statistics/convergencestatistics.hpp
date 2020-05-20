@@ -65,14 +65,16 @@ namespace QuantLib {
         void add(const value_type& value, Real weight = 1.0);
         template <class DataIterator>
         void addSequence(DataIterator begin, DataIterator end) {
-            for (; begin != end; ++begin)
+            for (; begin != end; ++begin) {
                 add(*begin);
+            }
         }
         template <class DataIterator, class WeightIterator>
         void addSequence(DataIterator begin, DataIterator end,
                          WeightIterator wbegin) {
-            for (; begin != end; ++begin, ++wbegin)
-                add(*begin,*wbegin);
+            for (; begin != end; ++begin, ++wbegin) {
+                add(*begin, *wbegin);
+            }
         }
         void reset();
         const std::vector<std::pair<Size,value_type> >& convergenceTable()

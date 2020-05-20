@@ -178,12 +178,14 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return 0.0001;
-               // return detail::avgHazardRate;
+            }
+            // return detail::avgHazardRate;
 
             // extrapolate
             Date d = c->dates()[i];
@@ -230,8 +232,9 @@ namespace QuantLib {
                                 Real rate,
                                 Size i) {
             data[i] = rate;
-            if (i==1)
+            if (i == 1) {
                 data[0] = rate; // first point is updated as well
+            }
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 30; }
@@ -273,8 +276,9 @@ namespace QuantLib {
     inline std::vector<std::pair<Date, Real> >
     InterpolatedAffineHazardRateCurve<T>::nodes() const {
         std::vector<std::pair<Date, Real> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
+        for (Size i = 0; i < dates_.size(); ++i) {
             results[i] = std::make_pair(dates_[i], this->data_[i]);
+        }
         return results;
     }
 
@@ -284,8 +288,9 @@ namespace QuantLib {
 
     template <class T>
     Real InterpolatedAffineHazardRateCurve<T>::hazardRateImpl(Time t) const {
-        if (t <= this->times_.back())
+        if (t <= this->times_.back()) {
             return this->interpolation_(t, true);
+        }
 
         // deterministic flat hazard rate extrapolation
         return this->data_.back();
@@ -300,8 +305,9 @@ namespace QuantLib {
         // the way x0 is defined:
         Real initValHR = std::pow(model_->dynamics()->process()->x0(), 2);
 
-        if (t == 0.0)
+        if (t == 0.0) {
             return model_->discountBond(0., t, initValHR);
+        }
 
         Real integral;
         if (t <= this->times_.back()) {
@@ -329,13 +335,16 @@ namespace QuantLib {
                 model_->dynamics()->process()->x0(), 
                 "Initial value different to process'.");
         #endif
-        if (tFwd == 0.) return survivalProbabilityImpl(tTarget);
-        if (tFwd - tTarget == 0.0)
-            return 1.;
+            if (tFwd == 0.) {
+                return survivalProbabilityImpl(tTarget);
+            }
+            if (tFwd - tTarget == 0.0) {
+                return 1.;
+            }
 
-        Real integralTFwd, integralTP;
-        if (tFwd <= this->times_.back()) {
-            integralTFwd = this->interpolation_.primitive(tFwd, true);
+            Real integralTFwd, integralTP;
+            if (tFwd <= this->times_.back()) {
+                integralTFwd = this->interpolation_.primitive(tFwd, true);
         } else {
             // flat hazard rate extrapolation
             integralTFwd = 

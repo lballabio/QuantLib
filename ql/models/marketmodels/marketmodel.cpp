@@ -28,8 +28,9 @@ namespace QuantLib {
     const Matrix& MarketModel::covariance(Size i) const {
         if (covariance_.empty()) {
             covariance_.resize(numberOfSteps());
-            for (Size j=0; j<numberOfSteps(); ++j)
+            for (Size j = 0; j < numberOfSteps(); ++j) {
                 covariance_[j] = pseudoRoot(j) * transpose(pseudoRoot(j));
+            }
         }
         QL_REQUIRE(i<covariance_.size(),
                    "i (" << i <<
@@ -43,8 +44,9 @@ namespace QuantLib {
             // call to covariance(0) triggers calculation, if necessary
             // while covariance_[0] would not
             totalCovariance_[0] = covariance(0);
-            for (Size j=1; j<numberOfSteps(); ++j)
-                totalCovariance_[j] = totalCovariance_[j-1] + covariance_[j];
+            for (Size j = 1; j < numberOfSteps(); ++j) {
+                totalCovariance_[j] = totalCovariance_[j - 1] + covariance_[j];
+            }
         }
         QL_REQUIRE(endIndex<covariance_.size(),
                    "endIndex (" << endIndex <<

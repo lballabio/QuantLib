@@ -73,12 +73,13 @@ namespace {
 
     std::string averageTypeToString(Average::Type averageType) {
 
-        if (averageType == Average::Geometric)
+        if (averageType == Average::Geometric) {
             return "Geometric Averaging";
-        else if (averageType == Average::Arithmetic)
+        } else if (averageType == Average::Arithmetic) {
             return "Arithmetic Averaging";
-        else
+        } else {
             QL_FAIL("unknown averaging");
+        }
     }
 
 }
@@ -365,8 +366,9 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     std::vector<Date> fixingDates(futureFixings);
     Integer dt = Integer(360/futureFixings+0.5);
     fixingDates[0] = today + dt;
-    for (Size j=1; j<futureFixings; j++)
-        fixingDates[j] = fixingDates[j-1] + dt;
+    for (Size j = 1; j < futureFixings; j++) {
+        fixingDates[j] = fixingDates[j - 1] + dt;
+    }
 
     DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
@@ -424,8 +426,9 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
     std::vector<Date> fixingDates(futureFixings);
     Integer dt = Integer(360/futureFixings+0.5);
     fixingDates[0] = today + dt;
-    for (Size j=1; j<futureFixings; j++)
-        fixingDates[j] = fixingDates[j-1] + dt;
+    for (Size j = 1; j < futureFixings; j++) {
+        fixingDates[j] = fixingDates[j - 1] + dt;
+    }
 
     DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
@@ -490,8 +493,9 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     std::vector<Date> fixingDates(futureFixings);
     Integer dt = Integer(360/futureFixings+0.5);
     fixingDates[0] = today + dt;
-    for (Size j=1; j<futureFixings; j++)
-        fixingDates[j] = fixingDates[j-1] + dt;
+    for (Size j = 1; j < futureFixings; j++) {
+        fixingDates[j] = fixingDates[j - 1] + dt;
+    }
 
     DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
@@ -873,10 +877,9 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
             Size pastFixings = 1;
 
             std::vector<Date> fixingDates;
-            for (Date d = today + 3*Months;
-                      d <= maturity->lastDate();
-                      d += 3*Months)
+            for (Date d = today + 3 * Months; d <= maturity->lastDate(); d += 3 * Months) {
                 fixingDates.push_back(d);
+            }
 
 
             ext::shared_ptr<PricingEngine> engine(
@@ -1018,8 +1021,9 @@ void AsianOptionTest::testPastFixings() {
     Real runningSum = 0.0;
     Size pastFixings = 0;
     std::vector<Date> fixingDates1;
-    for (Integer i=0; i<=12; ++i)
-        fixingDates1.push_back(today + i*Months);
+    for (Integer i = 0; i <= 12; ++i) {
+        fixingDates1.push_back(today + i * Months);
+    }
 
     DiscreteAveragingAsianOption option1(Average::Arithmetic, runningSum,
                                          pastFixings, fixingDates1,
@@ -1028,8 +1032,9 @@ void AsianOptionTest::testPastFixings() {
     pastFixings = 2;
     runningSum = pastFixings * spot->value() * 0.8;
     std::vector<Date> fixingDates2;
-    for (Integer i=-2; i<=12; ++i)
-        fixingDates2.push_back(today + i*Months);
+    for (Integer i = -2; i <= 12; ++i) {
+        fixingDates2.push_back(today + i * Months);
+    }
 
     DiscreteAveragingAsianOption option2(Average::Arithmetic, runningSum,
                                          pastFixings, fixingDates2,
@@ -1150,8 +1155,9 @@ void AsianOptionTest::testAllFixingsInThePast() {
     Date exerciseDate = today + 2*Weeks;
     Date startDate = exerciseDate - 1*Years;
     std::vector<Date> fixingDates;
-    for (Integer i=0; i<12; ++i)
-        fixingDates.push_back(startDate + i*Months);
+    for (Integer i = 0; i < 12; ++i) {
+        fixingDates.push_back(startDate + i * Months);
+    }
     Size pastFixings = 12;
 
     ext::shared_ptr<StrikedTypePayoff> payoff(
@@ -1427,13 +1433,13 @@ void AsianOptionTest::testVecerEngine() {
 
         Real calculated = option.NPV();
         Real error = std::fabs(calculated - cases[i].result);
-        if (error > cases[i].tolerance)
+        if (error > cases[i].tolerance) {
             BOOST_ERROR("Failed to reproduce expected NPV"
                         << "\n    calculated: " << calculated
                         << "\n    expected:   " << cases[i].result
-                        << "\n    expected:   " << cases[i].result
-                        << "\n    error:      " << error
+                        << "\n    expected:   " << cases[i].result << "\n    error:      " << error
                         << "\n    tolerance:  " << cases[i].tolerance);
+        }
     }
 }
 

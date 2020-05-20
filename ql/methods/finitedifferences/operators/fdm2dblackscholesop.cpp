@@ -143,9 +143,9 @@ namespace QuantLib {
         }
         else if (direction == 1) {
             return opY_.solve_splitting(direction, x, s);
-        }
-        else
+        } else {
             QL_FAIL("direction is too large");
+        }
     }
     
     Disposable<Array> Fdm2dBlackScholesOp::preconditioner(const Array& r, 

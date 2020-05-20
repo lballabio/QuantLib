@@ -26,10 +26,11 @@ namespace QuantLib {
         Real I0 = index_->fixing(baseDate_);
         Real I1 = index_->fixing(fixingDate_);
 
-        if (growthOnly_)
+        if (growthOnly_) {
             return notional_ * (I1 / I0 - 1.0);
-        else
+        } else {
             return notional_ * (I1 / I0);
+        }
     }
 
 }

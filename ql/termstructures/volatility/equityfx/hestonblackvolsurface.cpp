@@ -111,7 +111,9 @@ namespace QuantLib {
             payoff, integration_, cpxLogFormula_,
             hestonEngine.get(), npv, evaluations);
 
-        if (npv <= 0.0) return std::sqrt(theta);
+        if (npv <= 0.0) {
+            return std::sqrt(theta);
+        }
 
         Brent solver;
         solver.setMaxEvaluations(10000);

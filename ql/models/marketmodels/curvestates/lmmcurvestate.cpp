@@ -58,8 +58,9 @@ namespace QuantLib {
 
         // taken care at constructor time
         //discRatios_[numberOfRates_] = 1.0;
-        for (Size i=first_; i<numberOfRates_; ++i)
-            discRatios_[i+1]=discRatios_[i]/(1.0+forwardRates_[i]*rateTaus_[i]);
+        for (Size i = first_; i < numberOfRates_; ++i) {
+            discRatios_[i + 1] = discRatios_[i] / (1.0 + forwardRates_[i] * rateTaus_[i]);
+        }
 
         // lazy evaluation of:
         // - coterminal swap rates/annuities
@@ -85,9 +86,9 @@ namespace QuantLib {
                   discRatios_.begin()+first_);
         // ...then calculate forwards
 
-        for (Size i=first_; i<numberOfRates_; ++i)
-            forwardRates_[i] = (discRatios_[i]/discRatios_[i+1]-1.0) /
-                                                                rateTaus_[i];
+        for (Size i = first_; i < numberOfRates_; ++i) {
+            forwardRates_[i] = (discRatios_[i] / discRatios_[i + 1] - 1.0) / rateTaus_[i];
+        }
 
         // lazy evaluation of:
         // - coterminal swap rates/annuities
@@ -119,8 +120,9 @@ namespace QuantLib {
         //                                   discRatios_, rateTaus_,
         //                                 cotSwapRates_, cotAnnuities_);
 
-        if (firstCotAnnuityComped_ <=i)
-            return  cotAnnuities_[i]/discRatios_[numeraire];
+        if (firstCotAnnuityComped_ <= i) {
+            return cotAnnuities_[i] / discRatios_[numeraire];
+        }
 
         if (firstCotAnnuityComped_ == numberOfRates_)
         {
@@ -128,8 +130,9 @@ namespace QuantLib {
             --firstCotAnnuityComped_;
         }
 
-        for (int j= static_cast<int>(firstCotAnnuityComped_)-1; j >=static_cast<int>(i); --j)
-            cotAnnuities_[j] = cotAnnuities_[j+1]+rateTaus_[j]*discRatios_[j+1];
+        for (int j = static_cast<int>(firstCotAnnuityComped_) - 1; j >= static_cast<int>(i); --j) {
+            cotAnnuities_[j] = cotAnnuities_[j + 1] + rateTaus_[j] * discRatios_[j + 1];
+        }
 
         firstCotAnnuityComped_ = i;
 

@@ -60,8 +60,9 @@ namespace QuantLib {
             Array target(N);
             for (Size k=0; k<N; ++k) {
                 target[k] = covariance[k][N] + means[k]*means[N];
-                for (Size l=0; l<=k; ++l)
-                    C[k][l] = C[l][k] = covariance[k][l] + means[k]*means[l];
+                for (Size l = 0; l <= k; ++l) {
+                    C[k][l] = C[l][k] = covariance[k][l] + means[k] * means[l];
+                }
             }
 
             // 2) solve for least squares regression
@@ -101,8 +102,9 @@ namespace QuantLib {
         // over all paths
         Statistics estimate;
         std::vector<NodeData>& estimatedData = simulationData[0];
-        for (Size j=0; j<estimatedData.size(); ++j)
+        for (Size j = 0; j < estimatedData.size(); ++j) {
             estimate.add(estimatedData[j].cumulatedCashFlows);
+        }
 
         return estimate.mean();
     }

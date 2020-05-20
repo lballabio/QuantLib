@@ -45,8 +45,9 @@ namespace QuantLib {
             explicit MonomialFct(Size order): order_(order) {}
             inline Real operator()(const Real x) const {
                 Real ret = 1.0;
-                for(Size i=0; i<order_; ++i)
+                for (Size i = 0; i < order_; ++i) {
                     ret *= x;
+                }
                 return ret;
             }
           private:
@@ -65,8 +66,9 @@ namespace QuantLib {
                 QL_REQUIRE(b_.size()==a.size(), "wrong argument size");
                 #endif
                 Real ret = b_[0](a[0]);
-                for(Size i=1; i<b_.size(); ++i)
+                for (Size i = 1; i < b_.size(); ++i) {
                     ret *= b_[i](a[i]);
+                }
                 return ret;
             }
           private:
@@ -158,8 +160,9 @@ namespace QuantLib {
             // now we have all tuples of order i
             // for each tuple add the corresponding term
             for(Size j=0; j<tuples.size(); ++j) {
-                for(Size k=0; k<dim; ++k)
+                for (Size k = 0; k < dim; ++k) {
                     term[k] = pathBasis[tuples[j][k]];
+                }
                 ret.push_back(MultiDimFct(term));
             }
         }

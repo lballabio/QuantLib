@@ -170,29 +170,33 @@ namespace QuantLib {
 
     template <class TS>
     Date BootstrapHelper<TS>::maturityDate() const {
-        if (maturityDate_ == Date())
+        if (maturityDate_ == Date()) {
             return latestRelevantDate();
+        }
         return maturityDate_;
     }
 
     template <class TS>
     Date BootstrapHelper<TS>::latestRelevantDate() const {
-        if (latestRelevantDate_ == Date())
+        if (latestRelevantDate_ == Date()) {
             return latestDate();
+        }
         return latestRelevantDate_;
     }
 
     template <class TS>
     Date BootstrapHelper<TS>::pillarDate() const {
-        if (pillarDate_==Date())
+        if (pillarDate_ == Date()) {
             return latestDate();
+        }
         return pillarDate_;
     }
 
     template <class TS>
     Date BootstrapHelper<TS>::latestDate() const {
-        if (latestDate_ == Date())
+        if (latestDate_ == Date()) {
             return pillarDate_;
+        }
         return latestDate_;
     }
 
@@ -205,10 +209,11 @@ namespace QuantLib {
     void BootstrapHelper<TS>::accept(AcyclicVisitor& v) {
         Visitor<BootstrapHelper<TS> >* v1 =
             dynamic_cast<Visitor<BootstrapHelper<TS> >*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             QL_FAIL("not a bootstrap-helper visitor");
+        }
     }
 
     template <class TS>

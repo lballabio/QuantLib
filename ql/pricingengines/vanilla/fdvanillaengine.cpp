@@ -70,8 +70,9 @@ namespace QuantLib {
         // ensure strike is included in the grid
         ext::shared_ptr<StrikedTypePayoff> striked_payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
-        if (!striked_payoff)
+        if (!striked_payoff) {
             return;
+        }
         Real requiredGridValue = striked_payoff->strike();
 
         if(sMin_ > requiredGridValue/safetyZoneFactor_){

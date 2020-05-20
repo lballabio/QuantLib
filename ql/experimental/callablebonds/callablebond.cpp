@@ -247,8 +247,9 @@ namespace QuantLib {
                              Size maxIterations,
                              Spread guess)
     {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = settlementDate();
+        }
 
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
 
@@ -278,8 +279,9 @@ namespace QuantLib {
                                      Frequency frequency,
                                      Date settlement)
     {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = settlementDate();
+        }
 
         oas=convToContinuous(oas,
                              *this,
@@ -318,12 +320,11 @@ namespace QuantLib {
                                  dayCounter,
                                  compounding,
                                  frequency);
-            
-        if ( P == 0.0 )
+
+        if (P == 0.0) {
             return 0;
-        else
-            {
-                return (Pmm-Ppp)/(2*P*bump);
+        } else {
+            return (Pmm - Ppp) / (2 * P * bump);
             }
     }
 
@@ -350,12 +351,11 @@ namespace QuantLib {
                                  dayCounter,
                                  compounding,
                                  frequency);
-            
-        if ( P == 0.0 )
+
+        if (P == 0.0) {
             return 0;
-        else
-            {
-                return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * P);
+        } else {
+            return (Ppp + Pmm - 2 * P) / (std::pow(bump, 2) * P);
             }        
 
     }
@@ -403,7 +403,9 @@ namespace QuantLib {
 
     Real CallableFixedRateBond::accrued(Date settlement) const {
 
-        if (settlement == Date()) settlement = settlementDate();
+        if (settlement == Date()) {
+            settlement = settlementDate();
+        }
 
         const bool IncludeToday = false;
         for (Size i = 0; i<cashflows_.size(); ++i) {
@@ -411,12 +413,13 @@ namespace QuantLib {
             if (!cashflows_[i]->hasOccurred(settlement,IncludeToday)) {
                 ext::shared_ptr<Coupon> coupon =
                     ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon)
+                if (coupon) {
                     // !!!
                     return coupon->accruedAmount(settlement) /
                            notional(settlement) * 100.0;
-                else
+                } else {
                     return 0.0;
+                }
             }
         }
         return 0.0;

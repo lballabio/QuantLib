@@ -48,10 +48,11 @@ namespace QuantLib {
       sigma_(arguments_[2]), r0_(arguments_[3]) {
         theta_ = ConstantParameter(theta, PositiveConstraint());
         k_ = ConstantParameter(k, PositiveConstraint());
-        if (withFellerConstraint)
+        if (withFellerConstraint) {
             sigma_ = ConstantParameter(sigma, VolatilityConstraint(k,theta));
-        else
+        } else {
             sigma_ = ConstantParameter(sigma, PositiveConstraint());
+        }
         r0_ = ConstantParameter(r0, PositiveConstraint());
     }
 
@@ -116,10 +117,11 @@ namespace QuantLib {
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -
             strike*discountT*chit(2.0*z*(rho+psi));
 
-        if (type == Option::Call)
+        if (type == Option::Call) {
             return call;
-        else
-            return call - discountS + strike*discountT;
+        } else {
+            return call - discountS + strike * discountT;
+        }
     }
 
     ext::shared_ptr<Lattice>

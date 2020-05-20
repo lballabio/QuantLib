@@ -372,10 +372,11 @@ void CPISwapTest::consistency() {
     Real diff = fabs(1-zisV.NPV()/4191660.0);
     
     Real max_diff;
-    if (IborCoupon::usingAtParCoupons())
+    if (IborCoupon::usingAtParCoupons()) {
         max_diff = 1e-5;
-    else
+    } else {
         max_diff = 3e-5;
+    }
 
     QL_REQUIRE(diff<max_diff,
                "failed stored consistency value test, ratio = " << diff);

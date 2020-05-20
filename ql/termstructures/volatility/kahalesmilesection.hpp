@@ -67,10 +67,12 @@ namespace QuantLib {
                 : f_(f), s_(s), a_(a), b_(b), exponential_(false) {}
             cFunction(Real a, Real b) : a_(a), b_(b), exponential_(true) {}
             Real operator()(Real k) {
-                if (exponential_)
+                if (exponential_) {
                     return std::exp(-a_ * k + b_);
-                if (s_ < QL_EPSILON)
+                }
+                if (s_ < QL_EPSILON) {
                     return std::max(f_ - k, 0.0) + a_ * k + b_;
+                }
                 boost::math::normal normal;
                 Real d1 = std::log(f_ / k) / s_ + s_ / 2.0;
                 Real d2 = d1 - s_;

@@ -84,8 +84,9 @@ namespace QuantLib {
                                           Frequency freq,
                                           const DayCounter& dc)
     : originalCurve_(h), spread_(spread), comp_(comp), freq_(freq), dc_(dc) {
-        if (!originalCurve_.empty())
+        if (!originalCurve_.empty()) {
             enableExtrapolation(originalCurve_->allowsExtrapolation());
+        }
         registerWith(originalCurve_);
         registerWith(spread_);
     }

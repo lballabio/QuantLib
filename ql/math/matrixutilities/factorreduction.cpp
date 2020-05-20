@@ -47,9 +47,9 @@ namespace QuantLib {
         // Initial guess value
         std::vector<Real> previousCorrels(n, 0.);
         for(Size iCol=0; iCol<n; iCol++) {
-            for(Size iRow=0; iRow<n; iRow++)
-                previousCorrels[iCol] +=
-                    mtrx[iRow][iCol] * mtrx[iRow][iCol];
+            for (Size iRow = 0; iRow < n; iRow++) {
+                previousCorrels[iCol] += mtrx[iRow][iCol] * mtrx[iRow][iCol];
+            }
             previousCorrels[iCol] =
                 std::sqrt((previousCorrels[iCol]-1.)/(n-1.));
         }
@@ -59,9 +59,9 @@ namespace QuantLib {
         Real distance;
         do {
             // patch Matrix diagonal
-            for(Size iCol=0; iCol<n; iCol++)
-                mtrx[iCol][iCol] =
-                    previousCorrels[iCol];
+            for (Size iCol = 0; iCol < n; iCol++) {
+                mtrx[iCol][iCol] = previousCorrels[iCol];
+            }
             // compute eigenvector decomposition
             SymmetricSchurDecomposition ssDec(mtrx);
             //const Matrix& eigenVect = ssDec.eigenvectors();

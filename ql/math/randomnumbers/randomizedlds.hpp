@@ -127,8 +127,9 @@ namespace QuantLib {
     x.weight = randomizer_.weight * sample.weight;
     for (Size i = 0; i < dimension_; i++) {
         x.value[i] =  randomizer_.value[i] + sample.value[i];
-        if (x.value[i]>1.0)
+        if (x.value[i] > 1.0) {
             x.value[i] -= 1.0;
+        }
     }
     return x;
     }

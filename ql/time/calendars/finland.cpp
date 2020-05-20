@@ -39,11 +39,11 @@ namespace QuantLib {
             // Epiphany
             || (d == 6 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Ascension Thursday
-            || (dd == em+38)
+            || (dd == em + 38)
             // Labour Day
             || (d == 1 && m == May)
             // Midsummer Eve (Friday between June 18-24)
@@ -55,8 +55,9 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 

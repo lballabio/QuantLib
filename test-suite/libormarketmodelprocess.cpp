@@ -171,10 +171,10 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
         const Real calculated = std::sqrt(covar[i+1][i+1]);
         const Real expected   = lambdaExpected[i]/100;
 
-        if (std::fabs(calculated - expected) > tolerance)
+        if (std::fabs(calculated - expected) > tolerance) {
             BOOST_ERROR("Failed to reproduce expected lambda values"
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected);
+                        << "\n    calculated: " << calculated << "\n    expected:   " << expected);
+        }
     }
 
     ext::shared_ptr<LfmCovarianceParameterization> param =

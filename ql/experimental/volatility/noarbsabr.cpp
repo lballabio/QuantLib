@@ -119,8 +119,9 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
 }
 
 Real NoArbSabrModel::optionPrice(const Real strike) const {
-    if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
+    if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold) {
         return 0.0;
+    }
     return (1.0 - absProb_) *
         ((*integrator_)(integrand(this, strike),
                         strike, std::max(fmax_, 2.0 * strike)) /
@@ -128,10 +129,12 @@ Real NoArbSabrModel::optionPrice(const Real strike) const {
 }
 
 Real NoArbSabrModel::digitalOptionPrice(const Real strike) const {
-    if (strike < QL_MIN_POSITIVE_REAL)
+    if (strike < QL_MIN_POSITIVE_REAL) {
         return 1.0;
-    if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold)
+    }
+    if (p(std::max(forward_, strike)) < detail::NoArbSabrModel::density_threshold) {
         return 0.0;
+    }
     return (1.0 - absProb_)
         * ((*integrator_)(p_integrand(this),
                           strike, std::max(fmax_, 2.0 * strike)) /
@@ -148,8 +151,9 @@ Real NoArbSabrModel::forwardError(const Real forward) const {
 Real NoArbSabrModel::p(const Real f) const {
 
     if (f < detail::NoArbSabrModel::density_lower_bound ||
-        forward_ < detail::NoArbSabrModel::density_lower_bound)
+        forward_ < detail::NoArbSabrModel::density_lower_bound) {
         return 0.0;
+    }
 
     Real fOmB = std::pow(f, 1.0 - beta_);
     Real FOmB = std::pow(forward_, 1.0 - beta_);
@@ -227,8 +231,9 @@ Real D0Interpolator::operator()() const {
 
     Size tauInd = std::upper_bound(tauG_.begin(), tauG_.end(), expiryTime_) -
                                    tauG_.begin();
-    if (tauInd == tauG_.size())
+    if (tauInd == tauG_.size()) {
         --tauInd; // tau at upper bound
+    }
     Real expiryTimeTmp = expiryTime_;
     if (tauInd == 0) {
         ++tauInd;
@@ -241,8 +246,9 @@ Real D0Interpolator::operator()() const {
         sigmaIG_.size() -
         (std::upper_bound(sigmaIG_.rbegin(), sigmaIG_.rend(), sigmaI_) -
          sigmaIG_.rbegin());
-    if (sigmaIInd == 0)
+    if (sigmaIInd == 0) {
         ++sigmaIInd; // sigmaI at upper bound
+    }
     Real sigmaIL = (sigmaI_ - sigmaIG_[sigmaIInd - 1]) /
                    (sigmaIG_[sigmaIInd] - sigmaIG_[sigmaIInd - 1]);
 
@@ -260,8 +266,9 @@ Real D0Interpolator::operator()() const {
 
     // for nu = 0 we know phi = 0.5*z_F^2
     Size nuInd = std::upper_bound(nuG_.begin(), nuG_.end(), nu_) - nuG_.begin();
-    if (nuInd == nuG_.size())
+    if (nuInd == nuG_.size()) {
         --nuInd; // nu at upper bound
+    }
     Real tmpNuG = nuInd > 0 ? nuG_[nuInd - 1] : 0.0;
     Real nuL = (nu_ - tmpNuG) / (nuG_[nuInd] - tmpNuG);
 
@@ -269,10 +276,11 @@ Real D0Interpolator::operator()() const {
     Size betaInd =
         std::upper_bound(betaG_.begin(), betaG_.end(), beta_) - betaG_.begin();
     Real tmpBetaG;
-    if (betaInd == betaG_.size())
+    if (betaInd == betaG_.size()) {
         tmpBetaG = 1.0;
-    else
+    } else {
         tmpBetaG = betaG_[betaInd];
+    }
     Real betaL =
         (beta_ - betaG_[betaInd - 1]) / (tmpBetaG - betaG_[betaInd - 1]);
 
@@ -322,8 +330,9 @@ Real D0Interpolator::operator()() const {
 }
 
 Real D0Interpolator::phi(const Real d0) const {
-    if (d0 < 1e-14)
+    if (d0 < 1e-14) {
         return detail::NoArbSabrModel::phiByTau_cutoff * expiryTime_;
+    }
     return boost::math::gamma_q_inv(gamma_, d0) * expiryTime_;
 }
 

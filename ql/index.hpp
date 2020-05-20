@@ -103,9 +103,9 @@ namespace QuantLib {
                 Real currentValue = h[*dBegin];
                 bool missingFixing = forceOverwrite || currentValue == nullValue;
                 if (validFixing) {
-                    if (missingFixing)
+                    if (missingFixing) {
                         h[*(dBegin++)] = *(vBegin++);
-                    else if (close(currentValue,*(vBegin))) {
+                    } else if (close(currentValue, *(vBegin))) {
                         ++dBegin;
                         ++vBegin;
                     } else {

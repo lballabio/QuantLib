@@ -43,13 +43,16 @@ namespace QuantLib {
             periodStart_ = Date(start_.dayOfMonth(), start_.month(), eventsStart_.year()+1);
         }
         periodEnd_ = Date(end_.dayOfMonth(), end_.month(), periodStart_.year()+years_);
-        while(i_<events_->size() && (*events_)[i_].first<periodStart_) ++i_; //i points to the first element after the start of the relevant period.
+        while (i_ < events_->size() && (*events_)[i_].first < periodStart_) {
+            ++i_; // i points to the first element after the start of the relevant period.
+        }
     }
 
     bool EventSetSimulation::nextPath(std::vector< std::pair< Date, Real > >& path) {
         path.resize(0);
-        if(periodEnd_>eventsEnd_) //Ran out of event data 
+        if (periodEnd_ > eventsEnd_) { // Ran out of event data
             return false;
+        }
 
         while(i_<events_->size() && (*events_)[i_].first<periodStart_) {
             ++i_; //skip the elements between the previous period and this period
@@ -108,8 +111,9 @@ namespace QuantLib {
             if(eventDate<=end_)
             {
                 path.push_back(std::pair<Date, Real> (eventDate, generateBeta()));
+            } else {
+                break;
             }
-            else break;
             eventFraction = exponential_();
         }
         return true;

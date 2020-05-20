@@ -26,16 +26,18 @@ namespace QuantLib {
     void CommodityCashFlow::accept(AcyclicVisitor& v) {
         Visitor<CommodityCashFlow>* v1 =
             dynamic_cast<Visitor<CommodityCashFlow>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             CashFlow::accept(v);
+        }
     }
 
     std::ostream& operator<<(std::ostream& out,
                              const CommodityCashFlows& cashFlows) {
-        if (cashFlows.size() == 0)
+        if (cashFlows.size() == 0) {
             return out << "no cashflows" << std::endl;
+        }
         out << "cashflows" << std::endl;
         std::string currencyCode; //= cashFlows[0]->discountedAmount().currency().code();
         Real totalDiscounted = 0;

@@ -39,19 +39,22 @@ void LazyObjectTest::testDiscardingNotifications() {
     
     s->NPV();
     q->setValue(1.0);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of change");
-    
+    }
+
     f.lower();
     q->setValue(2.0);
-    if (f.isUp())
+    if (f.isUp()) {
         BOOST_FAIL("Observer was notified of second change");
+    }
 
     f.lower();
     s->NPV();
     q->setValue(3.0);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of change after recalculation");
+    }
 }
 
 
@@ -70,13 +73,15 @@ void LazyObjectTest::testForwardingNotifications() {
     
     s->NPV();
     q->setValue(1.0);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of change");
-    
+    }
+
     f.lower();
     q->setValue(2.0);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of second change");
+    }
 }
 
 

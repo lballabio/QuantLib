@@ -22,10 +22,11 @@
 namespace QuantLib {
 
     std::ostream& operator<<(std::ostream& out, const Currency& c) {
-        if (!c.empty())
+        if (!c.empty()) {
             return out << c.code();
-        else
+        } else {
             return out << "null currency";
+        }
     }
 
     Currency::Data::Data(const std::string& name,

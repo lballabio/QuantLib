@@ -25,10 +25,10 @@ namespace QuantLib {
 
     void Gaussian1dCapFloorEngine::calculate() const {
 
-        for (Size i = 0; i < arguments_.spreads.size(); i++)
+        for (Size i = 0; i < arguments_.spreads.size(); i++) {
             QL_REQUIRE(arguments_.spreads[i] == 0.0,
-                       "Non zero spreads (" << arguments_.spreads[i]
-                                            << ") are not allowed.");
+                       "Non zero spreads (" << arguments_.spreads[i] << ") are not allowed.");
+        }
 
         Size optionlets = arguments_.startDates.size();
         std::vector<Real> values(optionlets, 0.0);
@@ -72,19 +72,17 @@ namespace QuantLib {
 
                         for (Size j = 0; j < z.size(); j++) {
                             Real floatingLegNpv;
-                            if (iborIndex != NULL)
+                            if (iborIndex != NULL) {
                                 floatingLegNpv =
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
                                                         z[j], iborIndex) *
                                     model_->zerobond(paymentDate, fixingDate,
                                                      z[j], discountCurve_);
-                            else
-                                floatingLegNpv =
-                                    (model_->zerobond(valueDate, fixingDate,
-                                                      z[j]) -
-                                     model_->zerobond(paymentDate, fixingDate,
-                                                      z[j]));
+                            } else {
+                                floatingLegNpv = (model_->zerobond(valueDate, fixingDate, z[j]) -
+                                                  model_->zerobond(paymentDate, fixingDate, z[j]));
+                            }
                             Real fixedLegNpv =
                                 arguments_.capRates[i] *
                                 arguments_.accrualTimes[i] *
@@ -144,19 +142,17 @@ namespace QuantLib {
                     } else {
                         for (Size j = 0; j < z.size(); j++) {
                             Real floatingLegNpv;
-                            if (iborIndex != NULL)
+                            if (iborIndex != NULL) {
                                 floatingLegNpv =
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
                                                         z[j], iborIndex) *
                                     model_->zerobond(paymentDate, fixingDate,
                                                      z[j], discountCurve_);
-                            else
-                                floatingLegNpv =
-                                    (model_->zerobond(valueDate, fixingDate,
-                                                      z[j]) -
-                                     model_->zerobond(paymentDate, fixingDate,
-                                                      z[j]));
+                            } else {
+                                floatingLegNpv = (model_->zerobond(valueDate, fixingDate, z[j]) -
+                                                  model_->zerobond(paymentDate, fixingDate, z[j]));
+                            }
                             Real fixedLegNpv =
                                 arguments_.floorRates[i] *
                                 arguments_.accrualTimes[i] *

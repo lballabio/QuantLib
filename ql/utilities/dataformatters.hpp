@@ -148,17 +148,19 @@ namespace QuantLib {
         template <typename T>
         inline std::ostream& operator<<(std::ostream& out,
                                         const null_checker<T>& checker) {
-            if (checker.value == Null<T>())
+            if (checker.value == Null<T>()) {
                 return out << "null";
-            else
+            } else {
                 return out << checker.value;
+            }
         }
 
         template <typename T>
         inline std::ostream& operator<<(std::ostream& out,
                                         const power_of_two_holder<T>& holder) {
-            if (holder.n == Null<T>())
+            if (holder.n == Null<T>()) {
                 return out << "null";
+            }
 
             T n = holder.n;
             Integer power = 0;
@@ -175,8 +177,9 @@ namespace QuantLib {
         inline std::ostream& operator<<(std::ostream& out,
                                         const sequence_holder<I>& holder) {
             out << "( ";
-            for (I i = holder.begin; i != holder.end; ++i)
+            for (I i = holder.begin; i != holder.end; ++i) {
                 out << *i << " ";
+            }
             out << ")";
             return out;
         }

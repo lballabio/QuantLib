@@ -24,10 +24,11 @@ namespace QuantLib {
     Real SampledCurve::valueAtCenter() const {
         QL_REQUIRE(!empty(), "empty sampled curve");
         Size jmid = size()/2;
-        if (size() % 2 == 1)
+        if (size() % 2 == 1) {
             return values_[jmid];
-        else
-            return (values_[jmid]+values_[jmid-1])/2.0;
+        } else {
+            return (values_[jmid] + values_[jmid - 1]) / 2.0;
+        }
     }
 
     Real SampledCurve::firstDerivativeAtCenter() const {

@@ -38,13 +38,15 @@ void DateTest::ecbDates() {
     BOOST_TEST_MESSAGE("Testing ECB dates...");
 
     std::set<Date> knownDates = ECB::knownDates();
-    if (knownDates.empty())
+    if (knownDates.empty()) {
         BOOST_FAIL("\nempty EBC date vector");
+    }
 
     Size n = ECB::nextDates(Date::minDate()).size();
-    if (n != knownDates.size())
-        BOOST_FAIL("\nnextDates(minDate) returns "  << n <<
-                   " instead of " << knownDates.size() << " dates");
+    if (n != knownDates.size()) {
+        BOOST_FAIL("\nnextDates(minDate) returns " << n << " instead of " << knownDates.size()
+                                                   << " dates");
+    }
 
     std::set<Date>::const_iterator i;
     Date previousEcbDate = Date::minDate(),
@@ -52,32 +54,37 @@ void DateTest::ecbDates() {
     for (i=knownDates.begin(); i!=knownDates.end(); ++i) {
 
         currentEcbDate = *i;
-        if (!ECB::isECBdate(currentEcbDate))
+        if (!ECB::isECBdate(currentEcbDate)) {
             BOOST_FAIL("\n" << currentEcbDate << " fails isECBdate check");
+        }
 
         ecbDateMinusOne = currentEcbDate-1;
-        if (ECB::isECBdate(ecbDateMinusOne))
+        if (ECB::isECBdate(ecbDateMinusOne)) {
             BOOST_FAIL("\n" << ecbDateMinusOne << " fails isECBdate check");
+        }
 
-        if (ECB::nextDate(ecbDateMinusOne)!=currentEcbDate)
-            BOOST_FAIL("\n next EBC date following " << ecbDateMinusOne <<
-                       " must be " << currentEcbDate);
+        if (ECB::nextDate(ecbDateMinusOne) != currentEcbDate) {
+            BOOST_FAIL("\n next EBC date following " << ecbDateMinusOne << " must be "
+                                                     << currentEcbDate);
+        }
 
-        if (ECB::nextDate(previousEcbDate)!=currentEcbDate)
-            BOOST_FAIL("\n next EBC date following " << previousEcbDate <<
-                       " must be " << currentEcbDate);
+        if (ECB::nextDate(previousEcbDate) != currentEcbDate) {
+            BOOST_FAIL("\n next EBC date following " << previousEcbDate << " must be "
+                                                     << currentEcbDate);
+        }
 
         previousEcbDate = currentEcbDate;
     }
 
     Date knownDate = *knownDates.begin();
     ECB::removeDate(knownDate);
-    if (ECB::isECBdate(knownDate))
+    if (ECB::isECBdate(knownDate)) {
         BOOST_FAIL("\neunable to remove an EBC date");
+    }
     ECB::addDate(knownDate);
-    if (!ECB::isECBdate(knownDate))
+    if (!ECB::isECBdate(knownDate)) {
         BOOST_FAIL("\neunable to add an EBC date");
-
+    }
 }
 
 void DateTest::immDates() {
@@ -105,25 +112,24 @@ void DateTest::immDates() {
         imm = IMM::nextDate(counter, false);
 
         // check that imm is greater than counter
-        if (imm<=counter)
-            BOOST_FAIL("\n  "
-                       << imm.weekday() << " " << imm
-                       << " is not greater than "
-                       << counter.weekday() << " " << counter);
+        if (imm <= counter) {
+            BOOST_FAIL("\n  " << imm.weekday() << " " << imm << " is not greater than "
+                              << counter.weekday() << " " << counter);
+        }
 
         // check that imm is an IMM date
-        if (!IMM::isIMMdate(imm, false))
-            BOOST_FAIL("\n  "
-                       << imm.weekday() << " " << imm
-                       << " is not an IMM date (calculated from "
-                       << counter.weekday() << " " << counter << ")");
+        if (!IMM::isIMMdate(imm, false)) {
+            BOOST_FAIL("\n  " << imm.weekday() << " " << imm
+                              << " is not an IMM date (calculated from " << counter.weekday() << " "
+                              << counter << ")");
+        }
 
         // check that imm is <= to the next IMM date in the main cycle
-        if (imm>IMM::nextDate(counter, true))
-            BOOST_FAIL("\n  "
-                       << imm.weekday() << " " << imm
-                       << " is not less than or equal to the next future in the main cycle "
-                       << IMM::nextDate(counter, true));
+        if (imm > IMM::nextDate(counter, true)) {
+            BOOST_FAIL("\n  " << imm.weekday() << " " << imm
+                              << " is not less than or equal to the next future in the main cycle "
+                              << IMM::nextDate(counter, true));
+        }
 
         //// check that if counter is an IMM date, then imm==counter
         //if (IMM::isIMMdate(counter, false) && (imm!=counter))
@@ -133,19 +139,17 @@ void DateTest::immDates() {
         //               << imm.weekday() << " " << imm);
 
         // check that for every date IMMdate is the inverse of IMMcode
-        if (IMM::date(IMM::code(imm), counter) != imm)
-            BOOST_FAIL("\n  "
-                       << IMM::code(imm)
-                       << " at calendar day " << counter
-                       << " is not the IMM code matching " << imm);
+        if (IMM::date(IMM::code(imm), counter) != imm) {
+            BOOST_FAIL("\n  " << IMM::code(imm) << " at calendar day " << counter
+                              << " is not the IMM code matching " << imm);
+        }
 
         // check that for every date the 120 IMM codes refer to future dates
         for (int i=0; i<40; ++i) {
-            if (IMM::date(IMMcodes[i], counter)<counter)
-                BOOST_FAIL("\n  "
-                       << IMM::date(IMMcodes[i], counter)
-                       << " is wrong for " << IMMcodes[i]
-                       << " at reference date " << counter);
+            if (IMM::date(IMMcodes[i], counter) < counter) {
+                BOOST_FAIL("\n  " << IMM::date(IMMcodes[i], counter) << " is wrong for "
+                                  << IMMcodes[i] << " at reference date " << counter);
+            }
         }
 
         counter = counter + 1;
@@ -177,25 +181,24 @@ void DateTest::asxDates() {
         asx = ASX::nextDate(counter, false);
 
         // check that asx is greater than counter
-        if (asx <= counter)
-            BOOST_FAIL("\n  "
-            << asx.weekday() << " " << asx
-            << " is not greater than "
-            << counter.weekday() << " " << counter);
+        if (asx <= counter) {
+            BOOST_FAIL("\n  " << asx.weekday() << " " << asx << " is not greater than "
+                              << counter.weekday() << " " << counter);
+        }
 
         // check that asx is an ASX date
-        if (!ASX::isASXdate(asx, false))
-            BOOST_FAIL("\n  "
-            << asx.weekday() << " " << asx
-            << " is not an ASX date (calculated from "
-            << counter.weekday() << " " << counter << ")");
+        if (!ASX::isASXdate(asx, false)) {
+            BOOST_FAIL("\n  " << asx.weekday() << " " << asx
+                              << " is not an ASX date (calculated from " << counter.weekday() << " "
+                              << counter << ")");
+        }
 
         // check that asx is <= to the next ASX date in the main cycle
-        if (asx>ASX::nextDate(counter, true))
-            BOOST_FAIL("\n  "
-            << asx.weekday() << " " << asx
-            << " is not less than or equal to the next future in the main cycle "
-            << ASX::nextDate(counter, true));
+        if (asx > ASX::nextDate(counter, true)) {
+            BOOST_FAIL("\n  " << asx.weekday() << " " << asx
+                              << " is not less than or equal to the next future in the main cycle "
+                              << ASX::nextDate(counter, true));
+        }
 
         //// check that if counter is an ASX date, then asx==counter
         //if (ASX::isASXdate(counter, false) && (asx!=counter))
@@ -205,19 +208,17 @@ void DateTest::asxDates() {
         //               << asx.weekday() << " " << asx);
 
         // check that for every date ASXdate is the inverse of ASXcode
-        if (ASX::date(ASX::code(asx), counter) != asx)
-            BOOST_FAIL("\n  "
-            << ASX::code(asx)
-            << " at calendar day " << counter
-            << " is not the ASX code matching " << asx);
+        if (ASX::date(ASX::code(asx), counter) != asx) {
+            BOOST_FAIL("\n  " << ASX::code(asx) << " at calendar day " << counter
+                              << " is not the ASX code matching " << asx);
+        }
 
         // check that for every date the 120 ASX codes refer to future dates
         for (int i = 0; i<120; ++i) {
-            if (ASX::date(ASXcodes[i], counter)<counter)
-                BOOST_FAIL("\n  "
-                << ASX::date(ASXcodes[i], counter)
-                << " is wrong for " << ASXcodes[i]
-                << " at reference date " << counter);
+            if (ASX::date(ASXcodes[i], counter) < counter) {
+                BOOST_FAIL("\n  " << ASX::date(ASXcodes[i], counter) << " is wrong for "
+                                  << ASXcodes[i] << " at reference date " << counter);
+            }
         }
 
         counter = counter + 1;
@@ -242,11 +243,12 @@ void DateTest::testConsistency() {
         Date::serial_type serial = t.serialNumber();
 
         // check serial number consistency
-        if (serial != i)
+        if (serial != i) {
             BOOST_FAIL("inconsistent serial number:\n"
                        << "    original:      " << i << "\n"
                        << "    date:          " << t << "\n"
                        << "    serial number: " << serial);
+        }
 
         Integer dy = t.dayOfYear(),
                 d  = t.dayOfMonth(),
@@ -255,73 +257,67 @@ void DateTest::testConsistency() {
                 wd = t.weekday();
 
         // check if skipping any date
-        if (!((dy == dyold+1) ||
-              (dy == 1 && dyold == 365 && !Date::isLeap(yold)) ||
-              (dy == 1 && dyold == 366 && Date::isLeap(yold))))
+        if (!((dy == dyold + 1) || (dy == 1 && dyold == 365 && !Date::isLeap(yold)) ||
+              (dy == 1 && dyold == 366 && Date::isLeap(yold)))) {
             BOOST_FAIL("wrong day of year increment: \n"
                        << "    date: " << t << "\n"
                        << "    day of year: " << dy << "\n"
                        << "    previous:    " << dyold);
+        }
         dyold = dy;
 
-        if (!((d == dold+1 && m == mold   && y == yold) ||
-              (d == 1      && m == mold+1 && y == yold) ||
-              (d == 1      && m == 1      && y == yold+1)))
+        if (!((d == dold + 1 && m == mold && y == yold) || (d == 1 && m == mold + 1 && y == yold) ||
+              (d == 1 && m == 1 && y == yold + 1))) {
             BOOST_FAIL("wrong day,month,year increment: \n"
                        << "    date: " << t << "\n"
-                       << "    day,month,year: "
-                       << d << "," << Integer(m) << "," << y << "\n"
-                       << "    previous:       "
-                       << dold<< "," << Integer(mold) << "," << yold);
+                       << "    day,month,year: " << d << "," << Integer(m) << "," << y << "\n"
+                       << "    previous:       " << dold << "," << Integer(mold) << "," << yold);
+        }
         dold = d; mold = m; yold = y;
 
         // check month definition
-        if (m < 1 || m > 12)
+        if (m < 1 || m > 12) {
             BOOST_FAIL("invalid month: \n"
                        << "    date:  " << t << "\n"
                        << "    month: " << Integer(m));
+        }
 
         // check day definition
-        if (d < 1)
+        if (d < 1) {
             BOOST_FAIL("invalid day of month: \n"
                        << "    date:  " << t << "\n"
                        << "    day: " << d);
-        if (!((m == 1  && d <= 31) ||
-              (m == 2  && d <= 28) ||
-              (m == 2  && d == 29 && Date::isLeap(y)) ||
-              (m == 3  && d <= 31) ||
-              (m == 4  && d <= 30) ||
-              (m == 5  && d <= 31) ||
-              (m == 6  && d <= 30) ||
-              (m == 7  && d <= 31) ||
-              (m == 8  && d <= 31) ||
-              (m == 9  && d <= 30) ||
-              (m == 10 && d <= 31) ||
-              (m == 11 && d <= 30) ||
-              (m == 12 && d <= 31)))
+        }
+        if (!((m == 1 && d <= 31) || (m == 2 && d <= 28) ||
+              (m == 2 && d == 29 && Date::isLeap(y)) || (m == 3 && d <= 31) ||
+              (m == 4 && d <= 30) || (m == 5 && d <= 31) || (m == 6 && d <= 30) ||
+              (m == 7 && d <= 31) || (m == 8 && d <= 31) || (m == 9 && d <= 30) ||
+              (m == 10 && d <= 31) || (m == 11 && d <= 30) || (m == 12 && d <= 31))) {
             BOOST_FAIL("invalid day of month: \n"
                        << "    date:  " << t << "\n"
                        << "    day: " << d);
+        }
 
         // check weekday definition
-        if (!((Integer(wd) == Integer(wdold+1)) ||
-              (Integer(wd) == 1 && Integer(wdold) == 7)))
+        if (!((Integer(wd) == Integer(wdold + 1)) || (Integer(wd) == 1 && Integer(wdold) == 7))) {
             BOOST_FAIL("invalid weekday: \n"
                        << "    date:  " << t << "\n"
                        << "    weekday:  " << Integer(wd) << "\n"
                        << "    previous: " << Integer(wdold));
+        }
         wdold = wd;
 
         // create the same date with a different constructor
         Date s(d,Month(m),y);
         // check serial number consistency
         serial = s.serialNumber();
-        if (serial != i)
+        if (serial != i) {
             BOOST_FAIL("inconsistent serial number:\n"
                        << "    date:          " << t << "\n"
                        << "    serial number: " << i << "\n"
-                       << "    cloned date:   " <<  s << "\n"
+                       << "    cloned date:   " << s << "\n"
                        << "    serial number: " << serial);
+        }
     }
 
 }

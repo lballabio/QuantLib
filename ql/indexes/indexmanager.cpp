@@ -54,9 +54,9 @@ namespace QuantLib {
     std::vector<string> IndexManager::histories() const {
         std::vector<string> temp;
         temp.reserve(data_.size());
-        for (history_map::const_iterator i=data_.begin();
-             i!=data_.end(); ++i)
+        for (history_map::const_iterator i = data_.begin(); i != data_.end(); ++i) {
             temp.push_back(i->first);
+        }
         return temp;
     }
 

@@ -35,26 +35,27 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // Holy Thursday
-            || (dd == em-4)
+            || (dd == em - 4)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Ascension Thursday
-            || (dd == em+38)
+            || (dd == em + 38)
             // Whit Monday
-            || (dd == em+49)
+            || (dd == em + 49)
             // New Year's Day
-            || (d == 1  && m == January)
+            || (d == 1 && m == January)
             // May Day
-            || (d == 1  && m == May)
+            || (d == 1 && m == May)
             // National Independence Day
-            || (d == 17  && m == May)
+            || (d == 17 && m == May)
             // Christmas
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 

@@ -95,20 +95,23 @@ namespace QuantLib
             driftsComputers_[i].compute(oldRates,
                 drifts_);
 
-            for (Size j =0; j < aliveIndex_; ++j)
-                B[i][j]=0.0;
+            for (Size j = 0; j < aliveIndex_; ++j) {
+                B[i][j] = 0.0;
+            }
 
             for (Size j=aliveIndex_; j < numberRates; ++j)
             {
                 bumpedRates_[j] = std::log(oldRates[j]+displacements_[j]);
 
-                for (Size k=0; k < factors_; ++k)
-                    bumpedRates_[j] += -0.5*pseudo[j][k]*pseudo[j][k];
+                for (Size k = 0; k < factors_; ++k) {
+                    bumpedRates_[j] += -0.5 * pseudo[j][k] * pseudo[j][k];
+                }
 
                 bumpedRates_[j] +=drifts_[j];
 
-                for (Size k=0; k < factors_; ++k)
-                    bumpedRates_[j] += pseudo[j][k]*gaussians[k];
+                for (Size k = 0; k < factors_; ++k) {
+                    bumpedRates_[j] += pseudo[j][k] * gaussians[k];
+                }
 
                 bumpedRates_[j] = std::exp(bumpedRates_[j]);
                 bumpedRates_[j] -= displacements_[j];
@@ -184,23 +187,26 @@ namespace QuantLib
          QL_REQUIRE(B.columns() == numberRates, "we need B.columns() which is " << B.columns() << " to equal numberRates which is "  << numberRates);
 
 
-        for (Size j=aliveIndex_; j < numberRates; ++j)
-            ratios_[j] = (oldRates[j] + displacements_[j])*discountRatios[j+1];
+         for (Size j = aliveIndex_; j < numberRates; ++j) {
+             ratios_[j] = (oldRates[j] + displacements_[j]) * discountRatios[j + 1];
+         }
 
-        for (Size f=0; f < factors_; ++f)
-        {
-            e_[aliveIndex_][f] = 0;
+         for (Size f = 0; f < factors_; ++f) {
+             e_[aliveIndex_][f] = 0;
 
-            for (Size j= aliveIndex_+1; j < numberRates; ++j)
-                e_[j][f] = e_[j-1][f] + ratios_[j-1]*pseudoRoot_[j-1][f];
+             for (Size j = aliveIndex_ + 1; j < numberRates; ++j) {
+                 e_[j][f] = e_[j - 1][f] + ratios_[j - 1] * pseudoRoot_[j - 1][f];
+             }
         }
 
 
-        for (Size f=0; f < factors_; ++f)
+        for (Size f = 0; f < factors_; ++f) {
             for (Size j=aliveIndex_; j < numberRates; ++j)
             {
-                for (Size k= aliveIndex_; k < j ; ++k)
-                    allDerivatives_[j][k][f] = newRates[j]*ratios_[k]*taus_[k]*pseudoRoot_[j][f];
+                for (Size k = aliveIndex_; k < j; ++k) {
+                    allDerivatives_[j][k][f] =
+                        newRates[j] * ratios_[k] * taus_[k] * pseudoRoot_[j][f];
+                }
 
                 // GG don't seem to have the 2, this term is miniscule in any case
                 Real tmp = //2*
@@ -213,11 +219,11 @@ namespace QuantLib
 
                 allDerivatives_[j][j][f] =tmp;
 
-                for (Size k= j+1; k < numberRates ; ++k)
-                    allDerivatives_[j][k][f]=0.0;
-
-
+                for (Size k = j + 1; k < numberRates; ++k) {
+                    allDerivatives_[j][k][f] = 0.0;
+                }
             }
+        }
 
 
         for (Size i =0; i < numberBumps_; ++i)
@@ -232,9 +238,11 @@ namespace QuantLib
             {
                 Real sum =0.0;
 
-                for (Size k=aliveIndex_; k < numberRates; ++k)
-                    for (Size f=0; f < factors_; ++f)
-                        sum += pseudoBumps_[i][k][f]*allDerivatives_[j][k][f];
+                for (Size k = aliveIndex_; k < numberRates; ++k) {
+                    for (Size f = 0; f < factors_; ++f) {
+                        sum += pseudoBumps_[i][k][f] * allDerivatives_[j][k][f];
+                    }
+                }
                 B[i][j] =sum;
 
             }
@@ -280,36 +288,43 @@ namespace QuantLib
           Size numberRates = taus_.size();
 
            QL_REQUIRE(B.size() == numberRates, "we need B.size() which is " << B.size() << " to equal numberRates which is "  << numberRates);
-           for (Size j=0; j < B.size(); ++j)
-                      QL_REQUIRE(B[j].columns() == factors_ && B[j].rows() == numberRates , "we need B[j].rows() which is " << B[j].rows() << " to equal numberRates which is "  << numberRates << 
-                      " and B[j].columns() which is " << B[j].columns() << " to be equal to factors which is " << factors_);
+           for (Size j = 0; j < B.size(); ++j) {
+               QL_REQUIRE(B[j].columns() == factors_ && B[j].rows() == numberRates,
+                          "we need B[j].rows() which is "
+                              << B[j].rows() << " to equal numberRates which is " << numberRates
+                              << " and B[j].columns() which is " << B[j].columns()
+                              << " to be equal to factors which is " << factors_);
+           }
 
 
+           for (Size j = aliveIndex_; j < numberRates; ++j) {
+               ratios_[j] = (oldRates[j] + displacements_[j]) * discountRatios[j + 1];
+           }
 
+           for (Size f = 0; f < factors_; ++f) {
+               e_[aliveIndex_][f] = 0;
 
-        for (Size j=aliveIndex_; j < numberRates; ++j)
-            ratios_[j] = (oldRates[j] + displacements_[j])*discountRatios[j+1];
-
-        for (Size f=0; f < factors_; ++f)
-        {
-            e_[aliveIndex_][f] = 0;
-
-            for (Size j= aliveIndex_+1; j < numberRates; ++j)
-                e_[j][f] = e_[j-1][f] + ratios_[j-1]*pseudoRoot_[j-1][f];
+               for (Size j = aliveIndex_ + 1; j < numberRates; ++j) {
+                   e_[j][f] = e_[j - 1][f] + ratios_[j - 1] * pseudoRoot_[j - 1][f];
+               }
         }
 
         // nullify B for rates that have already reset
-        for (Size j=0; j < aliveIndex_; ++j)
-            for (Size k=0; k < numberRates; ++k)
-                for (Size f=0; f < factors_; ++f)
-                      B[j][k][f] =0.0;
+        for (Size j = 0; j < aliveIndex_; ++j) {
+            for (Size k = 0; k < numberRates; ++k) {
+                for (Size f = 0; f < factors_; ++f) {
+                    B[j][k][f] = 0.0;
+                }
+            }
+        }
 
 
-        for (Size f=0; f < factors_; ++f)
+        for (Size f = 0; f < factors_; ++f) {
             for (Size j=aliveIndex_; j < numberRates; ++j)
             {
-                for (Size k= aliveIndex_; k < j ; ++k)
-                    B[j][k][f] = newRates[j]*ratios_[k]*taus_[k]*pseudoRoot_[j][f];
+                for (Size k = aliveIndex_; k < j; ++k) {
+                    B[j][k][f] = newRates[j] * ratios_[k] * taus_[k] * pseudoRoot_[j][f];
+                }
 
                 Real tmp = 2*ratios_[j]*taus_[j]*pseudoRoot_[j][f];
                 tmp -=  pseudoRoot_[j][f];
@@ -320,14 +335,15 @@ namespace QuantLib
 
                 B[j][j][f] =tmp;
 
-                for (Size k= 0; k < aliveIndex_ ; ++k)
-                    B[j][k][f]=0.0;
+                for (Size k = 0; k < aliveIndex_; ++k) {
+                    B[j][k][f] = 0.0;
+                }
 
-                for (Size k= j+1; k < numberRates ; ++k)
-                    B[j][k][f]=0.0;
-
-
+                for (Size k = j + 1; k < numberRates; ++k) {
+                    B[j][k][f] = 0.0;
+                }
             }
+        }
     }
 
     

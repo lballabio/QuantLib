@@ -37,11 +37,13 @@ namespace QuantLib {
     void CrankNicolsonScheme::step(array_type& a, Time t) {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
 
-        if (theta_ != 1.0)
-            explicit_->step(a, t, 1.0-theta_);
+        if (theta_ != 1.0) {
+            explicit_->step(a, t, 1.0 - theta_);
+        }
 
-        if (theta_ != 0.0)
+        if (theta_ != 0.0) {
             implicit_->step(a, t, theta_);
+        }
     }
 
     void CrankNicolsonScheme::setStep(Time dt) {

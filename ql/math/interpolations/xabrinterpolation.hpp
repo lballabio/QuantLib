@@ -70,8 +70,9 @@ template <typename Model> class XABRCoeffHolder {
                        << Model().dimension());
 
         for (Size i = 0; i < params.size(); ++i) {
-            if (params[i] != Null<Real>())
+            if (params[i] != Null<Real>()) {
                 paramIsFixed_[i] = paramIsFixed[i];
+            }
         }
         Model().defaultValues(params_, paramIsFixed_, forward_, t_, addParams_);
         updateModelInstance();
@@ -116,9 +117,10 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
           errorAccept_(errorAccept), useMaxError_(useMaxError),
           maxGuesses_(maxGuesses), vegaWeighted_(vegaWeighted) {
         // if no optimization method or endCriteria is provided, we provide one
-        if (!optMethod_)
-            optMethod_ = ext::shared_ptr<OptimizationMethod>(
-                new LevenbergMarquardt(1e-8, 1e-8, 1e-8));
+        if (!optMethod_) {
+            optMethod_ =
+                ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8));
+        }
         // optMethod_ = ext::shared_ptr<OptimizationMethod>(new
         //    Simplex(0.01));
         if (!endCriteria_) {
@@ -150,8 +152,9 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             }
             // weight normalization
             std::vector<Real>::iterator w = this->weights_.begin();
-            for (; w != this->weights_.end(); ++w)
+            for (; w != this->weights_.end(); ++w) {
                 *w /= weightsSum;
+            }
         }
 
         // there is nothing to optimize
@@ -166,16 +169,19 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             XABRError costFunction(this);
 
             Array guess(Model().dimension());
-            for (Size i = 0; i < guess.size(); ++i)
+            for (Size i = 0; i < guess.size(); ++i) {
                 guess[i] = this->params_[i];
+            }
 
             Size iterations = 0;
             Size freeParameters = 0;
             Real bestError = QL_MAX_REAL;
             Array bestParameters;
-            for (Size i = 0; i < Model().dimension(); ++i)
-                if (!this->paramIsFixed_[i])
+            for (Size i = 0; i < Model().dimension(); ++i) {
+                if (!this->paramIsFixed_[i]) {
                     ++freeParameters;
+                }
+            }
             HaltonRsg halton(freeParameters, 42);
             EndCriteria::Type tmpEndCriteria;
             Real tmpInterpolationError;
@@ -186,9 +192,11 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                     HaltonRsg::sample_type s = halton.nextSequence();
                     Model().guess(guess, this->paramIsFixed_, this->forward_,
                                   this->t_, s.value, this->addParams_);
-                    for (Size i = 0; i < this->paramIsFixed_.size(); ++i)
-                        if (this->paramIsFixed_[i])
+                    for (Size i = 0; i < this->paramIsFixed_.size(); ++i) {
+                        if (this->paramIsFixed_[i]) {
                             guess[i] = this->params_[i];
+                        }
+                    }
                 }
 
                 Array inversedTransformatedGuess(Model().inverse(
@@ -223,8 +231,9 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             } while (++iterations < maxGuesses_ &&
                      tmpInterpolationError > errorAccept_);
 
-            for (Size i = 0; i < bestParameters.size(); ++i)
+            for (Size i = 0; i < bestParameters.size(); ++i) {
                 this->params_[i] = bestParameters[i];
+            }
 
             this->error_ = interpolationError();
             this->maxError_ = interpolationMaxError();
@@ -292,8 +301,9 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         Real value(const Array &x) const {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
-            for (Size i = 0; i < xabr_->params_.size(); ++i)
+            for (Size i = 0; i < xabr_->params_.size(); ++i) {
                 xabr_->params_[i] = y[i];
+            }
             xabr_->updateModelInstance();
             return xabr_->interpolationSquaredError();
         }
@@ -301,8 +311,9 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         Disposable<Array> values(const Array &x) const {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
-            for (Size i = 0; i < xabr_->params_.size(); ++i)
+            for (Size i = 0; i < xabr_->params_.size(); ++i) {
                 xabr_->params_[i] = y[i];
+            }
             xabr_->updateModelInstance();
             return xabr_->interpolationErrors();
         }

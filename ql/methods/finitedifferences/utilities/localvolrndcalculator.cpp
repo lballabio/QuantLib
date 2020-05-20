@@ -154,19 +154,24 @@ namespace QuantLib {
         Real xl = xm_[idx]->locations().front();
         Real xr = xm_[idx]->locations().back();
 
-        if (x < xl)
+        if (x < xl) {
             return 0.0;
-        else if (x > xr)
+        } else if (x > xr) {
             return 1.0;
+        }
 
         // left or right hand integral
         if (x > 0.5*(xr+xl)) {
-            while (pdf(xr, t) > 0.01*localVolProbEps_) xr*=1.1;
+            while (pdf(xr, t) > 0.01 * localVolProbEps_) {
+                xr *= 1.1;
+            }
             return 1.0-GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 ext::bind(&LocalVolRNDCalculator::pdf, this, _1, t), x, xr);
         }
         else {
-            while (pdf(xl, t) > 0.01*localVolProbEps_) xl*=0.9;
+            while (pdf(xl, t) > 0.01 * localVolProbEps_) {
+                xl *= 0.9;
+            }
 
             return GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 ext::bind(&LocalVolRNDCalculator::pdf, this, _1, t), xl, x);
@@ -295,10 +300,12 @@ namespace QuantLib {
                         std::min(timeGrid_->size()-1, i+scalingSteps)))
                      * vm;
 
-                if (maxLeftValue > localVolProbEps_)
-                    sLowerBound -= scalingFactor*xm;
-                if (maxRightValue > localVolProbEps_)
-                    sUpperBound += scalingFactor*xm;
+                if (maxLeftValue > localVolProbEps_) {
+                    sLowerBound -= scalingFactor * xm;
+                }
+                if (maxRightValue > localVolProbEps_) {
+                    sUpperBound += scalingFactor * xm;
+                }
 
                 mesher = ext::shared_ptr<Fdm1dMesher>(
                     new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
@@ -310,8 +317,9 @@ namespace QuantLib {
                 Array pn(xn.size(), 0.0);
 
                 for (Size j=0; j < xn.size(); ++j) {
-                    if (xn[j] >= oldLowerBound && xn[j] <= oldUpperBound)
+                    if (xn[j] >= oldLowerBound && xn[j] <= oldUpperBound) {
                         pn[j] = pSpline(xn[j]);
+                    }
                 }
 
                 x = xn;
@@ -351,11 +359,11 @@ namespace QuantLib {
         Size idx, Real x) const {
         calculate();
 
-        if (   x < xm_[idx]->locations().front()
-            || x > xm_[idx]->locations().back())
+        if (x < xm_[idx]->locations().front() || x > xm_[idx]->locations().back()) {
             return 0.0;
-        else
+        } else {
             return (*pFct_[idx])(x);
+        }
     }
 
     Disposable<Array> LocalVolRNDCalculator::rescalePDF(

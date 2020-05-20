@@ -97,13 +97,13 @@ namespace QuantLib {
                             coupon->referencePeriodStart(),
                             coupon->referencePeriodEnd(),
                             coupon->dayCounter(),
-                            coupon->isInArrears())); 
+                            coupon->isInArrears()));
 
 
-                        if (!newCpn->isInArrears())
-                            newCpn->setPricer(
-                                         ext::shared_ptr<FloatingRateCouponPricer>(
-                                                  new BlackIborCouponPricer()));
+                        if (!newCpn->isInArrears()) {
+                            newCpn->setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
+                                new BlackIborCouponPricer()));
+                        }
 
                         floatCFS.push_back(newCpn);
                     }
@@ -191,7 +191,9 @@ namespace QuantLib {
 
         Real defect = -targetNPV_;
 
-        for(Size i=0; i< weights.size();++i)   defect -= swap_->type()*lambda*weights[i]*annuities_[i];
+        for (Size i = 0; i < weights.size(); ++i) {
+            defect -= swap_->type() * lambda * weights[i] * annuities_[i];
+        }
 
         return defect;
     }
@@ -291,13 +293,13 @@ namespace QuantLib {
                 coupon->referencePeriodStart(),
                 coupon->referencePeriodEnd(),
                 coupon->dayCounter(),
-                coupon->isInArrears())); 
+                coupon->isInArrears()));
 
 
-            if (!newCpn->isInArrears())
+            if (!newCpn->isInArrears()) {
                 newCpn->setPricer(
-                             ext::shared_ptr<FloatingRateCouponPricer>(
-                                      new BlackIborCouponPricer()));
+                    ext::shared_ptr<FloatingRateCouponPricer>(new BlackIborCouponPricer()));
+            }
 
             floatCFS.push_back(newCpn);
         }

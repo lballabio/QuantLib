@@ -37,9 +37,10 @@ namespace QuantLib {
       functionEpsilon_(functionEpsilon),
       gradientNormEpsilon_(gradientNormEpsilon) {
 
-        if (maxStationaryStateIterations_ == Null<Size>())
-            maxStationaryStateIterations_ = std::min(static_cast<Size>(maxIterations/2),
-                                                     static_cast<Size>(100));
+        if (maxStationaryStateIterations_ == Null<Size>()) {
+            maxStationaryStateIterations_ =
+                std::min(static_cast<Size>(maxIterations / 2), static_cast<Size>(100));
+        }
         QL_REQUIRE(maxStationaryStateIterations_>1,
                    "maxStationaryStateIterations_ (" <<
                    maxStationaryStateIterations_ <<
@@ -49,14 +50,16 @@ namespace QuantLib {
                    maxStationaryStateIterations_ <<
                    ") must be less than maxIterations_ (" <<
                    maxIterations_ << ")");
-        if (gradientNormEpsilon_ == Null<Real>())
+        if (gradientNormEpsilon_ == Null<Real>()) {
             gradientNormEpsilon_ = functionEpsilon_;
+        }
     }
 
     bool EndCriteria::checkMaxIterations(const Size iteration,
                                          EndCriteria::Type& ecType) const{
-        if (iteration < maxIterations_)
+        if (iteration < maxIterations_) {
             return false;
+        }
         ecType = MaxIterations;
         return true;
     }
@@ -70,8 +73,9 @@ namespace QuantLib {
             return false;
         }
         ++statStateIterations;
-        if (statStateIterations <= maxStationaryStateIterations_)
+        if (statStateIterations <= maxStationaryStateIterations_) {
             return false;
+        }
         ecType = StationaryPoint;
         return true;
     }
@@ -86,8 +90,9 @@ namespace QuantLib {
             return false;
         }
         ++statStateIterations;
-        if (statStateIterations <= maxStationaryStateIterations_)
+        if (statStateIterations <= maxStationaryStateIterations_) {
             return false;
+        }
         ecType = StationaryFunctionValue;
         return true;
     }
@@ -96,10 +101,12 @@ namespace QuantLib {
                                             const Real f,
                                             const bool positiveOptimization,
                                             EndCriteria::Type& ecType) const {
-        if (!positiveOptimization)
+        if (!positiveOptimization) {
             return false;
-        if (f >= functionEpsilon_)
+        }
+        if (f >= functionEpsilon_) {
             return false;
+        }
         ecType = StationaryFunctionAccuracy;
         return true;
     }
@@ -116,8 +123,9 @@ namespace QuantLib {
 
     bool EndCriteria::checkZeroGradientNorm(const Real gradientNorm,
                                             EndCriteria::Type& ecType) const {
-        if (gradientNorm >= gradientNormEpsilon_)
+        if (gradientNorm >= gradientNormEpsilon_) {
             return false;
+        }
         ecType = ZeroGradientNorm;
         return true;
     }

@@ -82,8 +82,9 @@ namespace QuantLib {
         if (  cashFlowsGenerated[currentIndex_][0].amount[0]  >0)
         {
             numberCashFlowsThisStep[currentIndex_] = 1;
-            for (Size i=1; i <= numberRates_; ++i)
-                cashFlowsGenerated[currentIndex_][0].amount[i] =0;
+            for (Size i = 1; i <= numberRates_; ++i) {
+                cashFlowsGenerated[currentIndex_][0].amount[i] = 0;
+            }
 
             cashFlowsGenerated[currentIndex_][0].amount[currentIndex_+1]  = accruals_[currentIndex_];
         }
@@ -101,8 +102,9 @@ namespace QuantLib {
     std::vector<Size> MarketModelPathwiseMultiCaplet::suggestedNumeraires() const
     {
         std::vector<Size> numeraires(numberRates_);
-        for (Size i=0; i < numberRates_; ++i)
-            numeraires[i] = i+1;
+        for (Size i = 0; i < numberRates_; ++i) {
+            numeraires[i] = i + 1;
+        }
 
         return numeraires;
     }
@@ -223,8 +225,9 @@ namespace QuantLib {
         if (  cashFlowsGenerated[currentIndex_][0].amount[0]  >0)
         {
             numberCashFlowsThisStep[currentIndex_] = 1;
-            for (Size i=1; i <= numberRates_; ++i)
-                cashFlowsGenerated[currentIndex_][0].amount[i] =0;
+            for (Size i = 1; i <= numberRates_; ++i) {
+                cashFlowsGenerated[currentIndex_][0].amount[i] = 0;
+            }
 
             cashFlowsGenerated[currentIndex_][0].amount[currentIndex_+1]  = accruals_[currentIndex_]*currentState.discountRatio(currentIndex_+1,0);
 
@@ -249,8 +252,9 @@ namespace QuantLib {
     std::vector<Size> MarketModelPathwiseMultiDeflatedCaplet::suggestedNumeraires() const
     {
         std::vector<Size> numeraires(numberRates_);
-        for (Size i=0; i < numberRates_; ++i)
+        for (Size i = 0; i < numberRates_; ++i) {
             numeraires[i] = i;
+        }
 
         return numeraires;
     }
@@ -302,10 +306,9 @@ namespace QuantLib {
         for (Size i=0; i <  innerCashFlowsGenerated_.size(); ++i)
         {
             innerCashFlowsGenerated_[i].resize(underlyingCaplets_.maxNumberOfCashFlowsPerProductPerStep());
-            for (Size j=0; j < underlyingCaplets_.maxNumberOfCashFlowsPerProductPerStep(); ++j)
-                innerCashFlowsGenerated_[i][j].amount.resize(accruals.size()+1);
-
-
+            for (Size j = 0; j < underlyingCaplets_.maxNumberOfCashFlowsPerProductPerStep(); ++j) {
+                innerCashFlowsGenerated_[i][j].amount.resize(accruals.size() + 1);
+            }
         }
  
     }
@@ -357,9 +360,10 @@ namespace QuantLib {
     {
 
         bool done = underlyingCaplets_.nextTimeStep(currentState, innerCashFlowSizes_, innerCashFlowsGenerated_);
-        
-        for (Size k=0; k < startsAndEnds_.size(); ++k)
-            numberCashFlowsThisStep[k]=0;
+
+        for (Size k = 0; k < startsAndEnds_.size(); ++k) {
+            numberCashFlowsThisStep[k] = 0;
+        }
 
         for (Size j=0; j < numberRates_; ++j)
         {
@@ -369,8 +373,10 @@ namespace QuantLib {
                 {
                     if (startsAndEnds_[k].first <= j && j < startsAndEnds_[k].second)
                     {
-                        for (Size l=0; l < innerCashFlowSizes_[j]; ++l)
-                            cashFlowsGenerated[k][numberCashFlowsThisStep[k]++] = innerCashFlowsGenerated_[j][l];
+                        for (Size l = 0; l < innerCashFlowSizes_[j]; ++l) {
+                            cashFlowsGenerated[k][numberCashFlowsThisStep[k]++] =
+                                innerCashFlowsGenerated_[j][l];
+                        }
                     }
                 }
             }

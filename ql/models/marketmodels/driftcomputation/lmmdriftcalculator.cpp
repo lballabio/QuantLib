@@ -53,8 +53,9 @@ namespace QuantLib {
         QL_REQUIRE(numeraire_>=alive, "Numeraire smaller than alive");
 
         // Precompute 1/taus
-        for (Size i=0; i<taus.size(); ++i)
-            oneOverTaus_[i] = 1.0/taus[i];
+        for (Size i = 0; i < taus.size(); ++i) {
+            oneOverTaus_[i] = 1.0 / taus[i];
+        }
 
         // Compute covariance matrix from pseudoroot
         const Disposable<Matrix> pT = transpose(pseudo_);
@@ -79,10 +80,11 @@ namespace QuantLib {
             QL_REQUIRE(drifts.size()==numberOfRates_, "drifts.size() <> dim");
         #endif
 
-        if (isFullFactor_)
-            computePlain(fwds, drifts);
-        else
-            computeReduced(fwds, drifts);
+            if (isFullFactor_) {
+                computePlain(fwds, drifts);
+            } else {
+                computeReduced(fwds, drifts);
+            }
     }
 
     void LMMDriftCalculator::computePlain(const LMMCurveState& cs,
@@ -98,17 +100,18 @@ namespace QuantLib {
 
         // Precompute forwards factor
         Size i;
-        for(i=alive_; i<numberOfRates_; ++i)
-            tmp_[i] = (forwards[i]+displacements_[i]) /
-                      (oneOverTaus_[i]+forwards[i]);
+        for (i = alive_; i < numberOfRates_; ++i) {
+            tmp_[i] = (forwards[i] + displacements_[i]) / (oneOverTaus_[i] + forwards[i]);
+        }
 
         // Compute drifts
         for (i=alive_; i<numberOfRates_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
                                            tmp_.begin()+ups_[i],
                                            C_.row_begin(i)+downs_[i], 0.0);
-            if (numeraire_>i+1)
+            if (numeraire_ > i + 1) {
                 drifts[i] = -drifts[i];
+            }
         }
     }
 
@@ -124,13 +127,14 @@ namespace QuantLib {
         // using the pseudo square root of the covariance matrix.
 
         // Precompute forwards factor
-        for (Size i=alive_; i<numberOfRates_; ++i)
-            tmp_[i] = (forwards[i]+displacements_[i]) /
-                (oneOverTaus_[i]+forwards[i]);
+        for (Size i = alive_; i < numberOfRates_; ++i) {
+            tmp_[i] = (forwards[i] + displacements_[i]) / (oneOverTaus_[i] + forwards[i]);
+        }
 
         // Enforce initialization
-        for (Size r=0; r<numberOfFactors_; ++r)
-            e_[r][std::max(0,static_cast<Integer>(numeraire_)-1)] = 0.0;
+        for (Size r = 0; r < numberOfFactors_; ++r) {
+            e_[r][std::max(0, static_cast<Integer>(numeraire_) - 1)] = 0.0;
+        }
 
         // Now compute drifts: take the numeraire P_N (numeraire_=N)
         // as the reference point, divide the summation into 3 steps,
@@ -138,7 +142,9 @@ namespace QuantLib {
 
         // 1st step: the drift corresponding to the numeraire P_N is zero.
         // (if N=0 no drift is null, if N=numberOfRates_ the last drift is null).
-        if (numeraire_>0) drifts[numeraire_-1] = 0.0;
+        if (numeraire_ > 0) {
+            drifts[numeraire_ - 1] = 0.0;
+        }
 
         // 2nd step: then, move backward from N-2 (included) back to
         // alive (included) (if N=0 jumps to 3rd step, if N=numberOfRates_ the
@@ -172,10 +178,11 @@ namespace QuantLib {
         for (Size i=numeraire_; i<numberOfRates_; ++i) {
             drifts[i] = 0.0;
             for (Size r=0; r<numberOfFactors_; ++r) {
-                if (i==0)
+                if (i == 0) {
                     e_[r][i] = tmp_[i] * pseudo_[i][r];
-                else
-                    e_[r][i] = e_[r][i-1] + tmp_[i] * pseudo_[i][r];
+                } else {
+                    e_[r][i] = e_[r][i - 1] + tmp_[i] * pseudo_[i][r];
+                }
                 drifts[i] += e_[r][i]*pseudo_[i][r];
             }
         }

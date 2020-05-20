@@ -275,8 +275,9 @@ namespace QuantLib {
             const Size n = sizeof(values4)/sizeof(values4[0]);
             moneyness_.reserve(n);
 
-            for (Size i=0; i < n; ++i)
+            for (Size i = 0; i < n; ++i) {
                 moneyness_.push_back(values4[i][0]);
+            }
         }
     }
 

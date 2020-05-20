@@ -238,8 +238,9 @@ namespace {
         Volatility blackVolImpl(Time t, Real strike) const {
             QL_REQUIRE(t >= 0.0, "t must be >= 0");
 
-            if (t < QL_EPSILON)
+            if (t < QL_EPSILON) {
                 return b1_;
+            }
 
             const Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
             const Real mn = std::log(fwd/strike)/std::sqrt(t);

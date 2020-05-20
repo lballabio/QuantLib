@@ -30,12 +30,17 @@ namespace QuantLib {
                        const Real close)
     {
         if (bid != Null<Real>() && bid > 0.0) {
-            if (ask != Null<Real>() && ask > 0.0) return ((bid+ask)/2.0);
-            else                                  return bid;
+            if (ask != Null<Real>() && ask > 0.0) {
+                return ((bid + ask) / 2.0);
+            } else {
+                return bid;
+            }
         } else {
-            if (ask != Null<Real>() && ask > 0.0)          return ask;
-            else if (last != Null<Real>() && last > 0.0)   return last;
-            else {
+            if (ask != Null<Real>() && ask > 0.0) {
+                return ask;
+            } else if (last != Null<Real>() && last > 0.0) {
+                return last;
+            } else {
                 QL_REQUIRE(close != Null<Real>() && close > 0.0,
                            "all input prices are invalid");
                 return close;

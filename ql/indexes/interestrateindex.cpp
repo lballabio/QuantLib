@@ -40,14 +40,15 @@ namespace QuantLib {
         std::ostringstream out;
         out << familyName_;
         if (tenor_ == 1*Days) {
-            if (fixingDays_==0)
+            if (fixingDays_ == 0) {
                 out << "ON";
-            else if (fixingDays_==1)
+            } else if (fixingDays_ == 1) {
                 out << "TN";
-            else if (fixingDays_==2)
+            } else if (fixingDays_ == 2) {
                 out << "SN";
-            else
+            } else {
                 out << io::short_period(tenor_);
+            }
         } else {
             out << io::short_period(tenor_);
         }
@@ -66,9 +67,9 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
 
-        if (fixingDate>today ||
-            (fixingDate==today && forecastTodaysFixing))
+        if (fixingDate > today || (fixingDate == today && forecastTodaysFixing)) {
             return forecastFixing(fixingDate);
+        }
 
         if (fixingDate<today ||
             Settings::instance().enforcesTodaysHistoricFixings()) {
@@ -83,10 +84,11 @@ namespace QuantLib {
         try {
             // might have been fixed
             Rate result = pastFixing(fixingDate);
-            if (result!=Null<Real>())
+            if (result != Null<Real>()) {
                 return result;
-            else
-                ;   // fall through and forecast
+            } else {
+                ; // fall through and forecast
+            }
         } catch (Error&) {
                 ;   // fall through and forecast
         }

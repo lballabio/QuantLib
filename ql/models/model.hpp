@@ -193,10 +193,12 @@ namespace QuantLib {
                 for (Size i=0; i<arguments_.size(); i++) {
                     Size size = arguments_[i].size();
                     Array testParams(size);
-                    for (Size j=0; j<size; j++, k++)
+                    for (Size j = 0; j < size; j++, k++) {
                         testParams[j] = params[k];
-                    if (!arguments_[i].testParams(testParams))
+                    }
+                    if (!arguments_[i].testParams(testParams)) {
                         return false;
+                    }
                 }
                 return true;
             }
@@ -211,12 +213,14 @@ namespace QuantLib {
                 for (Size i = 0; i < arguments_.size(); i++) {
                     Size size = arguments_[i].size();
                     Array partialParams(size);
-                    for (Size j = 0; j < size; j++, k++)
+                    for (Size j = 0; j < size; j++, k++) {
                         partialParams[j] = params[k];
+                    }
                     Array tmpBound =
                         arguments_[i].constraint().upperBound(partialParams);
-                    for (Size j = 0; j < size; j++, k2++)
+                    for (Size j = 0; j < size; j++, k2++) {
                         result[k2] = tmpBound[j];
+                    }
                 }
                 return result;
             }
@@ -231,12 +235,14 @@ namespace QuantLib {
                 for (Size i = 0; i < arguments_.size(); i++) {
                     Size size = arguments_[i].size();
                     Array partialParams(size);
-                    for (Size j = 0; j < size; j++, k++)
+                    for (Size j = 0; j < size; j++, k++) {
                         partialParams[j] = params[k];
+                    }
                     Array tmpBound =
                         arguments_[i].constraint().lowerBound(partialParams);
-                    for (Size j = 0; j < size; j++, k2++)
+                    for (Size j = 0; j < size; j++, k2++) {
                         result[k2] = tmpBound[j];
+                    }
                 }
                 return result;
             }

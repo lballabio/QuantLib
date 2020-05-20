@@ -49,8 +49,9 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         initializeVolatilities();
         registerWithMarketData();
-        for (Size i=0; i<vols_.size(); ++i)
+        for (Size i = 0; i < vols_.size(); ++i) {
             vols_[i] = volHandles_[i]->value();
+        }
         interpolate();
     }
 
@@ -63,15 +64,17 @@ namespace QuantLib {
                    vols_.size() << ")");
         QL_REQUIRE(optionTenors_[0]>0*Days,
                    "negative first option tenor: " << optionTenors_[0]);
-        for (Size i=1; i<nOptionTenors_; ++i)
-            QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i) <<
-                       " is " << optionTenors_[i-1] << ", " <<
-                       io::ordinal(i+1) << " is " << optionTenors_[i]);
+        for (Size i = 1; i < nOptionTenors_; ++i) {
+            QL_REQUIRE(optionTenors_[i] > optionTenors_[i - 1],
+                       "non increasing option tenor: "
+                           << io::ordinal(i) << " is " << optionTenors_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << optionTenors_[i]);
+        }
         if (inclusionInInterpolation_.size()==1) {
             inclusionInInterpolation_.resize(nOptionTenors_);
-            for(Size j=1; j<nOptionTenors_;++j)
+            for (Size j = 1; j < nOptionTenors_; ++j) {
                 inclusionInInterpolation_[j] = inclusionInInterpolation_[0];
+            }
         } else
             QL_REQUIRE(nOptionTenors_==inclusionInInterpolation_.size(),
                        "mismatch between number of option tenors (" <<
@@ -81,8 +84,9 @@ namespace QuantLib {
 
     void AbcdAtmVolCurve::registerWithMarketData()
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
+        for (Size i = 0; i < volHandles_.size(); ++i) {
             registerWith(volHandles_[i]);
+        }
     }
 
     void AbcdAtmVolCurve::interpolate()
@@ -95,10 +99,11 @@ namespace QuantLib {
     void AbcdAtmVolCurve::accept(AcyclicVisitor& v) {
         Visitor<AbcdAtmVolCurve>* v1 =
             dynamic_cast<Visitor<AbcdAtmVolCurve>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             QL_FAIL("not a AbcdAtmVolCurve visitor");
+        }
     }
 
     void AbcdAtmVolCurve::update()
@@ -137,8 +142,9 @@ namespace QuantLib {
         actualVols_.clear();
         for (Size i=0; i<nOptionTenors_; ++i) {
             vols_[i] = volHandles_[i]->value();
-            if(inclusionInInterpolation_[i]==true)
-               actualVols_.push_back(vols_[i]);
+            if (inclusionInInterpolation_[i] == true) {
+                actualVols_.push_back(vols_[i]);
+            }
         }
     }
 
@@ -148,8 +154,9 @@ namespace QuantLib {
         actualVols_.clear();
         for (Size i=0; i<vols_.size(); ++i) {
             vols_[i] = volHandles_[i]->value();
-            if(inclusionInInterpolation_[i]==true)
-               actualVols_.push_back(vols_[i]);
+            if (inclusionInInterpolation_[i] == true) {
+                actualVols_.push_back(vols_[i]);
+            }
         }
         interpolation_->update();
     }

@@ -40,8 +40,9 @@ namespace QuantLib {
                                                const Date& d2,
                                                const Date& refPeriodStart,
                                                const Date& refPeriodEnd) const {
-        if (d1 == d2)
+        if (d1 == d2) {
             return 0.0;
+        }
 
         // We need the period to calculate the frequency
         QL_REQUIRE(refPeriodStart != Date(), "invalid refPeriodStart");
@@ -55,8 +56,9 @@ namespace QuantLib {
                    "must be longer than a month");
         Integer frequency = Integer(12/months);
 
-        if (dcs < 365/frequency)
-            return dcs/365.0;
+        if (dcs < 365 / frequency) {
+            return dcs / 365.0;
+        }
 
         return 1./frequency - (dcc-dcs)/365.0;
 

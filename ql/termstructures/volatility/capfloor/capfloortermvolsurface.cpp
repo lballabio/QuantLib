@@ -46,14 +46,17 @@ namespace QuantLib {
     {
         checkInputs();
         initializeOptionDatesAndTimes();
-        for (Size i=0; i<nOptionTenors_; ++i)
-            QL_REQUIRE(volHandles_[i].size()==nStrikes_,
-                       io::ordinal(i+1) << " row of vol handles has size " <<
-                       volHandles_[i].size() << " instead of " << nStrikes_);
+        for (Size i = 0; i < nOptionTenors_; ++i) {
+            QL_REQUIRE(volHandles_[i].size() == nStrikes_,
+                       io::ordinal(i + 1) << " row of vol handles has size "
+                                          << volHandles_[i].size() << " instead of " << nStrikes_);
+        }
         registerWithMarketData();
-        for (Size i=0; i<vols_.rows(); ++i)
-            for (Size j=0; j<vols_.columns(); ++j)
+        for (Size i = 0; i < vols_.rows(); ++i) {
+            for (Size j = 0; j < vols_.columns(); ++j) {
                 vols_[i][j] = volHandles_[i][j]->value();
+            }
+        }
         interpolate();
     }
 
@@ -78,14 +81,17 @@ namespace QuantLib {
     {
         checkInputs();
         initializeOptionDatesAndTimes();
-        for (Size i=0; i<nOptionTenors_; ++i)
-            QL_REQUIRE(volHandles_[i].size()==nStrikes_,
-                       io::ordinal(i+1) << " row of vol handles has size " <<
-                       volHandles_[i].size() << " instead of " << nStrikes_);
+        for (Size i = 0; i < nOptionTenors_; ++i) {
+            QL_REQUIRE(volHandles_[i].size() == nStrikes_,
+                       io::ordinal(i + 1) << " row of vol handles has size "
+                                          << volHandles_[i].size() << " instead of " << nStrikes_);
+        }
         registerWithMarketData();
-        for (Size i=0; i<vols_.rows(); ++i)
-            for (Size j=0; j<vols_.columns(); ++j)
+        for (Size i = 0; i < vols_.rows(); ++i) {
+            for (Size j = 0; j < vols_.columns(); ++j) {
                 vols_[i][j] = volHandles_[i][j]->value();
+            }
+        }
         interpolate();
     }
 
@@ -113,9 +119,10 @@ namespace QuantLib {
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<nOptionTenors_; ++i) {
             volHandles_[i].resize(nStrikes_);
-            for (Size j=0; j<nStrikes_; ++j)
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                    SimpleQuote(vols_[i][j])));
+            for (Size j = 0; j < nStrikes_; ++j) {
+                volHandles_[i][j] =
+                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(vols_[i][j])));
+            }
         }
         interpolate();
     }
@@ -144,9 +151,10 @@ namespace QuantLib {
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<nOptionTenors_; ++i) {
             volHandles_[i].resize(nStrikes_);
-            for (Size j=0; j<nStrikes_; ++j)
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                    SimpleQuote(vols_[i][j])));
+            for (Size j = 0; j < nStrikes_; ++j) {
+                volHandles_[i][j] =
+                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(vols_[i][j])));
+            }
         }
         interpolate();
     }
@@ -160,27 +168,31 @@ namespace QuantLib {
                    vols_.rows() << ")");
         QL_REQUIRE(optionTenors_[0]>0*Days,
                    "negative first option tenor: " << optionTenors_[0]);
-        for (Size i=1; i<nOptionTenors_; ++i)
-            QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i) <<
-                       " is " << optionTenors_[i-1] << ", " <<
-                       io::ordinal(i+1) << " is " << optionTenors_[i]);
+        for (Size i = 1; i < nOptionTenors_; ++i) {
+            QL_REQUIRE(optionTenors_[i] > optionTenors_[i - 1],
+                       "non increasing option tenor: "
+                           << io::ordinal(i) << " is " << optionTenors_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << optionTenors_[i]);
+        }
 
         QL_REQUIRE(nStrikes_==vols_.columns(),
                    "mismatch between strikes(" << strikes_.size() <<
                    ") and vol columns (" << vols_.columns() << ")");
-        for (Size j=1; j<nStrikes_; ++j)
-            QL_REQUIRE(strikes_[j-1]<strikes_[j],
-                       "non increasing strikes: " << io::ordinal(j) <<
-                       " is " << io::rate(strikes_[j-1]) << ", " <<
-                       io::ordinal(j+1) << " is " << io::rate(strikes_[j]));
+        for (Size j = 1; j < nStrikes_; ++j) {
+            QL_REQUIRE(strikes_[j - 1] < strikes_[j],
+                       "non increasing strikes: "
+                           << io::ordinal(j) << " is " << io::rate(strikes_[j - 1]) << ", "
+                           << io::ordinal(j + 1) << " is " << io::rate(strikes_[j]));
+        }
     }
 
     void CapFloorTermVolSurface::registerWithMarketData()
     {
-        for (Size i=0; i<nOptionTenors_; ++i)
-            for (Size j=0; j<nStrikes_; ++j)
+        for (Size i = 0; i < nOptionTenors_; ++i) {
+            for (Size j = 0; j < nStrikes_; ++j) {
                 registerWith(volHandles_[i][j]);
+            }
+        }
     }
 
     void CapFloorTermVolSurface::interpolate()
@@ -218,9 +230,11 @@ namespace QuantLib {
     {
         // check if date recalculation must be called here
 
-        for (Size i=0; i<nOptionTenors_; ++i)
-            for (Size j=0; j<nStrikes_; ++j)
+        for (Size i = 0; i < nOptionTenors_; ++i) {
+            for (Size j = 0; j < nStrikes_; ++j) {
                 vols_[i][j] = volHandles_[i][j]->value();
+            }
+        }
 
         interpolation_.update();
     }

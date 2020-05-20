@@ -191,17 +191,16 @@ void CapFloorTest::testVega() {
                         Real discrepancy =
                             std::fabs(numericalVega - analyticalVega);
                         discrepancy /= numericalVega;
-                        if (discrepancy > tolerance)
-                            BOOST_FAIL(
-                                "failed to compute cap/floor vega:" <<
-                                "\n   lengths:     " << lengths[j]*Years <<
-                                "\n   strike:      " << io::rate(strikes[k]) <<
-                                //"\n   types:       " << types[h] <<
-                                std::fixed << std::setprecision(12) <<
-                                "\n   calculated:  " << analyticalVega <<
-                                "\n   expected:    " << numericalVega <<
-                                "\n   discrepancy: " << io::rate(discrepancy) <<
-                                "\n   tolerance:   " << io::rate(tolerance));
+                        if (discrepancy > tolerance) {
+                            BOOST_FAIL("failed to compute cap/floor vega:"
+                                       << "\n   lengths:     " << lengths[j] * Years
+                                       << "\n   strike:      " << io::rate(strikes[k]) <<
+                                       //"\n   types:       " << types[h] <<
+                                       std::fixed << std::setprecision(12) << "\n   calculated:  "
+                                       << analyticalVega << "\n   expected:    " << numericalVega
+                                       << "\n   discrepancy: " << io::rate(discrepancy)
+                                       << "\n   tolerance:   " << io::rate(tolerance));
+                        }
                      }
                 }
             }
@@ -473,17 +472,16 @@ void CapFloorTest::testATMRate() {
                     vars.makeCapFloor(CapFloor::Floor, leg, strikes[j],vols[k]);
                 Rate capATMRate = cap->atmRate(**vars.termStructure);
                 Rate floorATMRate = floor->atmRate(**vars.termStructure);
-                if (!checkAbsError(floorATMRate, capATMRate, 1.0e-10))
-                    BOOST_FAIL(
-                      "Cap ATM Rate and floor ATM Rate should be equal :\n"
-                      << "   length:        " << lengths[i] << " years\n"
-                      << "   volatility:    " << io::volatility(vols[k]) << "\n"
-                      << "   strike:        " << io::rate(strikes[j]) << "\n"
-                      << "   cap ATM rate:  " << capATMRate << "\n"
-                      << "   floor ATM rate:" << floorATMRate << "\n"
-                      << "   relative Error:"
-                      << relativeError(capATMRate, floorATMRate,
-                                       capATMRate)*100 << "%" );
+                if (!checkAbsError(floorATMRate, capATMRate, 1.0e-10)) {
+                    BOOST_FAIL("Cap ATM Rate and floor ATM Rate should be equal :\n"
+                               << "   length:        " << lengths[i] << " years\n"
+                               << "   volatility:    " << io::volatility(vols[k]) << "\n"
+                               << "   strike:        " << io::rate(strikes[j]) << "\n"
+                               << "   cap ATM rate:  " << capATMRate << "\n"
+                               << "   floor ATM rate:" << floorATMRate << "\n"
+                               << "   relative Error:"
+                               << relativeError(capATMRate, floorATMRate, capATMRate) * 100 << "%");
+                }
                 VanillaSwap swap(VanillaSwap::Payer, vars.nominals[0],
                                  schedule, floorATMRate,
                                  vars.index->dayCounter(),
@@ -492,14 +490,14 @@ void CapFloorTest::testATMRate() {
                 swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                               new DiscountingSwapEngine(vars.termStructure)));
                 Real swapNPV = swap.NPV();
-                if (!checkAbsError(swapNPV, 0, 1.0e-10))
-                    BOOST_FAIL(
-                      "the NPV of a Swap struck at ATM rate "
-                      "should be equal to 0:\n"
-                      << "   length:        " << lengths[i] << " years\n"
-                      << "   volatility:    " << io::volatility(vols[k]) << "\n"
-                      << "   ATM rate:      " << io::rate(floorATMRate) << "\n"
-                      << "   swap NPV:      " << swapNPV);
+                if (!checkAbsError(swapNPV, 0, 1.0e-10)) {
+                    BOOST_FAIL("the NPV of a Swap struck at ATM rate "
+                               "should be equal to 0:\n"
+                               << "   length:        " << lengths[i] << " years\n"
+                               << "   volatility:    " << io::volatility(vols[k]) << "\n"
+                               << "   ATM rate:      " << io::rate(floorATMRate) << "\n"
+                               << "   swap NPV:      " << swapNPV);
+                }
         }
       }
     }
@@ -627,19 +625,17 @@ void CapFloorTest::testCachedValue() {
     }
 
     // test Black cap price against cached value
-    if (std::fabs(cap->NPV()-cachedCapNPV) > 1.0e-11)
-        BOOST_ERROR(
-            "failed to reproduce cached cap value:\n"
-            << std::setprecision(12)
-            << "    calculated: " << cap->NPV() << "\n"
-            << "    expected:   " << cachedCapNPV);
+    if (std::fabs(cap->NPV() - cachedCapNPV) > 1.0e-11) {
+        BOOST_ERROR("failed to reproduce cached cap value:\n"
+                    << std::setprecision(12) << "    calculated: " << cap->NPV() << "\n"
+                    << "    expected:   " << cachedCapNPV);
+    }
     // test Black floor price against cached value
-    if (std::fabs(floor->NPV()-cachedFloorNPV) > 1.0e-11)
-        BOOST_ERROR(
-            "failed to reproduce cached floor value:\n"
-            << std::setprecision(12)
-            << "    calculated: " << floor->NPV() << "\n"
-            << "    expected:   " << cachedFloorNPV);
+    if (std::fabs(floor->NPV() - cachedFloorNPV) > 1.0e-11) {
+        BOOST_ERROR("failed to reproduce cached floor value:\n"
+                    << std::setprecision(12) << "    calculated: " << floor->NPV() << "\n"
+                    << "    expected:   " << cachedFloorNPV);
+    }
 }
 
 void CapFloorTest::testCachedValueFromOptionLets() {
@@ -681,12 +677,12 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     
     capletPrices = cap->result<std::vector<Real> >("optionletsPrice");
     floorletPrices = floor->result<std::vector<Real> >("optionletsPrice");
-    
-    if (capletPrices.size() != 40)
-        BOOST_ERROR(
-            "failed to produce prices for all caplets:\n"
-            << "    calculated: " << capletPrices.size() << " caplet prices\n"
-            << "    expected:   " << 40);
+
+    if (capletPrices.size() != 40) {
+        BOOST_ERROR("failed to produce prices for all caplets:\n"
+                    << "    calculated: " << capletPrices.size() << " caplet prices\n"
+                    << "    expected:   " << 40);
+    }
 
     for (Size n=0; n<capletPrices.size(); n++){
         calculatedCapletsNPV += capletPrices[n];
@@ -696,19 +692,17 @@ void CapFloorTest::testCachedValueFromOptionLets() {
         calculatedFloorletsNPV += floorletPrices[n];
     }
 
-    if (std::fabs(calculatedCapletsNPV-cachedCapNPV) > 1.0e-11)
-        BOOST_ERROR(
-            "failed to reproduce cached cap value from its caplets' values:\n"
-            << std::setprecision(12)
-            << "    calculated: " << calculatedCapletsNPV << "\n"
-            << "    expected:   " << cachedCapNPV);
+    if (std::fabs(calculatedCapletsNPV - cachedCapNPV) > 1.0e-11) {
+        BOOST_ERROR("failed to reproduce cached cap value from its caplets' values:\n"
+                    << std::setprecision(12) << "    calculated: " << calculatedCapletsNPV << "\n"
+                    << "    expected:   " << cachedCapNPV);
+    }
     // test Black floor price against cached value
-    if (std::fabs(calculatedFloorletsNPV-cachedFloorNPV) > 1.0e-11)
-        BOOST_ERROR(
-            "failed to reproduce cached floor value from its floorlets' values:\n"
-            << std::setprecision(12)
-            << "    calculated: " << calculatedFloorletsNPV << "\n"
-            << "    expected:   " << cachedFloorNPV);
+    if (std::fabs(calculatedFloorletsNPV - cachedFloorNPV) > 1.0e-11) {
+        BOOST_ERROR("failed to reproduce cached floor value from its floorlets' values:\n"
+                    << std::setprecision(12) << "    calculated: " << calculatedFloorletsNPV << "\n"
+                    << "    expected:   " << cachedFloorNPV);
+    }
 }
 
 void CapFloorTest::testOptionLetsDelta() {
@@ -811,25 +805,27 @@ void CapFloorTest::testOptionLetsDelta() {
     }
 
     for (Size n=0; n<capletAnalyticDelta.size(); n++){
-        if (std::fabs(capletAnalyticDelta[n]-capletFDDelta[n]) > 1.0e-6)
+        if (std::fabs(capletAnalyticDelta[n] - capletFDDelta[n]) > 1.0e-6) {
             BOOST_ERROR(
                 "failed to compare analytical and finite difference caplet delta:\n"
                 << "caplet number:\t" << n << "\n"
                 << std::setprecision(12)
                 << "    finite difference: " << capletFDDelta[n]<< "\n"
                 << "    analytical value:   " << capletAnalyticDelta[n] << "\n"
-                << "    resulting ratio: " << capletFDDelta[n] / capletAnalyticDelta[n]);    
+                << "    resulting ratio: " << capletFDDelta[n] / capletAnalyticDelta[n]);
+        }
     }
 
     for (Size n=0; n<floorletAnalyticDelta.size(); n++){
-        if (std::fabs(floorletAnalyticDelta[n]-floorletFDDelta[n]) > 1.0e-6)
+        if (std::fabs(floorletAnalyticDelta[n] - floorletFDDelta[n]) > 1.0e-6) {
             BOOST_ERROR(
                 "failed to compare analytical and finite difference floorlet delta:\n"
                 << "floorlet number:\t" << n << "\n"
                 << std::setprecision(12)
                 << "    finite difference: " << floorletFDDelta[n]<< "\n"
                 << "    analytical value:   " << floorletAnalyticDelta[n] << "\n"
-                << "    resulting ratio: " << floorletFDDelta[n] / floorletAnalyticDelta[n]);    
+                << "    resulting ratio: " << floorletFDDelta[n] / floorletAnalyticDelta[n]);
+        }
     }
 
 }
@@ -937,25 +933,27 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     }
 
     for (Size n=0; n<capletAnalyticDelta.size(); n++){
-        if (std::fabs(capletAnalyticDelta[n]-capletFDDelta[n]) > 1.0e-6)
+        if (std::fabs(capletAnalyticDelta[n] - capletFDDelta[n]) > 1.0e-6) {
             BOOST_ERROR(
                 "failed to compare analytical and finite difference caplet delta:\n"
                 << "caplet number:\t" << n << "\n"
                 << std::setprecision(12)
                 << "    finite difference: " << capletFDDelta[n]<< "\n"
                 << "    analytical value:   " << capletAnalyticDelta[n] << "\n"
-                << "    resulting ratio: " << capletFDDelta[n] / capletAnalyticDelta[n]);    
+                << "    resulting ratio: " << capletFDDelta[n] / capletAnalyticDelta[n]);
+        }
     }
 
     for (Size n=0; n<floorletAnalyticDelta.size(); n++){
-        if (std::fabs(floorletAnalyticDelta[n]-floorletFDDelta[n]) > 1.0e-6)
+        if (std::fabs(floorletAnalyticDelta[n] - floorletFDDelta[n]) > 1.0e-6) {
             BOOST_ERROR(
                 "failed to compare analytical and finite difference floorlet delta:\n"
                 << "floorlet number:\t" << n << "\n"
                 << std::setprecision(12)
                 << "    finite difference: " << floorletFDDelta[n]<< "\n"
                 << "    analytical value:   " << floorletAnalyticDelta[n] << "\n"
-                << "    resulting ratio: " << floorletFDDelta[n] / floorletAnalyticDelta[n]);    
+                << "    resulting ratio: " << floorletFDDelta[n] / floorletAnalyticDelta[n]);
+        }
     }
 
 }

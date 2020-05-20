@@ -69,25 +69,22 @@ namespace QuantLib {
         n = cashFlowTimes.size();
         std::vector<MarketModelDiscounter> productDiscounters;
         productDiscounters.reserve(n);
-        for (i=0; i<n; ++i)
-            productDiscounters.push_back(
-                                     MarketModelDiscounter(cashFlowTimes[i],
-                                                           rateTimes));
+        for (i = 0; i < n; ++i) {
+            productDiscounters.push_back(MarketModelDiscounter(cashFlowTimes[i], rateTimes));
+        }
 
         n = rebateTimes.size();
         std::vector<MarketModelDiscounter> rebateDiscounters;
         rebateDiscounters.reserve(n);
-        for (i=0; i<n; ++i)
-            rebateDiscounters.push_back(
-                                     MarketModelDiscounter(rebateTimes[i],
-                                                           rateTimes));
+        for (i = 0; i < n; ++i) {
+            rebateDiscounters.push_back(MarketModelDiscounter(rebateTimes[i], rateTimes));
+        }
         n = controlTimes.size();
         std::vector<MarketModelDiscounter> controlDiscounters;
         controlDiscounters.reserve(n);
-        for (i=0; i<n; ++i)
-            controlDiscounters.push_back(
-                                     MarketModelDiscounter(controlTimes[i],
-                                                           rateTimes));
+        for (i = 0; i < n; ++i) {
+            controlDiscounters.push_back(MarketModelDiscounter(controlTimes[i], rateTimes));
+        }
 
         EvolutionDescription evolution = product.evolution();
         const std::vector<Size>& numeraires = evolver.numeraires();
@@ -119,8 +116,9 @@ namespace QuantLib {
         }
 
         collectedData.resize(exercises+1);
-        for (i=0; i<collectedData.size(); ++i)
+        for (i = 0; i < collectedData.size(); ++i) {
             collectedData[i].resize(numberOfPaths);
+        }
 
 
         for (i=0; i<numberOfPaths; ++i) {
@@ -140,12 +138,15 @@ namespace QuantLib {
                 const CurveState& currentState = evolver.currentState();
                 Size numeraire = numeraires[currentStep];
 
-                if (isRebateTime[currentStep])
+                if (isRebateTime[currentStep]) {
                     rebate.nextStep(currentState);
-                if (isControlTime[currentStep])
+                }
+                if (isControlTime[currentStep]) {
                     control.nextStep(currentState);
-                if (isBasisTime[currentStep])
+                }
+                if (isBasisTime[currentStep]) {
                     dataProvider.nextStep(currentState);
+                }
 
                 if (isExerciseTime[currentStep]) {
                     NodeData& data = collectedData[nextExercise+1][i];

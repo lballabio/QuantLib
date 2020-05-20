@@ -50,10 +50,11 @@ namespace QuantLib {
         DoubleBarrier::Type barrierType = arguments_.barrierType;
 
         if (triggered(spot)) {
-           if (barrierType == DoubleBarrier::KnockIn)
-               results_.value = vanillaEquivalent();  // knocked in
-           else
-               results_.value = 0.0;  // knocked out
+            if (barrierType == DoubleBarrier::KnockIn) {
+                results_.value = vanillaEquivalent(); // knocked in
+            } else {
+                results_.value = 0.0; // knocked out
+            }
         } else {
            switch (payoff->optionType()) {
              case Option::Call:
@@ -161,8 +162,9 @@ namespace QuantLib {
         Real forwardPrice = underlying() * dividendDiscount() / riskFreeDiscount();
         BlackCalculator black(payoff, forwardPrice, stdDeviation(), riskFreeDiscount());
         Real vanilla = black.value();
-        if (vanilla < 0.0)
-           vanilla = 0.0;
+        if (vanilla < 0.0) {
+            vanilla = 0.0;
+        }
         return vanilla;
     }
 

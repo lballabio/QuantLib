@@ -37,10 +37,11 @@ namespace QuantLib {
     : refDate_(discountCurve->referenceDate()) {
         // we need to find the first coupon for initial payment
         Size floatIdx = 0;
-        while (
-            (floatIdx + 1 < iborLeg.size()) &&
-            (refDate_ > (ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate()))
+        while ((floatIdx + 1 < iborLeg.size()) &&
+               (refDate_ >
+                (ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))->accrualStartDate())) {
             ++floatIdx;
+        }
         if (refDate_ <= (ext::dynamic_pointer_cast<Coupon>(iborLeg[floatIdx]))
                             ->accrualStartDate()) { // otherwise there is no floating coupon left
             ext::shared_ptr<Coupon> firstFloatCoupon =
@@ -50,8 +51,9 @@ namespace QuantLib {
             // calculate spread payments
             for (Size k = floatIdx; k < iborLeg.size(); ++k) {
                 ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(iborLeg[k]);
-                if (!coupon)
+                if (!coupon) {
                     QL_FAIL("FloatingLeg CashFlow is no Coupon.");
+                }
                 Date startDate = coupon->accrualStartDate();
                 Date endDate = coupon->accrualEndDate();
                 Rate liborForwardRate = coupon->rate();
@@ -85,10 +87,12 @@ namespace QuantLib {
         // assemble raw cash flow data...
         Actual365Fixed dc;
         // ... float times/weights
-        for (Size k = 0; k < floatLeg_.size(); ++k)
+        for (Size k = 0; k < floatLeg_.size(); ++k) {
             floatTimes_.push_back(dc.yearFraction(refDate_, floatLeg_[k]->date()));
-        for (Size k = 0; k < floatLeg_.size(); ++k)
+        }
+        for (Size k = 0; k < floatLeg_.size(); ++k) {
             floatWeights_.push_back(floatLeg_[k]->amount());
+        }
     }
 
     SwapCashFlows::SwapCashFlows(const ext::shared_ptr<VanillaSwap>& swap,
@@ -98,19 +102,23 @@ namespace QuantLib {
         // copy fixed leg coupons
         Leg fixedLeg = swap->fixedLeg();
         for (Size k = 0; k < fixedLeg.size(); ++k) {
-            if (ext::dynamic_pointer_cast<Coupon>(fixedLeg[k])->accrualStartDate() >= refDate_)
+            if (ext::dynamic_pointer_cast<Coupon>(fixedLeg[k])->accrualStartDate() >= refDate_) {
                 fixedLeg_.push_back(fixedLeg[k]);
+            }
         }
         Actual365Fixed dc;
         // ... fixed times/weights
-        for (Size k = 0; k < fixedLeg_.size(); ++k)
+        for (Size k = 0; k < fixedLeg_.size(); ++k) {
             fixedTimes_.push_back(dc.yearFraction(refDate_, fixedLeg_[k]->date()));
-        for (Size k = 0; k < fixedLeg_.size(); ++k)
+        }
+        for (Size k = 0; k < fixedLeg_.size(); ++k) {
             fixedWeights_.push_back(fixedLeg_[k]->amount());
+        }
         for (Size k = 0; k < fixedLeg_.size(); ++k) {
             ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(fixedLeg_[k]);
-            if (coupon)
+            if (coupon) {
                 annuityWeights_.push_back(coupon->nominal() * coupon->accrualPeriod());
+            }
         }
     }
 
@@ -124,10 +132,13 @@ namespace QuantLib {
         // assemble raw cash flow data...
         Actual365Fixed dc;
         // ... exercise times
-        for (Size k = 0; k < swaption_->exercise()->dates().size(); ++k)
-            if (swaption_->exercise()->dates()[k] > refDate_) // consider only future exercise dates
+        for (Size k = 0; k < swaption_->exercise()->dates().size(); ++k) {
+            if (swaption_->exercise()->dates()[k] >
+                refDate_) { // consider only future exercise dates
                 exerciseTimes_.push_back(
                     dc.yearFraction(refDate_, swaption_->exercise()->dates()[k]));
+            }
+        }
     }
 
 

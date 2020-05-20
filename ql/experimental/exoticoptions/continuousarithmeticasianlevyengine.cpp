@@ -101,11 +101,12 @@ namespace QuantLib {
         Real d1 = (1/sqrt(V))*((log(D)/2)-log(X));
         Real d2 = d1-sqrt(V);
 
-        if(payoff->optionType()==Option::Call)
+        if (payoff->optionType() == Option::Call) {
             results_.value = Se*N(d1) - X*exp(-riskFreeRate*T2)*N(d2);
-        else
-            results_.value = Se*N(d1) - X*exp(-riskFreeRate*T2)*N(d2)
-                             - Se + X*exp(-riskFreeRate*T2);
+        } else {
+            results_.value =
+                Se * N(d1) - X * exp(-riskFreeRate * T2) * N(d2) - Se + X * exp(-riskFreeRate * T2);
+        }
     }
 
 }

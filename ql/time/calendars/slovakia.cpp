@@ -39,7 +39,7 @@ namespace QuantLib {
             // Epiphany
             || (d == 6 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // May Day
@@ -65,9 +65,10 @@ namespace QuantLib {
             // St. Stephen
             || (d == 26 && m == December)
             // unidentified closing days for stock exchange
-            || (d >= 24 && d <= 31 && m == December && y == 2004)
-            || (d >= 24 && d <= 31 && m == December && y == 2005))
+            || (d >= 24 && d <= 31 && m == December && y == 2004) ||
+            (d >= 24 && d <= 31 && m == December && y == 2005)) {
             return false;
+        }
         return true;
     }
 

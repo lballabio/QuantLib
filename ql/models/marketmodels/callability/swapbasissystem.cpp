@@ -31,8 +31,9 @@ namespace QuantLib {
       evolution_(rateTimes, exerciseTimes) {
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
-            while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])
+            while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i]) {
                 ++j;
+            }
             rateIndex_[i] = j;
         }
     }
@@ -43,8 +44,9 @@ namespace QuantLib {
 
     std::vector<Size> SwapBasisSystem::numberOfFunctions() const {
         std::vector<Size> sizes(exerciseTimes_.size(), 3);
-        if (rateIndex_[exerciseTimes_.size()-1] == rateTimes_.size()-2)
+        if (rateIndex_[exerciseTimes_.size() - 1] == rateTimes_.size() - 2) {
             sizes.back() = 2;
+        }
         return sizes;
     }
 
@@ -72,8 +74,9 @@ namespace QuantLib {
         results.resize(2);
         results[0] = 1.0;
         results[1] = currentState.forwardRate(rateIndex);
-        if (rateIndex < rateTimes_.size()-2)
-            results.push_back(currentState.coterminalSwapRate(rateIndex+1));
+        if (rateIndex < rateTimes_.size() - 2) {
+            results.push_back(currentState.coterminalSwapRate(rateIndex + 1));
+        }
     }
 
     QL_UNIQUE_OR_AUTO_PTR<MarketModelBasisSystem>

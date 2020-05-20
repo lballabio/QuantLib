@@ -96,8 +96,9 @@ int main(int, char* []) {
                   << std::endl;
 
         std::vector<Date> exerciseDates;
-        for (Integer i=1; i<=4; i++)
-            exerciseDates.push_back(settlementDate + 3*i*Months);
+        for (Integer i = 1; i <= 4; i++) {
+            exerciseDates.push_back(settlementDate + 3 * i * Months);
+        }
 
         ext::shared_ptr<Exercise> europeanExercise(
                                          new EuropeanExercise(maturity));

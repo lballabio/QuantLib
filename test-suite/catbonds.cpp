@@ -157,7 +157,9 @@ void CatBondTest::testBetaRisk() {
     {
         BOOST_REQUIRE(simulation->nextPath(path));
         Real processValue = 0.0;
-        for(size_t j=0; j<path.size(); ++j) processValue+=path[j].second;
+        for (size_t j = 0; j < path.size(); ++j) {
+            processValue += path[j].second;
+        }
         sum+=processValue;
         sumSquares+=processValue*processValue;
         poissonSum+=path.size();
@@ -269,10 +271,11 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond1.cashflows(),pricer);
 
     Real cachedPrice1;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedPrice1 = 99.874645;
-    else
+    } else {
         cachedPrice1 = 99.874646;
+    }
 
     Real price = bond1.cleanPrice();
     Real catPrice = catBond1.cleanPrice();
@@ -315,11 +318,12 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond2.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond2.cashflows(),pricer);
 
-    Real cachedPrice2; 
-    if (!IborCoupon::usingAtParCoupons())
+    Real cachedPrice2;
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedPrice2 = 97.955904;
-    else
+    } else {
         cachedPrice2 = 97.955904;
+    }
 
     price = bond2.cleanPrice();
     catPrice = catBond2.cleanPrice();
@@ -364,10 +368,11 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond3.cashflows(),pricer);
 
     Real cachedPrice3;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedPrice3 = 98.495458;
-    else
+    } else {
         cachedPrice3 = 98.495459;
+    }
 
     price = bond3.cleanPrice();
     catPrice = catBond3.cleanPrice();

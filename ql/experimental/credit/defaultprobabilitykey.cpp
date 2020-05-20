@@ -41,16 +41,23 @@ namespace QuantLib {
     }
     
     bool operator==(const DefaultProbKey& lhs, const DefaultProbKey& rhs) {
-        if(lhs.seniority() != rhs.seniority()) return false;
-        if(lhs.currency() != rhs.currency()) return false;
+        if (lhs.seniority() != rhs.seniority()) {
+            return false;
+        }
+        if (lhs.currency() != rhs.currency()) {
+            return false;
+        }
 
         Size mySize = rhs.eventTypes().size();
-        if(mySize != lhs.eventTypes().size()) return false;
+        if (mySize != lhs.eventTypes().size()) {
+            return false;
+        }
         // the all types must be equal in the weak sense.
         for(Size i=0; i<mySize; i++) {
-            if(std::find_if(lhs.eventTypes().begin(), lhs.eventTypes().end(),
-                            points_to(*rhs.eventTypes()[i])) == lhs.eventTypes().end())
+            if (std::find_if(lhs.eventTypes().begin(), lhs.eventTypes().end(),
+                             points_to(*rhs.eventTypes()[i])) == lhs.eventTypes().end()) {
                 return false;
+            }
         }// naah, I bet this can be done with a double lambda
         return true;
     }
@@ -69,8 +76,9 @@ namespace QuantLib {
           seniority_(sen) {
         std::set<AtomicDefault::Type> buffer;
         Size numEvents = eventTypes_.size();
-        for(Size i=0; i< numEvents; i++)
+        for (Size i = 0; i < numEvents; i++) {
             buffer.insert(eventTypes_[i]->defaultType());
+        }
         QL_REQUIRE(buffer.size() == numEvents,
             "Duplicated event type in contract definition");
     }
@@ -90,9 +98,10 @@ namespace QuantLib {
         eventTypes_.push_back( ext::make_shared<DefaultType>(
             AtomicDefault::Bankruptcy,
                             Restructuring::XR));
-        if(resType != Restructuring::NoRestructuring)
-            eventTypes_.push_back( ext::make_shared<DefaultType>(
-                AtomicDefault::Restructuring, resType));
+        if (resType != Restructuring::NoRestructuring) {
+            eventTypes_.push_back(
+                ext::make_shared<DefaultType>(AtomicDefault::Restructuring, resType));
+        }
     }
 
 }

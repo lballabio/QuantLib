@@ -955,26 +955,28 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     option1->impliedVolatility(refValue*1.5, process,
                                tolerance, maxEvaluations);
 
-    if (f.isUp())
+    if (f.isUp()) {
         BOOST_ERROR("implied volatility calculation triggered a change "
                     "in another instrument");
+    }
 
     option2->recalculate();
-    if (std::fabs(option2->NPV() - refValue) >= 1.0e-8)
+    if (std::fabs(option2->NPV() - refValue) >= 1.0e-8) {
         BOOST_ERROR("implied volatility calculation changed the value "
                     << "of another instrument: \n"
-                    << std::setprecision(8)
-                    << "previous value: " << refValue << "\n"
+                    << std::setprecision(8) << "previous value: " << refValue << "\n"
                     << "current value:  " << option2->NPV());
+    }
 
     vol->setValue(vol->value()*1.5);
 
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_ERROR("volatility change not notified");
+    }
 
-    if (std::fabs(option2->NPV() - refValue) <= 1.0e-8)
+    if (std::fabs(option2->NPV() - refValue) <= 1.0e-8) {
         BOOST_ERROR("volatility change did not cause the value to change");
-
+    }
 }
 
 
@@ -1369,11 +1371,12 @@ void EuropeanOptionTest::testLocalVolatility() {
         0.517748, 0.517748, 0.517748, 0.416577, 0.364770, 0.331595, 0.287423, 0.264285 };
     
     Matrix blackVolMatrix(strikes.size(), dates.size()-1);
-    for (Size i=0; i < strikes.size(); ++i)
+    for (Size i = 0; i < strikes.size(); ++i) {
         for (Size j=1; j < dates.size(); ++j) {
             blackVolMatrix[i][j-1] = v[i*(dates.size()-1)+j-1];
         }
-    
+    }
+
     const ext::shared_ptr<BlackVarianceSurface> volTS(
         new BlackVarianceSurface(settlementDate, calendar,
                                  std::vector<Date>(dates.begin()+1, dates.end()),

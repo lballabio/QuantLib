@@ -47,7 +47,9 @@ namespace QuantLib {
         for (Size k=n-1; k >=1; --k) {
             while (!offDiagIsZero(k, e)) {
                 Size l = k;
-                while (--l > 0 && !offDiagIsZero(l,e));
+                while (--l > 0 && !offDiagIsZero(l, e)) {
+                    ;
+                }
                 iter_++;
 
                 Real q = d_[l];
@@ -121,9 +123,9 @@ namespace QuantLib {
         std::vector<std::pair<Real, std::vector<Real> > > temp(n);
         std::vector<Real> eigenVector(ev_.rows());
         for (Size i=0; i<n; i++) {
-            if (ev_.rows() > 0)
-                std::copy(ev_.column_begin(i),
-                          ev_.column_end(i), eigenVector.begin());
+            if (ev_.rows() > 0) {
+                std::copy(ev_.column_begin(i), ev_.column_end(i), eigenVector.begin());
+            }
             temp[i] = std::make_pair(d_[i], eigenVector);
         }
         std::sort(temp.begin(), temp.end(),
@@ -132,8 +134,9 @@ namespace QuantLib {
         for (Size i=0; i<n; i++) {
             d_[i] = temp[i].first;
             Real sign = 1.0;
-            if (ev_.rows() > 0 && temp[i].second[0]<0.0)
+            if (ev_.rows() > 0 && temp[i].second[0] < 0.0) {
                 sign = -1.0;
+            }
             for (Size j=0; j<ev_.rows(); ++j) {
                 ev_[j][i] = sign * temp[i].second[j];
             }

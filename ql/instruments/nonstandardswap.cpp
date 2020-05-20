@@ -73,10 +73,11 @@ namespace QuantLib {
           intermediateCapitalExchange_(intermediateCapitalExchange),
           finalCapitalExchange_(finalCapitalExchange) {
 
-        if (paymentConvention)
+        if (paymentConvention) {
             paymentConvention_ = *paymentConvention;
-        else
+        } else {
             paymentConvention_ = floatingSchedule_.businessDayConvention();
+        }
         init();
     }
 
@@ -99,10 +100,11 @@ namespace QuantLib {
           intermediateCapitalExchange_(intermediateCapitalExchange),
           finalCapitalExchange_(finalCapitalExchange) {
 
-        if (paymentConvention)
+        if (paymentConvention) {
             paymentConvention_ = *paymentConvention;
-        else
+        } else {
             paymentConvention_ = floatingSchedule_.businessDayConvention();
+        }
         init();
     }
 
@@ -140,8 +142,9 @@ namespace QuantLib {
         // coupons which makes trouble here in this context. We therefore use
         // a dirty trick and enforce the gearing to be non zero.
         for (Size i = 0; i < gearing_.size(); ++i) {
-            if (close(gearing_[i], 0.0))
+            if (close(gearing_[i], 0.0)) {
                 gearing_[i] = QL_EPSILON;
+            }
         }
 
         legs_[0] = FixedRateLeg(fixedSchedule_)
@@ -202,8 +205,9 @@ namespace QuantLib {
             floatingNominal_.push_back(floatingNominal_.back());
         }
 
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i) {
             registerWith(*i);
+        }
 
         switch (type_) {
         case VanillaSwap::Payer:
@@ -226,8 +230,9 @@ namespace QuantLib {
         NonstandardSwap::arguments *arguments =
             dynamic_cast<NonstandardSwap::arguments *>(args);
 
-        if (!arguments)
+        if (!arguments) {
             return; // swap engine ...
+        }
 
         arguments->type = type_;
         arguments->fixedNominal = fixedNominal_;

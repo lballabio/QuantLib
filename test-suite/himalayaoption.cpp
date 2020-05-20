@@ -36,8 +36,9 @@ void HimalayaOptionTest::testCached() {
 
     DayCounter dc = Actual360();
     std::vector<Date> fixingDates;
-    for (Size i=0; i<5; ++i)
-        fixingDates.push_back(today+i*90);
+    for (Size i = 0; i < 5; ++i) {
+        fixingDates.push_back(today + i * 90);
+    }
 
     Real strike = 101.0;
     HimalayaOption option(fixingDates, strike);
@@ -104,10 +105,10 @@ void HimalayaOptionTest::testCached() {
     Real storedValue = 6.60370398;
     Real tolerance = 1.0e-8;
 
-    if (std::fabs(value-storedValue) > tolerance)
-        BOOST_FAIL(std::setprecision(10)
-                   << "    calculated value: " << value << "\n"
-                   << "    expected:         " << storedValue);
+    if (std::fabs(value - storedValue) > tolerance) {
+        BOOST_FAIL(std::setprecision(10) << "    calculated value: " << value << "\n"
+                                         << "    expected:         " << storedValue);
+    }
 
     Real minimumTol = 1.0e-2;
     tolerance = option.errorEstimate();
@@ -119,10 +120,10 @@ void HimalayaOptionTest::testCached() {
 
     option.NPV();
     Real accuracy = option.errorEstimate();
-    if (accuracy > tolerance)
-        BOOST_FAIL(std::setprecision(10)
-                   << "    reached accuracy: " << accuracy << "\n"
-                   << "    expected:         " << tolerance);
+    if (accuracy > tolerance) {
+        BOOST_FAIL(std::setprecision(10) << "    reached accuracy: " << accuracy << "\n"
+                                         << "    expected:         " << tolerance);
+    }
 }
 
 

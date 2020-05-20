@@ -73,14 +73,17 @@ namespace QuantLib {
 
     template <class mp_real> inline
     mp_real MomentBasedGaussianPolynomial<mp_real>::z(Integer k, Integer i) const {
-        if (k == -1) return mp_real(0.0);
+        if (k == -1) {
+            return mp_real(0.0);
+        }
 
         const Integer rows = z_.size();
         const Integer cols = z_[0].size();
 
         if (cols <= i) {
-            for (Integer l=0; l<rows; ++l)
-                z_[l].resize(i+1, std::numeric_limits<mp_real>::quiet_NaN());
+            for (Integer l = 0; l < rows; ++l) {
+                z_[l].resize(i + 1, std::numeric_limits<mp_real>::quiet_NaN());
+            }
         }
         if (rows <= k) {
             z_.resize(k+1, std::vector<mp_real>(
@@ -88,9 +91,9 @@ namespace QuantLib {
         }
 
         if (boost::math::isnan(z_[k][i])) {
-            if (k == 0)
+            if (k == 0) {
                 z_[k][i] = moment(i);
-            else {
+            } else {
                 const mp_real tmp = z(k-1, i+1)
                     - alpha_(k-1)*z(k-1, i) - beta_(k-1)*z(k-2, i);
                 z_[k][i] = tmp;
@@ -103,13 +106,14 @@ namespace QuantLib {
     template <class mp_real> inline
     mp_real MomentBasedGaussianPolynomial<mp_real>::alpha_(Size u) const {
 
-        if (b_.size() <= u)
-            b_.resize(u+1, std::numeric_limits<mp_real>::quiet_NaN());
+        if (b_.size() <= u) {
+            b_.resize(u + 1, std::numeric_limits<mp_real>::quiet_NaN());
+        }
 
         if (boost::math::isnan(b_[u])) {
-            if (u == 0)
+            if (u == 0) {
                 b_[u] = moment(1);
-            else {
+            } else {
                 const Integer iu(u);
                 const mp_real tmp =
                     -z(iu-1, iu)/z(iu-1, iu-1) + z(iu, iu+1)/z(iu, iu);
@@ -121,11 +125,13 @@ namespace QuantLib {
 
     template <class mp_real> inline
     mp_real MomentBasedGaussianPolynomial<mp_real>::beta_(Size u) const {
-        if (u == 0)
+        if (u == 0) {
             return mp_real(1.0);
+        }
 
-        if (c_.size() <= u)
-            c_.resize(u+1, std::numeric_limits<mp_real>::quiet_NaN());
+        if (c_.size() <= u) {
+            c_.resize(u + 1, std::numeric_limits<mp_real>::quiet_NaN());
+        }
 
         if (boost::math::isnan(c_[u])) {
             const Integer iu(u);

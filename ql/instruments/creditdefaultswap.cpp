@@ -68,7 +68,9 @@ namespace QuantLib {
 
         if(rebatesAccrual) {
             Size i = 0;
-            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) {
+                ++i;
+            }
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
@@ -80,8 +82,9 @@ namespace QuantLib {
         }
 
         upfrontPayment_ = ext::make_shared<SimpleCashFlow>(0.0, effectiveUpfrontDate);
-        if (!claim_)
+        if (!claim_) {
             claim_ = ext::make_shared<FaceValueClaim>();
+        }
         registerWith(claim_);
 
 
@@ -132,7 +135,9 @@ namespace QuantLib {
 
         if(rebatesAccrual) {
             Size i = 0;
-            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) {
+                ++i;
+            }
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
@@ -143,8 +148,9 @@ namespace QuantLib {
                 rebateDate);
         }
 
-        if (!claim_)
+        if (!claim_) {
             claim_ = ext::make_shared<FaceValueClaim>();
+        }
         registerWith(claim_);
 
         maturity_ = schedule.dates().back();
@@ -182,8 +188,9 @@ namespace QuantLib {
     bool CreditDefaultSwap::isExpired() const {
         for (Leg::const_reverse_iterator i = leg_.rbegin();
                                          i != leg_.rend(); ++i) {
-            if (!(*i)->hasOccurred())
+            if (!(*i)->hasOccurred()) {
                 return false;
+            }
         }
         return true;
     }

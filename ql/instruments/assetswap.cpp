@@ -52,8 +52,9 @@ namespace QuantLib {
                          iborIndex->businessDayConvention(),
                          DateGeneration::Backward,
                          false); // endOfMonth
-        if (dealMaturity==Date())
+        if (dealMaturity == Date()) {
             dealMaturity = bond_->maturityDate();
+        }
         QL_REQUIRE(dealMaturity <= tempSch.dates().back(),
                    "deal maturity " << dealMaturity <<
                    " cannot be later than (adjusted) bond maturity " <<
@@ -80,26 +81,29 @@ namespace QuantLib {
         /* In the market asset swap, the bond is purchased in return for
            payment of the full price. The notional of the floating leg is
            then scaled by the full price. */
-        if (!parSwap_)
-            notional *= dirtyPrice/100.0;
+        if (!parSwap_) {
+            notional *= dirtyPrice / 100.0;
+        }
 
-        if (floatingDayCounter==DayCounter())
+        if (floatingDayCounter == DayCounter()) {
             legs_[1] = IborLeg(schedule, iborIndex)
                 .withNotionals(notional)
                 .withPaymentAdjustment(paymentAdjustment)
                 .withGearings(gearing)
                 .withSpreads(spread);
-        else
+        } else {
             legs_[1] = IborLeg(schedule, iborIndex)
-                .withNotionals(notional)
-                .withPaymentDayCounter(floatingDayCounter)
-                .withPaymentAdjustment(paymentAdjustment)
-                .withGearings(gearing)
-                .withSpreads(spread);
+                           .withNotionals(notional)
+                           .withPaymentDayCounter(floatingDayCounter)
+                           .withPaymentAdjustment(paymentAdjustment)
+                           .withGearings(gearing)
+                           .withSpreads(spread);
+        }
 
         Leg::const_iterator i;
-        for (i=legs_[1].begin(); i<legs_[1].end(); ++i)
+        for (i = legs_[1].begin(); i < legs_[1].end(); ++i) {
             registerWith(*i);
+        }
 
         const Leg& bondLeg = bond_->cashflows();
         // skip bond redemption
@@ -107,8 +111,9 @@ namespace QuantLib {
             // whatever might be the choice for the discounting engine
             // bond flows on upfrontDate_ must be discarded
             bool upfrontDateBondFlows = false;
-            if (!(*i)->hasOccurred(upfrontDate_, upfrontDateBondFlows))
+            if (!(*i)->hasOccurred(upfrontDate_, upfrontDateBondFlows)) {
                 legs_[0].push_back(*i);
+            }
         }
         // if the first skipped cashflow is not the redemption
         // and it is a coupon then add the accrued coupon
@@ -149,8 +154,9 @@ namespace QuantLib {
         }
 
         QL_REQUIRE(!legs_[0].empty(), "empty bond leg");
-        for (i=legs_[0].begin(); i<legs_[0].end(); ++i)
+        for (i = legs_[0].begin(); i < legs_[0].end(); ++i) {
             registerWith(*i);
+        }
 
         if (payBondCoupon) {
             payer_[0]=-1.0;
@@ -173,15 +179,12 @@ namespace QuantLib {
       nonParRepayment_(100), spread_(spread), parSwap_(parSwap)
     {
         Schedule schedule = floatSchedule;
-        if (floatSchedule.empty())
-            schedule = Schedule(bond_->settlementDate(),
-                                bond_->maturityDate(),
-                                iborIndex->tenor(),
-                                iborIndex->fixingCalendar(),
-                                iborIndex->businessDayConvention(),
-                                iborIndex->businessDayConvention(),
-                                DateGeneration::Backward,
+        if (floatSchedule.empty()) {
+            schedule = Schedule(bond_->settlementDate(), bond_->maturityDate(), iborIndex->tenor(),
+                                iborIndex->fixingCalendar(), iborIndex->businessDayConvention(),
+                                iborIndex->businessDayConvention(), DateGeneration::Backward,
                                 false); // endOfMonth
+        }
 
         // the following might become an input parameter
         BusinessDayConvention paymentAdjustment = Following;
@@ -207,31 +210,35 @@ namespace QuantLib {
         /* In the market asset swap, the bond is purchased in return for
            payment of the full price. The notional of the floating leg is
            then scaled by the full price. */
-        if (!parSwap_)
-            notional *= dirtyPrice/100.0;
+        if (!parSwap_) {
+            notional *= dirtyPrice / 100.0;
+        }
 
-        if (floatingDayCounter==DayCounter())
+        if (floatingDayCounter == DayCounter()) {
             legs_[1] = IborLeg(schedule, iborIndex)
                 .withNotionals(notional)
                 .withPaymentAdjustment(paymentAdjustment)
                 .withSpreads(spread);
-        else
+        } else {
             legs_[1] = IborLeg(schedule, iborIndex)
-                .withNotionals(notional)
-                .withPaymentDayCounter(floatingDayCounter)
-                .withPaymentAdjustment(paymentAdjustment)
-                .withSpreads(spread);
+                           .withNotionals(notional)
+                           .withPaymentDayCounter(floatingDayCounter)
+                           .withPaymentAdjustment(paymentAdjustment)
+                           .withSpreads(spread);
+        }
 
-        for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
+        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i) {
             registerWith(*i);
+        }
 
         const Leg& bondLeg = bond_->cashflows();
         for (Leg::const_iterator i=bondLeg.begin(); i<bondLeg.end(); ++i) {
             // whatever might be the choice for the discounting engine
             // bond flows on upfrontDate_ must be discarded
             bool upfrontDateBondFlows = false;
-            if (!(*i)->hasOccurred(upfrontDate_, upfrontDateBondFlows))
+            if (!(*i)->hasOccurred(upfrontDate_, upfrontDateBondFlows)) {
                 legs_[0].push_back(*i);
+            }
         }
 
         QL_REQUIRE(!legs_[0].empty(),
@@ -258,8 +265,9 @@ namespace QuantLib {
         }
 
         QL_REQUIRE(!legs_[0].empty(), "empty bond leg");
-        for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
+        for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i) {
             registerWith(*i);
+        }
 
         if (payBondCoupon) {
             payer_[0]=-1.0;
@@ -277,8 +285,9 @@ namespace QuantLib {
         AssetSwap::arguments* arguments =
             dynamic_cast<AssetSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (!arguments) { // it's a swap engine...
             return;
+        }
 
         const Leg& fixedCoupons = bondLeg();
 

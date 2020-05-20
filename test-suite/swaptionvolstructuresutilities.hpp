@@ -76,11 +76,12 @@ namespace QuantLib {
             volsHandle.resize(tenors.options.size());
             for (Size i=0; i<tenors.options.size(); i++){
                 volsHandle[i].resize(tenors.swaps.size());
-                for (Size j=0; j<tenors.swaps.size(); j++)
+                for (Size j = 0; j < tenors.swaps.size(); j++) {
                     // every handle must be reassigned, as the ones created by
                     // default are all linked together.
-                    volsHandle[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                        SimpleQuote(vols[i][j])));
+                    volsHandle[i][j] =
+                        Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(vols[i][j])));
+                }
             }
         };
     };

@@ -125,18 +125,22 @@ namespace QuantLib {
 
         for (Size nstp=1; nstp<=ADAPTIVERK_MAXSTP; nstp++) {
             std::vector<T> dydx=ode(x,y);
-            for (Size i=0;i<n;i++)
-                yScale[i] = std::abs(y[i])+std::abs(dydx[i]*h)+ADAPTIVERK_TINY;
-            if ((x+h-x2)*(x+h-x1) > 0.0)
-                h=x2-x;
+            for (Size i = 0; i < n; i++) {
+                yScale[i] = std::abs(y[i]) + std::abs(dydx[i] * h) + ADAPTIVERK_TINY;
+            }
+            if ((x + h - x2) * (x + h - x1) > 0.0) {
+                h = x2 - x;
+            }
             rkqs(y,dydx,x,h,eps_,yScale,hdid,hnext,ode);
 
-            if ((x-x2)*(x2-x1) >= 0.0)
+            if ((x - x2) * (x2 - x1) >= 0.0) {
                 return y;
+            }
 
-            if (std::fabs(hnext) <= hmin_)
-                QL_FAIL("Step size (" << hnext << ") too small ("
-                        << hmin_ << " min) in AdaptiveRungeKutta");
+            if (std::fabs(hnext) <= hmin_) {
+                QL_FAIL("Step size (" << hnext << ") too small (" << hmin_
+                                      << " min) in AdaptiveRungeKutta");
+            }
             h=hnext;
         }
         QL_FAIL("Too many steps (" << ADAPTIVERK_MAXSTP
@@ -188,8 +192,9 @@ namespace QuantLib {
         for(;;) {
             rkck(y,dydx,x,h,ytemp,yerr,derivs);
             errmax=0.0;
-            for (Size i=0;i<n;i++)
-                errmax=std::max(errmax,std::abs(yerr[i]/yScale[i]));
+            for (Size i = 0; i < n; i++) {
+                errmax = std::max(errmax, std::abs(yerr[i] / yScale[i]));
+            }
             errmax/=eps;
             if (errmax>1.0) {
                 Real htemp1 = ADAPTIVERK_SAFETY*h*std::pow(errmax,ADAPTIVERK_PSHRINK);
@@ -203,18 +208,21 @@ namespace QuantLib {
                 Real max_negative = htemp1 < htemp2 ? htemp1 : htemp2;
                 h = ((h >= 0.0) ? max_positive : max_negative);
                 xnew=x+h;
-                if (xnew==x)
+                if (xnew == x) {
                     QL_FAIL("Stepsize underflow (" << h << " at x = " << x
-                            << ") in AdaptiveRungeKutta::rkqs");
+                                                   << ") in AdaptiveRungeKutta::rkqs");
+                }
                 continue;
             } else {
-                if (errmax>ADAPTIVERK_ERRCON)
+                if (errmax > ADAPTIVERK_ERRCON) {
                     hnext=ADAPTIVERK_SAFETY*h*std::pow(errmax,ADAPTIVERK_PGROW);
-                else
-                    hnext=5.0*h;
+                } else {
+                    hnext = 5.0 * h;
+                }
                 x+=(hdid=h);
-                for (Size i=0;i<n;i++)
-                    y[i]=ytemp[i];
+                for (Size i = 0; i < n; i++) {
+                    y[i] = ytemp[i];
+                }
                 break;
             }
         }
@@ -233,28 +241,34 @@ namespace QuantLib {
         std::vector<T> ak2(n),ak3(n),ak4(n),ak5(n),ak6(n),ytemp(n);
 
         // first step
-        for (Size i=0;i<n;i++)
-            ytemp[i]=y[i]+b21*h*dydx[i];
+        for (Size i = 0; i < n; i++) {
+            ytemp[i] = y[i] + b21 * h * dydx[i];
+        }
 
         // second step
         ak2=derivs(x+a2*h,ytemp);
-        for (Size i=0;i<n;i++)
-            ytemp[i]=y[i]+h*(b31*dydx[i]+b32*ak2[i]);
+        for (Size i = 0; i < n; i++) {
+            ytemp[i] = y[i] + h * (b31 * dydx[i] + b32 * ak2[i]);
+        }
 
         // third step
         ak3=derivs(x+a3*h,ytemp);
-        for (Size i=0;i<n;i++)
-            ytemp[i]=y[i]+h*(b41*dydx[i]+b42*ak2[i]+b43*ak3[i]);
+        for (Size i = 0; i < n; i++) {
+            ytemp[i] = y[i] + h * (b41 * dydx[i] + b42 * ak2[i] + b43 * ak3[i]);
+        }
 
         // fourth step
         ak4=derivs(x+a4*h,ytemp);
-        for (Size i=0;i<n;i++)
-            ytemp[i]=y[i]+h*(b51*dydx[i]+b52*ak2[i]+b53*ak3[i]+b54*ak4[i]);
+        for (Size i = 0; i < n; i++) {
+            ytemp[i] = y[i] + h * (b51 * dydx[i] + b52 * ak2[i] + b53 * ak3[i] + b54 * ak4[i]);
+        }
 
         // fifth step
         ak5=derivs(x+a5*h,ytemp);
-        for (Size i=0;i<n;i++)
-            ytemp[i]=y[i]+h*(b61*dydx[i]+b62*ak2[i]+b63*ak3[i]+b64*ak4[i]+b65*ak5[i]);
+        for (Size i = 0; i < n; i++) {
+            ytemp[i] = y[i] + h * (b61 * dydx[i] + b62 * ak2[i] + b63 * ak3[i] + b64 * ak4[i] +
+                                   b65 * ak5[i]);
+        }
 
         // sixth step
         ak6=derivs(x+a6*h,ytemp);

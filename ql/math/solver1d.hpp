@@ -100,9 +100,9 @@ namespace QuantLib {
             fxMax_ = f(root_);
 
             // monotonically crescent bias, as in optionValue(volatility)
-            if (close(fxMax_,0.0))
+            if (close(fxMax_, 0.0)) {
                 return root_;
-            else if (fxMax_ > 0.0) {
+            } else if (fxMax_ > 0.0) {
                 xMin_ = enforceBounds_(root_ - step);
                 fxMin_ = f(xMin_);
                 xMax_ = root_;
@@ -116,10 +116,12 @@ namespace QuantLib {
             evaluationNumber_ = 2;
             while (evaluationNumber_ <= maxEvaluations_) {
                 if (fxMin_*fxMax_ <= 0.0) {
-                    if (close(fxMin_, 0.0))
+                    if (close(fxMin_, 0.0)) {
                         return xMin_;
-                    if (close(fxMax_, 0.0))
+                    }
+                    if (close(fxMax_, 0.0)) {
                         return xMax_;
+                    }
                     root_ = (xMax_+xMin_)/2.0;
                     return this->impl().solveImpl(f, accuracy);
                 }
@@ -187,12 +189,14 @@ namespace QuantLib {
                        << ") > enforced hi bound (" << upperBound_ << ")");
 
             fxMin_ = f(xMin_);
-            if (close(fxMin_, 0.0))
+            if (close(fxMin_, 0.0)) {
                 return xMin_;
+            }
 
             fxMax_ = f(xMax_);
-            if (close(fxMax_, 0.0))
+            if (close(fxMax_, 0.0)) {
                 return xMax_;
+            }
 
             evaluationNumber_ = 2;
 
@@ -255,10 +259,12 @@ namespace QuantLib {
 
     template <class T>
     inline Real Solver1D<T>::enforceBounds_(Real x) const {
-        if (lowerBoundEnforced_ && x < lowerBound_)
+        if (lowerBoundEnforced_ && x < lowerBound_) {
             return lowerBound_;
-        if (upperBoundEnforced_ && x > upperBound_)
+        }
+        if (upperBoundEnforced_ && x > upperBound_) {
             return upperBound_;
+        }
         return x;
     }
 

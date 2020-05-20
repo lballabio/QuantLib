@@ -100,13 +100,17 @@ namespace QuantLib {
 
     Real SyntheticCDO::premiumLegNPV() const {
         calculate();
-        if(side_ == Protection::Buyer) return premiumValue_;
+        if (side_ == Protection::Buyer) {
+            return premiumValue_;
+        }
         return -premiumValue_;
     }
 
     Real SyntheticCDO::protectionLegNPV() const {
         calculate();
-        if(side_ == Protection::Buyer) return -protectionValue_;
+        if (side_ == Protection::Buyer) {
+            return -protectionValue_;
+        }
         return protectionValue_;
     }
 

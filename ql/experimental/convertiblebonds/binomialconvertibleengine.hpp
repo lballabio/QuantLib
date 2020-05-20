@@ -82,10 +82,10 @@ namespace QuantLib {
         // subtract dividends
         Size i;
         for (i=0; i<arguments_.dividends.size(); i++) {
-            if (arguments_.dividends[i]->date() >= referenceDate)
+            if (arguments_.dividends[i]->date() >= referenceDate) {
                 s0 -= arguments_.dividends[i]->amount() *
-                      process_->riskFreeRate()->discount(
-                                             arguments_.dividends[i]->date());
+                      process_->riskFreeRate()->discount(arguments_.dividends[i]->date());
+            }
         }
         QL_REQUIRE(s0 > 0.0,
                    "negative value after subtracting dividends");

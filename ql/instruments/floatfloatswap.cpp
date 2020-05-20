@@ -136,78 +136,88 @@ namespace QuantLib {
                                      << ") does not match flooredRate2 size ("
                                      << flooredRate2_.size() << ")");
 
-        if (paymentConvention1)
+        if (paymentConvention1) {
             paymentConvention1_ = *paymentConvention1;
-        else
+        } else {
             paymentConvention1_ = schedule1_.businessDayConvention();
+        }
 
-        if (paymentConvention2)
+        if (paymentConvention2) {
             paymentConvention2_ = *paymentConvention2;
-        else
+        } else {
             paymentConvention2_ = schedule2_.businessDayConvention();
+        }
 
-        if (gearing1_.size() == 0)
+        if (gearing1_.size() == 0) {
             gearing1_ = std::vector<Real>(nominal1_.size(), 1.0);
-        if (gearing2_.size() == 0)
+        }
+        if (gearing2_.size() == 0) {
             gearing2_ = std::vector<Real>(nominal2_.size(), 1.0);
-        if (spread1_.size() == 0)
+        }
+        if (spread1_.size() == 0) {
             spread1_ = std::vector<Real>(nominal1_.size(), 0.0);
-        if (spread2_.size() == 0)
+        }
+        if (spread2_.size() == 0) {
             spread2_ = std::vector<Real>(nominal2_.size(), 0.0);
-        if (cappedRate1_.size() == 0)
+        }
+        if (cappedRate1_.size() == 0) {
             cappedRate1_ = std::vector<Real>(nominal1_.size(), Null<Real>());
-        if (cappedRate2_.size() == 0)
+        }
+        if (cappedRate2_.size() == 0) {
             cappedRate2_ = std::vector<Real>(nominal2_.size(), Null<Real>());
-        if (flooredRate1_.size() == 0)
+        }
+        if (flooredRate1_.size() == 0) {
             flooredRate1_ = std::vector<Real>(nominal1_.size(), Null<Real>());
-        if (flooredRate2_.size() == 0)
+        }
+        if (flooredRate2_.size() == 0) {
             flooredRate2_ = std::vector<Real>(nominal2_.size(), Null<Real>());
+        }
 
         bool isNull;
         isNull = cappedRate1_[0] == Null<Real>();
         for (Size i = 0; i < cappedRate1_.size(); i++) {
-            if (isNull)
+            if (isNull) {
                 QL_REQUIRE(cappedRate1_[i] == Null<Real>(),
                            "cappedRate1 must be null for all or none entry ("
                                << (i + 1) << "th is " << cappedRate1_[i]
                                << ")");
-            else
+            } else
                 QL_REQUIRE(cappedRate1_[i] != Null<Real>(),
                            "cappedRate 1 must be null for all or none entry ("
                                << "1st is " << cappedRate1_[0] << ")");
         }
         isNull = cappedRate2_[0] == Null<Real>();
         for (Size i = 0; i < cappedRate2_.size(); i++) {
-            if (isNull)
+            if (isNull) {
                 QL_REQUIRE(cappedRate2_[i] == Null<Real>(),
                            "cappedRate2 must be null for all or none entry ("
                                << (i + 1) << "th is " << cappedRate2_[i]
                                << ")");
-            else
+            } else
                 QL_REQUIRE(cappedRate2_[i] != Null<Real>(),
                            "cappedRate2 must be null for all or none entry ("
                                << "1st is " << cappedRate2_[0] << ")");
         }
         isNull = flooredRate1_[0] == Null<Real>();
         for (Size i = 0; i < flooredRate1_.size(); i++) {
-            if (isNull)
+            if (isNull) {
                 QL_REQUIRE(flooredRate1_[i] == Null<Real>(),
                            "flooredRate1 must be null for all or none entry ("
                                << (i + 1) << "th is " << flooredRate1_[i]
                                << ")");
-            else
+            } else
                 QL_REQUIRE(flooredRate1_[i] != Null<Real>(),
                            "flooredRate 1 must be null for all or none entry ("
                                << "1st is " << flooredRate1_[0] << ")");
         }
         isNull = flooredRate2_[0] == Null<Real>();
         for (Size i = 0; i < flooredRate2_.size(); i++) {
-            if (isNull)
+            if (isNull) {
                 QL_REQUIRE(flooredRate2_[i] == Null<Real>(),
                            "flooredRate2 must be null for all or none entry ("
                                << (i + 1) << "th is " << flooredRate2_[i]
                                << ")");
-            else
+            } else
                 QL_REQUIRE(flooredRate2_[i] != Null<Real>(),
                            "flooredRate2 must be null for all or none entry ("
                                << "1st is " << flooredRate2_[0] << ")");
@@ -216,12 +226,16 @@ namespace QuantLib {
         // if the gearing is zero then the ibor / cms leg will be set up with
         // fixed coupons which makes trouble here in this context. We therefore
         // use a dirty trick and enforce the gearing to be non zero.
-        for (Size i = 0; i < gearing1_.size(); i++)
-            if (close(gearing1_[i], 0.0))
+        for (Size i = 0; i < gearing1_.size(); i++) {
+            if (close(gearing1_[i], 0.0)) {
                 gearing1_[i] = QL_EPSILON;
-        for (Size i = 0; i < gearing2_.size(); i++)
-            if (close(gearing2_[i], 0.0))
+            }
+        }
+        for (Size i = 0; i < gearing2_.size(); i++) {
+            if (close(gearing2_[i], 0.0)) {
                 gearing2_[i] = QL_EPSILON;
+            }
+        }
 
         ext::shared_ptr<IborIndex> ibor1 =
             ext::dynamic_pointer_cast<IborIndex>(index1_);
@@ -248,10 +262,12 @@ namespace QuantLib {
                       .withPaymentAdjustment(paymentConvention1_)
                       .withSpreads(spread1_)
                       .withGearings(gearing1_);
-            if (cappedRate1_[0] != Null<Real>())
+            if (cappedRate1_[0] != Null<Real>()) {
                 leg = leg.withCaps(cappedRate1_);
-            if (flooredRate1_[0] != Null<Real>())
+            }
+            if (flooredRate1_[0] != Null<Real>()) {
                 leg = leg.withFloors(flooredRate1_);
+            }
             legs_[0] = leg;
         }
 
@@ -262,10 +278,12 @@ namespace QuantLib {
                       .withPaymentAdjustment(paymentConvention2_)
                       .withSpreads(spread2_)
                       .withGearings(gearing2_);
-            if (cappedRate2_[0] != Null<Real>())
+            if (cappedRate2_[0] != Null<Real>()) {
                 leg = leg.withCaps(cappedRate2_);
-            if (flooredRate2_[0] != Null<Real>())
+            }
+            if (flooredRate2_[0] != Null<Real>()) {
                 leg = leg.withFloors(flooredRate2_);
+            }
             legs_[1] = leg;
         }
 
@@ -276,10 +294,12 @@ namespace QuantLib {
                       .withPaymentAdjustment(paymentConvention1_)
                       .withSpreads(spread1_)
                       .withGearings(gearing1_);
-            if (cappedRate1_[0] != Null<Real>())
+            if (cappedRate1_[0] != Null<Real>()) {
                 leg = leg.withCaps(cappedRate1_);
-            if (flooredRate1_[0] != Null<Real>())
+            }
+            if (flooredRate1_[0] != Null<Real>()) {
                 leg = leg.withFloors(flooredRate1_);
+            }
             legs_[0] = leg;
         }
 
@@ -290,10 +310,12 @@ namespace QuantLib {
                       .withPaymentAdjustment(paymentConvention2_)
                       .withSpreads(spread2_)
                       .withGearings(gearing2_);
-            if (cappedRate2_[0] != Null<Real>())
+            if (cappedRate2_[0] != Null<Real>()) {
                 leg = leg.withCaps(cappedRate2_);
-            if (flooredRate2_[0] != Null<Real>())
+            }
+            if (flooredRate2_[0] != Null<Real>()) {
                 leg = leg.withFloors(flooredRate2_);
+            }
             legs_[1] = leg;
         }
 
@@ -304,10 +326,12 @@ namespace QuantLib {
                       .withPaymentAdjustment(paymentConvention1_)
                       .withSpreads(spread1_)
                       .withGearings(gearing1_);
-            if (cappedRate1_[0] != Null<Real>())
+            if (cappedRate1_[0] != Null<Real>()) {
                 leg = leg.withCaps(cappedRate1_);
-            if (flooredRate1_[0] != Null<Real>())
+            }
+            if (flooredRate1_[0] != Null<Real>()) {
                 leg = leg.withFloors(flooredRate1_);
+            }
             legs_[0] = leg;
         }
 
@@ -318,10 +342,12 @@ namespace QuantLib {
                       .withPaymentAdjustment(paymentConvention2_)
                       .withSpreads(spread2_)
                       .withGearings(gearing2_);
-            if (cappedRate2_[0] != Null<Real>())
+            if (cappedRate2_[0] != Null<Real>()) {
                 leg = leg.withCaps(cappedRate2_);
-            if (flooredRate2_[0] != Null<Real>())
+            }
+            if (flooredRate2_[0] != Null<Real>()) {
                 leg = leg.withFloors(flooredRate2_);
+            }
             legs_[1] = leg;
         }
 
@@ -367,11 +393,13 @@ namespace QuantLib {
             nominal2_.push_back(nominal2_.back());
         }
 
-        for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i)
+        for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i) {
             registerWith(*i);
+        }
 
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i) {
             registerWith(*i);
+        }
 
         switch (type_) {
         case VanillaSwap::Payer:
@@ -394,8 +422,10 @@ namespace QuantLib {
         FloatFloatSwap::arguments *arguments =
             dynamic_cast<FloatFloatSwap::arguments *>(args);
 
-        if(!arguments)
-            return; // swap engine ... // QL_REQUIRE(arguments != 0, "argument type does not match");
+        if (!arguments) {
+            return; // swap engine ... // QL_REQUIRE(arguments != 0, "argument type does not
+                    // match");
+        }
 
         arguments->type = type_;
         arguments->nominal1 = nominal1_;

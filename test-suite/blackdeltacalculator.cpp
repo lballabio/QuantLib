@@ -272,10 +272,11 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
         }
         else {
             const Real fwd = spotQuote->value()*discFor/discDom;
-            if (payoff->optionType() == Option::Call && fwd > payoff->strike())
+            if (payoff->optionType() == Option::Call && fwd > payoff->strike()) {
                 delta = 1.0;
-            else if (payoff->optionType() == Option::Put && fwd < payoff->strike())
+            } else if (payoff->optionType() == Option::Put && fwd < payoff->strike()) {
                 delta = -1.0;
+            }
         }
 
         expectedVal=delta-option.NPV()/spotQuote->value();

@@ -67,14 +67,14 @@ int main(int, char* []) {
         // build curves and issuers into a basket of three names
         std::vector<Real> hazardRates(3, -std::log(1.-0.01));
         std::vector<std::string> names;
-        for(Size i=0; i<hazardRates.size(); i++)
-            names.push_back(std::string("Acme") + 
-                boost::lexical_cast<std::string>(i));
+        for (Size i = 0; i < hazardRates.size(); i++) {
+            names.push_back(std::string("Acme") + boost::lexical_cast<std::string>(i));
+        }
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
-        for(Size i=0; i<hazardRates.size(); i++)
+        for (Size i = 0; i < hazardRates.size(); i++) {
             defTS.push_back(Handle<DefaultProbabilityTermStructure>(
-                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
-                    Actual365Fixed())));
+                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], Actual365Fixed())));
+        }
         std::vector<Issuer> issuers;
         for(Size i=0; i<hazardRates.size(); i++) {
             std::vector<QuantLib::Issuer::key_curve_pair> curves(1, 
@@ -86,9 +86,11 @@ int main(int, char* []) {
         }
 
         ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
-        for(Size i=0; i<hazardRates.size(); i++)
-            thePool->add(names[i], issuers[i], NorthAmericaCorpDefaultKey(
-                    EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+        for (Size i = 0; i < hazardRates.size(); i++) {
+            thePool->add(
+                names[i], issuers[i],
+                NorthAmericaCorpDefaultKey(EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+        }
 
         std::vector<DefaultProbKey> defaultKeys(hazardRates.size(), 
             NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
@@ -195,18 +197,18 @@ int main(int, char* []) {
         lmT->resetBasket(theBskt);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                tmp.push_back(lmT->defaultCorrelation(correlDate, 
-                    iName1, iName2));
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                tmp.push_back(lmT->defaultCorrelation(correlDate, iName1, iName2));
+            }
             correlsTlm.push_back(tmp);
         }
         //
         theBskt->setLossModel(rdlmT);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                tmp.push_back(theBskt->defaultCorrelation(correlDate, 
-                    iName1, iName2));
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                tmp.push_back(theBskt->defaultCorrelation(correlDate, iName1, iName2));
+            }
             correlsTrand.push_back(tmp);
         }
         #ifndef QL_PATCH_SOLARIS
@@ -214,18 +216,18 @@ int main(int, char* []) {
         lmG->resetBasket(theBskt);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                tmp.push_back(lmG->defaultCorrelation(correlDate, 
-                    iName1, iName2));
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                tmp.push_back(lmG->defaultCorrelation(correlDate, iName1, iName2));
+            }
             correlsGlm.push_back(tmp);
         }
         //
         theBskt->setLossModel(rdlmG);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                tmp.push_back(theBskt->defaultCorrelation(correlDate, 
-                    iName1, iName2));
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                tmp.push_back(theBskt->defaultCorrelation(correlDate, iName1, iName2));
+            }
             correlsGrand.push_back(tmp);
         }
         #endif
@@ -255,41 +257,41 @@ int main(int, char* []) {
         cout << "-- Default correlations G,T,GRand,TRand--" << endl;
         cout << "-----------------------------------------" << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                #ifndef QL_PATCH_SOLARIS
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                cout <<
+#ifndef QL_PATCH_SOLARIS
                     correlsGlm[iName1][iName2] << " , ";
-                #else
+            }
+#else
                     "n/a" << " , ";
                 #endif
             cout << endl;
         }
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                    correlsTlm[iName1][iName2] << " , ";
-            ;
-                cout << endl;
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                cout << correlsTlm[iName1][iName2] << " , ";
+            };
+            cout << endl;
         }
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                #ifndef QL_PATCH_SOLARIS
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                cout <<
+#ifndef QL_PATCH_SOLARIS
                     correlsGrand[iName1][iName2] << " , ";
-                #else
+            }
+#else
                     "n/a" << " , ";
                 #endif
             cout << endl;
         }
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
-            for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                    correlsTrand[iName1][iName2] << " , ";
-            ;
-                cout << endl;
+            for (Size iName2 = 0; iName2 < theBskt->size(); iName2++) {
+                cout << correlsTrand[iName1][iName2] << " , ";
+            };
+            cout << endl;
         }
 
         return 0;

@@ -93,8 +93,9 @@ namespace QuantLib {
         Rate nu = riskFreeRate - dividendRate - 0.5*volatility*volatility;
 
         Real temp = 0.0;
-        for (Size i=pastFixings+1; i<numberOfFixings; i++)
-            temp += fixingTimes[i-pastFixings-1]*(N-i);
+        for (Size i = pastFixings + 1; i < numberOfFixings; i++) {
+            temp += fixingTimes[i - pastFixings - 1] * (N - i);
+        }
         Real variance = volatility*volatility /N/N * (timeSum + 2.0*temp);
         Real covarianceTerm = volatility*volatility/N * timeSum;
         Real sigmaSum_2 = variance + volatility*volatility*residualTime -

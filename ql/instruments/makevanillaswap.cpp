@@ -65,9 +65,9 @@ namespace QuantLib {
     MakeVanillaSwap::operator ext::shared_ptr<VanillaSwap>() const {
 
         Date startDate;
-        if (effectiveDate_ != Date())
+        if (effectiveDate_ != Date()) {
             startDate = effectiveDate_;
-        else {
+        } else {
             Date refDate = Settings::instance().evaluationDate();
             // if the evaluation date is not a business day
             // then move to the next business day
@@ -75,45 +75,44 @@ namespace QuantLib {
             Date spotDate = floatCalendar_.advance(refDate,
                                                    settlementDays_*Days);
             startDate = spotDate+forwardStart_;
-            if (forwardStart_.length()<0)
+            if (forwardStart_.length() < 0) {
                 startDate = floatCalendar_.adjust(startDate,
                                                   Preceding);
-            else
-                startDate = floatCalendar_.adjust(startDate,
-                                                  Following);
+            } else {
+                startDate = floatCalendar_.adjust(startDate, Following);
+            }
         }
 
         Date endDate = terminationDate_;
         if (endDate == Date()) {
-            if (floatEndOfMonth_)
+            if (floatEndOfMonth_) {
                 endDate = floatCalendar_.advance(startDate,
                                                  swapTenor_,
                                                  ModifiedFollowing,
                                                  floatEndOfMonth_);
-            else
+            } else {
                 endDate = startDate + swapTenor_;
+            }
         }
 
         const Currency& curr = iborIndex_->currency();
         Period fixedTenor;
-        if (fixedTenor_ != Period())
+        if (fixedTenor_ != Period()) {
             fixedTenor = fixedTenor_;
-        else {
-            if ((curr == EURCurrency()) ||
-                (curr == USDCurrency()) ||
-                (curr == CHFCurrency()) ||
-                (curr == SEKCurrency()) ||
-                (curr == GBPCurrency() && swapTenor_ <= 1 * Years))
+        } else {
+            if ((curr == EURCurrency()) || (curr == USDCurrency()) || (curr == CHFCurrency()) ||
+                (curr == SEKCurrency()) || (curr == GBPCurrency() && swapTenor_ <= 1 * Years)) {
                 fixedTenor = Period(1, Years);
-            else if ((curr == GBPCurrency() && swapTenor_ > 1 * Years) ||
-                (curr == JPYCurrency()) ||
-                (curr == AUDCurrency() && swapTenor_ >= 4 * Years))
+            } else if ((curr == GBPCurrency() && swapTenor_ > 1 * Years) ||
+                       (curr == JPYCurrency()) ||
+                       (curr == AUDCurrency() && swapTenor_ >= 4 * Years)) {
                 fixedTenor = Period(6, Months);
-            else if ((curr == HKDCurrency() ||
-                     (curr == AUDCurrency() && swapTenor_ < 4 * Years)))
+            } else if ((curr == HKDCurrency() ||
+                        (curr == AUDCurrency() && swapTenor_ < 4 * Years))) {
                 fixedTenor = Period(3, Months);
-            else
+            } else {
                 QL_FAIL("unknown fixed leg default tenor for " << curr);
+            }
         }
 
         Schedule fixedSchedule(startDate, endDate,
@@ -131,20 +130,19 @@ namespace QuantLib {
                                floatFirstDate_, floatNextToLastDate_);
 
         DayCounter fixedDayCount;
-        if (fixedDayCount_ != DayCounter())
+        if (fixedDayCount_ != DayCounter()) {
             fixedDayCount = fixedDayCount_;
-        else {
-            if (curr == USDCurrency())
+        } else {
+            if (curr == USDCurrency()) {
                 fixedDayCount = Actual360();
-            else if (curr == EURCurrency() || curr == CHFCurrency() ||
-                     curr == SEKCurrency())
+            } else if (curr == EURCurrency() || curr == CHFCurrency() || curr == SEKCurrency()) {
                 fixedDayCount = Thirty360(Thirty360::BondBasis);
-            else if (curr == GBPCurrency() || curr == JPYCurrency() ||
-                     curr == AUDCurrency() || curr == HKDCurrency() ||
-                     curr == THBCurrency())
+            } else if (curr == GBPCurrency() || curr == JPYCurrency() || curr == AUDCurrency() ||
+                       curr == HKDCurrency() || curr == THBCurrency()) {
                 fixedDayCount = Actual365Fixed();
-            else
+            } else {
                 QL_FAIL("unknown fixed leg day counter for " << curr);
+            }
         }
 
         Rate usedFixedRate = fixedRate_;
@@ -165,8 +163,9 @@ namespace QuantLib {
                 ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
-            } else
+            } else {
                 temp.setPricingEngine(engine_);
+            }
 
             usedFixedRate = temp.fairRate();
         }
@@ -185,8 +184,9 @@ namespace QuantLib {
             ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             swap->setPricingEngine(engine);
-        } else
+        } else {
             swap->setPricingEngine(engine_);
+        }
 
         return swap;
     }

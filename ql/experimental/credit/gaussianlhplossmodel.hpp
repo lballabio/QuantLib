@@ -81,7 +81,9 @@ namespace QuantLib {
             biphi_ = BivariateCumulativeNormalDistribution(
                 -beta_);
             // tell basket to notify instruments, etc, we are invalid
-            if(!basket_.empty()) basket_->notifyObservers();
+            if (!basket_.empty()) {
+                basket_->notifyObservers();
+            }
         }
     private:
         void resetModel() { }
@@ -175,12 +177,15 @@ namespace QuantLib {
             const std::vector<Probability> probs = 
                 basket_->remainingProbabilities(d);
             std::vector<Real> recoveries;
-            for(Size i=0; i<basket_->remainingSize(); i++)
+            for (Size i = 0; i < basket_->remainingSize(); i++) {
                 recoveries.push_back(rrQuotes_[i]->value());
+            }
             std::vector<Real> notionals = basket_->remainingNotionals(d);
             Real denominator = std::inner_product(notionals.begin(), 
                 notionals.end(), probs.begin(), 0.);
-            if(denominator == 0.) return 0.;
+            if (denominator == 0.) {
+                return 0.;
+            }
 
             std::transform(notionals.begin(), notionals.end(), probs.begin(),
                 notionals.begin(), std::multiplies<Real>());

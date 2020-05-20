@@ -89,16 +89,18 @@ namespace QuantLib {
 
                 if (!arguments_.legs[i].empty()) {
                     Date d1 = CashFlows::startDate(arguments_.legs[i]);
-                    if (d1>=refDate)
+                    if (d1 >= refDate) {
                         results_.startDiscounts[i] = discountCurve_->discount(d1);
-                    else
+                    } else {
                         results_.startDiscounts[i] = Null<DiscountFactor>();
+                    }
 
                     Date d2 = CashFlows::maturityDate(arguments_.legs[i]);
-                    if (d2>=refDate)
+                    if (d2 >= refDate) {
                         results_.endDiscounts[i] = discountCurve_->discount(d2);
-                    else
+                    } else {
                         results_.endDiscounts[i] = Null<DiscountFactor>();
+                    }
                 } else {
                     results_.startDiscounts[i] = Null<DiscountFactor>();
                     results_.endDiscounts[i] = Null<DiscountFactor>();

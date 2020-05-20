@@ -66,11 +66,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
-                return 1.0/(1.0+detail::avgHazardRate*0.25);
+            if (i == 1) { // first pillar
+                return 1.0 / (1.0 + detail::avgHazardRate * 0.25);
+            }
 
             // extrapolate
             Date d = c->dates()[i];
@@ -137,11 +139,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return detail::avgHazardRate;
+            }
 
             // extrapolate
             Date d = c->dates()[i];
@@ -180,8 +184,9 @@ namespace QuantLib {
                                 Real rate,
                                 Size i) {
             data[i] = rate;
-            if (i==1)
+            if (i == 1) {
                 data[0] = rate; // first point is updated as well
+            }
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 30; }
@@ -213,11 +218,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return detail::avgHazardRate;
+            }
 
             // extrapolate
             Date d = c->dates()[i];
@@ -257,8 +264,9 @@ namespace QuantLib {
                                 Real density,
                                 Size i) {
             data[i] = density;
-            if (i==1)
+            if (i == 1) {
                 data[0] = density; // first point is updated as well
+            }
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 30; }

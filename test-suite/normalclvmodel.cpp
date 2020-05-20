@@ -466,8 +466,9 @@ void NormalCLVModelTest::testMoustacheGraph() {
 
 
     std::vector<Date> maturities(1, todaysDate + Period(2, Weeks));
-    while (maturities.back() < maturityDate)
+    while (maturities.back() < maturityDate) {
         maturities.push_back(maturities.back() + Period(2, Weeks));
+    }
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
     const ext::function<Real(Real, Real)> g = m.g();

@@ -52,7 +52,9 @@ namespace QuantLib {
     Real incompleteGammaFunctionSeriesRepr(Real a, Real x, Real accuracy,
                                            Integer maxIteration) {
 
-        if (x==0.0) return 0.0;
+        if (x == 0.0) {
+            return 0.0;
+        }
 
         Real gln = GammaFunction().logValue(a);
         Real ap=a;
@@ -84,9 +86,13 @@ namespace QuantLib {
             an = -i*(i-a);
             b += 2.0;
             d=an*d+b;
-            if (std::fabs(d) < QL_EPSILON) d=QL_EPSILON;
+            if (std::fabs(d) < QL_EPSILON) {
+                d = QL_EPSILON;
+            }
             c=b+an/c;
-            if (std::fabs(c) < QL_EPSILON) c=QL_EPSILON;
+            if (std::fabs(c) < QL_EPSILON) {
+                c = QL_EPSILON;
+            }
             d=1.0/d;
             del=d*c;
             h *= del;

@@ -29,8 +29,9 @@ namespace QuantLib {
 
         Date nextTwentieth(const Date& d, DateGeneration::Rule rule) {
             Date result = Date(20, d.month(), d.year());
-            if (result < d)
-                result += 1*Months;
+            if (result < d) {
+                result += 1 * Months;
+            }
             if (rule == DateGeneration::TwentiethIMM ||
                 rule == DateGeneration::OldCDS ||
                 rule == DateGeneration::CDS ||
@@ -46,8 +47,9 @@ namespace QuantLib {
 
         Date previousTwentieth(const Date& d, DateGeneration::Rule rule) {
             Date result = Date(20, d.month(), d.year());
-            if (result > d)
-                result -= 1*Months;
+            if (result > d) {
+                result -= 1 * Months;
+            }
             if (rule == DateGeneration::TwentiethIMM ||
                 rule == DateGeneration::OldCDS ||
                 rule == DateGeneration::CDS ||
@@ -84,10 +86,11 @@ namespace QuantLib {
       rule_(rule),
       dates_(dates), isRegular_(isRegular) {
 
-        if (tenor != boost::none && !allowsEndOfMonth(*tenor))
+        if (tenor != boost::none && !allowsEndOfMonth(*tenor)) {
             endOfMonth_ = false;
-        else
+        } else {
             endOfMonth_ = endOfMonth;
+        }
 
         QL_REQUIRE(
             isRegular_.size() == 0 || isRegular_.size() == dates.size() - 1,
@@ -138,9 +141,9 @@ namespace QuantLib {
                    << ") later than or equal to termination date ("
                    << terminationDate << ")");
 
-        if (tenor.length()==0)
+        if (tenor.length() == 0) {
             rule_ = DateGeneration::Zero;
-        else
+        } else
             QL_REQUIRE(tenor.length()>0,
                        "non positive tenor (" << tenor << ") not allowed");
 
@@ -226,16 +229,18 @@ namespace QuantLib {
                 dates_.insert(dates_.begin(), nextToLastDate_);
                 Date temp = nullCalendar.advance(seed,
                     -periods*(*tenor_), convention, *endOfMonth_);
-                if (temp!=nextToLastDate_)
+                if (temp != nextToLastDate_) {
                     isRegular_.insert(isRegular_.begin(), false);
-                else
+                } else {
                     isRegular_.insert(isRegular_.begin(), true);
+                }
                 seed = nextToLastDate_;
             }
 
             exitDate = effectiveDate;
-            if (firstDate_ != Date())
+            if (firstDate_ != Date()) {
                 exitDate = firstDate_;
+            }
 
             for (;;) {
                 Date temp = nullCalendar.advance(seed,
@@ -291,10 +296,11 @@ namespace QuantLib {
                 dates_.push_back(firstDate_);
                 Date temp = nullCalendar.advance(seed, periods*(*tenor_),
                                                  convention, *endOfMonth_);
-                if (temp!=firstDate_)
+                if (temp != firstDate_) {
                     isRegular_.push_back(false);
-                else
+                } else {
                     isRegular_.push_back(true);
+                }
                 seed = firstDate_;
             } else if (*rule_ == DateGeneration::Twentieth ||
                        *rule_ == DateGeneration::TwentiethIMM ||
@@ -318,8 +324,9 @@ namespace QuantLib {
             }
 
             exitDate = terminationDate;
-            if (nextToLastDate_ != Date())
+            if (nextToLastDate_ != Date()) {
                 exitDate = nextToLastDate_;
+            }
             if(*rule_ == DateGeneration::CDS2015
                && nextTwentieth(terminationDate, *rule_) == terminationDate
                && terminationDate.month() %2 == 1) {
@@ -376,20 +383,22 @@ namespace QuantLib {
         }
 
         // adjustments
-        if (*rule_==DateGeneration::ThirdWednesday)
-            for (Size i=1; i<dates_.size()-1; ++i)
-                dates_[i] = Date::nthWeekday(3, Wednesday,
-                                             dates_[i].month(),
-                                             dates_[i].year());
+        if (*rule_ == DateGeneration::ThirdWednesday) {
+            for (Size i = 1; i < dates_.size() - 1; ++i) {
+                dates_[i] = Date::nthWeekday(3, Wednesday, dates_[i].month(), dates_[i].year());
+            }
+        }
 
         if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month
             if (convention == Unadjusted) {
-                for (Size i=1; i<dates_.size()-1; ++i)
+                for (Size i = 1; i < dates_.size() - 1; ++i) {
                     dates_[i] = Date::endOfMonth(dates_[i]);
+                }
             } else {
-                for (Size i=1; i<dates_.size()-1; ++i)
+                for (Size i = 1; i < dates_.size() - 1; ++i) {
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
+                }
             }
             Date d1 = dates_.front(), d2 = dates_.back();
             if (terminationDateConvention != Unadjusted) {
@@ -398,10 +407,11 @@ namespace QuantLib {
             } else {
                 // the termination date is the first if going backwards,
                 // the last otherwise.
-                if (*rule_ == DateGeneration::Backward)
+                if (*rule_ == DateGeneration::Backward) {
                     d2 = Date::endOfMonth(dates_.back());
-                else
+                } else {
                     d1 = Date::endOfMonth(dates_.front());
+                }
             }
             // if the eom adjustment leads to a single date schedule
             // we do not apply it
@@ -411,10 +421,12 @@ namespace QuantLib {
             }
         } else {
             // first date not adjusted for old CDS schedules
-            if (*rule_ != DateGeneration::OldCDS)
+            if (*rule_ != DateGeneration::OldCDS) {
                 dates_[0] = calendar_.adjust(dates_[0], convention);
-            for (Size i=1; i<dates_.size()-1; ++i)
+            }
+            for (Size i = 1; i < dates_.size() - 1; ++i) {
                 dates_[i] = calendar_.adjust(dates_[i], convention);
+            }
 
             // termination date is NOT adjusted as per ISDA
             // specifications, unless otherwise specified in the
@@ -474,8 +486,9 @@ namespace QuantLib {
             // remove earlier dates
             while (result.dates_[0] < truncationDate) {
                 result.dates_.erase(result.dates_.begin());
-                if (!result.isRegular_.empty())
+                if (!result.isRegular_.empty()) {
                     result.isRegular_.erase(result.isRegular_.begin());
+                }
             }
 
             // add truncationDate if missing
@@ -488,10 +501,12 @@ namespace QuantLib {
                 result.terminationDateConvention_ = convention_;
             }
 
-            if (result.nextToLastDate_ <= truncationDate)
+            if (result.nextToLastDate_ <= truncationDate) {
                 result.nextToLastDate_ = Date();
-            if (result.firstDate_ <= truncationDate)
+            }
+            if (result.firstDate_ <= truncationDate) {
                 result.firstDate_ = Date();
+            }
         }
 
         return result;
@@ -508,8 +523,9 @@ namespace QuantLib {
             // remove later dates
             while (result.dates_.back()>truncationDate) {
                 result.dates_.pop_back();
-                if(!result.isRegular_.empty())
+                if (!result.isRegular_.empty()) {
                     result.isRegular_.pop_back();
+                }
             }
 
             // add truncationDate if missing
@@ -521,10 +537,12 @@ namespace QuantLib {
                 result.terminationDateConvention_ = convention_;
             }
 
-            if (result.nextToLastDate_>=truncationDate)
+            if (result.nextToLastDate_ >= truncationDate) {
                 result.nextToLastDate_ = Date();
-            if (result.firstDate_>=truncationDate)
+            }
+            if (result.firstDate_ >= truncationDate) {
                 result.firstDate_ = Date();
+            }
         }
 
         return result;
@@ -540,18 +558,20 @@ namespace QuantLib {
 
     Date Schedule::nextDate(const Date& refDate) const {
         std::vector<Date>::const_iterator res = lower_bound(refDate);
-        if (res!=dates_.end())
+        if (res != dates_.end()) {
             return *res;
-        else
+        } else {
             return Date();
+        }
     }
 
     Date Schedule::previousDate(const Date& refDate) const {
         std::vector<Date>::const_iterator res = lower_bound(refDate);
-        if (res!=dates_.begin())
+        if (res != dates_.begin()) {
             return *(--res);
-        else
+        } else {
             return Date();
+        }
     }
 
     bool Schedule::hasIsRegular() const {

@@ -126,8 +126,9 @@ namespace QuantLib {
 
         Time from = asset.time();
 
-        if (close(from,to))
+        if (close(from, to)) {
             return;
+        }
 
         QL_REQUIRE(from > to,
                    "cannot roll the asset back to" << to
@@ -156,8 +157,9 @@ namespace QuantLib {
             convertible.conversionProbability() = newConversionProbability;
 
             // skip the very last adjustment
-            if (i != iTo)
+            if (i != iTo) {
                 convertible.adjustValues();
+            }
         }
     }
 

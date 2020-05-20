@@ -36,8 +36,9 @@ namespace QuantLib {
                                       Size numeraireIndex)
     {
         Real annuity = 0.0;
-        for (Size i=startIndex; i<endIndex; ++i)
-            annuity += cs.rateTaus()[i]*cs.discountRatio(i+1, numeraireIndex);
+        for (Size i = startIndex; i < endIndex; ++i) {
+            annuity += cs.rateTaus()[i] * cs.discountRatio(i + 1, numeraireIndex);
+        }
         return annuity;
     }
 
@@ -47,10 +48,12 @@ namespace QuantLib {
                                              Size endIndex,
                                              Size forwardIndex)
     {
-        if (forwardIndex < startIndex)
+        if (forwardIndex < startIndex) {
             return 0.0;
-        if (forwardIndex >= endIndex)
+        }
+        if (forwardIndex >= endIndex) {
             return 0.0;
+        }
 
         Real numerator = cs.discountRatio(startIndex, endIndex)-1;
         Real swapAnnuity = annuity(cs, startIndex, endIndex,endIndex);
@@ -61,10 +64,11 @@ namespace QuantLib {
         Real part1 = ratio*(numerator+1)/swapAnnuity;
         Real part2 = numerator/(swapAnnuity*swapAnnuity);
 
-        if (forwardIndex >=1)
+        if (forwardIndex >= 1) {
             part2 *= ratio* annuity(cs, startIndex, forwardIndex, endIndex);
-        else 
+        } else {
             part2 = 0.0;
+        }
 
         return part1-part2;
     }
@@ -78,8 +82,9 @@ namespace QuantLib {
 
         // coterminal floating leg values
         std::vector<Real> a(n);
-        for (Size k=0; k<n; ++k)
-            a[k] = cs.discountRatio(k,n)-1.0;
+        for (Size k = 0; k < n; ++k) {
+            a[k] = cs.discountRatio(k, n) - 1.0;
+        }
         //p[k]-p[n];
 
         Matrix jacobian = Matrix(n, n, 0.0);
@@ -107,9 +112,11 @@ namespace QuantLib {
             Matrix zMatrix = coterminalSwapForwardJacobian(cs);
             const std::vector<Rate>& f = cs.forwardRates();
             const std::vector<Rate>& sr = cs.coterminalSwapRates();
-            for (Size i=0; i<n; ++i)
-                for (Size j=i; j<n; ++j)
-                    zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
+            for (Size i = 0; i < n; ++i) {
+                for (Size j = i; j < n; ++j) {
+                    zMatrix[i][j] *= (f[j] + displacement) / (sr[i] + displacement);
+                }
+            }
             return zMatrix;
     }
 
@@ -120,9 +127,11 @@ namespace QuantLib {
         Size n = cs.numberOfRates();
 
         Matrix jacobian = Matrix(n, n, 0.0);
-        for (Size i=0; i<n; ++i)      // i = swap rate index
-            for (Size j=0; j<n; ++j)  // j = forward rate index
-                jacobian[i][j] =swapDerivative(cs, 0, i+1, j);
+        for (Size i = 0; i < n; ++i) {     // i = swap rate index
+            for (Size j = 0; j < n; ++j) { // j = forward rate index
+                jacobian[i][j] = swapDerivative(cs, 0, i + 1, j);
+            }
+        }
 
         return jacobian;
     }
@@ -134,9 +143,11 @@ namespace QuantLib {
         Size n = cs.numberOfRates();
 
         Matrix jacobian = Matrix(n, n, 0.0);
-        for (Size i=0; i<n; ++i)      // i = swap rate index
-            for (Size j=0; j<n; ++j)  // j = forward rate index
-                jacobian[i][j] =swapDerivative(cs, i, std::min(n,i+spanningForwards), j);
+        for (Size i = 0; i < n; ++i) {     // i = swap rate index
+            for (Size j = 0; j < n; ++j) { // j = forward rate index
+                jacobian[i][j] = swapDerivative(cs, i, std::min(n, i + spanningForwards), j);
+            }
+        }
 
         return jacobian;
     }
@@ -150,12 +161,15 @@ namespace QuantLib {
         const std::vector<Rate>& f = cs.forwardRates();
         std::vector<Rate> sr(n);
 
-        for (Size i=0; i<n; ++i)
-            sr[i] = cs.cmSwapRate(0,i+1);
+        for (Size i = 0; i < n; ++i) {
+            sr[i] = cs.cmSwapRate(0, i + 1);
+        }
 
-        for (Size i=0; i<n; ++i)
-            for (Size j=i; j<n; ++j)
-                zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
+        for (Size i = 0; i < n; ++i) {
+            for (Size j = i; j < n; ++j) {
+                zMatrix[i][j] *= (f[j] + displacement) / (sr[i] + displacement);
+            }
+        }
         return zMatrix;
     }
 
@@ -169,12 +183,15 @@ namespace QuantLib {
         const std::vector<Rate>& f = cs.forwardRates();
         std::vector<Rate> sr(n);
 
-        for (Size i=0; i<n; ++i)
-            sr[i] = cs.cmSwapRate(i,spanningForwards);
+        for (Size i = 0; i < n; ++i) {
+            sr[i] = cs.cmSwapRate(i, spanningForwards);
+        }
 
-        for (Size i=0; i<n; ++i)
-            for (Size j=i; j<n; ++j)
-                zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
+        for (Size i = 0; i < n; ++i) {
+            for (Size j = i; j < n; ++j) {
+                zMatrix[i][j] *= (f[j] + displacement) / (sr[i] + displacement);
+            }
+        }
         return zMatrix;
     }
 

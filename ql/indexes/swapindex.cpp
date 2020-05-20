@@ -85,7 +85,7 @@ namespace QuantLib {
         // caching mechanism
         if (lastFixingDate_!=fixingDate) {
             Rate fixedRate = 0.0;
-            if (exogenousDiscount_)
+            if (exogenousDiscount_) {
                 lastSwap_ = MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
                     .withEffectiveDate(valueDate(fixingDate))
                     .withFixedLegCalendar(fixingCalendar())
@@ -94,14 +94,15 @@ namespace QuantLib {
                     .withFixedLegConvention(fixedLegConvention_)
                     .withFixedLegTerminationDateConvention(fixedLegConvention_)
                     .withDiscountingTermStructure(discount_);
-            else
+            } else {
                 lastSwap_ = MakeVanillaSwap(tenor_, iborIndex_, fixedRate)
-                    .withEffectiveDate(valueDate(fixingDate))
-                    .withFixedLegCalendar(fixingCalendar())
-                    .withFixedLegDayCount(dayCounter_)
-                    .withFixedLegTenor(fixedLegTenor_)
-                    .withFixedLegConvention(fixedLegConvention_)
-                    .withFixedLegTerminationDateConvention(fixedLegConvention_);
+                                .withEffectiveDate(valueDate(fixingDate))
+                                .withFixedLegCalendar(fixingCalendar())
+                                .withFixedLegDayCount(dayCounter_)
+                                .withFixedLegTenor(fixedLegTenor_)
+                                .withFixedLegConvention(fixedLegConvention_)
+                                .withFixedLegTerminationDateConvention(fixedLegConvention_);
+            }
             lastFixingDate_ = fixingDate;
         }
         return lastSwap_;
@@ -115,7 +116,7 @@ namespace QuantLib {
     ext::shared_ptr<SwapIndex>
     SwapIndex::clone(const Handle<YieldTermStructure>& forwarding) const {
 
-        if (exogenousDiscount_)
+        if (exogenousDiscount_) {
             return ext::shared_ptr<SwapIndex>(new
                 SwapIndex(familyName(),
                           tenor(),
@@ -127,17 +128,11 @@ namespace QuantLib {
                           dayCounter(),
                           iborIndex_->clone(forwarding),
                           discount_));
-        else
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor(),
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex_->clone(forwarding)));
+        } else {
+            return ext::shared_ptr<SwapIndex>(new SwapIndex(
+                familyName(), tenor(), fixingDays(), currency(), fixingCalendar(), fixedLegTenor(),
+                fixedLegConvention(), dayCounter(), iborIndex_->clone(forwarding)));
+        }
     }
 
     ext::shared_ptr<SwapIndex>
@@ -159,7 +154,7 @@ namespace QuantLib {
     ext::shared_ptr<SwapIndex>
     SwapIndex::clone(const Period& tenor) const {
 
-        if (exogenousDiscount_)
+        if (exogenousDiscount_) {
             return ext::shared_ptr<SwapIndex>(new
                 SwapIndex(familyName(),
                           tenor,
@@ -171,18 +166,11 @@ namespace QuantLib {
                           dayCounter(),
                           iborIndex(),
                           discountingTermStructure()));
-        else
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor,
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex()));
-
+        } else {
+            return ext::shared_ptr<SwapIndex>(
+                new SwapIndex(familyName(), tenor, fixingDays(), currency(), fixingCalendar(),
+                              fixedLegTenor(), fixedLegConvention(), dayCounter(), iborIndex()));
+        }
     }
 
     OvernightIndexedSwapIndex::OvernightIndexedSwapIndex(

@@ -25,20 +25,22 @@ namespace QuantLib {
                                    const Array &vols)
         : reversion_(reversion), reversionZero_(false), times_(times),
           vols_(vols) {
-        if (reversion_ < QL_EPSILON && -reversion_ < QL_EPSILON)
+        if (reversion_ < QL_EPSILON && -reversion_ < QL_EPSILON) {
             reversionZero_ = true;
+        }
         QL_REQUIRE(times.size() == vols.size() - 1,
                    "number of volatilities ("
                        << vols.size() << ") compared to number of times ("
                        << times_.size() << " must be bigger by one");
-        for (int i = 0; i < ((int)times.size()) - 1; i++)
+        for (int i = 0; i < ((int)times.size()) - 1; i++) {
             QL_REQUIRE(times[i] < times[i + 1], "times must be increasing ("
-                                                    << times[i] << "@" << i
-                                                    << " , " << times[i + 1]
+                                                    << times[i] << "@" << i << " , " << times[i + 1]
                                                     << "@" << i + 1 << ")");
-        for (Size i = 0; i < vols.size(); i++)
-            QL_REQUIRE(vols[i] >= 0.0, "volatilities must be non negative ("
-                                           << vols[i] << "@" << i << ")");
+        }
+        for (Size i = 0; i < vols.size(); i++) {
+            QL_REQUIRE(vols[i] >= 0.0,
+                       "volatilities must be non negative (" << vols[i] << "@" << i << ")");
+        }
     }
 
     Real MfStateProcess::x0() const { return 0.0; }
@@ -61,13 +63,15 @@ namespace QuantLib {
 
     Real MfStateProcess::variance(Time t, Real, Time dt) const {
 
-        if (dt < QL_EPSILON)
+        if (dt < QL_EPSILON) {
             return 0.0;
-        if (times_.size() == 0)
-            return reversionZero_ ? dt
-                                  : 1.0 / (2.0 * reversion_) *
-                                        (std::exp(2.0 * reversion_ * (t + dt)) -
-                                         std::exp(2.0 * reversion_ * t));
+        }
+        if (times_.size() == 0) {
+            return reversionZero_ ?
+                       dt :
+                       1.0 / (2.0 * reversion_) *
+                           (std::exp(2.0 * reversion_ * (t + dt)) - std::exp(2.0 * reversion_ * t));
+        }
 
         Size i =
             std::upper_bound(times_.begin(), times_.end(), t) - times_.begin();
@@ -77,24 +81,24 @@ namespace QuantLib {
         Real v = 0.0;
 
         for (Size k = i; k < j; k++) {
-            if (reversionZero_)
+            if (reversionZero_) {
                 v += vols_[k] * vols_[k] *
                      (times_[k] - std::max(k > 0 ? times_[k - 1] : 0.0, t));
-            else
+            } else {
                 v += 1.0 / (2.0 * reversion_) * vols_[k] * vols_[k] *
                      (std::exp(2.0 * reversion_ * times_[k]) -
-                      std::exp(2.0 * reversion_ *
-                               std::max(k > 0 ? times_[k - 1] : 0.0, t)));
+                      std::exp(2.0 * reversion_ * std::max(k > 0 ? times_[k - 1] : 0.0, t)));
+            }
         }
 
-        if (reversionZero_)
+        if (reversionZero_) {
             v += vols_[j] * vols_[j] *
                  (t + dt - std::max(j > 0 ? times_[j - 1] : 0.0, t));
-        else
+        } else {
             v += 1.0 / (2.0 * reversion_) * vols_[j] * vols_[j] *
                  (std::exp(2.0 * reversion_ * (t + dt)) -
-                  std::exp(2.0 * reversion_ *
-                           (std::max(j > 0 ? times_[j - 1] : 0.0, t))));
+                  std::exp(2.0 * reversion_ * (std::max(j > 0 ? times_[j - 1] : 0.0, t))));
+        }
 
         return v;
     }

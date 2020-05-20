@@ -45,8 +45,9 @@ namespace QuantLib {
 struct integrand {
     Real operator()(const std::vector<Real>& arg) const {
         Real sum = 1.;
-        for(Size i=0; i<arg.size(); i++) 
-            sum *= std::exp(-arg[i]*arg[i]) * std::cos(arg[i]);
+        for (Size i = 0; i < arg.size(); i++) {
+            sum *= std::exp(-arg[i] * arg[i]) * std::cos(arg[i]);
+        }
         return sum;
     }
 };
@@ -75,9 +76,9 @@ int main() {
     #endif
 
     std::vector<ext::shared_ptr<Integrator> > integrals;
-    for(Size i=0; i<dimension; i++)
-        integrals.push_back(
-        ext::make_shared<TrapezoidIntegral<Default> >(1.e-4, 20));
+    for (Size i = 0; i < dimension; i++) {
+        integrals.push_back(ext::make_shared<TrapezoidIntegral<Default> >(1.e-4, 20));
+    }
     std::vector<Real> a_limits(integrals.size(), -4.);
     std::vector<Real> b_limits(integrals.size(), 4.);
     MultidimIntegral testIntg(integrals);

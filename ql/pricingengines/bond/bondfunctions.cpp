@@ -38,8 +38,9 @@ namespace QuantLib {
 
     bool BondFunctions::isTradable(const Bond& bond,
                                    Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return bond.notional(settlement)!=0.0;
     }
@@ -47,8 +48,9 @@ namespace QuantLib {
     Leg::const_reverse_iterator
     BondFunctions::previousCashFlow(const Bond& bond,
                                     Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::previousCashFlow(bond.cashflows(),
                                            false, settlement);
@@ -56,8 +58,9 @@ namespace QuantLib {
 
     Leg::const_iterator BondFunctions::nextCashFlow(const Bond& bond,
                                                     Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::nextCashFlow(bond.cashflows(),
                                        false, settlement);
@@ -65,8 +68,9 @@ namespace QuantLib {
 
     Date BondFunctions::previousCashFlowDate(const Bond& bond,
                                              Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::previousCashFlowDate(bond.cashflows(),
                                                false, settlement);
@@ -74,8 +78,9 @@ namespace QuantLib {
 
     Date BondFunctions::nextCashFlowDate(const Bond& bond,
                                          Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::nextCashFlowDate(bond.cashflows(),
                                            false, settlement);
@@ -83,8 +88,9 @@ namespace QuantLib {
 
     Real BondFunctions::previousCashFlowAmount(const Bond& bond,
                                                Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::previousCashFlowAmount(bond.cashflows(),
                                                  false, settlement);
@@ -92,8 +98,9 @@ namespace QuantLib {
 
     Real BondFunctions::nextCashFlowAmount(const Bond& bond,
                                            Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::nextCashFlowAmount(bond.cashflows(),
                                              false, settlement);
@@ -101,8 +108,9 @@ namespace QuantLib {
 
     Rate BondFunctions::previousCouponRate(const Bond& bond,
                                            Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::previousCouponRate(bond.cashflows(),
                                              false, settlement);
@@ -110,8 +118,9 @@ namespace QuantLib {
 
     Rate BondFunctions::nextCouponRate(const Bond& bond,
                                        Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         return CashFlows::nextCouponRate(bond.cashflows(),
                                          false, settlement);
@@ -119,8 +128,9 @@ namespace QuantLib {
 
     Date BondFunctions::accrualStartDate(const Bond& bond,
                                          Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -132,8 +142,9 @@ namespace QuantLib {
 
     Date BondFunctions::accrualEndDate(const Bond& bond,
                                        Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -145,8 +156,9 @@ namespace QuantLib {
 
     Date BondFunctions::referencePeriodStart(const Bond& bond,
                                              Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -158,8 +170,9 @@ namespace QuantLib {
 
     Date BondFunctions::referencePeriodEnd(const Bond& bond,
                                            Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -171,8 +184,9 @@ namespace QuantLib {
 
     Time BondFunctions::accrualPeriod(const Bond& bond,
                                       Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -184,8 +198,9 @@ namespace QuantLib {
 
     Date::serial_type BondFunctions::accrualDays(const Bond& bond,
                                                  Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -197,8 +212,9 @@ namespace QuantLib {
 
     Time BondFunctions::accruedPeriod(const Bond& bond,
                                       Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -210,8 +226,9 @@ namespace QuantLib {
 
     Date::serial_type BondFunctions::accruedDays(const Bond& bond,
                                                  Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -223,8 +240,9 @@ namespace QuantLib {
 
     Real BondFunctions::accruedAmount(const Bond& bond,
                                       Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -240,8 +258,9 @@ namespace QuantLib {
     Real BondFunctions::cleanPrice(const Bond& bond,
                                    const YieldTermStructure& discountCurve,
                                    Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -257,8 +276,9 @@ namespace QuantLib {
     Real BondFunctions::bps(const Bond& bond,
                             const YieldTermStructure& discountCurve,
                             Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -273,8 +293,9 @@ namespace QuantLib {
                                 const YieldTermStructure& discountCurve,
                                 Date settlement,
                                 Real cleanPrice) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -310,8 +331,9 @@ namespace QuantLib {
     Real BondFunctions::dirtyPrice(const Bond& bond,
                                    const InterestRate& yield,
                                    Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -336,8 +358,9 @@ namespace QuantLib {
     Real BondFunctions::bps(const Bond& bond,
                             const InterestRate& yield,
                             Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -379,8 +402,9 @@ namespace QuantLib {
                                  const InterestRate& yield,
                                  Duration::Type type,
                                  Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -405,8 +429,9 @@ namespace QuantLib {
     Real BondFunctions::convexity(const Bond& bond,
                                   const InterestRate& yield,
                                   Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -429,8 +454,9 @@ namespace QuantLib {
     Real BondFunctions::basisPointValue(const Bond& bond,
                                         const InterestRate& yield,
                                         Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -454,8 +480,9 @@ namespace QuantLib {
     Real BondFunctions::yieldValueBasisPoint(const Bond& bond,
                                              const InterestRate& yield,
                                              Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -483,8 +510,9 @@ namespace QuantLib {
                                    Compounding comp,
                                    Frequency freq,
                                    Date settlement) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<
@@ -507,8 +535,9 @@ namespace QuantLib {
                                   Real accuracy,
                                   Size maxIterations,
                                   Rate guess) {
-        if (settlement == Date())
+        if (settlement == Date()) {
             settlement = bond.settlementDate();
+        }
 
         QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
                    "non tradable at " << settlement <<

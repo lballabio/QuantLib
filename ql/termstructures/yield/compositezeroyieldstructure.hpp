@@ -73,8 +73,9 @@ namespace QuantLib {
         Compounding comp, 
         Frequency freq)
     : curve1_(h1), curve2_(h2), f_(f), comp_(comp), freq_(freq) {
-        if (!curve1_.empty() && !curve2_.empty())
+        if (!curve1_.empty() && !curve2_.empty()) {
             enableExtrapolation(curve1_->allowsExtrapolation() && curve2_->allowsExtrapolation());
+        }
 
         registerWith(curve1_);
         registerWith(curve2_);

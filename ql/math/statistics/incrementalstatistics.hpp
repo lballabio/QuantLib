@@ -142,16 +142,18 @@ namespace QuantLib {
         //! adds a sequence of data to the set, with default weight
         template <class DataIterator>
         void addSequence(DataIterator begin, DataIterator end) {
-            for (;begin!=end;++begin)
+            for (; begin != end; ++begin) {
                 add(*begin);
+            }
         }
         //! adds a sequence of data to the set, each with its weight
         /*! \pre weights must be positive or null */
         template <class DataIterator, class WeightIterator>
         void addSequence(DataIterator begin, DataIterator end,
                          WeightIterator wbegin) {
-            for (;begin!=end;++begin,++wbegin)
+            for (; begin != end; ++begin, ++wbegin) {
                 add(*begin, *wbegin);
+            }
         }
         //! resets the data to a null set
         void reset();

@@ -64,26 +64,38 @@ void ZabrTest::testConsistency() {
         Real z1 = zabr1.optionPrice(k);
         Real z2 = zabr2.optionPrice(k);
         Real z3 = zabr3.optionPrice(k);
-        if (std::fabs(z0 - c0) > tol)
+        if (std::fabs(z0 - c0) > tol) {
             BOOST_ERROR("Zabr short maturity lognormal expansion price "
-                          "("
-                          << z0 << ") deviates from Sabr Hagan 2002 price "
-                                   "by " << (z0 - c0));
-        if (std::fabs(z1 - c0) > tol)
+                        "("
+                        << z0
+                        << ") deviates from Sabr Hagan 2002 price "
+                           "by "
+                        << (z0 - c0));
+        }
+        if (std::fabs(z1 - c0) > tol) {
             BOOST_ERROR("Zabr short maturity normal expansion price "
-                          "("
-                          << z1 << ") deviates from Sabr Hagan 2002 price "
-                                   "by " << (z1 - c0));
-        if (std::fabs(z2 - c0) > tol)
+                        "("
+                        << z1
+                        << ") deviates from Sabr Hagan 2002 price "
+                           "by "
+                        << (z1 - c0));
+        }
+        if (std::fabs(z2 - c0) > tol) {
             BOOST_ERROR("Zabr local volatility price "
-                          "("
-                          << z2 << ") deviates from Sabr Hagan 2002 price "
-                                   "by " << (z2 - c0));
-        if (std::fabs(z3 - c0) > tol)
+                        "("
+                        << z2
+                        << ") deviates from Sabr Hagan 2002 price "
+                           "by "
+                        << (z2 - c0));
+        }
+        if (std::fabs(z3 - c0) > tol) {
             BOOST_ERROR("Zabr full finite difference price "
-                          "("
-                          << z3 << ") deviates from Sabr Hagan 2002 price "
-                                   "by " << (z3 - c0));
+                        "("
+                        << z3
+                        << ") deviates from Sabr Hagan 2002 price "
+                           "by "
+                        << (z3 - c0));
+        }
         k += 0.0001;
     }
 }

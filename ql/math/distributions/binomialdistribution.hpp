@@ -75,10 +75,11 @@ namespace QuantLib {
         CumulativeBinomialDistribution(Real p, BigNatural n);
         // function
         Real operator()(BigNatural k) const {
-            if (k >= n_)
+            if (k >= n_) {
                 return 1.0;
-            else
-                return 1.0 - incompleteBetaFunction(k+1, n_-k, p_);
+            } else {
+                return 1.0 - incompleteBetaFunction(k + 1, n_ - k, p_);
+            }
         }
       private:
         BigNatural n_;
@@ -118,17 +119,19 @@ namespace QuantLib {
 
     inline Real BinomialDistribution::operator()(BigNatural k) const {
 
-        if (k > n_) return 0.0;
+        if (k > n_) {
+            return 0.0;
+        }
 
         // p==1.0
-        if (logP_==0.0)
+        if (logP_ == 0.0) {
             return (k==n_ ? 1.0 : 0.0);
         // p==0.0
-        else if (logOneMinusP_==0.0)
+        } else if (logOneMinusP_ == 0.0) {
             return (k==0 ? 1.0 : 0.0);
-        else
-            return std::exp(binomialCoefficientLn(n_, k) +
-                            k * logP_ + (n_-k) * logOneMinusP_);
+        } else {
+            return std::exp(binomialCoefficientLn(n_, k) + k * logP_ + (n_ - k) * logOneMinusP_);
+        }
     }
 
 

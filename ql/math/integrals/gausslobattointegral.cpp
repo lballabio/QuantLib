@@ -96,16 +96,18 @@ namespace QuantLib {
             const Real integral2 = (h/6)*(y1+y13+5*(y5+y9));
             const Real integral1 = (h/1470)*(77*(y1+y13)+432*(y3+y11)+
                                              625*(y5+y9)+672*y7);
-        
-            if (std::fabs(integral2-acc) != 0.0) 
-                r = std::fabs(integral1-acc)/std::fabs(integral2-acc);
-            if (r == 0.0 || r > 1.0)
+
+            if (std::fabs(integral2 - acc) != 0.0) {
+                r = std::fabs(integral1 - acc) / std::fabs(integral2 - acc);
+            }
+            if (r == 0.0 || r > 1.0) {
                 r = 1.0;
+            }
         }
 
-        if (relAccuracy_ != Null<Real>())
+        if (relAccuracy_ != Null<Real>()) {
             return std::min(absoluteAccuracy(), acc*relTol)/(r*QL_EPSILON);
-        else {
+        } else {
             return absoluteAccuracy()/(r*QL_EPSILON);
         }
     }

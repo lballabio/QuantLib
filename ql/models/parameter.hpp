@@ -131,8 +131,9 @@ namespace QuantLib {
             Real value(const Array& params, Time t) const {
                 Size size = times_.size();
                 for (Size i=0; i<size; i++) {
-                    if (t<times_[i])
+                    if (t < times_[i]) {
                         return params[i];
+                    }
                 }
                 return params[size];
             }

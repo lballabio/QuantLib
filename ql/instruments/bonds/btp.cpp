@@ -120,8 +120,9 @@ namespace QuantLib {
         n_ = btps_.size();
 
         outstanding_ = 0.0;
-        for (Size i=0; i<n_; ++i)
+        for (Size i = 0; i < n_; ++i) {
             outstanding_ += outstandings[i];
+        }
 
         weights_.resize(n_);
         for (Size i=0; i<n_; ++i) {

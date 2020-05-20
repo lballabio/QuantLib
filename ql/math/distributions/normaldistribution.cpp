@@ -162,16 +162,18 @@ namespace QuantLib {
                 ((((b3_*result+b2_)*result+b1_)*result+b0_)*result+1.0);
         } else {
             // improved approximation for the tail (Moro 1995)
-            if (x<0.5)
+            if (x < 0.5) {
                 result = x;
-            else
-                result=1.0-x;
+            } else {
+                result = 1.0 - x;
+            }
             result = std::log(-std::log(result));
             result = c0_+result*(c1_+result*(c2_+result*(c3_+result*
                                    (c4_+result*(c5_+result*(c6_+result*
                                                        (c7_+result*c8_)))))));
-            if (x<0.5)
-                result=-result;
+            if (x < 0.5) {
+                result = -result;
+            }
         }
 
         return average_ + result*sigma_;

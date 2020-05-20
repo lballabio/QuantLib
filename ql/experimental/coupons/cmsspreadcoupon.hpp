@@ -92,10 +92,11 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor& v) {
             Visitor<CappedFlooredCmsSpreadCoupon>* v1 =
                 dynamic_cast<Visitor<CappedFlooredCmsSpreadCoupon>*>(&v);
-            if (v1 != 0)
+            if (v1 != 0) {
                 v1->visit(*this);
-            else
+            } else {
                 CappedFlooredCoupon::accept(v);
+            }
         }
     };
 

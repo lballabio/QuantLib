@@ -68,8 +68,9 @@ namespace QuantLib {
                        "maxTimeSteps must be zero or "
                        "greater than or equal to timeSteps, "
                        << maxTimeSteps << " not allowed");
-            if (maxTimeSteps_==0)
-               maxTimeSteps_ = std::max( (Size)1000, timeSteps_*5);
+            if (maxTimeSteps_ == 0) {
+                maxTimeSteps_ = std::max((Size)1000, timeSteps_ * 5);
+            }
             registerWith(process_);
         }
         void calculate() const;
@@ -132,10 +133,11 @@ namespace QuantLib {
         if (boost::is_base_of<CoxRossRubinstein, T>::value && 
             maxTimeSteps_ > timeSteps_ && s0 > 0 && arguments_.barrier > 0) {
             Real divisor;
-            if (s0 > arguments_.barrier)
-               divisor = std::pow(std::log(s0 / arguments_.barrier), 2);
-            else
-               divisor = std::pow(std::log(arguments_.barrier / s0), 2);
+            if (s0 > arguments_.barrier) {
+                divisor = std::pow(std::log(s0 / arguments_.barrier), 2);
+            } else {
+                divisor = std::pow(std::log(arguments_.barrier / s0), 2);
+            }
             if (!close(divisor,0)) {
                 for (Size i=1; i < timeSteps_ ; ++i) {
                     Size optimum = Size(( i*i * v*v * maturity) / divisor);
@@ -146,8 +148,9 @@ namespace QuantLib {
                 }
             }
 
-            if (optimum_steps > maxTimeSteps_) 
-               optimum_steps = maxTimeSteps_; // too high, limit
+            if (optimum_steps > maxTimeSteps_) {
+                optimum_steps = maxTimeSteps_; // too high, limit
+            }
         }
 
         TimeGrid grid(maturity, optimum_steps);

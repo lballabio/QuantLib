@@ -61,14 +61,18 @@ struct SviSpecs {
                        std::vector<bool> &paramIsFixed, const Real &forward,
                        const Real expiryTime,
                        const std::vector<Real> &addParams) {
-        if (params[2] == Null<Real>())
+        if (params[2] == Null<Real>()) {
             params[2] = 0.1;
-        if (params[3] == Null<Real>())
+        }
+        if (params[3] == Null<Real>()) {
             params[3] = -0.4;
-        if (params[4] == Null<Real>())
+        }
+        if (params[4] == Null<Real>()) {
             params[4] = 0.0;
-        if (params[1] == Null<Real>())
+        }
+        if (params[1] == Null<Real>()) {
             params[1] = 2.0 / (1.0 + std::fabs(params[3]));
+        }
         if (params[0] == Null<Real>()) {
             params[0] = std::max(
                 0.20 * 0.20 * expiryTime -
@@ -83,18 +87,22 @@ struct SviSpecs {
                const Real &forward, const Real expiryTime,
                const std::vector<Real> &r, const std::vector<Real> &addParams) {
         Size j = 0;
-        if (!paramIsFixed[2])
+        if (!paramIsFixed[2]) {
             values[2] = r[j++] + eps1();
-        if (!paramIsFixed[3])
+        }
+        if (!paramIsFixed[3]) {
             values[3] = (2.0 * r[j++] - 1.0) * eps2();
-        if (!paramIsFixed[4])
+        }
+        if (!paramIsFixed[4]) {
             values[4] = (2.0 * r[j++] - 1.0);
-        if (!paramIsFixed[1])
+        }
+        if (!paramIsFixed[1]) {
             values[1] = r[j++] * 4.0 / (1.0 + std::fabs(values[3])) * eps2();
-        if (!paramIsFixed[0])
+        }
+        if (!paramIsFixed[0]) {
             values[0] = r[j++] * expiryTime -
-                        eps2() * (values[1] * values[2] *
-                                  std::sqrt(1.0 - values[3] * values[3]));
+                        eps2() * (values[1] * values[2] * std::sqrt(1.0 - values[3] * values[3]));
+        }
     }
     Array inverse(const Array &y, const std::vector<bool> &,
                   const std::vector<Real> &, const Real) {
@@ -116,16 +124,16 @@ struct SviSpecs {
         y[2] = x[2] * x[2] + eps1();
         y[3] = std::sin(x[3]) * eps2();
         y[4] = x[4];
-        if (paramIsFixed[1])
+        if (paramIsFixed[1]) {
             y[1] = params[1];
-        else
-            y[1] = (std::atan(x[1]) + M_PI / 2.0) / M_PI * eps2() * 4.0 /
-                   (1.0 + std::fabs(y[3]));
-        if (paramIsFixed[0])
+        } else {
+            y[1] = (std::atan(x[1]) + M_PI / 2.0) / M_PI * eps2() * 4.0 / (1.0 + std::fabs(y[3]));
+        }
+        if (paramIsFixed[0]) {
             y[0] = params[0];
-        else
-            y[0] = eps1() + x[0] * x[0] -
-                   y[1] * y[2] * std::sqrt(1.0 - y[3] * y[3]);
+        } else {
+            y[0] = eps1() + x[0] * x[0] - y[1] * y[2] * std::sqrt(1.0 - y[3] * y[3]);
+        }
         return y;
     }
     Real weight(const Real strike, const Real forward, const Real stdDev,

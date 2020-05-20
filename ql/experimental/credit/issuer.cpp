@@ -61,9 +61,11 @@ namespace QuantLib {
 
     const Handle<DefaultProbabilityTermStructure>&
         Issuer::defaultProbability(const DefaultProbKey& key) const {
-        for(Size i=0; i<probabilities_.size(); i++)
-            if(key == probabilities_[i].first)
+        for (Size i = 0; i < probabilities_.size(); i++) {
+            if (key == probabilities_[i].first) {
                 return probabilities_[i].second;
+            }
+        }
         QL_FAIL("Probability curve not available.");
     }
 
@@ -79,9 +81,10 @@ namespace QuantLib {
             // am i really speeding things up with the date comp?
             itev != events_.end(); // && (*itev)->date() > start;
             ++itev) {
-            if((*itev)->matchesDefaultKey(contractKey) &&
-                between(*itev, start, end, includeRefDate))
+            if ((*itev)->matchesDefaultKey(contractKey) &&
+                between(*itev, start, end, includeRefDate)) {
                 return *itev;
+            }
         }
         return ext::shared_ptr<DefaultEvent>();
     }
@@ -100,9 +103,10 @@ namespace QuantLib {
             // am i really speeding things up with the date comp?
             itev != events_.end(); // && (*itev)->date() > start;
             ++itev) {
-            if((*itev)->matchesDefaultKey(contractKey) &&
-                between(*itev, start, end, includeRefDate))
+            if ((*itev)->matchesDefaultKey(contractKey) &&
+                between(*itev, start, end, includeRefDate)) {
                 defaults.push_back(*itev);
+            }
         }
         return defaults;
     }

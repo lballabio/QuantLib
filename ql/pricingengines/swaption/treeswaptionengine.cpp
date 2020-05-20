@@ -86,10 +86,9 @@ namespace QuantLib {
         }
 
         std::vector<Time> stoppingTimes(arguments_.exercise->dates().size());
-        for (Size i=0; i<stoppingTimes.size(); ++i)
-            stoppingTimes[i] =
-                dayCounter.yearFraction(referenceDate,
-                                        arguments_.exercise->date(i));
+        for (Size i = 0; i < stoppingTimes.size(); ++i) {
+            stoppingTimes[i] = dayCounter.yearFraction(referenceDate, arguments_.exercise->date(i));
+        }
 
         swaption.initialize(lattice, stoppingTimes.back());
 

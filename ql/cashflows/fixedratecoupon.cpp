@@ -111,8 +111,9 @@ namespace QuantLib {
                                                 Compounding comp,
                                                 Frequency freq) {
         couponRates_.resize(rates.size());
-        for (Size i=0; i<rates.size(); ++i)
+        for (Size i = 0; i < rates.size(); ++i) {
             couponRates_[i] = InterestRate(rates[i], dc, comp, freq);
+        }
         return *this;
     }
 
@@ -209,14 +210,16 @@ namespace QuantLib {
                                                          exCouponAdjustment_,
                                                          exCouponEndOfMonth_);
             }
-            if ((i-1) < couponRates_.size())
+            if ((i - 1) < couponRates_.size()) {
                 rate = couponRates_[i-1];
-            else
+            } else {
                 rate = couponRates_.back();
-            if ((i-1) < notionals_.size())
+            }
+            if ((i - 1) < notionals_.size()) {
                 nominal = notionals_[i-1];
-            else
+            } else {
                 nominal = notionals_.back();
+            }
             leg.push_back(ext::shared_ptr<CashFlow>(new
                 FixedRateCoupon(paymentDate, nominal, rate,
                                 start, end, start, end, exCouponDate)));
@@ -233,14 +236,16 @@ namespace QuantLib {
                                                          exCouponAdjustment_,
                                                          exCouponEndOfMonth_);
             }
-            if ((N-2) < couponRates_.size())
+            if ((N - 2) < couponRates_.size()) {
                 rate = couponRates_[N-2];
-            else
+            } else {
                 rate = couponRates_.back();
-            if ((N-2) < notionals_.size())
+            }
+            if ((N - 2) < notionals_.size()) {
                 nominal = notionals_[N-2];
-            else
+            } else {
                 nominal = notionals_.back();
+            }
             InterestRate r( rate.rate(), lastPeriodDC_.empty() ?
                 rate.dayCounter() :
                 lastPeriodDC_ , rate.compounding(), rate.frequency() );

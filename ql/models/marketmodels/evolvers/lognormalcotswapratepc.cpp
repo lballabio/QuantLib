@@ -83,9 +83,9 @@ namespace QuantLib {
     {
         QL_REQUIRE(swapRates.size()==numberOfRates_,
                    "mismatch between swapRates and rateTimes");
-        for (Size i=0; i<numberOfRates_; ++i)
-            initialLogSwapRates_[i] = std::log(swapRates[i] +
-                                               displacements_[i]);
+        for (Size i = 0; i < numberOfRates_; ++i) {
+            initialLogSwapRates_[i] = std::log(swapRates[i] + displacements_[i]);
+        }
         curveState_.setOnCoterminalSwapRates(swapRates);
         calculators_[initialStep_].compute(curveState_, initialDrifts_);
     }
@@ -109,24 +109,23 @@ namespace QuantLib {
          //we're going from T1 to T2
 
         //a) compute drifts D1 at T1;
-        if (currentStep_ > initialStep_)
-            calculators_[currentStep_].compute(curveState_, drifts1_);
-        else
-            std::copy(initialDrifts_.begin(), initialDrifts_.end(),
-                      drifts1_.begin());
+         if (currentStep_ > initialStep_) {
+             calculators_[currentStep_].compute(curveState_, drifts1_);
+         } else {
+             std::copy(initialDrifts_.begin(), initialDrifts_.end(), drifts1_.begin());
+         }
 
-        //b) evolve forwards up to T2 using D1;
-        Real weight = generator_->nextStep(brownians_);
-        const Matrix& A = marketModel_->pseudoRoot(currentStep_);
-        const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
+         // b) evolve forwards up to T2 using D1;
+         Real weight = generator_->nextStep(brownians_);
+         const Matrix& A = marketModel_->pseudoRoot(currentStep_);
+         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
-        Size i, alive = alive_[currentStep_];
-        for (i=alive; i<numberOfRates_; ++i) {
-            logSwapRates_[i] += drifts1_[i] + fixedDrift[i];
-            logSwapRates_[i] +=
-                std::inner_product(A.row_begin(i), A.row_end(i),
-                                   brownians_.begin(), 0.0);
-            swapRates_[i] = std::exp(logSwapRates_[i]) - displacements_[i];
+         Size i, alive = alive_[currentStep_];
+         for (i = alive; i < numberOfRates_; ++i) {
+             logSwapRates_[i] += drifts1_[i] + fixedDrift[i];
+             logSwapRates_[i] +=
+                 std::inner_product(A.row_begin(i), A.row_end(i), brownians_.begin(), 0.0);
+             swapRates_[i] = std::exp(logSwapRates_[i]) - displacements_[i];
         }
 
         // intermediate curve state update

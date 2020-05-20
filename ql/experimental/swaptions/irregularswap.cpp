@@ -54,15 +54,16 @@ namespace QuantLib {
         //Fixed leg
         legs_[0] = fixLeg;
 
-        for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i)
+        for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i) {
             registerWith(*i);
-        
+        }
+
         //Floating Leg
         legs_[1] = floatLeg;
 
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i) {
             registerWith(*i);
-
+        }
     }
 
 
@@ -75,8 +76,9 @@ namespace QuantLib {
         IrregularSwap::arguments* arguments =
             dynamic_cast<IrregularSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (!arguments) { // it's a swap engine...
             return;
+        }
 
         arguments->type = type_;
         //arguments->nominal = nominal_;
@@ -187,13 +189,15 @@ namespace QuantLib {
 
         if (fairRate_ == Null<Rate>()) {
             // calculate it from other results
-            if (legBPS_[0] != Null<Real>()) 
+            if (legBPS_[0] != Null<Real>()) {
                 fairRate_ = 0.0; // Debug: legs_[0]->fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
+            }
         }
         if (fairSpread_ == Null<Spread>()) {
             // ditto
-            if (legBPS_[1] != Null<Real>())
-                fairSpread_ = 0.0; //DEBUG: spread_ - NPV_/(legBPS_[1]/basisPoint);
+            if (legBPS_[1] != Null<Real>()) {
+                fairSpread_ = 0.0; // DEBUG: spread_ - NPV_/(legBPS_[1]/basisPoint);
+            }
         }
     }
 

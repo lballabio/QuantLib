@@ -62,8 +62,9 @@ namespace QuantLib {
                 xMid = root_+dx;
                 fMid = f(xMid);
                 ++evaluationNumber_;
-                if (fMid <= 0.0)
+                if (fMid <= 0.0) {
                     root_ = xMid;
+                }
                 if (std::fabs(dx) < xAccuracy || (close(fMid, 0.0))) {
                     f(root_);
                     ++evaluationNumber_;

@@ -35,12 +35,11 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
-            || (d == 1  && m == January)
+            || (d == 1 && m == January)
             // Australia Day, January 26th (possibly moved to Monday)
-            || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) &&
-                m == January)
+            || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // ANZAC Day, April 25th (possibly moved to Monday)
@@ -52,12 +51,11 @@ namespace QuantLib {
             // Labour Day, first Monday in October
             || (d <= 7 && w == Monday && m == October)
             // Christmas, December 25th (possibly Monday or Tuesday)
-            || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
-                && m == December)
+            || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday))) && m == December)
             // Boxing Day, December 26th (possibly Monday or Tuesday)
-            || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
-                && m == December))
+            || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday))) && m == December)) {
             return false;
+        }
         return true;
     }
 

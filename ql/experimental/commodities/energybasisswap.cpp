@@ -212,10 +212,11 @@ namespace QuantLib {
                         receiveQuoteValue * receiveIndexUomConversionFactor *
                         receiveIndexFxConversionFactor;
 
-                    if (spreadToPayLeg_)
+                    if (spreadToPayLeg_) {
                         payLegPriceValue += basisValue;
-                    else
+                    } else {
                         receiveLegPriceValue += basisValue;
+                    }
 
                     dailyPositions_[stepDate] =
                         EnergyDailyPosition(stepDate, payLegPriceValue,

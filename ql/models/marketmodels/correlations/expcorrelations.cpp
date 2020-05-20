@@ -88,11 +88,12 @@ namespace QuantLib {
         checkIncreasingTimes(rateTimes_);
 
         // corrTimes must include all rateTimes but the last
-        if (times_ == std::vector<Time>())
+        if (times_ == std::vector<Time>()) {
             times_ = std::vector<Time>(rateTimes_.begin(),
                                        rateTimes_.end()-1);
-        else
+        } else {
             checkIncreasingTimes(times_);
+        }
 
         if (close(gamma,1.0)) {
             std::vector<Time> temp(rateTimes_.begin(), rateTimes_.end()-1);

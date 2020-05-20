@@ -64,8 +64,9 @@ namespace QuantLib {
                             static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
-            if (mandatoryTimes_[0] > 0.0)
+            if (mandatoryTimes_[0] > 0.0) {
                 times_.push_back(0.0);
+            }
 
             times_.insert(times_.end(),
                           mandatoryTimes_.begin(), mandatoryTimes_.end());
@@ -106,8 +107,9 @@ namespace QuantLib {
                 std::adjacent_difference(mandatoryTimes_.begin(),
                                          mandatoryTimes_.end(),
                                          std::back_inserter(diff));
-                if (diff.front()==0.0)
+                if (diff.front() == 0.0) {
                     diff.erase(diff.begin());
+                }
                 dtMax = *(std::min_element(diff.begin(), diff.end()));
             } else {
                 dtMax = last/steps;
@@ -126,8 +128,9 @@ namespace QuantLib {
                     nSteps = (nSteps!=0 ? nSteps : 1);
                     Time dt = (periodEnd - periodBegin)/nSteps;
                     times_.reserve(nSteps);
-                    for (Size n=1; n<=nSteps; ++n)
-                        times_.push_back(periodBegin + n*dt);
+                    for (Size n = 1; n <= nSteps; ++n) {
+                        times_.push_back(periodBegin + n * dt);
+                    }
                 }
                 periodBegin = periodEnd;
             }

@@ -35,18 +35,15 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
-                && m == January)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == January)
             // Orthodox Christmas
-            || ((d == 7 || ((d == 8 || d == 9) && w == Monday))
-                && m == January)
+            || ((d == 7 || ((d == 8 || d == 9) && w == Monday)) && m == January)
             // Women's Day
-            || ((d == 8 || ((d == 9 || d == 10) && w == Monday))
-                && m == March)
+            || ((d == 8 || ((d == 9 || d == 10) && w == Monday)) && m == March)
             // Orthodox Easter Monday
             || (dd == em)
             // Holy Trinity Day
-            || (dd == em+49)
+            || (dd == em + 49)
             // Workers' Solidarity Days
             || ((d == 1 || d == 2 || (d == 3 && w == Monday)) && m == May)
             // Victory Day
@@ -56,8 +53,9 @@ namespace QuantLib {
             // Independence Day
             || (d == 24 && m == August)
             // Defender's Day (since 2015)
-            || (d == 14 && m == October && y >= 2015))
+            || (d == 14 && m == October && y >= 2015)) {
             return false;
+        }
         return true;
     }
 

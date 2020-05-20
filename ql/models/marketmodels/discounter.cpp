@@ -33,8 +33,9 @@ namespace QuantLib {
 
         // handle the case where the payment is in the last
         // period or after the last period
-        if (before_ > rateTimes.size()-2)
-            before_ =  rateTimes.size()-2;
+        if (before_ > rateTimes.size() - 2) {
+            before_ = rateTimes.size() - 2;
+        }
 
         beforeWeight_=1.0-(paymentTime-rateTimes[before_])/
             (rateTimes[before_+1]-rateTimes[before_]);
@@ -43,12 +44,14 @@ namespace QuantLib {
     Real MarketModelDiscounter::numeraireBonds(const CurveState& curveState,
                                                Size numeraire) const {
         Real preDF = curveState.discountRatio(before_,numeraire);
-        if (beforeWeight_==1.0)
+        if (beforeWeight_ == 1.0) {
             return preDF;
+        }
 
         Real postDF = curveState.discountRatio(before_+1,numeraire);
-        if (beforeWeight_==0.0)
+        if (beforeWeight_ == 0.0) {
             return postDF;
+        }
 
         return std::pow(preDF,beforeWeight_)*std::pow(postDF,1.-beforeWeight_);
     }

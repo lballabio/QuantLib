@@ -84,19 +84,21 @@ namespace QuantLib {
                 }
             }
             Real value(Real x) const {
-                if (x <= this->xBegin_[0]
-                    || std::distance(this->xBegin_, this->xEnd_) == 1)
+                if (x <= this->xBegin_[0] || std::distance(this->xBegin_, this->xEnd_) == 1) {
                     return this->yBegin_[0];
+                }
 
                 Size i = this->locate(x);
-                if (x == this->xBegin_[i])
+                if (x == this->xBegin_[i]) {
                     return this->yBegin_[i];
-                else
-                    return this->yBegin_[i+1];
+                } else {
+                    return this->yBegin_[i + 1];
+                }
             }
             Real primitive(Real x) const {
-                if (std::distance(this->xBegin_, this->xEnd_) == 1)
+                if (std::distance(this->xBegin_, this->xEnd_) == 1) {
                     return (x - this->xBegin_[0]) * this->yBegin_[0];
+                }
 
                 Size i = this->locate(x);
                 Real dx = x-this->xBegin_[i];

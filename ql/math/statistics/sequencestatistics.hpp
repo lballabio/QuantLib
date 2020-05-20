@@ -135,9 +135,9 @@ namespace QuantLib {
             quadraticSum_ += weight * outerProduct(begin, end,
                                                    begin, end);
 
-            for (Size i=0; i<dimension_; ++begin, ++i)
+            for (Size i = 0; i < dimension_; ++begin, ++i) {
                 stats_[i].add(*begin, weight);
-
+            }
         }
         //@}
       protected:
@@ -231,8 +231,9 @@ namespace QuantLib {
         // (re-)initialize
         if (dimension > 0) {
             if (dimension == dimension_) {
-                for (Size i=0; i<dimension_; ++i)
+                for (Size i = 0; i < dimension_; ++i) {
                     stats_[i].reset();
+                }
             } else {
                 dimension_ = dimension;
                 stats_ = std::vector<Stat>(dimension);

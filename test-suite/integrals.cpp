@@ -309,13 +309,12 @@ Real pw_fct(const Real t) { return QL_PIECEWISE_FUNCTION(x, y, t); }
 void pw_check(const Integrator &in, const Real a, const Real b,
               const Real expected) {
     Real calculated = in(pw_fct, a, b);
-    if (!close(calculated, expected))
+    if (!close(calculated, expected)) {
         BOOST_FAIL(std::setprecision(16)
-                   << "piecewise integration over [" << a << "," << b
-                   << "] failed: "
-                   << "\n   calculated: " << calculated
-                   << "\n   expected:   " << expected
+                   << "piecewise integration over [" << a << "," << b << "] failed: "
+                   << "\n   calculated: " << calculated << "\n   expected:   " << expected
                    << "\n   difference: " << (calculated - expected));
+    }
 }
 } // empty namespace
 

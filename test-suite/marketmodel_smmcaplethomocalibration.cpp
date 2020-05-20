@@ -110,10 +110,12 @@ namespace market_model_smm_caplet_homo_calibration_test {
         rateTimes_ = std::vector<Time>(dates.size()-1);
         accruals_ = std::vector<Real>(rateTimes_.size()-1);
         dayCounter_ = SimpleDayCounter();
-        for (Size i=1; i<dates.size(); ++i)
-            rateTimes_[i-1] = dayCounter_.yearFraction(todaysDate_, dates[i]);
-        for (Size i=1; i<rateTimes_.size(); ++i)
-            accruals_[i-1] = rateTimes_[i] - rateTimes_[i-1];
+        for (Size i = 1; i < dates.size(); ++i) {
+            rateTimes_[i - 1] = dayCounter_.yearFraction(todaysDate_, dates[i]);
+        }
+        for (Size i = 1; i < rateTimes_.size(); ++i) {
+            accruals_[i - 1] = rateTimes_[i] - rateTimes_[i - 1];
+        }
 
         // Rates & displacement
         todaysForwards_ = std::vector<Rate>(accruals_.size());
@@ -134,9 +136,10 @@ namespace market_model_smm_caplet_homo_calibration_test {
         // Discounts
         todaysDiscounts_ = std::vector<DiscountFactor>(rateTimes_.size());
         todaysDiscounts_[0] = 0.95;
-        for (Size i=1; i<rateTimes_.size(); ++i)
-            todaysDiscounts_[i] = todaysDiscounts_[i-1] /
-                (1.0+todaysForwards_[i-1]*accruals_[i-1]);
+        for (Size i = 1; i < rateTimes_.size(); ++i) {
+            todaysDiscounts_[i] =
+                todaysDiscounts_[i - 1] / (1.0 + todaysForwards_[i - 1] * accruals_[i - 1]);
+        }
 
         //// Swaption Volatilities
         //Volatility mktSwaptionVols[] = {
@@ -292,8 +295,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
                                        capletTolerance,
                                        innerMaxIterations,
                                        innerTolerance);
-    if (!result)
+    if (!result) {
         BOOST_ERROR("calibration failed");
+    }
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
     ext::shared_ptr<MarketModel> smm(new
@@ -327,24 +331,29 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
         swapTerminalCovariance += swapPseudoRoots[i] * transpose(swapPseudoRoots[i]);
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
-        if (error>swapTolerance)
-            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " swaption vol:"
-                        "\n expected:  " << io::rate(expSwaptionVol) <<
-                        "\n realized:  " << io::rate(swaptionVol) <<
-                        "\n error:     " << error <<
-                        "\n tolerance: " << swapTolerance);
+        if (error > swapTolerance) {
+            BOOST_ERROR("failed to reproduce "
+                        << io::ordinal(i + 1)
+                        << " swaption vol:"
+                           "\n expected:  "
+                        << io::rate(expSwaptionVol) << "\n realized:  " << io::rate(swaptionVol)
+                        << "\n error:     " << error << "\n tolerance: " << swapTolerance);
+        }
     }
 
     // check caplet fit
     for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
-        if (error>capletTolerance)
-            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " caplet vol:"
-                        "\n expected:         " << io::rate(capletVols_[i]) <<
-                        "\n realized:         " << io::rate(capletVols[i]) <<
-                        "\n percentage error: " << error/capletVols_[i] <<
-                        "\n error:            " << error <<
-                        "\n tolerance:        " << capletTolerance);
+        if (error > capletTolerance) {
+            BOOST_ERROR("failed to reproduce " << io::ordinal(i + 1)
+                                               << " caplet vol:"
+                                                  "\n expected:         "
+                                               << io::rate(capletVols_[i])
+                                               << "\n realized:         " << io::rate(capletVols[i])
+                                               << "\n percentage error: " << error / capletVols_[i]
+                                               << "\n error:            " << error
+                                               << "\n tolerance:        " << capletTolerance);
+        }
     }
 
     Size period =2;
@@ -384,8 +393,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
 
     std::vector<Time> bigRateTimes(numberBigRates+1);
 
-    for (Size i=0; i <= numberBigRates; ++i)
-        bigRateTimes[i] = rateTimes_[i*period+offset];
+    for (Size i = 0; i <= numberBigRates; ++i) {
+        bigRateTimes[i] = rateTimes_[i * period + offset];
+    }
 
     ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
         ExponentialForwardCorrelation(rateTimes_,
@@ -492,13 +502,16 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     // check caplet fit
     for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
-        if (error>capletTolerance)
-            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " caplet vol:"
-                        "\n expected:         " << io::rate(capletVols_[i]) <<
-                        "\n realized:         " << io::rate(capletVols[i]) <<
-                        "\n percentage error: " << error/capletVols_[i] <<
-                        "\n error:            " << error <<
-                        "\n tolerance:        " << capletTolerance);
+        if (error > capletTolerance) {
+            BOOST_ERROR("failed to reproduce " << io::ordinal(i + 1)
+                                               << " caplet vol:"
+                                                  "\n expected:         "
+                                               << io::rate(capletVols_[i])
+                                               << "\n realized:         " << io::rate(capletVols[i])
+                                               << "\n percentage error: " << error / capletVols_[i]
+                                               << "\n error:            " << error
+                                               << "\n tolerance:        " << capletTolerance);
+        }
     }
 
 
@@ -520,12 +533,14 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
         Volatility swaptionVol =  sqrt(swapTerminalCovariance[i][i]/time);
 
         error = std::fabs(swaptionVol-expSwaptionVol);
-        if (error>swapTolerance)
-            BOOST_ERROR("failed to reproduce " << io::ordinal(i) << " swaption vol:"
-                        "\n expected:  " << io::rate(expSwaptionVol) <<
-                        "\n realized:  " << io::rate(swaptionVol) <<
-                        "\n error:     " << error <<
-                        "\n tolerance: " << swapTolerance);
+        if (error > swapTolerance) {
+            BOOST_ERROR("failed to reproduce "
+                        << io::ordinal(i)
+                        << " swaption vol:"
+                           "\n expected:  "
+                        << io::rate(expSwaptionVol) << "\n realized:  " << io::rate(swaptionVol)
+                        << "\n error:     " << error << "\n tolerance: " << swapTolerance);
+        }
     }
 
 
@@ -556,32 +571,35 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
         optimizer.findClosest(maxIterations, tolerance, y1, y2, y3);
 
         Real errorTol = 1e-12;
-        if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y1=1: "
-            << y1 << ", " << y2 << ", "  << y3);
+        if (fabs(y1 - 1.0) > errorTol) {
+            BOOST_ERROR("\n failed to reproduce y1=1: " << y1 << ", " << y2 << ", " << y3);
+        }
 
-        if ( fabs(y2-0.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y2=0: "
-            << y1 << ", " << y2 << ", "  << y3);
+        if (fabs(y2 - 0.0) > errorTol) {
+            BOOST_ERROR("\n failed to reproduce y2=0: " << y1 << ", " << y2 << ", " << y3);
+        }
 
-        if ( fabs(y3-0.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y3=0: "
-            << y1 << ", " <<y2 << ", "  << y3);
+        if (fabs(y3 - 0.0) > errorTol) {
+            BOOST_ERROR("\n failed to reproduce y3=0: " << y1 << ", " << y2 << ", " << y3);
+        }
 
 
         optimizer.findByProjection(y1, y2, y3);
 
-        if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\nfindByProjection failed to reproduce y1=1: "
-            << y1 << ", " << y2 << ", "  << y3);
+        if (fabs(y1 - 1.0) > errorTol) {
+            BOOST_ERROR("\nfindByProjection failed to reproduce y1=1: " << y1 << ", " << y2 << ", "
+                                                                        << y3);
+        }
 
-        if ( fabs(y2-0.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y2=0: "
-            << y1 << ", " << y2 << ", "  << y3);
+        if (fabs(y2 - 0.0) > errorTol) {
+            BOOST_ERROR("\n findByProjection failed to reproduce y2=0: " << y1 << ", " << y2 << ", "
+                                                                         << y3);
+        }
 
-        if ( fabs(y3-0.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y3=0: "
-            << y1 << ", " <<y2 << ", "  << y3);
+        if (fabs(y3 - 0.0) > errorTol) {
+            BOOST_ERROR("\n findByProjection failed to reproduce y3=0: " << y1 << ", " << y2 << ", "
+                                                                         << y3);
+        }
     }
 
    {
@@ -600,33 +618,35 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
         optimizer.findClosest(maxIterations, tolerance, y1, y2, y3);
 
         Real errorTol = 1e-4;
-        if ( fabs(y1-1.03306) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y1=1.03306: "
-            << y1 << ", " << y2 << ", "  << y3);
+        if (fabs(y1 - 1.03306) > errorTol) {
+            BOOST_ERROR("\n failed to reproduce y1=1.03306: " << y1 << ", " << y2 << ", " << y3);
+        }
 
-        if ( fabs(y2-0.999453) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y2=0.999453: "
-            << y1 << ", " << y2 << ", "  << y3);
+        if (fabs(y2 - 0.999453) > errorTol) {
+            BOOST_ERROR("\n failed to reproduce y2=0.999453: " << y1 << ", " << y2 << ", " << y3);
+        }
 
-        if ( fabs(y3-4.78893) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y3=4.78893: "
-            << y1 << ", " <<y2 << ", "  << y3);
+        if (fabs(y3 - 4.78893) > errorTol) {
+            BOOST_ERROR("\n failed to reproduce y3=4.78893: " << y1 << ", " << y2 << ", " << y3);
+        }
 
 
         optimizer.findByProjection(y1, y2, y3);
 
-        if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y1 =1: "
-            << y1 << " " << y2 << " "  << y3);
+        if (fabs(y1 - 1.0) > errorTol) {
+            BOOST_ERROR("\n findByProjection failed to reproduce y1 =1: " << y1 << " " << y2 << " "
+                                                                          << y3);
+        }
 
-        if ( fabs(y2-1.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y2 =1: "
-            << y1 << " " << y2 << " "  << y3);
+        if (fabs(y2 - 1.0) > errorTol) {
+            BOOST_ERROR("\n findByProjection failed to reproduce y2 =1: " << y1 << " " << y2 << " "
+                                                                          << y3);
+        }
 
-        if ( fabs(y3-sqrt(23.0)) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y3 =sqrt(23): "
-            << y1 << " " <<y2 << " "  << y3);
-
+        if (fabs(y3 - sqrt(23.0)) > errorTol) {
+            BOOST_ERROR("\n findByProjection failed to reproduce y3 =sqrt(23): " << y1 << " " << y2
+                                                                                 << " " << y3);
+        }
     }
 }
 

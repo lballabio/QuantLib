@@ -63,8 +63,9 @@ namespace QuantLib {
         };
         if (knownDateSet.empty()) {
             Size n = sizeof(knownDatesArray)/sizeof(Date::serial_type);
-            for (Size i=0; i<n; ++i)
+            for (Size i = 0; i < n; ++i) {
                 knownDateSet.insert(Date(knownDatesArray[i]));
+            }
         }
 
         return knownDateSet;
@@ -89,19 +90,33 @@ namespace QuantLib {
         string code = to_upper_copy(ecbCode);
         string monthString = code.substr(0, 3);
         Month m;
-        if (monthString=="JAN")      m = January;
-        else if (monthString=="FEB") m = February;
-        else if (monthString=="MAR") m = March;
-        else if (monthString=="APR") m = April;
-        else if (monthString=="MAY") m = May;
-        else if (monthString=="JUN") m = June;
-        else if (monthString=="JUL") m = July;
-        else if (monthString=="AUG") m = August;
-        else if (monthString=="SEP") m = September;
-        else if (monthString=="OCT") m = October;
-        else if (monthString=="NOV") m = November;
-        else if (monthString=="DEC") m = December;
-        else QL_FAIL("not an ECB month (and it should have been)");
+        if (monthString == "JAN") {
+            m = January;
+        } else if (monthString == "FEB") {
+            m = February;
+        } else if (monthString == "MAR") {
+            m = March;
+        } else if (monthString == "APR") {
+            m = April;
+        } else if (monthString == "MAY") {
+            m = May;
+        } else if (monthString == "JUN") {
+            m = June;
+        } else if (monthString == "JUL") {
+            m = July;
+        } else if (monthString == "AUG") {
+            m = August;
+        } else if (monthString == "SEP") {
+            m = September;
+        } else if (monthString == "OCT") {
+            m = October;
+        } else if (monthString == "NOV") {
+            m = November;
+        } else if (monthString == "DEC") {
+            m = December;
+        } else {
+            QL_FAIL("not an ECB month (and it should have been)");
+        }
 
         // lexical_cast causes compilation errors with x64
         //Year y = boost::lexical_cast<Year>(code.substr(3, 2));
@@ -112,8 +127,9 @@ namespace QuantLib {
                               Date(Settings::instance().evaluationDate()));
         Year referenceYear = (referenceDate.year() % 100);
         y += referenceDate.year() - referenceYear;
-        if (y<Date::minDate().year())
+        if (y < Date::minDate().year()) {
             return ECB::nextDate(Date::minDate());
+        }
 
         return ECB::nextDate(Date(1, m, y) - 1);
     }
@@ -126,8 +142,9 @@ namespace QuantLib {
         std::ostringstream ECBcode;
         unsigned int y = ecbDate.year() % 100;
         string padding;
-        if (y < 10)
+        if (y < 10) {
             padding = "0";
+        }
         switch(ecbDate.month()) {
           case January:
             ECBcode << "JAN" << padding << y;
@@ -208,33 +225,50 @@ namespace QuantLib {
 
     bool ECB::isECBcode(const std::string& ecbCode) {
 
-        if (ecbCode.length() != 5)
+        if (ecbCode.length() != 5) {
             return false;
+        }
 
         string code = to_upper_copy(ecbCode);
 
         string str1("0123456789");
         string::size_type loc = str1.find(code.substr(3, 1), 0);
-        if (loc == string::npos)
+        if (loc == string::npos) {
             return false;
+        }
         loc = str1.find(code.substr(4, 1), 0);
-        if (loc == string::npos)
+        if (loc == string::npos) {
             return false;
+        }
 
         string monthString = code.substr(0, 3);
-        if (monthString=="JAN")      return true;
-        else if (monthString=="FEB") return true;
-        else if (monthString=="MAR") return true;
-        else if (monthString=="APR") return true;
-        else if (monthString=="MAY") return true;
-        else if (monthString=="JUN") return true;
-        else if (monthString=="JUL") return true;
-        else if (monthString=="AUG") return true;
-        else if (monthString=="SEP") return true;
-        else if (monthString=="OCT") return true;
-        else if (monthString=="NOV") return true;
-        else if (monthString=="DEC") return true;
-        else return false;
+        if (monthString == "JAN") {
+            return true;
+        } else if (monthString == "FEB") {
+            return true;
+        } else if (monthString == "MAR") {
+            return true;
+        } else if (monthString == "APR") {
+            return true;
+        } else if (monthString == "MAY") {
+            return true;
+        } else if (monthString == "JUN") {
+            return true;
+        } else if (monthString == "JUL") {
+            return true;
+        } else if (monthString == "AUG") {
+            return true;
+        } else if (monthString == "SEP") {
+            return true;
+        } else if (monthString == "OCT") {
+            return true;
+        } else if (monthString == "NOV") {
+            return true;
+        } else if (monthString == "DEC") {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     string ECB::nextCode(const std::string& ecbCode) {
@@ -245,30 +279,44 @@ namespace QuantLib {
         std::ostringstream result;
 
         string monthString = code.substr(0, 3);
-        if (monthString=="JAN")      result << "FEB" << code.substr(3, 2);
-        else if (monthString=="FEB") result << "MAR" << code.substr(3, 2);
-        else if (monthString=="MAR") result << "APR" << code.substr(3, 2);
-        else if (monthString=="APR") result << "MAY" << code.substr(3, 2);
-        else if (monthString=="MAY") result << "JUN" << code.substr(3, 2);
-        else if (monthString=="JUN") result << "JUL" << code.substr(3, 2);
-        else if (monthString=="JUL") result << "AUG" << code.substr(3, 2);
-        else if (monthString=="AUG") result << "SEP" << code.substr(3, 2);
-        else if (monthString=="SEP") result << "OCT" << code.substr(3, 2);
-        else if (monthString=="OCT") result << "NOV" << code.substr(3, 2);
-        else if (monthString=="NOV") result << "DEC" << code.substr(3, 2);
-        else if (monthString=="DEC") {
+        if (monthString == "JAN") {
+            result << "FEB" << code.substr(3, 2);
+        } else if (monthString == "FEB") {
+            result << "MAR" << code.substr(3, 2);
+        } else if (monthString == "MAR") {
+            result << "APR" << code.substr(3, 2);
+        } else if (monthString == "APR") {
+            result << "MAY" << code.substr(3, 2);
+        } else if (monthString == "MAY") {
+            result << "JUN" << code.substr(3, 2);
+        } else if (monthString == "JUN") {
+            result << "JUL" << code.substr(3, 2);
+        } else if (monthString == "JUL") {
+            result << "AUG" << code.substr(3, 2);
+        } else if (monthString == "AUG") {
+            result << "SEP" << code.substr(3, 2);
+        } else if (monthString == "SEP") {
+            result << "OCT" << code.substr(3, 2);
+        } else if (monthString == "OCT") {
+            result << "NOV" << code.substr(3, 2);
+        } else if (monthString == "NOV") {
+            result << "DEC" << code.substr(3, 2);
+        } else if (monthString == "DEC") {
             // lexical_cast causes compilation errors with x64
             //Year y = boost::lexical_cast<Year>(code.substr(3, 2));
             unsigned int y = (io::to_integer(code.substr(3, 2)) + 1) % 100;
             string padding;
-            if (y < 10)
+            if (y < 10) {
                 padding = "0";
+            }
 
             result << "JAN" << padding << y;
-        } else QL_FAIL("not an ECB month (and it should have been)");
+        } else {
+            QL_FAIL("not an ECB month (and it should have been)");
+        }
 
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+#if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_ENSURE(isECBcode(result.str()),
                   "the result " << result.str() <<
                   " is an invalid ECB code");

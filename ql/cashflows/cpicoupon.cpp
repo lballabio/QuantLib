@@ -60,10 +60,11 @@ namespace QuantLib {
     void CPICoupon::accept(AcyclicVisitor& v) {
         Visitor<CPICoupon>* v1 =
         dynamic_cast<Visitor<CPICoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             InflationCoupon::accept(v);
+        }
     }
 
 
@@ -142,10 +143,11 @@ namespace QuantLib {
         }
 
 
-        if (growthOnly())
+        if (growthOnly()) {
             return notional() * (I1 / I0 - 1.0);
-        else
+        } else {
             return notional() * (I1 / I0);
+        }
     }
 
 

@@ -107,10 +107,11 @@ namespace QuantLib {
     inline void BlackVarianceSurface::accept(AcyclicVisitor& v) {
         Visitor<BlackVarianceSurface>* v1 =
             dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             BlackVarianceTermStructure::accept(v);
+        }
     }
 
 }

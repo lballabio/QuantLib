@@ -65,8 +65,9 @@ namespace QuantLib {
               flatPayoffExtrapolation_(flatPayoffExtrapolation),
               discountCurve_(discountCurve), probabilities_(probabilities) {
 
-            if (!discountCurve_.empty())
+            if (!discountCurve_.empty()) {
                 registerWith(discountCurve_);
+            }
         }
 
         Gaussian1dSwaptionEngine(
@@ -84,8 +85,9 @@ namespace QuantLib {
               flatPayoffExtrapolation_(flatPayoffExtrapolation),
               discountCurve_(discountCurve), probabilities_(probabilities) {
 
-            if (!discountCurve_.empty())
+            if (!discountCurve_.empty()) {
                 registerWith(discountCurve_);
+            }
         }
 
         void calculate() const;

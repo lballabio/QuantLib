@@ -125,8 +125,9 @@ namespace QuantLib {
         const SobolRsg::sample_type& nextSequence() const {
             const std::vector<boost::uint_least32_t>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
-            for (Size k=0; k<dimensionality_; ++k)
+            for (Size k = 0; k < dimensionality_; ++k) {
                 sequence_.value[k] = v[k] * normalizationFactor_;
+            }
             return sequence_;
         }
         const sample_type& lastSequence() const { return sequence_; }

@@ -50,8 +50,9 @@ namespace QuantLib {
             primeNumbers_.insert(primeNumbers_.end(),
                                  firstPrimes, firstPrimes+n);
         }
-        while (primeNumbers_.size()<=absoluteIndex)
+        while (primeNumbers_.size() <= absoluteIndex) {
             nextPrimeNumber();
+        }
         return primeNumbers_[absoluteIndex];
     }
 

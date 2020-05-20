@@ -30,8 +30,9 @@ namespace QuantLib {
     : AbcdMathFunction(a, b, c, d) {}
 
     Real AbcdFunction::volatility(Time tMin, Time tMax, Time T) const {
-        if (tMax==tMin)
+        if (tMax == tMin) {
             return instantaneousVolatility(tMax, T);
+        }
         QL_REQUIRE(tMax>tMin, "tMax must be > tMin");
         return std::sqrt(variance(tMin, tMax, T)/(tMax-tMin));
     }
@@ -71,7 +72,9 @@ namespace QuantLib {
 
     // PRIMITIVE
     Real AbcdFunction::primitive(Time t, Time T, Time S) const {
-        if (T<t || S<t) return 0.0;
+        if (T < t || S < t) {
+            return 0.0;
+        }
 
         if (close(c_,0.0)) {
             Real v = a_+d_;

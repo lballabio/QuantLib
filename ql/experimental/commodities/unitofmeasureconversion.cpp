@@ -61,31 +61,29 @@ namespace QuantLib {
     Quantity UnitOfMeasureConversion::convert(const Quantity& quantity) const {
         switch (data_->type) {
           case Direct:
-            if (quantity.unitOfMeasure() == data_->source)
-                return Quantity(quantity.commodityType(),
-                                data_->target,
-                                quantity.amount()*data_->conversionFactor);
-            else if (quantity.unitOfMeasure() == data_->target)
-                return Quantity(quantity.commodityType(),
-                                data_->source,
-                                quantity.amount()/data_->conversionFactor);
-            else
-                QL_FAIL("direct conversion not applicable");
+              if (quantity.unitOfMeasure() == data_->source) {
+                  return Quantity(quantity.commodityType(), data_->target,
+                                  quantity.amount() * data_->conversionFactor);
+              } else if (quantity.unitOfMeasure() == data_->target) {
+                  return Quantity(quantity.commodityType(), data_->source,
+                                  quantity.amount() / data_->conversionFactor);
+              } else {
+                  QL_FAIL("direct conversion not applicable");
+              }
           case Derived:
-            if (quantity.unitOfMeasure()
-                == data_->conversionFactorChain.first->source() ||
-                quantity.unitOfMeasure()
-                == data_->conversionFactorChain.first->target())
-                return data_->conversionFactorChain.second->convert(
-                       data_->conversionFactorChain.first->convert(quantity));
-            else if (quantity.unitOfMeasure()
-                     == data_->conversionFactorChain.second->source() ||
-                     quantity.unitOfMeasure()
-                     == data_->conversionFactorChain.second->target())
-                return data_->conversionFactorChain.first->convert(
+              if (quantity.unitOfMeasure() == data_->conversionFactorChain.first->source() ||
+                  quantity.unitOfMeasure() == data_->conversionFactorChain.first->target()) {
+                  return data_->conversionFactorChain.second->convert(
+                      data_->conversionFactorChain.first->convert(quantity));
+              } else if (quantity.unitOfMeasure() ==
+                             data_->conversionFactorChain.second->source() ||
+                         quantity.unitOfMeasure() ==
+                             data_->conversionFactorChain.second->target()) {
+                  return data_->conversionFactorChain.first->convert(
                       data_->conversionFactorChain.second->convert(quantity));
-            else
-                QL_FAIL("derived conversion factor not applicable");
+              } else {
+                  QL_FAIL("derived conversion factor not applicable");
+              }
           default:
             QL_FAIL("unknown conversion-factor type");
         }

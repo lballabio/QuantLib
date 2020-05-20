@@ -37,8 +37,9 @@ namespace QuantLib {
       jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
       nJumps_(jumps_.size()) {
         setJumps();
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             registerWith(jumps_[i]);
+        }
     }
 
     YieldTermStructure::YieldTermStructure(
@@ -51,8 +52,9 @@ namespace QuantLib {
       jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
       nJumps_(jumps_.size()) {
         setJumps();
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             registerWith(jumps_[i]);
+        }
     }
 
     YieldTermStructure::YieldTermStructure(
@@ -65,8 +67,9 @@ namespace QuantLib {
       jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
       nJumps_(jumps_.size()) {
         setJumps();
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             registerWith(jumps_[i]);
+        }
     }
 
     void YieldTermStructure::setJumps() {
@@ -74,15 +77,17 @@ namespace QuantLib {
             jumpDates_.resize(nJumps_);
             jumpTimes_.resize(nJumps_);
             Year y = referenceDate().year();
-            for (Size i=0; i<nJumps_; ++i)
-                jumpDates_[i] = Date(31, December, y+i);
+            for (Size i = 0; i < nJumps_; ++i) {
+                jumpDates_[i] = Date(31, December, y + i);
+            }
         } else { // fixed dats
             QL_REQUIRE(jumpDates_.size()==nJumps_,
                        "mismatch between number of jumps (" << nJumps_ <<
                        ") and jump dates (" << jumpDates_.size() << ")");
         }
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             jumpTimes_[i] = timeFromReference(jumpDates_[i]);
+        }
         latestReference_ = referenceDate();
     }
 
@@ -90,8 +95,9 @@ namespace QuantLib {
                                                 bool extrapolate) const {
         checkRange(t, extrapolate);
 
-        if (jumps_.empty())
+        if (jumps_.empty()) {
             return discountImpl(t);
+        }
 
         DiscountFactor jumpEffect = 1.0;
         for (Size i=0; i<nJumps_; ++i) {
@@ -131,7 +137,9 @@ namespace QuantLib {
                                               Compounding comp,
                                               Frequency freq,
                                               bool extrapolate) const {
-        if (t==0.0) t = dt;
+        if (t == 0.0) {
+            t = dt;
+        }
         Real compound = 1.0/discount(t, extrapolate);
         return InterestRate::impliedRate(compound,
                                          dayCounter(), comp, freq,
@@ -188,8 +196,9 @@ namespace QuantLib {
         Date newReference = Date();
         try {
             newReference = referenceDate();
-            if (newReference != latestReference_)
+            if (newReference != latestReference_) {
                 setJumps();
+            }
         } catch (Error&) {
             if (newReference == Date()) {
                 // the curve couldn't calculate the reference

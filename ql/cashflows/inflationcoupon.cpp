@@ -49,11 +49,13 @@ namespace QuantLib {
 
     void InflationCoupon::setPricer(const ext::shared_ptr<InflationCouponPricer>& pricer) {
         QL_REQUIRE(checkPricerImpl(pricer),"pricer given is wrong type");
-        if (pricer_)
+        if (pricer_) {
             unregisterWith(pricer_);
+        }
         pricer_ = pricer;
-        if (pricer_)
+        if (pricer_) {
             registerWith(pricer_);
+        }
         update();
     }
 

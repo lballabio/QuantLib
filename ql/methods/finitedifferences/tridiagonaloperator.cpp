@@ -73,9 +73,9 @@ namespace QuantLib {
 
         // matricial product
         result[0] += upperDiagonal_[0]*v[1];
-        for (Size j=1; j<=n_-2; j++)
-            result[j] += lowerDiagonal_[j-1]*v[j-1]+
-                upperDiagonal_[j]*v[j+1];
+        for (Size j = 1; j <= n_ - 2; j++) {
+            result[j] += lowerDiagonal_[j - 1] * v[j - 1] + upperDiagonal_[j] * v[j + 1];
+        }
         result[n_-1] += lowerDiagonal_[n_-2]*v[n_-2];
 
         return result;
@@ -109,8 +109,9 @@ namespace QuantLib {
             result[j] = (rhs[j] - lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
-        for (Size j=n_-2; j>0; --j)
-            result[j] -= temp_[j+1]*result[j+1];
+        for (Size j = n_ - 2; j > 0; --j) {
+            result[j] -= temp_[j + 1] * result[j + 1];
+        }
         result[0] -= temp_[1]*result[1];
     }
 

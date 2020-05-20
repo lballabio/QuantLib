@@ -27,8 +27,9 @@ namespace QuantLib {
 
     PathMultiAssetOption::PathMultiAssetOption(
                             const ext::shared_ptr<PricingEngine>& engine) {
-        if (engine)
+        if (engine) {
             setPricingEngine(engine);
+        }
     }
 
     bool PathMultiAssetOption::isExpired() const {

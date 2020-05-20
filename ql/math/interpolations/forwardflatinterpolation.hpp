@@ -83,8 +83,9 @@ namespace QuantLib {
                 }
             }
             Real value(Real x) const {
-                if (x >= this->xBegin_[n_-1])
-                    return this->yBegin_[n_-1];
+                if (x >= this->xBegin_[n_ - 1]) {
+                    return this->yBegin_[n_ - 1];
+                }
 
                 Size i = this->locate(x);
                 return this->yBegin_[i];

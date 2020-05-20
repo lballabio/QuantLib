@@ -81,8 +81,9 @@ namespace QuantLib {
                     const vector<Real>& weights,
                     const vector<bool>& fixParameters) {
         vector<ext::shared_ptr<CalibrationHelper> > tmp(instruments.size());
-        for (Size i=0; i<instruments.size(); ++i)
+        for (Size i = 0; i < instruments.size(); ++i) {
             tmp[i] = ext::static_pointer_cast<CalibrationHelper>(instruments[i]);
+        }
         calibrate(tmp, method, endCriteria, additionalConstraint,
                   weights, fixParameters);
     }
@@ -98,10 +99,11 @@ namespace QuantLib {
         QL_REQUIRE(!instruments.empty(), "no instruments provided");
 
         Constraint c;
-        if (additionalConstraint.empty())
+        if (additionalConstraint.empty()) {
             c = *constraint_;
-        else
-            c = CompositeConstraint(*constraint_,additionalConstraint);
+        } else {
+            c = CompositeConstraint(*constraint_, additionalConstraint);
+        }
 
         QL_REQUIRE(weights.empty() || weights.size() == instruments.size(),
                    "mismatch between number of instruments (" <<
@@ -133,8 +135,9 @@ namespace QuantLib {
                 const Array& params,
                 const vector<ext::shared_ptr<BlackCalibrationHelper> >& instruments) {
         vector<ext::shared_ptr<CalibrationHelper> > tmp(instruments.size());
-        for (Size i=0; i<instruments.size(); ++i)
+        for (Size i = 0; i < instruments.size(); ++i) {
             tmp[i] = ext::static_pointer_cast<CalibrationHelper>(instruments[i]);
+        }
         return value(params, tmp);
     }
 
@@ -149,12 +152,14 @@ namespace QuantLib {
 
     Disposable<Array> CalibratedModel::params() const {
         Size size=0;
-        for (Size i=0; i<arguments_.size(); ++i)
+        for (Size i = 0; i < arguments_.size(); ++i) {
             size += arguments_[i].size();
+        }
         Array params(size);
         for (Size i=0, k=0; i<arguments_.size(); ++i) {
-            for (Size j=0; j<arguments_[i].size(); ++j, ++k)
+            for (Size j = 0; j < arguments_[i].size(); ++j, ++k) {
                 params[k] = arguments_[i].params()[j];
+            }
         }
         return params;
     }

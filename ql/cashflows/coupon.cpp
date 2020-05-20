@@ -35,17 +35,19 @@ namespace QuantLib {
       accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
       refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd),
       exCouponDate_(exCouponDate), accrualPeriod_(Null<Real>()) {
-        if (refPeriodStart_ == Date())
+        if (refPeriodStart_ == Date()) {
             refPeriodStart_ = accrualStartDate_;
-        if (refPeriodEnd_ == Date())
+        }
+        if (refPeriodEnd_ == Date()) {
             refPeriodEnd_ = accrualEndDate_;
+        }
     }
 
     Time Coupon::accrualPeriod() const {
-        if (accrualPeriod_ == Null<Real>())
-            accrualPeriod_ =
-                dayCounter().yearFraction(accrualStartDate_, accrualEndDate_,
-                                          refPeriodStart_, refPeriodEnd_);
+        if (accrualPeriod_ == Null<Real>()) {
+            accrualPeriod_ = dayCounter().yearFraction(accrualStartDate_, accrualEndDate_,
+                                                       refPeriodStart_, refPeriodEnd_);
+        }
         return accrualPeriod_;
     }
 
@@ -76,10 +78,11 @@ namespace QuantLib {
 
     void Coupon::accept(AcyclicVisitor& v) {
         Visitor<Coupon>* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             CashFlow::accept(v);
+        }
     }
 
 }

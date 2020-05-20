@@ -75,16 +75,12 @@ int main(int, char* []) {
         Rate ratesSwapmkt[] = {.03249, .04074, .04463, .04675, .04775, .04811};
 
         vector<ext::shared_ptr<RateHelper> > swapHelpers;
-        for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++)
+        for (Size i = 0; i < sizeof(tenorsSwapMkt) / sizeof(Size); i++) {
             swapHelpers.push_back(ext::make_shared<SwapRateHelper>(
-                Handle<Quote>(ext::shared_ptr<Quote>(
-                                   new SimpleQuote(ratesSwapmkt[i]))),
-                    tenorsSwapMkt[i] * Years,
-                    TARGET(),
-                    Quarterly,
-                    ModifiedFollowing,
-                    ActualActual(ActualActual::ISDA),
-                    yieldIndx));
+                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(ratesSwapmkt[i]))),
+                tenorsSwapMkt[i] * Years, TARGET(), Quarterly, ModifiedFollowing,
+                ActualActual(ActualActual::ISDA), yieldIndx));
+        }
 
         ext::shared_ptr<YieldTermStructure> swapTS(
             new PiecewiseYieldCurve<Discount,LogLinear>(
@@ -186,20 +182,19 @@ int main(int, char* []) {
         ext::shared_ptr<IborIndex> yieldIndxS(
              new Euribor3M(Handle<YieldTermStructure>(swapTS)));
         std::vector<VanillaSwap> riskySwaps;
-        for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++) 
-            riskySwaps.push_back(MakeVanillaSwap(tenorsSwapMkt[i]*Years,
-                yieldIndxS,
-                ratesSwapmkt[i], 
-                0*Days)
-            .withSettlementDays(2)
-            .withFixedLegDayCount(fixedLegDayCounter)
-            .withFixedLegTenor(Period(fixedLegFrequency))
-            .withFixedLegConvention(fixedLegConvention)
-            .withFixedLegTerminationDateConvention(fixedLegConvention)
-            .withFixedLegCalendar(calendar)
-            .withFloatingLegCalendar(calendar)
-            .withNominal(100.)
-            .withType(swapType));
+        for (Size i = 0; i < sizeof(tenorsSwapMkt) / sizeof(Size); i++) {
+            riskySwaps.push_back(
+                MakeVanillaSwap(tenorsSwapMkt[i] * Years, yieldIndxS, ratesSwapmkt[i], 0 * Days)
+                    .withSettlementDays(2)
+                    .withFixedLegDayCount(fixedLegDayCounter)
+                    .withFixedLegTenor(Period(fixedLegFrequency))
+                    .withFixedLegConvention(fixedLegConvention)
+                    .withFixedLegTerminationDateConvention(fixedLegConvention)
+                    .withFixedLegCalendar(calendar)
+                    .withFloatingLegCalendar(calendar)
+                    .withNominal(100.)
+                    .withType(swapType));
+        }
 
         cout << "-- Correction in the contract fix rate in bp --" << endl;
         /* The paper plots correction to be substracted, here is printed

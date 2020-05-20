@@ -165,12 +165,14 @@ namespace QuantLib {
             // contains at least two dates
             Date tmp = overnightIndex->fixingCalendar().advance(
                 endDate, -1, Days, Preceding);
-            if (tmp != valueDates_.back())
+            if (tmp != valueDates_.back()) {
                 valueDates_.push_back(tmp);
+            }
             tmp = overnightIndex->fixingCalendar().adjust(
                 endDate, overnightIndex->businessDayConvention());
-            if (tmp != valueDates_.back())
+            if (tmp != valueDates_.back()) {
                 valueDates_.push_back(tmp);
+            }
         }
 
         QL_ENSURE(valueDates_.size()>=2, "degenerate schedule");
@@ -182,15 +184,17 @@ namespace QuantLib {
                                              valueDates_.end()-1);
         } else {
             fixingDates_.resize(n_);
-            for (Size i=0; i<n_; ++i)
+            for (Size i = 0; i < n_; ++i) {
                 fixingDates_[i] = overnightIndex->fixingDate(valueDates_[i]);
+            }
         }
 
         // accrual (compounding) periods
         dt_.resize(n_);
         const DayCounter& dc = overnightIndex->dayCounter();
-        for (Size i=0; i<n_; ++i)
-            dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
+        for (Size i = 0; i < n_; ++i) {
+            dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i + 1]);
+        }
 
         setPricer(ext::shared_ptr<FloatingRateCouponPricer>(new
                                             OvernightIndexedCouponPricer));
@@ -198,8 +202,9 @@ namespace QuantLib {
 
     const vector<Rate>& OvernightIndexedCoupon::indexFixings() const {
         fixings_.resize(n_);
-        for (Size i=0; i<n_; ++i)
+        for (Size i = 0; i < n_; ++i) {
             fixings_[i] = index_->fixing(fixingDates_[i]);
+        }
         return fixings_;
     }
 
@@ -292,12 +297,12 @@ namespace QuantLib {
             refEnd   =   end = schedule_.date(i+1);
             paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
 
-            if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
-                refStart = calendar.adjust(end - schedule_.tenor(),
-                                           paymentAdjustment_);
-            if (i == n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
-                refEnd = calendar.adjust(start + schedule_.tenor(),
-                                         paymentAdjustment_);
+            if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i + 1)) {
+                refStart = calendar.adjust(end - schedule_.tenor(), paymentAdjustment_);
+            }
+            if (i == n - 1 && schedule_.hasIsRegular() && !schedule_.isRegular(i + 1)) {
+                refEnd = calendar.adjust(start + schedule_.tenor(), paymentAdjustment_);
+            }
 
             cashflows.push_back(ext::shared_ptr<CashFlow>(new
                 OvernightIndexedCoupon(paymentDate,

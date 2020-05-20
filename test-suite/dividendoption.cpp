@@ -881,11 +881,12 @@ namespace {
             option.setPricingEngine(engine);
             Real value = option.NPV();
 
-            if (std::fabs(refValue-value) > tolerance)
+            if (std::fabs(refValue - value) > tolerance) {
                 BOOST_FAIL("NPV changed by null dividend :\n"
                            << "    previous value: " << value << "\n"
                            << "    current value:  " << refValue << "\n"
-                           << "    change:         " << value-refValue);
+                           << "    change:         " << value - refValue);
+            }
         }
     }
 

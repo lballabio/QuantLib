@@ -114,10 +114,12 @@ namespace QuantLib {
             Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
 
             const ext::shared_ptr<Pool>& pool = this->basket_->pool();
-            for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'
-                horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
-                    defaultProbability(this->basket_->defaultKeys()[iName])
+            for (Size iName = 0; iName < this->basket_->size(); ++iName) { // use'live'
+                horizonDefaultPs_.push_back(
+                    pool->get(pool->names()[iName])
+                        .defaultProbability(this->basket_->defaultKeys()[iName])
                         ->defaultProbability(maxHorizonDate, true));
+            }
         }
        Real getEventRecovery(const defaultSimEvent& evt) const {
             return evt.recovery();
@@ -205,8 +207,9 @@ namespace QuantLib {
                 Date today = Settings::instance().evaluationDate();
                 Date eventDate = today+Period(static_cast<Integer>(dateSTride), 
                     Days);
-                if(eventDate<dfts->referenceDate()) 
+                if (eventDate < dfts->referenceDate()) {
                     eventDate = dfts->referenceDate();
+                }
                 Real latentRRVarSample = 
                     copula_->latentRRVarValue(values, iName);
                 Real recovery = 

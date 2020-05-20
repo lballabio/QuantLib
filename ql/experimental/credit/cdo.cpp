@@ -58,8 +58,9 @@ namespace QuantLib {
 
         registerWith (yieldTS_);
         registerWith (copula_);
-        for (Size i = 0; i < basket_.size(); i++)
-            registerWith (basket_[i]);
+        for (Size i = 0; i < basket_.size(); i++) {
+            registerWith(basket_[i]);
+        }
 
         QL_REQUIRE (nominals_.size() <= basket_.size(),
                     "nominal vector size too large");
@@ -67,8 +68,9 @@ namespace QuantLib {
         if (nominals_.size() < basket_.size()) {
             Size n = basket_.size() - nominals_.size();
             Real back = nominals_.back();
-            for (Size i = 0; i < n; i++)
+            for (Size i = 0; i < n; i++) {
                 nominals_.push_back(back);
+            }
         }
 
         QL_REQUIRE (nominals_.size() == basket_.size(),
@@ -98,12 +100,14 @@ namespace QuantLib {
 
 
     Real CDO::expectedTrancheLoss (Date d) const {
-        if (d <= basket_.front()->referenceDate())
+        if (d <= basket_.front()->referenceDate()) {
             return 0;
+        }
 
         vector<Real> defProb (basket_.size());
-        for (Size j = 0; j < basket_.size(); j++)
-            defProb[j] = basket_[j]->defaultProbability (d);
+        for (Size j = 0; j < basket_.size(); j++) {
+            defProb[j] = basket_[j]->defaultProbability(d);
+        }
 
         LossDistBucketing op (nBuckets_, xMax_);
         Distribution dist = copula_->integral (op, lgds_, defProb);
@@ -139,13 +143,15 @@ namespace QuantLib {
 
         Real e1 = 0;
         Date today = yieldTS_->referenceDate();
-        if (premiumSchedule_[0] > today)
-            e1 = expectedTrancheLoss (premiumSchedule_[0]);
+        if (premiumSchedule_[0] > today) {
+            e1 = expectedTrancheLoss(premiumSchedule_[0]);
+        }
 
         for (Size i = 1; i < premiumSchedule_.size(); i++) {
             Date d2 = premiumSchedule_[i];
-            if (d2 < today)
+            if (d2 < today) {
                 continue;
+            }
 
             Date d1 = premiumSchedule_[i-1];
 
@@ -153,8 +159,9 @@ namespace QuantLib {
             do {
                 d = NullCalendar().advance (d0 > today ? d0 : today,
                                             integrationStep_);
-                if (d > d2)
+                if (d > d2) {
                     d = d2;
+                }
 
                 Real e2 = expectedTrancheLoss (d);
 
@@ -174,11 +181,12 @@ namespace QuantLib {
             while (d < d2);
         }
 
-        if (premiumSchedule_[0] >= today)
+        if (premiumSchedule_[0] >= today) {
             upfrontPremiumValue_ = (xMax_ - xMin_) * upfrontPremiumRate_ *
                 yieldTS_->discount(premiumSchedule_[0]);
-        else
+        } else {
             upfrontPremiumValue_ = 0.0;
+        }
 
         if (!protectionSeller_) {
             premiumValue_ *= -1;

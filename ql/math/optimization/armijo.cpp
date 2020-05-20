@@ -72,8 +72,9 @@ namespace QuantLib {
                      (!maxIter));
         }
 
-        if (maxIter)
+        if (maxIter) {
             succeed_ = false;
+        }
 
         // Compute new gradient
         P.gradient(gradient_, xtd_);

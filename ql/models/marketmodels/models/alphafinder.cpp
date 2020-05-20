@@ -37,8 +37,11 @@ namespace
         Real y=(theObject.*Value)(x);
 
         do {
-            if (y < target) low = x;
-            else if (y > target) high = x;
+            if (y < target) {
+                low = x;
+            } else if (y > target) {
+                high = x;
+            }
 
             x = 0.5*(low+high);
             y = (theObject.*Value)(x);
@@ -58,8 +61,11 @@ namespace
         bool ok=(theObject.*Value)(x);
 
         do {
-            if (ok) low = x;
-            else    high = x;
+            if (ok) {
+                low = x;
+            } else {
+                high = x;
+            }
 
             x = 0.5*(low+high);
             ok = (theObject.*Value)(x);
@@ -79,8 +85,11 @@ namespace
         bool ok=(theObject.*Value)(x);
 
         do {
-            if (ok) high = x;
-            else    low = x;
+            if (ok) {
+                high = x;
+            } else {
+                low = x;
+            }
 
             x = 0.5*(low+high);
             ok = (theObject.*Value)(x);
@@ -115,13 +124,13 @@ namespace
                 Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
                 if (!conditioner) {
-                    if  ((theObject.*Condition)(x))
+                    if ((theObject.*Condition)(x)) {
                         return x;
-                    else
-                        if (leftValue < rightValue)
-                            return low;
-                        else
-                            return high;
+                    } else if (leftValue < rightValue) {
+                        return low;
+                    } else {
+                        return high;
+                    }
                 }
 
                 if (tentativeNewMidValue < midValue) // go left
@@ -143,13 +152,13 @@ namespace
                 Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
                 bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
                 if (!conditioner) {
-                    if  ((theObject.*Condition)(x))
+                    if ((theObject.*Condition)(x)) {
                         return x;
-                    else
-                        if (leftValue < rightValue)
-                            return low;
-                        else
-                            return high;
+                    } else if (leftValue < rightValue) {
+                        return low;
+                    } else {
+                        return high;
+                    }
                 }
 
                 if (tentativeNewMidValue < midValue) // go right
@@ -252,8 +261,9 @@ namespace
             }
 
             Real VarToFind = totalVar_-varSoFar;
-            if (VarToFind < 0)
+            if (VarToFind < 0) {
                 return false;
+            }
             Real requiredSd = std::sqrt(VarToFind);
             b = requiredSd / (ratetwohomogeneousvols[stepindex+1] *
                                             (*parametricform_)(stepindex));
@@ -277,8 +287,9 @@ namespace
 
     bool AlphaFinder::testIfSolutionExists(Real alpha) {
         bool aExists =  valueAtTurningPoint(alpha)<targetVariance_;
-        if (!aExists)
+        if (!aExists) {
             return false;
+        }
 
         Real dum1, dum2, dum3;
         return finalPart(alpha,
@@ -316,15 +327,17 @@ namespace
         w0_=w0;
         w1_=w1;
         totalVar_=0;
-        for (Size i=0; i <=static_cast<Size>(stepindex)+1; ++i)
-            totalVar_+=ratetwohomogeneousvols[i]*ratetwohomogeneousvols[i];
+        for (Size i = 0; i <= static_cast<Size>(stepindex) + 1; ++i) {
+            totalVar_ += ratetwohomogeneousvols[i] * ratetwohomogeneousvols[i];
+        }
         targetVariance_ = targetVariance;
 
         // constant part will not depend on alpha
 
         constantPart_ =0.0;
-        for (Integer i=0; i < stepindex+1; ++i)
-                constantPart_+=rateonevols[i]*rateonevols[i];
+        for (Integer i = 0; i < stepindex + 1; ++i) {
+            constantPart_ += rateonevols[i] * rateonevols[i];
+        }
 
         constantPart_ *= w0*w0;
 
@@ -361,8 +374,9 @@ namespace
                 ++i;
             }
 
-            if (topValue <= targetVariance)
-                bilimit = alpha0 + (topAlpha-alpha0)*(i-2.0)/(steps+0.0);
+            if (topValue <= targetVariance) {
+                bilimit = alpha0 + (topAlpha - alpha0) * (i - 2.0) / (steps + 0.0);
+            }
         }
 
         if (bottomValue > targetVariance && topValue > targetVariance) {
@@ -374,12 +388,14 @@ namespace
                 ++i;
             }
 
-            if (bottomValue <= targetVariance)
-                bilimit = alpha0 +(bottomAlpha-alpha0)*(i-2.0)/(steps+0.0);
+            if (bottomValue <= targetVariance) {
+                bilimit = alpha0 + (bottomAlpha - alpha0) * (i - 2.0) / (steps + 0.0);
+            }
         }
 
-        if (bottomValue > targetVariance && topValue > targetVariance)
+        if (bottomValue > targetVariance && topValue > targetVariance) {
             return false;
+        }
 
         if (bottomValue <= targetVariance) {
             // then find root of increasing function
@@ -440,15 +456,17 @@ namespace
         w0_=w0;
         w1_=w1;
         totalVar_=0;
-        for (Size i=0; i <=static_cast<Size>(stepindex)+1; ++i)
-            totalVar_+=ratetwohomogeneousvols[i]*ratetwohomogeneousvols[i];
+        for (Size i = 0; i <= static_cast<Size>(stepindex) + 1; ++i) {
+            totalVar_ += ratetwohomogeneousvols[i] * ratetwohomogeneousvols[i];
+        }
         targetVariance_=targetVariance;
 
         // constant part will not depend on alpha
 
         constantPart_ =0.0;
-        for (Integer i=0; i < stepindex+1; ++i)
-            constantPart_+=rateonevols[i]*rateonevols[i];
+        for (Integer i = 0; i < stepindex + 1; ++i) {
+            constantPart_ += rateonevols[i] * rateonevols[i];
+        }
 
         constantPart_ *= w0*w0;
 
@@ -493,8 +511,9 @@ namespace
                      tolerance,
                      *this,
                      &AlphaFinder::testIfSolutionExists);
-            } else
-                alpha2= alphaMax;
+            } else {
+                alpha2 = alphaMax;
+            }
             }
         else {
             // ok let's see if we can find a value of alpha that works
@@ -512,8 +531,9 @@ namespace
                 foundDownOK=testIfSolutionExists(alphaDown);
             }
             foundOKPoint = foundUpOK || foundDownOK;
-            if (!foundOKPoint)
+            if (!foundOKPoint) {
                 return false;
+            }
 
             if (foundUpOK) {
                 alpha1 = alphaUp;

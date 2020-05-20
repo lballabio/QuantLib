@@ -61,8 +61,9 @@ namespace QuantLib {
             Real sum=0.0;
             for (Size k=0; k < numberOfRates_; ++k)
             {
-                for (Size l=0; l < period; ++l, ++m)
-                    sum+= largeDisplacements_[m];
+                for (Size l = 0; l < period; ++l, ++m) {
+                    sum += largeDisplacements_[m];
+                }
 
                 displacements_.push_back(sum/period);
             }
@@ -82,8 +83,9 @@ namespace QuantLib {
         Real finalReset = smallCS.rateTimes()[smallCS.numberOfRates()-1];
         std::vector<Time> oldEvolutionTimes(largeModel->evolution().evolutionTimes());
         std::vector<Time> newEvolutionTimes;
-        for (Size i =0; i < oldEvolutionTimes.size() && oldEvolutionTimes[i]<= finalReset; ++i)
+        for (Size i = 0; i < oldEvolutionTimes.size() && oldEvolutionTimes[i] <= finalReset; ++i) {
             newEvolutionTimes.push_back(oldEvolutionTimes[i]);
+        }
 
         evolution_=EvolutionDescription(smallCS.rateTimes(),
                                         newEvolutionTimes);
@@ -99,9 +101,11 @@ namespace QuantLib {
 
         std::set<Time> setTimes(evolutionTimes.begin(),evolutionTimes.end());
 
-        for (Size i=0; i < rateTimes.size()-1; ++i)
-            QL_REQUIRE(setTimes.find(rateTimes[i]) != setTimes.end(),
-                        "every new rate time except last must be an evolution time in fwdperiod adapter");
+        for (Size i = 0; i < rateTimes.size() - 1; ++i) {
+            QL_REQUIRE(
+                setTimes.find(rateTimes[i]) != setTimes.end(),
+                "every new rate time except last must be an evolution time in fwdperiod adapter");
+        }
 
 
         Matrix YMatrix =
@@ -117,10 +121,9 @@ namespace QuantLib {
 
         for (Size k = 0; k<numberOfSteps_; ++k) {
             pseudoRoots_[k]=YMatrix*largeModel->pseudoRoot(k);
-            for (Size i=0; i<alive[k]; ++i)
-                std::fill(pseudoRoots_[k].row_begin(i),
-                          pseudoRoots_[k].row_end(i),
-                          0.0);
+            for (Size i = 0; i < alive[k]; ++i) {
+                std::fill(pseudoRoots_[k].row_begin(i), pseudoRoots_[k].row_end(i), 0.0);
+            }
         }
     }
 

@@ -51,10 +51,11 @@ namespace QuantLib {
             integrand1(Real c_inf, const ext::function<Real(Real)>& f)
             : c_inf_(c_inf), f_(f) {}
             Real operator()(Real x) const {
-                if ((1.0-x)*c_inf_ > QL_EPSILON)
+                if ((1.0 - x) * c_inf_ > QL_EPSILON) {
                     return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
-                else
+                } else {
                     return 0.0;
+                }
             }
         };
 
@@ -297,11 +298,11 @@ namespace QuantLib {
                             + (std::exp(kmr*term_)*kappa_*theta_
                                -kappa_*theta_*(kmr*term_+1.0) ) / (2*kmr*kmr)
                             - v0_*(1.0-std::exp(kmr*term_)) / (2.0*kmr);
-                    }
-                    else
+                    } else {
                         // \kappa = \rho * \sigma
-                        return dd_-sx_ + 0.25*kappa_*theta_*term_*term_
-                                       + 0.5*v0_*term_;
+                        return dd_ - sx_ + 0.25 * kappa_ * theta_ * term_ * term_ +
+                               0.5 * v0_ * term_;
+                    }
                 }
                 else {
                     return dd_-sx_
@@ -330,10 +331,11 @@ namespace QuantLib {
                 if (g.imag() > M_PI || g.imag() <= -M_PI) {
                     // get back to principal branch of the complex logarithm
                     Real im = std::fmod(g.imag(), 2*M_PI);
-                    if (im > M_PI)
+                    if (im > M_PI) {
                         im -= 2*M_PI;
-                    else if (im <= -M_PI)
-                        im += 2*M_PI;
+                    } else if (im <= -M_PI) {
+                        im += 2 * M_PI;
+                    }
 
                     g = std::complex<Real>(g.real(), im);
                 }
@@ -346,10 +348,11 @@ namespace QuantLib {
             // remark: there is still the change that we miss a branch
             // if the order of the integration is not high enough.
             const Real tmp = g.imag() - g_km1_;
-            if (tmp <= -M_PI)
+            if (tmp <= -M_PI) {
                 ++b_;
-            else if (tmp > M_PI)
+            } else if (tmp > M_PI) {
                 --b_;
+            }
 
             g_km1_ = g.imag();
             g += std::complex<Real>(0, 2*b_*M_PI);
@@ -781,18 +784,20 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-            if (maxBound == Null<Real>())
-                retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
-            else
-                retVal = (*integrator_)(f, 0.0, maxBound);
-            break;
+              if (maxBound == Null<Real>()) {
+                  retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
+              } else {
+                  retVal = (*integrator_)(f, 0.0, maxBound);
+              }
+              break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-            if (maxBound == Null<Real>())
-                retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
-            else
-                retVal = (*integrator_)(f, 0.0, maxBound);
-            break;
+              if (maxBound == Null<Real>()) {
+                  retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
+              } else {
+                  retVal = (*integrator_)(f, 0.0, maxBound);
+              }
+              break;
           default:
             QL_FAIL("unknwon integration algorithm");
         }

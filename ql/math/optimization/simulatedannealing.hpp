@@ -95,8 +95,9 @@ namespace QuantLib {
     Real SimulatedAnnealing<RNG>::simplexSize() { // this is taken from
                                                   // simplex.cpp
         Array center(vertices_.front().size(), 0);
-        for (Size i = 0; i < vertices_.size(); ++i)
+        for (Size i = 0; i < vertices_.size(); ++i) {
             center += vertices_[i];
+        }
         center *= 1 / Real(vertices_.size());
         Real result = 0;
         for (Size i = 0; i < vertices_.size(); ++i) {
@@ -113,10 +114,11 @@ namespace QuantLib {
         for (j_ = 0; j_ < n_; j_++) {
             ptry_[j_] = sum_[j_] * fac1_ - vertices_[ihi_][j_] * fac2_;
         }
-        if (!P.constraint().test(ptry_))
+        if (!P.constraint().test(ptry_)) {
             ytry_ = QL_MAX_REAL;
-        else
+        } else {
             ytry_ = P.value(ptry_);
+        }
         if (boost::math::isnan(ytry_)) {
             ytry_ = QL_MAX_REAL;
         }
@@ -159,10 +161,11 @@ namespace QuantLib {
         }
         values_ = Array(n_ + 1, 0.0);
         for (i_ = 0; i_ <= n_; i_++) {
-            if (!P.constraint().test(vertices_[i_]))
+            if (!P.constraint().test(vertices_[i_])) {
                 values_[i_] = QL_MAX_REAL;
-            else
+            } else {
                 values_[i_] = P.value(vertices_[i_]);
+            }
             if (boost::math::isnan(ytry_)) { // handle NAN
                 values_[i_] = QL_MAX_REAL;
             }
@@ -177,8 +180,9 @@ namespace QuantLib {
             iterationT_ = iteration_;
             do {
                 sum_ = Array(n_, 0.0);
-                for (i_ = 0; i_ <= n_; i_++)
+                for (i_ = 0; i_ <= n_; i_++) {
                     sum_ += vertices_[i_];
+                }
                 tt_ = -T_;
                 ilo_ = 0;
                 ihi_ = 1;
@@ -244,10 +248,12 @@ namespace QuantLib {
                                 }
                             }
                             iteration_ += n_;
-                            for (i_ = 0; i_ < n_; i_++)
+                            for (i_ = 0; i_ < n_; i_++) {
                                 sum_[i_] = 0.0;
-                            for (i_ = 0; i_ <= n_; i_++)
+                            }
+                            for (i_ = 0; i_ <= n_; i_++) {
                                 sum_ += vertices_[i_];
+                            }
                         }
                     } else {
                         iteration_ += 1;
@@ -261,11 +267,12 @@ namespace QuantLib {
                 T_ *= (1.0 - epsilon_);
                 break;
             case ConstantBudget:
-                if (iteration_ <= K_)
+                if (iteration_ <= K_) {
                     T_ = T0_ *
                          std::pow(1.0 - (Real)iteration_ / (Real)K_, alpha_);
-                else
+                } else {
                     T_ = 0.0;
+                }
                 break;
             }
 

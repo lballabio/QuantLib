@@ -48,11 +48,13 @@ namespace QuantLib
         QL_REQUIRE(evolTimes.size()==numberRates_,
                    "rateTimes.size()<> numberOfRates+1");
 
-        if (strikes_.size() == 1)
+        if (strikes_.size() == 1) {
             strikes_ = std::vector<Rate>(numberRates_, strikes[0]);
+        }
 
-        if (accruals_.size() == 1)
+        if (accruals_.size() == 1) {
             accruals_ = std::vector<Rate>(numberRates_, accruals[0]);
+        }
 
         QL_REQUIRE(accruals_.size()==numberRates_,
                    "accruals.size() does not equal numberOfRates or 1");
@@ -76,9 +78,10 @@ namespace QuantLib
                      (liborRate-strikes_[currentIndex_])*accruals_[currentIndex_]*multiplier_;
 
         numberCashFlowsThisStep[0] = 1;
-        
-        for (Size i=1; i <= numberRates_; ++i)
-                cashFlowsGenerated[0][0].amount[i] =0;
+
+        for (Size i = 1; i <= numberRates_; ++i) {
+            cashFlowsGenerated[0][0].amount[i] = 0;
+        }
 
         cashFlowsGenerated[0][0].amount[currentIndex_+1] = accruals_[currentIndex_]*multiplier_;
             
@@ -96,8 +99,9 @@ namespace QuantLib
     std::vector<Size> MarketModelPathwiseSwap::suggestedNumeraires() const
     {
             std::vector<Size> numeraires(numberRates_);
-            for (Size i=0; i < numberRates_; ++i)
+            for (Size i = 0; i < numberRates_; ++i) {
                 numeraires[i] = i;
+            }
 
             return numeraires;
     }

@@ -38,8 +38,9 @@ namespace QuantLib {
         impl_->removedHolidays.erase(_d);
         // if it's already a holiday, leave the calendar alone.
         // Otherwise, add it.
-        if (impl_->isBusinessDay(_d))
+        if (impl_->isBusinessDay(_d)) {
             impl_->addedHolidays.insert(_d);
+        }
     }
 
     void Calendar::removeHoliday(const Date& d) {
@@ -55,22 +56,25 @@ namespace QuantLib {
         impl_->addedHolidays.erase(_d);
         // if it's already a business day, leave the calendar alone.
         // Otherwise, add it.
-        if (!impl_->isBusinessDay(_d))
+        if (!impl_->isBusinessDay(_d)) {
             impl_->removedHolidays.insert(_d);
+        }
     }
 
     Date Calendar::adjust(const Date& d,
                           BusinessDayConvention c) const {
         QL_REQUIRE(d != Date(), "null date");
 
-        if (c == Unadjusted)
+        if (c == Unadjusted) {
             return d;
+        }
 
         Date d1 = d;
         if (c == Following || c == ModifiedFollowing 
             || c == HalfMonthModifiedFollowing) {
-            while (isHoliday(d1))
+            while (isHoliday(d1)) {
                 d1++;
+            }
             if (c == ModifiedFollowing 
                 || c == HalfMonthModifiedFollowing) {
                 if (d1.month() != d.month()) {
@@ -83,8 +87,9 @@ namespace QuantLib {
                 }
             }
         } else if (c == Preceding || c == ModifiedPreceding) {
-            while (isHoliday(d1))
+            while (isHoliday(d1)) {
                 d1--;
+            }
             if (c == ModifiedPreceding && d1.month() != d.month()) {
                 return adjust(d,Following);
             }
@@ -95,10 +100,11 @@ namespace QuantLib {
                 d1++;
                 d2--;
             }
-            if (isHoliday(d1))
+            if (isHoliday(d1)) {
                 return d2;
-            else
+            } else {
                 return d1;
+            }
         } else {
             QL_FAIL("unknown business-day convention");
         }
@@ -117,15 +123,17 @@ namespace QuantLib {
             if (n > 0) {
                 while (n > 0) {
                     d1++;
-                    while (isHoliday(d1))
+                    while (isHoliday(d1)) {
                         d1++;
+                    }
                     n--;
                 }
             } else {
                 while (n < 0) {
                     d1--;
-                    while(isHoliday(d1))
+                    while (isHoliday(d1)) {
                         d1--;
+                    }
                     n++;
                 }
             }
@@ -137,8 +145,9 @@ namespace QuantLib {
             Date d1 = d + n*unit;
 
             // we are sure the unit is Months or Years
-            if (endOfMonth && isEndOfMonth(d))
+            if (endOfMonth && isEndOfMonth(d)) {
                 return Calendar::endOfMonth(d1);
+            }
 
             return adjust(d1, c);
         }
@@ -161,27 +170,34 @@ namespace QuantLib {
                 // the last one is treated separately to avoid
                 // incrementing Date::maxDate()
                 for (Date d = from; d < to; ++d) {
-                    if (isBusinessDay(d))
+                    if (isBusinessDay(d)) {
                         ++wd;
+                    }
                 }
-                if (isBusinessDay(to))
+                if (isBusinessDay(to)) {
                     ++wd;
+                }
             } else if (from > to) {
                 for (Date d = to; d < from; ++d) {
-                    if (isBusinessDay(d))
+                    if (isBusinessDay(d)) {
                         ++wd;
+                    }
                 }
-                if (isBusinessDay(from))
+                if (isBusinessDay(from)) {
                     ++wd;
+                }
             }
 
-            if (isBusinessDay(from) && !includeFirst)
+            if (isBusinessDay(from) && !includeFirst) {
                 wd--;
-            if (isBusinessDay(to) && !includeLast)
+            }
+            if (isBusinessDay(to) && !includeLast) {
                 wd--;
+            }
 
-            if (from > to)
+            if (from > to) {
                 wd = -wd;
+            }
         } else if (includeFirst && includeLast && isBusinessDay(from)) {
             wd = 1;
         }
@@ -283,9 +299,9 @@ namespace QuantLib {
             << to << ")");
         std::vector<Date> result;
         for (Date d = from; d <= to; ++d) {
-            if (calendar.isHoliday(d)
-                && (includeWeekEnds || !calendar.isWeekend(d.weekday())))
+            if (calendar.isHoliday(d) && (includeWeekEnds || !calendar.isWeekend(d.weekday()))) {
                 result.push_back(d);
+            }
        }
        return result;
     }
@@ -298,8 +314,9 @@ namespace QuantLib {
             << to << ")");
         std::vector<Date> result;
         for (Date d = from; d <= to; ++d) {
-            if (isHoliday(d) && (includeWeekEnds || !isWeekend(d.weekday())))
+            if (isHoliday(d) && (includeWeekEnds || !isWeekend(d.weekday()))) {
                 result.push_back(d);
+            }
        }
        return result;
     }
@@ -312,8 +329,9 @@ namespace QuantLib {
             << to << ")");
         std::vector<Date> result;
         for (Date d = from; d <= to; ++d) {
-            if (isBusinessDay(d))
+            if (isBusinessDay(d)) {
                 result.push_back(d);
+            }
        }
        return result;
     }

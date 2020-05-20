@@ -147,19 +147,19 @@ namespace QuantLib {
         Natural fixingDays = index_->fixingDays();
 
         Date exerciseDate = exerciseDate_;
-        if (exerciseDate == Null<Date>())
-            exerciseDate = calendar.advance(termStructure_->referenceDate(),
-                                            maturity_,
+        if (exerciseDate == Null<Date>()) {
+            exerciseDate = calendar.advance(termStructure_->referenceDate(), maturity_,
                                             index_->businessDayConvention());
+        }
 
         Date startDate = calendar.advance(exerciseDate,
                                     fixingDays, Days,
                                     index_->businessDayConvention());
 
         Date endDate = endDate_;
-        if (endDate == Null<Date>())
-            endDate = calendar.advance(startDate, length_,
-                                       index_->businessDayConvention());
+        if (endDate == Null<Date>()) {
+            endDate = calendar.advance(startDate, length_, index_->businessDayConvention());
+        }
 
         Schedule fixedSchedule(startDate, endDate, fixedLegTenor_, calendar,
                                index_->businessDayConvention(),

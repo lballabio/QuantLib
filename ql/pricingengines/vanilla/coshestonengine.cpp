@@ -98,15 +98,15 @@ namespace QuantLib {
                      *std::exp(std::complex<Real>(0, r*(x-a)))).real();
         }
 
-        if (payoff->optionType() == Option::Put)
+        if (payoff->optionType() == Option::Put) {
             results_.value = k*df*s;
-        else if (payoff->optionType() == Option::Call) {
+        } else if (payoff->optionType() == Option::Call) {
             const DiscountFactor qf
                 = process->dividendYield()->discount(maturityDate);
             results_.value = spot*qf - k*df*(1-s);
-        }
-        else
+        } else {
             QL_FAIL("unknown payoff type");
+        }
     }
 
     Real COSHestonEngine::muT(Time t) const {

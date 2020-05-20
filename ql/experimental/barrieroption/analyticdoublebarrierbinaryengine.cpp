@@ -108,14 +108,12 @@ namespace QuantLib {
         // poor, see for example Hui "One-touch double barrier binary option value")
         QL_REQUIRE(std::fabs(term) < requiredConvergence, "serie did not converge sufficiently fast");
 
-        if (barrierType == DoubleBarrier::KnockOut)
-           return std::max(tot, 0.0); // KO
-        else {
-           Rate discount = process_->riskFreeRate()->discount(
-                                             arguments_.exercise->lastDate());
-           QL_REQUIRE(discount>0.0,
-                        "positive discount required");
-           return std::max(cash * discount - tot, 0.0); // KI
+        if (barrierType == DoubleBarrier::KnockOut) {
+            return std::max(tot, 0.0); // KO
+        } else {
+            Rate discount = process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
+            QL_REQUIRE(discount > 0.0, "positive discount required");
+            return std::max(cash * discount - tot, 0.0); // KI
         }
     }
 
@@ -137,8 +135,9 @@ namespace QuantLib {
         Real cash = payoff_->cashPayoff();
         Real barrier_lo = arguments_.barrier_lo;
         Real barrier_hi = arguments_.barrier_hi;
-        if (barrierType == DoubleBarrier::KOKI)
-           std::swap(barrier_lo, barrier_hi);
+        if (barrierType == DoubleBarrier::KOKI) {
+            std::swap(barrier_lo, barrier_hi);
+        }
 
         Real sigmaq = variance/residualTime;
         Real r = process_->riskFreeRate()->zeroRate(residualTime, Continuous,

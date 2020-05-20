@@ -320,8 +320,9 @@ namespace QuantLib {
     inline std::vector<std::pair<Date,Rate> >
     InterpolatedYoYInflationCurve<T>::nodes() const {
         std::vector<std::pair<Date,Rate> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
-            results[i] = std::make_pair(dates_[i],this->data_[i]);
+        for (Size i = 0; i < dates_.size(); ++i) {
+            results[i] = std::make_pair(dates_[i], this->data_[i]);
+        }
         return results;
     }
 

@@ -37,26 +37,27 @@ namespace QuantLib {
             // Easter Monday
             || (dd == em)
             // Corpus Christi
-            || (dd == em+59)
+            || (dd == em + 59)
             // New Year's Day
-            || (d == 1  && m == January)
+            || (d == 1 && m == January)
             // Epiphany
-            || (d == 6  && m == January && y >= 2011)
+            || (d == 6 && m == January && y >= 2011)
             // May Day
-            || (d == 1  && m == May)
+            || (d == 1 && m == May)
             // Constitution Day
-            || (d == 3  && m == May)
+            || (d == 3 && m == May)
             // Assumption of the Blessed Virgin Mary
-            || (d == 15  && m == August)
+            || (d == 15 && m == August)
             // All Saints Day
-            || (d == 1  && m == November)
+            || (d == 1 && m == November)
             // Independence Day
-            || (d ==11  && m == November)
+            || (d == 11 && m == November)
             // Christmas
             || (d == 25 && m == December)
             // 2nd Day of Christmas
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 

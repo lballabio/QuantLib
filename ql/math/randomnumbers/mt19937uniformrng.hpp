@@ -58,8 +58,9 @@ namespace QuantLib {
         }
         //! return a random integer in the [0,0xffffffff]-interval
         unsigned long nextInt32() const  {
-            if (mti==N)
+            if (mti == N) {
                 twist(); /* generate N words at a time */
+            }
 
             unsigned long y = mt[mti++];
 

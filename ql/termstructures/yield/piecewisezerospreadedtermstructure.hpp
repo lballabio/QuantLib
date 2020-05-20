@@ -107,10 +107,12 @@ namespace QuantLib {
         QL_REQUIRE(spreads_.size() == dates_.size(),
                    "spread and date vector have different sizes");
         registerWith(originalCurve_);
-        for (Size i = 0; i < spreads_.size(); i++)
+        for (Size i = 0; i < spreads_.size(); i++) {
             registerWith(spreads_[i]);
-        if (!originalCurve_.empty())
+        }
+        if (!originalCurve_.empty()) {
             updateInterpolation();
+        }
     }
 
     template <class T>

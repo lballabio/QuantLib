@@ -151,12 +151,13 @@ namespace QuantLib {
         }
 
         // check that there is no instruments with invalid quote
-        for (Size i=0; i<nInsts; ++i)
+        for (Size i = 0; i < nInsts; ++i) {
             QL_REQUIRE(ts_->instruments_[i]->quote()->isValid(),
-                       io::ordinal(i+1) << " instrument (maturity: " <<
-                       ts_->instruments_[i]->maturityDate() << ", pillar: " <<
-                       ts_->instruments_[i]->pillarDate() <<
-                       ") has an invalid quote");
+                       io::ordinal(i + 1)
+                           << " instrument (maturity: " << ts_->instruments_[i]->maturityDate()
+                           << ", pillar: " << ts_->instruments_[i]->pillarDate()
+                           << ") has an invalid quote");
+        }
 
         // setup instruments
         for (Size i=0; i<nInsts; ++i) {
@@ -166,11 +167,11 @@ namespace QuantLib {
             ts_->instruments_[i]->setTermStructure(const_cast<Curve*>(ts_));
         }
         // set initial guess only if the current curve cannot be used as guess
-        if (validCurve_)
+        if (validCurve_) {
             QL_ENSURE(ts_->data_.size() == nInsts+1,
                       "dimension mismatch: expected " << nInsts+1 <<
                       ", actual " << ts_->data_.size());
-        else {
+        } else {
             ts_->data_ = std::vector<Rate>(nInsts+1);
             ts_->data_[0] = Traits::initialValue(ts_);
         }
@@ -183,8 +184,9 @@ namespace QuantLib {
         for (Size i=0; i<nInsts; ++i) {
             ts_->dates_[i+1] = ts_->instruments_[i]->pillarDate();
             ts_->times_[i+1] = ts_->timeFromReference(ts_->dates_[i+1]);
-            if (!validCurve_)
-                ts_->data_[i+1] = ts_->data_[i];
+            if (!validCurve_) {
+                ts_->data_[i + 1] = ts_->data_[i];
+            }
         }
 
         Real accuracy = accuracy_ != Null<Real>() ? accuracy_ : ts_->accuracy_;
@@ -207,8 +209,9 @@ namespace QuantLib {
         do {
             Size initialDataPt = iInst+1-localisation_+dataAdjust;
             Array startArray(localisation_+1-dataAdjust);
-            for (Size j = 0; j < startArray.size()-1; ++j)
-                startArray[j] = ts_->data_[initialDataPt+j];
+            for (Size j = 0; j < startArray.size() - 1; ++j) {
+                startArray[j] = ts_->data_[initialDataPt + j];
+            }
 
             // here we are extending the interpolation a point at a
             // time... but the local interpolator can make an

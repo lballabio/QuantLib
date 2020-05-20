@@ -112,8 +112,9 @@ namespace QuantLib {
 
     template <class Impl>
     const Array& TreeLattice<Impl>::statePrices(Size i) const {
-        if (i>statePricesLimit_)
+        if (i > statePricesLimit_) {
             computeStatePrices(i);
+        }
         return statePrices_[i];
     }
 
@@ -142,8 +143,9 @@ namespace QuantLib {
 
         Time from = asset.time();
 
-        if (close(from,to))
+        if (close(from, to)) {
             return;
+        }
 
         QL_REQUIRE(from > to,
                    "cannot roll the asset back to" << to
@@ -158,8 +160,9 @@ namespace QuantLib {
             asset.time() = t_[i];
             asset.values() = newValues;
             // skip the very last adjustment
-            if (i != iTo)
+            if (i != iTo) {
                 asset.adjustValues();
+            }
         }
     }
 

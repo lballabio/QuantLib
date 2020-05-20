@@ -49,18 +49,20 @@ namespace QuantLib {
         Time now = time();
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (now <= stoppingTimes_[1] &&
-                now >= stoppingTimes_[0])
-                applySpecificCondition();
-            break;
+              if (now <= stoppingTimes_[1] && now >= stoppingTimes_[0]) {
+                  applySpecificCondition();
+              }
+              break;
           case Exercise::European:
-            if (isOnTime(stoppingTimes_[0]))
-                applySpecificCondition();
-            break;
+              if (isOnTime(stoppingTimes_[0])) {
+                  applySpecificCondition();
+              }
+              break;
           case Exercise::Bermudan:
             for (Size i=0; i<stoppingTimes_.size(); i++) {
-                if (isOnTime(stoppingTimes_[i]))
+                if (isOnTime(stoppingTimes_[i])) {
                     applySpecificCondition();
+                }
             }
             break;
           default:

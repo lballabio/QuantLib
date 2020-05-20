@@ -145,11 +145,11 @@ namespace QuantLib {
 
     Disposable<Array> FdmExtOUJumpOp::apply_direction(Size direction,
                                                       const Array& r) const {
-        if (direction == 0)
+        if (direction == 0) {
             return ouOp_->apply_direction(direction, r);
-        else if (direction == 1)
+        } else if (direction == 1) {
             return dyMap_.apply(r);
-        else {
+        } else {
             Array retVal(r.size(), 0.0);
             return retVal;
         }

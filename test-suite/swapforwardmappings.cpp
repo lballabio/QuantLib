@@ -85,8 +85,9 @@ namespace {
         //paymentTimes_ = std::vector<Time>(rateTimes_.size()-1);
         accruals_ = std::vector<Time>(nbRates_);
         DayCounter dayCounter = SimpleDayCounter();
-        for (Size i=1; i<nbRates_+2; ++i)
-            rateTimes_[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
+        for (Size i = 1; i < nbRates_ + 2; ++i) {
+            rateTimes_[i - 1] = dayCounter.yearFraction(todaysDate, dates[i]);
+        }
 
         displacements_ = std::vector<Rate>(nbRates_, .0);
 
@@ -143,8 +144,9 @@ namespace {
 
         };
         volatilities_ = std::vector<Volatility>(nbRates_);
-        for (Size i = 0; i < volatilities_.size(); ++i)
-            volatilities_[i] =   mktVols[i];//.0;
+        for (Size i = 0; i < volatilities_.size(); ++i) {
+            volatilities_[i] = mktVols[i]; //.0;
+        }
     }
 
     const ext::shared_ptr<SequenceStatisticsInc> simulate(
@@ -202,7 +204,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
         Matrix coinitialJacobian(nbRates,nbRates);
 
-        for (Size i=0; i < nbRates; ++i)
+        for (Size i = 0; i < nbRates; ++i) {
             for (Size j=0; j < nbRates; ++j)
             {
                 bumpedForwards = forwards;
@@ -214,16 +216,16 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
                 Real downRate = lmmCurveState.cmSwapRate(0,i+1);
                 Real deriv = (upRate-downRate)/(2.0*bumpSize);
                 coinitialJacobian[i][j] = deriv;
-
             }
+        }
 
         Matrix modelJacobian(SwapForwardMappings::coinitialSwapForwardJacobian(lmmCurveState));
 
         Real errorTolerance = 1e-5;
 
 
-        for (Size i=0; i < nbRates; ++i)
-            for (Size j=0; j < nbRates; ++j)
+        for (Size i = 0; i < nbRates; ++i) {
+            for (Size j = 0; j < nbRates; ++j) {
                 if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
                 {
                     BOOST_TEST_MESSAGE("rate " << i
@@ -234,6 +236,8 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
                     BOOST_ERROR("test failed");
                 }
+            }
+        }
     }
 
     {
@@ -255,7 +259,7 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
             Matrix cmsJacobian(nbRates,nbRates);
 
-            for (Size i=0; i < nbRates; ++i)
+            for (Size i = 0; i < nbRates; ++i) {
                 for (Size j=0; j < nbRates; ++j)
                 {
                     bumpedForwards = forwards;
@@ -267,16 +271,16 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
                     Real downRate = lmmCurveState.cmSwapRate(i,spanningForwards);
                     Real deriv = (upRate-downRate)/(2.0*bumpSize);
                     cmsJacobian[i][j] = deriv;
-
                 }
+            }
 
             Matrix modelJacobian(SwapForwardMappings::cmSwapForwardJacobian(lmmCurveState, spanningForwards));
 
             Real errorTolerance = 1e-5;
 
 
-            for (Size i=0; i < nbRates; ++i)
-                for (Size j=0; j < nbRates; ++j)
+            for (Size i = 0; i < nbRates; ++i) {
+                for (Size j = 0; j < nbRates; ++j) {
                     if( fabs(modelJacobian[i][j]-cmsJacobian[i][j]) > errorTolerance)
                     {
                         BOOST_TEST_MESSAGE(
@@ -287,8 +291,9 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
                                            <<  "\n");
 
                         BOOST_ERROR("test failed");
-
                     }
+                }
+            }
         }
 
     }
@@ -360,12 +365,11 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
             std::sqrt(cotSwapsCovariance[i][i]),
             lmmCurveState.coterminalSwapAnnuity(i,i) *
             todaysDiscounts[i]).value();
-        if (fabs(expectedSwaption-results[i]) > 0.0001)
-            BOOST_ERROR(
-            "expected\t" << expectedSwaption <<
-            "\tLMM\t" << results[i]
-        << "\tstdev:\t" << errors[i] <<
-            "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
+        if (fabs(expectedSwaption - results[i]) > 0.0001) {
+            BOOST_ERROR("expected\t" << expectedSwaption << "\tLMM\t" << results[i] << "\tstdev:\t"
+                                     << errors[i] << "\t"
+                                     << std::fabs(results[i] - expectedSwaption) / errors[i]);
+        }
     }
 }
 
@@ -440,12 +444,10 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
 
         Real error = expectedSwaption - results[0];
         Real errorInSds = error/errors[0];
-        if (fabs(errorInSds) > 3.5 )
-            BOOST_ERROR(
-            "expected\t" << expectedSwaption <<
-            "\tLMM\t" << results[0]
-        << "\tstdev:\t" << errors[0] <<
-            "\t" <<errorInSds);
+        if (fabs(errorInSds) > 3.5) {
+            BOOST_ERROR("expected\t" << expectedSwaption << "\tLMM\t" << results[0] << "\tstdev:\t"
+                                     << errors[0] << "\t" << errorInSds);
+        }
     }
 
 }

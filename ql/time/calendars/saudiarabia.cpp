@@ -156,16 +156,14 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
 
-        if (isTrueWeekend(date)
-            || isEidAlAdha(date)
-            || isEidAlFitr(date)
+        if (isTrueWeekend(date) || isEidAlAdha(date) ||
+            isEidAlFitr(date)
             // National Day
             || (d == 23 && m == September)
             // other one-shot holidays
-            || (d == 26 && m == February && y==2011)
-            || (d == 19 && m == March && y==2011)
-            )
+            || (d == 26 && m == February && y == 2011) || (d == 19 && m == March && y == 2011)) {
             return false;
+        }
         return true;
     }
 

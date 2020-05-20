@@ -64,11 +64,13 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         Real c = correlation_->value();
 
-        if (c == 0)
+        if (c == 0) {
             return CumulativeStudentDistribution(nz_)(y / scaleZ_);
+        }
 
-        if (c == 1)
+        if (c == 1) {
             return CumulativeStudentDistribution(nm_)(y / scaleM_);
+        }
 
         StudentDistribution dz (nz_);
         StudentDistribution dm (nm_);
@@ -86,20 +88,22 @@ namespace QuantLib {
         if (c < 0.5) {
             // outer integral -> 1 for c -> 0
             // inner integral -> cumulativeStudent(nz)(y) for c-> 0
-            for (Real m = minimum + delta/2; m < maximum; m += delta)
-                for (Real z = minimum + delta/2;
-                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c); z += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_
-                        * dz (z / scaleZ_) / scaleZ_;
+            for (Real m = minimum + delta / 2; m < maximum; m += delta) {
+                for (Real z = minimum + delta / 2; z < (y - std::sqrt(c) * m) / std::sqrt(1. - c);
+                     z += delta) {
+                    cumulated += dm(m / scaleM_) / scaleM_ * dz(z / scaleZ_) / scaleZ_;
+                }
+            }
         }
         else {
             // outer integral -> 1 for c -> 1
             // inner integral -> cumulativeStudent(nm)(y) for c-> 1
-            for (Real z = minimum + delta/2; z < maximum; z += delta)
-                for (Real m = minimum + delta/2;
-                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c); m += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_
-                        * dz (z / scaleZ_) / scaleZ_;
+            for (Real z = minimum + delta / 2; z < maximum; z += delta) {
+                for (Real m = minimum + delta / 2; m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
+                     m += delta) {
+                    cumulated += dm(m / scaleM_) / scaleM_ * dz(z / scaleZ_) / scaleZ_;
+                }
+            }
         }
 
         return cumulated * delta * delta;
@@ -146,11 +150,13 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         Real c = correlation_->value();
 
-        if (c == 0)
+        if (c == 0) {
             return CumulativeStudentDistribution(nz_)(y / scaleZ_);
+        }
 
-        if (c == 1)
+        if (c == 1) {
             return CumulativeNormalDistribution()(y);
+        }
 
         StudentDistribution dz (nz_);
         NormalDistribution dm;
@@ -168,20 +174,22 @@ namespace QuantLib {
         if (c < 0.5) {
             // outer integral -> 1 for c -> 0
             // inner integral -> cumulativeStudent(nz)(y) for c-> 0
-            for (Real m = minimum + delta/2; m < maximum; m += delta)
-                for (Real z = minimum + delta/2;
-                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c);
-                     z += delta)
-                    cumulated += dm (m) * dz (z / scaleZ_) / scaleZ_;
+            for (Real m = minimum + delta / 2; m < maximum; m += delta) {
+                for (Real z = minimum + delta / 2; z < (y - std::sqrt(c) * m) / std::sqrt(1. - c);
+                     z += delta) {
+                    cumulated += dm(m) * dz(z / scaleZ_) / scaleZ_;
+                }
+            }
         }
         else {
             // outer integral -> 1 for c -> 1
             // inner integral -> cumulativeNormal(y) for c-> 1
-            for (Real z = minimum + delta/2; z < maximum; z += delta)
-                for (Real m = minimum + delta/2;
-                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
-                     m += delta)
-                    cumulated += dm (m) * dz (z / scaleZ_) / scaleZ_;
+            for (Real z = minimum + delta / 2; z < maximum; z += delta) {
+                for (Real m = minimum + delta / 2; m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
+                     m += delta) {
+                    cumulated += dm(m) * dz(z / scaleZ_) / scaleZ_;
+                }
+            }
         }
 
         return cumulated * delta * delta;
@@ -228,11 +236,13 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         Real c = correlation_->value();
 
-        if (c == 0)
+        if (c == 0) {
             return CumulativeNormalDistribution()(y);
+        }
 
-        if (c == 1)
+        if (c == 1) {
             return CumulativeStudentDistribution(nm_)(y / scaleM_);
+        }
 
 
         StudentDistribution dm (nm_);
@@ -251,20 +261,22 @@ namespace QuantLib {
         if (c < 0.5) {
             // outer integral -> 1 for c -> 0
             // inner integral -> cumulativeNormal(y) for c-> 0
-            for (Real m = minimum + delta/2; m < maximum; m += delta)
-                for (Real z = minimum + delta/2;
-                     z < (y - std::sqrt(c) * m) / std::sqrt (1. - c);
-                     z += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_ * dz (z);
+            for (Real m = minimum + delta / 2; m < maximum; m += delta) {
+                for (Real z = minimum + delta / 2; z < (y - std::sqrt(c) * m) / std::sqrt(1. - c);
+                     z += delta) {
+                    cumulated += dm(m / scaleM_) / scaleM_ * dz(z);
+                }
+            }
         }
         else {
             // outer integral -> 1 for c -> 1
             // inner integral -> cumulativeStudent(nm)(y) for c-> 1
-            for (Real z = minimum + delta/2; z < maximum; z += delta)
-                for (Real m = minimum + delta/2;
-                     m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
-                     m += delta)
-                    cumulated += dm (m / scaleM_) / scaleM_ * dz (z);
+            for (Real z = minimum + delta / 2; z < maximum; z += delta) {
+                for (Real m = minimum + delta / 2; m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
+                     m += delta) {
+                    cumulated += dm(m / scaleM_) / scaleM_ * dz(z);
+                }
+            }
         }
 
         return cumulated * delta * delta;

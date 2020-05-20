@@ -53,9 +53,9 @@ namespace QuantLib {
     MakeArithmeticAverageOIS::operator ext::shared_ptr<ArithmeticAverageOIS>() const {
 
         Date startDate;
-        if (effectiveDate_ != Date())
+        if (effectiveDate_ != Date()) {
             startDate = effectiveDate_;
-        else {
+        } else {
             Date refDate = Settings::instance().evaluationDate();
             // if the evaluation date is not a business day
             // then move to the next business day
@@ -63,10 +63,11 @@ namespace QuantLib {
             Date spotDate = calendar_.advance(refDate,
                                               settlementDays_*Days);
             startDate = spotDate+forwardStart_;
-            if (forwardStart_.length()<0)
+            if (forwardStart_.length() < 0) {
                 startDate = calendar_.adjust(startDate, Preceding);
-            else
+            } else {
                 startDate = calendar_.adjust(startDate, Following);
+            }
         }
 
         // OIS end of month default
@@ -75,13 +76,14 @@ namespace QuantLib {
 
         Date endDate = terminationDate_;
         if (endDate == Date()) {
-            if (usedEndOfMonth)
+            if (usedEndOfMonth) {
                 endDate = calendar_.advance(startDate,
                                             swapTenor_,
                                             ModifiedFollowing,
                                             usedEndOfMonth);
-            else
+            } else {
                 endDate = startDate + swapTenor_;
+            }
         }
 
         Schedule fixedLegSchedule(startDate, endDate,
@@ -120,8 +122,9 @@ namespace QuantLib {
                 ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
-            } else
+            } else {
                 temp.setPricingEngine(engine_);
+            }
 
             usedFixedRate = temp.fairRate();
         }
@@ -142,8 +145,9 @@ namespace QuantLib {
             ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             ois->setPricingEngine(engine);
-        } else
+        } else {
             ois->setPricingEngine(engine_);
+        }
 
         return ois;
     }
@@ -182,15 +186,17 @@ namespace QuantLib {
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withFixedLegPaymentFrequency(Frequency f) {
         fixedLegPaymentFrequency_ = f;
-        if (fixedLegPaymentFrequency_ == Once)
+        if (fixedLegPaymentFrequency_ == Once) {
             rule_ = DateGeneration::Zero;
+        }
         return *this;
     }
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withOvernightLegPaymentFrequency(Frequency f) {
         overnightLegPaymentFrequency_ = f;
-        if (overnightLegPaymentFrequency_ == Once)
+        if (overnightLegPaymentFrequency_ == Once) {
             rule_ = DateGeneration::Zero;
+        }
         return *this;
     }
 

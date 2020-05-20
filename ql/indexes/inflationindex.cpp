@@ -129,8 +129,9 @@ namespace QuantLib {
 
         if (interpolated_) { // might need the next one too
             std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
-            if (fixingDate > p.first)
+            if (fixingDate > p.first) {
                 latestNeededDate += Period(frequency_);
+            }
         }
 
         if (latestNeededDate <= historicalFixingKnown) {

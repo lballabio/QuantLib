@@ -161,10 +161,12 @@ namespace QuantLib {
         this->results_.theta = process_->dividendYield()->
             zeroRate(this->arguments_.resetDate, divdc, Continuous, NoFrequency)
             * this->results_.value;
-        if (originalResults_->vega != Null<Real>())
-            this->results_.vega  = discQ * originalResults_->vega;
-        if (originalResults_->rho != Null<Real>())
-            this->results_.rho   = discQ *  originalResults_->rho;
+        if (originalResults_->vega != Null<Real>()) {
+            this->results_.vega = discQ * originalResults_->vega;
+        }
+        if (originalResults_->rho != Null<Real>()) {
+            this->results_.rho = discQ * originalResults_->rho;
+        }
         if (originalResults_->dividendRho != Null<Real>()) {
             this->results_.dividendRho = - resetTime * this->results_.value
                + discQ * originalResults_->dividendRho;

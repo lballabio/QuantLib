@@ -91,8 +91,9 @@ namespace QuantLib {
 
                 Date fixingDate = arguments_.fixingDates[i];
                 Time sqrtTime = 0.0;
-                if (fixingDate > today)
+                if (fixingDate > today) {
                     sqrtTime = std::sqrt(vol_->timeFromReference(fixingDate));
+                }
 
                 if (type == CapFloor::Cap || type == CapFloor::Collar) {
                     Rate strike = arguments_.capRates[i];
@@ -146,8 +147,9 @@ namespace QuantLib {
         results_.additionalResults["optionletsDelta"] = deltas;
         results_.additionalResults["optionletsDiscountFactor"] = discountFactors;
         results_.additionalResults["optionletsAtmForward"] = arguments_.forwards;
-        if (type != CapFloor::Collar)
+        if (type != CapFloor::Collar) {
             results_.additionalResults["optionletsStdDev"] = stdDevs;
+        }
     }
 
 }

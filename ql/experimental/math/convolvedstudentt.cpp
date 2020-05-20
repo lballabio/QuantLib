@@ -52,8 +52,9 @@ namespace QuantLib {
             QL_REQUIRE(degreesFreedom[i] >= 0,
                 "Negative degree of freedom not allowed");
         }
-        for(Size i=0; i<degreesFreedom_.size(); i++)
-            polynCharFnc_.push_back(polynCharactT((degreesFreedom[i]-1)/2));
+        for (Size i = 0; i < degreesFreedom_.size(); i++) {
+            polynCharFnc_.push_back(polynCharactT((degreesFreedom[i] - 1) / 2));
+        }
         // adjust the polynomial coefficients by the factors in the linear
         //   combination:
         for(Size i=0; i<degreesFreedom_.size(); i++) {
@@ -64,13 +65,13 @@ namespace QuantLib {
             }
         }
         //convolution, here it is a product of polynomials and exponentials
-        for(Size i=0; i<polynCharFnc_.size(); i++)
-            polyConvolved_ =
-                convolveVectorPolynomials(polyConvolved_, polynCharFnc_[i]);
-          // trim possible zeros that might have arised:
-          std::vector<Real>::reverse_iterator it = polyConvolved_.rbegin();
-          while(it != polyConvolved_.rend()) {
-              if(*it == 0.) {
+        for (Size i = 0; i < polynCharFnc_.size(); i++) {
+            polyConvolved_ = convolveVectorPolynomials(polyConvolved_, polynCharFnc_[i]);
+        }
+        // trim possible zeros that might have arised:
+        std::vector<Real>::reverse_iterator it = polyConvolved_.rbegin();
+        while (it != polyConvolved_.rend()) {
+            if (*it == 0.) {
                 polyConvolved_.pop_back();
                 it = polyConvolved_.rbegin();
               }else{
@@ -78,9 +79,9 @@ namespace QuantLib {
               }
           }
           // cache 'a' value (the exponent)
-          for(Size i=0; i<degreesFreedom_.size(); i++)
-              a_ += std::sqrt(static_cast<Real>(degreesFreedom_[i]))
-                * std::abs(factors_[i]);
+          for (Size i = 0; i < degreesFreedom_.size(); i++) {
+              a_ += std::sqrt(static_cast<Real>(degreesFreedom_[i])) * std::abs(factors_[i]);
+          }
           a2_ = a_ * a_;
     }
 
@@ -89,8 +90,12 @@ namespace QuantLib {
         Natural nu = 2 * n +1;
         std::vector<Real> low(1,1.), high(1,1.);
         high.push_back(std::sqrt(static_cast<Real>(nu)));
-        if(n==0) return low;
-        if(n==1) return high;
+        if (n == 0) {
+            return low;
+        }
+        if (n == 1) {
+            return high;
+        }
 
         for(Size k=1; k<n; k++) {
             std::vector<Real> recursionFactor(1,0.); // 0 coef
@@ -99,8 +104,9 @@ namespace QuantLib {
             std::vector<Real> lowUp =
                 convolveVectorPolynomials(recursionFactor, low);
             //add them up:
-            for(Size i=0; i<high.size(); i++)
+            for (Size i = 0; i < high.size(); i++) {
                 lowUp[i] += high[i];
+            }
             low = high;
             high = lowUp;
         }
@@ -122,9 +128,10 @@ namespace QuantLib {
         Size newDegree = v1.size()+v2.size()-2;
         std::vector<Real> resultB(newDegree+1, 0.);
         for(Size polyOrdr=0; polyOrdr<resultB.size(); polyOrdr++) {
-            for(Size i=std::max<Integer>(0, polyOrdr-longer.size()+1);
-                i<=std::min(polyOrdr, shorter.size()-1); i++)
-                resultB[polyOrdr] += shorter[i]*longer[polyOrdr-i];
+            for (Size i = std::max<Integer>(0, polyOrdr - longer.size() + 1);
+                 i <= std::min(polyOrdr, shorter.size() - 1); i++) {
+                resultB[polyOrdr] += shorter[i] * longer[polyOrdr - i];
+            }
         }
         return resultB;
     }
@@ -135,8 +142,9 @@ namespace QuantLib {
         Real squared = a2_ + x*x;
         Real rootsqr = std::sqrt(squared);
         Real atan2xa = std::atan2(-x,a_);
-        if(polyConvolved_.size()>1)
-            integral += polyConvolved_[1] * x/squared;
+        if (polyConvolved_.size() > 1) {
+            integral += polyConvolved_[1] * x / squared;
+        }
 
         for(Size exponent = 2; exponent <polyConvolved_.size(); exponent++) {
             integral -= polyConvolved_[exponent] *

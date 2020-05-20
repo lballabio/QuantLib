@@ -976,10 +976,11 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond1.cashflows(),pricer);
 
     Real cachedPrice1;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedPrice1 = 99.874645;
-    else
+    } else {
         cachedPrice1 = 99.874646;
+    }
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -1007,10 +1008,11 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond2.cashflows(),pricer);
 
     Real cachedPrice2;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedPrice2 = 97.955904;
-    else
+    } else {
         cachedPrice2 = 97.955904;
+    }
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -1042,10 +1044,11 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond3.cashflows(),pricer);
 
     Real cachedPrice3;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedPrice3 = 98.495458;
-    else
+    } else {
         cachedPrice3 = 98.495459;
+    }
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {
@@ -1069,10 +1072,11 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond4.cashflows(), pricer);
 
     Real cachedPrice4;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedPrice4 = 98.892346;
-    else
+    } else {
         cachedPrice4 = 98.892055;
+    }
 
     price = bond4.cleanPrice();
     if (std::fabs(price - cachedPrice4) > tolerance) {
@@ -1496,10 +1500,11 @@ void BondTest::testBondFromScheduleWithDateVector()
     std::vector<Date> dates;
     for (Size i = 0; i < schedule.size(); ++i) {
         Date d = schedule.date(i);
-        if (d.month() == February && d.dayOfMonth() == 29)
+        if (d.month() == February && d.dayOfMonth() == 29) {
             dates.push_back(Date(28, February, d.year()));
-        else
+        } else {
             dates.push_back(d);
+        }
     }
 
     schedule = Schedule(dates, 

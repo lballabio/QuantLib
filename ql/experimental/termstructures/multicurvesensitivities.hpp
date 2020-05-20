@@ -66,20 +66,22 @@ public:
   */
 
   explicit MultiCurveSensitivities(const curvespec& curves) : curves_(curves) {
-    for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
-      registerWith((*it).second);
-    for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
-      ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
-          ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
-      QL_REQUIRE(curve != NULL, "Couldn't cast curvename: " << it->first);
-      for (std::vector< ext::shared_ptr< BootstrapHelper< YieldTermStructure > > >::iterator inst =
-               curve->instruments_.begin();
-           inst != curve->instruments_.end(); ++inst) {
-        allQuotes_.push_back((*inst)->quote());
-        std::stringstream tmp;
-        tmp << QuantLib::io::iso_date((*inst)->latestRelevantDate());
-        headers_.push_back(it->first + "_" + tmp.str());
+      for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
+          registerWith((*it).second);
       }
+      for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
+          ext::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
+              ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
+                  it->second.currentLink());
+          QL_REQUIRE(curve != NULL, "Couldn't cast curvename: " << it->first);
+          for (std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >::iterator inst =
+                   curve->instruments_.begin();
+               inst != curve->instruments_.end(); ++inst) {
+              allQuotes_.push_back((*inst)->quote());
+              std::stringstream tmp;
+              tmp << QuantLib::io::iso_date((*inst)->latestRelevantDate());
+              headers_.push_back(it->first + "_" + tmp.str());
+          }
     }
   }
 
@@ -113,8 +115,9 @@ inline void MultiCurveSensitivities::performCalculations() const {
     q->setValue(origQuote + bps);
     try {
       std::vector< Rate > tmp(allZeros());
-      for (Size i = 0; i < tmp.size(); ++i)
-        sensiVector.push_back((tmp[i] - origZeros_[i]) / bps);
+      for (Size i = 0; i < tmp.size(); ++i) {
+          sensiVector.push_back((tmp[i] - origZeros_[i]) / bps);
+      }
       q->setValue(origQuote);
     } catch (...) {
       q->setValue(origQuote);
@@ -142,8 +145,10 @@ inline std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes(
     ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
         ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
     result.reserve(result.size() + curve->nodes().size() - 1);
-    for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1; p != curve->nodes().end(); ++p)
-      result.push_back(*p);
+    for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1;
+         p != curve->nodes().end(); ++p) {
+        result.push_back(*p);
+    }
   }
   return result;
 }

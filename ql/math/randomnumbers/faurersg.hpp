@@ -56,8 +56,9 @@ namespace QuantLib {
         }
         const sample_type& nextSequence() const {
             generateNextIntSequence();
-            for (Size i=0; i<dimensionality_; i++)
-                sequence_.value[i] = integerSequence_[i]/normalizationFactor_;
+            for (Size i = 0; i < dimensionality_; i++) {
+                sequence_.value[i] = integerSequence_[i] / normalizationFactor_;
+            }
             return sequence_;
         }
         const sample_type& lastSequence() const { return sequence_; }

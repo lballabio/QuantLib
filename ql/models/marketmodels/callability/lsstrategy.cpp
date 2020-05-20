@@ -71,20 +71,21 @@ namespace QuantLib {
         std::vector<Time> rateTimes = evolution.rateTimes();
         std::vector<Time> rebateTimes = exercise_->possibleCashFlowTimes();
         rebateDiscounters_.reserve(rebateTimes.size());
-        for (i=0; i<rebateTimes.size(); ++i)
-            rebateDiscounters_.push_back(
-                         MarketModelDiscounter(rebateTimes[i], rateTimes));
+        for (i = 0; i < rebateTimes.size(); ++i) {
+            rebateDiscounters_.push_back(MarketModelDiscounter(rebateTimes[i], rateTimes));
+        }
 
         std::vector<Time> controlTimes = control_->possibleCashFlowTimes();
         controlDiscounters_.reserve(controlTimes.size());
-        for (i=0; i<controlTimes.size(); ++i)
-            controlDiscounters_.push_back(
-                         MarketModelDiscounter(controlTimes[i], rateTimes));
+        for (i = 0; i < controlTimes.size(); ++i) {
+            controlDiscounters_.push_back(MarketModelDiscounter(controlTimes[i], rateTimes));
+        }
 
         std::vector<Size> basisSizes = basisSystem_->numberOfFunctions();
         basisValues_.resize(basisSystem_->numberOfExercises());
-        for (i=0; i<basisValues_.size(); ++i)
+        for (i = 0; i < basisValues_.size(); ++i) {
             basisValues_[i].resize(basisSizes[i]);
+        }
     }
 
     std::vector<Time>
@@ -140,12 +141,15 @@ namespace QuantLib {
                                             const CurveState& currentState) {
         principalInNumerairePortfolio_ = newPrincipal_;
 
-        if (isRebateTime_[currentIndex_])
+        if (isRebateTime_[currentIndex_]) {
             exercise_->nextStep(currentState);
-        if (isControlTime_[currentIndex_])
+        }
+        if (isControlTime_[currentIndex_]) {
             control_->nextStep(currentState);
-        if (isBasisTime_[currentIndex_])
+        }
+        if (isBasisTime_[currentIndex_]) {
             basisSystem_->nextStep(currentState);
+        }
 
         if (currentIndex_ < numeraires_.size()-1) {
             Size numeraire = numeraires_[currentIndex_];

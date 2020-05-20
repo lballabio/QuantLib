@@ -110,7 +110,9 @@ namespace QuantLib {
             endDate = protectionStart_ + tenor_;
 
         } else {
-            if(!schedule_.empty()) return; //no need to update schedule
+            if (!schedule_.empty()) {
+                return; // no need to update schedule
+            }
             startDate = calendar_.adjust(startDate_, paymentConvention_);
             endDate = startDate_ + settlementDays_ + tenor_;
         }
@@ -125,8 +127,9 @@ namespace QuantLib {
         earliestDate_ = schedule_.dates().front();
         latestDate_   = calendar_.adjust(schedule_.dates().back(),
                                          paymentConvention_);
-        if (model_ == CreditDefaultSwap::ISDA)
+        if (model_ == CreditDefaultSwap::ISDA) {
             ++latestDate_;
+        }
     }
 
     SpreadCdsHelper::SpreadCdsHelper(

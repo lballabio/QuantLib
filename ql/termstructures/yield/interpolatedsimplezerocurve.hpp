@@ -105,8 +105,9 @@ template <class T> inline const std::vector<Rate> &InterpolatedSimpleZeroCurve<T
 
 template <class T> inline std::vector<std::pair<Date, Real> > InterpolatedSimpleZeroCurve<T>::nodes() const {
     std::vector<std::pair<Date, Real> > results(dates_.size());
-    for (Size i = 0; i < dates_.size(); ++i)
+    for (Size i = 0; i < dates_.size(); ++i) {
         results[i] = std::make_pair(dates_[i], this->data_[i]);
+    }
     return results;
 }
 

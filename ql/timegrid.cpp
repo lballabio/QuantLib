@@ -31,8 +31,9 @@ namespace QuantLib {
                    "negative times not allowed");
         Time dt = end/steps;
         times_.reserve(steps+1);
-        for (Size i=0; i<=steps; i++)
-            times_.push_back(dt*i);
+        for (Size i = 0; i <= steps; i++) {
+            times_.push_back(dt * i);
+        }
 
         mandatoryTimes_ = std::vector<Time>(1);
         mandatoryTimes_[0] = end;
@@ -87,10 +88,11 @@ namespace QuantLib {
         } else {
             Time dt1 = *result - t;
             Time dt2 = t - *(result-1);
-            if (dt1 < dt2)
+            if (dt1 < dt2) {
                 return result-begin;
-            else
-                return (result-begin)-1;
+            } else {
+                return (result - begin) - 1;
+            }
         }
     }
 

@@ -57,10 +57,11 @@ namespace QuantLib {
     void LocalVolTermStructure::accept(AcyclicVisitor& v) {
         Visitor<LocalVolTermStructure>* v1 =
             dynamic_cast<Visitor<LocalVolTermStructure>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             QL_FAIL("not a local-volatility term structure visitor");
+        }
     }
 
 }

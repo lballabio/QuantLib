@@ -237,8 +237,9 @@ namespace QuantLib {
                 IndexManager::instance().getHistory((underlying_->index())->name())[fixingDate];
             if (pastFixing != Null<Real>()) {
                 return underlyingRate + callCsi_ * callPayoff() + putCsi_  * putPayoff();
-            } else
+            } else {
                 return underlyingRate + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();
+            }
         }
         return underlyingRate + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();
     }
@@ -248,31 +249,35 @@ namespace QuantLib {
     }
 
     Rate DigitalCoupon::callStrike() const {
-        if (hasCall())
+        if (hasCall()) {
             return callStrike_;
-        else
+        } else {
             return Null<Rate>();
+        }
    }
 
     Rate DigitalCoupon::putStrike() const {
-        if (hasPut())
+        if (hasPut()) {
             return putStrike_;
-        else
+        } else {
             return Null<Rate>();
+        }
     }
 
     Rate DigitalCoupon::callDigitalPayoff() const {
-        if (isCallCashOrNothing_)
+        if (isCallCashOrNothing_) {
             return callDigitalPayoff_;
-        else
+        } else {
             return Null<Rate>();
+        }
     }
 
     Rate DigitalCoupon::putDigitalPayoff() const {
-        if (isPutCashOrNothing_)
+        if (isPutCashOrNothing_) {
             return putDigitalPayoff_;
-        else
+        } else {
             return Null<Rate>();
+        }
     }
 
     void DigitalCoupon::update() {
@@ -283,10 +288,11 @@ namespace QuantLib {
         typedef FloatingRateCoupon super;
         Visitor<DigitalCoupon>* v1 =
             dynamic_cast<Visitor<DigitalCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             super::accept(v);
+        }
     }
 
     Rate DigitalCoupon::callPayoff() const {
@@ -298,8 +304,9 @@ namespace QuantLib {
                 payoff = isCallCashOrNothing_ ? callDigitalPayoff_ : underlyingRate;
             } else {
                 if (isCallATMIncluded_) {
-                    if ( std::abs(callStrike_ - underlyingRate) <= 1.e-16 )
+                    if (std::abs(callStrike_ - underlyingRate) <= 1.e-16) {
                         payoff = isCallCashOrNothing_ ? callDigitalPayoff_ : underlyingRate;
+                    }
                 }
             }
         }
@@ -316,8 +323,9 @@ namespace QuantLib {
             } else {
                 // putStrike_ <= underlyingRate
                 if (isPutATMIncluded_) {
-                    if ( std::abs(putStrike_ - underlyingRate) <= 1.e-16 )
+                    if (std::abs(putStrike_ - underlyingRate) <= 1.e-16) {
                         payoff = isPutCashOrNothing_ ? putDigitalPayoff_ : underlyingRate;
+                    }
                 }
             }
         }

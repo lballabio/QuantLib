@@ -137,8 +137,9 @@ namespace QuantLib {
     inline std::vector<std::pair<Date, Real> >
     InterpolatedHazardRateCurve<T>::nodes() const {
         std::vector<std::pair<Date, Real> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
+        for (Size i = 0; i < dates_.size(); ++i) {
             results[i] = std::make_pair(dates_[i], this->data_[i]);
+        }
         return results;
     }
 
@@ -148,8 +149,9 @@ namespace QuantLib {
 
     template <class T>
     Real InterpolatedHazardRateCurve<T>::hazardRateImpl(Time t) const {
-        if (t <= this->times_.back())
+        if (t <= this->times_.back()) {
             return this->interpolation_(t, true);
+        }
 
         // flat hazard rate extrapolation
         return this->data_.back();
@@ -158,8 +160,9 @@ namespace QuantLib {
     template <class T>
     Probability
     InterpolatedHazardRateCurve<T>::survivalProbabilityImpl(Time t) const {
-        if (t == 0.0)
+        if (t == 0.0) {
             return 1.0;
+        }
 
         Real integral;
         if (t <= this->times_.back()) {

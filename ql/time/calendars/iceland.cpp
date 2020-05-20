@@ -37,17 +37,17 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Holy Thursday
-            || (dd == em-4)
+            || (dd == em - 4)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // First day of Summer
             || (d >= 19 && d <= 25 && w == Thursday && m == April)
             // Ascension Thursday
-            || (dd == em+38)
+            || (dd == em + 38)
             // Pentecost Monday
-            || (dd == em+49)
+            || (dd == em + 49)
             // Labour Day
             || (d == 1 && m == May)
             // Independence Day
@@ -57,8 +57,9 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 

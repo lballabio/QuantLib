@@ -107,8 +107,9 @@ namespace QuantLib {
     }
 
     Real Fdm3DimSolver::thetaAt(Real x, Real y, Rate z) const {
-        if (conditions_->stoppingTimes().front() == 0.0)
+        if (conditions_->stoppingTimes().front() == 0.0) {
             return Null<Real>();
+        }
 
         calculate();
 

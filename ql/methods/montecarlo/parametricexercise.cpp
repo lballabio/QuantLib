@@ -49,8 +49,9 @@ namespace QuantLib {
           exerciseIndex_(exerciseIndex),
           parameters_(exercise.numberOfParameters()[exerciseIndex]) {
             for (Size i=0; i<simulationData_.size(); ++i) {
-                if (simulationData_[i].isValid)
+                if (simulationData_[i].isValid) {
                     return;
+                }
             }
             QL_FAIL("no valid paths");
         }
@@ -63,12 +64,12 @@ namespace QuantLib {
             for (Size i=0; i<simulationData_.size(); ++i) {
                 if (simulationData_[i].isValid) {
                     ++n;
-                    if (exercise_.exercise(exerciseIndex_,
-                                           parameters_,
-                                           simulationData_[i].values))
+                    if (exercise_.exercise(exerciseIndex_, parameters_,
+                                           simulationData_[i].values)) {
                         sum += simulationData_[i].exerciseValue;
-                    else
+                    } else {
                         sum += simulationData_[i].cumulatedCashFlows;
+                    }
                 }
             }
             return -sum/n;
@@ -114,22 +115,21 @@ namespace QuantLib {
             std::vector<NodeData>& previousData = simulationData[i-1];
             for (Size j=0; j<previousData.size(); ++j) {
                 if (exerciseData[j].isValid) {
-                    if (exercise.exercise(i-1,
-                                          parameters[i-1],
-                                          exerciseData[j].values))
+                    if (exercise.exercise(i - 1, parameters[i - 1], exerciseData[j].values)) {
                         previousData[j].cumulatedCashFlows +=
                             exerciseData[j].exerciseValue;
-                    else
-                        previousData[j].cumulatedCashFlows +=
-                            exerciseData[j].cumulatedCashFlows;
+                    } else {
+                        previousData[j].cumulatedCashFlows += exerciseData[j].cumulatedCashFlows;
+                    }
                 }
             }
         }
 
         Real sum = 0.0;
         const std::vector<NodeData>& initialData = simulationData.front();
-        for (Size i=0; i<initialData.size(); ++i)
+        for (Size i = 0; i < initialData.size(); ++i) {
             sum += initialData[i].cumulatedCashFlows;
+        }
         return sum/initialData.size();
     }
 

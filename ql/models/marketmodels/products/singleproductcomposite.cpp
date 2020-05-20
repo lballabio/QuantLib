@@ -29,8 +29,9 @@ namespace QuantLib {
 
     Size SingleProductComposite::maxNumberOfCashFlowsPerProductPerStep() const {
         Size result = 0;
-        for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
+        for (const_iterator i = components_.begin(); i != components_.end(); ++i) {
             result += i->product->maxNumberOfCashFlowsPerProductPerStep();
+        }
         return result;
     }
 

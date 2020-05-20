@@ -410,10 +410,11 @@ void BarrierOptionTest::testHaugValues() {
                                       Handle<BlackVolTermStructure>(volTS));
 
         ext::shared_ptr<Exercise> exercise;
-        if (values[i].exType == Exercise::European)
+        if (values[i].exType == Exercise::European) {
             exercise = ext::make_shared<EuropeanExercise>(exDate);
-        else
+        } else {
             exercise = ext::make_shared<AmericanExercise>(exDate);
+        }
 
         BarrierOption barrierOption(
                 values[i].barrierType,
@@ -849,11 +850,12 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
         0.517748, 0.517748, 0.517748, 0.416577, 0.364770, 0.331595, 0.287423, 0.264285 };
     
     Matrix blackVolMatrix(strikes.size(), dates.size()-1);
-    for (Size i=0; i < strikes.size(); ++i)
+    for (Size i = 0; i < strikes.size(); ++i) {
         for (Size j=1; j < dates.size(); ++j) {
             blackVolMatrix[i][j-1] = v[i*(dates.size()-1)+j-1];
         }
-    
+    }
+
     const ext::shared_ptr<BlackVarianceSurface> volTS =
         ext::make_shared<BlackVarianceSurface>(
                                  settlementDate, calendar,

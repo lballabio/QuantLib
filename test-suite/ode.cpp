@@ -103,30 +103,28 @@ void OdeTest::testAdaptiveRungeKutta() {
         Real exact3 = sin(x);
         std::complex<Real> exact4 = std::exp(std::complex<Real>(0.0,x));
 
-        if ( std::fabs( exact1 - y1 ) > tol1 )
-            BOOST_FAIL("Error in ode #1: exact solution at x=" << x
-                       << " is " << exact1
-                       << ", numerical solution is " << y1
-                       << " difference " << std::fabs(exact1-y1)
-                       << " outside tolerance " << tol1);
-        if ( abs( exact2 - y2 ) > tol2 )
-            BOOST_FAIL("Error in ode #2: exact solution at x=" << x
-                       << " is " << exact2
-                       << ", numerical solution is " << y2
-                       << " difference " << abs(exact2-y2)
-                       << " outside tolerance " << tol2);
-        if ( std::fabs( exact3 - y3[0] ) > tol3 )
-            BOOST_FAIL("Error in ode #3: exact solution at x=" << x
-                       << " is " << exact3
-                       << ", numerical solution is " << y3[0]
-                       << " difference " << std::fabs(exact3-y3[0])
-                       << " outside tolerance " << tol3);
-        if ( abs( exact4 - y4[0] ) > tol4 )
-            BOOST_FAIL("Error in ode #4: exact solution at x=" << x
-                       << " is " << exact4
-                       << ", numerical solution is " << y4[0]
-                       << " difference " << abs(exact4-y4[0])
-                       << " outside tolerance " << tol4);
+        if (std::fabs(exact1 - y1) > tol1) {
+            BOOST_FAIL("Error in ode #1: exact solution at x="
+                       << x << " is " << exact1 << ", numerical solution is " << y1
+                       << " difference " << std::fabs(exact1 - y1) << " outside tolerance "
+                       << tol1);
+        }
+        if (abs(exact2 - y2) > tol2) {
+            BOOST_FAIL("Error in ode #2: exact solution at x="
+                       << x << " is " << exact2 << ", numerical solution is " << y2
+                       << " difference " << abs(exact2 - y2) << " outside tolerance " << tol2);
+        }
+        if (std::fabs(exact3 - y3[0]) > tol3) {
+            BOOST_FAIL("Error in ode #3: exact solution at x="
+                       << x << " is " << exact3 << ", numerical solution is " << y3[0]
+                       << " difference " << std::fabs(exact3 - y3[0]) << " outside tolerance "
+                       << tol3);
+        }
+        if (abs(exact4 - y4[0]) > tol4) {
+            BOOST_FAIL("Error in ode #4: exact solution at x="
+                       << x << " is " << exact4 << ", numerical solution is " << y4[0]
+                       << " difference " << abs(exact4 - y4[0]) << " outside tolerance " << tol4);
+        }
         x+=0.01;
         y1=rk_real(ode1_,y10,0.0,x);
         y2=rk_complex(ode2_,y20,0.0,x);

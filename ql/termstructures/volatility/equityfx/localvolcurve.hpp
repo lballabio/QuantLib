@@ -79,10 +79,11 @@ namespace QuantLib {
     inline void LocalVolCurve::accept(AcyclicVisitor& v) {
         Visitor<LocalVolCurve>* v1 =
             dynamic_cast<Visitor<LocalVolCurve>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             LocalVolTermStructure::accept(v);
+        }
     }
 
     /*! The relation

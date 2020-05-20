@@ -389,9 +389,9 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -413,20 +413,13 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
-       return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::CumGen1stDerivativeCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    s,
-                    _1)
-                )
-            );
+        return copula_->integratedExpectedValue(ext::function<Real(const std::vector<Real>& v1)>(
+            ext::bind(&SaddlePointLossModel<CP>::CumGen1stDerivativeCond, this,
+                      ext::cref(invUncondProbs), s, _1)));
     }
 
     template<class CP>
@@ -437,9 +430,9 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -461,9 +454,9 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -485,9 +478,9 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -508,15 +501,17 @@ namespace QuantLib {
         using namespace ext::placeholders;
 
         // avoid computation:
-        if (trancheLossFract >= 
+        if (trancheLossFract >=
             // time dependent soon:
-            basket_->detachmentAmount()) return 0.;
+            basket_->detachmentAmount()) {
+            return 0.;
+        }
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(d);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -538,9 +533,9 @@ namespace QuantLib {
 
         std::vector<Probability> invUncondProbs = 
             basket_->remainingProbabilities(d);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -562,9 +557,9 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(d);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -585,9 +580,9 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(d);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
@@ -609,9 +604,9 @@ namespace QuantLib {
 
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-            copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         return copula_->integratedExpectedValue(
             ext::function<Disposable<std::vector<Real> > (
@@ -870,10 +865,11 @@ namespace QuantLib {
 
         Size nNames = remainingNotionals_.size();
         std::vector<Real> lgds;
-        for(Size iName=0; iName<nNames; iName++)
-            lgds.push_back(remainingNotionals_[iName] * 
-            (1.-copula_->conditionalRecoveryInvP(invUncondPs[iName], iName,
-                mktFactor)) );
+        for (Size iName = 0; iName < nNames; iName++) {
+            lgds.push_back(
+                remainingNotionals_[iName] *
+                (1. - copula_->conditionalRecoveryInvP(invUncondPs[iName], iName, mktFactor)));
+        }
 
         // computed limits:
         // position of the name with the largest relative exposure loss (i.e.:
@@ -900,14 +896,18 @@ namespace QuantLib {
         // If we are below the loss resolution it returns approximating 
         //  by the minimum/maximum attainable point. Typically the functionals
         //  to integrate will have a low dependency on this point.
-        if(lossLevel < minLoss) return saddleMin;
+        if (lossLevel < minLoss) {
+            return saddleMin;
+        }
 
         Real saddleMax = 1./(lgds[iNamMax]/remainingNotional_) * 
             std::log((lgds[iNamMax]/remainingNotional_
                 -deltaMin)*(1.-pMaxName)/(pMaxName*deltaMin));
         Real maxLoss = 
             CumGen1stDerivativeCond(invUncondPs, saddleMax, mktFactor);
-        if(lossLevel > maxLoss) return saddleMax;
+        if (lossLevel > maxLoss) {
+            return saddleMax;
+        }
 
         Brent solverBrent;
         Real guess = (saddleMin+saddleMax)/2.;
@@ -935,13 +935,18 @@ namespace QuantLib {
 
         // still this does not tackle the situation where we have cumulated 
         //   losses from previous defaults:
-        if(d <= Settings::instance().evaluationDate()) return 0.;
+        if (d <= Settings::instance().evaluationDate()) {
+            return 0.;
+        }
 
         // Trivial cases when the percentile is outside the prob range 
         //   associated to the tranche limits:
-        if(percentile <= 1.-probOverLoss(d, 0.)) return 0.;
-        if(percentile >= 1.-probOverLoss(d, 1.)) 
+        if (percentile <= 1. - probOverLoss(d, 0.)) {
+            return 0.;
+        }
+        if (percentile >= 1. - probOverLoss(d, 1.)) {
             return basket_->remainingTrancheNotional();
+        }
 
         SaddlePercObjFunction f(*this, percentile, d);
         Brent solver;
@@ -979,11 +984,11 @@ namespace QuantLib {
         SaddlePointLossModel<CP>::lossDistribution(const Date& d) const {
         std::map<Real, Probability> distrib;
         static const Real numPts = 500.;
-        for(Real lossFraction=1./numPts; lossFraction<0.45; 
-            lossFraction+= 1./numPts)
+        for (Real lossFraction = 1. / numPts; lossFraction < 0.45; lossFraction += 1. / numPts) {
             distrib.insert(std::make_pair<Real, Probability>(
-                lossFraction * remainingNotional_ , 
-                  1.-probOverPortfLoss(d, lossFraction* remainingNotional_ )));
+                lossFraction * remainingNotional_,
+                1. - probOverPortfLoss(d, lossFraction * remainingNotional_)));
+        }
         return distrib;
     }
 
@@ -1010,21 +1015,28 @@ namespace QuantLib {
         for the recovery call (but rand rr are not intended to be used yet)
         */
        // return probOverLossPortfCond1stOrder(d, loss, mktFactor);
-        if (loss <= QL_EPSILON) return 1.;
+        if (loss <= QL_EPSILON) {
+            return 1.;
+        }
 
         Real relativeLoss = loss / remainingNotional_;
-        if (relativeLoss >= 1.-QL_EPSILON) return 0.;
+        if (relativeLoss >= 1. - QL_EPSILON) {
+            return 0.;
+        }
 
         const Size nNames = remainingNotionals_.size();
 
         Real averageRecovery_ = 0.;
-        for(Size iName=0; iName < nNames; iName++)
-            averageRecovery_ += copula_->conditionalRecoveryInvP(
-                invUncondProbs[iName], iName, mktFactor);
+        for (Size iName = 0; iName < nNames; iName++) {
+            averageRecovery_ +=
+                copula_->conditionalRecoveryInvP(invUncondProbs[iName], iName, mktFactor);
+        }
         averageRecovery_ = averageRecovery_ / nNames;
 
         Real maxAttLossFract = 1.-averageRecovery_;
-        if(relativeLoss > maxAttLossFract) return 0.;
+        if (relativeLoss > maxAttLossFract) {
+            return 0.;
+        }
 
         Real saddlePt = findSaddle(invUncondProbs,
             relativeLoss, mktFactor);
@@ -1046,7 +1058,9 @@ namespace QuantLib {
         if(saddlePt > 0.) { // <-> (loss > condEL)
             Real exponent = baseVal - relativeLoss * saddlePt + 
                 .5 * saddleTo2 * secondVal;
-            if( std::abs(exponent) > 700.) return 0.;
+            if (std::abs(exponent) > 700.) {
+                return 0.;
+            }
             return 
                 std::exp(exponent)
                 * CumulativeNormalDistribution()(-std::abs(saddlePt)*
@@ -1070,7 +1084,9 @@ namespace QuantLib {
         }else {// <->(loss < condEL)
             Real exponent = baseVal - relativeLoss * saddlePt + 
                 .5 * saddleTo2 * secondVal;
-            if( std::abs(exponent) > 700.) return 0.;
+            if (std::abs(exponent) > 700.) {
+                return 0.;
+            }
             return 
                 1.-
                 std::exp(exponent)
@@ -1098,22 +1114,29 @@ namespace QuantLib {
         Real loss, 
         const std::vector<Real>& mktFactor) const 
     {
-        if (loss <= QL_EPSILON) return 1.;
+        if (loss <= QL_EPSILON) {
+            return 1.;
+        }
         const Size nNames = remainingNotionals_.size();
 
         Real relativeLoss = loss / remainingNotional_;
-        if(relativeLoss >= 1.-QL_EPSILON) return 0.;
+        if (relativeLoss >= 1. - QL_EPSILON) {
+            return 0.;
+        }
 
         // only true for constant recovery models......?
         Real averageRecovery_ = 0.;
-        for(Size iName=0; iName < nNames; iName++)
+        for (Size iName = 0; iName < nNames; iName++) {
             averageRecovery_ += 
             copula_->conditionalRecoveryInvP(invUncondPs[iName], iName, 
-            mktFactor);  
+            mktFactor);
+        }
         averageRecovery_ = averageRecovery_ / nNames;
 
         Real maxAttLossFract = 1.-averageRecovery_;
-        if(relativeLoss > maxAttLossFract) return 0.;
+        if (relativeLoss > maxAttLossFract) {
+            return 0.;
+        }
 
         Real saddlePt = findSaddle(invUncondPs,
             relativeLoss, mktFactor);
@@ -1129,7 +1152,9 @@ namespace QuantLib {
         if(saddlePt > 0.) { // <-> (loss > condEL)
             Real exponent = baseVal - relativeLoss * saddlePt + 
                 .5 * saddleTo2 * secondVal;
-            if( std::abs(exponent) > 700.) return 0.;
+            if (std::abs(exponent) > 700.) {
+                return 0.;
+            }
             return 
                 // dangerous exponential; fix me
                 std::exp(exponent)
@@ -1142,7 +1167,9 @@ namespace QuantLib {
         }else {// <->(loss < condEL)
             Real exponent = baseVal - relativeLoss * saddlePt + 
                 .5 * saddleTo2 * secondVal;
-            if( std::abs(exponent) > 700.) return 0.;
+            if (std::abs(exponent) > 700.) {
+                return 0.;
+            }
 
             return 
                 1.-
@@ -1167,7 +1194,9 @@ namespace QuantLib {
         Real loss,
         const std::vector<Real>& mktFactor) const 
     {
-        if (loss <= QL_EPSILON) return 0.;
+        if (loss <= QL_EPSILON) {
+            return 0.;
+        }
 
         Real relativeLoss = loss / remainingNotional_;
         Real saddlePt = findSaddle(invUncondPs,
@@ -1214,7 +1243,9 @@ namespace QuantLib {
     {
         const Size nNames = remainingNotionals_.size();
         std::vector<Real> condContrib(nNames, 0.);
-        if (loss <= QL_EPSILON) return condContrib;
+        if (loss <= QL_EPSILON) {
+            return condContrib;
+        }
 
         Real saddlePt = findSaddle(invUncondProbs, loss / remainingNotional_, 
             mktFactor);
@@ -1282,10 +1313,11 @@ namespace QuantLib {
     {
         const Size nNames = remainingNotionals_.size();
         std::vector<Real> lgds;
-        for(Size iName=0; iName<nNames; iName++)
+        for (Size iName = 0; iName < nNames; iName++) {
             lgds.push_back(remainingNotionals_[iName] * 
                 (1.-copula_->conditionalRecoveryInvP(invUncondProbs[iName],
-                    iName, mktFactor))); 
+                    iName, mktFactor)));
+        }
         std::vector<Real> vola(nNames, 0.), mu(nNames, 0.);
         Real volaTot = 0., muTot = 0.;
         for(Size iName=0; iName < nNames; iName++) {
@@ -1297,8 +1329,9 @@ namespace QuantLib {
                 / remainingNotionals_[iName];
             volaTot += lgds[iName] * lgds[iName] * pBuffer * (1.-pBuffer) ;
         }
-        for (Size iName=0; iName < nNames; iName++)
+        for (Size iName = 0; iName < nNames; iName++) {
             vola[iName] = vola[iName] / volaTot;
+        }
 
         std::vector<Real> esfPartition(nNames, 0.);
         for(Size iName=0; iName < nNames; iName++) {
@@ -1423,13 +1456,15 @@ namespace QuantLib {
         Real trancheAmount = basket_->trancheNotional() * 
             (detachRatio_-attachRatio_);
         //assumed the amount includes the realized loses
-        if(lossPerc >= trancheAmount) return trancheAmount;
+        if (lossPerc >= trancheAmount) {
+            return trancheAmount;
+        }
         //SHOULD CHECK NOW THE OPPOSITE LIMIT ("zero" losses)....
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(d);
-        for(Size i=0; i<invUncondProbs.size(); i++)
-            invUncondProbs[i] = 
-                copula_->inverseCumulativeY(invUncondProbs[i], i);
+        for (Size i = 0; i < invUncondProbs.size(); i++) {
+            invUncondProbs[i] = copula_->inverseCumulativeY(invUncondProbs[i], i);
+        }
 
         // Integrate with the tranche or the portfolio according to the limits.
         return copula_->integratedExpectedValue(

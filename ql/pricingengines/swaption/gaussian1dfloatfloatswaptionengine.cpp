@@ -201,31 +201,32 @@ namespace QuantLib {
                 isEventDate = false;
             } else {
                 event0 = events[idx];
-                if (event0 == expiry)
+                if (event0 == expiry) {
                     idx = -1; // avoid double roll back if expiry equal to
-                              // earliest event date
+                }
+                // earliest event date
             }
 
-            if (std::find(arguments_.exercise->dates().begin(),
-                          arguments_.exercise->dates().end(),
-                          event0) != arguments_.exercise->dates().end())
+            if (std::find(arguments_.exercise->dates().begin(), arguments_.exercise->dates().end(),
+                          event0) != arguments_.exercise->dates().end()) {
                 isExercise = true;
-            else
+            } else {
                 isExercise = false;
+            }
 
-            if (std::find(arguments_.leg1FixingDates.begin(),
-                          arguments_.leg1FixingDates.end(),
-                          event0) != arguments_.leg1FixingDates.end())
+            if (std::find(arguments_.leg1FixingDates.begin(), arguments_.leg1FixingDates.end(),
+                          event0) != arguments_.leg1FixingDates.end()) {
                 isLeg1Fixing = true;
-            else
+            } else {
                 isLeg1Fixing = false;
+            }
 
-            if (std::find(arguments_.leg2FixingDates.begin(),
-                          arguments_.leg2FixingDates.end(),
-                          event0) != arguments_.leg2FixingDates.end())
+            if (std::find(arguments_.leg2FixingDates.begin(), arguments_.leg2FixingDates.end(),
+                          event0) != arguments_.leg2FixingDates.end()) {
                 isLeg2Fixing = true;
-            else
+            } else {
                 isLeg2Fixing = false;
+            }
 
             event0Time = std::max(
                 model_->termStructure()->timeFromReference(event0), 0.0);
@@ -304,42 +305,38 @@ namespace QuantLib {
                                           -100.0, z[0]) *
                                       zSpreadDf;
                         } else {
-                            if (type == Option::Call)
+                            if (type == Option::Call) {
+                                price += model_->gaussianShiftedPolynomialIntegral(
+                                             0.0, payoff1.cCoefficients()[z.size() - 2],
+                                             payoff1.bCoefficients()[z.size() - 2],
+                                             payoff1.aCoefficients()[z.size() - 2], p[z.size() - 2],
+                                             z[z.size() - 2], z[z.size() - 1], 100.0) *
+                                         zSpreadDf;
+                            }
+                            if (type == Option::Put) {
                                 price +=
                                     model_->gaussianShiftedPolynomialIntegral(
-                                        0.0,
-                                        payoff1.cCoefficients()[z.size() - 2],
-                                        payoff1.bCoefficients()[z.size() - 2],
-                                        payoff1.aCoefficients()[z.size() - 2],
-                                        p[z.size() - 2], z[z.size() - 2],
-                                        z[z.size() - 1], 100.0) *
+                                        0.0, payoff1.cCoefficients()[0], payoff1.bCoefficients()[0],
+                                        payoff1.aCoefficients()[0], p[0], z[0], -100.0, z[0]) *
                                     zSpreadDf;
-                            if (type == Option::Put)
-                                price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
-                                        0.0, payoff1.cCoefficients()[0],
-                                        payoff1.bCoefficients()[0],
-                                        payoff1.aCoefficients()[0], p[0], z[0],
-                                        -100.0, z[0]) *
-                                    zSpreadDf;
-                            if (type == Option::Call)
+                            }
+                            if (type == Option::Call) {
                                 pricea +=
                                     model_->gaussianShiftedPolynomialIntegral(
-                                        0.0,
-                                        payoff1a.cCoefficients()[z.size() - 2],
+                                        0.0, payoff1a.cCoefficients()[z.size() - 2],
                                         payoff1a.bCoefficients()[z.size() - 2],
-                                        payoff1a.aCoefficients()[z.size() - 2],
-                                        pa[z.size() - 2], z[z.size() - 2],
-                                        z[z.size() - 1], 100.0) *
+                                        payoff1a.aCoefficients()[z.size() - 2], pa[z.size() - 2],
+                                        z[z.size() - 2], z[z.size() - 1], 100.0) *
                                     zSpreadDf;
-                            if (type == Option::Put)
+                            }
+                            if (type == Option::Put) {
                                 pricea +=
                                     model_->gaussianShiftedPolynomialIntegral(
                                         0.0, payoff1a.cCoefficients()[0],
-                                        payoff1a.bCoefficients()[0],
-                                        payoff1a.aCoefficients()[0], pa[0],
-                                        z[0], -100.0, z[0]) *
+                                        payoff1a.bCoefficients()[0], payoff1a.aCoefficients()[0],
+                                        pa[0], z[0], -100.0, z[0]) *
                                     zSpreadDf;
+                            }
                         }
                     }
                 }
@@ -399,35 +396,23 @@ namespace QuantLib {
                                                   z[0], -100.0, z[0]) *
                                         zSpreadDf;
                                 } else {
-                                    if (type == Option::Call)
-                                        price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
-                                                      0.0,
-                                                      payoff1.cCoefficients()
-                                                          [z.size() - 2],
-                                                      payoff1.bCoefficients()
-                                                          [z.size() - 2],
-                                                      payoff1.aCoefficients()
-                                                          [z.size() - 2],
-                                                      p[z.size() - 2],
-                                                      z[z.size() - 2],
-                                                      z[z.size() - 1], 100.0) *
-                                            zSpreadDf;
-                                    if (type == Option::Put)
-                                        price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
-                                                      0.0,
-                                                      payoff1
-                                                          .cCoefficients()[0],
-                                                      payoff1
-                                                          .bCoefficients()[0],
-                                                      payoff1
-                                                          .aCoefficients()[0],
-                                                      p[0], z[0], -100.0,
-                                                      z[0]) *
-                                            zSpreadDf;
+                                    if (type == Option::Call) {
+                                        price += model_->gaussianShiftedPolynomialIntegral(
+                                                     0.0, payoff1.cCoefficients()[z.size() - 2],
+                                                     payoff1.bCoefficients()[z.size() - 2],
+                                                     payoff1.aCoefficients()[z.size() - 2],
+                                                     p[z.size() - 2], z[z.size() - 2],
+                                                     z[z.size() - 1], 100.0) *
+                                                 zSpreadDf;
+                                    }
+                                    if (type == Option::Put) {
+                                        price += model_->gaussianShiftedPolynomialIntegral(
+                                                     0.0, payoff1.cCoefficients()[0],
+                                                     payoff1.bCoefficients()[0],
+                                                     payoff1.aCoefficients()[0], p[0], z[0], -100.0,
+                                                     z[0]) *
+                                                 zSpreadDf;
+                                    }
                                 }
                             }
                         }
@@ -478,33 +463,26 @@ namespace QuantLib {
                                         arguments_.leg1FixingDates[j],
                                         cms1->tenor(), event0, zk, cms1);
                                 }
-                                if (cmsspread1 != NULL)
+                                if (cmsspread1 != NULL) {
                                     estFixing =
                                         cmsspread1->gearing1() *
-                                            model_->swapRate(
-                                                arguments_.leg1FixingDates[j],
-                                                cmsspread1->swapIndex1()
-                                                    ->tenor(),
-                                                event0, zk,
-                                                cmsspread1->swapIndex1()) +
+                                            model_->swapRate(arguments_.leg1FixingDates[j],
+                                                             cmsspread1->swapIndex1()->tenor(),
+                                                             event0, zk, cmsspread1->swapIndex1()) +
                                         cmsspread1->gearing2() *
-                                            model_->swapRate(
-                                                arguments_.leg1FixingDates[j],
-                                                cmsspread1->swapIndex2()
-                                                    ->tenor(),
-                                                event0, zk,
-                                                cmsspread1->swapIndex2());
+                                            model_->swapRate(arguments_.leg1FixingDates[j],
+                                                             cmsspread1->swapIndex2()->tenor(),
+                                                             event0, zk, cmsspread1->swapIndex2());
+                                }
                                 Real rate =
                                     arguments_.leg1Spreads[j] +
                                     arguments_.leg1Gearings[j] * estFixing;
-                                if (arguments_.leg1CappedRates[j] !=
-                                    Null<Real>())
-                                    rate = std::min(
-                                        arguments_.leg1CappedRates[j], rate);
-                                if (arguments_.leg1FlooredRates[j] !=
-                                    Null<Real>())
-                                    rate = std::max(
-                                        arguments_.leg1FlooredRates[j], rate);
+                                if (arguments_.leg1CappedRates[j] != Null<Real>()) {
+                                    rate = std::min(arguments_.leg1CappedRates[j], rate);
+                                }
+                                if (arguments_.leg1FlooredRates[j] != Null<Real>()) {
+                                    rate = std::max(arguments_.leg1FlooredRates[j], rate);
+                                }
                                 amount = rate * arguments_.nominal1[j] *
                                          arguments_.leg1AccrualTimes[j];
                             }
@@ -521,8 +499,9 @@ namespace QuantLib {
                                 j++;
                                 done =
                                     (event0 != arguments_.leg1FixingDates[j]);
-                            } else
+                            } else {
                                 done = true;
+                            }
 
                         } while (!done);
                     }
@@ -552,37 +531,34 @@ namespace QuantLib {
                                 amount = arguments_.leg2Coupons[j];
                             } else {
                                 Real estFixing = 0.0;
-                                if(ibor2 != NULL)
-                                    estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],event0,zk,ibor2);
-                                if(cms2 != NULL)
-                                    estFixing = model_->swapRate(arguments_.leg2FixingDates[j],cms2->tenor(),event0,zk,cms2);
-                                if (cmsspread2 != NULL)
+                                if (ibor2 != NULL) {
+                                    estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],
+                                                                    event0, zk, ibor2);
+                                }
+                                if (cms2 != NULL) {
+                                    estFixing = model_->swapRate(arguments_.leg2FixingDates[j],
+                                                                 cms2->tenor(), event0, zk, cms2);
+                                }
+                                if (cmsspread2 != NULL) {
                                     estFixing =
                                         cmsspread2->gearing1() *
-                                            model_->swapRate(
-                                                arguments_.leg2FixingDates[j],
-                                                cmsspread2->swapIndex1()
-                                                    ->tenor(),
-                                                event0, zk,
-                                                cmsspread2->swapIndex1()) +
+                                            model_->swapRate(arguments_.leg2FixingDates[j],
+                                                             cmsspread2->swapIndex1()->tenor(),
+                                                             event0, zk, cmsspread2->swapIndex1()) +
                                         cmsspread2->gearing2() *
-                                            model_->swapRate(
-                                                arguments_.leg2FixingDates[j],
-                                                cmsspread2->swapIndex2()
-                                                    ->tenor(),
-                                                event0, zk,
-                                                cmsspread2->swapIndex2());
+                                            model_->swapRate(arguments_.leg2FixingDates[j],
+                                                             cmsspread2->swapIndex2()->tenor(),
+                                                             event0, zk, cmsspread2->swapIndex2());
+                                }
                                 Real rate =
                                     arguments_.leg2Spreads[j] +
                                     arguments_.leg2Gearings[j] * estFixing;
-                                if (arguments_.leg2CappedRates[j] !=
-                                    Null<Real>())
-                                    rate = std::min(
-                                        arguments_.leg2CappedRates[j], rate);
-                                if (arguments_.leg2FlooredRates[j] !=
-                                    Null<Real>())
-                                    rate = std::max(
-                                        arguments_.leg2FlooredRates[j], rate);
+                                if (arguments_.leg2CappedRates[j] != Null<Real>()) {
+                                    rate = std::min(arguments_.leg2CappedRates[j], rate);
+                                }
+                                if (arguments_.leg2FlooredRates[j] != Null<Real>()) {
+                                    rate = std::max(arguments_.leg2FlooredRates[j], rate);
+                                }
                                 amount = rate * arguments_.nominal2[j] *
                                          arguments_.leg2AccrualTimes[j];
                             }
@@ -598,8 +574,9 @@ namespace QuantLib {
                                 j++;
                                 done =
                                     (event0 != arguments_.leg2FixingDates[j]);
-                            } else
+                            } else {
                                 done = true;
+                            }
 
                         } while (!done);
                     }
@@ -655,8 +632,9 @@ namespace QuantLib {
                                                  model_->numeraire(
                                                      event0Time, z[k],
                                                      discountCurve_));
-                                for (Size ii = exIdx; ii < noEx+1; ++ii)
+                                for (Size ii = exIdx; ii < noEx + 1; ++ii) {
                                     npvp0[ii][k] = 0.0;
+                                }
                             }
                         }
                         // end probability computation
@@ -666,8 +644,9 @@ namespace QuantLib {
                 }
             }
 
-            if(isExercise)
+            if (isExercise) {
                 --exIdx;
+            }
 
             npv1.swap(npv0);
             npv1a.swap(npv0a);

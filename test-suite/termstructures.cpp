@@ -137,20 +137,23 @@ void TermStructureTest::testReferenceChange() {
     Size i;
 
     std::vector<DiscountFactor> expected(LENGTH(days));
-    for (i=0; i<LENGTH(days); i++)
-        expected[i] = vars.termStructure->discount(today+days[i]);
+    for (i = 0; i < LENGTH(days); i++) {
+        expected[i] = vars.termStructure->discount(today + days[i]);
+    }
 
     Settings::instance().evaluationDate() = today+30;
     std::vector<DiscountFactor> calculated(LENGTH(days));
-    for (i=0; i<LENGTH(days); i++)
-        calculated[i] = vars.termStructure->discount(today+30+days[i]);
+    for (i = 0; i < LENGTH(days); i++) {
+        calculated[i] = vars.termStructure->discount(today + 30 + days[i]);
+    }
 
     for (i=0; i<LENGTH(days); i++) {
-        if (!close(expected[i],calculated[i]))
+        if (!close(expected[i], calculated[i])) {
             BOOST_ERROR("\n  Discount at " << days[i] << " days:\n"
-                        << std::setprecision(12)
-                        << "    before date change: " << expected[i] << "\n"
-                        << "    after date change:  " << calculated[i]);
+                                           << std::setprecision(12)
+                                           << "    before date change: " << expected[i] << "\n"
+                                           << "    after date change:  " << calculated[i]);
+        }
     }
 }
 
@@ -175,12 +178,12 @@ void TermStructureTest::testImplied() {
     DiscountFactor baseDiscount = vars.termStructure->discount(newSettlement);
     DiscountFactor discount = vars.termStructure->discount(testDate);
     DiscountFactor impliedDiscount = implied->discount(testDate);
-    if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce discount from implied curve\n"
-            << std::fixed << std::setprecision(10)
-            << "    calculated: " << baseDiscount*impliedDiscount << "\n"
-            << "    expected:   " << discount);
+    if (std::fabs(discount - baseDiscount * impliedDiscount) > tolerance) {
+        BOOST_ERROR("unable to reproduce discount from implied curve\n"
+                    << std::fixed << std::setprecision(10)
+                    << "    calculated: " << baseDiscount * impliedDiscount << "\n"
+                    << "    expected:   " << discount);
+    }
 }
 
 void TermStructureTest::testImpliedObs() {
@@ -201,8 +204,9 @@ void TermStructureTest::testImpliedObs() {
     Flag flag;
     flag.registerWith(implied);
     h.linkTo(vars.termStructure);
-    if (!flag.isUp())
+    if (!flag.isUp()) {
         BOOST_ERROR("Observer was not notified of term structure change");
+    }
 }
 
 void TermStructureTest::testFSpreaded() {
@@ -226,13 +230,12 @@ void TermStructureTest::testFSpreaded() {
                                                    Continuous, NoFrequency);
     Rate spreadedForward = spreaded->forwardRate(testDate, testDate, sprdc,
                                                  Continuous, NoFrequency);
-    if (std::fabs(forward - (spreadedForward-me->value())) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce forward from spreaded curve\n"
-            << std::setprecision(10)
-            << "    calculated: "
-            << io::rate(spreadedForward-me->value()) << "\n"
-            << "    expected:   " << io::rate(forward));
+    if (std::fabs(forward - (spreadedForward - me->value())) > tolerance) {
+        BOOST_ERROR("unable to reproduce forward from spreaded curve\n"
+                    << std::setprecision(10)
+                    << "    calculated: " << io::rate(spreadedForward - me->value()) << "\n"
+                    << "    expected:   " << io::rate(forward));
+    }
 }
 
 void TermStructureTest::testFSpreadedObs() {
@@ -252,12 +255,14 @@ void TermStructureTest::testFSpreadedObs() {
     Flag flag;
     flag.registerWith(spreaded);
     h.linkTo(vars.termStructure);
-    if (!flag.isUp())
+    if (!flag.isUp()) {
         BOOST_ERROR("Observer was not notified of term structure change");
+    }
     flag.lower();
     me->setValue(0.005);
-    if (!flag.isUp())
+    if (!flag.isUp()) {
         BOOST_ERROR("Observer was not notified of spread change");
+    }
 }
 
 void TermStructureTest::testZSpreaded() {
@@ -280,12 +285,12 @@ void TermStructureTest::testZSpreaded() {
                                              Continuous, NoFrequency);
     Rate spreadedZero = spreaded->zeroRate(testDate, rfdc,
                                            Continuous, NoFrequency);
-    if (std::fabs(zero - (spreadedZero-me->value())) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce zero yield from spreaded curve\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(spreadedZero-me->value()) << "\n"
-            << "    expected:   " << io::rate(zero));
+    if (std::fabs(zero - (spreadedZero - me->value())) > tolerance) {
+        BOOST_ERROR("unable to reproduce zero yield from spreaded curve\n"
+                    << std::setprecision(10)
+                    << "    calculated: " << io::rate(spreadedZero - me->value()) << "\n"
+                    << "    expected:   " << io::rate(zero));
+    }
 }
 
 void TermStructureTest::testZSpreadedObs() {
@@ -305,12 +310,14 @@ void TermStructureTest::testZSpreadedObs() {
     Flag flag;
     flag.registerWith(spreaded);
     h.linkTo(vars.termStructure);
-    if (!flag.isUp())
+    if (!flag.isUp()) {
         BOOST_ERROR("Observer was not notified of term structure change");
+    }
     flag.lower();
     me->setValue(0.005);
-    if (!flag.isUp())
+    if (!flag.isUp()) {
         BOOST_ERROR("Observer was not notified of spread change");
+    }
 }
 
 void TermStructureTest::testCreateWithNullUnderlying() {
@@ -472,12 +479,12 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
         Rate actual = compoundCurve->zeroRate(dates[i], Actual365Fixed(), Continuous).rate();
         Rate expected = rates[i];
 
-        if (std::fabs(actual - expected) > tolerance)
-            BOOST_ERROR(
-                "unable to reproduce zero yield rate from composite input curve\n"
-                << std::fixed << std::setprecision(10)
-                << "    calculated: " << actual << "\n"
-                << "    expected:   " << expected);
+        if (std::fabs(actual - expected) > tolerance) {
+            BOOST_ERROR("unable to reproduce zero yield rate from composite input curve\n"
+                        << std::fixed << std::setprecision(10) << "    calculated: " << actual
+                        << "\n"
+                        << "    expected:   " << expected);
+        }
     }
 }
 

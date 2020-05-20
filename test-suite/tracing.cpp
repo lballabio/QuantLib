@@ -46,10 +46,11 @@ namespace {
         TestCaseCleaner cleaner;
 
         std::ostringstream output;
-        if (enable)
+        if (enable) {
             QL_TRACE_ENABLE;
-        else
+        } else {
             QL_TRACE_DISABLE;
+        }
         QL_TRACE_ON(output);
         int i = 42;
         QL_TRACE_VARIABLE(i);

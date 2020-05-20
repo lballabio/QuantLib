@@ -52,120 +52,95 @@ namespace QuantLib {
 
         if (isWeekend(w)
             // New Year's Day
-            || (d == 1 && m == January)
-            || (y == 2005 && d == 3 && m == January)
-            || (y == 2006 && (d == 2 || d == 3) && m == January)
-            || (y == 2007 && d <= 3 && m == January)
-            || (y == 2007 && d == 31 && m == December)
-            || (y == 2009 && d == 2 && m == January)
-            || (y == 2011 && d == 3 && m == January)
-            || (y == 2012 && (d == 2 || d == 3) && m == January)
-            || (y == 2013 && d <= 3 && m == January)
-            || (y == 2014 && d == 1 && m == January)
-            || (y == 2015 && d <= 3 && m == January)
-            || (y == 2017 && d == 2 && m == January)
-            || (y == 2018 && d == 1 && m == January)
-            || (y == 2018 && d == 31 && m == December)
-            || (y == 2019 && d == 1 && m == January)
-            || (y == 2020 && d == 1 && m == January)
+            || (d == 1 && m == January) || (y == 2005 && d == 3 && m == January) ||
+            (y == 2006 && (d == 2 || d == 3) && m == January) ||
+            (y == 2007 && d <= 3 && m == January) || (y == 2007 && d == 31 && m == December) ||
+            (y == 2009 && d == 2 && m == January) || (y == 2011 && d == 3 && m == January) ||
+            (y == 2012 && (d == 2 || d == 3) && m == January) ||
+            (y == 2013 && d <= 3 && m == January) || (y == 2014 && d == 1 && m == January) ||
+            (y == 2015 && d <= 3 && m == January) || (y == 2017 && d == 2 && m == January) ||
+            (y == 2018 && d == 1 && m == January) || (y == 2018 && d == 31 && m == December) ||
+            (y == 2019 && d == 1 && m == January) ||
+            (y == 2020 && d == 1 && m == January)
             // Chinese New Year
-            || (y == 2004 && d >= 19 && d <= 28 && m == January)
-            || (y == 2005 && d >=  7 && d <= 15 && m == February)
-            || (y == 2006 && ((d >= 26 && m == January) ||
-                              (d <= 3 && m == February)))
-            || (y == 2007 && d >= 17 && d <= 25 && m == February)
-            || (y == 2008 && d >= 6 && d <= 12 && m == February)
-            || (y == 2009 && d >= 26 && d <= 30 && m == January)
-            || (y == 2010 && d >= 15 && d <= 19 && m == February)
-            || (y == 2011 && d >= 2 && d <= 8 && m == February)
-            || (y == 2012 && d >= 23 && d <= 28 && m == January)
-            || (y == 2013 && d >= 11 && d <= 15 && m == February)
-            || (y == 2014 && d >= 31 && m == January)
-            || (y == 2014 && d <= 6 && m == February)
-            || (y == 2015 && d >= 18 && d <= 24 && m == February)
-            || (y == 2016 && d >= 8 && d <= 12 && m == February)
-            || (y == 2017 && ((d >= 27 && m == January) ||
-                              (d <= 2 && m == February)))
-            || (y == 2018 && (d >= 15 && d <= 21 && m == February))
-            || (y == 2019 && d >= 4 && d <= 8 && m == February)
-            || (y == 2020 && (d == 24 || (d >= 27 && d <= 31)) && m == January)
+            || (y == 2004 && d >= 19 && d <= 28 && m == January) ||
+            (y == 2005 && d >= 7 && d <= 15 && m == February) ||
+            (y == 2006 && ((d >= 26 && m == January) || (d <= 3 && m == February))) ||
+            (y == 2007 && d >= 17 && d <= 25 && m == February) ||
+            (y == 2008 && d >= 6 && d <= 12 && m == February) ||
+            (y == 2009 && d >= 26 && d <= 30 && m == January) ||
+            (y == 2010 && d >= 15 && d <= 19 && m == February) ||
+            (y == 2011 && d >= 2 && d <= 8 && m == February) ||
+            (y == 2012 && d >= 23 && d <= 28 && m == January) ||
+            (y == 2013 && d >= 11 && d <= 15 && m == February) ||
+            (y == 2014 && d >= 31 && m == January) || (y == 2014 && d <= 6 && m == February) ||
+            (y == 2015 && d >= 18 && d <= 24 && m == February) ||
+            (y == 2016 && d >= 8 && d <= 12 && m == February) ||
+            (y == 2017 && ((d >= 27 && m == January) || (d <= 2 && m == February))) ||
+            (y == 2018 && (d >= 15 && d <= 21 && m == February)) ||
+            (y == 2019 && d >= 4 && d <= 8 && m == February) ||
+            (y == 2020 && (d == 24 || (d >= 27 && d <= 31)) && m == January)
             // Ching Ming Festival
-            || (y <= 2008 && d == 4 && m == April)
-            || (y == 2009 && d == 6 && m == April)
-            || (y == 2010 && d == 5 && m == April)
-            || (y == 2011 && d >=3 && d <= 5 && m == April)
-            || (y == 2012 && d >= 2 && d <= 4 && m == April)
-            || (y == 2013 && d >= 4 && d <= 5 && m == April)
-            || (y == 2014 && d == 7 && m == April)
-            || (y == 2015 && d >= 5 && d <= 6 && m == April)
-            || (y == 2016 && d == 4 && m == April)
-            || (y == 2017 && d >= 3 && d <= 4 && m == April)
-            || (y == 2018 && d >= 5 && d <= 6 && m == April)
-            || (y == 2019 && d == 5 && m == April)
-            || (y == 2020 && d == 6 && m == April)
+            || (y <= 2008 && d == 4 && m == April) || (y == 2009 && d == 6 && m == April) ||
+            (y == 2010 && d == 5 && m == April) || (y == 2011 && d >= 3 && d <= 5 && m == April) ||
+            (y == 2012 && d >= 2 && d <= 4 && m == April) ||
+            (y == 2013 && d >= 4 && d <= 5 && m == April) || (y == 2014 && d == 7 && m == April) ||
+            (y == 2015 && d >= 5 && d <= 6 && m == April) || (y == 2016 && d == 4 && m == April) ||
+            (y == 2017 && d >= 3 && d <= 4 && m == April) ||
+            (y == 2018 && d >= 5 && d <= 6 && m == April) || (y == 2019 && d == 5 && m == April) ||
+            (y == 2020 && d == 6 && m == April)
             // Labor Day
-            || (y <= 2007 && d >= 1 && d <= 7 && m == May)
-            || (y == 2008 && d >= 1 && d <= 2 && m == May)
-            || (y == 2009 && d == 1 && m == May)
-            || (y == 2010 && d == 3 && m == May)
-            || (y == 2011 && d == 2 && m == May)
-            || (y == 2012 && ((d == 30 && m == April) ||
-                              (d == 1 && m == May)))
-            || (y == 2013 && ((d >= 29 && m == April) ||
-                              (d == 1 && m == May)))
-            || (y == 2014 && d >= 1 && d <=3 && m == May)
-            || (y == 2015 && d == 1 && m == May)
-            || (y == 2016 && d >= 1 && d <=2 && m == May)
-            || (y == 2017 && d == 1 && m == May)
-            || (y == 2018 && ((d == 30 && m == April) || (d == 1 && m == May)))
-            || (y == 2019 && d >= 1 && d <=3 && m == May)
-            || (y == 2020 && (d == 1 || d == 4 || d == 5) && m == May)
+            || (y <= 2007 && d >= 1 && d <= 7 && m == May) ||
+            (y == 2008 && d >= 1 && d <= 2 && m == May) || (y == 2009 && d == 1 && m == May) ||
+            (y == 2010 && d == 3 && m == May) || (y == 2011 && d == 2 && m == May) ||
+            (y == 2012 && ((d == 30 && m == April) || (d == 1 && m == May))) ||
+            (y == 2013 && ((d >= 29 && m == April) || (d == 1 && m == May))) ||
+            (y == 2014 && d >= 1 && d <= 3 && m == May) || (y == 2015 && d == 1 && m == May) ||
+            (y == 2016 && d >= 1 && d <= 2 && m == May) || (y == 2017 && d == 1 && m == May) ||
+            (y == 2018 && ((d == 30 && m == April) || (d == 1 && m == May))) ||
+            (y == 2019 && d >= 1 && d <= 3 && m == May) ||
+            (y == 2020 && (d == 1 || d == 4 || d == 5) && m == May)
             // Tuen Ng Festival
-            || (y <= 2008 && d == 9 && m == June)
-            || (y == 2009 && (d == 28 || d == 29) && m == May)
-            || (y == 2010 && d >= 14 && d <= 16 && m == June)
-            || (y == 2011 && d >= 4 && d <= 6 && m == June)
-            || (y == 2012 && d >= 22 && d <= 24 && m == June)
-            || (y == 2013 && d >= 10 && d <= 12 && m == June)
-            || (y == 2014 && d == 2 && m == June)
-            || (y == 2015 && d == 22 && m == June)
-            || (y == 2016 && d >= 9 && d <= 10 && m == June)
-            || (y == 2017 && d >= 29 && d <= 30 && m == May)
-            || (y == 2018 && d == 18 && m == June)
-            || (y == 2019 && d == 7 && m == June)
-            || (y == 2020 && d >= 25 && d <= 26 && m == June)
+            || (y <= 2008 && d == 9 && m == June) ||
+            (y == 2009 && (d == 28 || d == 29) && m == May) ||
+            (y == 2010 && d >= 14 && d <= 16 && m == June) ||
+            (y == 2011 && d >= 4 && d <= 6 && m == June) ||
+            (y == 2012 && d >= 22 && d <= 24 && m == June) ||
+            (y == 2013 && d >= 10 && d <= 12 && m == June) || (y == 2014 && d == 2 && m == June) ||
+            (y == 2015 && d == 22 && m == June) || (y == 2016 && d >= 9 && d <= 10 && m == June) ||
+            (y == 2017 && d >= 29 && d <= 30 && m == May) || (y == 2018 && d == 18 && m == June) ||
+            (y == 2019 && d == 7 && m == June) ||
+            (y == 2020 && d >= 25 && d <= 26 && m == June)
             // Mid-Autumn Festival
-            || (y <= 2008 && d == 15 && m == September)
-            || (y == 2010 && d >= 22 && d <= 24 && m == September)
-            || (y == 2011 && d >= 10 && d <= 12 && m == September)
-            || (y == 2012 && d == 30 && m == September)
-            || (y == 2013 && d >= 19 && d <= 20 && m == September)
-            || (y == 2014 && d == 8 && m == September)
-            || (y == 2015 && d == 27 && m == September)
-            || (y == 2016 && d >= 15 && d <= 16 && m == September)
-            || (y == 2018 && d == 24 && m == September)
-            || (y == 2019 && d == 13 && m == September)
+            || (y <= 2008 && d == 15 && m == September) ||
+            (y == 2010 && d >= 22 && d <= 24 && m == September) ||
+            (y == 2011 && d >= 10 && d <= 12 && m == September) ||
+            (y == 2012 && d == 30 && m == September) ||
+            (y == 2013 && d >= 19 && d <= 20 && m == September) ||
+            (y == 2014 && d == 8 && m == September) || (y == 2015 && d == 27 && m == September) ||
+            (y == 2016 && d >= 15 && d <= 16 && m == September) ||
+            (y == 2018 && d == 24 && m == September) ||
+            (y == 2019 && d == 13 && m == September)
             // National Day
-            || (y <= 2007 && d >= 1 && d <= 7 && m == October) 
-            || (y == 2008 && ((d >= 29 && m == September) ||
-                              (d <= 3 && m == October)))
-            || (y == 2009 && d >= 1 && d <= 8 && m == October)
-            || (y == 2010 && d >= 1 && d <= 7 && m == October)
-            || (y == 2011 && d >= 1 && d <= 7 && m == October)
-            || (y == 2012 && d >= 1 && d <= 7 && m == October)
-            || (y == 2013 && d >= 1 && d <= 7 && m == October)
-            || (y == 2014 && d >= 1 && d <= 7 && m == October)
-            || (y == 2015 && d >= 1 && d <= 7 && m == October)
-            || (y == 2016 && d >= 3 && d <= 7 && m == October)
-            || (y == 2017 && d >= 2 && d <= 6 && m == October)
-            || (y == 2018 && d >= 1 && d <= 5 && m == October)
-            || (y == 2019 && d >= 1 && d <= 7 && m == October)
-            || (y == 2020 && d >= 1 && d <= 2 && m == October)
-            || (y == 2020 && d >= 5 && d <= 8 && m == October)
+            || (y <= 2007 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2008 && ((d >= 29 && m == September) || (d <= 3 && m == October))) ||
+            (y == 2009 && d >= 1 && d <= 8 && m == October) ||
+            (y == 2010 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2011 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2012 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2013 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2014 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2015 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2016 && d >= 3 && d <= 7 && m == October) ||
+            (y == 2017 && d >= 2 && d <= 6 && m == October) ||
+            (y == 2018 && d >= 1 && d <= 5 && m == October) ||
+            (y == 2019 && d >= 1 && d <= 7 && m == October) ||
+            (y == 2020 && d >= 1 && d <= 2 && m == October) ||
+            (y == 2020 && d >= 5 && d <= 8 && m == October)
             // 70th anniversary of the victory of anti-Japaneses war
-            || (y == 2015 && d >= 3 && d <= 4 && m == September)
-            )
+            || (y == 2015 && d >= 3 && d <= 4 && m == September)) {
             return false;
+        }
         return true;
     }
 

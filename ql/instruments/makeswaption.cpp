@@ -64,9 +64,9 @@ namespace QuantLib {
         // if the evaluation date is not a business day
         // then move to the next business day
         refDate = fixingCalendar.adjust(refDate);
-        if (fixingDate_ == Null<Date>())
-            fixingDate_ = fixingCalendar.advance(refDate, optionTenor_,
-                                                 optionConvention_);
+        if (fixingDate_ == Null<Date>()) {
+            fixingDate_ = fixingCalendar.advance(refDate, optionTenor_, optionConvention_);
+        }
         if (exerciseDate_ == Null<Date>()) {
             exercise_ = ext::shared_ptr<Exercise>(new
                 EuropeanExercise(fixingDate_));

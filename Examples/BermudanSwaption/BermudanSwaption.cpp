@@ -209,9 +209,10 @@ int main(int, char* []) {
         // model calibrations
 
         std::cout << "G2 (analytic formulae) calibration" << std::endl;
-        for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new G2SwaptionEngine(modelG2, 6.0, 16)));
+        for (i = 0; i < swaptions.size(); i++) {
+            swaptions[i]->setPricingEngine(
+                ext::shared_ptr<PricingEngine>(new G2SwaptionEngine(modelG2, 6.0, 16)));
+        }
 
         calibrateModel(modelG2, swaptions);
         std::cout << "calibrated to:\n"
@@ -225,9 +226,10 @@ int main(int, char* []) {
 
 
         std::cout << "Hull-White (analytic formulae) calibration" << std::endl;
-        for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new JamshidianSwaptionEngine(modelHW)));
+        for (i = 0; i < swaptions.size(); i++) {
+            swaptions[i]->setPricingEngine(
+                ext::shared_ptr<PricingEngine>(new JamshidianSwaptionEngine(modelHW)));
+        }
 
         calibrateModel(modelHW, swaptions);
         std::cout << "calibrated to:\n"
@@ -236,9 +238,10 @@ int main(int, char* []) {
                   << std::endl << std::endl;
 
         std::cout << "Hull-White (numerical) calibration" << std::endl;
-        for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                     new TreeSwaptionEngine(modelHW2, grid)));
+        for (i = 0; i < swaptions.size(); i++) {
+            swaptions[i]->setPricingEngine(
+                ext::shared_ptr<PricingEngine>(new TreeSwaptionEngine(modelHW2, grid)));
+        }
 
         calibrateModel(modelHW2, swaptions);
         std::cout << "calibrated to:\n"
@@ -247,9 +250,10 @@ int main(int, char* []) {
                   << std::endl << std::endl;
 
         std::cout << "Black-Karasinski (numerical) calibration" << std::endl;
-        for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                      new TreeSwaptionEngine(modelBK, grid)));
+        for (i = 0; i < swaptions.size(); i++) {
+            swaptions[i]->setPricingEngine(
+                ext::shared_ptr<PricingEngine>(new TreeSwaptionEngine(modelBK, grid)));
+        }
 
         calibrateModel(modelBK, swaptions);
         std::cout << "calibrated to:\n"

@@ -42,21 +42,20 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
 
-        if (forwardCurve_ != 0)
+        if (forwardCurve_ != 0) {
             // registerWith(forwardCurve_);
-            forwardCurveUomConversionFactor_ =
-                CommodityPricingHelper::calculateUomConversionFactor(
-                                                commodityType_,
-                                                forwardCurve_->unitOfMeasure_,
-                                                unitOfMeasure_);
+            forwardCurveUomConversionFactor_ = CommodityPricingHelper::calculateUomConversionFactor(
+                commodityType_, forwardCurve_->unitOfMeasure_, unitOfMeasure_);
+        }
     }
 
     std::ostream& operator<<(std::ostream& out, const CommodityIndex& index) {
         out << "[" << index.name_ << "] ("
             << index.currency_.code() << "/"
             << index.unitOfMeasure_.code() << ")";
-        if (index.forwardCurve_ != 0)
+        if (index.forwardCurve_ != 0) {
             out << "; forward (" << (*index.forwardCurve_) << ")";
+        }
         return out;
     }
 

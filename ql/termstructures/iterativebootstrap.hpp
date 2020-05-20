@@ -140,8 +140,9 @@ namespace detail {
         ts_ = ts;
         n_ = ts_->instruments_.size();
         QL_REQUIRE(n_ > 0, "no bootstrap helpers given")
-        for (Size j=0; j<n_; ++j)
+        for (Size j = 0; j < n_; ++j) {
             ts_->registerWith(ts_->instruments_[j]);
+        }
 
         // do not initialize yet: instruments could be invalid here
         // but valid later when bootstrapping is actually required
@@ -157,8 +158,9 @@ namespace detail {
         QL_REQUIRE(ts_->instruments_[n_-1]->pillarDate()>firstDate,
                    "all instruments expired");
         firstAliveHelper_ = 0;
-        while (ts_->instruments_[firstAliveHelper_]->pillarDate() <= firstDate)
+        while (ts_->instruments_[firstAliveHelper_]->pillarDate() <= firstDate) {
             ++firstAliveHelper_;
+        }
         alive_ = n_-firstAliveHelper_;
         Size nodes = alive_+1;
         QL_REQUIRE(nodes >= Interpolator::requiredPoints,
@@ -200,8 +202,9 @@ namespace detail {
 
             // when a pillar date is different from the last relevant date the
             // convergence loop is required even if the Interpolator is local
-            if (dates[i] != latestRelevantDate)
+            if (dates[i] != latestRelevantDate) {
                 loopRequired_ = true;
+            }
 
             errors_[i] = ext::shared_ptr<BootstrapError<Curve> >(new
                 BootstrapError<Curve>(ts_, helper, i));
@@ -227,8 +230,9 @@ namespace detail {
         // with evaluation date change.
         // anyway it makes little sense to use date relative helpers with a
         // non-moving curve if the evaluation date changes
-        if (!initialized_ || ts_->moving_)
+        if (!initialized_ || ts_->moving_) {
             initialize();
+        }
 
         // setup helpers
         for (Size j=firstAliveHelper_; j<n_; ++j) {
@@ -286,10 +290,11 @@ namespace detail {
                 Real guess = Traits::guess(i, ts_, validData, firstAliveHelper_);
 
                 // adjust guess if needed
-                if (guess >= max)
+                if (guess >= max) {
                     guess = max - (max - min) / 5.0;
-                else if (guess <= min)
+                } else if (guess <= min) {
                     guess = min + (max - min) / 5.0;
+                }
 
                 // extend interpolation if needed
                 if (!validData) {
@@ -298,8 +303,9 @@ namespace detail {
                         ts_->interpolation_ = ts_->interpolator_.interpolate(
                             times.begin(), times.begin()+i+1, data.begin());
                     } catch (...) {
-                        if (!Interpolator::global)
+                        if (!Interpolator::global) {
                             throw; // no chance to fix it in a later iteration
+                        }
 
                         // otherwise use Linear while the target
                         // interpolation is not usable yet
@@ -310,10 +316,11 @@ namespace detail {
                 }
 
                 try {
-                    if (validData)
+                    if (validData) {
                         solver_.solve(*errors_[i], accuracy, guess, min, max);
-                    else
+                    } else {
                         firstSolver_.solve(*errors_[i], accuracy, guess, min, max);
+                    }
                 } catch (std::exception &e) {
                     if (validCurve_) {
                         // the previous curve state might have been a
@@ -353,15 +360,18 @@ namespace detail {
                 }
             }
 
-            if (!loopRequired_)
-                 break;
+            if (!loopRequired_) {
+                break;
+            }
 
             // exit condition
             Real change = std::fabs(data[1]-previousData_[1]);
-            for (Size i=2; i<=alive_; ++i)
-                change = std::max(change, std::fabs(data[i]-previousData_[i]));
-            if (change<=accuracy)  // convergence reached
+            for (Size i = 2; i <= alive_; ++i) {
+                change = std::max(change, std::fabs(data[i] - previousData_[i]));
+            }
+            if (change <= accuracy) { // convergence reached
                 break;
+            }
 
             // If we hit the max number of iterations and dontThrow is true, just use what we have
             if (iteration == maxIterations) {

@@ -22,7 +22,9 @@
 namespace QuantLib {
 
     Real CumulativeGammaDistribution::operator()(Real x) const {
-        if (x <= 0.0) return 0.0;
+        if (x <= 0.0) {
+            return 0.0;
+        }
 
         Real gln = GammaFunction().logValue(a_);
 
@@ -34,8 +36,9 @@ namespace QuantLib {
                 ap += 1.0;
                 del *= x/ap;
                 sum += del;
-                if (std::fabs(del) < std::fabs(sum)*3.0e-7)
-                    return sum*std::exp(-x + a_*std::log(x) - gln);
+                if (std::fabs(del) < std::fabs(sum) * 3.0e-7) {
+                    return sum * std::exp(-x + a_ * std::log(x) - gln);
+                }
             }
         } else {
             Real b = x + 1.0 - a_;
@@ -46,14 +49,19 @@ namespace QuantLib {
                 Real an = -1.0*n*(n-a_);
                 b += 2.0;
                 d = an*d + b;
-                if (std::fabs(d) < QL_EPSILON) d = QL_EPSILON;
+                if (std::fabs(d) < QL_EPSILON) {
+                    d = QL_EPSILON;
+                }
                 c = b + an/c;
-                if (std::fabs(c) < QL_EPSILON) c = QL_EPSILON;
+                if (std::fabs(c) < QL_EPSILON) {
+                    c = QL_EPSILON;
+                }
                 d = 1.0/d;
                 Real del = d*c;
                 h *= del;
-                if (std::fabs(del - 1.0)<QL_EPSILON)
-                    return 1.0-h*std::exp(-x + a_*std::log(x) - gln);
+                if (std::fabs(del - 1.0) < QL_EPSILON) {
+                    return 1.0 - h * std::exp(-x + a_ * std::log(x) - gln);
+                }
             }
         }
         QL_FAIL("too few iterations");

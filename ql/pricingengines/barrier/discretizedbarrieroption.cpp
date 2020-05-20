@@ -62,14 +62,15 @@ namespace QuantLib {
         bool stoppingTime = false;         
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (now <= stoppingTimes_[1] &&
-                now >= stoppingTimes_[0])
-                stoppingTime = true;
-            break;
+              if (now <= stoppingTimes_[1] && now >= stoppingTimes_[0]) {
+                  stoppingTime = true;
+              }
+              break;
           case Exercise::European:
-            if (isOnTime(stoppingTimes_[0]))
-                stoppingTime = true;
-            break;
+              if (isOnTime(stoppingTimes_[0])) {
+                  stoppingTime = true;
+              }
+              break;
           case Exercise::Bermudan:
             for (Size i=0; i<stoppingTimes_.size(); i++) {
                 if (isOnTime(stoppingTimes_[i])) {
@@ -89,17 +90,17 @@ namespace QuantLib {
                      if (stoppingTime) {
                         optvalues[j] = std::max(vanilla_.values()[j],
                                       (*arguments_.payoff)(grid[j]));
+                     } else {
+                         optvalues[j] = vanilla_.values()[j];
                      }
-                     else
-                         optvalues[j] = vanilla_.values()[j]; 
-                  }
-                  else if (endTime)
+                  } else if (endTime) {
                       optvalues[j] = arguments_.rebate;
+                  }
                   break;
               case Barrier::DownOut:
-                  if (grid[j] <= arguments_.barrier)
+                  if (grid[j] <= arguments_.barrier) {
                       optvalues[j] = arguments_.rebate; // knocked out
-                  else if (stoppingTime) {
+                  } else if (stoppingTime) {
                       optvalues[j] = std::max(optvalues[j],
                                      (*arguments_.payoff)(grid[j]));
                   }
@@ -110,19 +111,19 @@ namespace QuantLib {
                      if (stoppingTime) {
                          optvalues[j] = std::max(vanilla_.values()[j],
                                       (*arguments_.payoff)(grid[j]));
+                     } else {
+                         optvalues[j] = vanilla_.values()[j];
                      }
-                     else
-                         optvalues[j] = vanilla_.values()[j]; 
-                  }
-                  else if (endTime)
+                  } else if (endTime) {
                       optvalues[j] = arguments_.rebate;
+                  }
                   break;
               case Barrier::UpOut:
-                  if (grid[j] >= arguments_.barrier)
-                     optvalues[j] = arguments_.rebate; // knocked out
-                  else if (stoppingTime)
-                      optvalues[j] = std::max(optvalues[j],
-                                     (*arguments_.payoff)(grid[j]));
+                  if (grid[j] >= arguments_.barrier) {
+                      optvalues[j] = arguments_.rebate; // knocked out
+                  } else if (stoppingTime) {
+                      optvalues[j] = std::max(optvalues[j], (*arguments_.payoff)(grid[j]));
+                  }
                   break;
               default:
                   QL_FAIL("invalid barrier type");

@@ -40,9 +40,9 @@ namespace QuantLib {
         const Real A = std::pow(forward*strike, oneMinusBeta);
         const Real sqrtA= std::sqrt(A);
         Real logM;
-        if (!close(forward, strike))
+        if (!close(forward, strike)) {
             logM = std::log(forward/strike);
-        else {
+        } else {
             const Real epsilon = (forward-strike)/strike;
             logM = epsilon - .5 * epsilon * epsilon ;
         }
@@ -61,9 +61,9 @@ namespace QuantLib {
         // computations become precise enough if the square of z worth
         // slightly more than the precision machine (hence the m)
         static const Real m = 10;
-        if (std::fabs(z*z)>QL_EPSILON * m)
+        if (std::fabs(z * z) > QL_EPSILON * m) {
             multiplier = z/xx;
-        else {
+        } else {
             multiplier = 1.0 - 0.5*rho*z - (3.0*rho*rho-2.0)*z*z/12.0;
         }
         return (alpha/D)*multiplier*d;

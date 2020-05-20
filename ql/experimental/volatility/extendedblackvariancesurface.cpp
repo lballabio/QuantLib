@@ -58,9 +58,9 @@ namespace QuantLib {
 
         setInterpolation<Bilinear>();
 
-        for (Size j = 0; j < volatilities_.size(); j++)
+        for (Size j = 0; j < volatilities_.size(); j++) {
             registerWith(volatilities_[j]);
-
+        }
     }
 
     void ExtendedBlackVarianceSurface::setVariances() {
@@ -87,21 +87,23 @@ namespace QuantLib {
     Real ExtendedBlackVarianceSurface::blackVarianceImpl(Time t,
                                                          Real strike) const {
 
-        if (t==0.0) return 0.0;
+        if (t == 0.0) {
+            return 0.0;
+        }
 
         // enforce constant extrapolation when required
-        if (strike < strikes_.front()
-            && lowerExtrapolation_ == ConstantExtrapolation)
+        if (strike < strikes_.front() && lowerExtrapolation_ == ConstantExtrapolation) {
             strike = strikes_.front();
-        if (strike > strikes_.back()
-            && upperExtrapolation_ == ConstantExtrapolation)
+        }
+        if (strike > strikes_.back() && upperExtrapolation_ == ConstantExtrapolation) {
             strike = strikes_.back();
+        }
 
-        if (t<=times_.back())
+        if (t <= times_.back()) {
             return varianceSurface_(t, strike, true);
-        else // t>times_.back() || extrapolate
-            return varianceSurface_(times_.back(), strike, true) *
-                t/times_.back();
+        } else { // t>times_.back() || extrapolate
+            return varianceSurface_(times_.back(), strike, true) * t / times_.back();
+        }
     }
 
 }

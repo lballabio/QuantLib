@@ -35,8 +35,9 @@ namespace QuantLib
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) 
         {
-            while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])
+            while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i]) {
                 ++j;
+            }
             rateIndex_[i] = j;
         }
     }
@@ -49,12 +50,14 @@ namespace QuantLib
     std::vector<Size> SwapForwardBasisSystem::numberOfFunctions() const 
     {
         std::vector<Size> sizes(exerciseTimes_.size(), 10);
-        
-        if (rateIndex_[exerciseTimes_.size()-1] == rateTimes_.size()-3)
-            sizes.back() = 6;
 
-        if (rateIndex_[exerciseTimes_.size()-1] == rateTimes_.size()-2)
+        if (rateIndex_[exerciseTimes_.size() - 1] == rateTimes_.size() - 3) {
+            sizes.back() = 6;
+        }
+
+        if (rateIndex_[exerciseTimes_.size() - 1] == rateTimes_.size() - 2) {
             sizes.back() = 3;
+        }
 
         return sizes;
     }

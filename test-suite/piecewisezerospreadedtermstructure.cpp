@@ -110,13 +110,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         spread1->value();
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
@@ -152,13 +151,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         spread2->value();
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpreads() {
@@ -199,13 +197,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpre
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         spread1->value();
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
@@ -245,13 +242,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
 
     Real tolerance = 1e-9;
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
@@ -286,13 +282,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         spread1->value();
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
@@ -330,13 +325,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         spread2->value();
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
@@ -371,13 +365,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         spread1->value();
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
@@ -423,13 +416,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         Real(0.026065770863);
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
@@ -460,12 +452,11 @@ void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
     Date expectedDate =
         std::min(vars.termStructure->maxDate(), spreadDates.back());
 
-    if (maxDate != expectedDate)
-        BOOST_ERROR(
-            "unable to reproduce max date\n"
-            << "    calculated: " << maxDate << "\n"
-            << "    expected: "   << expectedDate);
-
+    if (maxDate != expectedDate) {
+        BOOST_ERROR("unable to reproduce max date\n"
+                    << "    calculated: " << maxDate << "\n"
+                    << "    expected: " << expectedDate);
+    }
 }
 
 void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
@@ -499,12 +490,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
     Real expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                         Real(0.03);
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 
     spread2->setValue(0.025);
 
@@ -512,13 +503,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
     expectedRate = vars.termStructure->zeroRate(t,vars.compounding) +
                    Real(0.025);
 
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
-        BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
-            << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
-
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance) {
+        BOOST_ERROR("unable to reproduce interpolated rate\n"
+                    << std::setprecision(10) << "    calculated: " << io::rate(interpolatedZeroRate)
+                    << "\n"
+                    << "    expected: " << io::rate(expectedRate));
+    }
 }
 
 test_suite* PiecewiseZeroSpreadedTermStructureTest::suite() {

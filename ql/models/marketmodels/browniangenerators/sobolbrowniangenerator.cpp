@@ -27,17 +27,21 @@ namespace QuantLib {
         void fillByFactor(std::vector<std::vector<Size> >& M,
                           Size factors, Size steps) {
             Size counter = 0;
-            for (Size i=0; i<factors; ++i)
-                for (Size j=0; j<steps; ++j)
+            for (Size i = 0; i < factors; ++i) {
+                for (Size j = 0; j < steps; ++j) {
                     M[i][j] = counter++;
+                }
+            }
         }
 
         void fillByStep(std::vector<std::vector<Size> >& M,
                         Size factors, Size steps) {
             Size counter = 0;
-            for (Size j=0; j<steps; ++j)
-                for (Size i=0; i<factors; ++i)
+            for (Size j = 0; j < steps; ++j) {
+                for (Size i = 0; i < factors; ++i) {
                     M[i][j] = counter++;
+                }
+            }
         }
 
         // variate 2 is used for the second factor's full path
@@ -198,8 +202,9 @@ namespace QuantLib {
         QL_REQUIRE(output.size() == factors_, "size mismatch");
         QL_REQUIRE(lastStep_<steps_, "sequence exhausted");
         #endif
-        for (Size i=0; i<factors_; ++i)
+        for (Size i = 0; i < factors_; ++i) {
             output[i] = bridgedVariates_[i][lastStep_];
+        }
         ++lastStep_;
         return 1.0;
     }

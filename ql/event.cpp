@@ -31,18 +31,20 @@ namespace QuantLib {
         bool includeRefDateEvent =
             includeRefDate ? *includeRefDate :
                            Settings::instance().includeReferenceDateEvents();
-        if (includeRefDateEvent)
+        if (includeRefDateEvent) {
             return date() < refDate;
-        else
+        } else {
             return date() <= refDate;
+        }
     }
 
     void Event::accept(AcyclicVisitor& v) {
         Visitor<Event>* v1 = dynamic_cast<Visitor<Event>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             QL_FAIL("not an event visitor");
+        }
     }
 
 }

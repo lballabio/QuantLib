@@ -71,8 +71,9 @@ namespace QuantLib
         std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) 
     {
         numberCashFlowsThisStep[0] =1 ;
-        for (Size i=1; i <= lastIndex_; ++i)
-            cashFlowsGenerated[0][0].amount[i] =0;
+        for (Size i = 1; i <= lastIndex_; ++i) {
+            cashFlowsGenerated[0][0].amount[i] = 0;
+        }
 
         Rate liborRate = currentState.forwardRate(currentIndex_);
         Real inverseFloatingCoupon = std::max((fixedStrikes_[currentIndex_] - fixedMultipliers_[currentIndex_]*liborRate),0.0)*fixedAccruals_[currentIndex_] ;
@@ -113,8 +114,9 @@ namespace QuantLib
     std::vector<Size> MarketModelPathwiseInverseFloater::suggestedNumeraires() const
     {
         std::vector<Size> numeraires(lastIndex_);
-        for (Size i=0; i < lastIndex_; ++i)
+        for (Size i = 0; i < lastIndex_; ++i) {
             numeraires[i] = i;
+        }
 
         return numeraires;
     }

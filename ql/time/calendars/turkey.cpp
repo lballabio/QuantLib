@@ -50,228 +50,261 @@ namespace QuantLib {
             || (d == 19 && m == May)
             // 30 aug/ National Holiday
             || (d == 30 && m == August)
-            ///29 ekim  National Holiday
-            || (d == 29 && m == October))
+            /// 29 ekim  National Holiday
+            || (d == 29 && m == October)) {
             return false;
+        }
 
         // Local Holidays
         if (y == 2004) {
             // Kurban
             if ((m == February && d <= 4)
-            // Ramadan
-                || (m == November && d >= 14 && d <= 16))
+                // Ramadan
+                || (m == November && d >= 14 && d <= 16)) {
                 return false;
+            }
         } else if (y == 2005) {
             // Kurban
             if ((m == January && d >= 19 && d <= 21)
-            // Ramadan
-                || (m == November && d >= 2 && d <= 5))
+                // Ramadan
+                || (m == November && d >= 2 && d <= 5)) {
                 return false;
+            }
         } else if (y == 2006) {
             // Kurban
             if ((m == January && d >= 10 && d <= 13)
-            // Ramadan
+                // Ramadan
                 || (m == October && d >= 23 && d <= 25)
-            // Kurban
-                || (m == December && d == 31))
+                // Kurban
+                || (m == December && d == 31)) {
                 return false;
+            }
         } else if (y == 2007) {
             // Kurban
             if ((m == January && d <= 3)
-            // Ramadan
+                // Ramadan
                 || (m == October && d >= 12 && d <= 14)
-            // Kurban
-                || (m == December && d >= 20 && d <= 23))
+                // Kurban
+                || (m == December && d >= 20 && d <= 23)) {
                 return false;
+            }
         } else if (y == 2008) {
             // Ramadan
-            if ((m == September && d == 30)
-                || (m == October && d <= 2)
-            // Kurban
-                || (m == December && d >= 8 && d <= 11))
+            if ((m == September && d == 30) ||
+                (m == October && d <= 2)
+                // Kurban
+                || (m == December && d >= 8 && d <= 11)) {
                 return false;
+            }
         } else if (y == 2009) {
             // Ramadan
             if ((m == September && d >= 20 && d <= 22)
-            // Kurban
-                || (m == November && d >= 27 && d <= 30))
+                // Kurban
+                || (m == November && d >= 27 && d <= 30)) {
                 return false;
+            }
         } else if (y == 2010) {
             // Ramadan
             if ((m == September && d >= 9 && d <= 11)
-            // Kurban
-                || (m == November && d >= 16 && d <= 19))
+                // Kurban
+                || (m == November && d >= 16 && d <= 19)) {
                 return false;
+            }
         } else if (y == 2011) {
             // not clear from borsainstanbul.com
-            if ((m == October && d == 1)
-                || (m == November && d >= 9 && d <= 13))
+            if ((m == October && d == 1) || (m == November && d >= 9 && d <= 13)) {
                 return false;
+            }
         } else if (y == 2012) {
             // Ramadan
             if ((m == August && d >= 18 && d <= 21)
-            // Kurban
-                || (m == October && d >= 24 && d <= 28))
+                // Kurban
+                || (m == October && d >= 24 && d <= 28)) {
                 return false;
+            }
         } else if (y == 2013) {
             // Ramadan
             if ((m == August && d >= 7 && d <= 10)
-            // Kurban
+                // Kurban
                 || (m == October && d >= 14 && d <= 18)
-            // additional holiday for Republic Day
-                || (m == October && d == 28))
+                // additional holiday for Republic Day
+                || (m == October && d == 28)) {
                 return false;
+            }
         } else if (y == 2014) {
             // Ramadan
             if ((m == July && d >= 27 && d <= 30)
-            // Kurban
+                // Kurban
                 || (m == October && d >= 4 && d <= 7)
-            // additional holiday for Republic Day
-                || (m == October && d == 29))
+                // additional holiday for Republic Day
+                || (m == October && d == 29)) {
                 return false;
-		}
+            }
+                }
 		else if (y == 2015) {
 			// Ramadan
-			if ((m == July && d >= 17 && d <= 19)
-				// Kurban
-				|| (m == October && d >= 24 && d <= 27))
-				return false;
-		}
+                        if ((m == July && d >= 17 && d <= 19)
+                            // Kurban
+                            || (m == October && d >= 24 && d <= 27)) {
+                            return false;
+                        }
+                }
 		else if (y == 2016) {
 			// Ramadan
-			if ((m == July && d >= 5 && d <= 7)
-				// Kurban
-				|| (m == September && d >= 12 && d <= 15))
-				return false;
-		}
+                        if ((m == July && d >= 5 && d <= 7)
+                            // Kurban
+                            || (m == September && d >= 12 && d <= 15)) {
+                            return false;
+                        }
+                }
 		else if (y == 2017) {
 			// Ramadan
-			if ((m == June && d >= 25 && d <= 27)
-				// Kurban
-				|| (m == September && d >= 1 && d <= 4))
-				return false;
-		}
+                        if ((m == June && d >= 25 && d <= 27)
+                            // Kurban
+                            || (m == September && d >= 1 && d <= 4)) {
+                            return false;
+                        }
+                }
 		else if (y == 2018) {
 			// Ramadan
-			if ((m == June && d >= 15 && d <= 17)
-				// Kurban
-				|| (m == August && d >= 21 && d <= 24))
-				return false;
-		}
+                        if ((m == June && d >= 15 && d <= 17)
+                            // Kurban
+                            || (m == August && d >= 21 && d <= 24)) {
+                            return false;
+                        }
+                }
 		// Note: Holidays >= 2019 are not yet officially anounced by borsaistanbul.com
 		// and need further validation
 		else if (y == 2019) {
 			// Ramadan
-			if ((m == June && d >= 5 && d <= 7)
-				// Kurban
-				|| (m == August && d >= 11 && d <= 14))
-				return false;
-		}
+                        if ((m == June && d >= 5 && d <= 7)
+                            // Kurban
+                            || (m == August && d >= 11 && d <= 14)) {
+                            return false;
+                        }
+                }
 		else if (y == 2020) {
 			// Ramadan
-			if ((m == May && d >= 24 && d <= 26)
-				// Kurban
-				|| (m == July && d >= 30 && d <= 31))
-				return false;
-		}
+                        if ((m == May && d >= 24 && d <= 26)
+                            // Kurban
+                            || (m == July && d >= 30 && d <= 31)) {
+                            return false;
+                        }
+                }
 		else if (y == 2021) {
 			// Ramadan
-			if ((m == May && d >= 13 && d <= 14)
-				// Kurban
-				|| (m == July && d >= 19 && d <= 22))
-				return false;
-		}
+                        if ((m == May && d >= 13 && d <= 14)
+                            // Kurban
+                            || (m == July && d >= 19 && d <= 22)) {
+                            return false;
+                        }
+                }
 		else if (y == 2022) {
 			// Ramadan
-			if ((m == May && d >= 3 && d <= 5)
-				// Kurban
-				|| (m == July && d >= 9 && d <= 12))
-				return false;
-		}
+                        if ((m == May && d >= 3 && d <= 5)
+                            // Kurban
+                            || (m == July && d >= 9 && d <= 12)) {
+                            return false;
+                        }
+                }
 		else if (y == 2023) {
 			// Ramadan
-			if ((m == April && d >= 22 && d <= 24)
-				// Kurban
-				|| (m == June && d >= 28 && d <= 30))
-				return false;
-		}
+                        if ((m == April && d >= 22 && d <= 24)
+                            // Kurban
+                            || (m == June && d >= 28 && d <= 30)) {
+                            return false;
+                        }
+                }
 		else if (y == 2024) {
 			// Ramadan
-			if ((m == April && d >= 10 && d <= 12)
-				// Kurban
-				|| (m == June && d >= 17 && d <= 19))
-				return false;
-		}
+                        if ((m == April && d >= 10 && d <= 12)
+                            // Kurban
+                            || (m == June && d >= 17 && d <= 19)) {
+                            return false;
+                        }
+                }
 		else if (y == 2025) {
 			// Ramadan
-			if ((m == March && d == 31) || (m == April && d >= 1 && d <= 2)
-				// Kurban
-				|| (m == June && d >= 6 && d <= 9))
-				return false;
-		}
+                        if ((m == March && d == 31) ||
+                            (m == April && d >= 1 && d <= 2)
+                            // Kurban
+                            || (m == June && d >= 6 && d <= 9)) {
+                            return false;
+                        }
+                }
 		else if (y == 2026) {
 			// Ramadan
-			if ((m == March && d >= 20 && d <= 22)
-				// Kurban
-				|| (m == May && d >= 26 && d <= 29))
-				return false;
-		}
+                        if ((m == March && d >= 20 && d <= 22)
+                            // Kurban
+                            || (m == May && d >= 26 && d <= 29)) {
+                            return false;
+                        }
+                }
 		else if (y == 2027) {
 			// Ramadan
-			if ((m == March && d >= 10 && d <= 12)
-				// Kurban
-				|| (m == May && d >= 16 && d <= 19))
-				return false;
-		}
+                        if ((m == March && d >= 10 && d <= 12)
+                            // Kurban
+                            || (m == May && d >= 16 && d <= 19)) {
+                            return false;
+                        }
+                }
 		else if (y == 2028) {
 			// Ramadan
-			if ((m == February && d >= 27 && d <= 29)
-				// Kurban
-				|| (m == May && d >= 4 && d <= 7))
-				return false;
-		}
+                        if ((m == February && d >= 27 && d <= 29)
+                            // Kurban
+                            || (m == May && d >= 4 && d <= 7)) {
+                            return false;
+                        }
+                }
 		else if (y == 2029) {
 			// Ramadan
-			if ((m == February && d >= 15 && d <= 17)
-				// Kurban
-				|| (m == April && d >= 23 && d <= 26))
-				return false;
-		}
+                        if ((m == February && d >= 15 && d <= 17)
+                            // Kurban
+                            || (m == April && d >= 23 && d <= 26)) {
+                            return false;
+                        }
+                }
 		else if (y == 2030) {
 			// Ramadan
-			if ((m == February && d >= 5 && d <= 7)
-				// Kurban
-				|| (m == April && d >= 13 && d <= 16))
-				return false;
-		}
+                        if ((m == February && d >= 5 && d <= 7)
+                            // Kurban
+                            || (m == April && d >= 13 && d <= 16)) {
+                            return false;
+                        }
+                }
 		else if (y == 2031) {
 			// Ramadan
-			if ((m == January && d >= 25 && d <= 27)
-				// Kurban
-				|| (m == April && d >= 2 && d <= 5))
-				return false;
-		}
+                        if ((m == January && d >= 25 && d <= 27)
+                            // Kurban
+                            || (m == April && d >= 2 && d <= 5)) {
+                            return false;
+                        }
+                }
 		else if (y == 2032) {
 			// Ramadan
-			if ((m == January && d >= 14 && d <= 16)
-				// Kurban
-				|| (m == March && d >= 21 && d <= 24))
-				return false;
-		}
+                        if ((m == January && d >= 14 && d <= 16)
+                            // Kurban
+                            || (m == March && d >= 21 && d <= 24)) {
+                            return false;
+                        }
+                }
 		else if (y == 2033) {
 			// Ramadan
-			if ((m == January && d >= 3 && d <= 5) || (m == December && d == 23)
-				// Kurban
-				|| (m == March && d >= 11 && d <= 14))
-				return false;
-		}
+                        if ((m == January && d >= 3 && d <= 5) ||
+                            (m == December && d == 23)
+                            // Kurban
+                            || (m == March && d >= 11 && d <= 14)) {
+                            return false;
+                        }
+                }
 		else if (y == 2034) {
 			// Ramadan
-			if ((m == December && d >= 12 && d <= 14) 
-				// Kurban
-				|| (m == February && d == 28) || (m == March && d >= 1 && d <= 3))
-				return false;
-		}
+                        if ((m == December && d >= 12 && d <= 14)
+                            // Kurban
+                            || (m == February && d == 28) || (m == March && d >= 1 && d <= 3)) {
+                            return false;
+                        }
+                }
         return true;
     }
 

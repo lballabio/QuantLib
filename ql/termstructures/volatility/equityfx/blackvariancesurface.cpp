@@ -66,21 +66,23 @@ namespace QuantLib {
 
     Real BlackVarianceSurface::blackVarianceImpl(Time t, Real strike) const {
 
-        if (t==0.0) return 0.0;
+        if (t == 0.0) {
+            return 0.0;
+        }
 
         // enforce constant extrapolation when required
-        if (strike < strikes_.front()
-            && lowerExtrapolation_ == ConstantExtrapolation)
+        if (strike < strikes_.front() && lowerExtrapolation_ == ConstantExtrapolation) {
             strike = strikes_.front();
-        if (strike > strikes_.back()
-            && upperExtrapolation_ == ConstantExtrapolation)
+        }
+        if (strike > strikes_.back() && upperExtrapolation_ == ConstantExtrapolation) {
             strike = strikes_.back();
+        }
 
-        if (t<=times_.back())
+        if (t <= times_.back()) {
             return varianceSurface_(t, strike, true);
-        else // t>times_.back() || extrapolate
-            return varianceSurface_(times_.back(), strike, true) *
-                t/times_.back();
+        } else { // t>times_.back() || extrapolate
+            return varianceSurface_(times_.back(), strike, true) * t / times_.back();
+        }
     }
 
 }

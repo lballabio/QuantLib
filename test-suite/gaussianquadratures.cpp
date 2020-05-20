@@ -277,10 +277,11 @@ namespace gaussian_quadratures_test {
             : public MomentBasedGaussianPolynomial<mp_float> {
       public:
         mp_float moment(Size i) const {
-            if (i == 0)
+            if (i == 0) {
                 return mp_float(1.0);
-            else
-                return mp_float(i)*moment(i-1);
+            } else {
+                return mp_float(i) * moment(i - 1);
+            }
         }
 
         Real w(Real x) const {

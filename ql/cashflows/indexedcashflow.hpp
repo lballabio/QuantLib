@@ -89,10 +89,11 @@ namespace QuantLib {
     inline void IndexedCashFlow::accept(AcyclicVisitor& v) {
         Visitor<IndexedCashFlow>* v1 =
         dynamic_cast<Visitor<IndexedCashFlow>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             CashFlow::accept(v);
+        }
     }
 
 }

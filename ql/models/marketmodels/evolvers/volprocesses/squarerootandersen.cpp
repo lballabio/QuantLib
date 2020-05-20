@@ -48,8 +48,9 @@ QuantLib
         state_(1)
     {
         Size j=0;
-        for (; j < numberSubSteps_; ++j)
-            dt_[j] = evolutionTimes[0]/numberSubSteps_;
+        for (; j < numberSubSteps_; ++j) {
+            dt_[j] = evolutionTimes[0] / numberSubSteps_;
+        }
 
         for (Size i=1; i < evolutionTimes.size(); ++i)
         {
@@ -142,8 +143,9 @@ QuantLib
         QL_REQUIRE(currentStep_>0, "nextStep must be called before stepSd");
         Real stepVariance =0.0;
         Size lastStepStart = (currentStep_-1)*numberSubSteps_;
-        for (Size k=0; k < numberSubSteps_; ++k)
-            stepVariance += w1_*vPath_[k+lastStepStart]+w2_*vPath_[k+lastStepStart+1];
+        for (Size k = 0; k < numberSubSteps_; ++k) {
+            stepVariance += w1_ * vPath_[k + lastStepStart] + w2_ * vPath_[k + lastStepStart + 1];
+        }
 
         stepVariance /= numberSubSteps_;
 

@@ -57,18 +57,18 @@ namespace QuantLib {
             }
             void calculate() {
                 splines_.resize(this->zData_.rows());
-                for (Size i=0; i<(this->zData_.rows()); ++i)
+                for (Size i = 0; i < (this->zData_.rows()); ++i) {
                     splines_[i] = CubicInterpolation(
-                                this->xBegin_, this->xEnd_,
-                                this->zData_.row_begin(i),
-                                CubicInterpolation::Spline, false,
-                                CubicInterpolation::SecondDerivative, 0.0,
-                                CubicInterpolation::SecondDerivative, 0.0);
+                        this->xBegin_, this->xEnd_, this->zData_.row_begin(i),
+                        CubicInterpolation::Spline, false, CubicInterpolation::SecondDerivative,
+                        0.0, CubicInterpolation::SecondDerivative, 0.0);
+                }
             }
             Real value(Real x, Real y) const {
                 std::vector<Real> section(splines_.size());
-                for (Size i=0; i<splines_.size(); i++)
-                    section[i]=splines_[i](x,true);
+                for (Size i = 0; i < splines_.size(); i++) {
+                    section[i] = splines_[i](x, true);
+                }
 
                 CubicInterpolation spline(this->yBegin_, this->yEnd_,
                                           section.begin(),
@@ -109,8 +109,9 @@ namespace QuantLib {
 
             Real derivativeY(Real x, Real y) const {
                 std::vector<Real> section(splines_.size());
-                for (Size i=0; i<splines_.size(); i++)
-                    section[i]=splines_[i](x,true);
+                for (Size i = 0; i < splines_.size(); i++) {
+                    section[i] = splines_[i](x, true);
+                }
 
                 return CubicInterpolation(
                     this->yBegin_, this->yEnd_,
@@ -122,8 +123,9 @@ namespace QuantLib {
 
             Real secondDerivativeY(Real x, Real y) const {
                 std::vector<Real> section(splines_.size());
-                for (Size i=0; i<splines_.size(); i++)
-                    section[i]=splines_[i](x,true);
+                for (Size i = 0; i < splines_.size(); i++) {
+                    section[i] = splines_[i](x, true);
+                }
 
                 return CubicInterpolation(
                     this->yBegin_, this->yEnd_,

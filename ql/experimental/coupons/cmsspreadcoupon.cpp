@@ -37,10 +37,11 @@ namespace QuantLib {
 
     void CmsSpreadCoupon::accept(AcyclicVisitor &v) {
         Visitor<CmsSpreadCoupon> *v1 = dynamic_cast<Visitor<CmsSpreadCoupon> *>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             FloatingRateCoupon::accept(v);
+        }
     }
 
     CmsSpreadLeg::CmsSpreadLeg(const Schedule &schedule,

@@ -69,12 +69,13 @@ namespace QuantLib {
 
     Disposable<Array> FdmSabrOp::apply_direction(
         Size direction, const Array& r) const {
-        if (direction == 0)
+        if (direction == 0) {
             return mapF_.apply(r);
-        else if (direction == 1)
+        } else if (direction == 1) {
             return mapA_.apply(r);
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
 
     Disposable<Array> FdmSabrOp::solve_splitting(
@@ -85,9 +86,9 @@ namespace QuantLib {
         }
         else if (direction == 1) {
             return mapA_.solve_splitting(r, a, 1.0);
-        }
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
 
     Disposable<Array> FdmSabrOp::preconditioner(

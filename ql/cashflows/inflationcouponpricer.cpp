@@ -28,8 +28,9 @@ namespace QuantLib {
         for (Size i=0; i<leg.size(); ++i) {
             ext::shared_ptr<InflationCoupon> c =
                 ext::dynamic_pointer_cast<InflationCoupon>(leg[i]);
-            if (c)
+            if (c) {
                 c->setPricer(p);
+            }
         }
     }
 
@@ -126,8 +127,9 @@ namespace QuantLib {
 
     Rate YoYInflationCouponPricer::adjustedFixing(Rate fixing) const {
 
-        if (fixing == Null<Rate>())
+        if (fixing == Null<Rate>()) {
             fixing = coupon_->indexFixing();
+        }
 
         // no adjustment
         return fixing;

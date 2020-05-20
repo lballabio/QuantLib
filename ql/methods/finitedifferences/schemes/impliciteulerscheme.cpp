@@ -81,9 +81,9 @@ namespace QuantLib {
 
                 (*iterations_) += result.errors.size();
                 a = result.x;
-            }
-            else
+            } else {
                 QL_FAIL("unknown/illegal solver type");
+            }
         }
         bcSet_.applyAfterSolving(a);
     }

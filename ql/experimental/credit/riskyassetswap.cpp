@@ -63,7 +63,9 @@ namespace QuantLib {
         fixedAnnuity_   = fixedAnnuity();
         parCoupon_      = parCoupon();
 
-        if (coupon_ == Null<Rate>())  coupon_ = parCoupon_;
+        if (coupon_ == Null<Rate>()) {
+            coupon_ = parCoupon_;
+        }
 
         recoveryValue_  = recoveryValue();
         riskyBondPrice_ = riskyBondPrice();
@@ -76,8 +78,9 @@ namespace QuantLib {
 
         NPV_ *= nominal_;
 
-        if (fixedPayer_ == false)
+        if (fixedPayer_ == false) {
             NPV_ *= -1;
+        }
     }
 
 
@@ -116,10 +119,11 @@ namespace QuantLib {
         for (Size i = 1; i < fixedSchedule_.size(); i++) {
             TimeUnit stepSize = Days;
             Date d;
-            if (fixedSchedule_[i-1] >= defaultTS_->referenceDate())
+            if (fixedSchedule_[i - 1] >= defaultTS_->referenceDate()) {
                 d = fixedSchedule_[i-1];
-            else
+            } else {
                 d = defaultTS_->referenceDate();
+            }
             Date d0 = d;
             do {
                 Real disc = yieldTS_->discount (d);
@@ -230,8 +234,9 @@ namespace QuantLib {
     }
 
     void AssetSwapHelper::update() {
-        if (evaluationDate_ != Settings::instance().evaluationDate())
+        if (evaluationDate_ != Settings::instance().evaluationDate()) {
             initializeDates();
+        }
 
         DefaultProbabilityHelper::update();
     }

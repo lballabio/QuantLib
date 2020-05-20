@@ -69,9 +69,10 @@ namespace QuantLib {
                 newI = IntegrationPolicy::integrate(f,a,b,I,N);
                 N *= IntegrationPolicy::nbEvalutions();
                 // good enough? Also, don't run away immediately
-                if (std::fabs(I-newI) <= absoluteAccuracy() && i > 5)
+                if (std::fabs(I - newI) <= absoluteAccuracy() && i > 5) {
                     // ok, exit
                     return newI;
+                }
                 // oh well. Another step.
                 I = newI;
                 i++;
@@ -91,8 +92,9 @@ namespace QuantLib {
             Real sum = 0.0;
             Real dx = (b-a)/N;
             Real x = a + dx/2.0;
-            for (Size i=0; i<N; x += dx, ++i)
+            for (Size i = 0; i < N; x += dx, ++i) {
                 sum += f(x);
+            }
             return (I + dx*sum)/2.0;
         }
         inline static Size nbEvalutions(){ return 2;}
@@ -109,8 +111,9 @@ namespace QuantLib {
             Real dx = (b-a)/N;
             Real x = a + dx/6.0;
             Real D = 2.0*dx/3.0;
-            for (Size i=0; i<N; x += dx, ++i)
-                sum += f(x) + f(x+D);
+            for (Size i = 0; i < N; x += dx, ++i) {
+                sum += f(x) + f(x + D);
+            }
             return (I + dx*sum)/3.0;
         }
         inline static Size nbEvalutions(){ return 3;}

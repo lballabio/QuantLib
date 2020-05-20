@@ -181,9 +181,9 @@ void NthToDefaultTest::testGauss() {
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
-    for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+    for (Size i = 0; i < names; i++) {
+        namesIds.push_back(std::string("Name") + boost::lexical_cast<std::string>(i));
+    }
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {
@@ -196,9 +196,10 @@ void NthToDefaultTest::testGauss() {
     }
 
     ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
-    for(Size i=0; i<names; i++)
-        thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
-                EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+    for (Size i = 0; i < names; i++) {
+        thePool->add(namesIds[i], issuers[i],
+                     NorthAmericaCorpDefaultKey(EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+    }
 
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
@@ -311,9 +312,9 @@ void NthToDefaultTest::testStudent() {
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
-    for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+    for (Size i = 0; i < names; i++) {
+        namesIds.push_back(std::string("Name") + boost::lexical_cast<std::string>(i));
+    }
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {
@@ -326,9 +327,10 @@ void NthToDefaultTest::testStudent() {
     }
 
     ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
-    for(Size i=0; i<names; i++)
-        thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
-                EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+    for (Size i = 0; i < names; i++) {
+        thePool->add(namesIds[i], issuers[i],
+                     NorthAmericaCorpDefaultKey(EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+    }
 
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));

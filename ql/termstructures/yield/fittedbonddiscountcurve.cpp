@@ -149,8 +149,9 @@ namespace QuantLib {
         }
 
         if (calculateWeights_) {
-            if (weights_.empty())
+            if (weights_.empty()) {
                 weights_ = Array(n);
+            }
 
             Real squaredSum = 0.0;
             for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {

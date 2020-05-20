@@ -73,9 +73,9 @@ int main(int, char* []) {
             0.001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09;        
         //  0.01,  0.01,  0.01,  0.01, 0.01,  0.01,  0.01,  0.01,  0.01,  0.01;        
         std::vector<std::string> names;
-        for(Size i=0; i<hazardRates.size(); i++)
-            names.push_back(std::string("Acme") + 
-                boost::lexical_cast<std::string>(i));
+        for (Size i = 0; i < hazardRates.size(); i++) {
+            names.push_back(std::string("Acme") + boost::lexical_cast<std::string>(i));
+        }
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
         for(Size i=0; i<hazardRates.size(); i++) {
             defTS.push_back(Handle<DefaultProbabilityTermStructure>(
@@ -94,9 +94,11 @@ int main(int, char* []) {
         }
 
         ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
-        for(Size i=0; i<hazardRates.size(); i++)
-            thePool->add(names[i], issuers[i], NorthAmericaCorpDefaultKey(
-                    EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+        for (Size i = 0; i < hazardRates.size(); i++) {
+            thePool->add(
+                names[i], issuers[i],
+                NorthAmericaCorpDefaultKey(EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
+        }
 
         std::vector<DefaultProbKey> defaultKeys(hazardRates.size(), 
             NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));

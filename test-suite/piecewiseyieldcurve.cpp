@@ -298,9 +298,9 @@ namespace piecewise_yield_curve_test {
                 immDate = IMM::nextDate(immDate, false);
                 // if the fixing is before the evaluation date, we
                 // just jump forward by one future maturity
-                if (euribor3m->fixingDate(immDate) <
-                    Settings::instance().evaluationDate())
+                if (euribor3m->fixingDate(immDate) < Settings::instance().evaluationDate()) {
                     immDate = IMM::nextDate(immDate, false);
+                }
                 immFutHelpers[i] = ext::shared_ptr<RateHelper>(new
                     FuturesRateHelper(r, immDate, euribor3m, Handle<Quote>(),
                                       Futures::IMM));
@@ -311,13 +311,13 @@ namespace piecewise_yield_curve_test {
                 asxDate = ASX::nextDate(asxDate, false);
                 // if the fixing is before the evaluation date, we
                 // just jump forward by one future maturity
-                if (euribor3m->fixingDate(asxDate) <
-                    Settings::instance().evaluationDate())
+                if (euribor3m->fixingDate(asxDate) < Settings::instance().evaluationDate()) {
                     asxDate = ASX::nextDate(asxDate, false);
-                if (euribor3m->fixingCalendar().isBusinessDay(asxDate))
-                    asxFutHelpers.push_back(ext::shared_ptr<RateHelper>(new
-                        FuturesRateHelper(r, asxDate, euribor3m,
-                                          Handle<Quote>(), Futures::ASX)));
+                }
+                if (euribor3m->fixingCalendar().isBusinessDay(asxDate)) {
+                    asxFutHelpers.push_back(ext::shared_ptr<RateHelper>(new FuturesRateHelper(
+                        r, asxDate, euribor3m, Handle<Quote>(), Futures::ASX)));
+                }
             }
 
             for (Size i=0; i<bonds; i++) {
@@ -488,9 +488,9 @@ namespace piecewise_yield_curve_test {
             immStart = IMM::nextDate(immStart, false);
             // if the fixing is before the evaluation date, we
             // just jump forward by one future maturity
-            if (euribor3m->fixingDate(immStart) <
-                Settings::instance().evaluationDate())
+            if (euribor3m->fixingDate(immStart) < Settings::instance().evaluationDate()) {
                 immStart = IMM::nextDate(immStart, false);
+            }
             Date end = vars.calendar.advance(immStart, 3, Months,
                 euribor3m->businessDayConvention(),
                 euribor3m->endOfMonth());
@@ -520,11 +520,12 @@ namespace piecewise_yield_curve_test {
             asxStart = ASX::nextDate(asxStart, false);
             // if the fixing is before the evaluation date, we
             // just jump forward by one future maturity
-            if (euribor3m->fixingDate(asxStart) <
-                Settings::instance().evaluationDate())
+            if (euribor3m->fixingDate(asxStart) < Settings::instance().evaluationDate()) {
                 asxStart = ASX::nextDate(asxStart, false);
-            if (euribor3m->fixingCalendar().isHoliday(asxStart))
+            }
+            if (euribor3m->fixingCalendar().isHoliday(asxStart)) {
                 continue;
+            }
             Date end = vars.calendar.advance(asxStart, 3, Months,
                 euribor3m->businessDayConvention(),
                 euribor3m->endOfMonth());
@@ -840,10 +841,12 @@ void PiecewiseYieldCurveTest::testObservability() {
         DiscountFactor discount = vars.termStructure->discount(testTime);
         f.lower();
         vars.rates[i]->setValue(vars.rates[i]->value()*1.01);
-        if (!f.isUp())
+        if (!f.isUp()) {
             BOOST_FAIL("Observer was not notified of underlying rate change");
-        if (vars.termStructure->discount(testTime,true) == discount)
+        }
+        if (vars.termStructure->discount(testTime, true) == discount) {
             BOOST_FAIL("rate change did not trigger recalculation");
+        }
         vars.rates[i]->setValue(vars.rates[i]->value()/1.01);
     }
 
@@ -851,14 +854,16 @@ void PiecewiseYieldCurveTest::testObservability() {
     f.lower();
     Settings::instance().evaluationDate() =
         vars.calendar.advance(vars.today,15,Days);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of date change");
+    }
 
     f.lower();
     Settings::instance().evaluationDate() = vars.today;
-    if (f.isUp())
+    if (f.isUp()) {
         BOOST_FAIL("Observer was notified of date change"
                    " without an intervening recalculation");
+    }
 }
 
 
@@ -922,8 +927,9 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
     index->addFixing(vars.today, 0.0425);
 
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_ERROR("Observer was not notified of rate fixing");
+    }
 
     for (Size i=0; i<vars.swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
@@ -1280,8 +1286,9 @@ namespace piecewise_yield_curve_test {
         std::vector<Date> operator()() {
             Date settl = TARGET().advance(Settings::instance().evaluationDate(), 2 * Days);
             std::vector<Date> dates;
-            for (Size i = 0; i < 5; ++i)
+            for (Size i = 0; i < 5; ++i) {
                 dates.push_back(TARGET().advance(settl, (1 + i) * Months));
+            }
             return dates;
         }
     };

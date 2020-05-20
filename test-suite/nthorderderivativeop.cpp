@@ -78,8 +78,9 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsApply() {
     const Array x(6,0.0, 1.0);
     const Array y = op.apply(x);
 
-    for (Size i=0; i < x.size(); ++i)
-        BOOST_CHECK(close_enough(y[i], 1/dx));
+    for (Size i = 0; i < x.size(); ++i) {
+        BOOST_CHECK(close_enough(y[i], 1 / dx));
+    }
 }
 
 void NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid() {
@@ -413,10 +414,11 @@ namespace {
 
         Disposable<Array> apply_direction(
             Size direction, const Array& r) const {
-            if (direction == direction_)
+            if (direction == direction_) {
                 return apply(r);
-            else
+            } else {
                 return apply_mixed(r);
+            }
         }
 
         Disposable<Array> solve_splitting(
@@ -518,17 +520,19 @@ namespace {
                     std::pair<Real, Real>(specialPoint, setup.density));
 
             std::vector<Real> loc = mesher1d->locations();
-            for (Size i = 0; setup.midPoint && i < loc.size()-1; ++i)
+            for (Size i = 0; setup.midPoint && i < loc.size() - 1; ++i) {
                 if (loc[i] < specialPoint && loc[i+1]>= specialPoint) {
                     const Real d = loc[i+1] - loc[i];
 
                     const Real offset = (specialPoint - 0.5*d) - loc[i];
 
-                    for (Size l = 0; l < loc.size(); ++l)
+                    for (Size l = 0; l < loc.size(); ++l) {
                         loc[l] += offset;
+                    }
 
                     break;
                 }
+            }
 
             const ext::shared_ptr<FdmMesher> mesher =
                 ext::make_shared<FdmMesherComposite>(
@@ -545,7 +549,7 @@ namespace {
             rhs[0] = (*payoff)(sT[0]);
             rhs[yGrid-1] = (*payoff)(sT[yGrid-1]);
 
-            for (Size j=1; j < yGrid-1; ++j)
+            for (Size j = 1; j < yGrid - 1; ++j) {
                 if (setup.cellAvg && (
                          (sT[j] < strike && sT[j+1] >= strike)
                       || (sT[j-1] < strike && sT[j] >= strike))) {
@@ -557,9 +561,10 @@ namespace {
 
                     rhs[j] = GaussLobattoIntegral(1000, 1e-12)(
                         f, gMin, gMax)/(gMax - gMin);
-                }
-                else
+                } else {
                     rhs[j] = (*payoff)(sT[j]);
+                }
+            }
 
             const ext::shared_ptr<FdmHeatEquationOp> heatEqn =
                 ext::make_shared<FdmHeatEquationOp>(

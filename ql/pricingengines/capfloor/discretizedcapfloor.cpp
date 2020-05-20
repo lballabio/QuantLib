@@ -28,14 +28,14 @@ namespace QuantLib {
     : arguments_(args) {
 
         startTimes_.resize(args.startDates.size());
-        for (Size i=0; i<startTimes_.size(); ++i)
-            startTimes_[i] = dayCounter.yearFraction(referenceDate,
-                                                     args.startDates[i]);
+        for (Size i = 0; i < startTimes_.size(); ++i) {
+            startTimes_[i] = dayCounter.yearFraction(referenceDate, args.startDates[i]);
+        }
 
         endTimes_.resize(args.endDates.size());
-        for (Size i=0; i<endTimes_.size(); ++i)
-            endTimes_[i] = dayCounter.yearFraction(referenceDate,
-                                                   args.endDates[i]);
+        for (Size i = 0; i < endTimes_.size(); ++i) {
+            endTimes_[i] = dayCounter.yearFraction(referenceDate, args.endDates[i]);
+        }
     }
     
     void DiscretizedCapFloor::reset(Size size) {
@@ -67,9 +67,10 @@ namespace QuantLib {
                      (type == CapFloor::Collar)) {
                     Real accrual = 1.0 + arguments_.capRates[i]*tenor;
                     Real strike = 1.0/accrual;
-                    for (Size j=0; j<values_.size(); j++)
-                        values_[j] += nominal*accrual*gearing*
-                            std::max<Real>(strike - bond.values()[j], 0.0);
+                    for (Size j = 0; j < values_.size(); j++) {
+                        values_[j] += nominal * accrual * gearing *
+                                      std::max<Real>(strike - bond.values()[j], 0.0);
+                    }
                 }
 
                 if ( (type == CapFloor::Floor) ||
@@ -77,9 +78,10 @@ namespace QuantLib {
                     Real accrual = 1.0 + arguments_.floorRates[i]*tenor;
                     Real strike = 1.0/accrual;
                     Real mult = (type == CapFloor::Floor)?1.0:-1.0;
-                    for (Size j=0; j<values_.size(); j++)
-                        values_[j] += nominal*accrual*mult*gearing*
-                            std::max<Real>(bond.values()[j] - strike, 0.0);
+                    for (Size j = 0; j < values_.size(); j++) {
+                        values_[j] += nominal * accrual * mult * gearing *
+                                      std::max<Real>(bond.values()[j] - strike, 0.0);
+                    }
                 }
             }
         }
@@ -104,10 +106,11 @@ namespace QuantLib {
                     if (type == CapFloor::Floor || type == CapFloor::Collar) {
                         Rate floor = arguments_.floorRates[i];
                         Rate floorletRate = std::max(floor-fixing, 0.0);
-                        if (type == CapFloor::Floor)
+                        if (type == CapFloor::Floor) {
                             values_ += floorletRate*accrual*nominal*gearing;
-                        else
-                            values_ -= floorletRate*accrual*nominal*gearing;
+                        } else {
+                            values_ -= floorletRate * accrual * nominal * gearing;
+                        }
                     }
                 }
             }

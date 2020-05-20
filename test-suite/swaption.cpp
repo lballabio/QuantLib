@@ -363,23 +363,23 @@ void SwaptionTest::testSpreadTreatment() {
                     ext::shared_ptr<Swaption> swaption2_cash =
                         vars.makeSwaption(equivalentSwap,exerciseDate,0.20,
                                           Settlement::Cash, Settlement::ParYieldCurve);
-                    if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-6)
-                        BOOST_ERROR("wrong spread treatment:" <<
-                            "\nexercise: " << exerciseDate <<
-                            "\nlength:   " << lengths[j] <<
-                            "\ntype      " << type[k] <<
-                            "\nspread:   " << io::rate(spreads[l]) <<
-                            "\noriginal swaption value:   " << swaption1->NPV() <<
-                            "\nequivalent swaption value: " << swaption2->NPV());
+                    if (std::fabs(swaption1->NPV() - swaption2->NPV()) > 1.0e-6) {
+                        BOOST_ERROR("wrong spread treatment:"
+                                    << "\nexercise: " << exerciseDate
+                                    << "\nlength:   " << lengths[j] << "\ntype      " << type[k]
+                                    << "\nspread:   " << io::rate(spreads[l])
+                                    << "\noriginal swaption value:   " << swaption1->NPV()
+                                    << "\nequivalent swaption value: " << swaption2->NPV());
+                    }
 
-                    if (std::fabs(swaption1_cash->NPV()-swaption2_cash->NPV()) > 1.0e-6)
-                        BOOST_ERROR("wrong spread treatment:" <<
-                            "\nexercise date: " << exerciseDate <<
-                            "\nlength: " << lengths[j] <<
-                            "\npay " << (type[k] ? "fixed" : "floating") <<
-                            "\nspread: " << io::rate(spreads[l]) <<
-                            "\nvalue of original swaption:   "  << swaption1_cash->NPV() <<
-                            "\nvalue of equivalent swaption: "  << swaption2_cash->NPV());
+                    if (std::fabs(swaption1_cash->NPV() - swaption2_cash->NPV()) > 1.0e-6) {
+                        BOOST_ERROR("wrong spread treatment:"
+                                    << "\nexercise date: " << exerciseDate << "\nlength: "
+                                    << lengths[j] << "\npay " << (type[k] ? "fixed" : "floating")
+                                    << "\nspread: " << io::rate(spreads[l])
+                                    << "\nvalue of original swaption:   " << swaption1_cash->NPV()
+                                    << "\nvalue of equivalent swaption: " << swaption2_cash->NPV());
+                    }
                 }
 
             }
@@ -412,17 +412,18 @@ void SwaptionTest::testCachedValue() {
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
     Real cachedNPV;
-    if (IborCoupon::usingAtParCoupons())
+    if (IborCoupon::usingAtParCoupons()) {
         cachedNPV = 0.036418158579;
-    else
+    } else {
         cachedNPV = 0.036421429684;
+    }
 
     // FLOATING_POINT_EXCEPTION
-    if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)
-        BOOST_ERROR("failed to reproduce cached swaption value:\n" <<
-                    std::fixed << std::setprecision(12) <<
-                    "\ncalculated: " << swaption->NPV() <<
-                    "\nexpected:   " << cachedNPV);
+    if (std::fabs(swaption->NPV() - cachedNPV) > 1.0e-12) {
+        BOOST_ERROR("failed to reproduce cached swaption value:\n"
+                    << std::fixed << std::setprecision(12) << "\ncalculated: " << swaption->NPV()
+                    << "\nexpected:   " << cachedNPV);
+    }
 }
 
 void SwaptionTest::testVega() {
@@ -475,20 +476,22 @@ void SwaptionTest::testVega() {
                                 - numericalVegaPerPoint);
                             discrepancy /= numericalVegaPerPoint;
                             Real tolerance = 0.015;
-                            if (discrepancy > tolerance)
-                                BOOST_FAIL("failed to compute swaption vega:" <<
-                                    "\n  option tenor:    " << exercises[i] <<
-                                    "\n  volatility:      " << io::rate(vols[u]) <<
-                                    "\n  option type:     " << swaption->type() <<
-                                    "\n  swap tenor:      " << lengths[j] <<
-                                    "\n  strike:          " << io::rate(strikes[t]) <<
-                                    "\n  settlement:      " << types[h] <<
-                                    "\n  nominal:         " << swaption->underlyingSwap()->nominal() <<
-                                    "\n  npv:             " << swaptionNPV <<
-                                    "\n  calculated vega: " << analyticalVegaPerPoint <<
-                                    "\n  expected vega:   " << numericalVegaPerPoint <<
-                                    "\n  discrepancy:     " << io::rate(discrepancy) <<
-                                    "\n  tolerance:       " << io::rate(tolerance));
+                            if (discrepancy > tolerance) {
+                                BOOST_FAIL("failed to compute swaption vega:"
+                                           << "\n  option tenor:    " << exercises[i]
+                                           << "\n  volatility:      " << io::rate(vols[u])
+                                           << "\n  option type:     " << swaption->type()
+                                           << "\n  swap tenor:      " << lengths[j]
+                                           << "\n  strike:          " << io::rate(strikes[t])
+                                           << "\n  settlement:      " << types[h]
+                                           << "\n  nominal:         "
+                                           << swaption->underlyingSwap()->nominal()
+                                           << "\n  npv:             " << swaptionNPV
+                                           << "\n  calculated vega: " << analyticalVegaPerPoint
+                                           << "\n  expected vega:   " << numericalVegaPerPoint
+                                           << "\n  discrepancy:     " << io::rate(discrepancy)
+                                           << "\n  tolerance:       " << io::rate(tolerance));
+                            }
                         }
                     }
                 }

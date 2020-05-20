@@ -109,10 +109,11 @@ namespace QuantLib {
     inline void LocalConstantVol::accept(AcyclicVisitor& v) {
         Visitor<LocalConstantVol>* v1 =
             dynamic_cast<Visitor<LocalConstantVol>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             LocalVolTermStructure::accept(v);
+        }
     }
 
     inline Volatility LocalConstantVol::localVolImpl(Time, Real) const {

@@ -57,9 +57,10 @@ namespace QuantLib {
 
             // linear comb factors ajusted for the variance renormalization:
             std::vector<Real> normFactorWeights;
-            for(Size iFactor=0; iFactor<factorWeights[iLVar].size(); iFactor++)
-                normFactorWeights.push_back(factorWeights[iLVar][iFactor] * 
-                    varianceFactors_[iFactor]);
+            for (Size iFactor = 0; iFactor < factorWeights[iLVar].size(); iFactor++) {
+                normFactorWeights.push_back(factorWeights[iLVar][iFactor] *
+                                            varianceFactors_[iFactor]);
+            }
             // idiosincratic term, all Z factors are assumed identical.
             normFactorWeights.push_back(idiosyncFctr * varianceFactors_.back());
             latentVarsCumul_.push_back( 

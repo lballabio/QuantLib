@@ -66,8 +66,9 @@ namespace QuantLib {
         .withSpreads(spread_);
 
         Leg::const_iterator i;
-        for (i = yoyLeg.begin(); i < yoyLeg.end(); ++i)
+        for (i = yoyLeg.begin(); i < yoyLeg.end(); ++i) {
             registerWith(*i);
+        }
 
         legs_[0] = fixedLeg;
         legs_[1] = yoyLeg;
@@ -88,8 +89,9 @@ namespace QuantLib {
         YearOnYearInflationSwap::arguments* arguments =
         dynamic_cast<YearOnYearInflationSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (!arguments) { // it's a swap engine...
             return;
+        }
 
         arguments->type = type_;
         arguments->nominal = nominal_;
@@ -191,13 +193,15 @@ namespace QuantLib {
 
         if (fairRate_ == Null<Rate>()) {
             // calculate it from other results
-            if (legBPS_[0] != Null<Real>())
-                fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
+            if (legBPS_[0] != Null<Real>()) {
+                fairRate_ = fixedRate_ - NPV_ / (legBPS_[0] / basisPoint);
+            }
         }
         if (fairSpread_ == Null<Spread>()) {
             // ditto
-            if (legBPS_[1] != Null<Real>())
-                fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+            if (legBPS_[1] != Null<Real>()) {
+                fairSpread_ = spread_ - NPV_ / (legBPS_[1] / basisPoint);
+            }
         }
 
     }

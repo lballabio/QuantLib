@@ -41,22 +41,24 @@ GsrProcessCore::GsrProcessCore(const Array &times, const Array &vols,
                    << vols.size() << ") compared to number of times ("
                    << times_.size() << " must be bigger by one, or exactly "
                                        "1 reversion must be given");
-    for (int i = 0; i < ((int)times.size()) - 1; i++)
-        QL_REQUIRE(times[i] < times[i + 1], "times must be increasing ("
-                                                << times[i] << "@" << i << " , "
-                                                << times[i + 1] << "@" << i + 1
-                                                << ")");
+    for (int i = 0; i < ((int)times.size()) - 1; i++) {
+        QL_REQUIRE(times[i] < times[i + 1], "times must be increasing (" << times[i] << "@" << i
+                                                                         << " , " << times[i + 1]
+                                                                         << "@" << i + 1 << ")");
+    }
     flushCache();
 }
 
 void GsrProcessCore::flushCache() const {
-    for (int i = 0; i < (int)reversions_.size(); i++)
+    for (int i = 0; i < (int)reversions_.size(); i++) {
         // small reversions cause numerical problems, so we keep them
         // away from zero
-        if (std::fabs(reversions_[i]) < 1E-4)
+        if (std::fabs(reversions_[i]) < 1E-4) {
             revZero_[i] = true;
-        else
+        } else {
             revZero_[i] = false;
+        }
+    }
     cache1_.clear();
     cache2a_.clear();
     cache2b_.clear();
@@ -71,8 +73,9 @@ Real GsrProcessCore::expectation_x0dep_part(const Time w, const Real xw,
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
     std::map<std::pair<Real, Real>, Real>::const_iterator k = cache1_.find(key);
-    if (k != cache1_.end())
+    if (k != cache1_.end()) {
         return xw * (k->second);
+    }
     // A(w,t)x(w)
     Real res2 = 1.0;
     for (int i = lowerIndex(w); i <= upperIndex(t) - 1; i++) {
@@ -91,8 +94,9 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
     key = std::make_pair(w, t);
     std::map<std::pair<Real, Real>, Real>::const_iterator k =
         cache2a_.find(key);
-    if (k != cache2a_.end())
+    if (k != cache2a_.end()) {
         return k->second;
+    }
 
     Real res = 0.0;
 
@@ -107,11 +111,13 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
                                      (1.0 - exp(-2.0 * rev(l) *
                                                 (time2(l + 1) - time2(l))));
             // zeta_i (i>k)
-            for (int i = k + 1; i <= upperIndex(t) - 1; i++)
+            for (int i = k + 1; i <= upperIndex(t) - 1; i++) {
                 res2 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+            }
             // beta_j (j<k)
-            for (int j = l + 1; j <= k - 1; j++)
+            for (int j = l + 1; j <= k - 1; j++) {
                 res2 *= exp(-2.0 * rev(j) * (time2(j + 1) - time2(j)));
+            }
             // zeta_k beta_k
             res2 *=
                 revZero(k)
@@ -144,8 +150,9 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
                         exp(-rev(k) *
                             (cappedTime(k + 1, t) - flooredTime(k, w)))));
         // zeta_i (i>k)
-        for (int i = k + 1; i <= upperIndex(t) - 1; i++)
+        for (int i = k + 1; i <= upperIndex(t) - 1; i++) {
             res2 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+        }
         // no beta_j in this case ...
         res += res2;
     }
@@ -164,8 +171,9 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
     key = std::make_pair(w, t);
     std::map<std::pair<Real, Real>, Real>::const_iterator k =
         cache2b_.find(key);
-    if (k != cache2b_.end())
+    if (k != cache2b_.end()) {
         return k->second;
+    }
 
     Real res = 0.0;
     // int -A(s,t) \sigma^2 G(s,T)
@@ -181,11 +189,13 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
                            exp(-rev(l) * (cappedTime(l + 1, T_) - time2(l)))) /
                               rev(l);
             // zeta_i (i>k)
-            for (int i = k + 1; i <= upperIndex(t) - 1; i++)
+            for (int i = k + 1; i <= upperIndex(t) - 1; i++) {
                 res3 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+            }
             // gamma_j (j>k)
-            for (int j = k + 1; j <= l - 1; j++)
+            for (int j = k + 1; j <= l - 1; j++) {
                 res3 *= exp(-rev(j) * (time2(j + 1) - time2(j)));
+            }
             // zeta_k gamma_k
             res3 *=
                 revZero(k)
@@ -220,8 +230,9 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
                          cappedTime(k + 1, t))))) /
                       (2.0 * rev(k) * rev(k));
         // zeta_i (i>k)
-        for (int i = k + 1; i <= upperIndex(t) - 1; i++)
+        for (int i = k + 1; i <= upperIndex(t) - 1; i++) {
             res3 *= exp(-rev(i) * (cappedTime(i + 1, t) - time2(i)));
+        }
         // no gamma_j in this case ...
         res2 += res3;
         // add to main accumulator
@@ -240,8 +251,9 @@ Real GsrProcessCore::variance(const Time w, const Time dt) const {
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
     std::map<std::pair<Real, Real>, Real>::const_iterator k = cache3_.find(key);
-    if (k != cache3_.end())
+    if (k != cache3_.end()) {
         return k->second;
+    }
 
     Real res = 0.0;
     for (int k = lowerIndex(w); k <= upperIndex(t) - 1; k++) {
@@ -267,8 +279,9 @@ Real GsrProcessCore::y(const Time t) const {
     Real key;
     key = t;
     std::map<Real, Real>::const_iterator k = cache4_.find(key);
-    if (k != cache4_.end())
+    if (k != cache4_.end()) {
         return k->second;
+    }
 
     Real res = 0.0;
     for (int i = 0; i <= upperIndex(t) - 1; i++) {
@@ -291,8 +304,9 @@ Real GsrProcessCore::G(const Time t, const Time w) const {
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
     std::map<std::pair<Real, Real>, Real>::const_iterator k = cache5_.find(key);
-    if (k != cache5_.end())
+    if (k != cache5_.end()) {
         return k->second;
+    }
 
     Real res = 0.0;
     for (int i = lowerIndex(t); i <= upperIndex(w) - 1; i++) {
@@ -317,8 +331,9 @@ int GsrProcessCore::lowerIndex(const Time t) const {
 }
 
 int GsrProcessCore::upperIndex(const Time t) const {
-    if (t < QL_MIN_POSITIVE_REAL)
+    if (t < QL_MIN_POSITIVE_REAL) {
         return 0;
+    }
     return static_cast<int>(
                std::upper_bound(times_.begin(), times_.end(), t - QL_EPSILON) -
                times_.begin()) +
@@ -335,30 +350,35 @@ Real GsrProcessCore::flooredTime(const Size index,
 }
 
 Real GsrProcessCore::time2(const Size index) const {
-    if (index == 0)
+    if (index == 0) {
         return 0.0;
-    if (index > times_.size())
+    }
+    if (index > times_.size()) {
         return T_; // FIXME how to ensure that forward
-                   // measure time is geq all times
-                   // given
+    }
+    // measure time is geq all times
+    // given
     return times_[index - 1];
 }
 
 Real GsrProcessCore::vol(const Size index) const {
-    if (index >= vols_.size())
+    if (index >= vols_.size()) {
         return vols_.back();
+    }
     return vols_[index];
 }
 
 Real GsrProcessCore::rev(const Size index) const {
-    if (index >= reversions_.size())
+    if (index >= reversions_.size()) {
         return reversions_.back();
+    }
     return reversions_[index];
 }
 
 bool GsrProcessCore::revZero(const Size index) const {
-    if (index >= revZero_.size())
+    if (index >= revZero_.size()) {
         return revZero_.back();
+    }
     return revZero_[index];
 }
 

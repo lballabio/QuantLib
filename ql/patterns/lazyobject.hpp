@@ -124,10 +124,11 @@ namespace QuantLib {
             //    data because of calculated_ being still true
             calculated_ = false;
             // observers don't expect notifications from frozen objects
-            if (!frozen_)
+            if (!frozen_) {
                 notifyObservers();
-                // exiting notifyObservers() calculated_ could be
-                // already true because of non-lazy observers
+            }
+            // exiting notifyObservers() calculated_ could be
+            // already true because of non-lazy observers
         }
     }
  

@@ -35,8 +35,9 @@ namespace QuantLib {
     : size_(steps), t_(size_), sqrtdt_(size_),
       bridgeIndex_(size_), leftIndex_(size_), rightIndex_(size_),
       leftWeight_(size_), rightWeight_(size_), stdDev_(size_) {
-        for (Size i=0; i<size_; ++i)
-            t_[i] = static_cast<Time>(i+1);
+        for (Size i = 0; i < size_; ++i) {
+            t_[i] = static_cast<Time>(i + 1);
+        }
         initialize();
     }
 
@@ -51,8 +52,9 @@ namespace QuantLib {
     : size_(timeGrid.size()-1), t_(size_), sqrtdt_(size_),
       bridgeIndex_(size_), leftIndex_(size_), rightIndex_(size_),
       leftWeight_(size_), rightWeight_(size_), stdDev_(size_) {
-        for (Size i=0; i<size_; ++i)
-            t_[i] = timeGrid[i+1];
+        for (Size i = 0; i < size_; ++i) {
+            t_[i] = timeGrid[i + 1];
+        }
         initialize();
     }
 
@@ -60,8 +62,9 @@ namespace QuantLib {
     void BrownianBridge::initialize() {
 
         sqrtdt_[0] = std::sqrt(t_[0]);
-        for (Size i=1; i<size_; ++i)
-            sqrtdt_[i] = std::sqrt(t_[i]-t_[i-1]);
+        for (Size i = 1; i < size_; ++i) {
+            sqrtdt_[i] = std::sqrt(t_[i] - t_[i - 1]);
+        }
 
         // map is used to indicate which points are already constructed.
         // If map[i] is zero, path point i is yet unconstructed.
@@ -79,12 +82,14 @@ namespace QuantLib {
         leftWeight_[0] = rightWeight_[0] = 0.0;
         for (Size j=0, i=1; i<size_; ++i) {
             // Find the next unpopulated entry in the map.
-            while (map[j])
+            while (map[j]) {
                 ++j;
+            }
             Size k = j;
             // Find the next populated entry in the map from there.
-            while (!map[k])
+            while (!map[k]) {
                 ++k;
+            }
             // l-1 is now the index of the point to be constructed next.
             Size l = j + ((k-1-j)>>1);
             map[l] = i;
@@ -104,8 +109,9 @@ namespace QuantLib {
                 stdDev_[i] = std::sqrt(t_[l]*(t_[k]-t_[l])/t_[k]);
             }
             j=k+1;
-            if (j>=size_)
-                j=0;    //  wrap around
+            if (j >= size_) {
+                j = 0; //  wrap around
+            }
         }
     }
 

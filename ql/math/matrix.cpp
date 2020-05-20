@@ -121,10 +121,11 @@ namespace QuantLib {
         Real retVal = 1.0;
 
         for (Size i=0; i < m.rows(); ++i) {
-            if (pert[i] != i)
+            if (pert[i] != i) {
                 retVal *= -a(i,i);
-            else
-                retVal *=  a(i,i);
+            } else {
+                retVal *= a(i, i);
+            }
         }
         return retVal;
 

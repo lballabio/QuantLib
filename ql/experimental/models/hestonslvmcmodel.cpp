@@ -108,8 +108,9 @@ namespace QuantLib {
 
             vStrikes[i] = ext::make_shared<std::vector<Real> >(nBins_);
 
-            for (Integer j=0; j < Integer(nBins_); ++j)
-                vStrikes[i]->at(j) = spot->value() + (j - u)*dx;
+            for (Integer j = 0; j < Integer(nBins_); ++j) {
+                vStrikes[i]->at(j) = spot->value() + (j - u) * dx;
+            }
         }
 
         std::fill(L->column_begin(0),L->column_end(0), lv0);

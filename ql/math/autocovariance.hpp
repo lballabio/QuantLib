@@ -63,8 +63,9 @@ namespace QuantLib {
                          OutputIterator out) {
             Real mean(0.0);
             std::size_t n = 1;
-            for (InputIterator it = begin; it != end; ++it, ++n)
-                mean = (mean*Real(n-1) + *it)/n;
+            for (InputIterator it = begin; it != end; ++it, ++n) {
+                mean = (mean * Real(n - 1) + *it) / n;
+            }
             std::transform(begin, end, out,
                            subtract<Real>(mean));
             return mean;
@@ -87,8 +88,9 @@ namespace QuantLib {
         QL_REQUIRE(maxLag < nData, "maxLag must be less than data size");
         const std::vector<std::complex<Real> >& ft = double_ft(begin, end);
         Real w = 1.0 / (Real)ft.size();
-        for (std::size_t k = 0; k <= maxLag; ++k)
+        for (std::size_t k = 0; k <= maxLag; ++k) {
             *out++ = ft[k].real() * w;
+        }
     }
 
     //! Unbiased auto-covariances
@@ -157,8 +159,9 @@ namespace QuantLib {
         Real variance = ft[0].real() * w1 / w2;
         *out++ = variance * w2 / (w2-1.0);
         w2 -= 1.0;
-        for (std::size_t k = 1; k <= maxLag; ++k, w2 -= 1.0)
+        for (std::size_t k = 1; k <= maxLag; ++k, w2 -= 1.0) {
             *out++ = ft[k].real() * w1 / (variance * w2);
+        }
     }
 
     //! Unbiased auto-correlations.

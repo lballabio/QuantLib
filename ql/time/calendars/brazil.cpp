@@ -68,13 +68,13 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Passion of Christ
-            || (dd == em-3)
+            || (dd == em - 3)
             // Carnival
-            || (dd == em-49 || dd == em-48)
+            || (dd == em - 49 || dd == em - 48)
             // Corpus Christi
-            || (dd == em+59)
-            )
+            || (dd == em + 59)) {
             return false;
+        }
         return true;
     }
 
@@ -112,15 +112,15 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Passion of Christ
-            || (dd == em-3)
+            || (dd == em - 3)
             // Carnival
-            || (dd == em-49 || dd == em-48)
+            || (dd == em - 49 || dd == em - 48)
             // Corpus Christi
-            || (dd == em+59)
+            || (dd == em + 59)
             // last business day of the year
-            || (m == December && (d == 31 || (d >= 29 && w == Friday)))
-            )
+            || (m == December && (d == 31 || (d >= 29 && w == Friday)))) {
             return false;
+        }
         return true;
     }
 

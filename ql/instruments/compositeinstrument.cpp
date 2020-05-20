@@ -44,8 +44,9 @@ namespace QuantLib {
 
     bool CompositeInstrument::isExpired() const {
         for (const_iterator i=components_.begin(); i!=components_.end(); ++i) {
-            if (!i->first->isExpired())
+            if (!i->first->isExpired()) {
                 return false;
+            }
         }
         return true;
     }

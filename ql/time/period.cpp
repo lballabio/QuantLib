@@ -71,42 +71,48 @@ namespace QuantLib {
         Size length = std::abs(length_);
 
         if (length==0) {
-            if (units_==Years) return Once;
+            if (units_ == Years) {
+                return Once;
+            }
             return NoFrequency;
         }
 
         switch (units_) {
           case Years:
-            if (length == 1)
-                return Annual;
-            else
-                return OtherFrequency;
+              if (length == 1) {
+                  return Annual;
+              } else {
+                  return OtherFrequency;
+              }
           case Months:
-            if (12%length == 0 && length <= 12)
-                return Frequency(12/length);
-            else
-                return OtherFrequency;
+              if (12 % length == 0 && length <= 12) {
+                  return Frequency(12 / length);
+              } else {
+                  return OtherFrequency;
+              }
           case Weeks:
-            if (length==1)
-                return Weekly;
-            else if (length==2)
-                return Biweekly;
-            else if (length==4)
-                return EveryFourthWeek;
-            else
-                return OtherFrequency;
+              if (length == 1) {
+                  return Weekly;
+              } else if (length == 2) {
+                  return Biweekly;
+              } else if (length == 4) {
+                  return EveryFourthWeek;
+              } else {
+                  return OtherFrequency;
+              }
           case Days:
-            if (length==1)
-                return Daily;
-            else
-                return OtherFrequency;
+              if (length == 1) {
+                  return Daily;
+              } else {
+                  return OtherFrequency;
+              }
           default:
             QL_FAIL("unknown time unit (" << Integer(units_) << ")");
         }
     }
 
     void Period::normalize() {
-        if (length_!=0)
+        if (length_ != 0) {
             switch (units_) {
               case Months:
                 if (!(length_%12)) {
@@ -121,6 +127,7 @@ namespace QuantLib {
               default:
                 QL_FAIL("unknown time unit (" << Integer(units_) << ")");
             }
+        }
     }
 
     Period& Period::operator+=(const Period& p) {
@@ -269,7 +276,9 @@ namespace QuantLib {
     }
 
     Real years(const Period& p) {
-        if (p.length()==0) return 0.0;
+        if (p.length() == 0) {
+            return 0.0;
+        }
 
         switch (p.units()) {
           case Days:
@@ -286,7 +295,9 @@ namespace QuantLib {
     }
 
     Real months(const Period& p) {
-        if (p.length()==0) return 0.0;
+        if (p.length() == 0) {
+            return 0.0;
+        }
 
         switch (p.units()) {
           case Days:
@@ -303,7 +314,9 @@ namespace QuantLib {
     }
 
     Real weeks(const Period& p) {
-        if (p.length()==0) return 0.0;
+        if (p.length() == 0) {
+            return 0.0;
+        }
 
         switch (p.units()) {
           case Days:
@@ -320,7 +333,9 @@ namespace QuantLib {
     }
 
     Real days(const Period& p) {
-        if (p.length()==0) return 0.0;
+        if (p.length() == 0) {
+            return 0.0;
+        }
 
         switch (p.units()) {
           case Days:
@@ -339,33 +354,41 @@ namespace QuantLib {
     bool operator<(const Period& p1, const Period& p2) {
 
         // special cases
-        if (p1.length() == 0)
+        if (p1.length() == 0) {
             return p2.length() > 0;
-        if (p2.length() == 0)
+        }
+        if (p2.length() == 0) {
             return p1.length() < 0;
+        }
 
         // exact comparisons
-        if (p1.units() == p2.units())
+        if (p1.units() == p2.units()) {
             return p1.length() < p2.length();
-        if (p1.units() == Months && p2.units() == Years)
-            return p1.length() < 12*p2.length();
-        if (p1.units() == Years && p2.units() == Months)
-            return 12*p1.length() < p2.length();
-        if (p1.units() == Days && p2.units() == Weeks)
-            return p1.length() < 7*p2.length();
-        if (p1.units() == Weeks && p2.units() == Days)
-            return 7*p1.length() < p2.length();
+        }
+        if (p1.units() == Months && p2.units() == Years) {
+            return p1.length() < 12 * p2.length();
+        }
+        if (p1.units() == Years && p2.units() == Months) {
+            return 12 * p1.length() < p2.length();
+        }
+        if (p1.units() == Days && p2.units() == Weeks) {
+            return p1.length() < 7 * p2.length();
+        }
+        if (p1.units() == Weeks && p2.units() == Days) {
+            return 7 * p1.length() < p2.length();
+        }
 
         // inexact comparisons (handled by converting to days and using limits)
         std::pair<Integer, Integer> p1lim = daysMinMax(p1);
         std::pair<Integer, Integer> p2lim = daysMinMax(p2);
 
-        if (p1lim.second < p2lim.first)
+        if (p1lim.second < p2lim.first) {
             return true;
-        else if (p1lim.first > p2lim.second)
+        } else if (p1lim.first > p2lim.second) {
             return false;
-        else
+        } else {
             QL_FAIL("undecidable comparison between " << p1 << " and " << p2);
+        }
     }
 
 
@@ -404,10 +427,11 @@ namespace QuantLib {
                     out << m << (m == 1 ? " week " : " weeks ");
                     n = n%7;
                 }
-                if (n != 0 || m == 0)
+                if (n != 0 || m == 0) {
                     return out << n << (n == 1 ? " day" : " days");
-                else
+                } else {
                     return out;
+                }
               case Weeks:
                 return out << n << (n == 1 ? " week" : " weeks");
               case Months:
@@ -416,10 +440,11 @@ namespace QuantLib {
                     out << m << (m == 1 ? " year " : " years ");
                     n = n%12;
                 }
-                if (n != 0 || m == 0)
+                if (n != 0 || m == 0) {
                     return out << n << (n == 1 ? " month" : " months");
-                else
+                } else {
                     return out;
+                }
               case Years:
                 return out << n << (n == 1 ? " year" : " years");
               default:
@@ -438,10 +463,11 @@ namespace QuantLib {
                     out << m << "W";
                     n = n%7;
                 }
-                if (n != 0 || m == 0)
+                if (n != 0 || m == 0) {
                     return out << n << "D";
-                else
+                } else {
                     return out;
+                }
               case Weeks:
                 return out << n << "W";
               case Months:
@@ -450,10 +476,11 @@ namespace QuantLib {
                     out << n/12 << "Y";
                     n = n%12;
                 }
-                if (n != 0 || m == 0)
+                if (n != 0 || m == 0) {
                     return out << n << "M";
-                else
+                } else {
                     return out;
+                }
               case Years:
                 return out << n << "Y";
               default:

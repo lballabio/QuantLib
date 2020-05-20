@@ -89,8 +89,9 @@ namespace QuantLib {
         Frequency frequency = arguments_.frequency;
 
         // adjust if zero coupon bond (see also bond.cpp)
-        if (frequency == NoFrequency || frequency == Once)
+        if (frequency == NoFrequency || frequency == Once) {
             frequency = Annual;
+        }
 
         Rate fwdYtm = CashFlows::yield(fixedLeg,
                                        fwdNpv,

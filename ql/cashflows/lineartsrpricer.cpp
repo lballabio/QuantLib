@@ -59,22 +59,23 @@ namespace QuantLib {
           couponDiscountCurve_(couponDiscountCurve), settings_(settings),
           volDayCounter_(swaptionVol->dayCounter()), integrator_(integrator) {
 
-        if (!couponDiscountCurve_.empty())
+        if (!couponDiscountCurve_.empty()) {
             registerWith(couponDiscountCurve_);
+        }
 
-        if (integrator_ == NULL)
-            integrator_ =
-                ext::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
+        if (integrator_ == NULL) {
+            integrator_ = ext::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
+        }
     }
 
     Real LinearTsrPricer::GsrG(const Date &d) const {
 
         Real yf = volDayCounter_.yearFraction(fixingDate_, d);
-        if (std::fabs(meanReversion_->value()) < 1.0E-4)
+        if (std::fabs(meanReversion_->value()) < 1.0E-4) {
             return yf;
-        else
-            return (1.0 - std::exp(-meanReversion_->value() * yf)) /
-                   meanReversion_->value();
+        } else {
+            return (1.0 - std::exp(-meanReversion_->value() * yf)) / meanReversion_->value();
+        }
     }
 
     Real LinearTsrPricer::singularTerms(const Option::Type type,
@@ -108,10 +109,11 @@ namespace QuantLib {
         swapIndex_ = coupon_->swapIndex();
 
         forwardCurve_ = swapIndex_->forwardingTermStructure();
-        if (swapIndex_->exogenousDiscount())
+        if (swapIndex_->exogenousDiscount()) {
             discountCurve_ = swapIndex_->discountingTermStructure();
-        else
+        } else {
             discountCurve_ = forwardCurve_;
+        }
 
         // if no coupon discount curve is given just use the discounting curve
         // from the swap index. for rate calculation this curve cancels out in
@@ -122,12 +124,13 @@ namespace QuantLib {
 
         today_ = QuantLib::Settings::instance().evaluationDate();
 
-        if (paymentDate_ > today_ && !couponDiscountCurve_.empty())
+        if (paymentDate_ > today_ && !couponDiscountCurve_.empty()) {
             couponDiscountRatio_ =
                 couponDiscountCurve_->discount(paymentDate_) /
                 discountCurve_->discount(paymentDate_);
-        else
+        } else {
             couponDiscountRatio_ = 1.;
+        }
 
         spreadLegValue_ = spread_ * coupon_->accrualPeriod() *
                           discountCurve_->discount(paymentDate_) *
@@ -149,8 +152,9 @@ namespace QuantLib {
 
             if(sectionTmp->volatilityType() == Normal) {
                 // adjust lower bound if it was not set explicitly
-                if(settings_.defaultBounds_)
+                if (settings_.defaultBounds_) {
                     adjustedLowerBound_ = std::min(adjustedLowerBound_, -adjustedUpperBound_);
+                }
             } else {
                 // adjust bounds by section's shift
                 adjustedLowerBound_ -= sectionTmp->shift();
@@ -160,11 +164,12 @@ namespace QuantLib {
             // if the section does not provide an atm level, we enhance it to
             // have one, no need to exit with an exception ...
 
-            if (sectionTmp->atmLevel() == Null<Real>())
+            if (sectionTmp->atmLevel() == Null<Real>()) {
                 smileSection_ = ext::make_shared<AtmSmileSection>(
                     sectionTmp, swapRateValue_);
-            else
+            } else {
                 smileSection_ = sectionTmp;
+            }
 
             // compute linear model's parameters
 
@@ -255,10 +260,12 @@ namespace QuantLib {
     Real LinearTsrPricer::optionletPrice(Option::Type optionType,
                                          Real strike) const {
 
-        if (optionType == Option::Call && strike >= adjustedUpperBound_)
+        if (optionType == Option::Call && strike >= adjustedUpperBound_) {
             return 0.0;
-        if (optionType == Option::Put && strike <= adjustedLowerBound_)
+        }
+        if (optionType == Option::Put && strike <= adjustedLowerBound_) {
             return 0.0;
+        }
 
         // determine lower or upper integration bound (depending on option type)
 
@@ -267,10 +274,11 @@ namespace QuantLib {
         switch (settings_.strategy_) {
 
         case Settings::RateBound: {
-            if (optionType == Option::Call)
+            if (optionType == Option::Call) {
                 upper = adjustedUpperBound_;
-            else
+            } else {
                 lower = adjustedLowerBound_;
+            }
             break;
         }
 
@@ -279,10 +287,11 @@ namespace QuantLib {
             // expected side of strike
             Real bound =
                 strikeFromVegaRatio(settings_.vegaRatio_, optionType, strike);
-            if (optionType == Option::Call)
+            if (optionType == Option::Call) {
                 upper = std::min(bound, adjustedUpperBound_);
-            else
+            } else {
                 lower = std::max(bound, adjustedLowerBound_);
+            }
             break;
         }
 
@@ -291,10 +300,11 @@ namespace QuantLib {
             // side of strike
             Real bound =
                 strikeFromPrice(settings_.vegaRatio_, optionType, strike);
-            if (optionType == Option::Call)
+            if (optionType == Option::Call) {
                 upper = std::min(bound, adjustedUpperBound_);
-            else
+            } else {
                 lower = std::max(bound, adjustedLowerBound_);
+            }
             break;
         }
 

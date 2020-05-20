@@ -51,24 +51,19 @@ namespace QuantLib {
             // New Year's holidays
             || (d >= 1 && d <= 8 && m == January)
             // Defender of the Fatherland Day (possibly moved to Monday)
-            || ((d == 23 || ((d == 24 || d == 25) && w == Monday)) &&
-                m == February)
+            || ((d == 23 || ((d == 24 || d == 25) && w == Monday)) && m == February)
             // International Women's Day (possibly moved to Monday)
-            || ((d == 8 || ((d == 9 || d == 10) && w == Monday)) &&
-                m == March)
+            || ((d == 8 || ((d == 9 || d == 10) && w == Monday)) && m == March)
             // Labour Day (possibly moved to Monday)
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) &&
-                m == May)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == May)
             // Victory Day (possibly moved to Monday)
-            || ((d == 9 || ((d == 10 || d == 11) && w == Monday)) &&
-                m == May)
+            || ((d == 9 || ((d == 10 || d == 11) && w == Monday)) && m == May)
             // Russia Day (possibly moved to Monday)
-            || ((d == 12 || ((d == 13 || d == 14) && w == Monday)) &&
-                m == June)
+            || ((d == 12 || ((d == 13 || d == 14) && w == Monday)) && m == June)
             // Unity Day (possibly moved to Monday)
-            || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) &&
-                m == November))
+            || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) && m == November)) {
             return false;
+        }
         return true;
     }
 
@@ -145,12 +140,13 @@ namespace QuantLib {
 
         // the exchange was formally established in 2011, so data are only
         // available from 2012 to present
-        if (y < 2012)
-            QL_FAIL("MOEX calendar for the year " << y
-                    << " does not exist.");
+        if (y < 2012) {
+            QL_FAIL("MOEX calendar for the year " << y << " does not exist.");
+        }
 
-        if (isWorkingWeekend(d,m,y))
+        if (isWorkingWeekend(d, m, y)) {
             return true;
+        }
 
         // Known holidays
         if (isWeekend(w)
@@ -165,14 +161,15 @@ namespace QuantLib {
             // Russia Day
             || (d == 12 && m == June)
             // Unity Day (possibly moved to Monday)
-            || ((d == 4 || ((d == 5 || d == 6) && w == Monday))
-                && m == November)
+            || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) && m == November)
             // New Years Eve
-            || (d == 31 && m == December))
+            || (d == 31 && m == December)) {
             return false;
+        }
 
-        if (isExtraHoliday(d,m,y))
+        if (isExtraHoliday(d, m, y)) {
             return false;
+        }
 
         return true;
     }

@@ -34,8 +34,9 @@ namespace QuantLib {
         std::vector<Time> evolutionTimes =
             exercise_->evolution().evolutionTimes();
         for (Size i=0; i<evolutionTimes.size(); ++i) {
-            if (isExerciseTime_[i])
+            if (isExerciseTime_[i]) {
                 exerciseTimes_.push_back(evolutionTimes[i]);
+            }
         }
     }
 
@@ -54,8 +55,9 @@ namespace QuantLib {
 
     void ParametricExerciseAdapter::nextStep(const CurveState& currentState) {
         exercise_->nextStep(currentState);
-        if (isExerciseTime_[currentStep_])
+        if (isExerciseTime_[currentStep_]) {
             ++currentExercise_;
+        }
         ++currentStep_;
     }
 

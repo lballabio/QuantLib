@@ -68,15 +68,15 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Ascension Thursday
-            || (dd == em+38)
+            || (dd == em + 38)
             // Whit Monday
-            || (dd == em+49)
+            || (dd == em + 49)
             // Corpus Christi
-            || (dd == em+59)
+            || (dd == em + 59)
             // Labour Day
             || (d == 1 && m == May)
             // National Day
@@ -86,8 +86,9 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 
@@ -102,7 +103,7 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Labour Day
@@ -112,8 +113,9 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 
@@ -127,7 +129,7 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Labour Day
@@ -137,8 +139,9 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 
@@ -152,7 +155,7 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Labour Day
@@ -162,8 +165,9 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
     
@@ -177,20 +181,21 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Labour Day
             || (d == 1 && m == May)
             // Whit Monday
-            || (dd == em+49)
+            || (dd == em + 49)
             // Christmas' Eve
             || (d == 24 && m == December)
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 }

@@ -129,9 +129,9 @@ namespace {
                    "bad calibration guess nSwapTenors+1 != x.size()");
         const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
             ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
-        for (Size i = 0; i < nSwapTenors; ++i)
-            volCubeBySabr->recalibration(
-                smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
+        for (Size i = 0; i < nSwapTenors; ++i) {
+            volCubeBySabr->recalibration(smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
+        }
         Real meanReversion =
             smileAndCms_->reversionTransformDirect(x[nSwapTenors]);
         cmsMarket_->reprice(volCube_, meanReversion);
@@ -176,9 +176,9 @@ namespace {
                    "bad calibration guess nSwapTenors != x.size()");
         const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
             ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
-        for (Size i = 0; i < nSwapTenors; ++i)
-            volCubeBySabr->recalibration(
-                smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
+        for (Size i = 0; i < nSwapTenors; ++i) {
+            volCubeBySabr->recalibration(smileAndCms_->betaTransformDirect(x[i]), swapTenors[i]);
+        }
         cmsMarket_->reprice(
             volCube_,
             fixedMeanReversion_ == Null<Real>()
@@ -204,8 +204,9 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (Size j = 0; j < beta.size(); ++j)
+            for (Size j = 0; j < beta.size(); ++j) {
                 beta[j] = smileAndCms_->betaTransformDirect(beta[j]);
+            }
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         Real meanReversion = smileAndCms_->reversionTransformDirect(
@@ -231,8 +232,9 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (Size j = 0; j < beta.size(); ++j)
+            for (Size j = 0; j < beta.size(); ++j) {
                 beta[j] = smileAndCms_->betaTransformDirect(beta[j]);
+            }
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         cmsMarket_->reprice(
@@ -354,8 +356,9 @@ namespace QuantLib {
             Real fixedMeanReversion =
                 isMeanReversionGiven ? guess[nBeta] : Null<Real>();
             Array betasGuess(nBeta);
-            for (Size i = 0; i < nBeta; ++i)
+            for (Size i = 0; i < nBeta; ++i) {
                 betasGuess[i] = guess[i];
+            }
             ObjectiveFunction2 costFunction(
                 this, fixedMeanReversion == Null<Real>()
                           ? Null<Real>()
@@ -365,23 +368,27 @@ namespace QuantLib {
             Array tmp = problem.currentValue();
             error_ = costFunction.value(tmp);
             result = Array(nBeta + (isMeanReversionGiven ? 1 : 0));
-            for (Size i = 0; i < nBeta; ++i)
+            for (Size i = 0; i < nBeta; ++i) {
                 result[i] = betaTransformDirect(tmp[i]);
-            if (isMeanReversionGiven)
+            }
+            if (isMeanReversionGiven) {
                 result[nBeta] = fixedMeanReversion;
+            }
         } else {
             NoConstraint constraint;
             ObjectiveFunction costFunction(this);
             Array betaReversionGuess(nBeta + 1);
-            for (Size i = 0; i < nBeta; ++i)
+            for (Size i = 0; i < nBeta; ++i) {
                 betaReversionGuess[i] = betaTransformInverse(guess[i]);
+            }
             betaReversionGuess[nBeta] = reversionTransformInverse(guess[nBeta]);
             Problem problem(costFunction, constraint, betaReversionGuess);
             endCriteria_ = method->minimize(problem, *endCriteria);
             result = problem.currentValue();
             error_ = costFunction.value(result);
-            for (Size i = 0; i < nBeta; ++i)
+            for (Size i = 0; i < nBeta; ++i) {
                 result[i] = betaTransformDirect(result[i]);
+            }
             result[nBeta] = reversionTransformDirect(result[nBeta]);
         }
         const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =

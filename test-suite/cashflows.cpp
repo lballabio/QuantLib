@@ -49,11 +49,12 @@ void CashFlowsTest::testSettings() {
 
     // cash flows at T+0, T+1, T+2
     std::vector<ext::shared_ptr<CashFlow> > leg;
-    for (Integer i=0; i<3; ++i)
-        leg.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(1.0, today+i)));
+    for (Integer i = 0; i < 3; ++i) {
+        leg.push_back(ext::shared_ptr<CashFlow>(new SimpleCashFlow(1.0, today + i)));
+    }
 
 
-    #define CHECK_INCLUSION(n, days, expected) \
+#define CHECK_INCLUSION(n, days, expected) \
     if ((!leg[n]->hasOccurred(today+days)) != expected) { \
         BOOST_ERROR("cashflow at T+" << n << " " \
                     << (expected ? "not" : "") << "included" \
@@ -235,16 +236,19 @@ void CashFlowsTest::testDefaultSettlementDate() {
               .withPaymentAdjustment(Following);
 
     Time accruedPeriod = CashFlows::accruedPeriod(leg, false);
-    if (accruedPeriod == 0.0)
+    if (accruedPeriod == 0.0) {
         BOOST_ERROR("null accrued period with default settlement date");
+    }
 
     Date::serial_type accruedDays = CashFlows::accruedDays(leg, false);
-    if (accruedDays == 0)
+    if (accruedDays == 0) {
         BOOST_ERROR("no accrued days with default settlement date");
+    }
 
     Real accruedAmount = CashFlows::accruedAmount(leg, false);
-    if (accruedAmount == 0.0)
+    if (accruedAmount == 0.0) {
         BOOST_ERROR("null accrued amount with default settlement date");
+    }
 }
 
 void CashFlowsTest::testNullFixingDays() {
@@ -283,9 +287,11 @@ void CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth() {
     ext::shared_ptr<Coupon> firstCoupon =
         ext::dynamic_pointer_cast<Coupon>(leg.front());
 
-    if (firstCoupon->referencePeriodStart() != Date(31, August, 2016))
+    if (firstCoupon->referencePeriodStart() != Date(31, August, 2016)) {
         BOOST_ERROR("Expected reference start date at end of month, "
-                    "got " << firstCoupon->referencePeriodStart());
+                    "got "
+                    << firstCoupon->referencePeriodStart());
+    }
 }
 
 void CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth() {
@@ -306,9 +312,11 @@ void CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth() {
     ext::shared_ptr<Coupon> lastCoupon =
             ext::dynamic_pointer_cast<Coupon>(leg.back());
 
-    if (lastCoupon->referencePeriodEnd() != Date(31, August, 2018))
+    if (lastCoupon->referencePeriodEnd() != Date(31, August, 2018)) {
         BOOST_ERROR("Expected reference end date at end of month, "
-                            "got " << lastCoupon->referencePeriodEnd());
+                    "got "
+                    << lastCoupon->referencePeriodEnd());
+    }
 }
 
 void CashFlowsTest::testPartialScheduleLegConstruction() {
@@ -424,8 +432,9 @@ test_suite* CashFlowsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
-    if (IborCoupon::usingAtParCoupons())
+    if (IborCoupon::usingAtParCoupons()) {
         suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
+    }
 
     suite->add(QUANTLIB_TEST_CASE(
                              &CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));

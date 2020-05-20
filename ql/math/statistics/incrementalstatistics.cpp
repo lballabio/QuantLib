@@ -127,8 +127,9 @@ namespace QuantLib {
         QL_REQUIRE(valueWeight >= 0.0, "negative weight (" << valueWeight
                                                            << ") not allowed");
         acc_(value, boost::accumulators::weight = valueWeight);
-        if(value < 0.0)
+        if (value < 0.0) {
             downsideAcc_(value, boost::accumulators::weight = valueWeight);
+        }
     }
 
     void IncrementalStatistics::reset() {

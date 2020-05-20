@@ -232,8 +232,9 @@ namespace QuantLib {
 
     inline void DefaultProbabilityTermStructure::update() {
         TermStructure::update();
-        if (referenceDate() != latestReference_)
+        if (referenceDate() != latestReference_) {
             setJumps();
+        }
     }
 
 }

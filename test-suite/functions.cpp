@@ -36,19 +36,19 @@ void FunctionsTest::testFactorial() {
 
     Real expected = 1.0;
     Real calculated = Factorial::get(0);
-    if (calculated!=expected)
+    if (calculated != expected) {
         BOOST_FAIL("Factorial(0) = " << calculated);
+    }
 
     for (Natural i=1; i<171; ++i) {
         expected *= i;
         calculated = Factorial::get(i);
-        if (std::fabs(calculated-expected)/expected > 1.0e-9)
-            BOOST_FAIL("Factorial(" << i << ")" <<
-                       std::setprecision(16) << std::scientific <<
-                       "\n calculated: " << calculated <<
-                       "\n   expected: " << expected <<
-                       "\n rel. error: " <<
-                       std::fabs(calculated-expected)/expected);
+        if (std::fabs(calculated - expected) / expected > 1.0e-9) {
+            BOOST_FAIL("Factorial("
+                       << i << ")" << std::setprecision(16) << std::scientific
+                       << "\n calculated: " << calculated << "\n   expected: " << expected
+                       << "\n rel. error: " << std::fabs(calculated - expected) / expected);
+        }
     }
 }
 
@@ -58,22 +58,24 @@ void FunctionsTest::testGammaFunction() {
 
     Real expected = 0.0;
     Real calculated = GammaFunction().logValue(1);
-    if (std::fabs(calculated) > 1.0e-15)
+    if (std::fabs(calculated) > 1.0e-15) {
         BOOST_ERROR("GammaFunction(1)\n"
-                    << std::setprecision(16) << std::scientific
-                    << "    calculated: " << calculated << "\n"
+                    << std::setprecision(16) << std::scientific << "    calculated: " << calculated
+                    << "\n"
                     << "    expected:   " << expected);
+    }
 
     for (Size i=2; i<9000; i++) {
         expected  += std::log(Real(i));
         calculated = GammaFunction().logValue(static_cast<Real>(i+1));
-        if (std::fabs(calculated-expected)/expected > 1.0e-9)
-            BOOST_ERROR("GammaFunction(" << i << ")\n"
+        if (std::fabs(calculated - expected) / expected > 1.0e-9) {
+            BOOST_ERROR("GammaFunction("
+                        << i << ")\n"
                         << std::setprecision(16) << std::scientific
                         << "    calculated: " << calculated << "\n"
                         << "    expected:   " << expected << "\n"
-                        << "    rel. error: "
-                        << std::fabs(calculated-expected)/expected);
+                        << "    rel. error: " << std::fabs(calculated - expected) / expected);
+        }
     }
 }
 

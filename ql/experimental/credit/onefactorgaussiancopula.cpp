@@ -26,11 +26,13 @@ namespace QuantLib {
     //-----------------------------------------------------------------------
         Real c = correlation_->value();
 
-        if (c == 0)
+        if (c == 0) {
             return CumulativeNormalDistribution()(y);
+        }
 
-        if (c == 1)
+        if (c == 1) {
             return CumulativeNormalDistribution()(y);
+        }
 
         NormalDistribution dz;
         NormalDistribution dm;
@@ -44,18 +46,21 @@ namespace QuantLib {
         if (c < 0.5) {
             // outer integral -> 1 for c -> 0
             // inner integral -> CumulativeNormal()(y) for c-> 0
-            for (Real m = minimum; m < maximum; m += delta)
-                for (Real z = minimum; z < (y - std::sqrt(c) * m) / std::sqrt (1. - c);
-                     z += delta)
-                    cumulated += dm (m) * dz (z);
+            for (Real m = minimum; m < maximum; m += delta) {
+                for (Real z = minimum; z < (y - std::sqrt(c) * m) / std::sqrt(1. - c); z += delta) {
+                    cumulated += dm(m) * dz(z);
+                }
+            }
         }
         else {
             // outer integral -> 1 for c -> 1
             // inner integral -> CumulativeNormal()(y) for c-> 1
-            for (Real z = minimum; z < maximum; z += delta)
+            for (Real z = minimum; z < maximum; z += delta) {
                 for (Real m = minimum; m < (y - std::sqrt(1.0 - c) * z) / std::sqrt(c);
-                     m += delta)
-                    cumulated += dm (m) * dz (z);
+                     m += delta) {
+                    cumulated += dm(m) * dz(z);
+                }
+            }
         }
         cumulated *= (delta * delta);
 

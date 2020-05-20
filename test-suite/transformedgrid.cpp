@@ -42,8 +42,9 @@ void TransformedGridTest::testConstruction() {
         BOOST_ERROR("grid creation failed");
     }
 
-    if (std::fabs(tg.transformedGrid(0) - 1.0) > 1e-5)
+    if (std::fabs(tg.transformedGrid(0) - 1.0) > 1e-5) {
         BOOST_ERROR("grid transformation failed");
+    }
 }
 
 test_suite* TransformedGridTest::suite() {

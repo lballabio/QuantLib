@@ -69,8 +69,11 @@ namespace QuantLib {
         QL_REQUIRE(fixedSchedule_.size()>0,"empty fixed schedule");
         // \todo if roll!=unadjusted then need calendars ...
 
-        if (inflationNominal==Null<Real>()) inflationNominal_ = nominal_;
-        else inflationNominal_ = inflationNominal;
+        if (inflationNominal == Null<Real>()) {
+            inflationNominal_ = nominal_;
+        } else {
+            inflationNominal_ = inflationNominal;
+        }
 
         Leg floatingLeg;
         if (floatSchedule_.size() > 1) {
@@ -143,7 +146,9 @@ namespace QuantLib {
         CPISwap::arguments* arguments =
         dynamic_cast<CPISwap::arguments*>(args);
 
-        if (!arguments) return; // it's a swap engine...
+        if (!arguments) {
+            return; // it's a swap engine...
+        }
     }
 
 
@@ -199,13 +204,15 @@ namespace QuantLib {
 
         if (fairRate_ == Null<Rate>()) {
             // calculate it from other results
-            if (legBPS_[0] != Null<Real>())
-                fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
+            if (legBPS_[0] != Null<Real>()) {
+                fairRate_ = fixedRate_ - NPV_ / (legBPS_[0] / basisPoint);
+            }
         }
         if (fairSpread_ == Null<Spread>()) {
             // ditto
-            if (legBPS_[1] != Null<Real>())
-                fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+            if (legBPS_[1] != Null<Real>()) {
+                fairSpread_ = spread_ - NPV_ / (legBPS_[1] / basisPoint);
+            }
         }
 
     }

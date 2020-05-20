@@ -31,8 +31,9 @@ namespace QuantLib {
     }
 
     Real NonCentralCumulativeChiSquareDistribution::operator()(Real x) const {
-        if (x <= 0.0)
+        if (x <= 0.0) {
             return 0.0;
+        }
 
         const Real errmax = 1e-12;
         const Size itrmax = 10000;
@@ -76,16 +77,20 @@ namespace QuantLib {
                 n++;
                 f_2n += 2.0;
                 f_x_2n += 2.0;
-                if (!flag && n <= itrmax)
+                if (!flag && n <= itrmax) {
                     break;
+                }
             L10:
                 bound = t * x / f_x_2n;
-                if (bound <= errmax || n > itrmax)
+                if (bound <= errmax || n > itrmax) {
                     goto L_End;
+                }
             }
         }
     L_End:
-        if (bound > errmax) QL_FAIL("didn't converge");
+        if (bound > errmax) {
+            QL_FAIL("didn't converge");
+        }
         return (ans);
 
     }

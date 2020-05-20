@@ -49,16 +49,17 @@ namespace QuantLib {
                     "size mismatch of the interpolation data");
 
                 polynomials_.reserve(this->zData_.columns());
-                for (Size i=0; i<(this->zData_.columns()); ++i)
-                    polynomials_.push_back(Parabolic(
-                        this->yBegin_, this->yEnd_,
-                        this->zData_.column_begin(i)));
+                for (Size i = 0; i < (this->zData_.columns()); ++i) {
+                    polynomials_.push_back(
+                        Parabolic(this->yBegin_, this->yEnd_, this->zData_.column_begin(i)));
+                }
             }
             Real value(Real x,
                        Real y) const {
                 std::vector<Real> section(polynomials_.size());
-                for (Size i=0; i<polynomials_.size(); ++i)
+                for (Size i = 0; i < polynomials_.size(); ++i) {
                     section[i] = polynomials_[i](y, true);
+                }
 
                 QL_REQUIRE(section.size() == this->xEnd_ - this->xBegin_,
                            "size mismatch of the interpolation data");

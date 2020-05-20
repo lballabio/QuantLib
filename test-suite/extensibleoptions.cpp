@@ -76,11 +76,11 @@ void ExtensibleOptionsTest::testAnalyticHolderExtensibleOptionEngine() {
     Real expected = 9.4233;
     Real error = std::fabs(calculated-expected);
     Real tolerance = 1e-4;
-    if (error > tolerance)
+    if (error > tolerance) {
         BOOST_ERROR("Failed to reproduce holder-extensible option value"
-                    << "\n    expected:   " << expected
-                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected << "\n    calculated: " << calculated
                     << "\n    error:      " << error);
+    }
 }
 
 
@@ -141,11 +141,11 @@ void ExtensibleOptionsTest::testAnalyticWriterExtensibleOptionEngine() {
     Real expected = 6.8238;
     Real error = std::fabs(calculated-expected);
     Real tolerance = 1e-4;
-    if (error > tolerance)
+    if (error > tolerance) {
         BOOST_ERROR("Failed to reproduce writer-extensible option value"
-                    << "\n    expected:   " << expected
-                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected << "\n    calculated: " << calculated
                     << "\n    error:      " << error);
+    }
 }
 
 test_suite* ExtensibleOptionsTest::suite() {

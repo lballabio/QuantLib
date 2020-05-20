@@ -43,8 +43,9 @@ namespace QuantLib {
             Real unCor = 1 - rho*rho;
             Real sub = std::pow(h - rho * k, 2);
             Real denom = sub + unCor * (m + k*k);
-            if (denom < epsilon)
+            if (denom < epsilon) {
                 return 0.0; // limit case for rho = +/-1.0
+            }
             return sub / (sub + unCor * (m + k*k));
         }
 

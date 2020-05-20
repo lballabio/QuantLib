@@ -77,14 +77,17 @@ namespace QuantLib {
         lossProbability =  0.0;
         exhaustionProbability = 0.0;
         expectedLoss = 0.0;
-        if (arguments_.cashflows.empty())
+        if (arguments_.cashflows.empty()) {
             return 0.0;
+        }
 
-        if (settlementDate == Date())
+        if (settlementDate == Date()) {
             settlementDate = Settings::instance().evaluationDate();
+        }
 
-        if (npvDate == Date())
+        if (npvDate == Date()) {
             npvDate = settlementDate;
+        }
 
         Real totalNPV = 0.0;
         Date effectiveDate = std::max(arguments_.startDate, settlementDate);
@@ -100,8 +103,9 @@ namespace QuantLib {
             if(notionalPath.loss()>0) { //optimization, most paths will not include any loss
                 totalNPV += pathNpv(includeSettlementDateFlows, settlementDate, notionalPath);
                 lossProbability+=1;
-                if (notionalPath.loss()==1) 
-                    exhaustionProbability+=1;
+                if (notionalPath.loss() == 1) {
+                    exhaustionProbability += 1;
+                }
                 expectedLoss+=notionalPath.loss();
             } else {
                 totalNPV += riskFreeNPV;

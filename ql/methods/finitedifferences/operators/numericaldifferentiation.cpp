@@ -45,17 +45,20 @@ namespace QuantLib {
               case NumericalDifferentiation::Central:
                 QL_REQUIRE(n > 2 && (n % 2),
                     "number of steps must be an odd number greater than two");
-                for (Integer i=0; i < Integer(n); ++i)
-                    retVal[i] = (i-Integer(n)/2)*h;
+                for (Integer i = 0; i < Integer(n); ++i) {
+                    retVal[i] = (i - Integer(n) / 2) * h;
+                }
                 break;
               case NumericalDifferentiation::Backward:
-                for (Size i=0; i < n; ++i)
-                    retVal[i]=-(i*h);
-                break;
+                  for (Size i = 0; i < n; ++i) {
+                      retVal[i] = -(i * h);
+                  }
+                  break;
               case NumericalDifferentiation::Forward:
-                for (Size i=0; i < n; ++i)
-                    retVal[i]=i*h;
-                break;
+                  for (Size i = 0; i < n; ++i) {
+                      retVal[i] = i * h;
+                  }
+                  break;
               default:
                 QL_FAIL("unknown numerical differentiation scheme");
             }

@@ -53,73 +53,63 @@ namespace QuantLib {
         // checks
         if (isWeekend(w)
             // New Year's Day
-            || (d == 1  && m == January)
+            || (d == 1 && m == January)
             // Bank Holiday
-            || (d == 2  && m == January)
+            || (d == 2 && m == January)
             // Bank Holiday
-            || (d == 3  && m == January)
+            || (d == 3 && m == January)
             // Coming of Age Day (2nd Monday in January),
             // was January 15th until 2000
-            || (w == Monday && (d >= 8 && d <= 14) && m == January
-                && y >= 2000)
-            || ((d == 15 || (d == 16 && w == Monday)) && m == January
-                && y < 2000)
+            || (w == Monday && (d >= 8 && d <= 14) && m == January && y >= 2000) ||
+            ((d == 15 || (d == 16 && w == Monday)) && m == January && y < 2000)
             // National Foundation Day
             || ((d == 11 || (d == 12 && w == Monday)) && m == February)
             // Emperor's Birthday (Emperor Naruhito)
-            || ((d == 23 || (d == 24 && w == Monday)) && m == February
-                && y >= 2020)
+            || ((d == 23 || (d == 24 && w == Monday)) && m == February && y >= 2020)
             // Emperor's Birthday (Emperor Akihito)
-            || ((d == 23 || (d == 24 && w == Monday)) && m == December
-                && (y >= 1989 && y < 2019))
+            || ((d == 23 || (d == 24 && w == Monday)) && m == December && (y >= 1989 && y < 2019))
             // Vernal Equinox
-            || ((d == ve || (d == ve+1 && w == Monday)) && m == March)
+            || ((d == ve || (d == ve + 1 && w == Monday)) && m == March)
             // Greenery Day
             || ((d == 29 || (d == 30 && w == Monday)) && m == April)
             // Constitution Memorial Day
-            || (d == 3  && m == May)
+            || (d == 3 && m == May)
             // Holiday for a Nation
-            || (d == 4  && m == May)
+            || (d == 4 && m == May)
             // Children's Day
-            || (d == 5  && m == May)
+            || (d == 5 && m == May)
             // any of the three above observed later if on Saturday or Sunday
-            || (d == 6 && m == May
-                && (w == Monday || w == Tuesday || w == Wednesday))
+            || (d == 6 && m == May && (w == Monday || w == Tuesday || w == Wednesday))
             // Marine Day (3rd Monday in July),
             // was July 20th until 2003, not a holiday before 1996,
             // July 23rd in 2020 due to Olympics games
-            || (w == Monday && (d >= 15 && d <= 21) && m == July
-                && ((y >= 2003 && y < 2020) || y >= 2021))
-            || ((d == 20 || (d == 21 && w == Monday)) && m == July
-                && y >= 1996 && y < 2003)
-            || (d == 23 && m == July && y == 2020)
+            || (w == Monday && (d >= 15 && d <= 21) && m == July &&
+                ((y >= 2003 && y < 2020) || y >= 2021)) ||
+            ((d == 20 || (d == 21 && w == Monday)) && m == July && y >= 1996 && y < 2003) ||
+            (d == 23 && m == July && y == 2020)
             // Mountain Day
             // (moved in 2020 due to Olympics games)
-            || ((d == 11 || (d == 12 && w == Monday)) && m == August
-                && ((y >= 2016 && y < 2020) || y >= 2021))
-            || (d == 10 && m == August && y == 2020)
+            || ((d == 11 || (d == 12 && w == Monday)) && m == August &&
+                ((y >= 2016 && y < 2020) || y >= 2021)) ||
+            (d == 10 && m == August && y == 2020)
             // Respect for the Aged Day (3rd Monday in September),
             // was September 15th until 2003
-            || (w == Monday && (d >= 15 && d <= 21) && m == September
-                && y >= 2003)
-            || ((d == 15 || (d == 16 && w == Monday)) && m == September
-                && y < 2003)
+            || (w == Monday && (d >= 15 && d <= 21) && m == September && y >= 2003) ||
+            ((d == 15 || (d == 16 && w == Monday)) && m == September && y < 2003)
             // If a single day falls between Respect for the Aged Day
             // and the Autumnal Equinox, it is holiday
-            || (w == Tuesday && d+1 == ae && d >= 16 && d <= 22
-                && m == September && y >= 2003)
+            || (w == Tuesday && d + 1 == ae && d >= 16 && d <= 22 && m == September && y >= 2003)
             // Autumnal Equinox
-            || ((d == ae || (d == ae+1 && w == Monday)) && m == September)
+            || ((d == ae || (d == ae + 1 && w == Monday)) && m == September)
             // Health and Sports Day (2nd Monday in October),
             // was October 10th until 2000,
             // July 24th in 2020 due to Olympics games
-            || (w == Monday && (d >= 8 && d <= 14) && m == October
-                && ((y >= 2000 && y < 2020) || y >= 2021))
-            || ((d == 10 || (d == 11 && w == Monday)) && m == October
-                && y < 2000)
-            || (d == 24 && m == July && y == 2020)
+            || (w == Monday && (d >= 8 && d <= 14) && m == October &&
+                ((y >= 2000 && y < 2020) || y >= 2021)) ||
+            ((d == 10 || (d == 11 && w == Monday)) && m == October && y < 2000) ||
+            (d == 24 && m == July && y == 2020)
             // National Culture Day
-            || ((d == 3  || (d == 4 && w == Monday)) && m == November)
+            || ((d == 3 || (d == 4 && w == Monday)) && m == November)
             // Labor Thanksgiving Day
             || ((d == 23 || (d == 24 && w == Monday)) && m == November)
             // Bank Holiday
@@ -140,8 +130,9 @@ namespace QuantLib {
             // Special holiday based on Japanese public holidays law
             || (d == 2 && m == May && y == 2019)
             // Enthronement Ceremony (Emperor Naruhito)
-            || (d == 22 && m == October && y == 2019))
+            || (d == 22 && m == October && y == 2019)) {
             return false;
+        }
         return true;
     }
 

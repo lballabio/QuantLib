@@ -204,8 +204,9 @@ void HestonModelTest::testBlackCalibration() {
         ext::shared_ptr<PricingEngine> engine(
             ext::make_shared<AnalyticHestonEngine>(model, 96));
 
-        for (Size i = 0; i < options.size(); ++i)
+        for (Size i = 0; i < options.size(); ++i) {
             ext::dynamic_pointer_cast<BlackCalibrationHelper>(options[i])->setPricingEngine(engine);
+        }
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
         model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8,
@@ -276,8 +277,10 @@ void HestonModelTest::testDAXCalibration() {
     const Array params = model->params();
     for (Size j=0; j < LENGTH(engines); ++j) {
         model->setParams(params);
-        for (Size i = 0; i < options.size(); ++i)
-            ext::dynamic_pointer_cast<BlackCalibrationHelper>(options[i])->setPricingEngine(engines[j]);
+        for (Size i = 0; i < options.size(); ++i) {
+            ext::dynamic_pointer_cast<BlackCalibrationHelper>(options[i])
+                ->setPricingEngine(engines[j]);
+        }
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
         model->calibrate(options, om,
@@ -1222,8 +1225,9 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
     for (Size j=0; j < LENGTH(engines); ++j) {
         const ext::shared_ptr<PricingEngine> engine = engines[j];
 
-        for (Size i=0; i < options.size(); ++i)
+        for (Size i = 0; i < options.size(); ++i) {
             ext::dynamic_pointer_cast<BlackCalibrationHelper>(options[i])->setPricingEngine(engine);
+        }
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
         model->calibrate(options, om,
@@ -1628,8 +1632,9 @@ namespace {
         bool isAdaptive, Real expected, Real tol, Size valuations,
         std::string method) {
 
-        if (integration.isAdaptiveIntegration() != isAdaptive)
+        if (integration.isAdaptiveIntegration() != isAdaptive) {
             BOOST_ERROR(method << " is not an adaptive integration routine");
+        }
 
         const ext::shared_ptr<AnalyticHestonEngine> engine =
             ext::make_shared<AnalyticHestonEngine>(
@@ -1869,7 +1874,9 @@ namespace {
             Size n, Time t,
             const ext::shared_ptr<COSHestonEngine>& engine)
         : t_(t), alpha_(0.0, 1.0), engine_(engine) {
-            for (Size i=1; i < n; ++i, alpha_*=std::complex<Real>(0,1));
+            for (Size i = 1; i < n; ++i, alpha_ *= std::complex<Real>(0, 1)) {
+                ;
+            }
         }
 
         Real operator()(Real u) const {
@@ -2400,10 +2407,11 @@ void HestonModelTest::testAndersenPiterbargConvergence() {
             AnalyticHestonEngine::Integration::discreteTrapezoid(n), 1e-13));
 
         const Real calculatedDiff = std::fabs(option.NPV()-reference);
-        if (calculatedDiff > 1.25*diffs[n/10-1])
+        if (calculatedDiff > 1.25 * diffs[n / 10 - 1]) {
             BOOST_ERROR("failed to prove convergence for trapezoid rule "
-                    << "\n  calculated difference: " << calculatedDiff
-                    << "\n  expected difference:   " << diffs[n/10-1]);
+                        << "\n  calculated difference: " << calculatedDiff
+                        << "\n  expected difference:   " << diffs[n / 10 - 1]);
+        }
     }
 }
 
@@ -2458,11 +2466,11 @@ void HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF() {
                 const std::complex<Real> a = analyticEngine->chF(z, t);
                 const std::complex<Real> b = ptdHestonEngine->chF(z, t);
 
-                if (std::abs(a-b) > tol)
+                if (std::abs(a - b) > tol) {
                     BOOST_ERROR("failed to compare characteristic function "
-                            << "\n  time dependent model: " << b
-                            << "\n  Heston model        : " << a
-                            << "\n  Difference          : " << std::abs(a-b));
+                                << "\n  time dependent model: " << b << "\n  Heston model        : "
+                                << a << "\n  Difference          : " << std::abs(a - b));
+                }
             }
         }
     }
@@ -2530,12 +2538,13 @@ void HestonModelTest::testPiecewiseTimeDependentComparison() {
     option.setPricingEngine(ptdAPEngine);
     const Real calculatedAndersenPiterbarg = option.NPV();
 
-    if (std::fabs(calculatedGatheral - calculatedAndersenPiterbarg) > 1e-10)
+    if (std::fabs(calculatedGatheral - calculatedAndersenPiterbarg) > 1e-10) {
         BOOST_ERROR("failed to reproduce npv for time dependent Heston model "
-                << "\n  Gatheral ChF         : " << calculatedGatheral
-                << "\n  AndersenPiterbarg ChF: " << calculatedAndersenPiterbarg
-                << "\n  Difference          : "
-                << std::fabs(calculatedGatheral - calculatedAndersenPiterbarg));
+                    << "\n  Gatheral ChF         : " << calculatedGatheral
+                    << "\n  AndersenPiterbarg ChF: " << calculatedAndersenPiterbarg
+                    << "\n  Difference          : "
+                    << std::fabs(calculatedGatheral - calculatedAndersenPiterbarg));
+    }
 
     const ext::shared_ptr<HestonProcess> firstPartProcess(
         ext::make_shared<HestonProcess>(
@@ -2599,13 +2608,12 @@ void HestonModelTest::testPiecewiseTimeDependentComparison() {
     const Real calculatedMC = stat.mean();
     const Real errorEstimate = stat.errorEstimate();
 
-    if (std::fabs(calculatedMC - calculatedGatheral) > 3.0*errorEstimate)
+    if (std::fabs(calculatedMC - calculatedGatheral) > 3.0 * errorEstimate) {
         BOOST_ERROR("failed to reproduce npv for time dependent Heston model"
-                << "\n  Gatheral ChF     : " << calculatedGatheral
-                << "\n  Monte-Carlo      : " << calculatedMC
-                << "\n  Monte-Carlo error: " << errorEstimate
-                << "\n  Difference       : "
-                << std::fabs(calculatedGatheral - calculatedMC));
+                    << "\n  Gatheral ChF     : " << calculatedGatheral << "\n  Monte-Carlo      : "
+                    << calculatedMC << "\n  Monte-Carlo error: " << errorEstimate
+                    << "\n  Difference       : " << std::fabs(calculatedGatheral - calculatedMC));
+    }
 }
 
 void HestonModelTest::testPiecewiseTimeDependentChFAsymtotic() {
@@ -3066,16 +3074,17 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
                 const Real calculated = option.NPV();
 
                 Real expected;
-                if (payoff->optionType() == Option::Call)
-                    if (fwd < strike)
+                if (payoff->optionType() == Option::Call) {
+                    if (fwd < strike) {
                         expected = referenceValues[idx];
-                    else
-                        expected = (fwd - strike)*df + referenceValues[idx];
-                else
-                    if (fwd > strike)
-                        expected = referenceValues[idx];
-                    else
-                        expected = referenceValues[idx] - (fwd - strike)*df;
+                    } else {
+                        expected = (fwd - strike) * df + referenceValues[idx];
+                    }
+                } else if (fwd > strike) {
+                    expected = referenceValues[idx];
+                } else {
+                    expected = referenceValues[idx] - (fwd - strike) * df;
+                }
 
                 const Real diff = std::fabs(calculated - expected);
                 if (diff > 1e-12) {

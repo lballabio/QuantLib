@@ -35,8 +35,9 @@ namespace QuantLib {
                            const F& objectiveFunction) {
             Real W = 0.5*(3.0-std::sqrt(5.0));
             Real x = W*low+(1-W)*high;
-            if (mid > low && mid < high)
+            if (mid > low && mid < high) {
                 x = mid;
+            }
 
             Real midValue = objectiveFunction(x);
 
@@ -90,17 +91,17 @@ namespace QuantLib {
          QL_REQUIRE(alpha>0,
                    "cylinder centre must have positive coordinate");
 
-        if (std::fabs(alpha-s) > r )
-            nonEmpty_=false;
-        else
-            nonEmpty_=true;
+         if (std::fabs(alpha - s) > r) {
+             nonEmpty_ = false;
+         } else {
+             nonEmpty_ = true;
+         }
 
-        Real cylinderInside = r*r - (s + alpha)*(s+alpha);
+         Real cylinderInside = r * r - (s + alpha) * (s + alpha);
 
-        if (cylinderInside >0.0)
-        {
-            topValue_ = alpha+s;
-            bottomValue_ = alpha-s;
+         if (cylinderInside > 0.0) {
+             topValue_ = alpha + s;
+             bottomValue_ = alpha - s;
         }
         else
         {
@@ -211,10 +212,11 @@ namespace QuantLib {
         QL_REQUIRE(optimizer.isIntersectionNonEmpty(),
                    "intersection empty so no solution");
 
-        if (maxIterations ==0)
+        if (maxIterations == 0) {
             optimizer.findByProjection(y[0], y[1], y[2]);
-        else
+        } else {
             optimizer.findClosest(maxIterations, tolerance, y[0], y[1], y[2]);
+        }
 
         return y;
      }

@@ -57,7 +57,9 @@ namespace QuantLib {
         void reset(const Interpolation &interp) {
             ext::shared_ptr<InterpolationParameter::Impl> impl =
                 ext::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_);
-            if (impl) impl->reset(interp);
+            if (impl) {
+                impl->reset(interp);
+            }
         }
     };
 
@@ -183,24 +185,29 @@ namespace QuantLib {
                 "mean reversion inputs inconsistent");
             QL_REQUIRE(volstructure.size()==vol.size(),
                 "volatility inputs inconsistent");
-            if (!f_)
+            if (!f_) {
                 f_ = identity;
-            if (!fInverse_)
+            }
+            if (!fInverse_) {
                 fInverse_ = identity;
+            }
 
             DayCounter dc = yieldtermStructure->dayCounter();
             Date ref = yieldtermStructure->referenceDate();
-            for (Size i=0;i<speedstructure.size();i++)
-                speedperiods_.push_back(dc.yearFraction(ref,speedstructure[i]));
-            for (Size i=0;i<volstructure.size();i++)
-                volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
+            for (Size i = 0; i < speedstructure.size(); i++) {
+                speedperiods_.push_back(dc.yearFraction(ref, speedstructure[i]));
+            }
+            for (Size i = 0; i < volstructure.size(); i++) {
+                volperiods_.push_back(dc.yearFraction(ref, volstructure[i]));
+            }
 
             // interpolator x points to *periods_ vector, y points to
             // the internal Array in the parameter
             InterpolationParameter atemp(speedperiods_.size(), NoConstraint());
             a_ = atemp;
-            for (Size i=0; i<speedperiods_.size(); i++)
+            for (Size i = 0; i < speedperiods_.size(); i++) {
                 a_.setParam(i, speed[i]);
+            }
             speed_ = speedtraits.interpolate(speedperiods_.begin(),
                 speedperiods_.end(),a_.params().begin());
             speed_.enableExtrapolation();
@@ -208,8 +215,9 @@ namespace QuantLib {
 
             InterpolationParameter sigmatemp(volperiods_.size(), PositiveConstraint());
             sigma_ = sigmatemp;
-            for (Size i=0; i<volperiods_.size(); i++)
+            for (Size i = 0; i < volperiods_.size(); i++) {
                 sigma_.setParam(i, vol[i]);
+            }
             vol_ = voltraits.interpolate(volperiods_.begin(),
                 volperiods_.end(),sigma_.params().begin());
             vol_.enableExtrapolation();
@@ -372,10 +380,12 @@ namespace QuantLib {
                 }
             }
             Real value(Real x) const {
-                if (x <= this->xMin())
+                if (x <= this->xMin()) {
                     return this->yBegin_[0];
-                if (x >= this->xMax())
-                    return *(this->yBegin_+(this->xEnd_-this->xBegin_)-1);
+                }
+                if (x >= this->xMax()) {
+                    return *(this->yBegin_ + (this->xEnd_ - this->xBegin_) - 1);
+                }
                 Size i = this->locate(x);
                 return this->yBegin_[i] + (x-this->xBegin_[i])*s_[i];
             }
@@ -386,8 +396,9 @@ namespace QuantLib {
                     dx*(this->yBegin_[i] + 0.5*dx*s_[i]);
             }
             Real derivative(Real x) const {
-                if (!this->isInRange(x))
+                if (!this->isInRange(x)) {
                     return 0;
+                }
                 Size i = this->locate(x);
                 return s_[i];
             }

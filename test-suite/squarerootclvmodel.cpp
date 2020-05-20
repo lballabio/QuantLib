@@ -226,8 +226,9 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
 
     std::vector<Date> calibrationDates(1, todaysDate + Period(3, Months));
     calibrationDates.reserve(Size(daysBetween(todaysDate, maturityDate)/7 + 1));
-    while (calibrationDates.back() < maturityDate)
+    while (calibrationDates.back() < maturityDate) {
         calibrationDates.push_back(calibrationDates.back() + Period(1, Weeks));
+    }
 
     // sqrt process
     const Real kappa       = 1.0;
@@ -318,8 +319,9 @@ namespace square_root_clv_model {
             const Array diff = values(params);
 
             Real retVal = 0.0;
-            for (Size i=0; i < diff.size(); ++i)
-                retVal += diff[i]*diff[i];
+            for (Size i = 0; i < diff.size(); ++i) {
+                retVal += diff[i] * diff[i];
+            }
 
             return retVal;
         }
@@ -538,8 +540,9 @@ void SquareRootCLVModelTest::testForwardSkew() {
             spot, qTS, rTS, blackVol));
 
     std::vector<Date> calibrationDates(1, todaysDate + Period(6, Months));
-    while (calibrationDates.back() < endDate)
+    while (calibrationDates.back() < endDate) {
         calibrationDates.push_back(calibrationDates.back() + Period(3, Months));
+    }
 
     std::set<Date> clvCalibrationDates(
         calibrationDates.begin(), calibrationDates.end());
@@ -571,9 +574,9 @@ void SquareRootCLVModelTest::testForwardSkew() {
 
     // forward skew of the Heston-SLV model
     std::vector<Time> mandatoryTimes;
-    for (Size i=0, n = calibrationDates.size(); i < n; ++i)
-        mandatoryTimes.push_back(
-            dc.yearFraction(todaysDate, calibrationDates[i]));
+    for (Size i = 0, n = calibrationDates.size(); i < n; ++i) {
+        mandatoryTimes.push_back(dc.yearFraction(todaysDate, calibrationDates[i]));
+    }
 
     const Size tSteps = 200;
     const TimeGrid grid(mandatoryTimes.begin(), mandatoryTimes.end(), tSteps);

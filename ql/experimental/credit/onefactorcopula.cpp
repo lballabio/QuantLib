@@ -28,7 +28,9 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         calculate ();
         // FIXME
-        if (p < 1e-10) return 0;
+        if (p < 1e-10) {
+            return 0;
+        }
 
         Real c = correlation_->value();
 
@@ -48,8 +50,9 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         calculate ();
         vector<Real> p (prob.size(), 0);
-        for (Size i = 0; i < p.size(); i++)
-            p[i] = conditionalProbability (prob[i], m);
+        for (Size i = 0; i < p.size(); i++) {
+            p[i] = conditionalProbability(prob[i], m);
+        }
         return p;
     }
 
@@ -61,14 +64,15 @@ namespace QuantLib {
         QL_REQUIRE (y_.size() > 0, "cumulative Y not tabulated yet");
 
         // linear interpolation on the tabulated cumulative distribution of Y
-        if (y < y_.front())
+        if (y < y_.front()) {
             return cumulativeY_.front();
+        }
 
         for (Size i = 0; i < y_.size(); i++) {
-            if (y_[i] > y)
-                return (   (y_[i] - y)   * cumulativeY_[i-1]
-                           + (y - y_[i-1]) * cumulativeY_[i]   )
-                    / (y_[i] - y_[i-1]);
+            if (y_[i] > y) {
+                return ((y_[i] - y) * cumulativeY_[i - 1] + (y - y_[i - 1]) * cumulativeY_[i]) /
+                       (y_[i] - y_[i - 1]);
+            }
         }
 
         return cumulativeY_.back();
@@ -82,14 +86,15 @@ namespace QuantLib {
         QL_REQUIRE (y_.size() > 0, "cumulative Y not tabulated yet");
 
         // linear interpolation on the tabulated cumulative distribution of Y
-        if (x < cumulativeY_.front())
+        if (x < cumulativeY_.front()) {
             return y_.front();
+        }
 
         for (Size i = 0; i < cumulativeY_.size(); i++) {
-            if (cumulativeY_[i] > x)
-                return (   (cumulativeY_[i] - x)   * y_[i-1]
-                           + (x - cumulativeY_[i-1]) * y_[i]   )
-                    / (cumulativeY_[i] - cumulativeY_[i-1]);
+            if (cumulativeY_[i] > x) {
+                return ((cumulativeY_[i] - x) * y_[i - 1] + (x - cumulativeY_[i - 1]) * y_[i]) /
+                       (cumulativeY_[i] - cumulativeY_[i - 1]);
+            }
         }
 
         return y_.back();

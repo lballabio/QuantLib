@@ -142,8 +142,9 @@ namespace QuantLib {
         std::transform(lgd.begin(), lgd.end(), notionals_.begin(), 
                        lgd.begin(), std::multiplies<Real>());
         std::vector<Real> prob = basket_->remainingProbabilities(d);
-        for(Size iName=0; iName<prob.size(); iName++)
+        for (Size iName = 0; iName < prob.size(); iName++) {
             prob[iName] = copula_->inverseCumulativeY(prob[iName], iName);
+        }
 
         // integrate locally (1 factor). 
         // use explicitly a 1D latent model object? 
@@ -154,16 +155,17 @@ namespace QuantLib {
         std::vector<Real> mkft(1, min_ + delta_ /2.);
         for (Size i = 0; i < nSteps_; i++) {
             std::vector<Real> conditionalProbs;
-            for(Size iName=0; iName<notionals_.size(); iName++)
+            for (Size iName = 0; iName < notionals_.size(); iName++) {
                 conditionalProbs.push_back(
-                copula_->conditionalDefaultProbabilityInvP(prob[iName], iName, 
-                    mkft));
+                    copula_->conditionalDefaultProbabilityInvP(prob[iName], iName, mkft));
+            }
             Distribution bld = bucktLDistBuff(lgd, conditionalProbs);
             Real densitydm = delta_ * copula_->density(mkft);
             // also, instead of calling the static method it could be wrapped 
             // through an inlined call in the latent model
-            for (Size j = 0; j < nBuckets_; j++)
+            for (Size j = 0; j < nBuckets_; j++) {
                 dist.addDensity(j, bld.density(j) * densitydm);
+            }
             mkft[0] += delta_;
         }
         return dist;

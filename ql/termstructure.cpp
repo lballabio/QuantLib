@@ -55,8 +55,9 @@ namespace QuantLib {
     }
 
     void TermStructure::update() {
-        if (moving_)
+        if (moving_) {
             updated_ = false;
+        }
         notifyObservers();
     }
 

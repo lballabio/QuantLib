@@ -39,8 +39,9 @@ namespace QuantLib {
                    "swapTriggers/exerciseTimes mismatch");
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
-            while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])
+            while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i]) {
                 ++j;
+            }
             rateIndex_[i] = j;
         }
     }

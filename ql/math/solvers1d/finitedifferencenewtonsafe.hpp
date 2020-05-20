@@ -84,17 +84,19 @@ namespace QuantLib {
                 }
 
                 // Convergence criterion
-                if (std::fabs(dx) < xAccuracy)
+                if (std::fabs(dx) < xAccuracy) {
                     return root_;
+                }
 
                 froot = f(root_);
                 ++evaluationNumber_;
                 dfroot = (frootold-froot)/(rootold-root_);
 
-                if (froot < 0.0)
+                if (froot < 0.0) {
                     xl=root_;
-                else
-                    xh=root_;
+                } else {
+                    xh = root_;
+                }
             }
 
             QL_FAIL("maximum number of function evaluations ("

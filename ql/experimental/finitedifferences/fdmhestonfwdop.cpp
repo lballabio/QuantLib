@@ -180,12 +180,13 @@ namespace QuantLib {
     Disposable<Array> FdmHestonFwdOp::apply_direction(
         Size direction, const Array& u) const {
 
-        if (direction == 0)
+        if (direction == 0) {
             return mapX_->apply(u) ;
-        else if (direction == 1)
+        } else if (direction == 1) {
             return mapY_->apply(u) ;
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
 
     Disposable<Array> FdmHestonFwdOp::solve_splitting(
@@ -195,9 +196,9 @@ namespace QuantLib {
         }
         else if (direction == 1) {
             return mapY_->solve_splitting(1, u, s);
-        }
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
 
     Disposable<Array> FdmHestonFwdOp::preconditioner(
@@ -210,8 +211,9 @@ namespace QuantLib {
         const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
         Array v(layout->size(), 1.0);
 
-        if (!leverageFct_)
+        if (!leverageFct_) {
             return v;
+        }
 
         const Real t = 0.5*(t1+t2);
         const Time time = std::min(leverageFct_->maxTime(), t);

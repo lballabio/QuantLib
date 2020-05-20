@@ -29,11 +29,17 @@ namespace QuantLib {
         Date time2Date(const Date referenceDate, const DayCounter& dc, Time t) {
             t-=1e4*QL_EPSILON; // add a small buffer for rounding errors
             Date d(referenceDate);
-            while(dc.yearFraction(referenceDate, d+=Period(1, Years)) < t);
+            while (dc.yearFraction(referenceDate, d += Period(1, Years)) < t) {
+                ;
+            }
             d-=Period(1, Years);
-            while(dc.yearFraction(referenceDate, d+=Period(1, Months)) < t);
+            while (dc.yearFraction(referenceDate, d += Period(1, Months)) < t) {
+                ;
+            }
             d-=Period(1, Months);
-            while(dc.yearFraction(referenceDate, d++) < t);
+            while (dc.yearFraction(referenceDate, d++) < t) {
+                ;
+            }
             return d;
         }
     }
@@ -59,8 +65,9 @@ namespace QuantLib {
                    "cannot have dates[0] < referenceDate");
 
         times_ = std::vector<Time>(dates.size());
-        for (Size j=0; j<times_.size(); j++)
+        for (Size j = 0; j < times_.size(); j++) {
             times_[j] = timeFromReference(dates[j]);
+        }
 
         checkSurface();
         setInterpolation<Linear>();
@@ -130,11 +137,12 @@ namespace QuantLib {
                        "dates must be sorted unique!");
         }
 
-        for (Size i=0; i < strikes_.size(); ++i)
+        for (Size i = 0; i < strikes_.size(); ++i) {
             for (Size j=1; j<strikes_[i]->size(); j++) {
                 QL_REQUIRE((*strikes_[i])[j]>=(*strikes_[i])[j-1],
                            "strikes must be sorted");
             }
+        }
     }
 
     Date FixedLocalVolSurface::maxDate() const {
@@ -157,25 +165,30 @@ namespace QuantLib {
             std::lower_bound(times_.begin(), times_.end(), t));
 
         if (close_enough(t, times_[idx])) {
-            if (strikes_[idx]->front() < strikes_[idx]->back())
+            if (strikes_[idx]->front() < strikes_[idx]->back()) {
                 return localVolInterpol_[idx](strike, true);
-            else
-                return (*localVolMatrix_)[localVolMatrix_->rows()/2][idx];
+            } else {
+                return (*localVolMatrix_)[localVolMatrix_->rows() / 2][idx];
+            }
         }
         else {
             Real earlierStrike = strike, laterStrike = strike;
             if (lowerExtrapolation_ == ConstantExtrapolation) {
-                if (strike < strikes_[idx-1]->front())
-                    earlierStrike = strikes_[idx-1]->front();
-                if (strike < strikes_[idx]->front())
+                if (strike < strikes_[idx - 1]->front()) {
+                    earlierStrike = strikes_[idx - 1]->front();
+                }
+                if (strike < strikes_[idx]->front()) {
                     laterStrike = strikes_[idx]->front();
+                }
             }
 
             if (upperExtrapolation_ == ConstantExtrapolation) {
-                if (strike > strikes_[idx-1]->back())
-                    earlierStrike = strikes_[idx-1]->back();
-                if (strike > strikes_[idx]->back())
+                if (strike > strikes_[idx - 1]->back()) {
+                    earlierStrike = strikes_[idx - 1]->back();
+                }
+                if (strike > strikes_[idx]->back()) {
                     laterStrike = strikes_[idx]->back();
+                }
             }
 
             const Real earlyVol =

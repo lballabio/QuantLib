@@ -48,7 +48,7 @@ namespace QuantLib {
             // Labour Day
             || (d == 1 && m == May)
             // Pentecost
-            || (dd == em+49)
+            || (dd == em + 49)
             // Children's Day (since 2017)
             || (d == 1 && m == June && y >= 2017)
             // St Marys Day
@@ -60,8 +60,9 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // 2nd Day of Chritsmas
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)) {
             return false;
+        }
         return true;
     }
 

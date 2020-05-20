@@ -350,10 +350,11 @@ namespace QuantLib {
                            inPrice = vanillaOption - outPrice;
                        }
 
-                       if(arguments_.barrierType == DoubleBarrier::KnockOut)
-                          results_.value = outPrice;
-                       else
-                          results_.value = inPrice;
+                       if (arguments_.barrierType == DoubleBarrier::KnockOut) {
+                           results_.value = outPrice;
+                       } else {
+                           results_.value = inPrice;
+                       }
                        results_.additionalResults["VanillaPrice"] = vanillaOption;
                        results_.additionalResults["BarrierInPrice"] = inPrice;
                        results_.additionalResults["BarrierOutPrice"] = outPrice;

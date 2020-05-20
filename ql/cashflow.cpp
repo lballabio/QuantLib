@@ -30,10 +30,12 @@ namespace QuantLib {
         // easy and quick handling of most cases
         if (refDate != Date()) {
             Date cf = date();
-            if (refDate < cf)
+            if (refDate < cf) {
                 return false;
-            if (cf < refDate)
+            }
+            if (cf < refDate) {
                 return true;
+            }
         }
 
         if (refDate == Date() ||
@@ -42,8 +44,9 @@ namespace QuantLib {
             // specified in the settings (if any)
             boost::optional<bool> includeToday =
                 Settings::instance().includeTodaysCashFlows();
-            if (includeToday)
+            if (includeToday) {
                 includeRefDate = *includeToday;
+            }
         }
         return Event::hasOccurred(refDate, includeRefDate);
     }
@@ -51,8 +54,9 @@ namespace QuantLib {
     bool CashFlow::tradingExCoupon(const Date& refDate) const {
 
         Date ecd = exCouponDate();
-        if (ecd == Date())
+        if (ecd == Date()) {
             return false;
+        }
 
         Date ref =
             refDate != Date() ? refDate : Settings::instance().evaluationDate();
@@ -62,10 +66,11 @@ namespace QuantLib {
 
     void CashFlow::accept(AcyclicVisitor& v) {
         Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             Event::accept(v);
+        }
     }
 
 }

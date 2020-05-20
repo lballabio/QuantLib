@@ -65,13 +65,15 @@ namespace QuantLib {
     SegmentIntegral::integrate(const ext::function<Real (Real)>& f,
                                Real a,
                                Real b) const {
-        if(close_enough(a,b))
+        if (close_enough(a, b)) {
             return 0.0;
+        }
         Real dx = (b-a)/intervals_;
         Real sum = 0.5*(f(a)+f(b));
         Real end = b - 0.5*dx;
-        for (Real x = a+dx; x < end; x += dx)
+        for (Real x = a + dx; x < end; x += dx) {
             sum += f(x);
+        }
         return sum*dx;
     }
 

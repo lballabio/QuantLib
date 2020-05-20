@@ -171,10 +171,11 @@ namespace QuantLib {
         #endif
 
         ext::shared_ptr<T>& instance = instances_[id];
-        if (!instance)
+        if (!instance) {
             instance = ext::shared_ptr<T>(new T);
+        }
 
-        #endif
+#endif
 
         return *instance;
     }

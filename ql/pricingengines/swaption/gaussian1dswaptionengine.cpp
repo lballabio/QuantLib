@@ -72,10 +72,11 @@ namespace QuantLib {
 
         do {
 
-            if (idx == minIdxAlive - 1)
+            if (idx == minIdxAlive - 1) {
                 expiry0 = settlement;
-            else
+            } else {
                 expiry0 = arguments_.exercise->dates()[idx];
+            }
 
             expiry0Time = std::max(
                 model_->termStructure()->timeFromReference(expiry0), 0.0);
@@ -152,22 +153,18 @@ namespace QuantLib {
                             price += model_->gaussianShiftedPolynomialIntegral(
                                 0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0, z[0]);
                         } else {
-                            if (type == Option::Call)
-                                price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
-                                        0.0,
-                                        payoff1.cCoefficients()[z.size() - 2],
-                                        payoff1.bCoefficients()[z.size() - 2],
-                                        payoff1.aCoefficients()[z.size() - 2],
-                                        p[z.size() - 2], z[z.size() - 2],
-                                        z[z.size() - 1], 100.0);
-                            if (type == Option::Put)
-                                price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
-                                        0.0, payoff1.cCoefficients()[0],
-                                        payoff1.bCoefficients()[0],
-                                        payoff1.aCoefficients()[0], p[0], z[0],
-                                        -100.0, z[0]);
+                            if (type == Option::Call) {
+                                price += model_->gaussianShiftedPolynomialIntegral(
+                                    0.0, payoff1.cCoefficients()[z.size() - 2],
+                                    payoff1.bCoefficients()[z.size() - 2],
+                                    payoff1.aCoefficients()[z.size() - 2], p[z.size() - 2],
+                                    z[z.size() - 2], z[z.size() - 1], 100.0);
+                            }
+                            if (type == Option::Put) {
+                                price += model_->gaussianShiftedPolynomialIntegral(
+                                    0.0, payoff1.cCoefficients()[0], payoff1.bCoefficients()[0],
+                                    payoff1.aCoefficients()[0], p[0], z[0], -100.0, z[0]);
+                            }
                         }
                     }
                 }
@@ -218,32 +215,19 @@ namespace QuantLib {
                                                   0.0, 0.0, 0.0, 0.0, p[0],
                                                   z[0], -100.0, z[0]);
                                 } else {
-                                    if (type == Option::Call)
-                                        price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
-                                                      0.0,
-                                                      payoff1.cCoefficients()
-                                                          [z.size() - 2],
-                                                      payoff1.bCoefficients()
-                                                          [z.size() - 2],
-                                                      payoff1.aCoefficients()
-                                                          [z.size() - 2],
-                                                      p[z.size() - 2],
-                                                      z[z.size() - 2],
-                                                      z[z.size() - 1], 100.0);
-                                    if (type == Option::Put)
-                                        price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
-                                                      0.0,
-                                                      payoff1
-                                                          .cCoefficients()[0],
-                                                      payoff1
-                                                          .bCoefficients()[0],
-                                                      payoff1
-                                                          .aCoefficients()[0],
-                                                      p[0], z[0], -100.0, z[0]);
+                                    if (type == Option::Call) {
+                                        price += model_->gaussianShiftedPolynomialIntegral(
+                                            0.0, payoff1.cCoefficients()[z.size() - 2],
+                                            payoff1.bCoefficients()[z.size() - 2],
+                                            payoff1.aCoefficients()[z.size() - 2], p[z.size() - 2],
+                                            z[z.size() - 2], z[z.size() - 1], 100.0);
+                                    }
+                                    if (type == Option::Put) {
+                                        price += model_->gaussianShiftedPolynomialIntegral(
+                                            0.0, payoff1.cCoefficients()[0],
+                                            payoff1.bCoefficients()[0], payoff1.aCoefficients()[0],
+                                            p[0], z[0], -100.0, z[0]);
+                                    }
                                 }
                             }
                         }
@@ -281,19 +265,16 @@ namespace QuantLib {
 
                     // for probability computation
                     if (probabilities_ != None) {
-                        if (idx == static_cast<int>(
-                                       arguments_.exercise->dates().size()) -
-                                       1) // if true we are at the latest date,
-                                          // so we init
-                                          // the no call probability
+                        if (idx == static_cast<int>(arguments_.exercise->dates().size()) -
+                                       1) { // if true we are at the latest date,
+                                            // so we init
+                                            // the no call probability
                             npvp0.back()[k] =
-                                probabilities_ == Naive
-                                    ? 1.0
-                                    : 1.0 / (model_->zerobond(expiry0Time, 0.0,
-                                                              0.0,
-                                                              discountCurve_) *
-                                             model_->numeraire(expiry0, z[k],
-                                                               discountCurve_));
+                                probabilities_ == Naive ?
+                                    1.0 :
+                                    1.0 / (model_->zerobond(expiry0Time, 0.0, 0.0, discountCurve_) *
+                                           model_->numeraire(expiry0, z[k], discountCurve_));
+                        }
                         if (exerciseValue >= npv0[k]) {
                             npvp0[idx - minIdxAlive][k] =
                                 probabilities_ == Naive
@@ -304,9 +285,9 @@ namespace QuantLib {
                                                             discountCurve_) *
                                            model_->numeraire(expiry0Time, z[k],
                                                              discountCurve_));
-                            for (Size ii = idx - minIdxAlive + 1;
-                                 ii < npvp0.size(); ii++)
+                            for (Size ii = idx - minIdxAlive + 1; ii < npvp0.size(); ii++) {
                                 npvp0[ii][k] = 0.0;
+                            }
                         }
                     }
                     // end probability computation
@@ -319,8 +300,9 @@ namespace QuantLib {
 
             // for probability computation
             if (probabilities_ != None) {
-                for (Size i = 0; i < npvp0.size(); i++)
+                for (Size i = 0; i < npvp0.size(); i++) {
                     npvp1[i].swap(npvp0[i]);
+                }
             }
             // end probability computation
 

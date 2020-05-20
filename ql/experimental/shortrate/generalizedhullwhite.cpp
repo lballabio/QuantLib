@@ -31,8 +31,9 @@ namespace QuantLib {
 
         // integral of mean reversion
         Real integrateMeanReversion(const Interpolation &a,Real t,Real T) {
-            if ((T-t) < QL_EPSILON)
+            if ((T - t) < QL_EPSILON) {
                 return 0.0;
+            }
             SimpsonIntegral integrator(1e-5, 1000);
             Real mr = integrator(a,t,T);
             return mr;
@@ -130,7 +131,9 @@ namespace QuantLib {
         Real Et = exp(lnEt);
         Real B = 0;
         Size N = std::min<Size>(Size((T-t)*365), 2000);
-        if (N==0) N=1;
+        if (N == 0) {
+            N = 1;
+        }
         Real dt = 0.5*(T-t)/N;
         Real a,b,c,_t,total=0;
         _t = t;
@@ -153,7 +156,9 @@ namespace QuantLib {
         Real lnEt = integrateMeanReversion(speed_,0,t);
         Real V = 0,Eu;
         Size N = std::min<Size>(Size((T-t)*365), 2000);
-        if (N==0) N=1;
+        if (N == 0) {
+            N = 1;
+        }
         Real dt = 0.5*(T-t)/N;
         Real a,b,c,_t,lnE=lnEt;
         _t = t;

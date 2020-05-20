@@ -30,10 +30,12 @@ namespace QuantLib
         numberOfProducts_(innerProduct.numberOfProducts())
     {
 
-        for (Size i=0; i < cashFlowsGenerated_.size(); ++i)
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                    cashFlowsGenerated_[i][j].amount.resize(1+innerProduct.evolution().numberOfRates());
-        
+        for (Size i = 0; i < cashFlowsGenerated_.size(); ++i) {
+            for (Size j = 0; j < cashFlowsGenerated_[i].size(); ++j) {
+                cashFlowsGenerated_[i][j].amount.resize(1 +
+                                                        innerProduct.evolution().numberOfRates());
+            }
+        }
     }
 
         std::vector<Time>  MultiProductPathwiseWrapper::possibleCashFlowTimes() const
@@ -64,12 +66,13 @@ namespace QuantLib
             bool done = innerProduct_->nextTimeStep(currentState, numberCashFlowsThisStep,cashFlowsGenerated_);
 
             // tranform the data
-            for (Size i=0; i < numberOfProducts_; ++i)
+            for (Size i = 0; i < numberOfProducts_; ++i) {
                 for (Size j=0; j< numberCashFlowsThisStep[i]; ++j)
                 {
                     cashFlowsGenerated[i][j].timeIndex =cashFlowsGenerated_[i][j].timeIndex;
                     cashFlowsGenerated[i][j].amount =cashFlowsGenerated_[i][j].amount[0];
                 }
+            }
 
 
             return done;

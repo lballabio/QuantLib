@@ -37,10 +37,11 @@ namespace {
     bool isTheSame(Real a, Real b) {
         const Real eps = 500*QL_EPSILON;
 
-        if (std::fabs(b) < QL_EPSILON)
+        if (std::fabs(b) < QL_EPSILON) {
             return std::fabs(a) < eps;
-        else
-            return std::fabs((a - b)/b) < eps;
+        } else {
+            return std::fabs((a - b) / b) < eps;
+        }
     }
 
 
@@ -65,14 +66,13 @@ namespace {
 
     void singleValueTest(const std::string& comment,
                          Real calculated, Real expected, Real tol) {
-        if (std::fabs(calculated - expected) > tol)
-            BOOST_FAIL("Failed to reproduce " << comment
-                        << " order derivative"
-                        << "\n    calculated: " << calculated
-                        << "\n      expected: " << expected
-                        << "\n     tolerance: " << tol
-                        << "\n    difference: "
-                        << expected - calculated);
+        if (std::fabs(calculated - expected) > tol) {
+            BOOST_FAIL("Failed to reproduce " << comment << " order derivative"
+                                              << "\n    calculated: " << calculated
+                                              << "\n      expected: " << expected
+                                              << "\n     tolerance: " << tol
+                                              << "\n    difference: " << expected - calculated);
+        }
     }
 }
 
@@ -278,8 +278,9 @@ namespace {
         Matrix m(n, n, 1.0);
         for (Size i=1; i < n; ++i) {
             const Real fact = Factorial::get(i);
-            for (Size j=0; j < n; ++j)
+            for (Size j = 0; j < n; ++j) {
                 m[i][j] = std::pow(q[j], Integer(i)) / fact;
+            }
         }
 
         Array b(n, 0.0);

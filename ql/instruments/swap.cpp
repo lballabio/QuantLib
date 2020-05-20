@@ -36,10 +36,12 @@ namespace QuantLib {
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
         payer_[1] =  1.0;
-        for (Leg::iterator i = legs_[0].begin(); i!= legs_[0].end(); ++i)
+        for (Leg::iterator i = legs_[0].begin(); i != legs_[0].end(); ++i) {
             registerWith(*i);
-        for (Leg::iterator i = legs_[1].begin(); i!= legs_[1].end(); ++i)
+        }
+        for (Leg::iterator i = legs_[1].begin(); i != legs_[1].end(); ++i) {
             registerWith(*i);
+        }
     }
 
     Swap::Swap(const std::vector<Leg>& legs,
@@ -52,9 +54,12 @@ namespace QuantLib {
                    "size mismatch between payer (" << payer.size() <<
                    ") and legs (" << legs_.size() << ")");
         for (Size j=0; j<legs_.size(); ++j) {
-            if (payer[j]) payer_[j]=-1.0;
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+            if (payer[j]) {
+                payer_[j] = -1.0;
+            }
+            for (Leg::iterator i = legs_[j].begin(); i != legs_[j].end(); ++i) {
                 registerWith(*i);
+            }
         }
     }
 
@@ -67,10 +72,12 @@ namespace QuantLib {
 
     bool Swap::isExpired() const {
         for (Size j=0; j<legs_.size(); ++j) {
-            Leg::const_iterator i; 
-            for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
-                if (!(*i)->hasOccurred())
+            Leg::const_iterator i;
+            for (i = legs_[j].begin(); i != legs_[j].end(); ++i) {
+                if (!(*i)->hasOccurred()) {
                     return false;
+                }
+            }
         }
         return true;
     }
@@ -143,16 +150,18 @@ namespace QuantLib {
     Date Swap::startDate() const {
         QL_REQUIRE(!legs_.empty(), "no legs given");
         Date d = CashFlows::startDate(legs_[0]);
-        for (Size j=1; j<legs_.size(); ++j)
+        for (Size j = 1; j < legs_.size(); ++j) {
             d = std::min(d, CashFlows::startDate(legs_[j]));
+        }
         return d;
     }
 
     Date Swap::maturityDate() const {
         QL_REQUIRE(!legs_.empty(), "no legs given");
         Date d = CashFlows::maturityDate(legs_[0]);
-        for (Size j=1; j<legs_.size(); ++j)
+        for (Size j = 1; j < legs_.size(); ++j) {
             d = std::max(d, CashFlows::maturityDate(legs_[j]));
+        }
         return d;
     }
 
@@ -162,8 +171,9 @@ namespace QuantLib {
                 ext::shared_ptr<LazyObject> f =
                     ext::dynamic_pointer_cast<LazyObject>(
                         legs_[j][k]);
-                if (f)
+                if (f) {
                     f->update();
+                }
             }
         }
         update();

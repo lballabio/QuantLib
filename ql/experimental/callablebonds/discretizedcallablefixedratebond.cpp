@@ -41,16 +41,14 @@ namespace QuantLib {
                                                   args.redemptionDate);
 
         couponTimes_.resize(args.couponDates.size());
-        for (Size i=0; i<couponTimes_.size(); ++i)
-            couponTimes_[i] =
-                dayCounter.yearFraction(referenceDate,
-                                        args.couponDates[i]);
+        for (Size i = 0; i < couponTimes_.size(); ++i) {
+            couponTimes_[i] = dayCounter.yearFraction(referenceDate, args.couponDates[i]);
+        }
 
         callabilityTimes_.resize(args.callabilityDates.size());
-        for (Size i=0; i<callabilityTimes_.size(); ++i)
-            callabilityTimes_[i] =
-                dayCounter.yearFraction(referenceDate,
-                                        args.callabilityDates[i]);
+        for (Size i = 0; i < callabilityTimes_.size(); ++i) {
+            callabilityTimes_[i] = dayCounter.yearFraction(referenceDate, args.callabilityDates[i]);
+        }
 
         // similar to the tree swaption engine, we collapse similar coupon
         // and exercise dates to avoid mispricing. Delete if unnecessary.
@@ -58,8 +56,9 @@ namespace QuantLib {
         for (Size i=0; i<callabilityTimes_.size(); i++) {
             Time exerciseTime = callabilityTimes_[i];
             for (Size j=0; j<couponTimes_.size(); j++) {
-                if (withinNextWeek(exerciseTime, couponTimes_[j]))
+                if (withinNextWeek(exerciseTime, couponTimes_[j])) {
                     couponTimes_[j] = exerciseTime;
+                }
             }
         }
     }

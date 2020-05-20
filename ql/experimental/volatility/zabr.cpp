@@ -57,10 +57,11 @@ ZabrModel::ZabrModel(const Real expiryTime, const Real forward,
 
 Real ZabrModel::lognormalVolatilityHelper(const Real strike,
                                           const Real x) const {
-    if (close(strike, forward_))
+    if (close(strike, forward_)) {
         return std::pow(forward_, beta_ - 1.0) * alpha_;
-    else
+    } else {
         return std::log(forward_ / strike) / x;
+    }
 }
 
 Real ZabrModel::lognormalVolatility(const Real strike) const {
@@ -79,10 +80,11 @@ ZabrModel::lognormalVolatility(const std::vector<Real> &strikes) const {
 }
 
 Real ZabrModel::normalVolatilityHelper(const Real strike, const Real x) const {
-    if (close(strike, forward_))
+    if (close(strike, forward_)) {
         return std::pow(forward_, beta_) * alpha_;
-    else
+    } else {
         return (forward_ - strike) / x;
+    }
 }
 
 Real ZabrModel::normalVolatility(const Real strike) const {
@@ -282,10 +284,12 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
         Real f = mesher->location(iter, 0);
         // Real v = mesher->location(iter, 0);
         rhs[iter.index()] = std::max(f - strike, 0.0);
-        if (!iter.coordinates()[1])
+        if (!iter.coordinates()[1]) {
             f_.push_back(mesher->location(iter, 0));
-        if (!iter.coordinates()[0])
+        }
+        if (!iter.coordinates()[0]) {
             v_.push_back(mesher->location(iter, 1));
+        }
     }
 
     // Boundary conditions
@@ -302,9 +306,10 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     // interpolate solution (this is not necessary when using concentrating
     // meshers with required point)
     Matrix result(f_.size(), v_.size());
-    for (Size j = 0; j < v_.size(); ++j)
-        std::copy(rhs.begin() + j * f_.size(),
-                  rhs.begin() + (j + 1) * f_.size(), result.row_begin(j));
+    for (Size j = 0; j < v_.size(); ++j) {
+        std::copy(rhs.begin() + j * f_.size(), rhs.begin() + (j + 1) * f_.size(),
+                  result.row_begin(j));
+    }
     ext::shared_ptr<BicubicSpline> interpolation =
         ext::make_shared<BicubicSpline>(
             f_.begin(), f_.end(), v_.begin(), v_.end(), result);
@@ -322,10 +327,10 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
 
     QL_REQUIRE(strikes[0] > 0.0 || beta_ < 1.0,
                "strikes must be positive (" << strikes[0] << ") if beta = 1");
-    for (std::vector<Real>::const_iterator i = strikes.begin() + 1;
-         i != strikes.end(); ++i)
-        QL_REQUIRE(*i > *(i - 1), "strikes must be strictly ascending ("
-                                      << *(i - 1) << "," << *i << ")");
+    for (std::vector<Real>::const_iterator i = strikes.begin() + 1; i != strikes.end(); ++i) {
+        QL_REQUIRE(*i > *(i - 1),
+                   "strikes must be strictly ascending (" << *(i - 1) << "," << *i << ")");
+    }
 
     AdaptiveRungeKutta<Real> rk(1.0E-8, 1.0E-5,
                                 0.0); // TODO move the parameters here as
@@ -344,11 +349,14 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
         }
     } else {
         Size ynz = std::upper_bound(y.begin(), y.end(), 0.0) - y.begin();
-        if (ynz > 0)
-            if (close(y[ynz - 1], 0.0))
+        if (ynz > 0) {
+            if (close(y[ynz - 1], 0.0)) {
                 ynz--;
-        if (ynz == y.size())
+            }
+        }
+        if (ynz == y.size()) {
             ynz--;
+        }
 
         for (int dir = 1; dir >= -1; dir -= 2) {
             Real y0 = 0.0, u0 = 0.0;

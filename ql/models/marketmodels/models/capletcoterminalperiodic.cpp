@@ -83,8 +83,9 @@ namespace QuantLib
 
 
         std::vector<Real> scalingFactors(numberBigRates);
-        for (Size i=0; i < numberBigRates; ++i)
-            scalingFactors[i] =1.0;
+        for (Size i = 0; i < numberBigRates; ++i) {
+            scalingFactors[i] = 1.0;
+        }
 
         displacedSwapVariances.setLastCapletVol(*capletVols.rbegin());
 
@@ -159,8 +160,9 @@ namespace QuantLib
 
             }
 
-            for (Size i=0; i < numberBigRates; ++i)
+            for (Size i = 0; i < numberBigRates; ++i) {
                 modelSwaptionVolsMatrix[iterationsDone][i] = modelSwaptionVols[i];
+            }
 
             periodSwaptionRmsError = std::sqrt(totalSwaptionError/numberBigRates);
             errorImprovement = previousError -periodSwaptionRmsError;

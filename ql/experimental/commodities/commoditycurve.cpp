@@ -76,8 +76,9 @@ namespace QuantLib {
 
         times_.resize(dates_.size());
         times_[0]=0.0;
-        for (Size i = 1; i < dates_.size(); i++)
+        for (Size i = 1; i < dates_.size(); i++) {
             times_[i] = dayCounter().yearFraction(dates_[0], dates_[i]);
+        }
 
         interpolation_ =
             interpolator_.interpolate(times_.begin(), times_.end(),
@@ -98,8 +99,9 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out, const CommodityCurve& curve) {
         out << "[" << curve.name_ << "] (" << curve.currency_.code()
             << "/" << curve.unitOfMeasure_.code() << ")";
-        if (curve.basisOfCurve_ != 0)
+        if (curve.basisOfCurve_ != 0) {
             out << "; basis to (" << (*curve.basisOfCurve_) << ")";
+        }
         return out;
     }
 

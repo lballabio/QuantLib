@@ -88,8 +88,9 @@ namespace QuantLib {
     template <class Arguments, class Results>
     void LatticeShortRateModelEngine<Arguments, Results>::update()
     {
-        if (!timeGrid_.empty())
+        if (!timeGrid_.empty()) {
             lattice_ = this->model_->tree(timeGrid_);
+        }
         GenericModelEngine<ShortRateModel, Arguments, Results>::update();
     }
 

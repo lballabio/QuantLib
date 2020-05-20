@@ -41,13 +41,15 @@ namespace QuantLib {
         QL_REQUIRE(underlying_->underlying()->pricer() != NULL, "pricer not set");
         underlying_->underlying()->pricer()->initialize(*underlying_->underlying());
         Rate floorletRate = 0.0;
-        if (underlying_->isFloored())
-            floorletRate = underlying_->underlying()->pricer()->floorletRate(
-                underlying_->effectiveFloor());
+        if (underlying_->isFloored()) {
+            floorletRate =
+                underlying_->underlying()->pricer()->floorletRate(underlying_->effectiveFloor());
+        }
         Rate capletRate = 0.0;
-        if (underlying_->isCapped())
+        if (underlying_->isCapped()) {
             capletRate =
                 underlying_->underlying()->pricer()->capletRate(underlying_->effectiveCap());
+        }
 
         // if the underlying is collared we return the value of the embedded
         // collar, otherwise the value of a long floor or a long cap respectively
@@ -81,10 +83,11 @@ namespace QuantLib {
         underlying_->accept(v);
         Visitor<StrippedCappedFlooredCoupon> *v1 =
             dynamic_cast<Visitor<StrippedCappedFlooredCoupon> *>(&v);
-        if (v1 != NULL)
+        if (v1 != NULL) {
             v1->visit(*this);
-        else
+        } else {
             FloatingRateCoupon::accept(v);
+        }
     }
 
     bool StrippedCappedFlooredCoupon::isCap() const {

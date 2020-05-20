@@ -77,12 +77,14 @@ namespace QuantLib {
                                 Real a,
                                 Real b) const {
         evaluations_ = 0;
-        if (a == b)
+        if (a == b) {
             return 0.0;
-        if (b > a)
+        }
+        if (b > a) {
             return integrate(f, a, b);
-        else
+        } else {
             return -integrate(f, b, a);
+        }
     }
 
 }

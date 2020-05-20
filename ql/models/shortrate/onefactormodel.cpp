@@ -43,8 +43,9 @@ namespace QuantLib {
         Real operator()(Real theta) const {
             Real value = discountBondPrice_;
             theta_->change(theta);
-            for (Size j=0; j<size_; j++)
-                value -= statePrices_[j]*tree_.discount(i_,j);
+            for (Size j = 0; j < size_; j++) {
+                value -= statePrices_[j] * tree_.discount(i_, j);
+            }
             return value;
         }
 

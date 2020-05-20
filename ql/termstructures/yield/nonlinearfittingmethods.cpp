@@ -279,12 +279,14 @@ namespace QuantLib {
         DiscountFactor d = 0.0;
 
         if (!constrainAtZero_) {
-            for (Size i=0; i<size_; ++i)
-                d += x[i] * BernsteinPolynomial::get(i,i,t);
+            for (Size i = 0; i < size_; ++i) {
+                d += x[i] * BernsteinPolynomial::get(i, i, t);
+            }
         } else {
             d = 1.0;
-            for (Size i=0; i<size_; ++i)
-                d += x[i] * BernsteinPolynomial::get(i+1,i+1,t);
+            for (Size i = 0; i < size_; ++i) {
+                d += x[i] * BernsteinPolynomial::get(i + 1, i + 1, t);
+            }
         }
         return d;
     }

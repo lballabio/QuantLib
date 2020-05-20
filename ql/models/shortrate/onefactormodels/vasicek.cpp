@@ -48,10 +48,11 @@ namespace QuantLib {
 
     Real Vasicek::B(Time t, Time T) const {
         Real _a = a();
-        if (_a < std::sqrt(QL_EPSILON))
+        if (_a < std::sqrt(QL_EPSILON)) {
             return (T - t);
-        else
-            return (1.0 - std::exp(-_a*(T - t)))/_a;
+        } else {
+            return (1.0 - std::exp(-_a * (T - t))) / _a;
+        }
     }
 
     Real Vasicek::discountBondOption(Option::Type type,

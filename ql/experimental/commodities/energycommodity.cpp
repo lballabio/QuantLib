@@ -117,8 +117,9 @@ namespace QuantLib {
             ExchangeRate exchRate = ExchangeRateManager::instance().lookup(
                                    fromCurrency, toCurrency,
                                    evaluationDate /*, ExchangeRate::Direct*/);
-            if (fromCurrency == exchRate.target())
+            if (fromCurrency == exchRate.target()) {
                 return 1.0 / exchRate.rate();
+            }
             return exchRate.rate();
         }
         return 1;

@@ -72,8 +72,9 @@ namespace QuantLib {
 
         for (Size i = 0; i < numberOfTimes; ++i) {
             const Size pos = timePositions_[i];
-            for (Size j = 0; j < numberOfAssets; ++j)
+            for (Size j = 0; j < numberOfAssets; ++j) {
                 path[j][i] = multiPath[j][pos];
+            }
         }
         
         PathInfo info(numberOfTimes);
@@ -108,8 +109,9 @@ namespace QuantLib {
             const bool canExercise = !states.empty();
 
             // at the end the continuation value is 0.0
-            if (canExercise && exercise > 0.0)
+            if (canExercise && exercise > 0.0) {
                 price += exercise;
+            }
             price += payoff;
         }
 
@@ -176,8 +178,9 @@ namespace QuantLib {
             const bool canExercise = !states.empty();
 
             // at the end the continuation value is 0.0
-            if (canExercise && exercise > 0.0)
+            if (canExercise && exercise > 0.0) {
                 prices[j] += exercise;
+            }
             prices[j] += payoff;
         }
 

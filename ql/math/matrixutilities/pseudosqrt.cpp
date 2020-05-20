@@ -57,12 +57,14 @@ namespace QuantLib {
             // row normalization
             for (Size i=0; i<size; ++i) {
                 Real norm = 0.0;
-                for (Size j=0; j<pseudoCols; ++j)
-                    norm += pseudo[i][j]*pseudo[i][j];
+                for (Size j = 0; j < pseudoCols; ++j) {
+                    norm += pseudo[i][j] * pseudo[i][j];
+                }
                 if (norm>0.0) {
                     Real normAdj = std::sqrt(matrix[i][i]/norm);
-                    for (Size j=0; j<pseudoCols; ++j)
+                    for (Size j = 0; j < pseudoCols; ++j) {
                         pseudo[i][j] *= normAdj;
+                    }
                 }
             }
 
@@ -98,12 +100,12 @@ namespace QuantLib {
                                 currentRoot_[i][k]=0;
                             } else {
                                 for (j=0; j<=k; j++) {
-                                    if (j == k && k!=i)
+                                    if (j == k && k != i) {
                                         currentRoot_[i][k] *=
                                             std::cos(x[i*(i-1)/2+j]);
-                                    else if (j!=i)
-                                        currentRoot_[i][k] *=
-                                            std::sin(x[i*(i-1)/2+j]);
+                                    } else if (j != i) {
+                                        currentRoot_[i][k] *= std::sin(x[i * (i - 1) / 2 + j]);
+                                    }
                                 }
                             }
                         }
@@ -112,12 +114,12 @@ namespace QuantLib {
                     for (i=0; i<size_; i++) {
                         for (k=0; k<size_; k++) {
                             for (j=0; j<=k; j++) {
-                                if (j == k && k!=size_-1)
+                                if (j == k && k != size_ - 1) {
                                     currentRoot_[i][k] *=
                                         std::cos(x[j*size_+i]);
-                                else if (j!=size_-1)
-                                    currentRoot_[i][k] *=
-                                        std::sin(x[j*size_+i]);
+                                } else if (j != size_ - 1) {
+                                    currentRoot_[i][k] *= std::sin(x[j * size_ + i]);
+                                }
                             }
                         }
                     }
@@ -177,21 +179,26 @@ namespace QuantLib {
                 for (i=1; i<size; i++) {
                     for (j=0; j<i; j++) {
                         theta[i*(i-1)/2+j]=result[i][j];
-                        if (theta[i*(i-1)/2+j]>1-eps)
-                            theta[i*(i-1)/2+j]=1-eps;
-                        if (theta[i*(i-1)/2+j]<-1+eps)
-                            theta[i*(i-1)/2+j]=-1+eps;
+                        if (theta[i * (i - 1) / 2 + j] > 1 - eps) {
+                            theta[i * (i - 1) / 2 + j] = 1 - eps;
+                        }
+                        if (theta[i * (i - 1) / 2 + j] < -1 + eps) {
+                            theta[i * (i - 1) / 2 + j] = -1 + eps;
+                        }
                         for (k=0; k<j; k++) {
                             theta[i*(i-1)/2+j] /= std::sin(theta[i*(i-1)/2+k]);
-                            if (theta[i*(i-1)/2+j]>1-eps)
-                                theta[i*(i-1)/2+j]=1-eps;
-                            if (theta[i*(i-1)/2+j]<-1+eps)
-                                theta[i*(i-1)/2+j]=-1+eps;
+                            if (theta[i * (i - 1) / 2 + j] > 1 - eps) {
+                                theta[i * (i - 1) / 2 + j] = 1 - eps;
+                            }
+                            if (theta[i * (i - 1) / 2 + j] < -1 + eps) {
+                                theta[i * (i - 1) / 2 + j] = -1 + eps;
+                            }
                         }
                         theta[i*(i-1)/2+j] = std::acos(theta[i*(i-1)/2+j]);
                         if (j==i-1) {
-                            if (result[i][i]<0)
-                                theta[i*(i-1)/2+j]=-theta[i*(i-1)/2+j];
+                            if (result[i][i] < 0) {
+                                theta[i * (i - 1) / 2 + j] = -theta[i * (i - 1) / 2 + j];
+                            }
                         }
                     }
                 }
@@ -205,12 +212,12 @@ namespace QuantLib {
                             result[i][k]=0;
                         } else {
                             for (j=0; j<=k; j++) {
-                                if (j == k && k!=i)
+                                if (j == k && k != i) {
                                     result[i][k] *=
                                         std::cos(theta[i*(i-1)/2+j]);
-                                else if (j!=i)
-                                    result[i][k] *=
-                                        std::sin(theta[i*(i-1)/2+j]);
+                                } else if (j != i) {
+                                    result[i][k] *= std::sin(theta[i * (i - 1) / 2 + j]);
+                                }
                             }
                         }
                     }
@@ -221,21 +228,26 @@ namespace QuantLib {
                 for (i=0; i<size; i++) {
                     for (j=0; j<size-1; j++) {
                         theta[j*size+i]=result[i][j];
-                        if (theta[j*size+i]>1-eps)
-                            theta[j*size+i]=1-eps;
-                        if (theta[j*size+i]<-1+eps)
-                            theta[j*size+i]=-1+eps;
+                        if (theta[j * size + i] > 1 - eps) {
+                            theta[j * size + i] = 1 - eps;
+                        }
+                        if (theta[j * size + i] < -1 + eps) {
+                            theta[j * size + i] = -1 + eps;
+                        }
                         for (k=0;k<j;k++) {
                             theta[j*size+i] /= std::sin(theta[k*size+i]);
-                            if (theta[j*size+i]>1-eps)
-                                theta[j*size+i]=1-eps;
-                            if (theta[j*size+i]<-1+eps)
-                                theta[j*size+i]=-1+eps;
+                            if (theta[j * size + i] > 1 - eps) {
+                                theta[j * size + i] = 1 - eps;
+                            }
+                            if (theta[j * size + i] < -1 + eps) {
+                                theta[j * size + i] = -1 + eps;
+                            }
                         }
                         theta[j*size+i] = std::acos(theta[j*size+i]);
                         if (j==size-2) {
-                            if (result[i][j+1]<0)
-                                theta[j*size+i]=-theta[j*size+i];
+                            if (result[i][j + 1] < 0) {
+                                theta[j * size + i] = -theta[j * size + i];
+                            }
                         }
                     }
                 }
@@ -246,10 +258,11 @@ namespace QuantLib {
                 for (i=0; i<size; i++) {
                     for (k=0; k<size; k++) {
                         for (j=0; j<=k; j++) {
-                            if (j == k && k!=size-1)
+                            if (j == k && k != size - 1) {
                                 result[i][k] *= std::cos(theta[j*size+i]);
-                            else if (j!=size-1)
-                                result[i][k] *= std::sin(theta[j*size+i]);
+                            } else if (j != size - 1) {
+                                result[i][k] *= std::sin(theta[j * size + i]);
+                            }
                         }
                     }
                 }
@@ -271,8 +284,9 @@ namespace QuantLib {
             Real norm = 0.0;
             for (Size i=0; i<rows; ++i) {
                 Real colSum = 0.0;
-                for (Size j=0; j<cols; ++j)
+                for (Size j = 0; j < cols; ++j) {
                     colSum += std::fabs(M[i][j]);
+                }
                 norm = std::max(norm, colSum);
             }
             return norm;
@@ -286,8 +300,9 @@ namespace QuantLib {
                        "matrix not square");
 
             Matrix result(M);
-            for (Size i=0; i<size; ++i)
+            for (Size i = 0; i < size; ++i) {
                 result[i][i] = 1.0;
+            }
 
             return result;
         }
@@ -301,8 +316,9 @@ namespace QuantLib {
 
             Matrix diagonal(size, size, 0.0);
             SymmetricSchurDecomposition jd(M);
-            for (Size i=0; i<size; ++i)
+            for (Size i = 0; i < size; ++i) {
                 diagonal[i][i] = std::max<Real>(jd.eigenvalues()[i], 0.0);
+            }
 
             Matrix result =
                 jd.eigenvectors()*diagonal*transpose(jd.eigenvectors());
@@ -341,9 +357,11 @@ namespace QuantLib {
             }
 
             // ensure we return a symmetric matrix
-            for (Size i=0; i<size; ++i)
-                for (Size j=0; j<i; ++j)
+            for (Size i = 0; i < size; ++i) {
+                for (Size j = 0; j < i; ++j) {
                     Y[i][j] = Y[j][i];
+                }
+            }
 
             return Y;
         }
@@ -381,9 +399,9 @@ namespace QuantLib {
             break;
           case SalvagingAlgorithm::Spectral:
             // negative eigenvalues set to zero
-            for (Size i=0; i<size; i++)
-                diagonal[i][i] =
-                    std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
+            for (Size i = 0; i < size; i++) {
+                diagonal[i][i] = std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
+            }
 
             result = jd.eigenvectors() * diagonal;
             normalizePseudoRoot(matrix, result);
@@ -394,13 +412,16 @@ namespace QuantLib {
             for (Size i=0; i<size; ++i){
                 diagonal[i][i] =
                     std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
-                if (jd.eigenvalues()[i]<0.0) negative=true;
+                if (jd.eigenvalues()[i] < 0.0) {
+                    negative = true;
+                }
             }
             result = jd.eigenvectors() * diagonal;
             normalizePseudoRoot(matrix, result);
 
-            if (negative)
+            if (negative) {
                 result = hypersphereOptimize(matrix, result, false);
+            }
             break;
           case SalvagingAlgorithm::LowerDiagonal:
             // negative eigenvalues set to zero
@@ -408,14 +429,17 @@ namespace QuantLib {
             for (Size i=0; i<size; ++i){
                 diagonal[i][i] =
                     std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
-                if (jd.eigenvalues()[i]<0.0) negative=true;
+                if (jd.eigenvalues()[i] < 0.0) {
+                    negative = true;
+                }
             }
             result = jd.eigenvectors() * diagonal;
 
             normalizePseudoRoot(matrix, result);
 
-            if (negative)
+            if (negative) {
                 result = hypersphereOptimize(matrix, result, true);
+            }
             break;
           case SalvagingAlgorithm::Higham: {
               int maxIterations = 40;
@@ -470,8 +494,9 @@ namespace QuantLib {
             break;
           case SalvagingAlgorithm::Spectral:
             // negative eigenvalues set to zero
-            for (Size i=0; i<size; ++i)
+            for (Size i = 0; i < size; ++i) {
                 eigenValues[i] = std::max<Real>(eigenValues[i], 0.0);
+            }
             break;
           case SalvagingAlgorithm::Higham:
               {
@@ -505,8 +530,9 @@ namespace QuantLib {
         retainedFactors=std::min(retainedFactors, maxRank);
 
         Matrix diagonal(size, retainedFactors, 0.0);
-        for (Size i=0; i<retainedFactors; ++i)
+        for (Size i = 0; i < retainedFactors; ++i) {
             diagonal[i][i] = std::sqrt(eigenValues[i]);
+        }
         Matrix result = jd.eigenvectors() * diagonal;
 
         normalizePseudoRoot(matrix, result);

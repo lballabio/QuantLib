@@ -70,9 +70,10 @@ namespace QuantLib {
             // Armistice 1918
             || (d == 11 && m == November)
             // Noel
-            || (d == 25 && m == December))
-            
+            || (d == 25 && m == December)) {
+
             return false;
+        }
         return true;
     }
 
@@ -87,7 +88,7 @@ namespace QuantLib {
             // Jour de l'An
             || (d == 1 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Labor Day
@@ -99,9 +100,10 @@ namespace QuantLib {
             // Boxing Day
             || (d == 26 && m == December)
             // New Year's Eve
-            || (d == 31 && m == December))
-         
+            || (d == 31 && m == December)) {
+
             return false;
+        }
         return true;
     }
 

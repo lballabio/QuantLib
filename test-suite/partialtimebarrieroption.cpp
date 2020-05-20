@@ -117,11 +117,11 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
         Real expected = cases[i].result;
         Real error = std::fabs(calculated-expected);
         Real tolerance = 1e-4;
-        if (error > tolerance)
+        if (error > tolerance) {
             BOOST_ERROR("Failed to reproduce partial-time barrier option value"
-                        << "\n    expected:   " << expected
-                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected << "\n    calculated: " << calculated
                         << "\n    error:      " << error);
+        }
     }
 }
 

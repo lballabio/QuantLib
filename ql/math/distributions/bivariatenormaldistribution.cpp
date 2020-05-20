@@ -62,11 +62,13 @@ namespace QuantLib {
         Real MaxCumNormDistAB = std::max(CumNormDistA, CumNormDistB);
         Real MinCumNormDistAB = std::min(CumNormDistA, CumNormDistB);
 
-        if (1.0-MaxCumNormDistAB<1e-15)
+        if (1.0 - MaxCumNormDistAB < 1e-15) {
             return MinCumNormDistAB;
+        }
 
-        if (MinCumNormDistAB<1e-15)
+        if (MinCumNormDistAB < 1e-15) {
             return MinCumNormDistAB;
+        }
 
         Real a1 = a / std::sqrt(2.0 * (1.0 - rho2_));
         Real b1 = b / std::sqrt(2.0 * (1.0 - rho2_));

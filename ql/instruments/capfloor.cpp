@@ -130,18 +130,21 @@ namespace QuantLib {
         if (type_ == Cap || type_ == Collar) {
             QL_REQUIRE(!capRates_.empty(), "no cap rates given");
             capRates_.reserve(floatingLeg_.size());
-            while (capRates_.size() < floatingLeg_.size())
+            while (capRates_.size() < floatingLeg_.size()) {
                 capRates_.push_back(capRates_.back());
+            }
         }
         if (type_ == Floor || type_ == Collar) {
             QL_REQUIRE(!floorRates_.empty(), "no floor rates given");
             floorRates_.reserve(floatingLeg_.size());
-            while (floorRates_.size() < floatingLeg_.size())
+            while (floorRates_.size() < floatingLeg_.size()) {
                 floorRates_.push_back(floorRates_.back());
+            }
         }
         Leg::const_iterator i;
-        for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
+        for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i) {
             registerWith(*i);
+        }
 
         registerWith(Settings::instance().evaluationDate());
     }
@@ -154,27 +157,33 @@ namespace QuantLib {
         if (type_ == Cap) {
             capRates_ = strikes;
             capRates_.reserve(floatingLeg_.size());
-            while (capRates_.size() < floatingLeg_.size())
+            while (capRates_.size() < floatingLeg_.size()) {
                 capRates_.push_back(capRates_.back());
+            }
         } else if (type_ == Floor) {
             floorRates_ = strikes;
             floorRates_.reserve(floatingLeg_.size());
-            while (floorRates_.size() < floatingLeg_.size())
+            while (floorRates_.size() < floatingLeg_.size()) {
                 floorRates_.push_back(floorRates_.back());
-        } else
+            }
+        } else {
             QL_FAIL("only Cap/Floor types allowed in this constructor");
+        }
 
         Leg::const_iterator i;
-        for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
+        for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i) {
             registerWith(*i);
+        }
 
         registerWith(Settings::instance().evaluationDate());
     }
 
     bool CapFloor::isExpired() const {
-        for (Size i=floatingLeg_.size(); i>0; --i)
-            if (!floatingLeg_[i-1]->hasOccurred())
+        for (Size i = floatingLeg_.size(); i > 0; --i) {
+            if (!floatingLeg_[i - 1]->hasOccurred()) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -201,10 +210,12 @@ namespace QuantLib {
         Leg cf(1, floatingLeg()[i]);
 
         std::vector<Rate> cap, floor;
-        if (type() == Cap || type() == Collar)
+        if (type() == Cap || type() == Collar) {
             cap.push_back(capRates()[i]);
-        if (type() == Floor || type() == Collar)
+        }
+        if (type() == Floor || type() == Collar) {
             floor.push_back(floorRates()[i]);
+        }
 
         return ext::make_shared<CapFloor>(type(), cf, cap, floor);
     }
@@ -257,15 +268,17 @@ namespace QuantLib {
             arguments->gearings[i] = gearing;
             arguments->spreads[i] = spread;
 
-            if (type_ == Cap || type_ == Collar)
+            if (type_ == Cap || type_ == Collar) {
                 arguments->capRates[i] = (capRates_[i]-spread)/gearing;
-            else
+            } else {
                 arguments->capRates[i] = Null<Rate>();
+            }
 
-            if (type_ == Floor || type_ == Collar)
+            if (type_ == Floor || type_ == Collar) {
                 arguments->floorRates[i] = (floorRates_[i]-spread)/gearing;
-            else
+            } else {
                 arguments->floorRates[i] = Null<Rate>();
+            }
 
             arguments->indexes[i] = coupon->index();
         }
@@ -276,8 +289,9 @@ namespace QuantLib {
             ext::shared_ptr<LazyObject> f =
                 ext::dynamic_pointer_cast<LazyObject>(
                     floatingLeg_[i]);
-            if (f)
+            if (f) {
                 f->update();
+            }
         }
         update();
     }

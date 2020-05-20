@@ -75,8 +75,9 @@ namespace QuantLib
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
-            for (Size i = 0; i < currentPoint.size(); i++)
-                newPoint[i] = currentPoint[i] * exp(sqrt(temp[i])*gaussian_());
+            for (Size i = 0; i < currentPoint.size(); i++) {
+                newPoint[i] = currentPoint[i] * exp(sqrt(temp[i]) * gaussian_());
+            }
         };
     private:
         base_generator_type generator_;
@@ -107,8 +108,9 @@ namespace QuantLib
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
-            for (Size i = 0; i < currentPoint.size(); i++)
-                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+            for (Size i = 0; i < currentPoint.size(); i++) {
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i]) * gaussian_();
+            }
         };
     private:
         base_generator_type generator_;
@@ -231,8 +233,9 @@ namespace QuantLib
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
-            for (Size i = 0; i < currentPoint.size(); i++)
+            for (Size i = 0; i < currentPoint.size(); i++) {
                 newPoint[i] = currentPoint[i] + temp[i] * cauchy_();
+            }
         };
     protected:
         base_generator_type generator_;
@@ -329,8 +332,9 @@ namespace QuantLib
             generator_(probability.uniform_.engine()), distribution_(probability.uniform_.distribution()),
             uniform_(generator_, distribution_) {};
         inline bool operator()(Real currentValue, Real newValue, const Array &temp) const {
-            if (newValue < currentValue)
+            if (newValue < currentValue) {
                 return true;
+            }
             double mTemperature = *std::max_element(temp.begin(), temp.end());
             return (1.0 / (1.0 + exp((newValue - currentValue) / mTemperature))) > uniform_();
         }
@@ -349,8 +353,9 @@ namespace QuantLib
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
-            for (Size i = 0; i < initialTemp_.size(); i++)
+            for (Size i = 0; i < initialTemp_.size(); i++) {
                 newTemp[i] = initialTemp_[i] / log(steps[i]);
+            }
         }
     private:
         Array initialTemp_;
@@ -365,8 +370,9 @@ namespace QuantLib
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
-            for (Size i = 0; i < initialTemp_.size(); i++)
+            for (Size i = 0; i < initialTemp_.size(); i++) {
                 newTemp[i] = initialTemp_[i] / steps[i];
+            }
         }
     private:
         Array initialTemp_;
@@ -380,8 +386,9 @@ namespace QuantLib
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
-            for (Size i = 0; i < initialTemp_.size(); i++)
+            for (Size i = 0; i < initialTemp_.size(); i++) {
                 newTemp[i] = initialTemp_[i] / std::pow(steps[i], inverseN_);
+            }
         }
     private:
         Real inverseN_;
@@ -395,8 +402,9 @@ namespace QuantLib
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
-            for (Size i = 0; i < initialTemp_.size(); i++)
+            for (Size i = 0; i < initialTemp_.size(); i++) {
                 newTemp[i] = initialTemp_[i] * std::pow(power_, steps[i]);
+            }
         }
     private:
         Array initialTemp_;
@@ -411,14 +419,16 @@ namespace QuantLib
             :inverseN_(1.0 / dimension), initialTemp_(dimension, initialTemp),
             finalTemp_(dimension, finalTemp), exponent_(dimension, 0.0) {
             Real coeff = std::pow(maxSteps, -inverseN_);
-            for (Size i = 0; i < initialTemp_.size(); i++)
-                exponent_[i] = -log(finalTemp_[i] / initialTemp_[i])*coeff;
+            for (Size i = 0; i < initialTemp_.size(); i++) {
+                exponent_[i] = -log(finalTemp_[i] / initialTemp_[i]) * coeff;
+            }
         }
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
-            for (Size i = 0; i < initialTemp_.size(); i++)
+            for (Size i = 0; i < initialTemp_.size(); i++) {
                 newTemp[i] = initialTemp_[i] * exp(-exponent_[i] * std::pow(steps[i], inverseN_));
+            }
         }
     private:
         Real inverseN_;
@@ -476,20 +486,22 @@ namespace QuantLib
                 ofssetPoint[i] += stepSize_;
                 finiteDiffs[i] = bounded_[i] * std::abs((problem_->value(ofssetPoint) - currentValue) / stepSize_);
                 ofssetPoint[i] -= stepSize_;
-                if (finiteDiffs[i] < minSize_)
+                if (finiteDiffs[i] < minSize_) {
                     finiteDiffs[i] = minSize_;
-                if (finiteDiffs[i] > finiteDiffMax)
+                }
+                if (finiteDiffs[i] > finiteDiffMax) {
                     finiteDiffMax = finiteDiffs[i];
+                }
             }
             for (Size i = 0; i < N_; i++) {
                 Real tRatio = initialTemp_[i] / currTemp[i];
                 Real sRatio = finiteDiffMax / finiteDiffs[i];
-                if (sRatio*tRatio < functionTol_)
+                if (sRatio * tRatio < functionTol_) {
                     steps[i] = std::pow(std::fabs(std::log(functionTol_)),
                                         Integer(N_));
-                else
-                    steps[i] = std::pow(std::fabs(std::log(sRatio*tRatio)),
-                                        Integer(N_));
+                } else {
+                    steps[i] = std::pow(std::fabs(std::log(sRatio * tRatio)), Integer(N_));
+                }
             }
         }
     private:

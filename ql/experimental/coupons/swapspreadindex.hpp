@@ -74,10 +74,11 @@ namespace QuantLib {
         Real f2 = swapIndex2_->pastFixing(fixingDate);
         // if one of the fixings is missing we return null, indicating
         // a missing fixing for the spread index
-        if(f1 == Null<Real>() || f2 == Null<Real>())
+        if (f1 == Null<Real>() || f2 == Null<Real>()) {
             return Null<Real>();
-        else
+        } else {
             return gearing1_ * f1 + gearing2_ * f2;
+        }
     }
 
 }

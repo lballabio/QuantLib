@@ -81,8 +81,9 @@ namespace QuantLib {
     void Basket::setLossModel(
         const ext::shared_ptr<DefaultLossModel>& lossModel) {
 
-        if (lossModel_)
+        if (lossModel_) {
             unregisterWith(lossModel_);
+        }
         lossModel_ = lossModel;
         if (lossModel_) {
             //recovery quotes, defaults(once Issuer is observable)etc might 
@@ -117,9 +118,10 @@ namespace QuantLib {
     Disposable<vector<Real> > Basket::probabilities(const Date& d) const {
         vector<Real> prob(size());
         vector<DefaultProbKey> defKeys = defaultKeys();
-        for (Size j = 0; j < size(); j++)
-            prob[j] = pool_->get(pool_->names()[j]).defaultProbability(
-                defKeys[j])->defaultProbability(d);
+        for (Size j = 0; j < size(); j++) {
+            prob[j] =
+                pool_->get(pool_->names()[j]).defaultProbability(defKeys[j])->defaultProbability(d);
+        }
         return prob;
     }
 
@@ -135,13 +137,14 @@ namespace QuantLib {
                 /* \todo If the event has not settled one would need to 
                 introduce some model recovery rate (independently of a loss 
                 model) This remains to be done.
-                */  
-                if(credEvent->hasSettled())
-                    loss += claim_->amount(credEvent->date(),
-                            // notionals_[i],
-                            exposure(pool_->names()[i], credEvent->date()),
-                            credEvent->settlement().recoveryRate(
-                                pool_->defaultKeys()[i].seniority()));
+                */
+                if (credEvent->hasSettled()) {
+                    loss += claim_->amount(
+                        credEvent->date(),
+                        // notionals_[i],
+                        exposure(pool_->names()[i], credEvent->date()),
+                        credEvent->settlement().recoveryRate(pool_->defaultKeys()[i].seniority()));
+                }
             }
         }
         return loss;
@@ -179,12 +182,12 @@ namespace QuantLib {
     Disposable<std::vector<Size> > 
         Basket::liveList(const Date& endDate) const {
         std::vector<Size> calcBufferLiveList;
-        for (Size i = 0; i < size(); i++)
-            if (!pool_->get(pool_->names()[i]).defaultedBetween(
-                    refDate_,
-                    endDate,
-                    pool_->defaultKeys()[i]))
+        for (Size i = 0; i < size(); i++) {
+            if (!pool_->get(pool_->names()[i])
+                     .defaultedBetween(refDate_, endDate, pool_->defaultKeys()[i])) {
                 calcBufferLiveList.push_back(i);
+            }
+        }
 
         return calcBufferLiveList;
     }
@@ -193,10 +196,9 @@ namespace QuantLib {
         Real notional = 0;
         vector<DefaultProbKey> defKeys = defaultKeys();
         for (Size i = 0; i < size(); i++) {
-            if (!pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
-                                                        endDate,
-                                                        defKeys[i]))
+            if (!pool_->get(pool_->names()[i]).defaultedBetween(refDate_, endDate, defKeys[i])) {
                 notional += notionals_[i];
+            }
         }
         return notional;
     }
@@ -209,10 +211,11 @@ namespace QuantLib {
 
         std::vector<Real> calcBufferNotionals;
         const std::vector<Size>& alive = liveList(endDate);
-        for(Size i=0; i<alive.size(); i++)
+        for (Size i = 0; i < alive.size(); i++) {
             calcBufferNotionals.push_back(
                 exposure(pool_->names()[i], endDate)
-                );// some better way to trim it? 
+                );// some better way to trim it?
+        }
         return calcBufferNotionals;
     }
 
@@ -223,9 +226,11 @@ namespace QuantLib {
         vector<Real> prob;
         const std::vector<Size>& alive = liveList();
 
-        for(Size i=0; i<alive.size(); i++)
-            prob.push_back(pool_->get(pool_->names()[i]).defaultProbability(
-                pool_->defaultKeys()[i])->defaultProbability(d, true));
+        for (Size i = 0; i < alive.size(); i++) {
+            prob.push_back(pool_->get(pool_->names()[i])
+                               .defaultProbability(pool_->defaultKeys()[i])
+                               ->defaultProbability(d, true));
+        }
         return prob;
     }
 
@@ -263,8 +268,9 @@ namespace QuantLib {
 
         const std::vector<Size>& alive = liveList(endDate);
         std::vector<std::string> calcBufferNames;
-        for(Size i=0; i<alive.size(); i++)
+        for (Size i = 0; i < alive.size(); i++) {
             calcBufferNames.push_back(pool_->names()[alive[i]]);
+        }
         return calcBufferNames;
     }
 
@@ -276,8 +282,9 @@ namespace QuantLib {
 
         const std::vector<Size>& alive = liveList(endDate);
         vector<DefaultProbKey> defKeys;
-        for(Size i=0; i<alive.size(); i++)
+        for (Size i = 0; i < alive.size(); i++) {
             defKeys.push_back(pool_->defaultKeys()[alive[i]]);
+        }
         return defKeys;
     }
 
@@ -310,7 +317,9 @@ namespace QuantLib {
         calculate();
         // if eaten up all the tranche the prob of losing any amount is 1 
         //  (we have already lost it)
-        if(evalDateRemainingNot_ == 0.) return 1.;
+        if (evalDateRemainingNot_ == 0.) {
+            return 1.;
+        }
 
         // Turn to live (remaining) tranche units to feed into the model request
         Real xPtfl = attachmentAmount_ + 
@@ -319,7 +328,9 @@ namespace QuantLib {
             (detachmentAmount_-evalDateAttachAmount_);
         // in live tranche fractional units
         // if the level falls within realized losses the prob is 1.
-        if(xPtfl < 0.) return 1.;
+        if (xPtfl < 0.) {
+            return 1.;
+        }
 
         return lossModel_->probOverLoss(d, xPrim);
     }
@@ -355,8 +366,9 @@ namespace QuantLib {
         Basket::probsBeingNthEvent(Size n, const Date& d) const {
 
         Size alreadyDefaulted = pool_->size() - remainingNames().size();
-        if(alreadyDefaulted >=n) 
+        if (alreadyDefaulted >= n) {
             return std::vector<Probability>(remainingNames().size(), 0.);
+        }
 
         calculate();
         return lossModel_->probsBeingNthEvent(n-alreadyDefaulted, d);

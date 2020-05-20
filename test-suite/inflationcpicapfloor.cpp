@@ -304,9 +304,15 @@ namespace inflation_cpi_capfloor_test {
             cStrikesUK.clear();
             fStrikesUK.clear();
             cfMaturitiesUK.clear();
-            for(Size i = 0; i < ncStrikes; i++) cStrikesUK.push_back(cStrike[i]);
-            for(Size i = 0; i < nfStrikes; i++) fStrikesUK.push_back(fStrike[i]);
-            for(Size i = 0; i < ncfMaturities; i++) cfMaturitiesUK.push_back(cfMat[i]);
+            for (Size i = 0; i < ncStrikes; i++) {
+                cStrikesUK.push_back(cStrike[i]);
+            }
+            for (Size i = 0; i < nfStrikes; i++) {
+                fStrikesUK.push_back(fStrike[i]);
+            }
+            for (Size i = 0; i < ncfMaturities; i++) {
+                cfMaturitiesUK.push_back(cfMat[i]);
+            }
             cPriceUK = ext::make_shared<Matrix>(ncStrikes, ncfMaturities);
             fPriceUK = ext::make_shared<Matrix>(nfStrikes, ncfMaturities);
             for(Size i = 0; i < ncStrikes; i++) {

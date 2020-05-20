@@ -107,7 +107,9 @@ namespace QuantLib {
         //QL_REQUIRE(info != 6, "MINPACK: ftol is too small. no further "
         //                               "reduction in the sum of squares "
         //                               "is possible.");
-        if (info != 6) ecType = QuantLib::EndCriteria::StationaryFunctionValue;
+        if (info != 6) {
+            ecType = QuantLib::EndCriteria::StationaryFunctionValue;
+        }
         //QL_REQUIRE(info != 5, "MINPACK: number of calls to fcn has "
         //                               "reached or exceeded maxfev.");
         endCriteria.checkMaxIterations(nfev, ecType);

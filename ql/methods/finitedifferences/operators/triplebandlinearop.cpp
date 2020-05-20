@@ -324,8 +324,9 @@ namespace QuantLib {
             rim1 = ri;
         }
         // cannot be j>=0 with Size j
-        for (Size j=layout->size()-2; j>0; --j)
-            retVal[reverseIndex_[j]] -= tmp[j+1]*retVal[reverseIndex_[j+1]];
+        for (Size j = layout->size() - 2; j > 0; --j) {
+            retVal[reverseIndex_[j]] -= tmp[j + 1] * retVal[reverseIndex_[j + 1]];
+        }
         retVal[reverseIndex_[0]] -= tmp[1]*retVal[reverseIndex_[1]];
 
         return retVal;

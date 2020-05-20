@@ -55,9 +55,9 @@ void QuoteTest::testObservable() {
     f.registerWith(me);
     me->setValue(3.14);
 
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of quote change");
-
+    }
 }
 
 void QuoteTest::testObservableHandle() {
@@ -70,15 +70,16 @@ void QuoteTest::testObservableHandle() {
     f.registerWith(h);
 
     me1->setValue(3.14);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of quote change");
+    }
 
     f.lower();
     ext::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of quote change");
-
+    }
 }
 
 void QuoteTest::testDerived() {
@@ -97,9 +98,10 @@ void QuoteTest::testDerived() {
         DerivedQuote<unary_f> derived(h,funcs[i]);
         Real x = derived.value(),
              y = funcs[i](me->value());
-        if (std::fabs(x-y) > 1.0e-10)
+        if (std::fabs(x - y) > 1.0e-10) {
             BOOST_FAIL("derived quote yields " << x << "\n"
-                       << "function result is " << y);
+                                               << "function result is " << y);
+        }
     }
 }
 
@@ -118,9 +120,10 @@ void QuoteTest::testComposite() {
         CompositeQuote<binary_f> composite(h1,h2,funcs[i]);
         Real x = composite.value(),
              y = funcs[i](me1->value(),me2->value());
-        if (std::fabs(x-y) > 1.0e-10)
+        if (std::fabs(x - y) > 1.0e-10) {
             BOOST_FAIL("composite quote yields " << x << "\n"
-                       << "function result is " << y);
+                                                 << "function result is " << y);
+        }
     }
 }
 
@@ -145,22 +148,27 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Rate expectedForwardValue = euribor->fixing(fixingDate, true);
     // we test if the forward value given by the quote is consistent
     // with the one directly given by the index
-    if (std::fabs(forwardValue-expectedForwardValue) > 1.0e-15)
+    if (std::fabs(forwardValue - expectedForwardValue) > 1.0e-15) {
         BOOST_FAIL("Foward Value Quote quote yields " << forwardValue << "\n"
-                   << "expected result is " << expectedForwardValue);
+                                                      << "expected result is "
+                                                      << expectedForwardValue);
+    }
     // then we test the observer/observable chain
     Flag f;
     f.registerWith(forwardValueQuote);
     forwardQuote->setValue(0.04);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of quote change");
+    }
 
     // and we retest if the values are still matching
     forwardValue =  forwardValueQuote->value();
     expectedForwardValue = euribor->fixing(fixingDate, true);
-    if (std::fabs(forwardValue-expectedForwardValue) > 1.0e-15)
+    if (std::fabs(forwardValue - expectedForwardValue) > 1.0e-15) {
         BOOST_FAIL("Foward Value Quote quote yields " << forwardValue << "\n"
-                   << "expected result is " << expectedForwardValue);
+                                                      << "expected result is "
+                                                      << expectedForwardValue);
+    }
     // we test the ImpliedStdevQuote class
     f.unregisterWith(forwardValueQuote);
     f.lower();
@@ -179,22 +187,24 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
         blackFormulaImpliedStdDev(optionType, strike,
                                   forwardQuote->value(), price,
                                   1.0, 0.0, guess, 1.0e-6);
-    if (std::fabs(impliedStdev-expectedImpliedStdev) > 1.0e-15)
-        BOOST_FAIL("\nimpliedStdevQuote yields :" << impliedStdev <<
-                   "\nexpected result is       :" << expectedImpliedStdev);
+    if (std::fabs(impliedStdev - expectedImpliedStdev) > 1.0e-15) {
+        BOOST_FAIL("\nimpliedStdevQuote yields :" << impliedStdev << "\nexpected result is       :"
+                                                  << expectedImpliedStdev);
+    }
     // then we test the observer/observable chain
     ext::shared_ptr<Quote> quote = impliedStdevQuote;
     f.registerWith(quote);
     forwardQuote->setValue(0.05);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of quote change");
+    }
     quote->value();
     f.lower();
     quote->value();
     priceQuote->setValue(0.11);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of quote change");
-
+    }
 }
 
 

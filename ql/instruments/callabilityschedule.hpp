@@ -70,10 +70,11 @@ namespace QuantLib {
 
     inline void Callability::accept(AcyclicVisitor& v){
         Visitor<Callability>* v1 = dynamic_cast<Visitor<Callability>*>(&v);
-        if(v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             Event::accept(v);
+        }
     }
 
     typedef std::vector<ext::shared_ptr<Callability> > CallabilitySchedule;

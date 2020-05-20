@@ -154,8 +154,9 @@ namespace QuantLib {
 
             void validate() {
 
-                if ((adjustments_ & KahaleInterpolation) != 0)
+                if ((adjustments_ & KahaleInterpolation) != 0) {
                     addAdjustment(KahaleSmile);
+                }
 
                 if ((adjustments_ & KahaleSmile) != 0 &&
                     (adjustments_ & SmileDeleteArbitragePoints) != 0) {
@@ -361,8 +362,9 @@ namespace QuantLib {
             const std::vector<bool> &fixParameters = std::vector<bool>()) {
 
             std::vector<ext::shared_ptr<CalibrationHelper> > tmp(helpers.size());
-            for (Size i=0; i<helpers.size(); ++i)
+            for (Size i = 0; i < helpers.size(); ++i) {
                 tmp[i] = ext::static_pointer_cast<CalibrationHelper>(helpers[i]);
+            }
 
             calibrate(tmp, method, endCriteria, constraint, weights, fixParameters);
         }

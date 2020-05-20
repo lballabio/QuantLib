@@ -42,10 +42,11 @@ namespace QuantLib {
     }
 
     Real CEVRNDCalculator::massAtZero(Time t) const {
-        if (delta_ < 2.0)
+        if (delta_ < 2.0) {
             return 1.0-boost::math::gamma_p(-0.5*delta_+1.0,x0_/(2.0*t));
-        else
+        } else {
             return 0.0;
+        }
     }
 
     Real CEVRNDCalculator::X(Real f) const {
@@ -75,14 +76,15 @@ namespace QuantLib {
     Real CEVRNDCalculator::cdf(Real f, Time t) const {
         const Real y = X(f);
 
-        if (delta_ < 2.0)
+        if (delta_ < 2.0) {
             return 1.0 - boost::math::cdf(
                 boost::math::non_central_chi_squared_distribution<Real>(
                     2.0-delta_, y/t), x0_/t);
-        else
-            return 1.0 - boost::math::cdf(
-                boost::math::non_central_chi_squared_distribution<Real>(
-                    delta_, x0_/t), y/t);
+        } else {
+            return 1.0 - boost::math::cdf(boost::math::non_central_chi_squared_distribution<Real>(
+                                              delta_, x0_ / t),
+                                          y / t);
+        }
     }
 
     Real CEVRNDCalculator::sankaranApprox(Real c, Time t, Real x) const {
@@ -105,8 +107,9 @@ namespace QuantLib {
         using namespace ext::placeholders;
 
         if (delta_ < 2.0) {
-            if (f0_ < QL_EPSILON || q < massAtZero(t))
+            if (f0_ < QL_EPSILON || q < massAtZero(t)) {
                 return 0.0;
+            }
 
             const Real x = InverseCumulativeNormal()(1-q);
 

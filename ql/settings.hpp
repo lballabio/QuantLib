@@ -131,10 +131,11 @@ namespace QuantLib {
     // inline
 
     inline Settings::DateProxy::operator Date() const {
-        if (value() == Date())
+        if (value() == Date()) {
             return Date::todaysDate();
-        else
+        } else {
             return value();
+        }
     }
 
     inline Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {

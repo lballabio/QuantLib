@@ -52,8 +52,9 @@ namespace QuantLib {
 
         rng_ = MersenneTwisterUniformRng(init);
 
-        for (unsigned long i=0; i<skip ; i++)
+        for (unsigned long i = 0; i < skip; i++) {
             rng_.nextInt32();
+        }
     }
 
     unsigned long SeedGenerator::get() {

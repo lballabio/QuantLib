@@ -63,11 +63,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return detail::avgInflation;
+            }
 
             // could/should extrapolate
             return detail::avgInflation;
@@ -139,12 +141,14 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return detail::avgInflation;
-        
+            }
+
             // could/should extrapolate
             return detail::avgInflation;
         }

@@ -45,13 +45,15 @@ namespace QuantLib {
     }
 
     bool EurodollarFuturesImpliedStdDevQuote::isValid() const {
-        if (forward_.empty() || !forward_->isValid())
+        if (forward_.empty() || !forward_->isValid()) {
             return false;
+        }
         Real forwardValue = 100.0-forward_->value();
-        if (strike_>forwardValue)
+        if (strike_ > forwardValue) {
             return !putPrice_.empty() && putPrice_->isValid();
-        else
+        } else {
             return !callPrice_.empty() && callPrice_->isValid();
+        }
     }
 
     void EurodollarFuturesImpliedStdDevQuote::performCalculations() const {

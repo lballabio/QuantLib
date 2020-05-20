@@ -299,10 +299,11 @@ void SwapTest::testInArrears() {
     Decimal storedValue = -144813.0;
     Real tolerance = 1.0;
 
-    if (std::fabs(swap.NPV()-storedValue) > tolerance)
+    if (std::fabs(swap.NPV() - storedValue) > tolerance) {
         BOOST_ERROR("Wrong NPV calculation:\n"
                     << "    expected:   " << storedValue << "\n"
                     << "    calculated: " << swap.NPV());
+    }
 }
 
 void SwapTest::testCachedValue() {
@@ -321,17 +322,19 @@ void SwapTest::testCachedValue() {
 
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
 
-    Real cachedNPV;  
-    if (IborCoupon::usingAtParCoupons())
+    Real cachedNPV;
+    if (IborCoupon::usingAtParCoupons()) {
         cachedNPV = -5.872863313209;
-    else
+    } else {
         cachedNPV = -5.872342992212;
+    }
 
-    if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
+    if (std::fabs(swap->NPV() - cachedNPV) > 1.0e-11) {
         BOOST_ERROR("failed to reproduce cached swap value:\n"
-                    << std::fixed << std::setprecision(12)
-                    << "    calculated: " << swap->NPV() << "\n"
+                    << std::fixed << std::setprecision(12) << "    calculated: " << swap->NPV()
+                    << "\n"
                     << "    expected:   " << cachedNPV);
+    }
 }
 
 

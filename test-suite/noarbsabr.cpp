@@ -37,12 +37,13 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
 
     QuantLib::detail::D0Interpolator d(forward, tau, alpha, beta, nu, rho);
 
-    if (std::fabs(d() * QuantLib::detail::NoArbSabrModel::nsim - (Real)absorptions) > 0.1)
+    if (std::fabs(d() * QuantLib::detail::NoArbSabrModel::nsim - (Real)absorptions) > 0.1) {
         BOOST_ERROR("failed to reproduce number of absorptions at sigmaI="
-                    << sigmaI << ", beta=" << beta << ", rho=" << rho << ", nu="
-                    << nu << " tau=" << tau << ": D0Interpolator says "
+                    << sigmaI << ", beta=" << beta << ", rho=" << rho << ", nu=" << nu
+                    << " tau=" << tau << ": D0Interpolator says "
                     << d() * QuantLib::detail::NoArbSabrModel::nsim
                     << " while the reference value is " << absorptions);
+    }
 
     return;
 }
@@ -91,32 +92,35 @@ void NoArbSabrTest::testConsistencyWithHagan() {
     NoArbSabrSmileSection noarbsabr(tau,f,boost::assign::list_of(alpha)(beta)(nu)(rho));
 
     Real absProb=noarbsabr.model()->absorptionProbability();
-    if( absProb > 1E-10 || absProb < 0.0 )
+    if (absProb > 1E-10 || absProb < 0.0) {
         BOOST_ERROR("absorption probability should be close to zero, but is " << absProb);
+    }
 
     Real strike = 0.0001;
     while (strike < 0.15) {
         // test vanilla prices
         Real sabrPrice = sabr.optionPrice(strike);
         Real noarbsabrPrice = noarbsabr.optionPrice(strike);
-        if (std::fabs(sabrPrice - noarbsabrPrice) > 1e-5)
-            BOOST_ERROR("incosistent Hagan price ("
-                        << sabrPrice << ") and noarb-sabr price ("
-                        << noarbsabrPrice << ") at strike " << strike);
+        if (std::fabs(sabrPrice - noarbsabrPrice) > 1e-5) {
+            BOOST_ERROR("incosistent Hagan price (" << sabrPrice << ") and noarb-sabr price ("
+                                                    << noarbsabrPrice << ") at strike " << strike);
+        }
         // test digitals
         Real sabrDigital = sabr.digitalOptionPrice(strike);
         Real noarbsabrDigital = noarbsabr.digitalOptionPrice(strike);
-        if (std::fabs(sabrDigital - noarbsabrDigital) > 1e-3)
-            BOOST_ERROR("incosistent Hagan digital ("
-                        << sabrDigital << ") and noarb-sabr digital ("
-                        << noarbsabrDigital << ") at strike " << strike);
+        if (std::fabs(sabrDigital - noarbsabrDigital) > 1e-3) {
+            BOOST_ERROR("incosistent Hagan digital (" << sabrDigital << ") and noarb-sabr digital ("
+                                                      << noarbsabrDigital << ") at strike "
+                                                      << strike);
+        }
         // test density
         Real sabrDensity = sabr.density(strike);
         Real noarbsabrDensity = noarbsabr.density(strike);
-        if (std::fabs(sabrDensity - noarbsabrDensity) > 1e-0)
-            BOOST_ERROR("incosistent Hagan density ("
-                        << sabrDensity << ") and noarb-sabr density ("
-                        << noarbsabrDensity << ") at strike " << strike);
+        if (std::fabs(sabrDensity - noarbsabrDensity) > 1e-0) {
+            BOOST_ERROR("incosistent Hagan density (" << sabrDensity << ") and noarb-sabr density ("
+                                                      << noarbsabrDensity << ") at strike "
+                                                      << strike);
+        }
         strike += 0.0001;
     }
 

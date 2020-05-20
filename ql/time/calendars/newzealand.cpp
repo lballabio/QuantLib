@@ -35,17 +35,15 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday or Tuesday)
-            || ((d == 1 || (d == 3 && (w == Monday || w == Tuesday))) &&
-                m == January)
+            || ((d == 1 || (d == 3 && (w == Monday || w == Tuesday))) && m == January)
             // Day after New Year's Day (possibly moved to Mon or Tuesday)
-            || ((d == 2 || (d == 4 && (w == Monday || w == Tuesday))) &&
-                m == January)
+            || ((d == 2 || (d == 4 && (w == Monday || w == Tuesday))) && m == January)
             // Anniversary Day, Monday nearest January 22nd
             || ((d >= 19 && d <= 25) && w == Monday && m == January)
             // Waitangi Day. February 6th
             || (d == 6 && m == February)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // ANZAC Day. April 25th
@@ -55,12 +53,11 @@ namespace QuantLib {
             // Labour Day, fourth Monday in October
             || ((d >= 22 && d <= 28) && w == Monday && m == October)
             // Christmas, December 25th (possibly Monday or Tuesday)
-            || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
-                && m == December)
+            || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday))) && m == December)
             // Boxing Day, December 26th (possibly Monday or Tuesday)
-            || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
-                && m == December))
+            || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday))) && m == December)) {
             return false;
+        }
         return true;
     }
 

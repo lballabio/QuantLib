@@ -43,8 +43,9 @@ namespace QuantLib {
         Disposable<Array> grid(Time t) const {
             Size i = this->timeGrid().index(t);
             Array grid(this->impl().size(i));
-            for (Size j=0; j<grid.size(); j++)
-                grid[j] = this->impl().underlying(i,j);
+            for (Size j = 0; j < grid.size(); j++) {
+                grid[j] = this->impl().underlying(i, j);
+            }
             return grid;
         }
         Real underlying(Size i, Size index) const {

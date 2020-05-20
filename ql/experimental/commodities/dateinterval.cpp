@@ -22,8 +22,9 @@
 namespace QuantLib {
 
     std::ostream& operator<<(std::ostream& out, const DateInterval& di) {
-        if (di.startDate_ == Date() || di.endDate_ == Date())
+        if (di.startDate_ == Date() || di.endDate_ == Date()) {
             return out << "Null<DateInterval>()";
+        }
         return out << di.startDate_ << " to " << di.endDate_;
     }
 

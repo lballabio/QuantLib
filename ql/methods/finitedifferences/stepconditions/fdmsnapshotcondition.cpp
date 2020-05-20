@@ -29,8 +29,9 @@ namespace QuantLib {
 
 
     void FdmSnapshotCondition::applyTo(Array& a, Time t) const {
-        if (t == t_)
+        if (t == t_) {
             values_ = a;
+        }
     }
 
 

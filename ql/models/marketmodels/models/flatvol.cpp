@@ -118,8 +118,9 @@ namespace QuantLib {
                  }
             }
             // no more use for the kk-th correlation matrix
-            while (kk<corrTimes.size() && corrTimes[kk]<=evolTimes[k])
+            while (kk < corrTimes.size() && corrTimes[kk] <= evolTimes[k]) {
                 ++kk;
+            }
 
             // make it symmetric
             for (Size i=0; i<numberOfRates_; ++i) {
@@ -169,10 +170,9 @@ namespace QuantLib {
         Size numberOfRates = rateTimes.size()-1;
 
         vector<Rate> initialRates(numberOfRates);
-        for (Size i=0; i<numberOfRates; ++i)
-            initialRates[i] = yieldCurve_->forwardRate(rateTimes[i],
-                                                       rateTimes[i+1],
-                                                       Simple);
+        for (Size i = 0; i < numberOfRates; ++i) {
+            initialRates[i] = yieldCurve_->forwardRate(rateTimes[i], rateTimes[i + 1], Simple);
+        }
 
         vector<Volatility> displacedVolatilities(numberOfRates);
         for (Size i=0; i<numberOfRates; ++i) {

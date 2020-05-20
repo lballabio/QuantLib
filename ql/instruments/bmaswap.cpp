@@ -56,8 +56,9 @@ namespace QuantLib {
             .withPaymentAdjustment(bmaSchedule.businessDayConvention());
 
         for (Size j=0; j<2; ++j) {
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+            for (Leg::iterator i = legs_[j].begin(); i != legs_[j].end(); ++i) {
                 registerWith(*i);
+            }
         }
 
         switch (type_) {

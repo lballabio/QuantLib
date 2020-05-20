@@ -138,11 +138,13 @@ namespace QuantLib {
                             ? (*i)->amount() * disTs_->discount((*i)->date())
                             : 0.0;
             }
-            if (j == 0)
+            if (j == 0) {
                 npv *= -1.0;
+            }
         }
-        if (swap_->type() == VanillaSwap::Receiver)
+        if (swap_->type() == VanillaSwap::Receiver) {
             npv *= -1.0;
+        }
 
         return std::max(0.0, npv);
     }

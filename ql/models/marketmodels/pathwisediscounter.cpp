@@ -34,8 +34,9 @@ MarketModelPathwiseDiscounter::MarketModelPathwiseDiscounter(Time paymentTime,
 
         // handle the case where the payment is in the last
         // period or after the last period
-        if (before_ > rateTimes.size()-2)
-            before_ =  rateTimes.size()-2;
+        if (before_ > rateTimes.size() - 2) {
+            before_ = rateTimes.size() - 2;
+        }
 
         beforeWeight_=1.0-(paymentTime-rateTimes[before_])/
             (rateTimes[before_+1]-rateTimes[before_]);
@@ -43,9 +44,9 @@ MarketModelPathwiseDiscounter::MarketModelPathwiseDiscounter(Time paymentTime,
         postWeight_  = 1.0 - beforeWeight_;
         taus_.resize(numberRates_);
 
-        for (Size i=0; i < numberRates_; ++i)
-            taus_[i] = rateTimes[i+1] - rateTimes[i];
-
+        for (Size i = 0; i < numberRates_; ++i) {
+            taus_[i] = rateTimes[i + 1] - rateTimes[i];
+        }
 }
 
 void MarketModelPathwiseDiscounter::getFactors(
@@ -57,15 +58,18 @@ void MarketModelPathwiseDiscounter::getFactors(
     Real preDF = Discounts[currentStep][before_];
     Real postDF = Discounts[currentStep][before_+1];
 
-    for (Size i=before_+1; i<numberRates_; ++i)
-        factors[i+1] =0.0;
+    for (Size i = before_ + 1; i < numberRates_; ++i) {
+        factors[i + 1] = 0.0;
+    }
 
     if (postWeight_==0.0)
     {
         factors[0] = preDF;
 
-        for (Size i=0; i<before_; ++i)
-            factors[i+1] = -preDF*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
+        for (Size i = 0; i < before_; ++i) {
+            factors[i + 1] =
+                -preDF * taus_[i] * Discounts[currentStep][i + 1] / Discounts[currentStep][i];
+        }
 
         factors[before_+1]=0.0;
 
@@ -76,8 +80,9 @@ void MarketModelPathwiseDiscounter::getFactors(
 
     factors[0] = df;
 
-    for (Size i=0; i<=before_; ++i)
-       factors[i+1] = -df*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
+    for (Size i = 0; i <= before_; ++i) {
+        factors[i + 1] = -df * taus_[i] * Discounts[currentStep][i + 1] / Discounts[currentStep][i];
+    }
 
     factors[before_+1] *= postWeight_;
 

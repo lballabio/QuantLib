@@ -79,18 +79,21 @@ namespace QuantLib {
         Day d = dayOfYear(); // dayOfYear is 1 based
         Integer m = d/30 + 1;
         bool leap = isLeap(year());
-        while (d <= monthOffset(Month(m),leap))
+        while (d <= monthOffset(Month(m), leap)) {
             --m;
-        while (d > monthOffset(Month(m+1),leap))
+        }
+        while (d > monthOffset(Month(m + 1), leap)) {
             ++m;
+        }
         return Month(m);
     }
 
     Year Date::year() const {
         Year y = (serialNumber_ / 365)+1900;
         // yearOffset(y) is December 31st of the preceding year
-        if (serialNumber_ <= yearOffset(y))
+        if (serialNumber_ <= yearOffset(y)) {
             --y;
+        }
         return y;
     }
 
@@ -156,8 +159,9 @@ namespace QuantLib {
                       << "It must be in [1901,2199]");
 
             Integer length = monthLength(Month(m), isLeap(y));
-            if (d > length)
+            if (d > length) {
                 d = length;
+            }
 
             return Date(d, Month(m), y);
           }
@@ -170,8 +174,9 @@ namespace QuantLib {
                         "year " << y << " out of bounds. "
                         << "It must be in [1901,2199]");
 
-              if (d == 29 && m == February && !isLeap(y))
+              if (d == 29 && m == February && !isLeap(y)) {
                   d = 28;
+              }
 
               return Date(d,m,y);
           }
@@ -769,8 +774,9 @@ namespace QuantLib {
     Date Date::todaysDate() {
         std::time_t t;
 
-        if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
+        if (std::time(&t) == std::time_t(-1)) { // -1 means time() didn't work
             return Date();
+        }
         std::tm *lt = std::localtime(&t);
         return Date(Day(lt->tm_mday),
                         Month(lt->tm_mon+1),

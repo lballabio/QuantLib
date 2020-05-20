@@ -80,36 +80,36 @@ void DefaultProbabilityCurveTest::testDefaultProbability() {
 
         Probability pBetween = pEnd - pStart;
 
-        if (std::fabs(pBetween - pBetweenComputed) > tolerance)
-            BOOST_ERROR(
-                "Failed to reproduce probability(d1, d2) "
-                << "for default probability structure\n"
-                << std::setprecision(12)
-                << "    calculated probability: " << pBetweenComputed << "\n"
-                << "    expected probability:   " << pBetween);
+        if (std::fabs(pBetween - pBetweenComputed) > tolerance) {
+            BOOST_ERROR("Failed to reproduce probability(d1, d2) "
+                        << "for default probability structure\n"
+                        << std::setprecision(12)
+                        << "    calculated probability: " << pBetweenComputed << "\n"
+                        << "    expected probability:   " << pBetween);
+        }
 
         Time t2 = dayCounter.yearFraction(today, endDate);
         Probability timeProbability = flatHazardRate.defaultProbability(t2);
         Probability dateProbability =
             flatHazardRate.defaultProbability(endDate);
 
-        if (std::fabs(timeProbability - dateProbability) > tolerance)
-            BOOST_ERROR(
-                "single-time probability and single-date probability do not match\n"
-                << std::setprecision(10)
-                << "    time probability: " << timeProbability << "\n"
-                << "    date probability: " << dateProbability);
+        if (std::fabs(timeProbability - dateProbability) > tolerance) {
+            BOOST_ERROR("single-time probability and single-date probability do not match\n"
+                        << std::setprecision(10) << "    time probability: " << timeProbability
+                        << "\n"
+                        << "    date probability: " << dateProbability);
+        }
 
         Time t1 = dayCounter.yearFraction(today, startDate);
         timeProbability = flatHazardRate.defaultProbability(t1, t2);
         dateProbability = flatHazardRate.defaultProbability(startDate, endDate);
 
-        if (std::fabs(timeProbability - dateProbability) > tolerance)
-            BOOST_ERROR(
-                "double-time probability and double-date probability do not match\n"
-                << std::setprecision(10)
-                << "    time probability: " << timeProbability << "\n"
-                << "    date probability: " << dateProbability);
+        if (std::fabs(timeProbability - dateProbability) > tolerance) {
+            BOOST_ERROR("double-time probability and double-date probability do not match\n"
+                        << std::setprecision(10) << "    time probability: " << timeProbability
+                        << "\n"
+                        << "    date probability: " << dateProbability);
+        }
     }
 }
 
@@ -138,12 +138,12 @@ void DefaultProbabilityCurveTest::testFlatHazardRate() {
         Probability probability = 1.0 - std::exp(-hazardRate * t);
         Probability computedProbability = flatHazardRate.defaultProbability(t);
 
-        if (std::fabs(probability - computedProbability) > tolerance)
-            BOOST_ERROR(
-                "Failed to reproduce probability for flat hazard rate\n"
-                << std::setprecision(10)
-                << "    calculated probability: " << computedProbability << "\n"
-                << "    expected probability:   " << probability);
+        if (std::fabs(probability - computedProbability) > tolerance) {
+            BOOST_ERROR("Failed to reproduce probability for flat hazard rate\n"
+                        << std::setprecision(10)
+                        << "    calculated probability: " << computedProbability << "\n"
+                        << "    expected probability:   " << probability);
+        }
     }
 }
 
@@ -183,14 +183,11 @@ namespace {
 
         std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
-        for(Size i=0; i<n.size(); i++)
-            helpers.push_back(
-                ext::shared_ptr<DefaultProbabilityHelper>(
-                    new SpreadCdsHelper(quote[i], Period(n[i], Years),
-                                        settlementDays, calendar,
-                                        frequency, convention, rule,
-                                        dayCounter, recoveryRate,
-                                        discountCurve)));
+        for (Size i = 0; i < n.size(); i++) {
+            helpers.push_back(ext::shared_ptr<DefaultProbabilityHelper>(new SpreadCdsHelper(
+                quote[i], Period(n[i], Years), settlementDays, calendar, frequency, convention,
+                rule, dayCounter, recoveryRate, discountCurve)));
+        }
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(
@@ -223,13 +220,13 @@ namespace {
             // test
             Rate inputRate = quote[i];
             Rate computedRate = cds.fairSpread();
-            if (std::fabs(inputRate - computedRate) > tolerance)
-                BOOST_ERROR(
-                    "\nFailed to reproduce fair spread for " << n[i] <<
-                    "Y credit-default swaps\n"
-                    << std::setprecision(10)
-                    << "    computed rate: " << io::rate(computedRate) << "\n"
-                    << "    input rate:    " << io::rate(inputRate));
+            if (std::fabs(inputRate - computedRate) > tolerance) {
+                BOOST_ERROR("\nFailed to reproduce fair spread for "
+                            << n[i] << "Y credit-default swaps\n"
+                            << std::setprecision(10)
+                            << "    computed rate: " << io::rate(computedRate) << "\n"
+                            << "    input rate:    " << io::rate(inputRate));
+            }
         }
     }
 
@@ -269,17 +266,12 @@ namespace {
 
         std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
-        for(Size i=0; i<n.size(); i++)
-            helpers.push_back(
-                ext::shared_ptr<DefaultProbabilityHelper>(
-                    new UpfrontCdsHelper(quote[i], fixedRate,
-                                         Period(n[i], Years),
-                                         settlementDays, calendar,
-                                         frequency, convention, rule,
-                                         dayCounter, recoveryRate,
-                                         discountCurve,
-                                         upfrontSettlementDays, 
-                                         true, true, Date(), Actual360(true))));
+        for (Size i = 0; i < n.size(); i++) {
+            helpers.push_back(ext::shared_ptr<DefaultProbabilityHelper>(new UpfrontCdsHelper(
+                quote[i], fixedRate, Period(n[i], Years), settlementDays, calendar, frequency,
+                convention, rule, dayCounter, recoveryRate, discountCurve, upfrontSettlementDays,
+                true, true, Date(), Actual360(true))));
+        }
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(
@@ -321,13 +313,13 @@ namespace {
             // test
             Rate inputUpfront = quote[i];
             Rate computedUpfront = cds.fairUpfront();
-            if (std::fabs(inputUpfront - computedUpfront) > tolerance)
-                BOOST_ERROR(
-                    "\nFailed to reproduce fair upfront for " << n[i] <<
-                    "Y credit-default swaps\n"
-                    << std::setprecision(10)
-                    << "    computed: " << io::rate(computedUpfront) << "\n"
-                    << "    expected: " << io::rate(inputUpfront));
+            if (std::fabs(inputUpfront - computedUpfront) > tolerance) {
+                BOOST_ERROR("\nFailed to reproduce fair upfront for "
+                            << n[i] << "Y credit-default swaps\n"
+                            << std::setprecision(10)
+                            << "    computed: " << io::rate(computedUpfront) << "\n"
+                            << "    expected: " << io::rate(inputUpfront));
+            }
         }
     }
 
@@ -423,8 +415,9 @@ void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
 
     // also ensure that we didn't override the flag permanently
     boost::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
-    if (flag != false)
+    if (flag != false) {
         BOOST_ERROR("Cash-flow settings improperly modified");
+    }
 }
 
 /* This test attempts to build a default curve from CDS spreads as of 1 Apr 2020. The spreads are real and from a 

@@ -38,9 +38,9 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Holy Thursday
-            || (dd == em-4)
+            || (dd == em - 4)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Labour Day
             || (d == 1 && m == May)
             // May Revolution
@@ -52,15 +52,16 @@ namespace QuantLib {
             // Death of General José de San Martín
             || (d >= 15 && d <= 21 && w == Monday && m == August)
             // Columbus Day
-            || ((d == 10 || d == 11 || d == 12 || d == 15 || d == 16)
-                && w == Monday && m == October)
+            ||
+            ((d == 10 || d == 11 || d == 12 || d == 15 || d == 16) && w == Monday && m == October)
             // Immaculate Conception
             || (d == 8 && m == December)
             // Christmas Eve
             || (d == 24 && m == December)
             // New Year's Eve
-            || ((d == 31 || (d == 30 && w == Friday)) && m == December))
+            || ((d == 31 || (d == 30 && w == Friday)) && m == December)) {
             return false;
+        }
         return true;
     }
 

@@ -80,10 +80,11 @@ namespace QuantLib {
                         true);
                 Real atmStrike = sec->atmLevel();
                 Real atmVol;
-                if (atmStrike == Null<Real>())
+                if (atmStrike == Null<Real>()) {
                     atmVol = sec->volatility(0.03);
-                else
+                } else {
                     atmVol = sec->volatility(atmStrike);
+                }
                 Real shift = sec->shift();
 
                 helper = ext::shared_ptr<SwaptionHelper>(new SwaptionHelper(
@@ -191,8 +192,9 @@ namespace QuantLib {
                 maturity -= (Real)years;
                 maturity *= 12.0;
                 Size months = (Size)std::floor(maturity + 0.5);
-                if (years == 0 && months == 0)
+                if (years == 0 && months == 0) {
                     months = 1; // ensure a maturity of at least one months
+                }
                 // maturity -= (Real)months; maturity *= 365.25;
                 // Size days = (Size)std::floor(maturity);
 

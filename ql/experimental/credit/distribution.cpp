@@ -62,8 +62,9 @@ namespace QuantLib {
                     << " out of range [" << x_.front() << "; "
                     << x_.back() + dx_.back() << "]");
         for (Size i = 0; i < x_.size(); i++) {
-            if (x_[i] > x)
+            if (x_[i] > x) {
                 return i - 1;
+            }
         }
         return x_.size() - 1;
     }
@@ -79,8 +80,9 @@ namespace QuantLib {
     void Distribution::add (Real value) {
     //-------------------------------------------------------------------------
         isNormalized_ = false;
-        if (value < x_.front()) underFlow_++;
-        else {
+        if (value < x_.front()) {
+            underFlow_++;
+        } else {
             for (Size i = 0; i < count_.size(); i++) {
                 if (x_[i] + dx_[i] > value) {
                     count_[i]++;
@@ -111,38 +113,41 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
     void Distribution::normalize () {
     //-------------------------------------------------------------------------
-        if (isNormalized_)
-            return;
+    if (isNormalized_) {
+        return;
+    }
 
-        int count = underFlow_ + overFlow_;
-        for (int i = 0; i < size_; i++)
-            count += count_[i];
+    int count = underFlow_ + overFlow_;
+    for (int i = 0; i < size_; i++) {
+        count += count_[i];
+    }
 
-        excessProbability_[0] = 1.0;
-        cumulativeExcessProbability_[0] = 0.0;
-        for (int i = 0; i < size_; i++) {
-            if (count > 0) {
-                density_[i] = 1.0 / dx_[i] * count_[i] / count;
-                if (count_[i] > 0)
-                    average_[i] /= count_[i];
+    excessProbability_[0] = 1.0;
+    cumulativeExcessProbability_[0] = 0.0;
+    for (int i = 0; i < size_; i++) {
+        if (count > 0) {
+            density_[i] = 1.0 / dx_[i] * count_[i] / count;
+            if (count_[i] > 0) {
+                average_[i] /= count_[i];
             }
-            if (density_[i] == 0.0)
-                average_[i] = x_[i] + dx_[i]/2;
+        }
+        if (density_[i] == 0.0) {
+            average_[i] = x_[i] + dx_[i] / 2;
+        }
 
-            cumulativeDensity_[i] = density_[i] * dx_[i];
-            if (i > 0) {
-                cumulativeDensity_[i] += cumulativeDensity_[i-1];
-                excessProbability_[i] = 1.0 - cumulativeDensity_[i-1];
-//                     excessProbability_[i] = excessProbability_[i-1]
-//                         - density_[i-1] * dx_[i-1];
-//                     cumulativeExcessProbability_[i]
-//                         = (excessProbability_[i-1] +
-//                            excessProbability_[i]) / 2 * dx_[i-1]
-//                         + cumulativeExcessProbability_[i-1];
-                cumulativeExcessProbability_[i]
-                    = excessProbability_[i-1] * dx_[i-1]
-                    + cumulativeExcessProbability_[i-1];
-            }
+        cumulativeDensity_[i] = density_[i] * dx_[i];
+        if (i > 0) {
+            cumulativeDensity_[i] += cumulativeDensity_[i - 1];
+            excessProbability_[i] = 1.0 - cumulativeDensity_[i - 1];
+            //                     excessProbability_[i] = excessProbability_[i-1]
+            //                         - density_[i-1] * dx_[i-1];
+            //                     cumulativeExcessProbability_[i]
+            //                         = (excessProbability_[i-1] +
+            //                            excessProbability_[i]) / 2 * dx_[i-1]
+            //                         + cumulativeExcessProbability_[i-1];
+            cumulativeExcessProbability_[i] =
+                excessProbability_[i - 1] * dx_[i - 1] + cumulativeExcessProbability_[i - 1];
+        }
         }
 
         isNormalized_ = true;
@@ -153,8 +158,9 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         normalize();
         for (int i = 0; i < size_; i++) {
-            if (cumulativeDensity_[i] > quantil)
+            if (cumulativeDensity_[i] > quantil) {
                 return x_[i] + dx_[i];
+            }
         }
         return x_.back() + dx_.back();
     }
@@ -178,10 +184,12 @@ namespace QuantLib {
         Real expected = 0;
         for (int i = 0; i < size_; i++) {
             Real x = x_[i] + dx_[i]/2;
-            if (x < a)
+            if (x < a) {
                 continue;
-            if (x > d)
+            }
+            if (x > d) {
                 break;
+            }
             expected += (x - a) * dx_[i] * density_[i];
         }
 
@@ -224,9 +232,11 @@ namespace QuantLib {
         QL_REQUIRE (x > 0, "x must be positive");
         normalize();
         for (int i = 0; i < size_; i++) {
-            if (x_[i] + dx_[i] + tiny >= x)
-                return ((x - x_[i]) * cumulativeDensity_[i]
-                     + (x_[i] + dx_[i] - x) * cumulativeDensity_[i-1]) / dx_[i];
+            if (x_[i] + dx_[i] + tiny >= x) {
+                return ((x - x_[i]) * cumulativeDensity_[i] +
+                        (x_[i] + dx_[i] - x) * cumulativeDensity_[i - 1]) /
+                       dx_[i];
+            }
         }
         QL_FAIL ("x = " << x << " beyond distribution cutoff "
                  << x_.back() + dx_.back());
@@ -258,8 +268,9 @@ namespace QuantLib {
         std::vector<Real>::iterator detachPosit = 
             std::find_if(x_.begin(), x_.end(), 
                          greater_than<Real>(detachmentPoint));
-        if(detachPosit != x_.end())
+        if (detachPosit != x_.end()) {
             x_.erase(detachPosit + 1, x_.end());
+        }
 
         size_ = x_.size();
         cumulativeDensity_.erase(cumulativeDensity_.begin() + size_, 
@@ -294,10 +305,12 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         // force equal constant bucket sizes
         QL_REQUIRE (d1.dx_[0] == d2.dx_[0], "bucket sizes differ in d1 and d2");
-        for (Size i = 1; i < d1.size(); i++)
-            QL_REQUIRE (d1.dx_[i] == d1.dx_[i-1], "bucket size varies in d1");
-        for (Size i = 1; i < d2.size(); i++)
-            QL_REQUIRE (d2.dx_[i] == d2.dx_[i-1], "bucket size varies in d2");
+        for (Size i = 1; i < d1.size(); i++) {
+            QL_REQUIRE(d1.dx_[i] == d1.dx_[i - 1], "bucket size varies in d1");
+        }
+        for (Size i = 1; i < d2.size(); i++) {
+            QL_REQUIRE(d2.dx_[i] == d2.dx_[i - 1], "bucket size varies in d2");
+        }
 
         // force offset 0
         QL_REQUIRE (d1.xmin_ == 0.0 && d2.xmin_ == 0.0,
@@ -309,8 +322,9 @@ namespace QuantLib {
 
         for (Size i1 = 0; i1 < d1.size(); i1++) {
             Real dx = d1.dx_[i1];
-            for (Size i2 = 0; i2 < d2.size(); i2++)
-                dist.density_[i1+i2] = d1.density_[i1] * d2.density_[i2] * dx;
+            for (Size i2 = 0; i2 < d2.size(); i2++) {
+                dist.density_[i1 + i2] = d1.density_[i1] * d2.density_[i2] * dx;
+            }
         }
 
         // update cumulated and excess
@@ -337,11 +351,13 @@ namespace QuantLib {
         Real expected = 0;
         Integer iVal = locate(confidenceLevel(percValue));
 
-        if(iVal == size_-1) return x_.back();
+        if (iVal == size_ - 1) {
+            return x_.back();
+        }
 
-        for (int i = iVal; i < size_; i++)
-            expected += x_[i] * 
-                (cumulativeDensity_[i] - cumulativeDensity_[i-1]);
+        for (int i = iVal; i < size_; i++) {
+            expected += x_[i] * (cumulativeDensity_[i] - cumulativeDensity_[i - 1]);
+        }
         return expected/(1.-cumulativeDensity_.at(iVal));
     }
 

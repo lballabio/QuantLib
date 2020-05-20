@@ -85,9 +85,9 @@ namespace QuantLib {
 
         std::vector<Time> fixedPayTimes(arguments_.fixedPayDates.size());
         Time valueTime = dayCounter.yearFraction(referenceDate,arguments_.fixedResetDates[0]);
-        for (Size i=0; i<fixedPayTimes.size(); i++)
-            fixedPayTimes[i] = dayCounter.yearFraction(referenceDate,
-                                                       arguments_.fixedPayDates[i]);
+        for (Size i = 0; i < fixedPayTimes.size(); i++) {
+            fixedPayTimes[i] = dayCounter.yearFraction(referenceDate, arguments_.fixedPayDates[i]);
+        }
 
         rStarFinder finder(*model_, arguments_.nominal, maturity, valueTime,
                            fixedPayTimes, amounts);

@@ -33,8 +33,9 @@ namespace QuantLib {
         bool valid = constraint.test(newParams);
         Integer icount = 0;
         while (!valid) {
-            if (icount > 200)
+            if (icount > 200) {
                 QL_FAIL("can't update linesearch");
+            }
             diff *= 0.5;
             icount ++;
             newParams = params + diff*direction;

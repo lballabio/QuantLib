@@ -153,10 +153,10 @@ namespace {
                           new PercentageStrikePayoff(types[i], moneyness[j]));
 
                 std::vector<Date> reset;
-                for (Date d = today + Period(frequencies[kk]);
-                     d < maturity->lastDate();
-                     d += Period(frequencies[kk]))
+                for (Date d = today + Period(frequencies[kk]); d < maturity->lastDate();
+                     d += Period(frequencies[kk])) {
                     reset.push_back(d);
+                }
 
                 ext::shared_ptr<PricingEngine> engine(new T(process));
 
@@ -318,8 +318,9 @@ void CliquetOptionTest::testMcPerformance() {
                           new PercentageStrikePayoff(types[i], moneyness[j]));
 
               std::vector<Date> reset;
-              for (Date d = today + tenor; d < maturity->lastDate(); d += tenor)
+              for (Date d = today + tenor; d < maturity->lastDate(); d += tenor) {
                   reset.push_back(d);
+              }
 
               CliquetOption option(payoff, maturity, reset);
 

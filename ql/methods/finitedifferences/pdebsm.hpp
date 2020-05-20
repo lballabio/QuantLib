@@ -42,7 +42,9 @@ namespace QuantLib {
             return process_->drift(t, x);
         }
         virtual Real discount(Time t, Real) const {
-            if (std::fabs(t) < 1e-8) t = 0;
+            if (std::fabs(t) < 1e-8) {
+                t = 0;
+            }
             return process_->riskFreeRate()->
                 forwardRate(t,t,Continuous,NoFrequency,true);
         }

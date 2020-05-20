@@ -121,14 +121,15 @@ namespace QuantLib {
     Disposable<Array>
     FdmHestonHullWhiteOp::apply_direction(Size direction,
                                           const Array& r) const {
-        if (direction == 0)
+        if (direction == 0) {
             return dxMap_.getMap().apply(r);
-        else if (direction == 1)
+        } else if (direction == 1) {
             return dyMap_.apply(r);
-        else if (direction == 2)
+        } else if (direction == 2) {
             return hullWhiteOp_.apply(r);
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
 
     Disposable<Array> FdmHestonHullWhiteOp::apply_mixed(const Array& r) const {
@@ -146,9 +147,9 @@ namespace QuantLib {
         }
         else if (direction == 2) {
             return hullWhiteOp_.solve_splitting(2, r, a);
-        }
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
     
     Disposable<Array> FdmHestonHullWhiteOp::preconditioner(const Array& r, 

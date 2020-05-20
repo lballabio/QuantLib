@@ -83,20 +83,23 @@ namespace QuantLib {
         // expected between caps and floors but that no overlap in the
         // output is allowed so no repeats or overlaps are used
         cfStrikes_ = std::vector<Rate>();
-        for(Size i = 0; i <fStrikes_.size(); i++)
-            cfStrikes_.push_back( fStrikes[i] );
+        for (Size i = 0; i < fStrikes_.size(); i++) {
+            cfStrikes_.push_back(fStrikes[i]);
+        }
         Real eps = 0.0000001;
         Rate maxFstrike = fStrikes_.back();
         for(Size i = 0; i < cStrikes_.size(); i++) {
             Rate k = cStrikes[i];
-            if (k > maxFstrike + eps) cfStrikes_.push_back(k);
+            if (k > maxFstrike + eps) {
+                cfStrikes_.push_back(k);
+            }
         }
 
         // final consistency checking
         QL_REQUIRE(cfStrikes_.size() > 2, "overall not enough strikes");
-        for (Size i = 1; i < cfStrikes_.size(); i++)
-            QL_REQUIRE( cfStrikes_[i] > cfStrikes_[i-1],
-                        "cfStrikes not increasing");
+        for (Size i = 1; i < cfStrikes_.size(); i++) {
+            QL_REQUIRE(cfStrikes_[i] > cfStrikes_[i - 1], "cfStrikes not increasing");
+        }
     }
 
     Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const

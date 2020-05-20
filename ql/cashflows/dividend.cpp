@@ -26,10 +26,11 @@ namespace QuantLib {
     void Dividend::accept(AcyclicVisitor& v) {
         Visitor<Dividend>* v1 =
             dynamic_cast<Visitor<Dividend>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             CashFlow::accept(v);
+        }
     }
 
     std::vector<ext::shared_ptr<Dividend> >

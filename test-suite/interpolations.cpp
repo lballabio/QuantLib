@@ -60,23 +60,26 @@ namespace {
     std::vector<Real> xRange(Real start, Real finish, Size points) {
         std::vector<Real> x(points);
         Real dx = (finish-start)/(points-1);
-        for (Size i=0; i<points-1; i++)
-            x[i] = start+i*dx;
+        for (Size i = 0; i < points - 1; i++) {
+            x[i] = start + i * dx;
+        }
         x[points-1] = finish;
         return x;
     }
 
     std::vector<Real> gaussian(const std::vector<Real>& x) {
         std::vector<Real> y(x.size());
-        for (Size i=0; i<x.size(); i++)
-            y[i] = std::exp(-x[i]*x[i]);
+        for (Size i = 0; i < x.size(); i++) {
+            y[i] = std::exp(-x[i] * x[i]);
+        }
         return y;
     }
 
     std::vector<Real> parabolic(const std::vector<Real>& x) {
         std::vector<Real> y(x.size());
-        for (Size i=0; i<x.size(); i++)
-            y[i] = -x[i]*x[i];
+        for (Size i = 0; i < x.size(); i++) {
+            y[i] = -x[i] * x[i];
+        }
         return y;
     }
 
@@ -246,11 +249,11 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         f.update();
         Real result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
-        if (std::fabs(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
+        if (std::fabs(result - tabulatedErrors[i]) > toleranceOnTabErr[i]) {
             BOOST_ERROR("Not-a-knot spline interpolation "
-                        << "\n    sample points:      " << n
-                        << "\n    norm of difference: " << result
-                        << "\n    it should be:       " << tabulatedErrors[i]);
+                        << "\n    sample points:      " << n << "\n    norm of difference: "
+                        << result << "\n    it should be:       " << tabulatedErrors[i]);
+        }
 
         // MC not-a-knot
         f = CubicInterpolation(x.begin(), x.end(), y.begin(),
@@ -260,12 +263,11 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         f.update();
         result = std::sqrt(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
-        if (std::fabs(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
+        if (std::fabs(result - tabulatedMCErrors[i]) > toleranceOnTabMCErr[i]) {
             BOOST_ERROR("MC Not-a-knot spline interpolation "
-                        << "\n    sample points:      " << n
-                        << "\n    norm of difference: " << result
-                        << "\n    it should be:       "
-                        << tabulatedMCErrors[i]);
+                        << "\n    sample points:      " << n << "\n    norm of difference: "
+                        << result << "\n    it should be:       " << tabulatedMCErrors[i]);
+        }
     }
 
 }
@@ -817,20 +819,25 @@ void InterpolationTest::testMultiSpline() {
 
     for (i = 0; i < 5; ++i) {
         Real temp = offsets[i];
-        for (j = 0; j < dim[i]; temp += r, ++j)
+        for (j = 0; j < dim[i]; temp += r, ++j) {
             grid[i].push_back(temp);
+        }
     }
 
     MultiCubicSpline<5>::data_table y5(dim);
 
-    for (i = 0; i < dim[0]; ++i)
-        for (j = 0; j < dim[1]; ++j)
-            for (k = 0; k < dim[2]; ++k)
-                for (l = 0; l < dim[3]; ++l)
-                    for (m = 0; m < dim[4]; ++m)
+    for (i = 0; i < dim[0]; ++i) {
+        for (j = 0; j < dim[1]; ++j) {
+            for (k = 0; k < dim[2]; ++k) {
+                for (l = 0; l < dim[3]; ++l) {
+                    for (m = 0; m < dim[4]; ++m) {
                         y5[i][j][k][l][m] =
-                            multif(grid[0][i], grid[1][j], grid[2][k],
-                                   grid[3][l], grid[4][m]);
+                            multif(grid[0][i], grid[1][j], grid[2][k], grid[3][l], grid[4][m]);
+                    }
+                }
+            }
+        }
+    }
 
     MultiCubicSpline<5> cs(grid, y5);
     /* it would fail with
@@ -840,10 +847,10 @@ void InterpolationTest::testMultiSpline() {
                 for (l = 0; l < dim[3]; ++l)
                     for (m = 0; m < dim[4]; ++m) {
     */
-    for (i = 1; i < dim[0]-1; ++i)
-        for (j = 1; j < dim[1]-1; ++j)
-            for (k = 1; k < dim[2]-1; ++k)
-                for (l = 1; l < dim[3]-1; ++l)
+    for (i = 1; i < dim[0] - 1; ++i) {
+        for (j = 1; j < dim[1] - 1; ++j) {
+            for (k = 1; k < dim[2] - 1; ++k) {
+                for (l = 1; l < dim[3] - 1; ++l) {
                     for (m = 1; m < dim[4]-1; ++m) {
                         s = grid[0][i];
                         t = grid[1][j];
@@ -865,6 +872,10 @@ void InterpolationTest::testMultiSpline() {
                                 << "\n    tolerance: " << tolerance);
                         }
                     }
+                }
+            }
+        }
+    }
 
 
     unsigned long seed = 42;
@@ -932,14 +943,12 @@ void InterpolationTest::testAsFunctor() {
     std::transform(BEGIN(x2), END(x2), y2.begin(), f);
     for (Size i=0; i<N; i++) {
         Real expected = 5.0-x2[i];
-        if (std::fabs(y2[i]-expected) > tolerance)
-            BOOST_ERROR(
-                "failed to reproduce " << io::ordinal(i+1) << " expected datum"
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << y2[i]
-                << std::scientific
-                << "\n    error:      " << std::fabs(y2[i]-expected));
+        if (std::fabs(y2[i] - expected) > tolerance) {
+            BOOST_ERROR("failed to reproduce "
+                        << io::ordinal(i + 1) << " expected datum" << std::fixed
+                        << "\n    expected:   " << expected << "\n    calculated: " << y2[i]
+                        << std::scientific << "\n    error:      " << std::fabs(y2[i] - expected));
+        }
     }
 }
 
@@ -974,16 +983,16 @@ void InterpolationTest::testFritschButland() {
             for (Size k=0; k<10; ++k) {
                 Real x1 = left_knot + k*0.1, x2 = left_knot + (k+1)*0.1;
                 Real y1 = f(x1), y2 = f(x2);
-                if (boost::math::isnan(y1))
+                if (boost::math::isnan(y1)) {
                     BOOST_ERROR("NaN detected in case " << i << ":"
                                 << std::fixed
                                 << "\n    f(" << x1 << ") = " << y1);
-                else if (sign(y1, y2) != expected_sign)
+                } else if (sign(y1, y2) != expected_sign) {
                     BOOST_ERROR("interpolation is not monotonic "
-                                "in case " << i << ":"
-                                << std::fixed
-                                << "\n    f(" << x1 << ") = " << y1
+                                "in case "
+                                << i << ":" << std::fixed << "\n    f(" << x1 << ") = " << y1
                                 << "\n    f(" << x2 << ") = " << y2);
+                }
             }
         }
     }
@@ -1009,14 +1018,12 @@ void InterpolationTest::testBackwardFlat() {
         Real p = x[i];
         Real calculated = f(p);
         Real expected = y[i];
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to reproduce "
+                        << io::ordinal(i + 1) << " datum" << std::fixed << "\n    expected:   "
+                        << expected << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 
     // at middle points
@@ -1024,14 +1031,12 @@ void InterpolationTest::testBackwardFlat() {
         Real p = (x[i]+x[i+1])/2;
         Real calculated = f(p);
         Real expected = y[i+1];
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to interpolate correctly at " << p
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to interpolate correctly at "
+                        << p << std::fixed << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 
     // outside the original range
@@ -1040,52 +1045,44 @@ void InterpolationTest::testBackwardFlat() {
     Real p = x[0] - 0.5;
     Real calculated = f(p);
     Real expected = y[0];
-    if (std::fabs(expected-calculated) > tolerance)
-        BOOST_ERROR(
-            "failed to extrapolate correctly at " << p
-            << std::fixed
-            << "\n    expected:   " << expected
-            << "\n    calculated: " << calculated
-            << std::scientific
-            << "\n    error:      " << std::fabs(calculated-expected));
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("failed to extrapolate correctly at "
+                    << p << std::fixed << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated << std::scientific
+                    << "\n    error:      " << std::fabs(calculated - expected));
+    }
 
     p = x[N-1] + 0.5;
     calculated = f(p);
     expected = y[N-1];
-    if (std::fabs(expected-calculated) > tolerance)
-        BOOST_ERROR(
-            "failed to extrapolate correctly at " << p
-            << std::fixed
-            << "\n    expected:   " << expected
-            << "\n    calculated: " << calculated
-            << std::scientific
-            << "\n    error:      " << std::fabs(calculated-expected));
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("failed to extrapolate correctly at "
+                    << p << std::fixed << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated << std::scientific
+                    << "\n    error:      " << std::fabs(calculated - expected));
+    }
 
     // primitive at original points
     calculated = f.primitive(x[0]);
     expected = 0.0;
-    if (std::fabs(expected-calculated) > tolerance)
-        BOOST_ERROR(
-            "failed to calculate primitive at " << x[0]
-            << std::fixed
-            << "\n    expected:   " << expected
-            << "\n    calculated: " << calculated
-            << std::scientific
-            << "\n    error:      " << std::fabs(calculated-expected));
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("failed to calculate primitive at "
+                    << x[0] << std::fixed << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated << std::scientific
+                    << "\n    error:      " << std::fabs(calculated - expected));
+    }
 
     Real sum = 0.0;
     for (i=1; i<N; i++) {
         sum += (x[i]-x[i-1])*y[i];
         Real calculated = f.primitive(x[i]);
         Real expected = sum;
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to calculate primitive at " << x[i]
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to calculate primitive at "
+                        << x[i] << std::fixed << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 
     // primitive at middle points
@@ -1096,14 +1093,12 @@ void InterpolationTest::testBackwardFlat() {
         Real calculated = f.primitive(p);
         Real expected = sum;
         sum += (x[i+1]-x[i])*y[i+1]/2;
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to calculate primitive at " << x[i]
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to calculate primitive at "
+                        << x[i] << std::fixed << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 
 }
@@ -1127,14 +1122,12 @@ void InterpolationTest::testForwardFlat() {
         Real p = x[i];
         Real calculated = f(p);
         Real expected = y[i];
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to reproduce "
+                        << io::ordinal(i + 1) << " datum" << std::fixed << "\n    expected:   "
+                        << expected << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 
     // at middle points
@@ -1142,14 +1135,12 @@ void InterpolationTest::testForwardFlat() {
         Real p = (x[i]+x[i+1])/2;
         Real calculated = f(p);
         Real expected = y[i];
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to interpolate correctly at " << p
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to interpolate correctly at "
+                        << p << std::fixed << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 
     // outside the original range
@@ -1158,52 +1149,44 @@ void InterpolationTest::testForwardFlat() {
     Real p = x[0] - 0.5;
     Real calculated = f(p);
     Real expected = y[0];
-    if (std::fabs(expected-calculated) > tolerance)
-        BOOST_ERROR(
-            "failed to extrapolate correctly at " << p
-            << std::fixed
-            << "\n    expected:   " << expected
-            << "\n    calculated: " << calculated
-            << std::scientific
-            << "\n    error:      " << std::fabs(calculated-expected));
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("failed to extrapolate correctly at "
+                    << p << std::fixed << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated << std::scientific
+                    << "\n    error:      " << std::fabs(calculated - expected));
+    }
 
     p = x[N-1] + 0.5;
     calculated = f(p);
     expected = y[N-1];
-    if (std::fabs(expected-calculated) > tolerance)
-        BOOST_ERROR(
-            "failed to extrapolate correctly at " << p
-            << std::fixed
-            << "\n    expected:   " << expected
-            << "\n    calculated: " << calculated
-            << std::scientific
-            << "\n    error:      " << std::fabs(calculated-expected));
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("failed to extrapolate correctly at "
+                    << p << std::fixed << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated << std::scientific
+                    << "\n    error:      " << std::fabs(calculated - expected));
+    }
 
     // primitive at original points
     calculated = f.primitive(x[0]);
     expected = 0.0;
-    if (std::fabs(expected-calculated) > tolerance)
-        BOOST_ERROR(
-            "failed to calculate primitive at " << x[0]
-            << std::fixed
-            << "\n    expected:   " << expected
-            << "\n    calculated: " << calculated
-            << std::scientific
-            << "\n    error:      " << std::fabs(calculated-expected));
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_ERROR("failed to calculate primitive at "
+                    << x[0] << std::fixed << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated << std::scientific
+                    << "\n    error:      " << std::fabs(calculated - expected));
+    }
 
     Real sum = 0.0;
     for (i=1; i<N; i++) {
         sum += (x[i]-x[i-1])*y[i-1];
         Real calculated = f.primitive(x[i]);
         Real expected = sum;
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to calculate primitive at " << x[i]
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to calculate primitive at "
+                        << x[i] << std::fixed << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 
     // primitive at middle points
@@ -1214,14 +1197,12 @@ void InterpolationTest::testForwardFlat() {
         Real calculated = f.primitive(p);
         Real expected = sum;
         sum += (x[i+1]-x[i])*y[i]/2;
-        if (std::fabs(expected-calculated) > tolerance)
-            BOOST_ERROR(
-                "failed to calculate primitive at " << p
-                << std::fixed
-                << "\n    expected:   " << expected
-                << "\n    calculated: " << calculated
-                << std::scientific
-                << "\n    error:      " << std::fabs(calculated-expected));
+        if (std::fabs(expected - calculated) > tolerance) {
+            BOOST_ERROR("failed to calculate primitive at "
+                        << p << std::fixed << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated << std::scientific
+                        << "\n    error:      " << std::fabs(calculated - expected));
+        }
     }
 }
 
@@ -1270,12 +1251,12 @@ void InterpolationTest::testSabrInterpolation(){
         Real calculatedVol = sabrVolatility(strikes[i], forward, expiry,
                                             initialAlpha, initialBeta,
                                             initialNu, initialRho);
-        if (std::fabs(volatilities[i]-calculatedVol) > tolerance)
-        BOOST_ERROR(
-            "failed to calculate Sabr function at strike " << strikes[i]
-            << "\n    expected:   " << volatilities[i]
-            << "\n    calculated: " << calculatedVol
-            << "\n    error:      " << std::fabs(calculatedVol-volatilities[i]));
+        if (std::fabs(volatilities[i] - calculatedVol) > tolerance) {
+            BOOST_ERROR("failed to calculate Sabr function at strike "
+                        << strikes[i] << "\n    expected:   " << volatilities[i]
+                        << "\n    calculated: " << calculatedVol
+                        << "\n    error:      " << std::fabs(calculatedVol - volatilities[i]));
+        }
     }
 
     // Test SABR calibration against input parameters
@@ -1371,14 +1352,14 @@ void InterpolationTest::testSabrInterpolation(){
                     failed = true;
                 }
 
-                if (failed)
-                    BOOST_FAIL("\nSabr calibration failure:" <<
-                               "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
-                               "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
-                               "\n    isNuFixed:       " << isNuFixed[k_n] <<
-                               "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
-                               "\n    vegaWeighted[i]: " << vegaWeighted[i]);
-
+                if (failed) {
+                    BOOST_FAIL("\nSabr calibration failure:"
+                               << "\n    isAlphaFixed:    " << isAlphaFixed[k_a]
+                               << "\n    isBetaFixed:     " << isBetaFixed[k_b]
+                               << "\n    isNuFixed:       " << isNuFixed[k_n]
+                               << "\n    isRhoFixed:      " << isRhoFixed[k_r]
+                               << "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+                }
               }
             }
           }
@@ -1646,9 +1627,11 @@ void InterpolationTest::testBicubicDerivatives() {
     }
 
     Matrix f(100, 100);
-    for (Size i=0; i < 100; ++i)
-        for (Size j=0; j < 100; ++j)
-            f[i][j] = y[i]/10*std::sin(x[j])+std::cos(y[i]);
+    for (Size i = 0; i < 100; ++i) {
+        for (Size j = 0; j < 100; ++j) {
+            f[i][j] = y[i] / 10 * std::sin(x[j]) + std::cos(y[i]);
+        }
+    }
 
     const Real tol=0.005;
     BicubicSpline spline(x.begin(), x.end(), y.begin(), y.end(), f);
@@ -1691,9 +1674,11 @@ void InterpolationTest::testBicubicUpdate() {
     }
 
     Matrix f(N, N);
-    for (Size i=0; i < N; ++i)
-        for (Size j=0; j < N; ++j)
-            f[i][j] = x[j]*(x[j] + y[i]);
+    for (Size i = 0; i < N; ++i) {
+        for (Size j = 0; j < N; ++j) {
+            f[i][j] = x[j] * (x[j] + y[i]);
+        }
+    }
 
     BicubicSpline spline(x.begin(), x.end(), y.begin(), y.end(), f);
 
@@ -1773,9 +1758,10 @@ void InterpolationTest::testUnknownRichardsonExtrapolation() {
     catch (...) {}
 
     const Real limCosValue = RichardsonExtrapolation(limCos, 0.01)(4.0,2.0);
-    if (std::fabs(limCosValue + 1.0) > 1e-6)
+    if (std::fabs(limCosValue + 1.0) > 1e-6) {
         BOOST_ERROR("failed to reproduce Richardson extrapolation "
-                " with unknown order of convergence");
+                    " with unknown order of convergence");
+    }
 }
 
 
@@ -1894,12 +1880,12 @@ void InterpolationTest::testNoArbSabrInterpolation(){
                                         initialBeta)(initialNu)(initialRho));
     for (Size i = 0; i < strikes.size(); i++) {
         Real calculatedVol = noarbSabr.volatility(strikes[i]);
-        if (std::fabs(volatilities[i]-calculatedVol) > tolerance)
-        BOOST_ERROR(
-            "failed to calculate noarb-Sabr function at strike " << strikes[i]
-            << "\n    expected:   " << volatilities[i]
-            << "\n    calculated: " << calculatedVol
-            << "\n    error:      " << std::fabs(calculatedVol-volatilities[i]));
+        if (std::fabs(volatilities[i] - calculatedVol) > tolerance) {
+            BOOST_ERROR("failed to calculate noarb-Sabr function at strike "
+                        << strikes[i] << "\n    expected:   " << volatilities[i]
+                        << "\n    calculated: " << calculatedVol
+                        << "\n    error:      " << std::fabs(calculatedVol - volatilities[i]));
+        }
     }
 
     // Test SABR calibration against input parameters
@@ -1989,13 +1975,14 @@ void InterpolationTest::testNoArbSabrInterpolation(){
                                 failed = true;
                             }
 
-                            if (failed)
-                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:" <<
-                                           "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
-                                           "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
-                                           "\n    isNuFixed:       " << isNuFixed[k_n] <<
-                                           "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
-                                           "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+                            if (failed) {
+                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:"
+                                                   << "\n    isAlphaFixed:    " << isAlphaFixed[k_a]
+                                                   << "\n    isBetaFixed:     " << isBetaFixed[k_b]
+                                                   << "\n    isNuFixed:       " << isNuFixed[k_n]
+                                                   << "\n    isRhoFixed:      " << isRhoFixed[k_r]
+                                                   << "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+                            }
                         }
                     }
                 }
@@ -2053,8 +2040,9 @@ void InterpolationTest::testTransformations() {
     for (Size i = 0; i < 1E6; ++i) {
 
         s = h.nextSequence().value;
-        for (Size j = 0; j < 4; ++j)
+        for (Size j = 0; j < 4; ++j) {
             x[j] = 2.0 * size * s[j] - size;
+        }
 
         // sabr
         y = QuantLib::detail::SABRSpecs().direct(x, fixed, params, forward);
@@ -2062,13 +2050,13 @@ void InterpolationTest::testTransformations() {
         z = QuantLib::detail::SABRSpecs().inverse(y, fixed, params, forward);
         z = QuantLib::detail::SABRSpecs().direct(z, fixed, params, forward);
         if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
-            !close(z[3], y[3], N))
+            !close(z[3], y[3], N)) {
             BOOST_ERROR("SabrInterpolation: direct(inverse("
-                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3]
-                        << ")) = (" << z[0] << "," << z[1] << "," << z[2] << ","
-                        << z[3] << "), difference is (" << z[0] - y[0] << ","
-                        << z[1] - y[1] << "," << z[2] - y[2] << ","
+                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3] << ")) = (" << z[0]
+                        << "," << z[1] << "," << z[2] << "," << z[3] << "), difference is ("
+                        << z[0] - y[0] << "," << z[1] - y[1] << "," << z[2] - y[2] << ","
                         << z[3] - y[3] << ")");
+        }
 
         // noarb sabr
         y = QuantLib::detail::NoArbSabrSpecs().direct(x, fixed, params, forward);
@@ -2098,13 +2086,13 @@ void InterpolationTest::testTransformations() {
         z = QuantLib::detail::NoArbSabrSpecs().inverse(y, fixed, params, forward);
         z = QuantLib::detail::NoArbSabrSpecs().direct(z, fixed, params, forward);
         if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
-            !close(z[3], y[3], N))
+            !close(z[3], y[3], N)) {
             BOOST_ERROR("NoArbSabrInterpolation: direct(inverse("
-                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3]
-                        << ")) = (" << z[0] << "," << z[1] << "," << z[2] << ","
-                        << z[3] << "), difference is (" << z[0] - y[0] << ","
-                        << z[1] - y[1] << "," << z[2] - y[2] << ","
+                        << y[0] << "," << y[1] << "," << y[2] << "," << y[3] << ")) = (" << z[0]
+                        << "," << z[1] << "," << z[2] << "," << z[3] << "), difference is ("
+                        << z[0] - y[0] << "," << z[1] - y[1] << "," << z[2] - y[2] << ","
                         << z[3] - y[3] << ")");
+        }
     }
 }
 

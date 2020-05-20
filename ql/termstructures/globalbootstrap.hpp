@@ -98,10 +98,12 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
     ts_ = ts;
-    for (Size j = 0; j < ts_->instruments_.size(); ++j)
+    for (Size j = 0; j < ts_->instruments_.size(); ++j) {
         ts_->registerWith(ts_->instruments_[j]);
-    for (Size j = 0; j < additionalHelpers_.size(); ++j)
+    }
+    for (Size j = 0; j < additionalHelpers_.size(); ++j) {
         ts_->registerWith(additionalHelpers_[j]);
+    }
 
     // do not initialize yet: instruments could be invalid here
     // but valid later when bootstrapping is actually required
@@ -118,8 +120,10 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
     firstHelper_ = 0;
     if (!ts_->instruments_.empty()) {
-        while (firstHelper_ < ts_->instruments_.size() && ts_->instruments_[firstHelper_]->pillarDate() <= firstDate)
+        while (firstHelper_ < ts_->instruments_.size() &&
+               ts_->instruments_[firstHelper_]->pillarDate() <= firstDate) {
             ++firstHelper_;
+        }
     }
     numberHelpers_ = ts_->instruments_.size() - firstHelper_;
 
@@ -127,19 +131,23 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     firstAdditionalHelper_ = 0;
     if (!additionalHelpers_.empty()) {
         while (firstAdditionalHelper_ < additionalHelpers_.size() &&
-               additionalHelpers_[firstAdditionalHelper_]->pillarDate() <= firstDate)
+               additionalHelpers_[firstAdditionalHelper_]->pillarDate() <= firstDate) {
             ++firstAdditionalHelper_;
+        }
     }
     numberAdditionalHelpers_ = additionalHelpers_.size() - firstAdditionalHelper_;
 
     // skip expired additional dates
     std::vector<Date> additionalDates;
-    if (additionalDates_)
+    if (additionalDates_) {
         additionalDates = additionalDates_();
+    }
     firstAdditionalDate_ = 0;
     if (!additionalDates.empty()) {
-        while (firstAdditionalDate_ < additionalDates.size() && additionalDates[firstAdditionalDate_] <= firstDate)
+        while (firstAdditionalDate_ < additionalDates.size() &&
+               additionalDates[firstAdditionalDate_] <= firstDate) {
             ++firstAdditionalDate_;
+        }
     }
     numberAdditionalDates_ = additionalDates.size() - firstAdditionalDate_;
 
@@ -155,18 +163,21 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     // first populate the dates vector and make sure they are sorted and there are no duplicates
     dates.clear();
     dates.push_back(firstDate);
-    for (Size j = 0; j < numberHelpers_; ++j)
+    for (Size j = 0; j < numberHelpers_; ++j) {
         dates.push_back(ts_->instruments_[firstHelper_ + j]->pillarDate());
-    for (Size j = firstAdditionalDate_; j < numberAdditionalDates_; ++j)
+    }
+    for (Size j = firstAdditionalDate_; j < numberAdditionalDates_; ++j) {
         dates.push_back(additionalDates[firstAdditionalDate_ + j]);
+    }
     std::sort(dates.begin(), dates.end());
     std::vector<Date>::iterator it = std::unique(dates.begin(), dates.end());
     QL_REQUIRE(it == dates.end(), "duplicate dates among alive instruments and additional dates");
 
     // build times vector
     times.clear();
-    for (Size j = 0; j < dates.size(); ++j)
+    for (Size j = 0; j < dates.size(); ++j) {
         times.push_back(ts_->timeFromReference(dates[j]));
+    }
 
     // determine maxDate
     Date maxDate = firstDate;
@@ -195,8 +206,9 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     // with evaluation date change.
     // anyway it makes little sense to use date relative helpers with a
     // non-moving curve if the evaluation date changes
-    if (!initialized_ || ts_->moving_)
+    if (!initialized_ || ts_->moving_) {
         initialize();
+    }
 
     // setup helpers
     for (Size j = 0; j < numberHelpers_; ++j) {

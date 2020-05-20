@@ -66,11 +66,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
-                return 1.0/(1.0+detail::avgRate*c->times()[1]);
+            if (i == 1) { // first pillar
+                return 1.0 / (1.0 + detail::avgRate * c->times()[1]);
+            }
 
             // flat rate extrapolation
             Real r = -std::log(c->data()[i-1])/c->times()[i-1];
@@ -138,11 +140,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return detail::avgRate;
+            }
 
             // extrapolate
             Date d = c->dates()[i];
@@ -185,8 +189,9 @@ namespace QuantLib {
                                 Real rate,
                                 Size i) {
             data[i] = rate;
-            if (i==1)
+            if (i == 1) {
                 data[0] = rate; // first point is updated as well
+            }
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 100; }
@@ -219,11 +224,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return detail::avgRate;
+            }
 
             // extrapolate
             Date d = c->dates()[i];
@@ -266,8 +273,9 @@ namespace QuantLib {
                                 Real forward,
                                 Size i) {
             data[i] = forward;
-            if (i==1)
+            if (i == 1) {
                 data[0] = forward; // first point is updated as well
+            }
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 100; }
@@ -299,11 +307,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return detail::avgRate;
+            }
 
             // extrapolate
             Date d = c->dates()[i];
@@ -350,8 +360,9 @@ namespace QuantLib {
                                 Real rate,
                                 Size i) {
             data[i] = rate;
-            if (i==1)
+            if (i == 1) {
                 data[0] = rate; // first point is updated as well
+            }
         }
         // upper bound for convergence loop
         static Size maxIterations() { return 100; }

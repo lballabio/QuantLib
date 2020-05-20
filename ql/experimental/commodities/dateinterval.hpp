@@ -51,21 +51,24 @@ namespace QuantLib {
         bool isDateBetween(Date date,
                            bool includeFirst = true,
                            bool includeLast = true) const {
-            if (includeFirst && !(date >= startDate_))
+            if (includeFirst && !(date >= startDate_)) {
                 return false;
-            else if (!(date > startDate_))
+            } else if (!(date > startDate_)) {
                 return false;
-            if (includeLast && !(date <= endDate_))
+            }
+            if (includeLast && !(date <= endDate_)) {
                 return false;
-            else if (!(date < endDate_))
+            } else if (!(date < endDate_)) {
                 return false;
+            }
             return true;
         }
 
         DateInterval intersection(const DateInterval& di) const {
             if ((startDate_ < di.startDate_ && endDate_ < di.startDate_) ||
-                (startDate_ > di.endDate_ && endDate_ > di.endDate_))
+                (startDate_ > di.endDate_ && endDate_ > di.endDate_)) {
                 return DateInterval();
+            }
             return DateInterval(std::max(startDate_, di.startDate_),
                                 std::min(endDate_, di.endDate_));
         }

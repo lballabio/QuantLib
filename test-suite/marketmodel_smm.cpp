@@ -88,10 +88,12 @@ namespace market_model_smm_test {
         rateTimes = std::vector<Time>(dates.size()-1);
         accruals = std::vector<Real>(rateTimes.size()-1);
         dayCounter = SimpleDayCounter();
-        for (Size i=1; i<dates.size(); ++i)
-            rateTimes[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
-        for (Size i=1; i<rateTimes.size(); ++i)
-            accruals[i-1] = rateTimes[i] - rateTimes[i-1];
+        for (Size i = 1; i < dates.size(); ++i) {
+            rateTimes[i - 1] = dayCounter.yearFraction(todaysDate, dates[i]);
+        }
+        for (Size i = 1; i < rateTimes.size(); ++i) {
+            accruals[i - 1] = rateTimes[i] - rateTimes[i - 1];
+        }
 
         // Rates & displacement
         todaysForwards = std::vector<Rate>(accruals.size());
@@ -107,9 +109,10 @@ namespace market_model_smm_test {
         // Discounts
         todaysDiscounts = std::vector<DiscountFactor>(rateTimes.size());
         todaysDiscounts[0] = 0.95;
-        for (Size i=1; i<rateTimes.size(); ++i)
-            todaysDiscounts[i] = todaysDiscounts[i-1] /
-                (1.0+todaysForwards[i-1]*accruals[i-1]);
+        for (Size i = 1; i < rateTimes.size(); ++i) {
+            todaysDiscounts[i] =
+                todaysDiscounts[i - 1] / (1.0 + todaysForwards[i - 1] * accruals[i - 1]);
+        }
 
         // Swaption Volatilities
         Volatility mktVols[] = {0.15541283,
@@ -494,8 +497,9 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
                             measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_)
+                        if (printReport_) {
                             BOOST_TEST_MESSAGE("    " << config.str());
+                        }
                         ext::shared_ptr<SequenceStatisticsInc> stats = simulate(evolver, product);
                         checkCoterminalSwapsAndSwaptions(*stats, fixedRate,
                                                          displacedPayoff, marketModel,config.str());

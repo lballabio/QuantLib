@@ -71,10 +71,9 @@ namespace QuantLib {
             coterminalModel_->evolution().firstAliveRate();
         for (Size k = 0; k<numberOfSteps_; ++k) {
             pseudoRoots_[k]=invertedZedMatrix*coterminalModel_->pseudoRoot(k);
-            for (Size i=0; i<alive[k]; ++i)
-                std::fill(pseudoRoots_[k].row_begin(i),
-                          pseudoRoots_[k].row_end(i),
-                          0.0);
+            for (Size i = 0; i < alive[k]; ++i) {
+                std::fill(pseudoRoots_[k].row_begin(i), pseudoRoots_[k].row_end(i), 0.0);
+            }
         }
     }
 

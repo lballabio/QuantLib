@@ -79,12 +79,13 @@ Disposable<Array> FdmZabrOp::apply(const Array &u) const {
 
 Disposable<Array> FdmZabrOp::apply_direction(Size direction,
                                              const Array &r) const {
-    if (direction == 0)
+    if (direction == 0) {
         return dxMap_.getMap().apply(r);
-    else if (direction == 1)
+    } else if (direction == 1) {
         return dyMap_.getMap().apply(r);
-    else
+    } else {
         QL_FAIL("direction too large");
+    }
 }
 
 Disposable<Array> FdmZabrOp::apply_mixed(const Array &r) const {
@@ -98,8 +99,9 @@ Disposable<Array> FdmZabrOp::solve_splitting(Size direction, const Array &r,
         return dxMap_.getMap().solve_splitting(r, a, 1.0);
     } else if (direction == 1) {
         return dyMap_.getMap().solve_splitting(r, a, 1.0);
-    } else
+    } else {
         QL_FAIL("direction too large");
+    }
 }
 
 Disposable<Array> FdmZabrOp::preconditioner(const Array &r, Real dt) const {

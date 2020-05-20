@@ -134,22 +134,24 @@ namespace QuantLib {
         QL_REQUIRE(optionTenors_[0]>0*Days,
                    "first option tenor is negative (" <<
                    optionTenors_[0] << ")");
-        for (Size i=1; i<nOptionTenors_; ++i)
-            QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i) <<
-                       " is " << optionTenors_[i-1] << ", " << io::ordinal(i+1) <<
-                       " is " << optionTenors_[i]);
+        for (Size i = 1; i < nOptionTenors_; ++i) {
+            QL_REQUIRE(optionTenors_[i] > optionTenors_[i - 1],
+                       "non increasing option tenor: "
+                           << io::ordinal(i) << " is " << optionTenors_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << optionTenors_[i]);
+        }
     }
 
     void SwaptionVolatilityDiscrete::checkSwapTenors() const {
         QL_REQUIRE(swapTenors_[0]>0*Days,
                    "first swap tenor is negative (" <<
                    swapTenors_[0] << ")");
-        for (Size i=1; i<nSwapTenors_; ++i)
-            QL_REQUIRE(swapTenors_[i]>swapTenors_[i-1],
-                       "non increasing swap tenor: " << io::ordinal(i) <<
-                       " is " << swapTenors_[i-1] << ", " << io::ordinal(i+1) <<
-                       " is " << swapTenors_[i]);
+        for (Size i = 1; i < nSwapTenors_; ++i) {
+            QL_REQUIRE(swapTenors_[i] > swapTenors_[i - 1],
+                       "non increasing swap tenor: "
+                           << io::ordinal(i) << " is " << swapTenors_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << swapTenors_[i]);
+        }
     }
 
     void SwaptionVolatilityDiscrete::initializeOptionDatesAndTimes() const {
@@ -162,13 +164,15 @@ namespace QuantLib {
     }
 
     void SwaptionVolatilityDiscrete::initializeOptionTimes() const {
-        for (Size i=0; i<nOptionTenors_; ++i)
+        for (Size i = 0; i < nOptionTenors_; ++i) {
             optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
     }
 
     void SwaptionVolatilityDiscrete::initializeSwapLengths() const {
-        for (Size i=0; i<nSwapTenors_; ++i) 
+        for (Size i = 0; i < nSwapTenors_; ++i) {
             swapLengths_[i] = swapLength(swapTenors_[i]);
+        }
     }
 
     void SwaptionVolatilityDiscrete::performCalculations() const {

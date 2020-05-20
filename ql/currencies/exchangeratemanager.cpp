@@ -53,28 +53,32 @@ namespace QuantLib {
                                              Date date,
                                              ExchangeRate::Type type) const {
 
-        if (source == target)
-            return ExchangeRate(source,target,1.0);
+        if (source == target) {
+            return ExchangeRate(source, target, 1.0);
+        }
 
-        if (date == Date())
+        if (date == Date()) {
             date = Settings::instance().evaluationDate();
+        }
 
         if (type == ExchangeRate::Direct) {
             return directLookup(source,target,date);
         } else if (!source.triangulationCurrency().empty()) {
             const Currency& link = source.triangulationCurrency();
-            if (link == target)
+            if (link == target) {
                 return directLookup(source,link,date);
-            else
-                return ExchangeRate::chain(directLookup(source,link,date),
-                                           lookup(link,target,date));
+            } else {
+                return ExchangeRate::chain(directLookup(source, link, date),
+                                           lookup(link, target, date));
+            }
         } else if (!target.triangulationCurrency().empty()) {
             const Currency& link = target.triangulationCurrency();
-            if (source == link)
+            if (source == link) {
                 return directLookup(link,target,date);
-            else
-                return ExchangeRate::chain(lookup(source,link,date),
-                                           directLookup(link,target,date));
+            } else {
+                return ExchangeRate::chain(lookup(source, link, date),
+                                           directLookup(link, target, date));
+            }
         } else {
             return smartLookup(source,target,date);
         }
@@ -136,12 +140,12 @@ namespace QuantLib {
     ExchangeRate ExchangeRateManager::directLookup(const Currency& source,
                                                    const Currency& target,
                                                    const Date& date) const {
-        if (const ExchangeRate* rate = fetch(source,target,date))
+        if (const ExchangeRate* rate = fetch(source, target, date)) {
             return *rate;
-        else
-            QL_FAIL("no direct conversion available from "
-                    << source.code() << " to " << target.code()
-                    << " for " << date);
+        } else {
+            QL_FAIL("no direct conversion available from " << source.code() << " to "
+                                                           << target.code() << " for " << date);
+        }
     }
 
     ExchangeRate ExchangeRateManager::smartLookup(
@@ -150,8 +154,9 @@ namespace QuantLib {
                                          const Date& date,
                                          std::list<Integer> forbidden) const {
         // direct exchange rates are preferred.
-        if (const ExchangeRate* direct = fetch(source,target,date))
+        if (const ExchangeRate* direct = fetch(source, target, date)) {
             return *direct;
+        }
 
         // if none is found, turn to smart lookup. The source currency
         // is forbidden to subsequent lookups in order to avoid cycles.

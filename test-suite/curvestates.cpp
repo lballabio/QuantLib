@@ -70,25 +70,29 @@ namespace curve_states_test {
             paymentTimes = std::vector<Time>(rateTimes.size()-1);
             accruals = std::vector<Real>(rateTimes.size()-1);
             dayCounter = SimpleDayCounter();
-            for (Size i=1; i<dates.size(); ++i)
-                rateTimes[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
+            for (Size i = 1; i < dates.size(); ++i) {
+                rateTimes[i - 1] = dayCounter.yearFraction(todaysDate, dates[i]);
+            }
             std::copy(rateTimes.begin()+1, rateTimes.end(),
                       paymentTimes.begin());
-            for (Size i=1; i<rateTimes.size(); ++i)
-                accruals[i-1] = rateTimes[i] - rateTimes[i-1];
+            for (Size i = 1; i < rateTimes.size(); ++i) {
+                accruals[i - 1] = rateTimes[i] - rateTimes[i - 1];
+            }
 
             // Rates & displacement
             todaysForwards = std::vector<Rate>(paymentTimes.size());
             displacement = 0.0;
-            for (Size i=0; i<todaysForwards.size(); ++i)
-                todaysForwards[i] = 0.03 + 0.0010*i;
+            for (Size i = 0; i < todaysForwards.size(); ++i) {
+                todaysForwards[i] = 0.03 + 0.0010 * i;
+            }
 
             // Discounts
             todaysDiscounts = std::vector<DiscountFactor>(rateTimes.size());
             todaysDiscounts[0] = 0.95;
-            for (Size i=1; i<rateTimes.size(); ++i)
-                todaysDiscounts[i] = todaysDiscounts[i-1] /
-                    (1.0+todaysForwards[i-1]*accruals[i-1]);
+            for (Size i = 1; i < rateTimes.size(); ++i) {
+                todaysDiscounts[i] =
+                    todaysDiscounts[i - 1] / (1.0 + todaysForwards[i - 1] * accruals[i - 1]);
+            }
 
             // Coterminal swap rates & annuities
             Size N = todaysForwards.size();
@@ -156,11 +160,13 @@ void CurveStatesTest::testCMSwapCurveState() {
 
     //std::cout << "rate value:"<< std::endl;
 
-    for (Size i = 0; i < forwards.size(); ++i)
-        forwards[i] = static_cast<Rate>(i)*.001+.04;
+    for (Size i = 0; i < forwards.size(); ++i) {
+        forwards[i] = static_cast<Rate>(i) * .001 + .04;
+    }
 
-    for (Size i = 0; i < rateTimes.size(); ++i)
-        rateTimes[i] = static_cast<Time>(i+1)*.5;
+    for (Size i = 0; i < rateTimes.size(); ++i) {
+        rateTimes[i] = static_cast<Time>(i + 1) * .5;
+    }
 
     //BOOST_TEST_MESSAGE( << "Rates\nTime\tValue:"<< std::endl;)
     //for (Size i = 0; i < rateTimes.size()-1; ++i){

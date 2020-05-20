@@ -54,8 +54,9 @@ namespace QuantLib {
         QL_REQUIRE(numeraire_>=alive, "Numeraire smaller than alive");
 
         // Precompute 1/taus
-        for (Size i=0; i<taus.size(); ++i)
-            oneOverTaus_[i] = 1.0/taus[i];
+        for (Size i = 0; i < taus.size(); ++i) {
+            oneOverTaus_[i] = 1.0 / taus[i];
+        }
 
         // Compute covariance matrix from pseudoroot
         const Disposable<Matrix> pT = transpose(pseudo_);
@@ -95,8 +96,9 @@ namespace QuantLib {
                             ( pseudo_[j+1][k] * annuity +  wkaj_[k][j+1] )+
                             pseudo_[j+1][k]*displacements_[j+1]* annuity;
 
-                if (j >=static_cast<Integer>(alive_))
-                    wkaj_[k][j] = wkpj_[k][j+1]*taus[j ]+wkaj_[k][j+1];
+                if (j >= static_cast<Integer>(alive_)) {
+                    wkaj_[k][j] = wkpj_[k][j + 1] * taus[j] + wkaj_[k][j + 1];
+                }
             }
           }
 

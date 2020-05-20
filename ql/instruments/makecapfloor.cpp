@@ -47,8 +47,9 @@ namespace QuantLib {
         VanillaSwap swap = makeVanillaSwap_;
 
         Leg leg = swap.floatingLeg();
-        if (firstCapletExcluded_)
+        if (firstCapletExcluded_) {
             leg.erase(leg.begin());
+        }
 
         // only leaves the last coupon
         if (asOptionlet_ && leg.size() > 1) {

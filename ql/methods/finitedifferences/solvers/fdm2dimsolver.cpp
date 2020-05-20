@@ -89,8 +89,9 @@ namespace QuantLib {
     }
 
     Real Fdm2DimSolver::thetaAt(Real x, Real y) const {
-        if (conditions_->stoppingTimes().front() == 0.0)
+        if (conditions_->stoppingTimes().front() == 0.0) {
             return Null<Real>();
+        }
 
         calculate();
         Matrix thetaValues(resultValues_.rows(), resultValues_.columns());

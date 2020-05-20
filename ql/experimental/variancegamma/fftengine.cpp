@@ -115,8 +115,9 @@ namespace QuantLib {
             {
                 ext::shared_ptr<StrikedTypePayoff> payoff = *it;
 
-                if (payoff->strike() > maxStrike)
+                if (payoff->strike() > maxStrike) {
                     maxStrike = payoff->strike();
+                }
             }
             Real nR = 2.0 * (std::log(maxStrike) + lambda_) / lambda_;
       Size log2_n = (static_cast<Size>((std::log(nR) / std::log(2.0))) + 1);

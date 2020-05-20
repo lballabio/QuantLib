@@ -44,18 +44,20 @@ namespace QuantLib {
           case Option::Call:
             QL_REQUIRE(payoff->strike()>=0.0,
                        "Strike must be positive or null");
-            if (strike <= minmax())
+            if (strike <= minmax()) {
                 results_.value = A(1) + C(1);
-            else
+            } else {
                 results_.value = B(1);
+            }
             break;
           case Option::Put:
             QL_REQUIRE(payoff->strike()>0.0,
                        "Strike must be positive");
-            if (strike >= minmax())
+            if (strike >= minmax()) {
                 results_.value = A(-1) + C(-1);
-            else
+            } else {
                 results_.value = B(-1);
+            }
             break;
           default:
             QL_FAIL("Unknown type");

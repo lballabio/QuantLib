@@ -116,8 +116,9 @@ namespace QuantLib {
         Size i;
 
         Matrix A(n, m);
-        for (i=0; i<m; ++i)
+        for (i = 0; i < m; ++i) {
             std::transform(xBegin, xEnd, A.column_begin(i), *vBegin++);
+        }
 
         const SVD svd(A);
         const Matrix& V = svd.V();

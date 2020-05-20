@@ -37,24 +37,29 @@ namespace QuantLib {
             : bcSet_(bcSet) {  }
 
         void applyBeforeApplying(operator_type& op) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
+            for (Size i = 0; i < bcSet_.size(); ++i) {
                 bcSet_[i]->applyBeforeApplying(op);
+            }
         }
         void applyBeforeSolving(operator_type& op, array_type& a) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
+            for (Size i = 0; i < bcSet_.size(); ++i) {
                 bcSet_[i]->applyBeforeSolving(op, a);
+            }
         }
         void applyAfterApplying(array_type& a) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
+            for (Size i = 0; i < bcSet_.size(); ++i) {
                 bcSet_[i]->applyAfterApplying(a);
+            }
         }
         void applyAfterSolving(array_type& a) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
+            for (Size i = 0; i < bcSet_.size(); ++i) {
                 bcSet_[i]->applyAfterSolving(a);
+            }
         }
         void setTime(Time t) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
+            for (Size i = 0; i < bcSet_.size(); ++i) {
                 bcSet_[i]->setTime(t);
+            }
         }
 
       private:

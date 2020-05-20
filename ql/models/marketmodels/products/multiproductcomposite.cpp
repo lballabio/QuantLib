@@ -24,18 +24,18 @@ namespace QuantLib {
 
     Size MultiProductComposite::numberOfProducts() const {
         Size result = 0;
-        for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
+        for (const_iterator i = components_.begin(); i != components_.end(); ++i) {
             result += i->product->numberOfProducts();
+        }
         return result;
     }
 
 
     Size MultiProductComposite::maxNumberOfCashFlowsPerProductPerStep() const {
         Size result = 0;
-        for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
-            result = std::max(result,
-            i->product
-            ->maxNumberOfCashFlowsPerProductPerStep());
+        for (const_iterator i = components_.begin(); i != components_.end(); ++i) {
+            result = std::max(result, i->product->maxNumberOfCashFlowsPerProductPerStep());
+        }
         return result;
     }
 
@@ -69,10 +69,11 @@ namespace QuantLib {
                 }
                 // finally, set done to false if this product isn't done
                 done = done && thisDone;
+            } else {
+                for (Size j = 0; j < i->product->numberOfProducts(); ++j) {
+                    numberCashFlowsThisStep[j + offset] = 0;
+                }
             }
-            else
-                for (Size j=0; j<i->product->numberOfProducts(); ++j)
-                    numberCashFlowsThisStep[j+offset] =0;
 
             // the offset is updated whether or not the product was evolved
             offset += i->product->numberOfProducts();

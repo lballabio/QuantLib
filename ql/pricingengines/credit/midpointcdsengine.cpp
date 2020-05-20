@@ -89,9 +89,9 @@ namespace QuantLib {
         results_.couponLegNPV  = 0.0;
         results_.defaultLegNPV = 0.0;
         for (Size i=0; i<arguments_.leg.size(); ++i) {
-            if (arguments_.leg[i]->hasOccurred(settlementDate,
-                                               includeSettlementDateFlows_))
+            if (arguments_.leg[i]->hasOccurred(settlementDate, includeSettlementDateFlows_)) {
                 continue;
+            }
 
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
@@ -104,8 +104,9 @@ namespace QuantLib {
                  startDate = coupon->accrualStartDate(),
                  endDate = coupon->accrualEndDate();
             // this is the only point where it might not coincide
-            if (i==0)
+            if (i == 0) {
                 startDate = arguments_.protectionStart;
+            }
             Date effectiveStartDate =
                 (startDate <= today && today <= endDate) ? today : startDate;
             Date defaultDate = // mid-point

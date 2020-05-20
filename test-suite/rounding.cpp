@@ -75,12 +75,12 @@ void RoundingTest::testClosest() {
         ClosestRounding closest(digits);
         Real calculated = closest(testData[i].x);
         Real expected = testData[i].closest;
-        if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
+        if (!close(calculated, expected, 1)) {
+            BOOST_ERROR(std::fixed
+                        << std::setprecision(8) << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits) << "Expected:        " << expected << "\n"
                         << "Calculated:      " << calculated);
+        }
     }
 }
 
@@ -95,12 +95,12 @@ void RoundingTest::testUp() {
         UpRounding up(digits);
         Real calculated = up(testData[i].x);
         Real expected = testData[i].up;
-        if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
+        if (!close(calculated, expected, 1)) {
+            BOOST_ERROR(std::fixed
+                        << std::setprecision(8) << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits) << "Expected:        " << expected << "\n"
                         << "Calculated:      " << calculated);
+        }
     }
 }
 
@@ -115,12 +115,12 @@ void RoundingTest::testDown() {
         DownRounding down(digits);
         Real calculated = down(testData[i].x);
         Real expected = testData[i].down;
-        if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
+        if (!close(calculated, expected, 1)) {
+            BOOST_ERROR(std::fixed
+                        << std::setprecision(8) << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits) << "Expected:        " << expected << "\n"
                         << "Calculated:      " << calculated);
+        }
     }
 }
 
@@ -135,12 +135,12 @@ void RoundingTest::testFloor() {
         FloorTruncation floor(digits);
         Real calculated = floor(testData[i].x);
         Real expected = testData[i].floor;
-        if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
+        if (!close(calculated, expected, 1)) {
+            BOOST_ERROR(std::fixed
+                        << std::setprecision(8) << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits) << "Expected:        " << expected << "\n"
                         << "Calculated:      " << calculated);
+        }
     }
 }
 
@@ -155,12 +155,12 @@ void RoundingTest::testCeiling() {
         CeilingTruncation ceiling(digits);
         Real calculated = ceiling(testData[i].x);
         Real expected = testData[i].ceiling;
-        if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
+        if (!close(calculated, expected, 1)) {
+            BOOST_ERROR(std::fixed
+                        << std::setprecision(8) << "Original number: " << testData[i].x << "\n"
+                        << std::setprecision(digits) << "Expected:        " << expected << "\n"
                         << "Calculated:      " << calculated);
+        }
     }
 }
 

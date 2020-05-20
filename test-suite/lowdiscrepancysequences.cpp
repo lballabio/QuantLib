@@ -152,16 +152,19 @@ namespace
 
         std::vector<Real> errorInSds(maxDim);
 
-        for (Size i=0; i < maxDim; ++i)
-            errorInSds[i] = (means[i]-0.5)/ sds[i];
+        for (Size i = 0; i < maxDim; ++i) {
+            errorInSds[i] = (means[i] - 0.5) / sds[i];
+        }
 
         Real tolerance = 4.0;
 
-        for (Size i=0; i < maxDim; ++i)
-            if (fabs(errorInSds[i] ) > tolerance)
-                BOOST_ERROR("Lattice generator" << nameString <<" returns  a mean of " <<
-                means[i] << " with error equal to  " << errorInSds[i]
-            << " standard deviations in dimension " << i);
+        for (Size i = 0; i < maxDim; ++i) {
+            if (fabs(errorInSds[i]) > tolerance) {
+                BOOST_ERROR("Lattice generator" << nameString << " returns  a mean of " << means[i]
+                                                << " with error equal to  " << errorInSds[i]
+                                                << " standard deviations in dimension " << i);
+            }
+        }
     }
 }
 
@@ -813,8 +816,9 @@ namespace {
             std::string prefix = start_ ?
                 "random-start " :
                 "";
-            if (shift_)
+            if (shift_) {
                 prefix += "random-shift ";
+            }
             return prefix + "Halton";
         }
       private:
@@ -1063,8 +1067,9 @@ void LowDiscrepancyTest::testSobolSkipping() {
 
             // extract n samples
             SobolRsg rsg1(dimensionality[j], seed, integers[i]);
-            for (Size l=0; l<skip[k]; l++)
+            for (Size l = 0; l < skip[k]; l++) {
                 rsg1.nextInt32Sequence();
+            }
 
             // skip n samples at once
             SobolRsg rsg2(dimensionality[j], seed, integers[i]);

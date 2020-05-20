@@ -37,27 +37,28 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Constitution Day
-            || (y <= 2005 && d == 5 && m == February)
-            || (y >= 2006 && d <= 7 && w == Monday && m == February)
+            || (y <= 2005 && d == 5 && m == February) ||
+            (y >= 2006 && d <= 7 && w == Monday && m == February)
             // Birthday of Benito Juarez
-            || (y <= 2005 && d == 21 && m == March)
-            || (y >= 2006 && (d >= 15 && d <= 21) && w == Monday && m == March)
+            || (y <= 2005 && d == 21 && m == March) ||
+            (y >= 2006 && (d >= 15 && d <= 21) && w == Monday && m == March)
             // Holy Thursday
-            || (dd == em-4)
+            || (dd == em - 4)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Labour Day
             || (d == 1 && m == May)
             // National Day
             || (d == 16 && m == September)
             // Revolution Day
-            || (y <= 2005 && d == 20 && m == November)
-            || (y >= 2006 && (d >= 15 && d <= 21) && w == Monday && m == November)
+            || (y <= 2005 && d == 20 && m == November) ||
+            (y >= 2006 && (d >= 15 && d <= 21) && w == Monday && m == November)
             // Our Lady of Guadalupe
             || (d == 12 && m == December)
             // Christmas
-            || (d == 25 && m == December))
+            || (d == 25 && m == December)) {
             return false;
+        }
         return true;
     }
 

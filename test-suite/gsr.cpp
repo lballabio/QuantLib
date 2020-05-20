@@ -72,8 +72,9 @@ void GsrTest::testGsrProcess() {
     std::vector<Real> reversions0(1, reversion);
 
     std::vector<Date> stepDates1;
-    for (Size i = 1; i < 60; i++)
+    for (Size i = 1; i < 60; i++) {
         stepDates1.push_back(refDate + (i * 6 * Months));
+    }
     std::vector<Real> vols1(stepDates1.size() + 1, modelvol);
     std::vector<Real> reversions1(stepDates1.size() + 1, reversion);
 
@@ -104,34 +105,34 @@ void GsrTest::testGsrProcess() {
                     hwVal = hwProcess->expectation(w, xw, t - w);
                     gsrVal = gsrProcess->expectation(w, xw, t - w);
                     gsr2Val = gsrProcess2->expectation(w, xw, t - w);
-                    if (fabs(hwVal - gsrVal) > tol)
-                        BOOST_ERROR(
-                            "Expectation E^{T="
-                            << T << "}(x(" << t << ") | x(" << w << ") = " << xw
-                            << " is different in HullWhiteProcess(" << hwVal
-                            << ") and GsrProcess (" << gsrVal << ")");
-                    if (fabs(hwVal - gsr2Val) > tol)
-                        BOOST_ERROR(
-                            "Expectation E^{T="
-                            << T << "}(x(" << t << ") | x(" << w << ") = " << xw
-                            << " is different in HullWhiteProcess(" << hwVal
-                            << ") and GsrProcess2 (" << gsr2Val << ")");
+                    if (fabs(hwVal - gsrVal) > tol) {
+                        BOOST_ERROR("Expectation E^{T="
+                                    << T << "}(x(" << t << ") | x(" << w << ") = " << xw
+                                    << " is different in HullWhiteProcess(" << hwVal
+                                    << ") and GsrProcess (" << gsrVal << ")");
+                    }
+                    if (fabs(hwVal - gsr2Val) > tol) {
+                        BOOST_ERROR("Expectation E^{T="
+                                    << T << "}(x(" << t << ") | x(" << w << ") = " << xw
+                                    << " is different in HullWhiteProcess(" << hwVal
+                                    << ") and GsrProcess2 (" << gsr2Val << ")");
+                    }
 
                     hwVal = hwProcess->variance(w, xw, t - w);
                     gsrVal = gsrProcess->variance(w, xw, t - w);
                     gsr2Val = gsrProcess2->variance(w, xw, t - w);
-                    if (fabs(hwVal - gsrVal) > tol)
-                        BOOST_ERROR("Variance V((x("
-                                    << t << ") | x(" << w << ") = " << xw
-                                    << " is different in HullWhiteProcess("
-                                    << hwVal << ") and GsrProcess (" << gsrVal
-                                    << ")");
-                    if (fabs(hwVal - gsr2Val) > tol)
-                        BOOST_ERROR("Variance V((x("
-                                    << t << ") | x(" << w << ") = " << xw
-                                    << " is different in HullWhiteProcess("
-                                    << hwVal << ") and GsrProcess2 (" << gsr2Val
-                                    << ")");
+                    if (fabs(hwVal - gsrVal) > tol) {
+                        BOOST_ERROR("Variance V((x(" << t << ") | x(" << w << ") = " << xw
+                                                     << " is different in HullWhiteProcess("
+                                                     << hwVal << ") and GsrProcess (" << gsrVal
+                                                     << ")");
+                    }
+                    if (fabs(hwVal - gsr2Val) > tol) {
+                        BOOST_ERROR("Variance V((x(" << t << ") | x(" << w << ") = " << xw
+                                                     << " is different in HullWhiteProcess("
+                                                     << hwVal << ") and GsrProcess2 (" << gsr2Val
+                                                     << ")");
+                    }
                     xw += 0.01;
                 } while (xw <= 0.1);
                 w += t / 5.0;
@@ -177,8 +178,9 @@ void GsrTest::testGsrModel() {
 
     std::vector<Date> stepDates1; // artificial step dates (should yield the
                                   // same result)
-    for (Size i = 1; i < 60; i++)
+    for (Size i = 1; i < 60; i++) {
         stepDates1.push_back(refDate + (i * 6 * Months));
+    }
     std::vector<Real> vols1(stepDates1.size() + 1, modelvol);
     std::vector<Real> reversions1(stepDates1.size() + 1, reversion);
 
@@ -212,16 +214,16 @@ void GsrTest::testGsrModel() {
                 Real gsrVal = model->zerobond(t, w, yw);
                 Real gsr2Val = model2->zerobond(t, w, yw);
                 Real hwVal = hw->discountBond(w, t, rw);
-                if (fabs(gsrVal - hwVal) > tol0)
-                    BOOST_ERROR("Zerobond P("
-                                << w << "," << t << " | x=" << xw << " / y="
-                                << yw << ") is different in HullWhite ("
-                                << hwVal << ") and Gsr (" << gsrVal << ")");
-                if (fabs(gsr2Val - hwVal) > tol0)
-                    BOOST_ERROR("Zerobond P("
-                                << w << "," << t << " | x=" << xw << " / y="
-                                << yw << ") is different in HullWhite ("
-                                << hwVal << ") and Gsr2 (" << gsr2Val << ")");
+                if (fabs(gsrVal - hwVal) > tol0) {
+                    BOOST_ERROR("Zerobond P(" << w << "," << t << " | x=" << xw << " / y=" << yw
+                                              << ") is different in HullWhite (" << hwVal
+                                              << ") and Gsr (" << gsrVal << ")");
+                }
+                if (fabs(gsr2Val - hwVal) > tol0) {
+                    BOOST_ERROR("Zerobond P(" << w << "," << t << " | x=" << xw << " / y=" << yw
+                                              << ") is different in HullWhite (" << hwVal
+                                              << ") and Gsr2 (" << gsr2Val << ")");
+                }
                 xw += 0.01;
             } while (xw <= 0.10);
             t += 2.5;
@@ -267,22 +269,21 @@ void GsrTest::testGsrModel() {
         new Gaussian1dJamshidianSwaptionEngine(model)));
     Real GsrJamNpv = stdswaption->NPV();
 
-    if (fabs(HwJamNpv - GsrNonStdNpv) > 0.00005)
-        BOOST_ERROR(
-            "Jamshidian HW NPV ("
-            << HwJamNpv
-            << ") deviates from Gaussian1dNonstandardSwaptionEngine NPV ("
-            << GsrNonStdNpv << ")");
-    if (fabs(HwJamNpv - GsrStdNpv) > 0.00005)
+    if (fabs(HwJamNpv - GsrNonStdNpv) > 0.00005) {
         BOOST_ERROR("Jamshidian HW NPV ("
-                    << HwJamNpv
-                    << ") deviates from Gaussian1dSwaptionEngine NPV ("
-                    << GsrStdNpv << ")");
-    if (fabs(HwJamNpv - GsrJamNpv) > 0.00005)
+                    << HwJamNpv << ") deviates from Gaussian1dNonstandardSwaptionEngine NPV ("
+                    << GsrNonStdNpv << ")");
+    }
+    if (fabs(HwJamNpv - GsrStdNpv) > 0.00005) {
         BOOST_ERROR("Jamshidian HW NPV ("
-                    << HwJamNpv
-                    << ") deviates from Gaussian1dJamshidianEngine NPV ("
-                    << GsrJamNpv << ")");
+                    << HwJamNpv << ") deviates from Gaussian1dSwaptionEngine NPV (" << GsrStdNpv
+                    << ")");
+    }
+    if (fabs(HwJamNpv - GsrJamNpv) > 0.00005) {
+        BOOST_ERROR("Jamshidian HW NPV ("
+                    << HwJamNpv << ") deviates from Gaussian1dJamshidianEngine NPV (" << GsrJamNpv
+                    << ")");
+    }
 }
 
 test_suite *GsrTest::suite() {

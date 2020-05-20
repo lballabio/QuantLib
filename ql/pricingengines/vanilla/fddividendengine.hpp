@@ -162,8 +162,9 @@ namespace QuantLib {
     void FDDividendEngineMerton73<Scheme>::setGridLimits() const {
         Real paidDividends = 0.0;
         for (Size i=0; i<this->events_.size(); i++) {
-            if (this->getDividendTime(i) >= 0.0)
+            if (this->getDividendTime(i) >= 0.0) {
                 paidDividends += this->getDiscountedDividend(i);
+            }
         }
 
         FDVanillaEngine::setGridLimits(
@@ -213,8 +214,12 @@ namespace QuantLib {
         for (Size i=0; i<this->events_.size(); i++) {
             const Dividend *dividend =
                 dynamic_cast<const Dividend *>(this->events_[i].get());
-            if (!dividend) continue;
-            if (this->getDividendTime(i) < 0.0) continue;
+            if (!dividend) {
+                continue;
+            }
+            if (this->getDividendTime(i) < 0.0) {
+                continue;
+            }
             underlying -= dividend->amount(underlying);
         }
 
@@ -228,7 +233,9 @@ namespace QuantLib {
                                                              Size step) const{
         const Dividend *dividend =
             dynamic_cast<const Dividend *>(this->events_[step].get());
-        if (!dividend) return;
+        if (!dividend) {
+            return;
+        }
         detail::DividendAdder adder(dividend);
         this->sMin_ = adder(this->sMin_);
         this->sMax_ = adder(this->sMax_);

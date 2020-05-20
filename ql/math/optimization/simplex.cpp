@@ -43,8 +43,9 @@ namespace QuantLib {
     // Computes the size of the simplex
         Real computeSimplexSize (const std::vector<Array>& vertices) {
             Array center(vertices.front().size(),0);
-            for (Size i=0; i<vertices.size(); ++i)
+            for (Size i = 0; i < vertices.size(); ++i) {
                 center += vertices[i];
+            }
             center *=1/Real(vertices.size());
             Real result = 0;
             for (Size i=0; i<vertices.size(); ++i) {
@@ -115,14 +116,16 @@ namespace QuantLib {
         }
         // Initialize function values at the vertices of the simplex
         values_ = Array(n+1, 0.0);
-        for (i=0; i<=n; i++)
+        for (i = 0; i <= n; i++) {
             values_[i] = P.value(vertices_[i]);
+        }
         // Loop looking for minimum
         do {
             sum_ = Array(n, 0.0);
             Size i;
-            for (i=0; i<=n; i++)
+            for (i = 0; i <= n; i++) {
                 sum_ += vertices_[i];
+            }
             // Determine the best (iLowest), worst (iHighest)
             // and 2nd worst (iNextHighest) vertices
             Size iLowest = 0;
@@ -139,11 +142,13 @@ namespace QuantLib {
                     iNextHighest = iHighest;
                     iHighest = i;
                 } else {
-                    if ((values_[i]>values_[iNextHighest]) && i!=iHighest)
+                    if ((values_[i] > values_[iNextHighest]) && i != iHighest) {
                         iNextHighest = i;
+                    }
                 }
-                if (values_[i]<values_[iLowest])
+                if (values_[i] < values_[iLowest]) {
                     iLowest = i;
+                }
             }
             // Now compute accuracy, update iteration number and check end criteria
             //// Numerical Recipes exit strategy on fx (see NR in C++, p.410)

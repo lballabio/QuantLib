@@ -47,8 +47,9 @@ namespace {
         PathGenerator<rsg_type> generator(process, length, timeSteps,
                                           rsg, brownianBridge);
         Size i;
-        for (i=0; i<100; i++)
+        for (i = 0; i < 100; i++) {
             generator.next();
+        }
 
         sample_type sample = generator.next();
         Real calculated = sample.value.back();
@@ -99,14 +100,16 @@ namespace {
                                                TimeGrid(length, timeSteps),
                                                rsg, false);
         Size i, j;
-        for (i=0; i<100; i++)
+        for (i = 0; i < 100; i++) {
             generator.next();
+        }
 
         sample_type sample = generator.next();
         Array calculated(assets);
         Real error, tolerance = 2.0e-7;
-        for (j=0; j<assets; j++)
+        for (j = 0; j < assets; j++) {
             calculated[j] = sample.value[j].back();
+        }
         for (j=0; j<assets; j++) {
             error = std::fabs(calculated[j]-expected[j]);
             if (error > tolerance) {
@@ -121,8 +124,9 @@ namespace {
         }
 
         sample = generator.antithetic();
-        for (j=0; j<assets; j++)
+        for (j = 0; j < assets; j++) {
             calculated[j] = sample.value[j].back();
+        }
         for (j=0; j<assets; j++) {
             error = std::fabs(calculated[j]-antithetic[j]);
             if (error > tolerance) {

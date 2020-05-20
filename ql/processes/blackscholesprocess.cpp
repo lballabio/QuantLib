@@ -140,9 +140,10 @@ namespace QuantLib {
                              dt -
                          0.5 * var;
             return apply(x0, std::sqrt(var) * dw + drift);
-        } else
-            return apply(x0, discretization_->drift(*this, t0, x0, dt) +
-                                 stdDeviation(t0, x0, dt) * dw);
+        } else {
+            return apply(x0,
+                         discretization_->drift(*this, t0, x0, dt) + stdDeviation(t0, x0, dt) * dw);
+        }
     }
 
     Time GeneralizedBlackScholesProcess::time(const Date& d) const {
@@ -177,8 +178,9 @@ namespace QuantLib {
 
     const Handle<LocalVolTermStructure>&
     GeneralizedBlackScholesProcess::localVolatility() const {
-        if (hasExternalLocalVol_)
+        if (hasExternalLocalVol_) {
             return externalLocalVolTS_;
+        }
 
         if (!updated_) {
             isStrikeIndependent_=true;

@@ -132,12 +132,14 @@ namespace QuantLib {
     inline void Handle<T>::Link::linkTo(const ext::shared_ptr<T>& h,
                                         bool registerAsObserver) {
         if ((h != h_) || (isObserver_ != registerAsObserver)) {
-            if (h_ && isObserver_)
+            if (h_ && isObserver_) {
                 unregisterWith(h_);
+            }
             h_ = h;
             isObserver_ = registerAsObserver;
-            if (h_ && isObserver_)
+            if (h_ && isObserver_) {
                 registerWith(h_);
+            }
             notifyObservers();
         }
     }

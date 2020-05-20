@@ -174,9 +174,10 @@ namespace QuantLib {
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         std::vector<Real> invProb;
-        for(Size i=0; i<uncDefProb.size(); ++i)
-           invProb.push_back(copula_->inverseCumulativeY(uncDefProb[i], i));
-           ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
+        for (Size i = 0; i < uncDefProb.size(); ++i) {
+            invProb.push_back(copula_->inverseCumulativeY(uncDefProb[i], i));
+        }
+        ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
                 ext::bind(
@@ -223,15 +224,17 @@ namespace QuantLib {
         copula_->resetBasket(basket_.currentLink());
 
         std::vector<Real> lgdsTmp, lgds;
-        for(Size i=0; i<remainingBsktSize_; ++i)
-            lgds.push_back(notionals_[i]*(1.-copula_->recoveries()[i]));
+        for (Size i = 0; i < remainingBsktSize_; ++i) {
+            lgds.push_back(notionals_[i] * (1. - copula_->recoveries()[i]));
+        }
         lgdsTmp = lgds;
         ///////////////std::remove(lgds.begin(), lgds.end(), 0.);
         lgds.erase(std::remove(lgds.begin(), lgds.end(), 0.), lgds.end());
         lossUnit_ = *(std::min_element(lgds.begin(), lgds.end()))
             / nBuckets_;
-        for(Size i=0; i<remainingBsktSize_; ++i)
-            wk_.push_back(std::floor(lgdsTmp[i]/lossUnit_ + .5));
+        for (Size i = 0; i < remainingBsktSize_; ++i) {
+            wk_.push_back(std::floor(lgdsTmp[i] / lossUnit_ + .5));
+        }
     }
 
     // make it return a distribution object?
@@ -259,15 +262,25 @@ namespace QuantLib {
     {
         std::map<Real, Probability> dist = lossDistribution(d);
 
-        if(dist.begin()->second >=1.) return dist.begin()->first;
+        if (dist.begin()->second >= 1.) {
+            return dist.begin()->first;
+        }
 
         // deterministic case (e.g. date requested is todays date)
-        if(dist.size() == 1) return dist.begin()->first;
+        if (dist.size() == 1) {
+            return dist.begin()->first;
+        }
 
-        if(percentile == 1.) return dist.rbegin()->second;
-        if(percentile == 0.) return dist.begin()->second;
+        if (percentile == 1.) {
+            return dist.rbegin()->second;
+        }
+        if (percentile == 0.) {
+            return dist.begin()->second;
+        }
         std::map<Real, Probability>::const_iterator itdist = dist.begin();
-        while (itdist->second <= percentile) ++itdist;
+        while (itdist->second <= percentile) {
+            ++itdist;
+        }
         Real valPlus = itdist->second;
         Real xPlus   = itdist->first;
         --itdist;  //we're never 1st or last, because of tests above
@@ -286,13 +299,18 @@ namespace QuantLib {
     Real RecursiveLossModel<CP>::expectedShortfall(const Date& d, 
         Real perctl) const 
     {
-        if(d == Settings::instance().evaluationDate()) return 0.;
+        if (d == Settings::instance().evaluationDate()) {
+            return 0.;
+        }
         std::map<Real, Probability> distrib = lossDistribution(d);
 
         std::map<Real, Probability>::iterator itNxt, itDist = 
             distrib.begin();
-        for(; itDist != distrib.end(); ++itDist)
-            if(itDist->second >= perctl) break;
+        for (; itDist != distrib.end(); ++itDist) {
+            if (itDist->second >= perctl) {
+                break;
+            }
+        }
         itNxt = itDist;
         --itDist; // what if we are on the first one?!!!
 

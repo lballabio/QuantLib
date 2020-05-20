@@ -47,10 +47,12 @@ namespace QuantLib {
         for (int j=bufferSize+7; j>=0; j--) {
             long k = temp1/q1;
             temp1 = a1*(temp1-k*q1)-k*r1;
-            if (temp1 < 0)
+            if (temp1 < 0) {
                 temp1 += m1;
-            if (j < bufferSize)
+            }
+            if (j < bufferSize) {
                 buffer[j] = temp1;
+            }
         }
         y = buffer[0];
     }
@@ -60,26 +62,30 @@ namespace QuantLib {
         // Compute temp1=(a1*temp1) % m1
         // without overflows (Schrage's method)
         temp1 = a1*(temp1-k*q1)-k*r1;
-        if (temp1 < 0)
+        if (temp1 < 0) {
             temp1 += m1;
+        }
         k = temp2/q2;
         // Compute temp2=(a2*temp2) % m2
         // without overflows (Schrage's method)
         temp2 = a2*(temp2-k*q2)-k*r2;
-        if (temp2 < 0)
+        if (temp2 < 0) {
             temp2 += m2;
+        }
         // Will be in the range 0..bufferSize-1
         int j = y/bufferNormalizer;
         // Here temp1 is shuffled, temp1 and temp2 are
         // combined to generate output
         y = buffer[j]-temp2;
         buffer[j] = temp1;
-        if (y < 1)
-            y += m1-1;
+        if (y < 1) {
+            y += m1 - 1;
+        }
         double result = y/double(m1);
         // users don't expect endpoint values
-        if (result > maxRandom)
-            result = (double) maxRandom;
+        if (result > maxRandom) {
+            result = (double)maxRandom;
+        }
         return sample_type(result,1.0);
     }
 

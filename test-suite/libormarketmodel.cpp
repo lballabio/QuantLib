@@ -131,10 +131,10 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
 
     for (i=0; i<size; ++i) {
         for (Size j=0; j<size; ++j) {
-            if (std::fabs(recon[i][j]) > tolerance)
+            if (std::fabs(recon[i][j]) > tolerance) {
                 BOOST_ERROR("Failed to reproduce correlation matrix"
-                            << "\n    calculated: " << recon[i][j]
-                            << "\n    expected:   " << 0);
+                            << "\n    calculated: " << recon[i][j] << "\n    expected:   " << 0);
+            }
         }
     }
 
@@ -166,10 +166,11 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
 
         for (Size i=0; i<size; ++i) {
             for (Size j=0; j<size; ++j) {
-                if (std::fabs(recon[i][j]) > tolerance)
+                if (std::fabs(recon[i][j]) > tolerance) {
                     BOOST_ERROR("Failed to reproduce correlation matrix"
                                 << "\n    calculated: " << recon[i][j]
                                 << "\n    expected:   " << 0);
+                }
             }
         }
 
@@ -182,10 +183,11 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
                 expected=(a*(T-t)+d)*std::exp(-b*(T-t)) + c;
             }
 
-            if (std::fabs(expected - volatility[k]) > tolerance)
+            if (std::fabs(expected - volatility[k]) > tolerance) {
                 BOOST_ERROR("Failed to reproduce volatities"
                             << "\n    calculated: " << volatility[k]
                             << "\n    expected:   " << expected);
+            }
         }
     }
 }
@@ -200,10 +202,11 @@ void LiborMarketModelTest::testCapletPricing() {
 
     const Size size = 10;
     Real tolerance;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         tolerance = 1e-5;
-    else
+    } else {
         tolerance = 1e-12;
+    }
 
     ext::shared_ptr<IborIndex> index = makeIndex();
     ext::shared_ptr<LiborForwardModelProcess> process(
@@ -240,10 +243,10 @@ void LiborMarketModelTest::testCapletPricing() {
     const Real expected = 0.015853935178;
     const Real calculated = cap1->NPV();
 
-    if (std::fabs(expected - calculated) > tolerance)
+    if (std::fabs(expected - calculated) > tolerance) {
         BOOST_ERROR("Failed to reproduce npv"
-                    << "\n    calculated: " << calculated
-                    << "\n    expected:   " << expected);
+                    << "\n    calculated: " << calculated << "\n    expected:   " << expected);
+    }
 }
 
 void LiborMarketModelTest::testCalibration() {
@@ -346,10 +349,11 @@ void LiborMarketModelTest::testCalibration() {
         calculated += diff*diff;
     }
 
-    if (std::sqrt(calculated) > tolerance)
+    if (std::sqrt(calculated) > tolerance) {
         BOOST_ERROR("Failed to calibrate libor forward model"
                     << "\n    calculated diff: " << std::sqrt(calculated)
                     << "\n    expected : smaller than  " << tolerance);
+    }
 }
 
 void LiborMarketModelTest::testSwaptionPricing() {
@@ -363,10 +367,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
     const Size steps = 8*size;
 
     Real tolerance;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         tolerance = 1e-6;
-    else
+    } else {
         tolerance = 1e-12;
+    }
 
     std::vector<Date> dates;
     std::vector<Rate> rates;
@@ -441,10 +446,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
             const Real expected = forwardSwap->fairRate();
             const Real calculated = liborModel->S_0(i-1,i+j-1);
 
-            if (std::fabs(expected - calculated) > tolerance)
+            if (std::fabs(expected - calculated) > tolerance) {
                 BOOST_ERROR("Failed to reproduce fair forward swap rate"
                             << "\n    calculated: " << calculated
                             << "\n    expected:   " << expected);
+            }
 
             swapRate = forwardSwap->fairRate();
             forwardSwap = ext::make_shared<VanillaSwap>(
@@ -487,11 +493,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
                     stat.add(std::max(npv, 0.0));
                 }
 
-                if (std::fabs(swaption->NPV() - stat.mean())
-                    > stat.errorEstimate()*2.35)
+                if (std::fabs(swaption->NPV() - stat.mean()) > stat.errorEstimate() * 2.35) {
                     BOOST_ERROR("Failed to reproduce swaption npv"
                                 << "\n    calculated: " << stat.mean()
                                 << "\n    expected:   " << swaption->NPV());
+                }
             }
         }
     }

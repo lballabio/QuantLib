@@ -115,10 +115,11 @@ namespace QuantLib {
     void VanillaForwardPayoff::accept(AcyclicVisitor& v) {
         Visitor<VanillaForwardPayoff>* v1 =
             dynamic_cast<Visitor<VanillaForwardPayoff>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             StrikedTypePayoff::accept(v);
+        }
     }
 
 

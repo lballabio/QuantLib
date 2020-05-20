@@ -127,7 +127,7 @@ namespace andreasen_huge_volatility_interpl_test {
         for (Size i=0; i < LENGTH(raw); ++i) {
             const Real strike = spot->value()*raw[i][0];
 
-            for (Size j=1; j < LENGTH(raw[i]); ++j)
+            for (Size j = 1; j < LENGTH(raw[i]); ++j) {
                 if (raw[i][j] > QL_EPSILON) {
                     const Date maturity
                         = today + Period(Size(365*maturityTimes[j-1]), Days);
@@ -144,6 +144,7 @@ namespace andreasen_huge_volatility_interpl_test {
                         ext::make_shared<SimpleQuote>(impliedVol))
                     );
                 }
+            }
         }
 
         const CalibrationData data = { spot, rTS, qTS, calibrationSet};
@@ -573,7 +574,7 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
         AndreasenHugeVolatilityInterpl::CallPut
     };
 
-    for (Size i=0; i < LENGTH(interpl); ++i)
+    for (Size i = 0; i < LENGTH(interpl); ++i) {
         for (Size j=0; j < LENGTH(calibrationType); ++j) {
             const ext::shared_ptr<AndreasenHugeVolatilityInterpl>
                 andreasenHugeVolInterplation(
@@ -596,6 +597,7 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
                            << "\n    expected:   " << expected);
             }
         }
+    }
 }
 
 void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
@@ -979,11 +981,12 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
     const Date volRefDate = volatilityAdapter->referenceDate();
     const Date localRefDate = localVolAdapter->referenceDate();
 
-    if (volRefDate != today || localRefDate != today)
+    if (volRefDate != today || localRefDate != today) {
         BOOST_FAIL("reference dates should match today's date"
-               << "\n    today                     : " << today
-               << "\n    local vol reference date  : " << localRefDate
-               << "\n    implied vol reference date: " << volRefDate);
+                   << "\n    today                     : " << today
+                   << "\n    local vol reference date  : " << localRefDate
+                   << "\n    implied vol reference date: " << volRefDate);
+    }
 
     const Date modToday = Date(15, January, 2018);
     Settings::instance().evaluationDate() = modToday;
@@ -991,23 +994,24 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
     const Date modVolRefDate = volatilityAdapter->referenceDate();
     const Date modLocalRefDate = localVolAdapter->referenceDate();
 
-    if (modVolRefDate != modToday || modLocalRefDate != modToday)
+    if (modVolRefDate != modToday || modLocalRefDate != modToday) {
         BOOST_FAIL("reference dates should match modified today's date"
-               << "\n    today                     : " << modToday
-               << "\n    local vol reference date  : " << modLocalRefDate
-               << "\n    implied vol reference date: " << modVolRefDate);
+                   << "\n    today                     : " << modToday
+                   << "\n    local vol reference date  : " << modLocalRefDate
+                   << "\n    implied vol reference date: " << modVolRefDate);
+    }
 
     // test update method
     const Volatility modImpliedVol =
         volatilityAdapter->blackVol(maturity, s0, true);
 
     const Real diff = std::fabs(modImpliedVol - impliedVol);
-    if (diff > 10*tol)
+    if (diff > 10 * tol) {
         BOOST_FAIL("modified implied vol should match direct calculation"
-                << "\n    implied vol         : " << impliedVol
-                << "\n    modified implied vol: " << modImpliedVol
-                << "\n    difference          : " << diff
-                << "\n    tolerance           : " << tol);
+                   << "\n    implied vol         : " << impliedVol << "\n    modified implied vol: "
+                   << modImpliedVol << "\n    difference          : " << diff
+                   << "\n    tolerance           : " << tol);
+    }
 }
 
 void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {

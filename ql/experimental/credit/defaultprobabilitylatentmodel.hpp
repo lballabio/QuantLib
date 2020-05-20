@@ -123,13 +123,17 @@ namespace QuantLib {
             /*Avoid redundant call to minimum value inversion (might be \infty),
             and this independently of the copula function.
             */
-            if (prob < 1.e-10) return 0.;// use library macro...
+            if (prob < 1.e-10) {
+                return 0.; // use library macro...
+            }
             return conditionalDefaultProbabilityInvP(
                 inverseCumulativeY(prob, iName), iName, mktFactors);
         }
     protected:
         void update() {
-            if(basket_) basket_->notifyObservers();
+            if (basket_) {
+                basket_->notifyObservers();
+            }
             LatentModel<copulaPolicy>::update();
         }
     public:// open since users access it for performance on joint integrations.
@@ -213,7 +217,9 @@ namespace QuantLib {
             Probability pUncond = pool->get(pool->names()[iName]).
                 defaultProbability(basket_->defaultKeys()[iName])
                 ->defaultProbability(d);
-            if (pUncond < 1.e-10) return 0.;
+            if (pUncond < 1.e-10) {
+                return 0.;
+            }
 
             return integratedExpectedValue(
               ext::function<Real (const std::vector<Real>& v1)>(
@@ -308,11 +314,13 @@ namespace QuantLib {
 
             // Precalc conditional probabilities
             std::vector<Probability> pDefCond;
-            for(Size i=0; i<poolSize; i++)
-                pDefCond.push_back(conditionalDefaultProbability(
-                    pool->get(pool->names()[i]).
-                    defaultProbability(basket_->defaultKeys()[i])->
-                    defaultProbability(date), i, mktFactors));
+            for (Size i = 0; i < poolSize; i++) {
+                pDefCond.push_back(
+                    conditionalDefaultProbability(pool->get(pool->names()[i])
+                                                      .defaultProbability(basket_->defaultKeys()[i])
+                                                      ->defaultProbability(date),
+                                                  i, mktFactors));
+            }
 
             Probability probNEventsOrMore = 0.;
             for(BigNatural mask = 
@@ -323,9 +331,9 @@ namespace QuantLib {
                 boost::dynamic_bitset<> bsetMask(poolSize, mask);
                 if(bsetMask.count() >= n) {
                     Probability pConfig = 1;
-                    for(Size i=0; i<bsetMask.size(); i++)
-                        pConfig *= 
-                          (bsetMask[i] ? pDefCond[i] : (1.- pDefCond[i]));
+                    for (Size i = 0; i < bsetMask.size(); i++) {
+                        pConfig *= (bsetMask[i] ? pDefCond[i] : (1. - pDefCond[i]));
+                    }
                     probNEventsOrMore += pConfig;
                 }
             }

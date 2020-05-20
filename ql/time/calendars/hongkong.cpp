@@ -44,10 +44,9 @@ namespace QuantLib {
 
         if (isWeekend(w)
             // New Year's Day
-            || ((d == 1 || ((d == 2) && w == Monday))
-                && m == January)
+            || ((d == 1 || ((d == 2) && w == Monday)) && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Labor Day
@@ -55,18 +54,17 @@ namespace QuantLib {
             // SAR Establishment Day
             || ((d == 1 || ((d == 2) && w == Monday)) && m == July)
             // National Day
-            || ((d == 1 || ((d == 2) && w == Monday))
-                && m == October)
+            || ((d == 1 || ((d == 2) && w == Monday)) && m == October)
             // Christmas Day
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December)
-            )
+            || (d == 26 && m == December)) {
             return false;
+        }
 
         if (y == 2004) {
-            if (// Lunar New Year
-                ((d==22 || d==23 || d==24) && m == January)
+            if ( // Lunar New Year
+                ((d == 22 || d == 23 || d == 24) && m == January)
                 // Ching Ming Festival
                 || (d == 5 && m == April)
                 // Buddha's birthday
@@ -76,13 +74,14 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 29 && m == September)
                 // Chung Yeung
-                || (d == 22 && m == October))
+                || (d == 22 && m == October)) {
                 return false;
+            }
         }
 
         if (y == 2005) {
-            if (// Lunar New Year
-                ((d==9 || d==10 || d==11) && m == February)
+            if ( // Lunar New Year
+                ((d == 9 || d == 10 || d == 11) && m == February)
                 // Ching Ming Festival
                 || (d == 5 && m == April)
                 // Buddha's birthday
@@ -92,12 +91,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 19 && m == September)
                 // Chung Yeung festival
-                || (d == 11 && m == October))
-            return false;
+                || (d == 11 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2006) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d >= 28 && d <= 31) && m == January)
                 // Ching Ming Festival
                 || (d == 5 && m == April)
@@ -108,12 +108,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 7 && m == October)
                 // Chung Yeung festival
-                || (d == 30 && m == October))
-            return false;
+                || (d == 30 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2007) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d >= 17 && d <= 20) && m == February)
                 // Ching Ming Festival
                 || (d == 5 && m == April)
@@ -124,12 +125,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 26 && m == September)
                 // Chung Yeung festival
-                || (d == 19 && m == October))
-            return false;
+                || (d == 19 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2008) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d >= 7 && d <= 9) && m == February)
                 // Ching Ming Festival
                 || (d == 4 && m == April)
@@ -140,12 +142,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 15 && m == September)
                 // Chung Yeung festival
-                || (d == 7 && m == October))
-            return false;
+                || (d == 7 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2009) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d >= 26 && d <= 28) && m == January)
                 // Ching Ming Festival
                 || (d == 4 && m == April)
@@ -156,12 +159,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 3 && m == October)
                 // Chung Yeung festival
-                || (d == 26 && m == October))
-            return false;
+                || (d == 26 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2010) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d == 15 || d == 16) && m == February)
                 // Ching Ming Festival
                 || (d == 6 && m == April)
@@ -170,12 +174,13 @@ namespace QuantLib {
                 // Tuen Ng festival
                 || (d == 16 && m == June)
                 // Mid-autumn festival
-                || (d == 23 && m == September))
-            return false;
+                || (d == 23 && m == September)) {
+                return false;
+            }
         }
 
         if (y == 2011) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d == 3 || d == 4) && m == February)
                 // Ching Ming Festival
                 || (d == 5 && m == April)
@@ -188,12 +193,13 @@ namespace QuantLib {
                 // Chung Yeung festival
                 || (d == 5 && m == October)
                 // Second day after Christmas
-                || (d == 27 && m == December))
-            return false;
+                || (d == 27 && m == December)) {
+                return false;
+            }
         }
 
         if (y == 2012) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 (d >= 23 && d <= 25 && m == January)
                 // Ching Ming Festival
                 || (d == 4 && m == April)
@@ -202,12 +208,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 1 && m == October)
                 // Chung Yeung festival
-                || (d == 23 && m == October))
-            return false;
+                || (d == 23 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2013) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 (d >= 11 && d <= 13 && m == February)
                 // Ching Ming Festival
                 || (d == 4 && m == April)
@@ -218,12 +225,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 20 && m == September)
                 // Chung Yeung festival
-                || (d == 14 && m == October))
-            return false;
+                || (d == 14 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2014) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d == 31 && m == January) || (d <= 3 && m == February))
                 // Buddha's birthday
                 || (d == 6 && m == May)
@@ -232,12 +240,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 9 && m == September)
                 // Chung Yeung festival
-                || (d == 2 && m == October))
-            return false;
+                || (d == 2 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2015) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d == 19 && m == February) || (d == 20 && m == February))
                 // The day following Easter Monday
                 || (d == 7 && m == April)
@@ -248,12 +257,13 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 28 && m == September)
                 // Chung Yeung festival
-                || (d == 21 && m == October))
+                || (d == 21 && m == October)) {
                 return false;
+            }
         }
 
         if (y == 2016) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d >= 8 && d <= 10) && m == February)
                 // Ching Ming Festival
                 || (d == 4 && m == April)
@@ -264,12 +274,13 @@ namespace QuantLib {
                 // Chung Yeung festival
                 || (d == 10 && m == October)
                 // Second day after Christmas
-                || (d == 27 && m == December))
+                || (d == 27 && m == December)) {
                 return false;
+            }
         }
 
         if (y == 2017) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d == 30 || d == 31) && m == January)
                 // Ching Ming Festival
                 || (d == 4 && m == April)
@@ -278,12 +289,13 @@ namespace QuantLib {
                 // Tuen Ng festival
                 || (d == 30 && m == May)
                 // Mid-autumn festival
-                || (d == 5 && m == October))
+                || (d == 5 && m == October)) {
                 return false;
+            }
         }
 
         if (y == 2018) {
-            if (// Lunar New Year
+            if ( // Lunar New Year
                 ((d == 16 && m == February) || (d == 19 && m == February))
                 // Ching Ming Festival
                 || (d == 5 && m == April)
@@ -294,36 +306,39 @@ namespace QuantLib {
                 // Mid-autumn festival
                 || (d == 25 && m == September)
                 // Chung Yeung festival
-                || (d == 17 && m == October))
+                || (d == 17 && m == October)) {
                 return false;
+            }
         }
 
         if (y == 2019) {
-           if (// Lunar New Year
-               ((d >= 5 && d <= 7) && m == February)
-               // Ching Ming Festival
-               || (d == 5 && m == April)
-               // Tuen Ng festival
-               || (d == 7 && m == June)
-               // Chung Yeung festival
-               || (d == 7 && m == October))
-               return false;
+            if ( // Lunar New Year
+                ((d >= 5 && d <= 7) && m == February)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Tuen Ng festival
+                || (d == 7 && m == June)
+                // Chung Yeung festival
+                || (d == 7 && m == October)) {
+                return false;
+            }
         }
 
         if (y == 2020) {
-           if (// Lunar New Year
-               ((d == 27 || d == 28) && m == January)
-               // Ching Ming Festival
-               || (d == 4 && m == April)
-               // Buddha's birthday
-               || (d == 30 && m == April)
-               // Tuen Ng festival
-               || (d == 25 && m == June)
-               // Mid-autumn festival
-               || (d == 2 && m == October)
-               // Chung Yeung festival
-               || (d == 26 && m == October))
-               return false;
+            if ( // Lunar New Year
+                ((d == 27 || d == 28) && m == January)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 30 && m == April)
+                // Tuen Ng festival
+                || (d == 25 && m == June)
+                // Mid-autumn festival
+                || (d == 2 && m == October)
+                // Chung Yeung festival
+                || (d == 26 && m == October)) {
+                return false;
+            }
         }
 
         return true;

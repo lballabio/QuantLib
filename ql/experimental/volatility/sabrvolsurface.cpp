@@ -70,18 +70,22 @@ namespace QuantLib {
     boost::array<Real, 4> SabrVolSurface::sabrGuesses(const Date& d) const {
 
         // the guesses for sabr parameters are assumed to be piecewise constant
-        if (d<=optionDates_[0]) return sabrGuesses_[0];
+        if (d <= optionDates_[0]) {
+            return sabrGuesses_[0];
+        }
         Size i=0;
-        while (i<optionDates_.size()-1 && d<optionDates_[i])
+        while (i < optionDates_.size() - 1 && d < optionDates_[i]) {
             ++i;
+        }
         return sabrGuesses_[i];
     }
 
     void SabrVolSurface::updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const {
 
         Size i=0;
-        while (i<optionDates_.size() && d<=optionDates_[i])
+        while (i < optionDates_.size() && d <= optionDates_[i]) {
             ++i;
+        }
         sabrGuesses_[i][0] = newGuesses[0];
         sabrGuesses_[i][1] = newGuesses[1];
         sabrGuesses_[i][2] = newGuesses[2];
@@ -161,25 +165,28 @@ namespace QuantLib {
 
         Size nStrikes = atmRateSpreads_.size();
         QL_REQUIRE(nStrikes>1, "too few strikes (" << nStrikes << ")");
-        for (Size i=1; i<nStrikes; ++i)
-            QL_REQUIRE(atmRateSpreads_[i-1]<atmRateSpreads_[i],
-                       "non increasing strike spreads: " <<
-                       io::ordinal(i) << " is " << atmRateSpreads_[i-1] << ", " <<
-                       io::ordinal(i+1) << " is " << atmRateSpreads_[i]);
-        for (Size i=0; i<volSpreads_.size(); i++)
-            QL_REQUIRE(atmRateSpreads_.size()==volSpreads_[i].size(),
-                       "mismatch between number of strikes (" << atmRateSpreads_.size() <<
-                       ") and number of columns (" << volSpreads_[i].size() <<
-                       ") in the " << io::ordinal(i+1) << " row");
+        for (Size i = 1; i < nStrikes; ++i) {
+            QL_REQUIRE(atmRateSpreads_[i - 1] < atmRateSpreads_[i],
+                       "non increasing strike spreads: "
+                           << io::ordinal(i) << " is " << atmRateSpreads_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << atmRateSpreads_[i]);
+        }
+        for (Size i = 0; i < volSpreads_.size(); i++) {
+            QL_REQUIRE(atmRateSpreads_.size() == volSpreads_[i].size(),
+                       "mismatch between number of strikes ("
+                           << atmRateSpreads_.size() << ") and number of columns ("
+                           << volSpreads_[i].size() << ") in the " << io::ordinal(i + 1) << " row");
+        }
     }
 
     void SabrVolSurface::accept(AcyclicVisitor& v) {
         Visitor<SabrVolSurface>* v1 =
             dynamic_cast<Visitor<SabrVolSurface>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             InterestRateVolSurface::accept(v);
+        }
     }
 
 }

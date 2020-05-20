@@ -148,9 +148,10 @@ namespace QuantLib {
         std::map<Date, Real>::const_iterator hq = quotes_.find(date);
         if (hq->second == Null<Real>()) {
             ++hq;
-            if (hq == quotes_.end())
+            if (hq == quotes_.end()) {
                 //if (hq->second == Null<Real>())
                 return Null<Real>();
+            }
         }
         return hq->second;
     }
@@ -167,8 +168,9 @@ namespace QuantLib {
     }
 
     inline Date CommodityIndex::lastQuoteDate() const {
-        if (quotes_.empty())
+        if (quotes_.empty()) {
             return Date::minDate();
+        }
         return quotes_.lastDate();
     }
 
@@ -177,8 +179,9 @@ namespace QuantLib {
     }
 
     inline bool CommodityIndex::forwardCurveEmpty() const {
-        if (forwardCurve_ != 0)
+        if (forwardCurve_ != 0) {
             return forwardCurve_->empty();
+        }
         return false;
     }
 

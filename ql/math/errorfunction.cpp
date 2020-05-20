@@ -217,8 +217,9 @@ namespace QuantLib {
 
         if(ax < 0.84375) {      /* |x|<0.84375 */
             if(ax < 3.7252902984e-09) { /* |x|<2**-28 */
-                if (ax < DBL_MIN*16)
-                    return 0.125*(8.0*x+efx8*x);  /*avoid underflow */
+                if (ax < DBL_MIN * 16) {
+                    return 0.125 * (8.0 * x + efx8 * x); /*avoid underflow */
+                }
                 return x + efx*x;
             }
             z = x*x;
@@ -231,10 +232,18 @@ namespace QuantLib {
             s = ax-one;
             P = pa0+s*(pa1+s*(pa2+s*(pa3+s*(pa4+s*(pa5+s*pa6)))));
             Q = one+s*(qa1+s*(qa2+s*(qa3+s*(qa4+s*(qa5+s*qa6)))));
-            if(x>=0) return erx + P/Q; else return -erx - P/Q;
+            if (x >= 0) {
+                return erx + P / Q;
+            } else {
+                return -erx - P / Q;
+            }
         }
         if (ax >= 6) {      /* inf>|x|>=6 */
-            if(x>=0) return one-tiny; else return tiny-one;
+            if (x >= 0) {
+                return one - tiny;
+            } else {
+                return tiny - one;
+            }
         }
 
         /* Starts to lose accuracy when ax~5 */
@@ -248,8 +257,11 @@ namespace QuantLib {
             S=one+s*(sb1+s*(sb2+s*(sb3+s*(sb4+s*(sb5+s*(sb6+s*sb7))))));
         }
         r = std::exp( -ax*ax-0.5625 +R/S);
-        if(x>=0) return one-r/ax; else return  r/ax-one;
-
+        if (x >= 0) {
+            return one - r / ax;
+        } else {
+            return r / ax - one;
+        }
     }
 
 }

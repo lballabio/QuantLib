@@ -66,8 +66,9 @@ namespace QuantLib {
         .withNotionals(nominal_)
         ;
 
-        if (firstCapletExcluded_)
+        if (firstCapletExcluded_) {
             leg.erase(leg.begin());
+        }
 
         // only leaves the last coupon
         if (asOptionlet_ && leg.size() > 1) {

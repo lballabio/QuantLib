@@ -90,9 +90,9 @@ namespace QuantLib {
         checkInputs();
         initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
-        for (Size i=0; i<nOptionTenors_; ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                SimpleQuote(vols_[i])));
+        for (Size i = 0; i < nOptionTenors_; ++i) {
+            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(vols_[i])));
+        }
         interpolate();
     }
 
@@ -115,9 +115,9 @@ namespace QuantLib {
         checkInputs();
         initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
-        for (Size i=0; i<nOptionTenors_; ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                SimpleQuote(vols_[i])));
+        for (Size i = 0; i < nOptionTenors_; ++i) {
+            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(vols_[i])));
+        }
         interpolate();
     }
 
@@ -130,17 +130,19 @@ namespace QuantLib {
                    vols_.size() << ")");
         QL_REQUIRE(optionTenors_[0]>0*Days,
                    "negative first option tenor: " << optionTenors_[0]);
-        for (Size i=1; i<nOptionTenors_; ++i)
-            QL_REQUIRE(optionTenors_[i]>optionTenors_[i-1],
-                       "non increasing option tenor: " << io::ordinal(i) <<
-                       " is " << optionTenors_[i-1] << ", " <<
-                       io::ordinal(i+1) << " is " << optionTenors_[i]);
+        for (Size i = 1; i < nOptionTenors_; ++i) {
+            QL_REQUIRE(optionTenors_[i] > optionTenors_[i - 1],
+                       "non increasing option tenor: "
+                           << io::ordinal(i) << " is " << optionTenors_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << optionTenors_[i]);
+        }
     }
 
     void CapFloorTermVolCurve::registerWithMarketData()
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
+        for (Size i = 0; i < volHandles_.size(); ++i) {
             registerWith(volHandles_[i]);
+        }
     }
 
     void CapFloorTermVolCurve::interpolate()
@@ -179,8 +181,9 @@ namespace QuantLib {
     {
         // check if date recalculation must be called here
 
-        for (Size i=0; i<vols_.size(); ++i)
+        for (Size i = 0; i < vols_.size(); ++i) {
             vols_[i] = volHandles_[i]->value();
+        }
 
         interpolation_.update();
     }

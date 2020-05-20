@@ -55,15 +55,17 @@ namespace QuantLib {
           case Continuous:
             return std::exp(r_*t);
           case SimpleThenCompounded:
-            if (t<=1.0/Real(freq_))
-                return 1.0 + r_*t;
-            else
-                return std::pow(1.0+r_/freq_, freq_*t);
+              if (t <= 1.0 / Real(freq_)) {
+                  return 1.0 + r_ * t;
+              } else {
+                  return std::pow(1.0 + r_ / freq_, freq_ * t);
+              }
           case CompoundedThenSimple:
-            if (t>1.0/Real(freq_))
-                return 1.0 + r_*t;
-            else
-                return std::pow(1.0+r_/freq_, freq_*t);
+              if (t > 1.0 / Real(freq_)) {
+                  return 1.0 + r_ * t;
+              } else {
+                  return std::pow(1.0 + r_ / freq_, freq_ * t);
+              }
           default:
             QL_FAIL("unknown compounding convention");
         }
@@ -94,17 +96,19 @@ namespace QuantLib {
                 r = std::log(compound)/t;
                 break;
               case SimpleThenCompounded:
-                if (t<=1.0/Real(freq))
-                    r = (compound - 1.0)/t;
-                else
-                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
-                break;
+                  if (t <= 1.0 / Real(freq)) {
+                      r = (compound - 1.0) / t;
+                  } else {
+                      r = (std::pow(compound, 1.0 / (Real(freq) * t)) - 1.0) * Real(freq);
+                  }
+                  break;
               case CompoundedThenSimple:
-                if (t>1.0/Real(freq))
-                    r = (compound - 1.0)/t;
-                else
-                    r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
-                break;
+                  if (t > 1.0 / Real(freq)) {
+                      r = (compound - 1.0) / t;
+                  } else {
+                      r = (std::pow(compound, 1.0 / (Real(freq) * t)) - 1.0) * Real(freq);
+                  }
+                  break;
               default:
                 QL_FAIL("unknown compounding convention ("
                         << Integer(comp) << ")");
@@ -115,8 +119,9 @@ namespace QuantLib {
 
 
     std::ostream& operator<<(std::ostream& out, const InterestRate& ir) {
-        if (ir.rate() == Null<Rate>())
+        if (ir.rate() == Null<Rate>()) {
             return out << "null interest rate";
+        }
 
         out << io::rate(ir.rate()) << " " << ir.dayCounter().name() << " ";
         switch (ir.compounding()) {

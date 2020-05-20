@@ -37,8 +37,9 @@ namespace QuantLib {
     inline Disposable<Array> CenteredGrid(Real center, Real dx,
                                           Size steps) {
         Array result(steps+1);
-        for (Size i=0; i<steps+1; i++)
-            result[i] = center + (i - steps/2.0)*dx;
+        for (Size i = 0; i < steps + 1; i++) {
+            result[i] = center + (i - steps / 2.0) * dx;
+        }
         return result;
     }
 
@@ -46,8 +47,9 @@ namespace QuantLib {
                                          Size steps) {
         Array result(steps+1);
         Real x=xMin, dx=(xMax-xMin)/steps;
-        for (Size i=0; i<steps+1; i++, x+=dx)
+        for (Size i = 0; i < steps + 1; i++, x += dx) {
             result[i] = x;
+        }
         return result;
     }
 

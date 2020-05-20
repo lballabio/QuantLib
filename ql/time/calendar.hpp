@@ -233,10 +233,12 @@ namespace QuantLib {
         const Date& _d = d;
 #endif
 
-        if (impl_->addedHolidays.find(_d) != impl_->addedHolidays.end())
+        if (impl_->addedHolidays.find(_d) != impl_->addedHolidays.end()) {
             return false;
-        if (impl_->removedHolidays.find(_d) != impl_->removedHolidays.end())
+        }
+        if (impl_->removedHolidays.find(_d) != impl_->removedHolidays.end()) {
             return true;
+        }
 
         return impl_->isBusinessDay(_d);
     }

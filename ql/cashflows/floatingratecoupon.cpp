@@ -51,8 +51,9 @@ namespace QuantLib {
     {
         QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
-        if (dayCounter_.empty())
+        if (dayCounter_.empty()) {
             dayCounter_ = index_->dayCounter();
+        }
 
         registerWith(index_);
         registerWith(Settings::instance().evaluationDate());
@@ -60,11 +61,13 @@ namespace QuantLib {
 
     void FloatingRateCoupon::setPricer(
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        if (pricer_)
+        if (pricer_) {
             unregisterWith(pricer_);
+        }
         pricer_ = pricer;
-        if (pricer_)
+        if (pricer_) {
             registerWith(pricer_);
+        }
         update();
     }
 

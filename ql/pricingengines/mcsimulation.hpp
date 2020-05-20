@@ -196,10 +196,11 @@ namespace QuantLib {
         }
 
         if (requiredTolerance != Null<Real>()) {
-            if (maxSamples != Null<Size>())
+            if (maxSamples != Null<Size>()) {
                 this->value(requiredTolerance, maxSamples);
-            else
+            } else {
                 this->value(requiredTolerance);
+            }
         } else {
             this->valueWithSamples(requiredSamples);
         }

@@ -167,8 +167,9 @@ namespace QuantLib {
     inline Observable& Observable::operator=(const Observable& o) {
         // as above, the observer set is not copied. Moreover,
         // observers of this object must be notified of the change
-        if (&o != this)
+        if (&o != this) {
             notifyObservers();
+        }
         return *this;
     }
 
@@ -178,8 +179,9 @@ namespace QuantLib {
     }
 
     inline Size Observable::unregisterObserver(Observer* o) {
-        if (settings_.updatesDeferred())
+        if (settings_.updatesDeferred()) {
             settings_.unregisterDeferredObserver(o);
+        }
 
         return observers_.erase(o);
     }
@@ -187,23 +189,27 @@ namespace QuantLib {
 
     inline Observer::Observer(const Observer& o)
     : observables_(o.observables_) {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+        for (iterator i = observables_.begin(); i != observables_.end(); ++i) {
             (*i)->registerObserver(this);
+        }
     }
 
     inline Observer& Observer::operator=(const Observer& o) {
         iterator i;
-        for (i=observables_.begin(); i!=observables_.end(); ++i)
+        for (i = observables_.begin(); i != observables_.end(); ++i) {
             (*i)->unregisterObserver(this);
+        }
         observables_ = o.observables_;
-        for (i=observables_.begin(); i!=observables_.end(); ++i)
+        for (i = observables_.begin(); i != observables_.end(); ++i) {
             (*i)->registerObserver(this);
+        }
         return *this;
     }
 
     inline Observer::~Observer() {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+        for (iterator i = observables_.begin(); i != observables_.end(); ++i) {
             (*i)->unregisterObserver(this);
+        }
     }
 
     inline std::pair<Observer::iterator, bool>
@@ -219,21 +225,24 @@ namespace QuantLib {
     Observer::registerWithObservables(const ext::shared_ptr<Observer> &o) {
         if (o) {
             iterator i;
-            for (i = o->observables_.begin(); i != o->observables_.end(); ++i)
+            for (i = o->observables_.begin(); i != o->observables_.end(); ++i) {
                 registerWith(*i);
+            }
         }
     }
 
     inline
     Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
-        if (h)
+        if (h) {
             h->unregisterObserver(this);
+        }
         return observables_.erase(h);
     }
 
     inline void Observer::unregisterWithAll() {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+        for (iterator i = observables_.begin(); i != observables_.end(); ++i) {
             (*i)->unregisterObserver(this);
+        }
         observables_.clear();
     }
 

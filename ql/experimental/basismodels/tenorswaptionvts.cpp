@@ -91,21 +91,25 @@ namespace QuantLib {
         // calculate affine TSR model u and v
         // Sum tau_j   (fixed leg)
         Real sumTauj = 0.0;
-        for (Size k = 0; k < cfs.annuityWeights().size(); ++k)
+        for (Size k = 0; k < cfs.annuityWeights().size(); ++k) {
             sumTauj += cfs.annuityWeights()[k];
+        }
         // Sum tau_j (T_M - T_j)   (fixed leg)
         Real sumTaujDeltaT = 0.0;
-        for (Size k = 0; k < cfs.annuityWeights().size(); ++k)
+        for (Size k = 0; k < cfs.annuityWeights().size(); ++k) {
             sumTaujDeltaT +=
                 cfs.annuityWeights()[k] * (cfs.fixedTimes().back() - cfs.fixedTimes()[k]);
+        }
         // Sum w_i   (float leg)
         Real sumWi = 0.0;
-        for (Size k = 0; k < cfs.floatWeights().size(); ++k)
+        for (Size k = 0; k < cfs.floatWeights().size(); ++k) {
             sumWi += cfs.floatWeights()[k];
+        }
         // Sum w_i (T_N - T_i)    (float leg)
         Real sumWiDeltaT = 0.0;
-        for (Size k = 0; k < cfs.floatWeights().size(); ++k)
+        for (Size k = 0; k < cfs.floatWeights().size(); ++k) {
             sumWiDeltaT += cfs.floatWeights()[k] * (cfs.floatTimes().back() - cfs.floatTimes()[k]);
+        }
         // assemble u, v and a(T_p)
         Real den = sumTaujDeltaT * sumWi - sumWiDeltaT * sumTauj;
         Real u = -sumTauj / den;
@@ -116,10 +120,12 @@ namespace QuantLib {
         Real sumBase = 0.0;
         Real sumTarg = 0.0;
         // we skip the first and last weight as they represent the notional flows
-        for (Size k = 1; k < cfs.floatWeights().size() - 1; ++k)
+        for (Size k = 1; k < cfs.floatWeights().size() - 1; ++k) {
             sumBase += cfs.floatWeights()[k] * (u * (T_N - cfs.floatTimes()[k]) + v);
-        for (Size k = 1; k < cf2.floatWeights().size() - 1; ++k)
+        }
+        for (Size k = 1; k < cf2.floatWeights().size() - 1; ++k) {
             sumTarg += cf2.floatWeights()[k] * (u * (T_N - cf2.floatTimes()[k]) + v);
+        }
         lambda_ = sumTarg - sumBase;
         // Annuity scaling
         annuityScaling_ = targSwap->fixedLegBPS() / finlSwap->fixedLegBPS();

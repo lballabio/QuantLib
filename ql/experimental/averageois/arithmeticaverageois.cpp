@@ -75,8 +75,9 @@ namespace QuantLib {
 
     void ArithmeticAverageOIS::initialize(const Schedule& fixedLegSchedule,
                                           const Schedule& overnightLegSchedule) {
-        if (fixedDC_==DayCounter())
+        if (fixedDC_ == DayCounter()) {
             fixedDC_ = overnightIndex_->dayCounter();
+        }
         legs_[0] = FixedRateLeg(fixedLegSchedule)
             .withNotionals(nominals_)
             .withCouponRates(fixedRate_, fixedDC_);
@@ -95,8 +96,9 @@ namespace QuantLib {
         }
 
         for (Size j=0; j<2; ++j) {
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+            for (Leg::iterator i = legs_[j].begin(); i != legs_[j].end(); ++i) {
                 registerWith(*i);
+            }
         }
 
         switch (type_) {

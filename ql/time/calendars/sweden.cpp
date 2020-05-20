@@ -35,19 +35,19 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Ascension Thursday
-            || (dd == em+38)
+            || (dd == em + 38)
             // Whit Monday (till 2004)
-            || (dd == em+49 && y < 2005)
+            || (dd == em + 49 && y < 2005)
             // New Year's Day
-            || (d == 1  && m == January)
+            || (d == 1 && m == January)
             // Epiphany
-            || (d == 6  && m == January)
+            || (d == 6 && m == January)
             // May Day
-            || (d == 1  && m == May)
+            || (d == 1 && m == May)
             // National Day
             // Only a holiday since 2005
             || (d == 6 && m == June && y >= 2005)
@@ -60,8 +60,9 @@ namespace QuantLib {
             // Boxing Day
             || (d == 26 && m == December)
             // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 31 && m == December)) {
             return false;
+        }
         return true;
     }
 

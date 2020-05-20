@@ -172,7 +172,9 @@ namespace QuantLib {
         /*Avoid redundant call to minimum value inversion (might be \infty),
         and this independently of the copula function.
         */
-        if (prob < 1.e-10) return 0.;// use library macro...
+        if (prob < 1.e-10) {
+            return 0.; // use library macro...
+        }
         return conditionalDefaultProbabilityInvP(
             inverseCumulativeY(prob, iName), iName, mktFactors);
     }
@@ -265,7 +267,9 @@ namespace QuantLib {
                 basket_->defaultKeys()[iName]);
         const Probability pdef = dfts->defaultProbability(d, true);
         // before asking for -\infty
-        if (pdef < 1.e-10) return 0.;
+        if (pdef < 1.e-10) {
+            return 0.;
+        }
 
         Size iRecovery = iName + numNames_;// should be live pool
         return cumulativeY(
@@ -370,12 +374,12 @@ namespace QuantLib {
             */
         {
             Real cumul = 0.;
-            for(Size iB=0; iB<factorWeights[iName].size(); iB++)
+            for (Size iB = 0; iB < factorWeights[iName].size(); iB++) {
                 // actually this size is unique
-                cumul += factorWeights[iName][iB] * 
-                    factorWeights[iName][iB] * 
-                    factorWeights[iName + numNames_][iB] * 
-                    factorWeights[iName + numNames_][iB];
+                cumul += factorWeights[iName][iB] * factorWeights[iName][iB] *
+                         factorWeights[iName + numNames_][iB] *
+                         factorWeights[iName + numNames_][iB];
+            }
             crossIdiosyncFctrs_.push_back(cumul);
         }
 

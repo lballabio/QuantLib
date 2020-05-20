@@ -253,13 +253,14 @@ namespace cms_test {
             numericalPricers.clear();
             analyticPricers.clear();
             for (Size j = 0; j < yieldCurveModels.size(); ++j) {
-                if (j < yieldCurveModels.size() - 1)
+                if (j < yieldCurveModels.size() - 1) {
                     numericalPricers.push_back(
                         ext::shared_ptr<CmsCouponPricer>(new NumericHaganPricer(
                             atmVol, yieldCurveModels[j], zeroMeanRev)));
-                else
-                    numericalPricers.push_back(ext::shared_ptr<CmsCouponPricer>(
-                        new LinearTsrPricer(atmVol, zeroMeanRev)));
+                } else {
+                    numericalPricers.push_back(
+                        ext::shared_ptr<CmsCouponPricer>(new LinearTsrPricer(atmVol, zeroMeanRev)));
+                }
 
                 analyticPricers.push_back(ext::shared_ptr<CmsCouponPricer>(new
                     AnalyticHaganPricer(atmVol, yieldCurveModels[j],
@@ -319,21 +320,21 @@ void CmsTest::testFairRate()  {
         Spread tol = 2.0e-4;
         bool linearTsr = j==vars.yieldCurveModels.size()-1;
 
-        if (difference > tol)
-            BOOST_FAIL("\nCoupon payment date: " << paymentDate <<
-                       "\nCoupon start date:   " << startDate <<
-                       "\nCoupon floor:        " << io::rate(infiniteFloor) <<
-                       "\nCoupon gearing:      " << io::rate(gearing) <<
-                       "\nCoupon swap index:   " << swapIndex->name() <<
-                       "\nCoupon spread:       " << io::rate(spread) <<
-                       "\nCoupon cap:          " << io::rate(infiniteCap) <<
-                       "\nCoupon DayCounter:   " << vars.iborIndex->dayCounter()<<
-                       "\nYieldCurve Model:    " << vars.yieldCurveModels[j] <<
-                       "\nNumerical Pricer:    " << io::rate(rate0) <<
-                                   (linearTsr ? " (Linear TSR Model)" : "") <<
-                       "\nAnalytic Pricer:     " << io::rate(rate1) <<
-                       "\ndifference:          " << io::rate(difference) <<
-                       "\ntolerance:           " << io::rate(tol));
+        if (difference > tol) {
+            BOOST_FAIL("\nCoupon payment date: "
+                       << paymentDate << "\nCoupon start date:   " << startDate
+                       << "\nCoupon floor:        " << io::rate(infiniteFloor)
+                       << "\nCoupon gearing:      " << io::rate(gearing)
+                       << "\nCoupon swap index:   " << swapIndex->name()
+                       << "\nCoupon spread:       " << io::rate(spread)
+                       << "\nCoupon cap:          " << io::rate(infiniteCap)
+                       << "\nCoupon DayCounter:   " << vars.iborIndex->dayCounter()
+                       << "\nYieldCurve Model:    " << vars.yieldCurveModels[j]
+                       << "\nNumerical Pricer:    " << io::rate(rate0)
+                       << (linearTsr ? " (Linear TSR Model)" : "") << "\nAnalytic Pricer:     "
+                       << io::rate(rate1) << "\ndifference:          " << io::rate(difference)
+                       << "\ntolerance:           " << io::rate(tol));
+        }
     }
 }
 
@@ -365,13 +366,12 @@ void CmsTest::testCmsSwap() {
     swapLengths.push_back(10);
     Size n = swapLengths.size();
     std::vector<ext::shared_ptr<Swap> > cms(n);
-    for (Size i=0; i<n; ++i)
+    for (Size i = 0; i < n; ++i) {
         // no cap, floor
         // no gearing, spread
-        cms[i] = MakeCms(Period(swapLengths[i], Years),
-                         swapIndex,
-                         vars.iborIndex, spread,
-                         10*Days);
+        cms[i] =
+            MakeCms(Period(swapLengths[i], Years), swapIndex, vars.iborIndex, spread, 10 * Days);
+    }
 
     for (Size j=0; j<vars.yieldCurveModels.size(); ++j) {
         vars.numericalPricers[j]->setSwaptionVolatility(vars.atmVol);
@@ -385,20 +385,21 @@ void CmsTest::testCmsSwap() {
             Real difference =  std::fabs(priceNum-priceAn);
             Real tol = 2.0e-4;
             bool linearTsr = j==vars.yieldCurveModels.size()-1;
-            if (difference > tol)
+            if (difference > tol) {
                 BOOST_FAIL("\nLength in Years:  " << swapLengths[sl] <<
                            //"\nfloor:            " << io::rate(infiniteFloor) <<
                            //"\ngearing:          " << io::rate(gearing) <<
-                           "\nswap index:       " << swapIndex->name() <<
-                           "\nibor index:       " << vars.iborIndex->name() <<
-                           "\nspread:           " << io::rate(spread) <<
+                           "\nswap index:       " << swapIndex->name() << "\nibor index:       "
+                                                  << vars.iborIndex->name()
+                                                  << "\nspread:           " << io::rate(spread) <<
                            //"\ncap:              " << io::rate(infiniteCap) <<
-                           "\nYieldCurve Model: " << vars.yieldCurveModels[j] <<
-                           "\nNumerical Pricer: " << io::rate(priceNum) <<
-                                   (linearTsr ? " (Linear TSR Model)" : "") <<
-                           "\nAnalytic Pricer:  " << io::rate(priceAn) <<
-                           "\ndifference:       " << io::rate(difference) <<
-                           "\ntolerance:        " << io::rate(tol));
+                           "\nYieldCurve Model: " << vars.yieldCurveModels[j]
+                                                  << "\nNumerical Pricer: " << io::rate(priceNum)
+                                                  << (linearTsr ? " (Linear TSR Model)" : "")
+                                                  << "\nAnalytic Pricer:  " << io::rate(priceAn)
+                                                  << "\ndifference:       " << io::rate(difference)
+                                                  << "\ntolerance:        " << io::rate(tol));
+            }
         }
     }
 
@@ -474,24 +475,26 @@ void CmsTest::testParity() {
                                                 swapletPrice);
                     Real tol = 2.0e-5;
                     bool linearTsr = k==0 && j==vars.yieldCurveModels.size()-1;
-                    if(linearTsr)
+                    if (linearTsr) {
                         tol = 1.0e-7;
-                    if (difference > tol)
-                        BOOST_FAIL("\nCoupon payment date: " << paymentDate <<
-                                   "\nCoupon start date:   " << startDate <<
-                                   "\nCoupon gearing:      " << io::rate(gearing) <<
-                                   "\nCoupon swap index:   " << swapIndex->name() <<
-                                   "\nCoupon spread:       " << io::rate(spread) <<
-                                   "\nstrike:              " << io::rate(strike) <<
-                                   "\nCoupon DayCounter:   " << vars.iborIndex->dayCounter() <<
-                                   "\nYieldCurve Model:    " << vars.yieldCurveModels[j] <<
-                                   (k==0 ? "\nNumerical Pricer" : "\nAnalytic Pricer") <<
-                                   (linearTsr ? " (Linear TSR Model)" : "") <<
-                                   "\nSwaplet price:       " << io::rate(swapletPrice) <<
-                                   "\nCaplet price:        " << io::rate(capletPrice) <<
-                                   "\nFloorlet price:      " << io::rate(floorletPrice) <<
-                                   "\ndifference:          " << difference <<
-                                   "\ntolerance:           " << io::rate(tol));
+                    }
+                    if (difference > tol) {
+                        BOOST_FAIL("\nCoupon payment date: "
+                                   << paymentDate << "\nCoupon start date:   " << startDate
+                                   << "\nCoupon gearing:      " << io::rate(gearing)
+                                   << "\nCoupon swap index:   " << swapIndex->name()
+                                   << "\nCoupon spread:       " << io::rate(spread)
+                                   << "\nstrike:              " << io::rate(strike)
+                                   << "\nCoupon DayCounter:   " << vars.iborIndex->dayCounter()
+                                   << "\nYieldCurve Model:    " << vars.yieldCurveModels[j]
+                                   << (k == 0 ? "\nNumerical Pricer" : "\nAnalytic Pricer")
+                                   << (linearTsr ? " (Linear TSR Model)" : "")
+                                   << "\nSwaplet price:       " << io::rate(swapletPrice)
+                                   << "\nCaplet price:        " << io::rate(capletPrice)
+                                   << "\nFloorlet price:      " << io::rate(floorletPrice)
+                                   << "\ndifference:          " << difference
+                                   << "\ntolerance:           " << io::rate(tol));
+                    }
                 }
             }
         }

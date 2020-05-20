@@ -46,18 +46,18 @@ namespace QuantLib {
       numerairesHeld_(product->numberOfProducts()),
       numberCashFlowsThisStep_(product->numberOfProducts()),
       cashFlowsGenerated_(product->numberOfProducts()) {
-        for (Size i=0; i<numberProducts_; ++i)
-            cashFlowsGenerated_[i].resize(
-                       product_->maxNumberOfCashFlowsPerProductPerStep());
+        for (Size i = 0; i < numberProducts_; ++i) {
+            cashFlowsGenerated_[i].resize(product_->maxNumberOfCashFlowsPerProductPerStep());
+        }
 
         const std::vector<Time>& cashFlowTimes =
             product_->possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
         Size n = cashFlowTimes.size();
         discounters_.reserve(n);
-        for (Size j=0; j<n; ++j)
-            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
-                                                         rateTimes));
+        for (Size j = 0; j < n; ++j) {
+            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j], rateTimes));
+        }
         const std::vector<Rate>& evolutionTimes =
             product_->evolution().evolutionTimes();
         constraints_.resize(evolutionTimes.size());
@@ -89,8 +89,9 @@ namespace QuantLib {
         modifiedValues.resize(constrainedEvolvers_.size());
         for (Size i=0; i<modifiedValues.size(); ++i) {
             modifiedValues[i].resize(constrainedEvolvers_[i].size());
-            for (Size j=0; j<modifiedValues[i].size(); ++j)
+            for (Size j = 0; j < modifiedValues[i].size(); ++j) {
                 modifiedValues[i][j].resize(N);
+            }
         }
 
         std::vector<Real> results(N);
@@ -104,8 +105,9 @@ namespace QuantLib {
                     const std::vector<Real>& weights = diffWeights_[j][k];
                     for (Size l=0; l<N; ++l) {
                         results[l] = weights[0]*values[l];
-                        for (Size n=1; n<weights.size(); ++n)
-                            results[l] += weights[n]*modifiedValues[j][n-1][l];
+                        for (Size n = 1; n < weights.size(); ++n) {
+                            results[l] += weights[n] * modifiedValues[j][n - 1][l];
+                        }
                     }
                     modifiedStats[j][k].add(results);
                 }
@@ -122,8 +124,9 @@ namespace QuantLib {
         product_->reset();
         Real principalInNumerairePortfolio = 1.0;
 
-        if (storeRates)
-            constraintsActive_ =false;
+        if (storeRates) {
+            constraintsActive_ = false;
+        }
         //            std::fill(constraintsActive_.begin(),
         //                    constraintsActive_.end(),
         //                  false);
@@ -187,9 +190,9 @@ namespace QuantLib {
 
         } while (!done);
 
-        for (Size i=0; i<numerairesHeld_.size(); ++i)
+        for (Size i = 0; i < numerairesHeld_.size(); ++i) {
             values[i] = numerairesHeld_[i] * initialNumeraireValue_;
-
+        }
     }
 
 }

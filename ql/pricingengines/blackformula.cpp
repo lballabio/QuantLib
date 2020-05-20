@@ -74,16 +74,18 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
 
-        if (stdDev==0.0)
-            return std::max((forward-strike)*optionType, Real(0.0))*discount;
+        if (stdDev == 0.0) {
+            return std::max((forward - strike) * optionType, Real(0.0)) * discount;
+        }
 
         forward = forward + displacement;
         strike = strike + displacement;
 
         // since displacement is non-negative strike==0 iff displacement==0
         // so returning forward*discount is OK
-        if (strike==0.0)
-            return (optionType==Option::Call ? forward*discount : 0.0);
+        if (strike == 0.0) {
+            return (optionType == Option::Call ? forward * discount : 0.0);
+        }
 
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
         Real d2 = d1 - stdDev;
@@ -125,21 +127,22 @@ namespace QuantLib {
         Real stdDev;
         forward = forward + displacement;
         strike = strike + displacement;
-        if (strike==forward)
+        if (strike == forward) {
             // Brenner-Subrahmanyan (1988) and Feinstein (1988) ATM approx.
             stdDev = blackPrice/discount*std::sqrt(2.0 * M_PI)/forward;
-        else {
+        } else {
             // Corrado and Miller extended moneyness approximation
             Real moneynessDelta = optionType*(forward-strike);
             Real moneynessDelta_2 = moneynessDelta/2.0;
             Real temp = blackPrice/discount - moneynessDelta_2;
             Real moneynessDelta_PI = moneynessDelta*moneynessDelta/M_PI;
             Real temp2 = temp*temp-moneynessDelta_PI;
-            if (temp2<0.0) // approximation breaks down, 2 alternatives:
+            if (temp2 < 0.0) { // approximation breaks down, 2 alternatives:
                 // 1. zero it
-                temp2=0.0;
-                // 2. Manaster-Koehler (1982) efficient Newton-Raphson seed
-                //return std::fabs(std::log(forward/strike))*std::sqrt(2.0);
+                temp2 = 0.0;
+            }
+            // 2. Manaster-Koehler (1982) efficient Newton-Raphson seed
+            // return std::fabs(std::log(forward/strike))*std::sqrt(2.0);
             temp2 = std::sqrt(temp2);
             temp += temp2;
             temp *= std::sqrt(2.0 * M_PI);
@@ -198,11 +201,11 @@ namespace QuantLib {
                                                          1.0, 0.0);
             Real ds = 0.0;
             Real tmp = d1 * d1 + 2.0 * d2 * dc;
-            if (std::fabs(d2) > 1E-10 && tmp >= 0.0)
+            if (std::fabs(d2) > 1E-10 && tmp >= 0.0) {
                 ds = (-d1 + std::sqrt(tmp)) / d2; // second order approximation
-            else
-                if(std::fabs(d1) > 1E-10)
-                    ds = dc / d1; // first order approximation
+            } else if (std::fabs(d1) > 1E-10) {
+                ds = dc / d1; // first order approximation
+            }
             stdDev = s0 + ds;
         }
 
@@ -264,20 +267,22 @@ namespace QuantLib {
                 (type == Option::Call) ? ey*Af(std::sqrt(2*y)) - 0.5
                                        : 0.5-ey*Af(-std::sqrt(2*y)));
 
-            if (marketValue <= M0)
+            if (marketValue <= M0) {
                 return std::sqrt(gamma+y)-std::sqrt(gamma-y);
-            else
-                return std::sqrt(gamma+y)+std::sqrt(gamma-y);
+            } else {
+                return std::sqrt(gamma + y) + std::sqrt(gamma - y);
+            }
         }
         else {
             const Real M0 = K*df*(
                 (type == Option::Call) ? 0.5*ey - Af(-std::sqrt(-2*y))
                                        : Af(std::sqrt(-2*y)) - 0.5*ey);
 
-            if (marketValue <= M0)
+            if (marketValue <= M0) {
                 return std::sqrt(gamma-y)-std::sqrt(gamma+y);
-            else
-                return std::sqrt(gamma+y)+std::sqrt(gamma-y);
+            } else {
+                return std::sqrt(gamma + y) + std::sqrt(gamma - y);
+            }
         }
     }
 
@@ -313,9 +318,10 @@ namespace QuantLib {
             QL_REQUIRE(stdDev>=0.0,
                        "stdDev (" << stdDev << ") must be non-negative");
             #endif
-            if (stdDev==0.0)
-                return std::max(signedForward_-signedStrike_, Real(0.0))
-                                                   - undiscountedBlackPrice_;
+            if (stdDev == 0.0) {
+                return std::max(signedForward_ - signedStrike_, Real(0.0)) -
+                       undiscountedBlackPrice_;
+            }
             Real temp = halfOptionType_*stdDev;
             Real d = signedMoneyness_/stdDev;
             Real signedD1 = d + temp;
@@ -384,10 +390,10 @@ namespace QuantLib {
         strike = strike + displacement;
         forward = forward + displacement;
 
-        if (guess==Null<Real>())
+        if (guess == Null<Real>()) {
             guess = blackFormulaImpliedStdDevApproximation(
                 optionType, strike, forward, blackPrice, discount, displacement);
-        else
+        } else
             QL_REQUIRE(guess>=0.0,
                        "stdDev guess (" << guess << ") must be non-negative");
         BlackImpliedStdDevHelper f(optionType, strike, forward,
@@ -528,13 +534,15 @@ namespace QuantLib {
                                         Real stdDev,
                                         Real displacement) {
         checkParameters(strike, forward, displacement);
-        if (stdDev==0.0)
-            return (forward*optionType > strike*optionType ? 1.0 : 0.0);
+        if (stdDev == 0.0) {
+            return (forward * optionType > strike * optionType ? 1.0 : 0.0);
+        }
 
         forward = forward + displacement;
         strike = strike + displacement;
-        if (strike==0.0)
-            return (optionType==Option::Call ? 1.0 : 0.0);
+        if (strike == 0.0) {
+            return (optionType == Option::Call ? 1.0 : 0.0);
+        }
         Real d2 = std::log(forward/strike)/stdDev - 0.5*stdDev;
         CumulativeNormalDistribution phi;
         return phi(optionType*d2);
@@ -556,13 +564,15 @@ namespace QuantLib {
                         Real stdDev,
                         Real displacement) {
         checkParameters(strike, forward, displacement);
-        if (stdDev==0.0)
-            return (forward*optionType < strike*optionType ? 1.0 : 0.0);
+        if (stdDev == 0.0) {
+            return (forward * optionType < strike * optionType ? 1.0 : 0.0);
+        }
 
         forward = forward + displacement;
         strike = strike + displacement;
-        if (strike==0.0)
-            return (optionType==Option::Call ? 1.0 : 0.0);
+        if (strike == 0.0) {
+            return (optionType == Option::Call ? 1.0 : 0.0);
+        }
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
         CumulativeNormalDistribution phi;
         return phi(optionType*d1);
@@ -606,8 +616,9 @@ namespace QuantLib {
         forward = forward + displacement;
         strike = strike + displacement;
 
-        if (stdDev==0.0 || strike==0.0)
+        if (stdDev == 0.0 || strike == 0.0) {
             return 0.0;
+        }
 
         Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
         return discount * forward *
@@ -639,8 +650,9 @@ namespace QuantLib {
         forward = forward + displacement;
         strike = strike + displacement;
 
-        if (stdDev==0.0 || strike==0.0)
+        if (stdDev == 0.0 || strike == 0.0) {
             return 0.0;
+        }
 
         Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
         Real d1p = -std::log(forward/strike)/(stdDev*stdDev) + .5;
@@ -669,8 +681,9 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
         Real d = (forward-strike)*optionType, h = d/stdDev;
-        if (stdDev==0.0)
-            return discount*std::max(d, 0.0);
+        if (stdDev == 0.0) {
+            return discount * std::max(d, 0.0);
+        }
         CumulativeNormalDistribution phi;
         Real result = discount*(stdDev*phi.derivative(h) + d*phi(h));
         QL_ENSURE(result>=0.0,
@@ -776,8 +789,9 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
 
-        if (stdDev==0.0)
+        if (stdDev == 0.0) {
             return 0.0;
+        }
 
         Real d1 = (forward - strike)/stdDev;
         return discount *
@@ -801,8 +815,9 @@ namespace QuantLib {
         QL_REQUIRE(stdDev>=0.0,
                    "stdDev (" << stdDev << ") must be non-negative");
         Real d = (forward-strike)*optionType, h = d/stdDev;
-        if (stdDev==0.0)
+        if (stdDev == 0.0) {
             return std::max(d, 0.0);
+        }
         CumulativeNormalDistribution phi;
         Real result = phi(h);
         return result;

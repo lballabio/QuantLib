@@ -28,8 +28,9 @@ namespace QuantLib {
 
     Decimal Rounding::operator()(Decimal value) const {
 
-        if (type_ == None)
+        if (type_ == None) {
             return value;
+        }
 
         Real mult = std::pow(10.0,precision_);
         bool neg = (value < 0.0);
@@ -41,23 +42,27 @@ namespace QuantLib {
           case Down:
             break;
           case Up:
-            if (modVal != 0.0)
-                lvalue += 1.0;
-            break;
+              if (modVal != 0.0) {
+                  lvalue += 1.0;
+              }
+              break;
           case Closest:
-            if (modVal >= (digit_/10.0))
-                lvalue += 1.0;
-            break;
+              if (modVal >= (digit_ / 10.0)) {
+                  lvalue += 1.0;
+              }
+              break;
           case Floor:
             if (!neg) {
-                if (modVal >= (digit_/10.0))
+                if (modVal >= (digit_ / 10.0)) {
                     lvalue += 1.0;
+                }
             }
             break;
           case Ceiling:
             if (neg) {
-                if (modVal >= (digit_/10.0))
+                if (modVal >= (digit_ / 10.0)) {
                     lvalue += 1.0;
+                }
             }
             break;
           default:

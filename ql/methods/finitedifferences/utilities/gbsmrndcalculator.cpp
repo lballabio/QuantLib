@@ -88,11 +88,14 @@ namespace QuantLib {
         const Real guess = fwd*std::exp(atmVariance*atmX);
 
         Real lower = guess;
-        while (guess/lower < 65535.0 && cdf(lower, t) > q)
-            lower*=0.5;
+        while (guess / lower < 65535.0 && cdf(lower, t) > q) {
+            lower *= 0.5;
+        }
 
         Real upper = guess;
-        while (upper/guess < 65535.0 && cdf(upper, t) < q) upper*=2;
+        while (upper / guess < 65535.0 && cdf(upper, t) < q) {
+            upper *= 2;
+        }
 
         QL_REQUIRE(guess/lower < 65535.0 && upper/guess < 65535.0,
                 "Could not find an start interval with ("

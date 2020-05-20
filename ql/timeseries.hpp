@@ -63,8 +63,9 @@ namespace QuantLib {
         template <class DateIterator, class ValueIterator>
         TimeSeries(DateIterator dBegin, DateIterator dEnd,
                    ValueIterator vBegin) {
-            while (dBegin != dEnd)
+            while (dBegin != dEnd) {
                 values_[*(dBegin++)] = *(vBegin++);
+            }
         }
         /*! This constructor initializes the history with a set of
             values. Such values are assigned to a corresponding number
@@ -75,8 +76,9 @@ namespace QuantLib {
         TimeSeries(const Date& firstDate,
                    ValueIterator begin, ValueIterator end) {
             Date d = firstDate;
-            while (begin != end)
+            while (begin != end) {
                 values_[d++] = *(begin++);
+            }
         }
         //! \name Inspectors
         //@{
@@ -93,14 +95,16 @@ namespace QuantLib {
         //@{
         //! returns the (possibly null) datum corresponding to the given date
         T operator[](const Date& d) const {
-            if (values_.find(d) != values_.end())
+            if (values_.find(d) != values_.end()) {
                 return values_[d];
-            else
+            } else {
                 return Null<T>();
+            }
         }
         T& operator[](const Date& d) {
-            if (values_.find(d) == values_.end())
+            if (values_.find(d) == values_.end()) {
                 values_[d] = Null<T>();
+            }
             return values_[d];
         }
         //@}

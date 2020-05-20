@@ -161,10 +161,11 @@ void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
         0.0, 0.01, 0.05, 0.10, 0.25, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90,
         1.0, 1.25, 1.5,  1.75, 2.0,  5.0,  7.5,  10.0, 15.0, 20.0};
     std::vector<Real> tmp;
-    if (moneyness.size() == 0)
+    if (moneyness.size() == 0) {
         tmp = std::vector<Real>(defaultMoney, defaultMoney + 21);
-    else
+    } else {
         tmp = std::vector<Real>(moneyness);
+    }
 
     strikes_.clear(); // should not be necessary, anyway
     Real lastF = 0.0;
@@ -273,10 +274,11 @@ Real ZabrSmileSection<Evaluation>::optionPrice(Rate strike, Option::Type type,
                                                ZabrLocalVolatility) const {
     Real call = strike <= strikes_.back() ? (*callPriceFct_)(strike)
                                           : exp(-a_ * strike + b_);
-    if (type == Option::Call)
+    if (type == Option::Call) {
         return call * discount;
-    else
+    } else {
         return (call - (forward_ - strike)) * discount;
+    }
 }
 
 template <typename Evaluation>
@@ -301,10 +303,11 @@ ZabrSmileSection<Evaluation>::volatilityImpl(Rate strike,
     Real impliedVol = 0.0;
     try {
         Option::Type type;
-        if (strike >= model_->forward())
+        if (strike >= model_->forward()) {
             type = Option::Call;
-        else
+        } else {
             type = Option::Put;
+        }
         impliedVol =
             blackFormulaImpliedStdDev(type, strike, model_->forward(),
                                       optionPrice(strike, type, 1.0), 1.0) /

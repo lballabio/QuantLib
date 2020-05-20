@@ -298,18 +298,16 @@ void OvernightIndexedSwapTest::testCachedValue() {
     ext::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(1*Years, fixedRate, 0.0,true);
     Real cachedNPV   = 0.001730450147;
     Real tolerance = 1.0e-11;
-    if (std::fabs(swap->NPV()-cachedNPV) > tolerance)
-        BOOST_ERROR("\nfailed to reproduce cached swap value (non telescopic value dates):" <<
-                    std::fixed << std::setprecision(12) <<
-                    "\ncalculated: " << swap->NPV() <<
-                    "\n  expected: " << cachedNPV <<
-                    "\n tolerance:" << tolerance);
-    if (std::fabs(swap2->NPV()-cachedNPV) > tolerance)
-        BOOST_ERROR("\nfailed to reproduce cached swap value (telescopic value dates):" <<
-                    std::fixed << std::setprecision(12) <<
-                    "\ncalculated: " << swap->NPV() <<
-                    "\n  expected: " << cachedNPV <<
-                    "\n tolerance:" << tolerance);
+    if (std::fabs(swap->NPV() - cachedNPV) > tolerance) {
+        BOOST_ERROR("\nfailed to reproduce cached swap value (non telescopic value dates):"
+                    << std::fixed << std::setprecision(12) << "\ncalculated: " << swap->NPV()
+                    << "\n  expected: " << cachedNPV << "\n tolerance:" << tolerance);
+    }
+    if (std::fabs(swap2->NPV() - cachedNPV) > tolerance) {
+        BOOST_ERROR("\nfailed to reproduce cached swap value (telescopic value dates):"
+                    << std::fixed << std::setprecision(12) << "\ncalculated: " << swap->NPV()
+                    << "\n  expected: " << cachedNPV << "\n tolerance:" << tolerance);
+    }
 }
 
 namespace overnight_indexed_swap_test {
@@ -338,8 +336,9 @@ void testBootstrap(bool telescopicValueDates) {
                                       euribor3m->endOfMonth(),
                                       euribor3m->dayCounter()));
 
-        if (term <= 2*Days)
+        if (term <= 2 * Days) {
             eoniaHelpers.push_back(helper);
+        }
     }
 
     for (Size i = 0; i < LENGTH(eoniaSwapData); i++) {
@@ -374,13 +373,12 @@ void testBootstrap(bool telescopicValueDates) {
         Rate calculated = swap->fairRate();
         Rate error = std::fabs(expected-calculated);
 
-        if (error>tolerance)
-            BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
-                        "\n swap length:     " << term <<
-                        "\n quoted rate:     " << expected <<
-                        "\n calculated rate: " << calculated <<
-                        "\n error:           " << error <<
-                        "\n tolerance:       " << tolerance);
+        if (error > tolerance) {
+            BOOST_FAIL("curve inconsistency:"
+                       << std::setprecision(10) << "\n swap length:     " << term
+                       << "\n quoted rate:     " << expected << "\n calculated rate: " << calculated
+                       << "\n error:           " << error << "\n tolerance:       " << tolerance);
+        }
     }
 } // testBootstrap(telescopicValueDates)
 } // anonymous namespace

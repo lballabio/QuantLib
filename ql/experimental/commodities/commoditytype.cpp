@@ -28,9 +28,9 @@ namespace QuantLib {
     CommodityType::CommodityType(const std::string& name,
                                  const std::string& code) {
         std::map<std::string, ext::shared_ptr<CommodityType::Data> >::const_iterator i = commodityTypes_.find(code);
-        if (i != commodityTypes_.end())
+        if (i != commodityTypes_.end()) {
             data_ = i->second;
-        else {
+        } else {
             data_ = ext::make_shared<CommodityType::Data>(
                                          name, code);
             commodityTypes_[code] = data_;
@@ -38,10 +38,11 @@ namespace QuantLib {
     }
 
     std::ostream& operator<<(std::ostream& out, const CommodityType& c) {
-        if (!c.empty())
+        if (!c.empty()) {
             return out << c.code();
-        else
+        } else {
             return out << "null commodity type";
+        }
     }
 
 }

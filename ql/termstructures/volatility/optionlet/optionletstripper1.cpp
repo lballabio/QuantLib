@@ -153,17 +153,17 @@ OptionletStripper1::OptionletStripper1(
                   }
                 }
                 catch (std::exception &e) {
-                    if(dontThrow_)
+                    if (dontThrow_) {
                         optionletStDevs_[i][j]=0.0;
-                    else
+                    } else {
                         QL_FAIL("could not bootstrap optionlet:"
-                            "\n type:    " << optionletType <<
-                            "\n strike:  " << io::rate(strikes[j]) <<
-                            "\n atm:     " << io::rate(atmOptionletRate_[i]) <<
-                            "\n price:   " << optionletPrices_[i][j] <<
-                            "\n annuity: " << optionletAnnuity <<
-                            "\n expiry:  " << optionletDates_[i] <<
-                            "\n error:   " << e.what());
+                                "\n type:    "
+                                << optionletType << "\n strike:  " << io::rate(strikes[j])
+                                << "\n atm:     " << io::rate(atmOptionletRate_[i])
+                                << "\n price:   " << optionletPrices_[i][j] << "\n annuity: "
+                                << optionletAnnuity << "\n expiry:  " << optionletDates_[i]
+                                << "\n error:   " << e.what());
+                    }
                 }
                 optionletVolatilities_[i][j] = optionletStDevs_[i][j] /
                                                 std::sqrt(optionletTimes_[i]);
@@ -193,8 +193,9 @@ OptionletStripper1::OptionletStripper1(
     }
 
     Rate OptionletStripper1::switchStrike() const {
-        if (floatingSwitchStrike_)
+        if (floatingSwitchStrike_) {
             calculate();
+        }
         return switchStrike_;
     }
 

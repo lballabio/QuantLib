@@ -355,12 +355,13 @@ namespace {
 
         Real operator()(Real t) const {
             Size i;
-            if (close_enough(t, 1/16.))
+            if (close_enough(t, 1 / 16.)) {
                 i = 0;
-            else if (close_enough(t, 1/32.))
+            } else if (close_enough(t, 1 / 32.)) {
                 i = 1;
-            else
+            } else {
                 QL_FAIL("unmatched reference result lookup");
+            }
 
             return data_[i_][i];
         }

@@ -34,8 +34,9 @@ namespace QuantLib {
         QL_REQUIRE(correlation.rows() == processes.size(),
                    "mismatch between number of processes "
                    "and size of correlation matrix");
-        for (Size i=0; i<processes_.size(); i++)
+        for (Size i = 0; i < processes_.size(); i++) {
             registerWith(processes_[i]);
+        }
     }
 
     Size StochasticProcessArray::size() const {
@@ -44,16 +45,18 @@ namespace QuantLib {
 
     Disposable<Array> StochasticProcessArray::initialValues() const {
         Array tmp(size());
-        for (Size i=0; i<size(); ++i)
+        for (Size i = 0; i < size(); ++i) {
             tmp[i] = processes_[i]->x0();
+        }
         return tmp;
     }
 
     Disposable<Array> StochasticProcessArray::drift(Time t,
                                                     const Array& x) const {
         Array tmp(size());
-        for (Size i=0; i<size(); ++i)
+        for (Size i = 0; i < size(); ++i) {
             tmp[i] = processes_[i]->drift(t, x[i]);
+        }
         return tmp;
     }
 
@@ -73,8 +76,9 @@ namespace QuantLib {
                                                           const Array& x0,
                                                           Time dt) const {
         Array tmp(size());
-        for (Size i=0; i<size(); ++i)
+        for (Size i = 0; i < size(); ++i) {
             tmp[i] = processes_[i]->expectation(t0, x0[i], dt);
+        }
         return tmp;
     }
 
@@ -103,16 +107,18 @@ namespace QuantLib {
         const Array dz = sqrtCorrelation_ * dw;
 
         Array tmp(size());
-        for (Size i=0; i<size(); ++i)
+        for (Size i = 0; i < size(); ++i) {
             tmp[i] = processes_[i]->evolve(t0, x0[i], dt, dz[i]);
+        }
         return tmp;
     }
 
     Disposable<Array> StochasticProcessArray::apply(const Array& x0,
                                                     const Array& dx) const {
         Array tmp(size());
-        for (Size i=0; i<size(); ++i)
-            tmp[i] = processes_[i]->apply(x0[i],dx[i]);
+        for (Size i = 0; i < size(); ++i) {
+            tmp[i] = processes_[i]->apply(x0[i], dx[i]);
+        }
         return tmp;
     }
 

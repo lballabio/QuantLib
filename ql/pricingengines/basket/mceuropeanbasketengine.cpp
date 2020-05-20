@@ -39,8 +39,9 @@ namespace QuantLib {
         Size j;
         // calculate the final price of each asset
         Array finalPrice(numAssets, 0.0);
-        for (j = 0; j < numAssets; j++)
+        for (j = 0; j < numAssets; j++) {
             finalPrice[j] = multiPath[j].back();
+        }
         return (*payoff_)(finalPrice) * discount_;
     }
 

@@ -59,10 +59,10 @@ namespace QuantLib {
                 BOOST_CHECK(true);
                 test_();
                 Date after = Settings::instance().evaluationDate();
-                if (before != after)
+                if (before != after) {
                     BOOST_ERROR("Evaluation date not reset"
-                                << "\n  before: " << before
-                                << "\n  after:  " << after);
+                                << "\n  before: " << before << "\n  after:  " << after);
+                }
             }
             #if BOOST_VERSION <= 105300
             // defined to avoid unused-variable warnings. It doesn't
@@ -179,8 +179,9 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out, const vector_streamer<T>& s) {
         out << "{ ";
         if (!s.v.empty()) {
-            for (size_t n=0; n<s.v.size()-1; ++n)
+            for (size_t n = 0; n < s.v.size() - 1; ++n) {
                 out << s.v[n] << ", ";
+            }
             out << s.v.back();
         }
         out << " }";

@@ -44,10 +44,10 @@ namespace QuantLib {
       arguments_(args) {
 
         exerciseTimes_.resize(arguments_.exercise->dates().size());
-        for (Size i=0; i<exerciseTimes_.size(); ++i)
+        for (Size i = 0; i < exerciseTimes_.size(); ++i) {
             exerciseTimes_[i] =
-                dayCounter.yearFraction(referenceDate,
-                                        arguments_.exercise->date(i));
+                dayCounter.yearFraction(referenceDate, arguments_.exercise->date(i));
+        }
 
         // Date adjustments can get time vectors out of synch.
         // Here, we try and collapse similar dates which could cause
@@ -55,21 +55,21 @@ namespace QuantLib {
         for (Size i=0; i<arguments_.exercise->dates().size(); i++) {
             Date exerciseDate = arguments_.exercise->date(i);
             for (Size j=0; j<arguments_.fixedPayDates.size(); j++) {
-                if (withinNextWeek(exerciseDate,
-                                   arguments_.fixedPayDates[j])
+                if (withinNextWeek(exerciseDate, arguments_.fixedPayDates[j])
                     // coupons in the future are dealt with below
-                    && arguments_.fixedResetDates[j] < referenceDate)
+                    && arguments_.fixedResetDates[j] < referenceDate) {
                     arguments_.fixedPayDates[j] = exerciseDate;
+                }
             }
             for (Size j=0; j<arguments_.fixedResetDates.size(); j++) {
-                if (withinPreviousWeek(exerciseDate,
-                                       arguments_.fixedResetDates[j]))
+                if (withinPreviousWeek(exerciseDate, arguments_.fixedResetDates[j])) {
                     arguments_.fixedResetDates[j] = exerciseDate;
+                }
             }
             for (Size j=0; j<arguments_.floatingResetDates.size(); j++) {
-                if (withinPreviousWeek(exerciseDate,
-                                       arguments_.floatingResetDates[j]))
+                if (withinPreviousWeek(exerciseDate, arguments_.floatingResetDates[j])) {
                     arguments_.floatingResetDates[j] = exerciseDate;
+                }
             }
         }
 

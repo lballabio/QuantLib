@@ -43,8 +43,9 @@ namespace QuantLib {
 
         for (Size i = 0; i < numberOfTimes; ++i) {
             const Size pos = timePositions_[i];
-            for (Size j = 0; j < numberOfAssets; ++j)
+            for (Size j = 0; j < numberOfAssets; ++j) {
                 path[j][i] = multiPath[j][pos];
+            }
         }
 
         Array values(numberOfTimes, 0.0);

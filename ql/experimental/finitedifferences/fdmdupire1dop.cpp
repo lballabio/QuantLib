@@ -42,8 +42,9 @@ Disposable<Array> FdmDupire1dOp::apply(const Array &u) const {
 
 Disposable<Array> FdmDupire1dOp::apply_direction(Size direction,
                                                  const Array &r) const {
-    if (direction == 0)
+    if (direction == 0) {
         return mapT_.apply(r);
+    }
     QL_FAIL("direction too large");
 }
 

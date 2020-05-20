@@ -221,13 +221,15 @@ namespace QuantLib {
             j >>= 7; // the last 24 bits for accepttion/rejection
             x = (c[f]*static_cast<long>(j))*w_[i]; // x is uniform
                                                    // within the i-th strip
-            if (j < k_[i]) // if true, accept x
+            if (j < k_[i]) {                       // if true, accept x
                 break;
+            }
 
             // handle rejections
             if (i!=0) { // upper strips
-                if ((f_[i-1]-f_[i])*mt32_.nextReal() + f_[i] < std::exp(-0.5*x*x))
+                if ((f_[i - 1] - f_[i]) * mt32_.nextReal() + f_[i] < std::exp(-0.5 * x * x)) {
                     break;
+                }
             } else { // base strip, sample from the tail
                 x = c[f]*InverseCumulativeNormal::standard_value(
                                                       p_*mt32_.nextReal()+q_);

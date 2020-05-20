@@ -32,11 +32,12 @@ void AutocovariancesTest::testConvolutions() {
     convolutions(x.begin(), x.end(), conv.begin(), 5);
     Real expected[] = { 385, 330, 276, 224, 175, 130 };
     Array delta = conv - Array(expected, expected+6);
-    if (DotProduct(delta, delta) > 1.0e-6)
+    if (DotProduct(delta, delta) > 1.0e-6) {
         BOOST_ERROR("Convolution: \n"
-                    << std::setprecision(4) << std::scientific
-                    << "    calculated:   " << conv << "\n"
-                    << "    expected:     " << Array(expected, expected+6));
+                    << std::setprecision(4) << std::scientific << "    calculated:   " << conv
+                    << "\n"
+                    << "    expected:     " << Array(expected, expected + 6));
+    }
 }
 
 void AutocovariancesTest::testAutoCovariances() {
@@ -51,11 +52,12 @@ void AutocovariancesTest::testAutoCovariances() {
                     << "    expected:     " << 5.5);
     }
     Array delta = acovf - Array(expected, expected+6);
-    if (DotProduct(delta, delta) > 1.0e-6)
+    if (DotProduct(delta, delta) > 1.0e-6) {
         BOOST_ERROR("Autocovariances: \n"
-                    << std::setprecision(4) << std::scientific
-                    << "    calculated:   " << acovf << "\n"
-                    << "    expected:     " << Array(expected, expected+6));
+                    << std::setprecision(4) << std::scientific << "    calculated:   " << acovf
+                    << "\n"
+                    << "    expected:     " << Array(expected, expected + 6));
+    }
 }
 
 void AutocovariancesTest::testAutoCorrelations() {
@@ -71,17 +73,18 @@ void AutocovariancesTest::testAutoCorrelations() {
                     << "    expected:     " << 5.5);
     }
     Array delta = acorf - Array(expected, expected+6);
-    if (DotProduct(delta, delta) > 1.0e-6)
+    if (DotProduct(delta, delta) > 1.0e-6) {
         BOOST_ERROR("Autocovariances: \n"
-                    << std::setprecision(4) << std::scientific
-                    << "    calculated:   " << acorf << "\n"
-                    << "    expected:     " << Array(expected, expected+6));
+                    << std::setprecision(4) << std::scientific << "    calculated:   " << acorf
+                    << "\n"
+                    << "    expected:     " << Array(expected, expected + 6));
+    }
     delta = x - Array(10, -4.5, 1);
-    if (DotProduct(delta, delta) > 1.0e-6)
+    if (DotProduct(delta, delta) > 1.0e-6) {
         BOOST_ERROR("Centering: \n"
-                    << std::setprecision(4) << std::scientific
-                    << "    calculated:   " << x << "\n"
+                    << std::setprecision(4) << std::scientific << "    calculated:   " << x << "\n"
                     << "    expected:     " << Array(10, -4.5, 1));
+    }
 }
 
 test_suite* AutocovariancesTest::suite() {

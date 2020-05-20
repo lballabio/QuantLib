@@ -200,8 +200,9 @@ void DayCounterTest::testActualActual() {
         if (std::fabs(calculated-testCases[i].result) > 1.0e-10) {
             std::ostringstream period, refPeriod;
             period << "period: " << d1 << " to " << d2;
-            if (testCases[i].convention == ActualActual::ISMA)
+            if (testCases[i].convention == ActualActual::ISMA) {
                 refPeriod << "referencePeriod: " << rd1 << " to " << rd2;
+            }
             BOOST_ERROR(dayCounter.name() << ":\n"
                        << period.str() << "\n" << refPeriod.str() << "\n"
                        << std::setprecision(10)

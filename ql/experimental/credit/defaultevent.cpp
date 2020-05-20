@@ -32,10 +32,11 @@ namespace QuantLib {
     void DefaultEvent::accept(AcyclicVisitor& v) {
         Visitor<DefaultEvent>* v1 =
             dynamic_cast<Visitor<DefaultEvent>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             Event::accept(v);
+        }
     }
 
     // They will be sorted by settlement date
@@ -46,10 +47,11 @@ namespace QuantLib {
     void DefaultEvent::DefaultSettlement::accept(AcyclicVisitor& v) {
         Visitor<DefaultEvent::DefaultSettlement>* v1 =
             dynamic_cast<Visitor<DefaultEvent::DefaultSettlement>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             Event::accept(v);
+        }
     }
 
     DefaultEvent::DefaultSettlement::DefaultSettlement(
@@ -132,15 +134,20 @@ namespace QuantLib {
 
     bool DefaultEvent::matchesDefaultKey(
         const DefaultProbKey& contractKey) const {
-        if(bondsCurrency_ != contractKey.currency()) return false;
-        // a contract with NoSeniority matches all events
-        if((bondsSeniority_ != contractKey.seniority())
-            && (contractKey.seniority() != NoSeniority))
+        if (bondsCurrency_ != contractKey.currency()) {
             return false;
+        }
+        // a contract with NoSeniority matches all events
+        if ((bondsSeniority_ != contractKey.seniority()) &&
+            (contractKey.seniority() != NoSeniority)) {
+            return false;
+        }
         // loop on all event types in the contract and chek if we match any,
         //   calls derived types
         for(Size i=0; i<contractKey.size(); i++) {
-            if(this->matchesEventType(contractKey.eventTypes()[i])) return true;
+            if (this->matchesEventType(contractKey.eventTypes()[i])) {
+                return true;
+            }
         }
         return false;
     }
@@ -160,11 +167,16 @@ namespace QuantLib {
         ext::shared_ptr<FailureToPay> eveType =
             ext::dynamic_pointer_cast<FailureToPay>(contractEvType);
         // this chekcs the atomic types, no need to call parents method
-        if(!eveType) return false;
-        if(defaultedAmount_ < eveType->amountRequired()) return false;
-        Date today = Settings::instance().evaluationDate();
-        if(!this->hasOccurred(today - eveType->gracePeriod(), true))
+        if (!eveType) {
             return false;
+        }
+        if (defaultedAmount_ < eveType->amountRequired()) {
+            return false;
+        }
+        Date today = Settings::instance().evaluationDate();
+        if (!this->hasOccurred(today - eveType->gracePeriod(), true)) {
+            return false;
+        }
         return true;
     }
 

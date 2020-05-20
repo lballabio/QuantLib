@@ -72,8 +72,9 @@ namespace QuantLib {
             // St. Stephen
             || (d == 26 && m == December)
             // December 31st, 1999 only
-            || (d == 31 && m == December && y == 1999))
+            || (d == 31 && m == December && y == 1999)) {
             return false;
+        }
         return true;
     }
 
@@ -88,7 +89,7 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Easter Monday
             || (dd == em)
             // Labour Day
@@ -102,8 +103,9 @@ namespace QuantLib {
             // St. Stephen
             || (d == 26 && m == December)
             // New Year's Eve
-            || (d == 31 && m == December))
+            || (d == 31 && m == December)) {
             return false;
+        }
         return true;
     }
 

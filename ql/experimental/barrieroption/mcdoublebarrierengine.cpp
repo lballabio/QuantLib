@@ -58,8 +58,9 @@ namespace QuantLib {
 
                     if (new_asset_price >= barrierHigh_ || new_asset_price <= barrierLow_){
                         isOptionActive = false;
-                        if (knockNode == null)
-                            knockNode = i+1;
+                        if (knockNode == null) {
+                            knockNode = i + 1;
+                        }
                         break;
                     }
                 }
@@ -71,8 +72,9 @@ namespace QuantLib {
 
                     if (new_asset_price >= barrierHigh_ || new_asset_price <= barrierLow_){
                         isOptionActive = true;
-                        if (knockNode == null)
-                            knockNode = i+1;
+                        if (knockNode == null) {
+                            knockNode = i + 1;
+                        }
                         break;
                     }
                 }

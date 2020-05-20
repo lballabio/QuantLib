@@ -111,12 +111,13 @@ namespace QuantLib {
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; ++i, ++j)
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif
-                if (x < *xBegin_)
+                if (x < *xBegin_) {
                     return 0;
-                else if (x > *(xEnd_-1))
+                } else if (x > *(xEnd_ - 1)) {
                     return xEnd_-xBegin_-2;
-                else
-                    return std::upper_bound(xBegin_,xEnd_-1,x)-xBegin_-1;
+                } else {
+                    return std::upper_bound(xBegin_, xEnd_ - 1, x) - xBegin_ - 1;
+                }
             }
             I1 xBegin_, xEnd_;
             I2 yBegin_;

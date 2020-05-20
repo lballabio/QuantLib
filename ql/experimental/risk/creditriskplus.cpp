@@ -88,8 +88,9 @@ namespace QuantLib {
             sum += loss_[i];
         }
 
-        if(loss_[0] >= p)
+        if (loss_[0] >= p) {
             return 0.0;
+        }
 
         Real p1 = sum - loss_[i];
         Real p2 = sum >= p ? sum : 1.0;
@@ -124,10 +125,12 @@ namespace QuantLib {
 
         for (Size k = 0; k < m_; ++k) {
             unsigned long exUnit = (unsigned long)(std::floor(0.5 + exposure_[k] / unit_)); // round
-            if (exposure_[k] > 0 && exUnit == 0)
+            if (exposure_[k] > 0 && exUnit == 0) {
                 exUnit = 1; // but avoid zero exposure
-            if (exUnit > maxNu_)
+            }
+            if (exUnit > maxNu_) {
                 maxNu_ = exUnit;
+            }
             pdAdj[k] = exposure_[k] > 0.0
                            ? exposure_[k] * pd_[k] / (exUnit * unit_)
                            : 0.0; // adjusted pd
@@ -193,8 +196,9 @@ namespace QuantLib {
             ul_ += tmp;
         }
         ul_ = std::sqrt(ul_);
-        for (Size i = 0; i < n_; ++i)
+        for (Size i = 0; i < n_; ++i) {
             sectorUl_[i] = std::sqrt(sectorUl_[i]);
+        }
 
         // compute risk contributions (formula 15 in [1])
 
@@ -224,9 +228,9 @@ namespace QuantLib {
                 iter = epsNuC_.find(j + 1);
                 if (iter != epsNuC_.end()) {
                     res += (*iter).second * loss_[n - j] * alphaC_;
-                    if (j <= n - 1)
-                        res += (*iter).second / ((Real)(j + 1)) *
-                               ((Real)(n - j)) * loss_[n - j];
+                    if (j <= n - 1) {
+                        res += (*iter).second / ((Real)(j + 1)) * ((Real)(n - j)) * loss_[n - j];
+                    }
                 }
             }
             loss_.push_back(res * pC_ / (pdSum_ * ((Real)(n + 1))));

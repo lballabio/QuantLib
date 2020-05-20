@@ -33,27 +33,31 @@ namespace QuantLib {
 
         newVector_ = newVector1;
 
-        if (currentBasis_.size()==euclideanDimension_)
+        if (currentBasis_.size() == euclideanDimension_) {
             return false;
+        }
 
         for (Size j=0; j<currentBasis_.size(); ++j) {
             Real innerProd = std::inner_product(newVector_.begin(),
                 newVector_.end(),
                 currentBasis_[j].begin(), 0.0);
 
-            for (Size k=0; k<euclideanDimension_; ++k)
-                newVector_[k] -=innerProd*currentBasis_[j][k];
+            for (Size k = 0; k < euclideanDimension_; ++k) {
+                newVector_[k] -= innerProd * currentBasis_[j][k];
+            }
         }
 
         Real norm = std::sqrt(std::inner_product(newVector_.begin(),
             newVector_.end(),
             newVector_.begin(), 0.0));
 
-        if (norm<1e-12) // maybe this should be a tolerance
+        if (norm < 1e-12) { // maybe this should be a tolerance
             return false;
+        }
 
-        for (Size l=0; l<euclideanDimension_; ++l)
-            newVector_[l]/=norm;
+        for (Size l = 0; l < euclideanDimension_; ++l) {
+            newVector_[l] /= norm;
+        }
 
         currentBasis_.push_back(newVector_);
 
@@ -71,9 +75,11 @@ namespace QuantLib {
 
     Matrix BasisIncompleteOrdered::getBasisAsRowsInMatrix() const {
         Matrix basis(currentBasis_.size(), euclideanDimension_);
-        for (Size i=0; i<basis.rows(); ++i)
-            for (Size j=0; j<basis.columns(); ++j)
+        for (Size i = 0; i < basis.rows(); ++i) {
+            for (Size j = 0; j < basis.columns(); ++j) {
                 basis[i][j] = currentBasis_[i][j];
+            }
+        }
 
         return basis;
     }
@@ -83,8 +89,9 @@ namespace QuantLib {
         Real normSquared(const Matrix& v, Size row)
         {
             Real x=0.0;
-            for (Size i=0; i < v.columns(); ++i)
-                x += v[row][i]*v[row][i];
+            for (Size i = 0; i < v.columns(); ++i) {
+                x += v[row][i] * v[row][i];
+            }
 
             return x;
         }
@@ -99,8 +106,9 @@ namespace QuantLib {
         {
 
             Real x=0.0;
-            for (Size i=0; i < v.columns(); ++i)
-                x += v[row1][i]*w[row2][i];
+            for (Size i = 0; i < v.columns(); ++i) {
+                x += v[row1][i] * w[row2][i];
+            }
 
             return x;
         }
@@ -128,8 +136,9 @@ namespace QuantLib {
             {
                 for (Size k=0; k< numberVectors_; ++k) // create an orthormal basis not containing j
                 {
-                    for (Size m=0; m < dimension_; ++m)
+                    for (Size m = 0; m < dimension_; ++m) {
                         orthoNormalizedVectors_[k][m] = originalVectors_[k][m];
+                    }
 
                     if ( k !=j && validVectors_[k])
                     {
@@ -140,8 +149,10 @@ namespace QuantLib {
                             if (validVectors_[l] && l !=j)
                             {
                                 Real dotProduct = innerProduct(orthoNormalizedVectors_, k, orthoNormalizedVectors_,l);
-                                for (Size n=0; n < dimension_; ++n)
-                                    orthoNormalizedVectors_[k][n] -=  dotProduct*orthoNormalizedVectors_[l][n];
+                                for (Size n = 0; n < dimension_; ++n) {
+                                    orthoNormalizedVectors_[k][n] -=
+                                        dotProduct * orthoNormalizedVectors_[l][n];
+                                }
                             }
 
                         }
@@ -155,8 +166,9 @@ namespace QuantLib {
                         else
                         {
                             Real normBeforeScalingRecip = 1.0/normBeforeScaling;
-                            for (Size m=0; m < dimension_; ++m)
+                            for (Size m = 0; m < dimension_; ++m) {
                                 orthoNormalizedVectors_[k][m] *= normBeforeScalingRecip;
+                            }
 
                         } // end of else (norm < tolerance)
 
@@ -169,27 +181,30 @@ namespace QuantLib {
                 Real prevNormSquared = normSquared(originalVectors_, j);
 
 
-                for (Size r=0; r < numberVectors_; ++r)
+                for (Size r = 0; r < numberVectors_; ++r) {
                     if (validVectors_[r] && r != j)
                     {
                         Real dotProduct = innerProduct(orthoNormalizedVectors_, j, orthoNormalizedVectors_,r);
 
-                        for (Size s=0; s < dimension_; ++s)
-                           orthoNormalizedVectors_[j][s] -= dotProduct*orthoNormalizedVectors_[r][s];
+                        for (Size s = 0; s < dimension_; ++s) {
+                            orthoNormalizedVectors_[j][s] -=
+                                dotProduct * orthoNormalizedVectors_[r][s];
+                        }
+                    }
+                }
 
+                Real projectionOnOriginalDirection =
+                    innerProduct(originalVectors_, j, orthoNormalizedVectors_, j);
+                Real sizeMultiplier = prevNormSquared / projectionOnOriginalDirection;
+
+                if (std::fabs(sizeMultiplier) < multiplierCutoff_) {
+                    for (Size t = 0; t < dimension_; ++t) {
+                        currentVector[t] = orthoNormalizedVectors_[j][t] * sizeMultiplier;
                     }
 
-               Real projectionOnOriginalDirection = innerProduct(originalVectors_,j,orthoNormalizedVectors_,j);
-               Real sizeMultiplier = prevNormSquared/projectionOnOriginalDirection;
-
-               if (std::fabs(sizeMultiplier) < multiplierCutoff_)
-               {
-                    for (Size t=0; t < dimension_; ++t)
-                        currentVector[t] = orthoNormalizedVectors_[j][t]*sizeMultiplier;
-
-               }
-               else
-                   validVectors_[j] = false;
+                } else {
+                    validVectors_[j] = false;
+                }
 
 
             } // end of  if (validVectors_[j])
@@ -200,8 +215,9 @@ namespace QuantLib {
         } //end of j loop
 
         numberValidVectors_ =0;
-        for (Size i=0; i < numberVectors_; ++i)
-            numberValidVectors_ +=  validVectors_[i] ? 1 : 0;
+        for (Size i = 0; i < numberVectors_; ++i) {
+            numberValidVectors_ += validVectors_[i] ? 1 : 0;
+        }
 
 
     } // end of constructor

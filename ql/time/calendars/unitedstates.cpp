@@ -136,15 +136,13 @@ namespace QuantLib {
             // (or to Friday if on Saturday)
             || (d == 31 && w == Friday && m == December)
             // Martin Luther King's birthday (third Monday in January)
-            || ((d >= 15 && d <= 21) && w == Monday && m == January
-                && y >= 1983)
+            || ((d >= 15 && d <= 21) && w == Monday && m == January && y >= 1983)
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
             // Independence Day (Monday if Sunday or Friday if Saturday)
-            || ((d == 4 || (d == 5 && w == Monday) ||
-                 (d == 3 && w == Friday)) && m == July)
+            || ((d == 4 || (d == 5 && w == Monday) || (d == 3 && w == Friday)) && m == July)
             // Labor Day (first Monday in September)
             || isLaborDay(d, m, y, w)
             // Columbus Day (second Monday in October)
@@ -154,9 +152,10 @@ namespace QuantLib {
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)
-            || ((d == 25 || (d == 26 && w == Monday) ||
-                 (d == 24 && w == Friday)) && m == December))
+            ||
+            ((d == 25 || (d == 26 && w == Monday) || (d == 24 && w == Friday)) && m == December)) {
             return false;
+        }
         return true;
     }
 
@@ -167,9 +166,9 @@ namespace QuantLib {
         Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
-        if (((d == 5 && w == Monday) ||
-            (d == 3 && w == Friday)) && m == July && y >= 2015)
+        if (((d == 5 && w == Monday) || (d == 3 && w == Friday)) && m == July && y >= 2015) {
             return true;
+        }
         return SettlementImpl::isBusinessDay(date);
     }
 
@@ -185,32 +184,33 @@ namespace QuantLib {
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
             // Independence Day (Monday if Sunday or Friday if Saturday)
-            || ((d == 4 || (d == 5 && w == Monday) ||
-                 (d == 3 && w == Friday)) && m == July)
+            || ((d == 4 || (d == 5 && w == Monday) || (d == 3 && w == Friday)) && m == July)
             // Labor Day (first Monday in September)
             || isLaborDay(d, m, y, w)
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)
-            || ((d == 25 || (d == 26 && w == Monday) ||
-                 (d == 24 && w == Friday)) && m == December)
-            ) return false;
+            ||
+            ((d == 25 || (d == 26 && w == Monday) || (d == 24 && w == Friday)) && m == December)) {
+            return false;
+        }
 
-        if (y >= 1998 && (d >= 15 && d <= 21) && w == Monday && m == January)
+        if (y >= 1998 && (d >= 15 && d <= 21) && w == Monday && m == January) {
             // Martin Luther King's birthday (third Monday in January)
             return false;
+        }
 
-        if ((y <= 1968 || (y <= 1980 && y % 4 == 0)) && m == November
-            && d <= 7 && w == Tuesday)
+        if ((y <= 1968 || (y <= 1980 && y % 4 == 0)) && m == November && d <= 7 && w == Tuesday) {
             // Presidential election days
             return false;
+        }
 
         // Special closings
-        if (// President Bush's Funeral
+        if ( // President Bush's Funeral
             (y == 2018 && m == December && d == 5)
             // Hurricane Sandy
             || (y == 2012 && m == October && (d == 29 || d == 30))
@@ -250,9 +250,9 @@ namespace QuantLib {
             // Day after Christmas
             || (y == 1958 && m == December && d == 26)
             // Christmas Eve
-            || ((y == 1954 || y == 1956 || y == 1965)
-                && m == December && d == 24)
-            ) return false;
+            || ((y == 1954 || y == 1956 || y == 1965) && m == December && d == 24)) {
+            return false;
+        }
 
         return true;
     }
@@ -268,17 +268,15 @@ namespace QuantLib {
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Martin Luther King's birthday (third Monday in January)
-            || ((d >= 15 && d <= 21) && w == Monday && m == January
-                && y >= 1983)
+            || ((d >= 15 && d <= 21) && w == Monday && m == January && y >= 1983)
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
             // Good Friday (2015 was half day due to NFP report)
-            || (dd == em-3 && y != 2015)
+            || (dd == em - 3 && y != 2015)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
             // Independence Day (Monday if Sunday or Friday if Saturday)
-            || ((d == 4 || (d == 5 && w == Monday) ||
-                 (d == 3 && w == Friday)) && m == July)
+            || ((d == 4 || (d == 5 && w == Monday) || (d == 3 && w == Friday)) && m == July)
             // Labor Day (first Monday in September)
             || isLaborDay(d, m, y, w)
             // Columbus Day (second Monday in October)
@@ -288,19 +286,21 @@ namespace QuantLib {
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)
-            || ((d == 25 || (d == 26 && w == Monday) ||
-                 (d == 24 && w == Friday)) && m == December))
+            ||
+            ((d == 25 || (d == 26 && w == Monday) || (d == 24 && w == Friday)) && m == December)) {
             return false;
-             
+        }
+
         // Special closings
-        if (// President Bush's Funeral
+        if ( // President Bush's Funeral
             (y == 2018 && m == December && d == 5)
             // Hurricane Sandy
             || (y == 2012 && m == October && (d == 30))
             // President Reagan's funeral
-            || (y == 2004 && m == June && d == 11)
-            ) return false;
-     
+            || (y == 2004 && m == June && d == 11)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -322,8 +322,9 @@ namespace QuantLib {
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday)
-            || ((d == 25 || (d == 26 && w == Monday)) && m == December))
+            || ((d == 25 || (d == 26 && w == Monday)) && m == December)) {
             return false;
+        }
         return true;
     }
  
@@ -338,8 +339,7 @@ namespace QuantLib {
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Martin Luther King's birthday (third Monday in January)
-            || ((d >= 15 && d <= 21) && w == Monday && m == January
-                && y >= 1983)
+            || ((d >= 15 && d <= 21) && w == Monday && m == January && y >= 1983)
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
             // Memorial Day (last Monday in May)
@@ -355,8 +355,9 @@ namespace QuantLib {
             // Thanksgiving Day (fourth Thursday in November)
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday)
-            || ((d == 25 || (d == 26 && w == Monday)) && m == December))
+            || ((d == 25 || (d == 26 && w == Monday)) && m == December)) {
             return false;
+        }
         return true;
     }
 

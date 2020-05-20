@@ -51,18 +51,17 @@ namespace QuantLib {
         std::vector<std::pair<Time, Real> > intermediateSteps;
         for (Size i=0; i < dividendSchedule.size(); ++i) {
             const Time t = process->time(dividendSchedule[i]->date());
-            if (t <= maturity && t >= 0.0)
-                intermediateSteps.push_back(
-                    std::make_pair(
-                        process->time(dividendSchedule[i]->date()),
-                        dividendSchedule[i]->amount()
-                    ) );
+            if (t <= maturity && t >= 0.0) {
+                intermediateSteps.push_back(std::make_pair(
+                    process->time(dividendSchedule[i]->date()), dividendSchedule[i]->amount()));
+            }
         }
 
         const Size intermediateTimeSteps = std::max<Size>(2, Size(24.0*maturity));
-        for (Size i=0; i < intermediateTimeSteps; ++i)
+        for (Size i = 0; i < intermediateTimeSteps; ++i) {
             intermediateSteps.push_back(
-                std::make_pair((i+1)*(maturity/intermediateTimeSteps), 0.0));
+                std::make_pair((i + 1) * (maturity / intermediateTimeSteps), 0.0));
+        }
 
         std::sort(intermediateSteps.begin(), intermediateSteps.end());
 

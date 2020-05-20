@@ -46,8 +46,9 @@ namespace QuantLib {
 
         checkIncreasingTimes(forwardOptionPaymentTimes);
         checkIncreasingTimes(swaptionPaymentTimes);
-        for (Size i=0; i < swaptionPaymentTimes_.size(); ++i)
+        for (Size i = 0; i < swaptionPaymentTimes_.size(); ++i) {
             paymentTimes_.push_back(swaptionPaymentTimes_[i]);
+        }
         lastIndex_ = rateTimes.size()-1;
         numberFRAs_ = rateTimes.size()-1;
         numberBigFRAs_ = (numberFRAs_-offset_)/period_;
@@ -81,51 +82,52 @@ namespace QuantLib {
                                                                genCashFlows)
     {
 
-     for (Size i=0; i < numberCashFlowsThisStep.size(); ++i)
-        numberCashFlowsThisStep[i]=0UL;
-
-    if (currentIndex_ >=offset_ && (currentIndex_ - offset_) % period_ ==0)
-    {
-        // caplet first
-        Real df = currentState.discountRatio(currentIndex_ + period_, currentIndex_);
-        Time tau = rateTimes_[currentIndex_+period_]- rateTimes_[currentIndex_];
-        Real forward = (1.0/df-1.0)/tau;
-        Real value = (*forwardPayOffs_[productIndex_])(forward);
-        value *= tau*currentState.discountRatio(currentIndex_+period_,currentIndex_);
-
-        if (value >0)
-        {
-            numberCashFlowsThisStep[productIndex_]=1UL;
-            genCashFlows[productIndex_][0].amount = value;
-            genCashFlows[productIndex_][0].timeIndex= productIndex_;
+        for (Size i = 0; i < numberCashFlowsThisStep.size(); ++i) {
+            numberCashFlowsThisStep[i] = 0UL;
         }
 
-        // now swaption
+        if (currentIndex_ >= offset_ && (currentIndex_ - offset_) % period_ == 0) {
+            // caplet first
+            Real df = currentState.discountRatio(currentIndex_ + period_, currentIndex_);
+            Time tau = rateTimes_[currentIndex_ + period_] - rateTimes_[currentIndex_];
+            Real forward = (1.0 / df - 1.0) / tau;
+            Real value = (*forwardPayOffs_[productIndex_])(forward);
+            value *= tau * currentState.discountRatio(currentIndex_ + period_, currentIndex_);
 
-        unsigned long numberPeriods = numberBigFRAs_ - productIndex_;
-        Real B = 0.0;
-        double P0 = 1.0; // i.e currentState.discountRatio(currentIndex_,currentIndex_);
-        Real Pn = currentState.discountRatio(currentIndex_ + numberPeriods*period_, currentIndex_);
-        for (unsigned long i=0; i < numberPeriods; ++i)
-        {
-            Time tau = rateTimes_[currentIndex_+(i+1)*period_]- rateTimes_[currentIndex_+i*period_];
-            B+= tau*currentState.discountRatio(currentIndex_+(i+1)*period_,currentIndex_);
-        }
+            if (value > 0) {
+                numberCashFlowsThisStep[productIndex_] = 1UL;
+                genCashFlows[productIndex_][0].amount = value;
+                genCashFlows[productIndex_][0].timeIndex = productIndex_;
+            }
+
+            // now swaption
+
+            unsigned long numberPeriods = numberBigFRAs_ - productIndex_;
+            Real B = 0.0;
+            double P0 = 1.0; // i.e currentState.discountRatio(currentIndex_,currentIndex_);
+            Real Pn =
+                currentState.discountRatio(currentIndex_ + numberPeriods * period_, currentIndex_);
+            for (unsigned long i = 0; i < numberPeriods; ++i) {
+                Time tau = rateTimes_[currentIndex_ + (i + 1) * period_] -
+                           rateTimes_[currentIndex_ + i * period_];
+                B += tau *
+                     currentState.discountRatio(currentIndex_ + (i + 1) * period_, currentIndex_);
+            }
 
 
-        Real swapRate = (P0-Pn)/B;
+            Real swapRate = (P0 - Pn) / B;
 
-        Real swaptionValue=  (*swapPayOffs_[productIndex_])(swapRate);
-        swaptionValue *=B;
+            Real swaptionValue = (*swapPayOffs_[productIndex_])(swapRate);
+            swaptionValue *= B;
 
-        if (swaptionValue >0)
-        {
-            numberCashFlowsThisStep[productIndex_+numberBigFRAs_]=1UL;
-            genCashFlows[productIndex_+numberBigFRAs_][0].amount = swaptionValue;
-            genCashFlows[productIndex_+numberBigFRAs_][0].timeIndex=productIndex_+numberBigFRAs_;
-       }
+            if (swaptionValue > 0) {
+                numberCashFlowsThisStep[productIndex_ + numberBigFRAs_] = 1UL;
+                genCashFlows[productIndex_ + numberBigFRAs_][0].amount = swaptionValue;
+                genCashFlows[productIndex_ + numberBigFRAs_][0].timeIndex =
+                    productIndex_ + numberBigFRAs_;
+            }
 
-        ++productIndex_;
+            ++productIndex_;
 
     }
 

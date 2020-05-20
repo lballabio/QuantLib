@@ -68,13 +68,13 @@ namespace QuantLib {
               const Real modelPrice = modelValue();
 
               Volatility implied;
-              if (modelPrice <= lowerPrice)
+              if (modelPrice <= lowerPrice) {
                   implied = minVol;
-              else if (modelPrice >= upperPrice)
+              } else if (modelPrice >= upperPrice) {
                   implied = maxVol;
-              else
-                  implied = this->impliedVolatility(
-                                          modelPrice, 1e-12, 5000, minVol, maxVol);
+              } else {
+                  implied = this->impliedVolatility(modelPrice, 1e-12, 5000, minVol, maxVol);
+              }
               error = implied - volatility_->value();
             }
             break;

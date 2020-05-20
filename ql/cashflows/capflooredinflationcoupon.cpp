@@ -80,7 +80,9 @@ namespace QuantLib {
             const ext::shared_ptr<YoYInflationCouponPricer>& pricer) {
 
         YoYInflationCoupon::setPricer(pricer);
-        if (underlying_) underlying_->setPricer(pricer);
+        if (underlying_) {
+            underlying_->setPricer(pricer);
+        }
     }
 
 
@@ -117,19 +119,23 @@ namespace QuantLib {
 
 
     Rate CappedFlooredYoYInflationCoupon::cap() const {
-        if ( (gearing_ > 0) && isCapped_)
+        if ((gearing_ > 0) && isCapped_) {
             return cap_;
-        if ( (gearing_ < 0) && isFloored_)
+        }
+        if ((gearing_ < 0) && isFloored_) {
             return floor_;
+        }
         return Null<Rate>();
     }
 
 
     Rate CappedFlooredYoYInflationCoupon::floor() const {
-        if ( (gearing_ > 0) && isFloored_)
+        if ((gearing_ > 0) && isFloored_) {
             return floor_;
-        if ( (gearing_ < 0) && isCapped_)
+        }
+        if ((gearing_ < 0) && isCapped_) {
             return cap_;
+        }
         return Null<Rate>();
     }
 
@@ -154,10 +160,11 @@ namespace QuantLib {
         Visitor<CappedFlooredYoYInflationCoupon>* v1 =
             dynamic_cast<Visitor<CappedFlooredYoYInflationCoupon>*>(&v);
 
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             super::accept(v);
+        }
     }
 
 }

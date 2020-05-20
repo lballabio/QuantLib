@@ -95,10 +95,11 @@ namespace QuantLib {
         Real z = std::log(CoxIngersollRoss::A(t,s)/strike)/b;
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -
             strike*discountT*chit(2.0*z*(rho+psi));
-        if (type == Option::Call)
+        if (type == Option::Call) {
             return call;
-        else
-            return call - discountS + strike*discountT;
+        } else {
+            return call - discountS + strike * discountT;
+        }
     }
 
 }

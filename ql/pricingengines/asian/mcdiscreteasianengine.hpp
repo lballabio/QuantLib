@@ -92,10 +92,10 @@ namespace QuantLib {
                 // option values for deep OTM options
                 this->results_.value = std::max(0.0, this->results_.value);
             }
-                
-            if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+
+            if (RNG::allowsErrorEstimate) {
+                results_.errorEstimate = this->mcModel_->sampleAccumulator().errorEstimate();
+            }
         }
       protected:
         // McSimulation implementation
@@ -154,9 +154,9 @@ namespace QuantLib {
             }
         }
 
-        if (fixingTimes.empty() ||
-            (fixingTimes.size() == 1 && fixingTimes.front() == 0.0))
+        if (fixingTimes.empty() || (fixingTimes.size() == 1 && fixingTimes.front() == 0.0)) {
             throw detail::PastFixingsOnly();
+        }
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
     }

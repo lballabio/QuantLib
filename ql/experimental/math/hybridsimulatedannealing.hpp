@@ -94,8 +94,9 @@ namespace QuantLib {
             reAnnealSteps_(reAnnealSteps == 0 ? QL_MAX_INTEGER : reAnnealSteps), resetScheme_(resetScheme),
             resetSteps_(resetSteps == 0 ? QL_MAX_INTEGER : resetSteps), localOptimizer_(localOptimizer),
             optimizeScheme_(localOptimizer ? optimizeScheme : NoLocalOptimize) {
-            if (!localOptimizer)
+            if (!localOptimizer) {
                 localOptimizer.reset(new LevenbergMarquardt);
+            }
         }
 
         EndCriteria::Type minimize(Problem &P, const EndCriteria &endCriteria);
@@ -176,8 +177,9 @@ namespace QuantLib {
             //Increase steps
             k++;
             kStationary++;
-            for (Size i = 0; i < annealStep.size(); i++)
+            for (Size i = 0; i < annealStep.size(); i++) {
                 annealStep[i]++;
+            }
 
             //Reanneal if necessary
             if (kReAnneal == reAnnealSteps_) {
@@ -208,15 +210,18 @@ namespace QuantLib {
             temperature_(currentTemperature, currentTemperature, annealStep);
 
             //Check if temperature condition is breached
-            for (Size i = 0; i < n; i++)
-                temperatureBreached = temperatureBreached && currentTemperature[i] < endTemperature_;
+            for (Size i = 0; i < n; i++) {
+                temperatureBreached =
+                    temperatureBreached && currentTemperature[i] < endTemperature_;
+            }
         }
         
         //Change end criteria type if appropriate
-        if (k > maxK)
+        if (k > maxK) {
             ecType = EndCriteria::MaxIterations;
-        else if (kStationary > maxKStationary)
+        } else if (kStationary > maxKStationary) {
             ecType = EndCriteria::StationaryPoint;
+        }
 
         //Set result to best point
         P.setCurrentValue(bestPoint);

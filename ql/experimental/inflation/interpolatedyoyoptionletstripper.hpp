@@ -201,7 +201,9 @@ namespace QuantLib {
         // strip each K separatly
         for (Size i=0; i<YoYCapFloorTermPriceSurface_->strikes().size(); i++) {
             Rate K = YoYCapFloorTermPriceSurface_->strikes()[i];
-            if (K > maxFloor) useType = YoYInflationCapFloor::Cap;
+            if (K > maxFloor) {
+                useType = YoYInflationCapFloor::Cap;
+            }
 
             // solve for the initial point on the vol curve
             Brent solver;

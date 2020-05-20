@@ -107,8 +107,9 @@ namespace QuantLib {
                 }
             }
             // no more use for the kk-th correlation matrix
-            while (kk<corrTimes.size() && corrTimes[kk]<=evolTimes[k])
+            while (kk < corrTimes.size() && corrTimes[kk] <= evolTimes[k]) {
                 ++kk;
+            }
 
             // make it symmetric
             for (Size i=0; i<numberOfRates_; ++i) {

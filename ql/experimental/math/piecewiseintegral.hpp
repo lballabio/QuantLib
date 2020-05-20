@@ -57,10 +57,11 @@ class PiecewiseIntegral : public Integrator {
 inline Real PiecewiseIntegral::integrate_h(const ext::function<Real(Real)> &f,
                                            Real a, Real b) const {
 
-    if (!close_enough(a, b))
+    if (!close_enough(a, b)) {
         return (*integrator_)(f, a, b);
-    else
+    } else {
         return 0.0;
+    }
 }
 
 inline Real PiecewiseIntegral::integrate(const ext::function<Real(Real)> &f,

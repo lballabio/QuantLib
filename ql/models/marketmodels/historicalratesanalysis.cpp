@@ -64,13 +64,14 @@ namespace QuantLib {
             // From 2nd step onwards, calculate forward rate
             // relative differences
             if (!isFirst){
-                for (Size i=0; i<nRates; ++i)
-                    sampleDiff[i] = sample[i]/prevSample[i] -1.0;
+                for (Size i = 0; i < nRates; ++i) {
+                    sampleDiff[i] = sample[i] / prevSample[i] - 1.0;
+                }
                 // add observation
                 statistics.add(sampleDiff.begin(), sampleDiff.end());
-            }
-            else
+            } else {
                 isFirst = false;
+            }
 
             // Store last calculated forward rates
             std::swap(prevSample, sample);

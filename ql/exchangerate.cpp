@@ -25,23 +25,23 @@ namespace QuantLib {
     Money ExchangeRate::exchange(const Money& amount) const {
         switch (type_) {
           case Direct:
-            if (amount.currency() == source_)
-                return Money(amount.value()*rate_, target_);
-            else if (amount.currency() == target_)
-                return Money(amount.value()/rate_, source_);
-            else
-                QL_FAIL("exchange rate not applicable");
+              if (amount.currency() == source_) {
+                  return Money(amount.value() * rate_, target_);
+              } else if (amount.currency() == target_) {
+                  return Money(amount.value() / rate_, source_);
+              } else {
+                  QL_FAIL("exchange rate not applicable");
+              }
           case Derived:
-            if (amount.currency() == rateChain_.first->source() ||
-                amount.currency() == rateChain_.first->target())
-                return rateChain_.second->exchange(
-                                         rateChain_.first->exchange(amount));
-            else if (amount.currency() == rateChain_.second->source() ||
-                       amount.currency() == rateChain_.second->target())
-                return rateChain_.first->exchange(
-                                         rateChain_.second->exchange(amount));
-            else
-                QL_FAIL("exchange rate not applicable");
+              if (amount.currency() == rateChain_.first->source() ||
+                  amount.currency() == rateChain_.first->target()) {
+                  return rateChain_.second->exchange(rateChain_.first->exchange(amount));
+              } else if (amount.currency() == rateChain_.second->source() ||
+                         amount.currency() == rateChain_.second->target()) {
+                  return rateChain_.first->exchange(rateChain_.second->exchange(amount));
+              } else {
+                  QL_FAIL("exchange rate not applicable");
+              }
           default:
             QL_FAIL("unknown exchange-rate type");
         }

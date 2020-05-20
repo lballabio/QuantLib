@@ -168,12 +168,13 @@ namespace QuantLib {
 
     Disposable<Array> FdmHestonOp::apply_direction(Size direction,
                                                    const Array& r) const {
-        if (direction == 0)
+        if (direction == 0) {
             return dxMap_.getMap().apply(r);
-        else if (direction == 1)
+        } else if (direction == 1) {
             return dyMap_.getMap().apply(r);
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
 
     Disposable<Array> FdmHestonOp::apply_mixed(const Array& r) const {
@@ -189,9 +190,9 @@ namespace QuantLib {
         }
         else if (direction == 1) {
             return dyMap_.getMap().solve_splitting(r, a, 1.0);
-        }
-        else
+        } else {
             QL_FAIL("direction too large");
+        }
     }
 
     Disposable<Array>

@@ -282,10 +282,11 @@ namespace QuantLib {
     void FuturesRateHelper::accept(AcyclicVisitor& v) {
         Visitor<FuturesRateHelper>* v1 =
             dynamic_cast<Visitor<FuturesRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             RateHelper::accept(v);
+        }
     }
 
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
@@ -364,10 +365,11 @@ namespace QuantLib {
     void DepositRateHelper::accept(AcyclicVisitor& v) {
         Visitor<DepositRateHelper>* v1 =
             dynamic_cast<Visitor<DepositRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             RateHelper::accept(v);
+        }
     }
 
 
@@ -583,13 +585,14 @@ namespace QuantLib {
 
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        if (useIndexedCoupon_)
+        if (useIndexedCoupon_) {
             return iborIndex_->fixing(fixingDate_, true);
-        else
+        } else {
             return (termStructure_->discount(earliestDate_) /
                         termStructure_->discount(maturityDate_) -
                     1.0) /
                    spanningTime_;
+        }
     }
 
     void FraRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -635,10 +638,10 @@ namespace QuantLib {
             QL_FAIL("neither periodToStart nor immOffsetStart/End given");
         }
 
-        if (useIndexedCoupon_)
+        if (useIndexedCoupon_) {
             // latest relevant date is calculated from earliestDate_
             latestRelevantDate_ = iborIndex_->maturityDate(earliestDate_);
-        else {
+        } else {
             latestRelevantDate_ = maturityDate_;
             spanningTime_ = iborIndex_->dayCounter().yearFraction(earliestDate_, maturityDate_);
         }
@@ -673,10 +676,11 @@ namespace QuantLib {
     void FraRateHelper::accept(AcyclicVisitor& v) {
         Visitor<FraRateHelper>* v1 =
             dynamic_cast<Visitor<FraRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             RateHelper::accept(v);
+        }
     }
 
 
@@ -736,8 +740,9 @@ namespace QuantLib {
       spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
 
-        if (settlementDays_==Null<Natural>())
+        if (settlementDays_ == Null<Natural>()) {
             settlementDays_ = iborIndex->fixingDays();
+        }
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
@@ -810,8 +815,9 @@ namespace QuantLib {
       spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
 
-        if (settlementDays_==Null<Natural>())
+        if (settlementDays_ == Null<Natural>()) {
             settlementDays_ = iborIndex->fixingDays();
+        }
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
@@ -887,10 +893,11 @@ namespace QuantLib {
         ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
-        if (discountHandle_.empty())
+        if (discountHandle_.empty()) {
             discountRelinkableHandle_.linkTo(temp, observer);
-        else
+        } else {
             discountRelinkableHandle_.linkTo(*discountHandle_, observer);
+        }
 
         RelativeDateRateHelper::setTermStructure(t);
     }
@@ -912,10 +919,11 @@ namespace QuantLib {
     void SwapRateHelper::accept(AcyclicVisitor& v) {
         Visitor<SwapRateHelper>* v1 =
             dynamic_cast<Visitor<SwapRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             RateHelper::accept(v);
+        }
     }
 
     BMASwapRateHelper::BMASwapRateHelper(
@@ -1014,10 +1022,11 @@ namespace QuantLib {
     void BMASwapRateHelper::accept(AcyclicVisitor& v) {
         Visitor<BMASwapRateHelper>* v1 =
             dynamic_cast<Visitor<BMASwapRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             RateHelper::accept(v);
+        }
     }
 
     FxSwapRateHelper::FxSwapRateHelper(const Handle<Quote>& fwdPoint,
@@ -1038,11 +1047,11 @@ namespace QuantLib {
         registerWith(spot_);
         registerWith(collHandle_);
 
-        if (tradingCalendar_.empty())
+        if (tradingCalendar_.empty()) {
             jointCalendar_ = cal_;
-        else
-            jointCalendar_ = JointCalendar(tradingCalendar_, cal_,
-                                           JoinHolidays);
+        } else {
+            jointCalendar_ = JointCalendar(tradingCalendar_, cal_, JoinHolidays);
+        }
         initializeDates();
     }
 
@@ -1097,10 +1106,11 @@ namespace QuantLib {
     void FxSwapRateHelper::accept(AcyclicVisitor& v) {
         Visitor<FxSwapRateHelper>* v1 =
             dynamic_cast<Visitor<FxSwapRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             RateHelper::accept(v);
+        }
     }
 
 }

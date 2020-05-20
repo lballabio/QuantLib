@@ -69,9 +69,9 @@ namespace QuantLib {
                       ? std::vector<Real>(defaultMoneyNormal,
                                           defaultMoneyNormal + 27)
                       : std::vector<Real>(defaultMoney, defaultMoney + 21);
-        }
-        else
+        } else {
             tmp = std::vector<Real>(moneynessGrid);
+        }
 
         Real shift = section.shift();
 
@@ -92,8 +92,9 @@ namespace QuantLib {
                     m_.push_back(tmp[i]);
                     k_.push_back(k);
                 }
-                if (close(k, section.maxStrike()))
+                if (close(k, section.maxStrike())) {
                     maxStrikeAdded = true;
+                }
             } else { // if the section provides a limited strike range
                      // we put the respective endpoint in our grid
                      // in order to not loose too much information
@@ -116,8 +117,9 @@ namespace QuantLib {
 
         // only known for shifted lognormal vols, otherwise we include
         // the lower strike in the loop below
-        if(section.volatilityType() == ShiftedLognormal)
+        if (section.volatilityType() == ShiftedLognormal) {
             c_.push_back(f_ + shift);
+        }
 
         for (Size i = (section.volatilityType() == Normal ? 0 : 1);
              i < k_.size(); i++) {
@@ -136,9 +138,9 @@ namespace QuantLib {
         // shift central index to the right if necessary
         // (sometimes even the atm point lies in an arbitrageable area)
 
-        while (!af(centralIndex, centralIndex, centralIndex + 1) &&
-               centralIndex < k_.size() - 1)
+        while (!af(centralIndex, centralIndex, centralIndex + 1) && centralIndex < k_.size() - 1) {
             centralIndex++;
+        }
 
         QL_REQUIRE(centralIndex < k_.size(),
                    "central index is at right boundary")
@@ -157,8 +159,9 @@ namespace QuantLib {
                 isAf = af(leftIndex_, rightIndex_, rightIndex_) &&
                        af(leftIndex_, rightIndex_ - 1, rightIndex_);
             }
-            if (!isAf)
+            if (!isAf) {
                 rightIndex_--;
+            }
 
             isAf = true;
             while (isAf && leftIndex_ > 1) {
@@ -166,11 +169,13 @@ namespace QuantLib {
                 isAf = af(leftIndex_, leftIndex_, rightIndex_) &&
                        af(leftIndex_, leftIndex_ + 1, rightIndex_);
             }
-            if (!isAf)
+            if (!isAf) {
                 leftIndex_++;
+            }
 
-            if (rightIndex_ < leftIndex_)
+            if (rightIndex_ < leftIndex_) {
                 rightIndex_ = leftIndex_;
+            }
 
             if (deleteArbitragePoints && leftIndex_ > 1) {
                 m_.erase(m_.begin() + leftIndex_ - 1);
@@ -207,17 +212,21 @@ namespace QuantLib {
 
     bool SmileSectionUtils::af(const Size i0, const Size i,
                                const Size i1) const {
-        if (i == 0)
+        if (i == 0) {
             return true;
+        }
         Size im = i - 1 >= i0 ? i - 1 : 0;
         Real q1 = (c_[i] - c_[im]) / (k_[i] - k_[im]);
-        if (q1 < -1.0 || q1 > 0.0)
+        if (q1 < -1.0 || q1 > 0.0) {
             return false;
-        if (i >= i1)
+        }
+        if (i >= i1) {
             return true;
+        }
         Real q2 = (c_[i + 1] - c_[i]) / (k_[i + 1] - k_[i]);
-        if (q1 <= q2 && q2 <= 0.0)
+        if (q1 <= q2 && q2 <= 0.0) {
             return true;
+        }
         return false;
     }
 }

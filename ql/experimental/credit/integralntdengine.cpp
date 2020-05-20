@@ -71,11 +71,11 @@ namespace QuantLib {
                     * probNonTriggered;
                  ////   * (1.0 - defaultProb);
 
-                if (coupon->accrualStartDate() >= 
-                    discountCurve_->referenceDate())
+                if (coupon->accrualStartDate() >= discountCurve_->referenceDate()) {
                     d = coupon->accrualStartDate();
-                else
+                } else {
                     d = discountCurve_->referenceDate();
+                }
 
                 // do steps of specified size
                 d0 = d;
@@ -141,8 +141,9 @@ namespace QuantLib {
                     Probability dcfdd = defProb1 - defProb0;
                     defProb0 = defProb1;
 
-                    if (arguments_.settlePremiumAccrual)
-                        accrualValue += coupon->accruedAmount(d)*disc*dcfdd;
+                    if (arguments_.settlePremiumAccrual) {
+                        accrualValue += coupon->accruedAmount(d) * disc * dcfdd;
+                    }
 
                     d0 = d;
                     d = d0 + stepSize;
@@ -157,13 +158,13 @@ namespace QuantLib {
         }
 
         // The upfront might be due before the curve ref date...
-        if (!arguments_.premiumLeg[0]->hasOccurred(today))
+        if (!arguments_.premiumLeg[0]->hasOccurred(today)) {
             results_.upfrontPremiumValue =
-                arguments_.basket->remainingNotional() 
-                    * arguments_.upfrontRate
-                    * discountCurve_->discount(
-                        ext::dynamic_pointer_cast<FixedRateCoupon>(
-                            arguments_.premiumLeg[0])->accrualStartDate());
+                arguments_.basket->remainingNotional() * arguments_.upfrontRate *
+                discountCurve_->discount(
+                    ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.premiumLeg[0])
+                        ->accrualStartDate());
+        }
         if (arguments_.side == Protection::Buyer) {
             results_.premiumValue *= -1;
             accrualValue *= -1;

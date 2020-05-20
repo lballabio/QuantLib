@@ -56,8 +56,11 @@ namespace QuantLib {
                 /* To speed up computation a threshold is introduced to
                    make sure it is worthy to perform the Jacobi rotation
                 */
-                if (ite<5) threshold = 0.2*sum/(size*size);
-                else       threshold = 0.0;
+                if (ite < 5) {
+                    threshold = 0.2 * sum / (size * size);
+                } else {
+                    threshold = 0.0;
+                }
 
                 Size j, k, l;
                 for (j=0; j<size-1; j++) {
@@ -76,8 +79,9 @@ namespace QuantLib {
                                 beta = 0.5*heig/ss[j][k];
                                 tang = 1.0/(std::fabs(beta)+
                                     std::sqrt(1+beta*beta));
-                                if (beta<0)
+                                if (beta < 0) {
                                     tang = -tang;
+                                }
                             }
                             cosin = 1/std::sqrt(1+tang*tang);
                             sine = tang*cosin;
@@ -88,15 +92,18 @@ namespace QuantLib {
                             diagonal_[j] -= heig;
                             diagonal_[k] += heig;
                             ss[j][k] = 0.0;
-                            for (l=0; l+1<=j; l++)
+                            for (l = 0; l + 1 <= j; l++) {
                                 jacobiRotate_(ss, rho, sine, l, j, l, k);
-                            for (l=j+1; l<=k-1; l++)
+                            }
+                            for (l = j + 1; l <= k - 1; l++) {
                                 jacobiRotate_(ss, rho, sine, j, l, l, k);
-                            for (l=k+1; l<size; l++)
+                            }
+                            for (l = k + 1; l < size; l++) {
                                 jacobiRotate_(ss, rho, sine, j, l, k, l);
-                            for (l=0;   l<size; l++)
-                                jacobiRotate_(eigenVectors_,
-                                                  rho, sine, l, j, l, k);
+                            }
+                            for (l = 0; l < size; l++) {
+                                jacobiRotate_(eigenVectors_, rho, sine, l, j, l, k);
+                            }
                         }
                     }
                 }
@@ -130,8 +137,9 @@ namespace QuantLib {
                 (std::fabs(temp[col].first/maxEv)<1e-16 ? 0.0 :
                                                           temp[col].first);
             Real sign = 1.0;
-            if (temp[col].second[0]<0.0)
+            if (temp[col].second[0] < 0.0) {
                 sign = -1.0;
+            }
             for (row=0; row<size; row++) {
                 eigenVectors_[row][col] = sign * temp[col].second[row];
             }

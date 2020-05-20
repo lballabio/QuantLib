@@ -48,12 +48,14 @@ namespace QuantLib {
 
         SwaptionVolatilityCube::performCalculations();
         //! set volSpreadsMatrix_ by volSpreads_ quotes
-        for (Size i=0; i<nStrikes_; i++) 
-            for (Size j=0; j<nOptionTenors_; j++)
+        for (Size i = 0; i < nStrikes_; i++) {
+            for (Size j = 0; j < nOptionTenors_; j++) {
                 for (Size k=0; k<nSwapTenors_; k++) {
                     volSpreadsMatrix_[i][j][k] =
                         volSpreads_[j*nSwapTenors_+k][i]->value();
                 }
+            }
+        }
         //! create volSpreadsInterpolator_ 
         for (Size i=0; i<nStrikes_; i++) {
             volSpreadsInterpolator_[i] = BilinearInterpolation(

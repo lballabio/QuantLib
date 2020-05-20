@@ -116,8 +116,9 @@ namespace QuantLib {
             iteration++;
             iterationStat++;
             //Check if stopping criteria is met
-            if (iteration > maxIteration || iterationStat > maxIStationary)
+            if (iteration > maxIteration || iterationStat > maxIStationary) {
                 break;
+            }
 
             //According to the topology, determine best global position
             topology_->findSocialBest();
@@ -163,10 +164,11 @@ namespace QuantLib {
                 }
             }
         } while (true);
-        if (iteration > maxIteration)
+        if (iteration > maxIteration) {
             ecType = EndCriteria::MaxIterations;
-        else
+        } else {
             ecType = EndCriteria::StationaryPoint;
+        }
 
         //Set result to best point
         P.setCurrentValue(pBX_[bestPosition]);
@@ -177,7 +179,9 @@ namespace QuantLib {
     void AdaptiveInertia::setValues() {
         Real currBest = (*pBF_)[0];
         for (Size i = 1; i < M_; i++) {
-            if (currBest >(*pBF_)[i]) currBest = (*pBF_)[i];
+            if (currBest > (*pBF_)[i]) {
+                currBest = (*pBF_)[i];
+            }
         }
         if (started_) { //First iteration leaves inertia unchanged
             if (currBest < best_) {
@@ -322,9 +326,13 @@ namespace QuantLib {
             for (Size j = 0; j < totalClubs_; j++) {
                 if (clubSet[j]) {
                     //If still thought of the best, check if best in club j
-                    if (best && i != bestByClub_[j]) best = false;
+                    if (best && i != bestByClub_[j]) {
+                        best = false;
+                    }
                     //If still thought of the worst, check if worst in club j
-                    if (worst && i != worstByClub_[j]) worst = false;
+                    if (worst && i != worstByClub_[j]) {
+                        worst = false;
+                    }
                     //Update currentClubs
                     currentClubs++;
                 }

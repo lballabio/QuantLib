@@ -98,10 +98,12 @@ namespace market_model_smm_caplet_calibration_test {
         rateTimes_ = std::vector<Time>(dates.size()-1);
         accruals_ = std::vector<Real>(rateTimes_.size()-1);
         dayCounter_ = SimpleDayCounter();
-        for (Size i=1; i<dates.size(); ++i)
-            rateTimes_[i-1] = dayCounter_.yearFraction(todaysDate_, dates[i]);
-        for (Size i=1; i<rateTimes_.size(); ++i)
-            accruals_[i-1] = rateTimes_[i] - rateTimes_[i-1];
+        for (Size i = 1; i < dates.size(); ++i) {
+            rateTimes_[i - 1] = dayCounter_.yearFraction(todaysDate_, dates[i]);
+        }
+        for (Size i = 1; i < rateTimes_.size(); ++i) {
+            accruals_[i - 1] = rateTimes_[i] - rateTimes_[i - 1];
+        }
 
         // Rates & displacement
         todaysForwards_ = std::vector<Rate>(accruals_.size());
@@ -121,9 +123,10 @@ namespace market_model_smm_caplet_calibration_test {
         // Discounts
         todaysDiscounts_ = std::vector<DiscountFactor>(rateTimes_.size());
         todaysDiscounts_[0] = 0.95;
-        for (Size i=1; i<rateTimes_.size(); ++i)
-            todaysDiscounts_[i] = todaysDiscounts_[i-1] /
-                (1.0+todaysForwards_[i-1]*accruals_[i-1]);
+        for (Size i = 1; i < rateTimes_.size(); ++i) {
+            todaysDiscounts_[i] =
+                todaysDiscounts_[i - 1] / (1.0 + todaysForwards_[i - 1] * accruals_[i - 1]);
+        }
 
         //// Swaption Volatilities
         //Volatility mktSwaptionVols[] = {
@@ -283,8 +286,9 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                                        capletTolerance/10,
                                        innerMaxIterations,
                                        innerTolerance);
-    if (!result)
+    if (!result) {
         BOOST_ERROR("calibration failed");
+    }
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
     ext::shared_ptr<MarketModel> smm(new
@@ -318,24 +322,29 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
         swapTerminalCovariance += swapPseudoRoots[i] * transpose(swapPseudoRoots[i]);
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
-        if (error>swapTolerance)
-            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " swaption vol:"
-                        "\n expected:  " << io::rate(expSwaptionVol) <<
-                        "\n realized:  " << io::rate(swaptionVol) <<
-                        "\n error:     " << error <<
-                        "\n tolerance: " << swapTolerance);
+        if (error > swapTolerance) {
+            BOOST_ERROR("failed to reproduce "
+                        << io::ordinal(i + 1)
+                        << " swaption vol:"
+                           "\n expected:  "
+                        << io::rate(expSwaptionVol) << "\n realized:  " << io::rate(swaptionVol)
+                        << "\n error:     " << error << "\n tolerance: " << swapTolerance);
+        }
     }
 
     // check caplet fit
     for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
-        if (error>capletTolerance)
-            BOOST_ERROR("failed to reproduce " << io::ordinal(i+1) << " caplet vol:"
-                        "\n expected:         " << io::rate(capletVols_[i]) <<
-                        "\n realized:         " << io::rate(capletVols[i]) <<
-                        "\n percentage error: " << error/capletVols_[i] <<
-                        "\n error:            " << error <<
-                        "\n tolerance:        " << capletTolerance);
+        if (error > capletTolerance) {
+            BOOST_ERROR("failed to reproduce " << io::ordinal(i + 1)
+                                               << " caplet vol:"
+                                                  "\n expected:         "
+                                               << io::rate(capletVols_[i])
+                                               << "\n realized:         " << io::rate(capletVols[i])
+                                               << "\n percentage error: " << error / capletVols_[i]
+                                               << "\n error:            " << error
+                                               << "\n tolerance:        " << capletTolerance);
+        }
     }
 }
 

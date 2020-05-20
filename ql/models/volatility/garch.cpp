@@ -331,16 +331,21 @@ namespace QuantLib {
             std::vector<std::size_t> idx;
             std::size_t nCov = acf.size() - 1;
             for (std::size_t i = 0; i <= nCov; ++i) {
-                if (i < 2) idx.push_back(i);
+                if (i < 2) {
+                    idx.push_back(i);
+                }
                 if (i > 1 && acf[i] > 0 && acf[i-1] > 0 && acf[i-1] > acf[i]) {
                     gamma += acf[i]/acf[i-1];
                     nn++;
                     idx.push_back(i);
                 }
             }
-            if (nn > 0)
+            if (nn > 0) {
                 gamma /= nn;
-            if (gamma < gammaLower) gamma = gammaLower;
+            }
+            if (gamma < gammaLower) {
+                gamma = gammaLower;
+            }
             beta = std::min(gamma, std::max(gamma * (1 - A) - B, 0.0));
             omega = mean_r2 * (1 - gamma);
 
@@ -467,8 +472,9 @@ namespace QuantLib {
                 opt1[1] = alpha;
                 opt1[2] = beta;
                 opt1[0] = omega;
-                if (constraints.test(opt1))
+                if (constraints.test(opt1)) {
                     fCost1 = std::min(fCost1, cost.value(opt1));
+                }
             } catch (const std::exception &) {
                 fCost1 = QL_MAX_REAL;
             }
@@ -479,8 +485,9 @@ namespace QuantLib {
                 opt2[1] = alpha;
                 opt2[2] = beta;
                 opt2[0] = omega;
-                if (constraints.test(opt2))
+                if (constraints.test(opt2)) {
                     fCost2 = std::min(fCost2, cost.value(opt2));
+                }
             } catch (const std::exception &) {
                 fCost2 = QL_MAX_REAL;
             }

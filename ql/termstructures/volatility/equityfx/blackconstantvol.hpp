@@ -123,10 +123,11 @@ namespace QuantLib {
     inline void BlackConstantVol::accept(AcyclicVisitor& v) {
         Visitor<BlackConstantVol>* v1 =
             dynamic_cast<Visitor<BlackConstantVol>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             BlackVolatilityTermStructure::accept(v);
+        }
     }
 
     inline Volatility BlackConstantVol::blackVolImpl(Time, Real) const {

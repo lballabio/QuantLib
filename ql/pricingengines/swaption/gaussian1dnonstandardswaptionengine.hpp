@@ -83,11 +83,13 @@ namespace QuantLib {
               discountCurve_(discountCurve), oas_(oas),
               probabilities_(probabilities) {
 
-            if (!oas_.empty())
+            if (!oas_.empty()) {
                 registerWith(oas_);
+            }
 
-            if (!discountCurve_.empty())
+            if (!discountCurve_.empty()) {
                 registerWith(discountCurve_);
+            }
         }
 
         Gaussian1dNonstandardSwaptionEngine(
@@ -111,11 +113,13 @@ namespace QuantLib {
               discountCurve_(discountCurve), oas_(oas),
               probabilities_(probabilities) {
 
-            if (!oas_.empty())
+            if (!oas_.empty()) {
                 registerWith(oas_);
+            }
 
-            if (!discountCurve_.empty())
+            if (!discountCurve_.empty()) {
                 registerWith(discountCurve_);
+            }
         }
 
         void calculate() const;

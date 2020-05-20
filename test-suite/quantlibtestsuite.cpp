@@ -231,10 +231,12 @@ namespace {
         seconds -= hours * 3600;
         int minutes = int(seconds/60);
         seconds -= minutes * 60;
-        if (hours > 0)
+        if (hours > 0) {
             std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
+        }
+        if (hours > 0 || minutes > 0) {
             std::cout << minutes << " m ";
+        }
         std::cout << std::fixed << std::setprecision(0)
                   << seconds << " s\n" << std::endl;
     }
@@ -281,10 +283,11 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
 
     for (int i=1; i<argc; ++i) {
         std::string arg = argv[i];
-        if (arg == "--date=today")
+        if (arg == "--date=today") {
             return QuantLib::Date::todaysDate();
-        else if (arg.substr(0, 7) == "--date=")
+        } else if (arg.substr(0, 7) == "--date=") {
             return QuantLib::DateParser::parseISO(arg.substr(7));
+        }
     }
     return knownGoodDefault;
 }
@@ -300,12 +303,13 @@ SpeedLevel speed_level(int argc, char** argv) {
 
     for (int i=1; i<argc; ++i) {
         std::string arg = argv[i];
-        if (arg == "--slow")
+        if (arg == "--slow") {
             return Slow;
-        else if (arg == "--fast")
+        } else if (arg == "--fast") {
             return Fast;
-        else if (arg == "--faster")
+        } else if (arg == "--faster") {
             return Faster;
+        }
     }
     return Slow;
 }

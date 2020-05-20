@@ -47,10 +47,11 @@ namespace QuantLib {
       floatingSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread),
       floatingDayCount_(floatingDayCount) {
 
-        if (paymentConvention)
+        if (paymentConvention) {
             paymentConvention_ = *paymentConvention;
-        else
+        } else {
             paymentConvention_ = floatingSchedule_.businessDayConvention();
+        }
 
         legs_[0] = FixedRateLeg(fixedSchedule_)
             .withNotionals(nominal_)
@@ -62,8 +63,9 @@ namespace QuantLib {
             .withPaymentDayCounter(floatingDayCount_)
             .withPaymentAdjustment(paymentConvention_)
             .withSpreads(spread_);
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i) {
             registerWith(*i);
+        }
 
         switch (type_) {
           case Payer:
@@ -86,8 +88,9 @@ namespace QuantLib {
         VanillaSwap::arguments* arguments =
             dynamic_cast<VanillaSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (!arguments) { // it's a swap engine...
             return;
+        }
 
         arguments->type = type_;
         arguments->nominal = nominal_;
@@ -195,13 +198,15 @@ namespace QuantLib {
 
         if (fairRate_ == Null<Rate>()) {
             // calculate it from other results
-            if (legBPS_[0] != Null<Real>())
-                fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
+            if (legBPS_[0] != Null<Real>()) {
+                fairRate_ = fixedRate_ - NPV_ / (legBPS_[0] / basisPoint);
+            }
         }
         if (fairSpread_ == Null<Spread>()) {
             // ditto
-            if (legBPS_[1] != Null<Real>())
-                fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+            if (legBPS_[1] != Null<Real>()) {
+                fairSpread_ = spread_ - NPV_ / (legBPS_[1] / basisPoint);
+            }
         }
     }
 

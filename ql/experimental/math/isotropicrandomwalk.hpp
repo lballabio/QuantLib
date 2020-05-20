@@ -49,9 +49,9 @@ namespace QuantLib {
                             unsigned long seed = 0) :
             variate_(eng, dist), rng_(seed), 
             weights_(weights), dim_(dim) {
-            if (weights_.empty())
+            if (weights_.empty()) {
                 weights_ = Array(dim, 1.0);
-            else
+            } else
                 QL_REQUIRE(dim_ == weights_.size(), "Invalid weights");
         }
         template <class InputIterator>
@@ -70,10 +70,11 @@ namespace QuantLib {
                 *first = radius*sin(2.0*phi)*(*weight);
             }
             else {
-                if (rng_.nextReal() < 0.5)
+                if (rng_.nextReal() < 0.5) {
                     *first = -radius*(*weight);
-                else
-                    *first = radius*(*weight);
+                } else {
+                    *first = radius * (*weight);
+                }
             }
         }
         inline void setDimension(Size dim) { 
@@ -100,7 +101,9 @@ namespace QuantLib {
             Array bounds = upperBound - lowerBound;
             Real maxBound = bounds[0];
             for (Size j = 1; j < dim; j++) {
-                if (bounds[j] > maxBound) maxBound = bounds[j];
+                if (bounds[j] > maxBound) {
+                    maxBound = bounds[j];
+                }
             }
             //weights by dimension is the size of the bound
             //divided by the largest bound

@@ -81,20 +81,20 @@ namespace QuantLib {
             return directLookup(commodityType,source,target);
         } else if (!source.triangulationUnitOfMeasure().empty()) {
             const UnitOfMeasure& link = source.triangulationUnitOfMeasure();
-            if (link == target)
+            if (link == target) {
                 return directLookup(commodityType,source,link);
-            else
-                return UnitOfMeasureConversion::chain(
-                                      directLookup(commodityType,source,link),
-                                      lookup(commodityType,link,target));
+            } else {
+                return UnitOfMeasureConversion::chain(directLookup(commodityType, source, link),
+                                                      lookup(commodityType, link, target));
+            }
         } else if (!target.triangulationUnitOfMeasure().empty()) {
             const UnitOfMeasure& link = target.triangulationUnitOfMeasure();
-            if (source == link)
+            if (source == link) {
                 return directLookup(commodityType,link,target);
-            else
-                return UnitOfMeasureConversion::chain(
-                                     lookup(commodityType,source,link),
-                                     directLookup(commodityType,link,target));
+            } else {
+                return UnitOfMeasureConversion::chain(lookup(commodityType, source, link),
+                                                      directLookup(commodityType, link, target));
+            }
         } else {
             return smartLookup(commodityType,source,target);
         }

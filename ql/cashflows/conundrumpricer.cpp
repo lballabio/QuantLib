@@ -93,9 +93,11 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
 
-        if(paymentDate_ > today)
+        if (paymentDate_ > today) {
             discount_ = rateCurve_->discount(paymentDate_);
-        else discount_= 1.;
+        } else {
+            discount_ = 1.;
+        }
 
         spreadLegValue_ = spread_ * accrualPeriod * discount_;
 
@@ -278,11 +280,13 @@ namespace QuantLib {
 
                 // we estimate the actual boudary by testing integrand values
                 Real upperBoundary = 2*a;
-                while(integrand(upperBoundary)>precision_)
-                    upperBoundary *=2.0;
+                while (integrand(upperBoundary) > precision_) {
+                    upperBoundary *= 2.0;
+                }
                 // sometimes b < a because of a wrong estimation of b based on stdev
-                if (b > a)
+                if (b > a) {
                     upperBoundary = std::min(upperBoundary, b);
+                }
 
                 ext::function<Real (Real)> f;
                 GaussKronrodNonAdaptive

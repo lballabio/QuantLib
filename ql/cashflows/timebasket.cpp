@@ -29,8 +29,9 @@ namespace QuantLib {
         QL_REQUIRE(dates.size() == values.size(),
                    "number of dates differs from number of values");
         super& self = *this;
-        for (Size i = 0; i < dates.size(); i++)
+        for (Size i = 0; i < dates.size(); i++) {
             self[dates[i]] = values[i];
+        }
     }
 
     TimeBasket TimeBasket::rebin(const std::vector<Date>& buckets) const {
@@ -41,8 +42,9 @@ namespace QuantLib {
 
         TimeBasket result;
 
-        for (Size i = 0; i < sbuckets.size(); i++)
+        for (Size i = 0; i < sbuckets.size(); i++) {
             result[sbuckets[i]] = 0.0;
+        }
 
         for (const_iterator j = begin(); j != end(); ++j) {
             Date date = j->first;
@@ -52,13 +54,15 @@ namespace QuantLib {
             std::vector<Date>::const_iterator bi =
                 std::lower_bound(sbuckets.begin(), sbuckets.end(), date);
 
-            if (bi == sbuckets.end())
+            if (bi == sbuckets.end()) {
                 pDate = sbuckets.back();
-            else
+            } else {
                 pDate = *bi;
+            }
 
-            if (bi != sbuckets.begin() && bi != sbuckets.end())
-                nDate = *(bi-1);
+            if (bi != sbuckets.begin() && bi != sbuckets.end()) {
+                nDate = *(bi - 1);
+            }
 
             if (pDate == date || nDate == Null<Date>()) {
                 result[pDate] += value;

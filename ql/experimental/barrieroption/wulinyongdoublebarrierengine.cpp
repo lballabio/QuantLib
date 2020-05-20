@@ -119,10 +119,11 @@ namespace QuantLib {
         }
 
         //rebate paid at maturity
-        if(barrierType == DoubleBarrier::KnockOut)
+        if (barrierType == DoubleBarrier::KnockOut) {
             results_.value = barrierOut ;
-        else
+        } else {
             results_.value = european - barrierOut;
+        }
         results_.additionalResults["vanilla"] = european;
         results_.additionalResults["barrierOut"] = barrierOut;
         results_.additionalResults["barrierIn"] = european - barrierOut;

@@ -67,8 +67,12 @@ namespace QuantLib {
                        << " versus obs lag = " << observationLag_);
         }
 
-        if (infCalendar_==Calendar()) infCalendar_ = fixCalendar_;
-        if (infConvention_==BusinessDayConvention()) infConvention_ = fixConvention_;
+        if (infCalendar_ == Calendar()) {
+            infCalendar_ = fixCalendar_;
+        }
+        if (infConvention_ == BusinessDayConvention()) {
+            infConvention_ = fixConvention_;
+        }
 
         if (adjustInfObsDates_) {
             baseDate_ = infCalendar_.adjust(startDate - observationLag_, infConvention_);
@@ -96,8 +100,9 @@ namespace QuantLib {
             new IndexedCashFlow(nominal,infIndex,baseDate_,obsDate_,infPayDate,growthOnly)));
 
         for (Size j=0; j<2; ++j) {
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+            for (Leg::iterator i = legs_[j].begin(); i != legs_[j].end(); ++i) {
                 registerWith(*i);
+            }
         }
 
         switch (type_) {

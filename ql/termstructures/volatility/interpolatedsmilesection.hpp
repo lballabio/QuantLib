@@ -110,8 +110,9 @@ namespace QuantLib {
       stdDevHandles_(stdDevHandles), atmLevel_(atmLevel),
       vols_(stdDevHandles.size())
     {
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
+        for (Size i = 0; i < stdDevHandles_.size(); ++i) {
             LazyObject::registerWith(stdDevHandles_[i]);
+        }
         LazyObject::registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
@@ -135,9 +136,9 @@ namespace QuantLib {
     {
         // fill dummy handles to allow generic handle-based
         // computations later on
-        for (Size i=0; i<stdDevs.size(); ++i)
-            stdDevHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                SimpleQuote(stdDevs[i])));
+        for (Size i = 0; i < stdDevs.size(); ++i) {
+            stdDevHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(stdDevs[i])));
+        }
         atmLevel_ = Handle<Quote>
            (ext::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
         // check strikes!!!!!!!!!!!!!!!!!!!!
@@ -161,8 +162,9 @@ namespace QuantLib {
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
       stdDevHandles_(stdDevHandles), atmLevel_(atmLevel), vols_(stdDevHandles.size())
     {
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
+        for (Size i = 0; i < stdDevHandles_.size(); ++i) {
             LazyObject::registerWith(stdDevHandles_[i]);
+        }
         LazyObject::registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
@@ -187,9 +189,9 @@ namespace QuantLib {
     {
         //fill dummy handles to allow generic handle-based
         // computations later on
-        for (Size i=0; i<stdDevs.size(); ++i)
-            stdDevHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                SimpleQuote(stdDevs[i])));
+        for (Size i = 0; i < stdDevs.size(); ++i) {
+            stdDevHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(stdDevs[i])));
+        }
         atmLevel_ = Handle<Quote>
            (ext::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
         // check strikes!!!!!!!!!!!!!!!!!!!!
@@ -202,8 +204,9 @@ namespace QuantLib {
     template <class Interpolator>
     inline void InterpolatedSmileSection<Interpolator>::performCalculations()
                                                                       const {
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
-            vols_[i] = stdDevHandles_[i]->value()/exerciseTimeSquareRoot_;
+        for (Size i = 0; i < stdDevHandles_.size(); ++i) {
+            vols_[i] = stdDevHandles_[i]->value() / exerciseTimeSquareRoot_;
+        }
         interpolation_.update();
     }
 

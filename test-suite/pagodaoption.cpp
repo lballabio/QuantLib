@@ -36,8 +36,9 @@ void PagodaOptionTest::testCached() {
 
     DayCounter dc = Actual360();
     std::vector<Date> fixingDates;
-    for (Size i=1; i<=4; ++i)
-        fixingDates.push_back(today+i*90);
+    for (Size i = 1; i <= 4; ++i) {
+        fixingDates.push_back(today + i * 90);
+    }
 
     Real roof = 0.20;
     Real fraction = 0.62;
@@ -104,10 +105,10 @@ void PagodaOptionTest::testCached() {
     Real storedValue = 0.01221094;
     Real tolerance = 1.0e-8;
 
-    if (std::fabs(value-storedValue) > tolerance)
-        BOOST_FAIL(std::setprecision(9)
-                   << "    calculated value: " << value << "\n"
-                   << "    expected:         " << storedValue);
+    if (std::fabs(value - storedValue) > tolerance) {
+        BOOST_FAIL(std::setprecision(9) << "    calculated value: " << value << "\n"
+                                        << "    expected:         " << storedValue);
+    }
 
     Real minimumTol = 1.0e-2;
     tolerance = option.errorEstimate();
@@ -119,10 +120,10 @@ void PagodaOptionTest::testCached() {
 
     option.NPV();
     Real accuracy = option.errorEstimate();
-    if (accuracy > tolerance)
-        BOOST_FAIL(std::setprecision(10)
-                   << "    reached accuracy: " << accuracy << "\n"
-                   << "    expected:         " << tolerance);
+    if (accuracy > tolerance) {
+        BOOST_FAIL(std::setprecision(10) << "    reached accuracy: " << accuracy << "\n"
+                                         << "    expected:         " << tolerance);
+    }
 }
 
 

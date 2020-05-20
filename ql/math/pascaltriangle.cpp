@@ -36,8 +36,9 @@ namespace QuantLib {
             coefficients_.push_back(std::vector<BigNatural>(4, 1));
             coefficients_[3][1] = coefficients_[3][2] = 3;
         }
-        while (coefficients_.size()<=order)
+        while (coefficients_.size() <= order) {
             nextOrder();
+        }
         return coefficients_[order];
     }
 

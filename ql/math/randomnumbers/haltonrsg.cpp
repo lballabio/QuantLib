@@ -46,10 +46,12 @@ namespace QuantLib {
         if (randomStart || randomShift) {
             RandomSequenceGenerator<MersenneTwisterUniformRng>
                 uniformRsg(dimensionality_, seed);
-            if (randomStart)
+            if (randomStart) {
                 randomStart_ = uniformRsg.nextInt32Sequence();
-            if (randomShift)
+            }
+            if (randomShift) {
                 randomShift_ = uniformRsg.nextSequence().value;
+            }
         }
 
     }

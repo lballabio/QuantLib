@@ -65,15 +65,16 @@ namespace swaption_volatility_cube_test {
                                                        atm.tenors.swaps[j],
                                                        strike, true);
                 Volatility error = std::abs(expVol-actVol);
-                if (error>tolerance)
-                  BOOST_ERROR("\nrecovery of atm vols failed:"
-                              "\nexpiry time = " << atm.tenors.options[i] <<
-                              "\nswap length = " << atm.tenors.swaps[j] <<
-                              "\n atm strike = " << io::rate(strike) <<
-                              "\n   exp. vol = " << io::volatility(expVol) <<
-                              "\n actual vol = " << io::volatility(actVol) <<
-                              "\n      error = " << io::volatility(error) <<
-                              "\n  tolerance = " << tolerance);
+                if (error > tolerance) {
+                    BOOST_ERROR("\nrecovery of atm vols failed:"
+                                "\nexpiry time = "
+                                << atm.tenors.options[i] << "\nswap length = "
+                                << atm.tenors.swaps[j] << "\n atm strike = " << io::rate(strike)
+                                << "\n   exp. vol = " << io::volatility(expVol)
+                                << "\n actual vol = " << io::volatility(actVol)
+                                << "\n      error = " << io::volatility(error)
+                                << "\n  tolerance = " << tolerance);
+                }
               }
             }
         }
@@ -98,18 +99,20 @@ namespace swaption_volatility_cube_test {
                   Volatility expVolSpread =
                       cube.volSpreads[i*cube.tenors.swaps.size()+j][k];
                   Volatility error = std::abs(expVolSpread-spread);
-                  if (error>tolerance)
+                  if (error > tolerance) {
                       BOOST_FAIL("\nrecovery of smile vol spreads failed:"
-                                 "\n    option tenor = " << cube.tenors.options[i] <<
-                                 "\n      swap tenor = " << cube.tenors.swaps[j] <<
-                                 "\n      atm strike = " << io::rate(atmStrike) <<
-                                 "\n   strike spread = " << io::rate(cube.strikeSpreads[k]) <<
-                                 "\n         atm vol = " << io::volatility(atmVol) <<
-                                 "\n      smiled vol = " << io::volatility(vol) <<
-                                 "\n      vol spread = " << io::volatility(spread) <<
-                                 "\n exp. vol spread = " << io::volatility(expVolSpread) <<
-                                 "\n           error = " << io::volatility(error) <<
-                                 "\n       tolerance = " << tolerance);
+                                 "\n    option tenor = "
+                                 << cube.tenors.options[i]
+                                 << "\n      swap tenor = " << cube.tenors.swaps[j]
+                                 << "\n      atm strike = " << io::rate(atmStrike)
+                                 << "\n   strike spread = " << io::rate(cube.strikeSpreads[k])
+                                 << "\n         atm vol = " << io::volatility(atmVol)
+                                 << "\n      smiled vol = " << io::volatility(vol)
+                                 << "\n      vol spread = " << io::volatility(spread)
+                                 << "\n exp. vol spread = " << io::volatility(expVolSpread)
+                                 << "\n           error = " << io::volatility(error)
+                                 << "\n       tolerance = " << tolerance);
+                  }
                 }
               }
             }
@@ -271,8 +274,9 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
     ext::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube(new
         SpreadedSwaptionVolatility(volCube, spreadHandle));
     std::vector<Real> strikes;
-    for (Size k=1; k<100; k++)
-        strikes.push_back(k*.01);
+    for (Size k = 1; k < 100; k++) {
+        strikes.push_back(k * .01);
+    }
     for (Size i=0; i<vars.cube.tenors.options.size(); i++) {
         for (Size j=0; j<vars.cube.tenors.swaps.size(); j++) {
             ext::shared_ptr<SmileSection> smileSectionByCube =
@@ -283,24 +287,25 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                 Real strike = strikes[k];
                 Real diff = spreadedVolCube->volatility(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j], strike)
                             - volCube->volatility(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j], strike);
-                if (std::fabs(diff-spread->value())>1e-16)
+                if (std::fabs(diff - spread->value()) > 1e-16) {
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
-                                "\nexpiry time = " << vars.cube.tenors.options[i] <<
-                                "\nswap length = " << vars.cube.tenors.swaps[j] <<
-                                "\n atm strike = " << io::rate(strike) <<
-                                "\ndiff = " << diff <<
-                                "\nspread = " << spread->value());
+                                "\nexpiry time = "
+                                << vars.cube.tenors.options[i]
+                                << "\nswap length = " << vars.cube.tenors.swaps[j]
+                                << "\n atm strike = " << io::rate(strike) << "\ndiff = " << diff
+                                << "\nspread = " << spread->value());
+                }
 
                 diff = smileSectionBySpreadedCube->volatility(strike)
                        - smileSectionByCube->volatility(strike);
-                if (std::fabs(diff-spread->value())>1e-16)
+                if (std::fabs(diff - spread->value()) > 1e-16) {
                     BOOST_ERROR("\ndiff!=spread in smile section method:"
-                                "\nexpiry time = " << vars.cube.tenors.options[i] <<
-                                "\nswap length = " << vars.cube.tenors.swaps[j] <<
-                                "\n atm strike = " << io::rate(strike) <<
-                                "\ndiff = " << diff <<
-                                "\nspread = " << spread->value());
-
+                                "\nexpiry time = "
+                                << vars.cube.tenors.options[i]
+                                << "\nswap length = " << vars.cube.tenors.swaps[j]
+                                << "\n atm strike = " << io::rate(strike) << "\ndiff = " << diff
+                                << "\nspread = " << spread->value());
+                }
             }
         }
     }
@@ -309,14 +314,16 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
     Flag f;
     f.registerWith(spreadedVolCube);
     volCube->update();
-    if(!f.isUp())
+    if (!f.isUp()) {
         BOOST_ERROR("SpreadedSwaptionVolatilityStructure "
                     << "does not propagate notifications");
+    }
     f.lower();
     spread->setValue(.001);
-    if(!f.isUp())
+    if (!f.isUp()) {
         BOOST_ERROR("SpreadedSwaptionVolatilityStructure "
                     << "does not propagate notifications");
+    }
 }
 
 
@@ -387,14 +394,14 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                        vars.cube.tenors.swaps[j],
                                                        dummyStrike + vars.cube.strikeSpreads[k],
                                                        false);
-                if (std::fabs(v0 - v1) > 1e-14)
-                    BOOST_ERROR(description <<
-                                " option tenor = " << vars.cube.tenors.options[i] <<
-                                " swap tenor = " << vars.cube.tenors.swaps[j] <<
-                                " strike = " << io::rate(dummyStrike+vars.cube.strikeSpreads[k])<<
-                                "  v0 = " << io::volatility(v0) <<
-                                "  v1 = " << io::volatility(v1) <<
-                                "  error = " << std::fabs(v1-v0));
+                if (std::fabs(v0 - v1) > 1e-14) {
+                    BOOST_ERROR(description
+                                << " option tenor = " << vars.cube.tenors.options[i]
+                                << " swap tenor = " << vars.cube.tenors.swaps[j] << " strike = "
+                                << io::rate(dummyStrike + vars.cube.strikeSpreads[k]) << "  v0 = "
+                                << io::volatility(v0) << "  v1 = " << io::volatility(v1)
+                                << "  error = " << std::fabs(v1 - v0));
+                }
             }
         }
     }
@@ -437,14 +444,14 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                        vars.cube.tenors.swaps[j],
                                                        dummyStrike + vars.cube.strikeSpreads[k],
                                                        false);
-                if (std::fabs(v0 - v1) > 1e-14)
-                    BOOST_ERROR(description <<
-                                " option tenor = " << vars.cube.tenors.options[i] <<
-                                " swap tenor = " << vars.cube.tenors.swaps[j] <<
-                                " strike = " << io::rate(dummyStrike+vars.cube.strikeSpreads[k])<<
-                                "  v0 = " << io::volatility(v0) <<
-                                "  v1 = " << io::volatility(v1) <<
-                                "  error = " << std::fabs(v1-v0));
+                if (std::fabs(v0 - v1) > 1e-14) {
+                    BOOST_ERROR(description
+                                << " option tenor = " << vars.cube.tenors.options[i]
+                                << " swap tenor = " << vars.cube.tenors.swaps[j] << " strike = "
+                                << io::rate(dummyStrike + vars.cube.strikeSpreads[k]) << "  v0 = "
+                                << io::volatility(v0) << "  v1 = " << io::volatility(v1)
+                                << "  error = " << std::fabs(v1 - v0));
+                }
             }
         }
     }

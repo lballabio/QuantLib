@@ -118,8 +118,9 @@ namespace QuantLib {
 
     template <class T>
     inline Date InterpolatedZeroCurve<T>::maxDate() const {
-        if (this->maxDate_ != Date())
-           return this->maxDate_;
+        if (this->maxDate_ != Date()) {
+            return this->maxDate_;
+        }
         return dates_.back();
     }
 
@@ -149,8 +150,9 @@ namespace QuantLib {
     inline std::vector<std::pair<Date, Real> >
     InterpolatedZeroCurve<T>::nodes() const {
         std::vector<std::pair<Date, Real> > results(dates_.size());
-        for (Size i=0; i<dates_.size(); ++i)
+        for (Size i = 0; i < dates_.size(); ++i) {
             results[i] = std::make_pair(dates_[i], this->data_[i]);
+        }
         return results;
     }
 
@@ -160,8 +162,9 @@ namespace QuantLib {
 
     template <class T>
     Rate InterpolatedZeroCurve<T>::zeroYieldImpl(Time t) const {
-        if (t <= this->times_.back())
+        if (t <= this->times_.back()) {
             return this->interpolation_(t, true);
+        }
 
         // flat fwd extrapolation
         Time tMax = this->times_.back();

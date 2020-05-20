@@ -68,8 +68,12 @@ namespace QuantLib {
         // If multi-year is the specification consistent with the term structure start date?
         // We do NOT test daily seasonality because this will, in general, never be consistent
         // given weekends, holidays, leap years, etc.
-        if(this->frequency() == Daily) return true;
-        if(Size(this->frequency()) == seasonalityFactors().size()) return true;
+        if (this->frequency() == Daily) {
+            return true;
+        }
+        if (Size(this->frequency()) == seasonalityFactors().size()) {
+            return true;
+        }
 
         // how many years do you need to test?
         Size nTest = seasonalityFactors().size() / this->frequency();
@@ -157,7 +161,9 @@ namespace QuantLib {
             // days, weeks, months, years are the only time unit possibilities
             Integer diffDays = std::abs(to - from);  // in days
             Integer dir = 1;
-            if(from > to)dir = -1;
+            if (from > to) {
+                dir = -1;
+            }
             Integer diff;
             if (factorPeriod.units() == Days) {
                 diff = dir*diffDays;

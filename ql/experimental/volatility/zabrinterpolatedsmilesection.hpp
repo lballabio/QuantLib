@@ -213,8 +213,9 @@ ZabrInterpolatedSmileSection<Evaluation>::ZabrInterpolatedSmileSection(
 
     LazyObject::registerWith(forward_);
     LazyObject::registerWith(atmVolatility_);
-    for (Size i = 0; i < volHandles_.size(); ++i)
+    for (Size i = 0; i < volHandles_.size(); ++i) {
         LazyObject::registerWith(volHandles_[i]);
+    }
 }
 
 template <typename Evaluation>
@@ -239,9 +240,9 @@ ZabrInterpolatedSmileSection<Evaluation>::ZabrInterpolatedSmileSection(
       isGammaFixed_(isGammaFixed), vegaWeighted_(vegaWeighted),
       endCriteria_(endCriteria), method_(method) {
 
-    for (Size i = 0; i < volHandles_.size(); ++i)
-        volHandles_[i] = Handle<Quote>(
-            ext::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
+    for (Size i = 0; i < volHandles_.size(); ++i) {
+        volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
+    }
 }
 
 template <typename Evaluation>

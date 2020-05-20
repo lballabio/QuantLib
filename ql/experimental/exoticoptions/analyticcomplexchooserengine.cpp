@@ -141,10 +141,11 @@ namespace QuantLib {
 
 
     Real AnalyticComplexChooserEngine::strike(Option::Type optionType) const {
-        if (optionType == Option::Call)
+        if (optionType == Option::Call) {
             return arguments_.strikeCall;
-        else
+        } else {
             return arguments_.strikePut;
+        }
     }
 
     Time AnalyticComplexChooserEngine::choosingTime() const {

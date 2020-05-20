@@ -101,13 +101,18 @@ namespace QuantLib {
         QL_REQUIRE(mu_>=0.0,
                    "mu must be non negative (" << mu_ << " not allowed)");
 
-        if (mu_!=0.0) logMu_ = std::log(mu_);
+        if (mu_ != 0.0) {
+            logMu_ = std::log(mu_);
+        }
     }
 
     inline Real PoissonDistribution::operator()(BigNatural k) const {
         if (mu_==0.0) {
-            if (k==0) return 1.0;
-            else      return 0.0;
+            if (k == 0) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
         }
         Real logFactorial = Factorial::ln(k);
         return std::exp(k*std::log(mu_) - logFactorial - mu_);
@@ -124,8 +129,9 @@ namespace QuantLib {
                    "Inverse cumulative Poisson distribution is "
                    "only defined on the interval [0,1]");
 
-        if (x == 1.0)
+        if (x == 1.0) {
             return QL_MAX_REAL;
+        }
 
         Real sum = 0.0;
         BigNatural index = 0;

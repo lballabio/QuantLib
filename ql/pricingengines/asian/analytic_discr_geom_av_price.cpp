@@ -92,8 +92,9 @@ namespace QuantLib {
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
         Real temp = 0.0;
-        for (i=pastFixings+1; i<numberOfFixings; i++)
-            temp += fixingTimes[i-pastFixings-1]*(N-i);
+        for (i = pastFixings + 1; i < numberOfFixings; i++) {
+            temp += fixingTimes[i - pastFixings - 1] * (N - i);
+        }
         Real variance = vola*vola /N/N * (timeSum+ 2.0*temp);
         Real dsigG_dsig = std::sqrt((timeSum + 2.0*temp))/N;
         Real sigG = vola * dsigG_dsig;
@@ -140,9 +141,9 @@ namespace QuantLib {
         results_.vega = forwardPrice * riskFreeDiscount *
                    ( (dmuG_dsig + sigG * dsigG_dsig)*Nx_1 + nx_1*dsigG_dsig );
 
-        if (payoff->optionType() == Option::Put)
-            results_.vega -= riskFreeDiscount * forwardPrice *
-                                              (dmuG_dsig + sigG * dsigG_dsig);
+        if (payoff->optionType() == Option::Put) {
+            results_.vega -= riskFreeDiscount * forwardPrice * (dmuG_dsig + sigG * dsigG_dsig);
+        }
 
         Time tRho = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
                                       arguments_.exercise->lastDate());

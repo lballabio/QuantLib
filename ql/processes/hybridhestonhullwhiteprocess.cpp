@@ -197,10 +197,10 @@ namespace QuantLib {
             retVal[2] = hullWhiteProcess_->evolve(t0, r, dt, dw_2);
     
             const Real vol = eta*std::sqrt(dt)*dw[0];
-            retVal[0] = x0[0]*std::exp(mu + vol);            
-        }
-        else
+            retVal[0] = x0[0]*std::exp(mu + vol);
+        } else {
             QL_FAIL("unknown discretization scheme");
+        }
 
         return retVal;
     }

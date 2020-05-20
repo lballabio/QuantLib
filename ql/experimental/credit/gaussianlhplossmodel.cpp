@@ -44,8 +44,9 @@ namespace QuantLib {
           biphi_(-sqrt(correlQuote->value()))
         {
             registerWith(correl_);
-            for(Size i=0; i<quotes.size(); i++)
+            for (Size i = 0; i < quotes.size(); i++) {
                 registerWith(quotes[i]);
+            }
     }
 
     GaussianLHPLossModel::GaussianLHPLossModel(
@@ -60,9 +61,10 @@ namespace QuantLib {
           beta_(sqrt(correlation)),
           biphi_(-sqrt(correlation))
         {
-            for(Size i=0; i<recoveries.size(); i++)
-                rrQuotes_.push_back(Handle<RecoveryRateQuote>(
-                ext::make_shared<RecoveryRateQuote>(recoveries[i])));
+        for (Size i = 0; i < recoveries.size(); i++) {
+            rrQuotes_.push_back(
+                Handle<RecoveryRateQuote>(ext::make_shared<RecoveryRateQuote>(recoveries[i])));
+        }
         }
 
         GaussianLHPLossModel::GaussianLHPLossModel(
@@ -78,9 +80,10 @@ namespace QuantLib {
           biphi_(-sqrt(correlQuote->value()))
         {
             registerWith(correl_);
-            for(Size i=0; i<recoveries.size(); i++)
-                rrQuotes_.push_back(Handle<RecoveryRateQuote>(
-                ext::make_shared<RecoveryRateQuote>(recoveries[i])));
+            for (Size i = 0; i < recoveries.size(); i++) {
+                rrQuotes_.push_back(
+                    Handle<RecoveryRateQuote>(ext::make_shared<RecoveryRateQuote>(recoveries[i])));
+            }
         }
 
 
@@ -92,9 +95,13 @@ namespace QuantLib {
             Real attachLimit, Real detachLimit) const 
         {
 
-            if (attachLimit >= detachLimit) return 0.;// or is it an error?
+            if (attachLimit >= detachLimit) {
+                return 0.; // or is it an error?
+            }
             // expected remaining notional:
-            if (remainingNot == 0.) return 0.;
+            if (remainingNot == 0.) {
+                return 0.;
+            }
 
             const Real one = 1.0 - 1.0e-12;  // FIXME DUE TO THE INV CUMUL AT 1
             const Real k1 = std::min(one, attachLimit /(1.0 - averageRR)
@@ -113,8 +120,9 @@ namespace QuantLib {
                 return remainingNot * (detachLimit * phi_(invFlightK2) 
                     - attachLimit * phi_(invFlightK1) + (1.-averageRR) * 
                     (biphi_(ip, -invFlightK2) - biphi_(ip, -invFlightK1)) );
+            } else {
+                return 0.0;
             }
-            else return 0.0;
         }
 
         Real GaussianLHPLossModel::probOverLoss(const Date& d,
@@ -138,12 +146,16 @@ namespace QuantLib {
 
             Real averageRR = averageRecovery(d);
             Real maxAttLossFract = (1.-averageRR);
-            if(portfFract > maxAttLossFract) return 0.;
+            if (portfFract > maxAttLossFract) {
+                return 0.;
+            }
 
             // for non-equity losses add the probability jump at zero tranche 
             //   losses (since this method returns prob of losing more or 
             //   equal to)
-            if(portfFract <= QL_EPSILON) return 1.;
+            if (portfFract <= QL_EPSILON) {
+                return 1.;
+            }
 
             Probability prob = averageProb(d);
 
@@ -169,8 +181,9 @@ namespace QuantLib {
             const Real detach = 
                 std::min(remainingDetachAmount / remainingNot, 1.);
 
-            if(ptflLossPerc >= detach-QL_EPSILON) 
-                return remainingNot * (detach-attach);//equivalent
+            if (ptflLossPerc >= detach - QL_EPSILON) {
+                return remainingNot * (detach - attach); // equivalent
+            }
 
             Real maxLossLevel = std::max(attach, ptflLossPerc);
             Probability prob = averageProb(d);
@@ -193,8 +206,12 @@ namespace QuantLib {
             QL_REQUIRE(perctl >= 0. && perctl <=1., 
                 "Percentile argument out of bounds.");
 
-            if(perctl==0.) return 0.;// portfl == attach
-            if(perctl==1.) perctl = 1. - QL_EPSILON; // portfl == detach
+            if (perctl == 0.) {
+                return 0.; // portfl == attach
+            }
+            if (perctl == 1.) {
+                perctl = 1. - QL_EPSILON; // portfl == detach
+            }
 
             return (1.-averageRecovery(d)) * 
                 phi_( ( InverseCumulativeNormal::standard_value(averageProb(d))

@@ -106,13 +106,13 @@ namespace QuantLib {
                     sig.begin());
                 break;
               case AndreasenHugeVolatilityInterpl::PiecewiseConstant:
-                for (Size i=0; i < x.size()-1; ++i)
-                    x[i] = 0.5*(lnMarketStrikes_[i] + lnMarketStrikes_[i+1]);
-                x.back() = lnMarketStrikes_.back();
+                  for (Size i = 0; i < x.size() - 1; ++i) {
+                      x[i] = 0.5 * (lnMarketStrikes_[i] + lnMarketStrikes_[i + 1]);
+                  }
+                  x.back() = lnMarketStrikes_.back();
 
-                sigInterpl = BackwardFlatInterpolation(
-                    x.begin(), x.end(), sig.begin());
-                break;
+                  sigInterpl = BackwardFlatInterpolation(x.begin(), x.end(), sig.begin());
+                  break;
               default:
                 QL_FAIL("unknown interpolation type");
             }
@@ -203,25 +203,26 @@ namespace QuantLib {
                 std::copy(cv.begin(), cv.end(), retVal.begin() + cv.size());
 
                 return retVal;
-            }
-            else if (putCostFct_)
+            } else if (putCostFct_) {
                 return putCostFct_->values(sig);
-            else if (callCostFct_)
+            } else if (callCostFct_) {
                 return callCostFct_->values(sig);
-            else
+            } else {
                 QL_FAIL("internal error: cost function not set");
+            }
         }
 
         Disposable<Array> initialValues() const {
-            if (putCostFct_ && callCostFct_)
+            if (putCostFct_ && callCostFct_) {
                 return 0.5*(  putCostFct_->initialValues()
                             + callCostFct_->initialValues());
-            else if (putCostFct_)
+            } else if (putCostFct_) {
                 return putCostFct_->initialValues();
-            else if (callCostFct_)
+            } else if (callCostFct_) {
                 return callCostFct_->initialValues();
-            else
+            } else {
                 QL_FAIL("internal error: cost function not set");
+            }
         }
 
       private:
@@ -326,10 +327,11 @@ namespace QuantLib {
         Size iExpiry, Option::Type optionType,
         const Array& previousNPVs) const {
 
-        if (calibrationType_ != CallPut
-            && (   (calibrationType_ == Call && optionType ==Option::Put)
-                || (calibrationType_ == Put  && optionType ==Option::Call)))
+        if (calibrationType_ != CallPut &&
+            ((calibrationType_ == Call && optionType == Option::Put) ||
+             (calibrationType_ == Put && optionType == Option::Call))) {
             return ext::shared_ptr<AndreasenHugeCostFunction>();
+        }
 
         const Time expiryTime = expiryTimes_[iExpiry];
 
@@ -450,9 +452,10 @@ namespace QuantLib {
                 const Real fwd = spot_->value()*
                     qTS_->discount(expiryTimes_[i])/rTS_->discount(expiryTimes_[i]);
 
-                for (Size j=0; j < vegaDiffs.size(); ++j)
-                    vegaDiffs[j] = std::fabs(
-                        (fwd > gridInFwd_[j])? vegaPutDiffs[j] : vegaCallDiffs[j]);
+                for (Size j = 0; j < vegaDiffs.size(); ++j) {
+                    vegaDiffs[j] =
+                        std::fabs((fwd > gridInFwd_[j]) ? vegaPutDiffs[j] : vegaCallDiffs[j]);
+                }
               }
               break;
               case Put:
@@ -472,10 +475,12 @@ namespace QuantLib {
             maxError_ = std::max(maxError_,
                 *std::max_element(vegaDiffs.begin(), vegaDiffs.end()));
 
-            if (putCostFct)
+            if (putCostFct) {
                 npvPuts = putCostFct->solveFor(dT_[i], sig, npvPuts);
-            if (callCostFct)
-                npvCalls= callCostFct->solveFor(dT_[i], sig, npvCalls);
+            }
+            if (callCostFct) {
+                npvCalls = callCostFct->solveFor(dT_[i], sig, npvCalls);
+            }
         }
 
         avgError_ /= calibrationSet_.size();
@@ -555,11 +560,12 @@ namespace QuantLib {
 
             Real price = getCacheValue(strike, f);
 
-            if (optionType == Option::Put
-                && (calibrationType_ == Call || calibrationType_ == CallPut))
+            if (optionType == Option::Put &&
+                (calibrationType_ == Call || calibrationType_ == CallPut)) {
                 price = price + strike/fwd - 1.0;
-            else if (optionType == Option::Call && calibrationType_ == Put)
-                price = 1.0 - strike/fwd + price;
+            } else if (optionType == Option::Call && calibrationType_ == Put) {
+                price = 1.0 - strike / fwd + price;
+            }
 
             return price*df*fwd;
         }
@@ -622,9 +628,11 @@ namespace QuantLib {
 
         Array localVol = Sqrt(2*dCdT/d2CdK2);
 
-        for (Size i=1; i < localVol.size()-1; ++i)
-            if (!boost::math::isfinite(localVol[i]) || localVol[i] < 0.0)
+        for (Size i = 1; i < localVol.size() - 1; ++i) {
+            if (!boost::math::isfinite(localVol[i]) || localVol[i] < 0.0) {
                 localVol[i] = 0.25;
+            }
+        }
 
         return localVol;
     }
@@ -633,8 +641,9 @@ namespace QuantLib {
     const {
         TimeValueCacheType::const_iterator f = localVolCache_.find(t);
 
-        if (f != localVolCache_.end())
+        if (f != localVolCache_.end()) {
             return getCacheValue(strike, f);
+        }
 
         calculate();
 
@@ -646,9 +655,9 @@ namespace QuantLib {
             const Array putLocalVol = getLocalVolSlice(t, Option::Put);
             const Array callLocalVol = getLocalVolSlice(t, Option::Call);
 
-            for (Size i=0, n=localVol->size(); i < n; ++i)
-                (*localVol)[i] =
-                    (gridPoints_[i] > 0.0)? callLocalVol[i] : putLocalVol[i];
+            for (Size i = 0, n = localVol->size(); i < n; ++i) {
+                (*localVol)[i] = (gridPoints_[i] > 0.0) ? callLocalVol[i] : putLocalVol[i];
+            }
           }
           break;
           case Put:

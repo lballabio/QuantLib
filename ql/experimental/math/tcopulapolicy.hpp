@@ -108,10 +108,11 @@ namespace QuantLib {
                 "Incompatible sample and latent model sizes");
     #endif
             Real prodDensities = 1.;
-            for(Size i=0; i<m.size(); i++) 
-                prodDensities *= boost::math::pdf(distributions_[i], 
-                    m[i] /varianceFactors_[i]) /varianceFactors_[i];
-                 // accumulate lambda
+            for (Size i = 0; i < m.size(); i++) {
+                prodDensities *= boost::math::pdf(distributions_[i], m[i] / varianceFactors_[i]) /
+                                 varianceFactors_[i];
+            }
+            // accumulate lambda
             return prodDensities;
         }
         /*! Returns the inverse of the cumulative distribution of the (modelled) 

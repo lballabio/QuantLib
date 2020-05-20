@@ -104,9 +104,9 @@ struct CommonVars {
                 43956, 44321, 44686, 45051, 45418, 45782, 46147, 46512, 47609,
                 49436, 51263, 53087, 56739, 60392;
 
-            for (std::vector< int >::iterator it = datesTmp.begin();
-                 it != datesTmp.end(); ++it)
+            for (std::vector<int>::iterator it = datesTmp.begin(); it != datesTmp.end(); ++it) {
                 dates.push_back(Date(*it));
+            }
 
             rates += -0.00292, -0.00292, -0.001441, -0.00117, -0.001204,
                 -0.001212, -0.001223, -0.001236, -0.001221, -0.001238,
@@ -130,9 +130,9 @@ struct CommonVars {
                 49800, 50165, 50530, 50895, 51263, 51627, 51991, 52356, 52722,
                 53087, 54913, 56739, 60392, 64045;
 
-            for (std::vector< int >::iterator it = datesTmp.begin();
-                 it != datesTmp.end(); ++it)
+            for (std::vector<int>::iterator it = datesTmp.begin(); it != datesTmp.end(); ++it) {
                 dates.push_back(Date(*it));
+            }
 
             rates += 0.000649, 0.000649, 0.000684, 0.000717, 0.000745, 0.000872,
                 0.000905, 0.000954, 0.001532, 0.002319, 0.003147, 0.003949,
@@ -153,15 +153,16 @@ struct CommonVars {
           setTermStructure();
 
           optionTenors.resize(10);
-          for (Size i = 0; i < optionTenors.size(); ++i)
+          for (Size i = 0; i < optionTenors.size(); ++i) {
               optionTenors[i] = Period(i + 1, Years);
+          }
 
           Volatility flatVol = .18;
 
           std::vector<Handle<Quote> >  curveVHandle(optionTenors.size());
-          for (Size i=0; i<optionTenors.size(); ++i)
-              curveVHandle[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
-                                                        SimpleQuote(flatVol)));
+          for (Size i = 0; i < optionTenors.size(); ++i) {
+              curveVHandle[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(flatVol)));
+          }
 
           flatTermVolCurve = Handle<CapFloorTermVolCurve>(
               ext::make_shared<CapFloorTermVolCurve>(0, calendar, Following, optionTenors,
@@ -174,12 +175,14 @@ struct CommonVars {
             setTermStructure();
 
             optionTenors.resize(10);
-            for (Size i = 0; i < optionTenors.size(); ++i)
+            for (Size i = 0; i < optionTenors.size(); ++i) {
                 optionTenors[i] = Period(i + 1, Years);
+            }
 
             strikes.resize(10);
-            for (Size j = 0; j < strikes.size(); ++j)
+            for (Size j = 0; j < strikes.size(); ++j) {
                 strikes[j] = Real(j + 1) / 100.0;
+            }
 
             Volatility flatVol = .18;
             termV = Matrix(optionTenors.size(), strikes.size(), flatVol);
@@ -427,13 +430,15 @@ void OptionletStripperTest::testFlatTermVolatilityStripping1() {
             Real priceFromConstantVolatility = cap->NPV();
 
             Real error = std::fabs(priceFromStrippedVolatility - priceFromConstantVolatility);
-            if (error>vars.tolerance)
-                BOOST_FAIL("\noption tenor:       " << vars.optionTenors[tenorIndex] <<
-                           "\nstrike:             " << io::rate(vars.strikes[strikeIndex]) <<
-                           "\nstripped vol price: " << io::rate(priceFromStrippedVolatility) <<
-                           "\nconstant vol price: " << io::rate(priceFromConstantVolatility) <<
-                           "\nerror:              " << io::rate(error) <<
-                           "\ntolerance:          " << io::rate(vars.tolerance));
+            if (error > vars.tolerance) {
+                BOOST_FAIL("\noption tenor:       "
+                           << vars.optionTenors[tenorIndex]
+                           << "\nstrike:             " << io::rate(vars.strikes[strikeIndex])
+                           << "\nstripped vol price: " << io::rate(priceFromStrippedVolatility)
+                           << "\nconstant vol price: " << io::rate(priceFromConstantVolatility)
+                           << "\nerror:              " << io::rate(error)
+                           << "\ntolerance:          " << io::rate(vars.tolerance));
+            }
             }
     }
 }
@@ -490,13 +495,15 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
             Real priceFromConstantVolatility = cap->NPV();
 
             Real error = std::fabs(priceFromStrippedVolatility - priceFromConstantVolatility);
-            if (error>vars.tolerance)
-                BOOST_FAIL("\noption tenor:       " << vars.optionTenors[tenorIndex] <<
-                           "\nstrike:             " << io::rate(vars.strikes[strikeIndex]) <<
-                           "\nstripped vol price: " << io::rate(priceFromStrippedVolatility) <<
-                           "\nconstant vol price: " << io::rate(priceFromConstantVolatility) <<
-                           "\nerror:              " << io::rate(error) <<
-                           "\ntolerance:          " << io::rate(vars.tolerance));
+            if (error > vars.tolerance) {
+                BOOST_FAIL("\noption tenor:       "
+                           << vars.optionTenors[tenorIndex]
+                           << "\nstrike:             " << io::rate(vars.strikes[strikeIndex])
+                           << "\nstripped vol price: " << io::rate(priceFromStrippedVolatility)
+                           << "\nconstant vol price: " << io::rate(priceFromConstantVolatility)
+                           << "\nerror:              " << io::rate(error)
+                           << "\ntolerance:          " << io::rate(vars.tolerance));
+            }
             }
     }
 }
@@ -554,17 +561,15 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
 
             Real error = std::fabs(priceFromStrippedVolatility -
                                    priceFromConstantVolatility);
-            if (error > vars.tolerance)
-                BOOST_FAIL(
-                    "\noption tenor:       "
-                    << vars.optionTenors[tenorIndex] << "\nstrike:             "
-                    << io::rate(vars.strikes[strikeIndex])
-                    << "\nstripped vol price: "
-                    << io::rate(priceFromStrippedVolatility)
-                    << "\nconstant vol price: "
-                    << io::rate(priceFromConstantVolatility)
-                    << "\nerror:              " << io::rate(error)
-                    << "\ntolerance:          " << io::rate(vars.tolerance));
+            if (error > vars.tolerance) {
+                BOOST_FAIL("\noption tenor:       "
+                           << vars.optionTenors[tenorIndex]
+                           << "\nstrike:             " << io::rate(vars.strikes[strikeIndex])
+                           << "\nstripped vol price: " << io::rate(priceFromStrippedVolatility)
+                           << "\nconstant vol price: " << io::rate(priceFromConstantVolatility)
+                           << "\nerror:              " << io::rate(error)
+                           << "\ntolerance:          " << io::rate(vars.tolerance));
+            }
         }
     }
 }
@@ -623,17 +628,15 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
 
             Real error = std::fabs(priceFromStrippedVolatility -
                                    priceFromConstantVolatility);
-            if (error > vars.tolerance)
-                BOOST_FAIL(
-                    "\noption tenor:       "
-                    << vars.optionTenors[tenorIndex] << "\nstrike:             "
-                    << io::rate(vars.strikes[strikeIndex])
-                    << "\nstripped vol price: "
-                    << io::rate(priceFromStrippedVolatility)
-                    << "\nconstant vol price: "
-                    << io::rate(priceFromConstantVolatility)
-                    << "\nerror:              " << io::rate(error)
-                    << "\ntolerance:          " << io::rate(vars.tolerance));
+            if (error > vars.tolerance) {
+                BOOST_FAIL("\noption tenor:       "
+                           << vars.optionTenors[tenorIndex]
+                           << "\nstrike:             " << io::rate(vars.strikes[strikeIndex])
+                           << "\nstripped vol price: " << io::rate(priceFromStrippedVolatility)
+                           << "\nconstant vol price: " << io::rate(priceFromConstantVolatility)
+                           << "\nerror:              " << io::rate(error)
+                           << "\ntolerance:          " << io::rate(vars.tolerance));
+            }
         }
     }
 }
@@ -694,14 +697,15 @@ void OptionletStripperTest::testFlatTermVolatilityStripping2() {
                                                                vars.strikes[strikeIndex], true);
 
     Real error = std::fabs(strippedVol1-strippedVol2);
-      if (error>vars.tolerance)
-      BOOST_FAIL("\noption tenor:  " << vars.optionTenors[tenorIndex] <<
-                 "\nstrike:        " << io::rate(vars.strikes[strikeIndex]) <<
-                 "\nstripped vol1: " << io::rate(strippedVol1) <<
-                 "\nstripped vol2: " << io::rate(strippedVol2) <<
-                 "\nflat vol:      " << io::rate(flatVol) <<
-                 "\nerror:         " << io::rate(error) <<
-                 "\ntolerance:     " << io::rate(vars.tolerance));
+    if (error > vars.tolerance) {
+        BOOST_FAIL("\noption tenor:  " << vars.optionTenors[tenorIndex]
+                                       << "\nstrike:        " << io::rate(vars.strikes[strikeIndex])
+                                       << "\nstripped vol1: " << io::rate(strippedVol1)
+                                       << "\nstripped vol2: " << io::rate(strippedVol2)
+                                       << "\nflat vol:      " << io::rate(flatVol)
+                                       << "\nerror:         " << io::rate(error)
+                                       << "\ntolerance:     " << io::rate(vars.tolerance));
+    }
     }
   }
 
@@ -762,14 +766,15 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
                                                                vars.strikes[strikeIndex], true);
 
       Real error = std::fabs(strippedVol1-strippedVol2);
-      if (error>vars.tolerance)
-      BOOST_FAIL("\noption tenor:  " << vars.optionTenors[tenorIndex] <<
-                 "\nstrike:        " << io::rate(vars.strikes[strikeIndex]) <<
-                 "\nstripped vol1: " << io::rate(strippedVol1) <<
-                 "\nstripped vol2: " << io::rate(strippedVol2) <<
-                 "\nflat vol:      " << io::rate(flatVol) <<
-                 "\nerror:         " << io::rate(error) <<
-                 "\ntolerance:     " << io::rate(vars.tolerance));
+      if (error > vars.tolerance) {
+          BOOST_FAIL("\noption tenor:  " << vars.optionTenors[tenorIndex] << "\nstrike:        "
+                                         << io::rate(vars.strikes[strikeIndex])
+                                         << "\nstripped vol1: " << io::rate(strippedVol1)
+                                         << "\nstripped vol2: " << io::rate(strippedVol2)
+                                         << "\nflat vol:      " << io::rate(flatVol)
+                                         << "\nerror:         " << io::rate(error)
+                                         << "\ntolerance:     " << io::rate(vars.tolerance));
+      }
     }
   }
 }
@@ -795,36 +800,38 @@ void OptionletStripperTest::testSwitchStrike() {
                                Null< Rate >(), vars.accuracy));
 
     Real expected;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         expected = 0.02981258;
-    else
+    } else {
         expected = 0.02981223;
-    
+    }
+
     Real error = std::fabs(optionletStripper1->switchStrike() - expected);
-    if (error > vars.tolerance)
+    if (error > vars.tolerance) {
         BOOST_FAIL("\nSwitchstrike not correctly computed:  "
                    << "\nexpected switch strike: " << io::rate(expected)
-                   << "\ncomputed switch strike: "
-                   << io::rate(optionletStripper1->switchStrike())
+                   << "\ncomputed switch strike: " << io::rate(optionletStripper1->switchStrike())
                    << "\nerror:         " << io::rate(error)
                    << "\ntolerance:     " << io::rate(vars.tolerance));
+    }
 
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         expected = 0.0499381;
-    else
+    } else {
         expected = 0.0499371;
+    }
 
     error = std::fabs(optionletStripper1->switchStrike() - expected);
-    if (error > vars.tolerance)
+    if (error > vars.tolerance) {
         BOOST_FAIL("\nSwitchstrike not correctly computed:  "
                    << "\nexpected switch strike: " << io::rate(expected)
-                   << "\ncomputed switch strike: "
-                   << io::rate(optionletStripper1->switchStrike())
+                   << "\ncomputed switch strike: " << io::rate(optionletStripper1->switchStrike())
                    << "\nerror:         " << io::rate(error)
                    << "\ntolerance:     " << io::rate(vars.tolerance));
+    }
 }
 
 test_suite* OptionletStripperTest::suite() {

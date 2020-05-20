@@ -79,9 +79,9 @@ namespace QuantLib {
             fixingDate_, indexFixingDays, Days);
 
         if (usingAtParCoupons_) {
-            if (isInArrears_)
+            if (isInArrears_) {
                 fixingEndDate_ = index_->maturityDate(fixingValueDate_);
-            else { // par coupon approximation
+            } else { // par coupon approximation
                 Date nextFixingDate = fixingCalendar.advance(
                     accrualEndDate_, -static_cast<Integer>(fixingDays_), Days);
                 fixingEndDate_ = fixingCalendar.advance(
@@ -113,10 +113,9 @@ namespace QuantLib {
         */
         Date today = Settings::instance().evaluationDate();
 
-        if (fixingDate_>today)
-            return iborIndex_->forecastFixing(fixingValueDate_,
-                                              fixingEndDate_,
-                                              spanningTime_);
+        if (fixingDate_ > today) {
+            return iborIndex_->forecastFixing(fixingValueDate_, fixingEndDate_, spanningTime_);
+        }
 
         if (fixingDate_<today ||
             Settings::instance().enforcesTodaysHistoricFixings()) {
@@ -129,10 +128,11 @@ namespace QuantLib {
 
         try {
             Rate result = index_->pastFixing(fixingDate_);
-            if (result!=Null<Real>())
+            if (result != Null<Real>()) {
                 return result;
-            else
-                ;   // fall through and forecast
+            } else {
+                ; // fall through and forecast
+            }
         } catch (Error&) {
                 ;   // fall through and forecast
         }
@@ -144,10 +144,11 @@ namespace QuantLib {
     void IborCoupon::accept(AcyclicVisitor& v) {
         Visitor<IborCoupon>* v1 =
             dynamic_cast<Visitor<IborCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             FloatingRateCoupon::accept(v);
+        }
     }
 
 

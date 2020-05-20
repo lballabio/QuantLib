@@ -120,8 +120,9 @@ namespace QuantLib {
             MultiPath& path = next_.value;
 
             Array asset = process_->initialValues();
-            for (Size j=0; j<m; j++)
+            for (Size j = 0; j < m; j++) {
                 path[j].front() = asset[j];
+            }
 
             Array temp(n);
             next_.weight = sequence_.weight;
@@ -132,19 +133,20 @@ namespace QuantLib {
                 Size offset = (i-1)*n;
                 t = timeGrid[i-1];
                 dt = timeGrid.dt(i-1);
-                if (antithetic)
+                if (antithetic) {
                     std::transform(sequence_.value.begin()+offset,
                                    sequence_.value.begin()+offset+n,
                                    temp.begin(),
                                    std::negate<Real>());
-                else
-                    std::copy(sequence_.value.begin()+offset,
-                              sequence_.value.begin()+offset+n,
-                              temp.begin());
+                } else {
+                    std::copy(sequence_.value.begin() + offset,
+                              sequence_.value.begin() + offset + n, temp.begin());
+                }
 
                 asset = process_->evolve(t, asset, dt, temp);
-                for (Size j=0; j<m; j++)
+                for (Size j = 0; j < m; j++) {
                     path[j][i] = asset[j];
+                }
             }
             return next_;
         }

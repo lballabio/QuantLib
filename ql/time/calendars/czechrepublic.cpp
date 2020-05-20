@@ -37,8 +37,8 @@ namespace QuantLib {
         if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
-			// Good Friday
-			|| (dd == em - 3 && y >= 2016)
+            // Good Friday
+            || (dd == em - 3 && y >= 2016)
             // Easter Monday
             || (dd == em)
             // Labour Day
@@ -62,9 +62,9 @@ namespace QuantLib {
             // St. Stephen
             || (d == 26 && m == December)
             // unidentified closing days for stock exchange
-            || (d == 2 && m == January && y == 2004)
-            || (d == 31 && m == December && y == 2004))
+            || (d == 2 && m == January && y == 2004) || (d == 31 && m == December && y == 2004)) {
             return false;
+        }
         return true;
     }
 

@@ -33,8 +33,9 @@ namespace QuantLib {
 
         // first row filling
         m[0][0] = 1.0;
-        for (Size j=1; j<matrixSize; ++j)
+        for (Size j = 1; j < matrixSize; ++j) {
             m[0][j] = 0.0;
+        }
 
         // next ones...
         Size k = 0; //angles index
@@ -48,8 +49,9 @@ namespace QuantLib {
                 ++k;
             }
             m[i][bound] = sinProduct;
-            for (Size j=bound+1; j<m.rows(); ++j)
+            for (Size j = bound + 1; j < m.rows(); ++j) {
                 m[i][j] = 0;
+            }
         }
         return m;
     }
@@ -68,13 +70,15 @@ namespace QuantLib {
                 sinPhi = 0.0;
             }
 
-            for (Size j=0; j<i; ++j)
-                m[i][j] = sinPhi * m[i-1][j];
+            for (Size j = 0; j < i; ++j) {
+                m[i][j] = sinPhi * m[i - 1][j];
+            }
 
             m[i][i] = cosPhi;
 
-            for (Size j=i+1; j<m.rows(); ++j)
+            for (Size j = i + 1; j < m.rows(); ++j) {
                 m[i][j] = 0.0;
+            }
         }
         return m;
     }
@@ -85,8 +89,9 @@ namespace QuantLib {
                                                             Size rank) {
         Array angles(x.size());
         //we convert the unconstrained parameters in angles
-        for (Size i = 0; i < x.size(); ++i)
-            angles[i] = M_PI*.5 - std::atan(x[i]);
+        for (Size i = 0; i < x.size(); ++i) {
+            angles[i] = M_PI * .5 - std::atan(x[i]);
+        }
         return triangularAnglesParametrization(angles, matrixSize, rank);
     }
 
@@ -96,8 +101,9 @@ namespace QuantLib {
                                                             Size rank) {
         Array angles(x.size());
         //we convert the unconstrained parameters in angles
-        for (Size i = 0; i < x.size(); ++i)
-            angles[i] = M_PI*.5 - std::atan(x[i]);
+        for (Size i = 0; i < x.size(); ++i) {
+            angles[i] = M_PI * .5 - std::atan(x[i]);
+        }
         return lmmTriangularAnglesParametrization(angles, matrixSize, rank);
     }
 

@@ -39,8 +39,9 @@ namespace QuantLib {
 
     void YoYInflationCapFloorEngine::setVolatility(
             const Handle<YoYOptionletVolatilitySurface> &v) {
-        if (!volatility_.empty())
+        if (!volatility_.empty()) {
             unregisterWith(volatility_);
+        }
         volatility_ = v;
         registerWith(volatility_);
         update();
@@ -126,8 +127,9 @@ namespace QuantLib {
 
         results_.additionalResults["optionletsPrice"] = values;
         results_.additionalResults["optionletsAtmForward"] = forwards;
-        if (type != YoYInflationCapFloor::Collar)
+        if (type != YoYInflationCapFloor::Collar) {
             results_.additionalResults["optionletsStdDev"] = stdDevs;
+        }
     }
 
 

@@ -148,7 +148,9 @@ namespace QuantLib {
         //! Returns the value of the pdf for x
         Real operator()(Real x) const{
             using std::pow;
-            if(x < xm_) return 0.0;
+            if (x < xm_) {
+                return 0.0;
+            }
             return alpha_*pow(xm_/x, alpha_)/x;
         }
         

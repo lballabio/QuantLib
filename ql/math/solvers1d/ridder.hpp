@@ -80,8 +80,9 @@ namespace QuantLib {
                 // Second of two function evaluations per iteration
                 froot = f(root_);
                 ++evaluationNumber_;
-                if (close(froot, 0.0))
+                if (close(froot, 0.0)) {
                     return root_;
+                }
 
                 // Bookkeeping to keep the root bracketed on next iteration
                 if (sign(fxMid,froot) != fxMid) {

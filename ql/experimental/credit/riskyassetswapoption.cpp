@@ -39,10 +39,11 @@ namespace QuantLib {
 
     void RiskyAssetSwapOption::performCalculations() const {
         Real w;
-        if (asw_->fixedPayer()) // strike receiver = asw call = spread put
+        if (asw_->fixedPayer()) { // strike receiver = asw call = spread put
             w = -1.0;
-        else
+        } else {
             w = 1.0;
+        }
 
         Date today = Settings::instance().evaluationDate();
         Time expiryTime = Actual365Fixed().yearFraction(today, expiry_);

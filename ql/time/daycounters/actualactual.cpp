@@ -101,10 +101,11 @@ namespace QuantLib {
         switch (c) {
           case ISMA:
           case Bond:
-            if (!schedule.empty())
-                return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(schedule));
-            else
-                return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl);
+              if (!schedule.empty()) {
+                  return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(schedule));
+              } else {
+                  return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl);
+              }
           case ISDA:
           case Historical:
           case Actual365:
@@ -152,11 +153,13 @@ namespace QuantLib {
                                                    const Date& d2,
                                                    const Date& d3,
                                                    const Date& d4) const {
-        if (d1 == d2)
+        if (d1 == d2) {
             return 0.0;
+        }
 
-        if (d1 > d2)
-            return -yearFraction(d2,d1,d3,d4);
+        if (d1 > d2) {
+            return -yearFraction(d2, d1, d3, d4);
+        }
 
         // when the reference period is not specified, try taking
         // it equal to (d1,d2)
@@ -206,13 +209,14 @@ namespace QuantLib {
                 // the last notional payment date
                 Date previousRef = refPeriodStart - months*Months;
 
-                if (d2 > refPeriodStart)
+                if (d2 > refPeriodStart) {
                     return yearFraction(d1, refPeriodStart, previousRef,
                                         refPeriodStart) +
                         yearFraction(refPeriodStart, d2, refPeriodStart,
                                      refPeriodEnd);
-                else
-                    return yearFraction(d1,d2,previousRef,refPeriodStart);
+                } else {
+                    return yearFraction(d1, d2, previousRef, refPeriodStart);
+                }
             }
         } else {
             // here refPeriodEnd is the last (notional?) payment date
@@ -251,11 +255,13 @@ namespace QuantLib {
                                                const Date& d2,
                                                const Date&,
                                                const Date&) const {
-        if (d1 == d2)
+        if (d1 == d2) {
             return 0.0;
+        }
 
-        if (d1 > d2)
-            return -yearFraction(d2,d1,Date(),Date());
+        if (d1 > d2) {
+            return -yearFraction(d2, d1, Date(), Date());
+        }
 
         Integer y1 = d1.year(), y2 = d2.year();
         Real dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
@@ -273,11 +279,13 @@ namespace QuantLib {
                                               const Date& d2,
                                               const Date&,
                                               const Date&) const {
-        if (d1 == d2)
+        if (d1 == d2) {
             return 0.0;
+        }
 
-        if (d1 > d2)
-            return -yearFraction(d2,d1,Date(),Date());
+        if (d1 > d2) {
+            return -yearFraction(d2, d1, Date(), Date());
+        }
 
         Date newD2=d2, temp=d2;
         Time sum = 0.0;
@@ -297,12 +305,14 @@ namespace QuantLib {
 
         if (Date::isLeap(newD2.year())) {
             temp = Date(29, February, newD2.year());
-            if (newD2>temp && d1<=temp)
+            if (newD2 > temp && d1 <= temp) {
                 den += 1.0;
+            }
         } else if (Date::isLeap(d1.year())) {
             temp = Date(29, February, d1.year());
-            if (newD2>temp && d1<=temp)
+            if (newD2 > temp && d1 <= temp) {
                 den += 1.0;
+            }
         }
 
         return sum+daysBetween(d1, newD2)/den;

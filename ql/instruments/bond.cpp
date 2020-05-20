@@ -56,9 +56,9 @@ namespace QuantLib {
         }
 
         registerWith(Settings::instance().evaluationDate());
-        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end();
-             ++c)
+        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end(); ++c) {
             registerWith(*c);
+        }
     }
 
     Bond::Bond(Natural settlementDays,
@@ -76,8 +76,9 @@ namespace QuantLib {
             std::sort(cashflows_.begin(), cashflows_.end()-1,
                       earlier_than<ext::shared_ptr<CashFlow> >());
 
-            if (maturityDate_ == Date())
+            if (maturityDate_ == Date()) {
                 maturityDate_ = CashFlows::maturityDate(cashflows);
+            }
 
             if (issueDate_ != Date()) {
                 QL_REQUIRE(issueDate_<cashflows_[0]->date(),
@@ -99,9 +100,9 @@ namespace QuantLib {
         }
 
         registerWith(Settings::instance().evaluationDate());
-        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end();
-             ++c)
+        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end(); ++c) {
             registerWith(*c);
+        }
     }
 
     bool Bond::isExpired() const {
@@ -114,8 +115,9 @@ namespace QuantLib {
     }
 
     Real Bond::notional(Date d) const {
-        if (d == Date())
+        if (d == Date()) {
             d = settlementDate();
+        }
 
         if (d > notionalSchedule_.back()) {
             // after maturity
@@ -154,10 +156,11 @@ namespace QuantLib {
     }
 
     Date Bond::maturityDate() const {
-        if (maturityDate_!=Null<Date>())
+        if (maturityDate_ != Null<Date>()) {
             return maturityDate_;
-        else
+        } else {
             return BondFunctions::maturityDate(*this);
+        }
     }
 
     bool Bond::isTradable(Date d) const {
@@ -165,16 +168,18 @@ namespace QuantLib {
     }
 
     Date Bond::settlementDate(Date d) const {
-        if (d==Date())
+        if (d == Date()) {
             d = Settings::instance().evaluationDate();
+        }
 
         // usually, the settlement is at T+n...
         Date settlement = calendar_.advance(d, settlementDays_, Days);
         // ...but the bond won't be traded until the issue date (if given.)
-        if (issueDate_ == Date())
+        if (issueDate_ == Date()) {
             return settlement;
-        else
+        } else {
             return std::max(settlement, issueDate_);
+        }
     }
 
     Real Bond::cleanPrice() const {
@@ -183,10 +188,11 @@ namespace QuantLib {
 
     Real Bond::dirtyPrice() const {
         Real currentNotional = notional(settlementDate());
-        if (currentNotional == 0.0)
+        if (currentNotional == 0.0) {
             return 0.0;
-        else
-            return settlementValue()*100.0/currentNotional;
+        } else {
+            return settlementValue() * 100.0 / currentNotional;
+        }
     }
 
     Real Bond::settlementValue() const {
@@ -209,8 +215,9 @@ namespace QuantLib {
                      Real guess,
                      Bond::Price::Type priceType) const {
         Real currentNotional = notional(settlementDate());
-        if (currentNotional == 0.0)
+        if (currentNotional == 0.0) {
             return 0.0;
+        }
 
         Real price = priceType == Bond::Price::Clean ? cleanPrice() : dirtyPrice();
 
@@ -234,8 +241,9 @@ namespace QuantLib {
                           Frequency freq,
                           Date settlement) const {
         Real currentNotional = notional(settlement);
-        if (currentNotional == 0.0)
+        if (currentNotional == 0.0) {
             return 0.0;
+        }
 
         return BondFunctions::cleanPrice(*this, y, dc, comp, freq, settlement)
             + accruedAmount(settlement);
@@ -251,8 +259,9 @@ namespace QuantLib {
                      Real guess,
                      Bond::Price::Type priceType) const {
         Real currentNotional = notional(settlement);
-        if (currentNotional == 0.0)
+        if (currentNotional == 0.0) {
             return 0.0;
+        }
 
         return BondFunctions::yield(*this, price, dc, comp, freq,
                                     settlement, accuracy, maxEvaluations,
@@ -261,8 +270,9 @@ namespace QuantLib {
 
     Real Bond::accruedAmount(Date settlement) const {
         Real currentNotional = notional(settlement);
-        if (currentNotional == 0.0)
+        if (currentNotional == 0.0) {
             return 0.0;
+        }
 
         return BondFunctions::accruedAmount(*this, settlement);
     }
@@ -321,11 +331,12 @@ namespace QuantLib {
                                               100.0;
             Real amount = (R/100.0)*(notionals_[i-1]-notionals_[i]);
             ext::shared_ptr<CashFlow> payment;
-            if (i < notionalSchedule_.size()-1)
+            if (i < notionalSchedule_.size() - 1) {
                 payment.reset(new AmortizingPayment(amount,
                                                     notionalSchedule_[i]));
-            else
+            } else {
                 payment.reset(new Redemption(amount, notionalSchedule_[i]));
+            }
             cashflows_.push_back(payment);
             redemptions_.push_back(payment);
         }
@@ -364,8 +375,9 @@ namespace QuantLib {
         for (Size k = 0; k < cashflows_.size(); ++k) {
             ext::shared_ptr<LazyObject> f =
                 ext::dynamic_pointer_cast<LazyObject>(cashflows_[k]);
-            if (f)
+            if (f) {
                 f->update();
+            }
         }
         update();
     }
@@ -379,8 +391,9 @@ namespace QuantLib {
         for (Size i=0; i<cashflows_.size(); ++i) {
             ext::shared_ptr<Coupon> coupon =
                 ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-            if (!coupon)
+            if (!coupon) {
                 continue;
+            }
 
             Real notional = coupon->nominal();
             // we add the notional only if it is the first one...
@@ -412,8 +425,9 @@ namespace QuantLib {
     void Bond::arguments::validate() const {
         QL_REQUIRE(settlementDate != Date(), "no settlement date provided");
         QL_REQUIRE(!cashflows.empty(), "no cash flow provided");
-        for (Size i=0; i<cashflows.size(); ++i)
+        for (Size i = 0; i < cashflows.size(); ++i) {
             QL_REQUIRE(cashflows[i], "null cash flow provided");
+        }
     }
 
 }

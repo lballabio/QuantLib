@@ -86,11 +86,11 @@ namespace QuantLib {
     }
 
     inline Real TrinomialTree::underlying(Size i, Size index) const {
-        if (i==0)
+        if (i == 0) {
             return x0_;
-        else
-            return x0_ + (branchings_[i-1].jMin() +
-                          static_cast<Real>(index))*dx(i);
+        } else {
+            return x0_ + (branchings_[i - 1].jMin() + static_cast<Real>(index)) * dx(i);
+        }
     }
 
     inline Size TrinomialTree::descendant(Size i, Size index,

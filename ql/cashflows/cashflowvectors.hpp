@@ -139,7 +139,7 @@ namespace QuantLib {
                                     start, end, refStart, refEnd, 
 						            exCouponDate)));
             } else { // floating coupon
-                if (detail::noOption(caps, floors, i))
+                if (detail::noOption(caps, floors, i)) {
                     leg.push_back(ext::shared_ptr<CashFlow>(new
                         FloatingCouponType(
                             paymentDate,
@@ -151,7 +151,7 @@ namespace QuantLib {
                             detail::get(spreads, i, 0.0),
                             refStart, refEnd,
                             paymentDayCounter, isInArrears, exCouponDate)));
-                else {
+                } else {
                     leg.push_back(ext::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(
                                paymentDate,

@@ -83,9 +83,9 @@ namespace QuantLib {
     {
         QL_REQUIRE(forwards.size()==numberOfRates_,
                    "mismatch between forwards and rateTimes");
-        for (Size i=0; i<numberOfRates_; ++i)
-            initialLogForwards_[i] = std::log(forwards[i] +
-                                              displacements_[i]);
+        for (Size i = 0; i < numberOfRates_; ++i) {
+            initialLogForwards_[i] = std::log(forwards[i] + displacements_[i]);
+        }
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
@@ -128,8 +128,9 @@ namespace QuantLib {
         for ( i = numberOfRates_-2; i >= alive ; --i )
         {
             drifts2 = 0.0;
-            for ( Size j = i+1; j < numberOfRates_ ; ++j )
-                drifts2 -= g_[j]*C[i][j];
+            for (Size j = i + 1; j < numberOfRates_; ++j) {
+                drifts2 -= g_[j] * C[i][j];
+            }
             logForwards_[i] += drifts2 + fixedDrift[i];
             logForwards_[i] += std::inner_product( A.row_begin(i), A.row_end(i),
                                                    brownians_.begin(), 0.0);

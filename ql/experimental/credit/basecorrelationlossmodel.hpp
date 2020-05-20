@@ -114,7 +114,9 @@ namespace QuantLib {
         void update() {
             setupModels();
             // tell basket to notify instruments, etc, we are invalid
-            if(!basket_.empty()) basket_->notifyObservers();
+            if (!basket_.empty()) {
+                basket_->notifyObservers();
+            }
         }
 
         /* Update model caches after basket assignement. */

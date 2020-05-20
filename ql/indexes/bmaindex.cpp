@@ -27,10 +27,11 @@ namespace QuantLib {
 
         Date previousWednesday(const Date& date) {
             Weekday w = date.weekday();
-            if (w >= 4) // roll back w-4 days
+            if (w >= 4) { // roll back w-4 days
                 return date - (w - 4) * Days;
-            else // roll forward 4-w days and back one week
+            } else { // roll forward 4-w days and back one week
                 return date + (4 - w - 7) * Days;
+            }
         }
 
         Date nextWednesday(const Date& date) {
@@ -57,8 +58,9 @@ namespace QuantLib {
         // between last Wednesday included and the fixing date are
         // holidays
         for (Date d = previousWednesday(date); d<date; ++d) {
-            if (cal.isBusinessDay(d))
+            if (cal.isBusinessDay(d)) {
                 return false;
+            }
         }
         // also, the fixing date itself must be a business day
         return cal.isBusinessDay(date);

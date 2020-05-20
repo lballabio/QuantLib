@@ -42,26 +42,30 @@ void InstrumentTest::testObservable() {
     
     s->NPV();
     me1->setValue(3.14);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of instrument change");
-    
+    }
+
     s->NPV();
     f.lower();
     ext::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of instrument change");
+    }
 
     f.lower();
     s->freeze();
     s->NPV();
     me2->setValue(2.71);
-    if (f.isUp())
+    if (f.isUp()) {
         BOOST_FAIL("Observer was notified of frozen instrument change");
+    }
     s->NPV();
     s->unfreeze();
-    if (!f.isUp())
+    if (!f.isUp()) {
         BOOST_FAIL("Observer was not notified of instrument change");
+    }
 }
 
 
@@ -100,17 +104,21 @@ void InstrumentTest::testCompositeWhenShiftingDates() {
 
     Settings::instance().evaluationDate() = today+45;
 
-    if (!composite.isExpired())
+    if (!composite.isExpired()) {
         BOOST_FAIL("Composite didn't detect expiration");
-    if (composite.NPV() != 0.0)
+    }
+    if (composite.NPV() != 0.0) {
         BOOST_FAIL("Composite didn't return a null NPV");
+    }
 
     Settings::instance().evaluationDate() = today;
 
-    if (composite.isExpired())
+    if (composite.isExpired()) {
         BOOST_FAIL("Composite didn't detect aliveness");
-    if (composite.NPV() == 0.0)
+    }
+    if (composite.NPV() == 0.0) {
         BOOST_FAIL("Composite didn't recalculate");
+    }
 }
 
 test_suite* InstrumentTest::suite() {

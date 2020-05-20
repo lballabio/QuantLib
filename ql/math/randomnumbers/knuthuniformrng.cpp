@@ -41,38 +41,68 @@ namespace QuantLib {
 
         for (j=0;j<KK;j++) {
             u[j]=ss; ul[j]=0.0;                    // bootstrap the buffer
-            ss+=ss; if (ss>=1.0) ss-=1.0-2*ulp; // cyclic shift of 51 bits
+            ss+=ss;
+            if (ss >= 1.0) {
+                ss -= 1.0 - 2 * ulp; // cyclic shift of 51 bits
+            }
         }
-        for (;j<KK+KK-1;j++) u[j]=ul[j]=0.0;
+        for (; j < KK + KK - 1; j++) {
+            u[j] = ul[j] = 0.0;
+        }
         u[1]+=ulp;ul[1]=ulp;            // make u[1] (and only u[1]) "odd"
         s=seed&0x3fffffff;
         t=TT-1; while (t) {
-            for (j=KK-1;j>0;--j) ul[j+j]=ul[j],u[j+j]=u[j];    // "square"
-            for (j=KK+KK-2;j>KK-LL;j-=2)
-                ul[KK+KK-1-j]=0.0,u[KK+KK-1-j]=u[j]-ul[j];
-            for (j=KK+KK-2;j>=KK;--j) if(ul[j]) {
-                ul[j-(KK-LL)]=ulp-ul[j-(KK-LL)],
-                    u[j-(KK-LL)]=mod_sum(u[j-(KK-LL)],u[j]);
-                ul[j-KK]=ulp-ul[j-KK],u[j-KK]=mod_sum(u[j-KK],u[j]);
+            for (j = KK - 1; j > 0; --j) {
+                ul[j + j] = ul[j], u[j + j] = u[j]; // "square"
+            }
+            for (j = KK + KK - 2; j > KK - LL; j -= 2) {
+                ul[KK + KK - 1 - j] = 0.0, u[KK + KK - 1 - j] = u[j] - ul[j];
+            }
+            for (j = KK + KK - 2; j >= KK; --j) {
+                if (ul[j]) {
+                    ul[j - (KK - LL)] = ulp - ul[j - (KK - LL)],
+                                 u[j - (KK - LL)] = mod_sum(u[j - (KK - LL)], u[j]);
+                    ul[j - KK] = ulp - ul[j - KK], u[j - KK] = mod_sum(u[j - KK], u[j]);
+                }
             }
             if (is_odd(s)) {                            // "multiply by z"
-                for (j=KK;j>0;--j)  ul[j]=ul[j-1],u[j]=u[j-1];
+                for (j = KK; j > 0; --j) {
+                    ul[j] = ul[j - 1], u[j] = u[j - 1];
+                }
                 ul[0]=ul[KK],u[0]=u[KK];    // shift the buffer cyclically
-                if (ul[KK]) ul[LL]=ulp-ul[LL],u[LL]=mod_sum(u[LL],u[KK]);
+                if (ul[KK]) {
+                    ul[LL] = ulp - ul[LL], u[LL] = mod_sum(u[LL], u[KK]);
+                }
             }
-            if (s) s>>=1; else t--;
+            if (s) {
+                s >>= 1;
+            } else {
+                t--;
+            }
         }
-        for (j=0;j<LL;j++) ran_u[j+KK-LL]=u[j];
-        for (;j<KK;j++) ran_u[j-LL]=u[j];
+        for (j = 0; j < LL; j++) {
+            ran_u[j + KK - LL] = u[j];
+        }
+        for (; j < KK; j++) {
+            ran_u[j - LL] = u[j];
+        }
     }
 
     void KnuthUniformRng::ranf_array(std::vector<double>& aa,
                                      int n) const {
         int i,j;
-        for (j=0;j<KK;j++) aa[j]=ran_u[j];
-        for (;j<n;j++) aa[j]=mod_sum(aa[j-KK],aa[j-LL]);
-        for (i=0;i<LL;i++,j++) ran_u[i]=mod_sum(aa[j-KK],aa[j-LL]);
-        for (;i<KK;i++,j++) ran_u[i]=mod_sum(aa[j-KK],ran_u[i-LL]);
+        for (j = 0; j < KK; j++) {
+            aa[j] = ran_u[j];
+        }
+        for (; j < n; j++) {
+            aa[j] = mod_sum(aa[j - KK], aa[j - LL]);
+        }
+        for (i = 0; i < LL; i++, j++) {
+            ran_u[i] = mod_sum(aa[j - KK], aa[j - LL]);
+        }
+        for (; i < KK; i++, j++) {
+            ran_u[i] = mod_sum(aa[j - KK], ran_u[i - LL]);
+        }
     }
 
     double KnuthUniformRng::ranf_arr_cycle() const {

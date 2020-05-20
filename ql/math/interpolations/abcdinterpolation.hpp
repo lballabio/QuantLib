@@ -55,18 +55,26 @@ namespace QuantLib {
               error_(Null<Real>()),
               maxError_(Null<Real>()),
               abcdEndCriteria_(EndCriteria::None) {
-                if (a_ != Null<Real>())
+                if (a_ != Null<Real>()) {
                     aIsFixed_ = aIsFixed;
-                else a_ = -0.06;
-                if (b_ != Null<Real>())
+                } else {
+                    a_ = -0.06;
+                }
+                if (b_ != Null<Real>()) {
                     bIsFixed_ = bIsFixed;
-                else b_ = 0.17;
-                if (c_ != Null<Real>())
+                } else {
+                    b_ = 0.17;
+                }
+                if (c_ != Null<Real>()) {
                     cIsFixed_ = cIsFixed;
-                else c_ = 0.54;
-                if (d_ != Null<Real>())
+                } else {
+                    c_ = 0.54;
+                }
+                if (d_ != Null<Real>()) {
                     dIsFixed_ = dIsFixed;
-                else d_ = 0.17;
+                } else {
+                    d_ = 0.17;
+                }
 
                 AbcdMathFunction::validate(a, b, c, d);
             }

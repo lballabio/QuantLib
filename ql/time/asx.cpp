@@ -39,14 +39,18 @@ using std::string;
 namespace QuantLib {
 
     bool ASX::isASXdate(const Date& date, bool mainCycle) {
-        if (date.weekday()!=Friday)
+        if (date.weekday() != Friday) {
             return false;
+        }
 
         Day d = date.dayOfMonth();
-        if (d<8 || d>14)
+        if (d < 8 || d > 14) {
             return false;
+        }
 
-        if (!mainCycle) return true;
+        if (!mainCycle) {
+            return true;
+        }
 
         switch (date.month()) {
           case March:
@@ -60,19 +64,25 @@ namespace QuantLib {
     }
 
     bool ASX::isASXcode(const std::string& in, bool mainCycle) {
-        if (in.length() != 2)
+        if (in.length() != 2) {
             return false;
+        }
 
         string str1("0123456789");
         string::size_type loc = str1.find(in.substr(1,1), 0);
-        if (loc == string::npos)
+        if (loc == string::npos) {
             return false;
+        }
 
-        if (mainCycle) str1 = "hmzuHMZU";
-        else           str1 = "fghjkmnquvxzFGHJKMNQUVXZ";
+        if (mainCycle) {
+            str1 = "hmzuHMZU";
+        } else {
+            str1 = "fghjkmnquvxzFGHJKMNQUVXZ";
+        }
         loc = str1.find(in.substr(0,1), 0);
-        if (loc == string::npos)
+        if (loc == string::npos) {
             return false;
+        }
 
         return true;
     }
@@ -144,31 +154,49 @@ namespace QuantLib {
         std::string code = to_upper_copy(asxCode);
         std::string ms = code.substr(0,1);
         QuantLib::Month m;
-        if (ms=="F")      m = January;
-        else if (ms=="G") m = February;
-        else if (ms=="H") m = March;
-        else if (ms=="J") m = April;
-        else if (ms=="K") m = May;
-        else if (ms=="M") m = June;
-        else if (ms=="N") m = July;
-        else if (ms=="Q") m = August;
-        else if (ms=="U") m = September;
-        else if (ms=="V") m = October;
-        else if (ms=="X") m = November;
-        else if (ms=="Z") m = December;
-        else QL_FAIL("invalid ASX month letter");
+        if (ms == "F") {
+            m = January;
+        } else if (ms == "G") {
+            m = February;
+        } else if (ms == "H") {
+            m = March;
+        } else if (ms == "J") {
+            m = April;
+        } else if (ms == "K") {
+            m = May;
+        } else if (ms == "M") {
+            m = June;
+        } else if (ms == "N") {
+            m = July;
+        } else if (ms == "Q") {
+            m = August;
+        } else if (ms == "U") {
+            m = September;
+        } else if (ms == "V") {
+            m = October;
+        } else if (ms == "X") {
+            m = November;
+        } else if (ms == "Z") {
+            m = December;
+        } else {
+            QL_FAIL("invalid ASX month letter");
+        }
 
-//        Year y = boost::lexical_cast<Year>(); // lexical_cast causes compilation errors with x64
+        //        Year y = boost::lexical_cast<Year>(); // lexical_cast causes compilation errors
+        //        with x64
 
         Year y= io::to_integer(code.substr(1,1));
         /* year<1900 are not valid QuantLib years: to avoid a run-time
            exception few lines below we need to add 10 years right away */
-        if (y==0 && referenceDate.year()<=1909) y+=10;
+        if (y == 0 && referenceDate.year() <= 1909) {
+            y += 10;
+        }
         Year referenceYear = (referenceDate.year() % 10);
         y += referenceDate.year() - referenceYear;
         Date result = ASX::nextDate(Date(1, m, y), false);
-        if (result<referenceDate)
-            return ASX::nextDate(Date(1, m, y+10), false);
+        if (result < referenceDate) {
+            return ASX::nextDate(Date(1, m, y + 10), false);
+        }
 
         return result;
     }
@@ -193,8 +221,9 @@ namespace QuantLib {
         }
 
         Date result = Date::nthWeekday(2, Friday, m, y);
-        if (result<=refDate)
+        if (result <= refDate) {
             result = nextDate(Date(15, m, y), mainCycle);
+        }
         return result;
     }
 

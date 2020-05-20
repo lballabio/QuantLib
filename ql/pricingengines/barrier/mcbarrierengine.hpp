@@ -83,9 +83,9 @@ namespace QuantLib {
                                                          requiredSamples_,
                                                          maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
-            if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+            if (RNG::allowsErrorEstimate) {
+                results_.errorEstimate = this->mcModel_->sampleAccumulator().errorEstimate();
+            }
         }
       protected:
         // McSimulation implementation
@@ -240,8 +240,9 @@ namespace QuantLib {
 
         TimeGrid grid = timeGrid();
         std::vector<DiscountFactor> discounts(grid.size());
-        for (Size i=0; i<grid.size(); i++)
+        for (Size i = 0; i < grid.size(); i++) {
             discounts[i] = process_->riskFreeRate()->discount(grid[i]);
+        }
 
         // do this with template parameters?
         if (isBiased_) {

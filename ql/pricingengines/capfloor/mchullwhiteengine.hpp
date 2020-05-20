@@ -88,9 +88,9 @@ namespace QuantLib {
                                   requiredSamples_,
                                   maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
-            if (RNG::allowsErrorEstimate)
-                results_.errorEstimate =
-                    this->mcModel_->sampleAccumulator().errorEstimate();
+            if (RNG::allowsErrorEstimate) {
+                results_.errorEstimate = this->mcModel_->sampleAccumulator().errorEstimate();
+            }
         }
 
       protected:
@@ -113,10 +113,10 @@ namespace QuantLib {
             // only add future fixing times...
             std::vector<Time> times;
             for (Size i=0; i<arguments_.fixingDates.size(); i++) {
-                if (arguments_.fixingDates[i] > referenceDate)
+                if (arguments_.fixingDates[i] > referenceDate) {
                     times.push_back(
-                          dayCounter.yearFraction(referenceDate,
-                                                  arguments_.fixingDates[i]));
+                        dayCounter.yearFraction(referenceDate, arguments_.fixingDates[i]));
+                }
             }
             // ...and maturity.
             times.push_back(

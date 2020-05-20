@@ -47,9 +47,10 @@ namespace QuantLib {
       maximizeHomogeneity_(maximizeHomogeneity),
       parametricForm_(parametricForm),
       alpha_(numberOfRates_), a_(numberOfRates_), b_(numberOfRates_) {
-          if (!parametricForm_)
-              parametricForm_ = ext::shared_ptr<AlphaForm>(new
-                AlphaFormLinearHyperbolic(evolution.rateTimes()));
+        if (!parametricForm_) {
+            parametricForm_ =
+                ext::shared_ptr<AlphaForm>(new AlphaFormLinearHyperbolic(evolution.rateTimes()));
+        }
 
         QL_REQUIRE(numberOfRates_==alphaInitial.size(),
             "mismatch between number of rates (" << numberOfRates_ <<
@@ -114,10 +115,10 @@ namespace QuantLib {
 
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());
-        for (Size i=0; i<corrPseudo.size(); ++i)
-            corrPseudo[i] = rankReducedSqrt(corr.correlation(i),
-                                            numberOfFactors, 1.0,
+        for (Size i = 0; i < corrPseudo.size(); ++i) {
+            corrPseudo[i] = rankReducedSqrt(corr.correlation(i), numberOfFactors, 1.0,
                                             SalvagingAlgorithm::None);
+        }
 
         // get Zinverse, we can get wj later
         Matrix zedMatrix =
@@ -145,8 +146,9 @@ namespace QuantLib {
             // we will do this by modifying the vol of swap rate i+1
             const std::vector<Real>& var =
                                     displacedSwapVariances[i+1]->variances();
-            for (Size j =0; j < i+2; ++j)
+            for (Size j = 0; j < i + 2; ++j) {
                 secondRateVols[j] = std::sqrt(var[j]);
+            }
 
             for (Size k=0; k < i+1; k++) {
                 Real correlation=0.0;
@@ -161,13 +163,14 @@ namespace QuantLib {
             Real w0 = invertedZedMatrix[i][i];
             Real w1 = invertedZedMatrix[i][i+1];
             // w0 adjustment
-            for (Size k = i+2; k <invertedZedMatrix.columns(); ++k)
-                w0+= invertedZedMatrix[i][k];
+            for (Size k = i + 2; k < invertedZedMatrix.columns(); ++k) {
+                w0 += invertedZedMatrix[i][k];
+            }
 
             Real targetVariance= capletVols[i]*capletVols[i]*rateTimes[i];
 
             bool success;
-            if (maximizeHomogeneity)
+            if (maximizeHomogeneity) {
                 success = solver.solveWithMaxHomogeneity(
                                                     alphaInitial[i+1] ,
                                                     i,
@@ -185,23 +188,12 @@ namespace QuantLib {
                                                     a[i+1],
                                                     b[i+1],
                                                     theseNewVols);
-            else
-                success = solver.solve(alphaInitial[i+1] ,
-                                       i,
-                                       firstRateVols,
-                                       secondRateVols,
-                                       correlations,
-                                       w0,
-                                       w1,
-                                       targetVariance,
-                                       tolerance,
-                                       alphaMax[i+1],
-                                       alphaMin[i+1],
-                                       maxIterations,
-                                       alpha[i+1],
-                                       a[i+1],
-                                       b[i+1],
-                                       theseNewVols);
+            } else {
+                success = solver.solve(alphaInitial[i + 1], i, firstRateVols, secondRateVols,
+                                       correlations, w0, w1, targetVariance, tolerance,
+                                       alphaMax[i + 1], alphaMin[i + 1], maxIterations,
+                                       alpha[i + 1], a[i + 1], b[i + 1], theseNewVols);
+            }
 
             if (!success) {
                 //++failures;
@@ -217,8 +209,9 @@ namespace QuantLib {
             swapCovariancePseudoRoots[k] = corrPseudo[k];
             for (Size j=0; j<numberOfRates; ++j) {
                 Real coeff =newVols[j][k];
-                for (Size i=0; i<numberOfFactors; ++i)
-                    swapCovariancePseudoRoots[k][j][i]*=coeff;
+                for (Size i = 0; i < numberOfFactors; ++i) {
+                    swapCovariancePseudoRoots[k][j][i] *= coeff;
+                }
             }
             QL_ENSURE(swapCovariancePseudoRoots[k].rows()==numberOfRates,
                 "step " << k

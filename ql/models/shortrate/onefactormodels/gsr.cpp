@@ -33,9 +33,9 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
 
     volatilities_.resize(volatilities.size());
-    for (Size i = 0; i < volatilities.size(); ++i)
-        volatilities_[i] =
-            Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+    for (Size i = 0; i < volatilities.size(); ++i) {
+        volatilities_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+    }
     reversions_.resize(1);
     reversions_[0] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversion));
 
@@ -53,13 +53,13 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
 
     volatilities_.resize(volatilities.size());
-    for (Size i = 0; i < volatilities.size(); ++i)
-        volatilities_[i] =
-            Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+    for (Size i = 0; i < volatilities.size(); ++i) {
+        volatilities_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+    }
     reversions_.resize(reversions.size());
-    for (Size i = 0; i < reversions.size(); ++i)
-        reversions_[i] =
-            Handle<Quote>(ext::make_shared<SimpleQuote>(reversions[i]));
+    for (Size i = 0; i < reversions.size(); ++i) {
+        reversions_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversions[i]));
+    }
 
     initialize(T);
 }
@@ -91,10 +91,11 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     initialize(T);
 }
 
-void Gsr::update() { 
-	if (stateProcess_ != NULL)
+void Gsr::update() {
+    if (stateProcess_ != NULL) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
-	LazyObject::update();
+    }
+    LazyObject::update();
 }
 
 void Gsr::updateTimes() const {
@@ -104,17 +105,18 @@ void Gsr::updateTimes() const {
          i != volstepdates_.end(); ++i, ++j) {
         volsteptimes_.push_back(termStructure()->timeFromReference(*i));
         volsteptimesArray_[j] = volsteptimes_[j];
-        if (j == 0)
+        if (j == 0) {
             QL_REQUIRE(volsteptimes_[0] > 0.0, "volsteptimes must be positive ("
                                                    << volsteptimes_[0] << ")");
-        else
+        } else
             QL_REQUIRE(volsteptimes_[j] > volsteptimes_[j - 1],
                        "volsteptimes must be strictly increasing ("
                            << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                            << volsteptimes_[j] << "@" << j << ")");
     }
-    if (stateProcess_ != NULL)
+    if (stateProcess_ != NULL) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    }
 }
 
 void Gsr::updateVolatility() {
@@ -173,11 +175,13 @@ void Gsr::initialize(Real T) {
     volatilityObserver_ = ext::make_shared<VolatilityObserver>(this);
     reversionObserver_ = ext::make_shared<ReversionObserver>(this);
 
-    for (Size i = 0; i < reversions_.size(); ++i)
+    for (Size i = 0; i < reversions_.size(); ++i) {
         reversionObserver_->registerWith(reversions_[i]);
+    }
 
-    for (Size i = 0; i < volatilities_.size(); ++i)
+    for (Size i = 0; i < volatilities_.size(); ++i) {
         volatilityObserver_->registerWith(volatilities_[i]);
+    }
 }
 
 Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
@@ -185,9 +189,9 @@ Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
 
     calculate();
 
-    if (t == 0.0)
-        return yts.empty() ? this->termStructure()->discount(T, true)
-                           : yts->discount(T, true);
+    if (t == 0.0) {
+        return yts.empty() ? this->termStructure()->discount(T, true) : yts->discount(T, true);
+    }
 
     ext::shared_ptr<GsrProcess> p =
         ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
@@ -212,11 +216,10 @@ Real Gsr::numeraireImpl(const Time t, const Real y,
     ext::shared_ptr<GsrProcess> p =
         ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
 
-    if (t == 0)
-        return yts.empty()
-                   ? this->termStructure()->discount(p->getForwardMeasureTime(),
-                                                     true)
-                   : yts->discount(p->getForwardMeasureTime());
+    if (t == 0) {
+        return yts.empty() ? this->termStructure()->discount(p->getForwardMeasureTime(), true) :
+                             yts->discount(p->getForwardMeasureTime());
+    }
     return zerobond(p->getForwardMeasureTime(), t, y, yts);
 }
 }

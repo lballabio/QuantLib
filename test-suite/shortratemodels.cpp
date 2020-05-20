@@ -185,10 +185,11 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
 
     // Check and print out results
     Real cachedA, cachedSigma;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedA = 0.05, cachedSigma = 0.00585835;
-    else
+    } else {
         cachedA = 0.05, cachedSigma = 0.00585858;
+    }
 
     Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
@@ -271,10 +272,11 @@ void ShortRateModelTest::testCachedHullWhite2() {
     // JamshidianEngine not accounting for the delay between option
     // expiry and underlying start
     Real cachedA, cachedSigma;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         cachedA = 0.0481608, cachedSigma = 0.00582493;
-    else
+    } else {
         cachedA = 0.0482063, cachedSigma = 0.00582687;
+    }
 
     Real tolerance = 5.0e-6; 
     Array xMinCalculated = model->params();
@@ -360,10 +362,11 @@ void ShortRateModelTest::testSwaps() {
                                         new TreeVanillaSwapEngine(model,120));
 
     Real tolerance;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!IborCoupon::usingAtParCoupons()) {
         tolerance = 4.0e-3;
-    else
+    } else {
         tolerance = 1.0e-8;
+    }
 
     for (Size i=0; i<LENGTH(start); i++) {
 

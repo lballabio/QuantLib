@@ -293,10 +293,10 @@ void InflationTest::testZeroIndex() {
                                                    iir->frequency());
         for (Date d=lim.first; d<=lim.second; d++) {
             if (d < inflationPeriod(todayMinusLag,iir->frequency()).first) {
-                if (std::fabs(iir->fixing(d) - fixData[i]) > eps)
+                if (std::fabs(iir->fixing(d) - fixData[i]) > eps) {
                     BOOST_ERROR("Fixings not constant within a period: "
-                                << iir->fixing(d)
-                                << ", should be " << fixData[i]);
+                                << iir->fixing(d) << ", should be " << fixData[i]);
+                }
             }
         }
     }
@@ -417,19 +417,18 @@ void InflationTest::testZeroTermStructure() {
         Date d = testIndex[i];
         Real z = hz->zeroRate(d, Period(0,Days));
         Real t = hz->dayCounter().yearFraction(bd, d);
-        if(!ii->interpolated()) // because fixing constant over period
-            t = hz->dayCounter().yearFraction(bd,
-                inflationPeriod(d, ii->frequency()).first);
+        if (!ii->interpolated()) { // because fixing constant over period
+            t = hz->dayCounter().yearFraction(bd, inflationPeriod(d, ii->frequency()).first);
+        }
         Real calc = bf * pow( 1+z, t);
-        if (t<=0)
-            calc = ii->fixing(d,false); // still historical
-        if (std::fabs(calc - ii->fixing(d,true))/10000.0 > eps)
-            BOOST_ERROR("ZC index does not forecast correctly for date " << d
-                        << " from base date " << bd
-                        << " with fixing " << bf
-                        << ", correct:  " << calc
-                        << ", fix: " << ii->fixing(d,true)
-                        << ", t " << t);
+        if (t <= 0) {
+            calc = ii->fixing(d, false); // still historical
+        }
+        if (std::fabs(calc - ii->fixing(d, true)) / 10000.0 > eps) {
+            BOOST_ERROR("ZC index does not forecast correctly for date "
+                        << d << " from base date " << bd << " with fixing " << bf << ", correct:  "
+                        << calc << ", fix: " << ii->fixing(d, true) << ", t " << t);
+        }
     }
 
 
@@ -553,15 +552,14 @@ void InflationTest::testZeroTermStructure() {
         Real z = hz->zeroRate(d, Period(0,Days));
         Real t = hz->dayCounter().yearFraction(bd, d);
         Real calc = bf * pow( 1+z, t);
-        if (t<=0) calc = iiyes->fixing(d); // still historical
-        if (std::fabs(calc - iiyes->fixing(d)) > eps)
-            BOOST_ERROR("ZC INTERPOLATED index does not forecast correctly for date " << d
-                        << " from base date " << bd
-                        << " with fixing " << bf
-                        << ", correct:  " << calc
-                        << ", fix: " << iiyes->fixing(d)
-                        << ", t " << t
-                        << ", zero " << z);
+        if (t <= 0) {
+            calc = iiyes->fixing(d); // still historical
+        }
+        if (std::fabs(calc - iiyes->fixing(d)) > eps) {
+            BOOST_ERROR("ZC INTERPOLATED index does not forecast correctly for date "
+                        << d << " from base date " << bd << " with fixing " << bf << ", correct:  "
+                        << calc << ", fix: " << iiyes->fixing(d) << ", t " << t << ", zero " << z);
+        }
     }
 
 
@@ -615,10 +613,10 @@ void InflationTest::testZeroIndexFutureFixing() {
     Date evaluationDate = euhicp.fixingCalendar().adjust(sample_date + 2*Weeks);
     Settings::instance().evaluationDate() = evaluationDate;
     Real fixing = euhicp.fixing(sample_date);
-    if (std::fabs(fixing - sample_fixing) > 1e-12)
+    if (std::fabs(fixing - sample_fixing) > 1e-12) {
         BOOST_ERROR("Failed to retrieve correct fixing: "
-                    << "\n    returned: " << fixing
-                    << "\n    expected: " << sample_fixing);
+                    << "\n    returned: " << fixing << "\n    expected: " << sample_fixing);
+    }
 
     // fixing date in the future
     evaluationDate = euhicp.fixingCalendar().adjust(sample_date - 2*Weeks);
@@ -631,9 +629,10 @@ void InflationTest::testZeroIndexFutureFixing() {
         retrieved = true;
     } catch (Error&) {}
 
-    if (retrieved)
+    if (retrieved) {
         BOOST_ERROR("Retrieved future fixing: "
                     << "\n    returned: " << fixing);
+    }
 }
 
 
@@ -971,10 +970,11 @@ void InflationTest::testPeriod() {
 
     for (int year = 1950; year < 2051; ++year) {
 
-        if (Date::isLeap(year))
+        if (Date::isLeap(year)) {
             days[2] = 29;
-        else
+        } else {
             days[2] = 28;
+        }
 
         for (Size i=1; i<=12; ++i){
 

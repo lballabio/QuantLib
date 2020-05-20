@@ -89,17 +89,21 @@ namespace QuantLib {
             ext::shared_ptr<Interpolation2D> decoratedInterp_;
 
             Real bindX(Real x) const {
-                if(x < xMin())
+                if (x < xMin()) {
                     return xMin();
-                if (x > xMax()) 
+                }
+                if (x > xMax()) {
                     return xMax();
+                }
                 return x;
             }
             Real bindY(Real y) const {
-                if(y < yMin())
+                if (y < yMin()) {
                     return yMin();
-                if (y > yMax()) 
+                }
+                if (y > yMax()) {
                     return yMax();
+                }
                 return y;
             }
 

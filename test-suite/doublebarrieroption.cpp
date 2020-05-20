@@ -515,11 +515,12 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
 
             // Expected result for KO is given in array, for KI is evaluated as vanilla - KO
             Real expected = 0;
-            if (barrierType == DoubleBarrier::KnockOut)
-               expected = values[i].result;
-            else if (barrierType == DoubleBarrier::KnockIn)
-               expected = (bsVanillaPrice - values[i].result);
-           
+            if (barrierType == DoubleBarrier::KnockOut) {
+                expected = values[i].result;
+            } else if (barrierType == DoubleBarrier::KnockIn) {
+                expected = (bsVanillaPrice - values[i].result);
+            }
+
             Real calculated = doubleBarrierOption.NPV();
             Real error = std::fabs(calculated-expected);
             if (error>values[i].tol) {
@@ -587,8 +588,9 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     DayCounter dayCounter = Actual365Fixed();
 
     std::vector<Date> exerciseDates;
-    for (Integer i=1; i<=4; i++)
-        exerciseDates.push_back(settlementDate + 3*i*Months);
+    for (Integer i = 1; i <= 4; i++) {
+        exerciseDates.push_back(settlementDate + 3 * i * Months);
+    }
 
     ext::shared_ptr<Exercise> europeanExercise(
         new EuropeanExercise(maturity));

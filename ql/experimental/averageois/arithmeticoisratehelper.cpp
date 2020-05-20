@@ -80,10 +80,11 @@ namespace QuantLib {
         ext::shared_ptr<YieldTermStructure> temp(t, no_deletion);
         termStructureHandle_.linkTo(temp, observer);
 
-        if (discountHandle_.empty())
+        if (discountHandle_.empty()) {
             discountRelinkableHandle_.linkTo(temp, observer);
-        else
+        } else {
             discountRelinkableHandle_.linkTo(*discountHandle_, observer);
+        }
 
         RelativeDateRateHelper::setTermStructure(t);
     }
@@ -106,10 +107,11 @@ namespace QuantLib {
     void ArithmeticOISRateHelper::accept(AcyclicVisitor& v) {
         Visitor<ArithmeticOISRateHelper>* v1 =
             dynamic_cast<Visitor<ArithmeticOISRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             RateHelper::accept(v);
+        }
     }
 
 }

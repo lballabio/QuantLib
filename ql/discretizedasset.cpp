@@ -33,15 +33,17 @@ namespace QuantLib {
         Size i;
         switch (exerciseType_) {
           case Exercise::American:
-            if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1])
-                applyExerciseCondition();
-            break;
+              if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1]) {
+                  applyExerciseCondition();
+              }
+              break;
           case Exercise::Bermudan:
           case Exercise::European:
             for (i=0; i<exerciseTimes_.size(); i++) {
                 Time t = exerciseTimes_[i];
-                if (t >= 0.0 && isOnTime(t))
+                if (t >= 0.0 && isOnTime(t)) {
                     applyExerciseCondition();
+                }
             }
             break;
           default:

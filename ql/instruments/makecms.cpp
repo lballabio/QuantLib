@@ -99,9 +99,9 @@ namespace QuantLib {
     MakeCms::operator ext::shared_ptr<Swap>() const {
 
         Date startDate;
-        if (effectiveDate_ != Date())
+        if (effectiveDate_ != Date()) {
             startDate = effectiveDate_;
-        else {
+        } else {
             Natural fixingDays = iborIndex_->fixingDays();
             Date refDate = Settings::instance().evaluationDate();
             // if the evaluation date is not a business day
@@ -137,8 +137,9 @@ namespace QuantLib {
             .withSpreads(cmsSpread_)
             .withCaps(cmsCap_)
             .withFloors(cmsFloor_);
-        if (couponPricer_)
+        if (couponPricer_) {
             setCouponPricer(cmsLeg, couponPricer_);
+        }
 
         Rate usedSpread = iborSpread_;
         if (useAtmSpread_) {
@@ -175,10 +176,11 @@ namespace QuantLib {
             .withSpreads(usedSpread);
 
         ext::shared_ptr<Swap> swap;
-        if (payCms_)
+        if (payCms_) {
             swap = ext::make_shared<Swap>(cmsLeg, floatLeg);
-        else
+        } else {
             swap = ext::make_shared<Swap>(floatLeg, cmsLeg);
+        }
         swap->setPricingEngine(engine_);
         return swap;
     }

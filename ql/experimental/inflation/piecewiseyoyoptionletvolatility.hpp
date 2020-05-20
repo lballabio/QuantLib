@@ -56,11 +56,13 @@ namespace QuantLib {
                           bool validData,
                           Size) // firstAliveHelper
         {
-            if (validData) // previous iteration value
+            if (validData) { // previous iteration value
                 return c->data()[i];
+            }
 
-            if (i==1) // first pillar
+            if (i == 1) { // first pillar
                 return 0.005;
+            }
 
             // could/should extrapolate
             return 0.002;

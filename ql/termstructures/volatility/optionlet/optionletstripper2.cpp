@@ -186,8 +186,9 @@ namespace QuantLib {
 
     Real OptionletStripper2::ObjectiveFunction::operator()(Volatility s) const
     {
-        if (s!=spreadQuote_->value())
+        if (s != spreadQuote_->value()) {
             spreadQuote_->setValue(s);
+        }
         return cap_->NPV()-targetValue_;
     }
 }

@@ -90,9 +90,9 @@ namespace QuantLib {
         results_.couponLegNPV = 0.0;
         results_.defaultLegNPV = 0.0;
         for (Size i=0; i<arguments_.leg.size(); ++i) {
-            if (arguments_.leg[i]->hasOccurred(settlementDate,
-                                               includeSettlementDateFlows_))
+            if (arguments_.leg[i]->hasOccurred(settlementDate, includeSettlementDateFlows_)) {
                 continue;
+            }
 
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
@@ -135,12 +135,12 @@ namespace QuantLib {
 
                 // accrual...
                 if (arguments_.settlesAccrual) {
-                    if (arguments_.paysAtDefaultTime)
+                    if (arguments_.paysAtDefaultTime) {
                         results_.couponLegNPV +=
                             coupon->accruedAmount(d1) * B * dP;
-                    else
-                        results_.couponLegNPV +=
-                            couponAmount * B * dP;
+                    } else {
+                        results_.couponLegNPV += couponAmount * B * dP;
+                    }
                 }
 
                 // ...and claim.

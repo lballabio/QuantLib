@@ -191,10 +191,11 @@ void DoubleBinaryOptionTest::testHaugValues() {
         Date exDate = today + Integer(values[i].t*360+0.5);
         ext::shared_ptr<Exercise> exercise;
         if (values[i].barrierType == DoubleBarrier::KIKO ||
-            values[i].barrierType == DoubleBarrier::KOKI)
+            values[i].barrierType == DoubleBarrier::KOKI) {
             exercise.reset(new AmericanExercise(today, exDate));
-        else
+        } else {
             exercise.reset(new EuropeanExercise(exDate));
+        }
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);

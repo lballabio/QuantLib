@@ -52,17 +52,19 @@ namespace QuantLib {
         qt_ = P.value (xtd_);
 
         while ((qt_ - q0) < -beta_*t*qpt_ || (qt_ - q0) > -alpha_*t*qpt_) {
-            if ((qt_ - q0) > -alpha_*t*qpt_)
+            if ((qt_ - q0) > -alpha_ * t * qpt_) {
                 tr = t;
-            else
+            } else {
                 tl = t;
+            }
             ++loopNumber;
             
             // calculate the new step
-            if (close_enough(tr, 0.0))
+            if (close_enough(tr, 0.0)) {
                 t *= extrapolation_;
-            else
+            } else {
                 t = (tl + tr) / 2.0;
+            }
 
             // New point value
             xtd_ = P.currentValue();
@@ -74,12 +76,14 @@ namespace QuantLib {
             // and it squared norm
             maxIter = endCriteria.checkMaxIterations(loopNumber, ecType);
 
-            if (maxIter)
+            if (maxIter) {
                 break;
+            }
         }
 
-        if (maxIter)
+        if (maxIter) {
             succeed_ = false;
+        }
 
         // Compute new gradient
         P.gradient(gradient_, xtd_);

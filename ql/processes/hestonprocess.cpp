@@ -308,8 +308,9 @@ namespace QuantLib {
 
                 // get the upper bound for the integration
                 Real upper = u_eps/2.0;
-                while (std::abs(Phi(process,upper,nu_0,nu_t,dt)/upper)
-                        > eps) upper*=2.0;
+                while (std::abs(Phi(process, upper, nu_0, nu_t, dt) / upper) > eps) {
+                    upper *= 2.0;
+                }
 
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
@@ -322,8 +323,9 @@ namespace QuantLib {
               {
                 // get the upper bound for the integration
                 Real upper = u_eps/2.0;
-                while (std::abs(Phi(process, upper,nu_0,nu_t,dt)/upper)
-                        >  eps) upper*=2.0;
+                while (std::abs(Phi(process, upper, nu_0, nu_t, dt) / upper) > eps) {
+                    upper *= 2.0;
+                }
 
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,

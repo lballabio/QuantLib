@@ -316,9 +316,9 @@ namespace QuantLib {
         // do not use base_curve::update() as it would always notify observers
 
         // TermStructure::update() update part
-        if (this->moving_)
+        if (this->moving_) {
             this->updated_ = false;
-
+        }
     }
 
     template <class C, class I, template <class> class B>

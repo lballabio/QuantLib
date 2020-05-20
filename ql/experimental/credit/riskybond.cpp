@@ -86,8 +86,9 @@ namespace QuantLib {
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
         for (Size i = 0; i < cf.size(); i++) {
             Date d2 = cf[i]->date();
-            if (d2 > npvDate)
+            if (d2 > npvDate) {
                 npv += cf[i]->amount() * yieldTS()->discount(d2);
+            }
         }
         return npv;
     }
@@ -98,8 +99,9 @@ namespace QuantLib {
         Real flow = 0;
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
         for (Size i = 0; i < cf.size(); i++) {
-            if (cf[i]->date() > npvDate)
+            if (cf[i]->date() > npvDate) {
                 flow += cf[i]->amount();
+            }
         }
         return flow;
     }
@@ -193,14 +195,16 @@ namespace QuantLib {
     }
 
     Real RiskyFixedBond::notional(Date date) const {
-        if (date > maturityDate())
+        if (date > maturityDate()) {
             return 0.0;
+        }
         Real ntl = notionals_.front();
         for (Size i = 0; i < schedule_.size(); i++) {
-            if (i < notionals_.size() && schedule_[i] <= date)
+            if (i < notionals_.size() && schedule_[i] <= date) {
                 ntl = notionals_[i];
-            else
+            } else {
                 break;
+            }
         }
         return ntl;
     }
@@ -283,14 +287,16 @@ namespace QuantLib {
     }
 
     Real RiskyFloatingBond::notional(Date date) const {
-        if (date > maturityDate())
+        if (date > maturityDate()) {
             return 0.0;
+        }
         Real ntl = notionals_.front();
         for (Size i = 0; i < schedule_.size(); i++) {
-            if (i < notionals_.size() && schedule_[i] <= date)
+            if (i < notionals_.size() && schedule_[i] <= date) {
                 ntl = notionals_[i];
-            else
+            } else {
                 break;
+            }
         }
         return ntl;
     }

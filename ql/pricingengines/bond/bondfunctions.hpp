@@ -167,8 +167,9 @@ namespace QuantLib {
                           Real accuracy = 1.0e-10,
                           Rate guess = 0.05,
                           Bond::Price::Type priceType = Bond::Price::Clean) {
-            if (settlementDate == Date())
+            if (settlementDate == Date()) {
                 settlementDate = bond.settlementDate();
+            }
 
             QL_REQUIRE(BondFunctions::isTradable(bond, settlementDate),
                        "non tradable at " << settlementDate <<
@@ -176,8 +177,9 @@ namespace QuantLib {
 
             Real dirtyPrice = price;
 
-            if (priceType == Bond::Price::Clean)
+            if (priceType == Bond::Price::Clean) {
                 dirtyPrice += bond.accruedAmount(settlementDate);
+            }
 
             dirtyPrice /= 100.0 / bond.notional(settlementDate);
 

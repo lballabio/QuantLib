@@ -37,44 +37,36 @@ namespace QuantLib {
             // New Year's Day (possibly moved to Monday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
             // Good Friday
-            || (dd == em-3)
+            || (dd == em - 3)
             // Family Day
             || (dd == em)
             // Human Rights Day, March 21st (possibly moved to Monday)
-            || ((d == 21 || (d == 22 && w == Monday))
-                && m == March)
+            || ((d == 21 || (d == 22 && w == Monday)) && m == March)
             // Freedom Day, April 27th (possibly moved to Monday)
-            || ((d == 27 || (d == 28 && w == Monday))
-                && m == April)
+            || ((d == 27 || (d == 28 && w == Monday)) && m == April)
             // Election Day, April 14th 2004
             || (d == 14 && m == April && y == 2004)
             // Workers Day, May 1st (possibly moved to Monday)
-            || ((d == 1 || (d == 2 && w == Monday))
-                && m == May)
+            || ((d == 1 || (d == 2 && w == Monday)) && m == May)
             // Youth Day, June 16th (possibly moved to Monday)
-            || ((d == 16 || (d == 17 && w == Monday))
-                && m == June)
+            || ((d == 16 || (d == 17 && w == Monday)) && m == June)
             // National Women's Day, August 9th (possibly moved to Monday)
-            || ((d == 9 || (d == 10 && w == Monday))
-                && m == August)
+            || ((d == 9 || (d == 10 && w == Monday)) && m == August)
             // Heritage Day, September 24th (possibly moved to Monday)
-            || ((d == 24 || (d == 25 && w == Monday))
-                && m == September)
+            || ((d == 24 || (d == 25 && w == Monday)) && m == September)
             // Day of Reconciliation, December 16th
             // (possibly moved to Monday)
-            || ((d == 16 || (d == 17 && w == Monday))
-                && m == December)
+            || ((d == 16 || (d == 17 && w == Monday)) && m == December)
             // Christmas
             || (d == 25 && m == December)
             // Day of Goodwill (possibly moved to Monday)
-            || ((d == 26 || (d == 27 && w == Monday))
-                && m == December)
+            || ((d == 26 || (d == 27 && w == Monday)) && m == December)
             // one-shot: Election day 2009
             || (d == 22 && m == April && y == 2009)
             // one-shot: Election day 2016
-            || (d == 3 && m == August && y == 2016)
-            )
+            || (d == 3 && m == August && y == 2016)) {
             return false;
+        }
         return true;
     }
 

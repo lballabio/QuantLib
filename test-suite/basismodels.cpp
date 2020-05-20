@@ -66,11 +66,13 @@ namespace {
                                       const Real spread = 0.0) {
         Date today = Settings::instance().evaluationDate();
         std::vector<Date> dates;
-        for (Size k = 0; k < terms.size(); ++k)
+        for (Size k = 0; k < terms.size(); ++k) {
             dates.push_back(NullCalendar().advance(today, terms[k], Unadjusted));
+        }
         std::vector<Real> ratesPlusSpread(rates);
-        for (Size k = 0; k < ratesPlusSpread.size(); ++k)
+        for (Size k = 0; k < ratesPlusSpread.size(); ++k) {
             ratesPlusSpread[k] += spread;
+        }
         ext::shared_ptr<YieldTermStructure> ts =
             ext::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
                 dates, ratesPlusSpread, Actual365Fixed(), NullCalendar()));
@@ -111,8 +113,9 @@ namespace {
     Handle<OptionletVolatilityStructure> getOptionletTS() {
         Date today = Settings::instance().evaluationDate();
         std::vector<Date> dates;
-        for (Size k = 0; k < capletTerms.size(); ++k)
+        for (Size k = 0; k < capletTerms.size(); ++k) {
             dates.push_back(TARGET().advance(today, capletTerms[k], Following));
+        }
         // set up vol data manually
         std::vector<std::vector<Real> > capletVols;
         capletVols.push_back(std::vector<Real>(cplRow01, cplRow01 + 8));
@@ -129,9 +132,10 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > capletVolQuotes;
         for (Size i = 0; i < capletVols.size(); ++i) {
             std::vector<Handle<Quote> > row;
-            for (Size j = 0; j < capletVols[i].size(); ++j)
+            for (Size j = 0; j < capletVols[i].size(); ++j) {
                 row.push_back(RelinkableHandle<Quote>(
                     ext::shared_ptr<Quote>(new SimpleQuote(capletVols[i][j]))));
+            }
             capletVolQuotes.push_back(row);
         }
         Handle<YieldTermStructure> curve3m = getYTS(terms, proj3mRates);
@@ -164,9 +168,10 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > swaptionVolQuotes;
         for (Size i = 0; i < swaptionVols.size(); ++i) {
             std::vector<Handle<Quote> > row;
-            for (Size j = 0; j < swaptionVols[i].size(); ++j)
+            for (Size j = 0; j < swaptionVols[i].size(); ++j) {
                 row.push_back(RelinkableHandle<Quote>(
                     ext::shared_ptr<Quote>(new SimpleQuote(swaptionVols[i][j]))));
+            }
             swaptionVolQuotes.push_back(row);
         }
         ext::shared_ptr<SwaptionVolatilityStructure> tmp(
@@ -202,47 +207,54 @@ namespace {
         // model time is always Act365Fixed
         Time exerciseTime = Actual365Fixed().yearFraction(discYTS->referenceDate(),
                                                           swaption->exercise()->dates()[0]);
-        if (exerciseTime != cashFlows.exerciseTimes()[0])
+        if (exerciseTime != cashFlows.exerciseTimes()[0]) {
             BOOST_ERROR(
                 "Swaption cash flow exercise time does not coincide with manual calculation");
+        }
         // there might be rounding errors
         Real tol = 1.0e-8;
         // (discounted) fixed leg coupons must match swap fixed leg NPV
         Real fixedLeg = 0.0;
-        for (Size k = 0; k < cashFlows.fixedTimes().size(); ++k)
+        for (Size k = 0; k < cashFlows.fixedTimes().size(); ++k) {
             fixedLeg += cashFlows.fixedWeights()[k] * discYTS->discount(cashFlows.fixedTimes()[k]);
-        if (fabs(fixedLeg - (-swap->fixedLegNPV())) > tol) // note, '-1' because payer swap
+        }
+        if (fabs(fixedLeg - (-swap->fixedLegNPV())) > tol) { // note, '-1' because payer swap
             BOOST_ERROR("Swaption cash flow fixed leg NPV does not match Vanillaswap fixed leg NPV"
                         << "SwaptionCashFlows: " << fixedLeg << "\n"
                         << "swap->fixedLegNPV: " << swap->fixedLegNPV() << "\n"
                         << "Variance:          " << swap->fixedLegNPV() - fixedLeg << "\n");
+        }
         // (discounted) floating leg coupons must match swap floating leg NPV
         Real floatLeg = 0.0;
-        for (Size k = 0; k < cashFlows.floatTimes().size(); ++k)
+        for (Size k = 0; k < cashFlows.floatTimes().size(); ++k) {
             floatLeg += cashFlows.floatWeights()[k] * discYTS->discount(cashFlows.floatTimes()[k]);
-        if (fabs(floatLeg - swap->floatingLegNPV()) > tol)
+        }
+        if (fabs(floatLeg - swap->floatingLegNPV()) > tol) {
             BOOST_ERROR(
                 "Swaption cash flow floating leg NPV does not match Vanillaswap floating leg NPV.\n"
                 << "SwaptionCashFlows:    " << floatLeg << "\n"
                 << "swap->floatingLegNPV: " << swap->floatingLegNPV() << "\n"
                 << "Variance:             " << swap->floatingLegNPV() - floatLeg << "\n");
+        }
         // There should not be spread coupons in a single-curve setting.
         // However, if indexed coupons are used the floating leg is not at par,
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
         Real tol2;
-        if (!IborCoupon::usingAtParCoupons())
+        if (!IborCoupon::usingAtParCoupons()) {
             tol2 = 0.02;
-        else
+        } else {
             tol2 = tol;
+        }
 
         SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
         for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {
-            if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol2)
+            if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol2) {
                 BOOST_ERROR("Swaption cash flow floating leg spread does not vanish in "
                             "single-curve setting.\n"
                             << "Cash flow index k: " << k << ", floatWeights: "
                             << singleCurveCashFlows.floatWeights()[k] << "\n");
+            }
         }
     }
 
@@ -297,12 +309,13 @@ void BasismodelsTest::testTenoroptionletvts() {
                 // De-correlation yields that larger tenor shifted vols are smaller then shorter
                 // tenor vols
                 if (vol6mShifted - vol3m >
-                    0.0001) // we leave 1bp tolerance due to simplified spread calculation
+                    0.0001) { // we leave 1bp tolerance due to simplified spread calculation
                     BOOST_ERROR("Shifted 6m vol significantly larger then 3m vol at\n"
                                 << "expiry term: " << capletTerms[i]
                                 << ", strike: " << capletStrikes[j] << "\n"
                                 << "vol3m: " << vol3m << ", vol6m: " << vol6m
                                 << ", vol6mShifted: " << vol6mShifted << "\n");
+                }
             }
         }
     }
@@ -333,12 +346,13 @@ void BasismodelsTest::testTenoroptionletvts() {
                 Real tol =
                     (i < 3) ? (0.001) :
                               (0.0001); // 10bp tol for smaller tenors and 1bp tol for larger tenors
-                if (fabs(vol6mShifted - vol3m) > tol)
+                if (fabs(vol6mShifted - vol3m) > tol) {
                     BOOST_ERROR("Shifted 6m vol does not match 3m vol for perfect correlation at\n"
                                 << "expiry term: " << capletTerms[i]
                                 << ", strike: " << capletStrikes[j] << "\n"
                                 << "vol3m: " << vol3m << ", vol6m: " << vol6m
                                 << ", vol6mShifted: " << vol6mShifted << "\n");
+                }
             }
         }
     }
@@ -366,11 +380,12 @@ void BasismodelsTest::testTenorswaptionvts() {
                                                         0.01, true);
                 Real vol3m = euribor3mSwVTS->volatility(swaptionVTSTerms[i], swaptionVTSTerms[j],
                                                         0.01, true);
-                if (vol3m > vol6m)
+                if (vol3m > vol6m) {
                     BOOST_ERROR("Euribor 6m must be larger than 3m vol at\n"
                                 << "expiry term: " << swaptionVTSTerms[i]
                                 << ", swap term: " << swaptionVTSTerms[j] << "\n"
                                 << "vol3m: " << vol3m << ", vol6m: " << vol6m << "\n");
+                }
             }
         }
     }
@@ -386,12 +401,13 @@ void BasismodelsTest::testTenorswaptionvts() {
                 Real vol6m2 = euribor6mSwVTS2->volatility(swaptionVTSTerms[i], swaptionVTSTerms[j],
                                                           0.01, true);
                 Real tol = 1.0e-8;
-                if (fabs(vol6m2 - vol6m) > tol)
+                if (fabs(vol6m2 - vol6m) > tol) {
                     BOOST_ERROR("Euribor 6m to 6m vols should not change at\n"
                                 << "expiry term: " << swaptionVTSTerms[i]
                                 << ", swap term: " << swaptionVTSTerms[j] << "\n"
                                 << "vol6m: " << vol6m << ", vol6m2: " << vol6m2
                                 << ", variance: " << (vol6m2 - vol6m) << "\n");
+                }
             }
         }
     }
@@ -410,12 +426,13 @@ void BasismodelsTest::testTenorswaptionvts() {
                 Real vol6m2 = euribor6mSwVTS2->volatility(swaptionVTSTerms[i], swaptionVTSTerms[j],
                                                           0.01, true);
                 Real tol = 1.0e-8;
-                if (fabs(vol6m2 - vol6m) > tol)
+                if (fabs(vol6m2 - vol6m) > tol) {
                     BOOST_ERROR("Euribor 6m to 3m to 6m vols should not change at\n"
                                 << "expiry term: " << swaptionVTSTerms[i]
                                 << ", swap term: " << swaptionVTSTerms[j] << "\n"
                                 << "vol6m: " << vol6m << ", vol6m2: " << vol6m2
                                 << ", variance: " << (vol6m2 - vol6m) << "\n");
+                }
             }
         }
     }

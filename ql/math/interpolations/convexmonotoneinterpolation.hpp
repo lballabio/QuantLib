@@ -223,8 +223,9 @@ namespace QuantLib {
 
             helper_map getExistingHelpers() {
                 helper_map retArray(sectionHelpers_);
-                if (constantLastPeriod_)
-                    retArray.erase(*(this->xEnd_-1));
+                if (constantLastPeriod_) {
+                    retArray.erase(*(this->xEnd_ - 1));
+                }
                 return retArray;
             }
           private:
@@ -427,8 +428,9 @@ namespace QuantLib {
             }
 
             Real value(Real x) const {
-                if (!splitRegion_)
+                if (!splitRegion_) {
                     return ConvexMonotone4Helper::value(x);
+                }
 
                 Real xVal = (x-xPrev_)/xScaling_;
                 if (x <= x2_) {
@@ -443,8 +445,9 @@ namespace QuantLib {
             }
 
             Real primitive(Real x) const {
-                if (!splitRegion_)
+                if (!splitRegion_) {
                     return ConvexMonotone4Helper::primitive(x);
+                }
 
                 Real xVal = (x-xPrev_)/xScaling_;
                 if (x <= x2_) {
@@ -625,29 +628,34 @@ namespace QuantLib {
                      + dxPrev/(dx+dxPrev) * this->yBegin_[i+1];
             }
 
-            if (startPoint > 1)
-                f[startPoint-1] = preSectionHelpers_.rbegin()->second->fNext();
-            if (startPoint == 1)
+            if (startPoint > 1) {
+                f[startPoint - 1] = preSectionHelpers_.rbegin()->second->fNext();
+            }
+            if (startPoint == 1) {
                 f[0] = 1.5 * this->yBegin_[1] - 0.5 * f[1];
+            }
 
             f[length_-1] = 1.5 * this->yBegin_[length_-1] - 0.5 * f[length_-2];
 
             if (forcePositive_) {
-                if (f[0] < 0)
+                if (f[0] < 0) {
                     f[0] = 0.0;
-                if (f[length_-1] < 0.0)
-                    f[length_-1] = 0.0;
+                }
+                if (f[length_ - 1] < 0.0) {
+                    f[length_ - 1] = 0.0;
+                }
             }
 
             Real primitive = 0.0;
-            for (Size i = 0; i < startPoint-1; ++i)
-                primitive +=
-                    this->yBegin_[i+1] * (this->xBegin_[i+1]-this->xBegin_[i]);
+            for (Size i = 0; i < startPoint - 1; ++i) {
+                primitive += this->yBegin_[i + 1] * (this->xBegin_[i + 1] - this->xBegin_[i]);
+            }
 
             Size endPoint = length_;
             //constantLastPeriod_ = false;
-            if (constantLastPeriod_)
-                endPoint = endPoint-1;
+            if (constantLastPeriod_) {
+                endPoint = endPoint - 1;
+            }
 
             for (Size i=startPoint; i< endPoint; ++i) {
                 Real gPrev = f[i-1] - this->yBegin_[i];
@@ -785,10 +793,12 @@ namespace QuantLib {
                             Real eta = gNext/(gPrev + gNext);
                             Real b2 = (1.0 + monotonicity_)/2.0;
                             Real b3 = (1.0 - monotonicity_)/2.0;
-                            if (eta > b2)
+                            if (eta > b2) {
                                 eta = b2;
-                            if (eta < b3)
+                            }
+                            if (eta < b3) {
                                 eta = b3;
+                            }
                             if (forcePositive_) {
                                 convMonotoneHelper =
                                     ext::shared_ptr<SectionHelper>(

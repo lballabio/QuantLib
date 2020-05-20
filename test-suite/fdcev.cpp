@@ -106,7 +106,9 @@ void FdCevTest::testLocalMartingale() {
                     f += alpha * std::pow(f, beta) * mt.next().value * sqrtDt;
                     f = std::max(0.0, f);
 
-                    if (f == 0.0) break; // absorbing boundary
+                    if (f == 0.0) {
+                        break; // absorbing boundary
+                    }
                 }
                 stat.add(f - f0);
             }

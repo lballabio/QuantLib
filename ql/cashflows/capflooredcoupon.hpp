@@ -123,10 +123,11 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor& v) {
             Visitor<CappedFlooredIborCoupon>* v1 =
                 dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
-            if (v1 != 0)
+            if (v1 != 0) {
                 v1->visit(*this);
-            else
+            } else {
                 CappedFlooredCoupon::accept(v);
+            }
         }
     };
 
@@ -156,10 +157,11 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor& v) {
             Visitor<CappedFlooredCmsCoupon>* v1 =
                 dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);
-            if (v1 != 0)
+            if (v1 != 0) {
                 v1->visit(*this);
-            else
+            } else {
                 CappedFlooredCoupon::accept(v);
+            }
         }
     };
 

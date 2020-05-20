@@ -44,11 +44,12 @@ void FastFourierTransformTest::testSimple() {
                       cx(0,0),   cx(-11.6569,-4.8284) };
     for (size_t i = 0; i<8; i++) {
         if ((std::fabs(b[i].real() - expected[i].real()) > 1.0e-2) ||
-            (std::fabs(b[i].imag() - expected[i].imag()) > 1.0e-2))
+            (std::fabs(b[i].imag() - expected[i].imag()) > 1.0e-2)) {
             BOOST_ERROR("Convolution(" << i << ")\n"
-                        << std::setprecision(4) << std::scientific
-                        << "    calculated: " << b[i] << "\n"
-                        << "    expected:   " << expected[i]);
+                                       << std::setprecision(4) << std::scientific
+                                       << "    calculated: " << b[i] << "\n"
+                                       << "    expected:   " << expected[i]);
+        }
     }
 }
 
@@ -76,30 +77,32 @@ void FastFourierTransformTest::testInverse() {
     // 0
     Real calculated = ft[0].real() / nFrq;
     Real expected = x[0]*x[0] + x[1]*x[1] + x[2]*x[2];
-    if (fabs (calculated - expected) > 1.0e-10)
+    if (fabs(calculated - expected) > 1.0e-10) {
         BOOST_ERROR("Convolution(0)\n"
-                    << std::setprecision(16) << std::scientific
-                    << "    calculated: " << calculated << "\n"
+                    << std::setprecision(16) << std::scientific << "    calculated: " << calculated
+                    << "\n"
                     << "    expected:   " << expected);
+    }
 
     // 1
     calculated = ft[1].real() / nFrq;
     expected = x[0]*x[1] + x[1]*x[2];
-    if (fabs (calculated - expected) > 1.0e-10)
+    if (fabs(calculated - expected) > 1.0e-10) {
         BOOST_ERROR("Convolution(1)\n"
-                    << std::setprecision(16) << std::scientific
-                    << "    calculated: " << calculated << "\n"
+                    << std::setprecision(16) << std::scientific << "    calculated: " << calculated
+                    << "\n"
                     << "    expected:   " << expected);
+    }
 
     // 2
     calculated = ft[2].real() / nFrq;
     expected = x[0]*x[2];
-    if (fabs (calculated - expected) > 1.0e-10)
+    if (fabs(calculated - expected) > 1.0e-10) {
         BOOST_ERROR("Convolution(1)\n"
-                    << std::setprecision(16) << std::scientific
-                    << "    calculated: " << calculated << "\n"
+                    << std::setprecision(16) << std::scientific << "    calculated: " << calculated
+                    << "\n"
                     << "    expected:   " << expected);
-
+    }
 }
 
 

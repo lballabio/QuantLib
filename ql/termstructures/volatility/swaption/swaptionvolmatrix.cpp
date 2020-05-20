@@ -333,9 +333,11 @@ namespace QuantLib {
 
     void SwaptionVolatilityMatrix::registerWithMarketData()
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
-            for (Size j=0; j<volHandles_.front().size(); ++j)
+        for (Size i = 0; i < volHandles_.size(); ++i) {
+            for (Size j = 0; j < volHandles_.front().size(); ++j) {
                 registerWith(volHandles_[i][j]);
+            }
+        }
     }
 
     void SwaptionVolatilityMatrix::performCalculations() const {
@@ -346,8 +348,9 @@ namespace QuantLib {
         for (Size i=0; i<volatilities_.rows(); ++i) {
             for (Size j=0; j<volatilities_.columns(); ++j) {
                 volatilities_[i][j] = volHandles_[i][j]->value();
-                if(shiftValues_.size() > 0)
+                if (shiftValues_.size() > 0) {
                     shifts_[i][j] = shiftValues_[i][j];
+                }
             }
         }
     }

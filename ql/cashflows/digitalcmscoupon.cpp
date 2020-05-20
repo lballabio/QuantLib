@@ -44,10 +44,11 @@ namespace QuantLib {
         typedef DigitalCoupon super;
         Visitor<DigitalCmsCoupon>* v1 =
             dynamic_cast<Visitor<DigitalCmsCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             super::accept(v);
+        }
     }
 
 

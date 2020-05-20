@@ -87,10 +87,12 @@ namespace QuantLib {
                   Time t);
         void setStep(Time dt) {
             dt_ = dt;
-            if (theta_!=1.0) // there is an explicit part
-                explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
-            if (theta_!=0.0) // there is an implicit part
-                implicitPart_ = I_+(theta_ * dt_)*L_;
+            if (theta_ != 1.0) { // there is an explicit part
+                explicitPart_ = I_ - ((1.0 - theta_) * dt_) * L_;
+            }
+            if (theta_ != 0.0) { // there is an implicit part
+                implicitPart_ = I_ + (theta_ * dt_) * L_;
+            }
         }
       protected:
         operator_type L_, I_, explicitPart_, implicitPart_;
@@ -105,29 +107,34 @@ namespace QuantLib {
     template <class Operator>
     inline void MixedScheme<Operator>::step(array_type& a, Time t) {
         Size i;
-        for (i=0; i<bcs_.size(); i++)
+        for (i = 0; i < bcs_.size(); i++) {
             bcs_[i]->setTime(t);
+        }
         if (theta_!=1.0) { // there is an explicit part
             if (L_.isTimeDependent()) {
                 L_.setTime(t);
                 explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
             }
-            for (i=0; i<bcs_.size(); i++)
+            for (i = 0; i < bcs_.size(); i++) {
                 bcs_[i]->applyBeforeApplying(explicitPart_);
+            }
             a = explicitPart_.applyTo(a);
-            for (i=0; i<bcs_.size(); i++)
+            for (i = 0; i < bcs_.size(); i++) {
                 bcs_[i]->applyAfterApplying(a);
+            }
         }
         if (theta_!=0.0) { // there is an implicit part
             if (L_.isTimeDependent()) {
                 L_.setTime(t-dt_);
                 implicitPart_ = I_+(theta_ * dt_)*L_;
             }
-            for (i=0; i<bcs_.size(); i++)
-                bcs_[i]->applyBeforeSolving(implicitPart_,a);
+            for (i = 0; i < bcs_.size(); i++) {
+                bcs_[i]->applyBeforeSolving(implicitPart_, a);
+            }
             implicitPart_.solveFor(a, a);
-            for (i=0; i<bcs_.size(); i++)
+            for (i = 0; i < bcs_.size(); i++) {
                 bcs_[i]->applyAfterSolving(a);
+            }
         }
     }
 

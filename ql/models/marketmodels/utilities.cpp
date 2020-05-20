@@ -61,8 +61,9 @@ namespace QuantLib {
 
         std::valarray<bool> result(false,set.size());
         Size dimsubSet = subset.size();
-        if (dimsubSet==0)
+        if (dimsubSet == 0) {
             return result;
+        }
         Size dimSet = set.size();
         Time setElement, subsetElement;
 
@@ -76,16 +77,18 @@ namespace QuantLib {
                 subsetElement = subset[j];
                 result[i] = false;
                 // if smaller no hope, leave false and go to next i
-                if (setElement < subsetElement)
+                if (setElement < subsetElement) {
                     break;
+                }
                 // if match, set result[i] to true and go to next i
                 if (setElement == subsetElement) {
                     result[i] = true;
                     break;
                 }
                 // if larger, leave false if at the end or go to next j
-                if (j == dimsubSet-1)
+                if (j == dimsubSet - 1) {
                     break;
+                }
                 ++j;
             }
         }
@@ -99,11 +102,14 @@ namespace QuantLib {
         QL_REQUIRE(times[0]>0.0,
                    "first time (" << times[0] <<
                    ") must be greater than zero");
-        for (Size i=0; i<nTimes-1; ++i)
-            QL_REQUIRE(times[i+1]-times[i]>0,
-                       "non increasing rate times: "
-                       "times[" << i   << "]=" << times[i] << ", "
-                       "times[" << i+1 << "]=" << times[i+1]);
+        for (Size i = 0; i < nTimes - 1; ++i) {
+            QL_REQUIRE(times[i + 1] - times[i] > 0, "non increasing rate times: "
+                                                    "times["
+                                                        << i << "]=" << times[i]
+                                                        << ", "
+                                                           "times["
+                                                        << i + 1 << "]=" << times[i + 1]);
+        }
     }
 
     void checkIncreasingTimesAndCalculateTaus(const std::vector<Time>& times,
@@ -114,8 +120,9 @@ namespace QuantLib {
         QL_REQUIRE(times[0]>0.0,
                    "first time (" << times[0] <<
                    ") must be greater than zero");
-        if (taus.size()!=nTimes-1)
-            taus.resize(nTimes-1);
+        if (taus.size() != nTimes - 1) {
+            taus.resize(nTimes - 1);
+        }
         for (Size i=0; i<nTimes-1; ++i) {
             taus[i]=times[i+1]-times[i];
             QL_REQUIRE(taus[i]>0,

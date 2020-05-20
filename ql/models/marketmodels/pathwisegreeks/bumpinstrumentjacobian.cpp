@@ -43,8 +43,9 @@ namespace QuantLib
     {
         QL_REQUIRE(j < swaptions_.size()+caps_.size(), "too high index passed to VolatilityBumpInstrumentJacobian::derivativesVolatility");
 
-        if (computed_[j])
+        if (computed_[j]) {
             return derivatives_[j];
+        }
 
         derivatives_[j].resize(bumps_.numberBumps());
         onePercentBumps_[j].resize(bumps_.numberBumps());
@@ -66,9 +67,13 @@ namespace QuantLib
                 for (Size i= bumps_.allBumps()[k].stepBegin(); i < bumps_.allBumps()[k].stepEnd(); ++i)
                 {
                     const Matrix& fullDerivative = thisPseudo.volatilityDerivative(i);
-                    for (Size f= bumps_.allBumps()[k].factorBegin(); f < bumps_.allBumps()[k].factorEnd(); ++f)
-                        for (Size r= bumps_.allBumps()[k].rateBegin(); r < bumps_.allBumps()[k].rateEnd(); ++r)
+                    for (Size f = bumps_.allBumps()[k].factorBegin();
+                         f < bumps_.allBumps()[k].factorEnd(); ++f) {
+                        for (Size r = bumps_.allBumps()[k].rateBegin();
+                             r < bumps_.allBumps()[k].rateEnd(); ++r) {
                             v += fullDerivative[r][f];
+                        }
+                    }
                 }
 
                 derivatives_[j][k] =v;
@@ -92,9 +97,13 @@ namespace QuantLib
                 for (Size i= bumps_.allBumps()[k].stepBegin(); i < bumps_.allBumps()[k].stepEnd(); ++i)
                 {
                     const Matrix& fullDerivative = thisPseudo.volatilityDerivative(i);
-                    for (Size f= bumps_.allBumps()[k].factorBegin(); f < bumps_.allBumps()[k].factorEnd(); ++f)
-                        for (Size r= bumps_.allBumps()[k].rateBegin(); r < bumps_.allBumps()[k].rateEnd(); ++r)
+                    for (Size f = bumps_.allBumps()[k].factorBegin();
+                         f < bumps_.allBumps()[k].factorEnd(); ++f) {
+                        for (Size r = bumps_.allBumps()[k].rateBegin();
+                             r < bumps_.allBumps()[k].rateEnd(); ++r) {
                             v += fullDerivative[r][f];
+                        }
+                    }
                 }
 
                 sizesq += v*v;
@@ -127,9 +136,11 @@ namespace QuantLib
 
     const Matrix& VolatilityBumpInstrumentJacobian::getAllOnePercentBumps() const
     {
-        if (!allComputed_)
-             for (Size i=0; i <swaptions_.size()+caps_.size(); ++i)
+        if (!allComputed_) {
+            for (Size i = 0; i < swaptions_.size() + caps_.size(); ++i) {
                 derivativesVolatility(i);
+            }
+        }
 
         allComputed_ =true;
 
@@ -172,14 +183,17 @@ namespace QuantLib
         theBumps.resize(numberSteps);
        // recall that the bumps: We do the outermost vector by time step and inner one by which vega.
 
-        for (Size i=0; i < theBumps.size(); ++i)
+        for (Size i = 0; i < theBumps.size(); ++i) {
             theBumps[i].resize(numberRestrictedBumps);
+        }
 
         Matrix modelMatrix(numberRates, factors,0.0);
 
-        for (Size i=0;  i< numberSteps; ++i)
-            for (Size j=0; j < numberRestrictedBumps; ++j)
+        for (Size i = 0; i < numberSteps; ++i) {
+            for (Size j = 0; j < numberRestrictedBumps; ++j) {
                 theBumps[i][j] = modelMatrix;
+            }
+        }
 
         const std::vector<VegaBumpCluster>& bumpClusters(derivativesProducer_.getInputBumps().allBumps());
 
@@ -194,10 +208,16 @@ namespace QuantLib
                 {
                     Real magnitude = projector.GetVector(instrument)[cluster];
 
-                    for (Size step = bumpClusters[cluster].stepBegin(); step <  bumpClusters[cluster].stepEnd(); ++step)
-                        for (Size rate = bumpClusters[cluster].rateBegin(); rate < bumpClusters[cluster].rateEnd(); ++rate)
-                            for (Size factor = bumpClusters[cluster].factorBegin(); factor <  bumpClusters[cluster].factorEnd(); ++factor)
+                    for (Size step = bumpClusters[cluster].stepBegin();
+                         step < bumpClusters[cluster].stepEnd(); ++step) {
+                        for (Size rate = bumpClusters[cluster].rateBegin();
+                             rate < bumpClusters[cluster].rateEnd(); ++rate) {
+                            for (Size factor = bumpClusters[cluster].factorBegin();
+                                 factor < bumpClusters[cluster].factorEnd(); ++factor) {
                                 theBumps[step][bumpIndex][rate][factor] = magnitude;
+                            }
+                        }
+                    }
                 }
 
                 ++bumpIndex;

@@ -98,9 +98,9 @@ namespace QuantLib
             cashFlowsGenerated[i][0].timeIndex = currentIndex_;
             cashFlowsGenerated[i][0].amount[0] = amounts_[i][currentIndex_];
 
-            for (Size k=1; k <= evolution_.numberOfRates(); ++k)
-                 cashFlowsGenerated[i][0].amount[k] = 0.0;
- 
+            for (Size k = 1; k <= evolution_.numberOfRates(); ++k) {
+                cashFlowsGenerated[i][0].amount[k] = 0.0;
+            }
         }
         ++currentIndex_;
         return true;

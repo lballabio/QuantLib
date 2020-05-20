@@ -65,7 +65,7 @@ namespace QuantLib {
         for (Size i = floatingIdx; i < arguments_.floatingResetDates.size();
              i++) {
             Real amount;
-            if (!arguments_.floatingIsRedemptionFlow[i])
+            if (!arguments_.floatingIsRedemptionFlow[i]) {
                 amount = (arguments_.floatingGearings[i] *
                               model_->forwardRate(
                                   arguments_.floatingFixingDates[i], expiry, y,
@@ -73,8 +73,9 @@ namespace QuantLib {
                           arguments_.floatingSpreads[i]) *
                          arguments_.floatingAccrualTimes[i] *
                          arguments_.floatingNominal[i];
-            else
+            } else {
                 amount = arguments_.floatingCoupons[i];
+            }
             npv +=
                 amount * model_->zerobond(arguments_.floatingPayDates[i],
                                           expiry, y, discountCurve_) *
@@ -110,11 +111,13 @@ namespace QuantLib {
         for (Size i = fixedIdx; i < arguments_.fixedResetDates.size(); i++) {
             nominalSum += arguments_.fixedNominal[i];
             Real rate = arguments_.fixedRate[i];
-            if (close(rate, 0.0))
+            if (close(rate, 0.0)) {
                 rate = 0.03; // this value is at least better than zero
+            }
             weightedRate += arguments_.fixedNominal[i] * rate;
-            if (arguments_.fixedNominal[i] > 1E-8) // exclude zero nominal periods
+            if (arguments_.fixedNominal[i] > 1E-8) { // exclude zero nominal periods
                 ind += 1.0;
+            }
         }
         Real nominalAvg = nominalSum / ind;
 
@@ -182,10 +185,11 @@ namespace QuantLib {
 
         do {
 
-            if (idx == minIdxAlive - 1)
+            if (idx == minIdxAlive - 1) {
                 expiry0 = settlement;
-            else
+            } else {
                 expiry0 = arguments_.exercise->dates()[idx];
+            }
 
             expiry0Time = std::max(
                 model_->termStructure()->timeFromReference(expiry0), 0.0);
@@ -246,24 +250,21 @@ namespace QuantLib {
                                          z[0]) *
                                      zSpreadDf;
                         } else {
-                            if (type == Option::Call)
+                            if (type == Option::Call) {
+                                price += model_->gaussianShiftedPolynomialIntegral(
+                                             0.0, payoff1.cCoefficients()[z.size() - 2],
+                                             payoff1.bCoefficients()[z.size() - 2],
+                                             payoff1.aCoefficients()[z.size() - 2], p[z.size() - 2],
+                                             z[z.size() - 2], z[z.size() - 1], 100.0) *
+                                         zSpreadDf;
+                            }
+                            if (type == Option::Put) {
                                 price +=
                                     model_->gaussianShiftedPolynomialIntegral(
-                                        0.0,
-                                        payoff1.cCoefficients()[z.size() - 2],
-                                        payoff1.bCoefficients()[z.size() - 2],
-                                        payoff1.aCoefficients()[z.size() - 2],
-                                        p[z.size() - 2], z[z.size() - 2],
-                                        z[z.size() - 1], 100.0) *
+                                        0.0, payoff1.cCoefficients()[0], payoff1.bCoefficients()[0],
+                                        payoff1.aCoefficients()[0], p[0], z[0], -100.0, z[0]) *
                                     zSpreadDf;
-                            if (type == Option::Put)
-                                price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
-                                        0.0, payoff1.cCoefficients()[0],
-                                        payoff1.bCoefficients()[0],
-                                        payoff1.aCoefficients()[0], p[0], z[0],
-                                        -100.0, z[0]) *
-                                    zSpreadDf;
+                            }
                         }
                     }
                 }
@@ -322,35 +323,23 @@ namespace QuantLib {
                                                   z[0], -100.0, z[0]) *
                                         zSpreadDf;
                                 } else {
-                                    if (type == Option::Call)
-                                        price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
-                                                      0.0,
-                                                      payoff1.cCoefficients()
-                                                          [z.size() - 2],
-                                                      payoff1.bCoefficients()
-                                                          [z.size() - 2],
-                                                      payoff1.aCoefficients()
-                                                          [z.size() - 2],
-                                                      p[z.size() - 2],
-                                                      z[z.size() - 2],
-                                                      z[z.size() - 1], 100.0) *
-                                            zSpreadDf;
-                                    if (type == Option::Put)
-                                        price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
-                                                      0.0,
-                                                      payoff1
-                                                          .cCoefficients()[0],
-                                                      payoff1
-                                                          .bCoefficients()[0],
-                                                      payoff1
-                                                          .aCoefficients()[0],
-                                                      p[0], z[0], -100.0,
-                                                      z[0]) *
-                                            zSpreadDf;
+                                    if (type == Option::Call) {
+                                        price += model_->gaussianShiftedPolynomialIntegral(
+                                                     0.0, payoff1.cCoefficients()[z.size() - 2],
+                                                     payoff1.bCoefficients()[z.size() - 2],
+                                                     payoff1.aCoefficients()[z.size() - 2],
+                                                     p[z.size() - 2], z[z.size() - 2],
+                                                     z[z.size() - 1], 100.0) *
+                                                 zSpreadDf;
+                                    }
+                                    if (type == Option::Put) {
+                                        price += model_->gaussianShiftedPolynomialIntegral(
+                                                     0.0, payoff1.cCoefficients()[0],
+                                                     payoff1.bCoefficients()[0],
+                                                     payoff1.aCoefficients()[0], p[0], z[0], -100.0,
+                                                     z[0]) *
+                                                 zSpreadDf;
+                                    }
                                 }
                             }
                         }
@@ -376,17 +365,16 @@ namespace QuantLib {
                                                 arguments_
                                                     .floatingPayDates[l])));
                         Real amount;
-                        if (arguments_.floatingIsRedemptionFlow[l])
+                        if (arguments_.floatingIsRedemptionFlow[l]) {
                             amount = arguments_.floatingCoupons[l];
-                        else
-                            amount = arguments_.floatingNominal[l] *
-                                     arguments_.floatingAccrualTimes[l] *
-                                     (arguments_.floatingGearings[l] *
-                                          model_->forwardRate(
-                                              arguments_.floatingFixingDates[l],
-                                              expiry0, z[k],
-                                              arguments_.swap->iborIndex()) +
-                                      arguments_.floatingSpreads[l]);
+                        } else {
+                            amount =
+                                arguments_.floatingNominal[l] * arguments_.floatingAccrualTimes[l] *
+                                (arguments_.floatingGearings[l] *
+                                     model_->forwardRate(arguments_.floatingFixingDates[l], expiry0,
+                                                         z[k], arguments_.swap->iborIndex()) +
+                                 arguments_.floatingSpreads[l]);
+                        }
                         floatingLegNpv +=
                             amount *
                             model_->zerobond(arguments_.floatingPayDates[l],
@@ -436,19 +424,16 @@ namespace QuantLib {
 
                     // for probability computation
                     if (probabilities_ != None) {
-                        if (idx == static_cast<int>(
-                                       arguments_.exercise->dates().size()) -
-                                       1) // if true we are at the latest date,
-                                          // so we init
-                                          // the no call probability
+                        if (idx == static_cast<int>(arguments_.exercise->dates().size()) -
+                                       1) { // if true we are at the latest date,
+                                            // so we init
+                                            // the no call probability
                             npvp0.back()[k] =
-                                probabilities_ == Naive
-                                    ? 1.0
-                                    : 1.0 / (model_->zerobond(expiry0Time, 0.0,
-                                                              0.0,
-                                                              discountCurve_) *
-                                             model_->numeraire(expiry0, z[k],
-                                                               discountCurve_));
+                                probabilities_ == Naive ?
+                                    1.0 :
+                                    1.0 / (model_->zerobond(expiry0Time, 0.0, 0.0, discountCurve_) *
+                                           model_->numeraire(expiry0, z[k], discountCurve_));
+                        }
                         if (exerciseValue >= npv0[k]) {
                             npvp0[idx - minIdxAlive][k] =
                                 probabilities_ == Naive
@@ -459,9 +444,9 @@ namespace QuantLib {
                                                             discountCurve_) *
                                            model_->numeraire(expiry0Time, z[k],
                                                              discountCurve_));
-                            for (Size ii = idx - minIdxAlive + 1;
-                                 ii < npvp0.size(); ii++)
+                            for (Size ii = idx - minIdxAlive + 1; ii < npvp0.size(); ii++) {
                                 npvp0[ii][k] = 0.0;
+                            }
                         }
                     }
                     // end probability computation
@@ -474,8 +459,9 @@ namespace QuantLib {
 
             // for probability computation
             if (probabilities_ != None) {
-                for (Size i = 0; i < npvp0.size(); i++)
+                for (Size i = 0; i < npvp0.size(); i++) {
                     npvp1[i].swap(npvp0[i]);
+                }
             }
             // end probability computation
 

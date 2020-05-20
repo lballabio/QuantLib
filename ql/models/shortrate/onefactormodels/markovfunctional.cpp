@@ -105,11 +105,11 @@ namespace QuantLib {
              i != volstepdates_.end(); ++i, ++j) {
             volsteptimes_.push_back(termStructure()->timeFromReference(*i));
             volsteptimesArray_[j] = volsteptimes_[j];
-            if (j == 0)
+            if (j == 0) {
                 QL_REQUIRE(volsteptimes_[0] > 0.0,
                            "volsteptimes must be positive (" << volsteptimes_[0]
                                                              << ")");
-            else
+            } else
                 QL_REQUIRE(volsteptimes_[j] > volsteptimes_[j - 1],
                            "volsteptimes must be strictly increasing ("
                                << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
@@ -247,10 +247,12 @@ namespace QuantLib {
         }
 
         registerWith(termStructure());
-        if (!swaptionVol_.empty())
+        if (!swaptionVol_.empty()) {
             registerWith(swaptionVol_);
-        if (!capletVol_.empty())
+        }
+        if (!capletVol_.empty()) {
             registerWith(capletVol_);
+        }
     }
 
     void MarkovFunctional::makeSwaptionCalibrationPoint(const Date &expiry,
@@ -737,8 +739,9 @@ namespace QuantLib {
 
         calculate();
         Array res(y.size(), termStructure()->discount(numeraireTime_, true));
-        if (t < QL_EPSILON)
+        if (t < QL_EPSILON) {
             return res;
+        }
 
         Real inverseNormalization =
             termStructure()->discount(numeraireTime_, true) /
@@ -756,12 +759,14 @@ namespace QuantLib {
 
         for (Size j = 0; j < y.size(); j++) {
             Real yv = y[j];
-            if (yv < y_.front())
+            if (yv < y_.front()) {
                 yv = y_.front();
+            }
             // FIXME flat extrapolation should be incoperated into interpolation
             // object, see above
-            if (yv > y_.back())
+            if (yv > y_.back()) {
                 yv = y_.back();
+            }
             Real na = (*numeraire_[i - 1])(yv);
             Real nb = (*numeraire_[i])(yv);
             res[j] =
@@ -813,10 +818,10 @@ namespace QuantLib {
         const Time t, const Real y,
         const Handle<YieldTermStructure> &yts) const {
 
-        if (t == 0)
-            return yts.empty()
-                       ? this->termStructure()->discount(numeraireTime(), true)
-                       : yts->discount(numeraireTime());
+        if (t == 0) {
+            return yts.empty() ? this->termStructure()->discount(numeraireTime(), true) :
+                                 yts->discount(numeraireTime());
+        }
 
         Array ya(1, y);
         return numeraireArray(t, ya)[0] *
@@ -830,9 +835,9 @@ namespace QuantLib {
     MarkovFunctional::zerobondImpl(const Time T, const Time t, const Real y,
                                    const Handle<YieldTermStructure> &yts) const {
 
-        if (t == 0.0)
-            return yts.empty() ? this->termStructure()->discount(T, true)
-                               : yts->discount(T, true);
+        if (t == 0.0) {
+            return yts.empty() ? this->termStructure()->discount(T, true) : yts->discount(T, true);
+        }
         Array ya(1, y);
         return zerobondArray(T, t, ya)[0] *
                (yts.empty() ? 1.0 : (yts->discount(T) / yts->discount(t) *
@@ -926,21 +931,23 @@ namespace QuantLib {
                     : "")
             << std::endl;
         out << "Smile moneyness checkpoints: ";
-        for (Size i = 0; i < m.settings_.smileMoneynessCheckpoints_.size(); i++)
+        for (Size i = 0; i < m.settings_.smileMoneynessCheckpoints_.size(); i++) {
             out << m.settings_.smileMoneynessCheckpoints_[i]
-                << (i < m.settings_.smileMoneynessCheckpoints_.size() - 1 ? ";"
-                                                                          : "");
+                << (i < m.settings_.smileMoneynessCheckpoints_.size() - 1 ? ";" : "");
+        }
         out << std::endl;
 
         QL_REQUIRE(!m.dirty_, "model outputs are dirty");
 
-        if (m.expiries_.size() == 0)
+        if (m.expiries_.size() == 0) {
             return out; // no trace information was collected so no output
+        }
         out << std::endl;
         out << "Messages:" << std::endl;
         for (std::vector<std::string>::const_iterator i = m.messages_.begin();
-             i != m.messages_.end(); ++i)
+             i != m.messages_.end(); ++i) {
             out << (*i) << std::endl;
+        }
         out << std::endl << std::setprecision(16);
         out << "Yield termstructure fit:" << std::endl;
         out << "expiry;tenor;atm;annuity;digitalAdj;ytsAdj;marketzerorate;"
@@ -988,8 +995,9 @@ namespace QuantLib {
 
         calculate();
 
-        if (!iborIdx)
+        if (!iborIdx) {
             iborIdx = iborIndex_;
+        }
 
         Date valueDate = zeroFixingDays ? fixing : iborIdx->valueDate(fixing);
         Date endDate = iborIdx->fixingCalendar().advance(
@@ -1012,8 +1020,9 @@ namespace QuantLib {
 
         calculate();
 
-        if (!swapIdx)
+        if (!swapIdx) {
             swapIdx = swapIndexBase_;
+        }
         QL_REQUIRE(swapIdx, "No swap index given");
 
         ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
@@ -1038,8 +1047,9 @@ namespace QuantLib {
 
         calculate();
 
-        if (!swapIdx)
+        if (!swapIdx) {
             swapIdx = swapIndexBase_;
+        }
         QL_REQUIRE(swapIdx, "No swap index given");
 
         ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
@@ -1109,17 +1119,17 @@ namespace QuantLib {
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0, z[0]);
             } else {
-                if (type == Option::Call)
+                if (type == Option::Call) {
                     price += gaussianShiftedPolynomialIntegral(
                         0.0, payoff.cCoefficients()[z.size() - 2],
-                        payoff.bCoefficients()[z.size() - 2],
-                        payoff.aCoefficients()[z.size() - 2], p[z.size() - 2],
-                        z[z.size() - 2], z[z.size() - 1], 100.0);
-                if (type == Option::Put)
+                        payoff.bCoefficients()[z.size() - 2], payoff.aCoefficients()[z.size() - 2],
+                        p[z.size() - 2], z[z.size() - 2], z[z.size() - 1], 100.0);
+                }
+                if (type == Option::Put) {
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[0],
-                        payoff.bCoefficients()[0], payoff.aCoefficients()[0],
-                        p[0], z[0], -100.0, z[0]);
+                        0.0, payoff.cCoefficients()[0], payoff.bCoefficients()[0],
+                        payoff.aCoefficients()[0], p[0], z[0], -100.0, z[0]);
+                }
             }
         }
 
@@ -1133,8 +1143,9 @@ namespace QuantLib {
 
         calculate();
 
-        if (!iborIdx)
+        if (!iborIdx) {
             iborIdx = iborIndex_;
+        }
 
         Time fixingTime = termStructure()->timeFromReference(expiry);
         Time referenceTime =
@@ -1186,17 +1197,17 @@ namespace QuantLib {
                 price += gaussianShiftedPolynomialIntegral(
                     0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0, z[0]);
             } else {
-                if (type == Option::Call)
+                if (type == Option::Call) {
                     price += gaussianShiftedPolynomialIntegral(
                         0.0, payoff.cCoefficients()[z.size() - 2],
-                        payoff.bCoefficients()[z.size() - 2],
-                        payoff.aCoefficients()[z.size() - 2], p[z.size() - 2],
-                        z[z.size() - 2], z[z.size() - 1], 100.0);
-                if (type == Option::Put)
+                        payoff.bCoefficients()[z.size() - 2], payoff.aCoefficients()[z.size() - 2],
+                        p[z.size() - 2], z[z.size() - 2], z[z.size() - 1], 100.0);
+                }
+                if (type == Option::Put) {
                     price += gaussianShiftedPolynomialIntegral(
-                        0.0, payoff.cCoefficients()[0],
-                        payoff.bCoefficients()[0], payoff.aCoefficients()[0],
-                        p[0], z[0], -100.0, z[0]);
+                        0.0, payoff.cCoefficients()[0], payoff.bCoefficients()[0],
+                        payoff.aCoefficients()[0], p[0], z[0], -100.0, z[0]);
+                }
             }
         }
 

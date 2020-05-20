@@ -97,20 +97,20 @@ void BlackFormulaTest::testChambersImpliedVol() {
                                         displacements[i2]);
                                 Real moneyness = (strikes[i4] + displacements[i2]) /
                                              (forwards[i3] + displacements[i2]);
-                                if(moneyness > 1.0) moneyness = 1.0 / moneyness;
+                                if (moneyness > 1.0) {
+                                    moneyness = 1.0 / moneyness;
+                                }
                                 Real error = (iStdDev - stdDevs[i5]) / stdDevs[i5] * moneyness;
-                                if(error > tol)
+                                if (error > tol) {
                                     BOOST_ERROR(
                                         "Failed to verify Chambers-Nawalkha "
                                         "approximation for "
-                                        << types[i1]
-                                        << " displacement=" << displacements[i2]
-                                        << " forward=" << forwards[i3]
-                                        << " strike=" << strikes[i4]
+                                        << types[i1] << " displacement=" << displacements[i2]
+                                        << " forward=" << forwards[i3] << " strike=" << strikes[i4]
                                         << " discount=" << discounts[i6]
-                                        << " stddev=" << stdDevs[i5]
-                                        << " result=" << iStdDev
+                                        << " stddev=" << stdDevs[i5] << " result=" << iStdDev
                                         << " exceeds maximum error tolerance");
+                                }
                             }
                         }
                     }

@@ -120,8 +120,9 @@ namespace QuantLib {
     }
 
     inline Real AbcdMathFunction::maximumValue() const {
-        if (b_==0.0 || a_<=0.0)
+        if (b_ == 0.0 || a_ <= 0.0) {
             return d_;
+        }
         return (*this)(maximumLocation());
     }
 

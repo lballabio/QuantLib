@@ -56,9 +56,9 @@ namespace QuantLib {
                                                         maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
 
-            if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+            if (RNG::allowsErrorEstimate) {
+                results_.errorEstimate = this->mcModel_->sampleAccumulator().errorEstimate();
+            }
         }
       private:
         // McSimulation implementation

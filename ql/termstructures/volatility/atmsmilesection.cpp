@@ -26,8 +26,9 @@ namespace QuantLib {
         : SmileSection(*source), source_(source) {
 
         f_ = atm;
-        if (f_ == Null<Real>())
+        if (f_ == Null<Real>()) {
             f_ = source_->atmLevel();
+        }
     }
 
 }

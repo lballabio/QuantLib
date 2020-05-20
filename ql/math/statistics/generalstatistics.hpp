@@ -126,10 +126,11 @@ namespace QuantLib {
                     N += 1;
                 }
             }
-            if (N == 0)
+            if (N == 0) {
                 return std::make_pair<Real,Size>(Null<Real>(),0);
-            else
-                return std::make_pair(num/den,N);
+            } else {
+                return std::make_pair(num / den, N);
+            }
         }
 
         /*! \f$ y \f$-th percentile, defined as the value \f$ \bar{x} \f$
@@ -158,15 +159,17 @@ namespace QuantLib {
         //! adds a sequence of data to the set, with default weight
         template <class DataIterator>
         void addSequence(DataIterator begin, DataIterator end) {
-            for (;begin!=end;++begin)
+            for (; begin != end; ++begin) {
                 add(*begin);
+            }
         }
         //! adds a sequence of data to the set, each with its weight
         template <class DataIterator, class WeightIterator>
         void addSequence(DataIterator begin, DataIterator end,
                          WeightIterator wbegin) {
-            for (;begin!=end;++begin,++wbegin)
+            for (; begin != end; ++begin, ++wbegin) {
                 add(*begin, *wbegin);
+            }
         }
 
         //! resets the data to a null set

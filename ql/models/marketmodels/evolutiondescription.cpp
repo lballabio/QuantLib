@@ -55,10 +55,10 @@ namespace QuantLib {
                    ") is past the last fixing time (" <<
                    rateTimes[numberOfRates_-2] << ")");
 
-        if (relevanceRates.empty())
+        if (relevanceRates.empty()) {
             relevanceRates_ = std::vector<std::pair<Size,Size> >(
                                 numberOfSteps, std::make_pair(0,numberOfRates_));
-        else
+        } else
             QL_REQUIRE(relevanceRates.size() == numberOfSteps,
                        "relevanceRates / evolutionTimes mismatch");
 
@@ -71,8 +71,9 @@ namespace QuantLib {
         Time currentEvolutionTime = 0.0;
         Size firstAliveRate = 0;
         for (Size j=0; j<numberOfSteps; ++j) {
-            while (rateTimes_[firstAliveRate] <= currentEvolutionTime)
+            while (rateTimes_[firstAliveRate] <= currentEvolutionTime) {
                 ++firstAliveRate;
+            }
             firstAliveRate_[j] = firstAliveRate;
             currentEvolutionTime = evolutionTimes_[j];
         }
@@ -120,12 +121,13 @@ namespace QuantLib {
                    << ") and evolution times (" << n << ")");
 
         const std::vector<Time>& rateTimes = evolution.rateTimes();
-        for (Size i=0; i<n-1; i++)
+        for (Size i = 0; i < n - 1; i++) {
             QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i],
-                       io::ordinal(i+1) << " step, evolution time " <<
-                       evolutionTimes[i] << ": the numeraire (" << numeraires[i] <<
-                       "), corresponding to rate time " <<
-                       rateTimes[numeraires[i]] << ", is expired");
+                       io::ordinal(i + 1)
+                           << " step, evolution time " << evolutionTimes[i] << ": the numeraire ("
+                           << numeraires[i] << "), corresponding to rate time "
+                           << rateTimes[numeraires[i]] << ", is expired");
+        }
     }
 
     bool isInTerminalMeasure(const EvolutionDescription& evolution,
@@ -147,8 +149,9 @@ namespace QuantLib {
                    << maxNumeraire << ")");
         const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
         for (Size i=0, j=0; i<evolutionTimes.size(); ++i) {
-            while (rateTimes[j] < evolutionTimes[i])
+            while (rateTimes[j] < evolutionTimes[i]) {
                 j++;
+            }
             res = (numeraires[i] == std::min(j+offset, maxNumeraire)) && res;
         }
         return res;
@@ -178,8 +181,9 @@ namespace QuantLib {
         Size n = evolutionTimes.size();
         std::vector<Size> numeraires(n);
         for (Size i=0, j=0; i<n; ++i) {
-            while (rateTimes[j] < evolutionTimes[i])
+            while (rateTimes[j] < evolutionTimes[i]) {
                 j++;
+            }
             numeraires[i] = std::min(j+offset, maxNumeraire);
         }
         return numeraires;

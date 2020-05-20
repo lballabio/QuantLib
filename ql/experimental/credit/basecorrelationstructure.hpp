@@ -75,13 +75,11 @@ namespace QuantLib {
           lossLevel_(lossLevel),
           trancheTimes_(tenors.size(), 0.) {
               checkTrancheTenors();
-               
-              for(Size i=0; i<tenors_.size(); i++)
+
+              for (Size i = 0; i < tenors_.size(); i++) {
                   trancheDates_.push_back(
-                      calendar().advance(referenceDate(),
-                                         tenors_[i],
-                                         businessDayConvention())
-                                          );
+                      calendar().advance(referenceDate(), tenors_[i], businessDayConvention()));
+              }
 
               initializeTrancheTimes();
               checkInputs(correlations_.rows(), correlations_.columns());
@@ -139,11 +137,12 @@ namespace QuantLib {
         QL_REQUIRE(tenors_[0]>0*Days,
                    "first tranche tenor is negative (" <<
                    tenors_[0] << ")");
-        for (Size i=1; i<nTrancheTenors_; ++i)
-            QL_REQUIRE(tenors_[i]>tenors_[i-1],
-                       "non increasing tranche tenor: " << io::ordinal(i) <<
-                       " is " << tenors_[i-1] << ", " << io::ordinal(i+1) <<
-                       " is " << tenors_[i]);
+        for (Size i = 1; i < nTrancheTenors_; ++i) {
+            QL_REQUIRE(tenors_[i] > tenors_[i - 1],
+                       "non increasing tranche tenor: "
+                           << io::ordinal(i) << " is " << tenors_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << tenors_[i]);
+        }
     }
 
     template <class I2D_T>
@@ -165,8 +164,9 @@ namespace QuantLib {
 
     template <class I2D_T>
     void BaseCorrelationTermStructure<I2D_T>::initializeTrancheTimes() const {
-        for (Size i=0; i<nTrancheTenors_; ++i)
+        for (Size i = 0; i < nTrancheTenors_; ++i) {
             trancheTimes_[i] = timeFromReference(trancheDates_[i]);
+        }
     }
 
     template <class I2D_T>
@@ -185,9 +185,11 @@ namespace QuantLib {
     template <class I2D_T>
     void BaseCorrelationTermStructure<I2D_T>::registerWithMarketData()
     {
-        for (Size i=0; i<correlHandles_.size(); ++i)
-            for (Size j=0; j<correlHandles_.front().size(); ++j)
+        for (Size i = 0; i < correlHandles_.size(); ++i) {
+            for (Size j = 0; j < correlHandles_.front().size(); ++j) {
                 registerWith(correlHandles_[i][j]);
+            }
+        }
     }
 
     template <class I2D_T>
@@ -198,10 +200,11 @@ namespace QuantLib {
 
     template <class I2D_T>
     void BaseCorrelationTermStructure<I2D_T>::updateMatrix() const {
-        for (Size i=0; i<correlHandles_.size(); ++i)
-            for (Size j=0; j<correlHandles_.front().size(); ++j)
+        for (Size i = 0; i < correlHandles_.size(); ++i) {
+            for (Size j = 0; j < correlHandles_.front().size(); ++j) {
                 correlations_[i][j] = correlHandles_[i][j]->value();
-
+            }
+        }
     }
 
 }

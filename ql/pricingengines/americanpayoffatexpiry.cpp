@@ -110,14 +110,16 @@ namespace QuantLib {
             n_d1_ = f.derivative(D1_);
             n_d2_ = f.derivative(D2_);
         } else {
-            if (log_S_H_ * phi >0)
+            if (log_S_H_ * phi > 0) {
                 cum_d1_= 1.0;
-            else
-                cum_d1_= 0.0;
-            if (log_H_S_ * eta >0)
+            } else {
+                cum_d1_ = 0.0;
+            }
+            if (log_H_S_ * eta > 0) {
                 cum_d2_= 1.0;
-            else
-                cum_d2_= 0.0;
+            } else {
+                cum_d2_ = 0.0;
+            }
             n_d1_ = 0.0;
             n_d2_ = 0.0;
         }
@@ -170,13 +172,15 @@ namespace QuantLib {
             Y_ = 1.0;
         } else {
             X_ = 1.0;
-            if (cum_d2_ == 0.0)
+            if (cum_d2_ == 0.0) {
                 Y_ = 0.0; // check needed on some extreme cases
-            else
-                Y_ = std::pow(Real(strike_/spot_), Real(2.0*mu_));
+            } else {
+                Y_ = std::pow(Real(strike_ / spot_), Real(2.0 * mu_));
+            }
         }
-        if (!knock_in_)
-           Y_ *= -1.0; 
+        if (!knock_in_) {
+            Y_ *= -1.0;
+        }
     }
 
 }

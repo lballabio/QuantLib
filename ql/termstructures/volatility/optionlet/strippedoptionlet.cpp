@@ -51,8 +51,9 @@ StrippedOptionlet::StrippedOptionlet(
         Date refDate = calendar.advance(Settings::instance().evaluationDate(),
                                         settlementDays, Days);
 
-        for (Size i=0; i<nOptionletDates_; ++i)
+        for (Size i = 0; i < nOptionletDates_; ++i) {
             optionletTimes_[i] = dc_.yearFraction(refDate, optionletDates_[i]);
+        }
     }
 
     void StrippedOptionlet::checkInputs() const {
@@ -64,33 +65,40 @@ StrippedOptionlet::StrippedOptionlet(
                    optionletVolQuotes_.size() << ")");
         QL_REQUIRE(optionletDates_[0]>Settings::instance().evaluationDate(),
                    "first option date (" << optionletDates_[0] << ") is in the past");
-        for (Size i=1; i<nOptionletDates_; ++i)
-            QL_REQUIRE(optionletDates_[i]>optionletDates_[i-1],
-                       "non increasing option dates: " << io::ordinal(i) <<
-                       " is " << optionletDates_[i-1] << ", " <<
-                       io::ordinal(i+1) << " is " << optionletDates_[i]);
+        for (Size i = 1; i < nOptionletDates_; ++i) {
+            QL_REQUIRE(optionletDates_[i] > optionletDates_[i - 1],
+                       "non increasing option dates: "
+                           << io::ordinal(i) << " is " << optionletDates_[i - 1] << ", "
+                           << io::ordinal(i + 1) << " is " << optionletDates_[i]);
+        }
 
         QL_REQUIRE(nStrikes_==optionletVolQuotes_[0].size(),
                    "mismatch between strikes(" << optionletStrikes_[0].size() <<
                    ") and vol columns (" << optionletVolQuotes_[0].size() << ")");
-        for (Size j=1; j<nStrikes_; ++j)
-            QL_REQUIRE(optionletStrikes_[0][j-1]<optionletStrikes_[0][j],
-                       "non increasing strikes: " << io::ordinal(j) <<
-                       " is " << io::rate(optionletStrikes_[0][j-1]) << ", " <<
-                       io::ordinal(j+1) << " is " << io::rate(optionletStrikes_[0][j]));
+        for (Size j = 1; j < nStrikes_; ++j) {
+            QL_REQUIRE(optionletStrikes_[0][j - 1] < optionletStrikes_[0][j],
+                       "non increasing strikes: " << io::ordinal(j) << " is "
+                                                  << io::rate(optionletStrikes_[0][j - 1]) << ", "
+                                                  << io::ordinal(j + 1) << " is "
+                                                  << io::rate(optionletStrikes_[0][j]));
+        }
     }
 
     void StrippedOptionlet::registerWithMarketData()
     {
-        for (Size i=0; i<nOptionletDates_; ++i)
-            for (Size j=0; j<nStrikes_; ++j)
+        for (Size i = 0; i < nOptionletDates_; ++i) {
+            for (Size j = 0; j < nStrikes_; ++j) {
                 registerWith(optionletVolQuotes_[i][j]);
+            }
+        }
     }
 
     void StrippedOptionlet::performCalculations() const {
-        for (Size i=0; i<nOptionletDates_; ++i)
-          for (Size j=0; j<nStrikes_; ++j)
-            optionletVolatilities_[i][j] = optionletVolQuotes_[i][j]->value();
+        for (Size i = 0; i < nOptionletDates_; ++i) {
+            for (Size j = 0; j < nStrikes_; ++j) {
+                optionletVolatilities_[i][j] = optionletVolQuotes_[i][j]->value();
+            }
+        }
     }
 
     const vector<Rate>& StrippedOptionlet::optionletStrikes(Size i) const{
@@ -127,8 +135,9 @@ StrippedOptionlet::StrippedOptionlet(
 
     const vector<Time>& StrippedOptionlet::atmOptionletRates() const {
         calculate();
-        for (Size i=0; i<nOptionletDates_; ++i)
+        for (Size i = 0; i < nOptionletDates_; ++i) {
             optionletAtmRates_[i] = iborIndex_->fixing(optionletDates_[i], true);
+        }
         return optionletAtmRates_;
     }
 

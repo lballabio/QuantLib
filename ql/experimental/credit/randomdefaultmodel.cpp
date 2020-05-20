@@ -73,10 +73,11 @@ namespace QuantLib {
             Real y = a * values[0] + sqrt(1-a*a) * values[j+1];
             Real p = CumulativeNormalDistribution()(y);
 
-            if (dts->defaultProbability(tmax) < p)
+            if (dts->defaultProbability(tmax) < p) {
                 pool_->setTime(name, tmax+1);
-            else
-                pool_->setTime(name, Brent().solve(Root(dts,p),accuracy_,0,1));
+            } else {
+                pool_->setTime(name, Brent().solve(Root(dts, p), accuracy_, 0, 1));
+            }
         }
     }
 

@@ -76,8 +76,9 @@ namespace QuantLib {
         }
 
         Period result = parseOnePeriod(subStrings[0]);
-        for (Size i=1; i<subStrings.size(); ++i)
+        for (Size i = 1; i < subStrings.size(); ++i) {
             result += parseOnePeriod(subStrings[i]);
+        }
         return result;
     }
 
@@ -90,10 +91,15 @@ namespace QuantLib {
                    str.substr(str.length()-1, str.length()) << "' unit");
         TimeUnit units = Days;
         char abbr = static_cast<char>(std::toupper(str[iPos]));
-        if      (abbr == 'D') units = Days;
-        else if (abbr == 'W') units = Weeks;
-        else if (abbr == 'M') units = Months;
-        else if (abbr == 'Y') units = Years;
+        if (abbr == 'D') {
+            units = Days;
+        } else if (abbr == 'W') {
+            units = Weeks;
+        } else if (abbr == 'M') {
+            units = Months;
+        } else if (abbr == 'Y') {
+            units = Years;
+        }
 
         Size nPos = str.find_first_of("-+0123456789");
         QL_REQUIRE(nPos<iPos, "no numbers of " << units << " provided");

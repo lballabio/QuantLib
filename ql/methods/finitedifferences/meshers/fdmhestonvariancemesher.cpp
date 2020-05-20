@@ -139,10 +139,11 @@ namespace QuantLib {
         const Real v0 = process->v0();
         for (Size i=1; i<vGrid.size(); ++i) {
             if (vGrid[i-1] <= v0 && vGrid[i] >= v0) {
-                if (std::fabs(vGrid[i-1] - v0) < std::fabs(vGrid[i] - v0))
+                if (std::fabs(vGrid[i - 1] - v0) < std::fabs(vGrid[i] - v0)) {
                     vGrid[i-1] = v0;
-                else
+                } else {
                     vGrid[i] = v0;
+                }
             }
         }
 

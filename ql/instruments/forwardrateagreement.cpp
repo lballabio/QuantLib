@@ -106,10 +106,10 @@ namespace QuantLib {
     }
 
     void ForwardRateAgreement::calculateForwardRate() const {
-        if (useIndexedCoupon_)
+        if (useIndexedCoupon_) {
             forwardRate_ =
                 InterestRate(index_->fixing(fixingDate()), index_->dayCounter(), Simple, Once);
-        else
+        } else {
             // par coupon approximation
             forwardRate_ =
                 InterestRate((index_->forwardingTermStructure()->discount(valueDate_) /
@@ -117,5 +117,6 @@ namespace QuantLib {
                               1.0) /
                                  index_->dayCounter().yearFraction(valueDate_, maturityDate_),
                              index_->dayCounter(), Simple, Once);
+        }
     }
 }

@@ -33,8 +33,9 @@ namespace QuantLib {
       jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
       nJumps_(jumps_.size()) {
         setJumps();
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             registerWith(jumps_[i]);
+        }
     }
 
     DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
@@ -47,8 +48,9 @@ namespace QuantLib {
       jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
       nJumps_(jumps_.size()) {
         setJumps();
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             registerWith(jumps_[i]);
+        }
     }
 
     DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
@@ -61,8 +63,9 @@ namespace QuantLib {
       jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
       nJumps_(jumps_.size()) {
         setJumps();
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             registerWith(jumps_[i]);
+        }
     }
 
     void DefaultProbabilityTermStructure::setJumps() {
@@ -70,15 +73,17 @@ namespace QuantLib {
             jumpDates_.resize(nJumps_);
             jumpTimes_.resize(nJumps_);
             Year y = referenceDate().year();
-            for (Size i=0; i<nJumps_; ++i)
-                jumpDates_[i] = Date(31, December, y+i);
+            for (Size i = 0; i < nJumps_; ++i) {
+                jumpDates_[i] = Date(31, December, y + i);
+            }
         } else { // fixed dats
             QL_REQUIRE(jumpDates_.size()==nJumps_,
                        "mismatch between number of jumps (" << nJumps_ <<
                        ") and jump dates (" << jumpDates_.size() << ")");
         }
-        for (Size i=0; i<nJumps_; ++i)
+        for (Size i = 0; i < nJumps_; ++i) {
             jumpTimes_[i] = timeFromReference(jumpDates_[i]);
+        }
         latestReference_ = referenceDate();
     }
 

@@ -85,9 +85,9 @@ namespace QuantLib {
                 Real sec = (c_[leftIndex_ + 1] - c_[leftIndex_]) /
                            (k_[leftIndex_ + 1] - k_[leftIndex_]);
                 Real c1p;
-                if (interpolate_)
+                if (interpolate_) {
                     c1p = (secl + sec) / 2;
-                else {
+                } else {
                     c1p = -source_->digitalOptionPrice(
                         k1 - shift() + gap_ / 2.0, Option::Call, 1.0, gap_);
                     QL_REQUIRE(secl < c1p && c1p <= 0.0, "dummy");
@@ -137,13 +137,15 @@ namespace QuantLib {
                 Real c0 = c_[i];
                 Real c1 = c_[i + 1];
                 Real sec = (c_[i + 1] - c_[i]) / (k_[i + 1] - k_[i]);
-                if (i == leftIndex_)
+                if (i == leftIndex_) {
                     cp0 = leftIndex_ > 0 ? (secl + sec) / 2.0 : sec;
+                }
                 Real secr;
-                if (i == rightIndex_ - 1)
+                if (i == rightIndex_ - 1) {
                     secr = 0.0;
-                else
+                } else {
                     secr = (c_[i + 2] - c_[i + 1]) / (k_[i + 2] - k_[i + 1]);
+                }
                 cp1 = (sec + secr) / 2.0;
                 aHelper ah(k0, k1, c0, c1, cp0, cp1);
                 Real a;
@@ -183,10 +185,10 @@ namespace QuantLib {
                 Real k0 = k_[rightIndex_];
                 Real c0 = c_[rightIndex_];
                 Real cp0;
-                if (interpolate_)
+                if (interpolate_) {
                     cp0 = 0.5 * (c_[rightIndex_] - c_[rightIndex_ - 1]) /
                           (k_[rightIndex_] - k_[rightIndex_ - 1]);
-                else {
+                } else {
                     cp0 = -source_->digitalOptionPrice(
                         k0 - shift() - gap_ / 2.0, Option::Call, 1.0, gap_);
                 }
@@ -231,22 +233,22 @@ namespace QuantLib {
         // standard implementation
         Real shifted_strike = std::max(strike + shift(), QL_KAHALE_EPS);
         int i = index(shifted_strike);
-        if (interpolate_ ||
-            (i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1)))
+        if (interpolate_ || (i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1))) {
             return discount *
                    (type == Option::Call
                         ? (*cFunctions_[i])(shifted_strike)
                         : (*cFunctions_[i])(shifted_strike) + shifted_strike - f_);
-        else
+        } else {
             return source_->optionPrice(strike, type, discount);
+        }
     }
 
     Real KahaleSmileSection::volatilityImpl(Rate strike) const {
         Real shifted_strike = std::max(strike + shift(), QL_KAHALE_EPS);
         int i = index(shifted_strike);
-        if (!interpolate_ &&
-            !(i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1)))
+        if (!interpolate_ && !(i == 0 || i == (int)(rightIndex_ - leftIndex_ + 1))) {
             return source_->volatility(strike);
+        }
         Real c = (*cFunctions_[i])(shifted_strike);
         Real vol = 0.0;
         try {

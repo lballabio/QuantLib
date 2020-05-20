@@ -60,8 +60,9 @@ namespace QuantLib {
 
             for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
                 ++iter) {
-                for (Size i=0; i < dims; ++i)
+                for (Size i = 0; i < dims; ++i) {
                     locations[i] = mesher_->location(iter, i);
+                }
 
                 const Real innerValue = calculator_->innerValue(iter, t);
                 if (innerValue > a[iter.index()]) {

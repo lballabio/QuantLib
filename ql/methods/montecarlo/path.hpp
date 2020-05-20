@@ -81,8 +81,9 @@ namespace QuantLib {
 
     inline Path::Path(const TimeGrid& timeGrid, const Array& values)
     : timeGrid_(timeGrid), values_(values) {
-        if (values_.empty())
+        if (values_.empty()) {
             values_ = Array(timeGrid_.size());
+        }
         QL_REQUIRE(values_.size() == timeGrid_.size(),
                    "different number of times and asset values");
     }

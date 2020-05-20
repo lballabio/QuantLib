@@ -528,8 +528,9 @@ namespace QuantLib {
     Disposable<Array> SVD::solveFor(const Array& b) const{
         Matrix W(n_, n_, 0.0);
         const Size numericalRank = this->rank();
-        for (Size i=0; i<numericalRank; i++)
-            W[i][i] = 1./s_[i];
+        for (Size i = 0; i < numericalRank; i++) {
+            W[i][i] = 1. / s_[i];
+        }
 
         Matrix inverse = V()* W * transpose(U());
         Array result = inverse * b;

@@ -77,11 +77,13 @@ namespace QuantLib {
     QL_REQUIRE(time >= maximumTimeRead_,
                "not adapted payoff: looking into the future");
 
-    if (!exercises_.empty())
-      exercises_[time] = exercise;
+    if (!exercises_.empty()) {
+        exercises_[time] = exercise;
+    }
 
-    if (!states_.empty())
-      std::swap(states_[time], state);
+    if (!states_.empty()) {
+        std::swap(states_[time], state);
+    }
   }
 
 

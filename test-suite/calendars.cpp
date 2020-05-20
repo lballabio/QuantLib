@@ -71,32 +71,40 @@ void CalendarTest::testModifiedCalendars() {
     QL_REQUIRE(removedHolidays.find(d1) != removedHolidays.end(), "expected to find date in removedHolidays");
     QL_REQUIRE(removedHolidays.find(d2) == removedHolidays.end(), "did not expect to find date in removedHolidays");
 
-    if (c1.isHoliday(d1))
+    if (c1.isHoliday(d1)) {
         BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
-    if (c1.isBusinessDay(d2))
+    }
+    if (c1.isBusinessDay(d2)) {
         BOOST_FAIL(d2 << " still a business day for original TARGET instance");
+    }
 
     // any instance of TARGET should be modified...
     Calendar c3 = TARGET();
-    if (c3.isHoliday(d1))
+    if (c3.isHoliday(d1)) {
         BOOST_FAIL(d1 << " still a holiday for generic TARGET instance");
-    if (c3.isBusinessDay(d2))
+    }
+    if (c3.isBusinessDay(d2)) {
         BOOST_FAIL(d2 << " still a business day for generic TARGET instance");
+    }
 
     // ...but not other calendars
-    if (c2.isBusinessDay(d1))
+    if (c2.isBusinessDay(d1)) {
         BOOST_FAIL(d1 << " business day for New York");
-    if (c2.isHoliday(d2))
+    }
+    if (c2.isHoliday(d2)) {
         BOOST_FAIL(d2 << " holiday for New York");
+    }
 
     // restore original holiday set---test the other way around
     c3.addHoliday(d1);
     c3.removeHoliday(d2);
 
-    if (c1.isBusinessDay(d1))
+    if (c1.isBusinessDay(d1)) {
         BOOST_FAIL(d1 << " still a business day");
-    if (c1.isHoliday(d2))
+    }
+    if (c1.isHoliday(d2)) {
         BOOST_FAIL(d2 << " still a holiday");
+    }
 }
 
 
@@ -138,48 +146,54 @@ void CalendarTest::testJointCalendars() {
              b4 = c4.isBusinessDay(d),
              b5 = c5.isBusinessDay(d);
 
-        if ((b1 && b2) != c12h.isBusinessDay(d))
+        if ((b1 && b2) != c12h.isBusinessDay(d)) {
             BOOST_FAIL("At date " << d << ":\n"
-                       << "    inconsistency between joint calendar "
-                       << c12h.name() << " (joining holidays)\n"
-                       << "    and its components");
+                                  << "    inconsistency between joint calendar " << c12h.name()
+                                  << " (joining holidays)\n"
+                                  << "    and its components");
+        }
 
-        if ((b1 || b2) != c12b.isBusinessDay(d))
+        if ((b1 || b2) != c12b.isBusinessDay(d)) {
             BOOST_FAIL("At date " << d << ":\n"
-                       << "    inconsistency between joint calendar "
-                       << c12b.name() << " (joining business days)\n"
-                       << "    and its components");
+                                  << "    inconsistency between joint calendar " << c12b.name()
+                                  << " (joining business days)\n"
+                                  << "    and its components");
+        }
 
-        if ((b1 && b2 && b3) != c123h.isBusinessDay(d))
+        if ((b1 && b2 && b3) != c123h.isBusinessDay(d)) {
             BOOST_FAIL("At date " << d << ":\n"
-                       << "    inconsistency between joint calendar "
-                       << c123h.name() << " (joining holidays)\n"
-                       << "    and its components");
+                                  << "    inconsistency between joint calendar " << c123h.name()
+                                  << " (joining holidays)\n"
+                                  << "    and its components");
+        }
 
-        if ((b1 || b2 || b3) != c123b.isBusinessDay(d))
+        if ((b1 || b2 || b3) != c123b.isBusinessDay(d)) {
             BOOST_FAIL("At date " << d << ":\n"
-                       << "    inconsistency between joint calendar "
-                       << c123b.name() << " (joining business days)\n"
-                       << "    and its components");
+                                  << "    inconsistency between joint calendar " << c123b.name()
+                                  << " (joining business days)\n"
+                                  << "    and its components");
+        }
 
-        if ((b1 && b2 && b3 && b4) != c1234h.isBusinessDay(d))
+        if ((b1 && b2 && b3 && b4) != c1234h.isBusinessDay(d)) {
             BOOST_FAIL("At date " << d << ":\n"
-                       << "    inconsistency between joint calendar "
-                       << c1234h.name() << " (joining holidays)\n"
-                       << "    and its components");
+                                  << "    inconsistency between joint calendar " << c1234h.name()
+                                  << " (joining holidays)\n"
+                                  << "    and its components");
+        }
 
-        if ((b1 || b2 || b3 || b4) != c1234b.isBusinessDay(d))
+        if ((b1 || b2 || b3 || b4) != c1234b.isBusinessDay(d)) {
             BOOST_FAIL("At date " << d << ":\n"
-                       << "    inconsistency between joint calendar "
-                       << c1234b.name() << " (joining business days)\n"
-                       << "    and its components");
+                                  << "    inconsistency between joint calendar " << c1234b.name()
+                                  << " (joining business days)\n"
+                                  << "    and its components");
+        }
 
-        if ((b1 && b2 && b3 && b4 && b5) != cvh.isBusinessDay(d))
+        if ((b1 && b2 && b3 && b4 && b5) != cvh.isBusinessDay(d)) {
             BOOST_FAIL("At date " << d << ":\n"
-                       << "    inconsistency between joint calendar "
-                       << cvh.name() << " (joining holidays)\n"
-                       << "    and its components");
-
+                                  << "    inconsistency between joint calendar " << cvh.name()
+                                  << " (joining holidays)\n"
+                                  << "    and its components");
+        }
     }
 }
 
@@ -212,14 +226,15 @@ void CalendarTest::testUSSettlement() {
     Calendar c = UnitedStates(UnitedStates::Settlement);
     std::vector<Date> hol = c.holidayList(Date( 1, January, 2004),
                                           Date(31,December, 2005));
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
     for (Size i=0; i<hol.size(); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
 
     // before Uniform Monday Holiday Act
@@ -235,14 +250,15 @@ void CalendarTest::testUSSettlement() {
 
     hol = c.holidayList(Date( 1, January, 1961),
                         Date(31,December, 1961));
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
     for (Size i=0; i<hol.size(); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
 }
 
@@ -268,14 +284,15 @@ void CalendarTest::testUSGovernmentBondMarket() {
                                           Date(31,December,2004));
 
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testUSNewYorkStockExchange() {
@@ -318,14 +335,15 @@ void CalendarTest::testUSNewYorkStockExchange() {
 
     Size i;
     for (i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 
     std::vector<Date> histClose;
     histClose.push_back(Date(30,October,2012));  // Hurricane Sandy
@@ -371,9 +389,9 @@ void CalendarTest::testUSNewYorkStockExchange() {
     histClose.push_back(Date(5,Nov,1968));
     histClose.push_back(Date(3,Nov,1964));
     for (i=0; i<histClose.size(); i++) {
-        if (!c.isHoliday(histClose[i]))
-            BOOST_FAIL(histClose[i]
-                       << " should be holiday (historical close)");
+        if (!c.isHoliday(histClose[i])) {
+            BOOST_FAIL(histClose[i] << " should be holiday (historical close)");
+        }
     }
 }
 
@@ -431,15 +449,15 @@ void CalendarTest::testTARGET() {
                                           Date(31,December,2006));
 
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
-
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testGermanyFrankfurt() {
@@ -464,14 +482,15 @@ void CalendarTest::testGermanyFrankfurt() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2003),
                                           Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testGermanyEurex() {
@@ -496,14 +515,15 @@ void CalendarTest::testGermanyEurex() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2003),
                                           Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testGermanyXetra() {
@@ -528,14 +548,15 @@ void CalendarTest::testGermanyXetra() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2003),
                                           Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testUKSettlement() {
@@ -583,14 +604,15 @@ void CalendarTest::testUKSettlement() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2004),
                                           Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testUKExchange() {
@@ -638,14 +660,15 @@ void CalendarTest::testUKExchange() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2004),
                                           Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testUKMetals() {
@@ -693,14 +716,15 @@ void CalendarTest::testUKMetals() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2004),
                                           Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testItalyExchange() {
@@ -738,14 +762,15 @@ void CalendarTest::testItalyExchange() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2002),
                                           Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testRussia()
@@ -1341,14 +1366,15 @@ void CalendarTest::testRussia()
     Date(31, December, 2016), // only dates for which calendars are available
     true); // include week-ends since lists are exhaustive
   for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-    if (hol[i] != expectedHol[i])
-      BOOST_FAIL("expected holiday was " << expectedHol[i]
-        << " while calculated holiday is " << hol[i]);
+      if (hol[i] != expectedHol[i]) {
+          BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                             << hol[i]);
+      }
   }
-  if (hol.size() != expectedHol.size())
-    BOOST_FAIL("there were " << expectedHol.size()
-      << " expected holidays, while there are " << hol.size()
-      << " calculated holidays");
+  if (hol.size() != expectedHol.size()) {
+      BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                               << hol.size() << " calculated holidays");
+  }
 }
 
 void CalendarTest::testBrazil() {
@@ -1386,14 +1412,15 @@ void CalendarTest::testBrazil() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2005),
                                           Date(31,December,2006));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 
@@ -1476,14 +1503,15 @@ void CalendarTest::testSouthKoreanSettlement() {
     std::vector<Date> hol = c.holidayList(Date(1,January,2004),
                                           Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testKoreaStockExchange() {
@@ -1570,14 +1598,15 @@ void CalendarTest::testKoreaStockExchange() {
                                           Date(31,December,2007));
 
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                       << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size()!=expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-                   << " expected holidays, while there are " << hol.size()
-                   << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testChinaSSE() {
@@ -1724,14 +1753,15 @@ void CalendarTest::testChinaSSE() {
                                           Date(31, December, 2020));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i]
-                << " while calculated holiday is " << hol[i]);
+        if (hol[i] != expectedHol[i]) {
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+        }
     }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size()
-            << " expected holidays, while there are " << hol.size()
-            << " calculated holidays");
+    if (hol.size() != expectedHol.size()) {
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+    }
 }
 
 void CalendarTest::testChinaIB() {
@@ -1801,18 +1831,21 @@ void CalendarTest::testChinaIB() {
 
     while (start <= end) {
         if (c.isBusinessDay(start) && c.isWeekend(start.weekday())) {
-            if (expectedWorkingWeekEnds[k] != start)
-                BOOST_FAIL("expected working weekend was " << expectedWorkingWeekEnds[k]
-                    << " while calculated working weekend is " << start);
+            if (expectedWorkingWeekEnds[k] != start) {
+                BOOST_FAIL("expected working weekend was "
+                           << expectedWorkingWeekEnds[k] << " while calculated working weekend is "
+                           << start);
+            }
             ++k;
         }
         ++start;
     }
-    
-    if (k != (expectedWorkingWeekEnds.size()))
+
+    if (k != (expectedWorkingWeekEnds.size())) {
         BOOST_FAIL("there were " << expectedWorkingWeekEnds.size()
-            << " expected working weekends, while there are " << k
-            << " calculated working weekends");
+                                 << " expected working weekends, while there are " << k
+                                 << " calculated working weekends");
+    }
 }
 
 void CalendarTest::testEndOfMonth() {
@@ -1826,18 +1859,14 @@ void CalendarTest::testEndOfMonth() {
     while (counter<=last) {
         eom = c.endOfMonth(counter);
         // check that eom is eom
-        if (!c.isEndOfMonth(eom))
-            BOOST_FAIL("\n  "
-                       << eom.weekday() << " " << eom
-                       << " is not the last business day in "
-                       << eom.month() << " " << eom.year()
-                       << " according to " << c.name());
+        if (!c.isEndOfMonth(eom)) {
+            BOOST_FAIL("\n  " << eom.weekday() << " " << eom << " is not the last business day in "
+                              << eom.month() << " " << eom.year() << " according to " << c.name());
+        }
         // check that eom is in the same month as counter
-        if (eom.month()!=counter.month())
-            BOOST_FAIL("\n  "
-                       << eom
-                       << " is not in the same month as "
-                       << counter);
+        if (eom.month() != counter.month()) {
+            BOOST_FAIL("\n  " << eom << " is not in the same month as " << counter);
+        }
         counter = counter + 1;
     }
 }
@@ -1994,106 +2023,145 @@ void CalendarTest::testBespokeCalendars() {
     Date testDate3 = Date(6, October, 2008); // Monday
     Date testDate4 = Date(7, October, 2008); // Tuesday
 
-    if (!a1.isBusinessDay(testDate1))
+    if (!a1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " erroneously detected as holiday");
-    if (!a1.isBusinessDay(testDate2))
+    }
+    if (!a1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " erroneously detected as holiday");
-    if (!a1.isBusinessDay(testDate3))
+    }
+    if (!a1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " erroneously detected as holiday");
-    if (!a1.isBusinessDay(testDate4))
+    }
+    if (!a1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
-    if (!b1.isBusinessDay(testDate1))
+    if (!b1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate2))
+    }
+    if (!b1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate3))
+    }
+    if (!b1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate4))
+    }
+    if (!b1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
     a1.addWeekend(Sunday);
 
-    if (!a1.isBusinessDay(testDate1))
+    if (!a1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " erroneously detected as holiday");
-    if (a1.isBusinessDay(testDate2))
+    }
+    if (a1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
-    if (!a1.isBusinessDay(testDate3))
+    }
+    if (!a1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " erroneously detected as holiday");
-    if (!a1.isBusinessDay(testDate4))
+    }
+    if (!a1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
-    if (!b1.isBusinessDay(testDate1))
+    if (!b1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate2))
+    }
+    if (!b1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate3))
+    }
+    if (!b1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate4))
+    }
+    if (!b1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
     a1.addHoliday(testDate3);
 
-    if (!a1.isBusinessDay(testDate1))
+    if (!a1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " erroneously detected as holiday");
-    if (a1.isBusinessDay(testDate2))
+    }
+    if (a1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
-    if (a1.isBusinessDay(testDate3))
+    }
+    if (a1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
-    if (!a1.isBusinessDay(testDate4))
+    }
+    if (!a1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
-    if (!b1.isBusinessDay(testDate1))
+    if (!b1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate2))
+    }
+    if (!b1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate3))
+    }
+    if (!b1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " erroneously detected as holiday");
-    if (!b1.isBusinessDay(testDate4))
+    }
+    if (!b1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
     BespokeCalendar a2 = a1;  // linked to a1
 
     a2.addWeekend(Saturday);
 
-    if (a1.isBusinessDay(testDate1))
+    if (a1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
-    if (a1.isBusinessDay(testDate2))
+    }
+    if (a1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
-    if (a1.isBusinessDay(testDate3))
+    }
+    if (a1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
-    if (!a1.isBusinessDay(testDate4))
+    }
+    if (!a1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
-    if (a2.isBusinessDay(testDate1))
+    if (a2.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
-    if (a2.isBusinessDay(testDate2))
+    }
+    if (a2.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
-    if (a2.isBusinessDay(testDate3))
+    }
+    if (a2.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
-    if (!a2.isBusinessDay(testDate4))
+    }
+    if (!a2.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " erroneously detected as holiday");
+    }
 
     a2.addHoliday(testDate4);
 
-    if (a1.isBusinessDay(testDate1))
+    if (a1.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
-    if (a1.isBusinessDay(testDate2))
+    }
+    if (a1.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
-    if (a1.isBusinessDay(testDate3))
+    }
+    if (a1.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
-    if (a1.isBusinessDay(testDate4))
+    }
+    if (a1.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " (marked as holiday) not detected");
+    }
 
-    if (a2.isBusinessDay(testDate1))
+    if (a2.isBusinessDay(testDate1)) {
         BOOST_ERROR(testDate1 << " (Saturday) not detected as weekend");
-    if (a2.isBusinessDay(testDate2))
+    }
+    if (a2.isBusinessDay(testDate2)) {
         BOOST_ERROR(testDate2 << " (Sunday) not detected as weekend");
-    if (a2.isBusinessDay(testDate3))
+    }
+    if (a2.isBusinessDay(testDate3)) {
         BOOST_ERROR(testDate3 << " (marked as holiday) not detected");
-    if (a2.isBusinessDay(testDate4))
+    }
+    if (a2.isBusinessDay(testDate4)) {
         BOOST_ERROR(testDate4 << " (marked as holiday) not detected");
-
+    }
 }
 
 void CalendarTest::testIntradayAddHolidays() {

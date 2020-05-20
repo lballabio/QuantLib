@@ -65,8 +65,9 @@ namespace QuantLib {
 
                     const Real x_i = this->xBegin_[i];
                     for (Size j=0; j < n_; ++j) {
-                        if (i != j)
-                            lambda_[i] *= cM1*(x_i-this->xBegin_[j]);
+                        if (i != j) {
+                            lambda_[i] *= cM1 * (x_i - this->xBegin_[j]);
+                        }
                     }
                     lambda_[i] = 1.0/lambda_[i];
                 }
@@ -83,11 +84,12 @@ namespace QuantLib {
 
                     if (close_enough(x, x_i)) {
                         Real p=0.0;
-                        for (Size j=0; j < n_; ++j)
+                        for (Size j = 0; j < n_; ++j) {
                             if (i != j) {
                                 p+=lambda_[j]/(x-this->xBegin_[j])
                                     *(this->yBegin_[j] - this->yBegin_[i]);
                             }
+                        }
                         return p/lambda_[i];
                     }
 
@@ -120,8 +122,9 @@ namespace QuantLib {
                   Real n=0.0, d=0.0;
                   for (Size i=0; i < n_; ++i) {
                       const Real x_i = this->xBegin_[i];
-                      if (close_enough(x, x_i))
+                      if (close_enough(x, x_i)) {
                           return yBegin[i];
+                      }
 
                       const Real alpha = lambda_[i]/(x-x_i);
                       n += alpha * yBegin[i];

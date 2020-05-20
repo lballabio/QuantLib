@@ -36,8 +36,9 @@ namespace QuantLib {
         QL_REQUIRE(end <= numberOfRates_, "taus/end mismatch");
 
         Real sum = 0.0;
-        for (Size i=begin; i<end; ++i)
-            sum += rateTaus_[i]*discountRatio(i+1, numberOfRates_);
+        for (Size i = begin; i < end; ++i) {
+            sum += rateTaus_[i] * discountRatio(i + 1, numberOfRates_);
+        }
 
         return (discountRatio(begin, numberOfRates_)-discountRatio(end, numberOfRates_))/sum;
     }
@@ -51,8 +52,9 @@ namespace QuantLib {
         QL_REQUIRE(ds.size()==fwds.size()+1,
                    "ds.size()!=fwds.size()+1");
 
-        for (Size i=firstValidIndex; i<fwds.size(); ++i)
-            fwds[i] = (ds[i]-ds[i+1])/(ds[i+1]*taus[i]);
+        for (Size i = firstValidIndex; i < fwds.size(); ++i) {
+            fwds[i] = (ds[i] - ds[i + 1]) / (ds[i + 1] * taus[i]);
+        }
     }
 
     void coterminalFromDiscountRatios(
@@ -115,8 +117,9 @@ namespace QuantLib {
             Size lastIndex = std::min(i+spanningForwards,nConstMatSwapRates);
             constMatSwapAnnuities[i] = constMatSwapAnnuities[i-1]
                                        - taus[i-1] * ds[i];
-            if (lastIndex!=oldLastIndex)
-               constMatSwapAnnuities[i] += taus[lastIndex-1] * ds[lastIndex];
+            if (lastIndex != oldLastIndex) {
+                constMatSwapAnnuities[i] += taus[lastIndex - 1] * ds[lastIndex];
+            }
             constMatSwapRates[i] = (ds[i]-ds[lastIndex])
                 /constMatSwapAnnuities[i];
             oldLastIndex = lastIndex;

@@ -150,8 +150,9 @@ public:
         return f_(x);
     }
     virtual Disposable<Array> values(const Array& x) const {
-        if(!fs_)
+        if (!fs_) {
             throw std::runtime_error("Invalid function");
+        }
         return fs_(x);
     }
 private:
@@ -165,8 +166,9 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
     QL_REQUIRE(start.size() > 0, "Input size needs to be at least 1");
     std::cout << "Starting point: ";
     Constraint c;
-    if (!constraint.empty())
+    if (!constraint.empty()) {
         c = constraint;
+    }
     Problem p(f, c, start);
     printFunction(p, start);
     method.minimize(p, endCriteria);
@@ -176,10 +178,11 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
     {
         std::cout << "Global optimum: ";
         Real optimVal = printFunction(p, optimum);
-        if(std::abs(optimVal) < 1e-13)
+        if (std::abs(optimVal) < 1e-13) {
             return std::abs(val-optimVal) < 1e-6;
-        else
-            return std::abs((val-optimVal)/optimVal) < 1e-6;
+        } else {
+            return std::abs((val - optimVal) / optimVal) < 1e-6;
+        }
     }
     return 1;
 }

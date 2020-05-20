@@ -86,10 +86,11 @@ namespace QuantLib {
     void RangeAccrualFloatersCoupon::accept(AcyclicVisitor& v) {
         Visitor<RangeAccrualFloatersCoupon>* v1 =
             dynamic_cast<Visitor<RangeAccrualFloatersCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             FloatingRateCoupon::accept(v);
+        }
     }
 
     Real RangeAccrualFloatersCoupon::priceWithoutOptionality(
@@ -291,9 +292,9 @@ namespace QuantLib {
         if (startTime_>0) {
             Real q = (endTime_-U)/accrualFactor_;
             return q;
-        } else
+        } else {
             return 0.0;
-
+        }
     }
 
     Real RangeAccrualPricerByBgm::derDriftDerLambdaT(Real U,
@@ -322,9 +323,9 @@ namespace QuantLib {
         if (startTime_>0) {
             Real p = (U-startTime_)/accrualFactor_;
             return p;
-        } else
+        } else {
             return 0.0;
-
+        }
     }
 
     Real RangeAccrualPricerByBgm::digitalRangePrice(Real lowerTrigger,
@@ -347,10 +348,11 @@ namespace QuantLib {
                                         Real deflator) const {
         Real result = deflator;
         if(strike>eps_/2){
-            if(withSmile_)
+            if (withSmile_) {
                 result = digitalPriceWithSmile(strike, initialValue, expiry, deflator);
-            else
+            } else {
                 result = digitalPriceWithoutSmile(strike, initialValue, expiry, deflator);
+            }
         }
         return result;
     }

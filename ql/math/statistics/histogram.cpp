@@ -40,15 +40,17 @@ namespace QuantLib {
                        "Probability has to be in [0,1].");
             QL_REQUIRE(nsample > 0, "The sample size has to be positive." );
 
-            if (nsample == 1)
+            if (nsample == 1) {
                 return samples[0];
+            }
 
             // two special cases: close to boundaries
             const Real a = 1. / 3, b = 2*a / (nsample+a);
-            if (prob < b)
+            if (prob < b) {
                 return *std::min_element(samples.begin(), samples.end());
-            else if (prob > 1-b)
+            } else if (prob > 1 - b) {
                 return *std::max_element(samples.begin(), samples.end());
+            }
 
             // general situation: middle region and nsample >= 2
             Size index = static_cast<Size>(std::floor((nsample+a)*prob+a));
@@ -168,15 +170,17 @@ namespace QuantLib {
                     break;
                 }
             }
-            if (!processed)
-                ++counts_[bins_-1];
+            if (!processed) {
+                ++counts_[bins_ - 1];
+            }
         }
 
         frequency_.resize(bins_);
 
         Size totalCounts = data_.size();
-        for (Size i=0; i<bins_; ++i)
-            frequency_[i] = static_cast<Real>(counts_[i])/totalCounts;
+        for (Size i = 0; i < bins_; ++i) {
+            frequency_[i] = static_cast<Real>(counts_[i]) / totalCounts;
+        }
     }
 
 }

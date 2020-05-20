@@ -53,9 +53,9 @@ namespace QuantLib {
                                                          requiredSamples_,
                                                          maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
-            if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+            if (RNG::allowsErrorEstimate) {
+                results_.errorEstimate = this->mcModel_->sampleAccumulator().errorEstimate();
+            }
         }
       protected:
         // McSimulation implementation
@@ -141,8 +141,9 @@ namespace QuantLib {
     inline TimeGrid MCPerformanceEngine<RNG,S>::timeGrid() const {
 
         std::vector<Time> fixingTimes;
-        for (Size i=0; i<arguments_.resetDates.size(); i++)
+        for (Size i = 0; i < arguments_.resetDates.size(); i++) {
             fixingTimes.push_back(process_->time(arguments_.resetDates[i]));
+        }
         fixingTimes.push_back(process_->time(arguments_.exercise->lastDate()));
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());

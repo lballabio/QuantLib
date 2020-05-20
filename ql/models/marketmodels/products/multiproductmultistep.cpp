@@ -48,8 +48,9 @@ namespace QuantLib {
         Size n = rateTimes_.size()-1;
         std::vector<Size> numeraires(n);
         // MoneyMarketPlus(1)
-        for (Size i=0; i<n; ++i)
-            numeraires[i]=i+1;
+        for (Size i = 0; i < n; ++i) {
+            numeraires[i] = i + 1;
+        }
         return numeraires;
     }
 

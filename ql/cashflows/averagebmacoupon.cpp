@@ -57,11 +57,12 @@ namespace QuantLib {
                     Date valueDate = index->valueDate(fixingDates[i]);
                     Date nextValueDate = index->valueDate(fixingDates[i+1]);
 
-                    if (fixingDates[i] >= endDate || valueDate >= endDate)
+                    if (fixingDates[i] >= endDate || valueDate >= endDate) {
                         break;
-                    if (fixingDates[i+1] < startDate
-                        || nextValueDate <= startDate)
+                    }
+                    if (fixingDates[i + 1] < startDate || nextValueDate <= startDate) {
                         continue;
+                    }
 
                     d2 = std::min(nextValueDate, endDate);
 
@@ -102,8 +103,9 @@ namespace QuantLib {
 
     namespace {
     void adjustToPreviousValidFixingDate(Date& d, const ext::shared_ptr<BMAIndex>& index) {
-        while (!index->isValidFixingDate(d) && d > Date::minDate())
+        while (!index->isValidFixingDate(d) && d > Date::minDate()) {
             d--;
+        }
     }
     } // namespace
 
@@ -151,8 +153,9 @@ namespace QuantLib {
 
     std::vector<Rate> AverageBMACoupon::indexFixings() const {
         std::vector<Rate> fixings(fixingSchedule_.size());
-        for (Size i=0; i<fixings.size(); ++i)
+        for (Size i = 0; i < fixings.size(); ++i) {
             fixings[i] = index_->fixing(fixingSchedule_.date(i));
+        }
         return fixings;
     }
 
@@ -238,14 +241,14 @@ namespace QuantLib {
             refStart = start = schedule_.date(i);
             refEnd   =   end = schedule_.date(i+1);
             paymentDate = calendar.adjust(end, paymentAdjustment_);
-            if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)
-                && schedule_.hasTenor())
-                refStart = calendar.adjust(end - schedule_.tenor(),
-                                           paymentAdjustment_);
-            if (i == n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)
-                && schedule_.hasTenor())
-                refEnd = calendar.adjust(start + schedule_.tenor(),
-                                         paymentAdjustment_);
+            if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i + 1) &&
+                schedule_.hasTenor()) {
+                refStart = calendar.adjust(end - schedule_.tenor(), paymentAdjustment_);
+            }
+            if (i == n - 1 && schedule_.hasIsRegular() && !schedule_.isRegular(i + 1) &&
+                schedule_.hasTenor()) {
+                refEnd = calendar.adjust(start + schedule_.tenor(), paymentAdjustment_);
+            }
 
             cashflows.push_back(ext::shared_ptr<CashFlow>(new
                 AverageBMACoupon(paymentDate,

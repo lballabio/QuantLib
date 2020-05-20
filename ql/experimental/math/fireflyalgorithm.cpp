@@ -104,8 +104,9 @@ namespace QuantLib {
             iteration++;
             iterationStat++;
             //Check if stopping criteria is met
-            if (iteration > maxIteration || iterationStat > maxIStationary)
+            if (iteration > maxIteration || iterationStat > maxIStationary) {
                 break;
+            }
 
             //Divide into two subpopulations
             //First sort values
@@ -206,10 +207,11 @@ namespace QuantLib {
                 }
             }
         } while (true);
-        if (iteration > maxIteration)
+        if (iteration > maxIteration) {
             ecType = EndCriteria::MaxIterations;
-        else
+        } else {
             ecType = EndCriteria::StationaryPoint;
+        }
 
         //Set result to best point
         P.setCurrentValue(bestX);

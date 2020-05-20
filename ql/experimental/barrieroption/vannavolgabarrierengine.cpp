@@ -171,14 +171,15 @@ namespace QuantLib {
             //only calculate out barrier option price
             // in barrier price = vanilla - out barrier
             Barrier::Type barrierType;
-            if(arguments_.barrierType == Barrier::UpOut)
+            if (arguments_.barrierType == Barrier::UpOut) {
                 barrierType = arguments_.barrierType;
-            else if(arguments_.barrierType == Barrier::UpIn)
+            } else if (arguments_.barrierType == Barrier::UpIn) {
                 barrierType = Barrier::UpOut;
-            else if(arguments_.barrierType == Barrier::DownOut)
+            } else if (arguments_.barrierType == Barrier::DownOut) {
                 barrierType = arguments_.barrierType;
-            else
+            } else {
                 barrierType = Barrier::DownOut;
+            }
 
             BarrierOption barrierOption(barrierType,
                                         arguments_.barrier,
@@ -323,10 +324,14 @@ namespace QuantLib {
             Real h2 = (log(arguments_.barrier/x0Quote->value()) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real h2Prime = (log(x0Quote->value()/arguments_.barrier) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real probTouch = 0.0;
-            if(arguments_.barrierType == Barrier::UpIn || arguments_.barrierType == Barrier::UpOut)
+            if (arguments_.barrierType == Barrier::UpIn ||
+                arguments_.barrierType == Barrier::UpOut) {
                 probTouch = cnd(h2Prime) + pow(arguments_.barrier/x0Quote->value(), 2.0*mu/pow(atmVol_->value(), 2.0))*cnd(-h2);
-            else
-                probTouch = cnd(-h2Prime) + pow(arguments_.barrier/x0Quote->value(), 2.0*mu/pow(atmVol_->value(), 2.0))*cnd(h2);
+            } else {
+                probTouch = cnd(-h2Prime) + pow(arguments_.barrier / x0Quote->value(),
+                                                2.0 * mu / pow(atmVol_->value(), 2.0)) *
+                                                cnd(h2);
+            }
             Real p_survival = 1.0 - probTouch;
 
             Real lambda = p_survival ;
@@ -349,10 +354,12 @@ namespace QuantLib {
                 inPrice = vanillaOption - outPrice;
             }
 
-            if(arguments_.barrierType == Barrier::DownOut || arguments_.barrierType == Barrier::UpOut)
+            if (arguments_.barrierType == Barrier::DownOut ||
+                arguments_.barrierType == Barrier::UpOut) {
                 results_.value = outPrice;
-            else
+            } else {
                 results_.value = inPrice;
+            }
             results_.additionalResults["VanillaPrice"] = vanillaOption;
             results_.additionalResults["BarrierInPrice"] = inPrice;
             results_.additionalResults["BarrierOutPrice"] = outPrice;

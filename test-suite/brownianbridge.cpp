@@ -97,16 +97,18 @@ void BrownianBridgeTest::testVariates() {
         stats1.add(temp.begin(), temp.end());
 
         temp[0] = temp[0]*std::sqrt(times[0]);
-        for (Size j=1; j<N; ++j)
-            temp[j] = temp[j-1] + temp[j]*std::sqrt(times[j]-times[j-1]);
+        for (Size j = 1; j < N; ++j) {
+            temp[j] = temp[j - 1] + temp[j] * std::sqrt(times[j] - times[j - 1]);
+        }
         stats2.add(temp.begin(), temp.end());
     }
 
     // normalized single variates
     std::vector<Real> expectedMean(N, 0.0);
     Matrix expectedCovariance(N, N, 0.0);
-    for (Size i=0; i<N; i++)
+    for (Size i = 0; i < N; i++) {
         expectedCovariance[i][i] = 1.0;
+    }
 
 #ifndef __FAST_MATH__
     Real meanTolerance = 1.0e-16;
@@ -143,9 +145,11 @@ void BrownianBridgeTest::testVariates() {
     // denormalized sums along the path
     expectedMean = std::vector<Real>(N, 0.0);
     expectedCovariance = Matrix(N, N);
-    for (Size i=0; i<N; ++i)
-        for (Size j=i; j<N; ++j)
+    for (Size i = 0; i < N; ++i) {
+        for (Size j = i; j < N; ++j) {
             expectedCovariance[i][j] = expectedCovariance[j][i] = times[i];
+        }
+    }
 
     covTolerance = 6.0e-4;
 

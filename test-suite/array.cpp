@@ -40,110 +40,120 @@ void ArrayTest::testConstruction() {
 
     // empty array
     Array a1;
-    if (!a1.empty())
+    if (!a1.empty()) {
         BOOST_ERROR("default-initialized array is not empty "
-                    "(size = " << a1.size() << ")");
+                    "(size = "
+                    << a1.size() << ")");
+    }
 
     // sized array
     Size size = 5;
     Array a2(size);
-    if (a2.size() != size)
+    if (a2.size() != size) {
         BOOST_ERROR("array not of the required size"
-                    << "\n    required:  " << size
-                    << "\n    resulting: " << a2.size());
+                    << "\n    required:  " << size << "\n    resulting: " << a2.size());
+    }
 
     // sized array, constant values
     Real value = 42.0;
     Array a3(size, value);
-    if (a3.size() != size)
+    if (a3.size() != size) {
         BOOST_ERROR("array not of the required size"
-                    << "\n    required:  " << size
-                    << "\n    resulting: " << a3.size());
+                    << "\n    required:  " << size << "\n    resulting: " << a3.size());
+    }
     Size i;
     for (i=0; i<size; ++i) {
-        if (a3[i] != value)
-            BOOST_ERROR(io::ordinal(i+1) << " element not with required value"
-                        << "\n    required:  " << value
-                        << "\n    resulting: " << a3[i]);
+        if (a3[i] != value) {
+            BOOST_ERROR(io::ordinal(i + 1)
+                        << " element not with required value"
+                        << "\n    required:  " << value << "\n    resulting: " << a3[i]);
+        }
     }
 
     // sized array, incremental values
     Real increment = 3.0;
     Array a4(size, value, increment);
-    if (a4.size() != size)
+    if (a4.size() != size) {
         BOOST_ERROR("array not of the required size"
-                    << "\n    required:  " << size
-                    << "\n    resulting: " << a4.size());
+                    << "\n    required:  " << size << "\n    resulting: " << a4.size());
+    }
     for (i=0; i<size; i++) {
-        if (a4[i] != value + i*increment)
-            BOOST_ERROR(io::ordinal(i+1) << " element not with required value"
-                        << "\n    required:  " << value + i*increment
-                        << "\n    resulting: " << a4[i]);
+        if (a4[i] != value + i * increment) {
+            BOOST_ERROR(io::ordinal(i + 1) << " element not with required value"
+                                           << "\n    required:  " << value + i * increment
+                                           << "\n    resulting: " << a4[i]);
+        }
     }
 
     // copy constructor
     Array a5(a1);
-    if (a5.size() != a1.size())
+    if (a5.size() != a1.size()) {
         BOOST_ERROR("copy not of the same size as original"
-                    << "\n    original:  " << a1.size()
-                    << "\n    copy:      " << a5.size());
+                    << "\n    original:  " << a1.size() << "\n    copy:      " << a5.size());
+    }
 
     Array a6(a3);
-    if (a6.size() != a3.size())
+    if (a6.size() != a3.size()) {
         BOOST_ERROR("copy not of the same size as original"
-                    << "\n    original:  " << a3.size()
-                    << "\n    copy:      " << a6.size());
+                    << "\n    original:  " << a3.size() << "\n    copy:      " << a6.size());
+    }
     for (i=0; i<a3.size(); i++) {
-        if (a6[i] != a3[i])
-            BOOST_ERROR(io::ordinal(i+1) << " element of copy "
-                        "not with same value as original"
-                        << "\n    original:  " << a3[i]
-                        << "\n    copy:      " << a6[i]);
+        if (a6[i] != a3[i]) {
+            BOOST_ERROR(io::ordinal(i + 1)
+                        << " element of copy "
+                           "not with same value as original"
+                        << "\n    original:  " << a3[i] << "\n    copy:      " << a6[i]);
+        }
     }
 
     // creation of disposable array
     Array temp1(size, value);
     Disposable<Array> temp2(temp1);
-    if (temp2.size() != size || !temp1.empty())
+    if (temp2.size() != size || !temp1.empty()) {
         BOOST_ERROR("array not correctly moved into disposable array"
                     << "\n    original size of source: " << size
                     << "\n    current size of source:  " << temp1.size()
                     << "\n    current size of target:  " << temp2.size());
+    }
     for (i=0; i<size; i++) {
-        if (temp2[i] != value)
-            BOOST_ERROR(io::ordinal(i+1) << " element of disposable "
-                        "not moved correctly"
-                        << "\n    required:  " << value
-                        << "\n    resulting: " << temp2[i]);
+        if (temp2[i] != value) {
+            BOOST_ERROR(io::ordinal(i + 1)
+                        << " element of disposable "
+                           "not moved correctly"
+                        << "\n    required:  " << value << "\n    resulting: " << temp2[i]);
+        }
     }
 
     // copy constructor from disposable
     Array a7(temp2);
-    if (a7.size() != size || !temp2.empty())
+    if (a7.size() != size || !temp2.empty()) {
         BOOST_ERROR("disposable array not correctly moved into array"
                     << "\n    original size of source: " << size
                     << "\n    current size of source:  " << temp2.size()
                     << "\n    current size of target:  " << a7.size());
+    }
     for (i=0; i<size; i++) {
-        if (a7[i] != value)
-            BOOST_ERROR(io::ordinal(i+1) << " element not moved correctly"
-                        << "\n    required:  " << value
-                        << "\n    resulting: " << a7[i]);
+        if (a7[i] != value) {
+            BOOST_ERROR(io::ordinal(i + 1)
+                        << " element not moved correctly"
+                        << "\n    required:  " << value << "\n    resulting: " << a7[i]);
+        }
     }
 
     // assignment
     Array a8;
     a8 = a7;
-    if (a8.size() != a7.size())
+    if (a8.size() != a7.size()) {
         BOOST_ERROR("copy not of the same size as original"
-                    << "\n    original:  " << a7.size()
-                    << "\n    copy:      " << a8.size());
+                    << "\n    original:  " << a7.size() << "\n    copy:      " << a8.size());
+    }
     for (i=0; i<a7.size(); i++) {
-        if (a8[i] != a7[i])
-            BOOST_ERROR(io::ordinal(i+1) << " element of copy "
-                        "not with same value as original"
-                        << "\n    original:  " << a7[i]
-                        << "\n    copy:      " << a8[i]);
+        if (a8[i] != a7[i]) {
+            BOOST_ERROR(io::ordinal(i + 1)
+                        << " element of copy "
+                           "not with same value as original"
+                        << "\n    original:  " << a7[i] << "\n    copy:      " << a8[i]);
+        }
     }
 
     // assignment from disposable
@@ -151,16 +161,18 @@ void ArrayTest::testConstruction() {
     Disposable<Array> temp4(temp3);
     Array a9;
     a9 = temp4;
-    if (a9.size() != size || !temp4.empty())
+    if (a9.size() != size || !temp4.empty()) {
         BOOST_ERROR("disposable array not correctly moved into array"
                     << "\n    original size of source: " << size
                     << "\n    current size of source:  " << temp4.size()
                     << "\n    current size of target:  " << a9.size());
+    }
     for (i=0; i<size; i++) {
-        if (a9[i] != value)
-            BOOST_ERROR(io::ordinal(i+1) << " element not moved correctly"
-                        << "\n    required:  " << value
-                        << "\n    resulting: " << a9[i]);
+        if (a9[i] != value) {
+            BOOST_ERROR(io::ordinal(i + 1)
+                        << " element not moved correctly"
+                        << "\n    required:  " << value << "\n    resulting: " << a9[i]);
+        }
     }
 
     // transform
@@ -216,20 +228,23 @@ void ArrayTest::testArrayResize() {
 
     Array a(10,1.0,1.0);
 
-    for (Size i=0; i < 10; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+    for (Size i = 0; i < 10; ++i) {
+        BOOST_CHECK_CLOSE(a[i], Real(1 + i), 10 * QL_EPSILON);
+    }
 
     a.resize(5);
     BOOST_CHECK(a.size() == 5);
 
-    for (Size i=0; i < 5; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+    for (Size i = 0; i < 5; ++i) {
+        BOOST_CHECK_CLOSE(a[i], Real(1 + i), 10 * QL_EPSILON);
+    }
 
     a.resize(15);
     BOOST_CHECK(a.size() == 15);
 
-    for (Size i=0; i < 5; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+    for (Size i = 0; i < 5; ++i) {
+        BOOST_CHECK_CLOSE(a[i], Real(1 + i), 10 * QL_EPSILON);
+    }
 
     const Array::const_iterator iter = a.begin();
     a.resize(a.size());

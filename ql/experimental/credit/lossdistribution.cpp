@@ -55,8 +55,9 @@ namespace QuantLib {
         for (Size j = 0; j < n; j++) {
             prev = probability;
             probability[0] = prev[0] * (1.0 - p[j]);
-            for (Size i = 1; i <= j; i++)
-                probability[i] = prev[i-1] * p[j] + prev[i] * (1.0 - p[j]);
+            for (Size i = 1; i <= j; i++) {
+                probability[i] = prev[i - 1] * p[j] + prev[i] * (1.0 - p[j]);
+            }
             probability[j+1] = prev[j] * p[j];
         }
 
@@ -113,8 +114,9 @@ namespace QuantLib {
     //--------------------------------------------------------------------------
         vector<Real> probability = probabilityOfNEvents(p);
         Real sum = 1.0;
-        for (int j = 0; j < k; j++)
+        for (int j = 0; j < k; j++) {
             sum -= probability[j];
+        }
         return sum;
         /*
         Real sum = 0;
@@ -163,8 +165,9 @@ namespace QuantLib {
         excessProbability_.clear();
         excessProbability_.resize(n_+1, 0.0);
         excessProbability_[n_] = probability_[n_];
-        for (int k = n_-1; k >= 0; k--)
-            excessProbability_[k] = excessProbability_[k+1] + probability_[k];
+        for (int k = n_ - 1; k >= 0; k--) {
+            excessProbability_[k] = excessProbability_[k + 1] + probability_[k];
+        }
 
         dist.normalize();
 
@@ -191,16 +194,18 @@ namespace QuantLib {
         for (Size k = 0; k < n_; k++) {
             prev = probability_;
             probability_[0] = prev[0] * (1.0 - p[k]);
-            for (Size i = 1; i <= k; i++)
-                probability_[i] = prev[i-1] * p[k] + prev[i] * (1.0 - p[k]);
+            for (Size i = 1; i <= k; i++) {
+                probability_[i] = prev[i - 1] * p[k] + prev[i] * (1.0 - p[k]);
+            }
             probability_[k+1] = prev[k] * p[k];
         }
 
         excessProbability_.clear();
         excessProbability_.resize(n_+1, 0.0);
         excessProbability_[n_] = probability_[n_];
-        for (int k = n_ - 1; k >= 0; k--)
-            excessProbability_[k] = excessProbability_[k+1] + probability_[k];
+        for (int k = n_ - 1; k >= 0; k--) {
+            excessProbability_[k] = excessProbability_[k + 1] + probability_[k];
+        }
 
         Distribution dist (nBuckets_, 0.0, maximum_);
         for (Size i = 0; i <= n_; i++) {
@@ -237,8 +242,9 @@ namespace QuantLib {
         p[0] = 1.0;
         a[0] = 0.0;
         Real dx = maximum_ / nBuckets_;
-        for (Size k = 1; k < nBuckets_; k++)
-            a[k] = dx * k + dx/2;
+        for (Size k = 1; k < nBuckets_; k++) {
+            a[k] = dx * k + dx / 2;
+        }
 
         for (Size i = 0; i < nominals.size(); i++) {
             Real L = nominals[i];
@@ -250,9 +256,9 @@ namespace QuantLib {
                     QL_REQUIRE (u >= k, "u=" << u << "<k=" << k << " at i=" << i);
 
                     Real dp = p[k] * P;
-                    if (u == k)
+                    if (u == k) {
                         a[k] += P * L;
-                    else {
+                    } else {
                         // no update of a[u] and p[u] if u is beyond grid end
                         if (u < int(nBuckets_)) {
                             // a[u] remains unchanged, if dp = 0
@@ -293,8 +299,11 @@ namespace QuantLib {
     //--------------------------------------------------------------------------
         QL_REQUIRE (loss >= 0, "loss " << loss << " must be >= 0");
         Real dx = maximum_ / nBuckets_;
-        for (Size i = i0; i < nBuckets_; i++)
-            if (dx * i > loss + epsilon_) return i - 1;
+        for (Size i = i0; i < nBuckets_; i++) {
+            if (dx * i > loss + epsilon_) {
+                return i - 1;
+            }
+        }
         return nBuckets_;
     }
 
@@ -310,8 +319,9 @@ namespace QuantLib {
             Real e = 0;
             for (Size j = 0; j < nominals.size(); j++) {
                 Real r = rng.next().value;
-                if (r <= probabilities[j])
+                if (r <= probabilities[j]) {
                     e += nominals[j];
+                }
             }
             dist.add (e + epsilon_);
         }

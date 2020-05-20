@@ -250,7 +250,9 @@ namespace QuantLib {
             maxErrorTolerance_ = maxErrorTolerance;
         } else{
             maxErrorTolerance_ = SWAPTIONVOLCUBE_TOL;
-            if (vegaWeightedSmileFit_) maxErrorTolerance_ =  SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
+            if (vegaWeightedSmileFit_) {
+                maxErrorTolerance_ = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
+            }
         }
         if (errorAccept != Null<Rate>()) {
             errorAccept_ = errorAccept;
@@ -265,10 +267,14 @@ namespace QuantLib {
 
     template<class Model> void SwaptionVolCube1x<Model>::registerWithParametersGuess()
     {
-        for (Size i=0; i<4; i++)
-            for (Size j=0; j<nOptionTenors_; j++)
-                for (Size k=0; k<nSwapTenors_; k++)
-                    privateObserver_->registerWith(parametersGuessQuotes_[j+k*nOptionTenors_][i]);
+        for (Size i = 0; i < 4; i++) {
+            for (Size j = 0; j < nOptionTenors_; j++) {
+                for (Size k = 0; k < nSwapTenors_; k++) {
+                    privateObserver_->registerWith(
+                        parametersGuessQuotes_[j + k * nOptionTenors_][i]);
+                }
+            }
+        }
     }
 
     template<class Model> void SwaptionVolCube1x<Model>::setParameterGuess() const {
@@ -278,12 +284,14 @@ namespace QuantLib {
                                 optionTimes_, swapLengths_, 4,
                                 true, backwardFlat_);
         Size i;
-        for (i=0; i<4; i++)
-            for (Size j=0; j<nOptionTenors_ ; j++)
+        for (i = 0; i < 4; i++) {
+            for (Size j = 0; j < nOptionTenors_; j++) {
                 for (Size k=0; k<nSwapTenors_; k++) {
                     parametersGuess_.setElement(i, j, k,
                         parametersGuessQuotes_[j+k*nOptionTenors_][i]->value());
                 }
+            }
+        }
         parametersGuess_.updateInterpolators();
 
     }
@@ -613,8 +621,9 @@ namespace QuantLib {
                                                atmSwapTenors[k]);
                     std::vector<Real> volAtmCalibrated;
                     volAtmCalibrated.reserve(nStrikes_);
-                    for (Size i=0; i<nStrikes_; i++)
+                    for (Size i = 0; i < nStrikes_; i++) {
                         volAtmCalibrated.push_back(atmVol + spreadVols[i]);
+                    }
                     volCubeAtmCalibrated_.setPoint(
                                     atmOptionDates[j], atmSwapTenors[k],
                                     atmOptionTimes[j], atmSwapLengths[k],
@@ -666,15 +675,17 @@ namespace QuantLib {
                                                    atmOptionTime);
         Size optionTimesPreviousIndex =
             optionTimesPreviousNode - optionTimes.begin();
-        if (optionTimesPreviousIndex >0)
-            optionTimesPreviousIndex --;
+        if (optionTimesPreviousIndex > 0) {
+            optionTimesPreviousIndex--;
+        }
 
         swapLengthsPreviousNode = std::lower_bound(swapLengths.begin(),
                                                    swapLengths.end(),
                                                    atmTimeLength);
         Size swapLengthsPreviousIndex = swapLengthsPreviousNode - swapLengths.begin();
-        if (swapLengthsPreviousIndex >0)
-            swapLengthsPreviousIndex --;
+        if (swapLengthsPreviousIndex > 0) {
+            swapLengthsPreviousIndex--;
+        }
 
         std::vector< std::vector<ext::shared_ptr<SmileSection> > > smiles;
         std::vector<ext::shared_ptr<SmileSection> >  smilesOnPreviousExpiry;
@@ -783,10 +794,11 @@ namespace QuantLib {
     template<class Model> ext::shared_ptr<SmileSection>
     SwaptionVolCube1x<Model>::smileSectionImpl(Time optionTime,
                                        Time swapLength) const {
-        if (isAtmCalibrated_)
+        if (isAtmCalibrated_) {
             return smileSection(optionTime, swapLength, denseParameters_);
-        else
+        } else {
             return smileSection(optionTime, swapLength, sparseParameters_);
+        }
     }
 
     template<class Model> Matrix SwaptionVolCube1x<Model>::sparseSabrParameters() const {
@@ -861,9 +873,9 @@ namespace QuantLib {
                        << swapLengths.size() << ")");
 
         std::vector<Time> betaTimes;
-        for (Size i = 0; i < beta.size(); i++)
-            betaTimes.push_back(
-                timeFromReference(optionDateFromTenor(swapLengths[i])));
+        for (Size i = 0; i < beta.size(); i++) {
+            betaTimes.push_back(timeFromReference(optionDateFromTenor(swapLengths[i])));
+        }
 
         LinearInterpolation betaInterpolation(betaTimes.begin(),
                                               betaTimes.end(), beta.begin());
@@ -872,10 +884,12 @@ namespace QuantLib {
         for (Size i = 0; i < optionTimes().size(); i++) {
             Real t = optionTimes()[i];
             // flat extrapolation ensures admissable values
-            if (t < betaTimes.front())
+            if (t < betaTimes.front()) {
                 t = betaTimes.front();
-            if (t > betaTimes.back())
+            }
+            if (t > betaTimes.back()) {
                 t = betaTimes.back();
+            }
             cubeBeta.push_back(betaInterpolation(t));
         }
 
@@ -913,18 +927,17 @@ namespace QuantLib {
         for (Size k=0;k<nLayers_;k++) {
             ext::shared_ptr<Interpolation2D> interpolation;
             transposedPoints_.push_back(transpose(points[k]));
-            if (k <= 4 && backwardFlat_)
+            if (k <= 4 && backwardFlat_) {
                 interpolation =
                     ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            else
-                interpolation =
-                    ext::make_shared<BilinearInterpolation>(
-                        optionTimes_.begin(), optionTimes_.end(),
-                        swapLengths_.begin(), swapLengths_.end(),
-                        transposedPoints_[k]);
+            } else {
+                interpolation = ext::make_shared<BilinearInterpolation>(
+                    optionTimes_.begin(), optionTimes_.end(), swapLengths_.begin(),
+                    swapLengths_.end(), transposedPoints_[k]);
+            }
             interpolators_.push_back(ext::shared_ptr<Interpolation2D>(
                 new FlatExtrapolator2D(interpolation)));
             interpolators_[k]->enableExtrapolation();
@@ -943,18 +956,17 @@ namespace QuantLib {
         transposedPoints_ = o.transposedPoints_;
         for (Size k=0; k<nLayers_; ++k) {
             ext::shared_ptr<Interpolation2D> interpolation;
-            if (k <= 4 && backwardFlat_)
+            if (k <= 4 && backwardFlat_) {
                 interpolation =
                     ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            else
-                interpolation =
-                    ext::make_shared<BilinearInterpolation>(
-                        optionTimes_.begin(), optionTimes_.end(),
-                        swapLengths_.begin(), swapLengths_.end(),
-                        transposedPoints_[k]);
+            } else {
+                interpolation = ext::make_shared<BilinearInterpolation>(
+                    optionTimes_.begin(), optionTimes_.end(), swapLengths_.begin(),
+                    swapLengths_.end(), transposedPoints_[k]);
+            }
             interpolators_.push_back(ext::shared_ptr<Interpolation2D>(
                 new FlatExtrapolator2D(interpolation)));
             interpolators_[k]->enableExtrapolation();
@@ -974,18 +986,17 @@ namespace QuantLib {
         transposedPoints_ = o.transposedPoints_;
         for(Size k=0;k<nLayers_;k++){
             ext::shared_ptr<Interpolation2D> interpolation;
-            if (k <= 4 && backwardFlat_)
+            if (k <= 4 && backwardFlat_) {
                 interpolation =
                     ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            else
-                interpolation =
-                    ext::make_shared<BilinearInterpolation>(
-                        optionTimes_.begin(), optionTimes_.end(),
-                        swapLengths_.begin(), swapLengths_.end(),
-                        transposedPoints_[k]);
+            } else {
+                interpolation = ext::make_shared<BilinearInterpolation>(
+                    optionTimes_.begin(), optionTimes_.end(), swapLengths_.begin(),
+                    swapLengths_.end(), transposedPoints_[k]);
+            }
             interpolators_.push_back(ext::shared_ptr<Interpolation2D>(
                 new FlatExtrapolator2D(interpolation)));
             interpolators_[k]->enableExtrapolation();
@@ -1052,12 +1063,13 @@ namespace QuantLib {
             std::lower_bound(swapLengths_.begin(),swapLengths_.end(),swapLength);
         Size swapLengthsIndex = swapLengthsPreviousNode - swapLengths_.begin();
 
-        if (expandOptionTimes || expandSwapLengths)
-            expandLayers(optionTimesIndex, expandOptionTimes,
-                         swapLengthsIndex, expandSwapLengths);
+        if (expandOptionTimes || expandSwapLengths) {
+            expandLayers(optionTimesIndex, expandOptionTimes, swapLengthsIndex, expandSwapLengths);
+        }
 
-        for (Size k=0; k<nLayers_; ++k)
+        for (Size k = 0; k < nLayers_; ++k) {
             points_[k][optionTimesIndex][swapLengthsIndex] = point[k];
+        }
 
         optionTimes_[optionTimesIndex] = optionTime;
         swapLengths_[swapLengthsIndex] = swapLength;
@@ -1085,10 +1097,14 @@ namespace QuantLib {
         for (Size k=0; k<nLayers_; ++k) {
             for (Size u=0; u<points_[k].rows(); ++u) {
                  Size indexOfRow = u;
-                 if (u>=i && expandOptionTimes) indexOfRow = u+1;
+                 if (u >= i && expandOptionTimes) {
+                     indexOfRow = u + 1;
+                 }
                  for (Size v=0; v<points_[k].columns(); ++v) {
                       Size indexOfCol = v;
-                      if (v>=j && expandSwapLengths) indexOfCol = v+1;
+                      if (v >= j && expandSwapLengths) {
+                          indexOfCol = v + 1;
+                      }
                       newPoints[k][indexOfRow][indexOfCol]=points_[k][u][v];
                  }
             }
@@ -1104,8 +1120,9 @@ namespace QuantLib {
     template<class Model> std::vector<Real> SwaptionVolCube1x<Model>::Cube::operator()(
                             const Time optionTime, const Time swapLength) const {
         std::vector<Real> result;
-        for (Size k=0; k<nLayers_; ++k)
+        for (Size k = 0; k < nLayers_; ++k) {
             result.push_back((*interpolators_[k])(optionTime, swapLength));
+        }
         return result;
     }
 
@@ -1123,18 +1140,17 @@ namespace QuantLib {
         for (Size k = 0; k < nLayers_; ++k) {
             transposedPoints_[k] = transpose(points_[k]);
             ext::shared_ptr<Interpolation2D> interpolation;
-            if (k <= 4 && backwardFlat_)
+            if (k <= 4 && backwardFlat_) {
                 interpolation =
                     ext::make_shared<BackwardflatLinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
                         transposedPoints_[k]);
-            else
-                interpolation =
-                    ext::make_shared<BilinearInterpolation>(
-                        optionTimes_.begin(), optionTimes_.end(),
-                        swapLengths_.begin(), swapLengths_.end(),
-                        transposedPoints_[k]);
+            } else {
+                interpolation = ext::make_shared<BilinearInterpolation>(
+                    optionTimes_.begin(), optionTimes_.end(), swapLengths_.begin(),
+                    swapLengths_.end(), transposedPoints_[k]);
+            }
             interpolators_[k] = ext::shared_ptr<Interpolation2D>(
                 new FlatExtrapolator2D(interpolation));
             interpolators_[k]->enableExtrapolation();
@@ -1147,8 +1163,9 @@ namespace QuantLib {
             for (Size j=0; j<optionTimes_.size(); ++j) {
                 result[i*optionTimes_.size()+j][0] = swapLengths_[i];
                 result[i*optionTimes_.size()+j][1] = optionTimes_[j];
-                for (Size k=0; k<nLayers_; ++k)
-                    result[i*optionTimes_.size()+j][2+k] = points_[k][j][i];
+                for (Size k = 0; k < nLayers_; ++k) {
+                    result[i * optionTimes_.size() + j][2 + k] = points_[k][j][i];
+                }
             }
         }
         return result;

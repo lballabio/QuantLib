@@ -488,10 +488,10 @@ void BatesModelTest::testDAXCalibration() {
     Real expected = 36.6;
     Real calculated = getCalibrationError(options);
 
-    if (std::fabs(calculated - expected) > 2.5)
+    if (std::fabs(calculated - expected) > 2.5) {
         BOOST_ERROR("failed to calibrate the bates model"
-                    << "\n    calculated: " << calculated
-                    << "\n    expected:   " << expected);
+                    << "\n    calculated: " << calculated << "\n    expected:   " << expected);
+    }
 
     //check pricing of derived engines
     std::vector<ext::shared_ptr<PricingEngine> > pricingEngines;
@@ -529,10 +529,11 @@ void BatesModelTest::testDAXCalibration() {
         }
 
         Real calculated = std::fabs(getCalibrationError(options));
-        if (std::fabs(calculated - expectedValues[i]) > tolerance)
+        if (std::fabs(calculated - expectedValues[i]) > tolerance) {
             BOOST_ERROR("failed to calculated prices for derived Bates models"
                         << "\n    calculated: " << calculated
                         << "\n    expected:   " << expectedValues[i]);
+        }
     }
 }
 

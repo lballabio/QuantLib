@@ -245,8 +245,9 @@ void DistributionTest::testNormal() {
     std::vector<Real> x(N), y(N), yd(N), temp(N), diff(N);
 
     Size i;
-    for (i=0; i<N; i++)
-        x[i] = xMin+h*i;
+    for (i = 0; i < N; i++) {
+        x[i] = xMin + h * i;
+    }
     std::transform(x.begin(), x.end(), y.begin(), gaussian);
     std::transform(x.begin(), x.end(), yd.begin(), gaussianDerivative);
 
@@ -286,8 +287,9 @@ void DistributionTest::testNormal() {
     }
 
     // check that cum.derivative = Gaussian
-    for (i=0; i<x.size(); i++)
+    for (i = 0; i < x.size(); i++) {
         temp[i] = cum.derivative(x[i]);
+    }
     std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
@@ -299,8 +301,9 @@ void DistributionTest::testNormal() {
     }
 
     // check that normal.derivative = gaussianDerivative
-    for (i=0; i<x.size(); i++)
+    for (i = 0; i < x.size(); i++) {
         temp[i] = normal.derivative(x[i]);
+    }
     std::transform(yd.begin(),yd.end(),temp.begin(),diff.begin(),
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
@@ -348,12 +351,13 @@ void DistributionTest::testPoisson() {
         Real logHelper = -mean;
         Real expected = std::exp(logHelper);
         Real error = std::fabs(calculated-expected);
-        if (error > 1.0e-16)
+        if (error > 1.0e-16) {
             BOOST_ERROR("Poisson pdf(" << mean << ")(" << i << ")\n"
-                        << std::setprecision(16)
-                        << "    calculated: " << calculated << "\n"
-                        << "    expected:   " << expected << "\n"
-                        << "    error:      " << error);
+                                       << std::setprecision(16) << "    calculated: " << calculated
+                                       << "\n"
+                                       << "    expected:   " << expected << "\n"
+                                       << "    error:      " << error);
+        }
 
         for (i=1; i<25; i++) {
             calculated = pdf(i);
@@ -364,12 +368,13 @@ void DistributionTest::testPoisson() {
                 expected = std::exp(logHelper);
             }
             error = std::fabs(calculated-expected);
-            if (error>1.0e-13)
+            if (error > 1.0e-13) {
                 BOOST_ERROR("Poisson pdf(" << mean << ")(" << i << ")\n"
-                            << std::setprecision(13)
-                            << "    calculated: " << calculated << "\n"
-                            << "    expected:   " << expected << "\n"
-                            << "    error:      " << error);
+                                           << std::setprecision(13)
+                                           << "    calculated: " << calculated << "\n"
+                                           << "    expected:   " << expected << "\n"
+                                           << "    error:      " << error);
+            }
         }
     }
 }
@@ -385,12 +390,13 @@ void DistributionTest::testCumulativePoisson() {
         Real logHelper = -mean;
         Real cumExpected = std::exp(logHelper);
         Real error = std::fabs(cumCalculated-cumExpected);
-        if (error>1.0e-13)
+        if (error > 1.0e-13) {
             BOOST_ERROR("Poisson cdf(" << mean << ")(" << i << ")\n"
-                        << std::setprecision(13)
-                        << "    calculated: " << cumCalculated << "\n"
-                        << "    expected:   " << cumExpected << "\n"
-                        << "    error:      " << error);
+                                       << std::setprecision(13)
+                                       << "    calculated: " << cumCalculated << "\n"
+                                       << "    expected:   " << cumExpected << "\n"
+                                       << "    error:      " << error);
+        }
         for (i=1; i<25; i++) {
             cumCalculated = cdf(i);
             if (mean == 0.0) {
@@ -400,12 +406,13 @@ void DistributionTest::testCumulativePoisson() {
                 cumExpected += std::exp(logHelper);
             }
             error = std::fabs(cumCalculated-cumExpected);
-            if (error>1.0e-12)
+            if (error > 1.0e-12) {
                 BOOST_ERROR("Poisson cdf(" << mean << ")(" << i << ")\n"
-                            << std::setprecision(12)
-                            << "    calculated: " << cumCalculated << "\n"
-                            << "    expected:   " << cumExpected << "\n"
-                            << "    error:      " << error);
+                                           << std::setprecision(12)
+                                           << "    calculated: " << cumCalculated << "\n"
+                                           << "    expected:   " << cumExpected << "\n"
+                                           << "    error:      " << error);
+            }
         }
     }
 }
@@ -506,15 +513,17 @@ void DistributionTest::testBivariateCumulativeStudent() {
             Real reference1 = expected1[i*LENGTH(xs)+j];
 			Real calculated2 = f2(xs[j], xs[j]);
             Real reference2 = expected2[i*LENGTH(xs)+j];
-            if (std::fabs(calculated1 - reference1) > tolerance)
-                BOOST_ERROR("Failed to reproduce CDF value at " << xs[j] <<
-                            "\n    calculated: " << calculated1 <<
-                            "\n    expected:   " << reference1);
-            if (std::fabs(calculated2 - reference2) > tolerance)
-                BOOST_ERROR("Failed to reproduce CDF value at " << xs[j] <<
-                            "\n    calculated: " << calculated2 <<
-                            "\n    expected:   " << reference1);
-		}
+            if (std::fabs(calculated1 - reference1) > tolerance) {
+                BOOST_ERROR("Failed to reproduce CDF value at "
+                            << xs[j] << "\n    calculated: " << calculated1
+                            << "\n    expected:   " << reference1);
+            }
+            if (std::fabs(calculated2 - reference2) > tolerance) {
+                BOOST_ERROR("Failed to reproduce CDF value at "
+                            << xs[j] << "\n    calculated: " << calculated2
+                            << "\n    expected:   " << reference1);
+            }
+                }
 	}
 
     // a few more random cases
@@ -592,14 +601,12 @@ void DistributionTest::testBivariateCumulativeStudent() {
 		BivariateCumulativeStudentDistribution f(cases[i].n,  cases[i].rho);
         Real calculated = f(cases[i].x, cases[i].y);
         Real expected = cases[i].result;
-        if (std::fabs(calculated - expected) > tolerance)
-            BOOST_ERROR("Failed to reproduce CDF value:" <<
-                        "\n    n:   " << cases[i].n <<
-                        "\n    rho: " << cases[i].rho <<
-                        "\n    x:   " << cases[i].x <<
-                        "\n    y:   " << cases[i].y <<
-                        "\n    calculated: " << calculated <<
-                        "\n    expected:   " << expected);
+        if (std::fabs(calculated - expected) > tolerance) {
+            BOOST_ERROR("Failed to reproduce CDF value:"
+                        << "\n    n:   " << cases[i].n << "\n    rho: " << cases[i].rho
+                        << "\n    x:   " << cases[i].x << "\n    y:   " << cases[i].y
+                        << "\n    calculated: " << calculated << "\n    expected:   " << expected);
+        }
     }
 }
 
@@ -622,23 +629,22 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
                 Real calculated = T(x, y);
                 Real expected = N(x, y);
 				Real diff = std::fabs(calculated - expected);
-                if (diff > tolerance)
-                    BOOST_ERROR("Failed to reproduce limit value:" <<
-                                "\n    rho: " << rho <<
-                                "\n    x:   " << x <<
-                                "\n    y:   " << y <<
-                                "\n    calculated: " << calculated <<
-                                "\n    expected:   " << expected);
-                
-				avgDiff += diff;
+                                if (diff > tolerance) {
+                                    BOOST_ERROR("Failed to reproduce limit value:"
+                                                << "\n    rho: " << rho << "\n    x:   " << x
+                                                << "\n    y:   " << y << "\n    calculated: "
+                                                << calculated << "\n    expected:   " << expected);
+                                }
+
+                                avgDiff += diff;
 				++m;
 			}
 		}
 		avgDiff /= m;
-        if (avgDiff > 3.0e-6)
-            BOOST_ERROR("Failed to reproduce average limit value:" <<
-                        "\n    rho: " << rho <<
-                        "\n    average error: " << avgDiff);
+                if (avgDiff > 3.0e-6) {
+                    BOOST_ERROR("Failed to reproduce average limit value:"
+                                << "\n    rho: " << rho << "\n    average error: " << avgDiff);
+                }
     }
 }
     

@@ -145,8 +145,9 @@ namespace QuantLib {
         // initialize working variables
         usedCapletVols_ = mktCapletVols_;
 
-        for (Size i=0; i<numberOfRates_; ++i)
-            mktSwaptionVols_[i]=displacedSwapVariances_[i]->totalVolatility(i);
+        for (Size i = 0; i < numberOfRates_; ++i) {
+            mktSwaptionVols_[i] = displacedSwapVariances_[i]->totalVolatility(i);
+        }
 
         std::vector<Spread> displacements(numberOfRates_,
                                           displacement_);
@@ -186,8 +187,9 @@ namespace QuantLib {
                 capletRmsError_ += capletError*capletError;
                 capletMaxError_ = std::max(capletMaxError_, capletError);
 
-                if (i < numberOfRates_-1)
-                    usedCapletVols_[i] *= mktCapletVols_[i]/mdlCapletVols_[i];
+                if (i < numberOfRates_ - 1) {
+                    usedCapletVols_[i] *= mktCapletVols_[i] / mdlCapletVols_[i];
+                }
             }
             swaptionRmsError_ = std::sqrt(swaptionRmsError_/numberOfRates_);
             capletRmsError_ = std::sqrt(capletRmsError_/numberOfRates_);
@@ -202,13 +204,13 @@ namespace QuantLib {
                                  displacements));
 
          timeDependentCalibratedSwaptionVols_.clear();
-         for (Size i=0; i<numberOfRates_; ++i)
-             timeDependentCalibratedSwaptionVols_.push_back(
-                ctsmm->timeDependentVolatility(i));
+         for (Size i = 0; i < numberOfRates_; ++i) {
+             timeDependentCalibratedSwaptionVols_.push_back(ctsmm->timeDependentVolatility(i));
+         }
 
-        // calculate deformationSize_ ??
-        calibrated_ = true;
-        return failures_==0;
+         // calculate deformationSize_ ??
+         calibrated_ = true;
+         return failures_ == 0;
     }
 
 }

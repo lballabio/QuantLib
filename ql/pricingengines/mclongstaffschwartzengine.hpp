@@ -225,8 +225,9 @@ namespace QuantLib {
             for (Size i = 0; i < this->arguments_.exercise->dates().size();
                  ++i) {
                 Time t = process_->time(this->arguments_.exercise->date(i));
-                if (t > 0.0)
+                if (t > 0.0) {
                     requiredTimes.push_back(t);
+                }
             }
         }
         if (this->timeSteps_ != Null<Size>()) {

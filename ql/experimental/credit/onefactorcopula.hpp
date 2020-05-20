@@ -223,8 +223,9 @@ namespace QuantLib {
                 std::vector<Real> conditional
                     = conditionalProbability(probabilities, m(i));
                 Distribution d = f(nominals, conditional);
-                for (Size j = 0; j < dist.size(); j++)
+                for (Size j = 0; j < dist.size(); j++) {
                     dist.addDensity(j, d.density(j) * densitydm(i));
+                }
             }
             return dist;
         }

@@ -81,11 +81,13 @@ namespace QuantLib {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
         Rate swapletRate = underlying_->rate();
         Rate floorletRate = 0.;
-        if(isFloored_)
+        if (isFloored_) {
             floorletRate = underlying_->pricer()->floorletRate(effectiveFloor());
+        }
         Rate capletRate = 0.;
-        if(isCapped_)
+        if (isCapped_) {
             capletRate = underlying_->pricer()->capletRate(effectiveCap());
+        }
         return swapletRate + floorletRate - capletRate;
     }
 
@@ -94,33 +96,39 @@ namespace QuantLib {
     }
 
     Rate CappedFlooredCoupon::cap() const {
-        if ( (gearing_ > 0) && isCapped_)
-                return cap_;
-        if ( (gearing_ < 0) && isFloored_)
+        if ((gearing_ > 0) && isCapped_) {
+            return cap_;
+        }
+        if ((gearing_ < 0) && isFloored_) {
             return floor_;
+        }
         return Null<Rate>();
     }
 
     Rate CappedFlooredCoupon::floor() const {
-        if ( (gearing_ > 0) && isFloored_)
+        if ((gearing_ > 0) && isFloored_) {
             return floor_;
-        if ( (gearing_ < 0) && isCapped_)
+        }
+        if ((gearing_ < 0) && isCapped_) {
             return cap_;
+        }
         return Null<Rate>();
     }
 
     Rate CappedFlooredCoupon::effectiveCap() const {
-        if (isCapped_)
+        if (isCapped_) {
             return (cap_ - spread())/gearing();
-        else
+        } else {
             return Null<Rate>();
+        }
     }
 
     Rate CappedFlooredCoupon::effectiveFloor() const {
-        if (isFloored_)
+        if (isFloored_) {
             return (floor_ - spread())/gearing();
-        else
+        } else {
             return Null<Rate>();
+        }
     }
 
     void CappedFlooredCoupon::update() {
@@ -131,10 +139,11 @@ namespace QuantLib {
         typedef FloatingRateCoupon super;
         Visitor<CappedFlooredCoupon>* v1 =
             dynamic_cast<Visitor<CappedFlooredCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             super::accept(v);
+        }
     }
 
 }

@@ -392,9 +392,9 @@ namespace QuantLib {
                         ? timeGrid->at(rescaleSteps[rescaleIdx])
                         : timeGrid->back(),
                     vGrid, v0, params_));
-            }
-            else
+            } else {
                 vMesher.push_back(vMesher.back());
+            }
         }
 
         // start probability distribution
@@ -484,8 +484,9 @@ namespace QuantLib {
 
                 for (Size j=0; j < x.size(); ++j) {
                     Array pSlice(vGrid);
-                    for (Size k=0; k < vGrid; ++k)
-                        pSlice[k] = pn[j + k*xGrid];
+                    for (Size k = 0; k < vGrid; ++k) {
+                        pSlice[k] = pn[j + k * xGrid];
+                    }
 
                     const Real pInt = (trafoType == FdmSquareRootFwdOp::Power)
                        ? DiscreteSimpsonIntegral()(v, Pow(v, alpha-1)*pSlice)
@@ -519,16 +520,17 @@ namespace QuantLib {
                 const Real upperL = leverageFct->localVol(t, sUpperBound);
 
                 for (Size j=0; j < x.size(); ++j) {
-                    if (x[j] < sLowerBound)
+                    if (x[j] < sLowerBound) {
                         std::fill(L->row_begin(j)+i,
                           std::min(L->row_begin(j)+i+1, L->row_end(j)),
                           lowerL);
-                    else if (x[j] > sUpperBound)
+                    } else if (x[j] > sUpperBound) {
                         std::fill(L->row_begin(j)+i,
                           std::min(L->row_begin(j)+i+1, L->row_end(j)),
                           upperL);
-                    else if ((*L)[j][i] == Null<Real>())
+                    } else if ((*L)[j][i] == Null<Real>()) {
                         QL_FAIL("internal error");
+                    }
                 }
                 leverageFct->setInterpolation(Linear());
 

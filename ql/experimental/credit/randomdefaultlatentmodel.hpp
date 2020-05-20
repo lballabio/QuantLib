@@ -114,7 +114,9 @@ namespace QuantLib {
         void update() {
             simsBuffer_.clear();
             // tell basket to notify instruments, etc, we are invalid
-            if(!basket_.empty()) basket_->notifyObservers();
+            if (!basket_.empty()) {
+                basket_->notifyObservers();
+            }
             LazyObject::update();
         }
 
@@ -242,17 +244,24 @@ namespace QuantLib {
         // casted to natural to avoid warning, we have just checked the sign
         Natural val = d.serialNumber() - today.serialNumber();
 
-        if(n==0) return 1.;
+        if (n == 0) {
+            return 1.;
+        }
 
         Real counts = 0.;
         for(Size iSim=0; iSim < nSims_; iSim++) {
             Size simCount = 0;
             const std::vector<simEvent<D<C, URNG> > >& events =
                 getSim(iSim);
-            for(Size iEvt=0; iEvt < events.size(); iEvt++)
+            for (Size iEvt = 0; iEvt < events.size(); iEvt++) {
                 // duck type on the members:
-                if(val > events[iEvt].dayFromRef) simCount++;
-            if(simCount >= n) counts++;
+                if (val > events[iEvt].dayFromRef) {
+                    simCount++;
+                }
+            }
+            if (simCount >= n) {
+                counts++;
+            }
         }
         return counts/nSims_;
         // \todo Provide confidence interval
@@ -279,11 +288,11 @@ namespace QuantLib {
             std::map<unsigned short, unsigned short> namesDefaulting;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
                 // if event is within time horizon...
-                if(val > events[iEvt].dayFromRef)
+                if (val > events[iEvt].dayFromRef) {
                     //...count it. notice insertion sorts by date.
-                    namesDefaulting.insert(std::make_pair<unsigned short,
-                      unsigned short>(events[iEvt].dayFromRef,
-                        events[iEvt].nameIdx));
+                    namesDefaulting.insert(std::make_pair<unsigned short, unsigned short>(
+                        events[iEvt].dayFromRef, events[iEvt].nameIdx));
+                }
             }
             if(namesDefaulting.size() >= n) {
                 std::map<unsigned short, unsigned short>::const_iterator
@@ -323,10 +332,12 @@ namespace QuantLib {
             const std::vector<simEvent<D<C, URNG> > >& events = getSim(iSim);
             Real imatch = 0., jmatch = 0.;
             for(Size iEvt=0; iEvt < events.size(); iEvt++) {
-                if((val > events[iEvt].dayFromRef) &&
-                   (events[iEvt].nameIdx == iName)) imatch = 1.;
-                if((val > events[iEvt].dayFromRef) &&
-                   (events[iEvt].nameIdx == jName)) jmatch = 1.;
+                if ((val > events[iEvt].dayFromRef) && (events[iEvt].nameIdx == iName)) {
+                    imatch = 1.;
+                }
+                if ((val > events[iEvt].dayFromRef) && (events[iEvt].nameIdx == jName)) {
+                    jmatch = 1.;
+                }
             }
             expectedDefiDefj += imatch * jmatch;
             expectedDefi += imatch;
@@ -462,7 +473,9 @@ namespace QuantLib {
         Real detachAmount = basket_->detachmentAmount();
 
         Date::serial_type val = d.serialNumber() - today.serialNumber();
-        if(val <= 0) return 0.;// plus basket realized losses
+        if (val <= 0) {
+            return 0.; // plus basket realized losses
+        }
 
         //GenericRiskStatistics<GeneralStatistics> statsX;
         std::vector<Real> losses;
@@ -616,7 +629,9 @@ namespace QuantLib {
                 // sfinal = s;
                 sLocked = true;
             }
-            if(rLocked && sLocked) break;
+            if (rLocked && sLocked) {
+                break;
+            }
             r--;
             s++;
             s = std::min(nSims_-1, s);
@@ -887,10 +902,12 @@ namespace QuantLib {
             Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
 
             const ext::shared_ptr<Pool>& pool = this->basket_->pool();
-            for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'
-                horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
-                    defaultProbability(this->basket_->defaultKeys()[iName])
+            for (Size iName = 0; iName < this->basket_->size(); ++iName) { // use'live'
+                horizonDefaultPs_.push_back(
+                    pool->get(pool->names()[iName])
+                        .defaultProbability(this->basket_->defaultKeys()[iName])
                         ->defaultProbability(maxHorizonDate, true));
+            }
         }
         Real getEventRecovery(const defaultSimEvent& evt) const {
             return recoveries_[evt.nameIdx];

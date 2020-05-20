@@ -268,8 +268,9 @@ namespace QuantLib {
             n_cubic_spline(const data &d, const data &d2,
                            const data_table &y, data_table &y2, output_data &v)
             :  d_(d), d2_(d2), y_(y), y2_(y2), v_(v) {
-                for(Size j = 0, dim = y_.size();  j < dim; ++j)
+                for (Size j = 0, dim = y_.size(); j < dim; ++j) {
                     X(d_.second, d2_.second, y_[j], y2_[j], v_.second);
+                }
             }
             ~n_cubic_spline(){}
           private:
@@ -319,10 +320,10 @@ namespace QuantLib {
                            result_type& r)
             :  a_(a), b_(b), a2_(a2), b2_(b2), i_(i), d_(d), d2_(d2),
                y_(y), y2_(y2), v_(v), v1_(v1), v2_(v2) {
-                for(Size j = 0, dim = y_.size(); j < dim; ++j)
-                    X(a_.second, b_.second, a2_.second, b2_.second, i_.second,
-                      d_.second, d2_.second, y_[j], y2_[j], v_.second,
-                      v1_.second, v2_.second, v1_.first[j]);
+                for (Size j = 0, dim = y_.size(); j < dim; ++j) {
+                    X(a_.second, b_.second, a2_.second, b2_.second, i_.second, d_.second,
+                      d2_.second, y_[j], y2_[j], v_.second, v1_.second, v2_.second, v1_.first[j]);
+                }
                 base_cubic_spline(d_.first, d2_.first,
                                   v1_.first.first, v2_.first.first, v_.first);
                 base_cubic_splint(a_.first, b_.first, a2_.first, b2_.first,
@@ -519,8 +520,12 @@ namespace QuantLib {
                 std::vector<Real> tmp2(dim - 1);
                 y[j].swap(tmp2);
                 for(; k < dim; ++k) {
-                    if((x[j][k] = v[k + 1] - v[k]) <= 0.0) break;
-                    if(k) y[j][k - 1] = 2.0 * (v[k + 1] - v[k - 1]);
+                    if ((x[j][k] = v[k + 1] - v[k]) <= 0.0) {
+                        break;
+                    }
+                    if (k) {
+                        y[j][k - 1] = 2.0 * (v[k + 1] - v[k - 1]);
+                    }
                 }
             }
             QL_REQUIRE(dim >= 3,

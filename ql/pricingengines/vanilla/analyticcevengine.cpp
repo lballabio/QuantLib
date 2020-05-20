@@ -77,10 +77,9 @@ namespace QuantLib {
                        + strike * (1.0 - boost::math::cdf(
                            nc_chi2(delta_, x0_/t), kTilde/t));
             }
-        }
-        else
+        } else {
             QL_FAIL("unknown option type");
-
+        }
     }
 
     AnalyticCEVEngine::AnalyticCEVEngine(

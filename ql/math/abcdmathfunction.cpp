@@ -34,8 +34,9 @@ namespace QuantLib {
         QL_REQUIRE(a+d>=0,
                    "a+d (" << a << "+" << d << ") must be non negative");
 
-        if (b>=0.0)
+        if (b >= 0.0) {
             return;
+        }
 
         // the one and only stationary point...
         Time zeroFirstDerivative = 1.0/c-a/b;
@@ -87,10 +88,11 @@ namespace QuantLib {
 
     Time AbcdMathFunction::maximumLocation() const {
         if (b_==0.0) {
-            if (a_>=0.0)
+            if (a_ >= 0.0) {
                 return 0.0;
-            else
+            } else {
                 return QL_MAX_REAL;
+            }
         }
 
         // stationary point

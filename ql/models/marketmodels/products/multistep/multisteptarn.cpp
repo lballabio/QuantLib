@@ -46,10 +46,9 @@ namespace QuantLib {
 
         lastIndex_ = accruals.size();
 
-        for (Size i=0; i < paymentTimesFloating_.size(); ++i)
+        for (Size i = 0; i < paymentTimesFloating_.size(); ++i) {
             allPaymentTimes_.push_back(paymentTimes[i]);
-
-
+        }
     }
 
     bool MultiStepTarn::nextTimeStep(

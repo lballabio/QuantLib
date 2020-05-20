@@ -30,8 +30,9 @@ namespace QuantLib {
 
     Rate BlackIborQuantoCouponPricer::adjustedFixing(Real fixing) const {
 
-        if (fixing == Null<Rate>())
+        if (fixing == Null<Rate>()) {
             fixing = coupon_->indexFixing();
+        }
 
         // Here we apply the quanto adjustment first, then delegate to
         // the parent class

@@ -217,10 +217,9 @@ namespace QuantLib {
         Real w = (arguments.type==VanillaSwap::Payer ? 1 : -1 );
 
         std::vector<Time> fixedPayTimes(arguments.fixedPayDates.size());
-        for (Size i=0; i<fixedPayTimes.size(); ++i)
-            fixedPayTimes[i] =
-                dayCounter.yearFraction(settlement,
-                                        arguments.fixedPayDates[i]);
+        for (Size i = 0; i < fixedPayTimes.size(); ++i) {
+            fixedPayTimes[i] = dayCounter.yearFraction(settlement, arguments.fixedPayDates[i]);
+        }
 
         SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(),
                                          w, start,

@@ -223,8 +223,9 @@ namespace QuantLib {
 
     inline Array::Array(Size size, Real value, Real increment)
     : data_(size ? new Real[size] : (Real*)(0)), n_(size) {
-        for (iterator i=begin(); i!=end(); ++i, value+=increment)
+        for (iterator i = begin(); i != end(); ++i, value += increment) {
             *i = value;
+        }
     }
 
     inline Array::Array(const Array& from)
@@ -647,8 +648,9 @@ namespace QuantLib {
 
     inline const Disposable<Array> Pow(const Array& v, Real alpha) {
         Array result(v.size());
-        for (Size i=0; i<v.size(); ++i)
+        for (Size i = 0; i < v.size(); ++i) {
             result[i] = std::pow(v[i], alpha);
+        }
         return result;
     }
 
@@ -661,8 +663,9 @@ namespace QuantLib {
         std::streamsize width = out.width();
         out << "[ ";
         if (!a.empty()) {
-            for (Size n=0; n<a.size()-1; ++n)
+            for (Size n = 0; n < a.size() - 1; ++n) {
                 out << std::setw(int(width)) << a[n] << "; ";
+            }
             out << std::setw(int(width)) << a.back();
         }
         out << " ]";

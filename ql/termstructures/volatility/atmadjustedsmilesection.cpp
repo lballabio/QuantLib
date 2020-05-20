@@ -27,14 +27,14 @@ namespace QuantLib {
         : SmileSection(*source), source_(source) {
 
         f_ = atm;
-        if (f_ == Null<Real>())
+        if (f_ == Null<Real>()) {
             f_ = source_->atmLevel();
-        if (recenterSmile && f_ != Null<Real>() &&
-            source_->atmLevel() != Null<Real>())
+        }
+        if (recenterSmile && f_ != Null<Real>() && source_->atmLevel() != Null<Real>()) {
             adjustment_ = source_->atmLevel() - f_;
-        else
+        } else {
             adjustment_ = 0.0;
-
+        }
     }
 
     Real AtmAdjustedSmileSection::adjustedStrike(Real strike) const {

@@ -84,8 +84,9 @@ namespace QuantLib {
     template <class T>
     void BlackScholesLattice<T>::stepback(Size i, const Array& values,
                                           Array& newValues) const {
-        for (Size j=0; j<size(i); j++)
-            newValues[j] = (pd_*values[j] + pu_*values[j+1])*discount_;
+        for (Size j = 0; j < size(i); j++) {
+            newValues[j] = (pd_ * values[j] + pu_ * values[j + 1]) * discount_;
+        }
     }
 
 }

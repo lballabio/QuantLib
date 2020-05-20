@@ -98,8 +98,9 @@ namespace QuantLib {
           public:
             bool test(const Array& params) const {
                 for (Size i=0; i<params.size(); ++i) {
-                    if (params[i] <= 0.0)
+                    if (params[i] <= 0.0) {
                         return false;
+                    }
                 }
                 return true;
             }
@@ -126,8 +127,9 @@ namespace QuantLib {
             : low_(low), high_(high) {}
             bool test(const Array& params) const {
                 for (Size i=0; i<params.size(); i++) {
-                    if ((params[i] < low_) || (params[i] > high_))
+                    if ((params[i] < low_) || (params[i] > high_)) {
                         return false;
+                    }
                 }
                 return true;
             }
@@ -198,8 +200,9 @@ namespace QuantLib {
                 QL_ENSURE(params.size()==low_.size(),
                           "Number of parameters and boundaries sizes are inconsistent.")
                 for (Size i = 0; i < params.size(); i++) {
-                    if ((params[i] < low_[i]) || (params[i] > high_[i]))
+                    if ((params[i] < low_[i]) || (params[i] > high_[i])) {
                         return false;
+                    }
                 }
                 return true;
             }

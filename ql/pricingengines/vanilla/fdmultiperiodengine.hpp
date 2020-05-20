@@ -55,8 +55,9 @@ namespace QuantLib {
             stoppingTimes_.clear();
             Size n = schedule.size();
             stoppingTimes_.reserve(n);
-            for (Size i=0; i<n; ++i)
+            for (Size i = 0; i < n; ++i) {
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
+            }
         }
 
         virtual void setupArguments(const PricingEngine::arguments* a) const {
@@ -68,9 +69,9 @@ namespace QuantLib {
 
             Size n = args->exercise->dates().size();
             stoppingTimes_.resize(n);
-            for (Size i=0; i<n; ++i)
-                stoppingTimes_[i] =
-                      process_->time(args->exercise->date(i));
+            for (Size i = 0; i < n; ++i) {
+                stoppingTimes_[i] = process_->time(args->exercise->date(i));
+            }
         }
 
         virtual void calculate(PricingEngine::results*) const;
@@ -117,8 +118,9 @@ namespace QuantLib {
             if(getDividendTime(0) < getResidualTime() * dateTolerance ){
                 firstDateIsZero = true;
                 firstIndex = 0;
-                if(dateNumber >= 2)
+                if (dateNumber >= 2) {
                     firstNonZeroDate = getDividendTime(1);
+                }
             }
 
             if (std::fabs(getDividendTime(lastIndex) - getResidualTime())
@@ -127,24 +129,26 @@ namespace QuantLib {
                 lastIndex = Integer(dateNumber) - 2;
             }
 
-            if (!firstDateIsZero)
+            if (!firstDateIsZero) {
                 firstNonZeroDate = getDividendTime(0);
+            }
 
             if (dateNumber >= 2) {
-                for (Size j = 1; j < dateNumber; j++)
-                    QL_REQUIRE(getDividendTime(j-1) < getDividendTime(j),
+                for (Size j = 1; j < dateNumber; j++) {
+                    QL_REQUIRE(getDividendTime(j - 1) < getDividendTime(j),
                                "dates must be in increasing order: "
-                               << getDividendTime(j-1)
-                               << " is not strictly smaller than "
-                               << getDividendTime(j));
+                                   << getDividendTime(j - 1) << " is not strictly smaller than "
+                                   << getDividendTime(j));
+                }
             }
         }
 
         Time dt = getResidualTime()/(timeStepPerPeriod_*(dateNumber+1));
 
         // Ensure that dt is always smaller than the first non-zero date
-        if (firstNonZeroDate <= dt)
-            dt = firstNonZeroDate/2.0;
+        if (firstNonZeroDate <= dt) {
+            dt = firstNonZeroDate / 2.0;
+        }
 
         setGridLimits();
         initializeInitialCondition();
@@ -154,32 +158,37 @@ namespace QuantLib {
         initializeStepCondition();
 
         prices_ = intrinsicValues_;
-        if(lastDateIsResTime)
+        if (lastDateIsResTime) {
             executeIntermediateStep(dateNumber - 1);
+        }
 
         Integer j = lastIndex;
         do {
-            if (j == Integer(dateNumber) - 1)
+            if (j == Integer(dateNumber) - 1) {
                 beginDate = getResidualTime();
-            else
-                beginDate = getDividendTime(j+1);
+            } else {
+                beginDate = getDividendTime(j + 1);
+            }
 
-            if (j >= 0)
+            if (j >= 0) {
                 endDate = getDividendTime(j);
-            else
+            } else {
                 endDate = dt;
+            }
 
             model_->rollback(prices_.values(),
                              beginDate, endDate,
                              timeStepPerPeriod_, *stepCondition_);
-            if (j >= 0)
+            if (j >= 0) {
                 executeIntermediateStep(j);
+            }
         } while (--j >= firstIndex);
 
         model_->rollback(prices_.values(), dt, 0, 1, *stepCondition_);
 
-        if(firstDateIsZero)
+        if (firstDateIsZero) {
             executeIntermediateStep(0);
+        }
 
         results->value = prices_.valueAtCenter();
         results->delta = prices_.firstDerivativeAtCenter();

@@ -57,8 +57,9 @@ namespace QuantLib {
                    "Numeraire smaller than alive");
 
         // Precompute 1/taus
-        for (Size i=0; i<taus.size(); ++i)
-            oneOverTaus_[i] = 1.0/taus[i];
+        for (Size i = 0; i < taus.size(); ++i) {
+            oneOverTaus_[i] = 1.0 / taus[i];
+        }
 
         // Compute covariance matrix from pseudoroot
         const Disposable<Matrix> pT = transpose(pseudo_);
@@ -106,8 +107,9 @@ namespace QuantLib {
                 {
                     wkaj_[k][j] = wkaj_[k][j+1] + PjPnWk_[k][j+1]*taus[j];
 
-                    if (j+spanningFwds_+1 <= numberOfRates_)
-                        wkaj_[k][j] -= PjPnWk_[k][endIndex]*taus[endIndex-1];
+                    if (j + spanningFwds_ + 1 <= numberOfRates_) {
+                        wkaj_[k][j] -= PjPnWk_[k][endIndex] * taus[endIndex - 1];
+                    }
                 }
 
             }
@@ -116,11 +118,13 @@ namespace QuantLib {
         Real PnOverPN = cs.discountRatio(numberOfRates_, numeraire_);
         //Real PnOverPN = 1.0;
 
-        for (Size j=alive_; j<numberOfRates_; ++j)
-            for (Size k=0; k<numberOfFactors_; ++k)
-                wkajN_[k][j] =  wkaj_[k][j]*PnOverPN
-                    -PjPnWk_[k][numeraire_]*PnOverPN*cs.cmSwapAnnuity(numeraire_,j,spanningFwds_);
-
+        for (Size j = alive_; j < numberOfRates_; ++j) {
+            for (Size k = 0; k < numberOfFactors_; ++k) {
+                wkajN_[k][j] =
+                    wkaj_[k][j] * PnOverPN - PjPnWk_[k][numeraire_] * PnOverPN *
+                                                 cs.cmSwapAnnuity(numeraire_, j, spanningFwds_);
+            }
+        }
 
 
         for (Size j=alive_; j<numberOfRates_; ++j)

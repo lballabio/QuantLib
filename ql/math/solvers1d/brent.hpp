@@ -103,7 +103,9 @@ namespace QuantLib {
                         p=s*(2.0*xMid*q*(q-r)-(root_-xMin_)*(r-1.0));
                         q=(q-1.0)*(r-1.0)*(s-1.0);
                     }
-                    if (p > 0.0) q = -q;  // Check whether in bounds
+                    if (p > 0.0) {
+                        q = -q; // Check whether in bounds
+                    }
                     p=std::fabs(p);
                     min1=3.0*xMid*q-std::fabs(xAcc1*q);
                     min2=std::fabs(e*q);
@@ -121,10 +123,11 @@ namespace QuantLib {
                 }
                 xMin_=root_;
                 fxMin_=froot;
-                if (std::fabs(d) > xAcc1)
+                if (std::fabs(d) > xAcc1) {
                     root_ += d;
-                else
-                    root_ += sign(xAcc1,xMid);
+                } else {
+                    root_ += sign(xAcc1, xMid);
+                }
                 froot=f(root_);
                 ++evaluationNumber_;
             }

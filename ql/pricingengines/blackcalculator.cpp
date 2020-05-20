@@ -229,27 +229,29 @@ namespace QuantLib {
     Real BlackCalculator::elasticity(Real spot) const {
         Real val = value();
         Real del = delta(spot);
-        if (val>QL_EPSILON)
+        if (val > QL_EPSILON) {
             return del/val*spot;
-        else if (std::fabs(del)<QL_EPSILON)
+        } else if (std::fabs(del) < QL_EPSILON) {
             return 0.0;
-        else if (del>0.0)
+        } else if (del > 0.0) {
             return QL_MAX_REAL;
-        else
+        } else {
             return QL_MIN_REAL;
+        }
     }
 
     Real BlackCalculator::elasticityForward() const {
         Real val = value();
         Real del = deltaForward();
-        if (val>QL_EPSILON)
+        if (val > QL_EPSILON) {
             return del/val*forward_;
-        else if (std::fabs(del)<QL_EPSILON)
+        } else if (std::fabs(del) < QL_EPSILON) {
             return 0.0;
-        else if (del>0.0)
+        } else if (del > 0.0) {
             return QL_MAX_REAL;
-        else
+        } else {
             return QL_MIN_REAL;
+        }
     }
 
     Real BlackCalculator::gamma(Real spot) const {
@@ -292,7 +294,9 @@ namespace QuantLib {
 
         QL_REQUIRE(maturity>=0.0,
                    "maturity (" << maturity << ") must be non-negative");
-        if (close(maturity, 0.0)) return 0.0;
+        if (close(maturity, 0.0)) {
+            return 0.0;
+        }
         return -( std::log(discount_)            * value()
                  +std::log(forward_/spot) * spot * delta(spot)
                  +0.5*variance_ * spot  * spot * gamma(spot))/maturity;

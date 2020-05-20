@@ -52,8 +52,9 @@ namespace QuantLib {
           couponDiscountCurve_(couponDiscountCurve) {
 
         registerWith(correlation);
-        if (!couponDiscountCurve_.empty())
+        if (!couponDiscountCurve_.empty()) {
             registerWith(couponDiscountCurve_);
+        }
         registerWith(cmsPricer_);
 
         QL_REQUIRE(integrationPoints >= 4,
@@ -149,11 +150,11 @@ namespace QuantLib {
 
         today_ = QuantLib::Settings::instance().evaluationDate();
 
-        if (couponDiscountCurve_.empty())
-            couponDiscountCurve_ =
-                index_->swapIndex1()->exogenousDiscount()
-                    ? index_->swapIndex1()->discountingTermStructure()
-                    : index_->swapIndex1()->forwardingTermStructure();
+        if (couponDiscountCurve_.empty()) {
+            couponDiscountCurve_ = index_->swapIndex1()->exogenousDiscount() ?
+                                       index_->swapIndex1()->discountingTermStructure() :
+                                       index_->swapIndex1()->forwardingTermStructure();
+        }
 
         discount_ = paymentDate_ > couponDiscountCurve_->referenceDate()
                         ? couponDiscountCurve_->discount(paymentDate_)

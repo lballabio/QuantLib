@@ -394,8 +394,9 @@ void HestonSLVModelTest::testTransformedZeroFlowBC() {
 
     Array p(vGrid);
     const SquareRootProcessRNDCalculator rnd(theta, kappa, theta, sigma);
-    for (Size i=0; i < v.size(); ++i)
-        p[i] =  rnd.stationary_pdf(v[i]);
+    for (Size i = 0; i < v.size(); ++i) {
+        p[i] = rnd.stationary_pdf(v[i]);
+    }
 
 
     const Real alpha = 1.0 - 2*kappa*theta/(sigma*sigma);
@@ -480,8 +481,9 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
         Array p(vGrid);
         for (Size i=0; i < v.size(); ++i) {
             p[i] =  rnd.stationary_pdf(v[i]);
-            if (transform == FdmSquareRootFwdOp::Power)
+            if (transform == FdmSquareRootFwdOp::Power) {
                 p[i] *= vq[i];
+            }
         }
 
         const ext::shared_ptr<FdmSquareRootFwdOp> op(
@@ -499,10 +501,11 @@ void HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity() {
 
         const Real expected = 1-2*eps;
 
-        if (transform == FdmSquareRootFwdOp::Power)
+        if (transform == FdmSquareRootFwdOp::Power) {
             for (Size i=0; i < v.size(); ++i) {
                 p[i] *= vmq[i];
             }
+        }
 
         const q_fct f(v, p, alpha);
 
@@ -552,8 +555,9 @@ void HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity() {
         const Array v = mesher->locations(0);
 
         Array p(vGrid);
-        for (Size i=0; i < v.size(); ++i)
-            p[i] =  stationaryLogProbabilityFct(kappa, theta, sigma, v[i]);
+        for (Size i = 0; i < v.size(); ++i) {
+            p[i] = stationaryLogProbabilityFct(kappa, theta, sigma, v[i]);
+        }
 
         const ext::shared_ptr<FdmSquareRootFwdOp> op(
 			ext::make_shared<FdmSquareRootFwdOp>(mesher, kappa, theta,
@@ -1051,10 +1055,11 @@ namespace {
             0.517748, 0.517748, 0.517748, 0.416577, 0.364770, 0.331595, 0.287423, 0.264285 };
 
         Matrix blackVolMatrix(surfaceStrikes.size(), dates.size());
-        for (Size i=0; i < surfaceStrikes.size(); ++i)
+        for (Size i = 0; i < surfaceStrikes.size(); ++i) {
             for (Size j=0; j < dates.size(); ++j) {
                 blackVolMatrix[i][j] = v[i*(dates.size())+j];
             }
+        }
 
         const ext::shared_ptr<BlackVarianceSurface> volTS(
 			ext::make_shared<BlackVarianceSurface>(todaysDate, cal,
@@ -1155,10 +1160,11 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
             // the extreme tail probabilities of the non central
             // chi square distribution lead to numerical exceptions
             // on some platforms
-            if (std::fabs(v - v0) < 5*sigma*std::sqrt(v0*eT))
+            if (std::fabs(v - v0) < 5 * sigma * std::sqrt(v0 * eT)) {
                 p_v = rndCalculator.pdf(v, eT);
-            else
+            } else {
                 p_v = 0.0;
+            }
         }
         const Real p_x = 1.0/(std::sqrt(M_TWOPI*bsV0*eT))
             * std::exp(-0.5*square<Real>()(x - x0)/(bsV0*eT));
@@ -1728,19 +1734,19 @@ void HestonSLVModelTest::testBarrierPricingViaHestonLocalVol() {
             const Real localVolNPV = option.NPV();
 
             const Real tol = 1e-3;
-            if (std::fabs(analyticNPV - hestonNPV) > tol)
+            if (std::fabs(analyticNPV - hestonNPV) > tol) {
                 BOOST_ERROR("Heston and BS price do not match "
-                        << "\n  Heston :       " << hestonNPV
-                        << "\n  Black-Scholes: " << analyticNPV
-                        << "\n  diff :   "
-                        << std::fabs(analyticNPV - hestonNPV));
+                            << "\n  Heston :       " << hestonNPV
+                            << "\n  Black-Scholes: " << analyticNPV
+                            << "\n  diff :   " << std::fabs(analyticNPV - hestonNPV));
+            }
 
-            if (std::fabs(analyticNPV - localVolNPV) > tol)
+            if (std::fabs(analyticNPV - localVolNPV) > tol) {
                 BOOST_ERROR("LocalVol and BS price do not match "
-                        << "\n  LocalVol :     " << localVolNPV
-                        << "\n  Black-Scholes: " << analyticNPV
-                        << "\n  diff :   "
-                        << std::fabs(analyticNPV - localVolNPV));
+                            << "\n  LocalVol :     " << localVolNPV
+                            << "\n  Black-Scholes: " << analyticNPV
+                            << "\n  diff :   " << std::fabs(analyticNPV - localVolNPV));
+            }
         }
     }
 }
@@ -2199,14 +2205,14 @@ void HestonSLVModelTest::testForwardSkewSLV() {
 
             for (Size j=0; j < LENGTH(strikes); ++j) {
                 const Real strike = strikes[j];
-                if (strike < 1.0)
+                if (strike < 1.0) {
                     stats[k][j].add(0.5*(
                           S_t1 * std::max(0.0, strike - S_T1/S_t1)
                         + S_t2 * std::max(0.0, strike - S_T2/S_t2)));
-                else
-                    stats[k][j].add(0.5*(
-                          S_t1 * std::max(0.0, S_T1/S_t1 - strike)
-                        + S_t2 * std::max(0.0, S_T2/S_t2 - strike)));
+                } else {
+                    stats[k][j].add(0.5 * (S_t1 * std::max(0.0, S_T1 / S_t1 - strike) +
+                                           S_t2 * std::max(0.0, S_T2 / S_t2 - strike)));
+                }
             }
         }
     }

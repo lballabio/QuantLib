@@ -29,9 +29,9 @@ namespace QuantLib {
                              Integer offsetDays,
                              const Calendar& calendar) {
         std::map<std::string, ext::shared_ptr<PaymentTerm::Data> >::const_iterator i = paymentTerms_.find(name);
-        if (i != paymentTerms_.end())
+        if (i != paymentTerms_.end()) {
             data_ = i->second;
-        else {
+        } else {
             data_ = ext::make_shared<PaymentTerm::Data>(
                                  name, eventType,
                                                        offsetDays, calendar);
@@ -40,10 +40,11 @@ namespace QuantLib {
     }
 
     std::ostream& operator<<(std::ostream& out, const PaymentTerm& c) {
-        if (!c.empty())
+        if (!c.empty()) {
             return out << c.name();
-        else
+        } else {
             return out << "null payment term type";
+        }
     }
 
 }

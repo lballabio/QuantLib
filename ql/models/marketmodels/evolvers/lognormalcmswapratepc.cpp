@@ -86,9 +86,9 @@ namespace QuantLib {
     {
         QL_REQUIRE(swapRates.size()==numberOfRates_,
                    "mismatch between swapRates and rateTimes");
-        for (Size i=0; i<numberOfRates_; ++i)
-            initialLogSwapRates_[i] = std::log(swapRates[i] +
-                                               displacements_[i]);
+        for (Size i = 0; i < numberOfRates_; ++i) {
+            initialLogSwapRates_[i] = std::log(swapRates[i] + displacements_[i]);
+        }
         curveState_.setOnCMSwapRates(swapRates);
         calculators_[initialStep_].compute(curveState_, initialDrifts_);
     }
@@ -111,11 +111,11 @@ namespace QuantLib {
         // we're going from T1 to T2
 
         // a) compute drifts D1 at T1;
-        if (currentStep_ > initialStep_)
+        if (currentStep_ > initialStep_) {
             calculators_[currentStep_].compute(curveState_, drifts1_);
-        else
-            std::copy(initialDrifts_.begin(), initialDrifts_.end(),
-                      drifts1_.begin());
+        } else {
+            std::copy(initialDrifts_.begin(), initialDrifts_.end(), drifts1_.begin());
+        }
 
         // b) evolve forwards up to T2 using D1;
         Real weight = generator_->nextStep(brownians_);

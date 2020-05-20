@@ -87,9 +87,9 @@ namespace QuantLib {
     {
         QL_REQUIRE(forwards.size()==numberOfRates_,
                    "mismatch between forwards and rateTimes");
-        for (Size i=0; i<numberOfRates_; ++i)
-            initialLogForwards_[i] = std::log(forwards[i] +
-                                              displacements_[i]);
+        for (Size i = 0; i < numberOfRates_; ++i) {
+            initialLogForwards_[i] = std::log(forwards[i] + displacements_[i]);
+        }
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
@@ -121,8 +121,9 @@ namespace QuantLib {
 
             for (Size j=0; j < numberOfRates_; ++j) {
                 Real cov=0.0;
-                for (Size k=0; k < numberOfFactors_; ++k)
-                    cov += A[startIndexOfSwapRate_[i]][k]*A[j][k];
+                for (Size k = 0; k < numberOfFactors_; ++k) {
+                    cov += A[startIndexOfSwapRate_[i]][k] * A[j][k];
+                }
                 covariances[j] = cov;
 
             }
@@ -145,8 +146,9 @@ namespace QuantLib {
         isConstraintActive_.resize(isConstraintActive.size());
         isConstraintActive_ = isConstraintActive;
 
-        for (unsigned long i=0; i < rateConstraints_.size(); i++)
-            rateConstraints_[i] = std::log(rateConstraints_[i]+displacements_[i]);
+        for (unsigned long i = 0; i < rateConstraints_.size(); i++) {
+            rateConstraints_[i] = std::log(rateConstraints_[i] + displacements_[i]);
+        }
     }
 
 
@@ -215,8 +217,9 @@ namespace QuantLib {
             weight *= weightsEffect;
         }
 
-        for (Size i=alive; i<numberOfRates_; i++)
+        for (Size i = alive; i < numberOfRates_; i++) {
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
+        }
 
         // c) update curve state
         curveState_.setOnForwardRates(forwards_);

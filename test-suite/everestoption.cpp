@@ -108,10 +108,10 @@ void EverestOptionTest::testCached() {
     Real storedValue = 0.75784944;
     Real tolerance = 1.0e-8;
 
-    if (std::fabs(value-storedValue) > tolerance)
-        BOOST_FAIL(std::setprecision(10)
-                   << "    calculated value: " << value << "\n"
-                   << "    expected:         " << storedValue);
+    if (std::fabs(value - storedValue) > tolerance) {
+        BOOST_FAIL(std::setprecision(10) << "    calculated value: " << value << "\n"
+                                         << "    expected:         " << storedValue);
+    }
 
     tolerance = option.errorEstimate();
     tolerance = std::min<Real>(tolerance/2.0, minimumTol*value);
@@ -123,10 +123,10 @@ void EverestOptionTest::testCached() {
 
     option.NPV();
     Real accuracy = option.errorEstimate();
-    if (accuracy > tolerance)
-        BOOST_FAIL(std::setprecision(10)
-                   << "    reached accuracy: " << accuracy << "\n"
-                   << "    expected:         " << tolerance);
+    if (accuracy > tolerance) {
+        BOOST_FAIL(std::setprecision(10) << "    reached accuracy: " << accuracy << "\n"
+                                         << "    expected:         " << tolerance);
+    }
 }
 
 

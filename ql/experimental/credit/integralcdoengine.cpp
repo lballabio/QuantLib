@@ -45,11 +45,12 @@ namespace QuantLib {
         // compute expected loss at the beginning of first relevant period
         Real e1 = 0;
         // todo add includeSettlement date flows variable to engine.
-        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) 
-             // cast to fixed rate coupon?
+        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) {
+            // cast to fixed rate coupon?
             e1 = arguments_.basket->expectedTrancheLoss(
                 ext::dynamic_pointer_cast<Coupon>(
-                    arguments_.normalizedLeg[0])->accrualStartDate()); 
+                    arguments_.normalizedLeg[0])->accrualStartDate());
+        }
         results_.expectedTrancheLoss.push_back(e1);// zero or realized losses?
 
         for (Size i = 0; i < arguments_.normalizedLeg.size(); i++) {
@@ -71,7 +72,9 @@ namespace QuantLib {
             do {
                 d = NullCalendar().advance(d0 > today ? d0 : today,
                                            stepSize_);
-                if (d > d2) d = d2;
+                if (d > d2) {
+                    d = d2;
+                }
 
                 e2 = arguments_.basket->expectedTrancheLoss(d);
 
@@ -84,7 +87,9 @@ namespace QuantLib {
 
                 // TO DO: Addd default coupon accrual value here-----
 
-                if (e2 < e1) results_.error ++;
+                if (e2 < e1) {
+                    results_.error++;
+                }
 
                 results_.protectionValue
                     += (e2 - e1) * discountCurve_->discount(d);
@@ -97,12 +102,13 @@ namespace QuantLib {
         }
 
         // add includeSettlement date flows variable to engine.
-        if (!arguments_.normalizedLeg[0]->hasOccurred(today))
-            results_.upfrontPremiumValue
-                = inceptionTrancheNotional * arguments_.upfrontRate
-                    * discountCurve_->discount(
-                        ext::dynamic_pointer_cast<Coupon>(
-                            arguments_.normalizedLeg[0])->accrualStartDate());
+        if (!arguments_.normalizedLeg[0]->hasOccurred(today)) {
+            results_.upfrontPremiumValue =
+                inceptionTrancheNotional * arguments_.upfrontRate *
+                discountCurve_->discount(
+                    ext::dynamic_pointer_cast<Coupon>(arguments_.normalizedLeg[0])
+                        ->accrualStartDate());
+        }
 
         if (arguments_.side == Protection::Buyer) {
             results_.protectionValue *= -1;

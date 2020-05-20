@@ -203,22 +203,26 @@ namespace QuantLib {
             cum_y1 = f(y1);
             cum_y2 = f(y2);
         } else {
-            if (log_S_X>0)
+            if (log_S_X > 0) {
                 cum_x1= 1.0;
-            else
-                cum_x1= 0.0;
-            if (log_S_H>0)
+            } else {
+                cum_x1 = 0.0;
+            }
+            if (log_S_H > 0) {
                 cum_x2= 1.0;
-            else
-                cum_x2= 0.0;
-            if (log_H2_SX>0)
+            } else {
+                cum_x2 = 0.0;
+            }
+            if (log_H2_SX > 0) {
                 cum_y1= 1.0;
-            else
-                cum_y1= 0.0;
-            if (log_H_S>0)
+            } else {
+                cum_y1 = 0.0;
+            }
+            if (log_H_S > 0) {
                 cum_y2= 1.0;
-            else
-                cum_y2= 0.0;
+            } else {
+                cum_y2 = 0.0;
+            }
         }
 
         Real alpha = 0;

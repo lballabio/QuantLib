@@ -44,9 +44,9 @@ namespace QuantLib {
                 Size N = product.numberOfProducts();
                 numberCashFlowsThisStep_.resize(N);
                 cashFlowsGenerated_.resize(N);
-                for (Size i=0; i<N; ++i)
-                    cashFlowsGenerated_[i].resize(
-                            product.maxNumberOfCashFlowsPerProductPerStep());
+                for (Size i = 0; i < N; ++i) {
+                    cashFlowsGenerated_[i].resize(product.maxNumberOfCashFlowsPerProductPerStep());
+                }
 
                 clear();
             }
@@ -54,11 +54,10 @@ namespace QuantLib {
             void reset() {
                 CallSpecifiedMultiProduct::reset();
                 disableCallability();
-                for (Size i=0; i<lastSavedStep_; ++i)
+                for (Size i = 0; i < lastSavedStep_; ++i) {
                     CallSpecifiedMultiProduct::nextTimeStep(
-                                                     *savedStates_[i],
-                                                     numberCashFlowsThisStep_,
-                                                     cashFlowsGenerated_);
+                        *savedStates_[i], numberCashFlowsThisStep_, cashFlowsGenerated_);
+                }
                 enableCallability();
             }
 
@@ -66,8 +65,9 @@ namespace QuantLib {
                     const CurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
-                if (recording_)
+                if (recording_) {
                     savedStates_.push_back(currentState);
+                }
                 return CallSpecifiedMultiProduct::nextTimeStep(
                                                      currentState,
                                                      numberCashFlowsThisStep,
@@ -152,9 +152,9 @@ namespace QuantLib {
 
         numberCashFlowsThisStep_.resize(numberOfProducts_);
         cashFlowsGenerated_.resize(numberOfProducts_);
-        for (Size i=0; i<numberOfProducts_; ++i)
-            cashFlowsGenerated_[i].resize(
-                          composite_.maxNumberOfCashFlowsPerProductPerStep());
+        for (Size i = 0; i < numberOfProducts_; ++i) {
+            cashFlowsGenerated_[i].resize(composite_.maxNumberOfCashFlowsPerProductPerStep());
+        }
 
         const std::vector<Time>& cashFlowTimes =
             composite_.possibleCashFlowTimes();
@@ -162,9 +162,9 @@ namespace QuantLib {
             composite_.evolution().rateTimes();
         Size n =cashFlowTimes.size();
         discounters_.reserve(n);
-        for (Size j=0; j<n; ++j)
-            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
-                                                         rateTimes));
+        for (Size j = 0; j < n; ++j) {
+            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j], rateTimes));
+        }
     }
 
 

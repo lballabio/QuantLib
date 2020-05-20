@@ -193,10 +193,11 @@ if(s1 != zero)
     }
 if(s2 != zero)
     {
-    if(s2 >= x3max)
+    if (s2 >= x3max) {
         temp = s2*(one+(x3max/s2)*(x3max*s3));
-    else
-        temp = x3max*((s2/x3max)+(x3max*s3));
+    } else {
+        temp = x3max * ((s2 / x3max) + (x3max * s3));
+    }
     ans = std::sqrt(temp);
     }
 else
@@ -212,27 +213,30 @@ return(ans);
 
 Real dmax1(Real a,Real b)
 {
-if( a >= b )
-    return(a);
-else
-    return(b);
+    if (a >= b) {
+        return (a);
+    } else {
+        return (b);
+    }
 }
 
 Real dmin1(Real a,Real b)
 {
-if( a <= b )
-    return(a);
-else
-    return(b);
+    if (a <= b) {
+        return (a);
+    } else {
+        return (b);
+    }
 }
 
 int min0(int a,int b)
 
 {
-if( a <= b )
-    return(a);
-else
-    return(b);
+    if (a <= b) {
+        return (a);
+    } else {
+        return (b);
+    }
 }
 
 int mod( int k, int m )
@@ -347,12 +351,14 @@ for( j=0; j<n; j++ )
     {
     temp = x[j];
     h = eps * std::fabs(temp);
-    if(h == zero)
+    if (h == zero) {
         h = eps;
+    }
     x[j] = temp + h;
     fcn(m,n,x,wa,iflag);
-    if( *iflag < 0)
+    if (*iflag < 0) {
         return;
+    }
     x[j] = temp;
     for( i=0; i<m; i++ )
         {
@@ -463,8 +469,9 @@ for( j=0; j<n; j++ )
     acnorm[j] = enorm(m,&a[ij]);
     rdiag[j] = acnorm[j];
     wa[j] = rdiag[j];
-    if(pivot != 0)
+    if (pivot != 0) {
         ipvt[j] = j;
+    }
     ij += m; /* m*j */
     }
 /*
@@ -473,29 +480,30 @@ for( j=0; j<n; j++ )
 minmn = min0(m,n);
 for( j=0; j<minmn; j++ )
 {
-if(pivot == 0)
-    goto L40;
-/*
-*    bring the column of largest norm into the pivot position.
-*/
-kmax = j;
-for( k=j; k<n; k++ )
-    {
-    if(rdiag[k] > rdiag[kmax])
-        kmax = k;
+    if (pivot == 0) {
+        goto L40;
     }
-if(kmax == j)
-    goto L40;
+    /*
+     *    bring the column of largest norm into the pivot position.
+     */
+    kmax = j;
+    for (k = j; k < n; k++) {
+        if (rdiag[k] > rdiag[kmax]) {
+            kmax = k;
+        }
+    }
+    if (kmax == j) {
+        goto L40;
+    }
 
-ij = m * j;
-jj = m * kmax;
-for( i=0; i<m; i++ )
-    {
-    temp = a[ij]; /* [i+m*j] */
-    a[ij] = a[jj]; /* [i+m*kmax] */
-    a[jj] = temp;
-    ij += 1;
-    jj += 1;
+    ij = m * j;
+    jj = m * kmax;
+    for (i = 0; i < m; i++) {
+        temp = a[ij];  /* [i+m*j] */
+        a[ij] = a[jj]; /* [i+m*kmax] */
+        a[jj] = temp;
+        ij += 1;
+        jj += 1;
     }
 rdiag[kmax] = rdiag[j];
 wa[kmax] = wa[j];
@@ -510,10 +518,12 @@ L40:
 */
 jj = j + m*j;
 ajnorm = enorm(m-j,&a[jj]);
-if(ajnorm == zero)
+if (ajnorm == zero) {
     goto L100;
-if(a[jj] < zero)
+}
+if (a[jj] < zero) {
     ajnorm = -ajnorm;
+}
 ij = jj;
 for( i=j; i<m; i++ )
     {
@@ -692,10 +702,12 @@ for( j=0; j<n; j++ )
 *    diagonal element using p from the qr factorization.
 */
 l = ipvt[j];
-if(diag[l] == zero)
+if (diag[l] == zero) {
     goto L90;
-for( k=j; k<n; k++ )
+}
+for (k = j; k < n; k++) {
     sdiag[k] = zero;
+}
 sdiag[j] = diag[l];
 /*
 *    the transformations to eliminate the row of d
@@ -709,14 +721,14 @@ for( k=j; k<n; k++ )
 *       determine a givens rotation which eliminates the
 *       appropriate element in the current row of d.
 */
-    if(sdiag[k] == zero)
-        continue;
-    kk = k + ldr * k;
-    if(std::fabs(r[kk]) < std::fabs(sdiag[k]))
-        {
-        cotan = r[kk]/sdiag[k];
-        sin = p5/std::sqrt(p25+p25*cotan*cotan);
-        cos = sin*cotan;
+if (sdiag[k] == zero) {
+    continue;
+}
+kk = k + ldr * k;
+if (std::fabs(r[kk]) < std::fabs(sdiag[k])) {
+    cotan = r[kk] / sdiag[k];
+    sin = p5 / std::sqrt(p25 + p25 * cotan * cotan);
+    cos = sin * cotan;
         }
     else
         {
@@ -764,26 +776,26 @@ L90:
 nsing = n;
 for( j=0; j<n; j++ )
     {
-    if( (sdiag[j] == zero) && (nsing == n) )
+    if ((sdiag[j] == zero) && (nsing == n)) {
         nsing = j;
-    if(nsing < n)
+    }
+    if (nsing < n) {
         wa[j] = zero;
     }
-if(nsing < 1)
-    goto L150;
+    }
+    if (nsing < 1) {
+        goto L150;
+    }
 
-for( k=0; k<nsing; k++ )
-    {
-    j = nsing - k - 1;
-    sum = zero;
-    jp1 = j + 1;
-    if(nsing > jp1)
-        {
-        ij = jp1 + ldr * j;
-        for( i=jp1; i<nsing; i++ )
-            {
-            sum += r[ij]*wa[i];
-            ij += 1; /* [i+ldr*j] */
+    for (k = 0; k < nsing; k++) {
+        j = nsing - k - 1;
+        sum = zero;
+        jp1 = j + 1;
+        if (nsing > jp1) {
+            ij = jp1 + ldr * j;
+            for (i = jp1; i < nsing; i++) {
+                sum += r[ij] * wa[i];
+                ij += 1; /* [i+ldr*j] */
             }
         }
     wa[j] = (wa[j] - sum)/sdiag[j];
@@ -923,10 +935,12 @@ jj = 0;
 for( j=0; j<n; j++ )
     {
     wa1[j] = qtb[j];
-    if( (r[jj] == zero) && (nsing == n) )
+    if ((r[jj] == zero) && (nsing == n)) {
         nsing = j;
-    if(nsing < n)
+    }
+    if (nsing < n) {
         wa1[j] = zero;
+    }
     jj += ldr+1; /* [j+ldr*j] */
     }
 if(nsing >= 1)
@@ -960,8 +974,9 @@ for( j=0; j<n; j++ )
 *     for acceptance of the gauss-newton direction.
 */
 iter = 0;
-for( j=0; j<n; j++ )
-    wa2[j] = diag[j]*x[j];
+for (j = 0; j < n; j++) {
+    wa2[j] = diag[j] * x[j];
+}
 dxnorm = enorm(n,wa2);
 fp = dxnorm - delta;
 if(fp <= p1*delta)
@@ -1020,16 +1035,18 @@ for( j=0; j<n; j++ )
     }
 gnorm = enorm(n,wa1);
 paru = gnorm/delta;
-if(paru == zero)
-    paru = DWARF/dmin1(delta,p1);
+if (paru == zero) {
+    paru = DWARF / dmin1(delta, p1);
+}
 /*
 *     if the input par lies outside of the interval (parl,paru),
 *     set par to the closer endpoint.
 */
 *par = dmax1( *par,parl);
 *par = dmin1( *par,paru);
-if( *par == zero)
-    *par = gnorm/dxnorm;
+if (*par == zero) {
+    *par = gnorm / dxnorm;
+}
 /*
 *     beginning of an iteration.
 */
@@ -1038,14 +1055,17 @@ iter += 1;
 /*
 *    evaluate the function at the current value of par.
 */
-if( *par == zero)
-    *par = dmax1(DWARF,p001*paru);
+if (*par == zero) {
+    *par = dmax1(DWARF, p001 * paru);
+}
 temp = std::sqrt( *par );
-for( j=0; j<n; j++ )
-    wa1[j] = temp*diag[j];
+for (j = 0; j < n; j++) {
+    wa1[j] = temp * diag[j];
+}
 qrsolv(n,r,ldr,ipvt,wa1,qtb,x,sdiag,wa2);
-for( j=0; j<n; j++ )
-    wa2[j] = diag[j]*x[j];
+for (j = 0; j < n; j++) {
+    wa2[j] = diag[j] * x[j];
+}
 dxnorm = enorm(n,wa2);
 temp = fp;
 fp = dxnorm - delta;
@@ -1054,10 +1074,10 @@ fp = dxnorm - delta;
 *    of par. also test for the exceptional cases where parl
 *    is zero or the number of iterations has reached 10.
 */
-if( (std::fabs(fp) <= p1*delta)
- || ((parl == zero) && (fp <= temp) && (temp < zero))
- || (iter == 10) )
+if ((std::fabs(fp) <= p1 * delta) || ((parl == zero) && (fp <= temp) && (temp < zero)) ||
+    (iter == 10)) {
     goto L220;
+}
 /*
 *    compute the newton correction.
 */
@@ -1088,10 +1108,12 @@ parc = ((fp/delta)/temp)/temp;
 /*
 *    depending on the sign of the function, update parl or paru.
 */
-if(fp > zero)
+if (fp > zero) {
     parl = dmax1(parl, *par);
-if(fp < zero)
+}
+if (fp < zero) {
     paru = dmin1(paru, *par);
+}
 /*
 *    compute an improved estimate for par.
 */
@@ -1105,8 +1127,9 @@ L220:
 /*
 *     termination.
 */
-if(iter == 0)
+if (iter == 0) {
     *par = zero;
+}
 /*
 *     last card of subroutine lmpar.
 */
@@ -1326,17 +1349,18 @@ iflag = 0;
 /*
 *     check the input parameters for errors.
 */
-if( (n <= 0) || (m < n) || (ldfjac < m) || (ftol < zero)
-    || (xtol < zero) || (gtol < zero) || (maxfev <= 0)
-    || (factor <= zero) )
+if ((n <= 0) || (m < n) || (ldfjac < m) || (ftol < zero) || (xtol < zero) || (gtol < zero) ||
+    (maxfev <= 0) || (factor <= zero)) {
     goto L300;
+}
 
 if( mode == 2 )
     { /* scaling by diag[] */
     for( j=0; j<n; j++ )
         {
-        if( diag[j] <= 0.0 )
+        if (diag[j] <= 0.0) {
             goto L300;
+        }
         }
     }
 /*
@@ -1346,8 +1370,9 @@ if( mode == 2 )
 iflag = 1;
 fcn(m,n,x,fvec,&iflag);
 *nfev = 1;
-if(iflag < 0)
+if (iflag < 0) {
     goto L300;
+}
 fnorm = enorm(m,fvec);
 /*
 *     initialize levenberg-marquardt parameter and iteration counter.
@@ -1364,13 +1389,15 @@ L30:
 *    calculate the jacobian matrix.
 */
 iflag = 2;
-if(jacFcn) // use user supplied jacobian calculation
+if (jacFcn) { // use user supplied jacobian calculation
     jacFcn(m,n,x,fjac,&iflag);
-else
-    fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
+} else {
+    fdjac2(m, n, x, fvec, fjac, ldfjac, &iflag, epsfcn, wa4, fcn);
+}
 *nfev += n;
-if(iflag < 0)
+if (iflag < 0) {
     goto L300;
+}
 /*
 *    if requested, call fcn to enable printing of iterates.
 */
@@ -1380,8 +1407,9 @@ if( nprint > 0 )
     if(mod(iter-1,nprint) == 0)
         {
         fcn(m,n,x,fvec,&iflag);
-        if(iflag < 0)
+        if (iflag < 0) {
             goto L300;
+        }
         }
     }
 /*
@@ -1399,8 +1427,9 @@ if(iter == 1)
         for( j=0; j<n; j++ )
             {
             diag[j] = wa2[j];
-            if( wa2[j] == zero )
+            if (wa2[j] == zero) {
                 diag[j] = one;
+            }
             }
         }
 
@@ -1408,33 +1437,33 @@ if(iter == 1)
 *    on the first iteration, calculate the norm of the scaled x
 *    and initialize the step bound delta.
 */
-    for( j=0; j<n; j++ )
-        wa3[j] = diag[j] * x[j];
+        for (j = 0; j < n; j++) {
+            wa3[j] = diag[j] * x[j];
+        }
 
-    xnorm = enorm(n,wa3);
-    delta = factor*xnorm;
-    if(delta == zero)
-        delta = factor;
+        xnorm = enorm(n, wa3);
+        delta = factor * xnorm;
+        if (delta == zero) {
+            delta = factor;
+        }
     }
 
 /*
 *    form (q transpose)*fvec and store the first n components in
 *    qtf.
 */
-for( i=0; i<m; i++ )
-    wa4[i] = fvec[i];
-jj = 0;
-for( j=0; j<n; j++ )
-    {
-    temp3 = fjac[jj];
-    if(temp3 != zero)
-        {
-        sum = zero;
-        ij = jj;
-        for( i=j; i<m; i++ )
-            {
-            sum += fjac[ij] * wa4[i];
-            ij += 1;    /* fjac[i+m*j] */
+    for (i = 0; i < m; i++) {
+        wa4[i] = fvec[i];
+    }
+    jj = 0;
+    for (j = 0; j < n; j++) {
+        temp3 = fjac[jj];
+        if (temp3 != zero) {
+            sum = zero;
+            ij = jj;
+            for (i = j; i < m; i++) {
+                sum += fjac[ij] * wa4[i];
+                ij += 1; /* fjac[i+m*j] */
             }
         temp = -sum / temp3;
         ij = jj;
@@ -1477,17 +1506,19 @@ for( j=0; j<n; j++ )
 /*
 *    test for convergence of the gradient norm.
 */
- if(gnorm <= gtol)
-    *info = 4;
- if( *info != 0)
-    goto L300;
-/*
-*    rescale if necessary.
-*/
- if(mode != 2)
-    {
-    for( j=0; j<n; j++ )
-        diag[j] = dmax1(diag[j],wa2[j]);
+    if (gnorm <= gtol) {
+        *info = 4;
+    }
+    if (*info != 0) {
+        goto L300;
+    }
+    /*
+     *    rescale if necessary.
+     */
+    if (mode != 2) {
+        for (j = 0; j < n; j++) {
+            diag[j] = dmax1(diag[j], wa2[j]);
+        }
     }
 
 /*
@@ -1511,16 +1542,18 @@ pnorm = enorm(n,wa3);
 /*
 *       on the first iteration, adjust the initial step bound.
 */
-if(iter == 1)
-    delta = dmin1(delta,pnorm);
+if (iter == 1) {
+    delta = dmin1(delta, pnorm);
+}
 /*
 *       evaluate the function at x + p and calculate its norm.
 */
 iflag = 1;
 fcn(m,n,wa2,wa4,&iflag);
 *nfev += 1;
-if(iflag < 0)
+if (iflag < 0) {
     goto L300;
+}
 fnorm1 = enorm(m,wa4);
 /*
 *       compute the scaled actual reduction.
@@ -1558,22 +1591,24 @@ dirder = -(temp1*temp1 + temp2*temp2);
 *       reduction.
 */
 ratio = zero;
-if(prered != zero)
-    ratio = actred/prered;
+if (prered != zero) {
+    ratio = actred / prered;
+}
 /*
 *       update the step bound.
 */
 if(ratio <= p25)
     {
-    if(actred >= zero)
+    if (actred >= zero) {
         temp = p5;
-    else
-        temp = p5*dirder/(dirder + p5*actred);
-    if( ((p1*fnorm1) >= fnorm)
-    || (temp < p1) )
+    } else {
+        temp = p5 * dirder / (dirder + p5 * actred);
+    }
+    if (((p1 * fnorm1) >= fnorm) || (temp < p1)) {
         temp = p1;
-       delta = temp*dmin1(delta,pnorm/p1);
-       par = par/temp;
+    }
+    delta = temp * dmin1(delta, pnorm / p1);
+    par = par / temp;
     }
 else
     {
@@ -1596,62 +1631,68 @@ if(ratio >= p0001)
         x[j] = wa2[j];
         wa2[j] = diag[j]*x[j];
         }
-    for( i=0; i<m; i++ )
-        fvec[i] = wa4[i];
-    xnorm = enorm(n,wa2);
-    fnorm = fnorm1;
-    iter += 1;
+        for (i = 0; i < m; i++) {
+            fvec[i] = wa4[i];
+        }
+        xnorm = enorm(n, wa2);
+        fnorm = fnorm1;
+        iter += 1;
     }
 /*
 *       tests for convergence.
 */
-if( (std::fabs(actred) <= ftol)
-  && (prered <= ftol)
-  && (p5*ratio <= one) )
-    *info = 1;
-if(delta <= xtol*xnorm)
-    *info = 2;
-if( (std::fabs(actred) <= ftol)
-  && (prered <= ftol)
-  && (p5*ratio <= one)
-  && ( *info == 2) )
-    *info = 3;
-if( *info != 0)
-    goto L300;
-/*
-*       tests for termination and stringent tolerances.
-*/
-if( *nfev >= maxfev)
-    *info = 5;
-if( (std::fabs(actred) <= MACHEP)
-  && (prered <= MACHEP)
-  && (p5*ratio <= one) )
-    *info = 6;
-if(delta <= MACHEP*xnorm)
-    *info = 7;
-if(gnorm <= MACHEP)
-    *info = 8;
-if( *info != 0)
-    goto L300;
-/*
-*       end of the inner loop. repeat if iteration unsuccessful.
-*/
-if(ratio < p0001)
-    goto L200;
-/*
-*    end of the outer loop.
-*/
-goto L30;
+    if ((std::fabs(actred) <= ftol) && (prered <= ftol) && (p5 * ratio <= one)) {
+        *info = 1;
+    }
+    if (delta <= xtol * xnorm) {
+        *info = 2;
+    }
+    if ((std::fabs(actred) <= ftol) && (prered <= ftol) && (p5 * ratio <= one) && (*info == 2)) {
+        *info = 3;
+    }
+    if (*info != 0) {
+        goto L300;
+    }
+    /*
+     *       tests for termination and stringent tolerances.
+     */
+    if (*nfev >= maxfev) {
+        *info = 5;
+    }
+    if ((std::fabs(actred) <= MACHEP) && (prered <= MACHEP) && (p5 * ratio <= one)) {
+        *info = 6;
+    }
+    if (delta <= MACHEP * xnorm) {
+        *info = 7;
+    }
+    if (gnorm <= MACHEP) {
+        *info = 8;
+    }
+    if (*info != 0) {
+        goto L300;
+    }
+    /*
+     *       end of the inner loop. repeat if iteration unsuccessful.
+     */
+    if (ratio < p0001) {
+        goto L200;
+    }
+    /*
+     *    end of the outer loop.
+     */
+    goto L30;
 
 L300:
 /*
 *     termination, either normal or user imposed.
 */
-if(iflag < 0)
+if (iflag < 0) {
     *info = iflag;
+}
 iflag = 0;
-if(nprint > 0)
-    fcn(m,n,x,fvec,&iflag);
+if (nprint > 0) {
+    fcn(m, n, x, fvec, &iflag);
+}
 /*
       last card of subroutine lmdif.
 */

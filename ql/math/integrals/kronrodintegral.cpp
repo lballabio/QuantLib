@@ -28,15 +28,17 @@ namespace QuantLib {
         err = std::fabs(err) ;
         if (resultAsc != 0 && err != 0){
             Real scale = std::pow((200 * err / resultAsc), 1.5) ;
-            if (scale < 1)
+            if (scale < 1) {
                 err = resultAsc * scale ;
-            else
-                err = resultAsc ;
+            } else {
+                err = resultAsc;
+            }
             }
         if (resultAbs > QL_MIN_POSITIVE_REAL / (50 * QL_EPSILON )){
             Real min_err = 50 * QL_EPSILON  * resultAbs ;
-            if (min_err > err)
-                err = min_err ;
+            if (min_err > err) {
+                err = min_err;
+            }
             }
         return err ;
     }
@@ -281,11 +283,10 @@ namespace QuantLib {
         Real mean = 0.5 * res21;
         resasc = w21b[5] * std::fabs(fCenter - mean);
 
-        for (k = 0; k < 5; k++)
-            resasc += (w21a[k] * (std::fabs(fv1[k] - mean)
-                        + std::fabs(fv2[k] - mean))
-                        + w21b[k] * (std::fabs(fv3[k] - mean)
-                        + std::fabs(fv4[k] - mean)));
+        for (k = 0; k < 5; k++) {
+            resasc += (w21a[k] * (std::fabs(fv1[k] - mean) + std::fabs(fv2[k] - mean)) +
+                       w21b[k] * (std::fabs(fv3[k] - mean) + std::fabs(fv4[k] - mean)));
+        }
 
         err = rescaleError ((res21 - res10) * halfLength, resAbs, resasc) ;
         resasc *= halfLength ;
@@ -301,8 +302,9 @@ namespace QuantLib {
 
         res43 = w43b[11] * fCenter;
 
-        for (k = 0; k < 10; k++)
+        for (k = 0; k < 10; k++) {
             res43 += savfun[k] * w43a[k];
+        }
 
         for (k = 0; k < 11; k++){
             Real abscissa = halfLength * x3[k];
@@ -327,8 +329,9 @@ namespace QuantLib {
 
         res87 = w87b[22] * fCenter;
 
-        for (k = 0; k < 21; k++)
+        for (k = 0; k < 21; k++) {
             res87 += savfun[k] * w87a[k];
+        }
 
         for (k = 0; k < 22; k++){
             Real abscissa = halfLength * x4[k];

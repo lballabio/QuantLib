@@ -23,10 +23,11 @@
 namespace QuantLib {
 
     std::ostream& operator<<(std::ostream& out, const UnitOfMeasure& c) {
-        if (!c.empty())
+        if (!c.empty()) {
             return out << c.code();
-        else
+        } else {
             return out << "null unit of measure";
+        }
     }
 
     std::map<std::string,

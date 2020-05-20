@@ -83,10 +83,11 @@ namespace QuantLib {
 
     inline void PathPayoff::accept(AcyclicVisitor& v) {
         Visitor<PathPayoff>* v1 = dynamic_cast<Visitor<PathPayoff>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             QL_FAIL("not a path-payoff visitor");
+        }
     }
 }
 

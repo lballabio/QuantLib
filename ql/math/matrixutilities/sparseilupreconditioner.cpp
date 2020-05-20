@@ -38,8 +38,9 @@ namespace QuantLib {
         QL_REQUIRE(A.size1() == A.size2(),
                    "sparse ILU preconditioner works only with square matrices");
 
-        for (SparseMatrix::size_type i=0; i < L_.size1(); ++i)
-            L_(i,i) = 1.0;
+        for (SparseMatrix::size_type i = 0; i < L_.size1(); ++i) {
+            L_(i, i) = 1.0;
+        }
 
         const Integer n = A.size1();
         std::set<Integer> lBandSet, uBandSet;
@@ -55,8 +56,9 @@ namespace QuantLib {
 
             std::vector<Integer> levii(n, 0);
             for (Integer i=0; i<n; ++i) {
-                if(   w[i] > QL_EPSILON
-                      || w[i] < -1.0*QL_EPSILON) levii[i] = 1;
+                if (w[i] > QL_EPSILON || w[i] < -1.0 * QL_EPSILON) {
+                    levii[i] = 1;
+                }
             }
             Integer jj = -1;
             while (jj < ii) {
@@ -172,8 +174,9 @@ namespace QuantLib {
             for (Integer j=lBands_.size()-1;
                  j>=0 && i-Integer(lBands_[j]) <= i-1; --j) {
                 const Integer k = i-Integer(lBands_[j]);
-                if (k >= 0)
-                    y[i]-=L_(i,k)*y[k]/L_(i,i);
+                if (k >= 0) {
+                    y[i] -= L_(i, k) * y[k] / L_(i, i);
+                }
             }
         }
         return y;

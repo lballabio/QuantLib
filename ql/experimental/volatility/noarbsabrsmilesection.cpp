@@ -75,21 +75,22 @@ Real NoArbSabrSmileSection::volatilityImpl(Rate strike) const {
     Real impliedVol = 0.0;
     try {
         Option::Type type;
-        if (strike >= forward_)
+        if (strike >= forward_) {
             type = Option::Call;
-        else
+        } else {
             type = Option::Put;
+        }
         impliedVol =
             blackFormulaImpliedStdDev(type, strike, forward_,
                                       optionPrice(strike, type, 1.0), 1.0) /
             std::sqrt(exerciseTime());
     } catch (...) {
     }
-    if (impliedVol == 0.0)
+    if (impliedVol == 0.0) {
         // fall back on Hagan 2002 expansion
-        impliedVol =
-            unsafeSabrVolatility(strike, forward_, exerciseTime(), params_[0],
-                                 params_[1], params_[2], params_[3]);
+        impliedVol = unsafeSabrVolatility(strike, forward_, exerciseTime(), params_[0], params_[1],
+                                          params_[2], params_[3]);
+    }
 
     return impliedVol;
 }

@@ -75,8 +75,9 @@ namespace QuantLib {
         }
         out << calendars_.front().name();
         std::vector<Calendar>::const_iterator i;
-        for (i=calendars_.begin()+1; i!=calendars_.end(); ++i)
+        for (i = calendars_.begin() + 1; i != calendars_.end(); ++i) {
             out << ", " << i->name();
+        }
         out << ")";
         return out.str();
     }
@@ -86,14 +87,16 @@ namespace QuantLib {
         switch (rule_) {
           case JoinHolidays:
             for (i=calendars_.begin(); i!=calendars_.end(); ++i) {
-                if (i->isWeekend(w))
+                if (i->isWeekend(w)) {
                     return true;
+                }
             }
             return false;
           case JoinBusinessDays:
             for (i=calendars_.begin(); i!=calendars_.end(); ++i) {
-                if (!i->isWeekend(w))
+                if (!i->isWeekend(w)) {
                     return false;
+                }
             }
             return true;
           default:
@@ -106,14 +109,16 @@ namespace QuantLib {
         switch (rule_) {
           case JoinHolidays:
             for (i=calendars_.begin(); i!=calendars_.end(); ++i) {
-                if (i->isHoliday(date))
+                if (i->isHoliday(date)) {
                     return false;
+                }
             }
             return true;
           case JoinBusinessDays:
             for (i=calendars_.begin(); i!=calendars_.end(); ++i) {
-                if (i->isBusinessDay(date))
+                if (i->isBusinessDay(date)) {
                     return true;
+                }
             }
             return false;
           default:

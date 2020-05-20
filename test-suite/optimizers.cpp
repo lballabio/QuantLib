@@ -62,8 +62,9 @@ namespace {
         Real value(const Array& x) const {
             QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
             Real y = 0;
-            for (Size i=0; i<=polynomialDegree_; ++i)
-                y += coefficients_[i]*std::pow(x[0],static_cast<int>(i));
+            for (Size i = 0; i <= polynomialDegree_; ++i) {
+                y += coefficients_[i] * std::pow(x[0], static_cast<int>(i));
+            }
             return y;
         }
 
@@ -213,8 +214,9 @@ namespace {
     Real maxDifference(const Array& a, const Array& b) {
         Array diff = a-b;
         Real maxDiff = 0.0;
-        for (Size i=0; i<diff.size(); ++i)
+        for (Size i = 0; i < diff.size(); ++i) {
             maxDiff = std::max(maxDiff, std::fabs(diff[i]));
+        }
         return maxDiff;
     }
 
@@ -320,34 +322,24 @@ void OptimizersTest::test() {
                 bool correct = (xError <= endCriteria.rootEpsilon() ||
                                 yError <= endCriteria.functionEpsilon());
 
-                if ((!completed) || (!correct))
-                    BOOST_ERROR("costFunction # = " << i <<
-                                "\nOptimizer: " <<
-                                optimizationMethods_[i][j].name <<
-                                "\n    function evaluations: " <<
-                                problem.functionEvaluation()  <<
-                                "\n    gradient evaluations: " <<
-                                problem.gradientEvaluation() <<
-                                "\n    x expected:           " <<
-                                xMinExpected_[i] <<
-                                "\n    x calculated:         " <<
-                                std::setprecision(9) << xMinCalculated <<
-                                "\n    x difference:         " <<
-                                xMinExpected_[i]- xMinCalculated <<
-                                "\n    rootEpsilon:          " <<
-                                std::setprecision(9) <<
-                                endCriteria.rootEpsilon() <<
-                                "\n    y expected:           " <<
-                                yMinExpected_[i] <<
-                                "\n    y calculated:         " <<
-                                std::setprecision(9) << yMinCalculated <<
-                                "\n    y difference:         " <<
-                                yMinExpected_[i]- yMinCalculated <<
-                                "\n    functionEpsilon:      " <<
-                                std::setprecision(9) <<
-                                endCriteria.functionEpsilon() <<
-                                "\n    endCriteriaResult:    " <<
-                                endCriteriaResult);
+                if ((!completed) || (!correct)) {
+                    BOOST_ERROR(
+                        "costFunction # = "
+                        << i << "\nOptimizer: " << optimizationMethods_[i][j].name
+                        << "\n    function evaluations: " << problem.functionEvaluation()
+                        << "\n    gradient evaluations: " << problem.gradientEvaluation()
+                        << "\n    x expected:           " << xMinExpected_[i]
+                        << "\n    x calculated:         " << std::setprecision(9) << xMinCalculated
+                        << "\n    x difference:         " << xMinExpected_[i] - xMinCalculated
+                        << "\n    rootEpsilon:          " << std::setprecision(9)
+                        << endCriteria.rootEpsilon()
+                        << "\n    y expected:           " << yMinExpected_[i]
+                        << "\n    y calculated:         " << std::setprecision(9) << yMinCalculated
+                        << "\n    y difference:         " << yMinExpected_[i] - yMinCalculated
+                        << "\n    functionEpsilon:      " << std::setprecision(9)
+                        << endCriteria.functionEpsilon()
+                        << "\n    endCriteriaResult:    " << endCriteriaResult);
+                }
             }
         }
     }

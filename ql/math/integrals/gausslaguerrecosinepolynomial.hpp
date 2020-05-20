@@ -41,31 +41,35 @@ namespace QuantLib {
 		virtual mp_real m1() const = 0;
 
 		mp_real moment_(Size n) const {
-			if (m_.size() <= n)
-				m_.resize(n+1, std::numeric_limits<mp_real>::quiet_NaN());
+                    if (m_.size() <= n) {
+                        m_.resize(n + 1, std::numeric_limits<mp_real>::quiet_NaN());
+                    }
 
-			if (boost::math::isnan(m_[n])) {
-				if (n == 0)
-					m_[0] = m0();
-				else if (n == 1)
-					m_[1] = m1();
-				else
-					m_[n] = (2*n*moment_(n-1)
-						- n*(n-1)*moment_(n-2))/(1+u_*u_);
-			}
+                    if (boost::math::isnan(m_[n])) {
+                        if (n == 0) {
+                            m_[0] = m0();
+                        } else if (n == 1) {
+                            m_[1] = m1();
+                        } else {
+                            m_[n] = (2 * n * moment_(n - 1) - n * (n - 1) * moment_(n - 2)) /
+                                    (1 + u_ * u_);
+                        }
+                        }
 
 			return m_[n];
 		}
 		mp_real fact(Size n) const {
-			if (f_.size() <= n)
-				f_.resize(n+1, std::numeric_limits<mp_real>::quiet_NaN());
+                    if (f_.size() <= n) {
+                        f_.resize(n + 1, std::numeric_limits<mp_real>::quiet_NaN());
+                    }
 
-			if (boost::math::isnan(f_[n])) {
-				if (n == 0)
-					f_[0] = 1.0;
-				else
-					f_[n] = n*fact(n-1);
-			}
+                    if (boost::math::isnan(f_[n])) {
+                        if (n == 0) {
+                            f_[0] = 1.0;
+                        } else {
+                            f_[n] = n * fact(n - 1);
+                        }
+                        }
 			return f_[n];
 
 		}

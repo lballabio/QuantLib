@@ -50,9 +50,11 @@ namespace QuantLib {
                            << ")");
         }
         numberOfExercises_ = 0;
-        for(Size i=0;i<isExerciseTime_.size();i++)
-            if(isExerciseTime_[i])
+        for (Size i = 0; i < isExerciseTime_.size(); i++) {
+            if (isExerciseTime_[i]) {
                 ++numberOfExercises_;
+            }
+        }
     }
 
     Size NothingExerciseValue::numberOfExercises() const {

@@ -51,10 +51,11 @@ namespace QuantLib {
     void BlackVolSurface::accept(AcyclicVisitor& v) {
         Visitor<BlackVolSurface>* v1 =
             dynamic_cast<Visitor<BlackVolSurface>*>(&v);
-        if (v1 != 0)
+        if (v1 != 0) {
             v1->visit(*this);
-        else
+        } else {
             QL_FAIL("not a BlackVolSurface term structure visitor");
+        }
     }
 
 }

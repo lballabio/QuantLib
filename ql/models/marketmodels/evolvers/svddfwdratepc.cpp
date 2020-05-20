@@ -91,9 +91,10 @@ namespace QuantLib {
         firstVolatilityFactor_ = std::min(firstVolatilityFactor_,variatesPerStep - volFactorsPerStep_);
 
         Size volIncrement = (variatesPerStep - firstVolatilityFactor_)/volFactorsPerStep_;
-        
-        for (Size i=0; i < volFactorsPerStep_; ++i)
-            isVolVariate_[firstVolatilityFactor_+i*volIncrement] = true;
+
+        for (Size i = 0; i < volFactorsPerStep_; ++i) {
+            isVolVariate_[firstVolatilityFactor_ + i * volIncrement] = true;
+        }
     }
 
     const std::vector<Size>& SVDDFwdRatePc::numeraires() const {
@@ -104,9 +105,9 @@ namespace QuantLib {
     {
         QL_REQUIRE(forwards.size()==numberOfRates_,
                    "mismatch between forwards and rateTimes");
-        for (Size i=0; i<numberOfRates_; ++i)
-             initialLogForwards_[i] = std::log(forwards[i] +
-                                               displacements_[i]);
+        for (Size i = 0; i < numberOfRates_; ++i) {
+            initialLogForwards_[i] = std::log(forwards[i] + displacements_[i]);
+        }
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
@@ -144,7 +145,7 @@ namespace QuantLib {
 
         // divide Brownians between vol process and forward process
 
-        for (Size i=0, j=0, k=0; i < allBrownians_.size(); ++i)
+        for (Size i = 0, j = 0, k = 0; i < allBrownians_.size(); ++i) {
             if ( isVolVariate_[i])
             {
                 volBrownians_[j] = allBrownians_[i];
@@ -155,6 +156,7 @@ namespace QuantLib {
                 brownians_[k] = allBrownians_[i];
                 ++k;
             }
+        }
 
 
         // get sd for step

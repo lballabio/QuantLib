@@ -85,9 +85,9 @@ namespace QuantLib {
             std::vector<Real> notionals = basket_->remainingNotionals(date);
             std::vector<Probability> invProbs = 
                 basket_->remainingProbabilities(date);
-            for(Size iName=0; iName<invProbs.size(); iName++)
-                invProbs[iName] = 
-                    copula_->inverseCumulativeY(invProbs[iName], iName);
+            for (Size iName = 0; iName < invProbs.size(); iName++) {
+                invProbs[iName] = copula_->inverseCumulativeY(invProbs[iName], iName);
+            }
 
             return copula_->integratedExpectedValue(
                 ext::function<Disposable<std::vector<Real> > (
@@ -127,9 +127,10 @@ namespace QuantLib {
         {
             std::vector<Real> condLgds;
             const std::vector<Size>& evalDateLives = basket_->liveList();
-            for(Size i=0; i<evalDateLives.size(); i++) 
-                condLgds.push_back(1.-copula_->conditionalRecovery(d, 
-                    evalDateLives[i], mktFactors));
+            for (Size i = 0; i < evalDateLives.size(); i++) {
+                condLgds.push_back(1. -
+                                   copula_->conditionalRecovery(d, evalDateLives[i], mktFactors));
+            }
             return condLgds;
         }
 
@@ -186,10 +187,10 @@ namespace QuantLib {
                 bsktSize;
 
         std::vector<Probability> condDefProb(bsktSize, 0.);
-        for(Size j=0; j<bsktSize; j++)//transform
-            condDefProb[j] = 
-                copula_->conditionalDefaultProbabilityInvP(uncondDefProbInv[j],
-                    j, mktFactors);
+        for (Size j = 0; j < bsktSize; j++) { // transform
+            condDefProb[j] =
+                copula_->conditionalDefaultProbabilityInvP(uncondDefProbInv[j], j, mktFactors);
+        }
         // of full portfolio:
         Real avgProb = avgLgd <= QL_EPSILON ? 0. : // only if all are 0
                 std::inner_product(condDefProb.begin(), 
@@ -240,12 +241,13 @@ namespace QuantLib {
             Probability probsRatio = avgProb/(1.-avgProb);
             lossProbDensity[0] = std::pow(1.-avgProb, 
                 static_cast<Real>(bsktSize));
-            for(Size i=1; i<bsktSize+1; i++) // recursive to avoid factorial
-                lossProbDensity[i] = lossProbDensity[i-1] * probsRatio 
-                    * (bsktSize-i+1.)/i;
+            for (Size i = 1; i < bsktSize + 1; i++) { // recursive to avoid factorial
+                lossProbDensity[i] = lossProbDensity[i - 1] * probsRatio * (bsktSize - i + 1.) / i;
+            }
             // redistribute probability:
-            for(Size i=0; i<bsktSize+1; i++)
+            for (Size i = 0; i < bsktSize + 1; i++) {
                 lossProbDensity[i] *= alpha;
+            }
             // adjust average
             Real epsilon = (1.-alpha)*(ceilAveProb-m);
             Real epsilonPlus = 1.-alpha-epsilon;
@@ -305,8 +307,9 @@ namespace QuantLib {
         data.reserve(dataSize);
         // use std::algorithm
         Real outsNot = basket_->remainingNotional(d);
-        for(Size i=0; i<dataSize; i++)
+        for (Size i = 0; i < dataSize; i++) {
             data.push_back(i * aveLossFrct * outsNot);
+        }
         return data;
     }
 
@@ -337,10 +340,10 @@ namespace QuantLib {
         std::vector<Real> notionals = basket_->remainingNotionals(d);
         std::vector<Probability> invProbs = 
             basket_->remainingProbabilities(d);
-        for(Size iName=0; iName<invProbs.size(); iName++)
-            invProbs[iName] = 
-                copula_->inverseCumulativeY(invProbs[iName], iName);
-            
+        for (Size iName = 0; iName < invProbs.size(); iName++) {
+            invProbs[iName] = copula_->inverseCumulativeY(invProbs[iName], iName);
+        }
+
         return copula_->integratedExpectedValue(
             ext::function<Real (const std::vector<Real>& v1)>(
                 ext::bind(&BinomialLossModel<LLM>::condTrancheLoss,
@@ -376,16 +379,26 @@ namespace QuantLib {
     Real BinomialLossModel<LLM>::percentile(const Date& d, Real perc) const {
         std::map<Real, Probability> dist = lossDistribution(d);
         // \todo: Use some of the library interpolators instead
-        if(// included in test below-> (dist.begin()->second >=1.) ||
-            (dist.begin()->second >= perc))return dist.begin()->first;
+        if ( // included in test below-> (dist.begin()->second >=1.) ||
+            (dist.begin()->second >= perc)) {
+            return dist.begin()->first;
+        }
 
         // deterministic case (e.g. date requested is todays date)
-        if(dist.size() == 1) return dist.begin()->first;
+        if (dist.size() == 1) {
+            return dist.begin()->first;
+        }
 
-        if(perc == 1.) return dist.rbegin()->first;
-        if(perc == 0.) return dist.begin()->first;
+        if (perc == 1.) {
+            return dist.rbegin()->first;
+        }
+        if (perc == 0.) {
+            return dist.begin()->first;
+        }
         std::map<Real, Probability>::const_iterator itdist = dist.begin();
-        while (itdist->second <= perc) ++itdist;
+        while (itdist->second <= perc) {
+            ++itdist;
+        }
         Real valPlus = itdist->second;
         Real xPlus   = itdist->first;
         --itdist; //we're never 1st or last, because of tests above
@@ -404,38 +417,43 @@ namespace QuantLib {
         Real perctl) const 
     {
         //taken from recursive since we have the distribution in both cases.
-        if(d == Settings::instance().evaluationDate()) return 0.;
-            std::map<Real, Probability> distrib = lossDistribution(d);
+        if (d == Settings::instance().evaluationDate()) {
+            return 0.;
+        }
+        std::map<Real, Probability> distrib = lossDistribution(d);
 
-            std::map<Real, Probability>::iterator 
-                itNxt, itDist = distrib.begin();
-            for(; itDist != distrib.end(); ++itDist)
-                if(itDist->second >= perctl) break;
-            itNxt = itDist;
-            --itDist;
+        std::map<Real, Probability>::iterator itNxt, itDist = distrib.begin();
+        for (; itDist != distrib.end(); ++itDist) {
+            if (itDist->second >= perctl) {
+                break;
+            }
+        }
+        itNxt = itDist;
+        --itDist;
 
-            // \todo: I could linearly triangulate the exact point and get 
-            //    extra precission on the first(broken) period.
-            if(itNxt != distrib.end()) { 
-                Real lossNxt = std::min(std::max(itNxt->first - attachAmount_, 
-                    0.), detachAmount_ - attachAmount_);
-                Real lossHere = std::min(std::max(itDist->first - attachAmount_,
-                    0.), detachAmount_ - attachAmount_);
+        // \todo: I could linearly triangulate the exact point and get
+        //    extra precission on the first(broken) period.
+        if (itNxt != distrib.end()) {
+            Real lossNxt =
+                std::min(std::max(itNxt->first - attachAmount_, 0.), detachAmount_ - attachAmount_);
+            Real lossHere = std::min(std::max(itDist->first - attachAmount_, 0.),
+                                     detachAmount_ - attachAmount_);
 
-                Real val =  lossNxt - (itNxt->second - perctl) * 
-                    (lossNxt - lossHere) / (itNxt->second - itDist->second); 
-                Real suma = (itNxt->second - perctl) * (lossNxt + val) * .5;
-                ++itDist; ++itNxt;
-                do{
-                    lossNxt = std::min(std::max(itNxt->first - attachAmount_, 
-                        0.), detachAmount_ - attachAmount_);
-                    lossHere = std::min(std::max(itDist->first - attachAmount_, 
-                        0.), detachAmount_ - attachAmount_);
-                    suma += .5 * (lossHere + lossNxt) 
-                        * (itNxt->second - itDist->second);
-                    ++itDist; ++itNxt;
-                }while(itNxt != distrib.end());
-                return suma / (1.-perctl);
+            Real val = lossNxt - (itNxt->second - perctl) * (lossNxt - lossHere) /
+                                     (itNxt->second - itDist->second);
+            Real suma = (itNxt->second - perctl) * (lossNxt + val) * .5;
+            ++itDist;
+            ++itNxt;
+            do {
+                lossNxt = std::min(std::max(itNxt->first - attachAmount_, 0.),
+                                   detachAmount_ - attachAmount_);
+                lossHere = std::min(std::max(itDist->first - attachAmount_, 0.),
+                                    detachAmount_ - attachAmount_);
+                suma += .5 * (lossHere + lossNxt) * (itNxt->second - itDist->second);
+                ++itDist;
+                ++itNxt;
+            } while (itNxt != distrib.end());
+            return suma / (1. - perctl);
             }
             QL_FAIL("Binomial model fails to calculate ESF.");
     }

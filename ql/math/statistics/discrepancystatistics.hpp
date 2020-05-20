@@ -106,8 +106,9 @@ namespace QuantLib {
     }
 
     inline void DiscrepancyStatistics::reset(Size dimension) {
-        if (dimension == 0)           // if no size given,
-            dimension = dimension_;   // keep the current one
+        if (dimension == 0) {       // if no size given,
+            dimension = dimension_; // keep the current one
+        }
         QL_REQUIRE(dimension != 1,
                    "dimension==1 not allowed");
 

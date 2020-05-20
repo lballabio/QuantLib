@@ -105,7 +105,9 @@ namespace QuantLib {
 
         xstar=log(kprice/hbarr);
 
-        if(xstar>0.0) xstar=0.0;
+        if (xstar > 0.0) {
+            xstar = 0.0;
+        }
         sigmat=integs(taumin,taumax);
         disc=-integr(taumin,taumax);
 
@@ -137,7 +139,9 @@ namespace QuantLib {
         v0=v0+exp(gm*0.5*sigmat)*(-hbarr*s0*e3+hbarr*POW(s0,-gm)*e4);
         v0=v0*exp(disc);
 
-        if(iord==0) return v0;
+        if (iord == 0) {
+            return v0;
+        }
 
         /*
           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -212,7 +216,9 @@ namespace QuantLib {
 
         v1=exp(disc)*et*v1*dt/(dsqpi*2.0);
 
-        if(iord==1) return v0+v1;
+        if (iord == 1) {
+            return v0 + v1;
+        }
 
         /*
           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -330,10 +336,9 @@ namespace QuantLib {
         /*
           |Z| > 37
         */
-        if (ZABS > 37)
+        if (ZABS > 37) {
             P = 0;
-        else
-        {
+        } else {
             /*
               |Z| <= 37
             */
@@ -341,16 +346,19 @@ namespace QuantLib {
             /*
               |Z| < CUTOFF = 10/SQRT(2)
             */
-            if ( ZABS < CUTOFF )
+            if (ZABS < CUTOFF) {
                 P = EXPNTL*((((((P6*ZABS + P5)*ZABS + P4)*ZABS + P3)*ZABS+ P2)*ZABS + P1)*ZABS + P0)/(((((((Q7*ZABS + Q6)*ZABS + Q5)*ZABS + Q4)*ZABS + Q3)*ZABS + Q2)*ZABS + Q1)*ZABS + Q0);
             /*
               |Z| >= CUTOFF.
             */
-            else
-                P = EXPNTL/(ZABS + 1/(ZABS + 2/(ZABS + 3/(ZABS + 4/(ZABS + 0.65)))))/ROOTPI;
-
+            } else {
+                P = EXPNTL / (ZABS + 1 / (ZABS + 2 / (ZABS + 3 / (ZABS + 4 / (ZABS + 0.65))))) /
+                    ROOTPI;
+            }
         }
-        if ( Z > 0 ) P = 1 - P;
+        if (Z > 0) {
+            P = 1 - P;
+        }
 
         return(P);
     }
@@ -855,38 +863,48 @@ namespace QuantLib {
         }
 
         TVT = 0.0;
-        if ( (fabs(H1) + fabs(H2) + fabs(H3)) < EPS ) TVT = ( 1 + ( asin(R12) + asin(R13) + asin(R23) )/PT )/8.0;
+        if ((fabs(H1) + fabs(H2) + fabs(H3)) < EPS) {
+            TVT = (1 + (asin(R12) + asin(R13) + asin(R23)) / PT) / 8.0;
 
-        else  if ( (NU < 1) && ( (fabs(R12) + fabs(R13)) < EPS) )  TVT = PHID(H1)*BVTL( NU, H2, H3, R23 );
+        } else if ((NU < 1) && ((fabs(R12) + fabs(R13)) < EPS)) {
+            TVT = PHID(H1) * BVTL(NU, H2, H3, R23);
 
-        else  if ( (NU < 1) && ((fabs(R13) + fabs(R23))< EPS) ) TVT = PHID(H3)*BVTL( NU, H1, H2, R12 );
+        } else if ((NU < 1) && ((fabs(R13) + fabs(R23)) < EPS)) {
+            TVT = PHID(H3) * BVTL(NU, H1, H2, R12);
 
-        else if( (NU < 1) && ((fabs(R12) + fabs(R23))< EPS) ) TVT = PHID(H2)*BVTL( NU, H1, H3, R13 );
+        } else if ((NU < 1) && ((fabs(R12) + fabs(R23)) < EPS)) {
+            TVT = PHID(H2) * BVTL(NU, H1, H3, R13);
 
-        else if ( (1.0 - R23)< EPS ) TVT = BVTL( NU, H1, min( H2, H3 ), R12 );
+        } else if ((1.0 - R23) < EPS) {
+            TVT = BVTL(NU, H1, min(H2, H3), R12);
 
-        else  if ( (R23 + 1.0) <EPS ) {
-            if  ( H2 > -H3 ) TVT = BVTL( NU, H1, H2, R12 ) - BVTL( NU, H1, -H3, R12 );}
-        else
-            {
-                /*
-                 *        Compute singular TVT value
-                 */
-                if ( NU < 1 ) TVT = BVTL( NU, H2, H3, R23 )*PHID(H1);
+        } else if ((R23 + 1.0) < EPS) {
+            if (H2 > -H3) {
+                TVT = BVTL(NU, H1, H2, R12) - BVTL(NU, H1, -H3, R12);
+            }
+        } else {
+            /*
+             *        Compute singular TVT value
+             */
+            if (NU < 1) {
+                TVT = BVTL(NU, H2, H3, R23) * PHID(H1);
 
-                else if ( R23 > 0 ) TVT = BVTL( NU, H1, min( H2, H3 ), ZRO );
+            } else if (R23 > 0) {
+                TVT = BVTL(NU, H1, min(H2, H3), ZRO);
 
-                else if ( H2 > -H3 ) TVT = BVTL( NU, H1, H2, ZRO ) - BVTL( NU, H1, -H3, ZRO );
+            } else if (H2 > -H3) {
+                TVT = BVTL(NU, H1, H2, ZRO) - BVTL(NU, H1, -H3, ZRO);
+            }
 
-                /*
-                 *        Use numerical integration to compute probability
-                 *
-                 */
-                RUA = asin( R12 );
-                RUB = asin( R13 );
-                AR = asin( R23);
-                RUC = SIGN( PT, AR ) - AR;
-                TVT = TVT + ADONET(  ZRO, ONE, EPS, *TVTMFN)/( 4.0*PT );
+            /*
+             *        Use numerical integration to compute probability
+             *
+             */
+            RUA = asin(R12);
+            RUB = asin(R13);
+            AR = asin(R23);
+            RUC = SIGN(PT, AR) - AR;
+            TVT = TVT + ADONET(ZRO, ONE, EPS, *TVTMFN) / (4.0 * PT);
             }
         result = max( ZRO, min( TVT, ONE ) );
 
@@ -910,8 +928,12 @@ namespace QuantLib {
         SINCS( RUA*X, R12, RR2 );
         SINCS( RUB*X, R13, RR3 );
 
-        if ( fabs(RUA)> 0 )  result += RUA*PNTGND( NUC, H1,H2,H3, R13,R23,R12,RR2);
-        if( fabs(RUB)>0 ) result += RUB*PNTGND( NUC, H1,H3,H2, R12,R23,R13,RR3 ) ;
+        if (fabs(RUA) > 0) {
+            result += RUA * PNTGND(NUC, H1, H2, H3, R13, R23, R12, RR2);
+        }
+        if (fabs(RUB) > 0) {
+            result += RUB * PNTGND(NUC, H1, H3, H2, R12, R23, R13, RR3);
+        }
         if ( NUC > 0 )
             {
                 SINCS( AR + RUC*X, R, RR );
@@ -977,9 +999,11 @@ namespace QuantLib {
                 FIN = 0.0;
                 for(I = 1; I<=IM; I++)
                     {
-                        if( EI[I] > EI[IP]) IP = I;
-                        FIN = FIN + FI[I];
-                        ERR = ERR + EI[I]*EI[I];
+                    if (EI[I] > EI[IP]) {
+                        IP = I;
+                    }
+                    FIN = FIN + FI[I];
+                    ERR = ERR + EI[I] * EI[I];
                     }
                 ERR = POW( ERR,0.5 );
             }
@@ -1066,7 +1090,9 @@ namespace QuantLib {
                 T = WID*XGK[J+1];
                 FC = TVTMFN(CEN-T,H1, H2,  H3, R23, RUA, RUB, AR, RUC, NUC )+TVTMFN(CEN+T,H1, H2,  H3, R23, RUA, RUB, AR, RUC, NUC );
                 RESK = RESK + WGK[J+1]*FC;
-                if((J-2*int(J/2)) == 0 ) RESG = RESG + WG[1+J/2]*FC;
+                if ((J - 2 * int(J / 2)) == 0) {
+                    RESG = RESG + WG[1 + J / 2] * FC;
+                }
             }
         result = WID*RESK;
         ERR = fabs( WID*( RESK - RESG ) );
@@ -1085,30 +1111,28 @@ namespace QuantLib {
         static Real result;
 
 
-        if ( NU < 1 ) result= PHID( T );
-        else if ( NU == 1 ) result = ( 1 + 2.0*atan(T)/PI )/2.0;
-        else if ( NU == 2 ) result = ( 1 + T/POW(( 2.0 + T*T),0.5))/2.0;
-        else
-            {
-                TT = T*T;
-                CSSTHE = 1/( 1 + TT/double(NU) );
-                POLYN = 1;
-                for( J = NU-2; J>= 2; J=J-2)
-                    {
-                        POLYN = 1.0 + ( J - 1.0 )*CSSTHE*POLYN/(double)J;
-                    }
-                if ((NU-2*int(NU/2) ) == 1 )
-                    {
-                        RN = NU;
-                        TS = T/POW(RN,0.5);
-                        result = ( 1.0 + 2.0*( atan(TS) + TS*CSSTHE*POLYN )/PI )/2.0;
-                    }
-                else
-                    {
-                        SNTHE = T/POW(( NU + TT ),0.5);
-                        result = ( 1 + SNTHE*POLYN )/2.0;
-                    }
-                result = max( ZRO, min( result, ONE ) );
+        if (NU < 1) {
+            result = PHID(T);
+        } else if (NU == 1) {
+            result = (1 + 2.0 * atan(T) / PI) / 2.0;
+        } else if (NU == 2) {
+            result = (1 + T / POW((2.0 + T * T), 0.5)) / 2.0;
+        } else {
+            TT = T * T;
+            CSSTHE = 1 / (1 + TT / double(NU));
+            POLYN = 1;
+            for (J = NU - 2; J >= 2; J = J - 2) {
+                POLYN = 1.0 + (J - 1.0) * CSSTHE * POLYN / (double)J;
+            }
+            if ((NU - 2 * int(NU / 2)) == 1) {
+                RN = NU;
+                TS = T / POW(RN, 0.5);
+                result = (1.0 + 2.0 * (atan(TS) + TS * CSSTHE * POLYN) / PI) / 2.0;
+            } else {
+                SNTHE = T / POW((NU + TT), 0.5);
+                result = (1 + SNTHE * POLYN) / 2.0;
+            }
+            result = max(ZRO, min(result, ONE));
             }
         return(result);
     }
@@ -1150,15 +1174,18 @@ namespace QuantLib {
         static Real result;
         ONE = 1;
         EPS = 1e-15;
-        if ( NU <1 ) result = ND2( -DH, -DK, R );
+        if (NU < 1) {
+            result = ND2(-DH, -DK, R);
 
-        else if ( (1 - R)<= EPS ) result = STUDNT( NU, min( DH, DK ) );
+        } else if ((1 - R) <= EPS) {
+            result = STUDNT(NU, min(DH, DK));
 
-        else  if( (R + 1)<=EPS )
-            {
-                if( DH > -DK ) result = STUDNT( NU, DH ) - STUDNT( NU, -DK );
-                else
-                    result = 0.0;
+        } else if ((R + 1) <= EPS) {
+            if (DH > -DK) {
+                result = STUDNT(NU, DH) - STUDNT(NU, -DK);
+            } else {
+                result = 0.0;
+            }
             }
         else
             {
@@ -1209,7 +1236,9 @@ namespace QuantLib {
                         HKN = DH*DK - NU;
                         HPK = DH + DK;
                         BVT = atan2( -SNU*( HKN*QHRK + HPK*HKRN ),HKN*HKRN-NU*HPK*QHRK )/TPI;
-                        if ( BVT < -EPS ) BVT = BVT + 1;
+                        if (BVT < -EPS) {
+                            BVT = BVT + 1;
+                        }
                         GMPH = DH/( TPI*SNU*( 1 + DH*DH/NU ) );
                         GMPK = DK/( TPI*SNU*( 1 + DK*DK/NU ) );
                         BTNCKH = POW( XNKH,0.5 );
@@ -1252,7 +1281,9 @@ namespace QuantLib {
               if( NUC<1 ) {
                   if ( (BT > -10) && (FT <100) ) {
                       result = exp( -FT/2 );
-                      if ( BT <10 ) result= result*PHID(BT);
+                      if (BT < 10) {
+                          result = result * PHID(BT);
+                      }
                   } else {
                       FT = POW((1 + FT/NUC),0.5);
                       result = STUDNT( NUC, BT/FT )/POW(FT,NUC);
@@ -1398,7 +1429,10 @@ namespace QuantLib {
                     C = ( 4 - HK )/8 ;
                     D = ( 12 - HK )/16;
                     ASR = -( BS/AS + HK )/2;
-                    if( ASR > -100 ) BVN = AA*exp(ASR)*( 1 - C*( BS - AS )*( 1 - D*BS/5 )/3 + C*D*AS*AS/5 );
+                    if (ASR > -100) {
+                        BVN = AA * exp(ASR) *
+                              (1 - C * (BS - AS) * (1 - D * BS / 5) / 3 + C * D * AS * AS / 5);
+                    }
                     if( -HK<100 ){
                         BB = POW(BS,0.5);
                         BVN = BVN - exp( -HK/2 )*POW(TWOPI,0.5)*PHID(-BB/AA)*BB*( 1 - C*BS*( 1 - D*BS/5 )/3 );
@@ -1427,7 +1461,9 @@ namespace QuantLib {
                 else
                     {
                         BVN = -BVN;
-                        if( K > H ) BVN = BVN + PHID(K) - PHID(H);
+                        if (K > H) {
+                            BVN = BVN + PHID(K) - PHID(H);
+                        }
                     }
             }
 

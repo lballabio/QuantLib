@@ -95,12 +95,14 @@ namespace QuantLib {
             calculateNextGeneration(population, p);
             std::partial_sort(population.begin(), population.begin() + 1, population.end(),
                               sort_by_cost());
-            if (population.front().cost < bestMemberEver_.cost)
+            if (population.front().cost < bestMemberEver_.cost) {
                 bestMemberEver_ = population.front();
+            }
             Real fxNew = population.front().cost;
             if (endCriteria.checkStationaryFunctionValue(fxOld, fxNew, stationaryPointIteration,
-                                                         ecType))
+                                                         ecType)) {
                 break;
+            }
             fxOld = fxNew;
         };
         p.setCurrentValue(bestMemberEver_.values);
@@ -176,9 +178,10 @@ namespace QuantLib {
               randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Array FWeight = Array(population.front().values.size(), 0.0);
-              for (Size fwIter = 0; fwIter < FWeight.size(); fwIter++)
-                  FWeight[fwIter] = (1.0 - configuration().stepsizeWeight)
-                      * rng_.nextReal() + configuration().stepsizeWeight;
+              for (Size fwIter = 0; fwIter < FWeight.size(); fwIter++) {
+                  FWeight[fwIter] = (1.0 - configuration().stepsizeWeight) * rng_.nextReal() +
+                                    configuration().stepsizeWeight;
+              }
               for (Size popIter = 0; popIter < population.size(); popIter++) {
                   population[popIter].values = population[popIter].values
                       + FWeight * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
@@ -283,16 +286,18 @@ namespace QuantLib {
             // immediately apply bounds if specified
             if (configuration().applyBounds) {
                 for (Size memIter = 0; memIter < population[popIter].values.size(); memIter++) {
-                    if (population[popIter].values[memIter] > upperBound_[memIter])
-                        population[popIter].values[memIter] = upperBound_[memIter]
-                            + rng_.nextReal()
-                            * (mirrorPopulation[popIter].values[memIter]
-                               - upperBound_[memIter]);
-                    if (population[popIter].values[memIter] < lowerBound_[memIter])
-                        population[popIter].values[memIter] = lowerBound_[memIter]
-                            + rng_.nextReal()
-                            * (mirrorPopulation[popIter].values[memIter]
-                               - lowerBound_[memIter]);
+                    if (population[popIter].values[memIter] > upperBound_[memIter]) {
+                        population[popIter].values[memIter] =
+                            upperBound_[memIter] +
+                            rng_.nextReal() *
+                                (mirrorPopulation[popIter].values[memIter] - upperBound_[memIter]);
+                    }
+                    if (population[popIter].values[memIter] < lowerBound_[memIter]) {
+                        population[popIter].values[memIter] =
+                            lowerBound_[memIter] +
+                            rng_.nextReal() *
+                                (mirrorPopulation[popIter].values[memIter] - lowerBound_[memIter]);
+                    }
                 }
             }
             // evaluate objective function as soon as possible to avoid unnecessary loops
@@ -301,9 +306,9 @@ namespace QuantLib {
             } catch (Error&) {
                 population[popIter].cost = QL_MAX_REAL;
             }
-            if(!boost::math::isfinite(population[popIter].cost))
+            if (!boost::math::isfinite(population[popIter].cost)) {
                 population[popIter].cost = QL_MAX_REAL;
-
+            }
         }
     }
 
@@ -364,16 +369,19 @@ namespace QuantLib {
          // Problems." page 649 for reference
         Real sizeWeightChangeProb = 0.1;
         for (Size coIter = 0;coIter < currGenSizeWeights_.size(); coIter++){
-            if (rng_.nextReal() < sizeWeightChangeProb)
-                currGenSizeWeights_[coIter] = sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
+            if (rng_.nextReal() < sizeWeightChangeProb) {
+                currGenSizeWeights_[coIter] =
+                    sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
+            }
         }
     }
 
     void DifferentialEvolution::adaptCrossover() const {
         Real crossoverChangeProb = 0.1; // [=tau2]
         for (Size coIter = 0;coIter < currGenCrossover_.size(); coIter++){
-            if (rng_.nextReal() < crossoverChangeProb)
+            if (rng_.nextReal() < crossoverChangeProb) {
                 currGenCrossover_[coIter] = rng_.nextReal();
+            }
         }
     }
 
@@ -391,8 +399,9 @@ namespace QuantLib {
                 population[j].values[i] = l + (u-l)*rng_.nextReal();
             }
             population[j].cost = p.costFunction().value(population[j].values);
-            if(!boost::math::isfinite(population[j].cost))
+            if (!boost::math::isfinite(population[j].cost)) {
                 population[j].cost = QL_MAX_REAL;
+            }
         }
     }
 

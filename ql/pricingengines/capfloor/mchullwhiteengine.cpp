@@ -36,19 +36,19 @@ namespace QuantLib {
             DayCounter dayCounter = model_->termStructure()->dayCounter();
 
             startTimes_.resize(args.startDates.size());
-            for (Size i=0; i<startTimes_.size(); ++i)
-                startTimes_[i] = dayCounter.yearFraction(referenceDate,
-                                                         args.startDates[i]);
+            for (Size i = 0; i < startTimes_.size(); ++i) {
+                startTimes_[i] = dayCounter.yearFraction(referenceDate, args.startDates[i]);
+            }
 
             endTimes_.resize(args.endDates.size());
-            for (Size i=0; i<endTimes_.size(); ++i)
-                endTimes_[i] = dayCounter.yearFraction(referenceDate,
-                                                       args.endDates[i]);
+            for (Size i = 0; i < endTimes_.size(); ++i) {
+                endTimes_[i] = dayCounter.yearFraction(referenceDate, args.endDates[i]);
+            }
 
             fixingTimes_.resize(args.fixingDates.size());
-            for (Size i=0; i<fixingTimes_.size(); ++i)
-                fixingTimes_[i] = dayCounter.yearFraction(referenceDate,
-                                                          args.fixingDates[i]);
+            for (Size i = 0; i < fixingTimes_.size(); ++i) {
+                fixingTimes_[i] = dayCounter.yearFraction(referenceDate, args.fixingDates[i]);
+            }
         }
 
         Real HullWhiteCapFloorPricer::operator()(const Path& path) const {

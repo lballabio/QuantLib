@@ -54,8 +54,9 @@ namespace QuantLib {
         Size i;
         for (i=0; i < maxIter_ && error >= relTol_; ++i) {
            rho = DotProduct(rTld, r);
-           if  (rho == 0.0 || omega == 0.0)
+           if (rho == 0.0 || omega == 0.0) {
                break;
+           }
 
            if (i) {
               beta = (rho/rhoTld)*(alpha/omega);

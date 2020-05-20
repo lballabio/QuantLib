@@ -50,8 +50,9 @@ namespace QuantLib {
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
-        for (Size i=0; i <= numberSteps_; ++i)
+        for (Size i = 0; i <= numberSteps_; ++i) {
             Discounts_[i][0] = 1.0;
+        }
 
 
         V_.reserve(numberProducts_);
@@ -66,8 +67,9 @@ namespace QuantLib {
             cashFlowsGenerated_[i].resize(
                 product_->maxNumberOfCashFlowsPerProductPerStep());
 
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                cashFlowsGenerated_[i][j].amount.resize(numberRates_+1);
+            for (Size j = 0; j < cashFlowsGenerated_[i].size(); ++j) {
+                cashFlowsGenerated_[i][j].amount.resize(numberRates_ + 1);
+            }
 
             numberCashFlowsThisIndex_[i].resize(product_->possibleCashFlowTimes().size());
 
@@ -92,9 +94,9 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes = product_->evolution().evolutionTimes();
         discounters_.reserve(cashFlowTimes.size());
 
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j],
-            rateTimes));
+        for (Size j = 0; j < cashFlowTimes.size(); ++j) {
+            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j], rateTimes));
+        }
 
 
         // need to check that we are in money market measure
@@ -108,8 +110,9 @@ namespace QuantLib {
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
             std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
-            if (it != evolutionTimes.begin())
+            if (it != evolutionTimes.begin()) {
                 --it;
+            }
             Size index = it - evolutionTimes.begin();
             cashFlowIndicesThisStep_[index].push_back(i);
         }
@@ -131,14 +134,16 @@ namespace QuantLib {
             {
                 numberCashFlowsThisIndex_[i][j] =0;
 
-                for (Size k=0; k <= numberRates_; ++k)
-                    totalCashFlowsThisIndex_[i][j][k] =0.0;
+                for (Size k = 0; k <= numberRates_; ++k) {
+                    totalCashFlowsThisIndex_[i][j][k] = 0.0;
+                }
             }
 
-            for (Size l=0;  l< numberRates_; ++l)
-                for (Size m=0; m <= numberSteps_; ++m)
-                    V_[i][m][l] =0.0;
-
+            for (Size l = 0; l < numberRates_; ++l) {
+                for (Size m = 0; m <= numberSteps_; ++m) {
+                    V_[i][m][l] = 0.0;
+                }
+            }
         }
 
 
@@ -180,9 +185,10 @@ namespace QuantLib {
                     Size k = cashFlowsGenerated_[i][j].timeIndex;
                     ++numberCashFlowsThisIndex_[i][ k];
 
-                    for (Size l=0; l <= numberRates_; ++l)
-                        totalCashFlowsThisIndex_[i][k][l] += cashFlowsGenerated_[i][j].amount[l]*weight;
-
+                    for (Size l = 0; l <= numberRates_; ++l) {
+                        totalCashFlowsThisIndex_[i][k][l] +=
+                            cashFlowsGenerated_[i][j].amount[l] * weight;
+                    }
                 }
             }
 
@@ -208,23 +214,29 @@ namespace QuantLib {
 
                 // first check to see if anything actually happened before spending time on computing stuff
                 bool noFlows = true;
-                for (Size l=0; l < numberProducts_ && noFlows; ++l)
-                    noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] ==0);
+                for (Size l = 0; l < numberProducts_ && noFlows; ++l) {
+                    noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] == 0);
+                }
 
                 flowsFound = flowsFound || !noFlows;
 
                 if (!noFlows)
                 {
-                    if (doDeflation_)
-                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by
+                    if (doDeflation_) {
+                        discounters_[cashFlowIndex].getFactors(
+                            LIBORRates_, Discounts_, stepToUse,
+                            deflatorAndDerivatives_); // get amount to discount cash flow by and
+                                                      // amount to multiply its derivatives by
+                    }
 
                     for (Size j=0; j < numberProducts_; ++j)
                     {
                         if (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
                         {
                             Real deflatedCashFlow = totalCashFlowsThisIndex_[j][cashFlowIndex][0];
-                            if (doDeflation_)
+                            if (doDeflation_) {
                                 deflatedCashFlow *= deflatorAndDerivatives_[0];
+                            }
                             //cashFlowsGenerated_[j][cashFlowIndex].amount[0]*deflatorAndDerivatives_[0];
                             numerairesHeld_[j] += deflatedCashFlow;
 
@@ -279,8 +291,9 @@ namespace QuantLib {
                             V_[i][nextStepIndex][j] = nextV;
 
                             Real summandTerm = 0.0;
-                            for (Size f=0; f < factors; ++f)
-                                summandTerm += thisPseudoRoot_[j][f]*partials_[f][j];
+                            for (Size f = 0; f < factors; ++f) {
+                                summandTerm += thisPseudoRoot_[j][f] * partials_[f][j];
+                            }
 
                             summandTerm *= taus[j]*StepsDiscountsSquared_[stepToUse][j];
 
@@ -302,8 +315,9 @@ namespace QuantLib {
         for (Size i=0; i < numberProducts_; ++i)
         {
             values[i] = numerairesHeld_[i]*initialNumeraireValue_;
-            for (Size j=0; j < numberRates_; ++j)
-                values[(i+1)*numberProducts_+j] = V_[i][0][j]*initialNumeraireValue_;
+            for (Size j = 0; j < numberRates_; ++j) {
+                values[(i + 1) * numberProducts_ + j] = V_[i][0][j] * initialNumeraireValue_;
+            }
         }
 
         return 1.0; // we have put the weight in already, this results in lower variance since weight changes along the path
@@ -378,8 +392,9 @@ namespace QuantLib {
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
-        for (Size i=0; i <= numberSteps_; ++i)
+        for (Size i = 0; i <= numberSteps_; ++i) {
             Discounts_[i][0] = 1.0;
+        }
 
 
         V_.reserve(numberProducts_);
@@ -394,8 +409,9 @@ namespace QuantLib {
             cashFlowsGenerated_[i].resize(
                 product_->maxNumberOfCashFlowsPerProductPerStep());
 
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                cashFlowsGenerated_[i][j].amount.resize(numberRates_+1);
+            for (Size j = 0; j < cashFlowsGenerated_[i].size(); ++j) {
+                cashFlowsGenerated_[i][j].amount.resize(numberRates_ + 1);
+            }
 
             numberCashFlowsThisIndex_[i].resize(product_->possibleCashFlowTimes().size());
 
@@ -420,9 +436,9 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes = product_->evolution().evolutionTimes();
         discounters_.reserve(cashFlowTimes.size());
 
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j],
-            rateTimes));
+        for (Size j = 0; j < cashFlowTimes.size(); ++j) {
+            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j], rateTimes));
+        }
 
 
         // need to check that we are in money market measure
@@ -436,8 +452,9 @@ namespace QuantLib {
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
             std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
-            if (it != evolutionTimes.begin())
+            if (it != evolutionTimes.begin()) {
                 --it;
+            }
             Size index = it - evolutionTimes.begin();
             cashFlowIndicesThisStep_[index].push_back(i);
         }
@@ -459,17 +476,20 @@ namespace QuantLib {
             {
                 numberCashFlowsThisIndex_[i][j] =0;
 
-                for (Size k=0; k <= numberRates_; ++k)
-                    totalCashFlowsThisIndex_[i][j][k] =0.0;
+                for (Size k = 0; k <= numberRates_; ++k) {
+                    totalCashFlowsThisIndex_[i][j][k] = 0.0;
+                }
             }
 
-            for (Size l=0;  l< numberRates_; ++l)
-                for (Size m=0; m <= numberSteps_; ++m)
-                    V_[i][m][l] =0.0;
+            for (Size l = 0; l < numberRates_; ++l) {
+                for (Size m = 0; m <= numberSteps_; ++m) {
+                    V_[i][m][l] = 0.0;
+                }
+            }
 
-            for (Size p=0; p < numberBumps_; ++p)
-                vegasThisPath_[i][p] =0.0;
-
+            for (Size p = 0; p < numberBumps_; ++p) {
+                vegasThisPath_[i][p] = 0.0;
+            }
         }
 
 
@@ -520,9 +540,10 @@ namespace QuantLib {
                     Size k = cashFlowsGenerated_[i][j].timeIndex;
                     ++numberCashFlowsThisIndex_[i][ k];
 
-                    for (Size l=0; l <= numberRates_; ++l)
-                        totalCashFlowsThisIndex_[i][k][l] += cashFlowsGenerated_[i][j].amount[l]*weight;
-
+                    for (Size l = 0; l <= numberRates_; ++l) {
+                        totalCashFlowsThisIndex_[i][k][l] +=
+                            cashFlowsGenerated_[i][j].amount[l] * weight;
+                    }
                 }
             }
 
@@ -548,23 +569,29 @@ namespace QuantLib {
 
                 // first check to see if anything actually happened before spending time on computing stuff
                 bool noFlows = true;
-                for (Size l=0; l < numberProducts_ && noFlows; ++l)
-                    noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] ==0);
+                for (Size l = 0; l < numberProducts_ && noFlows; ++l) {
+                    noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] == 0);
+                }
 
                 flowsFound = flowsFound || !noFlows;
 
                 if (!noFlows)
                 {
-                    if (doDeflation_)
-                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by
+                    if (doDeflation_) {
+                        discounters_[cashFlowIndex].getFactors(
+                            LIBORRates_, Discounts_, stepToUse,
+                            deflatorAndDerivatives_); // get amount to discount cash flow by and
+                                                      // amount to multiply its derivatives by
+                    }
 
                     for (Size j=0; j < numberProducts_; ++j)
                     {
                         if (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
                         {
                             Real deflatedCashFlow = totalCashFlowsThisIndex_[j][cashFlowIndex][0];
-                            if (doDeflation_)
+                            if (doDeflation_) {
                                 deflatedCashFlow *= deflatorAndDerivatives_[0];
+                            }
                             //cashFlowsGenerated_[j][cashFlowIndex].amount[0]*deflatorAndDerivatives_[0];
                             numerairesHeld_[j] += deflatedCashFlow;
 
@@ -576,9 +603,9 @@ namespace QuantLib {
                                     thisDerivative *= deflatorAndDerivatives_[0];
                                     thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
                                     fullDerivatives_[i-1] = thisDerivative;
+                                } else {
+                                    fullDerivatives_[i - 1] = thisDerivative;
                                 }
-                                else
-                                    fullDerivatives_[i-1] = thisDerivative;
 
                                 V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0
                             }
@@ -587,11 +614,12 @@ namespace QuantLib {
                             // this corresponds to the \frac{\partial F_n}[\partial theta} term
                             // we add the indirect terms later
 
-                            for (Size k=0; k < numberBumps_; ++k)
+                            for (Size k = 0; k < numberBumps_; ++k) {
                                 for (Size i=0; i < numberRates_; ++i)
                                 {
                                     vegasThisPath_[j][k] +=  fullDerivatives_[i]*jacobiansThisPaths_[stepToUse-1][k][i];
                                 }
+                            }
 
 
                         } // end of (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
@@ -635,8 +663,9 @@ namespace QuantLib {
                             V_[i][nextStepIndex][j] = nextV;
 
                             Real summandTerm = 0.0;
-                            for (Size f=0; f < factors; ++f)
-                                summandTerm += thisPseudoRoot_[j][f]*partials_[f][j];
+                            for (Size f = 0; f < factors; ++f) {
+                                summandTerm += thisPseudoRoot_[j][f] * partials_[f][j];
+                            }
 
                             summandTerm *= taus[j]*StepsDiscountsSquared_[stepToUse][j];
 
@@ -646,11 +675,16 @@ namespace QuantLib {
 
                     // we've done the Vs now the vegas
 
-                        if (nextStepIndex >0)
+                        if (nextStepIndex > 0) {
 
-                            for (Size l=0; l < numberBumps_; ++l)
-                                for (Size j=0; j < numberRates_; ++j)
-                                    vegasThisPath_[i][l] +=  V_[i][nextStepIndex][j] * jacobiansThisPaths_[nextStepIndex-1][l][j];
+                            for (Size l = 0; l < numberBumps_; ++l) {
+                                for (Size j = 0; j < numberRates_; ++j) {
+                                    vegasThisPath_[i][l] +=
+                                        V_[i][nextStepIndex][j] *
+                                        jacobiansThisPaths_[nextStepIndex - 1][l][j];
+                                }
+                            }
+                        }
 
 
                     } // end of (Size i=0; i < numberProducts_; ++i)
@@ -669,10 +703,13 @@ namespace QuantLib {
         for (Size i=0; i < numberProducts_; ++i)
         {
             values[i*entriesPerProduct] = numerairesHeld_[i]*initialNumeraireValue_;
-            for (Size j=0; j < numberRates_; ++j)
-                values[i*entriesPerProduct+1+j] = V_[i][0][j]*initialNumeraireValue_;
-            for (Size k=0; k < numberBumps_; ++k)
-                values[i*entriesPerProduct + numberRates_ +k +1 ] = vegasThisPath_[i][k]*initialNumeraireValue_;
+            for (Size j = 0; j < numberRates_; ++j) {
+                values[i * entriesPerProduct + 1 + j] = V_[i][0][j] * initialNumeraireValue_;
+            }
+            for (Size k = 0; k < numberBumps_; ++k) {
+                values[i * entriesPerProduct + numberRates_ + k + 1] =
+                    vegasThisPath_[i][k] * initialNumeraireValue_;
+            }
         }
 
         return 1.0; // we have put the weight in already, this results in lower variance since weight changes along the path
@@ -752,20 +789,19 @@ namespace QuantLib {
         numberBumps_ = vegaBumps[0].size();
 
        std::vector<Matrix> jacobiansThisPathsModel;
-       for (Size i =0; i < numberRates_; ++i)
-              jacobiansThisPathsModel.push_back(Matrix(numberRates_,factors_));
+       for (Size i = 0; i < numberRates_; ++i) {
+           jacobiansThisPathsModel.push_back(Matrix(numberRates_, factors_));
+       }
 
 
+       for (Size i = 0; i < numberSteps_; ++i) {
+           jacobianComputers_.push_back(RatePseudoRootJacobianAllElements(
+               pseudoRootStructure_->pseudoRoot(i), evolution.firstAliveRate()[i], numeraires_[i],
+               evolution.rateTaus(), pseudoRootStructure_->displacements()));
 
-        for (Size i =0; i < numberSteps_; ++i)
-        {
-              jacobianComputers_.push_back(RatePseudoRootJacobianAllElements(pseudoRootStructure_->pseudoRoot(i),evolution.firstAliveRate()[i],
-                                numeraires_[i],
-                                evolution.rateTaus(),
-                                pseudoRootStructure_->displacements()));
-
-              // vector of vector of matrices to store jacobians of rates with respect to pseudo-root elements
-            jacobiansThisPaths_.push_back(jacobiansThisPathsModel);
+           // vector of vector of matrices to store jacobians of rates with respect to pseudo-root
+           // elements
+           jacobiansThisPaths_.push_back(jacobiansThisPathsModel);
         }
 
 
@@ -776,8 +812,9 @@ namespace QuantLib {
 
         Discounts_ = Matrix(numberSteps_+1,numberRates_+1);
 
-        for (Size i=0; i <= numberSteps_; ++i)
+        for (Size i = 0; i <= numberSteps_; ++i) {
             Discounts_[i][0] = 1.0;
+        }
 
 
         V_.reserve(numberProducts_);
@@ -792,8 +829,9 @@ namespace QuantLib {
             cashFlowsGenerated_[i].resize(
                 product_->maxNumberOfCashFlowsPerProductPerStep());
 
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                cashFlowsGenerated_[i][j].amount.resize(numberRates_+1);
+            for (Size j = 0; j < cashFlowsGenerated_[i].size(); ++j) {
+                cashFlowsGenerated_[i][j].amount.resize(numberRates_ + 1);
+            }
 
             numberCashFlowsThisIndex_[i].resize(product_->possibleCashFlowTimes().size());
 
@@ -818,9 +856,9 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes = product_->evolution().evolutionTimes();
         discounters_.reserve(cashFlowTimes.size());
 
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j],
-            rateTimes));
+        for (Size j = 0; j < cashFlowTimes.size(); ++j) {
+            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j], rateTimes));
+        }
 
 
         // need to check that we are in money market measure
@@ -834,8 +872,9 @@ namespace QuantLib {
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
             std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
-            if (it != evolutionTimes.begin())
+            if (it != evolutionTimes.begin()) {
                 --it;
+            }
             Size index = it - evolutionTimes.begin();
             cashFlowIndicesThisStep_[index].push_back(i);
         }
@@ -882,14 +921,16 @@ namespace QuantLib {
             {
                 numberCashFlowsThisIndex_[i][j] =0;
 
-                for (Size k=0; k <= numberRates_; ++k)
-                    totalCashFlowsThisIndex_[i][j][k] =0.0;
+                for (Size k = 0; k <= numberRates_; ++k) {
+                    totalCashFlowsThisIndex_[i][j][k] = 0.0;
+                }
             }
 
-            for (Size l=0;  l< numberRates_; ++l)
-                for (Size m=0; m <= numberSteps_; ++m)
-                    V_[i][m][l] =0.0;
-
+            for (Size l = 0; l < numberRates_; ++l) {
+                for (Size m = 0; m <= numberSteps_; ++m) {
+                    V_[i][m][l] = 0.0;
+                }
+            }
         }
 
 
@@ -943,9 +984,10 @@ namespace QuantLib {
                     Size k = cashFlowsGenerated_[i][j].timeIndex;
                     ++numberCashFlowsThisIndex_[i][ k];
 
-                    for (Size l=0; l <= numberRates_; ++l)
-                        totalCashFlowsThisIndex_[i][k][l] += cashFlowsGenerated_[i][j].amount[l]*weight;
-
+                    for (Size l = 0; l <= numberRates_; ++l) {
+                        totalCashFlowsThisIndex_[i][k][l] +=
+                            cashFlowsGenerated_[i][j].amount[l] * weight;
+                    }
                 }
             }
 
@@ -971,23 +1013,29 @@ namespace QuantLib {
 
                 // first check to see if anything actually happened before spending time on computing stuff
                 bool noFlows = true;
-                for (Size l=0; l < numberProducts_ && noFlows; ++l)
-                    noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] ==0);
+                for (Size l = 0; l < numberProducts_ && noFlows; ++l) {
+                    noFlows = noFlows && (numberCashFlowsThisIndex_[l][cashFlowIndex] == 0);
+                }
 
                 flowsFound = flowsFound || !noFlows;
 
                 if (!noFlows)
                 {
-                    if (doDeflation_)
-                        discounters_[cashFlowIndex].getFactors(LIBORRates_, Discounts_,stepToUse, deflatorAndDerivatives_); // get amount to discount cash flow by and amount to multiply its derivatives by
+                    if (doDeflation_) {
+                        discounters_[cashFlowIndex].getFactors(
+                            LIBORRates_, Discounts_, stepToUse,
+                            deflatorAndDerivatives_); // get amount to discount cash flow by and
+                                                      // amount to multiply its derivatives by
+                    }
 
                     for (Size j=0; j < numberProducts_; ++j)
                     {
                         if (numberCashFlowsThisIndex_[j][cashFlowIndex] > 0)
                         {
                             Real deflatedCashFlow = totalCashFlowsThisIndex_[j][cashFlowIndex][0];
-                            if (doDeflation_)
+                            if (doDeflation_) {
                                 deflatedCashFlow *= deflatorAndDerivatives_[0];
+                            }
                             //cashFlowsGenerated_[j][cashFlowIndex].amount[0]*deflatorAndDerivatives_[0];
                             numerairesHeld_[j] += deflatedCashFlow;
 
@@ -999,9 +1047,9 @@ namespace QuantLib {
                                     thisDerivative *= deflatorAndDerivatives_[0];
                                     thisDerivative +=  totalCashFlowsThisIndex_[j][cashFlowIndex][0]*deflatorAndDerivatives_[i];
                                     fullDerivatives_[i-1] = thisDerivative;
+                                } else {
+                                    fullDerivatives_[i - 1] = thisDerivative;
                                 }
-                                else
-                                    fullDerivatives_[i-1] = thisDerivative;
 
                                 V_[j][stepToUse][i-1] += thisDerivative; // zeroth row of V is t =0 not t_0
                             } // end of  for (Size i=1; i <= numberRates_; ++i)
@@ -1046,8 +1094,9 @@ namespace QuantLib {
                             V_[i][nextStepIndex][j] = nextV;
 
                             Real summandTerm = 0.0;
-                            for (Size f=0; f < factors; ++f)
-                                summandTerm += thisPseudoRoot_[j][f]*partials_[f][j];
+                            for (Size f = 0; f < factors; ++f) {
+                                summandTerm += thisPseudoRoot_[j][f] * partials_[f][j];
+                            }
 
                             summandTerm *= taus[j]*StepsDiscountsSquared_[stepToUse][j];
 
@@ -1075,7 +1124,7 @@ namespace QuantLib {
                     // we know V, we need to pair against the senstivity of the rate to the elementary vega
                     // note the simplification here arising from the fact that the elementary vega affects the evolution on precisely one step
 
-                    for (Size k=0; k < numberRates_; ++k)
+                    for (Size k = 0; k < numberRates_; ++k) {
                         for (Size f=0; f < factors_; ++f)
                         {
                                 Real sensitivity =0.0;
@@ -1093,6 +1142,7 @@ namespace QuantLib {
 
                                 elementary_vegas_ThisPath_[i][j][k][f] = sensitivity;
                         }
+                    }
                 }
         }
 
@@ -1104,14 +1154,19 @@ namespace QuantLib {
         for (Size i=0; i < numberProducts_; ++i)
         {
             values[i*entriesPerProduct] = numerairesHeld_[i]*initialNumeraireValue_;
-            for (Size j=0; j < numberRates_; ++j)
-                values[i*entriesPerProduct+1+j] = V_[i][0][j]*initialNumeraireValue_;
+            for (Size j = 0; j < numberRates_; ++j) {
+                values[i * entriesPerProduct + 1 + j] = V_[i][0][j] * initialNumeraireValue_;
+            }
 
-            for (Size k=0; k < numberSteps_; ++k)
-                for (Size l=0; l < numberRates_; ++l)
-                    for (Size m=0; m < factors_; ++m)
-                        values[i*entriesPerProduct + numberRates_ +1 + m+ l*factors_ + k*numberRates_*factors_] = elementary_vegas_ThisPath_[i][k][l][m]*initialNumeraireValue_;
-
+            for (Size k = 0; k < numberSteps_; ++k) {
+                for (Size l = 0; l < numberRates_; ++l) {
+                    for (Size m = 0; m < factors_; ++m) {
+                        values[i * entriesPerProduct + numberRates_ + 1 + m + l * factors_ +
+                               k * numberRates_ * factors_] =
+                            elementary_vegas_ThisPath_[i][k][l][m] * initialNumeraireValue_;
+                    }
+                }
+            }
         }
 
         return 1.0; // we have put the weight in already, this results in lower variance since weight changes along the path
@@ -1179,10 +1234,16 @@ namespace QuantLib {
                     Real thisVega=0.0;
 
 
-                    for (Size t=0; t < numberSteps_; ++t)
-                        for (Size r=0; r < numberRates_; ++r)
-                            for (Size f=0; f < factors_; ++f)
-                                thisVega+= vegaBumps_[t][bump][r][f]*allMeans[p*inDataPerProduct+1+numberRates_+t*numberRates_*factors_+r*factors_+f];
+                    for (Size t = 0; t < numberSteps_; ++t) {
+                        for (Size r = 0; r < numberRates_; ++r) {
+                            for (Size f = 0; f < factors_; ++f) {
+                                thisVega +=
+                                    vegaBumps_[t][bump][r][f] *
+                                    allMeans[p * inDataPerProduct + 1 + numberRates_ +
+                                             t * numberRates_ * factors_ + r * factors_ + f];
+                            }
+                        }
+                    }
 
 
                     means[p*outDataPerProduct+1+numberRates_+bump] = thisVega;
