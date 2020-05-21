@@ -45,10 +45,16 @@ namespace QuantLib {
                    Real* wa1,Real* wa2,Real* wa3,Real* wa4,
                    const LmdifCostFunction& fcn,
                    const LmdifCostFunction& jacFcn);
-        
-        void qrsolv(int n,Real* r,int ldr,int* ipvt,
-                    Real* diag,Real* qtb, Real* x,
-                    Real* sdiag,Real* wa);
+
+        void qrsolv(int n,
+                    Real* r,
+                    int ldr,
+                    const int* ipvt,
+                    const Real* diag,
+                    const Real* qtb,
+                    Real* x,
+                    Real* sdiag,
+                    Real* wa);
         void qrfac(int m,int n,Real* a,int, int pivot,int* ipvt,
                    int,Real* rdiag,Real* acnorm,Real* wa);
     }

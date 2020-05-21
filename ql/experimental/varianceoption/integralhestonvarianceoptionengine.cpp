@@ -384,7 +384,7 @@ namespace QuantLib {
 
         ext::shared_ptr<PlainVanillaPayoff> plainPayoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        if (plainPayoff && plainPayoff->optionType() == Option::Call) {
+        if ((plainPayoff != 0) && plainPayoff->optionType() == Option::Call) {
             // a specialization for Call options is available
             Real strike = plainPayoff->strike();
             results_.value = IvopOneDim(epsilon, chi, theta, rho,

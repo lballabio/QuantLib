@@ -66,7 +66,7 @@ namespace QuantLib {
         L_ = getLeverageFctSlice(t1, t2);
         const Array Lsquare = L_*L_;
 
-        if (quantoHelper_) {
+        if (quantoHelper_ != 0) {
             mapT_.axpyb(r - q - varianceValues_*Lsquare
                 - quantoHelper_->quantoAdjustment(
                     volatilityValues_*L_, t1, t2),

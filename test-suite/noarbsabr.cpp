@@ -43,8 +43,6 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
                     << nu << " tau=" << tau << ": D0Interpolator says "
                     << d() * QuantLib::detail::NoArbSabrModel::nsim
                     << " while the reference value is " << absorptions);
-
-    return;
 }
 }
 

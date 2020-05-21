@@ -288,13 +288,18 @@ namespace QuantLib {
         }
         return d;
     }
-    
+
     SpreadFittingMethod::SpreadFittingMethod(ext::shared_ptr<FittingMethod> method,
-                        Handle<YieldTermStructure> discountCurve,
-                        const Real minCutoffTime, const Real maxCutoffTime)
-    : FittedBondDiscountCurve::FittingMethod(method ? method->constrainAtZero() : true, method ? method->weights() : Array(),
-                                             method ? method->optimizationMethod() : ext::shared_ptr<OptimizationMethod>(), 
-                                             method ? method->l2() : Array(), minCutoffTime, maxCutoffTime),
+                                             Handle<YieldTermStructure> discountCurve,
+                                             const Real minCutoffTime,
+                                             const Real maxCutoffTime)
+    : FittedBondDiscountCurve::FittingMethod(method != 0 ? method->constrainAtZero() : true,
+                                             method != 0 ? method->weights() : Array(),
+                                             method != 0 ? method->optimizationMethod() :
+                                                           ext::shared_ptr<OptimizationMethod>(),
+                                             method != 0 ? method->l2() : Array(),
+                                             minCutoffTime,
+                                             maxCutoffTime),
       method_(method), discountingCurve_(discountCurve) {
         QL_REQUIRE(method, "Fitting method is empty");
         QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");

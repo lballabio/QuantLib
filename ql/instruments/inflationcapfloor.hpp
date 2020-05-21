@@ -80,7 +80,7 @@ namespace QuantLib {
         Date maturityDate() const;
         ext::shared_ptr<YoYInflationCoupon> lastYoYInflationCoupon() const;
         //! Returns the n-th optionlet as a cap/floor with only one cash flow.
-        ext::shared_ptr<YoYInflationCapFloor> optionlet(const Size n) const;
+        ext::shared_ptr<YoYInflationCapFloor> optionlet(Size n) const;
         //@}
         virtual Rate atmRate(const YieldTermStructure& discountCurve) const;
         //! implied term volatility

@@ -42,10 +42,10 @@ namespace QuantLib {
                   const DayCounter& fixedLegDayCounter,
                   bool includeFirstSwaplet,
                   const Handle<YieldTermStructure>& termStructure,
-                  BlackCalibrationHelper::CalibrationErrorType errorType
-                                    = BlackCalibrationHelper::RelativePriceError,
-                  const VolatilityType type = ShiftedLognormal,
-                  const Real shift = 0.0);
+                  BlackCalibrationHelper::CalibrationErrorType errorType =
+                      BlackCalibrationHelper::RelativePriceError,
+                  VolatilityType type = ShiftedLognormal,
+                  Real shift = 0.0);
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;
         virtual Real blackPrice(Volatility volatility) const;

@@ -34,7 +34,7 @@ namespace QuantLib {
       receiveCurrency_(receiveCurrency), pricingPeriods_(pricingPeriods) {}
 
     const CommodityType& EnergySwap::commodityType() const {
-        QL_REQUIRE(pricingPeriods_.size() > 0, "no pricing periods");
+        QL_REQUIRE(!pricingPeriods_.empty(), "no pricing periods");
         return pricingPeriods_[0]->quantity().commodityType();
     }
 

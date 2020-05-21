@@ -37,10 +37,9 @@ namespace QuantLib {
 
         results_.valuationDate = (*discountCurve_)->referenceDate();
 
-        bool includeRefDateFlows =
-            includeSettlementDateFlows_ ?
-            *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateEvents();
+        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
+                                       *includeSettlementDateFlows_ :
+                                       Settings::instance().includeReferenceDateEvents();
 
         results_.value = CashFlows::npv(arguments_.cashflows,
                                         **discountCurve_,

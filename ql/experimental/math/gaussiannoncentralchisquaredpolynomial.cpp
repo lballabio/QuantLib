@@ -88,7 +88,7 @@ namespace QuantLib {
     GaussNonCentralChiSquaredPolynomial::GaussNonCentralChiSquaredPolynomial(
         Real nu, Real lambda)
     : nu_(nu), lambda_(lambda) {
-        if (!moments.size())
+        if (moments.empty())
             moments = initMoments();
     }
 

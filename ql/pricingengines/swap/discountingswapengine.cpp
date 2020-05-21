@@ -69,10 +69,9 @@ namespace QuantLib {
         results_.startDiscounts.resize(n);
         results_.endDiscounts.resize(n);
 
-        bool includeRefDateFlows =
-            includeSettlementDateFlows_ ?
-            *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateEvents();
+        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
+                                       *includeSettlementDateFlows_ :
+                                       Settings::instance().includeReferenceDateEvents();
 
         for (Size i=0; i<n; ++i) {
             try {

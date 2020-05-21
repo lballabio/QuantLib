@@ -81,10 +81,10 @@ namespace QuantLib {
     void Basket::setLossModel(
         const ext::shared_ptr<DefaultLossModel>& lossModel) {
 
-        if (lossModel_)
+        if (lossModel_ != 0)
             unregisterWith(lossModel_);
         lossModel_ = lossModel;
-        if (lossModel_) {
+        if (lossModel_ != 0) {
             //recovery quotes, defaults(once Issuer is observable)etc might 
             //  trigger us:
             registerWith(lossModel_);
@@ -131,7 +131,7 @@ namespace QuantLib {
             ext::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
-            if (credEvent) {
+            if (credEvent != 0) {
                 /* \todo If the event has not settled one would need to 
                 introduce some model recovery rate (independently of a loss 
                 model) This remains to be done.
@@ -156,7 +156,7 @@ namespace QuantLib {
             ext::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
-            if (credEvent) {
+            if (credEvent != 0) {
                 if(credEvent->hasSettled()) {
                     loss += claim_->amount(credEvent->date(),
                             //notionals_[i],

@@ -162,7 +162,7 @@ private:
 int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCriteria,
           const Array& start, const Constraint& constraint = Constraint(),
           const Array& optimum = Array()) {
-    QL_REQUIRE(start.size() > 0, "Input size needs to be at least 1");
+    QL_REQUIRE(!start.empty(), "Input size needs to be at least 1");
     std::cout << "Starting point: ";
     Constraint c;
     if (!constraint.empty())
@@ -177,9 +177,9 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
         std::cout << "Global optimum: ";
         Real optimVal = printFunction(p, optimum);
         if(std::abs(optimVal) < 1e-13)
-            return std::abs(val-optimVal) < 1e-6;
+            return static_cast<int>(std::abs(val - optimVal) < 1e-6);
         else
-            return std::abs((val-optimVal)/optimVal) < 1e-6;
+            return static_cast<int>(std::abs((val - optimVal) / optimVal) < 1e-6);
     }
     return 1;
 }

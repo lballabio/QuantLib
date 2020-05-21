@@ -94,14 +94,13 @@ namespace QuantLib {
             provide the evaluation date's fixing.
         */
 
-        IsdaCdsEngine(
-            const Handle<DefaultProbabilityTermStructure> &probability,
-            Real recoveryRate,
-            const Handle<YieldTermStructure> &discountCurve,
-            boost::optional<bool> includeSettlementDateFlows = boost::none,
-            const NumericalFix numericalFix = Taylor,
-            const AccrualBias accrualBias = HalfDayBias,
-            const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
+        IsdaCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+                      Real recoveryRate,
+                      const Handle<YieldTermStructure>& discountCurve,
+                      boost::optional<bool> includeSettlementDateFlows = boost::none,
+                      NumericalFix numericalFix = Taylor,
+                      AccrualBias accrualBias = HalfDayBias,
+                      ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
 
         const Handle<YieldTermStructure> isdaRateCurve() const {
             return discountCurve_;

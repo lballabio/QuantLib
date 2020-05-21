@@ -44,7 +44,6 @@ inline void checkSviParameters(const Real a, const Real b, const Real sigma,
                                                << ") must be non negative");
     QL_REQUIRE(b * (1.0 + std::fabs(rho)) < 4.0,
                "b(1+|rho|) must be less than 4");
-    return;
 }
 
 inline Real sviTotalVariance(const Real a, const Real b, const Real sigma,

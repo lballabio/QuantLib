@@ -125,9 +125,9 @@ namespace QuantLib {
         // the time data used for interpolation
         actualOptionTimes_.clear();
         for (Size i=0; i<nOptionTenors_; ++i) {
-            if(inclusionInInterpolation_[i]==true) {
-               actualOptionTimes_.push_back(optionTimes_[i]);
-               actualOptionTenors_.push_back(optionTenors_[i]);
+            if (inclusionInInterpolation_[i]) {
+                actualOptionTimes_.push_back(optionTimes_[i]);
+                actualOptionTenors_.push_back(optionTenors_[i]);
             }
         }
     }
@@ -137,8 +137,8 @@ namespace QuantLib {
         actualVols_.clear();
         for (Size i=0; i<nOptionTenors_; ++i) {
             vols_[i] = volHandles_[i]->value();
-            if(inclusionInInterpolation_[i]==true)
-               actualVols_.push_back(vols_[i]);
+            if (inclusionInInterpolation_[i])
+                actualVols_.push_back(vols_[i]);
         }
     }
 
@@ -148,8 +148,8 @@ namespace QuantLib {
         actualVols_.clear();
         for (Size i=0; i<vols_.size(); ++i) {
             vols_[i] = volHandles_[i]->value();
-            if(inclusionInInterpolation_[i]==true)
-               actualVols_.push_back(vols_[i]);
+            if (inclusionInInterpolation_[i])
+                actualVols_.push_back(vols_[i]);
         }
         interpolation_->update();
     }

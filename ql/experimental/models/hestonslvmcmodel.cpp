@@ -169,7 +169,7 @@ namespace QuantLib {
 
             Size s = 0u, e = 0u;
             for (Size i=0; i < nBins_; ++i) {
-                const Size inc = k + (i < m);
+                const Size inc = k + static_cast<unsigned long>(i < m);
                 e = s + inc;
 
                 Real sum=0.0;

@@ -33,15 +33,14 @@ namespace QuantLib {
     //! RateHelper for bootstrapping over overnight compounding futures
     class OvernightIndexFutureRateHelper : public RateHelper {
       public:
-        OvernightIndexFutureRateHelper(
-            const Handle<Quote>& price,
-            // first day of reference period
-            const Date& valueDate,
-            // delivery date
-            const Date& maturityDate,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            const OvernightIndexFuture::NettingType subPeriodsNettingType =
+        OvernightIndexFutureRateHelper(const Handle<Quote>& price,
+                                       // first day of reference period
+                                       const Date& valueDate,
+                                       // delivery date
+                                       const Date& maturityDate,
+                                       const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                                       const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                                       OvernightIndexFuture::NettingType subPeriodsNettingType =
                                            OvernightIndexFuture::Compounding);
 
         //! \name RateHelper interface
@@ -69,24 +68,22 @@ namespace QuantLib {
     */
     class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
       public:
-        SofrFutureRateHelper(
-            const Handle<Quote>& price,
-            Month referenceMonth,
-            Year referenceYear,
-            Frequency referenceFreq,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            const OvernightIndexFuture::NettingType subPeriodsNettingType =
-                                           OvernightIndexFuture::Compounding);
-        SofrFutureRateHelper(
-            Real price,
-            Month referenceMonth,
-            Year referenceYear,
-            Frequency referenceFreq,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            Real convexityAdjustment = 0,
-            const OvernightIndexFuture::NettingType subPeriodsNettingType =
-                                           OvernightIndexFuture::Compounding);
+        SofrFutureRateHelper(const Handle<Quote>& price,
+                             Month referenceMonth,
+                             Year referenceYear,
+                             Frequency referenceFreq,
+                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                             OvernightIndexFuture::NettingType subPeriodsNettingType =
+                                 OvernightIndexFuture::Compounding);
+        SofrFutureRateHelper(Real price,
+                             Month referenceMonth,
+                             Year referenceYear,
+                             Frequency referenceFreq,
+                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             Real convexityAdjustment = 0,
+                             OvernightIndexFuture::NettingType subPeriodsNettingType =
+                                 OvernightIndexFuture::Compounding);
     };
 
 }

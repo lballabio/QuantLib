@@ -34,12 +34,12 @@ namespace QuantLib {
         //! \name Constructor
         //@{
         //! calculate the reference date based on the global evaluation date
-        ConstantCPIVolatility(const Volatility v,
+        ConstantCPIVolatility(Volatility v,
                               Natural settlementDays,
                               const Calendar&,
                               BusinessDayConvention bdc,
                               const DayCounter& dc,
-                              const Period &observationLag,
+                              const Period& observationLag,
                               Frequency frequency,
                               bool indexIsInterpolated);
         //@}

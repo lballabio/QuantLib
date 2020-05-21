@@ -36,12 +36,12 @@ namespace QuantLib {
         SabrSmileSection(Time timeToExpiry,
                          Rate forward,
                          const std::vector<Real>& sabrParameters,
-                         const Real shift = 0.0);
+                         Real shift = 0.0);
         SabrSmileSection(const Date& d,
                          Rate forward,
                          const std::vector<Real>& sabrParameters,
                          const DayCounter& dc = Actual365Fixed(),
-                         const Real shift = 0.0);
+                         Real shift = 0.0);
         Real minStrike () const { return -shift_; }
         Real maxStrike () const { return QL_MAX_REAL; }
         Real atmLevel() const { return forward_; }

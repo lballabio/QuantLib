@@ -548,9 +548,9 @@ namespace QuantLib {
             possibly drop the static policy and create a policy member
             in LatentModel)
         */
-        explicit LatentModel(const Real correlSqr, Size nVariables,
-            const typename copulaType::initTraits& ini = 
-                copulaType::initTraits());
+        explicit LatentModel(Real correlSqr,
+                             Size nVariables,
+                             const typename copulaType::initTraits& ini = copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
           latent variables. The weight is observed and this constructor is

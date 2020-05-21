@@ -54,8 +54,7 @@ namespace QuantLib {
 
     }
 
-    UnitOfMeasureConversionManager::UnitOfMeasureConversionManager()
-    : Singleton<UnitOfMeasureConversionManager>() {
+    UnitOfMeasureConversionManager::UnitOfMeasureConversionManager() {
         addKnownConversionFactors();
     }
 

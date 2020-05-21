@@ -194,7 +194,7 @@ namespace QuantLib {
         callCostFct_(callCostFct) { }
 
         Disposable<Array> values(const Array& sig) const {
-            if (putCostFct_ && callCostFct_) {
+            if ((putCostFct_ != 0) && (callCostFct_ != 0)) {
                 const Array pv = putCostFct_->values(sig);
                 const Array cv = callCostFct_->values(sig);
 
@@ -203,22 +203,21 @@ namespace QuantLib {
                 std::copy(cv.begin(), cv.end(), retVal.begin() + cv.size());
 
                 return retVal;
-            }
-            else if (putCostFct_)
+            } else if (putCostFct_ != 0)
                 return putCostFct_->values(sig);
-            else if (callCostFct_)
+            else if (callCostFct_ != 0)
                 return callCostFct_->values(sig);
             else
                 QL_FAIL("internal error: cost function not set");
         }
 
         Disposable<Array> initialValues() const {
-            if (putCostFct_ && callCostFct_)
+            if ((putCostFct_ != 0) && (callCostFct_ != 0))
                 return 0.5*(  putCostFct_->initialValues()
                             + callCostFct_->initialValues());
-            else if (putCostFct_)
+            else if (putCostFct_ != 0)
                 return putCostFct_->initialValues();
-            else if (callCostFct_)
+            else if (callCostFct_ != 0)
                 return callCostFct_->initialValues();
             else
                 QL_FAIL("internal error: cost function not set");
@@ -253,8 +252,7 @@ namespace QuantLib {
       maxStrike_(_maxStrike),
       optimizationMethod_(optimizationMethod),
       endCriteria_(endCriteria) {
-        QL_REQUIRE(nGridPoints > 2 && calibrationSet.size() > 0,
-                "undefined grid or calibration set");
+        QL_REQUIRE(nGridPoints > 2 && !calibrationSet.empty(), "undefined grid or calibration set");
 
         std::set<Real> strikes;
         std::set<Date> expiries;
@@ -472,9 +470,9 @@ namespace QuantLib {
             maxError_ = std::max(maxError_,
                 *std::max_element(vegaDiffs.begin(), vegaDiffs.end()));
 
-            if (putCostFct)
+            if (putCostFct != 0)
                 npvPuts = putCostFct->solveFor(dT_[i], sig, npvPuts);
-            if (callCostFct)
+            if (callCostFct != 0)
                 npvCalls= callCostFct->solveFor(dT_[i], sig, npvCalls);
         }
 

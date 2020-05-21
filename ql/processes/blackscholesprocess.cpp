@@ -187,7 +187,7 @@ namespace QuantLib {
             ext::shared_ptr<BlackConstantVol> constVol =
                 ext::dynamic_pointer_cast<BlackConstantVol>(
                                                           *blackVolatility());
-            if (constVol) {
+            if (constVol != 0) {
                 // ok, the local vol is constant too.
                 localVolatility_.linkTo(ext::make_shared<LocalConstantVol>(
                     constVol->referenceDate(),
@@ -201,7 +201,7 @@ namespace QuantLib {
             ext::shared_ptr<BlackVarianceCurve> volCurve =
                 ext::dynamic_pointer_cast<BlackVarianceCurve>(
                                                           *blackVolatility());
-            if (volCurve) {
+            if (volCurve != 0) {
                 // ok, we can use the optimized algorithm
                 localVolatility_.linkTo(ext::make_shared<LocalVolCurve>(
                     Handle<BlackVarianceCurve>(volCurve)));

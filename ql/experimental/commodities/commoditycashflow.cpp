@@ -34,7 +34,7 @@ namespace QuantLib {
 
     std::ostream& operator<<(std::ostream& out,
                              const CommodityCashFlows& cashFlows) {
-        if (cashFlows.size() == 0)
+        if (cashFlows.empty())
             return out << "no cashflows" << std::endl;
         out << "cashflows" << std::endl;
         std::string currencyCode; //= cashFlows[0]->discountedAmount().currency().code();

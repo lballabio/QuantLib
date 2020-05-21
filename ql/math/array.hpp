@@ -213,23 +213,22 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Array::Array(Size size)
-    : data_(size ? new Real[size] : (Real*)(0)), n_(size) {}
+    inline Array::Array(Size size) : data_(size != 0u ? new Real[size] : (Real*)(0)), n_(size) {}
 
     inline Array::Array(Size size, Real value)
-    : data_(size ? new Real[size] : (Real*)(0)), n_(size) {
+    : data_(size != 0u ? new Real[size] : (Real*)(0)), n_(size) {
         std::fill(begin(),end(),value);
     }
 
     inline Array::Array(Size size, Real value, Real increment)
-    : data_(size ? new Real[size] : (Real*)(0)), n_(size) {
+    : data_(size != 0u ? new Real[size] : (Real*)(0)), n_(size) {
         for (iterator i=begin(); i!=end(); ++i, value+=increment)
             *i = value;
     }
 
     inline Array::Array(const Array& from)
-    : data_(from.n_ ? new Real[from.n_] : (Real*)(0)), n_(from.n_) {
-        #if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
+    : data_(from.n_ != 0u ? new Real[from.n_] : (Real*)(0)), n_(from.n_) {
+#if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
         if (n_)
         #endif
         std::copy(from.begin(),from.end(),begin());

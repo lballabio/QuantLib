@@ -43,7 +43,7 @@ namespace QuantLib {
       receiveLegTermStructure_(receiveLegTermStructure),
       discountTermStructure_(discountTermStructure) {
 
-        QL_REQUIRE(pricingPeriods_.size() > 0, "no pricing periods");
+        QL_REQUIRE(!pricingPeriods_.empty(), "no pricing periods");
         registerWith(index_);
     }
 

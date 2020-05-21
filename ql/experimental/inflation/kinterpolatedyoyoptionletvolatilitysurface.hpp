@@ -48,16 +48,16 @@ namespace QuantLib {
         //! \name Constructor
         //! calculate the reference date based on the global evaluation date
         KInterpolatedYoYOptionletVolatilitySurface(
-           const Natural settlementDays,
-           const Calendar&,
-           const BusinessDayConvention bdc,
-           const DayCounter& dc,
-           const Period &lag,
-           const ext::shared_ptr<YoYCapFloorTermPriceSurface> &capFloorPrices,
-           const ext::shared_ptr<YoYInflationCapFloorEngine> &pricer,
-           const ext::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
-           const Real slope,
-           const Interpolator1D &interpolator = Interpolator1D());
+            Natural settlementDays,
+            const Calendar&,
+            BusinessDayConvention bdc,
+            const DayCounter& dc,
+            const Period& lag,
+            const ext::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
+            const ext::shared_ptr<YoYInflationCapFloorEngine>& pricer,
+            const ext::shared_ptr<YoYOptionletStripper>& yoyOptionletStripper,
+            Real slope,
+            const Interpolator1D& interpolator = Interpolator1D());
 
         virtual Real minStrike() const;
         virtual Real maxStrike() const;

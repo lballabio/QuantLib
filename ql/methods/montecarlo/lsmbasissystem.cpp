@@ -58,7 +58,7 @@ namespace QuantLib {
         class MultiDimFct {
           public:
             explicit MultiDimFct(const VF_R& b): b_(b) {
-                QL_REQUIRE(b_.size()>0, "zero size basis");
+                QL_REQUIRE(!b_.empty(), "zero size basis");
             }
             inline Real operator()(const Array& a) const {
                 #if defined(QL_EXTRA_SAFETY_CHECKS)

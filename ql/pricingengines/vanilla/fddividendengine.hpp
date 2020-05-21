@@ -52,7 +52,7 @@ namespace QuantLib {
         Real getDividendAmount(Size i) const {
             const Dividend *dividend =
                 dynamic_cast<const Dividend *>(this->events_[i].get());
-            if (dividend) {
+            if (dividend != 0) {
                 return dividend->amount();
             } else {
                 return 0.0;
@@ -213,7 +213,8 @@ namespace QuantLib {
         for (Size i=0; i<this->events_.size(); i++) {
             const Dividend *dividend =
                 dynamic_cast<const Dividend *>(this->events_[i].get());
-            if (!dividend) continue;
+            if (dividend == 0)
+                continue;
             if (this->getDividendTime(i) < 0.0) continue;
             underlying -= dividend->amount(underlying);
         }
@@ -228,7 +229,8 @@ namespace QuantLib {
                                                              Size step) const{
         const Dividend *dividend =
             dynamic_cast<const Dividend *>(this->events_[step].get());
-        if (!dividend) return;
+        if (dividend == 0)
+            return;
         detail::DividendAdder adder(dividend);
         this->sMin_ = adder(this->sMin_);
         this->sMax_ = adder(this->sMax_);

@@ -42,32 +42,32 @@ namespace QuantLib {
                                    BusinessDayConvention bdc,
                                    const Handle<Quote>& volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! fixed reference date, floating market data
         ConstantSwaptionVolatility(const Date& referenceDate,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
                                    const Handle<Quote>& volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! floating reference date, fixed market data
         ConstantSwaptionVolatility(Natural settlementDays,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
                                    Volatility volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! fixed reference date, fixed market data
         ConstantSwaptionVolatility(const Date& referenceDate,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
                                    Volatility volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! \name TermStructure interface
         //@{
         Date maxDate() const;

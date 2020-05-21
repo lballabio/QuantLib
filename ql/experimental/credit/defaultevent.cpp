@@ -163,9 +163,7 @@ namespace QuantLib {
         if(!eveType) return false;
         if(defaultedAmount_ < eveType->amountRequired()) return false;
         Date today = Settings::instance().evaluationDate();
-        if(!this->hasOccurred(today - eveType->gracePeriod(), true))
-            return false;
-        return true;
+        return this->hasOccurred(today - eveType->gracePeriod(), true);
     }
 
 
@@ -241,4 +239,3 @@ namespace QuantLib {
                    recoveryRates) { }
 
 }
-

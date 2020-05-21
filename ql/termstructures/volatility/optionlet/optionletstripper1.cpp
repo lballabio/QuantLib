@@ -34,14 +34,18 @@
 
 namespace QuantLib {
 
-OptionletStripper1::OptionletStripper1(
-    const ext::shared_ptr< CapFloorTermVolSurface > &termVolSurface,
-    const ext::shared_ptr< IborIndex > &index, Rate switchStrike, Real accuracy,
-    Natural maxIter, const Handle< YieldTermStructure > &discount,
-    const VolatilityType type, const Real displacement, bool dontThrow)
+    OptionletStripper1::OptionletStripper1(
+        const ext::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+        const ext::shared_ptr<IborIndex>& index,
+        Rate switchStrike,
+        Real accuracy,
+        Natural maxIter,
+        const Handle<YieldTermStructure>& discount,
+        const VolatilityType type,
+        const Real displacement,
+        bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
-      floatingSwitchStrike_(switchStrike == Null< Rate >() ? true : false),
-      switchStrike_(switchStrike),
+      floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);

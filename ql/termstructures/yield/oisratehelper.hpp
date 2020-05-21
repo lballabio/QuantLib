@@ -33,22 +33,22 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
     class OISRateHelper : public RelativeDateRateHelper {
       public:
-        OISRateHelper(Natural settlementDays,
-                      const Period& tenor, // swap maturity
-                      const Handle<Quote>& fixedRate,
-                      const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                      // exogenous discounting curve
-                      const Handle<YieldTermStructure>& discountingCurve
-                                               = Handle<YieldTermStructure>(),
-                      bool telescopicValueDates = false,
-                      Natural paymentLag = 0,
-                      BusinessDayConvention paymentConvention = Following,
-                      Frequency paymentFrequency = Annual,
-                      const Calendar& paymentCalendar = Calendar(),
-                      const Period& forwardStart = 0 * Days, 
-                      const Spread overnightSpread = 0.0,
-                      Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+        OISRateHelper(
+            Natural settlementDays,
+            const Period& tenor, // swap maturity
+            const Handle<Quote>& fixedRate,
+            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            // exogenous discounting curve
+            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
+            bool telescopicValueDates = false,
+            Natural paymentLag = 0,
+            BusinessDayConvention paymentConvention = Following,
+            Frequency paymentFrequency = Annual,
+            const Calendar& paymentCalendar = Calendar(),
+            const Period& forwardStart = 0 * Days,
+            Spread overnightSpread = 0.0,
+            Pillar::Choice pillar = Pillar::LastRelevantDate,
+            Date customPillarDate = Date());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;

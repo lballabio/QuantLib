@@ -58,16 +58,16 @@ namespace QuantLib {
                       bool isMeanReversionFixed);
 
         Matrix compute(const ext::shared_ptr<EndCriteria>& endCriteria,
-                      const ext::shared_ptr<OptimizationMethod>& method,
-                      const Matrix& guess,
-                      bool isMeanReversionFixed,
-                      const Real meanReversionGuess = Null<Real>());
+                       const ext::shared_ptr<OptimizationMethod>& method,
+                       const Matrix& guess,
+                       bool isMeanReversionFixed,
+                       Real meanReversionGuess = Null<Real>());
 
-        Matrix
-        computeParametric(const ext::shared_ptr<EndCriteria> &endCriteria,
-                          const ext::shared_ptr<OptimizationMethod> &method,
-                          const Matrix &guess, bool isMeanReversionFixed,
-                          const Real meanReversionGuess = Null<Real>());
+        Matrix computeParametric(const ext::shared_ptr<EndCriteria>& endCriteria,
+                                 const ext::shared_ptr<OptimizationMethod>& method,
+                                 const Matrix& guess,
+                                 bool isMeanReversionFixed,
+                                 Real meanReversionGuess = Null<Real>());
 
         Real error() { return error_; }
         EndCriteria::Type endCriteria() { return endCriteria_; };

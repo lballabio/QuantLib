@@ -82,7 +82,7 @@ namespace QuantLib {
         
         startState(P, endCriteria);
 
-        bool isFA = Mfa_ > 0 ? true : false;
+        bool isFA = Mfa_ > 0;
         //Variables for DE
         Array z(N_, 0.0);
         Size indexR1, indexR2;
