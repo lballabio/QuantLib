@@ -28,7 +28,7 @@ namespace QuantLib {
                             boost::optional<bool> includeRefDate) const {
         Date refDate =
             d != Date() ? d : Settings::instance().evaluationDate();
-        bool includeRefDateEvent = includeRefDate != 0 ?
+        bool includeRefDateEvent = includeRefDate ? // NOLINT(readability-implicit-bool-conversion)
                                        *includeRefDate :
                                        Settings::instance().includeReferenceDateEvents();
         if (includeRefDateEvent)

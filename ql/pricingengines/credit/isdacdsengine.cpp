@@ -295,7 +295,8 @@ namespace QuantLib {
         }
 
         results_.accrualRebateNPV = 0.;
-        if ((arguments_.accrualRebate != 0) && arguments_.accrualRebate->amount() != 0. &&
+        // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+        if (arguments_.accrualRebate && arguments_.accrualRebate->amount() != 0. &&
             !arguments_.accrualRebate->hasOccurred(evalDate, includeSettlementDateFlows_)) {
             results_.accrualRebateNPV =
                 discountCurve_->discount(arguments_.accrualRebate->date()) *
@@ -344,7 +345,8 @@ namespace QuantLib {
             results_.couponLegBPS = Null<Rate>();
         }
 
-        if ((arguments_.upfront != 0) && *arguments_.upfront != 0.0) {
+        // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+        if (arguments_.upfront && *arguments_.upfront != 0.0) {
             results_.upfrontBPS =
                 results_.upfrontNPV * basisPoint / (*arguments_.upfront);
         } else {

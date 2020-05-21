@@ -124,12 +124,12 @@ namespace QuantLib {
                    "nominal2 size (" << nominal2_.size() << ") does not match flooredRate2 size ("
                                      << flooredRate2_.size() << ")");
 
-        if (paymentConvention1 != 0)
+        if (paymentConvention1) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention1_ = *paymentConvention1;
         else
             paymentConvention1_ = schedule1_.businessDayConvention();
 
-        if (paymentConvention2 != 0)
+        if (paymentConvention2) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention2_ = *paymentConvention2;
         else
             paymentConvention2_ = schedule2_.businessDayConvention();

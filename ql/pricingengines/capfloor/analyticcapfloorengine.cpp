@@ -57,7 +57,7 @@ namespace QuantLib {
         if (referenceDate == Settings::instance().evaluationDate()) {
             boost::optional<bool> includeTodaysPayments =
                 Settings::instance().includeTodaysCashFlows();
-            if (includeTodaysPayments != 0)
+            if (includeTodaysPayments) // NOLINT(readability-implicit-bool-conversion)
                 includeRefDatePayments = *includeTodaysPayments;
         }
 

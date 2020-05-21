@@ -139,10 +139,12 @@ namespace QuantLib {
       requiredSamples_(requiredSamples), requiredTolerance_(requiredTolerance),
       maxSamples_(maxSamples), seed_(seed),
       nCalibrationSamples_((nCalibrationSamples == Null<Size>()) ? 2048 : nCalibrationSamples),
-      brownianBridgeCalibration_(brownianBridgeCalibration != 0 ? *brownianBridgeCalibration :
+      // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+      brownianBridgeCalibration_(brownianBridgeCalibration ? *brownianBridgeCalibration :
                                                                   brownianBridge),
       antitheticVariateCalibration_(
-          antitheticVariateCalibration != 0 ? *antitheticVariateCalibration : antitheticVariate),
+          // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+          antitheticVariateCalibration ? *antitheticVariateCalibration : antitheticVariate),
       seedCalibration_(seedCalibration != Null<Real>() ? seedCalibration :
                                                          (seed == 0 ? 0 : seed + 1768237423L)) {
         QL_REQUIRE(timeSteps != Null<Size>() ||

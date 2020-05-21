@@ -69,7 +69,7 @@ namespace QuantLib {
         results_.startDiscounts.resize(n);
         results_.endDiscounts.resize(n);
 
-        bool includeRefDateFlows = includeSettlementDateFlows_ != 0 ?
+        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
                                        *includeSettlementDateFlows_ :
                                        Settings::instance().includeReferenceDateEvents();
 

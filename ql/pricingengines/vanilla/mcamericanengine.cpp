@@ -54,7 +54,6 @@ namespace QuantLib {
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
         if (strikePayoff != 0) {
-            // FLOATING_POINT_EXCEPTION
             scalingValue_/=strikePayoff->strike();
         }
     }

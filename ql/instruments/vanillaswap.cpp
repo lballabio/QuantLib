@@ -47,7 +47,7 @@ namespace QuantLib {
       floatingSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread),
       floatingDayCount_(floatingDayCount) {
 
-        if (paymentConvention != 0)
+        if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();

@@ -37,7 +37,7 @@ namespace QuantLib {
 
         results_.valuationDate = (*discountCurve_)->referenceDate();
 
-        bool includeRefDateFlows = includeSettlementDateFlows_ != 0 ?
+        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
                                        *includeSettlementDateFlows_ :
                                        Settings::instance().includeReferenceDateEvents();
 
