@@ -58,7 +58,7 @@ namespace QuantLib {
                                   const Array& l2,
                                   Real minCutoffTime = 0.0,
                                   const Real maxCutoffTime = QL_MAX_REAL);
-#if defined(QL_USE_STD_UNIQUE_PTR)
+        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
@@ -92,7 +92,7 @@ namespace QuantLib {
                             const Array& l2,
                             Real minCutoffTime = 0.0,
                             const Real maxCutoffTime = QL_MAX_REAL);
-#if defined(QL_USE_STD_UNIQUE_PTR)
+        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
@@ -128,7 +128,7 @@ namespace QuantLib {
                         const Array& l2,
                         Real minCutoffTime = 0.0,
                         const Real maxCutoffTime = QL_MAX_REAL);
-#if defined(QL_USE_STD_UNIQUE_PTR)
+        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
@@ -219,7 +219,7 @@ namespace QuantLib {
                                 const Array& l2,
                                 Real minCutoffTime = 0.0,
                                 const Real maxCutoffTime = QL_MAX_REAL);
-#if defined(QL_USE_STD_UNIQUE_PTR)
+        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
@@ -241,7 +241,7 @@ namespace QuantLib {
                             Handle<YieldTermStructure> discountCurve,
                             Real minCutoffTime = 0.0,
                             const Real maxCutoffTime = QL_MAX_REAL);
-#if defined(QL_USE_STD_UNIQUE_PTR)
+        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
