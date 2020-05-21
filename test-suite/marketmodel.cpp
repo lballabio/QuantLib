@@ -4876,7 +4876,7 @@ void MarketModelTest::testCovariance() {
               default:
                 BOOST_FAIL("Unknown model " << modelNames[k]);
             }
-            if (model) {
+            if (model != 0) {
                 for(Size i=0;i<evolTimes[l].size();i++) {
                     Matrix cov = model->covariance(i);
                     Real dt = evolTimes[l][i] - (i>0 ? evolTimes[l][i-1] : 0.0);

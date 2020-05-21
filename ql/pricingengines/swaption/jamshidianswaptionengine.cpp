@@ -69,7 +69,7 @@ namespace QuantLib {
 
         ext::shared_ptr<TermStructureConsistentModel> tsmodel =
             ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
-        if (tsmodel) {
+        if (tsmodel != 0) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
         } else {

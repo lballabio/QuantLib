@@ -132,10 +132,10 @@ namespace QuantLib {
 
     inline void Instrument::setPricingEngine(
                                   const ext::shared_ptr<PricingEngine>& e) {
-        if (engine_)
+        if (engine_ != 0)
             unregisterWith(engine_);
         engine_ = e;
-        if (engine_)
+        if (engine_ != 0)
             registerWith(engine_);
         // trigger (lazy) recalculation and notify observers
         update();

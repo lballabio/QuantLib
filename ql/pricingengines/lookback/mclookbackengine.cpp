@@ -38,7 +38,7 @@ namespace QuantLib {
         LookbackPartialFixedPathPricer(Time lookbackStart,
                                        Option::Type type,
                                        Real strike,
-                                       const DiscountFactor discount);
+                                       DiscountFactor discount);
         Real operator()(const Path& path) const;
       private:
         Time lookbackStart_;

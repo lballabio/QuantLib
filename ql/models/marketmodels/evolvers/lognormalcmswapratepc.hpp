@@ -35,7 +35,7 @@ namespace QuantLib {
     //! Predictor-Corrector
     class LogNormalCmSwapRatePc : public MarketModelEvolver {
       public:
-        LogNormalCmSwapRatePc(const Size spanningForwards,
+        LogNormalCmSwapRatePc(Size spanningForwards,
                               const ext::shared_ptr<MarketModel>&,
                               const BrownianGeneratorFactory&,
                               const std::vector<Size>& numeraires,

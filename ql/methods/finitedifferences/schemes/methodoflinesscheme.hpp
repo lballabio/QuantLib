@@ -40,10 +40,10 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        MethodOfLinesScheme(
-            const Real eps, const Real relInitStepSize,
-            const ext::shared_ptr<FdmLinearOpComposite>& map,
-            const bc_set& bcSet = bc_set());
+        MethodOfLinesScheme(Real eps,
+                            Real relInitStepSize,
+                            const ext::shared_ptr<FdmLinearOpComposite>& map,
+                            const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
         void setStep(Time dt);

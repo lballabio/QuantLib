@@ -72,13 +72,12 @@ class SimpleQuote;
 
     class HestonSLVFDMModel : public LazyObject {
       public:
-        HestonSLVFDMModel(
-            const Handle<LocalVolTermStructure>& localVol,
-            const Handle<HestonModel>& hestonModel,
-            const Date& endDate,
-            const HestonSLVFokkerPlanckFdmParams& params,
-            const bool logging = false,
-            const std::vector<Date>& mandatoryDates = std::vector<Date>());
+        HestonSLVFDMModel(const Handle<LocalVolTermStructure>& localVol,
+                          const Handle<HestonModel>& hestonModel,
+                          const Date& endDate,
+                          const HestonSLVFokkerPlanckFdmParams& params,
+                          bool logging = false,
+                          const std::vector<Date>& mandatoryDates = std::vector<Date>());
 
         ext::shared_ptr<HestonProcess> hestonProcess() const;
         ext::shared_ptr<LocalVolTermStructure> localVol() const;

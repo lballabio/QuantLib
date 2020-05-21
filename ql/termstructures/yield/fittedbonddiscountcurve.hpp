@@ -212,11 +212,12 @@ namespace QuantLib {
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
         //! constructors
-        FittingMethod(bool constrainAtZero = true, const Array& weights = Array(),
-                      ext::shared_ptr<OptimizationMethod> optimizationMethod
-                                          = ext::shared_ptr<OptimizationMethod>(),
+        FittingMethod(bool constrainAtZero = true,
+                      const Array& weights = Array(),
+                      ext::shared_ptr<OptimizationMethod> optimizationMethod =
+                          ext::shared_ptr<OptimizationMethod>(),
                       const Array& l2 = Array(),
-                      const Real minCutoffTime = 0.0,
+                      Real minCutoffTime = 0.0,
                       const Real maxCutoffTime = QL_MAX_REAL);
         //! rerun every time instruments/referenceDate changes
         virtual void init();

@@ -35,8 +35,7 @@ namespace QuantLib {
       public:
         explicit HestonBlackVolSurface(
             const Handle<HestonModel>& hestonModel,
-            const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula
-                = AnalyticHestonEngine::Gatheral,
+            AnalyticHestonEngine::ComplexLogFormula cpxLogFormula = AnalyticHestonEngine::Gatheral,
             const AnalyticHestonEngine::Integration& integration =
                 AnalyticHestonEngine::Integration::gaussLaguerre(164));
 

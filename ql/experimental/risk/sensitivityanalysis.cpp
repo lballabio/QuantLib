@@ -310,8 +310,6 @@ namespace QuantLib {
             bucketAnalysis(deltaMatrix[i], gammaMatrix[i], referenceValues,
                            quotes[i], parameters, shift, type);
         }
-
-        return;
     }
 
     pair<vector<vector<Real> >, vector<vector<Real> > >

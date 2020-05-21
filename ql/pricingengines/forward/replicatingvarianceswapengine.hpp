@@ -54,9 +54,9 @@ namespace QuantLib {
       protected:
         // helper methods
         void computeOptionWeights(const std::vector<Real>&,
-                                  const Option::Type,
+                                  Option::Type,
                                   weights_type& optionWeights) const;
-        Real computeLogPayoff(const Real, const Real) const;
+        Real computeLogPayoff(Real, Real) const;
         Real computeReplicatingPortfolio(
                                      const weights_type& optionWeights) const;
         Rate riskFreeRate() const;

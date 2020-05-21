@@ -35,14 +35,13 @@ namespace QuantLib {
 
     class Fdm2dBlackScholesSolver : public LazyObject {
       public:
-        Fdm2dBlackScholesSolver(
-            const Handle<GeneralizedBlackScholesProcess>& p1,
-            const Handle<GeneralizedBlackScholesProcess>& p2,
-            const Real correlation,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>());
+        Fdm2dBlackScholesSolver(const Handle<GeneralizedBlackScholesProcess>& p1,
+                                const Handle<GeneralizedBlackScholesProcess>& p2,
+                                Real correlation,
+                                const FdmSolverDesc& solverDesc,
+                                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                                bool localVol = false,
+                                Real illegalLocalVolOverwrite = -Null<Real>());
 
         Real valueAt(Real x, Real y) const;
         Real thetaAt(Real x, Real y) const;

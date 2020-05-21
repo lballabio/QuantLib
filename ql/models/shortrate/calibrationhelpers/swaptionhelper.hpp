@@ -43,12 +43,12 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       BlackCalibrationHelper::CalibrationErrorType errorType
-                                      = BlackCalibrationHelper::RelativePriceError,
-                       const Real strike = Null<Real>(),
-                       const Real nominal = 1.0,
-                       const VolatilityType type = ShiftedLognormal,
-                       const Real shift = 0.0);
+                       BlackCalibrationHelper::CalibrationErrorType errorType =
+                           BlackCalibrationHelper::RelativePriceError,
+                       Real strike = Null<Real>(),
+                       Real nominal = 1.0,
+                       VolatilityType type = ShiftedLognormal,
+                       Real shift = 0.0);
 
         SwaptionHelper(const Date& exerciseDate,
                        const Period& length,
@@ -58,12 +58,12 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       BlackCalibrationHelper::CalibrationErrorType errorType
-                                      = BlackCalibrationHelper::RelativePriceError,
-                       const Real strike = Null<Real>(),
-                       const Real nominal = 1.0,
-                       const VolatilityType type = ShiftedLognormal,
-                       const Real shift = 0.0);
+                       BlackCalibrationHelper::CalibrationErrorType errorType =
+                           BlackCalibrationHelper::RelativePriceError,
+                       Real strike = Null<Real>(),
+                       Real nominal = 1.0,
+                       VolatilityType type = ShiftedLognormal,
+                       Real shift = 0.0);
 
         SwaptionHelper(const Date& exerciseDate,
                        const Date& endDate,
@@ -73,12 +73,12 @@ namespace QuantLib {
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,
                        const Handle<YieldTermStructure>& termStructure,
-                       BlackCalibrationHelper::CalibrationErrorType errorType
-                                      = BlackCalibrationHelper::RelativePriceError,
-                       const Real strike = Null<Real>(),
-                       const Real nominal = 1.0,
-                       const VolatilityType type = ShiftedLognormal,
-                       const Real shift = 0.0);
+                       BlackCalibrationHelper::CalibrationErrorType errorType =
+                           BlackCalibrationHelper::RelativePriceError,
+                       Real strike = Null<Real>(),
+                       Real nominal = 1.0,
+                       VolatilityType type = ShiftedLognormal,
+                       Real shift = 0.0);
 
         virtual void addTimesTo(std::list<Time>& times) const;
         virtual Real modelValue() const;

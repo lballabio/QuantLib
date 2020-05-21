@@ -63,12 +63,10 @@ namespace QuantLib {
         } CalibrationBasketType;
 
         Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
-        calibrationBasket(
-            const ext::shared_ptr<Exercise> &exercise,
-            ext::shared_ptr<SwapIndex> standardSwapBase,
-            ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
-            const CalibrationBasketType basketType =
-                MaturityStrikeByDeltaGamma) const;
+        calibrationBasket(const ext::shared_ptr<Exercise>& exercise,
+                          ext::shared_ptr<SwapIndex> standardSwapBase,
+                          ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+                          CalibrationBasketType basketType = MaturityStrikeByDeltaGamma) const;
 
       protected:
 
@@ -86,8 +84,7 @@ namespace QuantLib {
 
         virtual ~BasketGeneratingEngine() {}
 
-        virtual Real underlyingNpv(const Date &expiry,
-                                   const Real y) const = 0;
+        virtual Real underlyingNpv(const Date& expiry, Real y) const = 0;
 
         virtual VanillaSwap::Type underlyingType() const = 0;
 

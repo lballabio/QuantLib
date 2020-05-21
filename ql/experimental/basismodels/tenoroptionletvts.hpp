@@ -52,7 +52,7 @@ namespace QuantLib {
 
           public:
             // constructor includes actual transformation details
-            TenorOptionletSmileSection(const TenorOptionletVTS& volTS, const Time optionTime);
+            TenorOptionletSmileSection(const TenorOptionletVTS& volTS, Time optionTime);
 
             // further SmileSection interface methods
             virtual Real minStrike() const {

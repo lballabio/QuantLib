@@ -64,7 +64,7 @@ namespace QuantLib {
                 Real c, Real gm);
     Real dvv(Real s,Real p,Real tt,Real a,Real b,Real gm);
     Real dff(Real s, Real p,Real tt,Real a,Real b,Real gm);
-    Real tvtl(int jj,Real limit[4],Real sigmarho[4],Real epsi);
+    Real tvtl(int jj, const Real limit[4], const Real sigmarho[4], Real epsi);
 
     Real BarrierUPD(Real kprice, Real stock, Real hbarr,
                       Real taumin, Real taumax, int iord, int igm,
@@ -783,8 +783,7 @@ namespace QuantLib {
                                   Real RUB, Real AR, Real RUC,
                                   int NUC));
 
-    Real tvtl(int NU, Real limit[], Real sigmarho[],Real epsi)
-    {
+    Real tvtl(int NU, const Real limit[], const Real sigmarho[], Real epsi) {
         /*
           A function for computing trivariate normal and t-probabilities.
 
@@ -886,7 +885,7 @@ namespace QuantLib {
                 RUB = asin( R13 );
                 AR = asin( R23);
                 RUC = SIGN( PT, AR ) - AR;
-                TVT = TVT + ADONET(  ZRO, ONE, EPS, *TVTMFN)/( 4.0*PT );
+                TVT = TVT + ADONET(ZRO, ONE, EPS, TVTMFN) / (4.0 * PT);
             }
         result = max( ZRO, min( TVT, ONE ) );
 
@@ -941,7 +940,6 @@ namespace QuantLib {
                 SX = sin(X);
                 CS = 1 - SX*SX;
             }
-        return;
     }
     //
 

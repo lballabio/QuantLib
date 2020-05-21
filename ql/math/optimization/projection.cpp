@@ -29,7 +29,7 @@ namespace QuantLib {
           actualParameters_(parameterValues),
           fixParameters_(fixParameters) {
 
-        if (fixParameters_.size() == 0)
+        if (fixParameters_.empty())
             fixParameters_ =
                 std::vector<bool>(actualParameters_.size(), false);
 

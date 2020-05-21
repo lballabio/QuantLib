@@ -620,7 +620,7 @@ namespace QuantLib {
             iborIndex_->fixingCalendar().adjust(evaluationDate_);
         Date spotDate = iborIndex_->fixingCalendar().advance(
             referenceDate, iborIndex_->fixingDays()*Days);
-        if(periodToStart_) {
+        if (periodToStart_ != 0) {
             earliestDate_ = iborIndex_->fixingCalendar().advance(
                 spotDate, *periodToStart_, iborIndex_->businessDayConvention(),
                 iborIndex_->endOfMonth());
@@ -628,7 +628,7 @@ namespace QuantLib {
             maturityDate_ = iborIndex_->fixingCalendar().advance(
                 spotDate, *periodToStart_ + iborIndex_->tenor(), iborIndex_->businessDayConvention(),
                 iborIndex_->endOfMonth());
-        } else if (immOffsetStart_ && immOffsetEnd_) {
+        } else if ((immOffsetStart_ != 0) && (immOffsetEnd_ != 0)) {
             earliestDate_ = iborIndex_->fixingCalendar().adjust(nthImmDate(spotDate, *immOffsetStart_));
             maturityDate_ = iborIndex_->fixingCalendar().adjust(nthImmDate(spotDate, *immOffsetEnd_));
         } else {

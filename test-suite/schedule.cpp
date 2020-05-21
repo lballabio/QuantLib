@@ -339,7 +339,7 @@ void ScheduleTest::testDateConstructor() {
     if (schedule2.rule() != DateGeneration::Backward)
         BOOST_ERROR("schedule2 has rule " << schedule2.rule()
                                           << ", expected Backward");
-    if (schedule2.endOfMonth() != true)
+    if (!schedule2.endOfMonth())
         BOOST_ERROR("schedule2 has end of month flag false, expected true");
 }
 

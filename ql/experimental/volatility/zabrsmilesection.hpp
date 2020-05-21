@@ -44,15 +44,17 @@ struct ZabrFullFd {};
 
 template <typename Evaluation> class ZabrSmileSection : public SmileSection {
   public:
-    ZabrSmileSection(Time timeToExpiry, Rate forward,
-                     const std::vector<Real> &zabrParameters,
-                     const std::vector<Real> &moneyness = std::vector<Real>(),
-                     const Size fdRefinement = 5);
-    ZabrSmileSection(const Date &d, Rate forward,
-                     const std::vector<Real> &zabrParameters,
-                     const DayCounter &dc = Actual365Fixed(),
-                     const std::vector<Real> &moneyness = std::vector<Real>(),
-                     const Size fdRefinement = 5);
+    ZabrSmileSection(Time timeToExpiry,
+                     Rate forward,
+                     const std::vector<Real>& zabrParameters,
+                     const std::vector<Real>& moneyness = std::vector<Real>(),
+                     Size fdRefinement = 5);
+    ZabrSmileSection(const Date& d,
+                     Rate forward,
+                     const std::vector<Real>& zabrParameters,
+                     const DayCounter& dc = Actual365Fixed(),
+                     const std::vector<Real>& moneyness = std::vector<Real>(),
+                     Size fdRefinement = 5);
 
     Real minStrike() const { return 0.0; }
     Real maxStrike() const { return QL_MAX_REAL; }
@@ -161,7 +163,7 @@ void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
         0.0, 0.01, 0.05, 0.10, 0.25, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90,
         1.0, 1.25, 1.5,  1.75, 2.0,  5.0,  7.5,  10.0, 15.0, 20.0};
     std::vector<Real> tmp;
-    if (moneyness.size() == 0)
+    if (moneyness.empty())
         tmp = std::vector<Real>(defaultMoney, defaultMoney + 21);
     else
         tmp = std::vector<Real>(moneyness);

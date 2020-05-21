@@ -713,7 +713,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     Real antitheticPayoff=0;
     const Size nrTrails = 40000;
     for (Size i=0; i < nrTrails; ++i) {
-        const bool antithetic = (i%2)==0 ? false : true;
+        const bool antithetic = (i % 2) != 0;
 
         sample_type path = antithetic ? generator.antithetic()
                                       : generator.next();

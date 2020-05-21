@@ -53,7 +53,7 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
-        if (strikePayoff) {
+        if (strikePayoff != 0) {
             // FLOATING_POINT_EXCEPTION
             scalingValue_/=strikePayoff->strike();
         }

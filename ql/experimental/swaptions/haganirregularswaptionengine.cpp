@@ -239,12 +239,10 @@ namespace QuantLib {
     ///////////////////////////////////////////////////////////
 
 
-    HaganIrregularSwaptionEngine::HaganIrregularSwaptionEngine(const Handle<SwaptionVolatilityStructure>& volatilityStructure,
+    HaganIrregularSwaptionEngine::HaganIrregularSwaptionEngine(
+        const Handle<SwaptionVolatilityStructure>& volatilityStructure,
         const Handle<YieldTermStructure>& termStructure)
-        : GenericEngine<IrregularSwaption::arguments,IrregularSwaption::results>(),
-        termStructure_(termStructure),
-        volatilityStructure_(volatilityStructure)
-    {
+    : termStructure_(termStructure), volatilityStructure_(volatilityStructure) {
         registerWith(termStructure_);
         registerWith(volatilityStructure_);
     }

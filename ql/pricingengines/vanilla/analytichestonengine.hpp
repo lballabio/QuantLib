@@ -127,11 +127,15 @@ namespace QuantLib {
                                   Real spotPrice,
                                   Real strikePrice,
                                   Real term,
-                                  Real kappa, Real theta, Real sigma, Real v0, Real rho,
+                                  Real kappa,
+                                  Real theta,
+                                  Real sigma,
+                                  Real v0,
+                                  Real rho,
                                   const TypePayoff& type,
                                   const Integration& integration,
-                                  const ComplexLogFormula cpxLog,
-                                  const AnalyticHestonEngine* const enginePtr,
+                                  ComplexLogFormula cpxLog,
+                                  const AnalyticHestonEngine* enginePtr,
                                   Real& value,
                                   Size& evaluations);
 

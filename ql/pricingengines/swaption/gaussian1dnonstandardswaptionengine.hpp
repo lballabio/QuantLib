@@ -121,7 +121,7 @@ namespace QuantLib {
         void calculate() const;
 
       protected:
-        Real underlyingNpv(const Date &expiry, const Real y) const;
+        Real underlyingNpv(const Date& expiry, Real y) const;
         VanillaSwap::Type underlyingType() const;
         const Date underlyingLastDate() const;
         const Disposable<Array> initialGuess(const Date &expiry) const;

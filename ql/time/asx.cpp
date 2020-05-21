@@ -71,10 +71,7 @@ namespace QuantLib {
         if (mainCycle) str1 = "hmzuHMZU";
         else           str1 = "fghjkmnquvxzFGHJKMNQUVXZ";
         loc = str1.find(in.substr(0,1), 0);
-        if (loc == string::npos)
-            return false;
-
-        return true;
+        return loc != string::npos;
     }
 
     std::string ASX::code(const Date& date) {

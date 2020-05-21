@@ -38,14 +38,13 @@ namespace QuantLib {
       public:
         enum NettingType { Averaging, Compounding };
 
-        OvernightIndexFuture(
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            const ext::shared_ptr<Payoff>& payoff,
-            const Date& valueDate,
-            const Date& maturityDate,
-            const Handle<YieldTermStructure>& discountCurve,
-            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            const NettingType subPeriodsNettingType = Compounding);
+        OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             const ext::shared_ptr<Payoff>& payoff,
+                             const Date& valueDate,
+                             const Date& maturityDate,
+                             const Handle<YieldTermStructure>& discountCurve,
+                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                             NettingType subPeriodsNettingType = Compounding);
 
         //! returns spot value/price of an underlying financial instrument
         virtual Real spotValue() const;

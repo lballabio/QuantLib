@@ -152,7 +152,7 @@ namespace QuantLib {
         Real forward2 = process2_->stateVariable()->value() *
             dividendDiscount2 / riskFreeDiscount;
 
-        if (max_basket) {
+        if (max_basket != 0) {
             switch (payoff->optionType()) {
               // euro call on a two asset max basket
               case Option::Call:
@@ -176,7 +176,7 @@ namespace QuantLib {
               default:
                 QL_FAIL("unknown option type");
             }
-        } else if (min_basket) {
+        } else if (min_basket != 0) {
             switch (payoff->optionType()) {
               // euro call on a two asset min basket
               case Option::Call:

@@ -105,62 +105,50 @@ namespace QuantLib {
                    "nominal2 size (" << nominal2_.size()
                                      << ") does not match schedule2 size ("
                                      << nominal2_.size() << ")");
-        QL_REQUIRE(gearing1_.size() == 0 ||
-                       gearing1_.size() == nominal1_.size(),
-                   "nominal1 size (" << nominal1_.size()
-                                     << ") does not match gearing1 size ("
+        QL_REQUIRE(gearing1_.empty() || gearing1_.size() == nominal1_.size(),
+                   "nominal1 size (" << nominal1_.size() << ") does not match gearing1 size ("
                                      << gearing1_.size() << ")");
-        QL_REQUIRE(gearing2_.size() == 0 ||
-                       gearing2_.size() == nominal2_.size(),
-                   "nominal2 size (" << nominal2_.size()
-                                     << ") does not match gearing2 size ("
+        QL_REQUIRE(gearing2_.empty() || gearing2_.size() == nominal2_.size(),
+                   "nominal2 size (" << nominal2_.size() << ") does not match gearing2 size ("
                                      << gearing2_.size() << ")");
-        QL_REQUIRE(cappedRate1_.size() == 0 ||
-                       cappedRate1_.size() == nominal1_.size(),
-                   "nominal1 size (" << nominal1_.size()
-                                     << ") does not match cappedRate1 size ("
+        QL_REQUIRE(cappedRate1_.empty() || cappedRate1_.size() == nominal1_.size(),
+                   "nominal1 size (" << nominal1_.size() << ") does not match cappedRate1 size ("
                                      << cappedRate1_.size() << ")");
-        QL_REQUIRE(cappedRate2_.size() == 0 ||
-                       cappedRate2_.size() == nominal2_.size(),
-                   "nominal2 size (" << nominal2_.size()
-                                     << ") does not match cappedRate2 size ("
+        QL_REQUIRE(cappedRate2_.empty() || cappedRate2_.size() == nominal2_.size(),
+                   "nominal2 size (" << nominal2_.size() << ") does not match cappedRate2 size ("
                                      << cappedRate2_.size() << ")");
-        QL_REQUIRE(flooredRate1_.size() == 0 ||
-                       flooredRate1_.size() == nominal1_.size(),
-                   "nominal1 size (" << nominal1_.size()
-                                     << ") does not match flooredRate1 size ("
+        QL_REQUIRE(flooredRate1_.empty() || flooredRate1_.size() == nominal1_.size(),
+                   "nominal1 size (" << nominal1_.size() << ") does not match flooredRate1 size ("
                                      << flooredRate1_.size() << ")");
-        QL_REQUIRE(flooredRate2_.size() == 0 ||
-                       flooredRate2_.size() == nominal2_.size(),
-                   "nominal2 size (" << nominal2_.size()
-                                     << ") does not match flooredRate2 size ("
+        QL_REQUIRE(flooredRate2_.empty() || flooredRate2_.size() == nominal2_.size(),
+                   "nominal2 size (" << nominal2_.size() << ") does not match flooredRate2 size ("
                                      << flooredRate2_.size() << ")");
 
-        if (paymentConvention1)
+        if (paymentConvention1 != 0)
             paymentConvention1_ = *paymentConvention1;
         else
             paymentConvention1_ = schedule1_.businessDayConvention();
 
-        if (paymentConvention2)
+        if (paymentConvention2 != 0)
             paymentConvention2_ = *paymentConvention2;
         else
             paymentConvention2_ = schedule2_.businessDayConvention();
 
-        if (gearing1_.size() == 0)
+        if (gearing1_.empty())
             gearing1_ = std::vector<Real>(nominal1_.size(), 1.0);
-        if (gearing2_.size() == 0)
+        if (gearing2_.empty())
             gearing2_ = std::vector<Real>(nominal2_.size(), 1.0);
-        if (spread1_.size() == 0)
+        if (spread1_.empty())
             spread1_ = std::vector<Real>(nominal1_.size(), 0.0);
-        if (spread2_.size() == 0)
+        if (spread2_.empty())
             spread2_ = std::vector<Real>(nominal2_.size(), 0.0);
-        if (cappedRate1_.size() == 0)
+        if (cappedRate1_.empty())
             cappedRate1_ = std::vector<Real>(nominal1_.size(), Null<Real>());
-        if (cappedRate2_.size() == 0)
+        if (cappedRate2_.empty())
             cappedRate2_ = std::vector<Real>(nominal2_.size(), Null<Real>());
-        if (flooredRate1_.size() == 0)
+        if (flooredRate1_.empty())
             flooredRate1_ = std::vector<Real>(nominal1_.size(), Null<Real>());
-        if (flooredRate2_.size() == 0)
+        if (flooredRate2_.empty())
             flooredRate2_ = std::vector<Real>(nominal2_.size(), Null<Real>());
 
         bool isNull;
@@ -241,7 +229,7 @@ namespace QuantLib {
         QL_REQUIRE(ibor2 != NULL || cms2 != NULL || cmsspread2 != NULL,
                    "index2 must be ibor or cms");
 
-        if (ibor1) {
+        if (ibor1 != 0) {
             IborLeg leg(schedule1_, ibor1);
             leg = leg.withNotionals(nominal1_)
                       .withPaymentDayCounter(dayCount1_)
@@ -255,7 +243,7 @@ namespace QuantLib {
             legs_[0] = leg;
         }
 
-        if (ibor2) {
+        if (ibor2 != 0) {
             IborLeg leg(schedule2_, ibor2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
@@ -269,7 +257,7 @@ namespace QuantLib {
             legs_[1] = leg;
         }
 
-        if (cms1) {
+        if (cms1 != 0) {
             CmsLeg leg(schedule1_, cms1);
             leg = leg.withNotionals(nominal1_)
                       .withPaymentDayCounter(dayCount1_)
@@ -283,7 +271,7 @@ namespace QuantLib {
             legs_[0] = leg;
         }
 
-        if (cms2) {
+        if (cms2 != 0) {
             CmsLeg leg(schedule2_, cms2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
@@ -297,7 +285,7 @@ namespace QuantLib {
             legs_[1] = leg;
         }
 
-        if (cmsspread1) {
+        if (cmsspread1 != 0) {
             CmsSpreadLeg leg(schedule1_, cmsspread1);
             leg = leg.withNotionals(nominal1_)
                       .withPaymentDayCounter(dayCount1_)
@@ -311,7 +299,7 @@ namespace QuantLib {
             legs_[0] = leg;
         }
 
-        if (cmsspread2) {
+        if (cmsspread2 != 0) {
             CmsSpreadLeg leg(schedule2_, cmsspread2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
@@ -394,7 +382,7 @@ namespace QuantLib {
         FloatFloatSwap::arguments *arguments =
             dynamic_cast<FloatFloatSwap::arguments *>(args);
 
-        if(!arguments)
+        if (arguments == 0)
             return; // swap engine ... // QL_REQUIRE(arguments != 0, "argument type does not match");
 
         arguments->type = type_;
@@ -434,7 +422,7 @@ namespace QuantLib {
         for (Size i = 0; i < leg1Coupons.size(); ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FloatingRateCoupon>(leg1Coupons[i]);
-            if (coupon) {
+            if (coupon != 0) {
                 arguments->leg1AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg1PayDates[i] = coupon->date();
                 arguments->leg1ResetDates[i] = coupon->accrualStartDate();
@@ -450,7 +438,7 @@ namespace QuantLib {
                 ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
                     ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg1Coupons[i]);
-                if (cfcoupon) {
+                if (cfcoupon != 0) {
                     arguments->leg1CappedRates[i] = cfcoupon->cap();
                     arguments->leg1FlooredRates[i] = cfcoupon->floor();
                 }
@@ -480,7 +468,7 @@ namespace QuantLib {
         for (Size i = 0; i < leg2Coupons.size(); ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FloatingRateCoupon>(leg2Coupons[i]);
-            if (coupon) {
+            if (coupon != 0) {
                 arguments->leg2AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg2PayDates[i] = coupon->date();
                 arguments->leg2ResetDates[i] = coupon->accrualStartDate();
@@ -496,7 +484,7 @@ namespace QuantLib {
                 ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
                     ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg2Coupons[i]);
-                if (cfcoupon) {
+                if (cfcoupon != 0) {
                     arguments->leg2CappedRates[i] = cfcoupon->cap();
                     arguments->leg2FlooredRates[i] = cfcoupon->floor();
                 }

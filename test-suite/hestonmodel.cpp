@@ -2561,8 +2561,8 @@ void HestonModelTest::testPiecewiseTimeDependentComparison() {
         Real priceS = 0.0;
 
         for (Size j=0; j < 2; ++j) {
-            const sample_type& path1 = (j&1) ? firstPathGen.antithetic()
-                                             : firstPathGen.next();
+            const sample_type& path1 =
+                (j & 1) != 0u ? firstPathGen.antithetic() : firstPathGen.next();
             const Real spot1 = path1.value[0].back();
             const Real v1    = path1.value[1].back();
 
@@ -3056,9 +3056,8 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
 
             for (Size k=0; k < 2; ++k) {
                 const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                    ext::make_shared<PlainVanillaPayoff>(
-                        (k) ? Option::Put : Option::Call,
-                        strike);
+                    ext::make_shared<PlainVanillaPayoff>((k) != 0u ? Option::Put : Option::Call,
+                                                         strike);
 
                 VanillaOption option(payoff, exercise);
                 option.setPricingEngine(engine);

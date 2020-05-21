@@ -223,8 +223,6 @@ namespace QuantLib {
                 break; // exit the loop
             }
         }
-
-        return;
     }
 
     RendistatoEquivalentSwapLengthQuote::RendistatoEquivalentSwapLengthQuote(

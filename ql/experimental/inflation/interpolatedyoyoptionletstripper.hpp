@@ -46,10 +46,9 @@ namespace QuantLib {
 
         //! YoYOptionletStripper interface
         //@{
-        virtual void initialize(
-                       const ext::shared_ptr<YoYCapFloorTermPriceSurface> &,
-                       const ext::shared_ptr<YoYInflationCapFloorEngine> &,
-                       const Real slope) const;
+        virtual void initialize(const ext::shared_ptr<YoYCapFloorTermPriceSurface>&,
+                                const ext::shared_ptr<YoYInflationCapFloorEngine>&,
+                                Real slope) const;
         virtual Rate minStrike() const {
             return YoYCapFloorTermPriceSurface_->strikes().front();
         }

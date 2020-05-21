@@ -665,10 +665,10 @@ namespace {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
               ++iter) {
-            if (!iter.coordinates()[1]) {
+            if (iter.coordinates()[1] == 0u) {
                 x.push_back(mesher->location(iter, 0));
             }
-            if (!iter.coordinates()[0]) {
+            if (iter.coordinates()[0] == 0u) {
                 y.push_back(mesher->location(iter, 1));
             }
         }

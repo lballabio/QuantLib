@@ -225,13 +225,13 @@ namespace QuantLib {
             // we might end up here because a CappedFlooredCoupon
             // was directly constructed; we should then check
             // the underlying for consistency with the pricer
-            if (ext::dynamic_pointer_cast<IborCoupon>(c.underlying())) {
+            if (ext::dynamic_pointer_cast<IborCoupon>(c.underlying()) != 0) {
                 QL_REQUIRE(ext::dynamic_pointer_cast<IborCouponPricer>(pricer_),
                            "pricer not compatible with Ibor Coupon");
-            } else if (ext::dynamic_pointer_cast<CmsCoupon>(c.underlying())) {
+            } else if (ext::dynamic_pointer_cast<CmsCoupon>(c.underlying()) != 0) {
                 QL_REQUIRE(ext::dynamic_pointer_cast<CmsCouponPricer>(pricer_),
                            "pricer not compatible with CMS Coupon");
-            } else if (ext::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying())) {
+            } else if (ext::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying()) != 0) {
                 QL_REQUIRE(ext::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_),
                            "pricer not compatible with CMS spread Coupon");
             }

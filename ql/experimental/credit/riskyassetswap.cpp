@@ -76,7 +76,7 @@ namespace QuantLib {
 
         NPV_ *= nominal_;
 
-        if (fixedPayer_ == false)
+        if (!fixedPayer_)
             NPV_ *= -1;
     }
 

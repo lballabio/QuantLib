@@ -58,7 +58,7 @@ namespace QuantLib {
         virtual Real operator()(Problem& P, // Optimization problem
                                 EndCriteria::Type& ecType,
                                 const EndCriteria&,
-                                const Real t_ini) = 0;      // initial value of line-search step
+                                Real t_ini) = 0; // initial value of line-search step
         Real update(Array& params,
                     const Array& direction,
                     Real beta,

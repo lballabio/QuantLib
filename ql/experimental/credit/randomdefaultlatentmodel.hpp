@@ -127,7 +127,7 @@ namespace QuantLib {
 
         void performSimulations() const {
             // Next sequence should determine the event and push it into buffer
-            for(Size i=nSims_; i; i--) {
+            for (Size i = nSims_; i != 0u; i--) {
                 const std::vector<Real>& sample =
                     copulasRng_->nextSequence().value;
                 static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
@@ -828,23 +828,19 @@ namespace QuantLib {
         Real accuracy_;
     public:
         // \todo: Allow a constructor building its own default latent model.
-        RandomDefaultLM(
-            const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
-            const std::vector<Real>& recoveries = std::vector<Real>(),
-            Size nSims = 0,// stats will crash on div by zero, FIX ME.
-            Real accuracy = 1.e-6,
-            BigNatural seed = 2863311530UL)
-        : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
-            (model->numFactors(), model->size(), model->copula(),
-                nSims, seed ),
-          model_(model),
-          recoveries_(recoveries.size()==0 ? std::vector<Real>(model->size(),
-            0.) : recoveries),
-          accuracy_(accuracy)
-        {
-            // redundant through basket?
-            this->registerWith(Settings::instance().evaluationDate());
-            this->registerWith(model_);
+      RandomDefaultLM(const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
+                      const std::vector<Real>& recoveries = std::vector<Real>(),
+                      Size nSims = 0, // stats will crash on div by zero, FIX ME.
+                      Real accuracy = 1.e-6,
+                      BigNatural seed = 2863311530UL)
+      : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>(
+            model->numFactors(), model->size(), model->copula(), nSims, seed),
+        model_(model),
+        recoveries_(recoveries.empty() ? std::vector<Real>(model->size(), 0.) : recoveries),
+        accuracy_(accuracy) {
+          // redundant through basket?
+          this->registerWith(Settings::instance().evaluationDate());
+          this->registerWith(model_);
         }
         RandomDefaultLM(
             const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&

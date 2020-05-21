@@ -158,8 +158,6 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
             }
         }
     }
-
-    return;
 };
 
 } // namespace QuantLib

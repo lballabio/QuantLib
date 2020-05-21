@@ -52,7 +52,7 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-        if (localVol_) {
+        if (localVol_ != 0) {
             const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 

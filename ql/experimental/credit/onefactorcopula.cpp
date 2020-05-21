@@ -58,7 +58,7 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         calculate ();
 
-        QL_REQUIRE (y_.size() > 0, "cumulative Y not tabulated yet");
+        QL_REQUIRE(!y_.empty(), "cumulative Y not tabulated yet");
 
         // linear interpolation on the tabulated cumulative distribution of Y
         if (y < y_.front())
@@ -79,7 +79,7 @@ namespace QuantLib {
     //-------------------------------------------------------------------------
         calculate ();
 
-        QL_REQUIRE (y_.size() > 0, "cumulative Y not tabulated yet");
+        QL_REQUIRE(!y_.empty(), "cumulative Y not tabulated yet");
 
         // linear interpolation on the tabulated cumulative distribution of Y
         if (x < cumulativeY_.front())

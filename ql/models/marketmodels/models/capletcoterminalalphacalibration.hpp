@@ -50,12 +50,10 @@ namespace QuantLib {
         static Natural capletAlphaFormCalibration(
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
-            const std::vector<ext::shared_ptr<
-                PiecewiseConstantVariance> >&
-                    displacedSwapVariances,
+            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
             const CurveState& cs,
-            const Spread displacement,
+            Spread displacement,
 
             const std::vector<Real>& alphaInitial,
             const std::vector<Real>& alphaMax,
@@ -63,7 +61,7 @@ namespace QuantLib {
             bool maximizeHomogeneity,
             ext::shared_ptr<AlphaForm> parametricForm,
 
-            const Size numberOfFactors,
+            Size numberOfFactors,
             Integer steps,
             Real toleranceForAlphaSolving,
 
@@ -72,6 +70,7 @@ namespace QuantLib {
             std::vector<Real>& b,
 
             std::vector<Matrix>& swapCovariancePseudoRoots);
+
       private:
         Natural calibrationImpl_(Natural numberOfFactors, 
                                  Natural maxIterations,

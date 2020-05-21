@@ -63,7 +63,7 @@ namespace QuantLib {
 
         if (dt < QL_EPSILON)
             return 0.0;
-        if (times_.size() == 0)
+        if (times_.empty())
             return reversionZero_ ? dt
                                   : 1.0 / (2.0 * reversion_) *
                                         (std::exp(2.0 * reversion_ * (t + dt)) -

@@ -60,10 +60,10 @@ namespace QuantLib {
 
     void FloatingRateCoupon::setPricer(
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        if (pricer_)
+        if (pricer_ != 0)
             unregisterWith(pricer_);
         pricer_ = pricer;
-        if (pricer_)
+        if (pricer_ != 0)
             registerWith(pricer_);
         update();
     }

@@ -41,11 +41,11 @@ namespace detail {
 
 class SABRWrapper {
   public:
-    SABRWrapper(const Time t, const Real &forward,
-                const std::vector<Real> &params,
-                const std::vector<Real> &addParams)
-        : t_(t), forward_(forward), params_(params),
-          shift_(addParams.size() == 0 ? 0.0 : addParams[0]) {
+    SABRWrapper(const Time t,
+                const Real& forward,
+                const std::vector<Real>& params,
+                const std::vector<Real>& addParams)
+    : t_(t), forward_(forward), params_(params), shift_(addParams.empty() ? 0.0 : addParams[0]) {
         QL_REQUIRE(forward_ + shift_ > 0.0, "forward+shift must be positive: "
                                                  << forward_ << " with shift "
                                                  << shift_ << " not allowed");
@@ -71,12 +71,10 @@ struct SABRSpecs {
             params[1] = 0.5;
         if (params[0] == Null<Real>())
             // adapt alpha to beta level
-            params[0] = 0.2 * (params[1] < 0.9999
-                                   ? std::pow(forward + (addParams.size() == 0
-                                                             ? 0.0
-                                                             : addParams[0]),
-                                              1.0 - params[1])
-                                   : 1.0);
+            params[0] = 0.2 * (params[1] < 0.9999 ?
+                                   std::pow(forward + (addParams.empty() ? 0.0 : addParams[0]),
+                                            1.0 - params[1]) :
+                                   1.0);
         if (params[2] == Null<Real>())
             params[2] = std::sqrt(0.4);
         if (params[3] == Null<Real>())
@@ -92,9 +90,8 @@ struct SABRSpecs {
             values[0] = (1.0 - 2E-6) * r[j++] + 1E-6; // lognormal vol guess
             // adapt this to beta level
             if (values[1] < 0.999)
-                values[0] *= std::pow(
-                    forward + (addParams.size() == 0 ? 0.0 : addParams[0]),
-                    1.0 - values[1]);
+                values[0] *=
+                    std::pow(forward + (addParams.empty() ? 0.0 : addParams[0]), 1.0 - values[1]);
         }
         if (!paramIsFixed[2])
             values[2] = 1.5 * r[j++] + 1E-6;
