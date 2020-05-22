@@ -57,7 +57,7 @@ namespace QuantLib {
             || (d == 24 && m == August)
             // Defender's Day (since 2015)
             || (d == 14 && m == October && y >= 2015))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

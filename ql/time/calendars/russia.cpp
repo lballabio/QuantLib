@@ -68,7 +68,7 @@ namespace QuantLib {
             // Unity Day (possibly moved to Monday)
             || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) &&
                 m == November))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

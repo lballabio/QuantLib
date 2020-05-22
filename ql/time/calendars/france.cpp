@@ -72,7 +72,7 @@ namespace QuantLib {
             // Noel
             || (d == 25 && m == December))
             
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -101,7 +101,7 @@ namespace QuantLib {
             // New Year's Eve
             || (d == 31 && m == December))
          
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

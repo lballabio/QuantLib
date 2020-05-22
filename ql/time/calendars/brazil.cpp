@@ -74,7 +74,7 @@ namespace QuantLib {
             // Corpus Christi
             || (dd == em+59)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -120,7 +120,7 @@ namespace QuantLib {
             // last business day of the year
             || (m == December && (d == 31 || (d >= 29 && w == Friday)))
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

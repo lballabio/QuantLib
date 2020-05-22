@@ -193,7 +193,7 @@ namespace QuantLib {
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
 
         return true;
     }

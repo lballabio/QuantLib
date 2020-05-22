@@ -141,7 +141,7 @@ namespace QuantLib {
             || (d == 2 && m == May && y == 2019)
             // Enthronement Ceremony (Emperor Naruhito)
             || (d == 22 && m == October && y == 2019))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
