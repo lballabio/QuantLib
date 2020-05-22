@@ -22,7 +22,6 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
-using std::fabs;
 using std::sqrt;
 
 namespace QuantLib {

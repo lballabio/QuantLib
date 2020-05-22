@@ -1,5 +1,5 @@
 ---
-Checks:          '-*,readability-*,bugprone-*,-readability-else-after-return,-readability-named-parameter,-readability-braces-around-statements,-readability-inconsistent-declaration-parameter-name'
+Checks:          '-*,readability-*,bugprone-*,misc-*,-readability-else-after-return,-readability-named-parameter,-readability-braces-around-statements,-readability-inconsistent-declaration-parameter-name,-misc-macro-parentheses,-misc-incorrect-roundings,-misc-unused-parameters'
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 AnalyzeTemporaryDtors: false
