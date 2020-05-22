@@ -133,7 +133,7 @@ namespace QuantLib {
          */
         for (j=0;j<=mm-1;j++)
         {
-            xiv[j+1]=(double)(j-mm/2)*nris;
+            xiv[j+1]=(j-mm/2.0)*nris;
         }
 
         for (j=0;j<=mm-1;j++)
@@ -284,8 +284,8 @@ namespace QuantLib {
 
         for (j=0;j<=mm-1;j++)
         {
-            xiv[j+1]=(double)(j-mm/2)*nris;
-            ivet[j+1]=(double)(j-mm/2)*pi2/((double)mm*nris);
+            xiv[j+1]=(j-mm/2.0)*nris;
+            ivet[j+1]=(j-mm/2.0)*pi2/((double)mm*nris);
         }
 
         for (j=0;j<=mm-1;j++)

@@ -55,7 +55,7 @@ namespace QuantLib {
                    "must be longer than a month");
         Integer frequency = Integer(12/months);
 
-        if (dcs < 365/frequency)
+        if (dcs < Integer(365/frequency))
             return dcs/365.0;
 
         return 1./frequency - (dcc-dcs)/365.0;

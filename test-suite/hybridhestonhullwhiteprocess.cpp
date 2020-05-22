@@ -1099,7 +1099,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                     option->setPricingEngine(fdEngine);
                     Real calculated = option->NPV();
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes);
+                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
                 }
 
                 if (controlVariate[i] && tolWithCV[l] < avgPriceDiff) {
@@ -1169,7 +1169,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                     Real calculated = option->NPV();
 
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes);
+                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
                 }
 
                 if (avgPriceDiff > tol[i]) {

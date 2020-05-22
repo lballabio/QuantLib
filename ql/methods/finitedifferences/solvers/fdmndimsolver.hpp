@@ -110,7 +110,7 @@ namespace QuantLib {
 
             const std::vector<Size>& c = iter.coordinates();
             for (Size i=0; i < N; ++i) {
-                if ((std::accumulate(c.begin(), c.end(), 0) - c[i]) == 0u) {
+                if ((std::accumulate(c.begin(), c.end(), 0ul) - c[i]) == 0u) {
                     x_[i].push_back(mesher->location(iter, i));
                 }
             }

@@ -899,7 +899,7 @@ namespace {
                 }
             }
 
-            avg/=LENGTH(strikes);
+            avg/=LENGTH(strikes); // NOLINT(bugprone-integer-division)
 
             if (avg > testCase.avgEps) {
                 BOOST_FAIL("failed to reproduce Heston SLV prices"
