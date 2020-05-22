@@ -26,9 +26,8 @@
 
 #include <ql/math/comparison.hpp>
 #include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>
-
+#include <ql/errors.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
-
 #include <vector>
 
 namespace QuantLib {

@@ -218,7 +218,7 @@ namespace QuantLib {
                           ext::shared_ptr<OptimizationMethod>(),
                       const Array& l2 = Array(),
                       Real minCutoffTime = 0.0,
-                      const Real maxCutoffTime = QL_MAX_REAL);
+                      Real maxCutoffTime = QL_MAX_REAL);
         //! rerun every time instruments/referenceDate changes
         virtual void init();
         //! discount function called by FittedBondDiscountCurve

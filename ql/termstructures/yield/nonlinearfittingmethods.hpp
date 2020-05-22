@@ -52,12 +52,12 @@ namespace QuantLib {
                                       ext::shared_ptr<OptimizationMethod>(),
                                   const Array& l2 = Array(),
                                   Real minCutoffTime = 0.0,
-                                  const Real maxCutoffTime = QL_MAX_REAL);
+                                  Real maxCutoffTime = QL_MAX_REAL);
         ExponentialSplinesFitting(bool constrainAtZero,
                                   const Array& weights,
                                   const Array& l2,
                                   Real minCutoffTime = 0.0,
-                                  const Real maxCutoffTime = QL_MAX_REAL);
+                                  Real maxCutoffTime = QL_MAX_REAL);
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
@@ -87,11 +87,11 @@ namespace QuantLib {
                                 ext::shared_ptr<OptimizationMethod>(),
                             const Array& l2 = Array(),
                             Real minCutoffTime = 0.0,
-                            const Real maxCutoffTime = QL_MAX_REAL);
+                            Real maxCutoffTime = QL_MAX_REAL);
         NelsonSiegelFitting(const Array& weights,
                             const Array& l2,
                             Real minCutoffTime = 0.0,
-                            const Real maxCutoffTime = QL_MAX_REAL);
+                            Real maxCutoffTime = QL_MAX_REAL);
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
@@ -123,11 +123,11 @@ namespace QuantLib {
                             ext::shared_ptr<OptimizationMethod>(),
                         const Array& l2 = Array(),
                         Real minCutoffTime = 0.0,
-                        const Real maxCutoffTime = QL_MAX_REAL);
+                        Real maxCutoffTime = QL_MAX_REAL);
         SvenssonFitting(const Array& weights,
                         const Array& l2,
                         Real minCutoffTime = 0.0,
-                        const Real maxCutoffTime = QL_MAX_REAL);
+                        Real maxCutoffTime = QL_MAX_REAL);
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
@@ -168,13 +168,13 @@ namespace QuantLib {
                                  ext::shared_ptr<OptimizationMethod>(),
                              const Array& l2 = Array(),
                              Real minCutoffTime = 0.0,
-                             const Real maxCutoffTime = QL_MAX_REAL);
+                             Real maxCutoffTime = QL_MAX_REAL);
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero,
                              const Array& weights,
                              const Array& l2,
                              Real minCutoffTime = 0.0,
-                             const Real maxCutoffTime = QL_MAX_REAL);
+                             Real maxCutoffTime = QL_MAX_REAL);
         //! cubic B-spline basis functions
         Real basisFunction(Integer i, Time t) const;
         #if defined(QL_USE_STD_UNIQUE_PTR)
@@ -212,13 +212,13 @@ namespace QuantLib {
                                     ext::shared_ptr<OptimizationMethod>(),
                                 const Array& l2 = Array(),
                                 Real minCutoffTime = 0.0,
-                                const Real maxCutoffTime = QL_MAX_REAL);
+                                Real maxCutoffTime = QL_MAX_REAL);
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero,
                                 const Array& weights,
                                 const Array& l2,
                                 Real minCutoffTime = 0.0,
-                                const Real maxCutoffTime = QL_MAX_REAL);
+                                Real maxCutoffTime = QL_MAX_REAL);
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
@@ -240,7 +240,7 @@ namespace QuantLib {
         SpreadFittingMethod(ext::shared_ptr<FittingMethod> method,
                             Handle<YieldTermStructure> discountCurve,
                             Real minCutoffTime = 0.0,
-                            const Real maxCutoffTime = QL_MAX_REAL);
+                            Real maxCutoffTime = QL_MAX_REAL);
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else

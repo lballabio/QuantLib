@@ -112,7 +112,7 @@ namespace {
         }
 
         void visit(test_case const& tc) {
-            if (test_enabled(tc.p_id))
+            if (test_enabled(tc.p_id) != 0u)
                 idMap_[tc.p_parent_id].push_back(tc.p_id);
         }
 
@@ -168,7 +168,7 @@ namespace {
 
         for (std::vector<std::string>::const_iterator iter = tok.begin();
             iter != tok.end(); ++iter) {
-            if (iter->length() && iter->compare("Running 1 test case...")) {
+            if ((iter->length() != 0u) && (iter->compare("Running 1 test case...") != 0)) {
                 out << *iter  << std::endl;
             }
         }
@@ -210,7 +210,7 @@ int main( int argc, char* argv[] )
 
             std::ifstream in(profileFileName);
             if (in.good()) {
-                for (std::string line; std::getline(in, line);) {
+                for (std::string line; std::getline(in, line) != 0;) {
                     std::vector<std::string> tok;
                     boost::split(tok, line, boost::is_any_of(":"));
 
@@ -274,10 +274,9 @@ int main( int argc, char* argv[] )
                 sizeof(RuntimeLog));
 
             // run root test cases in master process
-            const std::list<test_unit_id> qlRoot
-                = (tcc.map().count(tcc.testSuiteId()))
-                    ? tcc.map().find(tcc.testSuiteId())->second
-                    : std::list<test_unit_id>();
+            const std::list<test_unit_id> qlRoot = (tcc.map().count(tcc.testSuiteId())) != 0u ?
+                                                       tcc.map().find(tcc.testSuiteId())->second :
+                                                       std::list<test_unit_id>();
 
             // fork worker processes
             boost::thread_group threadGroup;
@@ -313,7 +312,7 @@ int main( int argc, char* argv[] )
                         const std::string name
                             = framework::get(*it, TUT_ANY).p_name;
 
-                        if (runTimeLog.count(name)) {
+                        if (runTimeLog.count(name) != 0u) {
                             testsSortedByRunTime.insert(
                                 std::make_pair(runTimeLog[name], *it));
                         }

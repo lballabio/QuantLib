@@ -142,7 +142,7 @@ namespace QuantLib {
                            const std::vector<Real>& moneynessGrid = std::vector<Real>(),
                            Real gap = 1.0E-5,
                            int forcedLeftIndex = -1,
-                           const int forcedRightIndex = QL_MAX_INTEGER);
+                           int forcedRightIndex = QL_MAX_INTEGER);
 
         Real minStrike() const { return -shift(); }
         Real maxStrike() const { return QL_MAX_REAL; }
