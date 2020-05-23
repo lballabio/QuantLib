@@ -84,7 +84,7 @@ inline MatrixProxy operator<<(Matrix& m, const Real x) {
 
 } // namespace initializers
 
-using initializers::operator<<;
+using initializers::operator<<;   // NOLINT(misc-unused-using-decls)
 
 } // namespace QuantLib
 
