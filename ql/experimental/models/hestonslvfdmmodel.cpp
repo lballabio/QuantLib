@@ -281,7 +281,7 @@ namespace QuantLib {
       params_(params),
       mandatoryDates_(mandatoryDates),
       mixingFactor_(mixingFactor),
-      logging_(logging), {
+      logging_(logging) {
 
         registerWith(localVol_);
         registerWith(hestonModel_);
