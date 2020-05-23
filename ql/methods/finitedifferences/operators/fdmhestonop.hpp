@@ -91,7 +91,8 @@ namespace QuantLib {
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
                 = ext::shared_ptr<FdmQuantoHelper>(),
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+                = ext::shared_ptr<LocalVolTermStructure>(),
+            const Real mixingFactor = 1.0);
 
         Size size() const;
         void setTime(Time t1, Time t2);

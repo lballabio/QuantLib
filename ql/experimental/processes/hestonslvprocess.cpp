@@ -31,9 +31,11 @@ namespace QuantLib {
 
     HestonSLVProcess::HestonSLVProcess(
         const ext::shared_ptr<HestonProcess>& hestonProcess,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+        const Real mixingFactor)
     : hestonProcess_(hestonProcess),
-      leverageFct_(leverageFct) {
+      leverageFct_(leverageFct),
+      mixingFactor_(mixingFactor) {
         registerWith(hestonProcess);
         update();
     };
@@ -44,7 +46,6 @@ namespace QuantLib {
         theta_ = hestonProcess_->theta();
         sigma_ = hestonProcess_->sigma();
         rho_   = hestonProcess_->rho();
-        mixingFactor_ = hestonProcess_->mixingFactor();
         mixedSigma_ = mixingFactor_ * sigma_;
     }
 

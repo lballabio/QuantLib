@@ -1927,14 +1927,14 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
 
     const ext::shared_ptr<HestonProcess> mixingProcess
         = ext::shared_ptr<HestonProcess>(new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
-                                                           HestonProcess::QuadraticExponentialMartingale, 0.1));
+                                                           HestonProcess::QuadraticExponentialMartingale));
     const ext::shared_ptr<HestonModel> mixingModel
         = ext::make_shared<HestonModel>(mixingProcess);
 
     const ext::shared_ptr<PricingEngine> fdEngineWithMixingFactor
         = ext::make_shared<FdHestonVanillaEngine>(
             mixingModel, 51, 401, 101, 0,
-            FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct);
+            FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct, 0.1);
 
     const Real strikes[] = { s0, 1.1*s0 };
     for (Size i=0; i < LENGTH(strikes); ++i) {

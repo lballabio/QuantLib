@@ -273,13 +273,15 @@ namespace QuantLib {
         const Date& endDate,
         const HestonSLVFokkerPlanckFdmParams& params,
         const bool logging,
-        const std::vector<Date>& mandatoryDates)
+        const std::vector<Date>& mandatoryDates,
+        const Real mixingFactor)
     : localVol_(localVol),
       hestonModel_(hestonModel),
       endDate_(endDate),
       params_(params),
       mandatoryDates_(mandatoryDates),
-      logging_(logging) {
+      logging_(logging),
+      mixingFactor_(mixingFactor) {
 
         registerWith(localVol_);
         registerWith(hestonModel_);
@@ -316,8 +318,7 @@ namespace QuantLib {
         const Real kappa = hestonProcess->kappa();
         const Real theta = hestonProcess->theta();
         const Real sigma = hestonProcess->sigma();
-        const Real mixingFactor = hestonProcess->mixingFactor();
-        const Real mixedSigma = mixingFactor * sigma;
+        const Real mixedSigma = mixingFactor_ * sigma;
         const Real alpha = 2*kappa*theta/(mixedSigma*mixedSigma);
 
         const Size xGrid = params_.xGrid;
@@ -436,7 +437,7 @@ namespace QuantLib {
             new FixedLocalVolSurface(referenceDate, times, vStrikes, L, dc));
 
         ext::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-            new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
+            new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct, mixingFactor_));
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);

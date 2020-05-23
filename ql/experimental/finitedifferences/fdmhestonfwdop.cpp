@@ -41,15 +41,15 @@ namespace QuantLib {
             const ext::shared_ptr<FdmMesher>& mesher,
             const ext::shared_ptr<HestonProcess>& process,
             FdmSquareRootFwdOp::TransformationType type,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+            const Real mixingFactor)
     : type_(type),
       kappa_(process->kappa()),
       theta_(process->theta()),
       sigma_(process->sigma()),
       rho_  (process->rho()),
       v0_   (process->v0()),
-      mixingFactor_ (process->mixingFactor()),
-      mixedSigma_ (mixingFactor_*sigma_),
+      mixedSigma_ (mixingFactor*sigma_),
       rTS_  (process->riskFreeRate().currentLink()),
       qTS_  (process->dividendYield().currentLink()),
       varianceValues_(0.5*mesher->locations(1)),
@@ -124,11 +124,11 @@ namespace QuantLib {
         if (leverageFct_) {
             L_ = getLeverageFctSlice(t1, t2);
             Array Lsquare = L_*L_;
-            if (type_ == FdmSquareRootFwdOp::Plain) { 
+            if (type_ == FdmSquareRootFwdOp::Plain) {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
                     dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
                     .add(dxMap_->multR(rho_*mixedSigma_*L_))
-                    .add(dxMap_->mult(varianceValues_).multR(Lsquare)), 
+                    .add(dxMap_->mult(varianceValues_).multR(Lsquare)),
                               Array());
             } else if (type_ == FdmSquareRootFwdOp::Power) {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
@@ -138,7 +138,7 @@ namespace QuantLib {
             } else if (type_ == FdmSquareRootFwdOp::Log) {
                 mapX_->axpyb( Array(1, -r + q), *dxMap_,
                     dxxMap_->multR(Lsquare).add(boundary_->multR(L_))
-                    .add(dxMap_->mult(0.5*Exp(2.0*varianceValues_)).multR(Lsquare)), 
+                    .add(dxMap_->mult(0.5*Exp(2.0*varianceValues_)).multR(Lsquare)),
                               Array());
             }
         }

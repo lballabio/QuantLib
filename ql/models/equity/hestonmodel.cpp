@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     HestonModel::HestonModel(const ext::shared_ptr<HestonProcess> & process)
-    : CalibratedModel(6), process_(process) {
+    : CalibratedModel(5), process_(process) {
         arguments_[0] = ConstantParameter(process->theta(),
                                           PositiveConstraint());
         arguments_[1] = ConstantParameter(process->kappa(),
@@ -33,8 +33,6 @@ namespace QuantLib {
         arguments_[3] = ConstantParameter(process->rho(),
                                           BoundaryConstraint(-1.0, 1.0));
         arguments_[4] = ConstantParameter(process->v0(),
-                                          PositiveConstraint());
-        arguments_[5] = ConstantParameter(process->mixingFactor(),
                                           PositiveConstraint());
         HestonModel::generateArguments();
 
@@ -48,8 +46,7 @@ namespace QuantLib {
                                          process_->dividendYield(),
                                          process_->s0(),
                                          v0(), kappa(), theta(),
-                                         sigma(), rho(), HestonProcess::QuadraticExponentialMartingale,
-                                         mixingFactor()));
+                                         sigma(), rho()));
     }
 
 }

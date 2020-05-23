@@ -58,11 +58,12 @@ namespace QuantLib {
     FdmHestonVarianceMesher::FdmHestonVarianceMesher(
         Size size,
         const ext::shared_ptr<HestonProcess> & process,
-        Time maturity, Size tAvgSteps, Real epsilon)
+        Time maturity, Size tAvgSteps, Real epsilon,
+        Real mixingFactor)
         : Fdm1dMesher(size) {
 
         std::vector<Real> vGrid(size, 0.0), pGrid(size, 0.0);
-        const Real mixedSigma = process->sigma()*process->mixingFactor();
+        const Real mixedSigma = process->sigma()*mixingFactor;
         const Real df  = 4*process->theta()*process->kappa()/
                             square<Real>()(mixedSigma);
         try {
@@ -160,11 +161,12 @@ namespace QuantLib {
         Size size,
         const ext::shared_ptr<HestonProcess>& process,
         const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-        Time maturity, Size tAvgSteps, Real epsilon)
+        Time maturity, Size tAvgSteps, Real epsilon,
+        Real mixingFactor)
      : Fdm1dMesher(size) {
 
         const FdmHestonVarianceMesher mesher(
-            size, process, maturity, tAvgSteps, epsilon);
+            size, process, maturity, tAvgSteps, epsilon, mixingFactor);
 
         for (Size i=0; i < size; ++i) {
             dplus_[i] = mesher.dplus(i);

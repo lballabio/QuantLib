@@ -137,12 +137,14 @@ namespace QuantLib {
         const ext::shared_ptr<FdmMesher>& mesher,
         const ext::shared_ptr<HestonProcess> & hestonProcess,
         const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+        const Real mixingFactor)
     : correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
-                        .mult(hestonProcess->rho()*hestonProcess->mixedSigma()
+                        .mult(hestonProcess->rho()*hestonProcess->sigma()
+                                *mixingFactor
                                 *mesher->locations(1))),
       dyMap_(mesher, hestonProcess->riskFreeRate().currentLink(),
-              hestonProcess->mixedSigma(),
+              hestonProcess->sigma()*mixingFactor,
               hestonProcess->kappa(), 
               hestonProcess->theta()),
       dxMap_(mesher,
