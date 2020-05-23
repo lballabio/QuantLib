@@ -34,8 +34,8 @@ namespace QuantLib {
         const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
         const Real mixingFactor)
     : hestonProcess_(hestonProcess),
-      leverageFct_(leverageFct),
-      mixingFactor_(mixingFactor) {
+      mixingFactor_(mixingFactor),
+      leverageFct_(leverageFct) {
         registerWith(hestonProcess);
         update();
     };
