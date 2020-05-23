@@ -81,7 +81,7 @@ namespace QuantLib {
         bool leap = isLeap(year());
         while (d <= monthOffset(Month(m),leap))
             --m;
-        while (d > monthOffset(Month(m+1),leap))
+        while (d > monthOffset(Month(m+1),leap)) // NOLINT(misc-misplaced-widening-cast)
             ++m;
         return Month(m);
     }
