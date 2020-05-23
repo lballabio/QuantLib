@@ -3094,6 +3094,44 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
     }
 }
 
+namespace {
+    class HestonIntegrationMaxBoundTestFct {
+      public:
+        HestonIntegrationMaxBoundTestFct(Real maxBound)
+        : maxBound_(maxBound),
+          callCounter_(ext::make_shared<Size>(Size(0))) {}
+
+        Real operator()() {
+            ++(*callCounter_);
+            return maxBound_;
+        }
+
+        Size getCallCounter() const {
+            return *callCounter_;
+        }
+      private:
+        const Real maxBound_;
+        const ext::shared_ptr<Size> callCounter_;
+    };
+}
+
+void HestonModelTest::testHestonEngineIntegration() {
+    BOOST_TEST_MESSAGE("Testing Heston engine integration signature...");
+
+    const AnalyticHestonEngine::Integration integration =
+        AnalyticHestonEngine::Integration::gaussLobatto(1e-12, 1e-12);
+
+    const Real c1 = integration.calculate(1.0, square<Real>(), 1.0);
+
+    HestonIntegrationMaxBoundTestFct testFct(1.0);
+    const Real c2 = integration.calculate(1.0, square<Real>(), testFct);
+
+    if (testFct.getCallCounter() == 0 ||
+            std::fabs(c1 - 1/3.) > 1e-10 || std::fabs(c2 - 1/3.) > 1e-10) {
+        BOOST_ERROR("failed to test Heston engine integration signature");
+    }
+}
+
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -3138,6 +3176,8 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
         &HestonModelTest::testSmallSigmaExpansion4ExpFitting));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testExponentialFitting4StrikesAndMaturities));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testHestonEngineIntegration));
+
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

@@ -23,7 +23,9 @@
   based on fourier transformation
 */
 
+#include <ql/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
@@ -33,7 +35,6 @@
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -567,8 +568,9 @@ namespace QuantLib {
             const Real epsilon = enginePtr->andersenPiterbargEpsilon_
                 *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
 
-            const Real uM = Integration::andersenPiterbargIntegrationLimit(
-                c_inf, epsilon, v0, term);
+            const ext::function<Real()> uM = ext::bind(
+                Integration::andersenPiterbargIntegrationLimit,
+                    c_inf, epsilon, v0, term);
 
             const Real vAvg = (cpxLog == AndersenPiterbarg)
                 ? (1-std::exp(-kappa*term))*(v0-theta)/(kappa*term) + theta
@@ -763,9 +765,10 @@ namespace QuantLib {
     }
 
     Real AnalyticHestonEngine::Integration::calculate(
-                               Real c_inf,
-                               const ext::function<Real(Real)>& f,
-                               Real maxBound) const {
+        Real c_inf,
+        const ext::function<Real(Real)>& f,
+        const ext::function<Real()>& maxBound) const {
+
         Real retVal;
 
         switch(intAlgo_) {
@@ -781,17 +784,17 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-            if (maxBound == Null<Real>())
-                retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
+            if (maxBound && maxBound() != Null<Real>())
+                retVal = (*integrator_)(f, 0.0, maxBound());
             else
-                retVal = (*integrator_)(f, 0.0, maxBound);
+                retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
             break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-            if (maxBound == Null<Real>())
-                retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
+            if (maxBound && maxBound() != Null<Real>())
+                retVal = (*integrator_)(f, 0.0, maxBound());
             else
-                retVal = (*integrator_)(f, 0.0, maxBound);
+                retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
             break;
           default:
             QL_FAIL("unknwon integration algorithm");
@@ -799,6 +802,17 @@ namespace QuantLib {
 
         return retVal;
      }
+
+    Real AnalyticHestonEngine::Integration::calculate(
+        Real c_inf,
+        const ext::function<Real(Real)>& f,
+        Real maxBound) const {
+
+        return AnalyticHestonEngine::Integration::calculate(
+            c_inf, f,
+            ext::bind(&constant<Real, Real>::operator(),
+                constant<Real, Real>(maxBound), 1.0));
+    }
 
     Real AnalyticHestonEngine::Integration::andersenPiterbargIntegrationLimit(
         Real c_inf, Real epsilon, Real v0, Real t) {

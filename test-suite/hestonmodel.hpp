@@ -57,6 +57,7 @@ class HestonModelTest {
     static void testSmallSigmaExpansion();
     static void testSmallSigmaExpansion4ExpFitting();
     static void testExponentialFitting4StrikesAndMaturities();
+    static void testHestonEngineIntegration();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
     static boost::unit_test_framework::test_suite* experimental();

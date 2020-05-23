@@ -257,6 +257,7 @@ namespace QuantLib {
                         / (u*u + 0.25);
             }
 
+          private:
             const ext::shared_ptr<AnalyticHestonEngine> analyticEngine_;
             const Real t_, freq_, sigmaBS_;
         };
@@ -265,11 +266,15 @@ namespace QuantLib {
     std::vector<Real> ExponentialFittingHestonEngine::moneyness_;
 
     ExponentialFittingHestonEngine::ExponentialFittingHestonEngine(
-        const ext::shared_ptr<HestonModel>& model, Real scaling)
+        const ext::shared_ptr<HestonModel>& model,
+        ControlVariate cv,
+        Real scaling)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
-      scaling_(scaling) {
+      cv_(cv),
+      scaling_(scaling),
+      analyticEngine_(ext::make_shared<AnalyticHestonEngine>(model, 1)) {
 
         if (moneyness_.empty()) {
             const Size n = sizeof(values4)/sizeof(values4[0]);
@@ -312,14 +317,15 @@ namespace QuantLib {
         const Real theta = model_->theta();
         const Real v0    = model_->v0();
 
-        const Real vAvg = (1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta;
+        const Real vAvg = (cv_ == AndersenPiterbarg)
+            ? (1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta
+            : -8.0*std::log(analyticEngine_->chF(
+                    std::complex<Real>(0, -0.5), t).real())/t;
 
         const Real bsPrice = BlackCalculator(
             Option::Call, strike, fwd, std::sqrt(vAvg*t), rd).value();
 
-        const LewisCV helper(
-            ext::make_shared<AnalyticHestonEngine>(model_.currentLink(), 1),
-            t, freq, std::sqrt(vAvg));
+        const LewisCV helper(analyticEngine_, t, freq, std::sqrt(vAvg));
 
         const Real scalingFactor = (scaling_ == Null<Real>())
             ? std::max(0.01, std::min(10.0, 0.25/std::sqrt(0.5*vAvg*t)))
@@ -358,7 +364,7 @@ namespace QuantLib {
             s += w_i*u*helper(u*x_i);
         }
 
-        const Real h_cv = s    * std::sqrt(strike * fwd)*rd/M_PI;
+        const Real h_cv = s * std::sqrt(strike * fwd)*rd/M_PI;
 
         switch (payoff->optionType())
         {
