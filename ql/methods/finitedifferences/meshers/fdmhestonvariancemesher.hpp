@@ -36,7 +36,8 @@ namespace QuantLib {
         FdmHestonVarianceMesher(
             Size size,
             const ext::shared_ptr<HestonProcess> & process,
-            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
+            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
+            Real mixingFactor = 1.0);
 
         Real volaEstimate() const { return volaEstimate_; }
 
@@ -53,7 +54,8 @@ namespace QuantLib {
             Size size,
             const ext::shared_ptr<HestonProcess>& process,
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
+            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
+            Real mixingFactor = 1.0);
 
         Real volaEstimate() const { return volaEstimate_; }
 
