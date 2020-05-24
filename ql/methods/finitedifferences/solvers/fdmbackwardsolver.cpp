@@ -86,10 +86,11 @@ namespace QuantLib {
         return FdmSchemeDesc(FdmSchemeDesc::TrBDF2Type, 2 - M_SQRT2, 1e-8);
     }
 
-    FdmBackwardSolver::FdmBackwardSolver(const ext::shared_ptr<FdmLinearOpComposite>& map,
-                                         const FdmBoundaryConditionSet& bcSet,
-                                         const ext::shared_ptr<FdmStepConditionComposite> condition,
-                                         const FdmSchemeDesc& schemeDesc)
+    FdmBackwardSolver::FdmBackwardSolver(
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
+        const FdmBoundaryConditionSet& bcSet,
+        const ext::shared_ptr<FdmStepConditionComposite>& condition,
+        const FdmSchemeDesc& schemeDesc)
     : map_(map), bcSet_(bcSet),
       condition_((condition) != 0 ?
                      condition :

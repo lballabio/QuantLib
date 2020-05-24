@@ -42,7 +42,7 @@ namespace QuantLib {
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
-                  Currency currency,
+                  const Currency& currency,
                   const Calendar& fixingCalendar,
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
@@ -51,7 +51,7 @@ namespace QuantLib {
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
-                  Currency currency,
+                  const Currency& currency,
                   const Calendar& fixingCalendar,
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
@@ -111,7 +111,7 @@ namespace QuantLib {
                   const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
-                  Currency currency,
+                  const Currency& currency,
                   const ext::shared_ptr<OvernightIndex>& overnightIndex,
                   bool telescopicValueDates = false);
         //! \name Inspectors

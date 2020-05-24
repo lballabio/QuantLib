@@ -50,7 +50,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     Gsr(const Handle<YieldTermStructure>& termStructure,
         const std::vector<Date>& volstepdates,
         const std::vector<Handle<Quote> >& volatilities,
-        Handle<Quote> reversion,
+        const Handle<Quote>& reversion,
         Real T = 60.0);
     // piecewise mean reversion with floating model data
     Gsr(const Handle<YieldTermStructure>& termStructure,

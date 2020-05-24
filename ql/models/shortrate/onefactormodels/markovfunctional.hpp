@@ -135,19 +135,23 @@ namespace QuantLib {
                   adjustments_(KahaleSmile | SmileExponentialExtrapolation),
                   smileMoneynessCheckpoints_(std::vector<Real>()) {}
 
-            ModelSettings(Size yGridPoints, Real yStdDevs, Size gaussHermitePoints,
-                          Real digitalGap, Real marketRateAccuracy,
-                          Real lowerRateBound, Real upperRateBound,
+            ModelSettings(Size yGridPoints,
+                          Real yStdDevs,
+                          Size gaussHermitePoints,
+                          Real digitalGap,
+                          Real marketRateAccuracy,
+                          Real lowerRateBound,
+                          Real upperRateBound,
                           int adjustments,
                           const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>(),
-                          const ext::shared_ptr<CustomSmileFactory> customSmileFactory =
-                                                       ext::shared_ptr<CustomSmileFactory>())
-                : yGridPoints_(yGridPoints), yStdDevs_(yStdDevs),
-                  gaussHermitePoints_(gaussHermitePoints), digitalGap_(digitalGap),
-                  marketRateAccuracy_(marketRateAccuracy), lowerRateBound_(lowerRateBound),
-                  upperRateBound_(upperRateBound), adjustments_(adjustments),
-                  smileMoneynessCheckpoints_(smileMoneyCheckpoints),
-                  customSmileFactory_(customSmileFactory) {}
+                          const ext::shared_ptr<CustomSmileFactory>& customSmileFactory =
+                              ext::shared_ptr<CustomSmileFactory>())
+            : yGridPoints_(yGridPoints), yStdDevs_(yStdDevs),
+              gaussHermitePoints_(gaussHermitePoints), digitalGap_(digitalGap),
+              marketRateAccuracy_(marketRateAccuracy), lowerRateBound_(lowerRateBound),
+              upperRateBound_(upperRateBound), adjustments_(adjustments),
+              smileMoneynessCheckpoints_(smileMoneyCheckpoints),
+              customSmileFactory_(customSmileFactory) {}
 
             void validate() {
 
@@ -484,7 +488,7 @@ namespace QuantLib {
             const Date& referenceDate = Null<Date>(),
             Real y = 0.0,
             bool zeroFixingDays = false,
-            ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
+            const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
         class ZeroHelper;
         friend class ZeroHelper;

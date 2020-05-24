@@ -64,15 +64,14 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     initialize(T);
 }
 
-Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
-         const std::vector<Date> &volstepdates,
-         const std::vector<Handle<Quote> > &volatilities,
-         const Handle<Quote> reversion, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
-      reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volatilities_(volatilities),
-      reversions_(std::vector<Handle<Quote> >(1, reversion)),
-      volstepdates_(volstepdates) {
+Gsr::Gsr(const Handle<YieldTermStructure>& termStructure,
+         const std::vector<Date>& volstepdates,
+         const std::vector<Handle<Quote> >& volatilities,
+         const Handle<Quote>& reversion,
+         const Real T)
+: Gaussian1dModel(termStructure), CalibratedModel(2), reversion_(arguments_[0]),
+  sigma_(arguments_[1]), volatilities_(volatilities),
+  reversions_(std::vector<Handle<Quote> >(1, reversion)), volstepdates_(volstepdates) {
 
     QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
     initialize(T);

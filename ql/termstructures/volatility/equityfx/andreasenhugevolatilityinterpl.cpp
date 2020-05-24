@@ -63,26 +63,17 @@ namespace QuantLib {
             const Array& marketVegas,
             const Array& lnMarketStrikes,
             const Array& previousNPVs,
-            const ext::shared_ptr<FdmMesherComposite> mesher,
+            const ext::shared_ptr<FdmMesherComposite>& mesher,
             Time dT,
             AndreasenHugeVolatilityInterpl::InterpolationType interpolationType)
-        : marketNPVs_(marketNPVs),
-          marketVegas_(marketVegas),
-          lnMarketStrikes_(lnMarketStrikes),
-          previousNPVs_(previousNPVs),
-          mesher_(mesher),
-          nGridPoints_(mesher->layout()->size()),
-          dT_(dT),
-          interpolationType_(
-              (lnMarketStrikes_.size() > 1)
-                  ? interpolationType
-                  : AndreasenHugeVolatilityInterpl::PiecewiseConstant),
-          dxMap_ (FirstDerivativeOp(0, mesher_)),
-          dxxMap_(SecondDerivativeOp(0, mesher_)),
-          d2CdK2_(dxMap_.mult(Array(mesher->layout()->size(), -1.0))
-                        .add(dxxMap_)),
-          mapT_  (0, mesher_) {
-        }
+        : marketNPVs_(marketNPVs), marketVegas_(marketVegas), lnMarketStrikes_(lnMarketStrikes),
+          previousNPVs_(previousNPVs), mesher_(mesher), nGridPoints_(mesher->layout()->size()),
+          dT_(dT), interpolationType_((lnMarketStrikes_.size() > 1) ?
+                                          interpolationType :
+                                          AndreasenHugeVolatilityInterpl::PiecewiseConstant),
+          dxMap_(FirstDerivativeOp(0, mesher_)), dxxMap_(SecondDerivativeOp(0, mesher_)),
+          d2CdK2_(dxMap_.mult(Array(mesher->layout()->size(), -1.0)).add(dxxMap_)),
+          mapT_(0, mesher_) {}
 
         Disposable<Array> d2CdK2(const Array& c) const {
             return d2CdK2_.apply(c);
@@ -300,8 +291,7 @@ namespace QuantLib {
             const Date expiry =
                 calibrationSet[i].first->exercise()->lastDate();
 
-            const Size l = std::distance(expiries.begin(),
-                std::lower_bound(expiries.begin(), expiries.end(), expiry));
+            const Size l = std::distance(expiries.begin(), expiries.lower_bound(expiry));
 
             const Real strike =
                 ext::dynamic_pointer_cast<PlainVanillaPayoff>(

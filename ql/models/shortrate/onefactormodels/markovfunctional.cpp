@@ -268,7 +268,7 @@ namespace QuantLib {
         ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIndexBase_, expiry, tenor);
 
         Schedule sched = underlying->fixedSchedule();
-        Calendar cal = sched.calendar();
+        const Calendar& cal = sched.calendar();
         BusinessDayConvention bdc = underlying->paymentConvention();
 
         for (unsigned int k = 1; k < sched.size(); k++) {
@@ -1054,10 +1054,14 @@ namespace QuantLib {
         return annuity;
     }
 
-    Real MarkovFunctional::swaptionPriceInternal(
-        const Option::Type &type, const Date &expiry, const Period &tenor,
-        const Rate strike, const Date &referenceDate, const Real y,
-        const bool zeroFixingDays, ext::shared_ptr<SwapIndex> swapIdx) const {
+    Real MarkovFunctional::swaptionPriceInternal(const Option::Type& type,
+                                                 const Date& expiry,
+                                                 const Period& tenor,
+                                                 const Rate strike,
+                                                 const Date& referenceDate,
+                                                 const Real y,
+                                                 const bool zeroFixingDays,
+                                                 const ext::shared_ptr<SwapIndex>& swapIdx) const {
 
         calculate();
 

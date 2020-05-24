@@ -17,28 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/credit/riskybond.hpp>
-#include <ql/experimental/credit/loss.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/experimental/credit/loss.hpp>
+#include <ql/experimental/credit/riskybond.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <utility>
 
 using namespace std;
 
 namespace QuantLib {
 
-    RiskyBond::RiskyBond(
-                 const std::string& name,
-                 const Currency& ccy,
-                 Real recoveryRate,
-                 const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                 const Handle<YieldTermStructure>& yieldTS,
-                 Natural settlementDays, Calendar calendar)
-    : name_(name), ccy_(ccy), recoveryRate_(recoveryRate),
-      defaultTS_(defaultTS), yieldTS_(yieldTS),
+    RiskyBond::RiskyBond(const std::string& name,
+                         const Currency& ccy,
+                         Real recoveryRate,
+                         const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                         const Handle<YieldTermStructure>& yieldTS,
+                         Natural settlementDays,
+                         const Calendar& calendar)
+    : name_(name), ccy_(ccy), recoveryRate_(recoveryRate), defaultTS_(defaultTS), yieldTS_(yieldTS),
       settlementDays_(settlementDays), calendar_(calendar) {
         registerWith (yieldTS_);
         registerWith (defaultTS_);
@@ -214,25 +213,20 @@ namespace QuantLib {
     }
 
     //------------------------------------------------------------------------
-    RiskyFloatingBond::RiskyFloatingBond(
-                            std::string name,
-                            Currency ccy,
-                            Real recoveryRate,
-                            Handle<DefaultProbabilityTermStructure> defaultTS,
-                            const Schedule& schedule,
-                            ext::shared_ptr<IborIndex> index,
-                            Integer fixingDays,
-                            Real spread,
-                            std::vector<Real> notionals,
-                            Handle<YieldTermStructure> yieldTS,
-                            Natural settlementDays)
-    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS,
-                settlementDays, schedule.calendar()),
-          schedule_(schedule),
-          index_(index),
-          fixingDays_(fixingDays),
-          spread_(spread),
-          notionals_(notionals) {
+    RiskyFloatingBond::RiskyFloatingBond(const std::string& name,
+                                         const Currency& ccy,
+                                         Real recoveryRate,
+                                         const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                                         const Schedule& schedule,
+                                         const ext::shared_ptr<IborIndex>& index,
+                                         Integer fixingDays,
+                                         Real spread,
+                                         const std::vector<Real>& notionals,
+                                         const Handle<YieldTermStructure>& yieldTS,
+                                         Natural settlementDays)
+    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS, settlementDays, schedule.calendar()),
+      schedule_(schedule), index_(index), fixingDays_(fixingDays), spread_(spread),
+      notionals_(notionals) {
 
         // FIXME: Take paymentConvention into account
         std::vector<Date> dates = schedule_.dates();

@@ -169,22 +169,30 @@ template <class Evaluation> class ZabrInterpolation : public Interpolation {
 //! no arbtrage sabr interpolation factory and traits
 template<class Evaluation> class Zabr {
   public:
-    Zabr(Time t, Real forward, Real alpha, Real beta, Real nu, Real rho,
-         Real gamma, bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed,
-         bool rhoIsFixed, bool gammaIsFixed, bool vegaWeighted = false,
-         const ext::shared_ptr<EndCriteria> endCriteria =
-             ext::shared_ptr<EndCriteria>(),
-         const ext::shared_ptr<OptimizationMethod> optMethod =
+    Zabr(Time t,
+         Real forward,
+         Real alpha,
+         Real beta,
+         Real nu,
+         Real rho,
+         Real gamma,
+         bool alphaIsFixed,
+         bool betaIsFixed,
+         bool nuIsFixed,
+         bool rhoIsFixed,
+         bool gammaIsFixed,
+         bool vegaWeighted = false,
+         const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
+         const ext::shared_ptr<OptimizationMethod>& optMethod =
              ext::shared_ptr<OptimizationMethod>(),
-         const Real errorAccept = 0.0020, const bool useMaxError = false,
+         const Real errorAccept = 0.0020,
+         const bool useMaxError = false,
          const Size maxGuesses = 50)
-        : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu),
-          rho_(rho), alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),
-          nuIsFixed_(nuIsFixed), rhoIsFixed_(rhoIsFixed),
-          gammaIsFixed_(gammaIsFixed), vegaWeighted_(vegaWeighted),
-          endCriteria_(endCriteria), optMethod_(optMethod),
-          errorAccept_(errorAccept), useMaxError_(useMaxError),
-          maxGuesses_(maxGuesses) {}
+    : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
+      alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed), nuIsFixed_(nuIsFixed),
+      rhoIsFixed_(rhoIsFixed), gammaIsFixed_(gammaIsFixed), vegaWeighted_(vegaWeighted),
+      endCriteria_(endCriteria), optMethod_(optMethod), errorAccept_(errorAccept),
+      useMaxError_(useMaxError), maxGuesses_(maxGuesses) {}
     template <class I1, class I2>
     Interpolation interpolate(const I1 &xBegin, const I1 &xEnd,
                               const I2 &yBegin) const {

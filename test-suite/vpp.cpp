@@ -330,7 +330,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     GeneralStatistics npv;
     const Size nTrails = 20000;
     for (Size i=0; i < nTrails; ++i) {
-        const sample_type path = generator.next();
+        const sample_type& path = generator.next();
 
         Array p(2);
         p[0] = path.value[0].back() + path.value[1].back();

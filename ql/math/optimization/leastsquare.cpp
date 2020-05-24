@@ -83,13 +83,11 @@ namespace QuantLib {
       c_(c)
     {}
 
-    NonLinearLeastSquare::NonLinearLeastSquare(
-                                     Constraint& c,
-                                     Real accuracy,
-                                     Size maxiter,
-                                     ext::shared_ptr<OptimizationMethod> om)
-    : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (om), c_(c) {}
+    NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c,
+                                               Real accuracy,
+                                               Size maxiter,
+                                               const ext::shared_ptr<OptimizationMethod>& om)
+    : exitFlag_(-1), accuracy_(accuracy), maxIterations_(maxiter), om_(om), c_(c) {}
 
     Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
         Real eps = accuracy_;

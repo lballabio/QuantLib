@@ -39,16 +39,16 @@ namespace QuantLib
     {
 
         public:
-            SwaptionPseudoDerivative(ext::shared_ptr<MarketModel> inputModel,
+          SwaptionPseudoDerivative(const ext::shared_ptr<MarketModel>& inputModel,
                                    Size startIndex,
                                    Size endIndex);
 
-            const Matrix& varianceDerivative(Size i) const;
-            const Matrix& volatilityDerivative(Size i) const;
+          const Matrix& varianceDerivative(Size i) const;
+          const Matrix& volatilityDerivative(Size i) const;
 
-            Real impliedVolatility() const;
-            Real variance() const;
-            Real expiry() const;
+          Real impliedVolatility() const;
+          Real variance() const;
+          Real expiry() const;
 
 
 
@@ -79,16 +79,16 @@ This is  tested in the pathwise vegas routine in MarketModels.cpp
     {
 
         public:
-            CapPseudoDerivative(ext::shared_ptr<MarketModel> inputModel,
-                                   Real strike,
-                                   Size startIndex,
-                                   Size endIndex, 
-                                   Real firstDF);
+          CapPseudoDerivative(const ext::shared_ptr<MarketModel>& inputModel,
+                              Real strike,
+                              Size startIndex,
+                              Size endIndex,
+                              Real firstDF);
 
-            const Matrix& volatilityDerivative(Size i) const;
-            const Matrix& priceDerivative(Size i) const;
+          const Matrix& volatilityDerivative(Size i) const;
+          const Matrix& priceDerivative(Size i) const;
 
-            Real impliedVolatility() const;
+          Real impliedVolatility() const;
 
 
 

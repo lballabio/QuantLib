@@ -23,16 +23,18 @@ using std::sqrt;
 
 namespace QuantLib {
 
-    KahaleSmileSection::KahaleSmileSection(
-        const ext::shared_ptr<SmileSection> source, const Real atm,
-        const bool interpolate, const bool exponentialExtrapolation,
-        const bool deleteArbitragePoints,
-        const std::vector<Real> &moneynessGrid, const Real gap,
-        const int forcedLeftIndex, const int forcedRightIndex)
-        : SmileSection(*source), source_(source), moneynessGrid_(moneynessGrid),
-          gap_(gap), interpolate_(interpolate),
-          exponentialExtrapolation_(exponentialExtrapolation),
-        forcedLeftIndex_(forcedLeftIndex), forcedRightIndex_(forcedRightIndex) {
+    KahaleSmileSection::KahaleSmileSection(const ext::shared_ptr<SmileSection>& source,
+                                           const Real atm,
+                                           const bool interpolate,
+                                           const bool exponentialExtrapolation,
+                                           const bool deleteArbitragePoints,
+                                           const std::vector<Real>& moneynessGrid,
+                                           const Real gap,
+                                           const int forcedLeftIndex,
+                                           const int forcedRightIndex)
+    : SmileSection(*source), source_(source), moneynessGrid_(moneynessGrid), gap_(gap),
+      interpolate_(interpolate), exponentialExtrapolation_(exponentialExtrapolation),
+      forcedLeftIndex_(forcedLeftIndex), forcedRightIndex_(forcedRightIndex) {
 
         // only shifted lognormal smile sections are supported
 

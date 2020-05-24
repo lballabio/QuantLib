@@ -347,8 +347,7 @@ namespace QuantLib {
 
     struct payoff_adapter {
         ext::shared_ptr<QuantLib::Payoff> payoff;
-        explicit payoff_adapter(ext::shared_ptr<QuantLib::Payoff> payoff)
-        : payoff(payoff) {}
+        explicit payoff_adapter(const ext::shared_ptr<QuantLib::Payoff>& payoff) : payoff(payoff) {}
         Real operator()(Real S) const {
             return (*payoff)(S);
         }

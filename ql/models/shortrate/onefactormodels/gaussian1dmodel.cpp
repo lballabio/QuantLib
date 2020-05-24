@@ -25,36 +25,37 @@ using std::exp;
 
 namespace QuantLib {
 
-Real Gaussian1dModel::forwardRate(const Date &fixing,
-                                  const Date &referenceDate, const Real y,
-                                  ext::shared_ptr<IborIndex> iborIdx) const {
+    Real Gaussian1dModel::forwardRate(const Date& fixing,
+                                      const Date& referenceDate,
+                                      const Real y,
+                                      const ext::shared_ptr<IborIndex>& iborIdx) const {
 
-    QL_REQUIRE(iborIdx != NULL, "no ibor index given");
+        QL_REQUIRE(iborIdx != NULL, "no ibor index given");
 
-    calculate();
+        calculate();
 
-    if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
-        return iborIdx->fixing(fixing);
+        if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
+            return iborIdx->fixing(fixing);
 
-    Handle<YieldTermStructure> yts =
-        iborIdx->forwardingTermStructure(); // might be empty, then use
-                                            // model curve
+        Handle<YieldTermStructure> yts = iborIdx->forwardingTermStructure(); // might be empty, then
+                                                                             // use model curve
 
-    Date valueDate = iborIdx->valueDate(fixing);
-    Date endDate = iborIdx->fixingCalendar().advance(
-        valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(),
-        iborIdx->endOfMonth());
-    // FIXME Here we should use the calculation date calendar ?
-    Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
+        Date valueDate = iborIdx->valueDate(fixing);
+        Date endDate = iborIdx->fixingCalendar().advance(
+            valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(), iborIdx->endOfMonth());
+        // FIXME Here we should use the calculation date calendar ?
+        Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
 
-    return (zerobond(valueDate, referenceDate, y, yts) -
-            zerobond(endDate, referenceDate, y, yts)) /
-           (dcf * zerobond(endDate, referenceDate, y, yts));
+        return (zerobond(valueDate, referenceDate, y, yts) -
+                zerobond(endDate, referenceDate, y, yts)) /
+               (dcf * zerobond(endDate, referenceDate, y, yts));
 }
 
-Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
-                               const Date &referenceDate, const Real y,
-                               ext::shared_ptr<SwapIndex> swapIdx) const {
+Real Gaussian1dModel::swapRate(const Date& fixing,
+                               const Period& tenor,
+                               const Date& referenceDate,
+                               const Real y,
+                               const ext::shared_ptr<SwapIndex>& swapIdx) const {
 
     QL_REQUIRE(swapIdx != NULL, "no swap index given");
 
@@ -110,9 +111,11 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
     return floatleg / annuity;
 }
 
-Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
-                                  const Date &referenceDate, const Real y,
-                                  ext::shared_ptr<SwapIndex> swapIdx) const {
+Real Gaussian1dModel::swapAnnuity(const Date& fixing,
+                                  const Period& tenor,
+                                  const Date& referenceDate,
+                                  const Real y,
+                                  const ext::shared_ptr<SwapIndex>& swapIdx) const {
 
     QL_REQUIRE(swapIdx != NULL, "no swap index given");
 

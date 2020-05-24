@@ -260,8 +260,7 @@ namespace inflation_volatility_test {
         DayCounter dc = Actual365Fixed();
         TARGET cal;
         BusinessDayConvention bdc = ModifiedFollowing;
-        ext::shared_ptr<QuantLib::YieldTermStructure> pn =
-            nominalEUR.currentLink();
+        const ext::shared_ptr<QuantLib::YieldTermStructure>& pn = nominalEUR.currentLink();
         Handle<QuantLib::YieldTermStructure> n(pn,false);
         ext::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> >
         cfEUprices(new InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic>(

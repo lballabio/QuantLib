@@ -251,12 +251,18 @@ void testSimulatedAnnealing(Size dimension, Size maxSteps, Size staticSteps){
     std::cout << "================================================================" << std::endl;
 }
 
-void testGaussianSA(Size dimension, Size maxSteps, Size staticSteps, Real initialTemp,
+void testGaussianSA(Size dimension,
+                    Size maxSteps,
+                    Size staticSteps,
+                    Real initialTemp,
                     Real finalTemp,
-                    GaussianSimulatedAnnealing::ResetScheme resetScheme = GaussianSimulatedAnnealing::ResetToBestPoint,
+                    GaussianSimulatedAnnealing::ResetScheme resetScheme =
+                        GaussianSimulatedAnnealing::ResetToBestPoint,
                     Size resetSteps = 150,
-                    GaussianSimulatedAnnealing::LocalOptimizeScheme optimizeScheme = GaussianSimulatedAnnealing::EveryBestPoint,
-                    ext::shared_ptr<OptimizationMethod> localOptimizer = ext::make_shared<LevenbergMarquardt>()){
+                    GaussianSimulatedAnnealing::LocalOptimizeScheme optimizeScheme =
+                        GaussianSimulatedAnnealing::EveryBestPoint,
+                    const ext::shared_ptr<OptimizationMethod>& localOptimizer =
+                        ext::make_shared<LevenbergMarquardt>()) {
 
     /*The ackley function has a large amount of local minima, but the
      * structure is symmetric, so if one could simply just ignore the

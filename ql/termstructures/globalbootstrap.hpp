@@ -245,10 +245,15 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     // setup cost function
     class TargetFunction : public CostFunction {
       public:
-        TargetFunction(const Size firstHelper, const Size numberHelpers, boost::function<Array()> additionalErrors,
-                       Curve *ts, const std::vector<Real> &lowerBounds, const std::vector<Real> &upperBounds)
-            : firstHelper_(firstHelper), numberHelpers_(numberHelpers), additionalErrors_(additionalErrors), ts_(ts),
-              lowerBounds_(lowerBounds), upperBounds_(upperBounds) {}
+        TargetFunction(const Size firstHelper,
+                       const Size numberHelpers,
+                       const boost::function<Array()>& additionalErrors,
+                       Curve* ts,
+                       const std::vector<Real>& lowerBounds,
+                       const std::vector<Real>& upperBounds)
+        : firstHelper_(firstHelper), numberHelpers_(numberHelpers),
+          additionalErrors_(additionalErrors), ts_(ts), lowerBounds_(lowerBounds),
+          upperBounds_(upperBounds) {}
 
         Real transformDirect(const Real x, const Size i) const {
             return (std::atan(x) + M_PI_2) / M_PI * (upperBounds_[i] - lowerBounds_[i]) + lowerBounds_[i];

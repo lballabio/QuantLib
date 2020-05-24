@@ -198,7 +198,7 @@ namespace QuantLib {
                                     .withConvention(Unadjusted)
                                     .withCalendar(calendar_)// fixed leg gets cal from sched
                                     .backwards();
-        Schedule yoySchedule = fixedSchedule;
+        const Schedule& yoySchedule = fixedSchedule;
         Spread spread = 0.0;
         Rate fixedRate = quote()->value();
 

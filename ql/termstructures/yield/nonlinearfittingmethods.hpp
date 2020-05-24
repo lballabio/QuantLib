@@ -48,7 +48,7 @@ namespace QuantLib {
       public:
         ExponentialSplinesFitting(bool constrainAtZero = true,
                                   const Array& weights = Array(),
-                                  ext::shared_ptr<OptimizationMethod> optimizationMethod =
+                                  const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
                                       ext::shared_ptr<OptimizationMethod>(),
                                   const Array& l2 = Array(),
                                   Real minCutoffTime = 0.0,
@@ -83,7 +83,7 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         NelsonSiegelFitting(const Array& weights = Array(),
-                            ext::shared_ptr<OptimizationMethod> optimizationMethod =
+                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
                                 ext::shared_ptr<OptimizationMethod>(),
                             const Array& l2 = Array(),
                             Real minCutoffTime = 0.0,
@@ -119,7 +119,7 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SvenssonFitting(const Array& weights = Array(),
-                        ext::shared_ptr<OptimizationMethod> optimizationMethod =
+                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
                             ext::shared_ptr<OptimizationMethod>(),
                         const Array& l2 = Array(),
                         Real minCutoffTime = 0.0,
@@ -164,7 +164,7 @@ namespace QuantLib {
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero = true,
                              const Array& weights = Array(),
-                             ext::shared_ptr<OptimizationMethod> optimizationMethod =
+                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
                                  ext::shared_ptr<OptimizationMethod>(),
                              const Array& l2 = Array(),
                              Real minCutoffTime = 0.0,
@@ -208,7 +208,7 @@ namespace QuantLib {
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero = true,
                                 const Array& weights = Array(),
-                                ext::shared_ptr<OptimizationMethod> optimizationMethod =
+                                const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
                                     ext::shared_ptr<OptimizationMethod>(),
                                 const Array& l2 = Array(),
                                 Real minCutoffTime = 0.0,
@@ -237,8 +237,8 @@ namespace QuantLib {
     class SpreadFittingMethod
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        SpreadFittingMethod(ext::shared_ptr<FittingMethod> method,
-                            Handle<YieldTermStructure> discountCurve,
+        SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
+                            const Handle<YieldTermStructure>& discountCurve,
                             Real minCutoffTime = 0.0,
                             Real maxCutoffTime = QL_MAX_REAL);
         #if defined(QL_USE_STD_UNIQUE_PTR)

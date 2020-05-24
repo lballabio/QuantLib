@@ -1150,7 +1150,8 @@ void AsianOptionTest::testAllFixingsInThePast() {
     Date exerciseDate = today + 2*Weeks;
     Date startDate = exerciseDate - 1*Years;
     std::vector<Date> fixingDates;
-    for (Integer i=0; i<12; ++i)
+    fixingDates.reserve(12);
+    for (Integer i = 0; i < 12; ++i)
         fixingDates.push_back(startDate + i*Months);
     Size pastFixings = 12;
 

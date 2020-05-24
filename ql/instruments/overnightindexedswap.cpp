@@ -52,26 +52,24 @@ namespace QuantLib {
     }
 
     OvernightIndexedSwap::OvernightIndexedSwap(
-                    Type type,
-                    std::vector<Real> nominals,
-                    const Schedule& schedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDC,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                    Spread spread,
-                    Natural paymentLag,
-                    BusinessDayConvention paymentAdjustment,
-                    Calendar paymentCalendar,
-                    bool telescopicValueDates)
-    : Swap(2), type_(type), nominals_(nominals),
-      paymentFrequency_(schedule.tenor().frequency()),
+        Type type,
+        const std::vector<Real>& nominals,
+        const Schedule& schedule,
+        Rate fixedRate,
+        const DayCounter& fixedDC,
+        const ext::shared_ptr<OvernightIndex>& overnightIndex,
+        Spread spread,
+        Natural paymentLag,
+        BusinessDayConvention paymentAdjustment,
+        Calendar paymentCalendar,
+        bool telescopicValueDates)
+    : Swap(2), type_(type), nominals_(nominals), paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag),
-      fixedRate_(fixedRate), fixedDC_(fixedDC),
-      overnightIndex_(overnightIndex), spread_(spread),
+      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
+      fixedDC_(fixedDC), overnightIndex_(overnightIndex), spread_(spread),
       telescopicValueDates_(telescopicValueDates) {
 
-          initialize(schedule);
+        initialize(schedule);
 
     }
 

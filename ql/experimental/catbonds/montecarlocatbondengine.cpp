@@ -24,9 +24,9 @@
 namespace QuantLib {
 
     MonteCarloCatBondEngine::MonteCarloCatBondEngine(
-                             const ext::shared_ptr<CatRisk> catRisk,
-                             const Handle<YieldTermStructure>& discountCurve,
-                             boost::optional<bool> includeSettlementDateFlows)
+        const ext::shared_ptr<CatRisk>& catRisk,
+        const Handle<YieldTermStructure>& discountCurve,
+        const boost::optional<bool>& includeSettlementDateFlows)
     : catRisk_(catRisk), discountCurve_(discountCurve),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
@@ -127,7 +127,7 @@ namespace QuantLib {
         return totalNPV;
     }
 
-    Real MonteCarloCatBondEngine::cashFlowRiskyValue(const ext::shared_ptr<CashFlow> cf, 
+    Real MonteCarloCatBondEngine::cashFlowRiskyValue(const ext::shared_ptr<CashFlow>& cf,
                                                      const NotionalPath& notionalPath) const {
         return cf->amount()*notionalPath.notionalRate(cf->date()); //TODO: fix for more complicated cashflows
     }

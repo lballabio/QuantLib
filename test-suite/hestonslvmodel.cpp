@@ -976,11 +976,11 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
 
 
 namespace {
-    ext::shared_ptr<Matrix> createLocalVolMatrixFromProcess(
-        ext::shared_ptr<BlackScholesMertonProcess> lvProcess,
-        const std::vector<Real>& strikes,
-        const std::vector<Date>& dates,
-        std::vector<Time>& times) {
+    ext::shared_ptr<Matrix>
+    createLocalVolMatrixFromProcess(const ext::shared_ptr<BlackScholesMertonProcess>& lvProcess,
+                                    const std::vector<Real>& strikes,
+                                    const std::vector<Date>& dates,
+                                    std::vector<Time>& times) {
 
         const ext::shared_ptr<LocalVolTermStructure> localVol =
             lvProcess->localVolatility().currentLink();

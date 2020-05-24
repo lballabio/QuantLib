@@ -311,7 +311,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
     MultiStepCoterminalSwaptions product
         = makeMultiStepCoterminalSwaptions(rateTimes, strike);
 
-    const EvolutionDescription evolution = product.evolution();
+    const EvolutionDescription& evolution = product.evolution();
     const Size numberOfFactors = nbRates;
     Spread displacement = marketData.displacements().front();
     Matrix jacobian =
@@ -393,7 +393,7 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
             PlainVanillaPayoff(Option::Call, strike));
         MultiStepSwaption product(rateTimes, startIndex, endIndex,payoff );
 
-        const EvolutionDescription evolution = product.evolution();
+        const EvolutionDescription& evolution = product.evolution();
         const Size numberOfFactors = nbRates;
         Spread displacement = marketData.displacements().front();
         Matrix jacobian =

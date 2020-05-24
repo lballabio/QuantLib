@@ -26,13 +26,11 @@
 
 namespace QuantLib {
 
-    MidPointCdsEngine::MidPointCdsEngine(
-                   const Handle<DefaultProbabilityTermStructure>& probability,
-                   Real recoveryRate,
-                   const Handle<YieldTermStructure>& discountCurve,
-                   boost::optional<bool> includeSettlementDateFlows)
-    : probability_(probability), recoveryRate_(recoveryRate),
-      discountCurve_(discountCurve),
+    MidPointCdsEngine::MidPointCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+                                         Real recoveryRate,
+                                         const Handle<YieldTermStructure>& discountCurve,
+                                         const boost::optional<bool>& includeSettlementDateFlows)
+    : probability_(probability), recoveryRate_(recoveryRate), discountCurve_(discountCurve),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(probability_);
         registerWith(discountCurve_);

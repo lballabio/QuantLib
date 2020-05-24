@@ -39,7 +39,7 @@ namespace QuantLib {
         Real log_asset_price = std::log(path.front());
         Real x, y;
         Volatility vol;
-        TimeGrid timeGrid = path.timeGrid();
+        const TimeGrid& timeGrid = path.timeGrid();
         Time dt;
         std::vector<Real> u = sequenceGen_.nextSequence().value;
         Real log_strike = std::log(payoff_->strike());

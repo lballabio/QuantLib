@@ -31,17 +31,16 @@
 
 namespace QuantLib {
 
-    IsdaCdsEngine::IsdaCdsEngine(
-        const Handle<DefaultProbabilityTermStructure> &probability,
-        Real recoveryRate, const Handle<YieldTermStructure> &discountCurve,
-        boost::optional<bool> includeSettlementDateFlows,
-        const NumericalFix numericalFix, const AccrualBias accrualBias,
-        const ForwardsInCouponPeriod forwardsInCouponPeriod)
-        : probability_(probability), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve),
-          includeSettlementDateFlows_(includeSettlementDateFlows),
-          numericalFix_(numericalFix), accrualBias_(accrualBias),
-          forwardsInCouponPeriod_(forwardsInCouponPeriod) {
+    IsdaCdsEngine::IsdaCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+                                 Real recoveryRate,
+                                 const Handle<YieldTermStructure>& discountCurve,
+                                 const boost::optional<bool>& includeSettlementDateFlows,
+                                 const NumericalFix numericalFix,
+                                 const AccrualBias accrualBias,
+                                 const ForwardsInCouponPeriod forwardsInCouponPeriod)
+    : probability_(probability), recoveryRate_(recoveryRate), discountCurve_(discountCurve),
+      includeSettlementDateFlows_(includeSettlementDateFlows), numericalFix_(numericalFix),
+      accrualBias_(accrualBias), forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
         registerWith(probability_);
         registerWith(discountCurve_);

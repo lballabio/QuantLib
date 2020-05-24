@@ -29,24 +29,15 @@ using namespace std;
 namespace QuantLib {
 
     Basket::Basket(const Date& refDate,
-        const vector<string>& names,
-        const vector<Real>& notionals,
-        const ext::shared_ptr<Pool> pool,
-        Real attachment,
-        Real detachment,
-        const ext::shared_ptr<Claim>& claim
-        )
-    : notionals_(notionals),
-      pool_(pool),
-      claim_(claim),
-      attachmentRatio_(attachment),
-      detachmentRatio_(detachment),
-      basketNotional_(0.0),
-      attachmentAmount_(0.0),
-      detachmentAmount_(0.0),
-      trancheNotional_(0.0),
-      refDate_(refDate)
-    {
+                   const vector<string>& names,
+                   const vector<Real>& notionals,
+                   const ext::shared_ptr<Pool>& pool,
+                   Real attachment,
+                   Real detachment,
+                   const ext::shared_ptr<Claim>& claim)
+    : notionals_(notionals), pool_(pool), claim_(claim), attachmentRatio_(attachment),
+      detachmentRatio_(detachment), basketNotional_(0.0), attachmentAmount_(0.0),
+      detachmentAmount_(0.0), trancheNotional_(0.0), refDate_(refDate) {
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
         QL_REQUIRE (attachmentRatio_ >= 0 &&
                     attachmentRatio_ <= detachmentRatio_ &&

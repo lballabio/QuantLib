@@ -763,8 +763,8 @@ namespace QuantLib {
           public:
             /* See a faster algorithm (neeeds to locate the points) in
             D.O'KANE p.249 sect 13.5 */
-            Root(const Handle<DefaultProbabilityTermStructure> dts, Real pd)
-                : dts_(dts), pd_(pd), curveRef_(dts->referenceDate()) {}
+            Root(const Handle<DefaultProbabilityTermStructure>& dts, Real pd)
+            : dts_(dts), pd_(pd), curveRef_(dts->referenceDate()) {}
             /* The cast I am forcing here comes from the requirement of 1D
             solvers to take in a target (cost) function of Real domain. It could
             be possible to change the template arg F in the 1D solvers to a

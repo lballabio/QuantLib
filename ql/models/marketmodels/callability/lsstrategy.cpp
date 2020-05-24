@@ -68,7 +68,7 @@ namespace QuantLib {
             }
         }
 
-        std::vector<Time> rateTimes = evolution.rateTimes();
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
         std::vector<Time> rebateTimes = exercise_->possibleCashFlowTimes();
         rebateDiscounters_.reserve(rebateTimes.size());
         for (i=0; i<rebateTimes.size(); ++i)
