@@ -66,8 +66,7 @@ namespace day_counters_test {
     };
 
     Time ISMAYearFractionWithReferenceDates(
-                                  DayCounter dayCounter, Date start, Date end,
-                                  Date refStart, Date refEnd) {
+        const DayCounter& dayCounter, Date start, Date end, Date refStart, Date refEnd) {
         Real referenceDayCount = Real(dayCounter.dayCount(refStart, refEnd));
         // guess how many coupon periods per year:
         Integer couponsPerYear = (Integer)(0.5 + 365.0 / referenceDayCount);
@@ -76,8 +75,7 @@ namespace day_counters_test {
             / (referenceDayCount*couponsPerYear);
     }
 
-    Time actualActualDaycountComputation(Schedule schedule,
-                                         Date start, Date end) {
+    Time actualActualDaycountComputation(const Schedule& schedule, Date start, Date end) {
 
         DayCounter daycounter = ActualActual(ActualActual::ISMA, schedule);
         Time yearFraction = 0.0;

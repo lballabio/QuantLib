@@ -77,8 +77,7 @@ namespace bonds_test {
         }
     };
 
-    void checkValue(Real value, Real expectedValue,
-                    Real tolerance, std::string msg) {
+    void checkValue(Real value, Real expectedValue, Real tolerance, const std::string& msg) {
         if (std::fabs(value - expectedValue) > tolerance) {
             BOOST_ERROR(msg
                         << std::fixed
