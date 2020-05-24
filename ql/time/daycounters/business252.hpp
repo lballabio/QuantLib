@@ -25,9 +25,10 @@
 #ifndef quantlib_business252_day_counter_hpp
 #define quantlib_business252_day_counter_hpp
 
-#include <ql/time/daycounter.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/daycounter.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -46,12 +47,11 @@ namespace QuantLib {
                               const Date& d2,
                               const Date&,
                               const Date&) const;
-            explicit Impl(Calendar c) { calendar_ = c; }
+            explicit Impl(const Calendar& c) : calendar_(c) {}
         };
       public:
-        Business252(Calendar c = Brazil())
-        : DayCounter(ext::shared_ptr<DayCounter::Impl>(
-                                                 new Business252::Impl(c))) {}
+        Business252(const Calendar& c = Brazil())
+        : DayCounter(ext::shared_ptr<DayCounter::Impl>(new Business252::Impl(c))) {}
     };
 
 }

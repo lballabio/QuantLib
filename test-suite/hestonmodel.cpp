@@ -1620,13 +1620,15 @@ void HestonModelTest::testExpansionOnFordeReference() {
 }
 
 namespace {
-    void reportOnIntegrationMethodTest(
-        VanillaOption& option,
-        const ext::shared_ptr<HestonModel>& model,
-        const AnalyticHestonEngine::Integration& integration,
-        AnalyticHestonEngine::ComplexLogFormula formula,
-        bool isAdaptive, Real expected, Real tol, Size valuations,
-        std::string method) {
+    void reportOnIntegrationMethodTest(VanillaOption& option,
+                                       const ext::shared_ptr<HestonModel>& model,
+                                       const AnalyticHestonEngine::Integration& integration,
+                                       AnalyticHestonEngine::ComplexLogFormula formula,
+                                       bool isAdaptive,
+                                       Real expected,
+                                       Real tol,
+                                       Size valuations,
+                                       const std::string& method) {
 
         if (integration.isAdaptiveIntegration() != isAdaptive)
             BOOST_ERROR(method << " is not an adaptive integration routine");

@@ -72,10 +72,8 @@ using namespace boost::unit_test_framework;
 namespace square_root_clv_model {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
-        CLVModelPayoff(Option::Type type, Real strike,
-                             const ext::function<Real(Real)> g)
-        : PlainVanillaPayoff(type, strike),
-          g_(g) { }
+        CLVModelPayoff(Option::Type type, Real strike, const ext::function<Real(Real)>& g)
+        : PlainVanillaPayoff(type, strike), g_(g) {}
 
         Real operator()(Real x) const {
             return PlainVanillaPayoff::operator()(g_(x));

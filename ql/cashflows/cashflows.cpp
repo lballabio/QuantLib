@@ -577,7 +577,7 @@ namespace QuantLib {
         }
 
         // helper fucntion used to calculate Time-To-Discount for each stage when calculating discount factor stepwisely
-        Time getStepwiseDiscountTime(const ext::shared_ptr<QuantLib::CashFlow> cashFlow,
+        Time getStepwiseDiscountTime(const ext::shared_ptr<QuantLib::CashFlow>& cashFlow,
                                      const DayCounter& dc,
                                      Date npvDate,
                                      Date lastDate) {

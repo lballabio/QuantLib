@@ -132,7 +132,7 @@ namespace QuantLib {
         Array annealStep(n, 1.0);
         Array bestPoint(x);
         Array currentPoint(x);
-        Array startingPoint(x);
+        const Array& startingPoint(x);
         Array newPoint(x);
         Real bestValue = P.value(bestPoint);
         Real currentValue = bestValue;

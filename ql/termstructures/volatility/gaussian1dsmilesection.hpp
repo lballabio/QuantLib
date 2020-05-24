@@ -44,13 +44,13 @@ class Gaussian1dSmileSection : public SmileSection {
                            const ext::shared_ptr<SwapIndex>& swapIndex,
                            const ext::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
-                           ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
+                           const ext::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine =
                                ext::shared_ptr<Gaussian1dSwaptionEngine>());
     Gaussian1dSmileSection(const Date& fixingDate,
                            const ext::shared_ptr<IborIndex>& swapIndex,
                            const ext::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
-                           ext::shared_ptr<Gaussian1dCapFloorEngine> capEngine =
+                           const ext::shared_ptr<Gaussian1dCapFloorEngine>& capEngine =
                                ext::shared_ptr<Gaussian1dCapFloorEngine>());
 
     // the minimum strike is zero only because we are

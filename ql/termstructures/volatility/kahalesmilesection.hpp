@@ -134,7 +134,7 @@ namespace QuantLib {
             mutable Real f_, b_;
         };
 
-        KahaleSmileSection(ext::shared_ptr<SmileSection> source,
+        KahaleSmileSection(const ext::shared_ptr<SmileSection>& source,
                            Real atm = Null<Real>(),
                            bool interpolate = false,
                            bool exponentialExtrapolation = false,

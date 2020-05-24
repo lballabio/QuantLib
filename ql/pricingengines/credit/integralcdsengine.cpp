@@ -26,15 +26,13 @@
 
 namespace QuantLib {
 
-    IntegralCdsEngine::IntegralCdsEngine(
-                   const Period& step,
-                   const Handle<DefaultProbabilityTermStructure>& probability,
-                   Real recoveryRate,
-                   const Handle<YieldTermStructure>& discountCurve,
-                   boost::optional<bool> includeSettlementDateFlows)
-    : integrationStep_(step), probability_(probability),
-      recoveryRate_(recoveryRate), discountCurve_(discountCurve),
-      includeSettlementDateFlows_(includeSettlementDateFlows) {
+    IntegralCdsEngine::IntegralCdsEngine(const Period& step,
+                                         const Handle<DefaultProbabilityTermStructure>& probability,
+                                         Real recoveryRate,
+                                         const Handle<YieldTermStructure>& discountCurve,
+                                         const boost::optional<bool>& includeSettlementDateFlows)
+    : integrationStep_(step), probability_(probability), recoveryRate_(recoveryRate),
+      discountCurve_(discountCurve), includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(probability_);
         registerWith(discountCurve_);
     }

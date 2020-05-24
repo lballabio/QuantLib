@@ -108,22 +108,24 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                         bool extrapolatePayoff = true,
                         bool flatPayoffExtrapolation = false) const;
 
-    Real forwardRate(const Date& fixing,
-                     const Date& referenceDate = Null<Date>(),
-                     Real y = 0.0,
-                     ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
+    Real
+    forwardRate(const Date& fixing,
+                const Date& referenceDate = Null<Date>(),
+                Real y = 0.0,
+                const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
 
     Real swapRate(const Date& fixing,
                   const Period& tenor,
                   const Date& referenceDate = Null<Date>(),
                   Real y = 0.0,
-                  ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
+                  const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
-    Real swapAnnuity(const Date& fixing,
-                     const Period& tenor,
-                     const Date& referenceDate = Null<Date>(),
-                     Real y = 0.0,
-                     ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
+    Real
+    swapAnnuity(const Date& fixing,
+                const Period& tenor,
+                const Date& referenceDate = Null<Date>(),
+                Real y = 0.0,
+                const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]

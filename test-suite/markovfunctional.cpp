@@ -240,10 +240,12 @@ namespace {
             30 * Years,  35 * Years,  40 * Years,  50 * Years,  60 * Years
         };
 
+        q6m.reserve(10 + 15 + 35);
         for (int i = 0; i < 10 + 15 + 35; i++) {
             q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(q6mh[i])));
         }
 
+        r6m.reserve(10);
         for (int i = 0; i < 10; i++) {
             r6m.push_back(ext::make_shared<DepositRateHelper>(
                 Handle<Quote>(q6m[i]), q6mh1[i],
@@ -338,6 +340,7 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > qSwAtm;
         for (int i = 0; i < 20; i++) {
             std::vector<Handle<Quote> > qSwAtmTmp;
+            qSwAtmTmp.reserve(14);
             for (int j = 0; j < 14; j++) {
                 qSwAtmTmp.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
                     new SimpleQuote(qSwAtmh[i * 14 + j]))));
@@ -415,6 +418,7 @@ namespace {
 
         for (int i = 0; i < 30; i++) {
             std::vector<Handle<Quote> > qSwSmileTmp;
+            qSwSmileTmp.reserve(9);
             for (int j = 0; j < 9; j++) {
                 qSwSmileTmp.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
                     new SimpleQuote(qSwSmileh[i * 9 + j]))));
@@ -444,6 +448,7 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > parameterGuess;
         for (int i = 0; i < 30; i++) {
             std::vector<Handle<Quote> > parameterGuessTmp;
+            parameterGuessTmp.reserve(4);
             for (int j = 0; j < 4; j++) {
                 parameterGuessTmp.push_back(
                     Handle<Quote>(ext::shared_ptr<Quote>(

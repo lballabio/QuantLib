@@ -32,7 +32,7 @@ namespace QuantLib {
     class AtmAdjustedSmileSection : public SmileSection {
 
       public:
-        AtmAdjustedSmileSection(ext::shared_ptr<SmileSection> source,
+        AtmAdjustedSmileSection(const ext::shared_ptr<SmileSection>& source,
                                 Real atm = Null<Real>(),
                                 bool recenterSmile = false);
 

@@ -41,7 +41,7 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
                                  const ext::shared_ptr<SwapIndex>& indexBase,
                                  const ext::shared_ptr<Gaussian1dModel>& model,
                                  const DayCounter& dc,
-                                 ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
+                                 const ext::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine =
                                      ext::shared_ptr<Gaussian1dSwaptionEngine>());
     //@{
     Date maxDate() const { return Date::maxDate(); }

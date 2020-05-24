@@ -32,9 +32,9 @@ namespace QuantLib {
 
     Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
     BasketGeneratingEngine::calibrationBasket(
-        const ext::shared_ptr<Exercise> &exercise,
-        ext::shared_ptr<SwapIndex> standardSwapBase,
-        ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        const ext::shared_ptr<Exercise>& exercise,
+        const ext::shared_ptr<SwapIndex>& standardSwapBase,
+        const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
         const CalibrationBasketType basketType) const {
 
         QL_REQUIRE(

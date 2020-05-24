@@ -32,14 +32,16 @@
 namespace QuantLib {
     class SABRVolTermStructure : public BlackVolatilityTermStructure {
       public:
-        SABRVolTermStructure(Real alpha, Real beta, Real gamma, Real rho,
-                             Real s0, Real r,
-                             const Date& referenceDate, const DayCounter dc)
-      : BlackVolatilityTermStructure(
-            referenceDate, NullCalendar(), Following, dc),
-        alpha_(alpha), beta_(beta),
-        gamma_(gamma), rho_(rho),
-        s0_(s0), r_(r) { }
+        SABRVolTermStructure(Real alpha,
+                             Real beta,
+                             Real gamma,
+                             Real rho,
+                             Real s0,
+                             Real r,
+                             const Date& referenceDate,
+                             const DayCounter& dc)
+        : BlackVolatilityTermStructure(referenceDate, NullCalendar(), Following, dc), alpha_(alpha),
+          beta_(beta), gamma_(gamma), rho_(rho), s0_(s0), r_(r) {}
 
         Date maxDate()   const { return Date::maxDate(); }
         Rate minStrike() const { return 0.0; }

@@ -32,9 +32,7 @@ namespace QuantLib {
         CTSMMCapletAlphaFormCalibration(
             const EvolutionDescription& evolution,
             const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const std::vector<ext::shared_ptr<
-                        PiecewiseConstantVariance> >&
-                                    displacedSwapVariances,
+            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
             const ext::shared_ptr<CurveState>& cs,
             Spread displacement,
@@ -42,8 +40,7 @@ namespace QuantLib {
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
             bool maximizeHomogeneity,
-            ext::shared_ptr<AlphaForm> parametricForm =
-                                    ext::shared_ptr<AlphaForm>());
+            const ext::shared_ptr<AlphaForm>& parametricForm = ext::shared_ptr<AlphaForm>());
         // inspector
         const std::vector<Real>& alpha() const;
         // actual calibration function
@@ -59,7 +56,7 @@ namespace QuantLib {
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
             bool maximizeHomogeneity,
-            ext::shared_ptr<AlphaForm> parametricForm,
+            const ext::shared_ptr<AlphaForm>& parametricForm,
 
             Size numberOfFactors,
             Integer steps,

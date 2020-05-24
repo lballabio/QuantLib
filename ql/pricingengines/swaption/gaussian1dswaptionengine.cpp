@@ -47,8 +47,8 @@ namespace QuantLib {
         VanillaSwap swap = *arguments_.swap;
         Option::Type type =
             arguments_.type == VanillaSwap::Payer ? Option::Call : Option::Put;
-        Schedule fixedSchedule = swap.fixedSchedule();
-        Schedule floatSchedule = swap.floatingSchedule();
+        const Schedule& fixedSchedule = swap.fixedSchedule();
+        const Schedule& floatSchedule = swap.floatingSchedule();
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);

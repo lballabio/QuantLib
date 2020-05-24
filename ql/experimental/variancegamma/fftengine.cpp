@@ -64,9 +64,8 @@ namespace QuantLib {
         VanillaOption::engine::update();
     }
 
-    void FFTEngine::calculateUncached(ext::shared_ptr<StrikedTypePayoff> payoff,
-        ext::shared_ptr<Exercise> exercise) const
-    {
+    void FFTEngine::calculateUncached(const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                                      const ext::shared_ptr<Exercise>& exercise) const {
         ext::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
         std::vector<ext::shared_ptr<Instrument> > optionList;
         optionList.push_back(option);

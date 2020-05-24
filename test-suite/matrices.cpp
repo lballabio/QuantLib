@@ -208,13 +208,13 @@ void MatricesTest::testSVD() {
         Matrix& A = testMatrices[j];
         SVD svd(A);
         // U is m x n
-        Matrix U = svd.U();
+        const Matrix& U = svd.U();
         // s is n long
         Array s = svd.singularValues();
         // S is n x n
         Matrix S = svd.S();
         // V is n x n
-        Matrix V = svd.V();
+        const Matrix& V = svd.V();
 
         for (Size i=0; i < S.rows(); i++) {
             if (S[i][i] != s[i])
