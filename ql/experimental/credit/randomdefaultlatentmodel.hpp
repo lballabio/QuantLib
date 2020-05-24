@@ -828,11 +828,11 @@ namespace QuantLib {
         Real accuracy_;
     public:
         // \todo: Allow a constructor building its own default latent model.
-      RandomDefaultLM(const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
-                      const std::vector<Real>& recoveries = std::vector<Real>(),
-                      Size nSims = 0, // stats will crash on div by zero, FIX ME.
-                      Real accuracy = 1.e-6,
-                      BigNatural seed = 2863311530UL)
+      explicit RandomDefaultLM(const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
+                               const std::vector<Real>& recoveries = std::vector<Real>(),
+                               Size nSims = 0, // stats will crash on div by zero, FIX ME.
+                               Real accuracy = 1.e-6,
+                               BigNatural seed = 2863311530UL)
       : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>(
             model->numFactors(), model->size(), model->copula(), nSims, seed),
         model_(model),
