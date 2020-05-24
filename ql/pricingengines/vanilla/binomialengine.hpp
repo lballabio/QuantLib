@@ -50,6 +50,24 @@ namespace QuantLib {
               one, while the two side points would be used for
               estimating partial derivatives.
     */
+
+    /*
+        As of 24 May 2020, I have updated the file to incorporate vega
+        computations.
+        The details' index are as follow:
+        - Create a new handle for the flat volatilty, stressed by a factor of
+            0.001.
+        - Create a new BS process that with every input the same but the stressed
+            volatility.
+        - Create a new tree based in the new BS process.
+        - Create a new BS lattice based on the new tree.
+        - The new option is initialized.
+        - Rollback and compute the PV for the new option.
+        - Line compute the vega by (Option2.NPV() - Option.NPV())/0.001, being Option 2 the
+            one with the stressed volaitility.
+        - Add vega to the output.
+
+    */
     template <class T>
     class BinomialVanillaEngine : public VanillaOption::engine {
       public:
@@ -83,6 +101,7 @@ namespace QuantLib {
         QL_REQUIRE(s0 > 0.0, "negative or null underlying given");
         Volatility v = process_->blackVolatility()->blackVol(
             arguments_.exercise->lastDate(), s0);
+        
         Date maturityDate = arguments_.exercise->lastDate();
         Rate r = process_->riskFreeRate()->zeroRate(maturityDate,
             rfdc, Continuous, NoFrequency);
@@ -100,6 +119,9 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> flatVol(
             ext::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, volcal, v, voldc)));
+        Handle<BlackVolTermStructure> flatVol2(
+            ext::shared_ptr<BlackVolTermStructure>(
+                new BlackConstantVol(referenceDate, volcal, v + 0.001, voldc))); //Second handle for stressed volatility 
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
@@ -112,17 +134,31 @@ namespace QuantLib {
                                       process_->stateVariable(),
                                       flatDividends, flatRiskFree, flatVol));
 
+        ext::shared_ptr<StochasticProcess1D> bs2(
+            new GeneralizedBlackScholesProcess(
+                process_->stateVariable(),
+                flatDividends, flatRiskFree, flatVol2));                 // Second BS process with stressed volatility
+
         TimeGrid grid(maturity, timeSteps_);
 
         ext::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
                                         payoff->strike()));
 
+        ext::shared_ptr<T> tree2(new T(bs2, maturity, timeSteps_,
+            payoff->strike()));                                          // Second tree with the new BS based on the stressed volatility
+
         ext::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, timeSteps_));
 
+        ext::shared_ptr<BlackScholesLattice<T> > lattice2(
+            new BlackScholesLattice<T>(tree2, r, maturity, timeSteps_)); // Second lattice with the volatility stressed tree and BS process
+
+        //Initialize the two option objects 
         DiscretizedVanillaOption option(arguments_, *process_, grid);
+        DiscretizedVanillaOption option2(arguments_, *process_, grid); 
 
         option.initialize(lattice, maturity);
+        option2.initialize(lattice2, maturity);
 
         // Partial derivatives calculated from various points in the
         // binomial tree 
@@ -159,12 +195,17 @@ namespace QuantLib {
 
         // Finally, rollback to t=0
         option.rollback(0.0);
+        option2.rollback(0.0);
         Real p0 = option.presentValue();
+        Real p0_2 = option2.presentValue(); // Compute the PV of the option with the stressed volatility
+
+        Real vega = (p0_2 - p0) / 0.001;
 
         // Store results
         results_.value = p0;
         results_.delta = delta;
         results_.gamma = gamma;
+        results_.vega = vega;
         results_.theta = blackScholesTheta(process_,
                                            results_.value,
                                            results_.delta,
