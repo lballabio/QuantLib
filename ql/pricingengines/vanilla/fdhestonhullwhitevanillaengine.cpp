@@ -192,7 +192,7 @@ namespace QuantLib {
             Real analyticNPV = option.NPV();
 
             ext::shared_ptr<FdHestonVanillaEngine> fdEngine(
-                    new FdHestonVanillaEngine(*model_, tGrid_, xGrid_, 
+                    new FdHestonVanillaEngine(*model_, tGrid_, xGrid_,
                                               vGrid_, dampingSteps_, 
                                               schemeDesc_));
             fdEngine->enableMultipleStrikesCaching(strikes_);

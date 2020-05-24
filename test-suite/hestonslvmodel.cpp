@@ -42,6 +42,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
+#include <ql/processes/hestonprocess.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
@@ -1924,6 +1925,17 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
     const ext::shared_ptr<Exercise> exercise
         = ext::make_shared<EuropeanExercise>(exerciseDate);
 
+    const ext::shared_ptr<HestonProcess> mixingProcess
+        = ext::shared_ptr<HestonProcess>(new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
+                                                           HestonProcess::QuadraticExponentialMartingale));
+    const ext::shared_ptr<HestonModel> mixingModel
+        = ext::make_shared<HestonModel>(mixingProcess);
+
+    const ext::shared_ptr<PricingEngine> fdEngineWithMixingFactor
+        = ext::make_shared<FdHestonVanillaEngine>(
+            mixingModel, 51, 401, 101, 0,
+            FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct, 0.1);
+
     const Real strikes[] = { s0, 1.1*s0 };
     for (Size i=0; i < LENGTH(strikes); ++i) {
         const Real strike = strikes[i];
@@ -1935,6 +1947,10 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
         option.setPricingEngine(fdEngine);
 
         const Real priceFDM = option.NPV();
+
+        option.setPricingEngine(fdEngineWithMixingFactor);
+
+        const Real priceFDMWithMix = option.NPV();
 
         option.setPricingEngine(mcEngine);
 
@@ -1953,6 +1969,13 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
                     << "\n MC Error : " << priceError
                     << "\n FDM Price: " << priceFDM);
         }
+
+        if (priceFDM != priceFDMWithMix) {
+            BOOST_ERROR("Heston mixing FDM price does not match with non-mixing FDM"
+                        << "\n Mixing FDM Price : " << priceFDMWithMix
+                        << "\n Non Mixing FDM Price : " << priceFDM);
+        }
+
     }
 }
 
