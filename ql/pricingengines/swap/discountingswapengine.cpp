@@ -25,12 +25,11 @@
 namespace QuantLib {
 
     DiscountingSwapEngine::DiscountingSwapEngine(
-                            const Handle<YieldTermStructure>& discountCurve,
-                            boost::optional<bool> includeSettlementDateFlows,
-                            Date settlementDate,
-                            Date npvDate)
-    : discountCurve_(discountCurve),
-      includeSettlementDateFlows_(includeSettlementDateFlows),
+        const Handle<YieldTermStructure>& discountCurve,
+        const boost::optional<bool>& includeSettlementDateFlows,
+        Date settlementDate,
+        Date npvDate)
+    : discountCurve_(discountCurve), includeSettlementDateFlows_(includeSettlementDateFlows),
       settlementDate_(settlementDate), npvDate_(npvDate) {
         registerWith(discountCurve_);
     }
@@ -69,10 +68,9 @@ namespace QuantLib {
         results_.startDiscounts.resize(n);
         results_.endDiscounts.resize(n);
 
-        bool includeRefDateFlows =
-            includeSettlementDateFlows_ ?
-            *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateEvents();
+        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
+                                       *includeSettlementDateFlows_ :
+                                       Settings::instance().includeReferenceDateEvents();
 
         for (Size i=0; i<n; ++i) {
             try {

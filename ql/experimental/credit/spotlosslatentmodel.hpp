@@ -68,9 +68,9 @@ namespace QuantLib {
             Real modelA,
             LatentModelIntegrationType::LatentModelIntegrationType integralType,
             const initTraits& ini = initTraits()
-            ); 
+            );
 
-        void resetBasket(const ext::shared_ptr<Basket> basket) const;
+        void resetBasket(ext::shared_ptr<Basket> basket) const;
         Probability conditionalDefaultProbability(const Date& date, Size iName,
             const std::vector<Real>& mktFactors) const;
         Probability conditionalDefaultProbability(Probability prob, Size iName,

@@ -152,7 +152,7 @@ namespace QuantLib {
 
         template <int intgDepth>
         Real scalarIntegrator(
-            ext::function<Real (const std::vector<Real>& arg1)> f, 
+            const ext::function<Real (const std::vector<Real>& arg1)>& f,
             const Real mFctr) const 
         {
             varBuffer_[intgDepth-1] = mFctr;
@@ -249,7 +249,7 @@ namespace QuantLib {
     //! Terminal integrand; scalar function version
     template<> 
     inline Real GaussianQuadMultidimIntegrator::scalarIntegrator<1>(
-        ext::function<Real (const std::vector<Real>& arg1)> f,
+        const ext::function<Real (const std::vector<Real>& arg1)>& f,
         const Real mFctr) const
     {
         varBuffer_[0] = mFctr;

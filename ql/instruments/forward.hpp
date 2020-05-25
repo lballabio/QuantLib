@@ -106,7 +106,7 @@ namespace QuantLib {
                                   Real forwardValue,
                                   Date settlementDate,
                                   Compounding compoundingConvention,
-                                  DayCounter dayCounter);
+                                  const DayCounter& dayCounter);
         //@}
       protected:
         Forward(const DayCounter& dayCounter,

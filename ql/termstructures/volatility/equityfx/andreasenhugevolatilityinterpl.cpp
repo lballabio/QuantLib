@@ -63,26 +63,17 @@ namespace QuantLib {
             const Array& marketVegas,
             const Array& lnMarketStrikes,
             const Array& previousNPVs,
-            const ext::shared_ptr<FdmMesherComposite> mesher,
+            const ext::shared_ptr<FdmMesherComposite>& mesher,
             Time dT,
             AndreasenHugeVolatilityInterpl::InterpolationType interpolationType)
-        : marketNPVs_(marketNPVs),
-          marketVegas_(marketVegas),
-          lnMarketStrikes_(lnMarketStrikes),
-          previousNPVs_(previousNPVs),
-          mesher_(mesher),
-          nGridPoints_(mesher->layout()->size()),
-          dT_(dT),
-          interpolationType_(
-              (lnMarketStrikes_.size() > 1)
-                  ? interpolationType
-                  : AndreasenHugeVolatilityInterpl::PiecewiseConstant),
-          dxMap_ (FirstDerivativeOp(0, mesher_)),
-          dxxMap_(SecondDerivativeOp(0, mesher_)),
-          d2CdK2_(dxMap_.mult(Array(mesher->layout()->size(), -1.0))
-                        .add(dxxMap_)),
-          mapT_  (0, mesher_) {
-        }
+        : marketNPVs_(marketNPVs), marketVegas_(marketVegas), lnMarketStrikes_(lnMarketStrikes),
+          previousNPVs_(previousNPVs), mesher_(mesher), nGridPoints_(mesher->layout()->size()),
+          dT_(dT), interpolationType_((lnMarketStrikes_.size() > 1) ?
+                                          interpolationType :
+                                          AndreasenHugeVolatilityInterpl::PiecewiseConstant),
+          dxMap_(FirstDerivativeOp(0, mesher_)), dxxMap_(SecondDerivativeOp(0, mesher_)),
+          d2CdK2_(dxMap_.mult(Array(mesher->layout()->size(), -1.0)).add(dxxMap_)),
+          mapT_(0, mesher_) {}
 
         Disposable<Array> d2CdK2(const Array& c) const {
             return d2CdK2_.apply(c);
@@ -194,7 +185,7 @@ namespace QuantLib {
         callCostFct_(callCostFct) { }
 
         Disposable<Array> values(const Array& sig) const {
-            if (putCostFct_ && callCostFct_) {
+            if ((putCostFct_ != 0) && (callCostFct_ != 0)) {
                 const Array pv = putCostFct_->values(sig);
                 const Array cv = callCostFct_->values(sig);
 
@@ -203,22 +194,21 @@ namespace QuantLib {
                 std::copy(cv.begin(), cv.end(), retVal.begin() + cv.size());
 
                 return retVal;
-            }
-            else if (putCostFct_)
+            } else if (putCostFct_ != 0)
                 return putCostFct_->values(sig);
-            else if (callCostFct_)
+            else if (callCostFct_ != 0)
                 return callCostFct_->values(sig);
             else
                 QL_FAIL("internal error: cost function not set");
         }
 
         Disposable<Array> initialValues() const {
-            if (putCostFct_ && callCostFct_)
+            if ((putCostFct_ != 0) && (callCostFct_ != 0))
                 return 0.5*(  putCostFct_->initialValues()
                             + callCostFct_->initialValues());
-            else if (putCostFct_)
+            else if (putCostFct_ != 0)
                 return putCostFct_->initialValues();
-            else if (callCostFct_)
+            else if (callCostFct_ != 0)
                 return callCostFct_->initialValues();
             else
                 QL_FAIL("internal error: cost function not set");
@@ -253,8 +243,7 @@ namespace QuantLib {
       maxStrike_(_maxStrike),
       optimizationMethod_(optimizationMethod),
       endCriteria_(endCriteria) {
-        QL_REQUIRE(nGridPoints > 2 && calibrationSet.size() > 0,
-                "undefined grid or calibration set");
+        QL_REQUIRE(nGridPoints > 2 && !calibrationSet.empty(), "undefined grid or calibration set");
 
         std::set<Real> strikes;
         std::set<Date> expiries;
@@ -302,8 +291,7 @@ namespace QuantLib {
             const Date expiry =
                 calibrationSet[i].first->exercise()->lastDate();
 
-            const Size l = std::distance(expiries.begin(),
-                std::lower_bound(expiries.begin(), expiries.end(), expiry));
+            const Size l = std::distance(expiries.begin(), expiries.lower_bound(expiry));
 
             const Real strike =
                 ext::dynamic_pointer_cast<PlainVanillaPayoff>(
@@ -472,9 +460,9 @@ namespace QuantLib {
             maxError_ = std::max(maxError_,
                 *std::max_element(vegaDiffs.begin(), vegaDiffs.end()));
 
-            if (putCostFct)
+            if (putCostFct != 0)
                 npvPuts = putCostFct->solveFor(dT_[i], sig, npvPuts);
-            if (callCostFct)
+            if (callCostFct != 0)
                 npvCalls= callCostFct->solveFor(dT_[i], sig, npvCalls);
         }
 

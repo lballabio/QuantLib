@@ -284,9 +284,9 @@ namespace QuantLib {
                        Option::Type optionType);
             Real operator()(Real x) const;
           protected:
-            Real functionF(const Real x) const;
-            Real firstDerivativeOfF(const Real x) const;
-            Real secondDerivativeOfF(const Real x) const;
+            Real functionF(Real x) const;
+            Real firstDerivativeOfF(Real x) const;
+            Real secondDerivativeOfF(Real x) const;
 
             Real strike() const;
             Real annuity() const;

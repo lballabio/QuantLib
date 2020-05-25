@@ -56,7 +56,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // 2nd Day of Christmas
             || (d == 26 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

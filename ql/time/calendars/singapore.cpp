@@ -110,7 +110,7 @@ namespace QuantLib {
             || (d == 8 && m == August && y == 2013)
             || (d == 28 && m == July && y == 2014)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

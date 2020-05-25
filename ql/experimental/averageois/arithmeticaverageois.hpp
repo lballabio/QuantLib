@@ -48,18 +48,17 @@ namespace QuantLib {
                     Real meanReversionSpeed = 0.03,
                     Real volatility = 0.00, // NO convexity adjustment by default
                     bool byApprox = false); // TRUE to use Katsumi Takada approximation
-        ArithmeticAverageOIS(
-                    Type type,
-                    std::vector<Real> nominals,
-                    const Schedule& fixedLegSchedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDC,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                    const Schedule& overnightLegSchedule,
-                    Spread spread = 0.0,
-                    Real meanReversionSpeed = 0.03,
-                    Real volatility = 0.00, // NO convexity adjustment by default
-                    bool byApprox = false); // TRUE to use Katsumi Takada approximation
+        ArithmeticAverageOIS(Type type,
+                             const std::vector<Real>& nominals,
+                             const Schedule& fixedLegSchedule,
+                             Rate fixedRate,
+                             const DayCounter& fixedDC,
+                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             const Schedule& overnightLegSchedule,
+                             Spread spread = 0.0,
+                             Real meanReversionSpeed = 0.03,
+                             Real volatility = 0.00, // NO convexity adjustment by default
+                             bool byApprox = false); // TRUE to use Katsumi Takada approximation
         //! \name Inspectors
         //@{
         Type type() const { return type_; }

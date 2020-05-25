@@ -123,7 +123,7 @@ namespace QuantLib {
                           const ext::shared_ptr<Seasonality>& seasonality) {
         // always reset, whether with null or new pointer
         seasonality_ = seasonality;
-        if (seasonality_) {
+        if (seasonality_ != 0) {
             QL_REQUIRE(seasonality_->isConsistent(*this),
                        "Seasonality inconsistent with "
                        "inflation term structure");
@@ -460,12 +460,28 @@ namespace QuantLib {
             endMonth = December;
             break;
           case Semiannual:
-            startMonth = Month(6*((month-1)/6) + 1);
-            endMonth = Month(startMonth + 5);
+            if (month <= June) {
+                startMonth = January;
+                endMonth = June;
+            } else {
+                startMonth = July;
+                endMonth = December;
+            }
             break;
           case Quarterly:
-            startMonth = Month(3*((month-1)/3) + 1);
-            endMonth = Month(startMonth + 2);
+            if (month <= March) {
+                startMonth = January;
+                endMonth = March;
+            } else if (month <= June) {
+                startMonth = April;
+                endMonth = June;
+            } else if (month <= September) {
+                startMonth = July;
+                endMonth = September;
+            } else {
+                startMonth = October;
+                endMonth = December;
+            }
             break;
           case Monthly:
             startMonth = endMonth = month;

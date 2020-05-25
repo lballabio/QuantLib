@@ -60,7 +60,7 @@ namespace QuantLib {
             // Boxing Day, December 26th (possibly Monday or Tuesday)
             || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
                 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

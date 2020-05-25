@@ -22,18 +22,14 @@
 
 namespace QuantLib {
 
-    LMMNormalDriftCalculator::LMMNormalDriftCalculator(
-                                         const Matrix& pseudo,
-                                         const std::vector<Time>& taus,
-                                         Size numeraire,
-                                         Size alive)
+    LMMNormalDriftCalculator::LMMNormalDriftCalculator(const Matrix& pseudo,
+                                                       const std::vector<Time>& taus,
+                                                       Size numeraire,
+                                                       Size alive)
     : numberOfRates_(taus.size()), numberOfFactors_(pseudo.columns()),
-      isFullFactor_(numberOfFactors_==numberOfRates_ ? true : false),
-      numeraire_(numeraire), alive_(alive),
-      oneOverTaus_(taus.size()),
-      pseudo_(pseudo), tmp_(taus.size(), 0.0),
-      e_(pseudo_.columns(), pseudo_.rows(), 0.0),
-      downs_(taus.size()), ups_(taus.size()) {
+      isFullFactor_(numberOfFactors_ == numberOfRates_), numeraire_(numeraire), alive_(alive),
+      oneOverTaus_(taus.size()), pseudo_(pseudo), tmp_(taus.size(), 0.0),
+      e_(pseudo_.columns(), pseudo_.rows(), 0.0), downs_(taus.size()), ups_(taus.size()) {
 
         // Check requirements
         QL_REQUIRE(numberOfRates_>0, "Dim out of range");

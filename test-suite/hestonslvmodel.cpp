@@ -666,10 +666,10 @@ namespace {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
               ++iter) {
-            if (!iter.coordinates()[1]) {
+            if (iter.coordinates()[1] == 0u) {
                 x.push_back(mesher->location(iter, 0));
             }
-            if (!iter.coordinates()[0]) {
+            if (iter.coordinates()[0] == 0u) {
                 y.push_back(mesher->location(iter, 1));
             }
         }
@@ -900,7 +900,7 @@ namespace {
                 }
             }
 
-            avg/=LENGTH(strikes);
+            avg/=LENGTH(strikes); // NOLINT(bugprone-integer-division)
 
             if (avg > testCase.avgEps) {
                 BOOST_FAIL("failed to reproduce Heston SLV prices"
@@ -977,11 +977,11 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquation() {
 
 
 namespace {
-    ext::shared_ptr<Matrix> createLocalVolMatrixFromProcess(
-        ext::shared_ptr<BlackScholesMertonProcess> lvProcess,
-        const std::vector<Real>& strikes,
-        const std::vector<Date>& dates,
-        std::vector<Time>& times) {
+    ext::shared_ptr<Matrix>
+    createLocalVolMatrixFromProcess(const ext::shared_ptr<BlackScholesMertonProcess>& lvProcess,
+                                    const std::vector<Real>& strikes,
+                                    const std::vector<Date>& dates,
+                                    std::vector<Time>& times) {
 
         const ext::shared_ptr<LocalVolTermStructure> localVol =
             lvProcess->localVolatility().currentLink();

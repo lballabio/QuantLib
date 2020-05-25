@@ -100,10 +100,9 @@ namespace QuantLib {
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
-                          const ext::shared_ptr<Claim>& =
-                                                  ext::shared_ptr<Claim>(),
+                          const ext::shared_ptr<Claim>& = ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
-                          const bool rebatesAccrual = true);
+                          bool rebatesAccrual = true);
         //! CDS quoted as upfront and running spread
         /*! @param side  Whether the protection is bought or sold.
             @param notional  Notional value
@@ -148,10 +147,9 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
-                          const ext::shared_ptr<Claim>& =
-                                                  ext::shared_ptr<Claim>(),
+                          const ext::shared_ptr<Claim>& = ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
-                          const bool rebatesAccrual = true);
+                          bool rebatesAccrual = true);
         //@}
         //! \name Instrument interface
         //@{

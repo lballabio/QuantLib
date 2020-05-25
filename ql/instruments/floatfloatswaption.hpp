@@ -64,11 +64,10 @@ namespace QuantLib {
         }
         //@}
         Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
-        calibrationBasket(
-            ext::shared_ptr<SwapIndex> standardSwapBase,
-            ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
-            const BasketGeneratingEngine::CalibrationBasketType basketType =
-                BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
+        calibrationBasket(const ext::shared_ptr<SwapIndex>& standardSwapBase,
+                          const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
+                          BasketGeneratingEngine::CalibrationBasketType basketType =
+                              BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
 
       private:
         // arguments

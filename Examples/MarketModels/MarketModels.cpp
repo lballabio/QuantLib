@@ -79,10 +79,8 @@ namespace QuantLib {
 #endif
 
 
-std::vector<std::vector<Matrix> > theVegaBumps(bool factorwiseBumping,
-                                               ext::shared_ptr<MarketModel> marketModel,
-                                               bool doCaps)
-{
+std::vector<std::vector<Matrix> >
+theVegaBumps(bool factorwiseBumping, const ext::shared_ptr<MarketModel>& marketModel, bool doCaps) {
     Real multiplierCutOff = 50.0;
     Real projectionTolerance = 1E-4;
     Size numberRates= marketModel->numberOfRates();
@@ -196,7 +194,7 @@ int Bermudan()
         CallSpecifiedMultiProduct(receiverSwap, naifStrategy,
         ExerciseAdapter(nullRebate));
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
 
 
     // parameters for models
@@ -537,7 +535,7 @@ int InverseFloater(Real rateLevel)
         CallSpecifiedMultiProduct(inverseFloater, naifStrategy,
         ExerciseAdapter(nullRebate));
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
 
 
     // parameters for models

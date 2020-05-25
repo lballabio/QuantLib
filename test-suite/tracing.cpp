@@ -58,7 +58,7 @@ namespace {
         #if defined(QL_ENABLE_TRACING)
         std::string expected = result;
         #else
-        std::string expected = "";
+        std::string expected;
         #endif
         if (output.str() != expected) {
             BOOST_FAIL("wrong trace:\n"

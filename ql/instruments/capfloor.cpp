@@ -276,7 +276,7 @@ namespace QuantLib {
             ext::shared_ptr<LazyObject> f =
                 ext::dynamic_pointer_cast<LazyObject>(
                     floatingLeg_[i]);
-            if (f)
+            if (f != 0)
                 f->update();
         }
         update();

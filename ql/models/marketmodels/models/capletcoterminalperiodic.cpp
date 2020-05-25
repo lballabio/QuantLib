@@ -122,7 +122,9 @@ namespace QuantLib
                 caplet0Swaption1Priority);
 
 
-            failures= unperiodicCalibrator.calibrate(numberOfFactors, maxUnperiodicIterations,toleranceUnperiodic,max1dIterations,tolerance1d);
+            failures = static_cast<QuantLib::Integer>(
+                unperiodicCalibrator.calibrate(numberOfFactors, maxUnperiodicIterations,
+                                               toleranceUnperiodic, max1dIterations, tolerance1d));
 
             swapCovariancePseudoRoots = unperiodicCalibrator.swapPseudoRoots();
 

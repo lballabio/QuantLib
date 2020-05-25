@@ -364,7 +364,7 @@ namespace QuantLib {
         for (Size k = 0; k < cashflows_.size(); ++k) {
             ext::shared_ptr<LazyObject> f =
                 ext::dynamic_pointer_cast<LazyObject>(cashflows_[k]);
-            if (f)
+            if (f != 0)
                 f->update();
         }
         update();

@@ -301,7 +301,7 @@ namespace QuantLib {
     }
 
     Time JointStochasticProcess::time(const Date& date) const {
-        QL_REQUIRE(l_.size() > 0, "process list is empty");
+        QL_REQUIRE(!l_.empty(), "process list is empty");
 
         return l_[0]->time(date);
     }

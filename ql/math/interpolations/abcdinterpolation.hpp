@@ -215,19 +215,20 @@ namespace QuantLib {
     /*! \ingroup interpolations */
     class Abcd {
       public:
-        Abcd(Real a, Real b, Real c, Real d,
-             bool aIsFixed, bool bIsFixed,
-             bool cIsFixed, bool dIsFixed,
+        Abcd(Real a,
+             Real b,
+             Real c,
+             Real d,
+             bool aIsFixed,
+             bool bIsFixed,
+             bool cIsFixed,
+             bool dIsFixed,
              bool vegaWeighted = false,
-             const ext::shared_ptr<EndCriteria> endCriteria
-                 = ext::shared_ptr<EndCriteria>(),
-             const ext::shared_ptr<OptimizationMethod> optMethod
-                 = ext::shared_ptr<OptimizationMethod>())
-        : a_(a), b_(b), c_(c), d_(d),
-          aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
-          cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
-          vegaWeighted_(vegaWeighted),
-          endCriteria_(endCriteria),
+             const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
+             const ext::shared_ptr<OptimizationMethod>& optMethod =
+                 ext::shared_ptr<OptimizationMethod>())
+        : a_(a), b_(b), c_(c), d_(d), aIsFixed_(aIsFixed), bIsFixed_(bIsFixed), cIsFixed_(cIsFixed),
+          dIsFixed_(dIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(endCriteria),
           optMethod_(optMethod) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,

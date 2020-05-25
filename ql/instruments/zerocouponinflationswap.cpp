@@ -18,10 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/instruments/zerocouponinflationswap.hpp>
-#include <ql/indexes/inflationindex.hpp>
-#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/indexedcashflow.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
+#include <ql/indexes/inflationindex.hpp>
+#include <ql/instruments/zerocouponinflationswap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -33,24 +34,21 @@ namespace QuantLib {
     ZeroCouponInflationSwap::ZeroCouponInflationSwap(
         Type type,
         Real nominal,
-        const Date& startDate,  // start date of contract (only)
-        const Date& maturity,   // this is pre-adjustment!
+        const Date& startDate, // start date of contract (only)
+        const Date& maturity,  // this is pre-adjustment!
         const Calendar& fixCalendar,
         BusinessDayConvention fixConvention,
         const DayCounter& dayCounter,
         Rate fixedRate,
-        const ext::shared_ptr<ZeroInflationIndex> &infIndex,
+        const ext::shared_ptr<ZeroInflationIndex>& infIndex,
         const Period& observationLag,
         bool adjustInfObsDates,
-        Calendar infCalendar,
+        const Calendar& infCalendar,
         BusinessDayConvention infConvention)
-    : Swap(2), type_(type), nominal_(nominal),
-      startDate_(startDate), maturityDate_(maturity),
-      fixCalendar_(fixCalendar), fixConvention_(fixConvention),
-      fixedRate_(fixedRate), infIndex_(infIndex),
-      observationLag_(observationLag), adjustInfObsDates_(adjustInfObsDates),
-      infCalendar_(infCalendar), infConvention_(infConvention),
-      dayCounter_(dayCounter) {
+    : Swap(2), type_(type), nominal_(nominal), startDate_(startDate), maturityDate_(maturity),
+      fixCalendar_(fixCalendar), fixConvention_(fixConvention), fixedRate_(fixedRate),
+      infIndex_(infIndex), observationLag_(observationLag), adjustInfObsDates_(adjustInfObsDates),
+      infCalendar_(infCalendar), infConvention_(infConvention), dayCounter_(dayCounter) {
         // first check compatibility of index and swap definitions
         if (infIndex_->interpolated()) {
             Period pShift(infIndex_->frequency());

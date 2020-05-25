@@ -46,21 +46,27 @@ namespace QuantLib {
         for (;j<KK+KK-1;j++) u[j]=ul[j]=0.0;
         u[1]+=ulp;ul[1]=ulp;            // make u[1] (and only u[1]) "odd"
         s=seed&0x3fffffff;
-        t=TT-1; while (t) {
+        t=TT-1;
+        while (t != 0) {
             for (j=KK-1;j>0;--j) ul[j+j]=ul[j],u[j+j]=u[j];    // "square"
             for (j=KK+KK-2;j>KK-LL;j-=2)
                 ul[KK+KK-1-j]=0.0,u[KK+KK-1-j]=u[j]-ul[j];
-            for (j=KK+KK-2;j>=KK;--j) if(ul[j]) {
-                ul[j-(KK-LL)]=ulp-ul[j-(KK-LL)],
-                    u[j-(KK-LL)]=mod_sum(u[j-(KK-LL)],u[j]);
-                ul[j-KK]=ulp-ul[j-KK],u[j-KK]=mod_sum(u[j-KK],u[j]);
+            for (j=KK+KK-2;j>=KK;--j)
+                if (ul[j] != 0.0) {
+                    ul[j - (KK - LL)] = ulp - ul[j - (KK - LL)],
+                                 u[j - (KK - LL)] = mod_sum(u[j - (KK - LL)], u[j]);
+                    ul[j - KK] = ulp - ul[j - KK], u[j - KK] = mod_sum(u[j - KK], u[j]);
             }
             if (is_odd(s)) {                            // "multiply by z"
                 for (j=KK;j>0;--j)  ul[j]=ul[j-1],u[j]=u[j-1];
                 ul[0]=ul[KK],u[0]=u[KK];    // shift the buffer cyclically
-                if (ul[KK]) ul[LL]=ulp-ul[LL],u[LL]=mod_sum(u[LL],u[KK]);
+                if (ul[KK] != 0.0)
+                    ul[LL] = ulp - ul[LL], u[LL] = mod_sum(u[LL], u[KK]);
             }
-            if (s) s>>=1; else t--;
+            if (s != 0)
+                s >>= 1;
+            else
+                t--;
         }
         for (j=0;j<LL;j++) ran_u[j+KK-LL]=u[j];
         for (;j<KK;j++) ran_u[j-LL]=u[j];

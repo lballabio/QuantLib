@@ -61,7 +61,7 @@ namespace QuantLib {
             || (d == 26 && m == December)
             // New Year's Eve
             || (d == 31 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

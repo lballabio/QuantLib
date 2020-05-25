@@ -277,7 +277,7 @@ namespace market_model_smm_test {
     std::vector<Size> makeMeasure(const MarketModelMultiProduct& product,
                                   MeasureType measureType) {
         std::vector<Size> result;
-        EvolutionDescription evolution(product.evolution());
+        const EvolutionDescription& evolution(product.evolution());
         switch (measureType) {
           case ProductSuggested:
             result = product.suggestedNumeraires();
@@ -346,11 +346,12 @@ namespace market_model_smm_test {
         }
     }
 
-    void checkCoterminalSwapsAndSwaptions(const SequenceStatisticsInc& stats,
-                                          const Rate fixedRate,
-                                          const std::vector<ext::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
-                                          const ext::shared_ptr<MarketModel>, //marketModel,
-                                          const std::string& config) {
+    void checkCoterminalSwapsAndSwaptions(
+        const SequenceStatisticsInc& stats,
+        const Rate fixedRate,
+        const std::vector<ext::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
+        const ext::shared_ptr<MarketModel>&, // marketModel,
+        const std::string& config) {
 
         std::vector<Real> results = stats.mean();
         std::vector<Real> errors = stats.errorEstimate();

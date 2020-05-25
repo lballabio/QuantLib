@@ -37,83 +37,71 @@ namespace QuantLib {
     // Implementation of helper class HaganIrregularSwaptionEngine::Basket  //
     //////////////////////////////////////////////////////////////////////////
 
-    HaganIrregularSwaptionEngine::Basket::Basket(ext::shared_ptr<IrregularSwap> swap,
+    HaganIrregularSwaptionEngine::Basket::Basket(
+        const ext::shared_ptr<IrregularSwap>& swap,
         const Handle<YieldTermStructure>& termStructure,
         const Handle<SwaptionVolatilityStructure>& volatilityStructure)
-        :swap_(swap),termStructure_(termStructure),volatilityStructure_(volatilityStructure),targetNPV_(0.0),lambda_(0.0){
+    : swap_(swap), termStructure_(termStructure), volatilityStructure_(volatilityStructure),
+      targetNPV_(0.0), lambda_(0.0) {
 
-            engine_ = ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure_));
+        engine_ = ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure_));
 
-            //store swap npv 
-            swap_->setPricingEngine(engine_);
-            targetNPV_ = swap_->NPV();
+        // store swap npv
+        swap_->setPricingEngine(engine_);
+        targetNPV_ = swap_->NPV();
 
-            //build standard swaps 
+        // build standard swaps
 
-            const Leg& fixedLeg = swap_->fixedLeg();
-            const Leg& floatLeg = swap_->floatingLeg();
+        const Leg& fixedLeg = swap_->fixedLeg();
+        const Leg& floatLeg = swap_->floatingLeg();
 
-            Leg fixedCFS,floatCFS;
+        Leg fixedCFS, floatCFS;
 
-            for(Size i = 0; i < fixedLeg.size(); ++i)  
-            {
-                //retrieve fixed rate coupon from fixed leg
-                ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
-                QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
+        for (Size i = 0; i < fixedLeg.size(); ++i) {
+            // retrieve fixed rate coupon from fixed leg
+            ext::shared_ptr<FixedRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
+            QL_REQUIRE(coupon, "dynamic cast of fixed leg coupon failed.");
 
-                expiries_.push_back(coupon->date());
+            expiries_.push_back(coupon->date());
 
-                ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon> (
-                    coupon->date(),
-                    1.0,
-                    coupon->rate(),
-                    coupon->dayCounter(),
-                    coupon->accrualStartDate(),
-                    coupon->accrualEndDate(),
-                    coupon->referencePeriodStart(),
-                    coupon->referencePeriodEnd()); 
+            ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon>(
+                coupon->date(), 1.0, coupon->rate(), coupon->dayCounter(),
+                coupon->accrualStartDate(), coupon->accrualEndDate(),
+                coupon->referencePeriodStart(), coupon->referencePeriodEnd());
 
-                fixedCFS.push_back(newCpn);
+            fixedCFS.push_back(newCpn);
 
-                annuities_.push_back(10000*CashFlows::bps(fixedCFS,**termStructure_,true));
+            annuities_.push_back(10000 * CashFlows::bps(fixedCFS, **termStructure_, true));
 
-                floatCFS.clear();
+            floatCFS.clear();
 
-                for(Size j = 0; j < floatLeg.size(); ++j){
-                    //retrieve ibor coupon from floating leg
-                    ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
-                    QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
+            for (Size j = 0; j < floatLeg.size(); ++j) {
+                // retrieve ibor coupon from floating leg
+                ext::shared_ptr<IborCoupon> coupon =
+                    ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
+                QL_REQUIRE(coupon, "dynamic cast of float leg coupon failed.");
 
-                    if( coupon->date() <= expiries_[i] ){
-                        ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
-                            new  IborCoupon(coupon->date(),
-                            1.0,
-                            coupon->accrualStartDate(),
-                            coupon->accrualEndDate(),
-                            coupon->fixingDays(),
-                            coupon->iborIndex(),
-                            1.0,
-                            coupon->spread(),
-                            coupon->referencePeriodStart(),
-                            coupon->referencePeriodEnd(),
-                            coupon->dayCounter(),
-                            coupon->isInArrears())); 
+                if (coupon->date() <= expiries_[i]) {
+                    ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon>(new IborCoupon(
+                        coupon->date(), 1.0, coupon->accrualStartDate(), coupon->accrualEndDate(),
+                        coupon->fixingDays(), coupon->iborIndex(), 1.0, coupon->spread(),
+                        coupon->referencePeriodStart(), coupon->referencePeriodEnd(),
+                        coupon->dayCounter(), coupon->isInArrears()));
 
 
-                        if (!newCpn->isInArrears())
-                            newCpn->setPricer(
-                                         ext::shared_ptr<FloatingRateCouponPricer>(
-                                                  new BlackIborCouponPricer()));
+                    if (!newCpn->isInArrears())
+                        newCpn->setPricer(
+                            ext::shared_ptr<FloatingRateCouponPricer>(new BlackIborCouponPricer()));
 
-                        floatCFS.push_back(newCpn);
-                    }
+                    floatCFS.push_back(newCpn);
                 }
-
-                Real floatLegNPV = CashFlows::npv(floatCFS,**termStructure_,true);
-
-                fairRates_.push_back(floatLegNPV/annuities_[i]);
-
             }
+
+            Real floatLegNPV = CashFlows::npv(floatCFS, **termStructure_, true);
+
+            fairRates_.push_back(floatLegNPV / annuities_[i]);
+        }
 
     }
 
@@ -239,12 +227,10 @@ namespace QuantLib {
     ///////////////////////////////////////////////////////////
 
 
-    HaganIrregularSwaptionEngine::HaganIrregularSwaptionEngine(const Handle<SwaptionVolatilityStructure>& volatilityStructure,
+    HaganIrregularSwaptionEngine::HaganIrregularSwaptionEngine(
+        const Handle<SwaptionVolatilityStructure>& volatilityStructure,
         const Handle<YieldTermStructure>& termStructure)
-        : GenericEngine<IrregularSwaption::arguments,IrregularSwaption::results>(),
-        termStructure_(termStructure),
-        volatilityStructure_(volatilityStructure)
-    {
+    : termStructure_(termStructure), volatilityStructure_(volatilityStructure) {
         registerWith(termStructure_);
         registerWith(volatilityStructure_);
     }

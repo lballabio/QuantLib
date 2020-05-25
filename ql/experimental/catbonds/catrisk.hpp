@@ -61,7 +61,11 @@ namespace QuantLib {
 
     class EventSetSimulation : public CatSimulation {
       public:
-        EventSetSimulation(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events, Date eventsStart, Date eventsEnd, Date start, Date end);
+        EventSetSimulation(const ext::shared_ptr<std::vector<std::pair<Date, Real> > >& events,
+                           Date eventsStart,
+                           Date eventsEnd,
+                           Date start,
+                           Date end);
         virtual bool nextPath(std::vector<std::pair<Date, Real> > &path);
       
       private:
@@ -77,8 +81,8 @@ namespace QuantLib {
 
     class EventSet : public CatRisk {        
       public:
-        EventSet(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
-                 Date eventsStart, 
+        EventSet(const ext::shared_ptr<std::vector<std::pair<Date, Real> > >& events,
+                 Date eventsStart,
                  Date eventsEnd);
 
         ext::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;

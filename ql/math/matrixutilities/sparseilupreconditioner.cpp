@@ -61,7 +61,7 @@ namespace QuantLib {
             Integer jj = -1;
             while (jj < ii) {
                 for (Integer k=jj+1; k<n; ++k) {
-                    if(levii[k]) {
+                    if (levii[k] != 0) {
                         jj = k;
                         break;
                     }

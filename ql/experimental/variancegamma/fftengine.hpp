@@ -63,8 +63,8 @@ namespace QuantLib {
         virtual std::complex<Real> complexFourierTransform(std::complex<Real> u) const = 0;
         virtual Real discountFactor(Date d) const = 0;
         virtual Real dividendYield(Date d) const = 0;
-        void calculateUncached(ext::shared_ptr<StrikedTypePayoff> payoff,
-            ext::shared_ptr<Exercise> exercise) const;
+        void calculateUncached(const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                               const ext::shared_ptr<Exercise>& exercise) const;
 
         ext::shared_ptr<StochasticProcess1D> process_;
         Real lambda_;   // Log strike spacing

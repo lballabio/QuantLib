@@ -30,7 +30,7 @@ namespace QuantLib {
         updatesDeferred_ = false;
 
         // if there are outstanding deferred updates, do the notification
-        if (deferredObservers_.size()) {
+        if (!deferredObservers_.empty()) {
             bool successful = true;
             std::string errMsg;
 
@@ -59,8 +59,7 @@ namespace QuantLib {
             // if updates are only deferred, flag this for later notification
             // these are held centrally by the settings singleton
             settings_.registerDeferredObservers(observers_);
-        }
-        else if (observers_.size()) {
+        } else if (!observers_.empty()) {
             bool successful = true;
             std::string errMsg;
             for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {

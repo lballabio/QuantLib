@@ -76,24 +76,25 @@ namespace QuantLib {
             ResetToOrigin
         };
 
-        HybridSimulatedAnnealing(const Sampler &sampler,
-            const Probability &probability,
-            const Temperature &temperature,
-            const Reannealing &reannealing = ReannealingTrivial(),
-            Real startTemperature = 200.0,
-            Real endTemperature = 0.01,
-            Size reAnnealSteps = 50,
-            ResetScheme resetScheme = ResetToBestPoint,
-            Size resetSteps = 150,
-            ext::shared_ptr<OptimizationMethod> localOptimizer
-            = ext::shared_ptr<OptimizationMethod>(),
-            LocalOptimizeScheme optimizeScheme = EveryBestPoint)
-            : sampler_(sampler), probability_(probability),
-            temperature_(temperature), reannealing_(reannealing),
-            startTemperature_(startTemperature), endTemperature_(endTemperature),
-            reAnnealSteps_(reAnnealSteps == 0 ? QL_MAX_INTEGER : reAnnealSteps), resetScheme_(resetScheme),
-            resetSteps_(resetSteps == 0 ? QL_MAX_INTEGER : resetSteps), localOptimizer_(localOptimizer),
-            optimizeScheme_(localOptimizer ? optimizeScheme : NoLocalOptimize) {
+        HybridSimulatedAnnealing(const Sampler& sampler,
+                                 const Probability& probability,
+                                 const Temperature& temperature,
+                                 const Reannealing& reannealing = ReannealingTrivial(),
+                                 Real startTemperature = 200.0,
+                                 Real endTemperature = 0.01,
+                                 Size reAnnealSteps = 50,
+                                 ResetScheme resetScheme = ResetToBestPoint,
+                                 Size resetSteps = 150,
+                                 ext::shared_ptr<OptimizationMethod> localOptimizer =
+                                     ext::shared_ptr<OptimizationMethod>(),
+                                 LocalOptimizeScheme optimizeScheme = EveryBestPoint)
+        : sampler_(sampler), probability_(probability), temperature_(temperature),
+          reannealing_(reannealing), startTemperature_(startTemperature),
+          endTemperature_(endTemperature),
+          reAnnealSteps_(reAnnealSteps == 0 ? QL_MAX_INTEGER : reAnnealSteps),
+          resetScheme_(resetScheme), resetSteps_(resetSteps == 0 ? QL_MAX_INTEGER : resetSteps),
+          localOptimizer_(localOptimizer),
+          optimizeScheme_(localOptimizer != 0 ? optimizeScheme : NoLocalOptimize) {
             if (!localOptimizer)
                 localOptimizer.reset(new LevenbergMarquardt);
         }
@@ -131,7 +132,7 @@ namespace QuantLib {
         Array annealStep(n, 1.0);
         Array bestPoint(x);
         Array currentPoint(x);
-        Array startingPoint(x);
+        const Array& startingPoint(x);
         Array newPoint(x);
         Real bestValue = P.value(bestPoint);
         Real currentValue = bestValue;

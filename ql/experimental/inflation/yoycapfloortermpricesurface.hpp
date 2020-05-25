@@ -82,18 +82,18 @@ namespace QuantLib {
         //@{
         virtual BusinessDayConvention businessDayConvention() const {return bdc_;}
         virtual Natural fixingDays() const {return fixingDays_;}
-        virtual Real price(const Date &d, const Rate k) const = 0;
-        virtual Real capPrice(const Date &d, const Rate k) const = 0;
-        virtual Real floorPrice(const Date &d, const Rate k) const = 0;
+        virtual Real price(const Date& d, Rate k) const = 0;
+        virtual Real capPrice(const Date& d, Rate k) const = 0;
+        virtual Real floorPrice(const Date& d, Rate k) const = 0;
         virtual Rate atmYoYSwapRate(const Date &d,
                                     bool extrapolate = true) const = 0;
         virtual Rate atmYoYRate(const Date &d,
                                 const Period &obsLag = Period(-1,Days),
                                 bool extrapolate = true) const = 0;
 
-        virtual Real price(const Period &d, const Rate k) const;
-        virtual Real capPrice(const Period &d, const Rate k) const;
-        virtual Real floorPrice(const Period &d, const Rate k) const;
+        virtual Real price(const Period& d, Rate k) const;
+        virtual Real capPrice(const Period& d, Rate k) const;
+        virtual Real floorPrice(const Period& d, Rate k) const;
         virtual Rate atmYoYSwapRate(const Period &d,
                                     bool extrapolate = true) const;
         virtual Rate atmYoYRate(const Period &d,
@@ -179,9 +179,9 @@ namespace QuantLib {
         atmYoYSwapDateRates() const { return atmYoYSwapDateRates_; }
         virtual ext::shared_ptr<YoYInflationTermStructure>
         YoYTS() const { return yoy_; }
-        virtual Rate price(const Date &d, const Rate k) const;
-        virtual Real floorPrice(const Date &d, const Rate k) const;
-        virtual Real capPrice(const Date &d, const Rate k) const;
+        virtual Rate price(const Date& d, Rate k) const;
+        virtual Real floorPrice(const Date& d, Rate k) const;
+        virtual Real capPrice(const Date& d, Rate k) const;
         virtual Rate atmYoYSwapRate(const Date &d,
                                     bool extrapolate = true) const {
             return atmYoYSwapRateCurve_(timeFromReference(d),extrapolate);
@@ -207,9 +207,7 @@ namespace QuantLib {
         void intersect() const;
         class ObjectiveFunction {
           public:
-            ObjectiveFunction(const Time t,
-                              const Interpolation2D &,
-                              const Interpolation2D &);
+            ObjectiveFunction(Time t, const Interpolation2D&, const Interpolation2D&);
             Real operator()(Rate guess) const;
           protected:
             const Time t_;
@@ -404,13 +402,13 @@ namespace QuantLib {
                 int counter = 1;
                 bool stop = false;
                 Real strike = 0.0;
-                while (stop == false) {
+                while (!stop) {
                     strike = fStrikes_.back() - counter * searchStep;
                     if (floorPrice_(t, strike) < capPrice_(t, strike))
                         stop = true;
                     counter++;
                     if (counter == numTrials + 1) {
-                        if (stop == false) {
+                        if (!stop) {
                             stop = true;
                             trialsExceeded = true;
                         }
@@ -422,13 +420,13 @@ namespace QuantLib {
                 int counter = 1;
                 bool stop = false;
                 Real strike = 0.0;
-                while (stop == false) {
+                while (!stop) {
                     strike = fStrikes_.back() + counter * searchStep;
                     if (floorPrice_(t, strike) > capPrice_(t, strike))
                         stop = true;
                     counter++;
                     if (counter == numTrials + 1) {
-                        if (stop == false) {
+                        if (!stop) {
                             stop = true;
                             trialsExceeded = true;
                         }
@@ -441,7 +439,7 @@ namespace QuantLib {
             guess = (hi+lo)/2.0;
             Rate kI = -999.999;
 
-            if (trialsExceeded == false) {
+            if (!trialsExceeded) {
                 try{
                     kI = solver.solve(  ObjectiveFunction(t, capPrice_, floorPrice_), solverTolerance_, guess, lo, hi );
                 } catch( std::exception &e) {

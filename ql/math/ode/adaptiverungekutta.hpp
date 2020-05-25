@@ -72,29 +72,24 @@ namespace QuantLib {
             The ode is given by a function \f$ F: R \times K^n
             \rightarrow K^n \f$ as \f$ f'(x) = F(x,f(x)) \f$, $K=R,
             C$ */
-        Disposable<std::vector<T> > operator()(const OdeFct& ode,
-                                               const std::vector<T>& y1,
-                                               const Real x1,
-                                               const Real x2);
-        T operator()(const OdeFct1d& ode,
-                     const T y1,
-                     const Real x1,
-                     const Real x2);
+        Disposable<std::vector<T> >
+        operator()(const OdeFct& ode, const std::vector<T>& y1, Real x1, Real x2);
+        T operator()(const OdeFct1d& ode, T y1, Real x1, Real x2);
 
-    private:
+      private:
         void rkqs(std::vector<T>& y,
                   const std::vector<T>& dydx,
                   Real& x,
-                  const Real htry,
-                  const Real eps,
+                  Real htry,
+                  Real eps,
                   const std::vector<Real>& yScale,
-                  Real &hdid,
-                  Real &hnext,
+                  Real& hdid,
+                  Real& hnext,
                   const OdeFct& derivs);
         void rkck(const std::vector<T>& y,
                   const std::vector<T>& dydx,
                   Real x,
-                  const Real h,
+                  Real h,
                   std::vector<T>& yout,
                   std::vector<T>& yerr,
                   const OdeFct& derivs);

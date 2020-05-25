@@ -44,7 +44,6 @@ inline void checkSviParameters(const Real a, const Real b, const Real sigma,
                                                << ") must be non negative");
     QL_REQUIRE(b * (1.0 + std::fabs(rho)) < 4.0,
                "b(1+|rho|) must be less than 4");
-    return;
 }
 
 inline Real sviTotalVariance(const Real a, const Real b, const Real sigma,
@@ -192,22 +191,30 @@ class SviInterpolation : public Interpolation {
 //! %Svi interpolation factory and traits
 class Svi {
   public:
-    Svi(Time t, Real forward, Real a, Real b, Real sigma, Real rho, Real m,
-         bool aIsFixed, bool bIsFixed, bool sigmaIsFixed, bool rhoIsFixed,
-         bool mIsFixed, bool vegaWeighted = false,
-         const ext::shared_ptr<EndCriteria> endCriteria =
-             ext::shared_ptr<EndCriteria>(),
-         const ext::shared_ptr<OptimizationMethod> optMethod =
-             ext::shared_ptr<OptimizationMethod>(),
-         const Real errorAccept = 0.0020, const bool useMaxError = false,
-         const Size maxGuesses = 50)
-        : t_(t), forward_(forward), a_(a), b_(b), sigma_(sigma), rho_(rho),
-          m_(m), aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
-          sigmaIsFixed_(sigmaIsFixed), rhoIsFixed_(rhoIsFixed),
-          mIsFixed_(mIsFixed), vegaWeighted_(vegaWeighted),
-          endCriteria_(endCriteria), optMethod_(optMethod),
-          errorAccept_(errorAccept), useMaxError_(useMaxError),
-          maxGuesses_(maxGuesses) {}
+    Svi(Time t,
+        Real forward,
+        Real a,
+        Real b,
+        Real sigma,
+        Real rho,
+        Real m,
+        bool aIsFixed,
+        bool bIsFixed,
+        bool sigmaIsFixed,
+        bool rhoIsFixed,
+        bool mIsFixed,
+        bool vegaWeighted = false,
+        const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
+        const ext::shared_ptr<OptimizationMethod>& optMethod =
+            ext::shared_ptr<OptimizationMethod>(),
+        const Real errorAccept = 0.0020,
+        const bool useMaxError = false,
+        const Size maxGuesses = 50)
+    : t_(t), forward_(forward), a_(a), b_(b), sigma_(sigma), rho_(rho), m_(m), aIsFixed_(aIsFixed),
+      bIsFixed_(bIsFixed), sigmaIsFixed_(sigmaIsFixed), rhoIsFixed_(rhoIsFixed),
+      mIsFixed_(mIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(endCriteria),
+      optMethod_(optMethod), errorAccept_(errorAccept), useMaxError_(useMaxError),
+      maxGuesses_(maxGuesses) {}
     template <class I1, class I2>
     Interpolation interpolate(const I1 &xBegin, const I1 &xEnd,
                               const I2 &yBegin) const {

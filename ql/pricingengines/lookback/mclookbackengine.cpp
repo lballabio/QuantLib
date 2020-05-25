@@ -38,7 +38,7 @@ namespace QuantLib {
         LookbackPartialFixedPathPricer(Time lookbackStart,
                                        Option::Type type,
                                        Real strike,
-                                       const DiscountFactor discount);
+                                       DiscountFactor discount);
         Real operator()(const Path& path) const;
       private:
         Time lookbackStart_;
@@ -178,7 +178,7 @@ namespace QuantLib {
     Real LookbackPartialFixedPathPricer::operator()(const Path& path) const {
         QL_REQUIRE(!path.empty(), "the path cannot be empty");
 
-        TimeGrid timeGrid = path.timeGrid();
+        const TimeGrid& timeGrid = path.timeGrid();
         Size startIndex = timeGrid.closestIndex(lookbackStart_);
         Real underlying;
         switch (payoff_.optionType()) {
@@ -230,7 +230,7 @@ namespace QuantLib {
     Real LookbackPartialFloatingPathPricer::operator()(const Path& path) const {
         QL_REQUIRE(!path.empty(), "the path cannot be empty");
 
-        TimeGrid timeGrid = path.timeGrid();
+        const TimeGrid& timeGrid = path.timeGrid();
         Size endIndex = timeGrid.closestIndex(lookbackEnd_);
         Real terminalPrice = path.back();
         Real strike;

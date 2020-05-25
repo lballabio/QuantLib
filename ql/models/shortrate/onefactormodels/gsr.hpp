@@ -35,28 +35,32 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
   public:
     // constant mean reversion
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Real> &volatilities, const Real reversion,
-        const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        const std::vector<Date>& volstepdates,
+        const std::vector<Real>& volatilities,
+        Real reversion,
+        Real T = 60.0);
     // piecewise mean reversion (with same step dates as volatilities)
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Real> &volatilities,
-        const std::vector<Real> &reversions, const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        const std::vector<Date>& volstepdates,
+        const std::vector<Real>& volatilities,
+        const std::vector<Real>& reversions,
+        Real T = 60.0);
     // constant mean reversion with floating model data
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Handle<Quote> > &volatilities,
-        const Handle<Quote> reversion, const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        const std::vector<Date>& volstepdates,
+        const std::vector<Handle<Quote> >& volatilities,
+        const Handle<Quote>& reversion,
+        Real T = 60.0);
     // piecewise mean reversion with floating model data
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Handle<Quote> > &volatilities,
-        const std::vector<Handle<Quote> > &reversions, const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        const std::vector<Date>& volstepdates,
+        const std::vector<Handle<Quote> >& volatilities,
+        const std::vector<Handle<Quote> >& reversions,
+        Real T = 60.0);
 
     Real numeraireTime() const;
-    void numeraireTime(const Real T);
+    void numeraireTime(Real T);
 
     const Array &reversion() const { return reversion_.params(); }
     const Array &volatility() const { return sigma_.params(); }
@@ -133,11 +137,9 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     }
 
   protected:
-    Real numeraireImpl(const Time t, const Real y,
-                       const Handle<YieldTermStructure> &yts) const;
+    Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const;
 
-    Real zerobondImpl(const Time T, const Time t, const Real y,
-                      const Handle<YieldTermStructure> &yts) const;
+    Real zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const;
 
     void generateArguments() {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();

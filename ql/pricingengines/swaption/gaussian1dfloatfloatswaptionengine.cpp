@@ -206,26 +206,17 @@ namespace QuantLib {
                               // earliest event date
             }
 
-            if (std::find(arguments_.exercise->dates().begin(),
-                          arguments_.exercise->dates().end(),
-                          event0) != arguments_.exercise->dates().end())
-                isExercise = true;
-            else
-                isExercise = false;
+            isExercise =
+                std::find(arguments_.exercise->dates().begin(), arguments_.exercise->dates().end(),
+                          event0) != arguments_.exercise->dates().end();
 
-            if (std::find(arguments_.leg1FixingDates.begin(),
-                          arguments_.leg1FixingDates.end(),
-                          event0) != arguments_.leg1FixingDates.end())
-                isLeg1Fixing = true;
-            else
-                isLeg1Fixing = false;
+            isLeg1Fixing =
+                std::find(arguments_.leg1FixingDates.begin(), arguments_.leg1FixingDates.end(),
+                          event0) != arguments_.leg1FixingDates.end();
 
-            if (std::find(arguments_.leg2FixingDates.begin(),
-                          arguments_.leg2FixingDates.end(),
-                          event0) != arguments_.leg2FixingDates.end())
-                isLeg2Fixing = true;
-            else
-                isLeg2Fixing = false;
+            isLeg2Fixing =
+                std::find(arguments_.leg2FixingDates.begin(), arguments_.leg2FixingDates.end(),
+                          event0) != arguments_.leg2FixingDates.end();
 
             event0Time = std::max(
                 model_->termStructure()->timeFromReference(event0), 0.0);

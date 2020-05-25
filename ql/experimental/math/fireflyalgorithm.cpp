@@ -23,17 +23,17 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <algorithm>
 
 namespace QuantLib {
-    FireflyAlgorithm::FireflyAlgorithm(Size M, 
-        ext::shared_ptr<Intensity> intensity,
-        ext::shared_ptr<RandomWalk> randomWalk,
-        Size Mde, Real mutation,
-        Real crossover, unsigned long seed):
-        mutation_(mutation), crossover_(crossover),
-        M_(M), Mde_(Mde), Mfa_(M_-Mde_), 
-        intensity_(intensity),
-        randomWalk_(randomWalk),
-        drawIndex_(base_generator_type(seed), uniform_integer(Mfa_, Mde > 0 ? M_-1 : M_)),
-        rng_(seed){
+    FireflyAlgorithm::FireflyAlgorithm(Size M,
+                                       const ext::shared_ptr<Intensity>& intensity,
+                                       const ext::shared_ptr<RandomWalk>& randomWalk,
+                                       Size Mde,
+                                       Real mutation,
+                                       Real crossover,
+                                       unsigned long seed)
+    : mutation_(mutation), crossover_(crossover), M_(M), Mde_(Mde), Mfa_(M_ - Mde_),
+      intensity_(intensity), randomWalk_(randomWalk),
+      drawIndex_(base_generator_type(seed), uniform_integer(Mfa_, Mde > 0 ? M_ - 1 : M_)),
+      rng_(seed) {
         QL_REQUIRE(M_ >= Mde_,
             "Differential Evolution subpopulation cannot be larger than total population");
     }
@@ -82,7 +82,7 @@ namespace QuantLib {
         
         startState(P, endCriteria);
 
-        bool isFA = Mfa_ > 0 ? true : false;
+        bool isFA = Mfa_ > 0;
         //Variables for DE
         Array z(N_, 0.0);
         Size indexR1, indexR2;

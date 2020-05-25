@@ -41,12 +41,12 @@ namespace QuantLib {
         SmileSection(const Date& d,
                      const DayCounter& dc = DayCounter(),
                      const Date& referenceDate = Date(),
-                     const VolatilityType type = ShiftedLognormal,
-                     const Rate shift = 0.0);
+                     VolatilityType type = ShiftedLognormal,
+                     Rate shift = 0.0);
         SmileSection(Time exerciseTime,
                      const DayCounter& dc = DayCounter(),
-                     const VolatilityType type = ShiftedLognormal,
-                     const Rate shift = 0.0);
+                     VolatilityType type = ShiftedLognormal,
+                     Rate shift = 0.0);
         SmileSection() {}
 
         virtual ~SmileSection() {}

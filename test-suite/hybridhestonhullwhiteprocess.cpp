@@ -713,7 +713,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     Real antitheticPayoff=0;
     const Size nrTrails = 40000;
     for (Size i=0; i < nrTrails; ++i) {
-        const bool antithetic = (i%2)==0 ? false : true;
+        const bool antithetic = (i % 2) != 0;
 
         sample_type path = antithetic ? generator.antithetic()
                                       : generator.next();
@@ -1099,7 +1099,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                     option->setPricingEngine(fdEngine);
                     Real calculated = option->NPV();
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes);
+                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
                 }
 
                 if (controlVariate[i] && tolWithCV[l] < avgPriceDiff) {
@@ -1169,7 +1169,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                     Real calculated = option->NPV();
 
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes);
+                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
                 }
 
                 if (avgPriceDiff > tol[i]) {

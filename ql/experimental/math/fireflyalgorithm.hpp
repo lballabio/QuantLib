@@ -92,11 +92,13 @@ namespace QuantLib {
         class Intensity;
         friend class RandomWalk;
         friend class Intensity;
-        FireflyAlgorithm(Size M, 
-            ext::shared_ptr<Intensity> intensity,
-            ext::shared_ptr<RandomWalk> randomWalk,
-            Size Mde = 0, Real mutationFactor = 1.0,
-            Real crossoverFactor = 0.5, unsigned long seed = SeedGenerator::instance().get());
+        FireflyAlgorithm(Size M,
+                         const ext::shared_ptr<Intensity>& intensity,
+                         const ext::shared_ptr<RandomWalk>& randomWalk,
+                         Size Mde = 0,
+                         Real mutationFactor = 1.0,
+                         Real crossoverFactor = 0.5,
+                         unsigned long seed = SeedGenerator::instance().get());
         void startState(Problem &P, const EndCriteria &endCriteria);
         EndCriteria::Type minimize(Problem &P, const EndCriteria &endCriteria);
 

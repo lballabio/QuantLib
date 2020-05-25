@@ -115,8 +115,7 @@ namespace QuantLib {
 
         date boostDate;
         std::istringstream is(str);
-        is.imbue(std::locale(std::locale(),
-                             new date_input_facet(fmt.c_str())));
+        is.imbue(std::locale(std::locale(), new date_input_facet(fmt)));
         is >> boostDate;
         date_duration noDays = boostDate - date(1901, 1, 1);
         return Date(1, January, 1901) + noDays.days();

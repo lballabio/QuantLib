@@ -85,14 +85,13 @@ namespace QuantLib {
 
     class FdmHestonOp : public FdmLinearOpComposite {
       public:
-        FdmHestonOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<HestonProcess>& hestonProcess,
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
-                = ext::shared_ptr<FdmQuantoHelper>(),
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>(),
-            const Real mixingFactor = 1.0);
+        FdmHestonOp(const ext::shared_ptr<FdmMesher>& mesher,
+                    const ext::shared_ptr<HestonProcess>& hestonProcess,
+                    const ext::shared_ptr<FdmQuantoHelper>& quantoHelper =
+                        ext::shared_ptr<FdmQuantoHelper>(),
+                    const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                        ext::shared_ptr<LocalVolTermStructure>(),
+                    Real mixingFactor = 1.0);
 
         Size size() const;
         void setTime(Time t1, Time t2);

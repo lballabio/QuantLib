@@ -70,8 +70,8 @@ namespace QuantLib {
     void Fdm2dBlackScholesOp::setTime(Time t1, Time t2) {
         opX_.setTime(t1, t2);
         opY_.setTime(t1, t2);
-        
-        if (localVol1_) {
+
+        if (localVol1_ != 0) {
             const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 

@@ -40,7 +40,7 @@ namespace QuantLib {
 		virtual mp_real m0() const = 0;
 		virtual mp_real m1() const = 0;
 
-		mp_real moment_(Size n) const {
+		mp_real moment_(Size n) const { //NOLINT(bugprone-virtual-near-miss)
 			if (m_.size() <= n)
 				m_.resize(n+1, std::numeric_limits<mp_real>::quiet_NaN());
 

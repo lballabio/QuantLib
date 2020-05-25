@@ -39,9 +39,12 @@ namespace QuantLib {
     /*! \ingroup processes */
     class GsrProcess : public ForwardMeasureProcess1D {
       public:
-        GsrProcess(const Array &times, const Array &vols,
-                   const Array &reversions, const Real T = 60.0,
-                   const Date &referenceDate = Null<Date>(), const DayCounter &dc = DayCounter());
+        GsrProcess(const Array& times,
+                   const Array& vols,
+                   const Array& reversions,
+                   Real T = 60.0,
+                   const Date& referenceDate = Null<Date>(),
+                   const DayCounter& dc = DayCounter());
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
@@ -64,7 +67,7 @@ namespace QuantLib {
         void flushCache() const;
 
       private:
-        void checkT(const Time t) const;
+        void checkT(Time t) const;
         const detail::GsrProcessCore core_;
         Date referenceDate_;
         DayCounter dc_;

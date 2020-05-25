@@ -109,9 +109,9 @@ namespace QuantLib {
         if (length_!=0)
             switch (units_) {
               case Months:
-                if (!(length_%12)) {
-                    length_/=12;
-                    units_ = Years;
+                  if ((length_ % 12) == 0) {
+                      length_ /= 12;
+                      units_ = Years;
                 }
                 break;
               case Days:

@@ -82,7 +82,7 @@ void ArrayTest::testConstruction() {
     }
 
     // copy constructor
-    Array a5(a1);
+    Array a5(a1);  // NOLINT(performance-unnecessary-copy-initialization)
     if (a5.size() != a1.size())
         BOOST_ERROR("copy not of the same size as original"
                     << "\n    original:  " << a1.size()

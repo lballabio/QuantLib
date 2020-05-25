@@ -162,7 +162,7 @@ namespace QuantLib {
                 ext::shared_ptr<LazyObject> f =
                     ext::dynamic_pointer_cast<LazyObject>(
                         legs_[j][k]);
-                if (f)
+                if (f != 0)
                     f->update();
             }
         }

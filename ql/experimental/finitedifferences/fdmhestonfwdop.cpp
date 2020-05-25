@@ -121,7 +121,7 @@ namespace QuantLib {
     void FdmHestonFwdOp::setTime(Time t1, Time t2){
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
-        if (leverageFct_) {
+        if (leverageFct_ != 0) {
             L_ = getLeverageFctSlice(t1, t2);
             Array Lsquare = L_*L_;
             if (type_ == FdmSquareRootFwdOp::Plain) {
@@ -157,7 +157,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmHestonFwdOp::apply(const Array& u) const {
-        if (leverageFct_) {
+        if (leverageFct_ != 0) {
             return mapX_->apply(u)
                     + mapY_->apply(u)
                     + correlation_->apply(L_*u);
@@ -170,7 +170,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmHestonFwdOp::apply_mixed(const Array& u) const{
-        if (leverageFct_) {
+        if (leverageFct_ != 0) {
             return correlation_->apply(L_*u);
         }
         else

@@ -168,7 +168,7 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::setTime(Time t) {
-        if (timeSetter_)
+        if (timeSetter_ != 0)
             timeSetter_->setTime(t, *this);
     }
 

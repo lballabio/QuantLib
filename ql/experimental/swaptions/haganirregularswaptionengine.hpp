@@ -58,15 +58,15 @@ namespace QuantLib {
         //helper class
         class Basket {
         public:
-            Basket(ext::shared_ptr<IrregularSwap> swap,
-                   const Handle<YieldTermStructure>& termStructure,
-                   const Handle<SwaptionVolatilityStructure>& volatilityStructure);
-            Disposable<Array> compute(Rate lambda = 0.0) const;
-            Real operator()(Rate x) const;
-            ext::shared_ptr<VanillaSwap> component(Size i) const;
-            Disposable<Array> weights() const { return compute(lambda_);};
-            Real& lambda() const { return lambda_;};
-            ext::shared_ptr<IrregularSwap> swap() const { return swap_;};
+          Basket(const ext::shared_ptr<IrregularSwap>& swap,
+                 const Handle<YieldTermStructure>& termStructure,
+                 const Handle<SwaptionVolatilityStructure>& volatilityStructure);
+          Disposable<Array> compute(Rate lambda = 0.0) const;
+          Real operator()(Rate x) const;
+          ext::shared_ptr<VanillaSwap> component(Size i) const;
+          Disposable<Array> weights() const { return compute(lambda_); };
+          Real& lambda() const { return lambda_; };
+          ext::shared_ptr<IrregularSwap> swap() const { return swap_; };
         private:
             ext::shared_ptr<IrregularSwap> swap_;
             Handle<YieldTermStructure>          termStructure_;

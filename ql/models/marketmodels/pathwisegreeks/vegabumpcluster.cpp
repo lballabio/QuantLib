@@ -74,8 +74,6 @@ namespace QuantLib {
 
     bool VegaBumpCluster::isCompatible(const ext::shared_ptr<MarketModel>& volStructure) const
     {
-
-
         if (rateEnd_ > volStructure->numberOfRates())
             return false;
 
@@ -87,11 +85,7 @@ namespace QuantLib {
 
         Size firstAliveRate = volStructure->evolution().firstAliveRate()[stepEnd_-1];
 
-        if (rateBegin_ < firstAliveRate) // if the rate has reset before the beginning of the last step of the bump
-            return false;
-
-        return true;
-
+        return rateBegin_ >= firstAliveRate; // if the rate has reset after the beginning of the last step of the bump
     }
 
 

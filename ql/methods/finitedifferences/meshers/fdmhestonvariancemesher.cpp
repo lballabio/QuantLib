@@ -176,7 +176,7 @@ namespace QuantLib {
 
         volaEstimate_ = mesher.volaEstimate();
 
-        if (leverageFct) {
+        if (leverageFct != 0) {
             typedef boost::accumulators::accumulator_set<
                 Real, boost::accumulators::stats<
                     boost::accumulators::tag::mean> >

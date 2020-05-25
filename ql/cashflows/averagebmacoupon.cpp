@@ -45,7 +45,7 @@ namespace QuantLib {
                      d1 = startDate,
                      d2 = startDate;
 
-                QL_REQUIRE (fixingDates.size() > 0, "fixing date list empty");
+                QL_REQUIRE(!fixingDates.empty(), "fixing date list empty");
                 QL_REQUIRE (index->valueDate(fixingDates.front()) <= startDate,
                             "first fixing date valid after period start");
                 QL_REQUIRE (index->valueDate(fixingDates.back()) >= endDate,

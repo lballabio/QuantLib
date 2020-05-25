@@ -363,7 +363,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360/futureFixings+0.5);
+    Integer dt = Integer(360.0/futureFixings+0.5);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -422,7 +422,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360/futureFixings+0.5);
+    Integer dt = Integer(360.0/futureFixings+0.5);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -488,7 +488,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360/futureFixings+0.5);
+    Integer dt = Integer(360.0/futureFixings+0.5);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -1150,7 +1150,8 @@ void AsianOptionTest::testAllFixingsInThePast() {
     Date exerciseDate = today + 2*Weeks;
     Date startDate = exerciseDate - 1*Years;
     std::vector<Date> fixingDates;
-    for (Integer i=0; i<12; ++i)
+    fixingDates.reserve(12);
+    for (Integer i = 0; i < 12; ++i)
         fixingDates.push_back(startDate + i*Months);
     Size pastFixings = 12;
 

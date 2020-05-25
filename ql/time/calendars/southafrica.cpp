@@ -74,7 +74,7 @@ namespace QuantLib {
             // one-shot: Election day 2016
             || (d == 3 && m == August && y == 2016)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

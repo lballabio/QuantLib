@@ -32,8 +32,8 @@ namespace QuantLib {
         SwapSpreadIndex(const std::string& familyName,
                         const ext::shared_ptr<SwapIndex>& swapIndex1,
                         const ext::shared_ptr<SwapIndex>& swapIndex2,
-                        const Real gearing1 = 1.0,
-                        const Real gearing2 = -1.0);
+                        Real gearing1 = 1.0,
+                        Real gearing2 = -1.0);
 
         //! \name InterestRateIndex interface
         //@{

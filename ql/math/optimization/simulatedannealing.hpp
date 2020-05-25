@@ -134,7 +134,6 @@ namespace QuantLib {
             }
         }
         ytry_ = yflu_;
-        return;
     }
 
     template <class RNG>

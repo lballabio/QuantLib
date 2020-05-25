@@ -330,7 +330,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     GeneralStatistics npv;
     const Size nTrails = 20000;
     for (Size i=0; i < nTrails; ++i) {
-        const sample_type path = generator.next();
+        const sample_type& path = generator.next();
 
         Array p(2);
         p[0] = path.value[0].back() + path.value[1].back();
@@ -786,8 +786,7 @@ void VPPTest::testVPPPricing() {
     for (Size i=0; i < nTrails; ++i) {
         Array x(dim), state(nStates, 0.0), contState(nStates, 0.0);
 
-        const sample_type& path = (i % 2) ? generator.antithetic()
-                                          : generator.next();
+        const sample_type& path = (i % 2) != 0u ? generator.antithetic() : generator.next();
 
         const ext::shared_ptr<FdmInnerValueCalculator> fuelPrices(
             new PathFuelPrice(path.value, fuelShape));
@@ -862,7 +861,7 @@ void VPPTest::testVPPPricing() {
             state = retVal;
         }
         tmpValue+=0.5*state.back();
-        if ((i%2)) {
+        if ((i % 2) != 0u) {
             npv.add(tmpValue, 1.0);
             tmpValue = 0.0;
         }

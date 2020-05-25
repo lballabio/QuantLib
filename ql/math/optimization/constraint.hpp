@@ -213,10 +213,9 @@ namespace QuantLib {
             Array low_, high_;
         };
       public:
-        NonhomogeneousBoundaryConstraint(Array low, Array high)
-        : Constraint(ext::shared_ptr <Constraint::Impl>(
-                     new NonhomogeneousBoundaryConstraint::Impl(low, high))) {
-        }
+        NonhomogeneousBoundaryConstraint(const Array& low, const Array& high)
+        : Constraint(ext::shared_ptr<Constraint::Impl>(
+              new NonhomogeneousBoundaryConstraint::Impl(low, high))) {}
     };
 
 }

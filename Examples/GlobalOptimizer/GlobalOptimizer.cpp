@@ -162,7 +162,7 @@ private:
 int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCriteria,
           const Array& start, const Constraint& constraint = Constraint(),
           const Array& optimum = Array()) {
-    QL_REQUIRE(start.size() > 0, "Input size needs to be at least 1");
+    QL_REQUIRE(!start.empty(), "Input size needs to be at least 1");
     std::cout << "Starting point: ";
     Constraint c;
     if (!constraint.empty())
@@ -177,9 +177,9 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
         std::cout << "Global optimum: ";
         Real optimVal = printFunction(p, optimum);
         if(std::abs(optimVal) < 1e-13)
-            return std::abs(val-optimVal) < 1e-6;
+            return static_cast<int>(std::abs(val - optimVal) < 1e-6);
         else
-            return std::abs((val-optimVal)/optimVal) < 1e-6;
+            return static_cast<int>(std::abs((val - optimVal) / optimVal) < 1e-6);
     }
     return 1;
 }
@@ -251,12 +251,18 @@ void testSimulatedAnnealing(Size dimension, Size maxSteps, Size staticSteps){
     std::cout << "================================================================" << std::endl;
 }
 
-void testGaussianSA(Size dimension, Size maxSteps, Size staticSteps, Real initialTemp,
+void testGaussianSA(Size dimension,
+                    Size maxSteps,
+                    Size staticSteps,
+                    Real initialTemp,
                     Real finalTemp,
-                    GaussianSimulatedAnnealing::ResetScheme resetScheme = GaussianSimulatedAnnealing::ResetToBestPoint,
+                    GaussianSimulatedAnnealing::ResetScheme resetScheme =
+                        GaussianSimulatedAnnealing::ResetToBestPoint,
                     Size resetSteps = 150,
-                    GaussianSimulatedAnnealing::LocalOptimizeScheme optimizeScheme = GaussianSimulatedAnnealing::EveryBestPoint,
-                    ext::shared_ptr<OptimizationMethod> localOptimizer = ext::make_shared<LevenbergMarquardt>()){
+                    GaussianSimulatedAnnealing::LocalOptimizeScheme optimizeScheme =
+                        GaussianSimulatedAnnealing::EveryBestPoint,
+                    const ext::shared_ptr<OptimizationMethod>& localOptimizer =
+                        ext::make_shared<LevenbergMarquardt>()) {
 
     /*The ackley function has a large amount of local minima, but the
      * structure is symmetric, so if one could simply just ignore the
