@@ -44,10 +44,8 @@ if (Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif (Boost_FOUND)
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -Wno-unknown-pragmas")
-
 add_subdirectory(ql)
-#add_subdirectory(Examples)
+add_subdirectory(Examples)
 add_subdirectory(test-suite)
 
 #
