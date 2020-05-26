@@ -126,40 +126,30 @@ namespace QuantLib {
     // helper class for integration
     class AnalyticHestonEngine::Fj_Helper {
     public:
-      Fj_Helper(const VanillaOption::arguments& arguments,
-                const ext::shared_ptr<HestonModel>& model,
-                const AnalyticHestonEngine* engine,
-                ComplexLogFormula cpxLog,
-                Time term,
-                Real ratio,
-                Size j);
+        Fj_Helper(const VanillaOption::arguments& arguments,
+            const ext::shared_ptr<HestonModel>& model,
+            const AnalyticHestonEngine* const engine,
+            ComplexLogFormula cpxLog,
+            Time term, Real ratio, Size j);
 
-      Fj_Helper(Real kappa,
-                Real theta,
-                Real sigma,
-                Real v0,
-                Real s0,
-                Real rho,
-                const AnalyticHestonEngine* engine,
-                ComplexLogFormula cpxLog,
-                Time term,
-                Real strike,
-                Real ratio,
-                Size j);
+        Fj_Helper(Real kappa, Real theta, Real sigma,
+            Real v0, Real s0, Real rho,
+            const AnalyticHestonEngine* const engine,
+            ComplexLogFormula cpxLog,
+            Time term,
+            Real strike,
+            Real ratio,
+            Size j);
 
-      Fj_Helper(Real kappa,
-                Real theta,
-                Real sigma,
-                Real v0,
-                Real s0,
-                Real rho,
-                ComplexLogFormula cpxLog,
-                Time term,
-                Real strike,
-                Real ratio,
-                Size j);
+         Fj_Helper(Real kappa, Real theta, Real sigma,
+            Real v0, Real s0, Real rho,
+            ComplexLogFormula cpxLog,
+            Time term,
+            Real strike,
+            Real ratio,
+            Size j);
 
-      Real operator()(Real phi) const;
+        Real operator()(Real phi) const;
 
     private:
         const Size j_;
@@ -268,8 +258,8 @@ namespace QuantLib {
             std::sqrt(t1*t1 - sigma2_*phi
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
-        const std::complex<Real> addOnTerm =
-            engine_ != 0 ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
+        const std::complex<Real> addOnTerm
+            = engine_ ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
@@ -756,9 +746,10 @@ namespace QuantLib {
     }
 
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
-        if (integrator_ != 0) {
+        if (integrator_) {
             return integrator_->numberOfEvaluations();
-        } else if (gaussianQuadrature_ != 0) {
+        }
+        else if (gaussianQuadrature_) {
             return gaussianQuadrature_->order();
         }
         else {
