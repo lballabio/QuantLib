@@ -173,9 +173,9 @@ add_executable (${TEST} ${QuantLib-Test_SRC})
 target_link_libraries (${TEST} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
 set_property(TARGET ${TEST} PROPERTY PROJECT_LABEL "testsuite")
 
-#set (BENCHMARK quantlib-benchmark)
-#add_executable (${BENCHMARK} ${BENCHMARK_FILES})
-#target_link_libraries (${BENCHMARK} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
-#set_property(TARGET ${BENCHMARK} PROPERTY PROJECT_LABEL "benchmark")
+set (BENCHMARK quantlib-benchmark)
+add_executable (${BENCHMARK} ${BENCHMARK_FILES})
+target_link_libraries (${BENCHMARK} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
+set_property(TARGET ${BENCHMARK} PROPERTY PROJECT_LABEL "benchmark")
 
 add_test (${TEST} ${TEST})

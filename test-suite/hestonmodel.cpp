@@ -3097,7 +3097,7 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
 namespace {
     class HestonIntegrationMaxBoundTestFct {
       public:
-        explicit HestonIntegrationMaxBoundTestFct(Real maxBound)
+        HestonIntegrationMaxBoundTestFct(Real maxBound)
         : maxBound_(maxBound),
           callCounter_(ext::make_shared<Size>(Size(0))) {}
 
