@@ -366,8 +366,9 @@ namespace QuantLib {
 
               const Real c_inf = -(C_u_inf + D_u_inf*v0).real();
 
-              const Real uM = Integration::andersenPiterbargIntegrationLimit(
-                  c_inf, epsilon, v0, term);
+              const ext::function<Real()> uM = ext::bind(
+                  Integration::andersenPiterbargIntegrationLimit,
+                      c_inf, epsilon, v0, term);
 
               const Real vAvg
                   = (1-std::exp(-kappaAvg*term))*(v0-thetaAvg)
