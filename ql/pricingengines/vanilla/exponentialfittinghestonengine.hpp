@@ -42,7 +42,7 @@ namespace QuantLib {
         integrals over an unbounded interval
 
         For adaptation details see
-        https://wordpress.com/post/hpcquantlib.wordpress.com/4557
+        https://hpcquantlib.wordpress.com/2020/05/17/optimized-heston-model-integration-exponentially-fitted-gauss-laguerre-quadrature-rule/
     */
 
 
