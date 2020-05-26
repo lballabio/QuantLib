@@ -36,7 +36,6 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
-
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
 #endif
@@ -775,9 +774,10 @@ namespace QuantLib {
     }
 
     Real AnalyticHestonEngine::Integration::calculate(
-                               Real c_inf,
-                               const ext::function<Real(Real)>& f,
-                               Real maxBound) const {
+        Real c_inf,
+        const ext::function<Real(Real)>& f,
+        const ext::function<Real()>& maxBound) const {
+
         Real retVal;
 
         switch(intAlgo_) {
