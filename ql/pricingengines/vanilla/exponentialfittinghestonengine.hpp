@@ -31,6 +31,7 @@
 #include <vector>
 
 namespace QuantLib {
+    class AnalyticHestonEngine;
 
     //! analytic Heston-model engine based on
     //  exponentially fitted Gauss-Laguerre quadrature
@@ -41,22 +42,29 @@ namespace QuantLib {
         integrals over an unbounded interval
 
         For adaptation details see
-        https://wordpress.com/post/hpcquantlib.wordpress.com/4557
+        https://hpcquantlib.wordpress.com/2020/05/17/optimized-heston-model-integration-exponentially-fitted-gauss-laguerre-quadrature-rule/
     */
+
 
     class ExponentialFittingHestonEngine
         : public GenericModelEngine<HestonModel,
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
+        enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
+
         explicit ExponentialFittingHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
+            ControlVariate cv = AndersenPiterbargOptCV,
             Real scaling = Null<Real>());
 
         void calculate() const;
 
       private:
+        const ControlVariate cv_;
         const Real scaling_;
+        const ext::shared_ptr<AnalyticHestonEngine> analyticEngine_;
+
         static std::vector<Real> moneyness_;
     };
 }

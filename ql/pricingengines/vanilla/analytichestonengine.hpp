@@ -187,7 +187,11 @@ namespace QuantLib {
 
         Real calculate(Real c_inf,
                        const ext::function<Real(Real)>& f,
-                       Real maxBound = Null<Real>()) const;
+                       const ext::function<Real()>& maxBound =
+                           ext::function<Real()>()) const;
+
+        Real calculate(Real c_inf,
+            const ext::function<Real(Real)>& f, Real maxBound) const;
 
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
