@@ -11,6 +11,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmg2solver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonhullwhitesolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmcirsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhullwhitesolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmndimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>

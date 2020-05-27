@@ -14,6 +14,7 @@ this_include_HEADERS = \
 	fdmg2solver.hpp \
 	fdmhestonhullwhitesolver.hpp \
 	fdmhestonsolver.hpp \
+	fdmcirsolver.hpp \
 	fdmhullwhitesolver.hpp \
 	fdmndimsolver.hpp \
 	fdmsimple2dbssolver.hpp \
@@ -30,6 +31,7 @@ cpp_files = \
 	fdmg2solver.cpp \
 	fdmhestonhullwhitesolver.cpp \
 	fdmhestonsolver.cpp \
+	fdmcirsolver.cpp \
 	fdmhullwhitesolver.cpp \
 	fdmsimple2dbssolver.cpp
 

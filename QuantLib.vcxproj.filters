@@ -2241,6 +2241,9 @@
     <ClInclude Include="ql\processes\blackscholesprocess.hpp">
       <Filter>processes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\processes\coxingersollrossprocess.hpp">
+      <Filter>processes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\processes\endeulerdiscretization.hpp">
       <Filter>processes</Filter>
     </ClInclude>
@@ -2260,6 +2263,9 @@
       <Filter>processes</Filter>
     </ClInclude>
     <ClInclude Include="ql\processes\hestonprocess.hpp">
+      <Filter>processes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\processes\coxingersollross.hpp">
       <Filter>processes</Filter>
     </ClInclude>
     <ClInclude Include="ql\processes\hullwhiteprocess.hpp">
@@ -3892,6 +3898,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonvanillaengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\fdcirvanillaengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\meshers\fdm1dmesher.hpp">
       <Filter>methods\finitedifferences\meshers</Filter>
     </ClInclude>
@@ -3949,6 +3958,9 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmhestonop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmcirop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmbatessolver.hpp">
       <Filter>methods\finitedifferences\solvers</Filter>
     </ClInclude>
@@ -3959,6 +3971,9 @@
       <Filter>methods\finitedifferences\solvers</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmhestonsolver.hpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\solvers\fdmcirsolver.hpp">
       <Filter>methods\finitedifferences\solvers</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\meshers\fdmblackscholesmesher.hpp">
@@ -5445,6 +5460,9 @@
     <ClCompile Include="ql\processes\blackscholesprocess.cpp">
       <Filter>processes</Filter>
     </ClCompile>
+    <ClCompile Include="ql\processes\coxingersollrossprocess.cpp">
+      <Filter>processes</Filter>
+    </ClCompile>
     <ClCompile Include="ql\processes\endeulerdiscretization.cpp">
       <Filter>processes</Filter>
     </ClCompile>
@@ -5464,6 +5482,9 @@
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\hestonprocess.cpp">
+      <Filter>processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\processes\coxingersollross.cpp">
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\hullwhiteprocess.cpp">
@@ -6621,6 +6642,9 @@
     <ClCompile Include="ql\pricingengines\vanilla\fdhestonvanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\fdcirvanillaengine.cpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\operators\fdm2dblackscholesop.cpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClCompile>
@@ -6666,6 +6690,9 @@
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmhestonop.cpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmcirop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdmbatessolver.cpp">
       <Filter>methods\finitedifferences\solvers</Filter>
     </ClCompile>
@@ -6676,6 +6703,9 @@
       <Filter>methods\finitedifferences\solvers</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdmhestonsolver.cpp">
+      <Filter>methods\finitedifferences\solvers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\solvers\fdmcirsolver.cpp">
       <Filter>methods\finitedifferences\solvers</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\meshers\fdmblackscholesmesher.cpp">

@@ -453,6 +453,7 @@ set(QuantLib_SRC
     methods/finitedifferences/operators/fdmg2op.cpp
     methods/finitedifferences/operators/fdmhestonhullwhiteop.cpp
     methods/finitedifferences/operators/fdmhestonop.cpp
+    methods/finitedifferences/operators/fdmcirop.cpp
     methods/finitedifferences/operators/fdmhullwhiteop.cpp
     methods/finitedifferences/operators/fdmlinearoplayout.cpp
     methods/finitedifferences/operators/fdmlocalvolfwdop.cpp
@@ -483,6 +484,7 @@ set(QuantLib_SRC
     methods/finitedifferences/solvers/fdmg2solver.cpp
     methods/finitedifferences/solvers/fdmhestonhullwhitesolver.cpp
     methods/finitedifferences/solvers/fdmhestonsolver.cpp
+    methods/finitedifferences/solvers/fdmcirsolver.cpp
     methods/finitedifferences/solvers/fdmhullwhitesolver.cpp
     methods/finitedifferences/solvers/fdmsimple2dbssolver.cpp
     methods/finitedifferences/stepconditions/fdmamericanstepcondition.cpp
@@ -722,6 +724,7 @@ set(QuantLib_SRC
     pricingengines/vanilla/exponentialfittinghestonengine.cpp
     pricingengines/vanilla/fdbatesvanillaengine.cpp
     pricingengines/vanilla/fdblackscholesvanillaengine.cpp
+    pricingengines/vanilla/fdcirvanillaengine.cpp
     pricingengines/vanilla/fdcevvanillaengine.cpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.cpp
     pricingengines/vanilla/fdhestonvanillaengine.cpp
@@ -752,6 +755,7 @@ set(QuantLib_SRC
     processes/merton76process.cpp
     processes/mfstateprocess.cpp
     processes/ornsteinuhlenbeckprocess.cpp
+    processes/coxingersollrossprocess.cpp
     processes/squarerootprocess.cpp
     processes/stochasticprocessarray.cpp
     quotes/eurodollarfuturesquote.cpp
@@ -1602,6 +1606,7 @@ set(QuantLib_HDR
     methods/finitedifferences/operators/fdmg2op.hpp
     methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp
     methods/finitedifferences/operators/fdmhestonop.hpp
+    methods/finitedifferences/operators/fdmcirop.hpp
     methods/finitedifferences/operators/fdmhullwhiteop.hpp
     methods/finitedifferences/operators/fdmlinearop.hpp
     methods/finitedifferences/operators/fdmlinearopcomposite.hpp
@@ -1645,6 +1650,7 @@ set(QuantLib_HDR
     methods/finitedifferences/solvers/fdmg2solver.hpp
     methods/finitedifferences/solvers/fdmhestonhullwhitesolver.hpp
     methods/finitedifferences/solvers/fdmhestonsolver.hpp
+    methods/finitedifferences/solvers/fdmcirsolver.hpp
     methods/finitedifferences/solvers/fdmhullwhitesolver.hpp
     methods/finitedifferences/solvers/fdmndimsolver.hpp
     methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp
@@ -1988,6 +1994,7 @@ set(QuantLib_HDR
     pricingengines/vanilla/fdbatesvanillaengine.hpp
     pricingengines/vanilla/fdbermudanengine.hpp
     pricingengines/vanilla/fdblackscholesvanillaengine.hpp
+    pricingengines/vanilla/fdcirvanillaengine.hpp
     pricingengines/vanilla/fdcevvanillaengine.hpp
     pricingengines/vanilla/fdconditions.hpp
     pricingengines/vanilla/fddividendamericanengine.hpp
@@ -2032,6 +2039,7 @@ set(QuantLib_HDR
     processes/merton76process.hpp
     processes/mfstateprocess.hpp
     processes/ornsteinuhlenbeckprocess.hpp
+    processes/coxingersollrossprocess.hpp
     processes/squarerootprocess.hpp
     processes/stochasticprocessarray.hpp
     qldefines.hpp

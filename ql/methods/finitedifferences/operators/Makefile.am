@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	fdmg2op.hpp \
 	fdmhestonhullwhiteop.hpp \
 	fdmhestonop.hpp \
+	fdmcirop.hpp \
 	fdmhullwhiteop.hpp \
 	fdmlinearopcomposite.hpp \
 	fdmlocalvolfwdop.hpp \
@@ -35,6 +36,7 @@ cpp_files = \
 	fdmg2op.cpp \
 	fdmhestonhullwhiteop.cpp \
 	fdmhestonop.cpp \
+	fdmcirop.cpp \
 	fdmhullwhiteop.cpp \
 	fdmlinearoplayout.cpp \
 	fdmlocalvolfwdop.cpp \

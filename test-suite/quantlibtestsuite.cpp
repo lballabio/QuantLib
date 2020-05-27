@@ -115,6 +115,7 @@
 #include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
+#include "fdcir.hpp"
 #include "fdmlinearop.hpp"
 #include "fdcev.hpp"
 #include "fdsabr.hpp"
@@ -400,6 +401,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
     test->add(FastFourierTransformTest::suite());
+    test->add(FdCIRTest::suite(speed));
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
     test->add(FdCevTest::suite(speed));

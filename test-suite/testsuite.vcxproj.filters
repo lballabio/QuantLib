@@ -164,6 +164,9 @@
     <ClCompile Include="fdheston.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fdcir.cpp">
+          <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="fdmlinearop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -620,6 +623,9 @@
     <ClInclude Include="fdheston.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fdcir.hpp">
+          <Filter>Header Files</Filter>
+        </ClInclude>
     <ClInclude Include="fdmlinearop.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
