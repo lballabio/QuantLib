@@ -793,18 +793,18 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-            if (maxBound && maxBound() != Null<Real>())
-                retVal = (*integrator_)(f, 0.0, maxBound());
-            else
-                retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
-            break;
+              if (maxBound != 0 && maxBound() != Null<Real>())
+                  retVal = (*integrator_)(f, 0.0, maxBound());
+              else
+                  retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
+              break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-            if (maxBound && maxBound() != Null<Real>())
-                retVal = (*integrator_)(f, 0.0, maxBound());
-            else
-                retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
-            break;
+              if (maxBound != 0 && maxBound() != Null<Real>())
+                  retVal = (*integrator_)(f, 0.0, maxBound());
+              else
+                  retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
+              break;
           default:
             QL_FAIL("unknwon integration algorithm");
         }
