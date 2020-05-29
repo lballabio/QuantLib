@@ -17,10 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/processes/hestonprocess.hpp>
 #include <ql/methods/finitedifferences/operators/fdmcirop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmcirsolver.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <boost/test/test_tools.hpp>
 
 namespace QuantLib {
 
@@ -42,6 +43,7 @@ namespace QuantLib {
     }
 
     void FdmCIRSolver::performCalculations() const {
+        BOOST_TEST_CHECKPOINT("performCalculations");
         ext::shared_ptr<FdmLinearOpComposite> op(
 			ext::make_shared<FdmCIROp>(
                 solverDesc_.mesher,
