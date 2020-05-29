@@ -201,6 +201,29 @@ namespace QuantLib {
         return retVal;
     }
 
+    void NinePointLinearOp::reset(NinePointLinearOp m)
+    {
+        const Size size = mesher_->layout()->size();
+
+        std::copy(m.i00_.get(), m.i00_.get()+size, i00_.get());
+        std::copy(m.i10_.get(), m.i10_.get()+size, i10_.get());
+        std::copy(m.i20_.get(), m.i20_.get()+size, i20_.get());
+        std::copy(m.i01_.get(), m.i01_.get()+size, i01_.get());
+        std::copy(m.i21_.get(), m.i21_.get()+size, i21_.get());
+        std::copy(m.i02_.get(), m.i02_.get()+size, i02_.get());
+        std::copy(m.i12_.get(), m.i12_.get()+size, i12_.get());
+        std::copy(m.i22_.get(), m.i22_.get()+size, i22_.get());
+        std::copy(m.a00_.get(), m.a00_.get()+size, a00_.get());
+        std::copy(m.a10_.get(), m.a10_.get()+size, a10_.get());
+        std::copy(m.a20_.get(), m.a20_.get()+size, a20_.get());
+        std::copy(m.a01_.get(), m.a01_.get()+size, a01_.get());
+        std::copy(m.a11_.get(), m.a11_.get()+size, a11_.get());
+        std::copy(m.a21_.get(), m.a21_.get()+size, a21_.get());
+        std::copy(m.a02_.get(), m.a02_.get()+size, a02_.get());
+        std::copy(m.a12_.get(), m.a12_.get()+size, a12_.get());
+        std::copy(m.a22_.get(), m.a22_.get()+size, a22_.get());
+    }
+
     void NinePointLinearOp::swap(NinePointLinearOp& m) {
         std::swap(d0_, m.d0_);
         std::swap(d1_, m.d1_);

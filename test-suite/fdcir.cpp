@@ -44,11 +44,11 @@ void FdCIRTest::testFdmCIRConvergence() {
 
     FdmSchemeDesc schemes[] = {
         FdmSchemeDesc::Hundsdorfer(),
-        /**FdmSchemeDesc::ModifiedCraigSneyd(),
+        FdmSchemeDesc::ModifiedCraigSneyd(),
         FdmSchemeDesc::ModifiedHundsdorfer(),
         FdmSchemeDesc::CraigSneyd(),
         FdmSchemeDesc::TrBDF2(),
-        FdmSchemeDesc::CrankNicolson(),**/
+        FdmSchemeDesc::CrankNicolson(),
     };
 
     // set up dates

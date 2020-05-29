@@ -106,9 +106,9 @@ namespace QuantLib {
         const Real spot = bsProcess_->x0();
 
         results_.value = solver->valueAt(spot, r0);
-        //results_.delta = solver->deltaAt(spot, r0);
-        //results_.gamma = solver->gammaAt(spot, r0);
-        //results_.theta = solver->thetaAt(spot, r0);
+        results_.delta = solver->deltaAt(spot, r0);
+        results_.gamma = solver->gammaAt(spot, r0);
+        results_.theta = solver->thetaAt(spot, r0);
     }
 
     MakeFdCIRVanillaEngine::MakeFdCIRVanillaEngine(
