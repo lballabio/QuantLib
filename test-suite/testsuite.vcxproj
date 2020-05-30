@@ -693,6 +693,7 @@
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="fastfouriertransform.cpp" />
     <ClCompile Include="fdheston.cpp" />
+    <ClCompile Include="fdcir.cpp" />
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
     <ClCompile Include="forwardrateagreement.cpp" />
@@ -847,6 +848,7 @@
     <ClInclude Include="functions.hpp" />
     <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />
+    <ClInclude Include="fdcir.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />
     <ClInclude Include="forwardoption.hpp" />
     <ClInclude Include="forwardrateagreement.hpp" />

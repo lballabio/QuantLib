@@ -55,6 +55,7 @@ set(QuantLib-Test_SRC
     fastfouriertransform.cpp
     fdcev.cpp
     fdheston.cpp
+    fdcir.cpp
     fdmlinearop.cpp
     fdsabr.cpp
     fittedbonddiscountcurve.cpp

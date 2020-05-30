@@ -1175,6 +1175,7 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmg2op.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmhestonhullwhiteop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmhestonop.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmcirop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmhullwhiteop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopcomposite.hpp" />
@@ -1218,6 +1219,7 @@
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmg2solver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmhestonhullwhitesolver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmhestonsolver.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\solvers\fdmcirsolver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmhullwhitesolver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmndimsolver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\solvers\fdmsimple2dbssolver.hpp" />
@@ -1569,6 +1571,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\fdsimplebsswingengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdstepconditionengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdvanillaengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\fdcirvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\hestonexpansionengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\integralengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\jumpdiffusionengine.hpp" />
@@ -1583,6 +1586,7 @@
     <ClInclude Include="ql\processes\all.hpp" />
     <ClInclude Include="ql\processes\batesprocess.hpp" />
     <ClInclude Include="ql\processes\blackscholesprocess.hpp" />
+    <ClInclude Include="ql\processes\coxingersollrossprocess.hpp" />
     <ClInclude Include="ql\processes\endeulerdiscretization.hpp" />
     <ClInclude Include="ql\processes\eulerdiscretization.hpp" />
     <ClInclude Include="ql\processes\forwardmeasureprocess.hpp" />
@@ -2293,6 +2297,7 @@
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmg2op.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmhestonhullwhiteop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmhestonop.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmcirop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmhullwhiteop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.cpp" />
@@ -2323,6 +2328,7 @@
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdmg2solver.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdmhestonhullwhitesolver.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdmhestonsolver.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\solvers\fdmcirsolver.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdmhullwhitesolver.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\solvers\fdmsimple2dbssolver.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\stepconditions\fdmamericanstepcondition.cpp" />
@@ -2565,6 +2571,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\fdsabrvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdsimplebsswingengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdvanillaengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\fdcirvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\hestonexpansionengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\integralengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\jumpdiffusionengine.cpp" />
@@ -2574,6 +2581,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp" />
     <ClCompile Include="ql\processes\batesprocess.cpp" />
     <ClCompile Include="ql\processes\blackscholesprocess.cpp" />
+    <ClCompile Include="ql\processes\coxingersollrossprocess.cpp" />
     <ClCompile Include="ql\processes\endeulerdiscretization.cpp" />
     <ClCompile Include="ql\processes\eulerdiscretization.cpp" />
     <ClCompile Include="ql\processes\forwardmeasureprocess.cpp" />

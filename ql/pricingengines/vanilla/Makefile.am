@@ -38,6 +38,7 @@ this_include_HEADERS = \
     fdeuropeanengine.hpp \
 	fdhestonhullwhitevanillaengine.hpp \
 	fdhestonvanillaengine.hpp \
+	fdcirvanillaengine.hpp \
     fdmultiperiodengine.hpp \
     fdsabrvanillaengine.hpp \
     fdshoutengine.hpp \
@@ -80,6 +81,7 @@ cpp_files = \
 	fdcevvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdhestonvanillaengine.cpp \
+	fdcirvanillaengine.cpp \
 	fdsabrvanillaengine.cpp \
 	fdsimplebsswingengine.cpp \
     fdvanillaengine.cpp \

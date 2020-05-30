@@ -55,6 +55,7 @@ QL_TESTS = \
 	extensibleoptions.hpp extensibleoptions.cpp \
 	fastfouriertransform.hpp fastfouriertransform.cpp \
 	fdheston.hpp fdheston.cpp \
+	fdcir.hpp fdcir.cpp \
 	fdmlinearop.hpp fdmlinearop.cpp \
 	fdcev.hpp fdcev.cpp \
 	fdsabr.hpp fdsabr.cpp \
