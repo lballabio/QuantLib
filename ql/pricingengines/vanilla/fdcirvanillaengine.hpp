@@ -47,8 +47,11 @@ namespace QuantLib {
         explicit FdCIRVanillaEngine(
             const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
-            const Real rho_,
+            Size tGrid,
+            Size xGrid,
+            Size vGrid,
+            Size dampingSteps,
+            Real rho_,
             const FdmSchemeDesc& schemeDesc,
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
@@ -71,7 +74,7 @@ namespace QuantLib {
         explicit MakeFdCIRVanillaEngine(
             const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            const Real rho);
+            Real rho);
 
         MakeFdCIRVanillaEngine& withQuantoHelper(
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
