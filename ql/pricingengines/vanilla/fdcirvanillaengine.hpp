@@ -60,8 +60,8 @@ namespace QuantLib {
         const Size tGrid_, xGrid_, rGrid_, dampingSteps_;
         const Real rho_;
         const FdmSchemeDesc schemeDesc_;
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess_;
-        const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
         
         ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
@@ -88,8 +88,8 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
 
       private:
-        const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess_;
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess_;
+        ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
         const Real rho_;
         Size tGrid_, xGrid_, rGrid_, dampingSteps_;
         ext::shared_ptr<FdmSchemeDesc> schemeDesc_;

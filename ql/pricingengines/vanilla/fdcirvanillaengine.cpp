@@ -89,7 +89,7 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-       return solverDesc;
+        return solverDesc;
     }
 
     void FdCIRVanillaEngine::calculate() const {
