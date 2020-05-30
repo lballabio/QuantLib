@@ -23,7 +23,6 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <boost/test/test_tools.hpp>
 
 namespace QuantLib {
 
@@ -38,11 +37,9 @@ namespace QuantLib {
       qTS_(bsProcess->dividendYield().currentLink()),
       strike_(strike),
       sigma1_(bsProcess->blackVolatility().currentLink()){
-        BOOST_TEST_CHECKPOINT("initialised equity");
     }
 
     void FdmCIREquityPart::setTime(Time t1, Time t2) {
-        BOOST_TEST_CHECKPOINT("set time equity");
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
         const Real v = sigma1_->blackForwardVariance(t1, t2, strike_)/(t2-t1);
@@ -52,7 +49,6 @@ namespace QuantLib {
     }
 
     const TripleBandLinearOp& FdmCIREquityPart::getMap() const {
-        BOOST_TEST_CHECKPOINT("get map equity");
         return mapT_;
     }
 
@@ -65,16 +61,13 @@ namespace QuantLib {
                    .mult(kappa*(theta - mesher->locations(1))))),
       mapT_(1, mesher),
       mesher_(mesher){
-        BOOST_TEST_CHECKPOINT("initialised rates");
     }
 
     void FdmCIRRatesPart::setTime(Time t1, Time t2) {
-        BOOST_TEST_CHECKPOINT("set time rates");
         mapT_.axpyb(Array(), dyMap_, dyMap_, -0.5*mesher_->locations(1));
     }
 
     const TripleBandLinearOp& FdmCIRRatesPart::getMap() const {
-        BOOST_TEST_CHECKPOINT("get map rates");
         return mapT_;
     }
 
@@ -93,14 +86,12 @@ namespace QuantLib {
     }
 
     void FdmCIRMixedPart::setTime(Time t1, Time t2) {
-        BOOST_TEST_CHECKPOINT("set time mixed");
         const Real v = std::sqrt(sigma1_->blackForwardVariance(t1, t2, strike_)/(t2-t1));
         NinePointLinearOp op(dyMap_.mult(Array(mesher_->layout()->size(), v)));
         mapT_.reset(op);
     }
 
     const NinePointLinearOp& FdmCIRMixedPart::getMap() const {
-        BOOST_TEST_CHECKPOINT("get map mixed");
         return mapT_;
     }
 
@@ -122,7 +113,6 @@ namespace QuantLib {
              bsProcess,
              rho,
              strike){
-        BOOST_TEST_CHECKPOINT("initialised fdmcirop");
     }
 
 
@@ -137,7 +127,6 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmCIROp::apply(const Array& u) const {
-        BOOST_TEST_CHECKPOINT("Applying");
         Array dx = dxMap_.getMap().apply(u);
         Array dy = dyMap_.getMap().apply(u);
         Array dz = dzMap_.getMap().apply(u);
@@ -147,7 +136,6 @@ namespace QuantLib {
 
     Disposable<Array> FdmCIROp::apply_direction(Size direction,
                                                    const Array& r) const {
-        BOOST_TEST_CHECKPOINT("Apply direction");
         if (direction == 0)
             return dxMap_.getMap().apply(r);
         else if (direction == 1)
@@ -157,14 +145,13 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmCIROp::apply_mixed(const Array& r) const {
-        BOOST_TEST_CHECKPOINT("apply mixed");
         return dzMap_.getMap().apply(r);
     }
 
     Disposable<Array>
         FdmCIROp::solve_splitting(Size direction,
                                      const Array& r, Real a) const {
-        BOOST_TEST_CHECKPOINT("solve splitting");
+
         if (direction == 0) {
             return dxMap_.getMap().solve_splitting(r, a, 1.0);
         }

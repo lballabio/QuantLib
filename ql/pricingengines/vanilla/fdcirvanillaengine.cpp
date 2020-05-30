@@ -28,7 +28,6 @@
 #include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/coxingersollrossprocess.hpp>
-#include <boost/test/test_tools.hpp>
 
 namespace QuantLib {
 
@@ -48,7 +47,6 @@ namespace QuantLib {
     }
 
     FdmSolverDesc FdCIRVanillaEngine::getSolverDesc(Real) const {
-        BOOST_TEST_CHECKPOINT("Initialising stuff");
         DividendSchedule dividendSchedule = DividendSchedule();
 
         const ext::shared_ptr<StrikedTypePayoff> payoff =
@@ -59,8 +57,6 @@ namespace QuantLib {
         const ext::shared_ptr<Fdm1dMesher> shortRateMesher(
             new FdmSimpleProcess1dMesher(rGrid_, cirProcess_, maturity, tGrid_));
 
-        BOOST_TEST_CHECKPOINT("Initialising stuff 2");
-
         // The equity mesher
         const ext::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(
@@ -69,8 +65,6 @@ namespace QuantLib {
                 std::pair<Real, Real>(payoff->strike(), 0.1),
                 dividendSchedule, quantoHelper_,
                 0.0));
-
-        BOOST_TEST_CHECKPOINT("Initialising stuff 3");
         
         const ext::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(equityMesher, shortRateMesher));
@@ -78,8 +72,6 @@ namespace QuantLib {
         // Calculator
         const ext::shared_ptr<FdmInnerValueCalculator> calculator(
                           new FdmLogInnerValue(arguments_.payoff, mesher, 0));
-
-        BOOST_TEST_CHECKPOINT("Initialising stuff 4");
 
         // Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
@@ -89,8 +81,6 @@ namespace QuantLib {
                                  bsProcess_->riskFreeRate()->referenceDate(),
                                  bsProcess_->riskFreeRate()->dayCounter());
 
-        BOOST_TEST_CHECKPOINT("Initialising stuff 5");
-
         // Boundary conditions
         const FdmBoundaryConditionSet boundaries;
 
@@ -99,8 +89,6 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        BOOST_TEST_CHECKPOINT("Initialising stuff 6");
-
        return solverDesc;
     }
 
@@ -108,15 +96,11 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
-        BOOST_TEST_CHECKPOINT("calculate 1");
-
         ext::shared_ptr<FdmCIRSolver> solver(new FdmCIRSolver(
                     Handle<CoxIngersollRossProcess>(cirProcess_),
                     Handle<GeneralizedBlackScholesProcess>(bsProcess_),
                     getSolverDesc(1.5), schemeDesc_,
                     rho_, payoff->strike()));
-
-        BOOST_TEST_CHECKPOINT("calculate 2");
 
         const Real r0   = cirProcess_->x0();
         const Real spot = bsProcess_->x0();
