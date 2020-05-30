@@ -88,7 +88,7 @@ namespace QuantLib {
     void FdmCIRMixedPart::setTime(Time t1, Time t2) {
         const Real v = std::sqrt(sigma1_->blackForwardVariance(t1, t2, strike_)/(t2-t1));
         NinePointLinearOp op(dyMap_.mult(Array(mesher_->layout()->size(), v)));
-        mapT_.reset(op);
+        mapT_.swap(op);
     }
 
     const NinePointLinearOp& FdmCIRMixedPart::getMap() const {

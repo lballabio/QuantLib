@@ -47,7 +47,6 @@ namespace QuantLib {
         Disposable<NinePointLinearOp> mult(const Array& u) const;
 
         void swap(NinePointLinearOp& m);
-        void reset(NinePointLinearOp m);
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<SparseMatrix> toMatrix() const;

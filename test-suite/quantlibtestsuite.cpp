@@ -366,7 +366,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(QUANTLIB_TEST_CASE(startTimer));
 
-    test->add(FdCIRTest::suite(speed));
     test->add(AmericanOptionTest::suite());
     test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
     test->add(ArrayTest::suite());
@@ -405,6 +404,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
     test->add(FdCevTest::suite(speed));
+    test->add(FdCIRTest::suite(speed));
     test->add(FdSabrTest::suite(speed));
     test->add(FittedBondDiscountCurveTest::suite());
     test->add(ForwardOptionTest::suite());

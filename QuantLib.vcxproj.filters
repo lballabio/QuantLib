@@ -2265,9 +2265,6 @@
     <ClInclude Include="ql\processes\hestonprocess.hpp">
       <Filter>processes</Filter>
     </ClInclude>
-    <ClInclude Include="ql\processes\coxingersollross.hpp">
-      <Filter>processes</Filter>
-    </ClInclude>
     <ClInclude Include="ql\processes\hullwhiteprocess.hpp">
       <Filter>processes</Filter>
     </ClInclude>
@@ -5482,9 +5479,6 @@
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\hestonprocess.cpp">
-      <Filter>processes</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\processes\coxingersollross.cpp">
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\hullwhiteprocess.cpp">
