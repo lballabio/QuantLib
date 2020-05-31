@@ -75,12 +75,11 @@ namespace QuantLib {
 
     class FdmCIRMixedPart {
       public:
-        FdmCIRMixedPart(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<CoxIngersollRossProcess> & cirProcess,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
-            const Real rho,
-            const Real strike);
+        FdmCIRMixedPart(const ext::shared_ptr<FdmMesher>& mesher,
+                        const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
+                        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                        Real rho,
+                        Real strike);
 
         void setTime(Time t1, Time t2);
         const NinePointLinearOp& getMap() const;
@@ -96,12 +95,11 @@ namespace QuantLib {
 
     class FdmCIROp : public FdmLinearOpComposite {
       public:
-        FdmCIROp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<CoxIngersollRossProcess> & cirProcess,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
-            const Real rho,
-            const Real strike);
+        FdmCIROp(const ext::shared_ptr<FdmMesher>& mesher,
+                 const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
+                 const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                 Real rho,
+                 Real strike);
 
         Size size() const;
         void setTime(Time t1, Time t2);
