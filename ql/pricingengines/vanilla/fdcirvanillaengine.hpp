@@ -51,7 +51,7 @@ namespace QuantLib {
             Size xGrid,
             Size vGrid,
             Size dampingSteps,
-            Real rho_,
+            Real rho,
             const FdmSchemeDesc& schemeDesc,
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
