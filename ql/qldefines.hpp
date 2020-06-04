@@ -44,6 +44,17 @@
     #define BOOST_ENABLE_ASSERT_HANDLER
 #endif
 
+/* Boost is deprecating to use of
+     #include <boost/bind.hpp>
+   starting with version 1.73.
+   This prevents the info message for a while. */
+#if BOOST_VERSION > 107200
+    #if !defined(BOOST_BIND_GLOBAL_PLACEHOLDERS)
+        #define BOOST_BIND_GLOBAL_PLACEHOLDERS
+    #endif
+#endif
+
+
 /* This allows one to include a given file at this point by
    passing it as a compiler define (e.g., -DQL_INCLUDE_FIRST=foo.hpp).
 
