@@ -255,11 +255,7 @@ namespace QuantLib {
         : GeneralizedHullWhite::ShortRateDynamics(
               ext::shared_ptr<StochasticProcess1D>(
                       new OrnsteinUhlenbeckProcess(a, sigma))),
-          fitting_(fitting) {
-
-            _f_=identity();
-            _fInverse_=identity();
-        }
+          fitting_(fitting), _f_(identity()), _fInverse_(identity()) {}
 
         Real variable(Time t, Rate r) const {
             return _f_(r) - fitting_(t);

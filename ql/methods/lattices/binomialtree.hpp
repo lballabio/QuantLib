@@ -42,9 +42,7 @@ namespace QuantLib {
         BinomialTree(const ext::shared_ptr<StochasticProcess1D>& process,
                      Time end,
                      Size steps)
-        : Tree<T>(steps+1) {
-            x0_ = process->x0();
-            dt_ = end/steps;
+        : Tree<T>(steps+1), x0_(process->x0()), dt_(end/steps) {
             driftPerStep_ = process->drift(0.0, x0_) * dt_;
         }
         Size size(Size i) const {

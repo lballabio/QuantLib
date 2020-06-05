@@ -44,10 +44,8 @@ namespace QuantLib {
     class GaussianKernel : public KernelFunction {
       public:
         GaussianKernel(Real average, Real sigma)
-        : nd_(average,sigma), cnd_(average,sigma) {
-            // normFact is \sqrt{2*\pi}.
-            normFact_ = M_SQRT2*M_SQRTPI;
-        }
+        : nd_(average,sigma), cnd_(average,sigma),
+          normFact_(M_SQRT2*M_SQRTPI) {} // normFact is \sqrt{2*\pi}.
 
         Real operator()(Real x) const{
             return nd_(x)*normFact_;

@@ -57,11 +57,11 @@ namespace QuantLib {
                               Real targetValue,
                               Real displacement,
                               VolatilityType type)
-        : discountCurve_(discountCurve), targetValue_(targetValue) {
+        : discountCurve_(discountCurve), targetValue_(targetValue),
+          vol_(ext::make_shared<SimpleQuote>(-1.0)) {
 
-            // set an implausible value, so that calculation is forced
+            // vol_ is set an implausible value, so that calculation is forced
             // at first ImpliedCapVolHelper::operator()(Volatility x) call
-            vol_ = ext::make_shared<SimpleQuote>(-1);
             Handle<Quote> h(vol_);
 
             switch (type) {

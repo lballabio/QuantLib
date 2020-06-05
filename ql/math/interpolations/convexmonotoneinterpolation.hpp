@@ -528,13 +528,12 @@ namespace QuantLib {
                                Real prevPrimitive)
             : splitRegion_(false), x1_(xPrev), x4_(xNext),
               primitive1_(prevPrimitive), fAverage_(fAverage),
-              fPrev_(fPrev), fNext_(fNext) {
+              fPrev_(fPrev), fNext_(fNext), xRatio_(1.0) {
                 a_ = 3*fPrev_ + 3*fNext_ - 6*fAverage_;
                 b_ = -(4*fPrev_ + 2*fNext_ - 6*fAverage_);
                 c_ = fPrev_;
                 Real d = b_*b_-4*a_*c_;
                 xScaling_ = x4_-x1_;
-                xRatio_ = 1.0;
                 if (d > 0) {
                     Real aAv = 36;
                     Real bAv = -24*(fPrev_+fNext_);
