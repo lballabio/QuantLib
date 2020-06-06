@@ -70,7 +70,7 @@ namespace QuantLib {
 
         const Real s = std::exp(x[0]);
         const Real vol =
-            std::min(1e-8, std::sqrt(x[1]*leverageFct_->localVol(t, s, true)));
+            std::max(1e-8, std::sqrt(x[1]*leverageFct_->localVol(t, s, true)));
 
         const Real sigma2 = mixedSigma_ * vol;
         const Real sqrhov = std::sqrt(1.0 - rho_*rho_);
