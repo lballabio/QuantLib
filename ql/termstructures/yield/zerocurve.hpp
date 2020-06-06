@@ -81,11 +81,10 @@ namespace QuantLib {
         const std::vector<Rate>& zeroRates() const;
         std::vector<std::pair<Date, Real> > nodes() const;
         //@}
+
       protected:
-        InterpolatedZeroCurve(
+        explicit InterpolatedZeroCurve(
             const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
         InterpolatedZeroCurve(
             const Date& referenceDate,
@@ -100,6 +99,18 @@ namespace QuantLib {
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
+
+        /*! \deprecated Passing jumps without a reference date never worked correctly.
+                        Use one of the other constructors instead.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        InterpolatedZeroCurve(
+            const DayCounter&,
+            const std::vector<Handle<Quote> >& jumps,
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& interpolator = Interpolator());
+
         //! \name ZeroYieldStructure implementation
         //@{
         Rate zeroYieldImpl(Time t) const;
@@ -173,11 +184,8 @@ namespace QuantLib {
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                     const DayCounter& dayCounter,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates,
                                     const T& interpolator)
-    : ZeroYieldStructure(dayCounter, jumps, jumpDates),
-      InterpolatedCurve<T>(interpolator) {}
+    : ZeroYieldStructure(dayCounter), InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
@@ -199,6 +207,38 @@ namespace QuantLib {
                                     const T& interpolator)
     : ZeroYieldStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
+
+    template <class T>
+    InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
+                                    const DayCounter& dayCounter,
+                                    const std::vector<Handle<Quote> >& jumps,
+                                    const std::vector<Date>& jumpDates,
+                                    const T& interpolator)
+    : ZeroYieldStructure(dayCounter, jumps, jumpDates),
+      InterpolatedCurve<T>(interpolator) {}
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
     template <class T>
     InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
