@@ -41,7 +41,7 @@ namespace QuantLib {
         : public HazardRateStructure {
     public:
         // implement remaining constructors.....
-      OneFactorAffineSurvivalStructure(
+      explicit OneFactorAffineSurvivalStructure(
           const ext::shared_ptr<OneFactorAffineModel>& model,
           const DayCounter& dayCounter = DayCounter(),
           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),

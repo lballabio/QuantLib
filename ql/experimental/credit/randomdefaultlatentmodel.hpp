@@ -842,9 +842,8 @@ namespace QuantLib {
           this->registerWith(Settings::instance().evaluationDate());
           this->registerWith(model_);
         }
-        RandomDefaultLM(
-            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&
-                model,
+        explicit RandomDefaultLM(
+            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& model,
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
             BigNatural seed = 2863311530UL)

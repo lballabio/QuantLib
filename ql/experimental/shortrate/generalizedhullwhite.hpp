@@ -47,7 +47,8 @@ namespace QuantLib {
             Interpolation interpolator_;
         };
     public:
-        InterpolationParameter(Size count,
+        explicit InterpolationParameter(
+            Size count,
             const Constraint& constraint = NoConstraint())
         : Parameter(count,
             ext::shared_ptr<Parameter::Impl>(

@@ -47,9 +47,10 @@ namespace QuantLib {
     template<class copulaPolicy> 
     class RecursiveLossModel : public DefaultLossModel {
     public:
-      RecursiveLossModel(const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
-                         // nope! use max common divisor. See O'Kane. Or give both options at least.
-                         Size nbuckets = 1)
+      explicit RecursiveLossModel(
+          const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
+          // nope! use max common divisor. See O'Kane. Or give both options at least.
+          Size nbuckets = 1)
       : copula_(m), nBuckets_(nbuckets) {}
 
     private:

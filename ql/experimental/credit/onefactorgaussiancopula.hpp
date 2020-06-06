@@ -39,8 +39,8 @@ namespace QuantLib {
     */
     class OneFactorGaussianCopula : public OneFactorCopula {
       public:
-        OneFactorGaussianCopula (const Handle<Quote>& correlation,
-                                 Real maximum = 5, Size integrationSteps = 50)
+        explicit OneFactorGaussianCopula(const Handle<Quote>& correlation,
+                                         Real maximum = 5, Size integrationSteps = 50)
         : OneFactorCopula (correlation, maximum, integrationSteps) {
             registerWith(correlation_);
         }

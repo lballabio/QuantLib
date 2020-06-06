@@ -50,7 +50,8 @@ namespace QuantLib {
         IrregularSwaption::results> {
     public:
         //@{
-        HaganIrregularSwaptionEngine(const Handle<SwaptionVolatilityStructure>&,
+        explicit HaganIrregularSwaptionEngine(
+            const Handle<SwaptionVolatilityStructure>&,
             const Handle<YieldTermStructure>& termStructure = Handle<YieldTermStructure>());
         //@}
         void calculate() const;
