@@ -2521,6 +2521,7 @@ void HestonSLVModelTest::testDiffusionAndDriftSlvProcess() {
     const Rate r = -0.005;
     const Rate q =  0.04;
 
+    const DayCounter dayCounter = Actual365Fixed();
     const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dc));
 
