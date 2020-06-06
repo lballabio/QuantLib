@@ -111,12 +111,10 @@ namespace QuantLib {
         const ext::shared_ptr<YoYInflationCapFloorEngine>& p,
         Real priceToMatch)
     : slope_(slope), K_(K), frequency_(anIndex->frequency()),
-      indexIsInterpolated_(anIndex->interpolated()), priceToMatch_(priceToMatch), surf_(surf),
-      p_(p) {
+      indexIsInterpolated_(anIndex->interpolated()),
+      tvec_(std::vector<Time>(2)), dvec_(std::vector<Date>(2)),
+      vvec_(std::vector<Volatility>(2)), priceToMatch_(priceToMatch), surf_(surf), p_(p) {
 
-        tvec_ = std::vector<Time>(2);
-        vvec_ = std::vector<Volatility>(2);
-        dvec_ = std::vector<Date>(2);
         lag_ = surf_->observationLag();
         capfloor_ =
             MakeYoYInflationCapFloor(type, anIndex,

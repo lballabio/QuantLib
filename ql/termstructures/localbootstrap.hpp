@@ -49,9 +49,8 @@ namespace QuantLib {
                         helper_iterator rateHelpersStart,
                         helper_iterator rateHelpersEnd)
         : curve_(curve), initialIndex_(initialIndex),
-          rateHelpersStart_(rateHelpersStart), rateHelpersEnd_(rateHelpersEnd) {
-            localisation_ = std::distance(rateHelpersStart, rateHelpersEnd);
-        }
+          localisation_(std::distance(rateHelpersStart, rateHelpersEnd)),
+          rateHelpersStart_(rateHelpersStart), rateHelpersEnd_(rateHelpersEnd) {}
 
         Real value(const Array& x) const;
         Disposable<Array> values(const Array& x) const;

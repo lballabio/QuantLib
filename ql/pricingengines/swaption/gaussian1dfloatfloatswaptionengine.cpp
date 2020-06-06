@@ -165,12 +165,10 @@ namespace QuantLib {
                 npvp1.push_back(npvTmp1);
             }
         }
-        // end probabkility computation
+        // end probability computation
 
         Date event1 = Null<Date>(), event0;
         Time event1Time = Null<Real>(), event0Time;
-
-        bool isExercise, isLeg1Fixing, isLeg2Fixing;
 
         ext::shared_ptr<IborIndex> ibor1 =
             ext::dynamic_pointer_cast<IborIndex>(arguments_.index1);
@@ -206,15 +204,15 @@ namespace QuantLib {
                               // earliest event date
             }
 
-            isExercise =
+            bool isExercise =
                 std::find(arguments_.exercise->dates().begin(), arguments_.exercise->dates().end(),
                           event0) != arguments_.exercise->dates().end();
 
-            isLeg1Fixing =
+            bool isLeg1Fixing =
                 std::find(arguments_.leg1FixingDates.begin(), arguments_.leg1FixingDates.end(),
                           event0) != arguments_.leg1FixingDates.end();
 
-            isLeg2Fixing =
+            bool isLeg2Fixing =
                 std::find(arguments_.leg2FixingDates.begin(), arguments_.leg2FixingDates.end(),
                           event0) != arguments_.leg2FixingDates.end();
 

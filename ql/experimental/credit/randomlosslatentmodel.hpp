@@ -78,7 +78,7 @@ namespace QuantLib {
         // for time inversion:
         Real accuracy_;
     public:
-        RandomLossLM(
+        explicit RandomLossLM(
             const ext::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> >& 
                 copula,
             Size nSims = 0,

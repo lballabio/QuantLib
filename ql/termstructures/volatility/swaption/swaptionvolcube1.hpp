@@ -930,15 +930,11 @@ namespace QuantLib {
         setPoints(points);
      }
 
-    template<class Model> SwaptionVolCube1x<Model>::Cube::Cube(const Cube& o) {
-        optionTimes_ = o.optionTimes_;
-        swapLengths_ = o.swapLengths_;
-        optionDates_ = o.optionDates_;
-        swapTenors_ = o.swapTenors_;
-        nLayers_ = o.nLayers_;
-        extrapolation_ = o.extrapolation_;
-        backwardFlat_ = o.backwardFlat_;
-        transposedPoints_ = o.transposedPoints_;
+    template<class Model> SwaptionVolCube1x<Model>::Cube::Cube(const Cube& o)
+    : optionTimes_(o.optionTimes_), swapLengths_(o.swapLengths_),
+      optionDates_(o.optionDates_), swapTenors_(o.swapTenors_),
+      nLayers_(o.nLayers_), transposedPoints_(o.transposedPoints_),
+      extrapolation_(o.extrapolation_), backwardFlat_(o.backwardFlat_) {
         for (Size k=0; k<nLayers_; ++k) {
             ext::shared_ptr<Interpolation2D> interpolation;
             if (k <= 4 && backwardFlat_)
