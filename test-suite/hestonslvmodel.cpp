@@ -1273,8 +1273,8 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol() {
 
     const std::vector<Real>& strikes = smoothImpliedVol.get<0>();
     const std::vector<Date>& dates = smoothImpliedVol.get<1>();
-    const Handle<BlackVolTermStructure> vTS = Handle<BlackVolTermStructure>(
-            createSmoothImpliedVol(dayCounter, calendar).get<2>());
+    const Handle<BlackVolTermStructure> vTS =
+        Handle<BlackVolTermStructure>(smoothImpliedVol.get<2>());
 
     const Size xGrid = 101;
     const Size tGrid = 51;
@@ -2503,6 +2503,114 @@ void HestonSLVModelTest::testMoustacheGraph() {
     }
 }
 
+void HestonSLVModelTest::testDiffusionAndDriftSlvProcess() {
+    BOOST_TEST_MESSAGE(
+        "Testing diffusion and drift of the SLV process...");
+
+    SavedSettings backup;
+
+    const Date todaysDate(6, June, 2020);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date maturityDate = todaysDate + Period(6, Months);
+    const Time maturity = dc.yearFraction(todaysDate, maturityDate);
+
+    const Real s0 = 100;
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Rate r = -0.005;
+    const Rate q =  0.04;
+
+    const Handle<YieldTermStructure> rTS(flatRate(todaysDate, r, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dc));
+
+    const ext::shared_ptr<LocalVolTermStructure> localVol =
+        getFixedLocalVolFromHeston(
+            ext::make_shared<HestonModel>(
+                ext::make_shared<HestonProcess>(
+                    rTS, qTS, spot, 0.1, 1.0, 0.13, 0.8, 0.4)),
+            ext::make_shared<TimeGrid>(maturity, 20));
+
+    const Real kappa =  2.5;
+    const Real theta =  1.0;
+    const Real rho   =  -0.75;
+    const Real sigma =  2.4;
+    const Real v0    =  1.0;
+
+    const ext::shared_ptr<HestonProcess> hestonProcess =
+        ext::make_shared<HestonProcess>(
+            rTS, qTS, spot, v0, kappa, theta, sigma, rho);
+
+    const Handle<HestonModel> hestonModel(
+        ext::make_shared<HestonModel>(hestonProcess));
+
+    const ext::shared_ptr<HestonSLVProcess> slvProcess =
+        ext::make_shared<HestonSLVProcess>(hestonProcess, localVol);
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, s0),
+        ext::make_shared<EuropeanExercise>(maturityDate));
+
+    option.setPricingEngine(
+        ext::make_shared<FdHestonVanillaEngine>(
+            hestonModel.currentLink(),
+            26, 201, 101, 0,
+            FdmSchemeDesc::ModifiedCraigSneyd(),
+            localVol));
+
+    const Real expected = option.NPV();
+
+    const Size nSims = 16733;
+    const Size nTimeSteps = 40;
+    const DiscountFactor df = rTS->discount(maturity);
+
+    SobolBrownianBridgeRsg rsg(2, nTimeSteps,
+        SobolBrownianGenerator::Diagonal, 12345u, SobolRsg::JoeKuoD7);
+
+    Array x(2), xt(2), dw(2);
+    GeneralStatistics stats;
+
+    const Time dt = maturity/nTimeSteps;
+    const Real sqrtDt = std::sqrt(dt);
+
+    for (Size i=0; i < nSims; ++i) {
+        Time t = 0.0;
+        x[0] = s0; x[1] = v0;
+
+        const std::vector<Real> n = rsg.nextSequence().value;
+
+        for (Size j=0; j < nTimeSteps; ++j, t+=dt) {
+
+            dw[0] = n[j];
+            dw[1] = n[j+nTimeSteps];
+
+            // full truncation scheme
+            xt[0] = x[0];
+            xt[1] = (x[1] > 0)? x[1] : 0.0;
+
+            x = slvProcess->apply(x,
+                    slvProcess->diffusion(t, xt)*sqrtDt*dw
+                 + slvProcess->drift(t, xt)*dt);
+        }
+
+        stats.add(df*option.payoff()->operator()(x[0]));
+    }
+
+    const Real calculated = stats.mean();
+    const Real errorEstimate = stats.errorEstimate();
+
+    const Real diff = std::fabs(expected - calculated);
+
+    if (diff > 2.35*errorEstimate) {
+        BOOST_ERROR(
+            "Failed to reproduce call option price with HestonSLVProcess "
+            "diffusion and drift discretization scheme"
+            << "\n expected   : " << expected
+            << "\n calculated : " << calculated
+            << "\n error est. : " << errorEstimate
+            << "\n diff       : " << diff);
+    }
+}
 
 test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE(
@@ -2526,6 +2634,8 @@ test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
         &HestonSLVModelTest::testMonteCarloVsFdmPricing));
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testLocalVolsvSLVPropDensity));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonSLVModelTest::testDiffusionAndDriftSlvProcess));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
