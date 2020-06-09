@@ -41,7 +41,8 @@ namespace QuantLib {
       x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       externalLocalVolTS_(localVolTS),
-      forceDiscretization_(false), hasExternalLocalVol_(true), updated_(false) {
+      forceDiscretization_(false), hasExternalLocalVol_(true), updated_(false),
+      isStrikeIndependent_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -59,7 +60,8 @@ namespace QuantLib {
     : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       forceDiscretization_(forceDiscretization),
-      hasExternalLocalVol_(false), updated_(false) {
+      hasExternalLocalVol_(false), updated_(false),
+      isStrikeIndependent_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
