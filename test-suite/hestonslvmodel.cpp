@@ -2272,7 +2272,7 @@ void HestonSLVModelTest::testForwardSkewSLV() {
                 QuantLib::detail::ImpliedVolatilityHelper::calculate(
                     *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
 
-            const Real tol = 0.001;
+            const Real tol = 0.002;
             const Volatility volError = std::fabs(implVol - expected[j]);
 
             if (volError > tol) {

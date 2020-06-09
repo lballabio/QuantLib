@@ -40,7 +40,8 @@ namespace QuantLib {
         class InvCDFHelper {
           public:
             InvCDFHelper(const RiskNeutralDensityCalculator* calculator,
-                         Real guess, Real accuracy, Size maxEvaluations);
+                         Real guess, Real accuracy, Size maxEvaluations,
+                         Real stepSize=0.01);
 
             Real inverseCDF(Real p, Time t) const;
           private:
@@ -48,6 +49,7 @@ namespace QuantLib {
             const Real guess_;
             const Real accuracy_;
             const Size maxEvaluations_;
+            const Real stepSize_;
         };
     };
 }
