@@ -1478,7 +1478,7 @@ namespace {
                         Handle<BlackVolTermStructure>(flatVol(lv,
                                                       dc))));
 
-                const Real tol = 0.0005;//testCase.eps;
+                const Real tol = 0.001;//testCase.eps;
                 if (std::fabs((calculated-expected)/vega) > tol) {
                     BOOST_FAIL("failed to reproduce round trip vola "
                               << "\n   strike         " << strike
@@ -1811,7 +1811,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModels() {
 
     const Real localDeltaExpected =  -0.439068;
     const Real hestonDeltaExpected = -0.342059;
-    const Real tol = 0.0005;
+    const Real tol = 0.001;
     if (std::fabs(hestonDeltaExpected - hestonDeltaCalculated) > tol) {
         BOOST_ERROR("Heston Delta does not match"
                 << "\n calculated : " << hestonDeltaCalculated
@@ -2272,7 +2272,7 @@ void HestonSLVModelTest::testForwardSkewSLV() {
                 QuantLib::detail::ImpliedVolatilityHelper::calculate(
                     *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
 
-            const Real tol = 0.001;
+            const Real tol = 0.002;
             const Volatility volError = std::fabs(implVol - expected[j]);
 
             if (volError > tol) {
