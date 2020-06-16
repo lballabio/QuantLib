@@ -2200,13 +2200,13 @@ void CalendarTest::testDayLists() {
     std::vector<Date>::iterator it_holidays = holidays.begin(),
                                 it_businessDays = businessDays.begin();
     for (Date d = firstDate; d < endDate; d++) {
-        if(d == *it_holidays && d == *it_businessDays) {
+        if(it_holidays != holidays.end() &&  it_businessDays != businessDays.end() && d == *it_holidays && d == *it_businessDays) {
             BOOST_FAIL("Date " << d << "is both holiday and business day.");
             ++it_holidays;
             ++it_businessDays;
-        } else if (d == *it_holidays){
+        } else if (it_holidays != holidays.end() && d == *it_holidays){
             ++it_holidays;
-        } else if (d == *it_businessDays) {
+        } else if (it_businessDays != businessDays.end() && d == *it_businessDays) {
             ++it_businessDays;
         } else {
             BOOST_FAIL( "Date " << d << "is neither holiday nor business day.");
