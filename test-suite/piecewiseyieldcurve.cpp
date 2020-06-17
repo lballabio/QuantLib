@@ -1298,16 +1298,15 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     Date today(26, Sep, 2019);
     Settings::instance().evaluationDate() = today;
 
-    // Here we compare zero rates from bbg curve S45 (EUR-EURIBOR-6M) with QL. We assume the
-    // following settings in bbg's SWDF screen (which are sort of the "factory" settings):
-    // Curve Defaults                            : Pay = Mid, Rec = Mid
-    // Interpolation Method                      : Piecewise linear (Simple-comp)
-    // Enable OIS Discount/Dual Curve Stripping  : not enabled
-    // We get a quite good match (1/100 bp), yet above numerical accuracy that might have to do
-    // with details of bbg's "special FRA treatment" which is not fully disclosed
+    // market rates
+    Real refMktRate[] = {-0.373,   -0.388,   -0.402,   -0.418,   -0.431,  -0.441,   -0.45,
+                         -0.457,   -0.463,   -0.469,   -0.461,   -0.463,  -0.479,   -0.4511,
+                         -0.45418, -0.439,   -0.4124,  -0.37703, -0.3335, -0.28168, -0.22725,
+                         -0.1745,  -0.12425, -0.07746, 0.0385,   0.1435,  0.17525,  0.17275,
+                         0.1515,   0.1225,   0.095,    0.0644};
 
-    // bbg maturity date
-    Date bbgDate[] = {
+    // expected outputs
+    Date refDate[] = {
         Date(31, Mar, 2020), Date(30, Apr, 2020), Date(29, May, 2020), Date(30, Jun, 2020),
         Date(31, Jul, 2020), Date(31, Aug, 2020), Date(30, Sep, 2020), Date(30, Oct, 2020),
         Date(30, Nov, 2020), Date(31, Dec, 2020), Date(29, Jan, 2021), Date(26, Feb, 2021),
@@ -1317,40 +1316,32 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
         Date(29, Sep, 2034), Date(30, Sep, 2039), Date(30, Sep, 2044), Date(30, Sep, 2049),
         Date(30, Sep, 2054), Date(30, Sep, 2059), Date(30, Sep, 2064), Date(30, Sep, 2069)};
 
-    // bbg market rate
-    Real bbgMktRate[] = {-0.373,   -0.388,   -0.402,   -0.418,   -0.431,  -0.441,   -0.45,
-                         -0.457,   -0.463,   -0.469,   -0.461,   -0.463,  -0.479,   -0.4511,
-                         -0.45418, -0.439,   -0.4124,  -0.37703, -0.3335, -0.28168, -0.22725,
-                         -0.1745,  -0.12425, -0.07746, 0.0385,   0.1435,  0.17525,  0.17275,
-                         0.1515,   0.1225,   0.095,    0.0644};
-
-    // bbg zero rate
-    Real bbgZeroRate[] = {-0.373,   -0.38058, -0.38718, -0.39353, -0.407,   -0.41274, -0.41107,
-                          -0.41542, -0.41951, -0.42329, -0.42658, -0.42959, -0.43297, -0.45103,
-                          -0.4541,  -0.43905, -0.41266, -0.3775,  -0.33434, -0.2828,  -0.2285,
-                          -0.17582, -0.1254,  -0.0783,  0.03913,  0.14646,  0.17874,  0.17556,
-                          0.1531,   0.12299,  0.0948,   0.06383};
+    Real refZeroRate[] = {-0.00373354, -0.00381005, -0.00387689, -0.00394124, -0.00407706, -0.00413633, -0.00411935,
+                          -0.00416370, -0.00420557, -0.00424431, -0.00427824, -0.00430977, -0.00434401, -0.00445243,
+                          -0.00448506, -0.00433690, -0.00407401, -0.00372752, -0.00330050, -0.00279139, -0.00225477,
+                          -0.00173422, -0.00123688, -0.00077237,  0.00038554,  0.00144248,  0.00175995,  0.00172873,
+                           0.00150782,  0.00121145,  0.000933912, 0.000628946};
 
     // build ql helpers
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor>(6 * Months);
 
     helpers.push_back(ext::make_shared<DepositRateHelper>(
-        bbgMktRate[0] / 100.0, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
+        refMktRate[0] / 100.0, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
 
     for (Size i = 0; i < 12; ++i) {
         helpers.push_back(
-            ext::make_shared<FraRateHelper>(bbgMktRate[1 + i] / 100.0, (i + 1) * Months, index));
+            ext::make_shared<FraRateHelper>(refMktRate[1 + i] / 100.0, (i + 1) * Months, index));
     }
 
     Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
     for (Size i = 0; i < 19; ++i) {
-        helpers.push_back(ext::make_shared<SwapRateHelper>(bbgMktRate[13 + i] / 100.0,
+        helpers.push_back(ext::make_shared<SwapRateHelper>(refMktRate[13 + i] / 100.0,
                                                            swapTenors[i] * Years, TARGET(), Annual,
                                                            ModifiedFollowing, Thirty360(), index));
     }
 
-    // global bootstrap constraints (bbg 'special serial FRA treatment')
+    // global bootstrap constraints
     std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
 
     // set up the additional rate helpers we need in the cost function
@@ -1360,34 +1351,23 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     }
 
     // build curve with additional dates and constraints using a global bootstrapper
-    typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> bbgCurve;
-    ext::shared_ptr<bbgCurve> curve = ext::make_shared<bbgCurve>(
+    typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> Curve;
+    ext::shared_ptr<Curve> curve = ext::make_shared<Curve>(
         2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
         Linear(),
-        bbgCurve::bootstrap_type(additionalHelpers, additionalDates(),
-                                 additionalErrors(additionalHelpers), 1.0e-12));
+        Curve::bootstrap_type(additionalHelpers, additionalDates(),
+                              additionalErrors(additionalHelpers), 1.0e-12));
     curve->enableExtrapolation();
 
-    // check ql vs bbg curve pillar dates
-    for (Size i = 0; i < LENGTH(bbgDate); ++i) {
-        BOOST_CHECK_EQUAL(bbgDate[i], helpers[i]->pillarDate());
+    // check expected pillar dates
+    for (Size i = 0; i < LENGTH(refDate); ++i) {
+        BOOST_CHECK_EQUAL(refDate[i], helpers[i]->pillarDate());
     }
 
-    // check ql vs bbg zero rates
-    for (Size i = 0; i < LENGTH(bbgZeroRate); ++i) {
-        // account for the way bbg displays zero rates
-        DayCounter dc;
-        Compounding comp;
-        if (i < 13) {
-            dc = Actual360();
-            comp = Simple;
-        } else {
-            dc = Thirty360();
-            comp = SimpleThenCompounded;
-        }
+    // check expected zero rates
+    for (Size i = 0; i < LENGTH(refZeroRate); ++i) {
         // 0.01 basis points tolerance
-        BOOST_CHECK_SMALL(std::fabs(bbgZeroRate[i] / 100.0 -
-                                    curve->zeroRate(bbgDate[i], dc, comp, Annual).rate()),
+        BOOST_CHECK_SMALL(std::fabs(refZeroRate[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate()),
                           1E-6);
     }
 }
