@@ -7,6 +7,8 @@
  Copyright (C) 2008 Charles Chongseok Hyun
  Copyright (C) 2015 Dmitri Nesteruk
  Copyright (C) 2020 Piotr Siejda
+ Copyright (C) 2020 Leonardo Arcari
+ Copyright (C) 2020 Kline s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
