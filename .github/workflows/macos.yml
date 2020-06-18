@@ -1,0 +1,24 @@
+name: Mac OS build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      run: |
+        brew install automake boost
+    - name: Build
+      env:
+        CXXFLAGS: -O2 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9
+        LDFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
+      run: |
+        ./autogen.sh
+        ./configure CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
+        make -j 2
+    - name: Run tests
+      run: |
+        ./test-suite/quantlib-test-suite --log_level=message
+    - name: Run examples
+      run: |
+        make -C Examples check-examples
