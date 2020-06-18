@@ -8,7 +8,9 @@
 
 [![Travis build Status](https://travis-ci.com/lballabio/QuantLib.svg?branch=master)](https://travis-ci.com/lballabio/QuantLib)
 [![Appveyor build status](https://ci.appveyor.com/api/projects/status/bmpiucu74eldfkm0/branch/master?svg=true)](https://ci.appveyor.com/project/lballabio/quantlib/branch/master)
-[![CMake build](https://github.com/lballabio/QuantLib/workflows/CMake%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions)
+[![CMake build](https://github.com/lballabio/QuantLib/workflows/CMake%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22CMake+build%22)
+[![Mac OS build](https://github.com/lballabio/QuantLib/workflows/Mac%20OS%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22Mac+OS+build%22)
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4bc1058db994f24aa931b119a885eea)](https://www.codacy.com/app/lballabio/QuantLib)
 [![Code Quality: Cpp](https://img.shields.io/lgtm/grade/cpp/g/lballabio/QuantLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/lballabio/QuantLib/context:cpp)
 [![Coverage Status](https://coveralls.io/repos/github/lballabio/QuantLib/badge.svg?branch=master)](https://coveralls.io/github/lballabio/QuantLib?branch=master)
