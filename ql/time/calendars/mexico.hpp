@@ -43,6 +43,7 @@ namespace QuantLib {
         <li>Good Friday</li>
         <li>Labour Day, May 1st</li>
         <li>National Day, September 16th</li>
+        <li>All Souls Day, November 2nd (bank holiday, not a public one)</li>
         <li>Revolution Day, third Monday in November
             (November 20th before 2006)</li>
         <li>Our Lady of Guadalupe, December 12th</li>
