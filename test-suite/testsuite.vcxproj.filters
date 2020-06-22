@@ -197,6 +197,9 @@
     <ClCompile Include="hybridhestonhullwhiteprocess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="indexes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="inflation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -654,6 +657,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hybridhestonhullwhiteprocess.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="indexes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inflation.hpp">

@@ -27,7 +27,6 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
 
 namespace QuantLib {
 
@@ -41,14 +40,17 @@ namespace QuantLib {
     class BMAIndex : public InterestRateIndex {
       public:
         explicit BMAIndex(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                          const Calendar& fixingCalendar =
-                                    UnitedStates(UnitedStates::GovernmentBond));
+                                    Handle<YieldTermStructure>());
+        /*! \deprecated Use the other constructor instead.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        BMAIndex(const Handle<YieldTermStructure>& h,
+                 const Calendar& fixingCalendar);
         //! \name Index interface
         //@{
         /*! BMA is fixed weekly on Wednesdays.
         */
-        std::string name() const { return "BMA"; }
         bool isValidFixingDate(const Date& fixingDate) const;
         //@}
         //! \name Inspectors

@@ -71,6 +71,7 @@ QL_TESTS = \
 	hestonslvmodel.hpp hestonslvmodel.cpp \
 	himalayaoption.hpp himalayaoption.cpp \
 	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
+	indexes.hpp indexes.cpp \
 	inflation.hpp inflation.cpp \
 	inflationcapfloor.hpp inflationcapfloor.cpp \
 	inflationcapflooredcoupon.hpp inflationcapflooredcoupon.cpp \
