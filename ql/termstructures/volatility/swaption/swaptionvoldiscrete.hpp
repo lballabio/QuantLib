@@ -81,7 +81,7 @@ namespace QuantLib {
         mutable Date evaluationDate_;
       private:
         void checkOptionTenors() const;
-        void checkOptionDates() const;
+        void checkOptionDates(const Date& reference) const;
         void checkSwapTenors() const;
         void initializeOptionDatesAndTimes() const;
         void initializeOptionTimes() const;

@@ -104,7 +104,7 @@ namespace QuantLib {
       swapTenors_(swapTenors),
       swapLengths_(nSwapTenors_) {
 
-        checkOptionDates();
+        checkOptionDates(referenceDate);
         initializeOptionTimes();
 
         checkSwapTenors();
@@ -117,11 +117,10 @@ namespace QuantLib {
         optionInterpolator_.enableExtrapolation();
     }
 
-    void SwaptionVolatilityDiscrete::checkOptionDates() const {
-        QL_REQUIRE(optionDates_[0]>referenceDate(),
+    void SwaptionVolatilityDiscrete::checkOptionDates(const Date& reference) const {
+        QL_REQUIRE(optionDates_[0] > reference,
                    "first option date (" << optionDates_[0] <<
-                   ") must be greater than reference date (" <<
-                   referenceDate() << ")");
+                   ") must be greater than reference date (" << reference << ")");
         for (Size i=1; i<nOptionTenors_; ++i) {
             QL_REQUIRE(optionDates_[i]>optionDates_[i-1],
                        "non increasing option dates: " << io::ordinal(i) <<

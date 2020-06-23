@@ -48,7 +48,7 @@ namespace QuantLib {
           rebatesAccrual_(rebatesAccrual),
           model_(model), startDate_(startDate) {
 
-        initializeDates();
+        CdsHelper::initializeDates();
 
         registerWith(discountCurve);
     }
@@ -74,7 +74,7 @@ namespace QuantLib {
           lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
           model_(model), startDate_(startDate){
 
-        initializeDates();
+        CdsHelper::initializeDates();
 
         registerWith(discountCurve);
     }
@@ -225,7 +225,7 @@ namespace QuantLib {
                 startDate, lastPeriodDayCounter, rebatesAccrual, model),
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {
-        initializeDates();
+        UpfrontCdsHelper::initializeDates();
     }
 
     UpfrontCdsHelper::UpfrontCdsHelper(
@@ -253,7 +253,7 @@ namespace QuantLib {
                 startDate, lastPeriodDayCounter, rebatesAccrual, model),
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {
-        initializeDates();
+        UpfrontCdsHelper::initializeDates();
     }
 
     void UpfrontCdsHelper::initializeDates() {
