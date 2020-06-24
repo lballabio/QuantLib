@@ -70,6 +70,7 @@ QL_TEST_SRCS = \
 	hestonslvmodel.cpp \
 	himalayaoption.cpp \
 	hybridhestonhullwhiteprocess.cpp \
+	indexes.cpp \
 	inflation.cpp \
 	inflationcapfloor.cpp \
 	inflationcapflooredcoupon.cpp \
@@ -225,6 +226,7 @@ QL_TEST_HDRS = \
 	hestonslvmodel.hpp \
 	himalayaoption.hpp \
 	hybridhestonhullwhiteprocess.hpp \
+	indexes.hpp \
 	inflation.hpp \
 	inflationcapfloor.hpp \
 	inflationcapflooredcoupon.hpp \

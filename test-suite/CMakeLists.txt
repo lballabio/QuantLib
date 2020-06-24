@@ -70,6 +70,7 @@ set(QuantLib-Test_SRC
     hestonslvmodel.cpp
     himalayaoption.cpp
     hybridhestonhullwhiteprocess.cpp
+    indexes.cpp
     inflation.cpp
     inflationcapfloor.cpp
     inflationcapflooredcoupon.cpp

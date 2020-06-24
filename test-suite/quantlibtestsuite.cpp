@@ -131,6 +131,7 @@
 #include "hestonslvmodel.hpp"
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
+#include "indexes.hpp"
 #include "inflation.hpp"
 #include "inflationcapfloor.hpp"
 #include "inflationcapflooredcoupon.hpp"
@@ -416,6 +417,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(GsrTest::suite());
     test->add(HestonModelTest::suite(speed));
     test->add(HybridHestonHullWhiteProcessTest::suite(speed));
+    test->add(IndexTest::suite());
     test->add(InflationTest::suite());
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());
