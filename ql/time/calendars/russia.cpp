@@ -90,6 +90,23 @@ namespace QuantLib {
                 case February: return d == 20;
                 default: return false;
                 }
+              case 2018:
+                switch (month) {
+                  case April: return d == 28;
+                  case June: return d == 9;
+                  case December: return d == 29;
+                  default: return false;
+                }
+              case 2019:
+                switch (month) {
+                  case May: return d == 2 || d == 3 || d == 10;
+                  default: return false;
+                }
+              case 2020:
+                switch (month) {
+                  case May: return d == 4 || d == 5;
+                  default: return false;
+                }
               default:
                 return false;
             }
@@ -129,6 +146,29 @@ namespace QuantLib {
                 case June:    return d == 13;
                 case December: return d == 30;
                 default:      return false;
+                }
+              case 2017:
+                switch (month) {
+                  case February: return d == 24;
+                  case May:      return d == 8;
+                  case November: return d == 6;
+                  default:       return false;
+                }
+              case 2018:
+                switch (month) {
+                  case March:     return d == 9;
+                  case April:     return d == 30;
+                  case May:       return d == 2;
+                  case June:      return d == 11;
+                  case December:  return d == 31;
+                  default:        return false;
+                }
+              case 2020:
+                switch (month) {
+                  case March:     return d == 30 || d == 31;
+                  case April:     return d == 1 || d == 2 || d == 3;
+                  case May:       return d == 4 || d == 5;
+                  default:        return false;
                 }
               default:
                 return false;
