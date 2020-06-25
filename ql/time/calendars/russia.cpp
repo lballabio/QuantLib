@@ -41,9 +41,9 @@ namespace QuantLib {
             QL_FAIL("unknown market");
         }
     }
-    
+
     namespace {
-        
+
         bool isExtraHolidaySettlementImpl(Day d, Month month, Year year) {
             switch (year) {
               case 2017:
@@ -108,10 +108,10 @@ namespace QuantLib {
             || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) &&
                 m == November))
             return false; // NOLINT(readability-simplify-boolean-expr)
-        
+
         if (isExtraHolidaySettlementImpl(d,m,y))
             return false;
-      
+
         return true;
     }
 
@@ -144,7 +144,7 @@ namespace QuantLib {
                 return false;
             }
         }
-        
+
         bool isExtraHolidayExchangeImpl(Day d, Month month, Year year) {
             switch (year) {
               case 2012:

@@ -284,7 +284,7 @@ namespace QuantLib {
                 )
                 return false;
         }
-      
+
       if (y == 2019) {
           if (// Chatrapati Shivaji Jayanti
               (d == 19 && m == February)
@@ -317,7 +317,7 @@ namespace QuantLib {
               )
               return false;
       }
-      
+
       if (y == 2020) {
           if (// Chatrapati Shivaji Jayanti
               (d == 19 && m == February)
