@@ -142,9 +142,16 @@ quantlib.hpp: Makefile.am
 	echo "#  include <ql/auto_link.hpp>" >> ${srcdir}/$@
 	echo "#endif" >> ${srcdir}/$@
 	echo >> ${srcdir}/$@
-	for i in $(filter-out auto_link.hpp config.hpp quantlib.hpp \
-                          qldefines.hpp mathconstants.hpp version.hpp, \
-	           $(this_include_HEADERS)); do \
+	for i in $(this_include_HEADERS); do \
+		case $$i in \
+			auto_link.hpp)     continue;; \
+			config.hpp)        continue;; \
+			mathconstants.hpp) continue;; \
+			qldefines.hpp)     continue;; \
+			quantlib.hpp)      continue;; \
+			version.hpp)       continue;; \
+			*.hpp)             ;; \
+		esac; \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \
 	done
 	echo >> ${srcdir}/$@
