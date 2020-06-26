@@ -7,6 +7,8 @@
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Toyin Akin
  Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2020 Leonardo Arcari
+ Copyright (C) 2020 Kline s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -277,6 +279,29 @@ namespace QuantLib {
     bool operator>(const Date&, const Date&);
     /*! \relates Date */
     bool operator>=(const Date&, const Date&);
+
+    /*!
+      Compute a hash value of @p d.
+
+      This method makes Date hashable via <tt>boost::hash</tt>.
+
+      Example:
+
+      \code{.cpp}
+      #include <boost/unordered_set.hpp>
+
+      boost::unordered_set<Date> set;
+      Date d = Date(1, Jan, 2020); 
+
+      set.insert(d);
+      assert(set.count(d)); // 'd' was added to 'set'
+      \endcode
+
+      \param [in] d Date to hash
+      \return A hash value of @p d
+      \relates Date
+    */
+    std::size_t hash_value(const Date& d);
 
     /*! \relates Date */
     std::ostream& operator<<(std::ostream&, const Date&);
