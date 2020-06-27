@@ -42,15 +42,23 @@ void IndexTest::testFixingObservability() {
     
     Date today = Date::todaysDate();
 
-    ext::make_shared<Euribor6M>()->addFixing(today, -0.003);
+    ext::shared_ptr<Index> euribor = ext::make_shared<Euribor6M>();
+
+    Date d1 = today;
+    while (!euribor->isValidFixingDate(d1))
+        d1++;
+
+    euribor->addFixing(d1, -0.003);
     if (!f1.isUp())
         BOOST_FAIL("Observer was not notified of added Euribor fixing");
 
-    Date d = today;
-    while (d.weekday() != Wednesday)
-        d++;
+    ext::shared_ptr<Index> bma = ext::make_shared<BMAIndex>();
 
-    ext::make_shared<BMAIndex>()->addFixing(d, 0.01);
+    Date d2 = today;
+    while (!bma->isValidFixingDate(d2))
+        d2++;
+
+    bma->addFixing(d2, 0.01);
     if (!f2.isUp())
         BOOST_FAIL("Observer was not notified of added BMA fixing");
 }
