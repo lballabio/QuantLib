@@ -827,7 +827,6 @@ void DividendOptionTest::testFdAmericanGreeks() {
         Date exDate = today + lengths[i]*Years;
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
         testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
-        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
     }
 }
 
@@ -1028,7 +1027,6 @@ void DividendOptionTest::testFdAmericanWithDividendToday() {
     ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
 
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
-    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
 
