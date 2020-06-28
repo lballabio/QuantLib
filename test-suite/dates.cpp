@@ -473,7 +473,7 @@ void DateTest::canHash() {
     boost::unordered_set<Date> set;
     set.insert(start_date);
 
-    if (!set.count(start_date)) {
+    if (set.count(start_date) == 0) {
         BOOST_FAIL("Expected to find date " << start_date << " in unordered_set\n");
     }
 }
@@ -497,4 +497,3 @@ test_suite* DateTest::suite(SpeedLevel speed) {
 
     return suite;
 }
-

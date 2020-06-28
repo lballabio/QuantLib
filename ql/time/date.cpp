@@ -833,11 +833,11 @@ namespace QuantLib {
 #ifdef QL_HIGH_RESOLUTION_DATE
         std::size_t seed = 0;
         boost::hash_combine(seed, d.serialNumber());
-        boost::hash_combine(seed, d.dateTime().total_nanoseconds());
+        boost::hash_combine(seed, d.dateTime().time_of_day().total_nanoseconds());
         return seed;
 #else
 
-        return boost::hash<Date::serial_type>{}(d.serialNumber());
+        return boost::hash<Date::serial_type>()(d.serialNumber());
 #endif
     }
 
