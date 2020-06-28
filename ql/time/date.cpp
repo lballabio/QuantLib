@@ -7,6 +7,8 @@
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Toyin Akin
  Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2020 Leonardo Arcari
+ Copyright (C) 2020 Kline s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +33,7 @@
 #endif
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/functional/hash.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -826,6 +829,17 @@ namespace QuantLib {
         }
     }
 
+    std::size_t hash_value(const Date& d) {
+#ifdef QL_HIGH_RESOLUTION_DATE
+        std::size_t seed = 0;
+        boost::hash_combine(seed, d.serialNumber());
+        boost::hash_combine(seed, d.dateTime().time_of_day().total_nanoseconds());
+        return seed;
+#else
+
+        return boost::hash<Date::serial_type>()(d.serialNumber());
+#endif
+    }
 
     // date formatting
 
