@@ -30,6 +30,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/models/shortrate/onefactormodels/coxingersollross.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/coxingersollrossprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
