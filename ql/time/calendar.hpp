@@ -4,6 +4,8 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2006 Piter Dias
+ Copyright (C) 2020 Leonardo Arcari
+ Copyright (C) 2020 Kline s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -216,11 +218,13 @@ namespace QuantLib {
 
     inline const std::set<Date>& Calendar::addedHolidays() const {
         QL_REQUIRE(impl_, "no calendar implementation provided");
+
         return impl_->addedHolidays;
     }
 
     inline const std::set<Date>& Calendar::removedHolidays() const {
         QL_REQUIRE(impl_, "no calendar implementation provided");
+
         return impl_->removedHolidays;
     }
 
@@ -233,9 +237,12 @@ namespace QuantLib {
         const Date& _d = d;
 #endif
 
-        if (impl_->addedHolidays.find(_d) != impl_->addedHolidays.end())
+        if (!impl_->addedHolidays.empty() &&
+            impl_->addedHolidays.find(_d) != impl_->addedHolidays.end())
             return false;
-        if (impl_->removedHolidays.find(_d) != impl_->removedHolidays.end())
+
+        if (!impl_->removedHolidays.empty() &&
+            impl_->removedHolidays.find(_d) != impl_->removedHolidays.end())
             return true;
 
         return impl_->isBusinessDay(_d);
