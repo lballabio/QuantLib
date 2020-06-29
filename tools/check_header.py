@@ -1,27 +1,34 @@
 #!/usr/bin/python
 
-import os, sys, tempfile
+import os
+import sys
+import tempfile
 
-if len(sys.argv) != 2:
-    print 'Usage: %s <header file>' % sys.argv[0]
-    sys.exit()
+errors = 0
 
-header = sys.argv[1]
+for line in sys.stdin.readlines():
+    header = line.strip()
 
-main = r"""
+    main = (
+        r"""
 #include <%s>
 int main() {
     return 0;
 }
-""" % header
+"""
+        % header
+    )
 
-fd,fname = tempfile.mkstemp(suffix = '.cpp', dir = '.', text = True)
-os.write(fd,main)
-os.close(fd)
+    fd, fname = tempfile.mkstemp(suffix=".cpp", dir=".", text=True)
+    os.write(fd, main)
+    os.close(fd)
 
-print 'Checking %s' % header
-command = 'g++ -c -I. %s -o /dev/null' % fname
-os.system(command)
+    print("Checking %s" % header)
+    command = "g++ -c -Wno-unknown-pragmas -Wno-deprecated-declarations -I. %s -o /dev/null" % fname
+    code = os.system(command)
+    if code != 0:
+        errors += 1
 
-os.unlink(fname)
+    os.unlink(fname)
 
+sys.exit(errors)
