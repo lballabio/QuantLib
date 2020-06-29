@@ -147,6 +147,8 @@ QuantLib is
     Copyright (C) 2019 Wojciech Slusarski
 
     Copyright (C) 2020 Piotr Siejda
+	Copyright (C) 2020 Leonardo Arcari
+    Copyright (C) 2020 Kline s.r.l.
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".
