@@ -17,6 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
+#include "utilities.hpp"
+#include "inflationcpiswap.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -32,10 +34,6 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
-
-#include "utilities.hpp"
-
-#include "inflationcpiswap.hpp"
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/instruments/cpiswap.hpp>
@@ -164,7 +162,7 @@ namespace inflation_cpi_swap_test {
                 { Date(25, February, 2010), 0.59955 },
                 { Date(18, March, 2010), 0.65361 },
                 { Date(25, May, 2010), 0.82830 },
-                //  { Date(17, June, 2010), 0.7 },  // can't boostrap with this data point
+                //  { Date(17, June, 2010), 0.7 },  // can't bootstrap with this data point
                 { Date(16, September, 2010), 0.78960 },
                 { Date(16, December, 2010), 0.93762 },
                 { Date(17, March, 2011), 1.12037 },

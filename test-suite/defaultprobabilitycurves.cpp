@@ -434,7 +434,7 @@ void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
 */
 void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
 
-    BOOST_TEST_MESSAGE("Testing iterative boostrap with retries...");
+    BOOST_TEST_MESSAGE("Testing iterative bootstrap with retries...");
 
     SavedSettings backup;
 

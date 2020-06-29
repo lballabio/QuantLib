@@ -2954,7 +2954,7 @@ void HestonModelTest::testSmallSigmaExpansion4ExpFitting() {
 
 void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
     BOOST_TEST_MESSAGE("Testing exponential fitting Heston engine "
-            "with high precision results for large moneyness ...");
+                       "with high precision results for large moneyness...");
 
     SavedSettings backup;
 

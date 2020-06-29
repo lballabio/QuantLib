@@ -102,7 +102,7 @@ namespace square_root_clv_model {
 
 void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     BOOST_TEST_MESSAGE(
-        "Testing vanilla option pricing with square root kernel process...");
+        "Testing vanilla option pricing with square-root kernel process...");
 
     using namespace ext::placeholders;
     using namespace square_root_clv_model;
@@ -187,7 +187,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
 void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
     BOOST_TEST_MESSAGE(
-        "Testing mapping function of the square root kernel process...");
+        "Testing mapping function of the square-root kernel process...");
 
     using namespace square_root_clv_model;
 
@@ -483,7 +483,7 @@ namespace square_root_clv_model {
 
 void SquareRootCLVModelTest::testForwardSkew() {
     BOOST_TEST_MESSAGE(
-        "Testing forward skew dynamics with square root kernel process...");
+        "Testing forward skew dynamics with square-root kernel process...");
 
     using namespace square_root_clv_model;
 

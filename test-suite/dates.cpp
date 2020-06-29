@@ -438,7 +438,7 @@ void DateTest::intraday() {
 }
 
 void DateTest::canHash() {
-    BOOST_TEST_MESSAGE("Testing parsing of dates...");
+    BOOST_TEST_MESSAGE("Testing hashing of dates...");
 
     Date start_date = Date(1, Jan, 2020);
     int nb_tests = 500;

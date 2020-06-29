@@ -290,7 +290,7 @@ namespace gaussian_quadratures_test {
 }
 
 void GaussianQuadraturesTest::testMomentBasedGaussianPolynomial() {
-     BOOST_TEST_MESSAGE("Testing moment based Gaussian polynomials...");
+     BOOST_TEST_MESSAGE("Testing moment-based Gaussian polynomials...");
 
      using namespace gaussian_quadratures_test;
 
