@@ -897,7 +897,7 @@
 
     EXPERIMENTAL FOLDER
     - Stochastic local-volatility Heston model, (thanks to Klaus
-      Spanderen and Johannes Goettker-Schnetmann). Both a Monte Carlo
+      Spanderen and Johannes Göttker-Schnetmann). Both a Monte Carlo
       and a finite-difference calibration and calculation are
       provided.
     - Laplace interpolation (thanks to Peter Caspers).

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007, 2008 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Michael von den Driesch
