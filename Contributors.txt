@@ -14,6 +14,7 @@ Grzegorz Andruszkiewicz
 Fanis Antoniou
 Driss Aouad
 Jose Aparicio
+Leonardo Arcari
 Sercan Atalik
 F. Eugene Aumson
 Ahmed Ayadi
@@ -95,6 +96,7 @@ Matthias Groncki
 Sebastien Gurrieri
 Tawanda Gwena
 Cavit Hafizoglu
+Lew Wei Hao
 Michael Heckl
 Andres Hernandez
 Chris Higgs
