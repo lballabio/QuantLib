@@ -93,12 +93,13 @@ namespace QuantLib {
         return arguments_.swap->type();
     }
 
+    // NOLINTNEXTLINE(readability-const-return-type)
     const Date Gaussian1dNonstandardSwaptionEngine::underlyingLastDate() const {
         return arguments_.fixedPayDates.back();
     }
 
-    const Disposable<Array> Gaussian1dNonstandardSwaptionEngine::initialGuess(
-        const Date &expiry) const {
+    // NOLINTNEXTLINE(readability-const-return-type)
+    const Disposable<Array> Gaussian1dNonstandardSwaptionEngine::initialGuess(const Date &expiry) const {
 
         Size fixedIdx =
             std::upper_bound(arguments_.fixedResetDates.begin(),

@@ -62,14 +62,15 @@ namespace QuantLib {
         return arguments_.swap->type();
     }
 
+    // NOLINTNEXTLINE(readability-const-return-type)
     const Date Gaussian1dFloatFloatSwaptionEngine::underlyingLastDate() const {
         Date l1 = arguments_.leg1PayDates.back();
         Date l2 = arguments_.leg2PayDates.back();
         return l2 >= l1 ? l2 : l1;
     }
 
-    const Disposable<Array>
-    Gaussian1dFloatFloatSwaptionEngine::initialGuess(const Date &expiry) const {
+    // NOLINTNEXTLINE(readability-const-return-type)
+    const Disposable<Array> Gaussian1dFloatFloatSwaptionEngine::initialGuess(const Date &expiry) const {
 
         Size idx1 =
             std::upper_bound(arguments_.leg1ResetDates.begin(),
