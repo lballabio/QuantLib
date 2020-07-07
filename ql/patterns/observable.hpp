@@ -55,8 +55,9 @@ namespace QuantLib {
         }
         void enableUpdates();
 
-        bool updatesEnabled()  {return updatesEnabled_;}
-        bool updatesDeferred() {return updatesDeferred_;}
+        bool updatesEnabled() const { return updatesEnabled_; }
+        bool updatesDeferred() const { return updatesDeferred_; }
+
       private:
         ObservableSettings()
         : updatesEnabled_(true),

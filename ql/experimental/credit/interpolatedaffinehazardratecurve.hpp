@@ -66,7 +66,7 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
-            ext::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel>& model,
             const Calendar& cal = Calendar(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -74,13 +74,13 @@ namespace QuantLib {
         InterpolatedAffineHazardRateCurve(const std::vector<Date>& dates,
                                           const std::vector<Rate>& hazardRates,
                                           const DayCounter& dayCounter,
-                                          ext::shared_ptr<OneFactorAffineModel> model,
+                                          const ext::shared_ptr<OneFactorAffineModel>& model,
                                           const Calendar& calendar,
                                           const Interpolator& interpolator);
         InterpolatedAffineHazardRateCurve(const std::vector<Date>& dates,
                                           const std::vector<Rate>& hazardRates,
                                           const DayCounter& dayCounter,
-                                          ext::shared_ptr<OneFactorAffineModel> model,
+                                          const ext::shared_ptr<OneFactorAffineModel>& model,
                                           const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
@@ -97,14 +97,14 @@ namespace QuantLib {
       protected:
         InterpolatedAffineHazardRateCurve(
             const DayCounter&,
-            ext::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel>& model,
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
         InterpolatedAffineHazardRateCurve(
             const Date& referenceDate,
             const DayCounter&,
-            ext::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel>& model,
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
@@ -112,7 +112,7 @@ namespace QuantLib {
             Natural settlementDays,
             const Calendar&,
             const DayCounter&,
-            ext::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel>& model,
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
@@ -132,7 +132,7 @@ namespace QuantLib {
         Probability conditionalSurvivalProbabilityImpl(Time tFwd, Time tTarget, 
             Real yVal) const;
         //@}
-    protected:
+
         mutable std::vector<Date> dates_;
       private:
         void initialize();
@@ -351,85 +351,76 @@ namespace QuantLib {
 
     template <class T>
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
-                                    const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel> model,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates,
-                                    const T& interpolator)
-    : OneFactorAffineSurvivalStructure(model, dayCounter, jumps, jumpDates),
+        const DayCounter& dayCounter,
+        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::vector<Handle<Quote> >& jumps,
+        const std::vector<Date>& jumpDates,
+        const T& interpolator)
+    : OneFactorAffineSurvivalStructure(model, dayCounter, jumps, jumpDates), InterpolatedCurve<T>(
+                                                                                 interpolator) {}
+
+    template <class T>
+    InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
+        const Date& referenceDate,
+        const DayCounter& dayCounter,
+        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::vector<Handle<Quote> >& jumps,
+        const std::vector<Date>& jumpDates,
+        const T& interpolator)
+    : OneFactorAffineSurvivalStructure(
+          model, referenceDate, Calendar(), dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
-                                    const Date& referenceDate,
-                                    const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel> model,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates,
-                                    const T& interpolator)
-    : OneFactorAffineSurvivalStructure(model, referenceDate, Calendar(), 
-        dayCounter, jumps, jumpDates),
+        Natural settlementDays,
+        const Calendar& calendar,
+        const DayCounter& dayCounter,
+        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::vector<Handle<Quote> >& jumps,
+        const std::vector<Date>& jumpDates,
+        const T& interpolator)
+    : OneFactorAffineSurvivalStructure(
+          model, settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
     template <class T>
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
-                                    Natural settlementDays,
-                                    const Calendar& calendar,
-                                    const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel> model,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates,
-                                    const T& interpolator)
-    : OneFactorAffineSurvivalStructure(model, settlementDays, calendar, 
-        dayCounter, jumps, jumpDates),
-      InterpolatedCurve<T>(interpolator) {}
-
-    template <class T>
-    InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
-                                    const std::vector<Date>& dates,
-                                    const std::vector<Rate>& hazardRates,
-                                    const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel> model,
-                                    const Calendar& calendar,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates,
-                                    const T& interpolator)
-    : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, 
-        dayCounter, jumps, jumpDates),
-      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
-      dates_(dates)
-    {
+        const std::vector<Date>& dates,
+        const std::vector<Rate>& hazardRates,
+        const DayCounter& dayCounter,
+        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const Calendar& calendar,
+        const std::vector<Handle<Quote> >& jumps,
+        const std::vector<Date>& jumpDates,
+        const T& interpolator)
+    : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, dayCounter, jumps, jumpDates),
+      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator), dates_(dates) {
         initialize();
     }
 
     template <class T>
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
-            const std::vector<Date>& dates,
-            const std::vector<Rate>& hazardRates,
-            const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel> model,
-            const Calendar& calendar,
-            const T& interpolator)
-    : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, 
-        dayCounter),
-      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
-      dates_(dates)
-    {
+        const std::vector<Date>& dates,
+        const std::vector<Rate>& hazardRates,
+        const DayCounter& dayCounter,
+        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const Calendar& calendar,
+        const T& interpolator)
+    : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator), dates_(dates) {
         initialize();
     }
 
     template <class T>
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
-            const std::vector<Date>& dates,
-            const std::vector<Rate>& hazardRates,
-            const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel> model,
-            const T& interpolator)
-    : OneFactorAffineSurvivalStructure(model, dates.at(0), Calendar(), 
-        dayCounter),
-      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator),
-      dates_(dates)
-    {
+        const std::vector<Date>& dates,
+        const std::vector<Rate>& hazardRates,
+        const DayCounter& dayCounter,
+        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const T& interpolator)
+    : OneFactorAffineSurvivalStructure(model, dates.at(0), Calendar(), dayCounter),
+      InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator), dates_(dates) {
         initialize();
     }
 

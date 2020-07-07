@@ -72,10 +72,8 @@ namespace QuantLib {
 
       private:
         void performCalculations() const;
-        Real weightedMean(const Matrix& var,
-                          const Matrix& weights);
-        Disposable<Array> weightedMeans(const Matrix& var,
-                                        const Matrix& weights);
+        Real weightedMean(const Matrix& var, const Matrix& weights) const;
+        Disposable<Array> weightedMeans(const Matrix& var, const Matrix& weights) const;
 
         std::vector<Period> swapLengths_;
         std::vector<ext::shared_ptr<SwapIndex> > swapIndexes_;

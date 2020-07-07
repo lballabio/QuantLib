@@ -247,10 +247,8 @@ Real Gaussian1dModel::gaussianShiftedPolynomialIntegral(
         a * h * h * h * h - b * h * h * h + c * h * h - d * h + e, x0, x1);
 }
 
-const Disposable<Array> Gaussian1dModel::yGrid(const Real stdDevs,
-                                               const int gridPoints,
-                                               const Real T, const Real t,
-                                               const Real y) const {
+Disposable<Array> Gaussian1dModel::yGrid(
+    const Real stdDevs, const int gridPoints, const Real T, const Real t, const Real y) const {
 
     // we use that the standard deviation is independent of $x$ here !
 

@@ -72,9 +72,7 @@ namespace QuantLib {
             return observationTimes_;
         }
 
-        const ext::shared_ptr<Schedule> observationsSchedule() const {
-            return observationsSchedule_;
-        }
+        ext::shared_ptr<Schedule> observationsSchedule() const { return observationsSchedule_; }
 
         //! \name Visitability
         //@{

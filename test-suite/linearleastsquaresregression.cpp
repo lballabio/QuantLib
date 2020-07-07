@@ -46,7 +46,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     const Real tolerance = 0.05;
 
     const Size nr=100000;
-    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
     std::vector<ext::function<Real(Real)> > v;
     v.push_back(constant<Real, Real>(1.0));
@@ -134,7 +134,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     const Size nr=100000;
     const Size dims = 4;
     const Real tolerance = 0.01;
-    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
     std::vector<ext::function<Real(Array)> > v;
     v.push_back(constant<Array, Real>(1.0));

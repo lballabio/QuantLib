@@ -64,13 +64,13 @@ namespace QuantLib {
                                                       solverDesc.maturity);
 
 
-            if ((iter.coordinates()[1] == 0u) && (iter.coordinates()[2] == 0u)) {
+            if ((iter.coordinates()[1] == 0U) && (iter.coordinates()[2] == 0U)) {
                 x_.push_back(mesher->location(iter, 0));
             }
-            if ((iter.coordinates()[0] == 0u) && (iter.coordinates()[2] == 0u)) {
+            if ((iter.coordinates()[0] == 0U) && (iter.coordinates()[2] == 0U)) {
                 y_.push_back(mesher->location(iter, 1));
             }
-            if ((iter.coordinates()[0] == 0u) && (iter.coordinates()[1] == 0u)) {
+            if ((iter.coordinates()[0] == 0U) && (iter.coordinates()[1] == 0U)) {
                 z_.push_back(mesher->location(iter, 2));
             }
         }

@@ -426,7 +426,7 @@ namespace QuantLib {
     void CallableFixedRateBond::setupArguments(
                                        PricingEngine::arguments* args) const {
 
-        Bond::setupArguments(args);
+        QuantLib::CallableBond::setupArguments(args);
         CallableBond::arguments* arguments =
             dynamic_cast<CallableBond::arguments*>(args);
 

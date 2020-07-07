@@ -81,7 +81,7 @@ namespace QuantLib {
             const ext::function<Real (const std::vector<Real>&)>& f,
             const std::vector<Real>& a,
             const std::vector<Real>& b) const;
-    private:
+
         const std::vector<ext::shared_ptr<Integrator> > integrators_;
 
         /* typedef (const ext::function<Real 

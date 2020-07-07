@@ -374,8 +374,7 @@ namespace square_root_clv_model {
                 const Real ncp1 = 4*kappa*std::exp(-kappa*(t1-t0))
                     / (sigma*sigma*(1-std::exp(-kappa*(t1-t0))));
 
-                const LowDiscrepancy::ursg_type ursg
-                    = LowDiscrepancy::ursg_type(2, 1235ul);
+                const LowDiscrepancy::ursg_type ursg = LowDiscrepancy::ursg_type(2, 1235UL);
 
                 std::vector<GeneralStatistics> stats(strikes_.size());
 
@@ -780,8 +779,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
 
     const TimeGrid bGrid(maturityTime, tSteps);
 
-    const PseudoRandom::ursg_type ursg
-        = PseudoRandom::ursg_type(tSteps, 1235ul);
+    const PseudoRandom::ursg_type ursg = PseudoRandom::ursg_type(tSteps, 1235UL);
 
     std::vector<GeneralStatistics> stats(n);
 

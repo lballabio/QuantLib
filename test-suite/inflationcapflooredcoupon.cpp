@@ -203,9 +203,10 @@ namespace inflation_capfloored_coupon_test {
         }
 
         // utilities
-        Leg makeYoYLeg(const Date& startDate, Integer length,
+        Leg makeYoYLeg(const Date& startDate,
+                       Integer length,
                        const Rate gearing = 1.0,
-                       const Rate spread = 0.0) {
+                       const Rate spread = 0.0) const {
             ext::shared_ptr<YoYInflationIndex> ii =
             ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
@@ -228,8 +229,7 @@ namespace inflation_capfloored_coupon_test {
             return yoyLeg;
         }
 
-        Leg makeFixedLeg(const Date& startDate,
-                         Integer length) {
+        Leg makeFixedLeg(const Date& startDate, Integer length) const {
 
             Date endDate = calendar.advance(startDate, length, Years,
                                             convention);
@@ -243,13 +243,14 @@ namespace inflation_capfloored_coupon_test {
         }
 
 
-        Leg makeYoYCapFlooredLeg(Size which, const Date& startDate,
-                              Integer length,
-                              const std::vector<Rate>& caps,
-                              const std::vector<Rate>& floors,
-                              Volatility volatility,
-                              const Rate gearing = 1.0,
-                              const Rate spread = 0.0) {
+        Leg makeYoYCapFlooredLeg(Size which,
+                                 const Date& startDate,
+                                 Integer length,
+                                 const std::vector<Rate>& caps,
+                                 const std::vector<Rate>& floors,
+                                 Volatility volatility,
+                                 const Rate gearing = 1.0,
+                                 const Rate spread = 0.0) const {
 
             Handle<YoYOptionletVolatilitySurface>
             vol(ext::make_shared<ConstantYoYOptionletVolatility>(
@@ -309,7 +310,7 @@ namespace inflation_capfloored_coupon_test {
         }
 
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) const {
 
             ext::shared_ptr<YoYInflationIndex>
             yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);

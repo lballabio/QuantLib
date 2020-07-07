@@ -169,7 +169,7 @@ namespace QuantLib {
 
             std::sort(pairs.begin(), pairs.end());
 
-            Size s = 0u, e = 0u;
+            Size s = 0U, e = 0U;
             for (Size i=0; i < nBins_; ++i) {
                 const Size inc = k + static_cast<unsigned long>(i < m);
                 e = s + inc;

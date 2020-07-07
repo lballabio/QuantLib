@@ -52,10 +52,10 @@ namespace QuantLib {
         const std::vector<Real> &loss() { return loss_; }
         const std::vector<Real> &marginalLoss() { return marginalLoss_; }
 
-        Real exposure() { return exposureSum_; }
+        Real exposure() const { return exposureSum_; }
         Real expectedLoss() const { return el_; }
-        Real unexpectedLoss() { return ul_; }
-        Real relativeDefaultVariance() {
+        Real unexpectedLoss() const { return ul_; }
+        Real relativeDefaultVariance() const {
             return (unexpectedLoss() * unexpectedLoss() - el2_) /
                    (expectedLoss() * expectedLoss());
         }

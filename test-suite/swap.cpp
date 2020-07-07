@@ -58,8 +58,8 @@ namespace swap_test {
         SavedSettings backup;
         
         // utilities
-        ext::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
-                                                Spread floatingSpread) {
+        ext::shared_ptr<VanillaSwap>
+        makeSwap(Integer length, Rate fixedRate, Spread floatingSpread) const {
             Date maturity = calendar.advance(settlement,length,Years,
                                              floatingConvention);
             Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),

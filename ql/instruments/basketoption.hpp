@@ -46,9 +46,7 @@ namespace QuantLib {
             return (*basePayoff_)(accumulate(a));
         }
         virtual Real accumulate(const Array &a) const = 0;
-        const ext::shared_ptr<Payoff> basePayoff() {
-            return basePayoff_;
-        }
+        ext::shared_ptr<Payoff> basePayoff() { return basePayoff_; }
     };
 
     class MinBasketPayoff : public BasketPayoff {

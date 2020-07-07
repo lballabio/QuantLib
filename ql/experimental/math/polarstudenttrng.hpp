@@ -65,7 +65,7 @@ namespace QuantLib {
           QL_REQUIRE(degFreedom_ > 0, 
               "Invalid degrees of freedom parameter.");
         }
-    public:
+
         //! returns a sample from a Student-t distribution
         sample_type next() const;
     private:

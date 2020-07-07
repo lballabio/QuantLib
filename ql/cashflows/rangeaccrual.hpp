@@ -68,9 +68,7 @@ namespace QuantLib {
         const std::vector<Real>& observationTimes() const {
             return observationTimes_;
         }
-        const ext::shared_ptr<Schedule> observationsSchedule() const {
-            return observationsSchedule_;
-        }
+        ext::shared_ptr<Schedule> observationsSchedule() const { return observationsSchedule_; }
 
         Real priceWithoutOptionality(
                        const Handle<YieldTermStructure>& discountCurve) const;

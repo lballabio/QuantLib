@@ -257,10 +257,10 @@ namespace QuantLib {
             Real precision = 1.0e-6,
             Real hardUpperLimit = QL_MAX_REAL);
 
-       Real upperLimit() { return upperLimit_; }
-       Real stdDeviations() { return stdDeviationsForUpperLimit_; }
+        Real upperLimit() const { return upperLimit_; }
+        Real stdDeviations() const { return stdDeviationsForUpperLimit_; }
 
-      //private:
+        // private:
         class Function {
           public:
             typedef Real argument_type;

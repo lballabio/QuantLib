@@ -152,7 +152,7 @@ namespace QuantLib {
             I2 yBegin_, yEnd_;
             const M& zData_;
         };
-      public:
+
         Interpolation2D() {}
         Real operator()(Real x, Real y,
                         bool allowExtrapolation = false) const {

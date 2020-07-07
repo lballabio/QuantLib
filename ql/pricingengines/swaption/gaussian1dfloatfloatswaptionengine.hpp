@@ -144,10 +144,10 @@ namespace QuantLib {
         const bool includeTodaysExercise_;
         const Probabilities probabilities_;
 
-        const std::pair<Real, Real> npvs(const Date& expiry,
-                                         Real y,
-                                         bool includeExerciseOnxpiry,
-                                         bool considerProbabilities = false) const;
+        std::pair<Real, Real> npvs(const Date& expiry,
+                                   Real y,
+                                   bool includeExerciseOnxpiry,
+                                   bool considerProbabilities = false) const;
 
         mutable ext::shared_ptr<RebatedExercise> rebatedExercise_;
     };

@@ -102,9 +102,11 @@ namespace QuantLib {
     }
 
     // calculate npv and underlying npv as of expiry date
-    const std::pair<Real, Real> Gaussian1dFloatFloatSwaptionEngine::npvs(
-        const Date &expiry, const Real y, const bool includeExerciseOnExpiry,
-        const bool considerProbabilities) const {
+    std::pair<Real, Real>
+    Gaussian1dFloatFloatSwaptionEngine::npvs(const Date& expiry,
+                                             const Real y,
+                                             const bool includeExerciseOnExpiry,
+                                             const bool considerProbabilities) const {
 
         // pricing
 

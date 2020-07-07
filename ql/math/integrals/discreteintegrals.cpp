@@ -67,7 +67,7 @@ namespace QuantLib {
 
             acc(k*alpha*f[j]+k*beta*f[j+1]+k*gamma*f[j+2]);
         }
-        if ((n & 1) == 0u) {
+        if ((n & 1) == 0U) {
             acc(0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]));
         }
 

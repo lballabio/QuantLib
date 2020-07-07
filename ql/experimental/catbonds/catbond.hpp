@@ -50,10 +50,11 @@ namespace QuantLib {
         virtual void setupArguments(PricingEngine::arguments*) const;
         virtual void fetchResults(const PricingEngine::results*) const;
 
-        Real lossProbability() { return lossProbability_; }
-        Real expectedLoss() { return expectedLoss_; }
-        Real exhaustionProbability() { return exhaustionProbability_; }
-    protected:
+        Real lossProbability() const { return lossProbability_; }
+        Real expectedLoss() const { return expectedLoss_; }
+        Real exhaustionProbability() const { return exhaustionProbability_; }
+
+      protected:
         ext::shared_ptr<NotionalRisk> notionalRisk_;
 
         mutable Real lossProbability_;

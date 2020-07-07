@@ -41,8 +41,8 @@ namespace QuantLib {
                           Real atm = Null<Real>(),
                           bool deleteArbitragePoints = false);
 
-        const std::pair<Real, Real> arbitragefreeRegion() const;
-        const std::pair<Size, Size> arbitragefreeIndices() const;
+        std::pair<Real, Real> arbitragefreeRegion() const;
+        std::pair<Size, Size> arbitragefreeIndices() const;
         const std::vector<Real> &moneyGrid() const { return m_; }
         const std::vector<Real> &strikeGrid() const { return k_; }
         const std::vector<Real> &callPrices() const { return c_; }

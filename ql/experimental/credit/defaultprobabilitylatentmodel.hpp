@@ -94,13 +94,13 @@ namespace QuantLib {
         /* To interface with loss models. It is possible to change the basket 
         since there are no cached magnitudes.
         */
-        void resetBasket(const ext::shared_ptr<Basket> basket) const {
+        void resetBasket(const ext::shared_ptr<Basket>& basket) const {
             basket_ = basket;
             // in the future change 'size' to 'liveSize'
             QL_REQUIRE(basket_->size() == factorWeights_.size(), 
                 "Incompatible new basket and model sizes.");
         }
-    public:
+
         /*! Returns the probability of default of a given name conditional on
         the realization of a given set of values of the model independent
         factors. The date at which the probability is given is implicit in the
@@ -129,7 +129,8 @@ namespace QuantLib {
         }
     protected:
         void update() {
-            if(basket_) basket_->notifyObservers();
+            if (basket_ != 0)
+                basket_->notifyObservers();
             LatentModel<copulaPolicy>::update();
         }
     public:// open since users access it for performance on joint integrations.

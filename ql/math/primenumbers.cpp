@@ -66,7 +66,7 @@ namespace QuantLib {
             do {
                 p = primeNumbers_[i];
                 ++i;
-            } while (((m % p) != 0u) && p <= n);
+            } while (((m % p) != 0U) && p <= n);
         } while ( p<=n );
         primeNumbers_.push_back(m);
         return m;

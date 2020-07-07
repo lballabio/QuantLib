@@ -127,7 +127,7 @@ namespace QuantLib {
 
         void performSimulations() const {
             // Next sequence should determine the event and push it into buffer
-            for (Size i = nSims_; i != 0u; i--) {
+            for (Size i = nSims_; i != 0U; i--) {
                 const std::vector<Real>& sample =
                     copulasRng_->nextSequence().value;
                 static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
@@ -895,7 +895,7 @@ namespace QuantLib {
             // deterministic
             return recoveries_[iName];
         }
-    protected:
+
         Real latentVarValue(const std::vector<Real>& factorsSample,
             Size iVar) const {
             return model_->latentVarValue(factorsSample, iVar);

@@ -69,7 +69,7 @@ namespace QuantLib {
                                  bool isMeanReversionFixed,
                                  Real meanReversionGuess = Null<Real>());
 
-        Real error() { return error_; }
+        Real error() const { return error_; }
         EndCriteria::Type endCriteria() { return endCriteria_; };
 
         static Real betaTransformInverse(Real beta) {

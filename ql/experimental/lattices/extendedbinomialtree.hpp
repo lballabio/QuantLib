@@ -60,7 +60,7 @@ namespace QuantLib {
         Real x0_;
         Time dt_;
 
-      protected:
+
         ext::shared_ptr<StochasticProcess1D> treeProcess_;
     };
 

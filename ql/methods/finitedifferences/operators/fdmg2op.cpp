@@ -55,9 +55,7 @@ namespace QuantLib {
       model_(model) {
     }
 
-    Size FdmG2Op::size() const {
-        return 2u;
-    }
+    Size FdmG2Op::size() const { return 2U; }
 
     void FdmG2Op::setTime(Time t1, Time t2) {
 

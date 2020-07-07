@@ -337,13 +337,12 @@ namespace QuantLib {
                        Real inPrice;
 
                        //adapt Vanilla delta
-                       if(adaptVanDelta_ == true){
+                       if (adaptVanDelta_) {
                            outPrice += lambda*(bsPriceWithSmile_ - vanillaOption);
                            //capfloored by (0, vanilla)
                            outPrice = std::max(0.0, std::min(bsPriceWithSmile_, outPrice));
                            inPrice = bsPriceWithSmile_ - outPrice;
-                       }
-                       else{
+                       } else {
                            //capfloored by (0, vanilla)
                            outPrice = std::max(0.0, std::min(vanillaOption, outPrice));
                            inPrice = vanillaOption - outPrice;

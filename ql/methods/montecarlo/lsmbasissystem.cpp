@@ -77,14 +77,14 @@ namespace QuantLib {
         void check_tuples(const VV& v, Size dim, Size order) {
             for(Size i=0; i<v.size(); ++i) {
                 QL_REQUIRE(dim==v[i].size(), "wrong tuple size");
-                QL_REQUIRE(order==std::accumulate(v[i].begin(), v[i].end(), 0ul),
-                    "wrong tuple order");
+                QL_REQUIRE(order == std::accumulate(v[i].begin(), v[i].end(), 0UL),
+                           "wrong tuple order");
             }
         }
 
         // build order N+1 tuples from order N tuples
         VV next_order_tuples(const VV& v) {
-            const Size order = std::accumulate(v[0].begin(), v[0].end(), 0ul);
+            const Size order = std::accumulate(v[0].begin(), v[0].end(), 0UL);
             const Size dim = v[0].size();
 
             check_tuples(v, dim, order);

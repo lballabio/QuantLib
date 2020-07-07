@@ -121,7 +121,7 @@ namespace QuantLib {
             I1 xBegin_, xEnd_;
             I2 yBegin_;
         };
-      public:
+
         Interpolation() {}
         virtual ~Interpolation() {}
         bool empty() const { return !impl_; }

@@ -75,7 +75,7 @@ namespace QuantLib {
 
 class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
   public:
-    const ext::shared_ptr<StochasticProcess1D> stateProcess() const;
+    ext::shared_ptr<StochasticProcess1D> stateProcess() const;
 
     Real numeraire(Time t,
                    Real y = 0.0,
@@ -149,7 +149,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
        consisting of
         2*gridPoints+1 points */
 
-    const Disposable<Array>
+    Disposable<Array>
     yGrid(Real yStdDevs, int gridPoints, Real T = 1.0, Real t = 0, Real y = 0) const;
 
   private:
@@ -231,8 +231,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     mutable bool enforcesTodaysHistoricFixings_;
 };
 
-inline const ext::shared_ptr<StochasticProcess1D>
-Gaussian1dModel::stateProcess() const {
+inline ext::shared_ptr<StochasticProcess1D> Gaussian1dModel::stateProcess() const {
 
     QL_REQUIRE(stateProcess_ != NULL, "state process not set");
     return stateProcess_;

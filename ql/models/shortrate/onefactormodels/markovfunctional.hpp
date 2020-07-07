@@ -373,7 +373,7 @@ namespace QuantLib {
         }
 
         // returns the indices of the af region from the last smile update
-        const std::vector<std::pair<Size,Size> > arbitrageIndices() const {
+        std::vector<std::pair<Size, Size> > arbitrageIndices() const {
             calculate();
             return arbitrageIndices_;
         }
@@ -436,9 +436,9 @@ namespace QuantLib {
                                 const Option::Type& type,
                                 Real strike) const;
 
-        const Disposable<Array> deflatedZerobondArray(Time T, Time t, const Array& y) const;
-        const Disposable<Array> numeraireArray(Time t, const Array& y) const;
-        const Disposable<Array> zerobondArray(Time T, Time t, const Array& y) const;
+        Disposable<Array> deflatedZerobondArray(Time T, Time t, const Array& y) const;
+        Disposable<Array> numeraireArray(Time t, const Array& y) const;
+        Disposable<Array> zerobondArray(Time T, Time t, const Array& y) const;
 
         Real deflatedZerobond(Time T, Time t = 0.0, Real y = 0.0) const;
 
