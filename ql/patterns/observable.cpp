@@ -96,11 +96,7 @@ namespace QuantLib {
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
-#if !defined(BOOST_BIND_NO_PLACEHOLDERS)
-#define BOOST_BIND_NO_PLACEHOLDERS
 #include <boost/bind/bind.hpp>
-#undef BOOST_BIND_NO_PLACEHOLDERS
-#endif
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
