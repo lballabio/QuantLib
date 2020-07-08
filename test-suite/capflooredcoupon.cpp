@@ -158,10 +158,10 @@ namespace capfloored_coupon_test {
         }
 
         ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                                 const Leg& leg,
-                                                 Rate capStrike,
-                                                 Rate floorStrike,
-                                                 Volatility volatility) {
+                                               const Leg& leg,
+                                               Rate capStrike,
+                                               Rate floorStrike,
+                                               Volatility volatility) const {
             ext::shared_ptr<CapFloor> result;
             switch (type) {
               case CapFloor::Cap:

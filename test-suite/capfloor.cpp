@@ -105,10 +105,10 @@ namespace capfloor_test {
         }
 
         ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                                 const Leg& leg,
-                                                 Rate strike,
-                                                 Volatility volatility,
-                                                 bool isLogNormal = true) {
+                                               const Leg& leg,
+                                               Rate strike,
+                                               Volatility volatility,
+                                               bool isLogNormal = true) const {
             ext::shared_ptr<CapFloor> result;
             switch (type) {
               case CapFloor::Cap:
@@ -129,7 +129,6 @@ namespace capfloor_test {
             }
             return result;
         }
-
     };
 
     bool checkAbsError(Real x1, Real x2, Real tolerance){

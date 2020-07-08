@@ -252,7 +252,7 @@ namespace inflation_capfloor_test {
                                                               const Leg& leg,
                                                               Rate strike,
                                                               Volatility volatility,
-                                                              Size which) {
+                                                              Size which) const {
             ext::shared_ptr<YoYInflationCapFloor> result;
             switch (type) {
                 case YoYInflationCapFloor::Cap:
@@ -269,7 +269,6 @@ namespace inflation_capfloor_test {
             result->setPricingEngine(makeEngine(volatility, which));
             return result;
         }
-
     };
 
 }
