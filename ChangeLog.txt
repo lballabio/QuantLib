@@ -1,3 +1,44 @@
+commit 356f82f8183431ef4a4cd8fa9ca149114e6f3d1b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Jul 2020 16:57:40 +0200
+
+    Set version to 1.19 final.
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 0366583baa6b9c67b442da4dcd65eb899889ad27
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jul 2020 23:54:35 +0200
+
+    Clean up defines
+
+ ql/patterns/observable.cpp | 4 ----
+ 1 file changed, 4 deletions(-)
+
+commit 6b3ab86fa09be0eae7fa50b3da4b6835e87b3fa4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2020 16:01:13 +0200
+
+    Don't report misspellings in the ChangeLog.
+
+ .misspell-fixer.ignore | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 0e710d48214f984820d4546599cccb656a132203
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2020 14:19:05 +0200
+
+    Update News and ChangeLog.
+
+ ChangeLog.txt           | 3840 +++++++++++++++++++++++++++++------------------
+ Contributors.txt        |    2 +
+ Docs/pages/authors.docs |    2 +
+ Docs/pages/history.docs |   72 +-
+ News.md                 |  147 +-
+ 5 files changed, 2556 insertions(+), 1507 deletions(-)
+
 commit 01c4ac695cddfa344440488f74ccdb793bbd3e13
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 30 Jun 2020 22:24:08 +0200
