@@ -48,6 +48,8 @@ namespace QuantLib {
             || (d == 1 && m == May)
             // 19 may/ National Holiday
             || (d == 19 && m == May)
+			// 15 july / National Holiday
+			|| (d == 15 && m == July)
             // 30 aug/ National Holiday
             || (d == 30 && m == August)
             ///29 ekim  National Holiday
