@@ -107,19 +107,6 @@ namespace QuantLib {
                                  bool flatExtrapolation = false,
                                  VolatilityType type = ShiftedLognormal,
                                  const Matrix& shifts = Matrix());
-        /*! \deprecated Use the constructor also taking a calendar and
-                        business-day convention instead.
-                        Deprecated in version 1.16.
-        */
-        QL_DEPRECATED
-        SwaptionVolatilityMatrix(const Date& referenceDate,
-                                 const std::vector<Date>& optionDates,
-                                 const std::vector<Period>& swapTenors,
-                                 const Matrix& volatilities,
-                                 const DayCounter& dayCounter,
-                                 bool flatExtrapolation = false,
-                                 VolatilityType type = ShiftedLognormal,
-                                 const Matrix& shifts = Matrix());
 
         //! \name LazyObject interface
         //@{
