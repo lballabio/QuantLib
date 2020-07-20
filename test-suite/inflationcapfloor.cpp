@@ -194,7 +194,7 @@ namespace inflation_capfloor_test {
         }
 
         // utilities
-        Leg makeYoYLeg(const Date& startDate, Integer length) {
+        Leg makeYoYLeg(const Date& startDate, Integer length) const {
             ext::shared_ptr<YoYInflationIndex> ii =
                 ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
@@ -208,8 +208,7 @@ namespace inflation_capfloor_test {
         }
 
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility,
-                                                  Size which) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) const {
 
             ext::shared_ptr<YoYInflationIndex>
             yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);

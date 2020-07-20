@@ -100,10 +100,10 @@ namespace QuantLib {
                                Time end,
                                Size steps,
                                Real strike)
-    : BinomialTree<LeisenReimer>(process, end, ((steps % 2) != 0u ? steps : (steps + 1))) {
+    : BinomialTree<LeisenReimer>(process, end, ((steps % 2) != 0U ? steps : (steps + 1))) {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
-        Size oddSteps = ((steps % 2) != 0u ? steps : (steps + 1));
+        Size oddSteps = ((steps % 2) != 0U ? steps : (steps + 1));
         Real variance = process->variance(0.0, x0_, end);
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
@@ -114,7 +114,6 @@ namespace QuantLib {
                                                  oddSteps);
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
-
     }
 
     Real Joshi4::computeUpProb(Real k, Real dj) const {
@@ -142,10 +141,10 @@ namespace QuantLib {
                    Time end,
                    Size steps,
                    Real strike)
-    : BinomialTree<Joshi4>(process, end, (steps % 2) != 0u ? steps : (steps + 1)) {
+    : BinomialTree<Joshi4>(process, end, (steps % 2) != 0U ? steps : (steps + 1)) {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
-        Size oddSteps = (steps % 2) != 0u ? steps : (steps + 1);
+        Size oddSteps = (steps % 2) != 0U ? steps : (steps + 1);
         Real variance = process->variance(0.0, x0_, end);
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
@@ -156,5 +155,4 @@ namespace QuantLib {
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
     }
-
 }

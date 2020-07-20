@@ -66,7 +66,7 @@ namespace QuantLib {
             cFunction(Real f, Real s, Real a, Real b)
                 : f_(f), s_(s), a_(a), b_(b), exponential_(false) {}
             cFunction(Real a, Real b) : a_(a), b_(b), exponential_(true) {}
-            Real operator()(Real k) {
+            Real operator()(Real k) const {
                 if (exponential_)
                     return std::exp(-a_ * k + b_);
                 if (s_ < QL_EPSILON)

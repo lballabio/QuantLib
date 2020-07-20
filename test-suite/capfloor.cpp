@@ -78,7 +78,7 @@ namespace capfloor_test {
         }
 
         // utilities
-        Leg makeLeg(const Date& startDate, Integer length) {
+        Leg makeLeg(const Date& startDate, Integer length) const {
             Date endDate = calendar.advance(startDate,length*Years,convention);
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               convention, convention,
@@ -90,14 +90,14 @@ namespace capfloor_test {
                 .withFixingDays(fixingDays);
         }
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
             Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
             return ext::shared_ptr<PricingEngine>(
                                 new BlackCapFloorEngine(termStructure, vol));
         }
 
-        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) {
+        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
             Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
             return ext::shared_ptr<PricingEngine>(

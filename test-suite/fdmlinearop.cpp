@@ -1483,7 +1483,7 @@ void FdmLinearOpTest::testSpareMatrixReference() {
     const Size nMatrices = 5;
     const Size nElements = 50;
 
-    PseudoRandom::urng_type rng(1234ul);
+    PseudoRandom::urng_type rng(1234UL);
 
     SparseMatrix expected(rows, columns);
     std::vector<SparseMatrix> v(nMatrices, SparseMatrix(rows, columns));
@@ -1537,7 +1537,7 @@ void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
     BOOST_TEST_MESSAGE("Testing assignment to zero in sparse matrix...");
 
     SparseMatrix m(5,5);
-    if (nrElementsOfSparseMatrix(m) != 0u) {
+    if (nrElementsOfSparseMatrix(m) != 0U) {
         BOOST_FAIL("non zero return for an emtpy matrix");
     }
     m(0, 0) = 0.0; m(1, 2) = 0.0;

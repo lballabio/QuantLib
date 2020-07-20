@@ -122,7 +122,7 @@ namespace QuantLib {
        Real getEventRecovery(const defaultSimEvent& evt) const {
             return evt.recovery();
         }
-    protected:
+
         Real latentVarValue(const std::vector<Real>& factorsSample, 
             Size iVar) const {
                 return copula_->latentVarValue(factorsSample, iVar);

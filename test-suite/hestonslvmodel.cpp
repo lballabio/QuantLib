@@ -666,10 +666,10 @@ namespace {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
               ++iter) {
-            if (iter.coordinates()[1] == 0u) {
+            if (iter.coordinates()[1] == 0U) {
                 x.push_back(mesher->location(iter, 0));
             }
-            if (iter.coordinates()[0] == 0u) {
+            if (iter.coordinates()[0] == 0U) {
                 y.push_back(mesher->location(iter, 1));
             }
         }
@@ -2025,15 +2025,13 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
 
         const ext::shared_ptr<LocalVolTermStructure> leverageFct =
             HestonSLVMCModel(
-                Handle<LocalVolTermStructure>(localVol),
-                Handle<HestonModel>(hestonModel),
-                sobol ? ext::shared_ptr<BrownianGeneratorFactory>(
-                            new SobolBrownianGeneratorFactory(
-                                SobolBrownianGenerator::Diagonal,
-                                1234ul, SobolRsg::JoeKuoD7))
-                      : ext::shared_ptr<BrownianGeneratorFactory>(
-                              new MTBrownianGeneratorFactory(1234ul)),
-                maturityDate, 91, xGrid, nSim).leverageFunction();
+                Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(hestonModel),
+                sobol ? ext::shared_ptr<BrownianGeneratorFactory>(new SobolBrownianGeneratorFactory(
+                            SobolBrownianGenerator::Diagonal, 1234UL, SobolRsg::JoeKuoD7)) :
+                        ext::shared_ptr<BrownianGeneratorFactory>(
+                            new MTBrownianGeneratorFactory(1234UL)),
+                maturityDate, 91, xGrid, nSim)
+                .leverageFunction();
 
         const ext::shared_ptr<PricingEngine> bsEngine(
             ext::make_shared<AnalyticEuropeanEngine>(
@@ -2049,7 +2047,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
 
         Real qualityFactor = 0.0;
         Real maxQualityFactor = 0.0;
-        Size nValues = 0u;
+        Size nValues = 0U;
 
         for (Size i=0; i < LENGTH(maturities); ++i) {
             const Date maturity(maturities[i]);
@@ -2152,11 +2150,10 @@ void HestonSLVModelTest::testForwardSkewSLV() {
 
     const ext::shared_ptr<LocalVolTermStructure> leverageFctMC =
         HestonSLVMCModel(
-            localVol,
-            hestonModel,
-            ext::shared_ptr<BrownianGeneratorFactory>(
-                 new MTBrownianGeneratorFactory(1234ul)),
-            maturityDate, 182, xGrid, nSim).leverageFunction();
+            localVol, hestonModel,
+            ext::shared_ptr<BrownianGeneratorFactory>(new MTBrownianGeneratorFactory(1234UL)),
+            maturityDate, 182, xGrid, nSim)
+            .leverageFunction();
 
     const ext::shared_ptr<HestonSLVProcess> mcSlvProcess(
         ext::make_shared<HestonSLVProcess>(hestonProcess, leverageFctMC));
@@ -2438,9 +2435,8 @@ void HestonSLVModelTest::testMoustacheGraph() {
         getFixedLocalVolFromHeston(hestonModel, timeGrid));
 
     const ext::shared_ptr<BrownianGeneratorFactory> sobolGeneratorFactory(
-        ext::make_shared<SobolBrownianGeneratorFactory>(
-            SobolBrownianGenerator::Diagonal,
-            1234ul, SobolRsg::JoeKuoD7));
+        ext::make_shared<SobolBrownianGeneratorFactory>(SobolBrownianGenerator::Diagonal, 1234UL,
+                                                        SobolRsg::JoeKuoD7));
 
     const Size xGrid = 100;
     const Size nSim  = 20000;
@@ -2564,8 +2560,8 @@ void HestonSLVModelTest::testDiffusionAndDriftSlvProcess() {
     const Size nTimeSteps = 40;
     const DiscountFactor df = rTS->discount(maturity);
 
-    SobolBrownianBridgeRsg rsg(2, nTimeSteps,
-        SobolBrownianGenerator::Diagonal, 12345u, SobolRsg::JoeKuoD7);
+    SobolBrownianBridgeRsg rsg(2, nTimeSteps, SobolBrownianGenerator::Diagonal, 12345U,
+                               SobolRsg::JoeKuoD7);
 
     Array x(2), xt(2), dw(2);
     GeneralStatistics stats;

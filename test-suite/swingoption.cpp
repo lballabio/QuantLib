@@ -104,8 +104,8 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
             Time t  = 0.0;
             Real q = 0.0;
             Real p = 0.0;
-            
-            PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
+
+            PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
             for (Size j=0; j < nTimeSteps; ++j) {
                 const Real dw = rng.next().value;

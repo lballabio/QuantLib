@@ -59,13 +59,13 @@ class ZabrModel {
     Disposable<std::vector<Real> >
     normalVolatility(const std::vector<Real> &strikes) const;
 
-    Real forward() { return forward_; }
-    Real expiryTime() { return expiryTime_; }
-    Real alpha() { return alpha_; }
-    Real beta() { return beta_; }
-    Real nu() { return nu_; }
-    Real rho() { return rho_; }
-    Real gamma() { return gamma_; }
+    Real forward() const { return forward_; }
+    Real expiryTime() const { return expiryTime_; }
+    Real alpha() const { return alpha_; }
+    Real beta() const { return beta_; }
+    Real nu() const { return nu_; }
+    Real rho() const { return rho_; }
+    Real gamma() const { return gamma_; }
 
   private:
     const Real expiryTime_, forward_;

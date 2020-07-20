@@ -1280,10 +1280,10 @@ void HestonModelTest::testAlanLewisReferencePrices() {
         ext::make_shared<HestonModel>(process));
 
     const ext::shared_ptr<PricingEngine> laguerreEngine(
-        ext::make_shared<AnalyticHestonEngine>(model, 128u));
+        ext::make_shared<AnalyticHestonEngine>(model, 128U));
 
     const ext::shared_ptr<PricingEngine> gaussLobattoEngine(
-        ext::make_shared<AnalyticHestonEngine>(model, QL_EPSILON, 100000u));
+        ext::make_shared<AnalyticHestonEngine>(model, QL_EPSILON, 100000U));
 
     const ext::shared_ptr<PricingEngine> cosEngine(
         ext::make_shared<COSHestonEngine>(model, 20, 400));
@@ -2564,7 +2564,7 @@ void HestonModelTest::testPiecewiseTimeDependentComparison() {
 
         for (Size j=0; j < 2; ++j) {
             const sample_type& path1 =
-                (j & 1) != 0u ? firstPathGen.antithetic() : firstPathGen.next();
+                (j & 1) != 0U ? firstPathGen.antithetic() : firstPathGen.next();
             const Real spot1 = path1.value[0].back();
             const Real v1    = path1.value[1].back();
 
@@ -3058,7 +3058,7 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
 
             for (Size k=0; k < 2; ++k) {
                 const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                    ext::make_shared<PlainVanillaPayoff>((k) != 0u ? Option::Put : Option::Call,
+                    ext::make_shared<PlainVanillaPayoff>((k) != 0U ? Option::Put : Option::Call,
                                                          strike);
 
                 VanillaOption option(payoff, exercise);

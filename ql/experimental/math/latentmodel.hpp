@@ -359,7 +359,7 @@ namespace QuantLib {
             return copula_;
         }
 
-    public:
+
     //  protected:
         //! \name Latent model random factor number generator facility.
         //@{
@@ -625,7 +625,7 @@ namespace QuantLib {
             QL_FAIL("Integration non implemented in Latent model.");
         }
         //@}
-    protected:
+
         // Ordering is: factorWeights_[iVariable][iFactor]
         mutable std::vector<std::vector<Real> > factorWeights_;
         /* This is a duplicated value from the data above chosen for memory 

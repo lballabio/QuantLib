@@ -57,12 +57,11 @@ namespace QuantLib {
            if  (rho == 0.0 || omega == 0.0)
                break;
 
-           if (i != 0u) {
+           if (i != 0U) {
                beta = (rho / rhoTld) * (alpha / omega);
                p = r + beta * (p - omega * v);
-           }
-           else {
-              p = r;
+           } else {
+               p = r;
            }
 
            pTld = ((M_) != 0 ? M_(p) : p);

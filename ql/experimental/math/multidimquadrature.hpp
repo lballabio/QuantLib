@@ -178,7 +178,7 @@ namespace QuantLib {
                ext::placeholders::_1)
             );
         }
-    private:
+
         // Same object for all dimensions poses problems when using the 
         //   parallelized integrals version.
         //! The actual integrators.

@@ -271,20 +271,18 @@ namespace market_model_test {
 #endif
     }
 
-    const ext::shared_ptr<SequenceStatisticsInc> simulate(
-        const ext::shared_ptr<MarketModelEvolver>& evolver,
-        const MarketModelMultiProduct& product) {
-            Size initialNumeraire = evolver->numeraires().front();
-            Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+    ext::shared_ptr<SequenceStatisticsInc>
+    simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
+             const MarketModelMultiProduct& product) {
+        Size initialNumeraire = evolver->numeraires().front();
+        Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
-            AccountingEngine engine(evolver, product, initialNumeraireValue);
-            ext::shared_ptr<SequenceStatisticsInc> stats(
-                new SequenceStatisticsInc(product.numberOfProducts()));
-            engine.multiplePathValues(*stats, paths_);
-            return stats;
+        AccountingEngine engine(evolver, product, initialNumeraireValue);
+        ext::shared_ptr<SequenceStatisticsInc> stats(
+            new SequenceStatisticsInc(product.numberOfProducts()));
+        engine.multiplePathValues(*stats, paths_);
+        return stats;
     }
-
-
 
 
     std::string marketModelTypeToString(MarketModelTest::MarketModelType type) {

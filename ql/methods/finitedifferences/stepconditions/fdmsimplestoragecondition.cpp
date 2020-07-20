@@ -42,10 +42,10 @@ namespace QuantLib {
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
              ++iter) {
-            if (iter.coordinates()[1] == 0u) {
+            if (iter.coordinates()[1] == 0U) {
                 x_.push_back(mesher_->location(iter, 0));
             }
-            if (iter.coordinates()[0] == 0u) {
+            if (iter.coordinates()[0] == 0U) {
                 y_.push_back(mesher_->location(iter, 1));
             }
         }

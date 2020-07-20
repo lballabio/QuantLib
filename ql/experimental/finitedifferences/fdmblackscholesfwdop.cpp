@@ -86,9 +86,7 @@ namespace QuantLib {
         }
     }
 
-    Size FdmBlackScholesFwdOp::size() const {
-        return 1u;
-    }
+    Size FdmBlackScholesFwdOp::size() const { return 1U; }
 
     Disposable<Array> FdmBlackScholesFwdOp::apply(const Array& u) const {
         return mapT_.apply(u);

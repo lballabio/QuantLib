@@ -46,13 +46,13 @@ namespace QuantLib {
         //! return last x value
         const Array& lastX() { return xtd_; }
         //! return last cost function value
-        Real lastFunctionValue() { return qt_; }
+        Real lastFunctionValue() const { return qt_; }
         //! return last gradient
         const Array& lastGradient() { return gradient_; }
         //! return square norm of last gradient
-        Real lastGradientNorm2() { return qpt_;}
+        Real lastGradientNorm2() const { return qpt_; }
 
-        bool succeed() { return succeed_; }
+        bool succeed() const { return succeed_; }
 
         //! Perform line search
         virtual Real operator()(Problem& P, // Optimization problem

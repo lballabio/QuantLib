@@ -230,14 +230,17 @@ namespace QuantLib {
         */
         PiecewiseDefaultCurve(
             const Date& referenceDate,
-            const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                              instruments,
+            const std::vector<ext::shared_ptr<typename Traits::helper> >& instruments,
             const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel>& model,
             const Interpolator& i = Interpolator(),
             const bootstrap_type& bootstrap = bootstrap_type())
-        : base_curve(referenceDate, dayCounter, model,
-            std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+        : base_curve(referenceDate,
+                     dayCounter,
+                     model,
+                     std::vector<Handle<Quote> >(),
+                     std::vector<Date>(),
+                     i),
           instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
@@ -248,15 +251,18 @@ namespace QuantLib {
         QL_DEPRECATED
         PiecewiseDefaultCurve(
             const Date& referenceDate,
-            const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                              instruments,
+            const std::vector<ext::shared_ptr<typename Traits::helper> >& instruments,
             const DayCounter& dayCounter,
             Real accuracy,
-            const ext::shared_ptr<OneFactorAffineModel> model,
+            const ext::shared_ptr<OneFactorAffineModel>& model,
             const Interpolator& i = Interpolator(),
             const bootstrap_type& bootstrap = bootstrap_type())
-        : base_curve(referenceDate, dayCounter, model,
-            std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+        : base_curve(referenceDate,
+                     dayCounter,
+                     model,
+                     std::vector<Handle<Quote> >(),
+                     std::vector<Date>(),
+                     i),
           instruments_(instruments), accuracy_(accuracy), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }

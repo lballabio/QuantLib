@@ -111,7 +111,7 @@ namespace QuantLib {
         Real percentile(const Date& d, Real percentile) const;
         Real expectedShortfall(const Date&d, Real percentile) const;
         Real expectedTrancheLoss(const Date& d) const;
-    protected:
+
         // Model internal workings ----------------
         //! Average loss per credit.
         Real averageLoss(const Date&, const std::vector<Real>& reminingNots, 
@@ -143,7 +143,7 @@ namespace QuantLib {
                 const std::vector<Real>& bsktNots,
                 const std::vector<Real>& uncondDefProbInv, 
                             const std::vector<Real>&  mktFactor) const;
-    protected:
+
         const ext::shared_ptr<LLM> copula_;
 
         // cached arguments:

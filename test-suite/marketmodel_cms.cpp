@@ -163,9 +163,9 @@ namespace market_model_cms_test {
         #endif
     }
 
-    const ext::shared_ptr<SequenceStatisticsInc> simulate(
-                         const ext::shared_ptr<MarketModelEvolver>& evolver,
-                         const MarketModelMultiProduct& product) {
+    ext::shared_ptr<SequenceStatisticsInc>
+    simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
+             const MarketModelMultiProduct& product) {
         Size initialNumeraire = evolver->numeraires().front();
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 

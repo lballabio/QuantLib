@@ -23,8 +23,7 @@
 
 namespace QuantLib {
 
-    const Disposable<Matrix> CholeskyDecomposition(const Matrix &S,
-                                                   bool flexible) {
+    Disposable<Matrix> CholeskyDecomposition(const Matrix& S, bool flexible) {
         Size i, j, size = S.rows();
 
         QL_REQUIRE(size == S.columns(),
@@ -62,5 +61,4 @@ namespace QuantLib {
         }
         return result;
     }
-
 }

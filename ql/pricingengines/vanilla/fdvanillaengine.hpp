@@ -76,7 +76,7 @@ namespace QuantLib {
         mutable std::vector<ext::shared_ptr<bc_type> > BCs_;
         // temporaries
         mutable Real sMin_, center_, sMax_;
-      protected:
+
         void ensureStrikeInGrid() const;
       private:
         Size safeGridPoints(Size gridPoints,

@@ -276,7 +276,7 @@ namespace QuantLib {
     }
 
     inline void FittedBondDiscountCurve::update() {
-        TermStructure::update();
+        QuantLib::YieldTermStructure::update();
         LazyObject::update();
     }
 

@@ -302,7 +302,7 @@ namespace QuantLib {
                 arguments_.accrualRebate->amount();
         }
 
-        Real upfrontSign = Protection::Seller != 0u ? 1.0 : -1.0;
+        Real upfrontSign = Protection::Seller != 0U ? 1.0 : -1.0;
 
         if (arguments_.side == Protection::Seller) {
             results_.defaultLegNPV *= -1.0;

@@ -26,18 +26,12 @@
 
 namespace QuantLib {
 
-    ImplicitEulerScheme::ImplicitEulerScheme(
-        const ext::shared_ptr<FdmLinearOpComposite>& map,
-        const bc_set& bcSet,
-        Real relTol,
-        SolverType solverType)
-    : dt_        (Null<Real>()),
-      iterations_(ext::make_shared<Size>(0u)),
-      relTol_    (relTol),
-      map_       (map),
-      bcSet_     (bcSet),
-      solverType_(solverType){
-    }
+    ImplicitEulerScheme::ImplicitEulerScheme(const ext::shared_ptr<FdmLinearOpComposite>& map,
+                                             const bc_set& bcSet,
+                                             Real relTol,
+                                             SolverType solverType)
+    : dt_(Null<Real>()), iterations_(ext::make_shared<Size>(0U)), relTol_(relTol), map_(map),
+      bcSet_(bcSet), solverType_(solverType) {}
 
     Disposable<Array> ImplicitEulerScheme::apply(const Array& r, Real theta) const {
         return r - (theta*dt_)*map_->apply(r);
@@ -76,8 +70,9 @@ namespace QuantLib {
             }
             else if (solverType_ == GMRES) {
                 const GMRESResult result =
-                    QuantLib::GMRES(applyF, std::max(Size(10), a.size()/10u),
-                        relTol_, preconditioner).solve(a, a);
+                    QuantLib::GMRES(applyF, std::max(Size(10), a.size() / 10U), relTol_,
+                                    preconditioner)
+                        .solve(a, a);
 
                 (*iterations_) += result.errors.size();
                 a = result.x;

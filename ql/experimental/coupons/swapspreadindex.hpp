@@ -49,8 +49,8 @@ namespace QuantLib {
         //@{
         ext::shared_ptr<SwapIndex> swapIndex1() { return swapIndex1_; }
         ext::shared_ptr<SwapIndex> swapIndex2() { return swapIndex2_; }
-        Real gearing1() { return gearing1_; }
-        Real gearing2() { return gearing2_; }
+        Real gearing1() const { return gearing1_; }
+        Real gearing2() const { return gearing2_; }
         //@}
 
 
