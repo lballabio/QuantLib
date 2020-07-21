@@ -351,10 +351,10 @@ namespace inflation_capfloored_coupon_test {
 
 
         ext::shared_ptr<YoYInflationCapFloor> makeYoYCapFloor(YoYInflationCapFloor::Type type,
-                                                                const Leg& leg,
-                                                                Rate strike,
-                                                                Volatility volatility,
-                                                                Size which) {
+                                                              const Leg& leg,
+                                                              Rate strike,
+                                                              Volatility volatility,
+                                                              Size which) const {
             ext::shared_ptr<YoYInflationCapFloor> result;
             switch (type) {
                 case YoYInflationCapFloor::Cap:
@@ -371,7 +371,6 @@ namespace inflation_capfloored_coupon_test {
             result->setPricingEngine(makeEngine(volatility, which));
             return result;
         }
-
     };
 
 }
