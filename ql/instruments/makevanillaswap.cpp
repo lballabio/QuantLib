@@ -82,15 +82,14 @@ namespace QuantLib {
             else {
                 spotDate = floatCalendar_.advance(refDate, settlementDays_ * Days);
             }
-            //Date spotDate = floatCalendar_.advance(refDate,
-            //                                       settlementDays_*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = floatCalendar_.adjust(startDate,
                                                   Preceding);
-            else
+            else if (forwardStart_.length()>0)
                 startDate = floatCalendar_.adjust(startDate,
                                                   Following);
+			// no explicit date adjustment needed for forwardStart_.length()==0 (already handled by spotDate arithmetic above)
         }
 
         Date endDate = terminationDate_;
