@@ -32,6 +32,7 @@
 #include <ql/currencies/asia.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/oceania.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 
@@ -72,8 +73,17 @@ namespace QuantLib {
             // if the evaluation date is not a business day
             // then move to the next business day
             refDate = floatCalendar_.adjust(refDate);
-            Date spotDate = floatCalendar_.advance(refDate,
-                                                   settlementDays_*Days);
+            // use index valueDate interface wherever possible to estimate spot date.
+			// Unless we pass an explicit settlementDays_ which does not match the index-defined number of fixing days.
+			Date spotDate;
+            if ((settlementDays_ == Null<Natural>()) || (settlementDays_ == iborIndex_->fixingDays())) {
+                    spotDate = iborIndex_->valueDate(refDate);
+                }
+            else {
+                spotDate = floatCalendar_.advance(refDate, settlementDays_ * Days);
+            }
+            //Date spotDate = floatCalendar_.advance(refDate,
+            //                                       settlementDays_*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = floatCalendar_.adjust(startDate,
