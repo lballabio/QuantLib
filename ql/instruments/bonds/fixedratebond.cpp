@@ -40,18 +40,21 @@ namespace QuantLib {
                                  const Period& exCouponPeriod,
                                  const Calendar& exCouponCalendar,
                                  const BusinessDayConvention exCouponConvention,
-                                 bool exCouponEndOfMonth)
+                                 bool exCouponEndOfMonth,
+                                 const DayCounter& stubAccrualDayCounter)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
             issueDate),
        frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency),
-       dayCounter_(accrualDayCounter) {
+       dayCounter_(accrualDayCounter),
+       stubDayCounter_(stubAccrualDayCounter) {
 
         maturityDate_ = schedule.endDate();
 
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
+            .withFirstPeriodDayCounter(stubAccrualDayCounter==DayCounter() ? accrualDayCounter : stubAccrualDayCounter)
             .withPaymentCalendar(calendar_)
             .withPaymentAdjustment(paymentConvention)
             .withExCouponPeriod(exCouponPeriod,
@@ -84,11 +87,13 @@ namespace QuantLib {
                                  const Period& exCouponPeriod,
                                  const Calendar& exCouponCalendar,
                                  const BusinessDayConvention exCouponConvention,
-                                 bool exCouponEndOfMonth)
+                                 bool exCouponEndOfMonth,
+                                 const DayCounter& stubAccrualDayCounter)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? calendar : paymentCalendar,
             issueDate),
-      frequency_(tenor.frequency()), dayCounter_(accrualDayCounter) {
+      frequency_(tenor.frequency()), dayCounter_(accrualDayCounter),
+      stubDayCounter_(stubAccrualDayCounter) {
 
         maturityDate_ = maturityDate;
 
@@ -120,6 +125,7 @@ namespace QuantLib {
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
+            .withFirstPeriodDayCounter(stubAccrualDayCounter==DayCounter() ? accrualDayCounter : stubAccrualDayCounter)
             .withPaymentCalendar(calendar_)
             .withPaymentAdjustment(paymentConvention)
             .withExCouponPeriod(exCouponPeriod,
@@ -167,6 +173,16 @@ namespace QuantLib {
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
+    }
+    const DayCounter& FixedRateBond::dayCounter(const Date& d){
+        if (stubDayCounter_==DayCounter())
+            return dayCounter_;
+        else
+            QL_ENSURE(d!=Date(),"No Date given for bond with short stub dayCounter");
+            if(d<(cashflows()[1])->date())
+                return stubDayCounter_;
+            else
+                return dayCounter_;
     }
 
 }
