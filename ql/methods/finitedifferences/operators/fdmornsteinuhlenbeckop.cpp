@@ -59,36 +59,6 @@ namespace QuantLib {
                       *Array(mesher->layout()->size(), 1.0)), Array());
     }
 
-    FdmOrnsteinUhlenbeckOp::FdmOrnsteinUhlenbeckOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& process,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            const FdmBoundaryConditionSet&,
-            Size direction)
-    : mesher_   (mesher),
-      process_  (process),
-      rTS_      (rTS),
-      direction_(direction),
-      m_        (direction, mesher),
-      mapX_     (direction, mesher)  {
-
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-
-        Array drift(layout->size());
-        const Array x(mesher_->locations(direction));
-
-        for (FdmLinearOpIterator iter=layout->begin(), endIter=layout->end();
-             iter!=endIter; ++iter) {
-            const Size i = iter.index();
-            drift[i] = process_->drift(0.0, x[i]);
-        }
-
-        m_.axpyb(drift, FirstDerivativeOp(direction, mesher),
-            SecondDerivativeOp(direction, mesher)
-                .mult(0.5*square<Real>()(process_->volatility())
-                      *Array(mesher->layout()->size(), 1.0)), Array());
-    }
-
     Size FdmOrnsteinUhlenbeckOp::size() const {
         return mesher_->layout()->dim().size();;
     }
