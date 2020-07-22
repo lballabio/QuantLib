@@ -130,7 +130,7 @@ namespace QuantLib {
         std::vector<Array> *xI_;
 
         virtual Real intensityImpl(Real valueX, Real valueY, Real distance) = 0;
-        inline Real distance(const Array& x, const Array& y) {
+        inline Real distance(const Array& x, const Array& y) const {
             Real d = 0.0;
             for (Size i = 0; i < N_; i++) {
                 Real diff = x[i] - y[i];
@@ -138,6 +138,7 @@ namespace QuantLib {
             }
             return d;
         }
+
     private:
         void init(FireflyAlgorithm *fa) {
             x_ = &fa->x_;

@@ -162,8 +162,8 @@ namespace QuantLib {
                                                Size steps,
                                                Real strike)
     : ExtendedBinomialTree<ExtendedLeisenReimer>(
-          process, end, ((steps % 2) != 0u ? steps : steps + 1)),
-      end_(end), oddSteps_((steps % 2) != 0u ? steps : steps + 1), strike_(strike) {
+          process, end, ((steps % 2) != 0U ? steps : steps + 1)),
+      end_(end), oddSteps_((steps % 2) != 0U ? steps : steps + 1), strike_(strike) {
 
         QL_REQUIRE(strike>0.0, "strike " << strike << "must be positive");
         Real variance = process->variance(0.0, x0_, end);
@@ -178,7 +178,6 @@ namespace QuantLib {
                                                  oddSteps_);
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
-
     }
 
     Real ExtendedLeisenReimer::underlying(Size i, Size index) const {
@@ -237,8 +236,8 @@ namespace QuantLib {
                                    Time end,
                                    Size steps,
                                    Real strike)
-    : ExtendedBinomialTree<ExtendedJoshi4>(process, end, ((steps % 2) != 0u ? steps : steps + 1)),
-      end_(end), oddSteps_((steps % 2) != 0u ? steps : steps + 1), strike_(strike) {
+    : ExtendedBinomialTree<ExtendedJoshi4>(process, end, ((steps % 2) != 0U ? steps : steps + 1)),
+      end_(end), oddSteps_((steps % 2) != 0U ? steps : steps + 1), strike_(strike) {
 
         QL_REQUIRE(strike>0.0, "strike " << strike << "must be positive");
         Real variance = process->variance(0.0, x0_, end);

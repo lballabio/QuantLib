@@ -106,14 +106,14 @@ namespace QuantLib {
         const Size allSteps = steps + dampingSteps;
         const Time dampingTo = from - (deltaT*dampingSteps)/allSteps;
 
-        if ((dampingSteps != 0u) && schemeDesc_.type != FdmSchemeDesc::ImplicitEulerType) {
+        if ((dampingSteps != 0U) && schemeDesc_.type != FdmSchemeDesc::ImplicitEulerType) {
             ImplicitEulerScheme implicitEvolver(map_, bcSet_);    
             FiniteDifferenceModel<ImplicitEulerScheme> 
                     dampingModel(implicitEvolver, condition_->stoppingTimes());
             dampingModel.rollback(rhs, from, dampingTo, 
                                   dampingSteps, *condition_);
         }
-        
+
         switch (schemeDesc_.type) {
           case FdmSchemeDesc::HundsdorferType:
             {

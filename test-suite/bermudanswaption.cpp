@@ -78,7 +78,7 @@ namespace bermudan_swaption_test {
         }
 
         // utilities
-        ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
+        ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) const {
             Date start = calendar.advance(settlement, startYears, Years);
             Date maturity = calendar.advance(start, length, Years);
             Schedule fixedSchedule(start, maturity,

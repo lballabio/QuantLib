@@ -109,7 +109,7 @@ namespace QuantLib {
                      // Settlement information:
                      const Date& settleDate = Null<Date>(),
                      Real recoveryRate = 0.4);
-      public:
+
         Date date() const;
         bool isRestructuring() const { return eventType_.isRestructuring(); }
         bool isDefault() const { return !isRestructuring();}

@@ -282,9 +282,9 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
         Real f = mesher->location(iter, 0);
         // Real v = mesher->location(iter, 0);
         rhs[iter.index()] = std::max(f - strike, 0.0);
-        if (iter.coordinates()[1] == 0u)
+        if (iter.coordinates()[1] == 0U)
             f_.push_back(mesher->location(iter, 0));
-        if (iter.coordinates()[0] == 0u)
+        if (iter.coordinates()[0] == 0U)
             v_.push_back(mesher->location(iter, 1));
     }
 

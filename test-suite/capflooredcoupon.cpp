@@ -82,8 +82,7 @@ namespace capfloored_coupon_test {
         }
 
         // utilities
-        Leg makeFixedLeg(const Date& startDate,
-                         Integer length) {
+        Leg makeFixedLeg(const Date& startDate, Integer length) const {
 
             Date endDate = calendar.advance(startDate, length, Years,
                                             convention);
@@ -99,7 +98,7 @@ namespace capfloored_coupon_test {
         Leg makeFloatingLeg(const Date& startDate,
                             Integer length,
                             const Rate gearing = 1.0,
-                            const Rate spread = 0.0) {
+                            const Rate spread = 0.0) const {
 
             Date endDate = calendar.advance(startDate,length,Years,convention);
             Schedule schedule(startDate,endDate,Period(frequency),calendar,
@@ -122,7 +121,7 @@ namespace capfloored_coupon_test {
                               const std::vector<Rate>& floors,
                               Volatility volatility,
                               const Rate gearing = 1.0,
-                              const Rate spread = 0.0) {
+                              const Rate spread = 0.0) const {
 
             Date endDate = calendar.advance(startDate,length,Years,convention);
             Schedule schedule(startDate,endDate,Period(frequency),calendar,
@@ -151,7 +150,7 @@ namespace capfloored_coupon_test {
             return iborLeg;
         }
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
             Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
             return ext::shared_ptr<PricingEngine>(
@@ -159,10 +158,10 @@ namespace capfloored_coupon_test {
         }
 
         ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                                 const Leg& leg,
-                                                 Rate capStrike,
-                                                 Rate floorStrike,
-                                                 Volatility volatility) {
+                                               const Leg& leg,
+                                               Rate capStrike,
+                                               Rate floorStrike,
+                                               Volatility volatility) const {
             ext::shared_ptr<CapFloor> result;
             switch (type) {
               case CapFloor::Cap:

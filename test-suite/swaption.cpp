@@ -69,11 +69,13 @@ namespace swaption_test {
         SavedSettings backup;
 
         // utilities
-        ext::shared_ptr<Swaption>
-        makeSwaption(const ext::shared_ptr<VanillaSwap>& swap, const Date& exercise,
-                     Volatility volatility, Settlement::Type settlementType = Settlement::Physical,
-                     Settlement::Method settlementMethod = Settlement::PhysicalOTC,
-                     BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) {
+        ext::shared_ptr<Swaption> makeSwaption(
+            const ext::shared_ptr<VanillaSwap>& swap,
+            const Date& exercise,
+            Volatility volatility,
+            Settlement::Type settlementType = Settlement::Physical,
+            Settlement::Method settlementMethod = Settlement::PhysicalOTC,
+            BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
             Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
             ext::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
@@ -88,9 +90,9 @@ namespace swaption_test {
             return result;
         }
 
-        ext::shared_ptr<PricingEngine>
-        makeEngine(Volatility volatility,
-                   BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) {
+        ext::shared_ptr<PricingEngine> makeEngine(
+            Volatility volatility,
+            BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
             Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
             return ext::shared_ptr<PricingEngine>(
                 new BlackSwaptionEngine(termStructure, h, Actual365Fixed(), 0.0, model));

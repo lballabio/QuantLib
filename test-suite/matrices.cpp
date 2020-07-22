@@ -410,7 +410,7 @@ void MatricesTest::testDeterminant() {
         for (Matrix::iterator iter = m.begin(); iter != m.end(); ++iter)
             *iter = rng.next().value;
 
-        if ((j % 3) == 0u) {
+        if ((j % 3) == 0U) {
             // every third matrix is a singular matrix
             Size row = Size(3*rng.next().value);
             std::fill(m.row_begin(row), m.row_end(row), 0.0);

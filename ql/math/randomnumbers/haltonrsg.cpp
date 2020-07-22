@@ -61,7 +61,7 @@ namespace QuantLib {
             unsigned long b = PrimeNumbers::get(i);
             double f = 1.0;
             unsigned long k = sequenceCounter_+randomStart_[i];
-            while (k != 0u) {
+            while (k != 0U) {
                 f /= b;
                 h += (k%b)*f;
                 k /= b;

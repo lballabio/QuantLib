@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     namespace {
-        const Size secPerDay = 24u*3600u;
+        const Size secPerDay = 24U * 3600U;
 
         std::pair<std::vector<Date>, std::vector<Size> >
             createDateTimes(const Date& from, const Date& to, Size stepSize) {
@@ -37,7 +37,7 @@ namespace QuantLib {
             std::vector<Date> dates;
 
             Date iterDate = from;
-            Size iterStepSize = 0u;
+            Size iterStepSize = 0U;
 
             while (iterDate <= to) {
                 dates.push_back(iterDate);
@@ -54,11 +54,9 @@ namespace QuantLib {
         }
     }
 
-    SwingExercise::SwingExercise(const std::vector<Date>& dates,
-                                 const std::vector<Size>& seconds)
+    SwingExercise::SwingExercise(const std::vector<Date>& dates, const std::vector<Size>& seconds)
     : BermudanExercise(dates),
-      seconds_(seconds.empty() ? std::vector<Size>(dates.size(), 0u)
-                               : seconds) {
+      seconds_(seconds.empty() ? std::vector<Size>(dates.size(), 0U) : seconds) {
         QL_REQUIRE(dates_.size() == seconds_.size(),
                    "dates and seconds must have the same size");
         for (Size i=0; i < dates_.size(); ++i) {
@@ -89,8 +87,7 @@ namespace QuantLib {
         for (Size i=0; i<dates().size(); ++i) {
             Time t = dc.yearFraction(refDate, dates()[i]);
 
-            const Time dt
-                = dc.yearFraction(refDate, dates()[i]+Period(1u, Days)) - t;
+            const Time dt = dc.yearFraction(refDate, dates()[i] + Period(1U, Days)) - t;
 
             t += dt*seconds()[i]/(24*3600.);
 

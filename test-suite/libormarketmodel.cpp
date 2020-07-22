@@ -467,7 +467,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
                 GeneralStatistics stat;
 
                 for (Size n=0; n<nrTrails; ++n) {
-                    sample_type path = (n % 2) != 0u ? generator.antithetic() : generator.next();
+                    sample_type path = (n % 2) != 0U ? generator.antithetic() : generator.next();
 
                     std::vector<Rate> rates(size);
                     for (Size k=0; k<process->size(); ++k) {

@@ -63,8 +63,9 @@ namespace {
         const std::vector<Volatility>& volatilities(){return volatilities_;}
         const std::vector<Rate>& displacements(){return displacements_;}
         const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
-        Size nbRates() {return nbRates_;}
-    private:
+        Size nbRates() const { return nbRates_; }
+
+      private:
         std::vector<Time> rateTimes_, accruals_;
         std::vector<Rate> forwards_;
         std::vector<Spread> displacements_;
@@ -147,11 +148,10 @@ namespace {
             volatilities_[i] =   mktVols[i];//.0;
     }
 
-    const ext::shared_ptr<SequenceStatisticsInc> simulate(
-        const std::vector<Real>& todaysDiscounts,
-        const ext::shared_ptr<MarketModelEvolver>& evolver,
-        const MarketModelMultiProduct& product)
-    {
+    ext::shared_ptr<SequenceStatisticsInc>
+    simulate(const std::vector<Real>& todaysDiscounts,
+             const ext::shared_ptr<MarketModelEvolver>& evolver,
+             const MarketModelMultiProduct& product) {
         Size paths_;
 #ifdef _DEBUG
         paths_ = 127;// //

@@ -73,10 +73,7 @@ namespace QuantLib {
           isAntitheticVariate_(antitheticVariate),
           cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue),
           cvPathGenerator_(cvPathGenerator) {
-            if (!cvPathPricer_)
-                isControlVariate_ = false;
-            else
-                isControlVariate_ = true;
+            isControlVariate_ = static_cast<bool>(cvPathPricer_);
         }
         void addSamples(Size samples);
         const stats_type& sampleAccumulator() const;

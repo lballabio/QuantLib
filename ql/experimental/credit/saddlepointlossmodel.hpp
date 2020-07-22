@@ -342,7 +342,7 @@ namespace QuantLib {
                 / basket_->remainingNotional(), 1.);
             copula_->resetBasket(basket_.currentLink());
         }
-    protected:
+
         const ext::shared_ptr<ConstantLossLatentmodel<CP> > copula_;
         // cached todays arguments values
         mutable Size remainingSize_;

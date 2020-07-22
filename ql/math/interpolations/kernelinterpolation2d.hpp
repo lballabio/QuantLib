@@ -174,7 +174,6 @@ namespace QuantLib {
                 }
             }
 
-          private:
 
             Size xSize_,ySize_,xySize_;
             Real invPrec_;

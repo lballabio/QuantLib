@@ -87,7 +87,7 @@ namespace QuantLib {
         }
 
         for (FdmLinearOpIterator iter=layout->begin();iter != endIter; ++iter) {
-            if (iter.coordinates()[stateDirection_] == 0u) {
+            if (iter.coordinates()[stateDirection_] == 0U) {
 
                 Array x(nStates);
                 for (Size i=0; i < nStates; ++i) {

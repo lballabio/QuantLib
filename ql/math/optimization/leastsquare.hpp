@@ -119,16 +119,17 @@ namespace QuantLib {
         Array& results() { return results_; }
 
         //! return the least square residual norm
-        Real residualNorm() { return resnorm_; }
+        Real residualNorm() const { return resnorm_; }
 
         //! return last function value
-        Real lastValue() { return bestAccuracy_; }
+        Real lastValue() const { return bestAccuracy_; }
 
         //! return exit flag
-        Integer exitFlag() { return exitFlag_; }
+        Integer exitFlag() const { return exitFlag_; }
 
         //! return the performed number of iterations
-        Integer iterationsNumber() { return nbIterations_; }
+        Integer iterationsNumber() const { return nbIterations_; }
+
       private:
         //! solution vector
         Array results_, initialValue_;

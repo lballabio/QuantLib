@@ -70,7 +70,7 @@ namespace QuantLib {
             const initTraits& ini = initTraits()
             );
 
-        void resetBasket(ext::shared_ptr<Basket> basket) const;
+        void resetBasket(const ext::shared_ptr<Basket>& basket) const;
         Probability conditionalDefaultProbability(const Date& date, Size iName,
             const std::vector<Real>& mktFactors) const;
         Probability conditionalDefaultProbability(Probability prob, Size iName,
@@ -133,10 +133,9 @@ namespace QuantLib {
 
     // ------------------------------------------------------------------------
 
-    template<class CP>
-    inline void SpotRecoveryLatentModel<CP>::resetBasket(
-        const ext::shared_ptr<Basket> basket) const 
-    {
+    template <class CP>
+    inline void
+    SpotRecoveryLatentModel<CP>::resetBasket(const ext::shared_ptr<Basket>& basket) const {
         basket_ = basket;
         // in the future change 'size' to 'liveSize'
         QL_REQUIRE(basket_->size() == numNames_, 
