@@ -59,10 +59,10 @@ namespace QuantLib {
                  = solverDesc_.calculator->avgInnerValue(iter,
                                                          solverDesc.maturity);
 
-            if (iter.coordinates()[1] == 0U) {
+            if (iter.coordinates()[1] == 0u) {
                 x_.push_back(mesher->location(iter, 0));
             }
-            if (iter.coordinates()[0] == 0U) {
+            if (iter.coordinates()[0] == 0u) {
                 y_.push_back(mesher->location(iter, 1));
             }
         }

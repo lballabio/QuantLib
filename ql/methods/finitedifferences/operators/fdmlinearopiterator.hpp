@@ -66,7 +66,7 @@ namespace QuantLib {
             }
         }
 
-        bool operator!=(const FdmLinearOpIterator& iterator) const {
+        bool operator!=(const FdmLinearOpIterator& iterator) {
             return index_ != iterator.index_;
         }
 

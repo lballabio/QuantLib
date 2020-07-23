@@ -43,7 +43,9 @@ namespace QuantLib {
       model_(model) {
     }
 
-    Size FdmHullWhiteOp::size() const { return 1U; }
+    Size FdmHullWhiteOp::size() const {
+        return 1u;
+    }
 
     void FdmHullWhiteOp::setTime(Time t1, Time t2) {
 

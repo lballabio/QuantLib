@@ -56,7 +56,9 @@ namespace QuantLib {
                     dxxMap_.multR(0.5*v), Array(1, 0.0));
     }
 
-    Size FdmLocalVolFwdOp::size() const { return 1U; }
+    Size FdmLocalVolFwdOp::size() const {
+        return 1u;
+    }
 
     Disposable<Array> FdmLocalVolFwdOp::apply(const Array& u) const {
         return mapT_.apply(u);

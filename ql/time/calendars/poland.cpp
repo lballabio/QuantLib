@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Poland::Poland() {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> impl(new Poland::Impl);
+        QL_STATIC ext::shared_ptr<Calendar::Impl> impl(new Poland::Impl);
         impl_ = impl;
     }
 

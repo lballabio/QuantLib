@@ -31,7 +31,7 @@ namespace QuantLib {
        It is divided in 100 centavos.
     */
      ARSCurrency::ARSCurrency() {
-        static ext::shared_ptr<Data> arsData(
+        QL_STATIC ext::shared_ptr<Data> arsData(
                                    new Data("Argentinian peso", "ARS", 32,
                                             "", "", 100,
                                             Rounding(),
@@ -44,7 +44,7 @@ namespace QuantLib {
        It is divided in 100 centavos.
     */
     BRLCurrency::BRLCurrency() {
-        static ext::shared_ptr<Data> brlData(
+        QL_STATIC ext::shared_ptr<Data> brlData(
                                     new Data("Brazilian real", "BRL", 986,
                                              "R$", "", 100,
                                              Rounding(),
@@ -57,7 +57,7 @@ namespace QuantLib {
        It is divided into 100 cents.
     */
     CADCurrency::CADCurrency() {
-        static ext::shared_ptr<Data> cadData(
+        QL_STATIC ext::shared_ptr<Data> cadData(
                                    new Data("Canadian dollar", "CAD", 124,
                                             "Can$", "", 100,
                                             Rounding(),
@@ -70,7 +70,7 @@ namespace QuantLib {
       It is divided in 100 centavos.
     */
     CLPCurrency::CLPCurrency() {
-        static ext::shared_ptr<Data> clpData(
+        QL_STATIC ext::shared_ptr<Data> clpData(
                                       new Data("Chilean peso", "CLP", 152,
                                                "Ch$", "", 100,
                                                Rounding(),
@@ -83,7 +83,7 @@ namespace QuantLib {
        It is divided in 100 centavos.
     */
     COPCurrency::COPCurrency() {
-        static ext::shared_ptr<Data> copData(
+        QL_STATIC ext::shared_ptr<Data> copData(
                                     new Data("Colombian peso", "COP", 170,
                                              "Col$", "", 100,
                                              Rounding(),
@@ -96,7 +96,7 @@ namespace QuantLib {
        It is divided in 100 centavos.
     */
     MXNCurrency::MXNCurrency() {
-        static ext::shared_ptr<Data> mxnData(
+        QL_STATIC ext::shared_ptr<Data> mxnData(
                                       new Data("Mexican peso", "MXN", 484,
                                                "Mex$", "", 100,
                                                Rounding(),
@@ -109,7 +109,7 @@ namespace QuantLib {
        It is divided in 100 centimos.
     */
     PENCurrency::PENCurrency() {
-        static ext::shared_ptr<Data> penData(
+        QL_STATIC ext::shared_ptr<Data> penData(
                                 new Data("Peruvian nuevo sol", "PEN", 604,
                                          "S/.", "", 100,
                                          Rounding(),
@@ -123,7 +123,7 @@ namespace QuantLib {
        as per ISO 3166-1, we assign 998 as a user-defined code.
     */
     PEICurrency::PEICurrency() {
-        static ext::shared_ptr<Data> peiData(
+        QL_STATIC ext::shared_ptr<Data> peiData(
                                 new Data("Peruvian inti", "PEI", 998,
                                          "I/.", "", 100,
                                          Rounding(),
@@ -137,7 +137,7 @@ namespace QuantLib {
        It was divided in 100 centavos.
     */
     PEHCurrency::PEHCurrency() {
-        static ext::shared_ptr<Data> pehData(
+        QL_STATIC ext::shared_ptr<Data> pehData(
                                 new Data("Peruvian sol", "PEH", 999,
                                          "S./", "", 100,
                                          Rounding(),
@@ -150,7 +150,7 @@ namespace QuantLib {
        It is divided in 100 cents.
     */
     TTDCurrency::TTDCurrency() {
-        static ext::shared_ptr<Data> ttdData(
+        QL_STATIC ext::shared_ptr<Data> ttdData(
                           new Data("Trinidad & Tobago dollar", "TTD", 780,
                                    "TT$", "", 100,
                                    Rounding(),
@@ -163,7 +163,7 @@ namespace QuantLib {
        It is divided in 100 cents.
     */
     USDCurrency::USDCurrency() {
-        static ext::shared_ptr<Data> usdData(
+        QL_STATIC ext::shared_ptr<Data> usdData(
                                        new Data("U.S. dollar", "USD", 840,
                                                 "$", "\xA2", 100,
                                                 Rounding(),
@@ -176,7 +176,7 @@ namespace QuantLib {
        It is divided in 100 centimos.
     */
     VEBCurrency::VEBCurrency() {
-        static ext::shared_ptr<Data> vebData(
+        QL_STATIC ext::shared_ptr<Data> vebData(
                                 new Data("Venezuelan bolivar", "VEB", 862,
                                          "Bs", "", 100,
                                          Rounding(),

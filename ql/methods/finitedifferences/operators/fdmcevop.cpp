@@ -42,7 +42,9 @@ namespace QuantLib {
       mapT_(direction, mesher) {
     }
 
-    Size FdmCEVOp::size() const { return 1U; }
+    Size FdmCEVOp::size() const {
+        return 1u;
+    }
 
     void FdmCEVOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();

@@ -194,5 +194,11 @@
 #define QL_DEPRECATED
 #endif
 
+/*  managed languages do not call runtime static initialisation entrypoint for classes  */
+#ifdef MANAGED_STATIC_INITIALISATION
+#define QL_STATIC
+#else
+#define QL_STATIC static
+#endif // !MANAGED_STATIC_INITIALISATION
 
 #endif

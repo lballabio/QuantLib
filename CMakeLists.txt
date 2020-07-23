@@ -5,6 +5,8 @@ project(QuantLib)
 include(CTest)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/quantlib.cmake)
 
+
+option(WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 option(BUILD_SHARED_LIBS "Build shared libraries" ${UNIX})
 option(USE_BOOST_DYNAMIC_LIBRARIES "Use the shared version of Boost libraries" ${UNIX})
 if (USE_BOOST_DYNAMIC_LIBRARIES)
@@ -12,6 +14,8 @@ if (USE_BOOST_DYNAMIC_LIBRARIES)
 else()
     set(Boost_USE_STATIC_LIBS ON)
 endif()
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 if (MSVC)
     set(MSVC_RUNTIME "dynamic" CACHE STRING "MSVC runtime to link")
@@ -27,6 +31,7 @@ if (MSVC)
 
     # Remove warnings
     add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-DMANAGED_STATIC_INITIALISATION)
 endif()
 
 # On single-configuration builds, select a default build type that
@@ -39,15 +44,17 @@ endif()
 # directory of the project to includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package(Boost 1.48.0)
+find_package(Boost 1.73.0)
 if (Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif (Boost_FOUND)
 
 add_subdirectory(ql)
-add_subdirectory(Examples)
-add_subdirectory(test-suite)
 
+if(NOT (${BUILD_SHARED_LIBS} AND MSVC))
+    add_subdirectory(Examples)
+    add_subdirectory(test-suite)
+endif()
 #
 # Copy across the ANSI config file into the build directory. Users
 # need to change userconfig.hpp if they require different settings.

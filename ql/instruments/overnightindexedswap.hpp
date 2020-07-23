@@ -41,17 +41,18 @@ namespace QuantLib {
     class OvernightIndexedSwap : public Swap {
     public:
         enum Type { Receiver = -1, Payer = 1 };
-        OvernightIndexedSwap(Type type,
-                             Real nominal,
-                             const Schedule& schedule,
-                             Rate fixedRate,
-                             const DayCounter& fixedDC,
-                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             Spread spread = 0.0,
-                             Natural paymentLag = 0,
-                             BusinessDayConvention paymentAdjustment = Following,
-                             const Calendar& paymentCalendar = Calendar(),
-                             bool telescopicValueDates = false);
+        OvernightIndexedSwap(
+                        Type type,
+                        Real nominal,
+                        const Schedule& schedule,
+                        Rate fixedRate,
+                        const DayCounter& fixedDC,
+                        const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                        Spread spread = 0.0,
+                        Natural paymentLag = 0,
+                        BusinessDayConvention paymentAdjustment = Following,
+                        Calendar paymentCalendar = Calendar(),
+                        bool telescopicValueDates = false);
 
         OvernightIndexedSwap(Type type,
                              const std::vector<Real>& nominals,
@@ -62,7 +63,7 @@ namespace QuantLib {
                              Spread spread = 0.0,
                              Natural paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
-                             const Calendar& paymentCalendar = Calendar(),
+                             Calendar paymentCalendar = Calendar(),
                              bool telescopicValueDates = false);
 
         //! \name Inspectors
@@ -78,7 +79,7 @@ namespace QuantLib {
         const DayCounter& fixedDayCount() { return fixedDC_; }
 
         const ext::shared_ptr<OvernightIndex>& overnightIndex() { return overnightIndex_; }
-        Spread spread() const { return spread_; }
+        Spread spread() { return spread_; }
 
         const Leg& fixedLeg() const { return legs_[0]; }
         const Leg& overnightLeg() const { return legs_[1]; }

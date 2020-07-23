@@ -44,14 +44,15 @@ namespace QuantLib {
 
     class HestonRNDCalculator : public RiskNeutralDensityCalculator {
     public:
-      explicit HestonRNDCalculator(const ext::shared_ptr<HestonProcess>& hestonProcess,
-                                   Real integrationEps = 1e-6,
-                                   Size maxIntegrationIterations = 10000UL);
+        explicit HestonRNDCalculator(
+            const ext::shared_ptr<HestonProcess>& hestonProcess,
+            Real integrationEps= 1e-6,
+            Size maxIntegrationIterations = 10000ul);
 
-      // x=ln(S)
-      Real pdf(Real x, Time t) const;
-      Real cdf(Real x, Time t) const;
-      Real invcdf(Real q, Time t) const;
+        // x=ln(S)
+        Real pdf(Real x, Time t) const;
+        Real cdf(Real x, Time t) const;
+        Real invcdf(Real q, Time t) const;
 
     private:
         Real x_t(Real x, Time t) const;

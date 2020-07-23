@@ -25,9 +25,9 @@ namespace QuantLib {
 
     Israel::Israel(Israel::Market market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> SettlementImpl(
+        QL_STATIC ext::shared_ptr<Calendar::Impl> SettlementImpl(
                                         new Israel::TelAvivImpl);
-        static ext::shared_ptr<Calendar::Impl> TelAvivImpl(
+        QL_STATIC ext::shared_ptr<Calendar::Impl> TelAvivImpl(
                                         new Israel::TelAvivImpl);
         switch (market) {
         case Settlement:

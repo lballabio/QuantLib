@@ -29,32 +29,32 @@ namespace QuantLib {
 
 
     AustraliaRegion::AustraliaRegion() {
-        static ext::shared_ptr<Data> AUdata(new Data("Australia","AU"));
+        QL_STATIC ext::shared_ptr<Data> AUdata(new Data("Australia","AU"));
         data_ = AUdata;
     }
 
     EURegion::EURegion() {
-        static ext::shared_ptr<Data> EUdata(new Data("EU","EU"));
+        QL_STATIC ext::shared_ptr<Data> EUdata(new Data("EU","EU"));
         data_ = EUdata;
     }
 
     FranceRegion::FranceRegion() {
-        static ext::shared_ptr<Data> FRdata(new Data("France","FR"));
+        QL_STATIC ext::shared_ptr<Data> FRdata(new Data("France","FR"));
         data_ = FRdata;
     }
 
     UKRegion::UKRegion() {
-        static ext::shared_ptr<Data> UKdata(new Data("UK","UK"));
+        QL_STATIC ext::shared_ptr<Data> UKdata(new Data("UK","UK"));
         data_ = UKdata;
     }
 
     USRegion::USRegion() {
-        static ext::shared_ptr<Data> USdata(new Data("USA","US"));
+        QL_STATIC ext::shared_ptr<Data> USdata(new Data("USA","US"));
         data_ = USdata;
     }
 
     ZARegion::ZARegion() {
-        static ext::shared_ptr<Data> ZAdata(new Data("South Africa","ZA"));
+        QL_STATIC ext::shared_ptr<Data> ZAdata(new Data("South Africa","ZA"));
         data_ = ZAdata;
     }
 
