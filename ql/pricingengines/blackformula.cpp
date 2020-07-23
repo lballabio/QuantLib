@@ -121,14 +121,11 @@ namespace QuantLib {
                    "stdDev (" << stdDev << ") must be non-negative");
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
-
-        if (stdDev==0.0)
-            return (optionType==Option::Call ? discount : 0.0);
-
+        
         forward = forward + displacement;
         strike = strike + displacement;
 
-        if (strike==0.0)
+        if (stdDev==0.0 || strike == 0)
             return (optionType==Option::Call ? discount : 0.0);
 
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
