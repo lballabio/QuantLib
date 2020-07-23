@@ -123,13 +123,13 @@ namespace QuantLib {
                    "discount (" << discount << ") must be positive");
 
         if (stdDev==0.0)
-            return (optionType==Option::Call ? 1.0 * discount : 0.0);
+            return (optionType==Option::Call ? discount : 0.0);
 
         forward = forward + displacement;
         strike = strike + displacement;
 
         if (strike==0.0)
-            return (optionType==Option::Call ? 0.0 : 1.0 * discount);
+            return (optionType==Option::Call ? discount : 0.0);
 
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
         CumulativeNormalDistribution phi;
