@@ -276,6 +276,153 @@ void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
     }
 }
 
+void assertBlackFormulaForwardDerivative(
+    Option::Type optionType,
+    const std::vector<Real> &strikes,
+    Real bpvol)
+{
+    Real forward = 1.0;
+    Real tte = 10.0;
+    Real stdDev = bpvol * std::sqrt(tte);
+    Real discount = 0.95;
+    Real displacement = 0.01;
+    Real bump = 0.0001;
+    Real epsilon = 1.e-10;
+
+    for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
+    {
+        Real strike = *it;
+        Real delta = blackFormulaForwardDerivative(
+            optionType, strike, forward, stdDev, discount, displacement);
+        Real bumped_delta = blackFormulaForwardDerivative(
+            optionType, strike, forward + bump, stdDev, discount, displacement);
+
+        Real base_premium = blackFormula(
+            optionType, strike, forward, stdDev, discount, displacement);
+        Real bumped_premium = blackFormula(
+            optionType, strike, forward + bump, stdDev, discount, displacement);
+        Real delta_approx = bumped_premium - base_premium;
+
+        /*! Based on the Mean Value Theorem, the below equality
+            should hold for any function that is monotonic in the
+            area of the bump.
+         */
+        bool success = (std::max(delta * bump, bumped_delta * bump) + epsilon >= (
+            delta_approx) >= std::min(delta * bump, bumped_delta * bump) - epsilon);
+
+        if (!success)
+        {
+            BOOST_ERROR("Failed to calculate the derivative of the"
+                        " Black formula w.r.t. forward"
+                        << "\n forward           :" << forward
+                        << "\n strike            :" << strike
+                        << "\n stdDev            :" << stdDev
+                        << "\n displacement      :" << displacement
+                        << "\n analytical delta  :" << delta
+                        << "\n approximated delta:" << delta_approx);
+        }
+    }
+}
+
+void BlackFormulaTest::testBlackFormulaForwardDerivative() {
+
+    BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula...");
+
+    std::vector<Real> strikes{0.1, 0.5, 1.0, 2.0, 3.0};
+    const Real vol = 0.1;
+    assertBlackFormulaForwardDerivative(Option::Call, strikes, vol);
+    assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
+}
+
+void BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroStrike() {
+
+    BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula "
+        "with zero strike...");
+
+    std::vector<Real> strikes{0.0};
+    const Real vol = 0.1;
+    assertBlackFormulaForwardDerivative(Option::Call, strikes, vol);
+    assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
+}
+
+void BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroVolatility() {
+
+    BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula "
+        "with zero volatility...");
+
+    std::vector<Real> strikes{0.1, 0.5, 1.0, 2.0, 3.0};
+    const Real vol = 0.0;
+    assertBlackFormulaForwardDerivative(Option::Call, strikes, vol);
+    assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
+}
+
+void assertBachelierBlackFormulaForwardDerivative(
+    Option::Type optionType,
+    const std::vector<Real> &strikes,
+    Real bpvol)
+{
+    Real forward = 1.0;
+    Real tte = 10.0;
+    Real stdDev = bpvol * std::sqrt(tte);
+    Real discount = 0.95;
+    Real bump = 0.0001;
+    Real epsilon = 1.e-10;
+
+    for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
+    {
+        Real strike = *it;
+        Real delta = bachelierBlackFormulaForwardDerivative(
+            optionType, strike, forward, stdDev, discount);
+        Real bumped_delta = bachelierBlackFormulaForwardDerivative(
+            optionType, strike, forward + bump, stdDev, discount);
+
+        Real base_premium = bachelierBlackFormula(
+            optionType, strike, forward, stdDev, discount);
+        Real bumped_premium = bachelierBlackFormula(
+            optionType, strike, forward + bump, stdDev, discount);
+        Real delta_approx = bumped_premium - base_premium;
+
+        /*! Based on the Mean Value Theorem, the below equality
+            should hold for any function that is monotonic in the
+            area of the bump.
+         */
+        bool success = (std::max(delta * bump, bumped_delta * bump) + epsilon >= (
+            delta_approx) >= std::min(delta * bump, bumped_delta * bump) - epsilon);
+
+        if (!success)
+        {
+            BOOST_ERROR("Failed to calculate the derivative of the"
+                        " Bachelier Black formula w.r.t. forward"
+                        << "\n forward           :" << forward
+                        << "\n strike            :" << strike
+                        << "\n stdDev            :" << stdDev
+                        << "\n analytical delta  :" << delta
+                        << "\n approximated delta:" << delta_approx);
+        }
+    }
+}
+
+void BlackFormulaTest::testBachelierBlackFormulaForwardDerivative() {
+
+    BOOST_TEST_MESSAGE("Testing forward derivative of the "
+        "Bachelier Black formula...");
+
+    std::vector<Real> strikes{-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0};
+    const Real vol = 0.001;
+    assertBachelierBlackFormulaForwardDerivative(Option::Call, strikes, vol);
+    assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
+}
+
+void BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatility() {
+
+    BOOST_TEST_MESSAGE("Testing forward derivative of the Bachelier Black formula "
+        "with zero volatility...");
+
+    std::vector<Real> strikes{-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0};
+    const Real vol = 0.0;
+    assertBachelierBlackFormulaForwardDerivative(Option::Call, strikes, vol);
+    assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
+}
 
 test_suite* BlackFormulaTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Black formula tests");
@@ -290,6 +437,16 @@ test_suite* BlackFormulaTest::suite() {
         &BlackFormulaTest::testRadoicicStefanicaLowerBound));
     suite->add(QUANTLIB_TEST_CASE(
         &BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testBlackFormulaForwardDerivative));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroStrike));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroVolatility));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testBachelierBlackFormulaForwardDerivative));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatility));
 
     return suite;
 }
