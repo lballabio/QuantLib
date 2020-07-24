@@ -289,9 +289,7 @@ namespace QuantLib {
         swapLength = std::max(swapLength, 1.0 / 12.0);
         results_.additionalResults["swapLength"] = swapLength;
 
-        Real variance = vol_->blackVariance(exerciseDate,
-                                                   swapLength,
-                                                   strike);
+        Real variance = vol_->blackVariance(exerciseDate, swapLength, strike);
 
         Real displacement =
             vol_->volatilityType() == ShiftedLognormal ?
@@ -307,7 +305,7 @@ namespace QuantLib {
         Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = Spec().vega(
             strike, atmForward, stdDev, exerciseTime, annuity, displacement);
-        results._additionalResults["delta"] = Spec().delta(
+        results_.additionalResults["delta"] = Spec().delta(
             w, strike, atmForward, stdDev, annuity, displacement);
     }
 
