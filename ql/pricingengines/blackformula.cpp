@@ -725,6 +725,30 @@ namespace QuantLib {
             payoff->strike(), forward, stdDev, discount);
     }
 
+    Real bachelierBlackFormulaForwardDerivative(
+        Option::Type optionType, Real strike, Real forward, Real stdDev, Real discount)
+    {
+        QL_REQUIRE(stdDev>=0.0,
+                   "stdDev (" << stdDev << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
+        if (stdDev==0.0)
+            return (optionType==Option::Call ? discount : 0.0);
+        Real d = (forward-strike)*optionType, h = d/stdDev;
+        CumulativeNormalDistribution phi;
+        return phi(d) * discount;
+    }
+
+    Real bachelierBlackFormulaForwardDerivative(
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+        Real forward,
+        Real stdDev,
+        Real discount)
+    {
+        return bachelierBlackFormulaForwardDerivative(payoff->optionType(),
+            payoff->strike(), forward, stdDev, discount);
+    }
+
     static Real h(Real eta) {
 
         const static Real  A0          = 3.994961687345134e-1;

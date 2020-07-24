@@ -59,7 +59,7 @@ namespace QuantLib {
                       Real discount = 1.0,
                       Real displacement = 0.0);
 
-    /*! Black 1976 forward derivative
+    /*! Black 1976 model forward derivative
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
@@ -70,7 +70,7 @@ namespace QuantLib {
                                        Real discount = 1.0,
                                        Real displacement = 0.0);
 
-    /*! Black 1976 forward derivative
+    /*! Black 1976 model forward derivative
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
@@ -335,6 +335,28 @@ namespace QuantLib {
                                Real forward,
                                Real stdDev,
                                Real discount = 1.0);
+
+    /*! Bachelier Black model forward derivative.
+
+        \warning Bachelier model needs absolute volatility, not
+                 percentage volatility. Standard deviation is
+                 absoluteVolatility*sqrt(timeToMaturity)
+    */
+    Real bachelierBlackFormulaForwardDerivative(
+        Option::Type optionType, Real strike, Real forward, Real stdDev, Real discount = 1.0);
+
+    /*! Bachelier Black model forward derivative.
+
+        \warning Bachelier model needs absolute volatility, not
+                 percentage volatility. Standard deviation is
+                 absoluteVolatility*sqrt(timeToMaturity)
+    */
+    Real bachelierBlackFormulaForwardDerivative(
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+        Real forward,
+        Real stdDev,
+        Real discount = 1.0);
+
     /*! Approximated Bachelier implied volatility
 
         It is calculated using  the analytic implied volatility approximation
