@@ -736,7 +736,7 @@ namespace QuantLib {
             return (optionType==Option::Call ? discount : 0.0);
         Real d = (forward-strike)*optionType, h = d/stdDev;
         CumulativeNormalDistribution phi;
-        return phi(d) * discount;
+        return phi(h) * discount;
     }
 
     Real bachelierBlackFormulaForwardDerivative(
