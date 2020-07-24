@@ -91,6 +91,12 @@ namespace QuantLib {
                    blackFormulaStdDevDerivative(strike, atmForward, stdDev,
                                                 annuity, displacement);
         }
+        Real delta(const Option::Type type, const Real strike,
+                   const Real atmForward, const Real stdDev, const Real annuity,
+                   const Real displacement) {
+            return blackFormulaForwardDerivative(type, strike, atmForward, stdDev,
+                                                 annuity, displacement);
+        }
     };
 
     // normal type engine
@@ -107,6 +113,12 @@ namespace QuantLib {
             return std::sqrt(exerciseTime) *
                    bachelierBlackFormulaStdDevDerivative(
                        strike, atmForward, stdDev, annuity);
+        }
+        Real delta(const Option::Type type, const Real strike,
+                   const Real atmForward, const Real stdDev, const Real annuity,
+                   const Real) {
+            return bachelierBlackFormulaForwardDerivative(
+                type, strike, atmForward, stdDev, annuity);
         }
     };
 
@@ -295,6 +307,8 @@ namespace QuantLib {
         Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = Spec().vega(
             strike, atmForward, stdDev, exerciseTime, annuity, displacement);
+        results._additionalResults["delta"] = Spec().delta(
+            w, strike, atmForward, stdDev, annuity, displacement);
     }
 
     }  // namespace detail
