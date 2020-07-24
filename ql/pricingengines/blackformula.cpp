@@ -122,15 +122,16 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
         
+        const Real basisPoint = 1.e-4;
         forward = forward + displacement;
         strike = strike + displacement;
 
         if (stdDev==0.0 || strike == 0)
-            return (optionType==Option::Call ? discount : 0.0);
+            return (optionType==Option::Call ? discount * basisPoint : 0.0);
 
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
         CumulativeNormalDistribution phi;
-        return phi(optionType * d1) * discount;                        
+        return phi(optionType * d1) * discount * basisPoint;                        
     }
 
     Real blackFormulaForwardDerivative(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
@@ -732,11 +733,13 @@ namespace QuantLib {
                    "stdDev (" << stdDev << ") must be non-negative");
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
+        
+        const Real basisPoint = 1.e-4;
         if (stdDev==0.0)
-            return (optionType==Option::Call ? discount : 0.0);
+            return (optionType==Option::Call ? discount * basisPoint : 0.0);
         Real d = (forward-strike)*optionType, h = d/stdDev;
         CumulativeNormalDistribution phi;
-        return phi(h) * discount;
+        return phi(h) * discount * basisPoint;
     }
 
     Real bachelierBlackFormulaForwardDerivative(
