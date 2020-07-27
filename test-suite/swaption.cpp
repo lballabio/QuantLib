@@ -23,6 +23,7 @@
 
 #include "swaption.hpp"
 #include "utilities.hpp"
+#include <ql/time/calendars/target.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
@@ -937,6 +938,127 @@ void SwaptionTest::testImpliedVolatility() {
     }
 }
 
+template <typename Engine>
+ext::shared_ptr<PricingEngine> makeConstVolEngine(
+    const Handle<YieldTermStructure> &discountCurve,
+    Volatility volatility)
+{
+    Handle<Quote> h(ext::make_shared<SimpleQuote>(volatility));
+    return ext::make_shared<Engine>(discountCurve, h);
+}
+
+template <typename Engine>
+void checkSwaptionDelta(bool useBachelierVol)
+{
+    using namespace swaption_test;
+
+    Calendar calendar = TARGET();
+    Date today = calendar.adjust(Date::todaysDate());
+    Settings::instance().evaluationDate() = today;
+
+    const Real bump = 1.e-4;
+    
+    RelinkableHandle<YieldTermStructure> projectionHandle;
+    
+    RelinkableHandle<Quote> projectionQuote;
+    projectionQuote.linkTo(ext::make_shared<SimpleQuote>(0.01));
+
+    ext::shared_ptr<YieldTermStructure> projectionCurve = ext::make_shared<FlatForward>(
+        today, projectionQuote, Actual365Fixed());
+    projectionHandle.linkTo(projectionCurve);
+
+    Handle<YieldTermStructure> discountHandle(
+        ext::make_shared<FlatForward>(
+            today, 
+            Handle<Quote>(ext::make_shared<SimpleQuote>(0.0085)), 
+            Actual365Fixed()));
+    ext::shared_ptr<DiscountingSwapEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(
+        discountHandle);
+    
+    Volatility volatility(0.2);
+    ext::shared_ptr<IborIndex> idx = ext::make_shared<Euribor6M>(projectionHandle);
+    
+    Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
+    Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::ParYieldCurve };
+    Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+    
+    for (Size u=0; u<LENGTH(vols); u++) {
+        Volatility volatility = useBachelierVol ? vols[u] / 100.0 : vols[u];
+        ext::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(
+            discountHandle, volatility);
+        for (Size i=0; i<LENGTH(exercises); i++) {
+            Date exerciseDate = calendar.advance(today, exercises[i]);
+            Date startDate = calendar.advance(exerciseDate, 2*Days);
+            for (Size j=0; j<LENGTH(lengths); j++) {
+                for (Size t=0; t<LENGTH(strikes); t++) {
+                    for (Size h=0; h<LENGTH(type); h++) {
+                        ext::shared_ptr<VanillaSwap> underlying = MakeVanillaSwap(
+                            lengths[j], idx, strikes[t])
+                            .withEffectiveDate(exerciseDate)
+                            .withFixedLegTenor(1 * Years)
+                            .withFixedLegDayCount(Thirty360())
+                            .withFloatingLegSpread(0.0)
+                            .withType(type[h]);
+                        underlying->setPricingEngine(swapEngine);
+                        Real fairRate = underlying->fairRate();
+
+                        ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
+                            underlying, 
+                            ext::make_shared<EuropeanExercise>(exerciseDate), 
+                            types[h], 
+                            methods[h]);
+                        swaption->setPricingEngine(swaptionEngine);
+
+                        Real value = swaption->NPV();
+                        Real delta = swaption->result<Real>("delta") * bump;
+
+                        projectionQuote.linkTo(ext::make_shared<SimpleQuote>(
+                            projectionQuote->value() + bump));
+    
+                        Real bumpedFairRate = underlying->fairRate();
+                        Real bumpedValue = swaption->NPV();
+                        Real bumpedDelta = swaption->result<Real>("delta") * bump;
+
+                        Real deltaBump = bumpedFairRate - fairRate;
+                        Real approxDelta = (bumpedValue - value) / deltaBump * bump;
+    
+                        Real lowerBound = std::min(delta, bumpedDelta);
+                        Real upperBound = std::max(delta, bumpedDelta);
+                        bool checkIsCorrect = lowerBound <= approxDelta && approxDelta <= upperBound;
+                        
+                        if (!checkIsCorrect)
+                            BOOST_FAIL("failed to compute swaption delta:" <<
+                                "\n  option tenor:    " << exerciseDate <<
+                                "\n  volatility:      " << io::rate(volatility) <<
+                                "\n  option type:     " << swaption->type() <<
+                                "\n  swap tenor:      " << lengths[j] <<
+                                "\n  strike:          " << strikes[t] <<
+                                "\n  settlement:      " << types[h] <<
+                                "\n  nominal:         " << swaption->underlyingSwap()->nominal() <<
+                                "\n  npv:             " << swaption->NPV() <<
+                                "\n  calculated delta: " << delta <<
+                                "\n  expected delta:   " << approxDelta);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void SwaptionTest::testSwaptionDeltaInBlackModel() {
+
+    BOOST_TEST_MESSAGE("Testing swaption delta in Black model...");
+
+    checkSwaptionDelta<BlackSwaptionEngine>(false);
+}
+
+void SwaptionTest::testSwaptionDeltaInBachelierModel() {
+
+    BOOST_TEST_MESSAGE("Testing swaption delta in Bachelier model...");
+
+    checkSwaptionDelta<BachelierSwaptionEngine>(true);
+}
 
 test_suite* SwaptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption tests");
@@ -955,6 +1077,9 @@ test_suite* SwaptionTest::suite() {
 
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testVega));
+
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSwaptionDeltaInBlackModel));
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSwaptionDeltaInBachelierModel));   
 
     return suite;
 }
