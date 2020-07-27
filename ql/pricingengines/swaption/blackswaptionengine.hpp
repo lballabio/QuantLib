@@ -304,7 +304,7 @@ namespace QuantLib {
         Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = Spec().vega(
             strike, atmForward, stdDev, exerciseTime, annuity, displacement);
-        results_.additionalResults["delta"] = w * Spec().delta(
+        results_.additionalResults["delta"] = arguments_.type * Spec().delta(
             w, strike, atmForward, stdDev, annuity, displacement);
     }
 
