@@ -939,7 +939,7 @@ void SwaptionTest::testImpliedVolatility() {
 }
 
 template <typename Engine>
-ext::shared_ptr<PricingEngine> makeConstVolEngine(
+ext::shared_ptr<Engine> makeConstVolEngine(
     const Handle<YieldTermStructure> &discountCurve,
     Volatility volatility)
 {
