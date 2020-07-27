@@ -299,13 +299,12 @@ namespace QuantLib {
         results_.additionalResults["stdDev"] = stdDev;
         Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
                                                 Option::Call : Option::Put;
-        results_.value = Spec().value(w, strike, atmForward, stdDev, annuity,
-                                                                displacement);
-
+        results_.value = Spec().value(w, strike, atmForward, stdDev, annuity, displacement);
+        
         Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = Spec().vega(
             strike, atmForward, stdDev, exerciseTime, annuity, displacement);
-        results_.additionalResults["delta"] = Spec().delta(
+        results_.additionalResults["delta"] = w * Spec().delta(
             w, strike, atmForward, stdDev, annuity, displacement);
     }
 
