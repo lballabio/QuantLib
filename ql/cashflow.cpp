@@ -42,7 +42,7 @@ namespace QuantLib {
             // specified in the settings (if any)
             boost::optional<bool> includeToday =
                 Settings::instance().includeTodaysCashFlows();
-            if (includeToday)
+            if (includeToday) // NOLINT(readability-implicit-bool-conversion)
                 includeRefDate = *includeToday;
         }
         return Event::hasOccurred(refDate, includeRefDate);
@@ -69,4 +69,3 @@ namespace QuantLib {
     }
 
 }
-

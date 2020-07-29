@@ -47,7 +47,7 @@ namespace QuantLib {
         */
         BondHelper(const Handle<Quote>& price,
                    const ext::shared_ptr<Bond>& bond,
-                   const Bond::Price::Type priceType = Bond::Price::Clean);
+                   Bond::Price::Type priceType = Bond::Price::Clean);
 
         /*! \deprecated Use the other overload instead.
                         Deprecated in version 1.18.
@@ -99,9 +99,9 @@ namespace QuantLib {
                             const Calendar& paymentCalendar = Calendar(),
                             const Period& exCouponPeriod = Period(),
                             const Calendar& exCouponCalendar = Calendar(),
-                            const BusinessDayConvention exCouponConvention = Unadjusted,
+                            BusinessDayConvention exCouponConvention = Unadjusted,
                             bool exCouponEndOfMonth = false,
-                            const Bond::Price::Type priceType = Bond::Price::Clean);
+                            Bond::Price::Type priceType = Bond::Price::Clean);
 
         /*! \deprecated Use the other overload instead.
                         Deprecated in version 1.18.
@@ -119,9 +119,9 @@ namespace QuantLib {
                             const Calendar& paymentCalendar,
                             const Period& exCouponPeriod,
                             const Calendar& exCouponCalendar,
-                            const BusinessDayConvention exCouponConvention,
+                            BusinessDayConvention exCouponConvention,
                             bool exCouponEndOfMonth,
-                            const bool useCleanPrice);
+                            bool useCleanPrice);
 
         //! \name Additional inspectors
         //@{
@@ -142,7 +142,7 @@ namespace QuantLib {
         CPIBondHelper(const Handle<Quote>& price,
                       Natural settlementDays,
                       Real faceAmount,
-                      const bool growthOnly,
+                      bool growthOnly,
                       Real baseCPI,
                       const Period& observationLag,
                       const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
@@ -155,33 +155,33 @@ namespace QuantLib {
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& exCouponPeriod = Period(),
                       const Calendar& exCouponCalendar = Calendar(),
-                      const BusinessDayConvention exCouponConvention = Unadjusted,
+                      BusinessDayConvention exCouponConvention = Unadjusted,
                       bool exCouponEndOfMonth = false,
-                      const Bond::Price::Type priceType = Bond::Price::Clean);
+                      Bond::Price::Type priceType = Bond::Price::Clean);
 
         /*! \deprecated Use the other overload instead.
                         Deprecated in version 1.18.
         */
         QL_DEPRECATED
         CPIBondHelper(const Handle<Quote>& price,
-                            Natural settlementDays,
-                            Real faceAmount,
-                            const bool growthOnly,
-                            Real baseCPI,
-                            const Period& observationLag,
-                            const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
-                            CPI::InterpolationType observationInterpolation,
-                            const Schedule& schedule,
-                            const std::vector<Rate>& fixedRate,
-                            const DayCounter& accrualDayCounter,
-                            BusinessDayConvention paymentConvention,
-                            const Date& issueDate,
-                            const Calendar& paymentCalendar,
-                            const Period& exCouponPeriod,
-                            const Calendar& exCouponCalendar,
-                            const BusinessDayConvention exCouponConvention,
-                            bool exCouponEndOfMonth,
-                            const bool useCleanPrice);
+                      Natural settlementDays,
+                      Real faceAmount,
+                      bool growthOnly,
+                      Real baseCPI,
+                      const Period& observationLag,
+                      const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                      CPI::InterpolationType observationInterpolation,
+                      const Schedule& schedule,
+                      const std::vector<Rate>& fixedRate,
+                      const DayCounter& accrualDayCounter,
+                      BusinessDayConvention paymentConvention,
+                      const Date& issueDate,
+                      const Calendar& paymentCalendar,
+                      const Period& exCouponPeriod,
+                      const Calendar& exCouponCalendar,
+                      BusinessDayConvention exCouponConvention,
+                      bool exCouponEndOfMonth,
+                      bool useCleanPrice);
         //! \name Additional inspectors
         //@{
         ext::shared_ptr<CPIBond> cpiBond() const;

@@ -395,7 +395,7 @@ namespace {
         : vol2_(0.5*vol*vol),
           direction_(direction),
           map_(ext::make_shared<NthOrderDerivativeOp>(
-              direction, 2, nPoints, mesher)),
+              direction, 2, Integer(nPoints), mesher)),
           preconditioner_(SecondDerivativeOp(direction, mesher)
               .mult(Array(mesher->layout()->size(), vol2_))) { }
 
@@ -533,9 +533,6 @@ namespace {
             const ext::shared_ptr<FdmMesher> mesher =
                 ext::make_shared<FdmMesherComposite>(
                     ext::make_shared<Predefined1dMesher>(loc));
-
-            const ext::shared_ptr<FdmLinearOpLayout> layout =
-                mesher->layout();
 
             const Array g = mesher->locations(0);
             const Array sT = Exp(g - 0.5*vol*vol*T)*df;

@@ -114,7 +114,7 @@ namespace QuantLib {
         // and it is a coupon then add the accrued coupon
         if (i<bondLeg.end()-1) {
             ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(*i);
-            if (c) {
+            if (c != 0) {
                 ext::shared_ptr<CashFlow> accruedCoupon(new
                     SimpleCashFlow(c->accruedAmount(dealMaturity), finalDate));
                 legs_[0].push_back(accruedCoupon);
@@ -277,7 +277,7 @@ namespace QuantLib {
         AssetSwap::arguments* arguments =
             dynamic_cast<AssetSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (arguments == 0) // it's a swap engine...
             return;
 
         const Leg& fixedCoupons = bondLeg();
@@ -391,7 +391,7 @@ namespace QuantLib {
         Swap::fetchResults(r);
         const AssetSwap::results* results =
             dynamic_cast<const AssetSwap::results*>(r);
-        if (results) {
+        if (results != 0) {
             fairSpread_ = results->fairSpread;
             fairCleanPrice_= results->fairCleanPrice;
             fairNonParRepayment_= results->fairNonParRepayment;

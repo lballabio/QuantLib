@@ -19,6 +19,8 @@ for:
       - image: Visual Studio 2013
   before_build:
     - COPY .appveyor\VS2013.props .\Build.props
+  test_script:
+    - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes -- --faster
 -
   matrix:
     only:
@@ -26,6 +28,6 @@ for:
   before_build:
     - COPY .appveyor\VS2019.props .\Build.props
     - COPY .appveyor\Unity.props .\Directory.Build.props
+  test_script:
+    - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes
 
-test_script:
-  - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes -- --faster

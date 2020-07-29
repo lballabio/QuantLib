@@ -25,14 +25,18 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-class FSquared {
-  public:
-    Real operator()(Real x) const { return x*x; }
-};
+namespace array_test {
+    class FSquared {
+      public:
+        Real operator()(Real x) const { return x*x; }
+    };
+}
 
 void ArrayTest::testConstruction() {
 
     BOOST_TEST_MESSAGE("Testing array construction...");
+
+    using namespace array_test;
 
     // empty array
     Array a1;
@@ -78,7 +82,7 @@ void ArrayTest::testConstruction() {
     }
 
     // copy constructor
-    Array a5(a1);
+    Array a5(a1);  // NOLINT(performance-unnecessary-copy-initialization)
     if (a5.size() != a1.size())
         BOOST_ERROR("copy not of the same size as original"
                     << "\n    original:  " << a1.size()

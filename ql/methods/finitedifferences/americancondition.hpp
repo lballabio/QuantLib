@@ -32,19 +32,64 @@
 namespace QuantLib {
 
     //! American exercise condition.
-    /*! \todo unify the intrinsicValues/Payoff thing */
     class AmericanCondition :
-        public StandardCurveDependentStepCondition {
-    public:
+        public StandardStepCondition {
+      public:
+        explicit AmericanCondition(const Array& intrinsicValues)
+        : impl_(new ArrayImpl(intrinsicValues)) {}
+
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
         AmericanCondition(Option::Type type,
                           Real strike)
-            : StandardCurveDependentStepCondition(type, strike) {};
-        AmericanCondition(const Array& intrinsicValues)
-            : StandardCurveDependentStepCondition(intrinsicValues) {};
-    private:
-        Real applyToValue(Real current, Real intrinsic) const {
-            return std::max(current, intrinsic);
+        : impl_(new PayoffImpl(type, strike)) {}
+
+        void applyTo(Array &a, Time) const {
+            //#pragma omp parallel for
+            for (Size i = 0; i < a.size(); i++) {
+                a[i] = std::max(a[i], impl_->getValue(a, i));
+            }
         }
+      private:
+        // This part should be removed and the array-based implementation
+        // inlined once the payoff-based constructor is removed.
+
+        class Impl;
+
+        ext::shared_ptr<Impl> impl_;
+
+        class Impl {
+          public:
+            virtual ~Impl() {}
+            virtual Real getValue(const Array &a,
+                                  int i) = 0;
+        };
+
+        class ArrayImpl : public Impl {
+          private:
+            Array intrinsicValues_;
+          public:
+            explicit ArrayImpl(const Array &a)
+            : intrinsicValues_(a) {}
+
+            Real getValue(const Array&, int i) {
+                return intrinsicValues_[i];
+            }
+        };
+
+        class PayoffImpl : public Impl {
+          private:
+            ext::shared_ptr<const Payoff> payoff_;
+          public:
+            PayoffImpl(Option::Type type, Real strike)
+            : payoff_(new PlainVanillaPayoff(type, strike)) {};
+            Real getValue(const Array &a,
+                          int i) {
+                return (*payoff_)(std::exp(a[i]));
+            }
+        };
     };
 }
 

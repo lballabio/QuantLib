@@ -30,7 +30,7 @@ namespace QuantLib {
         updatesDeferred_ = false;
 
         // if there are outstanding deferred updates, do the notification
-        if (deferredObservers_.size()) {
+        if (!deferredObservers_.empty()) {
             bool successful = true;
             std::string errMsg;
 
@@ -59,8 +59,7 @@ namespace QuantLib {
             // if updates are only deferred, flag this for later notification
             // these are held centrally by the settings singleton
             settings_.registerDeferredObservers(observers_);
-        }
-        else if (observers_.size()) {
+        } else if (!observers_.empty()) {
             bool successful = true;
             std::string errMsg;
             for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
@@ -96,7 +95,9 @@ namespace QuantLib {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#include <boost/bind.hpp>
+
+#include <boost/bind/bind.hpp>
+
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif

@@ -27,7 +27,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace covariance_test {
 
     Real norm(const Matrix& m) {
         Real sum = 0.0;
@@ -43,6 +43,8 @@ namespace {
 void CovarianceTest::testRankReduction() {
 
     BOOST_TEST_MESSAGE("Testing matrix rank reduction salvaging algorithms...");
+
+    using namespace covariance_test;
 
     Real expected, calculated;
 
@@ -100,6 +102,8 @@ void CovarianceTest::testSalvagingMatrix() {
 
     BOOST_TEST_MESSAGE("Testing positive semi-definiteness salvaging "
                        "algorithms...");
+
+    using namespace covariance_test;
 
     Real expected, calculated;
 

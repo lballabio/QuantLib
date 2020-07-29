@@ -579,7 +579,7 @@ int main(int argc, char *argv[]) {
 
         std::vector<Date> markovStepDates(exerciseDates.begin(),
                                           exerciseDates.end());
-        std::vector<Date> cmsFixingDates(markovStepDates);
+        const std::vector<Date>& cmsFixingDates(markovStepDates);
         std::vector<Real> markovSigmas(markovStepDates.size() + 1, 0.01);
         std::vector<Period> tenors(cmsFixingDates.size(), 10 * Years);
         ext::shared_ptr<MarkovFunctional> markov =

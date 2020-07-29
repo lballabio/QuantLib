@@ -6,7 +6,7 @@
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
- Copyright (C) 2003 Nicolas Di Césaré
+ Copyright (C) 2003 Nicolas Di CÃ©sarÃ©
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,10 +60,10 @@ namespace QuantLib {
 
     void FloatingRateCoupon::setPricer(
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        if (pricer_)
+        if (pricer_ != 0)
             unregisterWith(pricer_);
         pricer_ = pricer;
-        if (pricer_)
+        if (pricer_ != 0)
             registerWith(pricer_);
         update();
     }

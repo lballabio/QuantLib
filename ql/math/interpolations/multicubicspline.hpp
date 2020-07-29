@@ -134,12 +134,8 @@ namespace QuantLib {
             operator data_type() const {
                 return first;
             }
-            data_type operator[](Size n) const {
-                return n ? second[n - 1] : first;
-            }
-            data_type& operator[](Size n) {
-                return n ? second[n - 1] : first;
-            }
+            data_type operator[](Size n) const { return n != 0U ? second[n - 1] : first; }
+            data_type& operator[](Size n) { return n != 0U ? second[n - 1] : first; }
             data_type first;
             Y second;
         };
@@ -252,7 +248,7 @@ namespace QuantLib {
                     (v[k] = (u += d[j] * v[j])) /= t;
                 }
                 y2[0] = y2[dim] = 0.0;
-                while (k) {
+                while (k != 0U) {
                     (y2[k-1] *= y2[l-1]) += v[k-1];
                     --k; --l;
                 }
@@ -520,7 +516,8 @@ namespace QuantLib {
                 y[j].swap(tmp2);
                 for(; k < dim; ++k) {
                     if((x[j][k] = v[k + 1] - v[k]) <= 0.0) break;
-                    if(k) y[j][k - 1] = 2.0 * (v[k + 1] - v[k - 1]);
+                    if (k != 0U)
+                        y[j][k - 1] = 2.0 * (v[k + 1] - v[k - 1]);
                 }
             }
             QL_REQUIRE(dim >= 3,

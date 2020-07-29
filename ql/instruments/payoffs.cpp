@@ -63,6 +63,17 @@ namespace QuantLib {
         QL_FAIL("floating payoff not handled");
     }
 
+    Real FloatingTypePayoff::operator()(Real price, Real strike) const {
+        switch (type_) {
+            case Option::Call:
+                return std::max<Real>(price - strike,0.0);
+            case Option::Put:
+                return std::max<Real>(strike - price,0.0);
+            default:
+                QL_FAIL("unknown/illegal option type");
+        }
+    }
+
     std::string StrikedTypePayoff::description() const {
         std::ostringstream result;
         result << TypePayoff::description() << ", " <<

@@ -123,7 +123,6 @@ namespace QuantLib {
                                 Frequency frequency,
                                 Real bump=2e-4);
         //@}
-        virtual void setupArguments(PricingEngine::arguments*) const {}
 
       protected:
         CallableBond(Natural settlementDays,
@@ -221,7 +220,7 @@ namespace QuantLib {
                               const CallabilitySchedule& putCallSchedule
                                                       = CallabilitySchedule());
 
-        virtual void setupArguments(PricingEngine::arguments* args) const;
+        void setupArguments(PricingEngine::arguments* args) const;
 
       private:
         //! accrued interest used internally, where includeToday = false

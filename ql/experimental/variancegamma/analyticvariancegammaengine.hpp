@@ -37,7 +37,7 @@ namespace QuantLib {
     */
     class VarianceGammaEngine : public VanillaOption::engine {
     public:
-        VarianceGammaEngine(
+        explicit VarianceGammaEngine(
             const ext::shared_ptr<VarianceGammaProcess>&,
             Real absoluteError = 1e-5);
         void calculate() const;

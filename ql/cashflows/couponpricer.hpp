@@ -94,13 +94,11 @@ namespace QuantLib {
       public:
         enum TimingAdjustment { Black76, BivariateLognormal };
         BlackIborCouponPricer(
-            const Handle<OptionletVolatilityStructure>& v =
-                Handle<OptionletVolatilityStructure>(),
+            const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
-            const Handle<Quote> correlation =
+            const Handle<Quote>& correlation =
                 Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))))
-            : IborCouponPricer(v), timingAdjustment_(timingAdjustment),
-              correlation_(correlation) {
+        : IborCouponPricer(v), timingAdjustment_(timingAdjustment), correlation_(correlation) {
             QL_REQUIRE(timingAdjustment_ == Black76 ||
                            timingAdjustment_ == BivariateLognormal,
                        "unknown timing adjustment (code " << timingAdjustment_

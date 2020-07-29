@@ -64,7 +64,7 @@ namespace QuantLib {
             || ((d == 26 || (d == 27 && w == Monday))
                 && m == December)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

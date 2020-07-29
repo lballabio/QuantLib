@@ -58,7 +58,7 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace {
+namespace inflation_capfloored_coupon_test {
     struct Datum {
         Date date;
         Rate rate;
@@ -193,7 +193,7 @@ namespace {
                             new PiecewiseYoYInflationCurve<Linear>(
                                 evaluationDate, calendar, dc, observationLag,
                                 iir->frequency(),iir->interpolated(), baseYYRate,
-                                Handle<YieldTermStructure>(nominalTS), helpers));
+                                helpers));
             pYYTS->recalculate();
             yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
@@ -203,9 +203,10 @@ namespace {
         }
 
         // utilities
-        Leg makeYoYLeg(const Date& startDate, Integer length,
+        Leg makeYoYLeg(const Date& startDate,
+                       Integer length,
                        const Rate gearing = 1.0,
-                       const Rate spread = 0.0) {
+                       const Rate spread = 0.0) const {
             ext::shared_ptr<YoYInflationIndex> ii =
             ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
@@ -216,16 +217,19 @@ namespace {
             std::vector<Rate> gearingVector(length, gearing);
             std::vector<Spread> spreadVector(length, spread);
 
-            return yoyInflationLeg(schedule, calendar, ii, observationLag)
+            Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withGearings(gearingVector)
             .withSpreads(spreadVector)
             .withPaymentAdjustment(convention);
+
+            setCouponPricer(yoyLeg, ext::make_shared<YoYInflationCouponPricer>(nominalTS));
+
+            return yoyLeg;
         }
 
-        Leg makeFixedLeg(const Date& startDate,
-                         Integer length) {
+        Leg makeFixedLeg(const Date& startDate, Integer length) const {
 
             Date endDate = calendar.advance(startDate, length, Years,
                                             convention);
@@ -239,13 +243,14 @@ namespace {
         }
 
 
-        Leg makeYoYCapFlooredLeg(Size which, const Date& startDate,
-                              Integer length,
-                              const std::vector<Rate>& caps,
-                              const std::vector<Rate>& floors,
-                              Volatility volatility,
-                              const Rate gearing = 1.0,
-                              const Rate spread = 0.0) {
+        Leg makeYoYCapFlooredLeg(Size which,
+                                 const Date& startDate,
+                                 Integer length,
+                                 const std::vector<Rate>& caps,
+                                 const std::vector<Rate>& floors,
+                                 Volatility volatility,
+                                 const Rate gearing = 1.0,
+                                 const Rate spread = 0.0) const {
 
             Handle<YoYOptionletVolatilitySurface>
             vol(ext::make_shared<ConstantYoYOptionletVolatility>(
@@ -298,17 +303,14 @@ namespace {
             .withCaps(caps)
             .withFloors(floors);
 
-            for(Size i=0; i<yoyLeg.size(); i++) {
-                ext::dynamic_pointer_cast<YoYInflationCoupon>(yoyLeg[i])->setPricer(pricer);
-            }
-
-
+            setCouponPricer(yoyLeg, pricer);
             //setCouponPricer(iborLeg, pricer);
+
             return yoyLeg;
         }
 
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) const {
 
             ext::shared_ptr<YoYInflationIndex>
             yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
@@ -349,10 +351,10 @@ namespace {
 
 
         ext::shared_ptr<YoYInflationCapFloor> makeYoYCapFloor(YoYInflationCapFloor::Type type,
-                                                                const Leg& leg,
-                                                                Rate strike,
-                                                                Volatility volatility,
-                                                                Size which) {
+                                                              const Leg& leg,
+                                                              Rate strike,
+                                                              Volatility volatility,
+                                                              Size which) const {
             ext::shared_ptr<YoYInflationCapFloor> result;
             switch (type) {
                 case YoYInflationCapFloor::Cap:
@@ -369,7 +371,6 @@ namespace {
             result->setPricingEngine(makeEngine(volatility, which));
             return result;
         }
-
     };
 
 }
@@ -379,6 +380,8 @@ namespace {
 void InflationCapFlooredCouponTest::testDecomposition() {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
+
+    using namespace inflation_capfloored_coupon_test;
 
     CommonVars vars;
 
@@ -697,6 +700,8 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
     BOOST_TEST_MESSAGE("Testing inflation capped/floored coupon against"
                        " inflation capfloor instrument...");
 
+    using namespace inflation_capfloored_coupon_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -747,6 +752,7 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
+                    setCouponPricer(swap.yoyLeg(), ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from,
                                                          lengths[i],

@@ -270,13 +270,11 @@ void NormalCLVModelTest::testIllustrative1DExample() {
     }
 }
 
-namespace {
+namespace normal_clv_model_test {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
-        CLVModelPayoff(Option::Type type, Real strike,
-                             const ext::function<Real(Real)> g)
-        : PlainVanillaPayoff(type, strike),
-          g_(g) { }
+        CLVModelPayoff(Option::Type type, Real strike, const ext::function<Real(Real)>& g)
+        : PlainVanillaPayoff(type, strike), g_(g) {}
 
         Real operator()(Real x) const {
             return PlainVanillaPayoff::operator()(g_(x));
@@ -291,6 +289,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
     using namespace ext::placeholders;
+    using namespace normal_clv_model_test;
 
     SavedSettings backup;
 

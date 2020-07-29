@@ -228,7 +228,7 @@ namespace QuantLib {
                 ext::shared_ptr<SoftCallability> softCall =
                     ext::dynamic_pointer_cast<SoftCallability>(
                                                              callability_[i]);
-                if (softCall)
+                if (softCall != 0)
                     moreArgs->callabilityTriggers.push_back(
                                                          softCall->trigger());
                 else

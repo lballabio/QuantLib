@@ -48,11 +48,9 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ForwardRateStructure(
-            const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
-        ForwardRateStructure(
+        explicit ForwardRateStructure(
+            const DayCounter& dayCounter = DayCounter());
+        explicit ForwardRateStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),
@@ -63,6 +61,16 @@ namespace QuantLib {
             const Calendar& cal,
             const DayCounter& dayCounter = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
+
+        /*! \deprecated Passing jumps without a reference date never worked correctly.
+                        Use one of the other constructors instead.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        ForwardRateStructure(
+            const DayCounter& dayCounter,
+            const std::vector<Handle<Quote> >& jumps,
             const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
       protected:

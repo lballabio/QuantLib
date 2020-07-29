@@ -39,19 +39,19 @@ namespace QuantLib {
     namespace ext {
 
         #if defined(QL_USE_STD_SHARED_PTR)
-        using std::shared_ptr;
-        using std::weak_ptr;
-        using std::make_shared;
-        using std::static_pointer_cast;
-        using std::dynamic_pointer_cast;
-        using std::enable_shared_from_this;
+        using std::shared_ptr;                   // NOLINT(misc-unused-using-decls)
+        using std::weak_ptr;                     // NOLINT(misc-unused-using-decls)
+        using std::make_shared;                  // NOLINT(misc-unused-using-decls)
+        using std::static_pointer_cast;          // NOLINT(misc-unused-using-decls)
+        using std::dynamic_pointer_cast;         // NOLINT(misc-unused-using-decls)
+        using std::enable_shared_from_this;      // NOLINT(misc-unused-using-decls)
         #else
-        using boost::shared_ptr;
-        using boost::weak_ptr;
-        using boost::make_shared;
-        using boost::static_pointer_cast;
-        using boost::dynamic_pointer_cast;
-        using boost::enable_shared_from_this;
+        using boost::shared_ptr;                 // NOLINT(misc-unused-using-decls)
+        using boost::weak_ptr;                   // NOLINT(misc-unused-using-decls)
+        using boost::make_shared;                // NOLINT(misc-unused-using-decls)
+        using boost::static_pointer_cast;        // NOLINT(misc-unused-using-decls)
+        using boost::dynamic_pointer_cast;       // NOLINT(misc-unused-using-decls)
+        using boost::enable_shared_from_this;    // NOLINT(misc-unused-using-decls)
         #endif
 
     }

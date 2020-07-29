@@ -22,41 +22,39 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
-using std::fabs;
 using std::sqrt;
 
 namespace QuantLib {
 
-Gaussian1dSmileSection::Gaussian1dSmileSection(
-    const Date &fixingDate, const ext::shared_ptr<SwapIndex> &swapIndex,
-    const ext::shared_ptr<Gaussian1dModel> &model,
-    const DayCounter &dc,
-    const ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine)
+    Gaussian1dSmileSection::Gaussian1dSmileSection(
+        const Date& fixingDate,
+        const ext::shared_ptr<SwapIndex>& swapIndex,
+        const ext::shared_ptr<Gaussian1dModel>& model,
+        const DayCounter& dc,
+        const ext::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine)
     : SmileSection(fixingDate, dc, model->termStructure()->referenceDate()),
-      fixingDate_(fixingDate), swapIndex_(swapIndex),
-      iborIndex_(ext::shared_ptr<IborIndex>()), model_(model),
-      engine_(swaptionEngine) {
+      fixingDate_(fixingDate), swapIndex_(swapIndex), iborIndex_(ext::shared_ptr<IborIndex>()),
+      model_(model), engine_(swaptionEngine) {
 
-    atm_ = model_->swapRate(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0,
-                            swapIndex_);
-    annuity_ = model_->swapAnnuity(fixingDate_, swapIndex_->tenor(),
-                                   Null<Date>(), 0.0, swapIndex_);
+        atm_ = model_->swapRate(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0, swapIndex_);
+        annuity_ =
+            model_->swapAnnuity(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0, swapIndex_);
 
-    if (engine_ == NULL) {
-        engine_ = ext::make_shared<Gaussian1dSwaptionEngine>(
-            model_, 64, 7.0, true, false,
-            swapIndex_->discountingTermStructure());
-    }
+        if (engine_ == NULL) {
+            engine_ = ext::make_shared<Gaussian1dSwaptionEngine>(
+                model_, 64, 7.0, true, false, swapIndex_->discountingTermStructure());
+        }
 }
 
 Gaussian1dSmileSection::Gaussian1dSmileSection(
-    const Date &fixingDate, const ext::shared_ptr<IborIndex> &iborIndex,
-    const ext::shared_ptr<Gaussian1dModel> &model,
-    const DayCounter &dc,
-    const ext::shared_ptr<Gaussian1dCapFloorEngine> capEngine)
-    : SmileSection(fixingDate, dc, model->termStructure()->referenceDate()),
-      fixingDate_(fixingDate), swapIndex_(ext::shared_ptr<SwapIndex>()),
-      iborIndex_(iborIndex), model_(model), engine_(capEngine) {
+    const Date& fixingDate,
+    const ext::shared_ptr<IborIndex>& iborIndex,
+    const ext::shared_ptr<Gaussian1dModel>& model,
+    const DayCounter& dc,
+    const ext::shared_ptr<Gaussian1dCapFloorEngine>& capEngine)
+: SmileSection(fixingDate, dc, model->termStructure()->referenceDate()), fixingDate_(fixingDate),
+  swapIndex_(ext::shared_ptr<SwapIndex>()), iborIndex_(iborIndex), model_(model),
+  engine_(capEngine) {
 
     atm_ = model_->forwardRate(fixingDate_, Null<Date>(), 0.0, iborIndex_);
     CapFloor c = MakeCapFloor(CapFloor::Cap, iborIndex_->tenor(), iborIndex_,

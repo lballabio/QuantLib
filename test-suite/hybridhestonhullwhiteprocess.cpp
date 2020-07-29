@@ -713,7 +713,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     Real antitheticPayoff=0;
     const Size nrTrails = 40000;
     for (Size i=0; i < nrTrails; ++i) {
-        const bool antithetic = (i%2)==0 ? false : true;
+        const bool antithetic = (i % 2) != 0;
 
         sample_type path = antithetic ? generator.antithetic()
                                       : generator.next();
@@ -937,7 +937,7 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
 }
 
 
-namespace {
+namespace hybrid_heston_hullwhite_process_test {
 
     struct HestonModelData {
         const char* const name;
@@ -1032,6 +1032,8 @@ namespace {
 void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
     BOOST_TEST_MESSAGE("Testing convergence speed of Heston-Hull-White engine...");
 
+    using namespace hybrid_heston_hullwhite_process_test;
+
     SavedSettings backup;
 
     Date today(27, December, 2004);
@@ -1097,7 +1099,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                     option->setPricingEngine(fdEngine);
                     Real calculated = option->NPV();
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes);
+                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
                 }
 
                 if (controlVariate[i] && tolWithCV[l] < avgPriceDiff) {
@@ -1121,6 +1123,8 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
 
 void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
     BOOST_TEST_MESSAGE("Testing spatial convergence speed of Heston engine...");
+
+    using namespace hybrid_heston_hullwhite_process_test;
 
     SavedSettings backup;
 
@@ -1165,7 +1169,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                     Real calculated = option->NPV();
 
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes);
+                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
                 }
 
                 if (avgPriceDiff > tol[i]) {
@@ -1183,7 +1187,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
 
 
 
-namespace {
+namespace hybrid_heston_hullwhite_process_test {
     class HestonHullWhiteCorrelationConstraint : public Constraint {
       private:
         class Impl : public Constraint::Impl {
@@ -1212,6 +1216,8 @@ namespace {
 
 void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     BOOST_TEST_MESSAGE("Testing the Heston Hull-White calibration...");
+
+    using namespace hybrid_heston_hullwhite_process_test;
 
     // Calibration of a hybrid Heston-Hull-White model using
     // the finite difference HestonHullWhite pricing engine
@@ -1303,7 +1309,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             // for the full Heston-Hull-White calibration
             ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
             ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                detail::ImpliedVolatilityHelper::clone(
+                QuantLib::detail::ImpliedVolatilityHelper::clone(
                     ext::make_shared<GeneralizedBlackScholesProcess>(
 
                             s0, qTS, rTS, Handle<BlackVolTermStructure>(
@@ -1316,7 +1322,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
                 new AnalyticBSMHullWhiteEngine(equityShortRateCorr,
                                                bsProcess, hullWhiteModel));
 
-            Volatility vt = detail::ImpliedVolatilityHelper::calculate(
+            Volatility vt = QuantLib::detail::ImpliedVolatilityHelper::calculate(
                 dummyOption, *bshwEngine, *volQuote,
                 marketValue, 1e-8, 100, 0.0001, 10);
 

@@ -89,16 +89,15 @@ namespace QuantLib {
     FdmBackwardSolver::FdmBackwardSolver(
         const ext::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet,
-        const ext::shared_ptr<FdmStepConditionComposite> condition,
+        const ext::shared_ptr<FdmStepConditionComposite>& condition,
         const FdmSchemeDesc& schemeDesc)
     : map_(map), bcSet_(bcSet),
-      condition_((condition) ? condition 
-                             : ext::make_shared<FdmStepConditionComposite>(
-                                     std::list<std::vector<Time> >(),
-                                     FdmStepConditionComposite::Conditions())),
-      schemeDesc_(schemeDesc) {
-     }
-        
+      condition_((condition) != 0 ?
+                     condition :
+                     ext::make_shared<FdmStepConditionComposite>(
+                         std::list<std::vector<Time> >(), FdmStepConditionComposite::Conditions())),
+      schemeDesc_(schemeDesc) {}
+
     void FdmBackwardSolver::rollback(FdmBackwardSolver::array_type& rhs, 
                                      Time from, Time to,
                                      Size steps, Size dampingSteps) {
@@ -106,16 +105,15 @@ namespace QuantLib {
         const Time deltaT = from - to;
         const Size allSteps = steps + dampingSteps;
         const Time dampingTo = from - (deltaT*dampingSteps)/allSteps;
-                    
-        if (   dampingSteps 
-            && schemeDesc_.type != FdmSchemeDesc::ImplicitEulerType) {
+
+        if ((dampingSteps != 0U) && schemeDesc_.type != FdmSchemeDesc::ImplicitEulerType) {
             ImplicitEulerScheme implicitEvolver(map_, bcSet_);    
             FiniteDifferenceModel<ImplicitEulerScheme> 
                     dampingModel(implicitEvolver, condition_->stoppingTimes());
             dampingModel.rollback(rhs, from, dampingTo, 
                                   dampingSteps, *condition_);
         }
-        
+
         switch (schemeDesc_.type) {
           case FdmSchemeDesc::HundsdorferType:
             {

@@ -49,7 +49,7 @@ namespace QuantLib {
             const Real u = mesher_->location(iter, direction_);
 
             Real f = 0;
-            if (shape_) {
+            if (shape_ != 0) {
                 f = std::lower_bound(shape_->begin(), shape_->end(),
                    std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
             }

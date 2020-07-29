@@ -35,17 +35,16 @@ namespace QuantLib {
     //! %Abcd-interpolated volatility structure
     class AbcdVol : public MarketModel {
       public:
-        AbcdVol(
-            Real a,
-            Real b,
-            Real c,
-            Real d,
-            const std::vector<Real>& ks,
-            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const EvolutionDescription& evolution,
-            const Size numberOfFactors,
-            const std::vector<Rate>& initialRates,
-            const std::vector<Spread>& displacements);
+        AbcdVol(Real a,
+                Real b,
+                Real c,
+                Real d,
+                const std::vector<Real>& ks,
+                const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+                const EvolutionDescription& evolution,
+                Size numberOfFactors,
+                const std::vector<Rate>& initialRates,
+                const std::vector<Spread>& displacements);
         //! \name MarketModel interface
         //@{
         const std::vector<Rate>& initialRates() const;

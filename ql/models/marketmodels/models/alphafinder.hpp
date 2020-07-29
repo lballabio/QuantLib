@@ -28,7 +28,7 @@ namespace QuantLib {
 
     class AlphaFinder {
       public:
-        AlphaFinder(ext::shared_ptr<AlphaForm> parametricform);
+        AlphaFinder(const ext::shared_ptr<AlphaForm>& parametricform);
 
         bool solve(Real alpha0,
                    Integer stepindex,

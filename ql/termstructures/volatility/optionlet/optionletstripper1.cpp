@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007, 2008 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Michael von den Driesch
@@ -34,14 +34,18 @@
 
 namespace QuantLib {
 
-OptionletStripper1::OptionletStripper1(
-    const ext::shared_ptr< CapFloorTermVolSurface > &termVolSurface,
-    const ext::shared_ptr< IborIndex > &index, Rate switchStrike, Real accuracy,
-    Natural maxIter, const Handle< YieldTermStructure > &discount,
-    const VolatilityType type, const Real displacement, bool dontThrow)
+    OptionletStripper1::OptionletStripper1(
+        const ext::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+        const ext::shared_ptr<IborIndex>& index,
+        Rate switchStrike,
+        Real accuracy,
+        Natural maxIter,
+        const Handle<YieldTermStructure>& discount,
+        const VolatilityType type,
+        const Real displacement,
+        bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
-      floatingSwitchStrike_(switchStrike == Null< Rate >() ? true : false),
-      switchStrike_(switchStrike),
+      floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);

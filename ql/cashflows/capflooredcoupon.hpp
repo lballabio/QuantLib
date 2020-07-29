@@ -88,9 +88,9 @@ namespace QuantLib {
         void setPricer(
                    const ext::shared_ptr<FloatingRateCouponPricer>& pricer);
 
-        const ext::shared_ptr<FloatingRateCoupon> underlying() { return underlying_; }
+        ext::shared_ptr<FloatingRateCoupon> underlying() { return underlying_; }
 
-    protected:
+      protected:
         // data
         ext::shared_ptr<FloatingRateCoupon> underlying_;
         bool isCapped_, isFloored_;

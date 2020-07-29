@@ -73,7 +73,7 @@ namespace QuantLib {
           intermediateCapitalExchange_(intermediateCapitalExchange),
           finalCapitalExchange_(finalCapitalExchange) {
 
-        if (paymentConvention)
+        if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
@@ -99,7 +99,7 @@ namespace QuantLib {
           intermediateCapitalExchange_(intermediateCapitalExchange),
           finalCapitalExchange_(finalCapitalExchange) {
 
-        if (paymentConvention)
+        if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
@@ -226,7 +226,7 @@ namespace QuantLib {
         NonstandardSwap::arguments *arguments =
             dynamic_cast<NonstandardSwap::arguments *>(args);
 
-        if (!arguments)
+        if (arguments == 0)
             return; // swap engine ...
 
         arguments->type = type_;
@@ -245,7 +245,7 @@ namespace QuantLib {
         for (Size i = 0; i < fixedCoupons.size(); ++i) {
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
-            if (coupon) {
+            if (coupon != 0) {
                 arguments->fixedPayDates[i] = coupon->date();
                 arguments->fixedResetDates[i] = coupon->accrualStartDate();
                 arguments->fixedCoupons[i] = coupon->amount();
@@ -285,7 +285,7 @@ namespace QuantLib {
         for (Size i = 0; i < floatingCoupons.size(); ++i) {
             ext::shared_ptr<IborCoupon> coupon =
                 ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
-            if (coupon) {
+            if (coupon != 0) {
                 arguments->floatingResetDates[i] = coupon->accrualStartDate();
                 arguments->floatingPayDates[i] = coupon->date();
                 arguments->floatingFixingDates[i] = coupon->fixingDate();

@@ -57,7 +57,7 @@ namespace QuantLib {
                 const Calendar& paymentCalendar = Calendar(),
                 const Period& exCouponPeriod = Period(),
                 const Calendar& exCouponCalendar = Calendar(),
-                const BusinessDayConvention exCouponConvention = Unadjusted,
+                BusinessDayConvention exCouponConvention = Unadjusted,
                 bool exCouponEndOfMonth = false);
 
         Frequency frequency() const { return frequency_; }

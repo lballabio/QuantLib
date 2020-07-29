@@ -44,7 +44,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace capfloor_test {
 
     struct CommonVars {
         // common data
@@ -78,7 +78,7 @@ namespace {
         }
 
         // utilities
-        Leg makeLeg(const Date& startDate, Integer length) {
+        Leg makeLeg(const Date& startDate, Integer length) const {
             Date endDate = calendar.advance(startDate,length*Years,convention);
             Schedule schedule(startDate, endDate, Period(frequency), calendar,
                               convention, convention,
@@ -90,14 +90,14 @@ namespace {
                 .withFixingDays(fixingDays);
         }
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
             Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
             return ext::shared_ptr<PricingEngine>(
                                 new BlackCapFloorEngine(termStructure, vol));
         }
 
-        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) {
+        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
             Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
             return ext::shared_ptr<PricingEngine>(
@@ -105,10 +105,10 @@ namespace {
         }
 
         ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                                 const Leg& leg,
-                                                 Rate strike,
-                                                 Volatility volatility,
-                                                 bool isLogNormal = true) {
+                                               const Leg& leg,
+                                               Rate strike,
+                                               Volatility volatility,
+                                               bool isLogNormal = true) const {
             ext::shared_ptr<CapFloor> result;
             switch (type) {
               case CapFloor::Cap:
@@ -129,7 +129,6 @@ namespace {
             }
             return result;
         }
-
     };
 
     bool checkAbsError(Real x1, Real x2, Real tolerance){
@@ -155,6 +154,8 @@ namespace {
 void CapFloorTest::testVega() {
 
     BOOST_TEST_MESSAGE("Testing cap/floor vega...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -210,6 +211,8 @@ void CapFloorTest::testVega() {
 void CapFloorTest::testStrikeDependency() {
 
     BOOST_TEST_MESSAGE("Testing cap/floor dependency on strike...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -272,6 +275,8 @@ void CapFloorTest::testStrikeDependency() {
 void CapFloorTest::testConsistency() {
 
     BOOST_TEST_MESSAGE("Testing consistency between cap, floor and collar...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -387,6 +392,8 @@ void CapFloorTest::testParity() {
 
     BOOST_TEST_MESSAGE("Testing cap/floor parity...");
 
+    using namespace capfloor_test;
+
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -437,6 +444,8 @@ void CapFloorTest::testParity() {
 void CapFloorTest::testATMRate() {
 
     BOOST_TEST_MESSAGE("Testing cap/floor ATM rate...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -499,6 +508,8 @@ void CapFloorTest::testATMRate() {
 void CapFloorTest::testImpliedVolatility() {
 
     BOOST_TEST_MESSAGE("Testing implied term volatility for cap and floor...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -588,6 +599,8 @@ void CapFloorTest::testCachedValue() {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price against cached values...");
 
+    using namespace capfloor_test;
+
     CommonVars vars;
 
     Date cachedToday(14,March,2002),
@@ -631,6 +644,8 @@ void CapFloorTest::testCachedValue() {
 void CapFloorTest::testCachedValueFromOptionLets() {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price as a sum of optionlets prices against cached values...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -698,6 +713,8 @@ void CapFloorTest::testCachedValueFromOptionLets() {
 void CapFloorTest::testOptionLetsDelta() {
 
     BOOST_TEST_MESSAGE("Testing Black caplet/floorlet delta coefficients against finite difference values...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -819,6 +836,8 @@ void CapFloorTest::testOptionLetsDelta() {
 void CapFloorTest::testBachelierOptionLetsDelta() {
 
     BOOST_TEST_MESSAGE("Testing Bachelier caplet/floorlet delta coefficients against finite difference values...");
+
+    using namespace capfloor_test;
 
     CommonVars vars;
 

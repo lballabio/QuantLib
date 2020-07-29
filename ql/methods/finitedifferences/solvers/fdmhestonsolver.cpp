@@ -4,7 +4,7 @@
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
  Copyright (C) 2008, 2009, 2011, 2014, 2015 Klaus Spanderen
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,12 +32,14 @@ namespace QuantLib {
         const FdmSolverDesc& solverDesc,
         const FdmSchemeDesc& schemeDesc,
         const Handle<FdmQuantoHelper>& quantoHelper,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+        const Real mixingFactor)
     : process_(process),
       solverDesc_(solverDesc),
       schemeDesc_(schemeDesc),
       quantoHelper_(quantoHelper),
-      leverageFct_(leverageFct){
+      leverageFct_(leverageFct),
+      mixingFactor_(mixingFactor) {
 
         registerWith(process_);
         registerWith(quantoHelper_);
@@ -49,7 +51,7 @@ namespace QuantLib {
                 solverDesc_.mesher, process_.currentLink(),
                 (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
                              : ext::shared_ptr<FdmQuantoHelper>(),
-                leverageFct_));
+                leverageFct_, mixingFactor_));
 
         solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }

@@ -268,7 +268,7 @@ namespace QuantLib
                 newPoint[i] = lower_[i] - 1.0;
                 while (newPoint[i] < lower_[i] || newPoint[i] > upper_[i]) {
                     Real draw = uniform_();
-                    Real sign = (0.5 < draw) - (draw < 0.5);
+                    Real sign = static_cast<int>(0.5 < draw) - static_cast<int>(draw < 0.5);
                     Real y = sign*temp[i] * (std::pow(1.0 + 1.0 / temp[i],
                                                       std::abs(2 * draw - 1.0)) - 1.0);
                     newPoint[i] = currentPoint[i] + y*(upper_[i] - lower_[i]);
@@ -454,7 +454,7 @@ namespace QuantLib
             functionTol_(functionTol), N_(dimension), bound_(false),
             lower_(lower), upper_(upper), initialTemp_(dimension, initialTemp),
             bounded_(dimension, 1.0) {
-            if (lower.size() > 0 && upper.size() > 0) {
+            if (!lower.empty() && !upper.empty()) {
                 QL_REQUIRE(lower.size() == N_, "Incompatible input");
                 QL_REQUIRE(upper.size() == N_, "Incompatible input");
                 bound_ = true;

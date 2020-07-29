@@ -31,7 +31,9 @@
 #include <sstream>
 
 namespace {
-QuantLib::Real secondElement(const std::pair< QuantLib::Date, QuantLib::Real > &p) { return p.second; }
+    inline QuantLib::Real secondElement(const std::pair<QuantLib::Date, QuantLib::Real>& p) {
+        return p.second;
+    }
 }
 
 namespace QuantLib {

@@ -78,7 +78,7 @@ namespace QuantLib {
             IndexManager::instance().setHistory(tag, quotes_);
         }
 
-        void clearQuotes();
+        void clearQuotes() const;
         //! returns TRUE if the quote date is valid
         bool isValidQuoteDate(const Date& quoteDate) const;
         bool empty() const;
@@ -192,7 +192,7 @@ namespace QuantLib {
         IndexManager::instance().setHistory(tag, quotes_);
     }
 
-    inline void CommodityIndex::clearQuotes() {
+    inline void CommodityIndex::clearQuotes() const {
         IndexManager::instance().clearHistory(name());
     }
 

@@ -63,12 +63,10 @@ namespace QuantLib {
         } CalibrationBasketType;
 
         Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
-        calibrationBasket(
-            const ext::shared_ptr<Exercise> &exercise,
-            ext::shared_ptr<SwapIndex> standardSwapBase,
-            ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
-            const CalibrationBasketType basketType =
-                MaturityStrikeByDeltaGamma) const;
+        calibrationBasket(const ext::shared_ptr<Exercise>& exercise,
+                          const ext::shared_ptr<SwapIndex>& standardSwapBase,
+                          const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
+                          CalibrationBasketType basketType = MaturityStrikeByDeltaGamma) const;
 
       protected:
 
@@ -86,8 +84,7 @@ namespace QuantLib {
 
         virtual ~BasketGeneratingEngine() {}
 
-        virtual Real underlyingNpv(const Date &expiry,
-                                   const Real y) const = 0;
+        virtual Real underlyingNpv(const Date& expiry, Real y) const = 0;
 
         virtual VanillaSwap::Type underlyingType() const = 0;
 
@@ -117,8 +114,11 @@ namespace QuantLib {
                   expiry_(expiry), maxMaturity_(maxMaturity), npv_(npv),
                   delta_(delta), gamma_(gamma), h_(h) {}
 
-            Real NPV(ext::shared_ptr<VanillaSwap> swap, Real fixedRate,
-                     Real nominal, Real y, int type) const {
+            Real NPV(const ext::shared_ptr<VanillaSwap>& swap,
+                     Real fixedRate,
+                     Real nominal,
+                     Real y,
+                     int type) const {
                 Real npv = 0.0;
                 for (Size i = 0; i < swap->fixedLeg().size(); i++) {
                     ext::shared_ptr<FixedRateCoupon> c =

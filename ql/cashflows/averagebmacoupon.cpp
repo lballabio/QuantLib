@@ -45,7 +45,7 @@ namespace QuantLib {
                      d1 = startDate,
                      d2 = startDate;
 
-                QL_REQUIRE (fixingDates.size() > 0, "fixing date list empty");
+                QL_REQUIRE(!fixingDates.empty(), "fixing date list empty");
                 QL_REQUIRE (index->valueDate(fixingDates.front()) <= startDate,
                             "first fixing date valid after period start");
                 QL_REQUIRE (index->valueDate(fixingDates.back()) >= endDate,
@@ -100,6 +100,12 @@ namespace QuantLib {
 
     }
 
+    namespace {
+    void adjustToPreviousValidFixingDate(Date& d, const ext::shared_ptr<BMAIndex>& index) {
+        while (!index->isValidFixingDate(d) && d > Date::minDate())
+            d--;
+    }
+    } // namespace
 
     AverageBMACoupon::AverageBMACoupon(const Date& paymentDate,
                                        Real nominal,
@@ -118,6 +124,13 @@ namespace QuantLib {
         Integer fixingDays = Integer(index->fixingDays());
         fixingDays += bmaCutoffDays;
         Date fixingStart = cal.advance(startDate, -fixingDays*Days, Preceding);
+
+        // make sure that the value date associated to fixingStart is <= startDate
+        adjustToPreviousValidFixingDate(fixingStart, index);
+        while (index->valueDate(fixingStart) > startDate && fixingStart > Date::minDate()) {
+            adjustToPreviousValidFixingDate(--fixingStart, index);
+        }
+
         fixingSchedule_ = index->fixingSchedule(fixingStart, endDate);
 
         setPricer(ext::shared_ptr<FloatingRateCouponPricer>(

@@ -41,7 +41,8 @@ namespace QuantLib {
       x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       externalLocalVolTS_(localVolTS),
-      forceDiscretization_(false), hasExternalLocalVol_(true), updated_(false) {
+      forceDiscretization_(false), hasExternalLocalVol_(true), updated_(false),
+      isStrikeIndependent_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -59,7 +60,8 @@ namespace QuantLib {
     : StochasticProcess1D(disc), x0_(x0), riskFreeRate_(riskFreeTS),
       dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       forceDiscretization_(forceDiscretization),
-      hasExternalLocalVol_(false), updated_(false) {
+      hasExternalLocalVol_(false), updated_(false),
+      isStrikeIndependent_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
@@ -187,7 +189,7 @@ namespace QuantLib {
             ext::shared_ptr<BlackConstantVol> constVol =
                 ext::dynamic_pointer_cast<BlackConstantVol>(
                                                           *blackVolatility());
-            if (constVol) {
+            if (constVol != 0) {
                 // ok, the local vol is constant too.
                 localVolatility_.linkTo(ext::make_shared<LocalConstantVol>(
                     constVol->referenceDate(),
@@ -201,7 +203,7 @@ namespace QuantLib {
             ext::shared_ptr<BlackVarianceCurve> volCurve =
                 ext::dynamic_pointer_cast<BlackVarianceCurve>(
                                                           *blackVolatility());
-            if (volCurve) {
+            if (volCurve != 0) {
                 // ok, we can use the optimized algorithm
                 localVolatility_.linkTo(ext::make_shared<LocalVolCurve>(
                     Handle<BlackVarianceCurve>(volCurve)));

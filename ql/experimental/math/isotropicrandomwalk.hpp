@@ -44,7 +44,7 @@ namespace QuantLib {
     class IsotropicRandomWalk {
       public:
         typedef boost::variate_generator<Engine, Distribution> VariateGenerator;
-        IsotropicRandomWalk(Engine eng, Distribution dist, Size dim, 
+        IsotropicRandomWalk(const Engine& eng, Distribution dist, Size dim,
                             const Array& weights = Array(), 
                             unsigned long seed = 0) :
             variate_(eng, dist), rng_(seed), 

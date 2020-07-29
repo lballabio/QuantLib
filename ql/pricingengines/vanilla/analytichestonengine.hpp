@@ -127,11 +127,15 @@ namespace QuantLib {
                                   Real spotPrice,
                                   Real strikePrice,
                                   Real term,
-                                  Real kappa, Real theta, Real sigma, Real v0, Real rho,
+                                  Real kappa,
+                                  Real theta,
+                                  Real sigma,
+                                  Real v0,
+                                  Real rho,
                                   const TypePayoff& type,
                                   const Integration& integration,
-                                  const ComplexLogFormula cpxLog,
-                                  const AnalyticHestonEngine* const enginePtr,
+                                  ComplexLogFormula cpxLog,
+                                  const AnalyticHestonEngine* enginePtr,
                                   Real& value,
                                   Size& evaluations);
 
@@ -183,7 +187,11 @@ namespace QuantLib {
 
         Real calculate(Real c_inf,
                        const ext::function<Real(Real)>& f,
-                       Real maxBound = Null<Real>()) const;
+                       const ext::function<Real()>& maxBound =
+                           ext::function<Real()>()) const;
+
+        Real calculate(Real c_inf,
+            const ext::function<Real(Real)>& f, Real maxBound) const;
 
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;

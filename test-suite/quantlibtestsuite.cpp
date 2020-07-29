@@ -115,6 +115,7 @@
 #include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
 #include "fdheston.hpp"
+#include "fdcir.hpp"
 #include "fdmlinearop.hpp"
 #include "fdcev.hpp"
 #include "fdsabr.hpp"
@@ -130,6 +131,7 @@
 #include "hestonslvmodel.hpp"
 #include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
+#include "indexes.hpp"
 #include "inflation.hpp"
 #include "inflationcapfloor.hpp"
 #include "inflationcapflooredcoupon.hpp"
@@ -403,6 +405,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite());
     test->add(FdCevTest::suite(speed));
+    test->add(FdCIRTest::suite(speed));
     test->add(FdSabrTest::suite(speed));
     test->add(FittedBondDiscountCurveTest::suite());
     test->add(ForwardOptionTest::suite());
@@ -414,6 +417,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(GsrTest::suite());
     test->add(HestonModelTest::suite(speed));
     test->add(HybridHestonHullWhiteProcessTest::suite(speed));
+    test->add(IndexTest::suite());
     test->add(InflationTest::suite());
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());

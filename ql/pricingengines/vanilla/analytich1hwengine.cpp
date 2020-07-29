@@ -126,12 +126,10 @@ namespace QuantLib {
         }
 
         const std::complex<Real> I4 =
-            -1.0/lambda_* std::complex<Real>(u*u, ((j_ == 1u)? -u : u))
-              *(  b/c*(1.0 - std::exp(-c*term_))
-                + a*term_
-                + a/lambda_*(std::exp(-lambda_*term_) - 1.0)
-                + b/(c-lambda_)*std::exp(-c*term_)
-                    *(1.0 - std::exp(-term_*(lambda_-c))) );
+            -1.0 / lambda_ * std::complex<Real>(u * u, ((j_ == 1U) ? -u : u)) *
+            (b / c * (1.0 - std::exp(-c * term_)) + a * term_ +
+             a / lambda_ * (std::exp(-lambda_ * term_) - 1.0) +
+             b / (c - lambda_) * std::exp(-c * term_) * (1.0 - std::exp(-term_ * (lambda_ - c))));
 
         return eta_*rhoSr_*I4;
     }

@@ -41,6 +41,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
     BOOST_ERROR(exerciseTypeToString(exercise) << " " \
@@ -826,7 +827,6 @@ void DividendOptionTest::testFdAmericanGreeks() {
         Date exDate = today + lengths[i]*Years;
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
         testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Spot);
-        testFdGreeks(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
     }
 }
 
@@ -1027,7 +1027,6 @@ void DividendOptionTest::testFdAmericanWithDividendToday() {
     ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
 
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
-    testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
 

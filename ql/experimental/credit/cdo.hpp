@@ -133,10 +133,10 @@ namespace QuantLib {
              Size nBuckets,
              const Period& integrationStep = Period(10, Years));
 
-        Real nominal() { return nominal_; }
-        Real lgd() { return lgd_; }
-        Real attachment () { return attachment_; }
-        Real detachment () { return detachment_; }
+        Real nominal() const { return nominal_; }
+        Real lgd() const { return lgd_; }
+        Real attachment() const { return attachment_; }
+        Real detachment() const { return detachment_; }
         std::vector<Real> nominals() { return nominals_; }
         Size size() { return basket_.size(); }
 

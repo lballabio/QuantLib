@@ -61,8 +61,7 @@ namespace {
 
             const Real logAlpha = std::log(alpha_);
 
-            SobolBrownianBridgeRsg rsg(2, timeSteps,
-                SobolBrownianGenerator::Diagonal, 12345u);
+            SobolBrownianBridgeRsg rsg(2, timeSteps, SobolBrownianGenerator::Diagonal, 12345U);
 
             GeneralStatistics stats;
 

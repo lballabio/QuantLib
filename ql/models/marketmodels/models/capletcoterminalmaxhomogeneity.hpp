@@ -40,21 +40,20 @@ namespace QuantLib {
 
         // actual calibration function
         static Natural capletMaxHomogeneityCalibration(
-                    const EvolutionDescription& evolution,
-                    const PiecewiseConstantCorrelation& corr,
-                    const std::vector<ext::shared_ptr<
-                        PiecewiseConstantVariance> >&
-                            displacedSwapVariances,
-                    const std::vector<Volatility>& capletVols,
-                    const CurveState& cs,
-                    const Spread displacement,
-                    Real caplet0Swaption1Priority, 
-                    Size numberOfFactors,
-                    Size maxIterations,
-                    Real tolerance,
-                    Real& deformationSize,
-                    Real& totalSwaptionError, // ?
-                    std::vector<Matrix>& swapCovariancePseudoRoots); // the thing we really want the pseudo root for each time step
+            const EvolutionDescription& evolution,
+            const PiecewiseConstantCorrelation& corr,
+            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
+            const std::vector<Volatility>& capletVols,
+            const CurveState& cs,
+            Spread displacement,
+            Real caplet0Swaption1Priority,
+            Size numberOfFactors,
+            Size maxIterations,
+            Real tolerance,
+            Real& deformationSize,
+            Real& totalSwaptionError,                        // ?
+            std::vector<Matrix>& swapCovariancePseudoRoots); // the thing we really want the pseudo
+                                                             // root for each time step
 
       private:
         Natural calibrationImpl_(Natural numberOfFactors, 

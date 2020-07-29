@@ -56,7 +56,6 @@ void BlackFormulaTest::testBachelierImpliedVol(){
             BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVol );
         }
     }
-    return;
 }
 
 void BlackFormulaTest::testChambersImpliedVol() {

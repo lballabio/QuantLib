@@ -46,23 +46,18 @@ namespace QuantLib {
                          const Schedule& schedule,
                          const ext::shared_ptr<IborIndex>& iborIndex,
                          const DayCounter& accrualDayCounter,
-                         BusinessDayConvention paymentConvention
-                                             = Following,
+                         BusinessDayConvention paymentConvention = Following,
                          Natural fixingDays = Null<Natural>(),
-                         const std::vector<Real>& gearings
-                                             = std::vector<Real>(1, 1.0),
-                         const std::vector<Spread>& spreads
-                                             = std::vector<Spread>(1, 0.0),
-                         const std::vector<Rate>& caps
-                                             = std::vector<Rate>(),
-                         const std::vector<Rate>& floors
-                                            = std::vector<Rate>(),
+                         const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
+                         const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
+                         const std::vector<Rate>& caps = std::vector<Rate>(),
+                         const std::vector<Rate>& floors = std::vector<Rate>(),
                          bool inArrears = false,
                          Real redemption = 100.0,
-                         const Date& issueDate = Date(),                         
+                         const Date& issueDate = Date(),
                          const Period& exCouponPeriod = Period(),
                          const Calendar& exCouponCalendar = Calendar(),
-                         const BusinessDayConvention exCouponConvention = Unadjusted,
+                         BusinessDayConvention exCouponConvention = Unadjusted,
                          bool exCouponEndOfMonth = false);
         FloatingRateBond(Natural settlementDays,
                          Real faceAmount,
@@ -75,10 +70,8 @@ namespace QuantLib {
                          BusinessDayConvention accrualConvention = Following,
                          BusinessDayConvention paymentConvention = Following,
                          Natural fixingDays = Null<Natural>(),
-                         const std::vector<Real>& gearings
-                                             = std::vector<Real>(1, 1.0),
-                         const std::vector<Spread>& spreads
-                                             = std::vector<Spread>(1, 0.0),
+                         const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
+                         const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
                          const std::vector<Rate>& caps = std::vector<Rate>(),
                          const std::vector<Rate>& floors = std::vector<Rate>(),
                          bool inArrears = false,
@@ -89,7 +82,7 @@ namespace QuantLib {
                          bool endOfMonth = false,
                          const Period& exCouponPeriod = Period(),
                          const Calendar& exCouponCalendar = Calendar(),
-                         const BusinessDayConvention exCouponConvention = Unadjusted,
+                         BusinessDayConvention exCouponConvention = Unadjusted,
                          bool exCouponEndOfMonth = false);
     };
 

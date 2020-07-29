@@ -42,7 +42,7 @@ using namespace boost::unit_test_framework;
 
 #include <iostream>
 
-namespace {
+namespace inflation_cpi_bond_test {
 
     struct Datum {
         Date date;
@@ -160,7 +160,7 @@ namespace {
                   new PiecewiseZeroInflationCurve<Linear>(
                          evaluationDate, calendar, dayCounter, observationLag,
                          ii->frequency(),ii->interpolated(), baseZeroRate,
-                         Handle<YieldTermStructure>(yTS), helpers)));
+                         helpers)));
         }
 
         // teardown
@@ -175,6 +175,8 @@ namespace {
 
 void InflationCPIBondTest::testCleanPrice() {
     IndexManager::instance().clearHistories();
+
+    using namespace inflation_cpi_bond_test;
   
     CommonVars common;
 
@@ -207,7 +209,11 @@ void InflationCPIBondTest::testCleanPrice() {
 
     ext::shared_ptr<DiscountingBondEngine> engine(
                                  new DiscountingBondEngine(common.yTS));
+    ext::shared_ptr<InflationCouponPricer> pricer =
+        ext::make_shared<CPICouponPricer>(common.yTS);
+
     bond.setPricingEngine(engine);
+    setCouponPricer(bond.cashflows(), pricer);
 
     Real storedPrice = 383.01816406;
     Real calculated = bond.cleanPrice();

@@ -34,15 +34,15 @@ namespace QuantLib {
     */
     class FlatExtrapolator2D : public Interpolation2D {
       public:
-        FlatExtrapolator2D(ext::shared_ptr<Interpolation2D> decoratedInterpolation) {
+        FlatExtrapolator2D(const ext::shared_ptr<Interpolation2D>& decoratedInterpolation) {
             impl_ = ext::shared_ptr<Interpolation2D::Impl>(
                   new FlatExtrapolator2DImpl(decoratedInterpolation));
         }
       protected:
        class FlatExtrapolator2DImpl: public Interpolation2D::Impl{
           public:
-            FlatExtrapolator2DImpl(ext::shared_ptr<Interpolation2D> decoratedInterpolation)
-            :decoratedInterp_(decoratedInterpolation){
+            FlatExtrapolator2DImpl(const ext::shared_ptr<Interpolation2D>& decoratedInterpolation)
+            : decoratedInterp_(decoratedInterpolation) {
                 calculate();
             }
             Real xMin() const {

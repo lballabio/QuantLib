@@ -37,9 +37,9 @@ namespace QuantLib {
 
 class PiecewiseIntegral : public Integrator {
   public:
-    PiecewiseIntegral(const ext::shared_ptr<Integrator> &integrator,
-                      const std::vector<Real> &criticalPoints,
-                      const bool avoidCriticalPoints = true);
+    PiecewiseIntegral(const ext::shared_ptr<Integrator>& integrator,
+                      const std::vector<Real>& criticalPoints,
+                      bool avoidCriticalPoints = true);
 
   protected:
     Real integrate(const ext::function<Real(Real)> &f, Real a, Real b) const;

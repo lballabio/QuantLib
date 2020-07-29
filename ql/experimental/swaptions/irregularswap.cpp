@@ -75,7 +75,7 @@ namespace QuantLib {
         IrregularSwap::arguments* arguments =
             dynamic_cast<IrregularSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (arguments == 0) // it's a swap engine...
             return;
 
         arguments->type = type_;
@@ -177,7 +177,7 @@ namespace QuantLib {
 
         const IrregularSwap::results* results =
             dynamic_cast<const IrregularSwap::results*>(r);
-        if (results) { // might be a swap engine, so no error is thrown
+        if (results != 0) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;
         } else {

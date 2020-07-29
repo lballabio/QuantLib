@@ -43,11 +43,8 @@ namespace QuantLib {
                         const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end,
                         Size steps)
-        : Tree<T>(steps+1), treeProcess_(process) {
-            x0_ = process->x0();
-            dt_ = end/steps;
-            driftPerStep_ = process->drift(0.0, x0_) * dt_;
-        }
+        : Tree<T>(steps+1), x0_(process->x0()), dt_(end/steps),
+          treeProcess_(process) {}
         Size size(Size i) const {
             return i+1;
         }
@@ -60,10 +57,10 @@ namespace QuantLib {
             return this->treeProcess_->drift(driftTime, x0_) * dt_;
         }
 
-        Real x0_, driftPerStep_;
+        Real x0_;
         Time dt_;
 
-      protected:
+
         ext::shared_ptr<StochasticProcess1D> treeProcess_;
     };
 

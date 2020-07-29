@@ -103,7 +103,7 @@ namespace QuantLib {
 
             ext::shared_ptr<StrikedTypePayoff> striked_payoff =
                 ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
-            Real K = striked_payoff ? striked_payoff->strike() : process_->x0();
+            Real K = striked_payoff != 0 ? striked_payoff->strike() : process_->x0();
             Volatility sigma =
                 process_->blackVolatility()->blackVol(exerciseDate_, K);
 

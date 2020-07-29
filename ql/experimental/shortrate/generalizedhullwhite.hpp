@@ -47,7 +47,8 @@ namespace QuantLib {
             Interpolation interpolator_;
         };
     public:
-        InterpolationParameter(Size count,
+        explicit InterpolationParameter(
+            Size count,
             const Constraint& constraint = NoConstraint())
         : Parameter(count,
             ext::shared_ptr<Parameter::Impl>(
@@ -57,7 +58,8 @@ namespace QuantLib {
         void reset(const Interpolation &interp) {
             ext::shared_ptr<InterpolationParameter::Impl> impl =
                 ext::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_);
-            if (impl) impl->reset(interp);
+            if (impl != 0)
+                impl->reset(interp);
         }
     };
 
@@ -254,11 +256,7 @@ namespace QuantLib {
         : GeneralizedHullWhite::ShortRateDynamics(
               ext::shared_ptr<StochasticProcess1D>(
                       new OrnsteinUhlenbeckProcess(a, sigma))),
-          fitting_(fitting) {
-
-            _f_=identity();
-            _fInverse_=identity();
-        }
+          fitting_(fitting), _f_(identity()), _fInverse_(identity()) {}
 
         Real variable(Time t, Rate r) const {
             return _f_(r) - fitting_(t);

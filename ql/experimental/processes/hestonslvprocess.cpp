@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,8 +31,10 @@ namespace QuantLib {
 
     HestonSLVProcess::HestonSLVProcess(
         const ext::shared_ptr<HestonProcess>& hestonProcess,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
-    : hestonProcess_(hestonProcess),
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+        const Real mixingFactor)
+    : mixingFactor_(mixingFactor),
+      hestonProcess_(hestonProcess),
       leverageFct_(leverageFct) {
         registerWith(hestonProcess);
         update();
@@ -44,14 +46,14 @@ namespace QuantLib {
         theta_ = hestonProcess_->theta();
         sigma_ = hestonProcess_->sigma();
         rho_   = hestonProcess_->rho();
+        mixedSigma_ = mixingFactor_ * sigma_;
     }
 
     Disposable<Array> HestonSLVProcess::drift(Time t, const Array& x) const {
         Array tmp(2);
 
-        const Real s = std::exp(x[0]);
-        const Volatility vol
-            = std::sqrt(x[1])*leverageFct_->localVol(t, s, true);
+        const Volatility vol =
+           std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
 
         tmp[0] = riskFreeRate()->forwardRate(t, t, Continuous)
                - dividendYield()->forwardRate(t, t, Continuous)
@@ -65,11 +67,10 @@ namespace QuantLib {
     Disposable<Matrix> HestonSLVProcess::diffusion(Time t, const Array& x)
     const {
 
-        const Real s = std::exp(x[0]);
         const Real vol =
-            std::min(1e-8, std::sqrt(x[1]*leverageFct_->localVol(t, s, true)));
+            std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
 
-        const Real sigma2 = sigma_ * vol;
+        const Real sigma2 = mixedSigma_ * std::sqrt(x[1]);
         const Real sqrhov = std::sqrt(1.0 - rho_*rho_);
 
         Matrix tmp(2,2);
@@ -86,8 +87,8 @@ namespace QuantLib {
         const Real ex = std::exp(-kappa_*dt);
 
         const Real m  =  theta_+(x0[1]-theta_)*ex;
-        const Real s2 =  x0[1]*sigma_*sigma_*ex/kappa_*(1-ex)
-                       + theta_*sigma_*sigma_/(2*kappa_)*(1-ex)*(1-ex);
+        const Real s2 =  x0[1]*mixedSigma_*mixedSigma_*ex/kappa_*(1-ex)
+                       + theta_*mixedSigma_*mixedSigma_/(2*kappa_)*(1-ex)*(1-ex);
         const Real psi = s2/(m*m);
 
         if (psi < 1.5) {
@@ -114,7 +115,7 @@ namespace QuantLib {
         const Real v_0 = 0.5*(x0[1]+retVal[1])*l_0*l_0;
 
         retVal[0] = x0[0]*std::exp(mu*dt - 0.5*v_0*dt
-            + rho_/sigma_*l_0 * (
+            + rho_/mixedSigma_*l_0 * (
                   retVal[1] - kappa_*theta_*dt
                   + 0.5*(x0[1]+retVal[1])*kappa_*dt - x0[1])
             + rho1*std::sqrt(v_0*dt)*dw[0]);

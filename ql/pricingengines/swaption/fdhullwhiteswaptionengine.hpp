@@ -35,7 +35,7 @@ namespace QuantLib {
         : public GenericModelEngine<HullWhite, 
                                     Swaption::arguments, Swaption::results> {
       public:
-        FdHullWhiteSwaptionEngine(
+        explicit FdHullWhiteSwaptionEngine(
             const ext::shared_ptr<HullWhite>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size dampingSteps = 0, Real invEps = 1e-5,

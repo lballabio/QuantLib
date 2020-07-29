@@ -5,8 +5,9 @@ coverage:
   range: 50...80
 
 ignore:
-  - "test-suite/*"
-  - "Examples/**/*"
+  - "test-suite"
+  - "Examples"
+
 
 
 # The process to get a correct report is a bit fiddly.

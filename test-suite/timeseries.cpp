@@ -95,17 +95,6 @@ void TimeSeriesTest::testIntervalPrice() {
                                                                low);
 }
 
-namespace boost {
-
-    template<>
-    struct hash<Date> {
-        size_t operator()(const Date& _Keyval) const {
-            return boost::hash<Date::serial_type>()(_Keyval.serialNumber());
-        }
-    };
-
-}
-
 void TimeSeriesTest::testIterators() {
     BOOST_TEST_MESSAGE("Testing time series iterators...");
     std::vector<Date> dates;

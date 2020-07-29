@@ -84,7 +84,7 @@ namespace QuantLib {
         Date maturityDate() const;
         ext::shared_ptr<FloatingRateCoupon> lastFloatingRateCoupon() const;
         //! Returns the n-th optionlet as a new CapFloor with only one cash flow.
-        ext::shared_ptr<CapFloor> optionlet(const Size n) const;
+        ext::shared_ptr<CapFloor> optionlet(Size n) const;
         //@}
         Rate atmRate(const YieldTermStructure& discountCurve) const;
         //! implied term volatility

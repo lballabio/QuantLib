@@ -80,8 +80,5 @@ void MarketModelPathwiseDiscounter::getFactors(
        factors[i+1] = -df*taus_[i]*Discounts[currentStep][i+1]/Discounts[currentStep][i];
 
     factors[before_+1] *= postWeight_;
-
-    return ;
 }
-
 }

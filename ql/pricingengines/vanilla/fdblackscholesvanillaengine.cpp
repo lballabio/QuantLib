@@ -90,11 +90,18 @@ namespace QuantLib {
 
                 if (divDate <= exerciseDate && divDate >= settlementDate) {
                     const Real divAmount = (*divIter)->amount();
-                    const DiscountFactor discount =
-                        process_->riskFreeRate()->discount(divDate) /
-                        process_->dividendYield()->discount(divDate);
 
-                    spotAdjustment -= divAmount * discount;
+                    if (divAmount != 0.0) {
+                        QL_REQUIRE(arguments_.exercise->type()
+                                        == Exercise::European,
+                             "Escrowed dividend model expects an European option");
+
+                        const DiscountFactor discount =
+                            process_->riskFreeRate()->discount(divDate) /
+                            process_->dividendYield()->discount(divDate);
+
+                        spotAdjustment -= divAmount * discount;
+                    }
                 }
             }
 

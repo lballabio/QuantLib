@@ -11,29 +11,29 @@ cache: ccache
 env:
   global:
     - DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
-  matrix:
+  jobs:
     #
     - INFO="gcc 4.8 (Boost 1.48)"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:1.48.0-trusty
+      DOCKER_IMAGE=lballabio/quantlib-devenv:trusty
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror"
     #
     - INFO="gcc 5.4 (Boost 1.66)"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:1.66.0-xenial
+      DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
     - INFO="gcc 6.3 (Boost 1.66)"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:1.66.0-zesty
+      DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="gcc 7.x"
+    - INFO="gcc 7.4 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="gcc 8.x"
+    - INFO="gcc 8.3 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -43,17 +43,22 @@ env:
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="Clang 6"
+    - INFO="gcc 10.x"
+      DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
+      CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    #
+    - INFO="Clang 6 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="Clang 7"
+    - INFO="Clang 7 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
-    - INFO="Clang 8"
+    - INFO="Clang 8 (Boost 1.72)"
       DOCKER_IMAGE=lballabio/quantlib-devenv:disco
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -63,8 +68,13 @@ env:
       CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
+    - INFO="Clang 10"
+      DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+      CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+      CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    #
     - INFO="C++03 mode"
-      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+      DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     #
@@ -82,6 +92,12 @@ env:
       DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
       CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
       CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++17"
+    #
+    - INFO="Unity build enabled"
+      DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+      CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
+      CONFIGURE_FLAGS="--enable-unity-build"
+      CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     #
     - INFO="Intraday calculations enabled"
       DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
@@ -113,4 +129,7 @@ script:
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} make -j 2
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ccache --show-stats
   - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./test-suite/quantlib-test-suite --log_level=message -- --faster
+  - echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
+  - echo "#include <ql/quantlib.hpp>" > test2.cpp
+  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} bash -c "make install && ${CACHEDCXX} ${CXXFLAGS} test1.cpp test2.cpp -lQuantLib"
 

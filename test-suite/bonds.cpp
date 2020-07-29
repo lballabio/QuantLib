@@ -49,7 +49,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using ext::shared_ptr;
 
 #define ASSERT_CLOSE(name, settlement, calculated, expected, tolerance)  \
     if (std::fabs(calculated-expected) > tolerance) { \
@@ -58,7 +57,7 @@ using ext::shared_ptr;
                 << "\n    expected:   " << std::setprecision(8) << expected); \
     }
 
-namespace {
+namespace bonds_test {
 
     struct CommonVars {
         // common data
@@ -78,8 +77,7 @@ namespace {
         }
     };
 
-    void checkValue(Real value, Real expectedValue,
-                    Real tolerance, std::string msg) {
+    void checkValue(Real value, Real expectedValue, Real tolerance, const std::string& msg) {
         if (std::fabs(value - expectedValue) > tolerance) {
             BOOST_ERROR(msg
                         << std::fixed
@@ -95,6 +93,8 @@ namespace {
 void BondTest::testYield() {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/yield calculation...");
+
+    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -217,6 +217,8 @@ void BondTest::testAtmRate() {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/ATM rate calculation...");
 
+    using namespace bonds_test;
+
     CommonVars vars;
 
     Real tolerance = 1.0e-7;
@@ -231,7 +233,7 @@ void BondTest::testAtmRate() {
     BusinessDayConvention paymentConvention = ModifiedFollowing;
     Real redemption = 100.0;
     Handle<YieldTermStructure> disc(flatRate(vars.today,0.03,Actual360()));
-    shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(disc));
+    ext::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(disc));
 
     for (Size i=0; i<LENGTH(issueMonths); i++) {
       for (Size j=0; j<LENGTH(lengths); j++) {
@@ -281,6 +283,8 @@ void BondTest::testAtmRate() {
 void BondTest::testZspread() {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/z-spread calculation...");
+
+    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -377,6 +381,8 @@ void BondTest::testTheoretical() {
 
     BOOST_TEST_MESSAGE("Testing theoretical bond price/yield calculation...");
 
+    using namespace bonds_test;
+
     CommonVars vars;
 
     Real tolerance = 1.0e-7;
@@ -401,7 +407,7 @@ void BondTest::testTheoretical() {
             Date issue = dated;
             Date maturity = vars.calendar.advance(issue, lengths[j], Years);
 
-            shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
+            ext::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
             Handle<YieldTermStructure> discountCurve(flatRate(vars.today,
                                                               rate,
                                                               bondDayCount));
@@ -416,7 +422,7 @@ void BondTest::testTheoretical() {
                                bondDayCount, paymentConvention,
                                redemption, issue);
 
-            shared_ptr<PricingEngine> bondEngine(
+            ext::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
             bond.setPricingEngine(bondEngine);
 
@@ -469,6 +475,8 @@ void BondTest::testCached() {
     BOOST_TEST_MESSAGE(
         "Testing bond price/yield calculation against cached values...");
 
+    using namespace bonds_test;
+
     CommonVars vars;
 
     // with implicit settlement calculation:
@@ -508,7 +516,7 @@ void BondTest::testCached() {
         100.0, Date(1, November, 2004)
     );
 
-    shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
     bond1NoSchedule.setPricingEngine(bondEngine);
@@ -740,6 +748,8 @@ void BondTest::testCachedZero() {
 
     BOOST_TEST_MESSAGE("Testing zero-coupon bond prices against cached values...");
 
+    using namespace bonds_test;
+
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -760,7 +770,7 @@ void BondTest::testCachedZero() {
                          ModifiedFollowing,
                          100.0, Date(30,November,2004));
 
-    shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
@@ -821,6 +831,8 @@ void BondTest::testCachedFixed() {
 
     BOOST_TEST_MESSAGE("Testing fixed-coupon bond prices against cached values...");
 
+    using namespace bonds_test;
+
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -845,7 +857,7 @@ void BondTest::testCachedFixed() {
                         ModifiedFollowing,
                         100.0, Date(30,November,2004));
 
-    shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
@@ -919,6 +931,8 @@ void BondTest::testCachedFloating() {
 
     BOOST_TEST_MESSAGE("Testing floating-rate bond prices against cached values...");
 
+    using namespace bonds_test;
+
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -929,12 +943,12 @@ void BondTest::testCachedFloating() {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    shared_ptr<IborCouponPricer> pricer(new
+    ext::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
 
     // plain
@@ -954,7 +968,7 @@ void BondTest::testCachedFloating() {
                            false,
                            100.0, Date(30,November,2004));
 
-    shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                                      new DiscountingBondEngine(riskFreeRate));
     bond1.setPricingEngine(bondEngine);
 
@@ -985,7 +999,7 @@ void BondTest::testCachedFloating() {
                            false,
                            100.0, Date(30,November,2004));
 
-    shared_ptr<PricingEngine> bondEngine2(
+    ext::shared_ptr<PricingEngine> bondEngine2(
                                     new DiscountingBondEngine(discountCurve));
     bond2.setPricingEngine(bondEngine2);
 
@@ -1072,6 +1086,8 @@ void BondTest::testBrazilianCached() {
 
     BOOST_TEST_MESSAGE(
         "Testing Brazilian public bond prices against Andima cached values...");
+
+    using namespace bonds_test;
 
     CommonVars vars;
 

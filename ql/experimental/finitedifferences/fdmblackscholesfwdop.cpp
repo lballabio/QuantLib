@@ -52,7 +52,7 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-        if (localVol_) {
+        if (localVol_ != 0) {
             const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
@@ -86,9 +86,7 @@ namespace QuantLib {
         }
     }
 
-    Size FdmBlackScholesFwdOp::size() const {
-        return 1u;
-    }
+    Size FdmBlackScholesFwdOp::size() const { return 1U; }
 
     Disposable<Array> FdmBlackScholesFwdOp::apply(const Array& u) const {
         return mapT_.apply(u);

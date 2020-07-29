@@ -126,16 +126,17 @@ namespace QuantLib {
             The GP complex integration is simplified thanks to the symetry of
             the distribution.
         */
-        Probability operator()(const Real x) const;
+      Probability operator()(Real x) const;
 
-        /*! \brief Returns the probability density of the resulting
-        distribution.\par
-            Similarly to the cumulative probability, Gil-Pelaez theorem is
-            applied, the integration is similar.
+      /*! \brief Returns the probability density of the resulting
+      distribution.\par
+          Similarly to the cumulative probability, Gil-Pelaez theorem is
+          applied, the integration is similar.
 
-            \todo Implement in a separate class? given the name of this class..
-        */
-        Probability density(const Real x) const;
+          \todo Implement in a separate class? given the name of this class..
+      */
+      Probability density(Real x) const;
+
     private:
         mutable std::vector<Integer> degreesFreedom_;
         mutable std::vector<Real> factors_;
@@ -175,8 +176,9 @@ namespace QuantLib {
             const std::vector<Real>& factors = std::vector<Real>(),
             Real accuracy = 1.e-6);
         //! Returns the cumulative inverse value.
-        Real operator()(const Probability q) const;
-    private:
+        Real operator()(Probability q) const;
+
+      private:
         mutable Real normSqr_, accuracy_;
         mutable CumulativeBehrensFisher distrib_;
     };

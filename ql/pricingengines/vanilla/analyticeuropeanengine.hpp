@@ -64,7 +64,7 @@ namespace QuantLib {
             the risk-free rate in the given process is used for both
             forecasting and discounting.
         */
-        AnalyticEuropeanEngine(
+        explicit AnalyticEuropeanEngine(
                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
 
         /*! This constructor allows to use a different term structure

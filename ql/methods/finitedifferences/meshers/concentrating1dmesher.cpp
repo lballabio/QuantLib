@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2009 Ralph Schreyer
- Copyright (C) 2014 Johannes Goettker-Schnetmann
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
  Copyright (C) 2014 Klaus Spanderen
  Copyright (C) 2015 Peter Caspers
 

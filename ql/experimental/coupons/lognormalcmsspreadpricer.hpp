@@ -60,13 +60,13 @@ namespace QuantLib {
 
       public:
         LognormalCmsSpreadPricer(
-            const ext::shared_ptr<CmsCouponPricer> cmsPricer,
-            const Handle<Quote> &correlation,
-            const Handle<YieldTermStructure> &couponDiscountCurve =
-                Handle<YieldTermStructure>(),
-            const Size IntegrationPoints = 16,
-            const boost::optional<VolatilityType> volatilityType= boost::none,
-            const Real shift1 = Null<Real>(), const Real shift2 = Null<Real>());
+            const ext::shared_ptr<CmsCouponPricer>& cmsPricer,
+            const Handle<Quote>& correlation,
+            const Handle<YieldTermStructure>& couponDiscountCurve = Handle<YieldTermStructure>(),
+            Size IntegrationPoints = 16,
+            const boost::optional<VolatilityType>& volatilityType = boost::none,
+            Real shift1 = Null<Real>(),
+            Real shift2 = Null<Real>());
 
         /* */
         virtual Real swapletPrice() const;
@@ -80,8 +80,8 @@ namespace QuantLib {
         void initialize(const FloatingRateCoupon &coupon);
         Real optionletPrice(Option::Type optionType, Real strike) const;
 
-        Real integrand(const Real) const;
-        Real integrand_normal(const Real) const;
+        Real integrand(Real) const;
+        Real integrand_normal(Real) const;
 
         class integrand_f;
         friend class integrand_f;

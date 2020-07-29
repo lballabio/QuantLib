@@ -411,7 +411,7 @@ namespace QuantLib {
             if (!cashflows_[i]->hasOccurred(settlement,IncludeToday)) {
                 ext::shared_ptr<Coupon> coupon =
                     ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon)
+                if (coupon != 0)
                     // !!!
                     return coupon->accruedAmount(settlement) /
                            notional(settlement) * 100.0;
@@ -426,7 +426,8 @@ namespace QuantLib {
     void CallableFixedRateBond::setupArguments(
                                        PricingEngine::arguments* args) const {
 
-        Bond::setupArguments(args);
+        CallableBond::setupArguments(args);
+
         CallableBond::arguments* arguments =
             dynamic_cast<CallableBond::arguments*>(args);
 

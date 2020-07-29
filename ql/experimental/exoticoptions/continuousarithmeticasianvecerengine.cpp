@@ -146,7 +146,7 @@ namespace QuantLib {
                             0.5 * sigma2 * vecerTerm * vecerTerm  * Dia[i],
                             0.5 * sigma2 *  vecerTerm * vecerTerm * upperD[i]);
                     }
-                    explicit_part = gammaOp.identity(gammaOp.size()) +
+                    explicit_part = TridiagonalOperator::identity(gammaOp.size()) +
                                     (1 - Theta) * k * gammaOp;
                     explicit_part.setFirstRow(1.0,0.0); // Apply before applying
                     explicit_part.setLastRow(-1.0,1.0); // Neumann BC
@@ -168,7 +168,7 @@ namespace QuantLib {
                             0.5 * sigma2 * vecerTerm * vecerTerm * upperD[i]);
                     }
 
-                    implicit_part = gammaOp.identity(gammaOp.size()) -
+                    implicit_part = TridiagonalOperator::identity(gammaOp.size()) -
                                     Theta * k * gammaOp;
 
                     // Apply before solving

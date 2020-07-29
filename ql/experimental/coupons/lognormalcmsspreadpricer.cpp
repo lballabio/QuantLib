@@ -42,14 +42,15 @@ namespace QuantLib {
     };
 
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(
-        const ext::shared_ptr<CmsCouponPricer> cmsPricer,
-        const Handle<Quote> &correlation,
-        const Handle<YieldTermStructure> &couponDiscountCurve,
+        const ext::shared_ptr<CmsCouponPricer>& cmsPricer,
+        const Handle<Quote>& correlation,
+        const Handle<YieldTermStructure>& couponDiscountCurve,
         const Size integrationPoints,
-        const boost::optional<VolatilityType> volatilityType,
-        const Real shift1, const Real shift2)
-        : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
-          couponDiscountCurve_(couponDiscountCurve) {
+        const boost::optional<VolatilityType>& volatilityType,
+        const Real shift1,
+        const Real shift2)
+    : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
+      couponDiscountCurve_(couponDiscountCurve) {
 
         registerWith(correlation);
         if (!couponDiscountCurve_.empty())

@@ -46,13 +46,12 @@ namespace QuantLib {
             const Instrument::results* results_;
         };
 
-        IrregularImpliedVolHelper::IrregularImpliedVolHelper(
-                                                              const IrregularSwaption& swaption,
-                                                              const Handle<YieldTermStructure>& discountCurve,
-                                                              Real targetValue)
-        : discountCurve_(discountCurve), targetValue_(targetValue) {
+        IrregularImpliedVolHelper::IrregularImpliedVolHelper(const IrregularSwaption& swaption,
+                                                             const Handle<YieldTermStructure>& discountCurve,
+                                                             Real targetValue)
+        : discountCurve_(discountCurve), targetValue_(targetValue),
+          vol_(ext::make_shared<SimpleQuote>(-1.0)) {
 
-            vol_ = ext::make_shared<SimpleQuote>(-1.0);
             Handle<Quote> h(vol_);
             engine_ = ext::shared_ptr<PricingEngine>(new
                                     BlackSwaptionEngine(discountCurve_, h));

@@ -127,7 +127,7 @@ namespace QuantLib {
 
         void performSimulations() const {
             // Next sequence should determine the event and push it into buffer
-            for(Size i=nSims_; i; i--) {
+            for (Size i = nSims_; i != 0U; i--) {
                 const std::vector<Real>& sample =
                     copulasRng_->nextSequence().value;
                 static_cast<const derivedRandomLM<copulaPolicy, USNG>* >(
@@ -755,7 +755,7 @@ namespace QuantLib {
     context of default
     See default transition models for another instance of this inversion.
     Alternatively use the faster trick (flat HR) mentioned in the code or make
-    the algorithm parametric on the type of interpolation in the DefautlTS
+    the algorithm parametric on the type of interpolation in the default TS.
     */
     namespace detail {// not template dependent .....move it
         //! Utility for the numerical time solver
@@ -763,8 +763,8 @@ namespace QuantLib {
           public:
             /* See a faster algorithm (neeeds to locate the points) in
             D.O'KANE p.249 sect 13.5 */
-            Root(const Handle<DefaultProbabilityTermStructure> dts, Real pd)
-                : dts_(dts), pd_(pd), curveRef_(dts->referenceDate()) {}
+            Root(const Handle<DefaultProbabilityTermStructure>& dts, Real pd)
+            : dts_(dts), pd_(pd), curveRef_(dts->referenceDate()) {}
             /* The cast I am forcing here comes from the requirement of 1D
             solvers to take in a target (cost) function of Real domain. It could
             be possible to change the template arg F in the 1D solvers to a
@@ -828,27 +828,22 @@ namespace QuantLib {
         Real accuracy_;
     public:
         // \todo: Allow a constructor building its own default latent model.
-        RandomDefaultLM(
-            const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
-            const std::vector<Real>& recoveries = std::vector<Real>(),
-            Size nSims = 0,// stats will crash on div by zero, FIX ME.
-            Real accuracy = 1.e-6,
-            BigNatural seed = 2863311530UL)
-        : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>
-            (model->numFactors(), model->size(), model->copula(),
-                nSims, seed ),
-          model_(model),
-          recoveries_(recoveries.size()==0 ? std::vector<Real>(model->size(),
-            0.) : recoveries),
-          accuracy_(accuracy)
-        {
-            // redundant through basket?
-            this->registerWith(Settings::instance().evaluationDate());
-            this->registerWith(model_);
+      explicit RandomDefaultLM(const ext::shared_ptr<DefaultLatentModel<copulaPolicy> >& model,
+                               const std::vector<Real>& recoveries = std::vector<Real>(),
+                               Size nSims = 0, // stats will crash on div by zero, FIX ME.
+                               Real accuracy = 1.e-6,
+                               BigNatural seed = 2863311530UL)
+      : RandomLM< ::QuantLib::RandomDefaultLM, copulaPolicy, USNG>(
+            model->numFactors(), model->size(), model->copula(), nSims, seed),
+        model_(model),
+        recoveries_(recoveries.empty() ? std::vector<Real>(model->size(), 0.) : recoveries),
+        accuracy_(accuracy) {
+          // redundant through basket?
+          this->registerWith(Settings::instance().evaluationDate());
+          this->registerWith(model_);
         }
-        RandomDefaultLM(
-            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >&
-                model,
+        explicit RandomDefaultLM(
+            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& model,
             Size nSims = 0,// stats will crash on div by zero, FIX ME.
             Real accuracy = 1.e-6,
             BigNatural seed = 2863311530UL)
@@ -900,7 +895,7 @@ namespace QuantLib {
             // deterministic
             return recoveries_[iName];
         }
-    protected:
+
         Real latentVarValue(const std::vector<Real>& factorsSample,
             Size iVar) const {
             return model_->latentVarValue(factorsSample, iVar);

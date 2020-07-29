@@ -146,7 +146,7 @@ namespace QuantLib {
     // same frequency
     ext::shared_ptr<SwaptionVolatilityMatrix>
         LiborForwardModel::getSwaptionVolatilityMatrix() const {
-        if (swaptionVola) {
+        if (swaptionVola != 0) {
             return swaptionVola;
         }
 

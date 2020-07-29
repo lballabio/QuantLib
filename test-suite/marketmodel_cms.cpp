@@ -49,18 +49,13 @@
 #include <iostream>
 #include <sstream>
 
-#if defined(BOOST_MSVC)
-#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-#endif
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
-namespace {
+namespace market_model_cms_test {
 
     Date todaysDate, startDate, endDate;
     std::vector<Time> rateTimes;
@@ -168,9 +163,9 @@ namespace {
         #endif
     }
 
-    const ext::shared_ptr<SequenceStatisticsInc> simulate(
-                         const ext::shared_ptr<MarketModelEvolver>& evolver,
-                         const MarketModelMultiProduct& product) {
+    ext::shared_ptr<SequenceStatisticsInc>
+    simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
+             const MarketModelMultiProduct& product) {
         Size initialNumeraire = evolver->numeraires().front();
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
@@ -286,7 +281,7 @@ namespace {
     std::vector<Size> makeMeasure(const MarketModelMultiProduct& product,
                                   MeasureType measureType) {
         std::vector<Size> result;
-        EvolutionDescription evolution(product.evolution());
+        const EvolutionDescription& evolution(product.evolution());
         switch (measureType) {
           case ProductSuggested:
             result = product.suggestedNumeraires();
@@ -359,13 +354,12 @@ namespace {
     }
 
 
-    void checkCMSAndSwaptions(
-              const SequenceStatisticsInc& stats,
-              const Rate fixedRate,
-              const std::vector<ext::shared_ptr<StrikedTypePayoff> >&
-                                                              displacedPayoff,
-              const ext::shared_ptr<MarketModel>, // marketModel,
-              const std::string& config) {
+    void
+    checkCMSAndSwaptions(const SequenceStatisticsInc& stats,
+                         const Rate fixedRate,
+                         const std::vector<ext::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
+                         const ext::shared_ptr<MarketModel>&, // marketModel,
+                         const std::string& config) {
         std::vector<Real> results = stats.mean();
         std::vector<Real> errors = stats.errorEstimate();
         std::vector<Real> discrepancies(todaysForwards.size());
@@ -440,6 +434,8 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step constant maturity swaps and swaptions "
                        "in a lognormal constant maturity swap market model...");
+
+    using namespace market_model_cms_test;
 
     setup();
 

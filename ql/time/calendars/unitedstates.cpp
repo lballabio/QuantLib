@@ -156,7 +156,7 @@ namespace QuantLib {
             // Christmas (Monday if Sunday or Friday if Saturday)
             || ((d == 25 || (d == 26 && w == Monday) ||
                  (d == 24 && w == Friday)) && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -323,7 +323,7 @@ namespace QuantLib {
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday)
             || ((d == 25 || (d == 26 && w == Monday)) && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
  
@@ -356,7 +356,7 @@ namespace QuantLib {
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday)
             || ((d == 25 || (d == 26 && w == Monday)) && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

@@ -38,10 +38,12 @@ namespace QuantLib {
                             const Handle<YieldTermStructure>& riskFreeRate,
                             const Handle<YieldTermStructure>& dividendYield,
                             BlackCalibrationHelper::CalibrationErrorType errorType)
-    : BlackCalibrationHelper(volatility, riskFreeRate, errorType),
+    : BlackCalibrationHelper(volatility, errorType),
       maturity_(maturity), calendar_(calendar),
       s0_(Handle<Quote>(ext::make_shared<SimpleQuote>(s0))),
-      strikePrice_(strikePrice), dividendYield_(dividendYield) {
+      strikePrice_(strikePrice), riskFreeRate_(riskFreeRate),
+      dividendYield_(dividendYield) {
+        registerWith(riskFreeRate);
         registerWith(dividendYield);
     }
 
@@ -54,18 +56,20 @@ namespace QuantLib {
                             const Handle<YieldTermStructure>& riskFreeRate,
                             const Handle<YieldTermStructure>& dividendYield,
                             BlackCalibrationHelper::CalibrationErrorType errorType)
-    : BlackCalibrationHelper(volatility, riskFreeRate, errorType),
+    : BlackCalibrationHelper(volatility, errorType),
       maturity_(maturity), calendar_(calendar), s0_(s0),
-      strikePrice_(strikePrice), dividendYield_(dividendYield) {
+      strikePrice_(strikePrice), riskFreeRate_(riskFreeRate),
+      dividendYield_(dividendYield) {
         registerWith(s0);
+        registerWith(riskFreeRate);
         registerWith(dividendYield);
     }
 
     void HestonModelHelper::performCalculations() const {
         exerciseDate_ =
-            calendar_.advance(termStructure_->referenceDate(), maturity_);
-        tau_ = termStructure_->timeFromReference(exerciseDate_);
-        type_ = strikePrice_ * termStructure_->discount(tau_) >=
+            calendar_.advance(riskFreeRate_->referenceDate(), maturity_);
+        tau_ = riskFreeRate_->timeFromReference(exerciseDate_);
+        type_ = strikePrice_ * riskFreeRate_->discount(tau_) >=
                         s0_->value() * dividendYield_->discount(tau_)
                     ? Option::Call
                     : Option::Put;
@@ -87,7 +91,7 @@ namespace QuantLib {
         calculate();
         const Real stdDev = volatility * std::sqrt(maturity());
         return blackFormula(
-            type_, strikePrice_ * termStructure_->discount(tau_),
+            type_, strikePrice_ * riskFreeRate_->discount(tau_),
             s0_->value() * dividendYield_->discount(tau_), stdDev);
     }
 }

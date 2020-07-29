@@ -66,7 +66,7 @@ namespace QuantLib {
             cFunction(Real f, Real s, Real a, Real b)
                 : f_(f), s_(s), a_(a), b_(b), exponential_(false) {}
             cFunction(Real a, Real b) : a_(a), b_(b), exponential_(true) {}
-            Real operator()(Real k) {
+            Real operator()(Real k) const {
                 if (exponential_)
                     return std::exp(-a_ * k + b_);
                 if (s_ < QL_EPSILON)
@@ -134,16 +134,15 @@ namespace QuantLib {
             mutable Real f_, b_;
         };
 
-        KahaleSmileSection(const ext::shared_ptr<SmileSection> source,
-                           const Real atm = Null<Real>(),
-                           const bool interpolate = false,
-                           const bool exponentialExtrapolation = false,
-                           const bool deleteArbitragePoints = false,
-                           const std::vector<Real> &moneynessGrid =
-                               std::vector<Real>(),
-                           const Real gap = 1.0E-5,
-                           const int forcedLeftIndex = -1,
-                           const int forcedRightIndex = QL_MAX_INTEGER);
+        KahaleSmileSection(const ext::shared_ptr<SmileSection>& source,
+                           Real atm = Null<Real>(),
+                           bool interpolate = false,
+                           bool exponentialExtrapolation = false,
+                           bool deleteArbitragePoints = false,
+                           const std::vector<Real>& moneynessGrid = std::vector<Real>(),
+                           Real gap = 1.0E-5,
+                           int forcedLeftIndex = -1,
+                           int forcedRightIndex = QL_MAX_INTEGER);
 
         Real minStrike() const { return -shift(); }
         Real maxStrike() const { return QL_MAX_REAL; }

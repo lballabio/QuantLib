@@ -45,18 +45,6 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const ext::shared_ptr<ZeroInflationIndex>& zii,
             const Handle<YieldTermStructure>& nominalTermStructure);
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        ZeroCouponInflationSwapHelper(
-            const Handle<Quote>& quote,
-            const Period& swapObsLag,   // lag on swap observation of index
-            const Date& maturity,
-            const Calendar& calendar,   // index may have null calendar as valid on every day
-            BusinessDayConvention paymentConvention,
-            const DayCounter& dayCounter,
-            const ext::shared_ptr<ZeroInflationIndex>& zii);
 
         void setTermStructure(ZeroInflationTermStructure*);
         Real impliedQuote() const;
@@ -84,17 +72,6 @@ namespace QuantLib {
                                       const DayCounter& dayCounter,
                                       const ext::shared_ptr<YoYInflationIndex>& yii,
                                       const Handle<YieldTermStructure>& nominalTermStructure);
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
-                                      const Period& swapObsLag_,
-                                      const Date& maturity,
-                                      const Calendar& calendar,
-                                      BusinessDayConvention paymentConvention,
-                                      const DayCounter& dayCounter,
-                                      const ext::shared_ptr<YoYInflationIndex>& yii);
 
         void setTermStructure(YoYInflationTermStructure*);
         Real impliedQuote() const;

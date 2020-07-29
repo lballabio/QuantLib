@@ -42,7 +42,6 @@ void SviSmileSection::init() {
                    << params_.size() << ") given");
     detail::checkSviParameters(params_[0], params_[1], params_[2], params_[3],
                                params_[4]);
-    return;
 }
 
 Real SviSmileSection::volatilityImpl(Rate strike) const {

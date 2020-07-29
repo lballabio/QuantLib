@@ -23,7 +23,9 @@
   based on fourier transformation
 */
 
+#include <ql/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
@@ -33,7 +35,6 @@
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -125,30 +126,40 @@ namespace QuantLib {
     // helper class for integration
     class AnalyticHestonEngine::Fj_Helper {
     public:
-        Fj_Helper(const VanillaOption::arguments& arguments,
-            const ext::shared_ptr<HestonModel>& model,
-            const AnalyticHestonEngine* const engine,
-            ComplexLogFormula cpxLog,
-            Time term, Real ratio, Size j);
+      Fj_Helper(const VanillaOption::arguments& arguments,
+                const ext::shared_ptr<HestonModel>& model,
+                const AnalyticHestonEngine* engine,
+                ComplexLogFormula cpxLog,
+                Time term,
+                Real ratio,
+                Size j);
 
-        Fj_Helper(Real kappa, Real theta, Real sigma,
-            Real v0, Real s0, Real rho,
-            const AnalyticHestonEngine* const engine,
-            ComplexLogFormula cpxLog,
-            Time term,
-            Real strike,
-            Real ratio,
-            Size j);
+      Fj_Helper(Real kappa,
+                Real theta,
+                Real sigma,
+                Real v0,
+                Real s0,
+                Real rho,
+                const AnalyticHestonEngine* engine,
+                ComplexLogFormula cpxLog,
+                Time term,
+                Real strike,
+                Real ratio,
+                Size j);
 
-         Fj_Helper(Real kappa, Real theta, Real sigma,
-            Real v0, Real s0, Real rho,
-            ComplexLogFormula cpxLog,
-            Time term,
-            Real strike,
-            Real ratio,
-            Size j);
+      Fj_Helper(Real kappa,
+                Real theta,
+                Real sigma,
+                Real v0,
+                Real s0,
+                Real rho,
+                ComplexLogFormula cpxLog,
+                Time term,
+                Real strike,
+                Real ratio,
+                Size j);
 
-        Real operator()(Real phi) const;
+      Real operator()(Real phi) const;
 
     private:
         const Size j_;
@@ -257,8 +268,8 @@ namespace QuantLib {
             std::sqrt(t1*t1 - sigma2_*phi
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
-        const std::complex<Real> addOnTerm
-            = engine_ ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
+        const std::complex<Real> addOnTerm =
+            engine_ != 0 ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
@@ -404,7 +415,7 @@ namespace QuantLib {
         const AnalyticHestonEngine* const enginePtr_;
     };
 
-    std::complex<Real> AnalyticHestonEngine::lnChF(
+    std::complex<Real> AnalyticHestonEngine::chF(
         const std::complex<Real>& z, Time t) const {
 
         const Real kappa = model_->kappa();
@@ -415,22 +426,50 @@ namespace QuantLib {
 
         const Real sigma2 = sigma*sigma;
 
-        const std::complex<Real> g
-            = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
+        if (sigma > 1e-4) {
+            const std::complex<Real> g
+                = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
 
-        const std::complex<Real> D = std::sqrt(
-            g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
+            const std::complex<Real> D = std::sqrt(
+                g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
 
-        const std::complex<Real> G = (g-D)/(g+D);
+            const std::complex<Real> G = (g-D)/(g+D);
 
-        return v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
-                *(g-D) + kappa*theta/sigma2*((g-D)*t
-                -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G)));
+            return std::exp(v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
+                    *(g-D) + kappa*theta/sigma2*((g-D)*t
+                    -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G))));
+        }
+        else {
+            const Real kt = kappa*t;
+            const Real ekt = std::exp(kt);
+            const Real e2kt = std::exp(2*kt);
+            const Real rho2 = rho*rho;
+            const std::complex<Real> zpi = z + std::complex<Real>(0.0, 1.0);
+
+            return std::exp(-(((theta - v0 + ekt*((-1 + kt)*theta + v0))
+                    *z*zpi)/ekt)/(2.*kappa))
+                + (std::exp(-(kt) - ((theta - v0 + ekt
+                    *((-1 + kt)*theta + v0))*z*zpi)
+                /(2.*ekt*kappa))*rho*(2*theta + kt*theta -
+                    v0 - kt*v0 + ekt*((-2 + kt)*theta + v0))
+                *(1.0 - std::complex<Real>(-z.imag(),z.real()))*z*z)
+                    /(2.*kappa*kappa)*sigma
+                   + (std::exp(-2*kt - ((theta - v0 + ekt
+                *((-1 + kt)*theta + v0))*z*zpi)/(2.*ekt*kappa))*z*z*zpi
+                *(-2*rho2*square<Real>()(2*theta + kt*theta - v0 -
+                    kt*v0 + ekt*((-2 + kt)*theta + v0))
+                  *z*z*zpi + 2*kappa*v0*(-zpi
+                    + e2kt*(zpi + 4*rho2*z) - 2*ekt*(2*rho2*z
+                    + kt*(zpi + rho2*(2 + kt)*z))) + kappa*theta*(zpi + e2kt
+                *(-5.0*zpi - 24*rho2*z+ 2*kt*(zpi + 4*rho2*z)) +
+                4*ekt*(zpi + 6*rho2*z + kt*(zpi + rho2*(4 + kt)*z)))))
+                /(16.*square<Real>()(square<Real>()(kappa)))*sigma2;
+        }
     }
 
-    std::complex<Real> AnalyticHestonEngine::chF(
+    std::complex<Real> AnalyticHestonEngine::lnChF(
         const std::complex<Real>& z, Time T) const {
-        return std::exp(lnChF(z, T));
+        return std::log(chF(z, T));
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
@@ -539,8 +578,9 @@ namespace QuantLib {
             const Real epsilon = enginePtr->andersenPiterbargEpsilon_
                 *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
 
-            const Real uM = Integration::andersenPiterbargIntegrationLimit(
-                c_inf, epsilon, v0, term);
+            const ext::function<Real()> uM = ext::bind(
+                Integration::andersenPiterbargIntegrationLimit,
+                    c_inf, epsilon, v0, term);
 
             const Real vAvg = (cpxLog == AndersenPiterbarg)
                 ? (1-std::exp(-kappa*term))*(v0-theta)/(kappa*term) + theta
@@ -716,10 +756,9 @@ namespace QuantLib {
     }
 
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
-        if (integrator_) {
+        if (integrator_ != 0) {
             return integrator_->numberOfEvaluations();
-        }
-        else if (gaussianQuadrature_) {
+        } else if (gaussianQuadrature_ != 0) {
             return gaussianQuadrature_->order();
         }
         else {
@@ -735,9 +774,10 @@ namespace QuantLib {
     }
 
     Real AnalyticHestonEngine::Integration::calculate(
-                               Real c_inf,
-                               const ext::function<Real(Real)>& f,
-                               Real maxBound) const {
+        Real c_inf,
+        const ext::function<Real(Real)>& f,
+        const ext::function<Real()>& maxBound) const {
+
         Real retVal;
 
         switch(intAlgo_) {
@@ -753,24 +793,35 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-            if (maxBound == Null<Real>())
-                retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
-            else
-                retVal = (*integrator_)(f, 0.0, maxBound);
-            break;
+              if (maxBound != 0 && maxBound() != Null<Real>())
+                  retVal = (*integrator_)(f, 0.0, maxBound());
+              else
+                  retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
+              break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-            if (maxBound == Null<Real>())
-                retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
-            else
-                retVal = (*integrator_)(f, 0.0, maxBound);
-            break;
+              if (maxBound != 0 && maxBound() != Null<Real>())
+                  retVal = (*integrator_)(f, 0.0, maxBound());
+              else
+                  retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
+              break;
           default:
             QL_FAIL("unknwon integration algorithm");
         }
 
         return retVal;
      }
+
+    Real AnalyticHestonEngine::Integration::calculate(
+        Real c_inf,
+        const ext::function<Real(Real)>& f,
+        Real maxBound) const {
+
+        return AnalyticHestonEngine::Integration::calculate(
+            c_inf, f,
+            ext::bind(&constant<Real, Real>::operator(),
+                constant<Real, Real>(maxBound), 1.0));
+    }
 
     Real AnalyticHestonEngine::Integration::andersenPiterbargIntegrationLimit(
         Real c_inf, Real epsilon, Real v0, Real t) {

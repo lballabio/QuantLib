@@ -46,7 +46,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     const Real tolerance = 0.05;
 
     const Size nr=100000;
-    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
     std::vector<ext::function<Real(Real)> > v;
     v.push_back(constant<Real, Real>(1.0));
@@ -109,10 +109,16 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     }
 }
 
-namespace {
-    Real f(const Array& a, Size i) {
-        return a[i];
-    }
+namespace linear_least_square_regression_test {
+
+    struct get_item {
+        Size i;
+        explicit get_item(Size i) : i(i) {}
+        Real operator()(const Array& a) const {
+            return a[i];
+        }
+    };
+
 }
 
 void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
@@ -121,18 +127,19 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
         "Testing multi-dimensional linear least-squares regression...");
 
     using namespace ext::placeholders;
+    using namespace linear_least_square_regression_test;
 
     SavedSettings backup;
 
     const Size nr=100000;
     const Size dims = 4;
     const Real tolerance = 0.01;
-    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234u));
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
     std::vector<ext::function<Real(Array)> > v;
     v.push_back(constant<Array, Real>(1.0));
     for (Size i=0; i < dims; ++i) {
-        v.push_back(ext::bind(f, _1, i));
+        v.push_back(get_item(i));
     }
 
     Array coeff(v.size());

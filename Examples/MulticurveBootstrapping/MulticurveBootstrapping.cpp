@@ -627,10 +627,10 @@ int main(int, char* []) {
                                      new Euribor6M(forecastingTermStructure));
         Spread spread = 0.0;
 
-        Integer lenghtInYears = 5;
+        Integer lengthInYears = 5;
         VanillaSwap::Type swapType = VanillaSwap::Payer;
 
-        Date maturity = settlementDate + lenghtInYears*Years;
+        Date maturity = settlementDate + lengthInYears*Years;
         Schedule fixedSchedule(settlementDate, maturity,
                                Period(fixedLegFrequency),
                                calendar, fixedLegConvention,
@@ -647,7 +647,7 @@ int main(int, char* []) {
             floatingLegDayCounter);
 
         Date fwdStart = calendar.advance(settlementDate, 1, Years);
-        Date fwdMaturity = fwdStart + lenghtInYears*Years;
+        Date fwdMaturity = fwdStart + lengthInYears*Years;
         Schedule fwdFixedSchedule(fwdStart, fwdMaturity,
                                   Period(fixedLegFrequency),
                                   calendar, fixedLegConvention,

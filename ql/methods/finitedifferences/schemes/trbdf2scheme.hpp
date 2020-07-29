@@ -82,15 +82,9 @@ namespace QuantLib {
         const bc_set& bcSet,
         Real relTol,
         SolverType solverType)
-    : dt_(Null<Real>()),
-      beta_(Null<Real>()),
-      iterations_(ext::make_shared<Size>(0u)),
-      alpha_(alpha),
-      map_(map),
-      trapezoidalScheme_(trapezoidalScheme),
-      bcSet_(bcSet),
-      relTol_(relTol),
-      solverType_(solverType) {}
+    : dt_(Null<Real>()), beta_(Null<Real>()), iterations_(ext::make_shared<Size>(0U)),
+      alpha_(alpha), map_(map), trapezoidalScheme_(trapezoidalScheme), bcSet_(bcSet),
+      relTol_(relTol), solverType_(solverType) {}
 
     template <class TrapezoidalScheme>
     inline void TrBDF2Scheme<TrapezoidalScheme>::setStep(Time dt) {
@@ -147,8 +141,9 @@ namespace QuantLib {
                 fn = result.x;
             } else if (solverType_ == GMRES) {
                 const GMRESResult result =
-                    QuantLib::GMRES(applyF, std::max(Size(10), fn.size()/10u),
-                        relTol_, preconditioner).solve(f, f);
+                    QuantLib::GMRES(applyF, std::max(Size(10), fn.size() / 10U), relTol_,
+                                    preconditioner)
+                        .solve(f, f);
 
                 (*iterations_) += result.errors.size();
                 fn = result.x;

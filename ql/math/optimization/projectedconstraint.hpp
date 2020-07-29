@@ -53,7 +53,7 @@ namespace QuantLib {
             }
 
           private:
-            const Constraint &constraint_;
+            const Constraint constraint_;
             const Projection projection_;
         };
 

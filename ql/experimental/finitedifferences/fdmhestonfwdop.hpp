@@ -41,13 +41,12 @@ namespace QuantLib {
 
     class FdmHestonFwdOp : public FdmLinearOpComposite {
       public:
-        FdmHestonFwdOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<HestonProcess>& process,
-            FdmSquareRootFwdOp::TransformationType type 
-                = FdmSquareRootFwdOp::Plain,
-            const ext::shared_ptr<LocalVolTermStructure> & leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+        FdmHestonFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
+                       const ext::shared_ptr<HestonProcess>& process,
+                       FdmSquareRootFwdOp::TransformationType type = FdmSquareRootFwdOp::Plain,
+                       const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                           ext::shared_ptr<LocalVolTermStructure>(),
+                       Real mixingFactor = 1.0);
 
         Size size() const;
         void setTime(Time t1, Time t2);
@@ -67,7 +66,7 @@ namespace QuantLib {
       private:
         Disposable<Array> getLeverageFctSlice(Time t1, Time t2) const;
         const FdmSquareRootFwdOp::TransformationType type_;
-        const Real kappa_, theta_, sigma_, rho_, v0_;
+        const Real kappa_, theta_, sigma_, rho_, v0_, mixedSigma_;
 
         const ext::shared_ptr<YieldTermStructure> rTS_;
         const ext::shared_ptr<YieldTermStructure> qTS_;

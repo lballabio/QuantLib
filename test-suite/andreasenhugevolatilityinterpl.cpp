@@ -47,7 +47,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace andreasen_huge_volatility_interpl_test {
 
     struct CalibrationData {
         const Handle<Quote> spot;
@@ -360,6 +360,8 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugePut() {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Put calibration...");
 
+    using namespace andreasen_huge_volatility_interpl_test;
+
     const CalibrationData data = AndreasenHugeExampleData();
 
     const CalibrationResults expected = {
@@ -376,6 +378,8 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall() {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Call calibration...");
+
+    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData data = AndreasenHugeExampleData();
 
@@ -395,6 +399,8 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut() {
         "Testing Andreasen-Huge example with instantaneous "
          "Call and Put calibration...");
 
+    using namespace andreasen_huge_volatility_interpl_test;
+
     const CalibrationData data = AndreasenHugeExampleData();
 
     const CalibrationResults expected = {
@@ -411,6 +417,8 @@ void AndreasenHugeVolatilityInterplTest::testLinearInterpolation() {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with linear interpolation...");
 
+    using namespace andreasen_huge_volatility_interpl_test;
+
     const CalibrationData data = AndreasenHugeExampleData();
 
     const CalibrationResults expected = {
@@ -426,6 +434,8 @@ void AndreasenHugeVolatilityInterplTest::testLinearInterpolation() {
 void AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation() {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with piecewise constant interpolation...");
+
+    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData data = AndreasenHugeExampleData();
 
@@ -444,6 +454,8 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation with "
         "time dependent interest rates and dividend yield...");
+
+    using namespace andreasen_huge_volatility_interpl_test;
 
     SavedSettings backup;
 
@@ -590,6 +602,8 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation gives "
         "arbitrage free prices...");
+
+    using namespace andreasen_huge_volatility_interpl_test;
 
     SavedSettings backup;
 
@@ -784,7 +798,7 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
     }
 }
 
-namespace {
+namespace andreasen_huge_volatility_interpl_test {
     std::pair<CalibrationData, std::vector<Real> > sabrData() {
 
         const DayCounter dc = Actual365Fixed();
@@ -838,6 +852,8 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
 
     // http://chasethedevil.github.io/post/andreasen-huge-extrapolation/
 
+    using namespace andreasen_huge_volatility_interpl_test;
+
     SavedSettings backup;
 
     const std::pair<CalibrationData, std::vector<Real> > sd = sabrData();
@@ -884,6 +900,8 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
     BOOST_TEST_MESSAGE(
         "Testing different optimizer for Andreasen-Huge "
         "volatility interpolation...");
+
+    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData& data = sabrData().first;
 
@@ -995,6 +1013,8 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
 void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with flat volatility surface...");
+
+    using namespace andreasen_huge_volatility_interpl_test;
 
     SavedSettings backup;
 

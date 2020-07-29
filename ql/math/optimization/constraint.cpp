@@ -24,9 +24,7 @@ namespace QuantLib {
     Constraint::Constraint(const ext::shared_ptr<Constraint::Impl>& impl)
     : impl_(impl) {}
 
-    Real Constraint::update(Array& params,
-                            const Array& direction,
-                            Real beta) {
+    Real Constraint::update(Array& params, const Array& direction, Real beta) const {
 
         Real diff=beta;
         Array newParams = params + diff*direction;
@@ -43,5 +41,4 @@ namespace QuantLib {
         params += diff*direction;
         return diff;
     }
-
 }

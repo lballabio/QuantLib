@@ -55,7 +55,7 @@ namespace QuantLib {
                   const Handle<DefaultProbabilityTermStructure>& defaultTS,
                   const Handle<YieldTermStructure>& yieldTS,
                   Natural settlementDays = 0,
-                  Calendar calendar = Calendar());
+                  const Calendar& calendar = Calendar());
         virtual ~RiskyBond() {}
         virtual std::vector<ext::shared_ptr<CashFlow> > cashflows() const = 0;
         std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
@@ -150,23 +150,23 @@ namespace QuantLib {
     */
     class RiskyFloatingBond : public RiskyBond {
     public:
-        RiskyFloatingBond(std::string name,
-                          Currency ccy,
-                          Real recoveryRate,
-                          Handle<DefaultProbabilityTermStructure> defaultTS,
-                          const Schedule& schedule,
-                          ext::shared_ptr<IborIndex> index,
-                          Integer fixingDays,
-                          Real spread,
-                          std::vector<Real> notionals,
-                          Handle<YieldTermStructure> yieldTS,
-                          Natural settlementDays = 0);
-        std::vector<ext::shared_ptr<CashFlow> > cashflows() const;
-        Real notional(Date date = Date::minDate()) const;
-        Date effectiveDate() const;
-        Date maturityDate() const;
-        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const;
-        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const;
+      RiskyFloatingBond(const std::string& name,
+                        const Currency& ccy,
+                        Real recoveryRate,
+                        const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                        const Schedule& schedule,
+                        const ext::shared_ptr<IborIndex>& index,
+                        Integer fixingDays,
+                        Real spread,
+                        const std::vector<Real>& notionals,
+                        const Handle<YieldTermStructure>& yieldTS,
+                        Natural settlementDays = 0);
+      std::vector<ext::shared_ptr<CashFlow> > cashflows() const;
+      Real notional(Date date = Date::minDate()) const;
+      Date effectiveDate() const;
+      Date maturityDate() const;
+      std::vector<ext::shared_ptr<CashFlow> > interestFlows() const;
+      std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const;
     private:
         Schedule schedule_;
         ext::shared_ptr<IborIndex> index_;

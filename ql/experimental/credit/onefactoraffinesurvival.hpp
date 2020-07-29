@@ -41,77 +41,68 @@ namespace QuantLib {
         : public HazardRateStructure {
     public:
         // implement remaining constructors.....
-        OneFactorAffineSurvivalStructure(
-            ext::shared_ptr<OneFactorAffineModel> model,
-            const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps 
-                = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>()
-        ) : HazardRateStructure(dayCounter, jumps, jumpDates), 
-            model_(model) {}
+      explicit OneFactorAffineSurvivalStructure(
+          const ext::shared_ptr<OneFactorAffineModel>& model,
+          const DayCounter& dayCounter = DayCounter(),
+          const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+          const std::vector<Date>& jumpDates = std::vector<Date>())
+      : HazardRateStructure(dayCounter, jumps, jumpDates), model_(model) {}
 
-        OneFactorAffineSurvivalStructure(
-            ext::shared_ptr<OneFactorAffineModel> model,
-            const Date& referenceDate,
-            const Calendar& cal = Calendar(),
-            const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps 
-                = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>()
-        ) 
-        : HazardRateStructure(referenceDate, Calendar(), dayCounter, jumps, 
-            jumpDates), model_(model) {}
+      OneFactorAffineSurvivalStructure(
+          const ext::shared_ptr<OneFactorAffineModel>& model,
+          const Date& referenceDate,
+          const Calendar& cal = Calendar(),
+          const DayCounter& dayCounter = DayCounter(),
+          const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+          const std::vector<Date>& jumpDates = std::vector<Date>())
+      : HazardRateStructure(referenceDate, Calendar(), dayCounter, jumps, jumpDates),
+        model_(model) {}
 
-        OneFactorAffineSurvivalStructure(
-            ext::shared_ptr<OneFactorAffineModel> model,
-            Natural settlementDays,
-            const Calendar& calendar,
-            const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps
-                                          = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>())
-        : HazardRateStructure(settlementDays, calendar,
-                              dayCounter, jumps, jumpDates),
-          model_(model) {}
+      OneFactorAffineSurvivalStructure(
+          const ext::shared_ptr<OneFactorAffineModel>& model,
+          Natural settlementDays,
+          const Calendar& calendar,
+          const DayCounter& dayCounter = DayCounter(),
+          const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+          const std::vector<Date>& jumpDates = std::vector<Date>())
+      : HazardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates), model_(model) {
+      }
 
-        //! \name TermStructure interface
-        //@{
-        // overwrite on mkt models (e.g. bootstraps)
-        Date maxDate() const {
-            return Date::maxDate();
-        }
+      //! \name TermStructure interface
+      //@{
+      // overwrite on mkt models (e.g. bootstraps)
+      Date maxDate() const { return Date::maxDate(); }
 
-        /* Notice this is not calling hazard rate methods, these are 
-           stochastic now.
-        */
-        /*!
-          Returns the probability at a future time dTgt, conditional to
-          survival at a prior time dFwd and to the realization of a particular
-          hazard rate value at dFwd.
-          \param dFwd Time of the forward survival calculation and HR
-                      realization.
-          \param dTgt Target time of survival probability.
-          \param yVal Realized value of the HR at time dFwd.
-          \param extrapolate Allow curve extrapolation.
-          \return Survival probability.
+      /* Notice this is not calling hazard rate methods, these are
+         stochastic now.
+      */
+      /*!
+        Returns the probability at a future time dTgt, conditional to
+        survival at a prior time dFwd and to the realization of a particular
+        hazard rate value at dFwd.
+        \param dFwd Time of the forward survival calculation and HR
+                    realization.
+        \param dTgt Target time of survival probability.
+        \param yVal Realized value of the HR at time dFwd.
+        \param extrapolate Allow curve extrapolation.
+        \return Survival probability.
 
-          \todo turn into a protected method to be called by
-                defaults and survivals
-        */
-        /*
-          Note: curve extrapolation has a different meaning on different curve
-            types; for matched to market structures the credit market curves
-            would be requested for extrapolation; for affine models on top of
-            a static term structure it is this one that will be required for
-            extrapolation.
-         */
-        Probability conditionalSurvivalProbability(
-                const Date& dFwd, const Date& dTgt, Real yVal,
-                bool extrapolate = false) const
-        {
-            return conditionalSurvivalProbability(
-                timeFromReference(dFwd), timeFromReference(dTgt), 
-                yVal, extrapolate); 
+        \todo turn into a protected method to be called by
+              defaults and survivals
+      */
+      /*
+        Note: curve extrapolation has a different meaning on different curve
+          types; for matched to market structures the credit market curves
+          would be requested for extrapolation; for affine models on top of
+          a static term structure it is this one that will be required for
+          extrapolation.
+       */
+      Probability conditionalSurvivalProbability(const Date& dFwd,
+                                                 const Date& dTgt,
+                                                 Real yVal,
+                                                 bool extrapolate = false) const {
+          return conditionalSurvivalProbability(timeFromReference(dFwd), timeFromReference(dTgt),
+                                                yVal, extrapolate); 
         }
         Probability conditionalSurvivalProbability(
                 Time tFwd, Time tgt, Real yVal,

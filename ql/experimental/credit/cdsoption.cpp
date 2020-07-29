@@ -39,9 +39,8 @@ namespace QuantLib {
                    Real recoveryRate,
                    const Handle<YieldTermStructure>& termStructure,
                    Real targetValue)
-            : targetValue_(targetValue) {
+            : targetValue_(targetValue), vol_(ext::make_shared<SimpleQuote>(0.0)) {
 
-                vol_ = ext::make_shared<SimpleQuote>(0.0);
                 Handle<Quote> h(vol_);
                 engine_ = ext::shared_ptr<PricingEngine>(
                            new BlackCdsOptionEngine(probability, recoveryRate,

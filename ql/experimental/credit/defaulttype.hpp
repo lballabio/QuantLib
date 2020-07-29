@@ -167,8 +167,8 @@ namespace QuantLib {
         // Only atomic construction.
         // Amount contract by default is in dollars as per ISDA doc and not
         //   the contract curr. Theres an issue here...... FIX ME
-        FailureToPay(const Period& grace,
-                     Real amount = 1.e+6)
+        explicit FailureToPay(const Period& grace,
+                              Real amount = 1.e+6)
         : DefaultType(AtomicDefault::FailureToPay, Restructuring::XR),
           gracePeriod_(grace), amountRequired_(amount) {}
 

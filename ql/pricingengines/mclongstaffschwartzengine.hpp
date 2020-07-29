@@ -114,42 +114,39 @@ namespace QuantLib {
             mcModelCalibration_;
     };
 
-    template <class GenericEngine, template <class> class MC,
-              class RNG, class S, class RNG_Calibration>
-    inline MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S,RNG_Calibration>::
-    MCLongstaffSchwartzEngine(
-            const ext::shared_ptr<StochasticProcess>& process,
-            Size timeSteps,
-            Size timeStepsPerYear,
-            bool brownianBridge,
-            bool antitheticVariate,
-            bool controlVariate,
-            Size requiredSamples,
-            Real requiredTolerance,
-            Size maxSamples,
-            BigNatural seed,
-            Size nCalibrationSamples,
-            boost::optional<bool> brownianBridgeCalibration,
-            boost::optional<bool> antitheticVariateCalibration,
-            BigNatural seedCalibration)
-    : McSimulation<MC,RNG,S> (antitheticVariate, controlVariate),
-      process_            (process),
-      timeSteps_          (timeSteps),
-      timeStepsPerYear_   (timeStepsPerYear),
-      brownianBridge_     (brownianBridge),
-      requiredSamples_    (requiredSamples),
-      requiredTolerance_  (requiredTolerance),
-      maxSamples_         (maxSamples),
-      seed_               (seed),
-      nCalibrationSamples_( (nCalibrationSamples == Null<Size>())
-                            ? 2048 : nCalibrationSamples),
-      brownianBridgeCalibration_ (brownianBridgeCalibration ?
-                                  *brownianBridgeCalibration : brownianBridge),
-      antitheticVariateCalibration_(antitheticVariateCalibration ?
-                                    *antitheticVariateCalibration : antitheticVariate),
-      seedCalibration_(seedCalibration != Null<Real>() ?
-                         seedCalibration : (seed == 0 ? 0 : seed+1768237423L))
-    {
+    template <class GenericEngine,
+              template <class> class MC,
+              class RNG,
+              class S,
+              class RNG_Calibration>
+    inline MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S, RNG_Calibration>::
+        MCLongstaffSchwartzEngine(const ext::shared_ptr<StochasticProcess>& process,
+                                  Size timeSteps,
+                                  Size timeStepsPerYear,
+                                  bool brownianBridge,
+                                  bool antitheticVariate,
+                                  bool controlVariate,
+                                  Size requiredSamples,
+                                  Real requiredTolerance,
+                                  Size maxSamples,
+                                  BigNatural seed,
+                                  Size nCalibrationSamples,
+                                  boost::optional<bool> brownianBridgeCalibration,
+                                  boost::optional<bool> antitheticVariateCalibration,
+                                  BigNatural seedCalibration)
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(process),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), brownianBridge_(brownianBridge),
+      requiredSamples_(requiredSamples), requiredTolerance_(requiredTolerance),
+      maxSamples_(maxSamples), seed_(seed),
+      nCalibrationSamples_((nCalibrationSamples == Null<Size>()) ? 2048 : nCalibrationSamples),
+      // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+      brownianBridgeCalibration_(brownianBridgeCalibration ? *brownianBridgeCalibration :
+                                                                  brownianBridge),
+      antitheticVariateCalibration_(
+          // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+          antitheticVariateCalibration ? *antitheticVariateCalibration : antitheticVariate),
+      seedCalibration_(seedCalibration != Null<Real>() ? seedCalibration :
+                                                         (seed == 0 ? 0 : seed + 1768237423L)) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");

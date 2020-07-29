@@ -47,7 +47,7 @@ namespace QuantLib {
         Date start = evaluation + 1;
         Date upfrontDate = WeekendsOnly().advance(evaluation, 3 * Days);
         Date end;
-        if(tenor_) {
+        if (tenor_) { // NOLINT(readability-implicit-bool-conversion)
             end = start + *tenor_;
         } else {
             end = *termDate_;
