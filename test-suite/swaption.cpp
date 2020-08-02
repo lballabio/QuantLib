@@ -952,55 +952,59 @@ void checkSwaptionDelta(bool useBachelierVol)
 {
     using namespace swaption_test;
 
-    Calendar calendar = TARGET();
-    Date today = calendar.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today;
+    CommonVars vars;
+    Date today = vars.today;
+    Calendar calendar = vars.calendar;
 
     const Real bump = 1.e-4;
+    const Real epsilon = 1.e-10;
     
-    RelinkableHandle<YieldTermStructure> projectionHandle;
+    RelinkableHandle<YieldTermStructure> projectionCurveHandle;
     
-    RelinkableHandle<Quote> projectionQuote;
-    projectionQuote.linkTo(ext::make_shared<SimpleQuote>(0.01));
+    const Real projectionRate = 0.01;
+    RelinkableHandle<Quote> projectionQuoteHandle;
 
     ext::shared_ptr<YieldTermStructure> projectionCurve = ext::make_shared<FlatForward>(
-        today, projectionQuote, Actual365Fixed());
-    projectionHandle.linkTo(projectionCurve);
+        today, projectionQuoteHandle, Actual365Fixed());
+    projectionCurveHandle.linkTo(projectionCurve);
 
-    Handle<YieldTermStructure> discountHandle(
-        ext::make_shared<FlatForward>(
+    Handle<YieldTermStructure> discountHandle(ext::make_shared<FlatForward>(
             today, 
             Handle<Quote>(ext::make_shared<SimpleQuote>(0.0085)), 
             Actual365Fixed()));
     ext::shared_ptr<DiscountingSwapEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(
         discountHandle);
     
-    Volatility volatility(0.2);
-    ext::shared_ptr<IborIndex> idx = ext::make_shared<Euribor6M>(projectionHandle);
+    ext::shared_ptr<IborIndex> idx = ext::make_shared<Euribor6M>(projectionCurveHandle);
     
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
-    Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::ParYieldCurve };
+    Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::CollateralizedCashPrice};
+    
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
-    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+    Volatility vols[] = { 0.0, 0.10, 0.20, 0.30, 0.70, 0.90 };
     
     for (Size u=0; u<LENGTH(vols); u++) {
-        Volatility volatility = useBachelierVol ? vols[u] / 100.0 : vols[u];
-        ext::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(
-            discountHandle, volatility);
         for (Size i=0; i<LENGTH(exercises); i++) {
-            Date exerciseDate = calendar.advance(today, exercises[i]);
-            Date startDate = calendar.advance(exerciseDate, 2*Days);
             for (Size j=0; j<LENGTH(lengths); j++) {
                 for (Size t=0; t<LENGTH(strikes); t++) {
                     for (Size h=0; h<LENGTH(type); h++) {
+                        Volatility volatility = useBachelierVol ? vols[u] / 100.0 : vols[u];
+                        ext::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(
+                            discountHandle, volatility);
+
+                        Date exerciseDate = calendar.advance(today, exercises[i]);
+                        Date startDate = calendar.advance(exerciseDate, 2*Days);
+                        projectionQuoteHandle.linkTo(ext::make_shared<SimpleQuote>(projectionRate));
+                        
                         ext::shared_ptr<VanillaSwap> underlying = MakeVanillaSwap(
                             lengths[j], idx, strikes[t])
-                            .withEffectiveDate(exerciseDate)
+                            .withEffectiveDate(startDate)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(Thirty360())
                             .withFloatingLegSpread(0.0)
                             .withType(type[h]);
                         underlying->setPricingEngine(swapEngine);
+                        
                         Real fairRate = underlying->fairRate();
 
                         ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
@@ -1013,8 +1017,8 @@ void checkSwaptionDelta(bool useBachelierVol)
                         Real value = swaption->NPV();
                         Real delta = swaption->result<Real>("delta") * bump;
 
-                        projectionQuote.linkTo(ext::make_shared<SimpleQuote>(
-                            projectionQuote->value() + bump));
+                        projectionQuoteHandle.linkTo(ext::make_shared<SimpleQuote>(
+                            projectionRate + bump));
     
                         Real bumpedFairRate = underlying->fairRate();
                         Real bumpedValue = swaption->NPV();
@@ -1023,20 +1027,21 @@ void checkSwaptionDelta(bool useBachelierVol)
                         Real deltaBump = bumpedFairRate - fairRate;
                         Real approxDelta = (bumpedValue - value) / deltaBump * bump;
     
-                        Real lowerBound = std::min(delta, bumpedDelta);
-                        Real upperBound = std::max(delta, bumpedDelta);
+                        Real lowerBound = std::min(delta, bumpedDelta) - epsilon;
+                        Real upperBound = std::max(delta, bumpedDelta) + epsilon;
                         bool checkIsCorrect = lowerBound <= approxDelta && approxDelta <= upperBound;
                         
                         if (!checkIsCorrect)
                             BOOST_FAIL("failed to compute swaption delta:" <<
-                                "\n  option tenor:    " << exerciseDate <<
-                                "\n  volatility:      " << io::rate(volatility) <<
-                                "\n  option type:     " << swaption->type() <<
-                                "\n  swap tenor:      " << lengths[j] <<
-                                "\n  strike:          " << strikes[t] <<
-                                "\n  settlement:      " << types[h] <<
-                                "\n  nominal:         " << swaption->underlyingSwap()->nominal() <<
-                                "\n  npv:             " << swaption->NPV() <<
+                                "\n  option tenor:     " << exerciseDate <<
+                                "\n  volatility:       " << io::rate(volatility) <<
+                                "\n  option type:      " << swaption->type() <<
+                                "\n  swap tenor:       " << lengths[j] <<
+                                "\n  strike:           " << strikes[t] <<
+                                "\n  settlement:       " << types[h] <<
+                                "\n  method:           " << methods[h] <<
+                                "\n  nominal:          " << swaption->underlyingSwap()->nominal() <<
+                                "\n  npv:              " << value <<
                                 "\n  calculated delta: " << delta <<
                                 "\n  expected delta:   " << approxDelta);
                     }

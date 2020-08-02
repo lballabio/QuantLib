@@ -122,10 +122,13 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
         
+        if (stdDev==0.0)
+            return std::max(1.0 * optionType * boost::math::sign(forward-strike), 0.0) * discount;
+
         forward = forward + displacement;
         strike = strike + displacement;
 
-        if (stdDev==0.0 || strike == 0)
+        if (strike==0.0)
             return (optionType==Option::Call ? discount : 0.0);
 
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
@@ -733,7 +736,7 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
         if (stdDev==0.0)
-            return (optionType==Option::Call ? discount : 0.0);
+            return std::max(1.0 * optionType * boost::math::sign(forward-strike), 0.0) * discount;
         Real d = (forward-strike)*optionType, h = d/stdDev;
         CumulativeNormalDistribution phi;
         return phi(h) * discount;
