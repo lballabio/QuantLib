@@ -328,7 +328,12 @@ void BlackFormulaTest::testBlackFormulaForwardDerivative() {
 
     BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula...");
 
-    std::vector<Real> strikes{0.1, 0.5, 1.0, 2.0, 3.0};
+    std::vector<Real> strikes;
+    strikes.push_back(0.1);
+    strikes.push_back(0.5);
+    strikes.push_back(1.0);
+    strikes.push_back(2.0);
+    strikes.push_back(3.0);
     const Real vol = 0.1;
     assertBlackFormulaForwardDerivative(Option::Call, strikes, vol);
     assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
@@ -339,7 +344,8 @@ void BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroStrike() {
     BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula "
         "with zero strike...");
 
-    std::vector<Real> strikes{0.0};
+    std::vector<Real> strikes;
+    strikes.push_back(0.0);
     const Real vol = 0.1;
     assertBlackFormulaForwardDerivative(Option::Call, strikes, vol);
     assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
@@ -350,7 +356,12 @@ void BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroVolatility() {
     BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula "
         "with zero volatility...");
 
-    std::vector<Real> strikes{0.1, 0.5, 1.0, 2.0, 3.0};
+    std::vector<Real> strikes;
+    strikes.push_back(0.1);
+    strikes.push_back(0.5);
+    strikes.push_back(1.0);
+    strikes.push_back(2.0);
+    strikes.push_back(3.0);
     const Real vol = 0.0;
     assertBlackFormulaForwardDerivative(Option::Call, strikes, vol);
     assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
@@ -407,7 +418,16 @@ void BlackFormulaTest::testBachelierBlackFormulaForwardDerivative() {
     BOOST_TEST_MESSAGE("Testing forward derivative of the "
         "Bachelier Black formula...");
 
-    std::vector<Real> strikes{-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0};
+    std::vector<Real> strikes;
+    strikes.push_back(-3.0);
+    strikes.push_back(-2.0);
+    strikes.push_back(-1.0);
+    strikes.push_back(-0.5);
+    strikes.push_back(0.0);
+    strikes.push_back(0.5);
+    strikes.push_back(1.0);
+    strikes.push_back(2.0);
+    strikes.push_back(3.0);
     const Real vol = 0.001;
     assertBachelierBlackFormulaForwardDerivative(Option::Call, strikes, vol);
     assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
@@ -418,7 +438,16 @@ void BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatil
     BOOST_TEST_MESSAGE("Testing forward derivative of the Bachelier Black formula "
         "with zero volatility...");
 
-    std::vector<Real> strikes{-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0};
+    std::vector<Real> strikes;
+    strikes.push_back(-3.0);
+    strikes.push_back(-2.0);
+    strikes.push_back(-1.0);
+    strikes.push_back(-0.5);
+    strikes.push_back(0.0);
+    strikes.push_back(0.5);
+    strikes.push_back(1.0);
+    strikes.push_back(2.0);
+    strikes.push_back(3.0);
     const Real vol = 0.0;
     assertBachelierBlackFormulaForwardDerivative(Option::Call, strikes, vol);
     assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
