@@ -1029,6 +1029,11 @@ void checkSwaptionDelta(bool useBachelierVol)
     
                         Real lowerBound = std::min(delta, bumpedDelta) - epsilon;
                         Real upperBound = std::max(delta, bumpedDelta) + epsilon;
+
+                        /*! Based on the Mean Value Theorem, the below equality
+                            should hold for any function that is monotonic in the
+                            area of the bump.
+                        */
                         bool checkIsCorrect = lowerBound <= approxDelta && approxDelta <= upperBound;
                         
                         if (!checkIsCorrect)
