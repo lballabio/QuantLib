@@ -41,8 +41,8 @@ namespace QuantLib {
         \ingroup optimizers
     */
 
-    template <class RNG = MersenneTwisterUniformRng>
     //! Simulated Annealing
+    template <class RNG = MersenneTwisterUniformRng>
     class SimulatedAnnealing : public OptimizationMethod {
 
       public:
