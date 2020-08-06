@@ -504,7 +504,6 @@ void IntegralTest::testExponentialIntegral() {
             if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(e1.real()) > tol)
             || (std::abs(ref.imag()) < tol && std::abs(e1.imag()) > tol)) {
-            std::cout << e1 << " " << ref << std::endl;
             integrals_test::reportSiCiFail("E1", z, e1, ref, diff, tol);
         }
     }
