@@ -303,7 +303,7 @@ void assertBlackFormulaForwardDerivative(
             optionType, strike, forward + bump, stdDev, discount, displacement);
         Real delta_approx = bumped_premium - base_premium;
 
-        /*! Based on the Mean Value Theorem, the below equality
+        /*! Based on the Mean Value Theorem, the below inequality
             should hold for any function that is monotonic in the
             area of the bump.
          */
@@ -393,7 +393,7 @@ void assertBachelierBlackFormulaForwardDerivative(
             optionType, strike, forward + bump, stdDev, discount);
         Real delta_approx = bumped_premium - base_premium;
 
-        /*! Based on the Mean Value Theorem, the below equality
+        /*! Based on the Mean Value Theorem, the below inequality
             should hold for any function that is monotonic in the
             area of the bump.
          */
