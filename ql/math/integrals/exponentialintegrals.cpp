@@ -129,7 +129,7 @@ namespace QuantLib {
 
 
     std::complex<Real> E1(std::complex<Real> z) {
-        QL_REQUIRE(std::abs(z) <= 20.0, "Insufficient precision for |z| > 20.0");
+        QL_REQUIRE(std::abs(z) <= 25.0, "Insufficient precision for |z| > 25.0");
 
         std::complex<Real> s(0.0), sn(-z);
 
