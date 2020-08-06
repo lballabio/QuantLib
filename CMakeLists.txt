@@ -45,7 +45,7 @@ if (Boost_FOUND)
 endif (Boost_FOUND)
 
 add_subdirectory(ql)
-#add_subdirectory(Examples)
+add_subdirectory(Examples)
 add_subdirectory(test-suite)
 
 #
