@@ -23,7 +23,6 @@
 
 #include "swaption.hpp"
 #include "utilities.hpp"
-#include <ql/time/calendars/target.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
