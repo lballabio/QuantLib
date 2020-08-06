@@ -51,11 +51,15 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
+        enum ControlVariate {
+            AndersenPiterbarg,
+            AndersenPiterbargOptCV,
+            AsymptoticChF,
+            OptimalCV };
 
         explicit ExponentialFittingHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
-            ControlVariate cv = AndersenPiterbargOptCV,
+            ControlVariate cv = AndersenPiterbarg,
             Real scaling = Null<Real>());
 
         void calculate() const;

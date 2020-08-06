@@ -3133,6 +3133,142 @@ void HestonModelTest::testHestonEngineIntegration() {
     }
 }
 
+
+void HestonModelTest::testOptimalControlVariateChoice() {
+    BOOST_TEST_MESSAGE(
+        "Testing optimal control variate choice for the Heston model...");
+
+    Real v0    =  0.0225;
+    Real rho   =  0.5;
+    Real sigma =  2.0;
+    Real kappa =  0.1;
+    Real theta =  0.01;
+    Time t = 2.0;
+
+    AnalyticHestonEngine::ComplexLogFormula calculated =
+        AnalyticHestonEngine::optimalControlVariate(
+            t, v0, kappa, theta, sigma, rho);
+
+    if (calculated != AnalyticHestonEngine::AsymptoticChF) {
+        BOOST_ERROR("failed to reproduce optimal control variate choice");
+    }
+
+    calculated = AnalyticHestonEngine::optimalControlVariate(
+            t, v0, kappa, theta, 0.2, rho);
+    if (calculated != AnalyticHestonEngine::AndersenPiterbargOptCV) {
+        BOOST_ERROR("failed to reproduce optimal control variate choice");
+    }
+
+    calculated = AnalyticHestonEngine::optimalControlVariate(
+            t, 0.2, kappa, theta, sigma, rho);
+    if (calculated != AnalyticHestonEngine::AndersenPiterbargOptCV) {
+        BOOST_ERROR("failed to reproduce optimal control variate choice");
+    }
+
+}
+
+void HestonModelTest::testAsymptoticControlVariate() {
+    BOOST_TEST_MESSAGE("Testing Heston asymptotic control variate...");
+
+    SavedSettings backup;
+
+    const Date todaysDate = Date(4, August, 2020);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const DayCounter dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
+
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
+
+    const Real v0    =  0.0225;
+    const Real rho   =  0.5;
+    const Real sigma =  2.0;
+    const Real kappa =  0.1;
+    const Real theta =  0.01;
+
+    const ext::shared_ptr<HestonModel> model =
+        ext::make_shared<HestonModel>(
+            ext::make_shared<HestonProcess>(
+                rTS, rTS, s0, v0, kappa, theta, sigma, rho));
+
+    const Date maturityDate = todaysDate + Period(2, Years);
+    const Time t = dc.yearFraction(todaysDate, maturityDate);
+    const ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturityDate);
+
+    const Real moneyness = 0.0;
+
+    const Real moneynesses[] = { -15, -10, -5, 0, 5, 10, 15 };
+
+    const Real expected[] = {
+        0.0074676425640918,
+        0.008680823863233695,
+        0.010479611906112223,
+        0.023590088942038945,
+        0.0019575784806211706,
+        0.0005490310253748906,
+        0.0001657118753134695
+    };
+
+    const ext::shared_ptr<PricingEngine> engines[] = {
+        ext::make_shared<AnalyticHestonEngine>(
+            model,
+            AnalyticHestonEngine::OptimalCV,
+            AnalyticHestonEngine::Integration::gaussLobatto(1e-10, 1e-10, 1e5)),
+        ext::make_shared<AnalyticHestonEngine>(
+            model,
+            AnalyticHestonEngine::OptimalCV,
+            AnalyticHestonEngine::Integration::gaussLaguerre(96)),
+        ext::make_shared<ExponentialFittingHestonEngine>(
+            model,
+            ExponentialFittingHestonEngine::OptimalCV)
+    };
+
+    for (Size j=0; j < LENGTH(engines); ++j) {
+        for (Size i=0; i < LENGTH(moneynesses); ++i) {
+            const Real moneyness = moneynesses[i];
+
+            const Real strike = std::exp(-moneyness*std::sqrt(theta*t));
+
+            const ext::shared_ptr<PlainVanillaPayoff> payoff =
+                ext::make_shared<PlainVanillaPayoff>(
+                    strike > 1.0 ? Option::Call : Option::Put, strike);
+
+            const ext::shared_ptr<PricingEngine> engine = engines[j];
+
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(engine);
+
+            const Real calculated = option.NPV();
+
+            const ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine =
+                ext::dynamic_pointer_cast<AnalyticHestonEngine>(engine);
+
+            if (analyticHestonEngine
+                && analyticHestonEngine->numberOfEvaluations() > 5000) {
+                BOOST_ERROR("too many function valuation needed "
+                        << "\n  moneyness      : " << moneyness
+                        << "\n  evaluations    : "
+                        << analyticHestonEngine->numberOfEvaluations()
+                        << "\n  max evaluations: " << 5000);
+            }
+
+            const Real diff = std::fabs(calculated - expected[i]);
+            if (diff > 5e-8) {
+                BOOST_ERROR("failed to reproduce extreme Heston model values for"
+                        << "\n  moneyness : " << moneyness
+                        << "\n  #engine   : " << j
+                        << "\n  calculated: " << calculated
+                        << "\n  expected  : " << expected[i]
+                        << "\n  difference: " << diff
+                        << "\n  tolerance : " << 1e-8);
+            }
+        }
+    }
+}
+
+
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
 
@@ -3178,6 +3314,10 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testExponentialFitting4StrikesAndMaturities));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testHestonEngineIntegration));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testOptimalControlVariateChoice));
+    suite->add(QUANTLIB_TEST_CASE(
+        &HestonModelTest::testAsymptoticControlVariate));
 
 
     if (speed <= Fast) {

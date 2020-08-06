@@ -373,6 +373,7 @@ set(QuantLib_SRC
     math/factorial.cpp
     math/incompletegamma.cpp
     math/integrals/discreteintegrals.cpp
+    math/integrals/exponentialintegrals.cpp
     math/integrals/filonintegral.cpp
     math/integrals/gaussianorthogonalpolynomial.cpp
     math/integrals/gaussianquadratures.cpp
@@ -1438,6 +1439,7 @@ set(QuantLib_HDR
     math/initializers.hpp
     math/integrals/all.hpp
     math/integrals/discreteintegrals.hpp
+    math/integrals/exponentialintegrals.hpp
     math/integrals/filonintegral.hpp
     math/integrals/gaussianorthogonalpolynomial.hpp
     math/integrals/gaussianquadratures.hpp
