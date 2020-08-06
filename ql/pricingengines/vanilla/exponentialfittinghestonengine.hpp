@@ -52,14 +52,19 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         enum ControlVariate {
+            // Gatheral form with Andersen-Piterbarg control variate
             AndersenPiterbarg,
+            // same as AndersenPiterbarg, but a slightly better control variate
             AndersenPiterbargOptCV,
+            // Gatheral form with asymptotic expansion of the characteristic function as control variate
             AsymptoticChF,
-            OptimalCV };
+            // auto selection of best control variate algorithm from above
+            OptimalCV
+        };
 
         explicit ExponentialFittingHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
-            ControlVariate cv = AndersenPiterbarg,
+            ControlVariate cv = OptimalCV,
             Real scaling = Null<Real>());
 
         void calculate() const;
