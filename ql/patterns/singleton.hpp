@@ -79,9 +79,24 @@
 
 namespace QuantLib {
 
+    // This allows to define a different type if needed, while keeping
+    // backwards compatibility with the current implementation.
+    // For instance, one might create a file threadkey.hpp with:
+    //
+    // #include <pthread.h>
+    // #define QL_THREAD_KEY pthread_t
+    //
+    // and then compile QuantLib with the option -DQL_INCLUDE_FIRST=threadkey.hpp
+    // to have that file included by qldefines.hpp and thus this one.
+    #if defined(QL_THREAD_KEY)
+    typedef QL_THREAD_KEY ThreadKey;
+    #else
+    typedef Integer ThreadKey;
+    #endif
+
     #if defined(QL_ENABLE_SESSIONS)
     // definition must be provided by the user
-    Integer sessionId();
+    ThreadKey sessionId();
     #endif
 
     // this is required on VC++ when CLR support is enabled
@@ -111,7 +126,7 @@ namespace QuantLib {
     class Singleton : private boost::noncopyable {
     #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
       private:
-        static std::map<Integer, ext::shared_ptr<T> > instances_;
+        static std::map<ThreadKey, ext::shared_ptr<T> > instances_;
     #endif
 
     #if defined(QL_SINGLETON_THREAD_SAFE_INIT)
@@ -130,8 +145,8 @@ namespace QuantLib {
     // static member definitions
     
     #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-      template <class T>
-      std::map<Integer, ext::shared_ptr<T> > Singleton<T>::instances_;
+    template <class T>
+    std::map<ThreadKey, ext::shared_ptr<T> > Singleton<T>::instances_;
     #endif
 
     #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
@@ -145,7 +160,7 @@ namespace QuantLib {
     T& Singleton<T>::instance() {
 
         #if (QL_MANAGED == 0) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-        static std::map<Integer, ext::shared_ptr<T> > instances_;
+        static std::map<ThreadKey, ext::shared_ptr<T> > instances_;
         #endif
 
         // thread safe double checked locking pattern with atomic memory calls
@@ -165,9 +180,9 @@ namespace QuantLib {
         #else //this is not thread safe
 
         #if defined(QL_ENABLE_SESSIONS)
-        Integer id = sessionId();
+        ThreadKey id = sessionId();
         #else
-        Integer id = 0;
+        ThreadKey id = 0;
         #endif
 
         ext::shared_ptr<T>& instance = instances_[id];
