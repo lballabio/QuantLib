@@ -3197,8 +3197,6 @@ void HestonModelTest::testAsymptoticControlVariate() {
     const ext::shared_ptr<Exercise> exercise =
         ext::make_shared<EuropeanExercise>(maturityDate);
 
-    const Real moneyness = 0.0;
-
     const Real moneynesses[] = { -15, -10, -5, 0, 5, 10, 15 };
 
     const Real expected[] = {
@@ -3215,14 +3213,12 @@ void HestonModelTest::testAsymptoticControlVariate() {
         ext::make_shared<AnalyticHestonEngine>(
             model,
             AnalyticHestonEngine::OptimalCV,
-            AnalyticHestonEngine::Integration::gaussLobatto(1e-10, 1e-10, 1e5)),
+            AnalyticHestonEngine::Integration::gaussLobatto(1e-10, 1e-10, 100000)),
         ext::make_shared<AnalyticHestonEngine>(
             model,
             AnalyticHestonEngine::OptimalCV,
             AnalyticHestonEngine::Integration::gaussLaguerre(96)),
-        ext::make_shared<ExponentialFittingHestonEngine>(
-            model,
-            ExponentialFittingHestonEngine::OptimalCV)
+        ext::make_shared<ExponentialFittingHestonEngine>(model)
     };
 
     for (Size j=0; j < LENGTH(engines); ++j) {

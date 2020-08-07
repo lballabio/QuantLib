@@ -572,7 +572,7 @@ namespace QuantLib {
         AnalyticHestonEngine::optimalControlVariate(
         Time t, Real v0, Real kappa, Real theta, Real sigma, Real rho) {
 
-        if ((v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.055) {
+        if (t > 0.1 && (v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.055) {
             return AsymptoticChF;
         }
         else {

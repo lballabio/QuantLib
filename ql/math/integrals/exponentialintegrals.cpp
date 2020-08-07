@@ -80,12 +80,6 @@ namespace QuantLib {
             return -Si(-x);
         else if (x <= 4.0) {
             const Real x2 = x*x;
-            const Real x4 = x2*x2;
-            const Real x6 = x4*x2;
-            const Real x8 = x6*x2;
-            const Real x10 = x8*x2;
-            const Real x12 = x10*x2;
-            const Real x14 = x12*x2;
 
             return x*
                 ( 1 + x2*(-4.54393409816329991e-2 + x2*(1.15457225751016682e-3
@@ -155,7 +149,7 @@ namespace QuantLib {
         for (n=2; n < 1000 && s+sn*nn != s; ++n) {
             s+=sn*nn;
 
-            if (n & 1)
+            if ((n & 1) != 0u)
                 nn += 1/(2.0*(n/2) + 1);
 
             sn *= -z / Real(2*n);

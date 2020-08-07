@@ -349,7 +349,7 @@ void IntegralTest::testPiecewiseIntegral() {
 namespace integrals_test {
     template <class T>
     void reportSiCiFail(
-            std::string name, T z, T c, T e, Real diff, Real tol) {
+            const std::string& name, T z, T c, T e, Real diff, Real tol) {
         BOOST_FAIL(std::setprecision(16)
             << name << " calculation failed for " << z
             << "\n calculated: " << c
