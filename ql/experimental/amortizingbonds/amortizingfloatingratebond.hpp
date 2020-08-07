@@ -49,7 +49,11 @@ namespace QuantLib {
                         const std::vector<Rate>& caps = std::vector<Rate>(),
                         const std::vector<Rate>& floors = std::vector<Rate>(),
                         bool inArrears = false,
-                        const Date& issueDate = Date());
+                        const Date& issueDate = Date(),
+                        const Period& exCouponPeriod = Period(),
+                        const Calendar& exCouponCalendar = Calendar(),
+                        const BusinessDayConvention exCouponConvention = Unadjusted,
+                        bool exCouponEndOfMonth = false);
     };
 
 }

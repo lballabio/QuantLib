@@ -38,7 +38,8 @@ namespace QuantLib {
                          underlying->referencePeriodStart(),
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
-                         underlying->isInArrears()),
+                         underlying->isInArrears(),
+                         underlying->exCouponDate()),
       underlying_(underlying),
       isCapped_(false), isFloored_(false) {
 

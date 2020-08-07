@@ -31,7 +31,11 @@ namespace QuantLib {
                                       const std::vector<Rate>& coupons,
                                       const DayCounter& accrualDayCounter,
                                       BusinessDayConvention paymentConvention,
-                                      const Date& issueDate)
+                                      const Date& issueDate,
+                                      const Period& exCouponPeriod,
+                                      const Calendar& exCouponCalendar,
+                                      const BusinessDayConvention exCouponConvention,
+                                      bool exCouponEndOfMonth)
     : Bond(settlementDays, schedule.calendar(), issueDate),
       frequency_(schedule.tenor().frequency()),
       dayCounter_(accrualDayCounter) {
@@ -41,7 +45,11 @@ namespace QuantLib {
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(notionals)
             .withCouponRates(coupons, accrualDayCounter)
-            .withPaymentAdjustment(paymentConvention);
+            .withPaymentAdjustment(paymentConvention)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
 
         addRedemptionsToCashflows();
 

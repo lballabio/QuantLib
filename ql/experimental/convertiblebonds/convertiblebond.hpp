@@ -119,7 +119,11 @@ namespace QuantLib {
                 const std::vector<Rate>& coupons,
                 const DayCounter& dayCounter,
                 const Schedule& schedule,
-                Real redemption = 100);
+                Real redemption = 100,
+                const Period& exCouponPeriod = Period(),
+                const Calendar& exCouponCalendar = Calendar(),
+                const BusinessDayConvention exCouponConvention = Unadjusted,
+                bool exCouponEndOfMonth = false);
     };
 
 
@@ -144,7 +148,11 @@ namespace QuantLib {
                 const std::vector<Spread>& spreads,
                 const DayCounter& dayCounter,
                 const Schedule& schedule,
-                Real redemption = 100);
+                Real redemption = 100,
+                const Period& exCouponPeriod = Period(),
+                const Calendar& exCouponCalendar = Calendar(),
+                const BusinessDayConvention exCouponConvention = Unadjusted,
+                bool exCouponEndOfMonth = false);
     };
 
 
