@@ -34,14 +34,17 @@ namespace QuantLib {
     //! amortizing fixed-rate bond
     class AmortizingFixedRateBond : public Bond {
       public:
-        AmortizingFixedRateBond(
-                          Natural settlementDays,
-                          const std::vector<Real>& notionals,
-                          const Schedule& schedule,
-                          const std::vector<Rate>& coupons,
-                          const DayCounter& accrualDayCounter,
-                          BusinessDayConvention paymentConvention = Following,
-                          const Date& issueDate = Date());
+        AmortizingFixedRateBond(Natural settlementDays,
+                                const std::vector<Real>& notionals,
+                                const Schedule& schedule,
+                                const std::vector<Rate>& coupons,
+                                const DayCounter& accrualDayCounter,
+                                BusinessDayConvention paymentConvention = Following,
+                                const Date& issueDate = Date(),
+                                const Period& exCouponPeriod = Period(),
+                                const Calendar& exCouponCalendar = Calendar(),
+                                BusinessDayConvention exCouponConvention = Unadjusted,
+                                bool exCouponEndOfMonth = false);
         /*! Automatically generates a set of equal coupons, with an
             amortizing bond.  The coupons are equal and the accrual
             daycount is only used for quoting/settlement purposes -

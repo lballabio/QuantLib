@@ -87,6 +87,10 @@ namespace QuantLib {
         CmsLeg& withFloors(const std::vector<Rate>& floors);
         CmsLeg& inArrears(bool flag = true);
         CmsLeg& withZeroPayments(bool flag = true);
+        CmsLeg& withExCouponPeriod(const Period&,
+                                   const Calendar&,
+                                   BusinessDayConvention,
+                                   bool endOfMonth);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -99,6 +103,10 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
         bool inArrears_, zeroPayments_;
+        Period exCouponPeriod_;
+        Calendar exCouponCalendar_;
+        BusinessDayConvention exCouponAdjustment_;
+        bool exCouponEndOfMonth_;
     };
 
 }

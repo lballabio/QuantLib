@@ -70,12 +70,14 @@ namespace QuantLib {
 
     Real FloatingRateCoupon::accruedAmount(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
+            // out of coupon range
             return 0.0;
         } else if (tradingExCoupon(d)) {
             return -nominal() * rate() *
-                   dayCounter().yearFraction(d, accrualEndDate_,
+                   dayCounter().yearFraction(d, std::max(d, accrualEndDate_),
                                              refPeriodStart_, refPeriodEnd_);
         } else {
+            // usual case
             return nominal() * rate() *
                 dayCounter().yearFraction(accrualStartDate_,
                                           std::min(d, accrualEndDate_),
