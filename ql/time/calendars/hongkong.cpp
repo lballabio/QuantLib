@@ -245,6 +245,9 @@ namespace QuantLib {
                 || (d == 25 && m == May)
                 // Tuen Ng festival
                 || (d == 20 && m == June)
+                // The 70th anniversary day of the victory of the Chinese 
+                // people's war of resistance against Japanese aggression
+                || (d == 3 && m == September)
                 // Mid-autumn festival
                 || (d == 28 && m == September)
                 // Chung Yeung festival
