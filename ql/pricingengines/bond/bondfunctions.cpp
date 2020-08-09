@@ -226,9 +226,8 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
+        if (!BondFunctions::isTradable(bond, settlement))
+            return 0.0;
 
         return CashFlows::accruedAmount(bond.cashflows(),
                                         false, settlement) *
