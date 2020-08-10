@@ -50,7 +50,7 @@ namespace {
 
         SavedSettings backup;
 
-        Date issueDate() {
+        Date issueDate() const {
             // ensure that we're in mid-coupon
             return calendar.adjust(today - 100*Days);
         }
