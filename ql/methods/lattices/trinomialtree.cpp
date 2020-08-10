@@ -31,6 +31,8 @@ namespace QuantLib {
         x0_ = process->x0();
 
         Size nTimeSteps = timeGrid.size() - 1;
+        QL_REQUIRE(nTimeSteps > 0, "null time steps for trinomial tree");
+
         Integer jMin = 0;
         Integer jMax = 0;
 

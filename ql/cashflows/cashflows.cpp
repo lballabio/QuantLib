@@ -526,6 +526,8 @@ namespace QuantLib {
                             Date settlementDate,
                             Date npvDate,
                             Real targetNpv) {
+        if (leg.empty())
+            return 0.0;
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
