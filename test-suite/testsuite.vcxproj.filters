@@ -59,6 +59,9 @@
     <ClCompile Include="calendars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="callablebonds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="capfloor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -519,6 +522,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="calendars.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="callablebonds.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="capfloor.hpp">
