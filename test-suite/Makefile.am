@@ -20,6 +20,7 @@ QL_TEST_SRCS = \
 	brownianbridge.cpp \
 	businessdayconventions.cpp \
 	calendars.cpp \
+	callablebonds.cpp \
 	capfloor.cpp \
 	capflooredcoupon.cpp \
 	cashflows.cpp \
@@ -176,6 +177,7 @@ QL_TEST_HDRS = \
 	brownianbridge.hpp \
 	businessdayconventions.hpp \
 	calendars.hpp \
+	callablebonds.hpp \
 	capfloor.hpp \
 	capflooredcoupon.hpp \
 	cashflows.hpp \
