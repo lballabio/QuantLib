@@ -33,7 +33,9 @@ namespace QuantLib {
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year holidays and Christmas, January 1st to 8th</li>
+        <li>New Year holidays, January 1st to 5th (only 1st and 2nd
+            until 2005)</li>
+        <li>Christmas, January 7th (possibly moved to Monday)</li>
         <li>Defender of the Fatherland Day, February 23rd (possibly
             moved to Monday)</li>
         <li>International Women's Day, March 8th (possibly moved to
