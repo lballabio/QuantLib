@@ -215,6 +215,7 @@ namespace detail {
             // because, e.g., of interpolation's early checks
             ts_->data_ = std::vector<Real>(alive_+1, Traits::initialValue(ts_));
             previousData_.resize(alive_+1);
+            validCurve_ = false;
         }
         initialized_ = true;
     }
