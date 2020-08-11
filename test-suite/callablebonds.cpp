@@ -75,7 +75,7 @@ namespace {
         }
 
         template <class R>
-        ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) {
+        ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
             return ext::shared_ptr<YieldTermStructure>(
                                   new FlatForward(settlement, r, dayCounter));
         }
