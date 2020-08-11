@@ -55,19 +55,19 @@ namespace {
             return calendar.adjust(today - 100*Days);
         }
 
-        Date maturityDate() {
+        Date maturityDate() const {
             // ensure that we're in mid-coupon
             return calendar.advance(issueDate(),10,Years);
         }
 
-        std::vector<Date> evenYears() {
+        std::vector<Date> evenYears() const {
             std::vector<Date> dates;
             for (Size i=2; i<10; i+=2)
                 dates.push_back(calendar.advance(issueDate(),i,Years));
             return dates;
         }
 
-        std::vector<Date> oddYears() {
+        std::vector<Date> oddYears() const {
             std::vector<Date> dates;
             for (Size i=1; i<10; i+=2)
                 dates.push_back(calendar.advance(issueDate(),i,Years));
@@ -75,7 +75,7 @@ namespace {
         }
 
         template <class R>
-        ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) {
+        ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
             return ext::shared_ptr<YieldTermStructure>(
                                   new FlatForward(settlement, r, dayCounter));
         }
