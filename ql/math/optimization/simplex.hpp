@@ -61,6 +61,8 @@ namespace QuantLib {
         Simplex(Real lambda) : lambda_(lambda) {}
         virtual EndCriteria::Type minimize(Problem& P,
                                            const EndCriteria& endCriteria);
+        Real lambda() const { return lambda_; }
+
       private:
         Real extrapolate(Problem& P,
                          Size iHighest,
