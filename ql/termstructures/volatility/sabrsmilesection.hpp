@@ -45,11 +45,16 @@ namespace QuantLib {
         Real minStrike () const { return -shift_; }
         Real maxStrike () const { return QL_MAX_REAL; }
         Real atmLevel() const { return forward_; }
+        Real alpha() const { return alpha_; }
+        Real beta() const { return beta_; }
+        Real nu() const { return nu_; }
+        Real rho() const { return rho_; }
       protected:
         Real varianceImpl(Rate strike) const;
         Volatility volatilityImpl(Rate strike) const;
       private:
         Real alpha_, beta_, nu_, rho_, forward_, shift_;
+        void initialise(const std::vector<Real>& sabrParameters);
     };
 
 
