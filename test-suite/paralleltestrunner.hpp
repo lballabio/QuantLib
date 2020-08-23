@@ -210,7 +210,7 @@ int main( int argc, char* argv[] )
 
             std::ifstream in(profileFileName);
             if (in.good()) {
-                for (std::string line; std::getline(in, line);) {
+                for (std::string line; std::getline(in, line) != 0;) {
                     std::vector<std::string> tok;
                     boost::split(tok, line, boost::is_any_of(":"));
 
