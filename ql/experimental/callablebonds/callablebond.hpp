@@ -218,7 +218,11 @@ namespace QuantLib {
                               Real redemption = 100.0,
                               const Date& issueDate = Date(),
                               const CallabilitySchedule& putCallSchedule
-                                                      = CallabilitySchedule());
+                                                      = CallabilitySchedule(),
+                              const Period& exCouponPeriod = Period(),
+                              const Calendar& exCouponCalendar = Calendar(),
+                              BusinessDayConvention exCouponConvention = Unadjusted,
+                              bool exCouponEndOfMonth = false);
 
         void setupArguments(PricingEngine::arguments* args) const;
 

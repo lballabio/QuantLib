@@ -370,7 +370,11 @@ namespace QuantLib {
                               BusinessDayConvention paymentConvention,
                               Real redemption,
                               const Date& issueDate,
-                              const CallabilitySchedule& putCallSchedule)
+                              const CallabilitySchedule& putCallSchedule,
+                              const Period& exCouponPeriod,
+                              const Calendar& exCouponCalendar,
+                              BusinessDayConvention exCouponConvention,
+                              bool exCouponEndOfMonth)
     : CallableBond(settlementDays, schedule, accrualDayCounter,
                    issueDate, putCallSchedule) {
 
@@ -383,7 +387,11 @@ namespace QuantLib {
                 FixedRateLeg(schedule)
                 .withNotionals(faceAmount)
                 .withCouponRates(coupons, accrualDayCounter)
-                .withPaymentAdjustment(paymentConvention);
+                .withPaymentAdjustment(paymentConvention)
+                .withExCouponPeriod(exCouponPeriod,
+                                    exCouponCalendar,
+                                    exCouponConvention,
+                                    exCouponEndOfMonth);
 
             addRedemptionsToCashflows(std::vector<Real>(1, redemption));
         } else {
@@ -446,7 +454,8 @@ namespace QuantLib {
         arguments->couponAmounts.reserve(cfs.size()-1);
 
         for (Size i=0; i<cfs.size()-1; i++) {
-            if (!cfs[i]->hasOccurred(settlement, false)) {
+            if (!cfs[i]->hasOccurred(settlement, false)
+                && !cfs[i]->tradingExCoupon(settlement)) {
                 arguments->couponDates.push_back(cfs[i]->date());
                 arguments->couponAmounts.push_back(cfs[i]->amount());
             }

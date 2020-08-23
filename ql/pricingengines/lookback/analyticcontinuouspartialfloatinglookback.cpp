@@ -115,7 +115,7 @@ namespace QuantLib {
         {
             e1 = (carry + vol * vol / 2) * (residualTime() - lookbackPeriodEndTime()) / (vol * std::sqrt(residualTime() - lookbackPeriodEndTime()));
             e2 = e1 - vol * std::sqrt(residualTime() - lookbackPeriodEndTime());
-        } 
+        }
 
         Real f1 = (ls + (carry + vol * vol / 2) * lookbackPeriodEndTime()) / (vol * std::sqrt(lookbackPeriodEndTime()));
         Real f2 = f1 - vol * std::sqrt(lookbackPeriodEndTime());

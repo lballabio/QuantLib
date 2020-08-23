@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2020 Lew Wei Hao
+ Copyright (C) 2018 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,20 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_fd_cir_hpp
-#define quantlib_test_fd_cir_hpp
+#ifndef quantlib_test_callable_bonds_hpp
+#define quantlib_test_callable_bonds_hpp
 
 #include <boost/test/unit_test.hpp>
-#include "speedlevel.hpp"
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class FdCIRTest {
-public:
-    static void testFdmCIRConvergence();
-
-    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
+class CallableBondTest {
+  public:
+    static void testConsistency();
+    static void testInterplay();
+    static void testObservability();
+    static void testDegenerate();
+    static void testCached();
+    static boost::unit_test_framework::test_suite* suite();
 };
+
 
 #endif

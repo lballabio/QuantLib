@@ -146,6 +146,7 @@ namespace QuantLib {
     yoyInflationLeg::operator Leg() const {
 
         Size n = schedule_.size()-1;
+        QL_REQUIRE(!paymentDayCounter_.empty(), "no payment daycounter given");
         QL_REQUIRE(!notionals_.empty(), "no notional given");
         QL_REQUIRE(notionals_.size() <= n,
                    "too many nominals (" << notionals_.size() <<

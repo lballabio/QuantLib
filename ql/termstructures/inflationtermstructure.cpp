@@ -135,7 +135,7 @@ namespace QuantLib {
     void InflationTermStructure::checkRange(const Date& d,
                                             bool extrapolate) const {
         QL_REQUIRE(d >= baseDate(),
-                   "date (" << d << ") is before base date");
+                   "date (" << d << ") is before base date (" << baseDate() << ")");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || d <= maxDate(),
                    "date (" << d << ") is past max curve date ("
                    << maxDate() << ")");

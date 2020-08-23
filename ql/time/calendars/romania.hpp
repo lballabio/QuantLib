@@ -50,19 +50,30 @@ namespace QuantLib {
         <li>2nd Day of Christmas, December 26th</li>
         </ul>
         
+        Holidays for the Bucharest stock exchange
+        (data from <http://www.bvb.ro/Marketplace/TradingCalendar/index.aspx>):
+        all public holidays, plus a few one-off closing days (2014 only).
+
         \ingroup calendars
     */
     class Romania : public Calendar {
       private:
-        class Impl : public Calendar::OrthodoxImpl {
+        class PublicImpl : public Calendar::OrthodoxImpl {
           public:
             std::string name() const { return "Romania"; }
             bool isBusinessDay(const Date&) const;
         };
+        class BVBImpl : public PublicImpl {
+          public:
+            std::string name() const { return "Bucharest stock exchange"; }
+            bool isBusinessDay(const Date&) const;
+        };
       public:
-        Romania();
+        enum Market { Public,     //!< Public holidays
+                      BVB         //!< Bucharest stock-exchange
+        };
+        Romania(Market market = BVB);
     };
-
 
 }
 
