@@ -294,21 +294,21 @@ void assertBlackFormulaForwardDerivative(
         Real strike = *it;
         Real delta = blackFormulaForwardDerivative(
             optionType, strike, forward, stdDev, discount, displacement);
-        Real bumped_delta = blackFormulaForwardDerivative(
+        Real bumpedDelta = blackFormulaForwardDerivative(
             optionType, strike, forward + bump, stdDev, discount, displacement);
 
-        Real base_premium = blackFormula(
+        Real basePremium = blackFormula(
             optionType, strike, forward, stdDev, discount, displacement);
-        Real bumped_premium = blackFormula(
+        Real bumpedPremium = blackFormula(
             optionType, strike, forward + bump, stdDev, discount, displacement);
-        Real delta_approx = bumped_premium - base_premium;
+        Real deltaApprox = bumpedPremium - basePremium;
 
         /*! Based on the Mean Value Theorem, the below inequality
             should hold for any function that is monotonic in the
             area of the bump.
          */
-        bool success = (std::max(delta * bump, bumped_delta * bump) + epsilon >= (
-            delta_approx) >= std::min(delta * bump, bumped_delta * bump) - epsilon);
+        bool success = (std::max(delta * bump, bumpedDelta * bump) + epsilon >= (
+            deltaApprox) >= std::min(delta * bump, bumpedDelta * bump) - epsilon);
 
         if (!success)
         {
@@ -319,7 +319,7 @@ void assertBlackFormulaForwardDerivative(
                         << "\n stdDev            :" << stdDev
                         << "\n displacement      :" << displacement
                         << "\n analytical delta  :" << delta
-                        << "\n approximated delta:" << delta_approx);
+                        << "\n approximated delta:" << deltaApprox);
         }
     }
 }
