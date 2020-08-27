@@ -4,6 +4,7 @@
  Copyright (C) 2013 Gary Kennedy
  Copyright (C) 2015 Peter Caspers
  Copyright (C) 2017 Klaus Spanderen
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
