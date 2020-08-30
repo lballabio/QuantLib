@@ -100,6 +100,7 @@ namespace QuantLib {
             // same as AndersenPiterbarg, but a slightly better control variate
             AndersenPiterbargOptCV,
             // Gatheral form with asymptotic expansion of the characteristic function as control variate
+            // https://hpcquantlib.wordpress.com/2020/08/30/a-novel-control-variate-for-the-heston-model
             AsymptoticChF,
             // auto selection of best control variate algorithm from above
             OptimalCV
