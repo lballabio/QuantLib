@@ -2823,6 +2823,9 @@
     <ClInclude Include="ql\time\daycounters\actual360.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\daycounters\actual364.hpp">
+      <Filter>time\daycounters</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\daycounters\actual365fixed.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
@@ -2842,6 +2845,9 @@
       <Filter>time\daycounters</Filter>
     </ClInclude>
     <ClInclude Include="ql\time\daycounters\thirty360.hpp">
+      <Filter>time\daycounters</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\time\daycounters\thirty365.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
     <ClInclude Include="ql\legacy\all.hpp">
@@ -5896,6 +5902,9 @@
       <Filter>time\daycounters</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\daycounters\thirty360.cpp">
+      <Filter>time\daycounters</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\daycounters\thirty365.cpp">
       <Filter>time\daycounters</Filter>
     </ClCompile>
     <ClCompile Include="ql\legacy\libormarketmodels\lfmcovarparam.cpp">

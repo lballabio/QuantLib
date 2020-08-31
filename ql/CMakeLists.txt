@@ -889,6 +889,7 @@ set(QuantLib_SRC
     time/daycounters/business252.cpp
     time/daycounters/simpledaycounter.cpp
     time/daycounters/thirty360.cpp
+    time/daycounters/thirty365.cpp
     time/ecb.cpp
     time/frequency.cpp
     time/imm.cpp
@@ -2230,6 +2231,7 @@ set(QuantLib_HDR
     time/dategenerationrule.hpp
     time/daycounter.hpp
     time/daycounters/actual360.hpp
+    time/daycounters/actual364.hpp
     time/daycounters/actual365fixed.hpp
     time/daycounters/actualactual.hpp
     time/daycounters/all.hpp
@@ -2237,6 +2239,7 @@ set(QuantLib_HDR
     time/daycounters/one.hpp
     time/daycounters/simpledaycounter.hpp
     time/daycounters/thirty360.hpp
+    time/daycounters/thirty365.hpp
     time/ecb.hpp
     time/frequency.hpp
     time/imm.hpp

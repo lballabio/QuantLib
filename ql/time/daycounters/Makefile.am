@@ -5,19 +5,22 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	actual360.hpp \
+	actual364.hpp \
 	actual365fixed.hpp \
 	actualactual.hpp \
 	business252.hpp \
 	one.hpp \
 	simpledaycounter.hpp \
-	thirty360.hpp
+	thirty360.hpp \
+	thirty365.hpp
 
 cpp_files = \
     actual365fixed.cpp \
     actualactual.cpp \
     business252.cpp \
 	simpledaycounter.cpp \
-    thirty360.cpp
+    thirty360.cpp \
+    thirty365.cpp
 
 if UNITY_BUILD
 

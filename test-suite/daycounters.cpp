@@ -30,6 +30,7 @@
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/daycounters/business252.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/thirty365.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
@@ -640,6 +641,30 @@ void DayCounterTest::testBusiness252() {
     }
 }
 
+void DayCounterTest::testThirty365() {
+
+    BOOST_TEST_MESSAGE("Testing 30/365 day counter...");
+
+    Date d1(17,June,2011), d2(30,December,2012);
+    DayCounter dayCounter = Thirty365();
+
+    BigInteger days = dayCounter.dayCount(d1,d2);
+    if (days != 553) {
+        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                   << "    calculated: " << days << "\n"
+                   << "    expected:   " << 553);
+    }
+
+    Time t = dayCounter.yearFraction(d1,d2);
+    Time expected = 553/365.0;
+    if (std::fabs(t-expected) > 1.0e-12) {
+        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                   << std::setprecision(12)
+                   << "    calculated: " << t << "\n"
+                   << "    expected:   " << expected);
+    }
+}
+
 void DayCounterTest::testThirty360_BondBasis() {
 
     BOOST_TEST_MESSAGE("Testing thirty/360 day counter (Bond Basis)...");
@@ -866,6 +891,7 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testSimple));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testOne));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty365));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_German));

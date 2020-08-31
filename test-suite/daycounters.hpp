@@ -34,6 +34,7 @@ class DayCounterTest {
     static void testSimple();
     static void testOne();
     static void testBusiness252();
+    static void testThirty365();
     static void testThirty360_BondBasis();
     static void testThirty360_EurobondBasis();
     static void testThirty360_German();
