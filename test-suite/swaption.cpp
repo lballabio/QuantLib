@@ -1034,7 +1034,7 @@ void checkSwaptionDelta(bool useBachelierVol)
                             should hold for any function that is monotonic in the
                             area of the bump.
                         */
-                        bool checkIsCorrect = lowerBound <= approxDelta && approxDelta <= upperBound;
+                        bool checkIsCorrect = lowerBound < approxDelta && approxDelta < upperBound;
                         
                         if (!checkIsCorrect)
                             BOOST_FAIL("failed to compute swaption delta:" <<
