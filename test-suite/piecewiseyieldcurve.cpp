@@ -1115,6 +1115,34 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }
 
+void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
+    BOOST_TEST_MESSAGE("Testing SwapRateHelper spot date...");
+
+    SavedSettings backup;
+
+    ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
+
+    // July 3rd is holiday in the US, but not for LIBOR purposes
+    ext::shared_ptr<SwapRateHelper> helper = ext::make_shared<SwapRateHelper>(
+        0.02, 5 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+
+    Settings::instance().evaluationDate() = Date(11, October, 2019);
+
+    Date expected = Date(15, October, 2019);
+    Date calculated = helper->swap()->startDate();
+    if (calculated != expected)
+        BOOST_ERROR("expected spot date: " << expected << "\n"
+                    "calculated:         " << calculated);
+
+    // Settings::instance().evaluationDate() = Date(1, July, 2020);
+
+    // expected = Date(3, July, 2020);
+    // calculated = helper->swap()->startDate();
+    // if (calculated != expected)
+    //     BOOST_ERROR("expected spot date: " << expected << "\n"
+    //                 "calculated:         " << calculated);
+}
+
 void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
 
@@ -1519,6 +1547,8 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
+    suite->add(QUANTLIB_TEST_CASE(
+               &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
 
     if (IborCoupon::usingAtParCoupons()) {
         // This regression test didn't work with indexed coupons anyway.

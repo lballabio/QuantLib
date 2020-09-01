@@ -74,14 +74,12 @@ namespace QuantLib {
             // then move to the next business day
             refDate = floatCalendar_.adjust(refDate);
             // use index valueDate interface wherever possible to estimate spot date.
-			// Unless we pass an explicit settlementDays_ which does not match the index-defined number of fixing days.
-			Date spotDate;
-            if ((settlementDays_ == Null<Natural>()) || (settlementDays_ == iborIndex_->fixingDays())) {
-                    spotDate = iborIndex_->valueDate(refDate);
-                }
-            else {
+            // Unless we pass an explicit settlementDays_ which does not match the index-defined number of fixing days.
+            Date spotDate;
+            if ((settlementDays_ == Null<Natural>()) || (settlementDays_ == iborIndex_->fixingDays()))
+                spotDate = iborIndex_->valueDate(refDate);
+            else
                 spotDate = floatCalendar_.advance(refDate, settlementDays_ * Days);
-            }
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = floatCalendar_.adjust(startDate,
@@ -89,7 +87,7 @@ namespace QuantLib {
             else if (forwardStart_.length()>0)
                 startDate = floatCalendar_.adjust(startDate,
                                                   Following);
-			// no explicit date adjustment needed for forwardStart_.length()==0 (already handled by spotDate arithmetic above)
+            // no explicit date adjustment needed for forwardStart_.length()==0 (already handled by spotDate arithmetic above)
         }
 
         Date endDate = terminationDate_;

@@ -51,6 +51,7 @@ class PiecewiseYieldCurveTest {
     static void testZeroCopy();
 
     static void testSwapRateHelperLastRelevantDate();
+    static void testSwapRateHelperSpotDate();
 
     static void testBadPreviousCurve();
 
