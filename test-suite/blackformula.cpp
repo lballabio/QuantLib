@@ -289,6 +289,7 @@ void assertBlackFormulaForwardDerivative(
     Real displacement = 0.01;
     Real bump = 0.0001;
     Real epsilon = 1.e-10;
+    std::string type = optionType == Option::Call ? "Call" : "Put";
 
     for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
     {
@@ -302,20 +303,21 @@ void assertBlackFormulaForwardDerivative(
             optionType, strike, forward, stdDev, discount, displacement);
         Real bumpedPremium = blackFormula(
             optionType, strike, forward + bump, stdDev, discount, displacement);
-        Real deltaApprox = bumpedPremium - basePremium;
+        Real deltaApprox = (bumpedPremium - basePremium) / bump;
 
         /*! Based on the Mean Value Theorem, the below inequality
             should hold for any function that is monotonic in the
             area of the bump.
          */
         bool success =
-            (std::max(delta * bump, bumpedDelta * bump) + epsilon > deltaApprox)
-            &&  (deltaApprox > std::min(delta * bump, bumpedDelta * bump) - epsilon);
+            (std::max(delta, bumpedDelta) + epsilon > deltaApprox)
+            &&  (deltaApprox > std::min(delta, bumpedDelta) - epsilon);
 
         if (!success)
         {
             BOOST_ERROR("Failed to calculate the derivative of the"
                         " Black formula w.r.t. forward"
+                        << "\n option type       :" << type
                         << "\n forward           :" << forward
                         << "\n strike            :" << strike
                         << "\n stdDev            :" << stdDev
@@ -380,6 +382,7 @@ void assertBachelierBlackFormulaForwardDerivative(
     Real discount = 0.95;
     Real bump = 0.0001;
     Real epsilon = 1.e-10;
+    std::string type = optionType == Option::Call ? "Call" : "Put";
 
     for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
     {
@@ -393,20 +396,21 @@ void assertBachelierBlackFormulaForwardDerivative(
             optionType, strike, forward, stdDev, discount);
         Real bumpedPremium = bachelierBlackFormula(
             optionType, strike, forward + bump, stdDev, discount);
-        Real deltaApprox = bumpedPremium - basePremium;
+        Real deltaApprox = (bumpedPremium - basePremium) / bump;
 
         /*! Based on the Mean Value Theorem, the below inequality
             should hold for any function that is monotonic in the
             area of the bump.
          */
         bool success =
-            (std::max(delta * bump, bumpedDelta * bump) + epsilon > deltaApprox)
-            &&  (deltaApprox > std::min(delta * bump, bumpedDelta * bump) - epsilon);
+            (std::max(delta, bumpedDelta) + epsilon > deltaApprox)
+            &&  (deltaApprox > std::min(delta, bumpedDelta) - epsilon);
 
         if (!success)
         {
             BOOST_ERROR("Failed to calculate the derivative of the"
                         " Bachelier Black formula w.r.t. forward"
+                        << "\n option type       :" << type
                         << "\n forward           :" << forward
                         << "\n strike            :" << strike
                         << "\n stdDev            :" << stdDev
