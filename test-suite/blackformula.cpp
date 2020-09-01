@@ -308,8 +308,9 @@ void assertBlackFormulaForwardDerivative(
             should hold for any function that is monotonic in the
             area of the bump.
          */
-        bool success = (std::max(delta * bump, bumpedDelta * bump) + epsilon > (
-            deltaApprox) > std::min(delta * bump, bumpedDelta * bump) - epsilon);
+        bool success =
+            (std::max(delta * bump, bumpedDelta * bump) + epsilon > deltaApprox)
+            &&  (deltaApprox > std::min(delta * bump, bumpedDelta * bump) - epsilon);
 
         if (!success)
         {
@@ -398,8 +399,9 @@ void assertBachelierBlackFormulaForwardDerivative(
             should hold for any function that is monotonic in the
             area of the bump.
          */
-        bool success = (std::max(delta * bump, bumpedDelta * bump) + epsilon > (
-            deltaApprox) > std::min(delta * bump, bumpedDelta * bump) - epsilon);
+        bool success =
+            (std::max(delta * bump, bumpedDelta * bump) + epsilon > deltaApprox)
+            &&  (deltaApprox > std::min(delta * bump, bumpedDelta * bump) - epsilon);
 
         if (!success)
         {
