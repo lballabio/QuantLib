@@ -11,6 +11,7 @@
  Copyright (C) 2015 Peter Caspers
  Copyright (C) 2017 Klaus Spanderen
  Copyright (C) 2019 Wojciech Ślusarski
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -106,6 +107,43 @@ namespace QuantLib {
                       Real discount,
                       Real displacement) {
         return blackFormula(payoff->optionType(),
+            payoff->strike(), forward, stdDev, discount, displacement);
+    }
+
+    Real blackFormulaForwardDerivative(Option::Type optionType,
+                                       Real strike,
+                                       Real forward,
+                                       Real stdDev,
+                                       Real discount,
+                                       Real displacement)
+    {
+        checkParameters(strike, forward, displacement);
+        QL_REQUIRE(stdDev>=0.0,
+                   "stdDev (" << stdDev << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
+        
+        if (stdDev==0.0)
+            return optionType * std::max(1.0 * boost::math::sign((forward - strike) * optionType), 0.0) * discount;
+
+        forward = forward + displacement;
+        strike = strike + displacement;
+
+        if (strike==0.0)
+            return (optionType==Option::Call ? discount : 0.0);
+
+        Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
+        CumulativeNormalDistribution phi;
+        return optionType * phi(optionType * d1) * discount;                        
+    }
+
+    Real blackFormulaForwardDerivative(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                                       Real forward,
+                                       Real stdDev,
+                                       Real discount,
+                                       Real displacement) 
+    {
+        return blackFormulaForwardDerivative(payoff->optionType(),
             payoff->strike(), forward, stdDev, discount, displacement);
     }
 
@@ -688,6 +726,30 @@ namespace QuantLib {
                         Real stdDev,
                         Real discount) {
         return bachelierBlackFormula(payoff->optionType(),
+            payoff->strike(), forward, stdDev, discount);
+    }
+
+    Real bachelierBlackFormulaForwardDerivative(
+        Option::Type optionType, Real strike, Real forward, Real stdDev, Real discount)
+    {
+        QL_REQUIRE(stdDev>=0.0,
+                   "stdDev (" << stdDev << ") must be non-negative");
+        QL_REQUIRE(discount>0.0,
+                   "discount (" << discount << ") must be positive");
+        if (stdDev==0.0)
+            return optionType * std::max(1.0 * boost::math::sign((forward - strike) * optionType), 0.0) * discount;
+        Real d = (forward-strike)*optionType, h = d/stdDev;
+        CumulativeNormalDistribution phi;
+        return optionType * phi(h) * discount;
+    }
+
+    Real bachelierBlackFormulaForwardDerivative(
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+        Real forward,
+        Real stdDev,
+        Real discount)
+    {
+        return bachelierBlackFormulaForwardDerivative(payoff->optionType(),
             payoff->strike(), forward, stdDev, discount);
     }
 

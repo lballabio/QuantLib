@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,6 +35,9 @@ class SwaptionTest {
     static void testCashSettledSwaptions();
     static void testImpliedVolatility();
     static void testVega();
+    static void testSwaptionDeltaInBlackModel();
+    static void testSwaptionDeltaInBachelierModel();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 
