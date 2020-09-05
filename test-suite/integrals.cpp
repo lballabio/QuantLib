@@ -362,6 +362,8 @@ namespace integrals_test {
 void IntegralTest::testExponentialIntegral() {
     BOOST_TEST_MESSAGE("Testing Exponential integrals...");
 
+    using namespace ExponentialIntegral;
+
     // reference values are calculated with Mathematica or Python/mpmath
     const Real data[][10] = {
             {0.0010000000000000000208, 0.0, 0.00099999994444444613193, 0.0, -6.330539864080593754, 0.0, -6.3295393640250381967, 0.0, 6.3315393641361493112, 0.0},
@@ -513,6 +515,8 @@ void IntegralTest::testExponentialIntegral() {
 
 void IntegralTest::testRealSiCiIntegrals() {
     BOOST_TEST_MESSAGE("Testing real Ci and Si...");
+
+    using namespace ExponentialIntegral;
 
     // reference values are calculated with Mathematica or Python/mpmath
     const Real data[][3] = {

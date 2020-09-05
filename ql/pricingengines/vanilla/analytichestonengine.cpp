@@ -458,6 +458,7 @@ namespace QuantLib {
         else if (cpxLog_ == AsymptoticChF) {
             const std::complex<Real> phiFreq(phi_.real(), phi_.imag() + freq_);
 
+            using namespace ExponentialIntegral;
             return fwd_ - std::sqrt(strike_*fwd_)/M_PI*
                 (std::exp(psi_)*(
                       -2.0*Ci(-0.5*phiFreq)*std::sin(0.5*phiFreq)

@@ -32,7 +32,7 @@
 #endif
 
 namespace QuantLib {
-    namespace exponential_integrals {
+    namespace exponential_integrals_helper {
 
         // Reference:
         // Rowe et al: GALSIM: The modular galaxy image simulation toolkit
@@ -75,106 +75,108 @@ namespace QuantLib {
         }
     }
 
-    Real Si(Real x) {
-        if (x < 0)
-            return -Si(-x);
-        else if (x <= 4.0) {
-            const Real x2 = x*x;
+    namespace ExponentialIntegral {
+        Real Si(Real x) {
+            if (x < 0)
+                return -Si(-x);
+            else if (x <= 4.0) {
+                const Real x2 = x*x;
 
-            return x*
-                ( 1 + x2*(-4.54393409816329991e-2 + x2*(1.15457225751016682e-3
-                    + x2*(-1.41018536821330254e-5 + x2*(9.43280809438713025e-8
-                    + x2*(-3.53201978997168357e-10 + x2*(7.08240282274875911e-13
-                    - x2*6.05338212010422477e-16))))))
-                ) / (
-                  1 + x2*(1.01162145739225565e-2 + x2*(4.99175116169755106e-5
-                    + x2*(1.55654986308745614e-7 + x2*(3.28067571055789734e-10
-                    + x2*(4.5049097575386581e-13 + x2*3.21107051193712168e-16)))))
-                );
-        }
-        else {
-            using namespace exponential_integrals;
-            return M_PI_2 - f(x)*std::cos(x) - g(x)*std::sin(x);
-        }
-    }
-
-    Real Ci(Real x) {
-        QL_REQUIRE(x >= 0, "x < 0 => Ci(x) = Ci(-x) + i*pi");
-
-        if (x <= 4.0) {
-            const Real x2 = x*x;
-
-            return M_EULER_MASCHERONI + std::log(x) +
-                x2* ( -0.25 + x2*(7.51851524438898291e-3 +x2*(-1.27528342240267686e-4
-                            + x2*(1.05297363846239184e-6 +x2*(-4.68889508144848019e-9
-                            + x2*(1.06480802891189243e-11 - x2*9.93728488857585407e-15)))))
-                ) / (
-                     1 + x2*(1.1592605689110735e-2 + x2*(6.72126800814254432e-5
-                       + x2*(2.55533277086129636e-7 + x2*(6.97071295760958946e-10
-                       + x2*(1.38536352772778619e-12 + x2*(1.89106054713059759e-15
-                       + x2*1.39759616731376855e-18))))))
-                );
-        }
-        else {
-            using namespace exponential_integrals;
-            return f(x)*std::sin(x) - g(x)*std::cos(x);
-        }
-    }
-
-
-    std::complex<Real> E1(std::complex<Real> z) {
-        QL_REQUIRE(std::abs(z) <= 25.0, "Insufficient precision for |z| > 25.0");
-
-        std::complex<Real> s(0.0), sn(-z);
-
-        Size n;
-        for (n=2; n < 1000 && s + sn/Real(n-1) != s; ++n) {
-            s+=sn/Real(n-1);
-            sn *= -z/Real(n);
+                return x*
+                    ( 1 + x2*(-4.54393409816329991e-2 + x2*(1.15457225751016682e-3
+                        + x2*(-1.41018536821330254e-5 + x2*(9.43280809438713025e-8
+                        + x2*(-3.53201978997168357e-10 + x2*(7.08240282274875911e-13
+                        - x2*6.05338212010422477e-16))))))
+                    ) / (
+                      1 + x2*(1.01162145739225565e-2 + x2*(4.99175116169755106e-5
+                        + x2*(1.55654986308745614e-7 + x2*(3.28067571055789734e-10
+                        + x2*(4.5049097575386581e-13 + x2*3.21107051193712168e-16)))))
+                    );
+            }
+            else {
+                using namespace exponential_integrals_helper;
+                return M_PI_2 - f(x)*std::cos(x) - g(x)*std::sin(x);
+            }
         }
 
-        QL_REQUIRE(n < 1000, "series conversion issue");
+        Real Ci(Real x) {
+            QL_REQUIRE(x >= 0, "x < 0 => Ci(x) = Ci(-x) + i*pi");
 
-        return -M_EULER_MASCHERONI - std::log(z) -s;
-    }
+            if (x <= 4.0) {
+                const Real x2 = x*x;
 
-    std::complex<Real> Ei(std::complex<Real> z) {
-        QL_REQUIRE(std::abs(z) <= 25.0, "Insufficient precision for |z| > 25.0");
-
-        std::complex<Real> s(0.0), sn=z;
-
-        Real nn=1.0;
-
-        Size n;
-        for (n=2; n < 1000 && s+sn*nn != s; ++n) {
-            s+=sn*nn;
-
-            if ((n & 1) != 0u)
-                nn += 1/(2.0*(n/2) + 1);
-
-            sn *= -z / Real(2*n);
+                return M_EULER_MASCHERONI + std::log(x) +
+                    x2* ( -0.25 + x2*(7.51851524438898291e-3 +x2*(-1.27528342240267686e-4
+                                + x2*(1.05297363846239184e-6 +x2*(-4.68889508144848019e-9
+                                + x2*(1.06480802891189243e-11 - x2*9.93728488857585407e-15)))))
+                    ) / (
+                         1 + x2*(1.1592605689110735e-2 + x2*(6.72126800814254432e-5
+                           + x2*(2.55533277086129636e-7 + x2*(6.97071295760958946e-10
+                           + x2*(1.38536352772778619e-12 + x2*(1.89106054713059759e-15
+                           + x2*1.39759616731376855e-18))))))
+                    );
+            }
+            else {
+                using namespace exponential_integrals_helper;
+                return f(x)*std::sin(x) - g(x)*std::cos(x);
+            }
         }
 
-        QL_REQUIRE(n < 1000, "series conversion issue");
 
-        return M_EULER_MASCHERONI + std::log(z) + std::exp(0.5*z)*s;
-    }
+        std::complex<Real> E1(std::complex<Real> z) {
+            QL_REQUIRE(std::abs(z) <= 25.0, "Insufficient precision for |z| > 25.0");
 
-    // Reference:
-    // https://functions.wolfram.com/GammaBetaErf/ExpIntegralEi/introductions/ExpIntegrals/ShowAll.html
-    std::complex<Real> Si(std::complex<Real> z) {
-        const std::complex<Real> i(0.0, 1.0);
+            std::complex<Real> s(0.0), sn(-z);
 
-        return 0.25*i*(2.0*(Ei(-i*z) - Ei(i*z))
-                + std::log(i/z) - std::log(-i/z) - std::log(-i*z)
-                + std::log(i*z));
-    }
+            Size n;
+            for (n=2; n < 1000 && s + sn/Real(n-1) != s; ++n) {
+                s+=sn/Real(n-1);
+                sn *= -z/Real(n);
+            }
 
-    std::complex<Real> Ci(std::complex<Real> z) {
-        const std::complex<Real> i(0.0, 1.0);
+            QL_REQUIRE(n < 1000, "series conversion issue");
 
-        return 0.25*(2.0*(Ei(-i*z) + Ei(i*z))
-                + std::log(i/z) + std::log(-i/z) - std::log(-i*z)
-                - std::log(i*z)) + std::log(z);
+            return -M_EULER_MASCHERONI - std::log(z) -s;
+        }
+
+        std::complex<Real> Ei(std::complex<Real> z) {
+            QL_REQUIRE(std::abs(z) <= 25.0, "Insufficient precision for |z| > 25.0");
+
+            std::complex<Real> s(0.0), sn=z;
+
+            Real nn=1.0;
+
+            Size n;
+            for (n=2; n < 1000 && s+sn*nn != s; ++n) {
+                s+=sn*nn;
+
+                if ((n & 1) != 0u)
+                    nn += 1/(2.0*(n/2) + 1);
+
+                sn *= -z / Real(2*n);
+            }
+
+            QL_REQUIRE(n < 1000, "series conversion issue");
+
+            return M_EULER_MASCHERONI + std::log(z) + std::exp(0.5*z)*s;
+        }
+
+        // Reference:
+        // https://functions.wolfram.com/GammaBetaErf/ExpIntegralEi/introductions/ExpIntegrals/ShowAll.html
+        std::complex<Real> Si(std::complex<Real> z) {
+            const std::complex<Real> i(0.0, 1.0);
+
+            return 0.25*i*(2.0*(Ei(-i*z) - Ei(i*z))
+                    + std::log(i/z) - std::log(-i/z) - std::log(-i*z)
+                    + std::log(i*z));
+        }
+
+        std::complex<Real> Ci(std::complex<Real> z) {
+            const std::complex<Real> i(0.0, 1.0);
+
+            return 0.25*(2.0*(Ei(-i*z) + Ei(i*z))
+                    + std::log(i/z) + std::log(-i/z) - std::log(-i*z)
+                    - std::log(i*z)) + std::log(z);
+        }
     }
 }

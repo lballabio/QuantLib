@@ -30,11 +30,13 @@ namespace QuantLib {
         B. Rowe et al: GALSIM: The modular galaxy image simulation toolkit
         https://arxiv.org/abs/1407.7676
     */
-    Real Si(Real x);
-    Real Ci(Real x);
+    namespace ExponentialIntegral {
+        Real Si(Real x);
+        Real Ci(Real x);
 
-    std::complex<Real> Ci(std::complex<Real> z);
-    std::complex<Real> Si(std::complex<Real> z);
-    std::complex<Real> E1(std::complex<Real> z);
-    std::complex<Real> Ei(std::complex<Real> z);
+        std::complex<Real> Ci(std::complex<Real> z);
+        std::complex<Real> Si(std::complex<Real> z);
+        std::complex<Real> E1(std::complex<Real> z);
+        std::complex<Real> Ei(std::complex<Real> z);
+    }
 }
