@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/integrals/exponentialintegrals.hpp>
 #include <ql/math/integrals/filonintegral.hpp>
 #include <ql/math/integrals/gausslaguerrecosinepolynomial.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>

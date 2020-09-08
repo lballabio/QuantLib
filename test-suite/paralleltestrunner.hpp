@@ -40,7 +40,6 @@
 #undef VERSION
 #endif
 
-#include <boost/timer/timer.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -49,6 +48,7 @@
 #define BOOST_TEST_NO_MAIN 1
 #include <boost/test/included/unit_test.hpp>
 
+#include <boost/timer/timer.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -177,13 +177,13 @@ namespace {
         out.rdbuf(s.rdbuf());
     }
 
-	std::ostream& log_stream() {
-	#if BOOST_VERSION < 106200
-		return s_log_impl().stream();
-	#else
-		return s_log_impl().m_log_formatter_data.front().stream();
-	#endif
-	}
+    std::ostream& log_stream() {
+    #if BOOST_VERSION < 106200
+        return s_log_impl().stream();
+    #else
+        return s_log_impl().m_log_formatter_data.front().stream();
+    #endif
+    }
 }
 
 
@@ -210,7 +210,8 @@ int main( int argc, char* argv[] )
 
             std::ifstream in(profileFileName);
             if (in.good()) {
-                for (std::string line; std::getline(in, line) != 0;) {
+                // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+                for (std::string line; std::getline(in, line);) {
                     std::vector<std::string> tok;
                     boost::split(tok, line, boost::is_any_of(":"));
 

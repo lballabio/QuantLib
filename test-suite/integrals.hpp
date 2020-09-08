@@ -39,6 +39,8 @@ class IntegralTest {
     static void testDiscreteIntegrals();
     static void testDiscreteIntegrator();
     static void testPiecewiseIntegral();
+    static void testRealSiCiIntegrals();
+    static void testExponentialIntegral();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -91,9 +91,19 @@ namespace QuantLib {
       public:
         class Integration;
         enum ComplexLogFormula {
-            Gatheral, BranchCorrection, AndersenPiterbarg,
-            // same as above but with a slightly better control variate
-            AndersenPiterbargOptCV
+            // Gatheral form of characteristic function w/o control variate
+            Gatheral,
+            // old branch correction form of the characteristic function w/o control variate
+            BranchCorrection,
+            // Gatheral form with Andersen-Piterbarg control variate
+            AndersenPiterbarg,
+            // same as AndersenPiterbarg, but a slightly better control variate
+            AndersenPiterbargOptCV,
+            // Gatheral form with asymptotic expansion of the characteristic function as control variate
+            // https://hpcquantlib.wordpress.com/2020/08/30/a-novel-control-variate-for-the-heston-model
+            AsymptoticChF,
+            // auto selection of best control variate algorithm from above
+            OptimalCV
         };
 
         // Simple to use constructor: Using adaptive
@@ -139,6 +149,26 @@ namespace QuantLib {
                                   Real& value,
                                   Size& evaluations);
 
+        static ComplexLogFormula optimalControlVariate(
+             Time t, Real v0, Real kappa, Real theta, Real sigma, Real rho);
+
+        class AP_Helper {
+          public:
+            AP_Helper(Time term, Real fwd, Real strike, ComplexLogFormula cpxLog,
+                      const AnalyticHestonEngine* const enginePtr);
+
+            Real operator()(Real u) const;
+            Real controlVariateValue() const;
+
+          private:
+            const Time term_;
+            const Real fwd_, strike_, freq_;
+            const ComplexLogFormula cpxLog_;
+            const AnalyticHestonEngine* const enginePtr_;
+            Real vAvg_;
+            std::complex<Real> phi_, psi_;
+        };
+
       protected:
         // call back for extended stochastic volatility
         // plus jump diffusion engines like bates model
@@ -148,7 +178,6 @@ namespace QuantLib {
 
       private:
         class Fj_Helper;
-        class AP_Helper;
 
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;

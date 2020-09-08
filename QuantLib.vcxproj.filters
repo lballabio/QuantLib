@@ -4330,6 +4330,9 @@
     <ClInclude Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -6992,6 +6995,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\integrals\exponentialintegrals.cpp">
+      <Filter>math\integrals</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

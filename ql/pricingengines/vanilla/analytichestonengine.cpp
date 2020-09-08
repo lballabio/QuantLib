@@ -31,6 +31,7 @@
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/exponentialintegrals.hpp>
 
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
@@ -377,43 +378,95 @@ namespace QuantLib {
     }
 
 
-    class AnalyticHestonEngine::AP_Helper {
-      public:
-        AP_Helper(Time term, Real s0, Real strike, Real ratio,
-                  Volatility sigmaBS,
-                  const AnalyticHestonEngine* const enginePtr)
-        : term_(term),
-          sigmaBS_(sigmaBS),
-          x_(std::log(s0)),
-          sx_(std::log(strike)),
-          dd_(x_-std::log(ratio)),
-          enginePtr_(enginePtr) {
-            QL_REQUIRE(enginePtr != 0, "pricing engine required");
+    AnalyticHestonEngine::AP_Helper::AP_Helper(
+        Time term, Real fwd, Real strike, ComplexLogFormula cpxLog,
+        const AnalyticHestonEngine* const enginePtr)
+    : term_(term),
+      fwd_(fwd),
+      strike_(strike),
+      freq_(std::log(fwd/strike)),
+      cpxLog_(cpxLog),
+      enginePtr_(enginePtr) {
+        QL_REQUIRE(enginePtr != 0, "pricing engine required");
+
+        const Real v0    = enginePtr->model_->v0();
+        const Real kappa = enginePtr->model_->kappa();
+        const Real theta = enginePtr->model_->theta();
+        const Real sigma = enginePtr->model_->sigma();
+        const Real rho   = enginePtr->model_->rho();
+
+        switch(cpxLog_) {
+          case AndersenPiterbarg:
+              vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
+                        /(kappa*term) + theta;
+            break;
+          case AndersenPiterbargOptCV:
+              vAvg_ = -8.0*std::log(enginePtr->chF(
+                         std::complex<Real>(0, -0.5), term).real())/term;
+            break;
+          case AsymptoticChF:
+            phi_ = -(v0+term*kappa*theta)/sigma
+                * std::complex<Real>(std::sqrt(1-rho*rho), rho);
+
+            psi_ = std::complex<Real>(
+                (kappa- 0.5*rho*sigma)*(v0 + term*kappa*theta)
+                + kappa*theta*std::log(4*(1-rho*rho)),
+                - ((0.5*rho*rho*sigma - kappa*rho)/std::sqrt(1-rho*rho)
+                        *(v0 + kappa*theta*term)
+                  - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
+                          /(sigma*sigma);
+            break;
+          default:
+            QL_FAIL("unknown control variate");
+        }
+    }
+
+    Real AnalyticHestonEngine::AP_Helper::operator()(Real u) const {
+        QL_REQUIRE(   enginePtr_->addOnTerm(u, term_, 1)
+                        == std::complex<Real>(0.0)
+                   && enginePtr_->addOnTerm(u, term_, 2)
+                        == std::complex<Real>(0.0),
+                   "only Heston model is supported");
+
+        const std::complex<Real> z(u, -0.5);
+
+        std::complex<Real> phiBS;
+
+        switch (cpxLog_) {
+          case AndersenPiterbarg:
+          case AndersenPiterbargOptCV:
+            phiBS = std::exp(
+                -0.5*vAvg_*term_*(z*z + std::complex<Real>(-z.imag(), z.real())));
+            break;
+          case AsymptoticChF:
+            phiBS = std::exp(u*phi_ + psi_);
+            break;
+          default:
+            QL_FAIL("unknown control variate");
         }
 
-        Real operator()(Real u) const {
-            QL_REQUIRE(   enginePtr_->addOnTerm(u, term_, 1)
-                            == std::complex<Real>(0.0)
-                       && enginePtr_->addOnTerm(u, term_, 2)
-                            == std::complex<Real>(0.0),
-                       "only Heston model is supported");
+        return (std::exp(std::complex<Real>(0.0, u*freq_))
+            * (phiBS - enginePtr_->chF(z, term_)) / (u*u + 0.25)).real();
+    }
 
-            const std::complex<Real> z(u, -0.5);
-
-            const std::complex<Real> phiBS
-                = std::exp(-0.5*sigmaBS_*sigmaBS_*term_
-                           *(z*z + std::complex<Real>(-z.imag(), z.real())));
-
-            return (std::exp(std::complex<Real>(0.0, u*(dd_-sx_)))
-                * (phiBS - enginePtr_->chF(z, term_)) / (u*u + 0.25)).real();
+    Real AnalyticHestonEngine::AP_Helper::controlVariateValue() const {
+        if (cpxLog_ == AndersenPiterbarg || cpxLog_ == AndersenPiterbargOptCV) {
+              return BlackCalculator(
+                  Option::Call, strike_, fwd_, std::sqrt(vAvg_*term_))
+                      .value();
         }
+        else if (cpxLog_ == AsymptoticChF) {
+            const std::complex<Real> phiFreq(phi_.real(), phi_.imag() + freq_);
 
-      private:
-        const Time term_;
-        const Volatility sigmaBS_;
-        const Real x_, sx_, dd_;
-        const AnalyticHestonEngine* const enginePtr_;
-    };
+            using namespace ExponentialIntegral;
+            return fwd_ - std::sqrt(strike_*fwd_)/M_PI*
+                (std::exp(psi_)*(
+                      -2.0*Ci(-0.5*phiFreq)*std::sin(0.5*phiFreq)
+                       +std::cos(0.5*phiFreq)*(M_PI+2.0*Si(0.5*phiFreq)))).real();
+        }
+        else
+            QL_FAIL("unknown control variate");
+    }
 
     std::complex<Real> AnalyticHestonEngine::chF(
         const std::complex<Real>& z, Time t) const {
@@ -516,6 +569,19 @@ namespace QuantLib {
                    "with adaptive integration methods");
     }
 
+    AnalyticHestonEngine::ComplexLogFormula
+        AnalyticHestonEngine::optimalControlVariate(
+        Time t, Real v0, Real kappa, Real theta, Real sigma, Real rho) {
+
+        if (t > 0.1 && (v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.055) {
+            return AsymptoticChF;
+        }
+        else {
+            return AndersenPiterbargOptCV;
+        }
+    }
+
+
     Size AnalyticHestonEngine::numberOfEvaluations() const {
         return evaluations_;
     }
@@ -569,7 +635,9 @@ namespace QuantLib {
           }
           break;
           case AndersenPiterbarg:
-          case AndersenPiterbargOptCV: {
+          case AndersenPiterbargOptCV:
+          case AsymptoticChF:
+          case OptimalCV: {
             const Real c_inf =
                 std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*term)/sigma;
 
@@ -582,30 +650,26 @@ namespace QuantLib {
                 Integration::andersenPiterbargIntegrationLimit,
                     c_inf, epsilon, v0, term);
 
-            const Real vAvg = (cpxLog == AndersenPiterbarg)
-                ? (1-std::exp(-kappa*term))*(v0-theta)/(kappa*term) + theta
-                : -8.0*std::log(enginePtr->chF(
-                        std::complex<Real>(0, -0.5), term).real())/term;
+            AP_Helper cvHelper(term, fwdPrice, strikePrice,
+                (cpxLog == OptimalCV)
+                    ? optimalControlVariate(term, v0, kappa, theta, sigma, rho)
+                    : cpxLog,
+                enginePtr
+            );
 
-            const Real bsPrice
-                = BlackCalculator(Option::Call, strikePrice,
-                                  fwdPrice, std::sqrt(vAvg*term),
-                                  riskFreeDiscount).value();
+            const Real cvValue = cvHelper.controlVariateValue();
 
-            const Real h_cv = integration.calculate(c_inf,
-                    AP_Helper(term, spotPrice, strikePrice,
-                              ratio, std::sqrt(vAvg), enginePtr), uM)
-                * std::sqrt(strikePrice * fwdPrice)*riskFreeDiscount/M_PI;
+            const Real h_cv = integration.calculate(c_inf, cvHelper, uM)
+                * std::sqrt(strikePrice * fwdPrice)/M_PI;
             evaluations += integration.numberOfEvaluations();
 
             switch (type.optionType())
             {
               case Option::Call:
-                value = bsPrice + h_cv;
+                value = (cvValue + h_cv)*riskFreeDiscount;
                 break;
               case Option::Put:
-                value = bsPrice + h_cv
-                    - riskFreeDiscount*(fwdPrice - strikePrice);
+                value = (cvValue + h_cv - (fwdPrice - strikePrice))*riskFreeDiscount;
                 break;
               default:
                 QL_FAIL("unknown option type");

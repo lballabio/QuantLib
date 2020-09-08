@@ -1008,6 +1008,7 @@
     <ClInclude Include="ql\math\initializers.hpp" />
     <ClInclude Include="ql\math\integrals\all.hpp" />
     <ClInclude Include="ql\math\integrals\discreteintegrals.hpp" />
+    <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp" />
     <ClInclude Include="ql\math\integrals\filonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianquadratures.hpp" />
@@ -2219,6 +2220,7 @@
     <ClCompile Include="ql\math\factorial.cpp" />
     <ClCompile Include="ql\math\incompletegamma.cpp" />
     <ClCompile Include="ql\math\integrals\discreteintegrals.cpp" />
+    <ClCompile Include="ql\math\integrals\exponentialintegrals.cpp" />
     <ClCompile Include="ql\math\integrals\filonintegral.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianorthogonalpolynomial.cpp" />
     <ClCompile Include="ql\math\integrals\gaussianquadratures.cpp" />
