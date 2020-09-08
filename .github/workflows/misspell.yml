@@ -13,4 +13,3 @@ jobs:
         branch: misspell-fixes-${{ github.ref }}
         commit-message: 'Fixes by misspell-fixer'
         title: 'Typos fixed by misspell-fixer'
-        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>

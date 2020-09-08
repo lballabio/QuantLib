@@ -15,4 +15,3 @@ jobs:
         branch: update-copyright-list-${{ github.ref }}
         commit-message: 'Update copyright list in license'
         title: 'Update copyright list in license'
-        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
