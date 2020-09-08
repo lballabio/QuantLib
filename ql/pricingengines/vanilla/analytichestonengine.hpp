@@ -154,8 +154,11 @@ namespace QuantLib {
 
         class AP_Helper {
           public:
-            AP_Helper(Time term, Real fwd, Real strike, ComplexLogFormula cpxLog,
-                      const AnalyticHestonEngine* const enginePtr);
+            AP_Helper(Time term,
+                      Real fwd,
+                      Real strike,
+                      ComplexLogFormula cpxLog,
+                      const AnalyticHestonEngine* enginePtr);
 
             Real operator()(Real u) const;
             Real controlVariateValue() const;
