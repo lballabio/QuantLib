@@ -689,7 +689,7 @@ namespace QuantLib {
                                    Date customPillarDate,
                                    bool endOfMonth)
     : RelativeDateRateHelper(rate),
-      settlementDays_(swapIndex->fixingDays()),
+      settlementDays_(Null<Natural>()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
       calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
@@ -736,9 +736,6 @@ namespace QuantLib {
       spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
 
-        if (settlementDays_==Null<Natural>())
-            settlementDays_ = iborIndex->fixingDays();
-
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -763,7 +760,7 @@ namespace QuantLib {
                                    Date customPillarDate,
                                    bool endOfMonth)
     : RelativeDateRateHelper(rate),
-      settlementDays_(swapIndex->fixingDays()),
+      settlementDays_(Null<Natural>()),
       tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
       calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
@@ -809,9 +806,6 @@ namespace QuantLib {
       fixedDayCount_(fixedDayCount),
       spread_(spread), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(discount) {
-
-        if (settlementDays_==Null<Natural>())
-            settlementDays_ = iborIndex->fixingDays();
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);

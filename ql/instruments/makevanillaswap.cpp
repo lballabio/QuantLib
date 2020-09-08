@@ -42,7 +42,7 @@ namespace QuantLib {
                                      const Period& forwardStart)
     : swapTenor_(swapTenor), iborIndex_(index),
       fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlementDays_(iborIndex_->fixingDays()),
+      settlementDays_(Null<Natural>()),
       fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
       type_(VanillaSwap::Payer), nominal_(1.0),
@@ -76,7 +76,7 @@ namespace QuantLib {
             // use index valueDate interface wherever possible to estimate spot date.
             // Unless we pass an explicit settlementDays_ which does not match the index-defined number of fixing days.
             Date spotDate;
-            if ((settlementDays_ == Null<Natural>()) || (settlementDays_ == iborIndex_->fixingDays()))
+            if (settlementDays_ == Null<Natural>())
                 spotDate = iborIndex_->valueDate(refDate);
             else
                 spotDate = floatCalendar_.advance(refDate, settlementDays_ * Days);
