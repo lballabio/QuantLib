@@ -1122,12 +1122,14 @@ void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
 
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
 
-    // July 3rd is holiday in the US, but not for LIBOR purposes
     ext::shared_ptr<SwapRateHelper> helper = ext::make_shared<SwapRateHelper>(
         0.02, 5 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
 
     Settings::instance().evaluationDate() = Date(11, October, 2019);
 
+    // Advancing 2 days on the US calendar would yield October 16th (because October 14th
+    // is Columbus day), but the LIBOR spot is calculated advancing on the UK calendar,
+    // resulting in October 15th which is also a business day for the US calendar.
     Date expected = Date(15, October, 2019);
     Date calculated = helper->swap()->startDate();
     if (calculated != expected)
@@ -1136,6 +1138,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
 
     // Settings::instance().evaluationDate() = Date(1, July, 2020);
 
+    // TODO: July 3rd is holiday in the US, but not for LIBOR purposes.  This should probably
+    // be considered when building the schedule.
     // expected = Date(3, July, 2020);
     // calculated = helper->swap()->startDate();
     // if (calculated != expected)
