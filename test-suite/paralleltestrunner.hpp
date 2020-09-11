@@ -44,11 +44,16 @@
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
+#include <boost/timer/timer.hpp>
 
 #define BOOST_TEST_NO_MAIN 1
+#if BOOST_VERSION < 107000
+#define timer __TIMER__
 #include <boost/test/included/unit_test.hpp>
-
-#include <boost/timer/timer.hpp>
+#undef timer
+#else
+#include <boost/test/included/unit_test.hpp>
+#endif
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
