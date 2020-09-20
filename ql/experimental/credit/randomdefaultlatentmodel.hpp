@@ -21,6 +21,7 @@
 #ifndef quantlib_randomdefault_latent_model_hpp
 #define quantlib_randomdefault_latent_model_hpp
 
+#include <ql/tuple.hpp>
 #include <ql/math/beta.hpp>
 #include <ql/math/statistics/histogram.hpp>
 #include <ql/math/statistics/riskstatistics.hpp>
@@ -189,7 +190,7 @@ namespace QuantLib {
         virtual Real percentile(const Date& d, Real percentile) const;
         /*! Returns the VaR value for a given percentile and the 95 confidence
         interval of that value. */
-        virtual boost::tuples::tuple<Real, Real, Real> percentileAndInterval(
+        virtual ext::tuple<Real, Real, Real> percentileAndInterval(
             const Date& d, Real percentile) const;
         /*! Distributes the total VaR amount along the portfolio counterparties.
             The passed loss amount is in loss units.
@@ -534,7 +535,7 @@ namespace QuantLib {
     template<template <class, class> class D, class C, class URNG>
     Real RandomLM<D, C, URNG>::percentile(const Date& d, Real perc) const {
         // need to specify return type in tuples' get is parametric
-        return percentileAndInterval(d, perc).template get<0>();
+        return ext::get<0>(percentileAndInterval(d, perc));
     }
 
 
@@ -545,7 +546,7 @@ namespace QuantLib {
     of the stimator just computed. See the reference for a discussion.
     */
     template<template <class, class> class D, class C, class URNG>
-    boost::tuples::tuple<Real, Real, Real> // disposable?
+    ext::tuple<Real, Real, Real> // disposable?
         RandomLM<D, C, URNG>::percentileAndInterval(const Date& d,
             Real percentile) const {
 
@@ -624,7 +625,7 @@ namespace QuantLib {
         lowerPercentile = rankLosses[r];
         upperPercentile = rankLosses[s];
 
-        return boost::tuples::tuple<Real, Real, Real>(quantileValue,
+        return ext::tuple<Real, Real, Real>(quantileValue,
             lowerPercentile, upperPercentile);
     }
 

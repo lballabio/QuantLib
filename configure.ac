@@ -412,11 +412,30 @@ if test "$ql_use_std_function" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_std_function])
 
+
+AC_MSG_CHECKING([whether to enable standard smart tuple])
+AC_ARG_ENABLE([std-tuple],
+              AC_HELP_STRING([--enable-std-tuple],
+                             [If enabled, std::tuple and related
+                              classes and functions will be used instead
+                              of ext::tuple; this requires you to set
+                              your compiler's standard to at least C++11.
+                              If disabled (the default) the Boost facilities
+                              are used.]),
+              [ql_use_std_tuple=$enableval],
+              [ql_use_std_tuple=no])
+if test "$ql_use_std_tuple" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_TUPLE],[1],
+             [Define this if you want to use standard smart tuple.])
+fi
+AC_MSG_RESULT([$ql_use_std_pointers])
+
 AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],
               AC_HELP_STRING([--enable-std-classes],
                              [This is a shortcut for --enable-std-pointers
-                              --enable-std-unique-ptr --enable-std-function.
+                              --enable-std-unique-ptr --enable-std-function
+			      --enable-std-tuple.
                               If enabled, this supersedes any --disable
                               option passed for the above.]),
               [ql_use_std_classes=$enableval],
@@ -428,6 +447,8 @@ if test "$ql_use_std_classes" = "yes" ; then
              [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
    AC_DEFINE([QL_USE_STD_FUNCTION],[1],
              [Define this if you want to use std::function and std::bind.])
+   AC_DEFINE([QL_USE_STD_TUPLE],[1],
+             [Define this if you want to use std::tuple.])
 fi
 AC_MSG_RESULT([$ql_use_std_classes])
 
