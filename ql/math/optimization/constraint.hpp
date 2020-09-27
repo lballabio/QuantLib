@@ -69,9 +69,7 @@ namespace QuantLib {
                                             << params.size() << ")");
             return result;
         }
-        Real update(Array& p,
-                    const Array& direction,
-                    Real beta);
+        Real update(Array& p, const Array& direction, Real beta) const;
         Constraint(const ext::shared_ptr<Impl>& impl =
                                                    ext::shared_ptr<Impl>());
     };
@@ -213,10 +211,9 @@ namespace QuantLib {
             Array low_, high_;
         };
       public:
-        NonhomogeneousBoundaryConstraint(Array low, Array high)
-        : Constraint(ext::shared_ptr <Constraint::Impl>(
-                     new NonhomogeneousBoundaryConstraint::Impl(low, high))) {
-        }
+        NonhomogeneousBoundaryConstraint(const Array& low, const Array& high)
+        : Constraint(ext::shared_ptr<Constraint::Impl>(
+              new NonhomogeneousBoundaryConstraint::Impl(low, high))) {}
     };
 
 }

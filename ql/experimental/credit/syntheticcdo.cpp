@@ -40,15 +40,10 @@ namespace QuantLib {
                                const DayCounter& dayCounter,
                                BusinessDayConvention paymentConvention,
                                boost::optional<Real> notional)
-    : basket_(basket),
-      side_(side),
-      upfrontRate_(upfrontRate),
-      runningRate_(runningRate),
-      leverageFactor_(notional ? notional.get()/basket->trancheNotional() : 1.),
-      dayCounter_(dayCounter),
-      paymentConvention_(paymentConvention)
-    {
-        QL_REQUIRE (basket->names().size() > 0, "basket is empty");
+    : basket_(basket), side_(side), upfrontRate_(upfrontRate), runningRate_(runningRate),
+      leverageFactor_(notional ? notional.get() / basket->trancheNotional() : 1.), // NOLINT(readability-implicit-bool-conversion)
+      dayCounter_(dayCounter), paymentConvention_(paymentConvention) {
+        QL_REQUIRE(!basket->names().empty(), "basket is empty");
         // Basket inception must lie before contract protection start.
         QL_REQUIRE(basket->refDate() <= schedule.startDate(),
         //using the start date of the schedule might be wrong, think of the 

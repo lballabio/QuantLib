@@ -64,7 +64,7 @@ namespace QuantLib {
             // unidentified closing days for stock exchange
             || (d == 2 && m == January && y == 2004)
             || (d == 31 && m == December && y == 2004))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

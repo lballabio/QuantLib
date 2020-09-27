@@ -38,13 +38,14 @@ namespace QuantLib {
     */
     class CPICouponPricer : public InflationCouponPricer {
       public:
-        CPICouponPricer();
-        /*! \deprecated Use the constructor also taking an explicit
-                        nominal term structure.
-                        Deprecated in version 1.15.
+        /*! \deprecated Use one of the other constructors.
+                        Deprecated in version 1.19.
         */
         QL_DEPRECATED
-        explicit CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol);
+        CPICouponPricer();
+
+        explicit CPICouponPricer(const Handle<YieldTermStructure>& nominalTermStructure);
+
         CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol,
                         const Handle<YieldTermStructure>& nominalTermStructure);
 
@@ -97,7 +98,7 @@ namespace QuantLib {
         Spread spread_;
         Real discount_;
     };
-
+    
 }
 
 #endif

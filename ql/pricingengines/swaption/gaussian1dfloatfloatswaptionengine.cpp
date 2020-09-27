@@ -62,14 +62,15 @@ namespace QuantLib {
         return arguments_.swap->type();
     }
 
+    // NOLINTNEXTLINE(readability-const-return-type)
     const Date Gaussian1dFloatFloatSwaptionEngine::underlyingLastDate() const {
         Date l1 = arguments_.leg1PayDates.back();
         Date l2 = arguments_.leg2PayDates.back();
         return l2 >= l1 ? l2 : l1;
     }
 
-    const Disposable<Array>
-    Gaussian1dFloatFloatSwaptionEngine::initialGuess(const Date &expiry) const {
+    // NOLINTNEXTLINE(readability-const-return-type)
+    const Disposable<Array> Gaussian1dFloatFloatSwaptionEngine::initialGuess(const Date &expiry) const {
 
         Size idx1 =
             std::upper_bound(arguments_.leg1ResetDates.begin(),
@@ -101,9 +102,11 @@ namespace QuantLib {
     }
 
     // calculate npv and underlying npv as of expiry date
-    const std::pair<Real, Real> Gaussian1dFloatFloatSwaptionEngine::npvs(
-        const Date &expiry, const Real y, const bool includeExerciseOnExpiry,
-        const bool considerProbabilities) const {
+    std::pair<Real, Real>
+    Gaussian1dFloatFloatSwaptionEngine::npvs(const Date& expiry,
+                                             const Real y,
+                                             const bool includeExerciseOnExpiry,
+                                             const bool considerProbabilities) const {
 
         // pricing
 
@@ -165,12 +168,10 @@ namespace QuantLib {
                 npvp1.push_back(npvTmp1);
             }
         }
-        // end probabkility computation
+        // end probability computation
 
         Date event1 = Null<Date>(), event0;
         Time event1Time = Null<Real>(), event0Time;
-
-        bool isExercise, isLeg1Fixing, isLeg2Fixing;
 
         ext::shared_ptr<IborIndex> ibor1 =
             ext::dynamic_pointer_cast<IborIndex>(arguments_.index1);
@@ -206,26 +207,17 @@ namespace QuantLib {
                               // earliest event date
             }
 
-            if (std::find(arguments_.exercise->dates().begin(),
-                          arguments_.exercise->dates().end(),
-                          event0) != arguments_.exercise->dates().end())
-                isExercise = true;
-            else
-                isExercise = false;
+            bool isExercise =
+                std::find(arguments_.exercise->dates().begin(), arguments_.exercise->dates().end(),
+                          event0) != arguments_.exercise->dates().end();
 
-            if (std::find(arguments_.leg1FixingDates.begin(),
-                          arguments_.leg1FixingDates.end(),
-                          event0) != arguments_.leg1FixingDates.end())
-                isLeg1Fixing = true;
-            else
-                isLeg1Fixing = false;
+            bool isLeg1Fixing =
+                std::find(arguments_.leg1FixingDates.begin(), arguments_.leg1FixingDates.end(),
+                          event0) != arguments_.leg1FixingDates.end();
 
-            if (std::find(arguments_.leg2FixingDates.begin(),
-                          arguments_.leg2FixingDates.end(),
-                          event0) != arguments_.leg2FixingDates.end())
-                isLeg2Fixing = true;
-            else
-                isLeg2Fixing = false;
+            bool isLeg2Fixing =
+                std::find(arguments_.leg2FixingDates.begin(), arguments_.leg2FixingDates.end(),
+                          event0) != arguments_.leg2FixingDates.end();
 
             event0Time = std::max(
                 model_->termStructure()->timeFromReference(event0), 0.0);

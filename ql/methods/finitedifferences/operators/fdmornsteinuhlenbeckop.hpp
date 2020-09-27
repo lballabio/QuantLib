@@ -44,17 +44,6 @@ namespace QuantLib {
             const ext::shared_ptr<YieldTermStructure>& rTS,
             Size direction = 0);
 
-        /*! \deprecated use the other constructor.
-                        Deprecated in version 1.16.
-        */
-        QL_DEPRECATED
-        FdmOrnsteinUhlenbeckOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& p,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            const FdmBoundaryConditionSet& bcSet,
-            Size direction = 0);
-
         Size size() const;
         void setTime(Time t1, Time t2);
 

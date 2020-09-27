@@ -89,8 +89,9 @@ namespace QuantLib {
     class BinomialProbabilityOfAtLeastNEvents {
     public:
         explicit BinomialProbabilityOfAtLeastNEvents(int n) : n_(n) {}
-        Real operator()(std::vector<Real> p);
-    private:
+        Real operator()(std::vector<Real> p) const;
+
+      private:
         int n_;
     };
 

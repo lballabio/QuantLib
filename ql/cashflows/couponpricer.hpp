@@ -94,17 +94,15 @@ namespace QuantLib {
       public:
         enum TimingAdjustment { Black76, BivariateLognormal };
         BlackIborCouponPricer(
-            const Handle<OptionletVolatilityStructure>& v =
-                Handle<OptionletVolatilityStructure>(),
+            const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
-            const Handle<Quote> correlation =
+            const Handle<Quote>& correlation =
                 Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))))
-            : IborCouponPricer(v), timingAdjustment_(timingAdjustment),
-              correlation_(correlation) {
-            QL_REQUIRE(timingAdjustment_ == Black76 ||
-                           timingAdjustment_ == BivariateLognormal,
-                       "unknown timing adjustment (code " << timingAdjustment_
-                                                          << ")");
+        : IborCouponPricer(v), timingAdjustment_(timingAdjustment), correlation_(correlation) {
+            { // this additional scope seems required to avoid a misleading-indentation warning
+                QL_REQUIRE(timingAdjustment_ == Black76 || timingAdjustment_ == BivariateLognormal,
+                           "unknown timing adjustment (code " << timingAdjustment_ << ")");
+            }
             registerWith(correlation_);
         };
         virtual void initialize(const FloatingRateCoupon& coupon);

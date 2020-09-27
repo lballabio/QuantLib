@@ -81,7 +81,7 @@ namespace QuantLib {
                           bool contTenorSpread = true);
         SwaptionCashFlows(){}; // allow default constructor which does nothing
         // inspectors
-        inline const ext::shared_ptr<Swaption> swaption() const { return swaption_; }
+        inline ext::shared_ptr<Swaption> swaption() const { return swaption_; }
         inline const std::vector<Real>& exerciseTimes() const { return exerciseTimes_; }
     };
 

@@ -45,9 +45,9 @@ namespace QuantLib {
     class Ranlux3UniformRng {
       public:
         typedef Sample<Real> sample_type;
- 
-        explicit Ranlux3UniformRng(Size seed = 19780503u)
-        : ranlux3_(boost::random::ranlux64_base_01(seed)){ }
+
+        explicit Ranlux3UniformRng(Size seed = 19780503U)
+        : ranlux3_(boost::random::ranlux64_base_01(seed)) {}
 
         sample_type next() const {
             return sample_type(ranlux3_(), 1.0);
@@ -60,9 +60,9 @@ namespace QuantLib {
     class Ranlux4UniformRng {
       public:
         typedef Sample<Real> sample_type;
- 
-        explicit Ranlux4UniformRng(Size seed = 19780503u)
-        : ranlux4_(boost::random::ranlux64_base_01(seed)){ }
+
+        explicit Ranlux4UniformRng(Size seed = 19780503U)
+        : ranlux4_(boost::random::ranlux64_base_01(seed)) {}
 
         sample_type next() const {
             return sample_type(ranlux4_(), 1.0);

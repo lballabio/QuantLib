@@ -85,7 +85,7 @@ namespace QuantLib {
             || ((d == 4 || d == 5) && m == June && y == 2012)
             // December 31st, 1999 only
             || (d == 31 && m == December && y == 1999))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -128,7 +128,7 @@ namespace QuantLib {
             || ((d == 4 || d == 5) && m == June && y == 2012)
             // December 31st, 1999 only
             || (d == 31 && m == December && y == 1999))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -171,7 +171,7 @@ namespace QuantLib {
             || ((d == 4 || d == 5) && m == June && y == 2012)
             // December 31st, 1999 only
             || (d == 31 && m == December && y == 1999))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

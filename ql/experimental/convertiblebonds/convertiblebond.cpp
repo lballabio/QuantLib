@@ -103,7 +103,11 @@ namespace QuantLib {
                           const std::vector<Rate>& coupons,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
-                          Real redemption)
+                          Real redemption,
+                          const Period& exCouponPeriod,
+                          const Calendar& exCouponCalendar,
+                          const BusinessDayConvention exCouponConvention,
+                          bool exCouponEndOfMonth)
     : ConvertibleBond(exercise, conversionRatio, dividends, callability,
                       creditSpread, issueDate, settlementDays,
                       schedule, redemption) {
@@ -112,7 +116,11 @@ namespace QuantLib {
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(100.0)
             .withCouponRates(coupons, dayCounter)
-            .withPaymentAdjustment(schedule.businessDayConvention());
+            .withPaymentAdjustment(schedule.businessDayConvention())
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 
@@ -139,7 +147,11 @@ namespace QuantLib {
                           const std::vector<Spread>& spreads,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
-                          Real redemption)
+                          Real redemption,
+                          const Period& exCouponPeriod,
+                          const Calendar& exCouponCalendar,
+                          const BusinessDayConvention exCouponConvention,
+                          bool exCouponEndOfMonth)
     : ConvertibleBond(exercise, conversionRatio, dividends, callability,
                       creditSpread, issueDate, settlementDays,
                       schedule, redemption) {
@@ -150,7 +162,11 @@ namespace QuantLib {
             .withNotionals(100.0)
             .withPaymentAdjustment(schedule.businessDayConvention())
             .withFixingDays(fixingDays)
-            .withSpreads(spreads);
+            .withSpreads(spreads)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 
@@ -228,7 +244,7 @@ namespace QuantLib {
                 ext::shared_ptr<SoftCallability> softCall =
                     ext::dynamic_pointer_cast<SoftCallability>(
                                                              callability_[i]);
-                if (softCall)
+                if (softCall != 0)
                     moreArgs->callabilityTriggers.push_back(
                                                          softCall->trigger());
                 else

@@ -41,6 +41,7 @@
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
@@ -183,7 +184,7 @@ namespace inflation_capfloor_test {
                 new PiecewiseYoYInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
                         iir->frequency(),iir->interpolated(), baseYYRate,
-                        Handle<YieldTermStructure>(nominalTS), helpers));
+                        helpers));
             pYYTS->recalculate();
             yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
@@ -193,7 +194,7 @@ namespace inflation_capfloor_test {
         }
 
         // utilities
-        Leg makeYoYLeg(const Date& startDate, Integer length) {
+        Leg makeYoYLeg(const Date& startDate, Integer length) const {
             ext::shared_ptr<YoYInflationIndex> ii =
                 ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
             Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
@@ -207,8 +208,7 @@ namespace inflation_capfloor_test {
         }
 
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility,
-                                                  Size which) {
+        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) const {
 
             ext::shared_ptr<YoYInflationIndex>
             yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
@@ -252,7 +252,7 @@ namespace inflation_capfloor_test {
                                                               const Leg& leg,
                                                               Rate strike,
                                                               Volatility volatility,
-                                                              Size which) {
+                                                              Size which) const {
             ext::shared_ptr<YoYInflationCapFloor> result;
             switch (type) {
                 case YoYInflationCapFloor::Cap:
@@ -269,7 +269,6 @@ namespace inflation_capfloor_test {
             result->setPricingEngine(makeEngine(volatility, which));
             return result;
         }
-
     };
 
 }
@@ -460,6 +459,8 @@ void InflationCapFloorTest::testParity() {
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
+                    setCouponPricer(swap.yoyLeg(),
+                                    ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     // N.B. nominals are 10e6
                     if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-6) {

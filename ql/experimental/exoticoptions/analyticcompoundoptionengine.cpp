@@ -31,13 +31,11 @@ namespace QuantLib {
           public:
             ImpliedSpotHelper(DiscountFactor dividendDiscount,
                               DiscountFactor riskFreeDiscount,
-                              Real standardDeviation ,
-                              ext::shared_ptr<PlainVanillaPayoff> payoff,
+                              Real standardDeviation,
+                              const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                               Real strike)
-            : dividendDiscount_(dividendDiscount),
-              riskFreeDiscount_(riskFreeDiscount),
-              standardDeviation_(standardDeviation),
-              strike_(strike),payoff_(payoff) {}
+            : dividendDiscount_(dividendDiscount), riskFreeDiscount_(riskFreeDiscount),
+              standardDeviation_(standardDeviation), strike_(strike), payoff_(payoff) {}
             Real operator()(Real spot) const {
                 Real forwardPrice = spot*dividendDiscount_/riskFreeDiscount_;
                 Real value = blackFormula(payoff_, forwardPrice,

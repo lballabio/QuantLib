@@ -33,6 +33,7 @@ namespace QuantLib {
 
     class LineSearch;
 
+    //! Line search based method
     class LineSearchBasedMethod : public OptimizationMethod {
       public:
         explicit LineSearchBasedMethod(

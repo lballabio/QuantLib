@@ -53,20 +53,25 @@ namespace QuantLib {
         // Constructor
         explicit FdHestonVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100, 
-            Size vGrid = 50, Size dampingSteps = 0,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size vGrid = 50,
+            Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                ext::shared_ptr<LocalVolTermStructure>(),
+            Real mixingFactor = 1.0);
 
-        FdHestonVanillaEngine(
-            const ext::shared_ptr<HestonModel>& model,
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
-            Size tGrid = 100, Size xGrid = 100,
-            Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+        FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
+                              Size tGrid = 100,
+                              Size xGrid = 100,
+                              Size vGrid = 50,
+                              Size dampingSteps = 0,
+                              const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                              const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                                  ext::shared_ptr<LocalVolTermStructure>(),
+                              Real mixingFactor = 1.0);
 
         void calculate() const;
         
@@ -82,7 +87,8 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
         const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
-        
+        const Real mixingFactor_;
+
         std::vector<Real> strikes_;
         mutable std::vector<std::pair<DividendVanillaOption::arguments,
                                       DividendVanillaOption::results> >

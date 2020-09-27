@@ -1,100 +1,109 @@
-Changes for QuantLib 1.17:
+Changes for QuantLib 1.19:
 ==========================
 
-QuantLib 1.17 includes 30 pull requests from several contributors.
+QuantLib 1.19 includes 40 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/13?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/15?closed=1>.
 
 Portability
 -----------
 
-- As of this release, support of Visual C++ 2010 is deprecated; it
-  will be dropped in next release.  Also, we'll probably deprecate
-  Visual C++ 2012 in one of the next few releases in order to drop it
-  around the end of 2020.
+- Support for Visual C++ 2012 is being deprecated.  It will be dropped
+  around the end of 2020 or the beginning of 2021 in order to enable
+  use of C++11 features.
 
-Configuration
--------------
-
-- A new function `compiledBoostVersion()` is available, (thanks to
-  Andrew Smith).  It returns the version of Boost used to compile the
-  library, as reported by the `BOOST_VERSION` macro.  This can help
-  avoid linking the library with user code compiled with a different
-  Boost version (which can result in erratic behavior).
-
-- It is now possible to specify at run time whether to use indexed
-  coupons (thanks to Ralf Konrad).  The compile-time configuration is
-  still used as a default, but it is also possible to call either of
-  the static methods `IborCoupon::createAtParCoupons` or
-  `IborCoupon::createIndexedCoupons` to specify your preference.  For
-  the time being, the methods above must necessarily be called before
-  creating any instance of `IborCoupon` or of its derived classes.
+- Avoided use in Makefiles of functions only available to GNU Make
+  (thanks to GitHub user `UnitedMarsupials` for the heads-up).
 
 Build
 -----
 
-- As of this version, the names of the binaries produced by the
-  included Visual C++ solution no longer contain the toolset version
-  (e.g., v142).
-
-Instruments
------------
-
-- Added ex-coupon functionality to floating-rate bonds (thanks to
-  Steven Van Haren).
-
-- The inner structure `Callability::Price` was moved to the class
-  `Bond` and can now be used to specify what kind of price was passed
-  to the `BondFunctions::yield` method (thanks to Francois Botha).
-
-- It is now possible to use a par-coupon approximation for FRAs like
-  the one used in Ibor coupons (thanks to Peter Caspers).
-
-Pricing engines
----------------
-
-- Added escrowed dividend model to the new-style FD engine for
-  `DividendVanillaOption` (thanks to Klaus Spanderen).
-
-- Black cap/floor engine now also returns caplet deltas (thanks to
-  Wojciech Slusarski).
+- Automated builds on Travis and GitHub Actions were extended.  We now
+  have a build for Mac OS X, as well as a few builds that run a number
+  of checks on the code (including clang-tidy) and automatically open
+  pull requests with fixes.
 
 Term structures
 ---------------
 
-- OIS rate helpers can now choose whether to use as a pillar for the
-  bootstrap either their maturity date or the end date of the last
-  underlying fixing.  This provides an alternative if the bootstrap
-  should fail.  (Thanks to Drew Saunders for the heads-up.)
+- Added options for iterative bootstrap to widen the search domain or
+  to keep the best result upon failure (thanks to Francis Duffy).
 
-- Instances of the `FittedBondDiscountCurve` class now behave as
-  simple evaluators (that is, they use the given paramters without
-  performing root-solving) when the `maxIterations` parameter is set
-  to 0.  (Thanks to Nick Firoozye for the heads-up.)
+- Added flat-extrapolation option to fitted bond curves (thanks to
+  Peter Caspers).
+
+Instruments
+-----------
+
+- Added finite-difference pricing engine for equity options under the
+  Cox-Ingersoll-Ross process (thanks to Lew Wei Hao).
+
+- Added Heston engine based on exponentially-fitted Laguerre
+  quadrature rule (thanks to Klaus Spanderen).
+
+- Added Monte Carlo pricing engines for lookback options (thanks to
+  Lew Wei Hao).
+
+- Added Monte Carlo pricing engine for double-barrier options (thanks
+  to Lew Wei Hao).
+
+- Added analytic pricing engine for equity options under the
+  Vasicek model (thanks to Lew Wei Hao).
+
+- The `Bond::yield` method can now specify a guess and whether the
+  passed price is clean or dirty (thanks to Francois Botha).
+
+Models
+------
+
+- Improved grid scaling for FDM Heston SLV calibration, and fixed
+  drift and diffusion for Heston SLV process (thanks to Klaus
+  Spanderen and Peter Caspers).
+
+- Added mixing factor to Heston SLV process (thanks to Lew Wei Hao).
+
+Math
+----
+
+- Improved nodes/weights for the exponentially fitted Laguerre
+  quadrature rule and added sine and cosine quadratures (thanks to
+  Klaus Spanderen).
 
 Date/time
 ---------
 
-- Added a few special closing days to the US government bond calendar
-  (thanks to Mike DelMedico).
+- Improved performance of the Calendar class (thanks to Leonardo Arcari).
 
-- Fixed an incorrect 2019 holiday in Chinese calendar (thanks to Cheng Li).
+- Updated holidays for Indian and Russian calendars (thanks to Alexey
+  Indiryakov).
 
-- Added missing holiday to Swedish calendar (thanks to GitHub users
-  `periculus` and `tonyzhipengzhou`).
+- Added missing All Souls Day holiday to Mexican calendar (thanks to
+  GitHub user `phil-zxx` for the heads-up).
+
+- Restored New Year's Eve holiday to Eurex calendar (thanks to Joshua
+  Engelman).
 
 Deprecated features
 -------------------
 
-- The classes `FDEuropeanEngine`, `FDAmericanEngine`,
-  `FDBermudanEngine`, `FDDividendEuropeanEngine`,
-  `FDDividendEuropeanEngineShiftScale`, `FDDividendAmericanEngine`,
-  `FDDividendAmericanEngineShiftScale` are now deprecated.  They are
-  superseded by `FdBlackScholesVanillaEngine`.
+- Features deprecate in version 1.15 were removed: constructors of
+  inflation swap helpers, inflation-based pricing engines and
+  inflation coupon pricers that didn't take a nominal term structure.
 
+- The constructor of `BMAIndex` taking a calendar was deprecated.
 
-Thanks go also to Joel King, Kai Striega, Francis Duffy, Tom Anderson
-and GitHub user `lab4quant` for smaller fixes, enhancements, and bug
-reports.
+- The constructors of several interest-rate term structures taking
+  jumps without a reference date were deprecated.
+
+- The `CurveDependentStepCondition` class and related typedefs were
+  deprecated.
+
+- The constructor of `BlackCalibrationHelper` taking an interest-rate
+  structure was deprecated.
+
+- The constructors of several inflation curves taking a nominal curve
+  were deprecated.  The nominal curve should now be passed to the used
+  coupon pricers.
+

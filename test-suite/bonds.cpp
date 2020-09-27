@@ -77,8 +77,7 @@ namespace bonds_test {
         }
     };
 
-    void checkValue(Real value, Real expectedValue,
-                    Real tolerance, std::string msg) {
+    void checkValue(Real value, Real expectedValue, Real tolerance, const std::string& msg) {
         if (std::fabs(value - expectedValue) > tolerance) {
             BOOST_ERROR(msg
                         << std::fixed
@@ -1534,6 +1533,128 @@ void BondTest::testBondFromScheduleWithDateVector()
     }
 }
 
+void BondTest::testFixedBondWithGivenDates() {
+
+    BOOST_TEST_MESSAGE("Testing fixed-coupon bond built on schedule with given dates...");
+
+    using namespace bonds_test;
+
+    CommonVars vars;
+
+    Date today(22,November,2004);
+    Settings::instance().evaluationDate() = today;
+
+    Natural settlementDays = 1;
+
+    Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
+
+    Real tolerance = 1.0e-6;
+
+    ext::shared_ptr<PricingEngine> bondEngine(
+                                    new DiscountingBondEngine(discountCurve));
+    // plain
+
+    Schedule sch1(Date(30,November,2004),
+                  Date(30,November,2008), Period(Semiannual),
+                  UnitedStates(UnitedStates::GovernmentBond),
+                  Unadjusted, Unadjusted, DateGeneration::Backward, false);
+    FixedRateBond bond1(settlementDays, vars.faceAmount, sch1,
+                        std::vector<Rate>(1, 0.02875),
+                        ActualActual(ActualActual::ISMA),
+                        ModifiedFollowing,
+                        100.0, Date(30,November,2004));
+    bond1.setPricingEngine(bondEngine);
+
+    Schedule sch1_copy(sch1.dates(), UnitedStates(UnitedStates::GovernmentBond),
+                       Unadjusted, Unadjusted, Period(Semiannual),
+                       DateGeneration::Backward,
+                       false, std::vector<bool>(sch1.size()-1, true));
+    FixedRateBond bond1_copy(settlementDays, vars.faceAmount, sch1_copy,
+                             std::vector<Rate>(1, 0.02875),
+                             ActualActual(ActualActual::ISMA),
+                             ModifiedFollowing,
+                             100.0, Date(30,November,2004));
+    bond1_copy.setPricingEngine(bondEngine);
+
+    Real expected = bond1.cleanPrice();
+    Real calculated = bond1_copy.cleanPrice();
+    if (std::fabs(expected-calculated) > tolerance) {
+        BOOST_FAIL("failed to reproduce cached price:\n"
+                   << std::fixed
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected << "\n"
+                   << "    error:      " << expected-calculated);
+    }
+
+    // varying coupons
+
+    std::vector<Rate> couponRates(4);
+    couponRates[0] = 0.02875;
+    couponRates[1] = 0.03;
+    couponRates[2] = 0.03125;
+    couponRates[3] = 0.0325;
+
+    FixedRateBond bond2(settlementDays, vars.faceAmount, sch1,
+                        couponRates,
+                        ActualActual(ActualActual::ISMA),
+                        ModifiedFollowing,
+                        100.0, Date(30,November,2004));
+    bond2.setPricingEngine(bondEngine);
+
+    FixedRateBond bond2_copy(settlementDays, vars.faceAmount, sch1_copy,
+                             couponRates,
+                             ActualActual(ActualActual::ISMA),
+                             ModifiedFollowing,
+                             100.0, Date(30,November,2004));
+    bond2_copy.setPricingEngine(bondEngine);
+
+    expected = bond2.cleanPrice();
+    calculated = bond2_copy.cleanPrice();
+    if (std::fabs(expected-calculated) > tolerance) {
+        BOOST_FAIL("failed to reproduce cached price:\n"
+                   << std::fixed
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected << "\n"
+                   << "    error:      " << expected-calculated);
+    }
+
+
+    // stub date
+
+    Schedule sch3(Date(30,November,2004),
+                  Date(30,March,2009), Period(Semiannual),
+                  UnitedStates(UnitedStates::GovernmentBond),
+                  Unadjusted, Unadjusted, DateGeneration::Backward, false,
+                  Date(), Date(30,November,2008));
+    FixedRateBond bond3(settlementDays, vars.faceAmount, sch3,
+                        couponRates,
+                        Actual360(),
+                        ModifiedFollowing,
+                        100.0, Date(30,November,2004));
+    bond3.setPricingEngine(bondEngine);
+
+    Schedule sch3_copy(sch3.dates(), UnitedStates(UnitedStates::GovernmentBond),
+                       Unadjusted, Unadjusted, Period(Semiannual),
+                       DateGeneration::Backward,
+                       false, std::vector<bool>(sch3.size()-1, true));
+    FixedRateBond bond3_copy(settlementDays, vars.faceAmount, sch3_copy,
+                             couponRates,
+                             Actual360(),
+                             ModifiedFollowing,
+                             100.0, Date(30,November,2004));
+    bond3_copy.setPricingEngine(bondEngine);
+
+    expected = bond3.cleanPrice();
+    calculated = bond3_copy.cleanPrice();
+    if (std::fabs(expected-calculated) > tolerance) {
+        BOOST_FAIL("failed to reproduce cached price:\n"
+                   << std::fixed
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected << "\n"
+                   << "    error:      " << expected-calculated);
+    }
+}
+
 void BondTest::testFixedRateBondWithArbitrarySchedule() {
     BOOST_TEST_MESSAGE("Testing fixed-rate bond with arbitrary schedule...");
     SavedSettings backup;
@@ -1632,6 +1753,7 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFixed));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFloating));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBrazilianCached));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testFixedBondWithGivenDates));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));

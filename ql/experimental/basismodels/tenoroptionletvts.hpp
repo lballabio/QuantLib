@@ -52,7 +52,7 @@ namespace QuantLib {
 
           public:
             // constructor includes actual transformation details
-            TenorOptionletSmileSection(const TenorOptionletVTS& volTS, const Time optionTime);
+            TenorOptionletSmileSection(const TenorOptionletVTS& volTS, Time optionTime);
 
             // further SmileSection interface methods
             virtual Real minStrike() const {
@@ -86,10 +86,8 @@ namespace QuantLib {
 
           public:
             TwoParameterCorrelation(const ext::shared_ptr<Interpolation>& rhoInf,
-                                    const ext::shared_ptr<Interpolation>& beta) {
-                rhoInf_ = rhoInf;
-                beta_ = beta;
-            }
+                                    const ext::shared_ptr<Interpolation>& beta)
+            : rhoInf_(rhoInf), beta_(beta) {}
             Real operator()(const Time& start1, const Time& start2) const {
                 Real rhoInf = (*rhoInf_)(start1);
                 Real beta = (*beta_)(start1);

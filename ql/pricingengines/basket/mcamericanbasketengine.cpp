@@ -50,7 +50,7 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
 
-        if (strikePayoff) {
+        if (strikePayoff != 0) {
             scalingValue_/=strikePayoff->strike();
         }
 

@@ -38,14 +38,14 @@ namespace QuantLib {
                                 const Matrix &cPrice,
                                 const Matrix &fPrice)
     : InflationTermStructure(0, cal, baseRate, observationLag, zii->frequency(), 
-                             zii->interpolated(), yts, dc),
-      zii_(zii), cStrikes_(cStrikes), fStrikes_(fStrikes),
+                             zii->interpolated(), dc),
+      zii_(zii), nominalTS_(yts), cStrikes_(cStrikes), fStrikes_(fStrikes),
       cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice),
       nominal_(nominal), bdc_(bdc) {
 
           // does the index have a TS?
           QL_REQUIRE(!zii_->zeroInflationTermStructure().empty(),"ZITS missing from index");
-          QL_REQUIRE(!this->nominalTermStructure().empty(),"nominal TS missing");
+          QL_REQUIRE(!nominalTS_.empty(),"nominal TS missing");
               
         // data consistency checking, enough data?
         QL_REQUIRE(fStrikes_.size() > 1, "not enough floor strikes");

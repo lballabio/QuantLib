@@ -61,12 +61,11 @@ namespace QuantLib {
     class FdmBackwardSolver {
       public:
         typedef FdmLinearOp::array_type array_type;
-        
-        FdmBackwardSolver(
-          const ext::shared_ptr<FdmLinearOpComposite>& map,
-          const FdmBoundaryConditionSet& bcSet,
-          const ext::shared_ptr<FdmStepConditionComposite> condition,
-          const FdmSchemeDesc& schemeDesc);
+
+        FdmBackwardSolver(const ext::shared_ptr<FdmLinearOpComposite>& map,
+                          const FdmBoundaryConditionSet& bcSet,
+                          const ext::shared_ptr<FdmStepConditionComposite>& condition,
+                          const FdmSchemeDesc& schemeDesc);
 
         void rollback(array_type& a, 
                       Time from, Time to,

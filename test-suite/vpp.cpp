@@ -322,7 +322,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
 
     rsg_type rsg = PseudoRandom::make_sequence_generator(
-                           klugeOUProcess->factors()*(grid.size()-1), 1234ul);
+        klugeOUProcess->factors() * (grid.size() - 1), 1234UL);
 
     MultiPathGenerator<rsg_type> generator(klugeOUProcess, grid, rsg, false);
 
@@ -330,7 +330,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     GeneralStatistics npv;
     const Size nTrails = 20000;
     for (Size i=0; i < nTrails; ++i) {
-        const sample_type path = generator.next();
+        const sample_type& path = generator.next();
 
         Array p(2);
         p[0] = path.value[0].back() + path.value[1].back();
@@ -419,8 +419,7 @@ void VPPTest::testVPPIntrinsicValue() {
     const Real startUpFixCost = 100;
     const Real fuelCostAddon    = 3.0;
 
-    const ext::shared_ptr<SwingExercise> exercise(
-                                new SwingExercise(today, today+6, 3600u));
+    const ext::shared_ptr<SwingExercise> exercise(new SwingExercise(today, today + 6, 3600U));
 
     // Expected values are calculated using mixed integer programming
     // based on the gnu linear programming toolkit. For details please see:
@@ -468,7 +467,7 @@ namespace vpp_test {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
                         "invalid time");
 
-            const Size i = Size(t*365u*24u);
+            const Size i = Size(t * 365U * 24U);
             const Real f = std::lower_bound(shape_->begin(), shape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
 
@@ -500,7 +499,7 @@ namespace vpp_test {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,
                         "invalid time");
 
-            const Size i = Size(t*365u*24u);
+            const Size i = Size(t * 365U * 24U);
             const Real f = std::lower_bound(
                 powerShape_->begin(), powerShape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
@@ -568,7 +567,7 @@ void VPPTest::testVPPPricing() {
     const DayCounter dc = ActualActual();
     Settings::instance().evaluationDate() = today;
 
-    // vpp paramter
+    // vpp parameter
     const Real heatRate       = 2.5;
     const Real pMin           = 8;
     const Real pMax           = 40;
@@ -577,8 +576,7 @@ void VPPTest::testVPPPricing() {
     const Real startUpFuel    = 20;
     const Real startUpFixCost = 100;
 
-    const ext::shared_ptr<SwingExercise> exercise(
-                                new SwingExercise(today, today+6, 3600u));
+    const ext::shared_ptr<SwingExercise> exercise(new SwingExercise(today, today + 6, 3600U));
 
     VanillaVPPOption vppOption(heatRate, pMin, pMax, tMinUp, tMinDown,
                                startUpFuel, startUpFixCost, exercise);
@@ -669,7 +667,7 @@ void VPPTest::testVPPPricing() {
         stepConditionFactory.stateMesher()));
     const Size nStates = oneDimMesher->layout()->dim()[0];
 
-    const FdmVPPStepConditionMesher vppMesh = { 0u, oneDimMesher };
+    const FdmVPPStepConditionMesher vppMesh = {0U, oneDimMesher};
 
     const TimeGrid grid(dc.yearFraction(today, exercise->lastDate()+1),
                         exercise->dates().size());
@@ -677,7 +675,7 @@ void VPPTest::testVPPPricing() {
     typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
 
     rsg_type rsg = PseudoRandom::make_sequence_generator(
-                           klugeOUProcess->factors()*(grid.size()-1), 1234ul);
+        klugeOUProcess->factors() * (grid.size() - 1), 1234UL);
     MultiPathGenerator<rsg_type> generator(klugeOUProcess, grid, rsg, false);
 
     GeneralStatistics npv;
@@ -715,7 +713,7 @@ void VPPTest::testVPPPricing() {
 
     // Test: Longstaff Schwartz least squares Monte-Carlo
     // implementation is not strictly correct but saves some coding
-    const Size nCalibrationTrails = 1000u;
+    const Size nCalibrationTrails = 1000U;
     std::vector<sample_type> calibrationPaths;
     std::vector<ext::shared_ptr<FdmVPPStepCondition> > stepConditions;
     std::vector<ext::shared_ptr<FdmInnerValueCalculator> > sparkSpreads;
@@ -748,11 +746,11 @@ void VPPTest::testVPPPricing() {
         nStates, std::vector<Array>(exercise->dates().size(), Array()));
 
     // regression functions
-    const Size dim = 1u;
+    const Size dim = 1U;
     std::vector<ext::function<Real(Array)> > v(
-        LsmBasisSystem::multiPathBasisSystem(dim,5u, LsmBasisSystem::Monomial));
+        LsmBasisSystem::multiPathBasisSystem(dim, 5U, LsmBasisSystem::Monomial));
 
-    for (Size i=exercise->dates().size(); i > 0u; --i) {
+    for (Size i = exercise->dates().size(); i > 0U; --i) {
         const Time t = grid.at(i);
 
         std::vector<Array> x(nCalibrationTrails, Array(dim));
@@ -786,8 +784,7 @@ void VPPTest::testVPPPricing() {
     for (Size i=0; i < nTrails; ++i) {
         Array x(dim), state(nStates, 0.0), contState(nStates, 0.0);
 
-        const sample_type& path = (i % 2) ? generator.antithetic()
-                                          : generator.next();
+        const sample_type& path = (i % 2) != 0U ? generator.antithetic() : generator.next();
 
         const ext::shared_ptr<FdmInnerValueCalculator> fuelPrices(
             new PathFuelPrice(path.value, fuelShape));
@@ -796,7 +793,7 @@ void VPPTest::testVPPPricing() {
             new PathSparkSpreadPrice(heatRate, path.value,
                                      fuelShape, powerShape));
 
-        for (Size j=exercise->dates().size(); j > 0u; --j) {
+        for (Size j = exercise->dates().size(); j > 0U; --j) {
             const Time t = grid.at(j);
             const Real fuelPrice = fuelPrices->innerValue(iter, t);
             const Real sparkSpread = sparkSpreads->innerValue(iter, t);
@@ -862,7 +859,7 @@ void VPPTest::testVPPPricing() {
             state = retVal;
         }
         tmpValue+=0.5*state.back();
-        if ((i%2)) {
+        if ((i % 2) != 0U) {
             npv.add(tmpValue, 1.0);
             tmpValue = 0.0;
         }
@@ -924,7 +921,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
 
     Array x(mesher->layout()->size());
 
-    PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345ul));
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345UL));
     for (Size i=0; i < x.size(); ++i) {
         x[i] = rng.next().value;
     }

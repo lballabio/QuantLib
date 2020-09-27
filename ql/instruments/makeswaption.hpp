@@ -59,7 +59,7 @@ namespace QuantLib {
         MakeSwaption& withSettlementMethod(Settlement::Method settlementMethod);
         MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
         MakeSwaption& withExerciseDate(const Date&);
-        MakeSwaption& withUnderlyingType(const VanillaSwap::Type type);
+        MakeSwaption& withUnderlyingType(VanillaSwap::Type type);
 
         MakeSwaption& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);

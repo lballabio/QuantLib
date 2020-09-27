@@ -49,39 +49,38 @@ namespace QuantLib {
                                   DoubleBarrierOption::results> {
          public:
            // Constructor
-             VannaVolgaDoubleBarrierEngine(
-                   const Handle<DeltaVolQuote> atmVol,
-                   const Handle<DeltaVolQuote> vol25Put,
-                   const Handle<DeltaVolQuote> vol25Call,
-                   const Handle<Quote> spotFX,
-                   const Handle<YieldTermStructure> domesticTS,
-                   const Handle<YieldTermStructure> foreignTS,
-                   const bool adaptVanDelta = false,
-                   const Real bsPriceWithSmile = 0.0,
-                   int series = 5
-                   )
-             : GenericEngine<DoubleBarrierOption::arguments,
-                             DoubleBarrierOption::results>(),
-               atmVol_(atmVol), vol25Put_(vol25Put), vol25Call_(vol25Call), T_(atmVol_->maturity()),
-               spotFX_(spotFX), domesticTS_(domesticTS), foreignTS_(foreignTS),
-               adaptVanDelta_(adaptVanDelta), bsPriceWithSmile_(bsPriceWithSmile),
-               series_(series){
+           VannaVolgaDoubleBarrierEngine(const Handle<DeltaVolQuote>& atmVol,
+                                         const Handle<DeltaVolQuote>& vol25Put,
+                                         const Handle<DeltaVolQuote>& vol25Call,
+                                         const Handle<Quote>& spotFX,
+                                         const Handle<YieldTermStructure>& domesticTS,
+                                         const Handle<YieldTermStructure>& foreignTS,
+                                         const bool adaptVanDelta = false,
+                                         const Real bsPriceWithSmile = 0.0,
+                                         int series = 5)
+           : GenericEngine<DoubleBarrierOption::arguments, DoubleBarrierOption::results>(),
+             atmVol_(atmVol), vol25Put_(vol25Put), vol25Call_(vol25Call), T_(atmVol_->maturity()),
+             spotFX_(spotFX), domesticTS_(domesticTS), foreignTS_(foreignTS),
+             adaptVanDelta_(adaptVanDelta), bsPriceWithSmile_(bsPriceWithSmile), series_(series) {
 
-                   QL_REQUIRE(vol25Put_->delta() == -0.25, "25 delta put is required by vanna volga method");
-                   QL_REQUIRE(vol25Call_->delta() == 0.25, "25 delta call is required by vanna volga method");
+               QL_REQUIRE(vol25Put_->delta() == -0.25,
+                          "25 delta put is required by vanna volga method");
+               QL_REQUIRE(vol25Call_->delta() == 0.25,
+                          "25 delta call is required by vanna volga method");
 
-                   QL_REQUIRE(vol25Put_->maturity() == vol25Call_->maturity() && vol25Put_->maturity() == atmVol_->maturity(),
-                       "Maturity of 3 vols are not the same");
+               QL_REQUIRE(vol25Put_->maturity() == vol25Call_->maturity() &&
+                              vol25Put_->maturity() == atmVol_->maturity(),
+                          "Maturity of 3 vols are not the same");
 
-                   QL_REQUIRE(!domesticTS_.empty(), "domestic yield curve is not defined");
-                   QL_REQUIRE(!foreignTS_.empty(), "foreign yield curve is not defined");
+               QL_REQUIRE(!domesticTS_.empty(), "domestic yield curve is not defined");
+               QL_REQUIRE(!foreignTS_.empty(), "foreign yield curve is not defined");
 
-                   registerWith(atmVol_);
-                   registerWith(vol25Put_);
-                   registerWith(vol25Call_);
-                   registerWith(spotFX_);
-                   registerWith(domesticTS_);
-                   registerWith(foreignTS_);
+               registerWith(atmVol_);
+               registerWith(vol25Put_);
+               registerWith(vol25Call_);
+               registerWith(spotFX_);
+               registerWith(domesticTS_);
+               registerWith(foreignTS_);
              }
 
            virtual void calculate() const {
@@ -338,13 +337,12 @@ namespace QuantLib {
                        Real inPrice;
 
                        //adapt Vanilla delta
-                       if(adaptVanDelta_ == true){
+                       if (adaptVanDelta_) {
                            outPrice += lambda*(bsPriceWithSmile_ - vanillaOption);
                            //capfloored by (0, vanilla)
                            outPrice = std::max(0.0, std::min(bsPriceWithSmile_, outPrice));
                            inPrice = bsPriceWithSmile_ - outPrice;
-                       }
-                       else{
+                       } else {
                            //capfloored by (0, vanilla)
                            outPrice = std::max(0.0, std::min(vanillaOption, outPrice));
                            inPrice = vanillaOption - outPrice;

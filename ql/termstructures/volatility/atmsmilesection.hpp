@@ -32,8 +32,7 @@ namespace QuantLib {
     class AtmSmileSection : public SmileSection {
 
       public:
-        AtmSmileSection(const ext::shared_ptr<SmileSection> source,
-                        const Real atm = Null<Real>());
+        AtmSmileSection(const ext::shared_ptr<SmileSection>& source, Real atm = Null<Real>());
 
         Real minStrike() const { return source_->minStrike(); }
         Real maxStrike() const { return source_->maxStrike(); }

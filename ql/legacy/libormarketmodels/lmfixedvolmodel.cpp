@@ -68,9 +68,6 @@ namespace QuantLib {
         return volatilities_[i-ti];
     }
 
-    void LmFixedVolatilityModel::generateArguments() {
-        return;
-    }
-
+    void LmFixedVolatilityModel::generateArguments() {}
 }
 

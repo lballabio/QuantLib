@@ -42,7 +42,8 @@ namespace QuantLib {
         //Integer buySell{} const { return buySell_; }
         Quantity quantity() const { return quantity_; }
         const CommodityUnitCost& tradePrice() const { return tradePrice_; }
-        const ext::shared_ptr<CommodityIndex> index() const { return index_; }
+        ext::shared_ptr<CommodityIndex> index() const { return index_; }
+
       protected:
         void performCalculations() const;
         Integer buySell_;

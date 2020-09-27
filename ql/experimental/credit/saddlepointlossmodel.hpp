@@ -342,7 +342,7 @@ namespace QuantLib {
                 / basket_->remainingNotional(), 1.);
             copula_->resetBasket(basket_.currentLink());
         }
-    protected:
+
         const ext::shared_ptr<ConstantLossLatentmodel<CP> > copula_;
         // cached todays arguments values
         mutable Size remainingSize_;
@@ -1317,7 +1317,7 @@ namespace QuantLib {
         Probability percentile,
         const std::vector<Real>& mktFactor) const 
     {
-        /* TO DO: this is too crude, a general expresion valid for all 
+        /* TO DO: this is too crude, a general expression valid for all 
         situations is possible (with no extra cost as long as the loss limits 
         are checked).
         */

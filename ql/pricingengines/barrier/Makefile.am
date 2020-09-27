@@ -12,7 +12,7 @@ this_include_HEADERS = \
 	fdblackscholesrebateengine.hpp \
 	fdhestonbarrierengine.hpp \
 	fdhestonrebateengine.hpp \
-    mcbarrierengine.hpp
+    mcbarrierengine.hpp 
 
 cpp_files = \
     analyticbarrierengine.cpp \

@@ -157,6 +157,8 @@ namespace QuantLib {
 
             // Special holiday: 70 years from Independence Day
             || (d == 14 && m == August && y == 2015)
+            // Special temporary holiday
+            || (d == 17 && m == August && y == 2020)
 
             // Harvest Moon Day
             || ((d == 27 || d == 28 || d == 29) && m == September && y == 2004)
@@ -193,7 +195,7 @@ namespace QuantLib {
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
 
         return true;
     }

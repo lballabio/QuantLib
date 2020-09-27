@@ -226,7 +226,7 @@ namespace QuantLib {
 
         class Spy {
           public:
-            explicit Spy(ext::function<Real (Real)> f) : f_(f) {}
+            explicit Spy(const ext::function<Real(Real)>& f) : f_(f) {}
             Real value(Real x){
                 abscissas.push_back(x);
                 Real value = f_(x);

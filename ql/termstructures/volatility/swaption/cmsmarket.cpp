@@ -214,8 +214,7 @@ namespace QuantLib {
         return weightedMeans(errSpreads_, w);
     }
 
-    Real CmsMarket::weightedMean(const Matrix& var,
-                                 const Matrix& w) {
+    Real CmsMarket::weightedMean(const Matrix& var, const Matrix& w) const {
         Real mean = 0.0;
         for (Size i=0; i<nExercise_; ++i) {
             for (Size j=0; j<nSwapIndexes_; ++j) {
@@ -226,8 +225,7 @@ namespace QuantLib {
         return mean;
     }
 
-    Disposable<Array> CmsMarket::weightedMeans(const Matrix& var,
-                                               const Matrix& w) {
+    Disposable<Array> CmsMarket::weightedMeans(const Matrix& var, const Matrix& w) const {
         Array weightedVars(nExercise_*nSwapIndexes_);
         for (Size i=0; i<nExercise_; ++i) {
             for (Size j=0; j<nSwapIndexes_; ++j) {

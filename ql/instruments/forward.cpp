@@ -68,7 +68,7 @@ namespace QuantLib {
                                        Real forwardValue,
                                        Date settlementDate,
                                        Compounding comp,
-                                       DayCounter dayCounter) {
+                                       const DayCounter& dayCounter) {
 
         Time t = dayCounter.yearFraction(settlementDate,maturityDate_) ;
         Real compoundingFactor = forwardValue/

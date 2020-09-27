@@ -31,17 +31,16 @@
 
 namespace QuantLib {
 
-    IsdaCdsEngine::IsdaCdsEngine(
-        const Handle<DefaultProbabilityTermStructure> &probability,
-        Real recoveryRate, const Handle<YieldTermStructure> &discountCurve,
-        boost::optional<bool> includeSettlementDateFlows,
-        const NumericalFix numericalFix, const AccrualBias accrualBias,
-        const ForwardsInCouponPeriod forwardsInCouponPeriod)
-        : probability_(probability), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve),
-          includeSettlementDateFlows_(includeSettlementDateFlows),
-          numericalFix_(numericalFix), accrualBias_(accrualBias),
-          forwardsInCouponPeriod_(forwardsInCouponPeriod) {
+    IsdaCdsEngine::IsdaCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+                                 Real recoveryRate,
+                                 const Handle<YieldTermStructure>& discountCurve,
+                                 const boost::optional<bool>& includeSettlementDateFlows,
+                                 const NumericalFix numericalFix,
+                                 const AccrualBias accrualBias,
+                                 const ForwardsInCouponPeriod forwardsInCouponPeriod)
+    : probability_(probability), recoveryRate_(recoveryRate), discountCurve_(discountCurve),
+      includeSettlementDateFlows_(includeSettlementDateFlows), numericalFix_(numericalFix),
+      accrualBias_(accrualBias), forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
         registerWith(probability_);
         registerWith(discountCurve_);
@@ -295,16 +294,15 @@ namespace QuantLib {
         }
 
         results_.accrualRebateNPV = 0.;
-        if (arguments_.accrualRebate &&
-            arguments_.accrualRebate->amount() != 0. &&
-            !arguments_.accrualRebate->hasOccurred(
-                evalDate, includeSettlementDateFlows_)) {
+        // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+        if (arguments_.accrualRebate && arguments_.accrualRebate->amount() != 0. &&
+            !arguments_.accrualRebate->hasOccurred(evalDate, includeSettlementDateFlows_)) {
             results_.accrualRebateNPV =
                 discountCurve_->discount(arguments_.accrualRebate->date()) *
                 arguments_.accrualRebate->amount();
         }
 
-        Real upfrontSign = Protection::Seller ? 1.0 : -1.0;
+        Real upfrontSign = Protection::Seller != 0U ? 1.0 : -1.0;
 
         if (arguments_.side == Protection::Seller) {
             results_.defaultLegNPV *= -1.0;
@@ -346,6 +344,7 @@ namespace QuantLib {
             results_.couponLegBPS = Null<Rate>();
         }
 
+        // NOLINTNEXTLINE(readability-implicit-bool-conversion)
         if (arguments_.upfront && *arguments_.upfront != 0.0) {
             results_.upfrontBPS =
                 results_.upfrontNPV * basisPoint / (*arguments_.upfront);

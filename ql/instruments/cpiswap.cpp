@@ -65,8 +65,8 @@ namespace QuantLib {
     observationLag_(observationLag),
     observationInterpolation_(observationInterpolation)
     {
-        QL_REQUIRE(floatSchedule_.size()>0,"empty float schedule");
-        QL_REQUIRE(fixedSchedule_.size()>0,"empty fixed schedule");
+        QL_REQUIRE(!floatSchedule_.empty(), "empty float schedule");
+        QL_REQUIRE(!fixedSchedule_.empty(), "empty fixed schedule");
         // \todo if roll!=unadjusted then need calendars ...
 
         if (inflationNominal==Null<Real>()) inflationNominal_ = nominal_;
@@ -143,7 +143,8 @@ namespace QuantLib {
         CPISwap::arguments* arguments =
         dynamic_cast<CPISwap::arguments*>(args);
 
-        if (!arguments) return; // it's a swap engine...
+        if (arguments == 0)
+            return; // it's a swap engine...
     }
 
 
@@ -189,7 +190,7 @@ namespace QuantLib {
         Swap::fetchResults(r);
 
         const CPISwap::results* results = dynamic_cast<const CPISwap::results*>(r);
-        if (results) { // might be a swap engine, so no error is thrown
+        if (results != 0) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;
         } else {

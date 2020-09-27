@@ -34,30 +34,32 @@ namespace QuantLib {
     //! amortizing fixed-rate bond
     class AmortizingFixedRateBond : public Bond {
       public:
-        AmortizingFixedRateBond(
-                          Natural settlementDays,
-                          const std::vector<Real>& notionals,
-                          const Schedule& schedule,
-                          const std::vector<Rate>& coupons,
-                          const DayCounter& accrualDayCounter,
-                          BusinessDayConvention paymentConvention = Following,
-                          const Date& issueDate = Date());
+        AmortizingFixedRateBond(Natural settlementDays,
+                                const std::vector<Real>& notionals,
+                                const Schedule& schedule,
+                                const std::vector<Rate>& coupons,
+                                const DayCounter& accrualDayCounter,
+                                BusinessDayConvention paymentConvention = Following,
+                                const Date& issueDate = Date(),
+                                const Period& exCouponPeriod = Period(),
+                                const Calendar& exCouponCalendar = Calendar(),
+                                BusinessDayConvention exCouponConvention = Unadjusted,
+                                bool exCouponEndOfMonth = false);
         /*! Automatically generates a set of equal coupons, with an
             amortizing bond.  The coupons are equal and the accrual
             daycount is only used for quoting/settlement purposes -
             not for calculating the coupons.
         */
-        AmortizingFixedRateBond(
-                          Natural settlementDays,
-                          const Calendar& calendar,
-                          Real faceAmount,
-                          const Date& startDate,
-                          const Period& bondTenor,
-                          const Frequency& sinkingFrequency,
-                          const Rate coupon,
-                          const DayCounter& accrualDayCounter,
-                          BusinessDayConvention paymentConvention = Following,
-                          const Date& issueDate = Date());
+        AmortizingFixedRateBond(Natural settlementDays,
+                                const Calendar& calendar,
+                                Real faceAmount,
+                                const Date& startDate,
+                                const Period& bondTenor,
+                                const Frequency& sinkingFrequency,
+                                Rate coupon,
+                                const DayCounter& accrualDayCounter,
+                                BusinessDayConvention paymentConvention = Following,
+                                const Date& issueDate = Date());
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:

@@ -37,7 +37,8 @@ docs-clean:
 	rm -f .time-stamp*
 
 
-.time-stamp: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
+.time-stamp: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT) ../LICENSE.TXT
+	cp -p ../LICENSE.TXT .
 	$(SED) -e "s|ql_basepath|${BASEPATH}/|" \
            -e "s|ql_version|$(VERSION)|" \
 	       quantlib.doxy > .quantlib.doxy

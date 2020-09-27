@@ -57,8 +57,9 @@ namespace QuantLib {
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& exCouponPeriod = Period(),
                       const Calendar& exCouponCalendar = Calendar(),
-                      const BusinessDayConvention exCouponConvention = Unadjusted,
-                      bool exCouponEndOfMonth = false);
+                      BusinessDayConvention exCouponConvention = Unadjusted,
+                      bool exCouponEndOfMonth = false,
+                      const DayCounter& firstPeriodDayCounter = DayCounter());
         /*! simple annual compounding coupon rates
             with internal schedule calculation */
         FixedRateBond(Natural settlementDays,
@@ -79,9 +80,10 @@ namespace QuantLib {
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& exCouponPeriod = Period(),
                       const Calendar& exCouponCalendar = Calendar(),
-                      const BusinessDayConvention exCouponConvention = Unadjusted,
-                      bool exCouponEndOfMonth = false);
-        //! generic compounding and frequency InterestRate coupons 
+                      BusinessDayConvention exCouponConvention = Unadjusted,
+                      bool exCouponEndOfMonth = false,
+                      const DayCounter& firstPeriodDayCounter = DayCounter());
+        //! generic compounding and frequency InterestRate coupons
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
                       const Schedule& schedule,
@@ -92,13 +94,15 @@ namespace QuantLib {
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& exCouponPeriod = Period(),
                       const Calendar& exCouponCalendar = Calendar(),
-                      const BusinessDayConvention exCouponConvention = Unadjusted,
+                      BusinessDayConvention exCouponConvention = Unadjusted,
                       bool exCouponEndOfMonth = false);
         Frequency frequency() const { return frequency_; }
-        const DayCounter& dayCounter() const { return dayCounter_; }
+        const DayCounter& dayCounter() const {return dayCounter_;}
+        const DayCounter& firstPeriodDayCounter() const {return firstPeriodDayCounter_;}
       protected:
         Frequency frequency_;
         DayCounter dayCounter_;
+        DayCounter firstPeriodDayCounter_;
     };
 
 }

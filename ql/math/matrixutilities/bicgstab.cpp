@@ -57,15 +57,14 @@ namespace QuantLib {
            if  (rho == 0.0 || omega == 0.0)
                break;
 
-           if (i) {
-              beta = (rho/rhoTld)*(alpha/omega);
-              p = r + beta*(p - omega*v);
-           }
-           else {
-              p = r;
+           if (i != 0U) {
+               beta = (rho / rhoTld) * (alpha / omega);
+               p = r + beta * (p - omega * v);
+           } else {
+               p = r;
            }
 
-           pTld = ((M_)? M_(p) : p);
+           pTld = ((M_) != 0 ? M_(p) : p);
            v     = A_(pTld);
 
            alpha = rho/DotProduct(rTld, v);
@@ -76,7 +75,7 @@ namespace QuantLib {
               break;
            }
 
-           sTld = ((M_) ? M_(s) : s);
+           sTld = ((M_) != 0 ? M_(s) : s);
            t = A_(sTld);
            omega = DotProduct(t,s)/DotProduct(t,t);
            x += alpha*pTld + omega*sTld;

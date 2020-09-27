@@ -4,7 +4,7 @@
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
  Copyright (C) 2008, 2009, 2015 Klaus Spanderen
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,7 +38,8 @@ namespace QuantLib {
             const ext::shared_ptr<HestonModel>& model,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+            const Real mixingFactor)
     : GenericModelEngine<HestonModel,
                         DividendVanillaOption::arguments,
                         DividendVanillaOption::results>(model),
@@ -46,7 +47,8 @@ namespace QuantLib {
       vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc),
       leverageFct_(leverageFct),
-      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {
+      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
+      mixingFactor_(mixingFactor) {
     }
 
     FdHestonVanillaEngine::FdHestonVanillaEngine(
@@ -54,7 +56,8 @@ namespace QuantLib {
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
             Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct)
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+            const Real mixingFactor)
     : GenericModelEngine<HestonModel,
                         DividendVanillaOption::arguments,
                         DividendVanillaOption::results>(model),
@@ -62,7 +65,8 @@ namespace QuantLib {
       vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc),
       leverageFct_(leverageFct),
-      quantoHelper_(quantoHelper) {
+      quantoHelper_(quantoHelper),
+      mixingFactor_(mixingFactor) {
     }
 
 
@@ -76,7 +80,7 @@ namespace QuantLib {
         const Size tGridAvgSteps = std::max(tGridMin, tGrid_/50);
         const ext::shared_ptr<FdmHestonLocalVolatilityVarianceMesher> vMesher
             = ext::make_shared<FdmHestonLocalVolatilityVarianceMesher>(
-                  vGrid_, process, leverageFct_, maturity, tGridAvgSteps);
+                  vGrid_, process, leverageFct_, maturity, tGridAvgSteps, 0.0001, mixingFactor_);
 
         const Volatility avgVolaEstimate = vMesher->volaEstimate();
 
@@ -152,8 +156,8 @@ namespace QuantLib {
                     ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                           cachedArgs2results_[i].first.payoff);
 
-                if (p1 && p1->strike()     == p2->strike()
-                       && p1->optionType() == p2->optionType()) {
+                if ((p1 != 0) && p1->strike() == p2->strike() &&
+                    p1->optionType() == p2->optionType()) {
                     QL_REQUIRE(arguments_.cashFlow.empty(),
                                "multiple strikes engine does "
                                "not work with discrete dividends");
@@ -168,7 +172,8 @@ namespace QuantLib {
         ext::shared_ptr<FdmHestonSolver> solver(new FdmHestonSolver(
                     Handle<HestonProcess>(process),
                     getSolverDesc(1.5), schemeDesc_,
-                    Handle<FdmQuantoHelper>(quantoHelper_), leverageFct_));
+                    Handle<FdmQuantoHelper>(quantoHelper_), leverageFct_,
+                     mixingFactor_));
 
         const Real v0   = process->v0();
         const Real spot = process->s0()->value();

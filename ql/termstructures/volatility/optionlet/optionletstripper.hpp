@@ -66,12 +66,11 @@ namespace QuantLib {
         VolatilityType volatilityType() const;
 
       protected:
-        OptionletStripper(const ext::shared_ptr< CapFloorTermVolSurface > &,
-                          const ext::shared_ptr< IborIndex > &iborIndex_,
-                          const Handle< YieldTermStructure > &discount =
-                              Handle< YieldTermStructure >(),
-                          const VolatilityType type = ShiftedLognormal,
-                          const Real displacement = 0.0);
+        OptionletStripper(const ext::shared_ptr<CapFloorTermVolSurface>&,
+                          const ext::shared_ptr<IborIndex>& iborIndex_,
+                          const Handle<YieldTermStructure>& discount = Handle<YieldTermStructure>(),
+                          VolatilityType type = ShiftedLognormal,
+                          Real displacement = 0.0);
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Handle<YieldTermStructure> discount_;

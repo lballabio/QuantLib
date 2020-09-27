@@ -154,7 +154,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            BootstrapHelper<YieldTermStructure>::accept(v);
+            BondHelper::accept(v);
     }
 
     CPIBondHelper::CPIBondHelper(
@@ -225,7 +225,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            BootstrapHelper<YieldTermStructure>::accept(v);
+            BondHelper::accept(v);
     }
 
 }

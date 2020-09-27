@@ -46,15 +46,10 @@ namespace QuantLib {
         YoYInflationCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
                                    const Handle<YoYOptionletVolatilitySurface>& vol,
                                    const Handle<YieldTermStructure>& nominalTermStructure);
-        /*! \deprecated Use the constructor with an explicit nominal curve.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        YoYInflationCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
-                                   const Handle<YoYOptionletVolatilitySurface>& vol);
 
         ext::shared_ptr<YoYInflationIndex> index() const { return index_;}
         Handle<YoYOptionletVolatilitySurface> volatility() const { return volatility_; }
+        Handle<YieldTermStructure> nominalTermStructure() const { return nominalTermStructure_; }
 
         void setVolatility(const Handle<YoYOptionletVolatilitySurface>& vol);
 
@@ -79,13 +74,6 @@ namespace QuantLib {
         YoYInflationBlackCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
                                         const Handle<YoYOptionletVolatilitySurface>& vol,
                                         const Handle<YieldTermStructure>& nominalTermStructure);
-        /*! \deprecated Use the constructor with an explicit nominal curve.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        YoYInflationBlackCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
-                                        const Handle<YoYOptionletVolatilitySurface>&);
-
       protected:
         virtual Real optionletImpl(Option::Type, Real strike,
                                    Real forward, Real stdDev,
@@ -101,13 +89,6 @@ namespace QuantLib {
                     const ext::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>& vol,
                     const Handle<YieldTermStructure>& nominalTermStructure);
-        /*! \deprecated Use the constructor with an explicit nominal curve.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        YoYInflationUnitDisplacedBlackCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>&,
-                    const Handle<YoYOptionletVolatilitySurface>&);
       protected:
         virtual Real optionletImpl(Option::Type, Real strike,
                                    Real forward, Real stdDev,
@@ -123,13 +104,6 @@ namespace QuantLib {
                     const ext::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>& vol,
                     const Handle<YieldTermStructure>& nominalTermStructure);
-        /*! \deprecated Use the constructor with an explicit nominal curve.
-                        Deprecated in version 1.15.
-        */
-        QL_DEPRECATED
-        YoYInflationBachelierCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>&,
-                    const Handle<YoYOptionletVolatilitySurface>&);
       protected:
         virtual Real optionletImpl(Option::Type, Real strike,
                                    Real forward, Real stdDev,

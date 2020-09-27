@@ -146,6 +146,7 @@ namespace QuantLib {
     yoyInflationLeg::operator Leg() const {
 
         Size n = schedule_.size()-1;
+        QL_REQUIRE(!paymentDayCounter_.empty(), "no payment daycounter given");
         QL_REQUIRE(!notionals_.empty(), "no notional given");
         QL_REQUIRE(notionals_.size() <= n,
                    "too many nominals (" << notionals_.size() <<
@@ -206,8 +207,9 @@ namespace QuantLib {
 
                     // in this case you can set a pricer
                     // straight away because it only provides computation - not data
-                    ext::shared_ptr<YoYInflationCouponPricer> pricer(
-                                            new YoYInflationCouponPricer);
+                    ext::shared_ptr<YoYInflationCouponPricer> pricer =
+                        ext::make_shared<YoYInflationCouponPricer>(Handle<YoYOptionletVolatilitySurface>(),
+                                                                   Handle<YieldTermStructure>());
                     coup->setPricer(pricer);
                     leg.push_back(ext::dynamic_pointer_cast<CashFlow>(coup));
 

@@ -269,7 +269,7 @@ namespace inflation_cpi_capfloor_test {
                                 new PiecewiseZeroInflationCurve<Linear>(
                                     evaluationDate, calendar, dcZCIIS, observationLag,
                                     ii->frequency(),ii->interpolated(), baseZeroRate,
-                                    Handle<YieldTermStructure>(nominalTS), helpers));
+                                    helpers));
             pCPIts->recalculate();
             cpiUK.linkTo(pCPIts);
             hii.linkTo(ii);

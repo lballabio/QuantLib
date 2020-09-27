@@ -48,9 +48,7 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        YieldTermStructure(const DayCounter& dc = DayCounter(),
-                           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-                           const std::vector<Date>& jumpDates = std::vector<Date>());
+        explicit YieldTermStructure(const DayCounter& dc = DayCounter());
         YieldTermStructure(const Date& referenceDate,
                            const Calendar& cal = Calendar(),
                            const DayCounter& dc = DayCounter(),
@@ -60,6 +58,15 @@ namespace QuantLib {
                            const Calendar& cal,
                            const DayCounter& dc = DayCounter(),
                            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+                           const std::vector<Date>& jumpDates = std::vector<Date>());
+
+        /*! \deprecated Passing jumps without a reference date never worked correctly.
+                        Use one of the other constructors instead.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        YieldTermStructure(const DayCounter& dc,
+                           const std::vector<Handle<Quote> >& jumps,
                            const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
 
@@ -170,7 +177,7 @@ namespace QuantLib {
         //@}
       private:
         // methods
-        void setJumps();
+        void setJumps(const Date& referenceDate);
         // data members
         std::vector<Handle<Quote> > jumps_;
         std::vector<Date> jumpDates_;

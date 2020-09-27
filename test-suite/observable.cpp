@@ -40,7 +40,8 @@ namespace {
         void update() {
             ++counter_;
         }
-        Size counter() { return counter_; }
+        Size counter() const { return counter_; }
+
       private:
         Size counter_;
     };

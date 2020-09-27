@@ -77,7 +77,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // St. Stephen
             || (d == 26 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -111,7 +111,7 @@ namespace QuantLib {
             || (d == 26 && m == December)
             // Exchange Holiday
             || (d == 31 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

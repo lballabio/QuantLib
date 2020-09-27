@@ -86,6 +86,7 @@ namespace QuantLib {
         <li>Christmas' Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Christmas Holiday, December 26th</li>
+        <li>New Year's Eve, December 31st</li>
         </ul>
 
         Holidays for the Euwax exchange

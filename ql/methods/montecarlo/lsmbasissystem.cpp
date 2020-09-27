@@ -58,7 +58,7 @@ namespace QuantLib {
         class MultiDimFct {
           public:
             explicit MultiDimFct(const VF_R& b): b_(b) {
-                QL_REQUIRE(b_.size()>0, "zero size basis");
+                QL_REQUIRE(!b_.empty(), "zero size basis");
             }
             inline Real operator()(const Array& a) const {
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -77,14 +77,14 @@ namespace QuantLib {
         void check_tuples(const VV& v, Size dim, Size order) {
             for(Size i=0; i<v.size(); ++i) {
                 QL_REQUIRE(dim==v[i].size(), "wrong tuple size");
-                QL_REQUIRE(order==std::accumulate(v[i].begin(), v[i].end(), 0u),
-                    "wrong tuple order");
+                QL_REQUIRE(order == std::accumulate(v[i].begin(), v[i].end(), 0UL),
+                           "wrong tuple order");
             }
         }
 
         // build order N+1 tuples from order N tuples
         VV next_order_tuples(const VV& v) {
-            const Size order = std::accumulate(v[0].begin(), v[0].end(), 0u);
+            const Size order = std::accumulate(v[0].begin(), v[0].end(), 0UL);
             const Size dim = v[0].size();
 
             check_tuples(v, dim, order);

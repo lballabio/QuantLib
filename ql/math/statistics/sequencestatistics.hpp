@@ -164,12 +164,12 @@ namespace QuantLib {
 
     template <class Stat>
     inline Size GenericSequenceStatistics<Stat>::samples() const {
-        return (stats_.size() == 0) ? 0 : stats_[0].samples();
+        return (stats_.empty()) ? 0 : stats_[0].samples();
     }
 
     template <class Stat>
     inline Real GenericSequenceStatistics<Stat>::weightSum() const {
-        return (stats_.size() == 0) ? 0.0 : stats_[0].weightSum();
+        return (stats_.empty()) ? 0.0 : stats_[0].weightSum();
     }
 
 

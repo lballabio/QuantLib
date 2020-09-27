@@ -247,7 +247,7 @@ namespace QuantLib {
 
         }
 
-        if (!dir) // invers Factor required
+        if (dir == 0) // invers Factor required
         {
             seasonalCorrection = 1/seasonalCorrection;
         }

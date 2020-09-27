@@ -49,9 +49,8 @@ namespace QuantLib {
       public:
         DefaultProbKey();
 
-        DefaultProbKey(const std::vector<ext::shared_ptr<DefaultType> >&
-                           eventTypes,
-                       const Currency cur,
+        DefaultProbKey(const std::vector<ext::shared_ptr<DefaultType> >& eventTypes,
+                       const Currency& cur,
                        Seniority sen);
 
         const Currency& currency() const {return obligationCurrency_;}

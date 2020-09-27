@@ -58,7 +58,7 @@ namespace QuantLib {
                 Probability defaultProb = 
                     std::accumulate(probsTriggering.begin(), 
                     probsTriggering.end(), Real(0.));
-                // OVERKILL???? 1-probAtleastNevents is enough
+                // OVERKILL???? 1-probAtLeastNEvents is enough
 
 */
                 // prob of contract not having been triggered by date of payment

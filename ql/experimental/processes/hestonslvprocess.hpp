@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,9 +32,9 @@ namespace QuantLib {
 
     class HestonSLVProcess : public StochasticProcess {
       public:
-        HestonSLVProcess(
-            const ext::shared_ptr<HestonProcess>& hestonProcess,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct);
+        HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
+                         const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+                         Real mixingFactor = 1.0);
 
         Size size()    const { return Size(2); }
         Size factors() const { return Size(2); }
@@ -58,6 +58,7 @@ namespace QuantLib {
         Real kappa() const { return kappa_; }
         Real theta() const { return theta_; }
         Real sigma() const { return sigma_; }
+        Real mixingFactor() const { return mixingFactor_; }
         ext::shared_ptr<LocalVolTermStructure> leverageFct() const {
             return leverageFct_;
         }
@@ -73,7 +74,7 @@ namespace QuantLib {
         Time time(const Date& d) const { return hestonProcess_->time(d); }
 
       private:
-        Real kappa_, theta_, sigma_, rho_, v0_;
+        Real kappa_, theta_, sigma_, rho_, v0_, mixingFactor_, mixedSigma_;
 
         const ext::shared_ptr<HestonProcess> hestonProcess_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;

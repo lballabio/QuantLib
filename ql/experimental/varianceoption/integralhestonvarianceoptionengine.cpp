@@ -133,7 +133,7 @@ namespace QuantLib {
          */
         for (j=0;j<=mm-1;j++)
         {
-            xiv[j+1]=(double)(j-mm/2)*nris;
+            xiv[j+1]=(j-mm/2.0)*nris;
         }
 
         for (j=0;j<=mm-1;j++)
@@ -284,8 +284,8 @@ namespace QuantLib {
 
         for (j=0;j<=mm-1;j++)
         {
-            xiv[j+1]=(double)(j-mm/2)*nris;
-            ivet[j+1]=(double)(j-mm/2)*pi2/((double)mm*nris);
+            xiv[j+1]=(j-mm/2.0)*nris;
+            ivet[j+1]=(j-mm/2.0)*pi2/((double)mm*nris);
         }
 
         for (j=0;j<=mm-1;j++)
@@ -347,8 +347,7 @@ namespace QuantLib {
 
     struct payoff_adapter {
         ext::shared_ptr<QuantLib::Payoff> payoff;
-        explicit payoff_adapter(ext::shared_ptr<QuantLib::Payoff> payoff)
-        : payoff(payoff) {}
+        explicit payoff_adapter(const ext::shared_ptr<QuantLib::Payoff>& payoff) : payoff(payoff) {}
         Real operator()(Real S) const {
             return (*payoff)(S);
         }
@@ -384,7 +383,7 @@ namespace QuantLib {
 
         ext::shared_ptr<PlainVanillaPayoff> plainPayoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        if (plainPayoff && plainPayoff->optionType() == Option::Call) {
+        if ((plainPayoff != 0) && plainPayoff->optionType() == Option::Call) {
             // a specialization for Call options is available
             Real strike = plainPayoff->strike();
             results_.value = IvopOneDim(epsilon, chi, theta, rho,

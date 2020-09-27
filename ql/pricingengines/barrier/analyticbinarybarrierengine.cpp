@@ -163,14 +163,14 @@ namespace QuantLib {
         // binary cash-or-nothing payoff?
         ext::shared_ptr<CashOrNothingPayoff> coo =
             ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
-        if (coo) {
+        if (coo != 0) {
             K = coo->cashPayoff();
         }
 
         // binary asset-or-nothing payoff?
         ext::shared_ptr<AssetOrNothingPayoff> aoo =
             ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
-        if (aoo) {
+        if (aoo != 0) {
             mu += 1.0; 
             K = spot * dividendDiscount / discount; // forward
         }

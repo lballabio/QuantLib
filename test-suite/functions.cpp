@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2014 Klaus Spanderen
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

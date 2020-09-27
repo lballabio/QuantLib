@@ -47,8 +47,8 @@ namespace QuantLib {
         VanillaSwap swap = *arguments_.swap;
         Option::Type type =
             arguments_.type == VanillaSwap::Payer ? Option::Call : Option::Put;
-        Schedule fixedSchedule = swap.fixedSchedule();
-        Schedule floatSchedule = swap.floatingSchedule();
+        const Schedule& fixedSchedule = swap.fixedSchedule();
+        const Schedule& floatSchedule = swap.floatingSchedule();
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);
@@ -58,7 +58,7 @@ namespace QuantLib {
         // for probability computation
         std::vector<Array> npvp0, npvp1;
         if (probabilities_ != None) {
-            for (Size i = 0; i < static_cast<Size>(idx - minIdxAlive + 2); ++i) {
+            for (int i = 0; i < idx - minIdxAlive + 2; ++i) {
                 Array npvTmp0(2 * integrationPoints_ + 1, 0.0);
                 Array npvTmp1(2 * integrationPoints_ + 1, 0.0);
                 npvp0.push_back(npvTmp0);

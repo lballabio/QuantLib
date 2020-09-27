@@ -130,7 +130,7 @@ namespace QuantLib {
         }
 
       protected:
-        Real underlyingNpv(const Date &expiry, const Real y) const;
+        Real underlyingNpv(const Date& expiry, Real y) const;
         VanillaSwap::Type underlyingType() const;
         const Date underlyingLastDate() const;
         const Disposable<Array> initialGuess(const Date &expiry) const;
@@ -144,10 +144,10 @@ namespace QuantLib {
         const bool includeTodaysExercise_;
         const Probabilities probabilities_;
 
-        const std::pair<Real, Real>
-        npvs(const Date &expiry, const Real y,
-             const bool includeExerciseOnxpiry,
-             const bool considerProbabilities=false) const;
+        std::pair<Real, Real> npvs(const Date& expiry,
+                                   Real y,
+                                   bool includeExerciseOnxpiry,
+                                   bool considerProbabilities = false) const;
 
         mutable ext::shared_ptr<RebatedExercise> rebatedExercise_;
     };

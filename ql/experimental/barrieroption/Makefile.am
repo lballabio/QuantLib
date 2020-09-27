@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     analyticdoublebarrierbinaryengine.hpp \
 	analyticdoublebarrierengine.hpp \
+	mcdoublebarrierengine.hpp \
     binomialdoublebarrierengine.hpp \
     discretizeddoublebarrieroption.hpp \
     doublebarrieroption.hpp \
@@ -20,6 +21,7 @@ this_include_HEADERS = \
 cpp_files = \
     analyticdoublebarrierbinaryengine.cpp \
 	analyticdoublebarrierengine.cpp \
+	mcdoublebarrierengine.cpp \
     discretizeddoublebarrieroption.cpp \
     doublebarrieroption.cpp \
     doublebarriertype.cpp \

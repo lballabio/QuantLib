@@ -44,7 +44,7 @@ namespace QuantLib {
       basis_(basis), payLegTermStructure_(payLegTermStructure),
       receiveLegTermStructure_(receiveLegTermStructure),
       discountTermStructure_(discountTermStructure) {
-        QL_REQUIRE(pricingPeriods_.size() > 0, "no payment dates");
+        QL_REQUIRE(!pricingPeriods_.empty(), "no payment dates");
         registerWith(spreadIndex_);
         registerWith(payIndex_);
         registerWith(receiveIndex_);
@@ -292,7 +292,7 @@ namespace QuantLib {
                 NPV_ += dDelta;
             }
 
-            QL_REQUIRE(paymentCashFlows_.size() > 0, "no cashflows");
+            QL_REQUIRE(!paymentCashFlows_.empty(), "no cashflows");
 
             for (SecondaryCostAmounts::const_iterator i =
                      secondaryCostAmounts_.begin();

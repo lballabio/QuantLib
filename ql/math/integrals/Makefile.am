@@ -4,12 +4,15 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	discreteintegrals.hpp \
+	exponentialintegrals.hpp \
 	filonintegral.hpp \
+	gausslaguerrecosinepolynomial.hpp \
 	gausslobattointegral.hpp \
 	gaussianorthogonalpolynomial.hpp \
 	gaussianquadratures.hpp \
 	integral.hpp \
 	kronrodintegral.hpp \
+	momentbasedgaussianpolynomial.hpp  \
 	segmentintegral.hpp \
 	simpsonintegral.hpp \
 	trapezoidintegral.hpp \
@@ -17,6 +20,7 @@ this_include_HEADERS = \
 
 cpp_files = \
 	discreteintegrals.cpp \
+	exponentialintegrals.cpp \
 	filonintegral.cpp \
 	gausslobattointegral.cpp \
 	gaussianorthogonalpolynomial.cpp \

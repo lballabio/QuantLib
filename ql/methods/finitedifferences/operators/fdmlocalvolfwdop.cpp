@@ -26,23 +26,16 @@
 
 namespace QuantLib {
 
-    FdmLocalVolFwdOp::FdmLocalVolFwdOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<Quote>& spot,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
-        const ext::shared_ptr<YieldTermStructure>& qTS,
-        const ext::shared_ptr<LocalVolTermStructure>& localVol,
-        Size direction)
-    : mesher_(mesher),
-      rTS_   (rTS),
-      qTS_   (qTS),
-      localVol_(localVol),
-      x_ ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
-      dxMap_ (FirstDerivativeOp(direction, mesher)),
-      dxxMap_(SecondDerivativeOp(direction, mesher)),
-      mapT_  (direction, mesher),
-      direction_(direction) {
-    }
+    FdmLocalVolFwdOp::FdmLocalVolFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
+                                       const ext::shared_ptr<Quote>& spot,
+                                       const ext::shared_ptr<YieldTermStructure>& rTS,
+                                       const ext::shared_ptr<YieldTermStructure>& qTS,
+                                       const ext::shared_ptr<LocalVolTermStructure>& localVol,
+                                       Size direction)
+    : mesher_(mesher), rTS_(rTS), qTS_(qTS), localVol_(localVol),
+      x_((localVol) != 0 ? Array(Exp(mesher->locations(direction))) : Array()),
+      dxMap_(FirstDerivativeOp(direction, mesher)), dxxMap_(SecondDerivativeOp(direction, mesher)),
+      mapT_(direction, mesher), direction_(direction) {}
 
     void FdmLocalVolFwdOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
@@ -63,9 +56,7 @@ namespace QuantLib {
                     dxxMap_.multR(0.5*v), Array(1, 0.0));
     }
 
-    Size FdmLocalVolFwdOp::size() const {
-        return 1u;
-    }
+    Size FdmLocalVolFwdOp::size() const { return 1U; }
 
     Disposable<Array> FdmLocalVolFwdOp::apply(const Array& u) const {
         return mapT_.apply(u);

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -44,15 +44,14 @@ namespace QuantLib {
 
     class HestonRNDCalculator : public RiskNeutralDensityCalculator {
     public:
-        explicit HestonRNDCalculator(
-            const ext::shared_ptr<HestonProcess>& hestonProcess,
-            Real integrationEps= 1e-6,
-            Size maxIntegrationIterations = 10000ul);
+      explicit HestonRNDCalculator(const ext::shared_ptr<HestonProcess>& hestonProcess,
+                                   Real integrationEps = 1e-6,
+                                   Size maxIntegrationIterations = 10000UL);
 
-        // x=ln(S)
-        Real pdf(Real x, Time t) const;
-        Real cdf(Real x, Time t) const;
-        Real invcdf(Real q, Time t) const;
+      // x=ln(S)
+      Real pdf(Real x, Time t) const;
+      Real cdf(Real x, Time t) const;
+      Real invcdf(Real q, Time t) const;
 
     private:
         Real x_t(Real x, Time t) const;

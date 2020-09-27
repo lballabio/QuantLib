@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2009 Ralph Schreyer
- Copyright (C) 2014 Johannes Goettker-Schnetmann
+ Copyright (C) 2014 Johannes Göttker-Schnetmann
  Copyright (C) 2014 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,11 +38,12 @@ namespace QuantLib {
 
     class Concentrating1dMesher : public Fdm1dMesher {
       public:
-        Concentrating1dMesher(
-            Real start, Real end, Size size,
-            const std::pair<Real, Real>& cPoints
-                     = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
-            const bool requireCPoint = false);
+        Concentrating1dMesher(Real start,
+                              Real end,
+                              Size size,
+                              const std::pair<Real, Real>& cPoints =
+                                  (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
+                              bool requireCPoint = false);
 
         Concentrating1dMesher(
             Real start, Real end, Size size,

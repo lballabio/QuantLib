@@ -36,8 +36,8 @@ namespace QuantLib {
     */
     class MakeCreditDefaultSwap {
       public:
-        MakeCreditDefaultSwap(const Period &tenor, const Real couponRate);
-        MakeCreditDefaultSwap(const Date &termDate, const Real couponRate);
+        MakeCreditDefaultSwap(const Period& tenor, Real couponRate);
+        MakeCreditDefaultSwap(const Date& termDate, Real couponRate);
 
         operator CreditDefaultSwap() const;
         operator ext::shared_ptr<CreditDefaultSwap>() const;

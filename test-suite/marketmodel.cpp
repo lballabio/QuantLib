@@ -271,20 +271,18 @@ namespace market_model_test {
 #endif
     }
 
-    const ext::shared_ptr<SequenceStatisticsInc> simulate(
-        const ext::shared_ptr<MarketModelEvolver>& evolver,
-        const MarketModelMultiProduct& product) {
-            Size initialNumeraire = evolver->numeraires().front();
-            Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+    ext::shared_ptr<SequenceStatisticsInc>
+    simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
+             const MarketModelMultiProduct& product) {
+        Size initialNumeraire = evolver->numeraires().front();
+        Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
-            AccountingEngine engine(evolver, product, initialNumeraireValue);
-            ext::shared_ptr<SequenceStatisticsInc> stats(
-                new SequenceStatisticsInc(product.numberOfProducts()));
-            engine.multiplePathValues(*stats, paths_);
-            return stats;
+        AccountingEngine engine(evolver, product, initialNumeraireValue);
+        ext::shared_ptr<SequenceStatisticsInc> stats(
+            new SequenceStatisticsInc(product.numberOfProducts()));
+        engine.multiplePathValues(*stats, paths_);
+        return stats;
     }
-
-
 
 
     std::string marketModelTypeToString(MarketModelTest::MarketModelType type) {
@@ -388,7 +386,7 @@ namespace market_model_test {
     std::vector<Size> makeMeasure(const MarketModelMultiProduct& product,
         MeasureType measureType) {
             std::vector<Size> result;
-            EvolutionDescription evolution(product.evolution());
+            const EvolutionDescription& evolution(product.evolution());
             switch (measureType) {
           case ProductSuggested:
               result = product.suggestedNumeraires();
@@ -1057,7 +1055,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
 
                                    setup();
 
-                                   EvolutionDescription evolution = product.evolution();
+                                   const EvolutionDescription& evolution = product.evolution();
 
                                    MarketModelTest::MarketModelType marketModels[] = {
                                        // CalibratedMM,
@@ -1340,7 +1338,7 @@ void MarketModelTest::testPeriodAdapter() {
         period,
         offset);
 
-    EvolutionDescription evolution(theProduct.evolution());
+    const EvolutionDescription& evolution(theProduct.evolution());
 
     bool logNormal = true;
     Size factors = 5;
@@ -1480,7 +1478,7 @@ void MarketModelTest::testCallableSwapNaif() {
         CallSpecifiedMultiProduct(receiverSwap, naifStrategy,
         ExerciseAdapter(nullRebate));
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
 
     MarketModelType marketModels[] = {
         // CalibratedMM,
@@ -1651,7 +1649,7 @@ void MarketModelTest::testCallableSwapLS() {
         CallSpecifiedMultiProduct(receiverSwap, naifStrategy,
         ExerciseAdapter(nullRebate));
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
 
     MarketModelType marketModels[] = {
         // CalibratedMM,
@@ -1792,7 +1790,7 @@ void MarketModelTest::testCallableSwapLS() {
 }
 
 void MarketModelTest::testCallableSwapAnderson(
-    MarketModelType marketModelType, unsigned testedFactor) {
+    MarketModelType marketModelType, Size testedFactor) {
 
     using namespace market_model_test;
 
@@ -1837,7 +1835,7 @@ void MarketModelTest::testCallableSwapAnderson(
         CallSpecifiedMultiProduct(receiverSwap, naifStrategy,
         ExerciseAdapter(nullRebate));
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
 
     Size factors = testedFactor;
 
@@ -1978,7 +1976,7 @@ void MarketModelTest::testGreeks() {
     MultiStepOptionlets product(rateTimes, accruals,
         paymentTimes, payoffs);
 
-    EvolutionDescription evolution = product.evolution();
+    const EvolutionDescription& evolution = product.evolution();
 
     MarketModelType marketModels[] = {
         // CalibratedMM,
@@ -3689,7 +3687,7 @@ void MarketModelTest::testPathwiseMarketVegas()
     MarketModelPathwiseCoterminalSwaptionsNumericalDeflated swaptionsDeflated2(rateTimes, cs.coterminalSwapRates(),bumpSizeNumericalDifferentiation);
 
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
     Size steps = evolution.numberOfSteps();
     Size numberRates = evolution.numberOfRates();
 
@@ -4727,7 +4725,7 @@ void MarketModelTest::testDriftCalculator() {
     std::vector<Time> evolutionTimes(rateTimes.size()-1);
     std::copy(rateTimes.begin(), rateTimes.end()-1, evolutionTimes.begin());
     EvolutionDescription evolution(rateTimes,evolutionTimes);
-    std::vector<Real> rateTaus = evolution.rateTaus();
+    const std::vector<Real>& rateTaus = evolution.rateTaus();
     std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution,
         measureOffset_);
     std::vector<Size> alive = evolution.firstAliveRate();
@@ -4876,7 +4874,7 @@ void MarketModelTest::testCovariance() {
               default:
                 BOOST_FAIL("Unknown model " << modelNames[k]);
             }
-            if (model) {
+            if (model != 0) {
                 for(Size i=0;i<evolTimes[l].size();i++) {
                     Matrix cov = model->covariance(i);
                     Real dt = evolTimes[l][i] - (i>0 ? evolTimes[l][i-1] : 0.0);

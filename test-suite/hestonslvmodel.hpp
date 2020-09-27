@@ -46,6 +46,7 @@ public:
     static void testMonteCarloCalibration();
     static void testMoustacheGraph();
     static void testForwardSkewSLV();
+    static void testDiffusionAndDriftSlvProcess();
 
     static boost::unit_test_framework::test_suite* experimental(SpeedLevel);
 

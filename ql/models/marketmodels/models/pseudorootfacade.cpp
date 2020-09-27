@@ -24,17 +24,12 @@
 
 namespace QuantLib {
 
-    PseudoRootFacade::PseudoRootFacade(
-        const ext::shared_ptr<CTSMMCapletCalibration> c)
+    PseudoRootFacade::PseudoRootFacade(const ext::shared_ptr<CTSMMCapletCalibration>& c)
     : numberOfFactors_(c->swapPseudoRoots().front().columns()),
       numberOfRates_(c->swapPseudoRoots().front().rows()),
       numberOfSteps_(c->swapPseudoRoots().size()),
-      initialRates_(c->curveState()->coterminalSwapRates()),
-      displacements_(c->displacements()),
-      evolution_(c->curveState()->rateTimes()),
-      covariancePseudoRoots_(c->swapPseudoRoots())
-    {
-    }
+      initialRates_(c->curveState()->coterminalSwapRates()), displacements_(c->displacements()),
+      evolution_(c->curveState()->rateTimes()), covariancePseudoRoots_(c->swapPseudoRoots()) {}
 
 
     PseudoRootFacade::PseudoRootFacade(

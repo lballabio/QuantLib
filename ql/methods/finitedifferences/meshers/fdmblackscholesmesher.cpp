@@ -68,19 +68,14 @@ namespace QuantLib {
 
         const Handle<YieldTermStructure> rTS = process->riskFreeRate();
 
-        const Handle<YieldTermStructure> qTS = (fdmQuantoHelper)
-            ? Handle<YieldTermStructure>(
-                ext::make_shared<QuantoTermStructure>(
-                    process->dividendYield(),
-                    process->riskFreeRate(),
-                    Handle<YieldTermStructure>(fdmQuantoHelper->fTS_),
-                    process->blackVolatility(),
-                    strike,
-                    Handle<BlackVolTermStructure>(fdmQuantoHelper->fxVolTS_),
-                    fdmQuantoHelper->exchRateATMlevel_,
-                    fdmQuantoHelper->equityFxCorrelation_)
-              )
-            : process->dividendYield();
+        const Handle<YieldTermStructure> qTS =
+            (fdmQuantoHelper) != 0 ?
+                Handle<YieldTermStructure>(ext::make_shared<QuantoTermStructure>(
+                    process->dividendYield(), process->riskFreeRate(),
+                    Handle<YieldTermStructure>(fdmQuantoHelper->fTS_), process->blackVolatility(),
+                    strike, Handle<BlackVolTermStructure>(fdmQuantoHelper->fxVolTS_),
+                    fdmQuantoHelper->exchRateATMlevel_, fdmQuantoHelper->equityFxCorrelation_)) :
+                process->dividendYield();
 
         Time lastDivTime = 0.0;
         Real fwd = S + spotAdjustment;

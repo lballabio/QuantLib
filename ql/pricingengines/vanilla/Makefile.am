@@ -8,6 +8,7 @@ this_include_HEADERS = \
     analyticdigitalamericanengine.hpp \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
+    analyticeuropeanvasicekengine.hpp \
     analyticcevengine.hpp \
     analyticgjrgarchengine.hpp \
     analytich1hwengine.hpp \
@@ -20,6 +21,7 @@ this_include_HEADERS = \
     bjerksundstenslandengine.hpp \
     coshestonengine.hpp \
     discretizedvanillaoption.hpp \
+    exponentialfittinghestonengine.hpp \
     hestonexpansionengine.hpp \
     integralengine.hpp \
     jumpdiffusionengine.hpp \
@@ -36,6 +38,7 @@ this_include_HEADERS = \
     fdeuropeanengine.hpp \
 	fdhestonhullwhitevanillaengine.hpp \
 	fdhestonvanillaengine.hpp \
+	fdcirvanillaengine.hpp \
     fdmultiperiodengine.hpp \
     fdsabrvanillaengine.hpp \
     fdshoutengine.hpp \
@@ -56,6 +59,7 @@ cpp_files = \
     analyticdigitalamericanengine.cpp \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
+    analyticeuropeanvasicekengine.cpp \
     analyticcevengine.cpp \
     analyticgjrgarchengine.cpp \
     analytich1hwengine.cpp \
@@ -67,6 +71,7 @@ cpp_files = \
     bjerksundstenslandengine.cpp \
     coshestonengine.cpp \
     discretizedvanillaoption.cpp \
+    exponentialfittinghestonengine.cpp \
     hestonexpansionengine.cpp \
     integralengine.cpp \
     jumpdiffusionengine.cpp \
@@ -76,6 +81,7 @@ cpp_files = \
 	fdcevvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdhestonvanillaengine.cpp \
+	fdcirvanillaengine.cpp \
 	fdsabrvanillaengine.cpp \
 	fdsimplebsswingengine.cpp \
     fdvanillaengine.cpp \

@@ -195,7 +195,7 @@ namespace inflation_volatility_test {
         ext::shared_ptr<InterpolatedYoYInflationCurve<Linear> >
             pYTSEU( new InterpolatedYoYInflationCurve<Linear>(
                     eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly,
-                    indexIsInterpolated, nominalGBP, d, r) );
+                    indexIsInterpolated, d, r) );
         yoyEU.linkTo(pYTSEU);
 
         // price data
@@ -260,8 +260,7 @@ namespace inflation_volatility_test {
         DayCounter dc = Actual365Fixed();
         TARGET cal;
         BusinessDayConvention bdc = ModifiedFollowing;
-        ext::shared_ptr<QuantLib::YieldTermStructure> pn =
-            nominalEUR.currentLink();
+        const ext::shared_ptr<QuantLib::YieldTermStructure>& pn = nominalEUR.currentLink();
         Handle<QuantLib::YieldTermStructure> n(pn,false);
         ext::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> >
         cfEUprices(new InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic>(

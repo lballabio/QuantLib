@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -273,12 +273,14 @@ namespace QuantLib {
         const Date& endDate,
         const HestonSLVFokkerPlanckFdmParams& params,
         const bool logging,
-        const std::vector<Date>& mandatoryDates)
+        const std::vector<Date>& mandatoryDates,
+        const Real mixingFactor)
     : localVol_(localVol),
       hestonModel_(hestonModel),
       endDate_(endDate),
       params_(params),
       mandatoryDates_(mandatoryDates),
+      mixingFactor_(mixingFactor),
       logging_(logging) {
 
         registerWith(localVol_);
@@ -316,7 +318,8 @@ namespace QuantLib {
         const Real kappa = hestonProcess->kappa();
         const Real theta = hestonProcess->theta();
         const Real sigma = hestonProcess->sigma();
-        const Real alpha = 2*kappa*theta/(sigma*sigma);
+        const Real mixedSigma = mixingFactor_ * sigma;
+        const Real alpha = 2*kappa*theta/(mixedSigma*mixedSigma);
 
         const Size xGrid = params_.xGrid;
         const Size vGrid = params_.vGrid;
@@ -366,7 +369,7 @@ namespace QuantLib {
             = localVolRND.rescaleTimeSteps();
 
         const SquareRootProcessRNDCalculator squareRootRnd(
-            v0, kappa, theta, sigma);
+            v0, kappa, theta, mixedSigma);
 
         const FdmSquareRootFwdOp::TransformationType trafoType
           = params_.trafoType;
@@ -434,7 +437,7 @@ namespace QuantLib {
             new FixedLocalVolSurface(referenceDate, times, vStrikes, L, dc));
 
         ext::shared_ptr<FdmLinearOpComposite> hestonFwdOp(
-            new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct));
+            new FdmHestonFwdOp(mesher, hestonProcess, trafoType, leverageFct, mixingFactor_));
 
         Array p = FdmHestonGreensFct(mesher, hestonProcess, trafoType, lv0)
             .get(timeGrid->at(1), params_.greensAlgorithm);

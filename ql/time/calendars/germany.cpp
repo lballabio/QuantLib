@@ -87,7 +87,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // Boxing Day
             || (d == 26 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -113,7 +113,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // Christmas Day
             || (d == 26 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -138,7 +138,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // Christmas Day
             || (d == 26 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -162,8 +162,10 @@ namespace QuantLib {
             // Christmas
             || (d == 25 && m == December)
             // Christmas Day
-            || (d == 26 && m == December))
-            return false;
+            || (d == 26 && m == December)
+            // New Year's Eve
+            || (d == 31 && m == December))
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
     
@@ -190,7 +192,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // Christmas Day
             || (d == 26 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 }

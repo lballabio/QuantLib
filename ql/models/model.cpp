@@ -116,7 +116,7 @@ namespace QuantLib {
                    prms.size() << ") and fixed-parameter specs (" <<
                    fixParameters.size() << ")");
         vector<bool> all(prms.size(), false);
-        Projection proj(prms,fixParameters.size()>0 ? fixParameters : all);
+        Projection proj(prms, !fixParameters.empty() ? fixParameters : all);
         CalibrationFunction f(this,instruments,w,proj);
         ProjectedConstraint pc(c,proj);
         Problem prob(f, pc, proj.project(prms));

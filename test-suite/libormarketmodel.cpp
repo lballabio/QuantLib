@@ -55,8 +55,7 @@ using namespace boost::unit_test_framework;
 
 namespace libor_market_model_test {
 
-    ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
-                                           std::vector<Rate> rates) {
+    ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates, const std::vector<Rate>& rates) {
         DayCounter dayCounter = Actual360();
 
         RelinkableHandle<YieldTermStructure> termStructure;
@@ -468,8 +467,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
                 GeneralStatistics stat;
 
                 for (Size n=0; n<nrTrails; ++n) {
-                    sample_type path = (n%2) ? generator.antithetic()
-                                             : generator.next();
+                    sample_type path = (n % 2) != 0U ? generator.antithetic() : generator.next();
 
                     std::vector<Rate> rates(size);
                     for (Size k=0; k<process->size(); ++k) {

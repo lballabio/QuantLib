@@ -1,0 +1,13 @@
+
+# Comment to be posted to welcome users when they open their first PR
+firstPRWelcomeComment: >
+  Thanks for opening this pull request!  It might take a while before we look at it, so don't worry if there seems to be no feedback.  We'll get to it.
+
+# Comment to be posted to congratulate user on their first merged PR
+firstPRMergeComment: >
+  Congratulations on your first merged pull request!
+
+# Comment to be posted to on first time issues
+firstIssueWelcomeComment: >
+  Thanks for posting!  It might take a while before we look at your issue, so don't worry if there seems to be no feedback.  We'll get to it.
+

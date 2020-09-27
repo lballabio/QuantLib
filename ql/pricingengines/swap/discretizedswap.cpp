@@ -35,6 +35,7 @@ namespace QuantLib {
                                      const Date& referenceDate,
                                      const DayCounter& dayCounter)
     : arguments_(args) {
+        // NOLINTNEXTLINE(readability-implicit-bool-conversion)
         includeTodaysCashFlows_ = Settings::instance().includeTodaysCashFlows() &&
                                   *Settings::instance().includeTodaysCashFlows();
 

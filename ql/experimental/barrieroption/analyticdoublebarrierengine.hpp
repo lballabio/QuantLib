@@ -48,7 +48,7 @@ namespace QuantLib {
     */
     class AnalyticDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
-        AnalyticDoubleBarrierEngine(
+        explicit AnalyticDoubleBarrierEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process, 
             int series = 5);
         void calculate() const;

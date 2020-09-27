@@ -64,16 +64,20 @@ namespace QuantLib {
                 Real c, Real gm);
     Real dvv(Real s,Real p,Real tt,Real a,Real b,Real gm);
     Real dff(Real s, Real p,Real tt,Real a,Real b,Real gm);
-    Real tvtl(int jj,Real limit[4],Real sigmarho[4],Real epsi);
+    Real tvtl(int jj, const Real limit[4], const Real sigmarho[4], Real epsi);
 
-    Real BarrierUPD(Real kprice, Real stock, Real hbarr,
-                      Real taumin, Real taumax, int iord, int igm,
-                      ext::function<Real(Real, Real)> integr,
-                      ext::function<Real(Real, Real)> integalpha,
-                      ext::function<Real(Real, Real)> integs,
-                      ext::function<Real(Real)> alpha,
-                      ext::function<Real(Real)> sigmaq)
-    {
+    Real BarrierUPD(Real kprice,
+                    Real stock,
+                    Real hbarr,
+                    Real taumin,
+                    Real taumax,
+                    int iord,
+                    int igm,
+                    const ext::function<Real(Real, Real)>& integr,
+                    const ext::function<Real(Real, Real)>& integalpha,
+                    const ext::function<Real(Real, Real)>& integs,
+                    const ext::function<Real(Real)>& alpha,
+                    const ext::function<Real(Real)>& sigmaq) {
         Real v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
         int i=0,j=0;
         Real tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
@@ -783,8 +787,7 @@ namespace QuantLib {
                                   Real RUB, Real AR, Real RUC,
                                   int NUC));
 
-    Real tvtl(int NU, Real limit[], Real sigmarho[],Real epsi)
-    {
+    Real tvtl(int NU, const Real limit[], const Real sigmarho[], Real epsi) {
         /*
           A function for computing trivariate normal and t-probabilities.
 
@@ -886,7 +889,7 @@ namespace QuantLib {
                 RUB = asin( R13 );
                 AR = asin( R23);
                 RUC = SIGN( PT, AR ) - AR;
-                TVT = TVT + ADONET(  ZRO, ONE, EPS, *TVTMFN)/( 4.0*PT );
+                TVT = TVT + ADONET(ZRO, ONE, EPS, TVTMFN) / (4.0 * PT);
             }
         result = max( ZRO, min( TVT, ONE ) );
 
@@ -941,7 +944,6 @@ namespace QuantLib {
                 SX = sin(X);
                 CS = 1 - SX*SX;
             }
-        return;
     }
     //
 
@@ -1440,8 +1442,7 @@ namespace QuantLib {
 
         struct integr_adapter {
             ext::shared_ptr<YieldTermStructure> r;
-            explicit integr_adapter(
-                    ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+            explicit integr_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
             : r(*(process->riskFreeRate())) {}
             Real operator()(Real t1,Real t2) const {
                 return r->forwardRate(t1,t2,Continuous) * (t2-t1);
@@ -1452,9 +1453,8 @@ namespace QuantLib {
             ext::shared_ptr<YieldTermStructure> r;
             ext::shared_ptr<YieldTermStructure> q;
             explicit integalpha_adapter(
-                    ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : r(*(process->riskFreeRate())),
-              q(*(process->dividendYield())) {}
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : r(*(process->riskFreeRate())), q(*(process->dividendYield())) {}
             Real operator()(Real t1,Real t2) const {
                 Real alpha = r->forwardRate(t1,t2,Continuous)
                            - q->forwardRate(t1,t2,Continuous);
@@ -1465,10 +1465,8 @@ namespace QuantLib {
         struct alpha_adapter {
             ext::shared_ptr<YieldTermStructure> r;
             ext::shared_ptr<YieldTermStructure> q;
-            explicit alpha_adapter(
-                    ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : r(*(process->riskFreeRate())),
-              q(*(process->dividendYield())) {}
+            explicit alpha_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : r(*(process->riskFreeRate())), q(*(process->dividendYield())) {}
             Real operator()(Real t) const {
                 return r->forwardRate(t,t,Continuous)
                      - q->forwardRate(t,t,Continuous);
@@ -1478,10 +1476,8 @@ namespace QuantLib {
         struct sigmaq_adapter {
             ext::shared_ptr<BlackVolTermStructure> v;
             Real s;
-            explicit sigmaq_adapter(
-                    ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : v(*(process->blackVolatility())),
-              s(process->x0()) {}
+            explicit sigmaq_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : v(*(process->blackVolatility())), s(process->x0()) {}
             Real operator()(Real t) const {
                 Real sigma = v->blackForwardVol(t,t,s,true);
                 return sigma*sigma;
@@ -1491,10 +1487,8 @@ namespace QuantLib {
         struct integs_adapter {
             ext::shared_ptr<BlackVolTermStructure> v;
             Real s;
-            explicit integs_adapter(
-                    ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : v(*(process->blackVolatility())),
-              s(process->x0()) {}
+            explicit integs_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : v(*(process->blackVolatility())), s(process->x0()) {}
             Real operator()(Real t1,Real t2) const {
                 return v->blackForwardVariance(t1,t2,s,true);
             }

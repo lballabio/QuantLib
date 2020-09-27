@@ -53,6 +53,7 @@ set(QuantLib_SRC
     experimental/averageois/makearithmeticaverageois.cpp
     experimental/barrieroption/analyticdoublebarrierbinaryengine.cpp
     experimental/barrieroption/analyticdoublebarrierengine.cpp
+    experimental/barrieroption/mcdoublebarrierengine.cpp
     experimental/barrieroption/discretizeddoublebarrieroption.cpp
     experimental/barrieroption/doublebarrieroption.cpp
     experimental/barrieroption/doublebarriertype.cpp
@@ -372,6 +373,7 @@ set(QuantLib_SRC
     math/factorial.cpp
     math/incompletegamma.cpp
     math/integrals/discreteintegrals.cpp
+    math/integrals/exponentialintegrals.cpp
     math/integrals/filonintegral.cpp
     math/integrals/gaussianorthogonalpolynomial.cpp
     math/integrals/gaussianquadratures.cpp
@@ -452,6 +454,7 @@ set(QuantLib_SRC
     methods/finitedifferences/operators/fdmg2op.cpp
     methods/finitedifferences/operators/fdmhestonhullwhiteop.cpp
     methods/finitedifferences/operators/fdmhestonop.cpp
+    methods/finitedifferences/operators/fdmcirop.cpp
     methods/finitedifferences/operators/fdmhullwhiteop.cpp
     methods/finitedifferences/operators/fdmlinearoplayout.cpp
     methods/finitedifferences/operators/fdmlocalvolfwdop.cpp
@@ -482,6 +485,7 @@ set(QuantLib_SRC
     methods/finitedifferences/solvers/fdmg2solver.cpp
     methods/finitedifferences/solvers/fdmhestonhullwhitesolver.cpp
     methods/finitedifferences/solvers/fdmhestonsolver.cpp
+    methods/finitedifferences/solvers/fdmcirsolver.cpp
     methods/finitedifferences/solvers/fdmhullwhitesolver.cpp
     methods/finitedifferences/solvers/fdmsimple2dbssolver.cpp
     methods/finitedifferences/stepconditions/fdmamericanstepcondition.cpp
@@ -686,6 +690,7 @@ set(QuantLib_SRC
     pricingengines/lookback/analyticcontinuousfloatinglookback.cpp
     pricingengines/lookback/analyticcontinuouspartialfixedlookback.cpp
     pricingengines/lookback/analyticcontinuouspartialfloatinglookback.cpp
+    pricingengines/lookback/mclookbackengine.cpp
     pricingengines/swap/cvaswapengine.cpp
     pricingengines/swap/discountingswapengine.cpp
     pricingengines/swap/discretizedswap.cpp
@@ -706,6 +711,7 @@ set(QuantLib_SRC
     pricingengines/vanilla/analyticdigitalamericanengine.cpp
     pricingengines/vanilla/analyticdividendeuropeanengine.cpp
     pricingengines/vanilla/analyticeuropeanengine.cpp
+    pricingengines/vanilla/analyticeuropeanvasicekengine.cpp
     pricingengines/vanilla/analyticgjrgarchengine.cpp
     pricingengines/vanilla/analytich1hwengine.cpp
     pricingengines/vanilla/analytichestonengine.cpp
@@ -716,8 +722,10 @@ set(QuantLib_SRC
     pricingengines/vanilla/bjerksundstenslandengine.cpp
     pricingengines/vanilla/coshestonengine.cpp
     pricingengines/vanilla/discretizedvanillaoption.cpp
+    pricingengines/vanilla/exponentialfittinghestonengine.cpp
     pricingengines/vanilla/fdbatesvanillaengine.cpp
     pricingengines/vanilla/fdblackscholesvanillaengine.cpp
+    pricingengines/vanilla/fdcirvanillaengine.cpp
     pricingengines/vanilla/fdcevvanillaengine.cpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.cpp
     pricingengines/vanilla/fdhestonvanillaengine.cpp
@@ -748,6 +756,7 @@ set(QuantLib_SRC
     processes/merton76process.cpp
     processes/mfstateprocess.cpp
     processes/ornsteinuhlenbeckprocess.cpp
+    processes/coxingersollrossprocess.cpp
     processes/squarerootprocess.cpp
     processes/stochasticprocessarray.cpp
     quotes/eurodollarfuturesquote.cpp
@@ -881,6 +890,7 @@ set(QuantLib_SRC
     time/daycounters/business252.cpp
     time/daycounters/simpledaycounter.cpp
     time/daycounters/thirty360.cpp
+    time/daycounters/thirty365.cpp
     time/ecb.cpp
     time/frequency.cpp
     time/imm.cpp
@@ -964,6 +974,7 @@ set(QuantLib_HDR
     experimental/barrieroption/all.hpp
     experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp
     experimental/barrieroption/analyticdoublebarrierengine.hpp
+    experimental/barrieroption/mcdoublebarrierengine.hpp
     experimental/barrieroption/binomialdoublebarrierengine.hpp
     experimental/barrieroption/discretizeddoublebarrieroption.hpp
     experimental/barrieroption/doublebarrieroption.hpp
@@ -1429,12 +1440,15 @@ set(QuantLib_HDR
     math/initializers.hpp
     math/integrals/all.hpp
     math/integrals/discreteintegrals.hpp
+    math/integrals/exponentialintegrals.hpp
     math/integrals/filonintegral.hpp
     math/integrals/gaussianorthogonalpolynomial.hpp
     math/integrals/gaussianquadratures.hpp
+    math/integrals/gausslaguerrecosinepolynomial.hpp
     math/integrals/gausslobattointegral.hpp
     math/integrals/integral.hpp
     math/integrals/kronrodintegral.hpp
+    math/integrals/momentbasedgaussianpolynomial.hpp
     math/integrals/segmentintegral.hpp
     math/integrals/simpsonintegral.hpp
     math/integrals/trapezoidintegral.hpp
@@ -1595,6 +1609,7 @@ set(QuantLib_HDR
     methods/finitedifferences/operators/fdmg2op.hpp
     methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp
     methods/finitedifferences/operators/fdmhestonop.hpp
+    methods/finitedifferences/operators/fdmcirop.hpp
     methods/finitedifferences/operators/fdmhullwhiteop.hpp
     methods/finitedifferences/operators/fdmlinearop.hpp
     methods/finitedifferences/operators/fdmlinearopcomposite.hpp
@@ -1638,6 +1653,7 @@ set(QuantLib_HDR
     methods/finitedifferences/solvers/fdmg2solver.hpp
     methods/finitedifferences/solvers/fdmhestonhullwhitesolver.hpp
     methods/finitedifferences/solvers/fdmhestonsolver.hpp
+    methods/finitedifferences/solvers/fdmcirsolver.hpp
     methods/finitedifferences/solvers/fdmhullwhitesolver.hpp
     methods/finitedifferences/solvers/fdmndimsolver.hpp
     methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp
@@ -1935,6 +1951,7 @@ set(QuantLib_HDR
     pricingengines/lookback/analyticcontinuousfloatinglookback.hpp
     pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp
     pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp
+    pricingengines/lookback/mclookbackengine.hpp
     pricingengines/mclongstaffschwartzengine.hpp
     pricingengines/mcsimulation.hpp
     pricingengines/quanto/all.hpp
@@ -1963,6 +1980,7 @@ set(QuantLib_HDR
     pricingengines/vanilla/analyticdigitalamericanengine.hpp
     pricingengines/vanilla/analyticdividendeuropeanengine.hpp
     pricingengines/vanilla/analyticeuropeanengine.hpp
+    pricingengines/vanilla/analyticeuropeanvasicekengine.hpp
     pricingengines/vanilla/analyticgjrgarchengine.hpp
     pricingengines/vanilla/analytich1hwengine.hpp
     pricingengines/vanilla/analytichestonengine.hpp
@@ -1974,10 +1992,12 @@ set(QuantLib_HDR
     pricingengines/vanilla/bjerksundstenslandengine.hpp
     pricingengines/vanilla/coshestonengine.hpp
     pricingengines/vanilla/discretizedvanillaoption.hpp
+    pricingengines/vanilla/exponentialfittinghestonengine.hpp
     pricingengines/vanilla/fdamericanengine.hpp
     pricingengines/vanilla/fdbatesvanillaengine.hpp
     pricingengines/vanilla/fdbermudanengine.hpp
     pricingengines/vanilla/fdblackscholesvanillaengine.hpp
+    pricingengines/vanilla/fdcirvanillaengine.hpp
     pricingengines/vanilla/fdcevvanillaengine.hpp
     pricingengines/vanilla/fdconditions.hpp
     pricingengines/vanilla/fddividendamericanengine.hpp
@@ -2022,6 +2042,7 @@ set(QuantLib_HDR
     processes/merton76process.hpp
     processes/mfstateprocess.hpp
     processes/ornsteinuhlenbeckprocess.hpp
+    processes/coxingersollrossprocess.hpp
     processes/squarerootprocess.hpp
     processes/stochasticprocessarray.hpp
     qldefines.hpp
@@ -2212,6 +2233,7 @@ set(QuantLib_HDR
     time/dategenerationrule.hpp
     time/daycounter.hpp
     time/daycounters/actual360.hpp
+    time/daycounters/actual364.hpp
     time/daycounters/actual365fixed.hpp
     time/daycounters/actualactual.hpp
     time/daycounters/all.hpp
@@ -2219,6 +2241,7 @@ set(QuantLib_HDR
     time/daycounters/one.hpp
     time/daycounters/simpledaycounter.hpp
     time/daycounters/thirty360.hpp
+    time/daycounters/thirty365.hpp
     time/ecb.hpp
     time/frequency.hpp
     time/imm.hpp
@@ -2259,8 +2282,10 @@ else()
 endif()
 set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME} PARENT_SCOPE)
 
-
-install(FILES ${QuantLib_HDR} DESTINATION include/ql)
+foreach(file ${QuantLib_HDR})
+    get_filename_component(dir ${file} DIRECTORY)
+    install(FILES ${file} DESTINATION include/ql/${dir})
+endforeach()
 
 install(TARGETS ${QL_OUTPUT_NAME}
         ARCHIVE DESTINATION lib

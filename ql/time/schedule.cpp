@@ -72,29 +72,24 @@ namespace QuantLib {
     Schedule::Schedule(const std::vector<Date>& dates,
                        const Calendar& calendar,
                        BusinessDayConvention convention,
-                       boost::optional<BusinessDayConvention>
-                                         terminationDateConvention,
-                       const boost::optional<Period> tenor,
-                       boost::optional<DateGeneration::Rule> rule,
-                       boost::optional<bool> endOfMonth,
+                       const boost::optional<BusinessDayConvention>& terminationDateConvention,
+                       const boost::optional<Period>& tenor,
+                       const boost::optional<DateGeneration::Rule>& rule,
+                       const boost::optional<bool>& endOfMonth,
                        const std::vector<bool>& isRegular)
-    : tenor_(tenor), calendar_(calendar),
-      convention_(convention),
-      terminationDateConvention_(terminationDateConvention),
-      rule_(rule),
-      dates_(dates), isRegular_(isRegular) {
+    : tenor_(tenor), calendar_(calendar), convention_(convention),
+      terminationDateConvention_(terminationDateConvention), rule_(rule), dates_(dates),
+      isRegular_(isRegular) {
 
         if (tenor != boost::none && !allowsEndOfMonth(*tenor))
             endOfMonth_ = false;
         else
             endOfMonth_ = endOfMonth;
 
-        QL_REQUIRE(
-            isRegular_.size() == 0 || isRegular_.size() == dates.size() - 1,
-            "isRegular size ("
-                << isRegular_.size()
-                << ") must be zero or equal to the number of dates minus 1 ("
-                << dates.size() - 1 << ")");
+        QL_REQUIRE(isRegular_.empty() || isRegular_.size() == dates.size() - 1,
+                   "isRegular size (" << isRegular_.size()
+                                      << ") must be zero or equal to the number of dates minus 1 ("
+                                      << dates.size() - 1 << ")");
     }
 
     Schedule::Schedule(Date effectiveDate,
@@ -554,9 +549,7 @@ namespace QuantLib {
             return Date();
     }
 
-    bool Schedule::hasIsRegular() const {
-        return isRegular_.size() > 0;
-    }
+    bool Schedule::hasIsRegular() const { return !isRegular_.empty(); }
 
     bool Schedule::isRegular(Size i) const {
         QL_REQUIRE(hasIsRegular(),
@@ -568,8 +561,7 @@ namespace QuantLib {
     }
 
     const std::vector<bool>& Schedule::isRegular() const {
-        QL_REQUIRE(isRegular_.size() > 0,
-                   "full interface (isRegular) not available");
+        QL_REQUIRE(!isRegular_.empty(), "full interface (isRegular) not available");
         return isRegular_;
     }
 
@@ -651,7 +643,7 @@ namespace QuantLib {
         // set dynamic defaults:
         BusinessDayConvention convention;
         // if a convention was set, we use it.
-        if (convention_) {
+        if (convention_) { // NOLINT(readability-implicit-bool-conversion)
             convention = *convention_;
         } else {
             if (!calendar_.empty()) {
@@ -665,7 +657,7 @@ namespace QuantLib {
 
         BusinessDayConvention terminationDateConvention;
         // if set explicitly, we use it;
-        if (terminationDateConvention_) {
+        if (terminationDateConvention_) { // NOLINT(readability-implicit-bool-conversion)
             terminationDateConvention = *terminationDateConvention_;
         } else {
             // Unadjusted as per ISDA specification

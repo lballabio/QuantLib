@@ -55,10 +55,10 @@ namespace QuantLib {
             (intended to be used in an event construction)
         */
         // member? move to friend?
-        template<Size N>
-        static const std::map<Seniority, Real>
-            makeIsdaMap(const Real (&(arrayIsdaRR))[N]) ;
-    private:
+        template <Size N>
+        static std::map<Seniority, Real> makeIsdaMap(const Real (&(arrayIsdaRR))[N]);
+
+      private:
         // Conventional recoveries for ISDA seniorities
         static const Real IsdaConvRecoveries[];
         // The seniority this recovery is quoted for.
@@ -90,9 +90,8 @@ namespace QuantLib {
     // template definitions
 
     // helpers allow further automatic inclusion of seniorities
-    template<Size N>
-    const std::map<Seniority, Real>
-        RecoveryRateQuote::makeIsdaMap (const Real (&(arrayIsdaRR))[N]) {
+    template <Size N>
+    std::map<Seniority, Real> RecoveryRateQuote::makeIsdaMap(const Real (&(arrayIsdaRR))[N]) {
         // TO DO: include check on sizes... not to go beyond enum sizes.
         // TO DO: check Reals are valid, i.e. non Null and within [0-1] range
         std::map<Seniority, Real> isdaMap;
@@ -102,7 +101,6 @@ namespace QuantLib {
         }
         return isdaMap;
     }
-
 }
 
 #endif

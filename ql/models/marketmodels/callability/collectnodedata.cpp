@@ -92,7 +92,7 @@ namespace QuantLib {
         EvolutionDescription evolution = product.evolution();
         const std::vector<Size>& numeraires = evolver.numeraires();
 
-        std::vector<Time> evolutionTimes = evolution.evolutionTimes();
+        const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
 
         std::valarray<bool> isProductTime =
             isInSubset(evolutionTimes,

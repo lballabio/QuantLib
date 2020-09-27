@@ -4,7 +4,7 @@
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008, 2009 Ralph Schreyer
  Copyright (C) 2008, 2009, 2011, 2014, 2015 Klaus Spanderen
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,14 +41,13 @@ namespace QuantLib {
 
     class FdmHestonSolver : public LazyObject {
       public:
-        FdmHestonSolver(
-            const Handle<HestonProcess>& process,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const Handle<FdmQuantoHelper>& quantoHelper
-                                                = Handle<FdmQuantoHelper>(),
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+        FdmHestonSolver(const Handle<HestonProcess>& process,
+                        const FdmSolverDesc& solverDesc,
+                        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                        const Handle<FdmQuantoHelper>& quantoHelper = Handle<FdmQuantoHelper>(),
+                        const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                            ext::shared_ptr<LocalVolTermStructure>(),
+                        Real mixingFactor = 1.0);
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;
@@ -73,6 +72,7 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
         const Handle<FdmQuantoHelper> quantoHelper_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const Real mixingFactor_;
 
         mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };

@@ -78,7 +78,7 @@ namespace QuantLib {
         // for time inversion:
         Real accuracy_;
     public:
-        RandomLossLM(
+        explicit RandomLossLM(
             const ext::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> >& 
                 copula,
             Size nSims = 0,
@@ -122,7 +122,7 @@ namespace QuantLib {
        Real getEventRecovery(const defaultSimEvent& evt) const {
             return evt.recovery();
         }
-    protected:
+
         Real latentVarValue(const std::vector<Real>& factorsSample, 
             Size iVar) const {
                 return copula_->latentVarValue(factorsSample, iVar);

@@ -370,7 +370,11 @@ namespace QuantLib {
                               BusinessDayConvention paymentConvention,
                               Real redemption,
                               const Date& issueDate,
-                              const CallabilitySchedule& putCallSchedule)
+                              const CallabilitySchedule& putCallSchedule,
+                              const Period& exCouponPeriod,
+                              const Calendar& exCouponCalendar,
+                              BusinessDayConvention exCouponConvention,
+                              bool exCouponEndOfMonth)
     : CallableBond(settlementDays, schedule, accrualDayCounter,
                    issueDate, putCallSchedule) {
 
@@ -383,7 +387,11 @@ namespace QuantLib {
                 FixedRateLeg(schedule)
                 .withNotionals(faceAmount)
                 .withCouponRates(coupons, accrualDayCounter)
-                .withPaymentAdjustment(paymentConvention);
+                .withPaymentAdjustment(paymentConvention)
+                .withExCouponPeriod(exCouponPeriod,
+                                    exCouponCalendar,
+                                    exCouponConvention,
+                                    exCouponEndOfMonth);
 
             addRedemptionsToCashflows(std::vector<Real>(1, redemption));
         } else {
@@ -411,7 +419,7 @@ namespace QuantLib {
             if (!cashflows_[i]->hasOccurred(settlement,IncludeToday)) {
                 ext::shared_ptr<Coupon> coupon =
                     ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon)
+                if (coupon != 0)
                     // !!!
                     return coupon->accruedAmount(settlement) /
                            notional(settlement) * 100.0;
@@ -426,7 +434,8 @@ namespace QuantLib {
     void CallableFixedRateBond::setupArguments(
                                        PricingEngine::arguments* args) const {
 
-        Bond::setupArguments(args);
+        CallableBond::setupArguments(args);
+
         CallableBond::arguments* arguments =
             dynamic_cast<CallableBond::arguments*>(args);
 
@@ -445,7 +454,8 @@ namespace QuantLib {
         arguments->couponAmounts.reserve(cfs.size()-1);
 
         for (Size i=0; i<cfs.size()-1; i++) {
-            if (!cfs[i]->hasOccurred(settlement, false)) {
+            if (!cfs[i]->hasOccurred(settlement, false)
+                && !cfs[i]->tradingExCoupon(settlement)) {
                 arguments->couponDates.push_back(cfs[i]->date());
                 arguments->couponAmounts.push_back(cfs[i]->amount());
             }

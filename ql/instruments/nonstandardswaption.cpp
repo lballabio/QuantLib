@@ -75,8 +75,8 @@ namespace QuantLib {
 
     Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
     NonstandardSwaption::calibrationBasket(
-        ext::shared_ptr<SwapIndex> standardSwapBase,
-        ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        const ext::shared_ptr<SwapIndex>& standardSwapBase,
+        const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
         const BasketGeneratingEngine::CalibrationBasketType basketType) const {
 
         ext::shared_ptr<BasketGeneratingEngine> engine =

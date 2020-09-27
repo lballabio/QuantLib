@@ -6,6 +6,8 @@
  Copyright (C) 2003 RiskMap srl
  Copyright (C) 2015 Maddalena Zanzi
  Copyright (c) 2015 Klaus Spanderen
+ Copyright (C) 2020 Leonardo Arcari
+ Copyright (C) 2020 Kline s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,11 +26,14 @@
 #include "dates.hpp"
 #include "utilities.hpp"
 #include <ql/time/date.hpp>
+#include <ql/time/timeunit.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/time/ecb.hpp>
 #include <ql/time/asx.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
+#include <boost/unordered_set.hpp>
+#include <boost/functional/hash.hpp>
 #include <sstream>
 
 using namespace QuantLib;
@@ -432,6 +437,46 @@ void DateTest::intraday() {
 #endif
 }
 
+void DateTest::canHash() {
+    BOOST_TEST_MESSAGE("Testing hashing of dates...");
+
+    Date start_date = Date(1, Jan, 2020);
+    int nb_tests = 500;
+
+    boost::hash<Date> hasher;
+
+    // Check hash values
+    for (int i = 0; i < nb_tests; ++i) {
+        for (int j = 0; j < nb_tests; ++j) {
+            Date lhs = start_date + i;
+            Date rhs = start_date + j;
+
+            if (lhs == rhs && hasher(lhs) != hasher(rhs)) {
+                BOOST_FAIL("Equal dates are expected to have same hash value\n"
+                           << "rhs = " << lhs << '\n'
+                           << "lhs = " << rhs << '\n'
+                           << "hash(lhs) = " << hasher(lhs) << '\n'
+                           << "hash(rhs) = " << hasher(rhs) << '\n');
+            }
+
+            if (lhs != rhs && hasher(lhs) == hasher(rhs)) {
+                BOOST_FAIL("Different dates are expected to have different hash value\n"
+                           << "rhs = " << lhs << '\n'
+                           << "lhs = " << rhs << '\n'
+                           << "hash(lhs) = " << hasher(lhs) << '\n'
+                           << "hash(rhs) = " << hasher(rhs) << '\n');
+            }
+        }
+    }
+
+    // Check if Date can be used as unordered_set key
+    boost::unordered_set<Date> set;
+    set.insert(start_date);
+
+    if (set.count(start_date) == 0) {
+        BOOST_FAIL("Expected to find date " << start_date << " in unordered_set\n");
+    }
+}
 
 test_suite* DateTest::suite(SpeedLevel speed) {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
@@ -444,6 +489,7 @@ test_suite* DateTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
     #endif
     suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
+    suite->add(QUANTLIB_TEST_CASE(&DateTest::canHash));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&DateTest::asxDates));
@@ -451,4 +497,3 @@ test_suite* DateTest::suite(SpeedLevel speed) {
 
     return suite;
 }
-

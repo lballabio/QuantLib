@@ -75,68 +75,73 @@ namespace QuantLib {
 
 class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
   public:
-    const ext::shared_ptr<StochasticProcess1D> stateProcess() const;
+    ext::shared_ptr<StochasticProcess1D> stateProcess() const;
 
-    Real numeraire(const Time t, const Real y = 0.0,
-                   const Handle<YieldTermStructure> &yts =
-                             Handle<YieldTermStructure>()) const;
+    Real numeraire(Time t,
+                   Real y = 0.0,
+                   const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real zerobond(
-        const Time T, const Time t = 0.0, const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
+    Real zerobond(Time T,
+                  Time t = 0.0,
+                  Real y = 0.0,
+                  const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real numeraire(const Date &referenceDate, const Real y = 0.0,
-                   const Handle<YieldTermStructure> &yts =
-                             Handle<YieldTermStructure>()) const;
+    Real numeraire(const Date& referenceDate,
+                   Real y = 0.0,
+                   const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real zerobond(
-        const Date &maturity, const Date &referenceDate = Null<Date>(),
-        const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
+    Real zerobond(const Date& maturity,
+                  const Date& referenceDate = Null<Date>(),
+                  Real y = 0.0,
+                  const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real zerobondOption(
-        const Option::Type &type, const Date &expiry, const Date &valueDate,
-        const Date &maturity, const Rate strike,
-        const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
-        const Real yStdDevs = 7.0, const Size yGridPoints = 64,
-        const bool extrapolatePayoff = true,
-        const bool flatPayoffExtrapolation = false) const;
+    Real zerobondOption(const Option::Type& type,
+                        const Date& expiry,
+                        const Date& valueDate,
+                        const Date& maturity,
+                        Rate strike,
+                        const Date& referenceDate = Null<Date>(),
+                        Real y = 0.0,
+                        const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>(),
+                        Real yStdDevs = 7.0,
+                        Size yGridPoints = 64,
+                        bool extrapolatePayoff = true,
+                        bool flatPayoffExtrapolation = false) const;
 
-    Real forwardRate(
-        const Date &fixing, const Date &referenceDate = Null<Date>(),
-        const Real y = 0.0,
-        ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
+    Real
+    forwardRate(const Date& fixing,
+                const Date& referenceDate = Null<Date>(),
+                Real y = 0.0,
+                const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
 
-    Real swapRate(
-        const Date &fixing, const Period &tenor,
-        const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
+    Real swapRate(const Date& fixing,
+                  const Period& tenor,
+                  const Date& referenceDate = Null<Date>(),
+                  Real y = 0.0,
+                  const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
-    Real swapAnnuity(
-        const Date &fixing, const Period &tenor,
-        const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
+    Real
+    swapAnnuity(const Date& fixing,
+                const Period& tenor,
+                const Date& referenceDate = Null<Date>(),
+                Real y = 0.0,
+                const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
     with
     \f[ p(x) = ax^4+bx^3+cx^2+dx+e \f].
     */
-    static Real gaussianPolynomialIntegral(const Real a, const Real b,
-                                           const Real c, const Real d,
-                                           const Real e, const Real x0,
-                                           const Real x1);
+    static Real
+    gaussianPolynomialIntegral(Real a, Real b, Real c, Real d, Real e, Real x0, Real x1);
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
     with
     \f[ p(x) = a(x-h)^4+b(x-h)^3+c(x-h)^2+d(x-h)+e \f].
     */
-    static Real
-    gaussianShiftedPolynomialIntegral(const Real a, const Real b, const Real c,
-                                      const Real d, const Real e, const Real h,
-                                      const Real x0, const Real x1);
+    static Real gaussianShiftedPolynomialIntegral(
+        Real a, Real b, Real c, Real d, Real e, Real h, Real x0, Real x1);
 
     /*! Generates a grid of values for the standardized state variable $y$
        at time $T$
@@ -144,9 +149,8 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
        consisting of
         2*gridPoints+1 points */
 
-    const Disposable<Array> yGrid(const Real yStdDevs, const int gridPoints,
-                                  const Real T = 1.0, const Real t = 0,
-                                  const Real y = 0) const;
+    Disposable<Array>
+    yGrid(Real yStdDevs, int gridPoints, Real T = 1.0, Real t = 0, Real y = 0) const;
 
   private:
     // It is of great importance for performance reasons to cache underlying
@@ -189,12 +193,10 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
     virtual ~Gaussian1dModel() {}
 
-    virtual Real
-    numeraireImpl(const Time t, const Real y,
-                  const Handle<YieldTermStructure> &yts) const = 0;
+    virtual Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const = 0;
 
-    virtual Real zerobondImpl(const Time T, const Time t, const Real y,
-                              const Handle<YieldTermStructure> &yts) const = 0;
+    virtual Real
+    zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const = 0;
 
     void performCalculations() const {
         evaluationDate_ = Settings::instance().evaluationDate();
@@ -229,8 +231,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     mutable bool enforcesTodaysHistoricFixings_;
 };
 
-inline const ext::shared_ptr<StochasticProcess1D>
-Gaussian1dModel::stateProcess() const {
+inline ext::shared_ptr<StochasticProcess1D> Gaussian1dModel::stateProcess() const {
 
     QL_REQUIRE(stateProcess_ != NULL, "state process not set");
     return stateProcess_;

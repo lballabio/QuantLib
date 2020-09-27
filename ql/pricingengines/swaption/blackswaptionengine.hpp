@@ -7,6 +7,7 @@
  Copyright (C) 2015, 2016, 2017 Peter Caspers
  Copyright (C) 2017 Paul Giltinan
  Copyright (C) 2017 Werner Kuerzinger
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -91,6 +92,12 @@ namespace QuantLib {
                    blackFormulaStdDevDerivative(strike, atmForward, stdDev,
                                                 annuity, displacement);
         }
+        Real delta(const Option::Type type, const Real strike,
+                   const Real atmForward, const Real stdDev, const Real annuity,
+                   const Real displacement) {
+            return blackFormulaForwardDerivative(type, strike, atmForward, stdDev,
+                                                 annuity, displacement);
+        }
     };
 
     // normal type engine
@@ -107,6 +114,12 @@ namespace QuantLib {
             return std::sqrt(exerciseTime) *
                    bachelierBlackFormulaStdDevDerivative(
                        strike, atmForward, stdDev, annuity);
+        }
+        Real delta(const Option::Type type, const Real strike,
+                   const Real atmForward, const Real stdDev, const Real annuity,
+                   const Real) {
+            return bachelierBlackFormulaForwardDerivative(
+                type, strike, atmForward, stdDev, annuity);
         }
     };
 
@@ -277,9 +290,7 @@ namespace QuantLib {
         swapLength = std::max(swapLength, 1.0 / 12.0);
         results_.additionalResults["swapLength"] = swapLength;
 
-        Real variance = vol_->blackVariance(exerciseDate,
-                                                   swapLength,
-                                                   strike);
+        Real variance = vol_->blackVariance(exerciseDate, swapLength, strike);
 
         Real displacement =
             vol_->volatilityType() == ShiftedLognormal ?
@@ -289,12 +300,13 @@ namespace QuantLib {
         results_.additionalResults["stdDev"] = stdDev;
         Option::Type w = (arguments_.type==VanillaSwap::Payer) ?
                                                 Option::Call : Option::Put;
-        results_.value = Spec().value(w, strike, atmForward, stdDev, annuity,
-                                                                displacement);
-
+        results_.value = Spec().value(w, strike, atmForward, stdDev, annuity, displacement);
+        
         Time exerciseTime = vol_->timeFromReference(exerciseDate);
         results_.additionalResults["vega"] = Spec().vega(
             strike, atmForward, stdDev, exerciseTime, annuity, displacement);
+        results_.additionalResults["delta"] = Spec().delta(
+            w, strike, atmForward, stdDev, annuity, displacement);
     }
 
     }  // namespace detail

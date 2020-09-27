@@ -100,8 +100,8 @@ namespace QuantLib {
         Leg leg; leg.reserve(n);
 
         // the following is not always correct
-        Calendar calendar = schedule.calendar();
-        
+        const Calendar& calendar = schedule.calendar();
+
         if (paymentCalendar.empty()) {
             paymentCalendar = calendar;
         }
@@ -217,7 +217,7 @@ namespace QuantLib {
         Leg leg; leg.reserve(n);
 
         // the following is not always correct
-        Calendar calendar = schedule.calendar();
+        const Calendar& calendar = schedule.calendar();
 
         Date refStart, start, refEnd, end;
         Date paymentDate;

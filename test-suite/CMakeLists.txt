@@ -20,6 +20,7 @@ set(QuantLib-Test_SRC
     brownianbridge.cpp
     businessdayconventions.cpp
     calendars.cpp
+    callablebonds.cpp
     capfloor.cpp
     capflooredcoupon.cpp
     cashflows.cpp
@@ -55,6 +56,7 @@ set(QuantLib-Test_SRC
     fastfouriertransform.cpp
     fdcev.cpp
     fdheston.cpp
+    fdcir.cpp
     fdmlinearop.cpp
     fdsabr.cpp
     fittedbonddiscountcurve.cpp
@@ -69,6 +71,7 @@ set(QuantLib-Test_SRC
     hestonslvmodel.cpp
     himalayaoption.cpp
     hybridhestonhullwhiteprocess.cpp
+    indexes.cpp
     inflation.cpp
     inflationcapfloor.cpp
     inflationcapflooredcoupon.cpp

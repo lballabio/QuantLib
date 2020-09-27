@@ -43,11 +43,11 @@ public:
 
 private:
     ArrayProxy(Array& a, const Real x) : a_(a) {
-        QL_REQUIRE(a_.size() > 0, "ArrayProxy: array has size 0");
+        QL_REQUIRE(!a_.empty(), "ArrayProxy: array has size 0");
         a_[0] = x;
         idx_ = 1;
     }
-    friend ArrayProxy operator<<(Array&, const Real);
+    friend ArrayProxy operator<<(Array&, Real);
     Size idx_;
     Array& a_;
 };
@@ -69,7 +69,7 @@ private:
         *m_.begin() = x;
         idx_ = 1;
     }
-    friend MatrixProxy operator<<(Matrix&, const Real);
+    friend MatrixProxy operator<<(Matrix&, Real);
     Size idx_;
     Matrix& m_;
 };
@@ -84,7 +84,7 @@ inline MatrixProxy operator<<(Matrix& m, const Real x) {
 
 } // namespace initializers
 
-using initializers::operator<<;
+using initializers::operator<<;   // NOLINT(misc-unused-using-decls)
 
 } // namespace QuantLib
 

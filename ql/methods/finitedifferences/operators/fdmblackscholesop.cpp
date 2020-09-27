@@ -56,7 +56,7 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-        if (localVol_) {
+        if (localVol_ != 0) {
             const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
@@ -80,7 +80,7 @@ namespace QuantLib {
                 }
             }
 
-            if (quantoHelper_) {
+            if (quantoHelper_ != 0) {
                 mapT_.axpyb(r - q - 0.5*v
                     - quantoHelper_->quantoAdjustment(Sqrt(v), t1, t2),
                     dxMap_, dxxMap_.mult(0.5*v), Array(1, -r));
@@ -94,7 +94,7 @@ namespace QuantLib {
             const Real v
                 = volTS_->blackForwardVariance(t1, t2, strike_)/(t2-t1);
 
-            if (quantoHelper_) {
+            if (quantoHelper_ != 0) {
                 mapT_.axpyb(
                     Array(1, r - q - 0.5*v)
                         - quantoHelper_->quantoAdjustment(
@@ -111,9 +111,7 @@ namespace QuantLib {
         }
     }
 
-    Size FdmBlackScholesOp::size() const {
-        return 1u;
-    }
+    Size FdmBlackScholesOp::size() const { return 1U; }
 
     Disposable<Array> FdmBlackScholesOp::apply(const Array& u) const {
         return mapT_.apply(u);

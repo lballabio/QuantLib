@@ -51,21 +51,20 @@ namespace QuantLib {
         : public MCLongstaffSchwartzEngine<VanillaOption::engine,
                                            SingleVariate,RNG,S,RNG_Calibration> {
       public:
-        MCAmericanEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool antitheticVariate,
-             bool controlVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed,
-             Size polynomOrder,
-             LsmBasisSystem::PolynomType polynomType,
-             Size nCalibrationSamples = Null<Size>(),
-             boost::optional<bool> antitheticVariateCalibration = boost::none,
-             BigNatural seedCalibration = Null<Size>());
+        MCAmericanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         Size timeSteps,
+                         Size timeStepsPerYear,
+                         bool antitheticVariate,
+                         bool controlVariate,
+                         Size requiredSamples,
+                         Real requiredTolerance,
+                         Size maxSamples,
+                         BigNatural seed,
+                         Size polynomOrder,
+                         LsmBasisSystem::PolynomType polynomType,
+                         Size nCalibrationSamples = Null<Size>(),
+                         const boost::optional<bool>& antitheticVariateCalibration = boost::none,
+                         BigNatural seedCalibration = Null<Size>());
 
         void calculate() const;
         
@@ -141,20 +140,36 @@ namespace QuantLib {
 
     template <class RNG, class S, class RNG_Calibration>
     inline MCAmericanEngine<RNG, S, RNG_Calibration>::MCAmericanEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> &process,
-        Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
-        bool controlVariate, Size requiredSamples, Real requiredTolerance,
-        Size maxSamples, BigNatural seed, Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType, Size nCalibrationSamples,
-        boost::optional<bool> antitheticVariateCalibration,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool antitheticVariate,
+        bool controlVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed,
+        Size polynomOrder,
+        LsmBasisSystem::PolynomType polynomType,
+        Size nCalibrationSamples,
+        const boost::optional<bool>& antitheticVariateCalibration,
         BigNatural seedCalibration)
-        : MCLongstaffSchwartzEngine<VanillaOption::engine, SingleVariate, RNG,
-                                    S, RNG_Calibration>(
-              process, timeSteps, timeStepsPerYear, false, antitheticVariate,
-              controlVariate, requiredSamples, requiredTolerance, maxSamples,
-              seed, nCalibrationSamples, false, antitheticVariateCalibration,
-              seedCalibration),
-          polynomOrder_(polynomOrder), polynomType_(polynomType) {}
+    : MCLongstaffSchwartzEngine<VanillaOption::engine, SingleVariate, RNG, S, RNG_Calibration>(
+          process,
+          timeSteps,
+          timeStepsPerYear,
+          false,
+          antitheticVariate,
+          controlVariate,
+          requiredSamples,
+          requiredTolerance,
+          maxSamples,
+          seed,
+          nCalibrationSamples,
+          false,
+          antitheticVariateCalibration,
+          seedCalibration),
+      polynomOrder_(polynomOrder), polynomType_(polynomType) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline void MCAmericanEngine<RNG, S, RNG_Calibration>::calculate() const {

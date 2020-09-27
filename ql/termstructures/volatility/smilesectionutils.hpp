@@ -36,21 +36,20 @@ namespace QuantLib {
         volatility smile sections */
     class SmileSectionUtils {
       public:
-        SmileSectionUtils(const SmileSection &section,
-                          const std::vector<Real> &moneynessGrid =
-                              std::vector<Real>(),
-                          const Real atm = Null<Real>(),
-                          const bool deleteArbitragePoints = false);
+        SmileSectionUtils(const SmileSection& section,
+                          const std::vector<Real>& moneynessGrid = std::vector<Real>(),
+                          Real atm = Null<Real>(),
+                          bool deleteArbitragePoints = false);
 
-        const std::pair<Real, Real> arbitragefreeRegion() const;
-        const std::pair<Size, Size> arbitragefreeIndices() const;
+        std::pair<Real, Real> arbitragefreeRegion() const;
+        std::pair<Size, Size> arbitragefreeIndices() const;
         const std::vector<Real> &moneyGrid() const { return m_; }
         const std::vector<Real> &strikeGrid() const { return k_; }
         const std::vector<Real> &callPrices() const { return c_; }
         Real atmLevel() const { return f_; }
 
       private:
-        bool af(const Size i0, const Size i, const Size i1) const;
+        bool af(Size i0, Size i, Size i1) const;
         std::vector<Real> m_, c_, k_;
         Size leftIndex_, rightIndex_;
         Real f_;

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -177,10 +177,13 @@ namespace QuantLib {
         calculate();
 
         const Time closeGridTime(timeGrid_->closestTime(t));
+
         if (closeGridTime == 0.0) {
+            const Real stepSize = 0.02*(
+                    xm_[0]->locations().back() - xm_[0]->locations().front());
             return RiskNeutralDensityCalculator::InvCDFHelper(
-                this, std::log(spot_->value()), 0.1*localVolProbEps_, maxIter_)
-                .inverseCDF(p, t);
+                this, std::log(spot_->value()),
+                0.1*localVolProbEps_, maxIter_, stepSize).inverseCDF(p, t);
         }
         else {
             Array xp(xGrid_);
@@ -188,12 +191,14 @@ namespace QuantLib {
 
             const Array x(xm_[idx]->locations().begin(),
                           xm_[idx]->locations().end());
+            const Real stepSize = 0.005*(x.back() - x.front());
+
             std::transform(x.begin(), x.end(), pm_->row_begin(idx), xp.begin(),
                            std::multiplies<Real>());
 
             const Real xm = DiscreteSimpsonIntegral()(x, xp);
             return RiskNeutralDensityCalculator::InvCDFHelper(
-                this, xm, 0.1*localVolProbEps_, maxIter_).inverseCDF(p, t);
+                this, xm, 0.1*localVolProbEps_, maxIter_, stepSize).inverseCDF(p, t);
         }
     }
 
@@ -231,6 +236,7 @@ namespace QuantLib {
 
         const Volatility stdDevOfFirstStep = vol * std::sqrt(sT);
         const Real normInvEps = InverseCumulativeNormal()(1 - localVolProbEps_);
+
         Real sLowerBound = xm - normInvEps * stdDevOfFirstStep;
         Real sUpperBound = xm + normInvEps * stdDevOfFirstStep;
 
@@ -287,18 +293,12 @@ namespace QuantLib {
                 const Real vm = DiscreteSimpsonIntegral()(x, vols)
                     /(x.back() - x.front());
 
-                const Size scalingSteps
-                    = std::max(3, Integer(0.01*timeGrid_->size()));
-
-                const Real scalingFactor
-                    = std::sqrt(timeGrid_->at(
-                        std::min(timeGrid_->size()-1, i+scalingSteps)))
-                     * vm;
+                const Real scalingFactor = vm*std::sqrt(0.5*timeGrid_->back());
 
                 if (maxLeftValue > localVolProbEps_)
-                    sLowerBound -= scalingFactor*xm;
+                    sLowerBound -= scalingFactor*(oldUpperBound-oldLowerBound);
                 if (maxRightValue > localVolProbEps_)
-                    sUpperBound += scalingFactor*xm;
+                    sUpperBound += scalingFactor*(oldUpperBound-oldLowerBound);
 
                 mesher = ext::shared_ptr<Fdm1dMesher>(
                     new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,

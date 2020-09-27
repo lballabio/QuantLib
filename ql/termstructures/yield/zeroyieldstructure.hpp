@@ -48,11 +48,9 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ZeroYieldStructure(
-            const DayCounter& dc = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
-        ZeroYieldStructure(
+        explicit ZeroYieldStructure(
+            const DayCounter& dc = DayCounter());
+        explicit ZeroYieldStructure(
             const Date& referenceDate,
             const Calendar& calendar = Calendar(),
             const DayCounter& dc = DayCounter(),
@@ -63,6 +61,16 @@ namespace QuantLib {
             const Calendar& calendar,
             const DayCounter& dc = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>());
+
+        /*! \deprecated Passing jumps without a reference date never worked correctly.
+                        Use one of the other constructors instead.
+                        Deprecated in version 1.19.
+        */
+        QL_DEPRECATED
+        ZeroYieldStructure(
+            const DayCounter& dc,
+            const std::vector<Handle<Quote> >& jumps,
             const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
       protected:

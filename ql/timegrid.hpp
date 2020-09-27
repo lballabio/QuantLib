@@ -120,12 +120,9 @@ namespace QuantLib {
                                                    ++t) {
                 Time periodEnd = *t;
                 if (periodEnd != 0.0) {
-                    // the nearest integer
-                    Size nSteps = Size((periodEnd - periodBegin)/dtMax+0.5);
-                    // at least one time step!
-                    nSteps = (nSteps!=0 ? nSteps : 1);
+                    // the nearest integer, at least 1
+                    Size nSteps = std::max(Size((periodEnd - periodBegin)/dtMax+0.5), Size(1));
                     Time dt = (periodEnd - periodBegin)/nSteps;
-                    times_.reserve(nSteps);
                     for (Size n=1; n<=nSteps; ++n)
                         times_.push_back(periodBegin + n*dt);
                 }

@@ -163,9 +163,9 @@ namespace market_model_cms_test {
         #endif
     }
 
-    const ext::shared_ptr<SequenceStatisticsInc> simulate(
-                         const ext::shared_ptr<MarketModelEvolver>& evolver,
-                         const MarketModelMultiProduct& product) {
+    ext::shared_ptr<SequenceStatisticsInc>
+    simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
+             const MarketModelMultiProduct& product) {
         Size initialNumeraire = evolver->numeraires().front();
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
@@ -281,7 +281,7 @@ namespace market_model_cms_test {
     std::vector<Size> makeMeasure(const MarketModelMultiProduct& product,
                                   MeasureType measureType) {
         std::vector<Size> result;
-        EvolutionDescription evolution(product.evolution());
+        const EvolutionDescription& evolution(product.evolution());
         switch (measureType) {
           case ProductSuggested:
             result = product.suggestedNumeraires();
@@ -354,13 +354,12 @@ namespace market_model_cms_test {
     }
 
 
-    void checkCMSAndSwaptions(
-              const SequenceStatisticsInc& stats,
-              const Rate fixedRate,
-              const std::vector<ext::shared_ptr<StrikedTypePayoff> >&
-                                                              displacedPayoff,
-              const ext::shared_ptr<MarketModel>, // marketModel,
-              const std::string& config) {
+    void
+    checkCMSAndSwaptions(const SequenceStatisticsInc& stats,
+                         const Rate fixedRate,
+                         const std::vector<ext::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
+                         const ext::shared_ptr<MarketModel>&, // marketModel,
+                         const std::string& config) {
         std::vector<Real> results = stats.mean();
         std::vector<Real> errors = stats.errorEstimate();
         std::vector<Real> discrepancies(todaysForwards.size());
