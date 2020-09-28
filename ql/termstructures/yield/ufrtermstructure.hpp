@@ -24,8 +24,8 @@
 #ifndef quantlib_ufr_term_structure_hpp
 #define quantlib_ufr_term_structure_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/yield/zeroyieldstructure.hpp>
 
 namespace QuantLib {
 
@@ -57,23 +57,97 @@ namespace QuantLib {
         - tbd
     */
 
-   class UFRTermStructure : public YieldTermStructure {
+    class UFRTermStructure : public ZeroYieldStructure {
       public:
-        ImpliedTermStructure(const Handle<YieldTermStructure>&,
-                             const Handle<Quote>& llfr,
-                             const Handle<Quote>& ufr,);
+        UFRTermStructure(const Handle<YieldTermStructure>&,
+                         const Handle<Quote>& lastLiquidForwardRate,
+                         const Handle<Quote>& ultimateForwardRate,
+                         const Period& firstSmoothingPoint,
+                         double alpha);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const;
         Calendar calendar() const;
         Natural settlementDays() const;
+        const Date& referenceDate() const;
         Date maxDate() const;
+        Time maxTime() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
       protected:
-        DiscountFactor discountImpl(Time) const;
+        //! returns the UFR extended zero yield rate
+        Rate zeroYieldImpl(Time) const;
         //@}
       private:
         Handle<YieldTermStructure> originalCurve_;
+        Handle<Quote> _llfr;
+        Handle<Quote> _ufr;
+        Period _fsp;
+        double _alpha;
     };
+
+    // inline definitions
+
+    inline UFRTermStructure::UFRTermStructure(const Handle<YieldTermStructure>& h,
+                                              const Handle<Quote>& lastLiquidForwardRate,
+                                              const Handle<Quote>& ultimateForwardRate,
+                                              const Period& firstSmoothingPoint,
+                                              double alpha)
+    : originalCurve_(h), _llfr(lastLiquidForwardRate), _ufr(ultimateForwardRate),
+      _fsp(firstSmoothingPoint), _alpha(alpha) {
+        if (!originalCurve_.empty())
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
+        registerWith(originalCurve_);
+        registerWith(_llfr);
+        registerWith(_ufr);
+    }
+
+    inline DayCounter UFRTermStructure::dayCounter() const { return originalCurve_->dayCounter(); }
+
+    inline Calendar UFRTermStructure::calendar() const { return originalCurve_->calendar(); }
+
+    inline Natural UFRTermStructure::settlementDays() const {
+        return originalCurve_->settlementDays();
+    }
+
+    inline const Date& UFRTermStructure::referenceDate() const {
+        return originalCurve_->referenceDate();
+    }
+
+    inline Date UFRTermStructure::maxDate() const { return originalCurve_->maxDate(); }
+
+    inline Time UFRTermStructure::maxTime() const { return originalCurve_->maxTime(); }
+
+    inline Date UFRTermStructure::maxDate() const { return originalCurve_->maxDate(); }
+
+    inline void UFRTermStructure::update() {
+        if (!originalCurve_.empty()) {
+            YieldTermStructure::update();
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
+        } else {
+            /* The implementation inherited from YieldTermStructure
+               asks for our reference date, which we don't have since
+               the original curve is still not set. Therefore, we skip
+               over that and just call the base-class behavior. */
+            TermStructure::update();
+        }
+    }
+
+    inline Rate UFRTermStructure::zeroYieldImpl(Time t) const {
+        Date ref = referenceDate();
+        InterestRate baseRate = originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
+        Time timeToFsp = dayCounter().yearFraction(ref, ref + _fsp);
+        if (timeToFsp < 0.0)
+            return baseRate;
+        Real beta = (1.0 - exp(-_alpha * t)) / (_alpha * t);
+        Rate extrapolatedForward = _ufr->value() + (_llfr->value() - _ufr->value()) * beta;
+        InterestRate extendedRate(baseRate + extrapolatedForward, baseRate.dayCounter(),
+                                  baseRate.compounding(), baseRate.frequency());
+        return extendedRate;
+    }
 }
 
 #endif
