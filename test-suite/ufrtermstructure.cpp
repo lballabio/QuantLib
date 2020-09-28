@@ -116,14 +116,13 @@ namespace ufr_term_structure_test {
                                          const std::vector<LLFRWeight>& weights,
                                          Real omega) {
         Real llfr;
-        Size n = weights.size();
         DayCounter dc = t->dayCounter();
         Date ref = t->referenceDate();
         Calendar cal = t->calendar();
         Date fspDt = cal.advance(ref, fsp);
         Time timeToFsp = dc.yearFraction(ref, fspDt);
 
-        for (Size i = 0; i < n; i++) {
+        for (Size i = 0; i < weights.size(); i++) {
             LLFRWeight w = weights[i];
             Date forwardDt = cal.advance(fspDt, w.n * w.units);
             Real timeToForward = dc.yearFraction(fspDt, forwardDt);
@@ -159,16 +158,33 @@ void UFRTermStructureTest::testDnbReplication() {
     ext::shared_ptr<YieldTermStructure> ufrTs(new UFRTermStructure(
         vars.ftkTermStructureHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), fsp, alpha));
 
-    std::vector<LLFRWeight> expectedUfrZeroes;
-    expectedUfrZeroes.push_back({1, Years, -0.00235});
-    expectedUfrZeroes.push_back({5, Years, 0.00196});
-    expectedUfrZeroes.push_back({10, Years, 0.00828});
-    expectedUfrZeroes.push_back({20, Years, 0.01357});
-    expectedUfrZeroes.push_back({30, Years, 0.01509});
-    expectedUfrZeroes.push_back({50, Years, 0.01776});
-    expectedUfrZeroes.push_back({60, Years, 0.01859});
-    expectedUfrZeroes.push_back({70, Years, 0.0192});
-    expectedUfrZeroes.push_back({80, Years, 0.01967});
-    expectedUfrZeroes.push_back({90, Years, 0.02004});
-    expectedUfrZeroes.push_back({100, Years, 0.02034});
+    std::vector<Datum> expZeroes;
+    expZeroes.push_back({1, Years, -0.00235});
+    expZeroes.push_back({5, Years, 0.00196});
+    expZeroes.push_back({10, Years, 0.00828});
+    expZeroes.push_back({20, Years, 0.01357});
+    expZeroes.push_back({30, Years, 0.01509});
+    expZeroes.push_back({50, Years, 0.01776});
+    expZeroes.push_back({60, Years, 0.01859});
+    expZeroes.push_back({70, Years, 0.0192});
+    expZeroes.push_back({80, Years, 0.01967});
+    expZeroes.push_back({90, Years, 0.02004});
+    expZeroes.push_back({100, Years, 0.02034});
+
+    Real tolerance = 1.0e-5;
+
+    for (Size i = 0; i < expZeroes.size(); ++i) {
+        Period p = expZeroes[i].n * expZeroes[i].units;
+
+        Date maturity = vars.settlement + p;
+        Rate actual = ufrTs->zeroRate(maturity, vars.dayCount, Compounded, Annual).rate();
+        Rate expected = expZeroes[i].rate;
+
+        if (std::fabs(actual - expected) > tolerance)
+            BOOST_ERROR(
+                "unable to reproduce zero yield rate from the UFR curve\n"
+                << std::fixed << std::setprecision(10)
+                << "    calculated: " << actual << "\n"
+                << "    expected:   " << expected);
+    }
 }
