@@ -62,8 +62,8 @@ namespace QuantLib {
         UFRTermStructure(const Handle<YieldTermStructure>&,
                          const Handle<Quote>& lastLiquidForwardRate,
                          const Handle<Quote>& ultimateForwardRate,
-                         const Period& firstSmoothingPoint,
-                         double alpha);
+                         Time firstSmoothingPoint,
+                         Real alpha);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -85,8 +85,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> _llfr;
         Handle<Quote> _ufr;
-        Period _fsp;
-        double _alpha;
+        Time _fsp;
+        Real _alpha;
     };
 
     // inline definitions
@@ -94,8 +94,8 @@ namespace QuantLib {
     inline UFRTermStructure::UFRTermStructure(const Handle<YieldTermStructure>& h,
                                               const Handle<Quote>& lastLiquidForwardRate,
                                               const Handle<Quote>& ultimateForwardRate,
-                                              const Period& firstSmoothingPoint,
-                                              double alpha)
+                                              Time firstSmoothingPoint,
+                                              Real alpha)
     : originalCurve_(h), _llfr(lastLiquidForwardRate), _ufr(ultimateForwardRate),
       _fsp(firstSmoothingPoint), _alpha(alpha) {
         if (!originalCurve_.empty())
@@ -121,8 +121,6 @@ namespace QuantLib {
 
     inline Time UFRTermStructure::maxTime() const { return originalCurve_->maxTime(); }
 
-    inline Date UFRTermStructure::maxDate() const { return originalCurve_->maxDate(); }
-
     inline void UFRTermStructure::update() {
         if (!originalCurve_.empty()) {
             YieldTermStructure::update();
@@ -137,16 +135,14 @@ namespace QuantLib {
     }
 
     inline Rate UFRTermStructure::zeroYieldImpl(Time t) const {
-        Date ref = referenceDate();
-        InterestRate baseRate = originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
-        Time timeToFsp = dayCounter().yearFraction(ref, calendar().advance(ref, _fsp));
-        if (timeToFsp < 0.0)
-            return baseRate;
-        Real beta = (1.0 - exp(-_alpha * t)) / (_alpha * t);
-        Rate extrapolatedForward = _ufr->value() + (_llfr->value() - _ufr->value()) * beta;
-        InterestRate extendedRate(baseRate + extrapolatedForward, baseRate.dayCounter(),
-                                  baseRate.compounding(), baseRate.frequency());
-        return extendedRate;
+        Time deltaT = t - _fsp;
+        if (deltaT > 0.0) {
+            InterestRate baseRate = originalCurve_->zeroRate(_fsp, Continuous, NoFrequency, true);
+            Real beta = (1.0 - std::exp(-_alpha * deltaT)) / (_alpha * deltaT);
+            Rate extrapolatedForward = _ufr->value() + (_llfr->value() - _ufr->value()) * beta;
+            return (_fsp * baseRate + deltaT * extrapolatedForward) / t;
+        }
+        return originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
     }
 }
 
