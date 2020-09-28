@@ -139,7 +139,7 @@ namespace QuantLib {
     inline Rate UFRTermStructure::zeroYieldImpl(Time t) const {
         Date ref = referenceDate();
         InterestRate baseRate = originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
-        Time timeToFsp = dayCounter().yearFraction(ref, ref + _fsp);
+        Time timeToFsp = dayCounter().yearFraction(ref, calendar().advance(ref, _fsp));
         if (timeToFsp < 0.0)
             return baseRate;
         Real beta = (1.0 - exp(-_alpha * t)) / (_alpha * t);
