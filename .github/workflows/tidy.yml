@@ -10,7 +10,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
-        sudo apt-get install -y clang-tidy libboost-dev
+        sudo apt-get update
+        sudo apt-get install -y clang-tidy-9 libboost-dev
     - name: Check
       run: |
         find . -name *.[hc]pp -not -name config.*.hpp -not -name all.hpp -not -name quantlib.hpp -not -name paralleltestrunner.hpp | sort | xargs -n 1 ./tools/run_tidy.sh
