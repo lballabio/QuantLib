@@ -43,8 +43,8 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/quotes/simplequote.hpp>
 
-#include <iostream>
-#include <iomanip>
+
+#include<bits/stdc++.h>
 
 using namespace std;
 using namespace QuantLib;
