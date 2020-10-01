@@ -41,8 +41,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 
-#include <iostream>
-#include <iomanip>
+
+#include<bits/stdc++.h>
 
 using namespace QuantLib;
 
