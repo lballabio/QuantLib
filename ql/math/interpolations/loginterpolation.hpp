@@ -126,6 +126,29 @@ namespace QuantLib {
 
     // convenience classes
 
+    class DefaultLogCubic : public LogCubic {
+      public:
+        DefaultLogCubic()
+        : LogCubic(CubicInterpolation::Kruger) {}
+    };
+
+    class MonotonicLogCubic : public LogCubic {
+      public:
+        MonotonicLogCubic()
+        : LogCubic(CubicInterpolation::Spline, true,
+                   CubicInterpolation::SecondDerivative, 0.0,
+                   CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class KrugerLog : public LogCubic {
+      public:
+        KrugerLog()
+        : LogCubic(CubicInterpolation::Kruger, false,
+                   CubicInterpolation::SecondDerivative, 0.0,
+                   CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+
     class LogCubicNaturalSpline : public LogCubicInterpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
