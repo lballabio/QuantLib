@@ -496,10 +496,7 @@ namespace QuantLib {
     AndreasenHugeVolatilityInterpl::calibrationError() const {
         calculate();
 
-        return ext::make_tuple<Real, Real, Real>(
-               ext::forward<Real>(minError_),
-               ext::forward<Real>(maxError_),
-               ext::forward<Real>(avgError_));
+        return ext::make_tuple(minError_, maxError_, avgError_);
     }
 
     Size AndreasenHugeVolatilityInterpl::getExerciseTimeIdx(Time t) const {
@@ -574,12 +571,8 @@ namespace QuantLib {
 
         Real fwd = spot_->value()*qTS_->discount(t)/df;
 
-        priceCache_[t] = ext::make_tuple<
-            Real,
-            ext::shared_ptr<Array>,
-            ext::shared_ptr<Interpolation> >(
-                ext::forward<Real>(fwd),
-                ext::forward<ext::shared_ptr<Array> >(prices),
+        priceCache_[t] = ext::make_tuple(
+                fwd, prices,
                 ext::make_shared<CubicNaturalSpline>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
                     prices->begin()+1));
@@ -654,11 +647,8 @@ namespace QuantLib {
 
         Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
 
-        localVolCache_[t] = ext::make_tuple<
-            Real,
-            ext::shared_ptr<Array>,
-            ext::shared_ptr<Interpolation> >(
-                ext::forward<Real>(fwd), ext::forward<ext::shared_ptr<Array> >(localVol),
+        localVolCache_[t] = ext::make_tuple(
+                fwd, localVol,
                 ext::make_shared<LinearInterpolation>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
                     localVol->begin()+1));
