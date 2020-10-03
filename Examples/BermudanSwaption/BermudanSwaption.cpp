@@ -1,5 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
+/* welcome to program */
+
 /*!
  Copyright (C) 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004 Ferdinando Ametrano
@@ -18,7 +20,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-
+/* happy coding */
 #include <ql/qldefines.hpp>
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
