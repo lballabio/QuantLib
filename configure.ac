@@ -413,12 +413,12 @@ fi
 AC_MSG_RESULT([$ql_use_std_function])
 
 
-AC_MSG_CHECKING([whether to enable standard smart tuple])
+AC_MSG_CHECKING([whether to enable std::tuple])
 AC_ARG_ENABLE([std-tuple],
               AC_HELP_STRING([--enable-std-tuple],
                              [If enabled, std::tuple and related
-                              classes and functions will be used instead
-                              of ext::tuple; this requires you to set
+                              functions will be used instead
+                              of boost::tuple; this requires you to set
                               your compiler's standard to at least C++11.
                               If disabled (the default) the Boost facilities
                               are used.]),
@@ -426,7 +426,7 @@ AC_ARG_ENABLE([std-tuple],
               [ql_use_std_tuple=no])
 if test "$ql_use_std_tuple" = "yes" ; then
    AC_DEFINE([QL_USE_STD_TUPLE],[1],
-             [Define this if you want to use standard smart tuple.])
+             [Define this if you want to use std::tuple.])
 fi
 AC_MSG_RESULT([$ql_use_std_pointers])
 
