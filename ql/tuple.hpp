@@ -30,7 +30,6 @@
 #include <tuple>
 #else
 #include <boost/tuple/tuple.hpp>
-#include <boost/move/move.hpp>
 #endif
 
 namespace QuantLib {
@@ -41,12 +40,10 @@ namespace QuantLib {
         using std::tuple;                   // NOLINT(misc-unused-using-decls)
         using std::make_tuple;              // NOLINT(misc-unused-using-decls)
         using std::get;                     // NOLINT(misc-unused-using-decls)
-        using std::forward;                 // NOLINT(misc-unused-using-decls)
         #else
         using boost::tuple;                 // NOLINT(misc-unused-using-decls)
         using boost::make_tuple;            // NOLINT(misc-unused-using-decls)
         using boost::get;                   // NOLINT(misc-unused-using-decls)
-        using boost::forward;                   // NOLINT(misc-unused-using-decls)
         #endif
 
     }
