@@ -306,15 +306,19 @@ namespace QuantLib {
     
     class DefaultLogMixedLinearCubic : public LogMixedLinearCubic {
       public:
-        DefaultLogMixedLinearCubic()
-        : LogMixedLinearCubic(MixedInterpolation::ShareRanges,
+        DefaultLogMixedLinearCubic(const Size n,
+                                   MixedInterpolation::Behavior behavior
+                                   = MixedInterpolation::ShareRanges)
+        : LogMixedLinearCubic(n, behavior,
                               CubicInterpolation::Kruger) {}
     };
 
     class MonotonicLogMixedLinearCubic : public LogMixedLinearCubic {
       public:
-        MonotonicLogMixedLinearCubic()
-        : LogMixedLinearCubic(MixedInterpolation::ShareRanges,
+        MonotonicLogMixedLinearCubic(const Size n,
+                                   MixedInterpolation::Behavior behavior
+                                   = MixedInterpolation::ShareRanges)
+        : LogMixedLinearCubic(n, behavior,
                               CubicInterpolation::Spline, true,
                               CubicInterpolation::SecondDerivative, 0.0,
                               CubicInterpolation::SecondDerivative, 0.0) {}
@@ -322,8 +326,10 @@ namespace QuantLib {
 
     class KrugerLogMixedLinearCubic: public LogMixedLinearCubic {
       public:
-        KrugerLogMixedLinearCubic()
-        : LogMixedLinearCubic(MixedInterpolation::ShareRanges,
+        KrugerLogMixedLinearCubic(const Size n,
+                                  MixedInterpolation::Behavior behavior
+                                  = MixedInterpolation::ShareRanges)
+        : LogMixedLinearCubic(n, behavior,
                               CubicInterpolation::Kruger, false,
                               CubicInterpolation::SecondDerivative, 0.0,
                               CubicInterpolation::SecondDerivative, 0.0) {}
