@@ -307,6 +307,8 @@ namespace QuantLib {
             strike, atmForward, stdDev, exerciseTime, annuity, displacement);
         results_.additionalResults["delta"] = Spec().delta(
             w, strike, atmForward, stdDev, annuity, displacement);
+        results_.additionalResults["timeToExpiry"] = exerciseTime;
+        results_.additionalResults["impliedVolatility"] = stdDev / std::sqrt(exerciseTime);
     }
 
     }  // namespace detail
