@@ -303,6 +303,32 @@ namespace QuantLib {
     };
 
     // convenience classes
+    
+    class DefaultLogMixedLinearCubic : public LogMixedLinearCubic {
+      public:
+        DefaultLogMixedLinearCubic()
+        : LogMixedLinearCubic(MixedInterpolation::ShareRanges,
+                              CubicInterpolation::Kruger) {}
+    };
+
+    class MonotonicLogMixedLinearCubic : public LogMixedLinearCubic {
+      public:
+        MonotonicLogMixedLinearCubic()
+        : LogMixedLinearCubic(MixedInterpolation::ShareRanges,
+                              CubicInterpolation::Spline, true,
+                              CubicInterpolation::SecondDerivative, 0.0,
+                              CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
+    class KrugerLogMixedLinearCubic: public LogMixedLinearCubic {
+      public:
+        KrugerLogMixedLinearCubic()
+        : LogMixedLinearCubic(MixedInterpolation::ShareRanges,
+                              CubicInterpolation::Kruger, false,
+                              CubicInterpolation::SecondDerivative, 0.0,
+                              CubicInterpolation::SecondDerivative, 0.0) {}
+    };
+
 
     class LogMixedLinearCubicNaturalSpline : public LogMixedLinearCubicInterpolation {
       public:
