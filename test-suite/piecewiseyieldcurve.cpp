@@ -672,14 +672,10 @@ void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
 
     testCurveConsistency<Discount,LogCubic,IterativeBootstrap>(
         vars,
-        LogCubic(CubicInterpolation::Spline, true,
-                 CubicInterpolation::SecondDerivative, 0.0,
-                 CubicInterpolation::SecondDerivative, 0.0));
+        MonotonicLogCubic());
     testBMACurveConsistency<Discount,LogCubic,IterativeBootstrap>(
         vars,
-        LogCubic(CubicInterpolation::Spline, true,
-                 CubicInterpolation::SecondDerivative, 0.0,
-                 CubicInterpolation::SecondDerivative, 0.0));
+        MonotonicLogCubic());
 }
 
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
