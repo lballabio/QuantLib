@@ -108,7 +108,7 @@ namespace ufr_term_structure_test {
             zeroData.push_back(initZeroRate(Date(2, January, 2049), 0.0140356));
             zeroData.push_back(initZeroRate(Date(2, January, 2059), 0.0138101));
             zeroData.push_back(initZeroRate(Date(2, January, 2069), 0.0135371));
-
+            
             InterestRate ufr(0.023, dayCount, Compounded, Annual);
             ufrRate = ext::shared_ptr<Quote>(
                 new SimpleQuote(ufr.equivalentRate(Continuous, Annual, 1.0)));
@@ -135,7 +135,7 @@ namespace ufr_term_structure_test {
                                          Time fsp,
                                          const std::vector<LLFRWeight>& weights,
                                          Real omega) {
-        Real llfr;
+        Real llfr = 0.0;
         DayCounter dc = ts->dayCounter();
         Date ref = ts->referenceDate();
 
