@@ -122,6 +122,7 @@ QL_TEST_SRCS = \
 	quantooption.cpp \
 	quotes.cpp \
 	rangeaccrual.cpp \
+	regulatorytermstructure.cpp \
 	riskneutraldensitycalculator.cpp \
 	riskstats.cpp \
 	rngtraits.cpp \
@@ -148,7 +149,6 @@ QL_TEST_SRCS = \
 	tracing.cpp \
 	twoassetbarrieroption.cpp \
 	twoassetcorrelationoption.cpp \
-	ufrtermstructure.cpp \
 	utilities.cpp \
 	variancegamma.cpp \
 	varianceoption.cpp \
@@ -280,6 +280,7 @@ QL_TEST_HDRS = \
 	quantooption.hpp \
 	quotes.hpp \
 	rangeaccrual.hpp \
+	regulatorytermstructure.hpp \
 	riskneutraldensitycalculator.hpp \
 	riskstats.hpp \
 	rngtraits.hpp \
@@ -307,7 +308,6 @@ QL_TEST_HDRS = \
 	tracing.hpp \
 	twoassetbarrieroption.hpp \
 	twoassetcorrelationoption.hpp \
-	ufrtermstructure.hpp \
 	utilities.hpp \
 	variancegamma.hpp \
 	varianceoption.hpp \

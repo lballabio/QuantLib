@@ -4333,7 +4333,7 @@
     <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\yield\ufrtermstructure.hpp">
+    <ClInclude Include="ql\termstructures\yield\regulatorytermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
   </ItemGroup>

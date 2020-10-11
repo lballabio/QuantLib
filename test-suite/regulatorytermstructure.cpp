@@ -16,14 +16,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "ufrtermstructure.hpp"
+#include "regulatorytermstructure.hpp"
 #include "utilities.hpp"
 #include <ql/currencies/europe.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/termstructures/yield/ufrtermstructure.hpp>
+#include <ql/termstructures/yield/regulatorytermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>

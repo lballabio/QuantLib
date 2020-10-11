@@ -17,19 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ufrtermstructure.hpp
+/*! \file regulatorytermstructure.hpp
     \brief Ultimate Forward Rate term structure
 */
 
-#ifndef quantlib_ufr_term_structure_hpp
-#define quantlib_ufr_term_structure_hpp
+#ifndef quantlib_regulatory_term_structure_hpp
+#define quantlib_regulatory_term_structure_hpp
 
 #include <ql/quote.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
 
 namespace QuantLib {
 
-    //! Ultimate Forward Rate term structure
+    //! Regulatory term structure
 
     /*! Dutch regulatory term structure for pension funds with a
         parametrized extrapolation mechanism designed for
