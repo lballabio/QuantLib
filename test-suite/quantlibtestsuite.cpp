@@ -459,7 +459,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
     test->add(RangeAccrualTest::suite());
-    test->add(UltimateForwardTermStructureTest::suite());
     test->add(RiskStatisticsTest::suite());
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
@@ -479,6 +478,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
+    test->add(UltimateForwardTermStructureTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
 
