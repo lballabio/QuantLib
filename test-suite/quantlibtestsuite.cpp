@@ -531,7 +531,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VPPTest::suite(speed));
     test->add(ZabrTest::suite(speed));
 
-    tests for deprecated classes
+    // tests for deprecated classes
     test->add(LiborMarketModelTest::suite(speed));
     test->add(LiborMarketModelProcessTest::suite(speed));
 
