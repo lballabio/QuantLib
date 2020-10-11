@@ -31,6 +31,7 @@ class UFRTermStructureTest {
     static void testExtrapolatedForward();
     static void testZeroRateAtFirstSmoothingPoint();
     static void testThatInspectorsEqualToBaseCurve();
+    static void testExceptionWhenFspLessOrEqualZero();
 
     static boost::unit_test_framework::test_suite* suite();
 };

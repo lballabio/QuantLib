@@ -98,6 +98,7 @@ namespace QuantLib {
                                               Real alpha)
     : originalCurve_(h), llfr_(lastLiquidForwardRate), ufr_(ultimateForwardRate),
       fsp_(firstSmoothingPoint), alpha_(alpha) {
+        QL_REQUIRE(fsp_ > 0.0, "time to first smoothing point must be positive");
         if (!originalCurve_.empty())
             enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);

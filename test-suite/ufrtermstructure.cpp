@@ -279,6 +279,30 @@ void UFRTermStructureTest::testThatInspectorsEqualToBaseCurve() {
                     << "    base curve:   " << vars.ftkTermStructureHandle->maxTime() << "\n");
 }
 
+void UFRTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
+    BOOST_TEST_MESSAGE("Testing exception when the First Smoothing Point less or equal zero...");
+
+    using namespace ufr_term_structure_test;
+
+    CommonVars vars;
+
+    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+
+    ext::shared_ptr<YieldTermStructure> ufrTs(
+        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+
+    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(
+                          new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                                               Handle<Quote>(vars.ufrRate), 0.0, vars.alpha)),
+                      Error);
+
+    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(
+                          new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                                               Handle<Quote>(vars.ufrRate), -1.0, vars.alpha)),
+                      Error);
+}
+
 test_suite* UFRTermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("UFR term structure tests");
 
@@ -286,6 +310,7 @@ test_suite* UFRTermStructureTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testExtrapolatedForward));
     suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testZeroRateAtFirstSmoothingPoint));
     suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testThatInspectorsEqualToBaseCurve));
+    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testExceptionWhenFspLessOrEqualZero));
 
     return suite;
 }
