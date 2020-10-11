@@ -27,7 +27,8 @@
 
 class UFRTermStructureTest {
   public:
-    static void testDnbReplication();
+    static void testDutchCentralBankRates();
+    static void testExtrapolatedForward();
 
     static boost::unit_test_framework::test_suite* suite();
 };

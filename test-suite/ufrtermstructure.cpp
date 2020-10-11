@@ -121,9 +121,21 @@ namespace ufr_term_structure_test {
         }
         return ext::shared_ptr<Quote>(new SimpleQuote(omega * llfr));
     }
+
+    Rate calculateExtrapolatedForward(const ext::shared_ptr<YieldTermStructure>& ts,
+                                      Time t,
+                                      Time fsp,
+                                      Rate llfr,
+                                      Rate ufr,
+                                      Real alpha) {
+        Time deltaT = t - fsp;
+        InterestRate baseRate = ts->zeroRate(fsp, Continuous, NoFrequency, true);
+        Real beta = (1.0 - std::exp(-alpha * deltaT)) / (alpha * deltaT);
+        return ufr + (llfr - ufr) * beta;
+    }
 }
 
-void UFRTermStructureTest::testDnbReplication() {
+void UFRTermStructureTest::testDutchCentralBankRates() {
     BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates...");
 
     using namespace ufr_term_structure_test;
@@ -139,19 +151,19 @@ void UFRTermStructureTest::testDnbReplication() {
         vars.ftkTermStructureHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), fsp, alpha));
 
     Datum expectedZeroes[] = {{10, Years, 0.00477}, {20, Years, 0.01004}, {30, Years, 0.01223},
-                         {40, Years, 0.01433}, {50, Years, 0.01589}, {60, Years, 0.01702},
-                         {70, Years, 0.01785}, {80, Years, 0.01849}, {90, Years, 0.01899},
-                         {100, Years, 0.01939}};
+                              {40, Years, 0.01433}, {50, Years, 0.01589}, {60, Years, 0.01702},
+                              {70, Years, 0.01785}, {80, Years, 0.01849}, {90, Years, 0.01899},
+                              {100, Years, 0.01939}};
 
     Real tolerance = 1.0e-4;
     Size nRates = LENGTH(expectedZeroes);
 
-    for (Size k = 0; k < nRates; ++k) {
-        Period p = expectedZeroes[k].n * expectedZeroes[k].units;
+    for (Size i = 0; i < nRates; ++i) {
+        Period p = expectedZeroes[i].n * expectedZeroes[i].units;
         Date maturity = vars.settlement + p;
-        
+
         Rate actual = ufrTs->zeroRate(maturity, vars.dayCount, Compounded, Annual).rate();
-        Rate expected = expectedZeroes[k].rate;
+        Rate expected = expectedZeroes[i].rate;
 
         if (std::fabs(actual - expected) > tolerance)
             BOOST_ERROR("unable to reproduce zero yield rate from the UFR curve\n"
@@ -161,10 +173,50 @@ void UFRTermStructureTest::testDnbReplication() {
     }
 }
 
+void UFRTermStructureTest::testExtrapolatedForward() {
+    BOOST_TEST_MESSAGE("Testing continuous forward rates in extrapolation region...");
+
+    using namespace ufr_term_structure_test;
+
+    CommonVars vars;
+
+    Time fsp = 20.0;
+    Real alpha = 0.1;
+
+    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+
+    ext::shared_ptr<YieldTermStructure> ufrTs(new UFRTermStructure(
+        vars.ftkTermStructureHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), fsp, alpha));
+
+    Period tenors[] = {
+        20 * Years, 30 * Years, 40 * Years, 50 * Years,  60 * Years,
+        70 * Years, 80 * Years, 90 * Years, 100 * Years,
+    };
+
+    Size nTenors = LENGTH(tenors);
+
+    for (Size i = 0; i < nTenors; ++i) {
+        Date maturity = vars.settlement + tenors[i];
+        Time t = ufrTs->timeFromReference(maturity);
+
+        Rate actual = ufrTs->forwardRate(fsp, t, Continuous, NoFrequency, true).rate();
+        Rate expected = calculateExtrapolatedForward(ufrTs, t, fsp, llfr->value(),
+                                                     vars.ufrRate->value(), alpha);
+
+        Real tolerance = 1.0e-10;
+        if (std::fabs(actual - expected) > tolerance)
+            BOOST_ERROR("unable to replicate the forward rate from the UFR curve\n"
+                        << std::setprecision(10) << "    calculated: " << actual << "\n"
+                        << "    expected:   " << expected << "\n"
+                        << "    tenor:       " << tenors[i] << "\n");
+    }
+}
+
 test_suite* UFRTermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("UFR term structure tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testDnbReplication));
+    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testDutchCentralBankRates));
+    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testExtrapolatedForward));
 
     return suite;
 }
