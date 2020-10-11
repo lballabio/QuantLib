@@ -209,7 +209,7 @@
 #include "transformedgrid.hpp"
 #include "twoassetbarrieroption.hpp"
 #include "twoassetcorrelationoption.hpp"
-#include "ufrtermstructure.hpp"
+#include "regulatorytermstructure.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
@@ -534,7 +534,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     // test->add(LiborMarketModelTest::suite(speed));
     // test->add(LiborMarketModelProcessTest::suite(speed));
 
-    test->add(UFRTermStructureTest::suite());
+    test->add(UltimateForwardTermStructureTest::suite());
     test->add(QUANTLIB_TEST_CASE(stopTimer));
 
     return test;

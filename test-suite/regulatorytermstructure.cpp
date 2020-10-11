@@ -31,7 +31,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace ufr_term_structure_test {
+namespace regulatory_term_structure_test {
 
     struct Datum {
         Integer n;
@@ -141,10 +141,10 @@ namespace ufr_term_structure_test {
     }
 }
 
-void UFRTermStructureTest::testDutchCentralBankRates() {
+void UltimateForwardTermStructureTest::testDutchCentralBankRates() {
     BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates...");
 
-    using namespace ufr_term_structure_test;
+    using namespace regulatory_term_structure_test;
 
     CommonVars vars;
 
@@ -177,10 +177,10 @@ void UFRTermStructureTest::testDutchCentralBankRates() {
     }
 }
 
-void UFRTermStructureTest::testExtrapolatedForward() {
+void UltimateForwardTermStructureTest::testExtrapolatedForward() {
     BOOST_TEST_MESSAGE("Testing continuous forward rates in extrapolation region...");
 
-    using namespace ufr_term_structure_test;
+    using namespace regulatory_term_structure_test;
 
     CommonVars vars;
 
@@ -214,10 +214,10 @@ void UFRTermStructureTest::testExtrapolatedForward() {
     }
 }
 
-void UFRTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
+void UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
     BOOST_TEST_MESSAGE("Testing zero rate on the First Smoothing Point...");
 
-    using namespace ufr_term_structure_test;
+    using namespace regulatory_term_structure_test;
 
     CommonVars vars;
 
@@ -239,10 +239,10 @@ void UFRTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
                     << "    FSP:       " << vars.fsp << "\n");
 }
 
-void UFRTermStructureTest::testThatInspectorsEqualToBaseCurve() {
+void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
     BOOST_TEST_MESSAGE("Testing UFR curve inspectors...");
 
-    using namespace ufr_term_structure_test;
+    using namespace regulatory_term_structure_test;
 
     CommonVars vars;
 
@@ -279,10 +279,10 @@ void UFRTermStructureTest::testThatInspectorsEqualToBaseCurve() {
                     << "    base curve:   " << vars.ftkTermStructureHandle->maxTime() << "\n");
 }
 
-void UFRTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
+void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
     BOOST_TEST_MESSAGE("Testing exception when the First Smoothing Point less or equal zero...");
 
-    using namespace ufr_term_structure_test;
+    using namespace regulatory_term_structure_test;
 
     CommonVars vars;
 
@@ -303,14 +303,14 @@ void UFRTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
                       Error);
 }
 
-test_suite* UFRTermStructureTest::suite() {
+test_suite* UltimateForwardTermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("UFR term structure tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testDutchCentralBankRates));
-    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testExtrapolatedForward));
-    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testZeroRateAtFirstSmoothingPoint));
-    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testThatInspectorsEqualToBaseCurve));
-    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testExceptionWhenFspLessOrEqualZero));
+    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testDutchCentralBankRates));
+    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExtrapolatedForward));
+    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint));
+    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve));
+    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero));
 
     return suite;
 }

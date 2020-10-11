@@ -25,7 +25,7 @@
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class UFRTermStructureTest {
+class UltimateForwardTermStructureTest {
   public:
     static void testDutchCentralBankRates();
     static void testExtrapolatedForward();
