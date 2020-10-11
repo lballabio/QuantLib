@@ -45,7 +45,6 @@ namespace regulatory_term_structure_test {
     };
 
     struct CommonVars {
-        // global data
         Date today, settlement;
         Calendar calendar;
         Natural settlementDays;
@@ -79,7 +78,17 @@ namespace regulatory_term_structure_test {
                 new IborIndex("FTK_IDX", floatingTenor, settlementDays, ccy, calendar,
                               businessConvention, false, dayCount, ftkTermStructureHandle));
 
-            // Data source: https://fred.stlouisfed.org/
+            /* 
+            Data source: https://fred.stlouisfed.org/
+            Note that these rates are used as a proxy.
+            
+            In order to fully replicate the rates published by the Dutch Central Bank 
+            (with the required accuracy) one needs to use Bloomberg CMPL BID Euribor 6m swap rates
+            as stated in the documentation:
+
+            https://www.toezicht.dnb.nl/binaries/50-234028.pdf
+            
+            */
             Datum swapData[] = {{1, Years, -0.00315}, {2, Years, -0.00205}, {3, Years, -0.00144},
                                 {4, Years, -0.00068}, {5, Years, 0.00014},  {6, Years, 0.00103},
                                 {7, Years, 0.00194},  {8, Years, 0.00288},  {9, Years, 0.00381},
