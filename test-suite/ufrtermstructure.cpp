@@ -262,12 +262,6 @@ void UFRTermStructureTest::testThatInspectorsEqualToBaseCurve() {
                     << std::setprecision(10) << "    UFR curve: " << ufrTs->calendar() << "\n"
                     << "    base curve:   " << vars.ftkTermStructureHandle->calendar() << "\n");
 
-    if (ufrTs->settlementDays() != vars.ftkTermStructureHandle->settlementDays())
-        BOOST_ERROR("different number of settlement days on the UFR curve than on the base curve\n"
-                    << std::setprecision(10) << "    UFR curve: " << ufrTs->settlementDays() << "\n"
-                    << "    base curve:   " << vars.ftkTermStructureHandle->settlementDays()
-                    << "\n");
-
     if (ufrTs->referenceDate() != vars.ftkTermStructureHandle->referenceDate())
         BOOST_ERROR("different reference date on the UFR curve than on the base curve\n"
                     << std::setprecision(10) << "    UFR curve: " << ufrTs->referenceDate() << "\n"
