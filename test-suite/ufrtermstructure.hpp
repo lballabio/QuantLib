@@ -29,6 +29,8 @@ class UFRTermStructureTest {
   public:
     static void testDutchCentralBankRates();
     static void testExtrapolatedForward();
+    static void testZeroRateAtFirstSmoothingPoint();
+    static void testThatInspectorsEqualToBaseCurve();
 
     static boost::unit_test_framework::test_suite* suite();
 };

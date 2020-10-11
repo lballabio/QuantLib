@@ -48,15 +48,19 @@ namespace ufr_term_structure_test {
         // global data
         Date today, settlement;
         Calendar calendar;
+        Natural settlementDays;
         Currency ccy;
         BusinessDayConvention businessConvention;
         DayCounter dayCount;
         Frequency fixedFrequency;
         Period floatingTenor;
+
         ext::shared_ptr<IborIndex> index;
-        Natural settlementDays;
         RelinkableHandle<YieldTermStructure> ftkTermStructureHandle;
+
         ext::shared_ptr<Quote> ufrRate;
+        Time fsp;
+        Real alpha;
 
         // cleanup
         SavedSettings backup;
@@ -86,6 +90,8 @@ namespace ufr_term_structure_test {
             InterestRate ufr(0.023, dayCount, Compounded, Annual);
             ufrRate = ext::shared_ptr<Quote>(
                 new SimpleQuote(ufr.equivalentRate(Continuous, Annual, 1.0)));
+            fsp = 20.0;
+            alpha = 0.1;
 
             today = calendar.adjust(Date(29, March, 2019));
             Settings::instance().evaluationDate() = today;
@@ -142,13 +148,11 @@ void UFRTermStructureTest::testDutchCentralBankRates() {
 
     CommonVars vars;
 
-    Time fsp = 20.0;
-    Real alpha = 0.1;
+    ext::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkTermStructureHandle, vars.fsp);
 
-    ext::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkTermStructureHandle, fsp);
-
-    ext::shared_ptr<YieldTermStructure> ufrTs(new UFRTermStructure(
-        vars.ftkTermStructureHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), fsp, alpha));
+    ext::shared_ptr<YieldTermStructure> ufrTs(
+        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
     Datum expectedZeroes[] = {{10, Years, 0.00477}, {20, Years, 0.01004}, {30, Years, 0.01223},
                               {40, Years, 0.01433}, {50, Years, 0.01589}, {60, Years, 0.01702},
@@ -180,13 +184,11 @@ void UFRTermStructureTest::testExtrapolatedForward() {
 
     CommonVars vars;
 
-    Time fsp = 20.0;
-    Real alpha = 0.1;
-
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(new UFRTermStructure(
-        vars.ftkTermStructureHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), fsp, alpha));
+    ext::shared_ptr<YieldTermStructure> ufrTs(
+        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
     Period tenors[] = {
         20 * Years, 30 * Years, 40 * Years, 50 * Years,  60 * Years,
@@ -199,9 +201,9 @@ void UFRTermStructureTest::testExtrapolatedForward() {
         Date maturity = vars.settlement + tenors[i];
         Time t = ufrTs->timeFromReference(maturity);
 
-        Rate actual = ufrTs->forwardRate(fsp, t, Continuous, NoFrequency, true).rate();
-        Rate expected = calculateExtrapolatedForward(ufrTs, t, fsp, llfr->value(),
-                                                     vars.ufrRate->value(), alpha);
+        Rate actual = ufrTs->forwardRate(vars.fsp, t, Continuous, NoFrequency, true).rate();
+        Rate expected = calculateExtrapolatedForward(ufrTs, t, vars.fsp, llfr->value(),
+                                                     vars.ufrRate->value(), vars.alpha);
 
         Real tolerance = 1.0e-10;
         if (std::fabs(actual - expected) > tolerance)
@@ -212,11 +214,84 @@ void UFRTermStructureTest::testExtrapolatedForward() {
     }
 }
 
+void UFRTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
+    BOOST_TEST_MESSAGE("Testing zero rate on the First Smoothing Point...");
+
+    using namespace ufr_term_structure_test;
+
+    CommonVars vars;
+
+    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+
+    ext::shared_ptr<YieldTermStructure> ufrTs(
+        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+
+    Rate actual = ufrTs->zeroRate(vars.fsp, Continuous, NoFrequency, true).rate();
+    Rate expected =
+        vars.ftkTermStructureHandle->zeroRate(vars.fsp, Continuous, NoFrequency, true).rate();
+
+    Real tolerance = 1.0e-10;
+    if (std::fabs(actual - expected) > tolerance)
+        BOOST_ERROR("unable to replicate the zero rate on the First Smoothing Point\n"
+                    << std::setprecision(10) << "    calculated: " << actual << "\n"
+                    << "    expected:   " << expected << "\n"
+                    << "    FSP:       " << vars.fsp << "\n");
+}
+
+void UFRTermStructureTest::testThatInspectorsEqualToBaseCurve() {
+    BOOST_TEST_MESSAGE("Testing UFR curve inspectors...");
+
+    using namespace ufr_term_structure_test;
+
+    CommonVars vars;
+
+    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+
+    ext::shared_ptr<YieldTermStructure> ufrTs(
+        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+
+    if (ufrTs->dayCounter() != vars.ftkTermStructureHandle->dayCounter())
+        BOOST_ERROR("different day counter on the UFR curve than on the base curve\n"
+                    << std::setprecision(10) << "    UFR curve: " << ufrTs->dayCounter() << "\n"
+                    << "    base curve:   " << vars.ftkTermStructureHandle->dayCounter() << "\n");
+
+    if (ufrTs->calendar() != vars.ftkTermStructureHandle->calendar())
+        BOOST_ERROR("different calendar on the UFR curve than on the base curve\n"
+                    << std::setprecision(10) << "    UFR curve: " << ufrTs->calendar() << "\n"
+                    << "    base curve:   " << vars.ftkTermStructureHandle->calendar() << "\n");
+
+    if (ufrTs->settlementDays() != vars.ftkTermStructureHandle->settlementDays())
+        BOOST_ERROR("different number of settlement days on the UFR curve than on the base curve\n"
+                    << std::setprecision(10) << "    UFR curve: " << ufrTs->settlementDays() << "\n"
+                    << "    base curve:   " << vars.ftkTermStructureHandle->settlementDays()
+                    << "\n");
+
+    if (ufrTs->referenceDate() != vars.ftkTermStructureHandle->referenceDate())
+        BOOST_ERROR("different reference date on the UFR curve than on the base curve\n"
+                    << std::setprecision(10) << "    UFR curve: " << ufrTs->referenceDate() << "\n"
+                    << "    base curve:   " << vars.ftkTermStructureHandle->referenceDate()
+                    << "\n");
+
+    if (ufrTs->maxDate() != vars.ftkTermStructureHandle->maxDate())
+        BOOST_ERROR("different max date on the UFR curve than on the base curve\n"
+                    << std::setprecision(10) << "    UFR curve: " << ufrTs->maxDate() << "\n"
+                    << "    base curve:   " << vars.ftkTermStructureHandle->maxDate() << "\n");
+
+    if (ufrTs->maxTime() != vars.ftkTermStructureHandle->maxTime())
+        BOOST_ERROR("different max time on the UFR curve than on the base curve\n"
+                    << std::setprecision(10) << "    UFR curve: " << ufrTs->maxTime() << "\n"
+                    << "    base curve:   " << vars.ftkTermStructureHandle->maxTime() << "\n");
+}
+
 test_suite* UFRTermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("UFR term structure tests");
 
     suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testDutchCentralBankRates));
     suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testExtrapolatedForward));
+    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testZeroRateAtFirstSmoothingPoint));
+    suite->add(QUANTLIB_TEST_CASE(&UFRTermStructureTest::testThatInspectorsEqualToBaseCurve));
 
     return suite;
 }
