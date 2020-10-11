@@ -83,10 +83,10 @@ namespace QuantLib {
         //@}
       private:
         Handle<YieldTermStructure> originalCurve_;
-        Handle<Quote> _llfr;
-        Handle<Quote> _ufr;
-        Time _fsp;
-        Real _alpha;
+        Handle<Quote> llfr_;
+        Handle<Quote> ufr_;
+        Time fsp_;
+        Real alpha_;
     };
 
     // inline definitions
@@ -96,13 +96,13 @@ namespace QuantLib {
                                               const Handle<Quote>& ultimateForwardRate,
                                               Time firstSmoothingPoint,
                                               Real alpha)
-    : originalCurve_(h), _llfr(lastLiquidForwardRate), _ufr(ultimateForwardRate),
-      _fsp(firstSmoothingPoint), _alpha(alpha) {
+    : originalCurve_(h), llfr_(lastLiquidForwardRate), ufr_(ultimateForwardRate),
+      fsp_(firstSmoothingPoint), alpha_(alpha) {
         if (!originalCurve_.empty())
             enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);
-        registerWith(_llfr);
-        registerWith(_ufr);
+        registerWith(llfr_);
+        registerWith(ufr_);
     }
 
     inline DayCounter UFRTermStructure::dayCounter() const { return originalCurve_->dayCounter(); }
@@ -135,12 +135,12 @@ namespace QuantLib {
     }
 
     inline Rate UFRTermStructure::zeroYieldImpl(Time t) const {
-        Time deltaT = t - _fsp;
+        Time deltaT = t - fsp_;
         if (deltaT > 0.0) {
-            InterestRate baseRate = originalCurve_->zeroRate(_fsp, Continuous, NoFrequency, true);
-            Real beta = (1.0 - std::exp(-_alpha * deltaT)) / (_alpha * deltaT);
-            Rate extrapolatedForward = _ufr->value() + (_llfr->value() - _ufr->value()) * beta;
-            return (_fsp * baseRate + deltaT * extrapolatedForward) / t;
+            InterestRate baseRate = originalCurve_->zeroRate(fsp_, Continuous, NoFrequency, true);
+            Real beta = (1.0 - std::exp(-alpha_ * deltaT)) / (alpha_ * deltaT);
+            Rate extrapolatedForward = ufr_->value() + (llfr_->value() - ufr_->value()) * beta;
+            return (fsp_ * baseRate + deltaT * extrapolatedForward) / t;
         }
         return originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
     }

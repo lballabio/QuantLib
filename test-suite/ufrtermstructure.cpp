@@ -1,5 +1,4 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-
 /*
  Copyright (C) 2020 Marcin Rybacki
 
@@ -32,33 +31,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-
 namespace ufr_term_structure_test {
-    struct ZeroRatePoint {
-        Date date;
-        Rate rate;
-    };
-
-    ZeroRatePoint initZeroRate(Date d, Rate r) {
-        ZeroRatePoint z;
-        z.date = d;
-        z.rate = r;
-        return z;
-    }
 
     struct Datum {
         Integer n;
         TimeUnit units;
         Rate rate;
     };
-
-    Datum initDatum(Integer n, TimeUnit u, Rate r) {
-        Datum d;
-        d.n = n;
-        d.units = u;
-        d.rate = r;
-        return d;
-    }
 
     struct LLFRWeight {
         Time ttm;
@@ -73,60 +52,75 @@ namespace ufr_term_structure_test {
     }
 
     struct CommonVars {
+        // global data
         Date today, settlement;
         Calendar calendar;
+        Currency ccy;
+        BusinessDayConvention businessConvention;
         DayCounter dayCount;
-
+        Frequency fixedFrequency;
+        Period floatingTenor;
+        ext::shared_ptr<IborIndex> index;
         Natural settlementDays;
         RelinkableHandle<YieldTermStructure> ftkTermStructureHandle;
-
         ext::shared_ptr<Quote> ufrRate;
 
+        // cleanup
         SavedSettings backup;
+        // utilities
 
         CommonVars() {
             settlementDays = 2;
+            businessConvention = Unadjusted;
             dayCount = SimpleDayCounter();
             calendar = NullCalendar();
+            ccy = EURCurrency();
+            fixedFrequency = Annual;
+            floatingTenor = 6 * Months;
 
-            std::vector<ZeroRatePoint> zeroData;
-            zeroData.push_back(initZeroRate(Date(2, January, 2019), -0.00235176));
-            zeroData.push_back(initZeroRate(Date(2, January, 2020), -0.00235176));
-            zeroData.push_back(initZeroRate(Date(2, January, 2021), -0.00178209));
-            zeroData.push_back(initZeroRate(Date(2, January, 2022), -0.000921391));
-            zeroData.push_back(initZeroRate(Date(2, January, 2023), 0.000339853));
-            zeroData.push_back(initZeroRate(Date(2, January, 2024), 0.00195862));
-            zeroData.push_back(initZeroRate(Date(2, January, 2025), 0.00323966));
-            zeroData.push_back(initZeroRate(Date(2, January, 2026), 0.00457807));
-            zeroData.push_back(initZeroRate(Date(2, January, 2027), 0.00585332));
-            zeroData.push_back(initZeroRate(Date(2, January, 2028), 0.0070809));
-            zeroData.push_back(initZeroRate(Date(2, January, 2029), 0.00824992));
-            zeroData.push_back(initZeroRate(Date(2, January, 2031), 0.00991469));
-            zeroData.push_back(initZeroRate(Date(2, January, 2034), 0.0118056));
-            zeroData.push_back(initZeroRate(Date(2, January, 2039), 0.0134759));
-            zeroData.push_back(initZeroRate(Date(2, January, 2044), 0.013918));
-            zeroData.push_back(initZeroRate(Date(2, January, 2049), 0.0140356));
-            zeroData.push_back(initZeroRate(Date(2, January, 2059), 0.0138101));
-            zeroData.push_back(initZeroRate(Date(2, January, 2069), 0.0135371));
-            
+            index = ext::shared_ptr<IborIndex>(
+                new IborIndex("FTK_IDX", floatingTenor, settlementDays, ccy, calendar,
+                              businessConvention, false, dayCount, ftkTermStructureHandle));
+
+            std::vector<Datum> swapData;
+            // Data source: https://fred.stlouisfed.org/
+            swapData.push_back({1, Years, -0.00315});
+            swapData.push_back({2, Years, -0.00205});
+            swapData.push_back({3, Years, -0.00144});
+            swapData.push_back({4, Years, -0.00068});
+            swapData.push_back({5, Years, 0.00014});
+            swapData.push_back({6, Years, 0.00103});
+            swapData.push_back({7, Years, 0.00194});
+            swapData.push_back({8, Years, 0.00288});
+            swapData.push_back({9, Years, 0.00381});
+            swapData.push_back({10, Years, 0.00471});
+            swapData.push_back({12, Years, 0.0063});
+            swapData.push_back({15, Years, 0.00808});
+            swapData.push_back({20, Years, 0.00973});
+            swapData.push_back({25, Years, 0.01035});
+            swapData.push_back({30, Years, 0.01055});
+            swapData.push_back({40, Years, 0.0103});
+            swapData.push_back({50, Years, 0.0103});
+
             InterestRate ufr(0.023, dayCount, Compounded, Annual);
             ufrRate = ext::shared_ptr<Quote>(
                 new SimpleQuote(ufr.equivalentRate(Continuous, Annual, 1.0)));
 
-            today = calendar.adjust(Date(31, December, 2018));
+            today = calendar.adjust(Date(29, March, 2019));
             Settings::instance().evaluationDate() = today;
             settlement = calendar.advance(today, settlementDays, Days);
 
-            std::vector<Date> nomD;
-            std::vector<Rate> nomR;
-            for (Size i = 0; i < zeroData.size(); i++) {
-                nomD.push_back(zeroData[i].date);
-                nomR.push_back(zeroData[i].rate);
+            Size swaps = LENGTH(swapData);
+            std::vector<ext::shared_ptr<RateHelper> > instruments;
+            for (std::vector<Datum>::iterator it = swapData.begin(); it != swapData.end(); ++it) {
+                instruments.push_back(ext::shared_ptr<RateHelper>(
+                    new SwapRateHelper((*it).rate, Period((*it).n, (*it).units), calendar,
+                                       fixedFrequency, businessConvention, dayCount, index)));
             }
-            ext::shared_ptr<YieldTermStructure> ftkTermStructure(
-                new InterpolatedZeroCurve<Linear>(nomD, nomR, dayCount));
-            ftkTermStructure->enableExtrapolation();
 
+            ext::shared_ptr<YieldTermStructure> ftkTermStructure(
+                new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, dayCount));
+            ftkTermStructure->enableExtrapolation();
             ftkTermStructureHandle.linkTo(ftkTermStructure);
         }
     };
@@ -135,7 +129,7 @@ namespace ufr_term_structure_test {
                                          Time fsp,
                                          const std::vector<LLFRWeight>& weights,
                                          Real omega) {
-        Real llfr = 0.0;
+        Rate llfr = 0.0;
         DayCounter dc = ts->dayCounter();
         Date ref = ts->referenceDate();
 
@@ -148,7 +142,6 @@ namespace ufr_term_structure_test {
 }
 
 void UFRTermStructureTest::testDnbReplication() {
-
     BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates...");
 
     using namespace ufr_term_structure_test;
@@ -162,45 +155,41 @@ void UFRTermStructureTest::testDnbReplication() {
     llfrWeights.push_back(initLlfrWeight(50.0, 0.125));
 
     Real omega = 8.0 / 15.0;
-
     Time fsp = 20.0;
+    Real alpha = 0.1;
 
     ext::shared_ptr<Quote> llfr =
         calculateLLFR(vars.ftkTermStructureHandle, fsp, llfrWeights, omega);
 
-    Real alpha = 0.1;
-
     ext::shared_ptr<YieldTermStructure> ufrTs(new UFRTermStructure(
         vars.ftkTermStructureHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate), fsp, alpha));
 
-    std::vector<Datum> expectedZeroes;
-    expectedZeroes.push_back(initDatum(1, Years, -0.00235));
-    expectedZeroes.push_back(initDatum(5, Years, 0.00196));
-    expectedZeroes.push_back(initDatum(10, Years, 0.00828));
-    expectedZeroes.push_back(initDatum(20, Years, 0.01357));
-    expectedZeroes.push_back(initDatum(30, Years, 0.01509));
-    expectedZeroes.push_back(initDatum(50, Years, 0.01776));
-    expectedZeroes.push_back(initDatum(60, Years, 0.01859));
-    expectedZeroes.push_back(initDatum(70, Years, 0.0192));
-    expectedZeroes.push_back(initDatum(80, Years, 0.01967));
-    expectedZeroes.push_back(initDatum(90, Years, 0.02004));
-    expectedZeroes.push_back(initDatum(100, Years, 0.02034));
+    std::vector<Datum> expZeroes;
+    expZeroes.push_back({10, Years, 0.00477});
+    expZeroes.push_back({20, Years, 0.01004});
+    expZeroes.push_back({30, Years, 0.01223});
+    expZeroes.push_back({40, Years, 0.01433});
+    expZeroes.push_back({50, Years, 0.01589});
+    expZeroes.push_back({60, Years, 0.01702});
+    expZeroes.push_back({70, Years, 0.01785});
+    expZeroes.push_back({80, Years, 0.01849});
+    expZeroes.push_back({90, Years, 0.01899});
+    expZeroes.push_back({100, Years, 0.01939});
 
-    Real tolerance = 1.0e-5;
+    Real tolerance = 1.0e-4;
 
-    for (Size i = 0; i < expectedZeroes.size(); ++i) {
-        Datum z = expectedZeroes[i];
-        Period p = Period(z.n, z.units);
+    for (Size i = 0; i < expZeroes.size(); ++i) {
+        Period p = expZeroes[i].n * expZeroes[i].units;
 
         Date maturity = vars.settlement + p;
         Rate actual = ufrTs->zeroRate(maturity, vars.dayCount, Compounded, Annual).rate();
-        Rate expected = z.rate;
+        Rate expected = expZeroes[i].rate;
 
         if (std::fabs(actual - expected) > tolerance)
-            BOOST_ERROR("unable to reproduce zero yield rate from the UFR curve\n"
-                        << std::setprecision(10) << "    calculated: " << actual << "\n"
-                        << "    expected:   " << expected << "\n"
-                        << "    tenor:       " << p << "\n");
+        BOOST_ERROR("unable to reproduce zero yield rate from the UFR curve\n"
+                    << std::setprecision(10) << "    calculated: " << actual << "\n"
+                    << "    expected:   " << expected << "\n"
+                    << "    tenor:       " << p << "\n");
     }
 }
 
