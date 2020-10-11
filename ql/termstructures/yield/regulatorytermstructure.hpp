@@ -57,13 +57,13 @@ namespace QuantLib {
         - tbd
     */
 
-    class UFRTermStructure : public ZeroYieldStructure {
+    class UltimateForwardTermStructure : public ZeroYieldStructure {
       public:
-        UFRTermStructure(const Handle<YieldTermStructure>&,
-                         const Handle<Quote>& lastLiquidForwardRate,
-                         const Handle<Quote>& ultimateForwardRate,
-                         Time firstSmoothingPoint,
-                         Real alpha);
+        UltimateForwardTermStructure(const Handle<YieldTermStructure>&,
+                                     const Handle<Quote>& lastLiquidForwardRate,
+                                     const Handle<Quote>& ultimateForwardRate,
+                                     Time firstSmoothingPoint,
+                                     Real alpha);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -91,11 +91,12 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline UFRTermStructure::UFRTermStructure(const Handle<YieldTermStructure>& h,
-                                              const Handle<Quote>& lastLiquidForwardRate,
-                                              const Handle<Quote>& ultimateForwardRate,
-                                              Time firstSmoothingPoint,
-                                              Real alpha)
+    inline UltimateForwardTermStructure::UltimateForwardTermStructure(
+        const Handle<YieldTermStructure>& h,
+        const Handle<Quote>& lastLiquidForwardRate,
+        const Handle<Quote>& ultimateForwardRate,
+        Time firstSmoothingPoint,
+        Real alpha)
     : originalCurve_(h), llfr_(lastLiquidForwardRate), ufr_(ultimateForwardRate),
       fsp_(firstSmoothingPoint), alpha_(alpha) {
         QL_REQUIRE(fsp_ > 0.0, "time to first smoothing point must be positive");
@@ -106,23 +107,27 @@ namespace QuantLib {
         registerWith(ufr_);
     }
 
-    inline DayCounter UFRTermStructure::dayCounter() const { return originalCurve_->dayCounter(); }
+    inline DayCounter UltimateForwardTermStructure::dayCounter() const {
+        return originalCurve_->dayCounter();
+    }
 
-    inline Calendar UFRTermStructure::calendar() const { return originalCurve_->calendar(); }
+    inline Calendar UltimateForwardTermStructure::calendar() const {
+        return originalCurve_->calendar();
+    }
 
-    inline Natural UFRTermStructure::settlementDays() const {
+    inline Natural UltimateForwardTermStructure::settlementDays() const {
         return originalCurve_->settlementDays();
     }
 
-    inline const Date& UFRTermStructure::referenceDate() const {
+    inline const Date& UltimateForwardTermStructure::referenceDate() const {
         return originalCurve_->referenceDate();
     }
 
-    inline Date UFRTermStructure::maxDate() const { return originalCurve_->maxDate(); }
+    inline Date UltimateForwardTermStructure::maxDate() const { return originalCurve_->maxDate(); }
 
-    inline Time UFRTermStructure::maxTime() const { return originalCurve_->maxTime(); }
+    inline Time UltimateForwardTermStructure::maxTime() const { return originalCurve_->maxTime(); }
 
-    inline void UFRTermStructure::update() {
+    inline void UltimateForwardTermStructure::update() {
         if (!originalCurve_.empty()) {
             YieldTermStructure::update();
             enableExtrapolation(originalCurve_->allowsExtrapolation());
@@ -135,7 +140,7 @@ namespace QuantLib {
         }
     }
 
-    inline Rate UFRTermStructure::zeroYieldImpl(Time t) const {
+    inline Rate UltimateForwardTermStructure::zeroYieldImpl(Time t) const {
         Time deltaT = t - fsp_;
         if (deltaT > 0.0) {
             InterestRate baseRate = originalCurve_->zeroRate(fsp_, Continuous, NoFrequency, true);

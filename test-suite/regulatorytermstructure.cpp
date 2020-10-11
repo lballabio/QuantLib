@@ -151,8 +151,8 @@ void UFRTermStructureTest::testDutchCentralBankRates() {
     ext::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkTermStructureHandle, vars.fsp);
 
     ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
-                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+        new UltimateForwardTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
     Datum expectedZeroes[] = {{10, Years, 0.00477}, {20, Years, 0.01004}, {30, Years, 0.01223},
                               {40, Years, 0.01433}, {50, Years, 0.01589}, {60, Years, 0.01702},
@@ -187,8 +187,8 @@ void UFRTermStructureTest::testExtrapolatedForward() {
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
     ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
-                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+        new UltimateForwardTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
     Period tenors[] = {
         20 * Years, 30 * Years, 40 * Years, 50 * Years,  60 * Years,
@@ -224,8 +224,8 @@ void UFRTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
     ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
-                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+        new UltimateForwardTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
     Rate actual = ufrTs->zeroRate(vars.fsp, Continuous, NoFrequency, true).rate();
     Rate expected =
@@ -249,8 +249,8 @@ void UFRTermStructureTest::testThatInspectorsEqualToBaseCurve() {
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
     ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
-                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+        new UltimateForwardTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
     if (ufrTs->dayCounter() != vars.ftkTermStructureHandle->dayCounter())
         BOOST_ERROR("different day counter on the UFR curve than on the base curve\n"
@@ -289,17 +289,17 @@ void UFRTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
     ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
-                             Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
+        new UltimateForwardTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
-    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(
-                          new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
-                                               Handle<Quote>(vars.ufrRate), 0.0, vars.alpha)),
+    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
+                          vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                          Handle<Quote>(vars.ufrRate), 0.0, vars.alpha)),
                       Error);
 
-    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(
-                          new UFRTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
-                                               Handle<Quote>(vars.ufrRate), -1.0, vars.alpha)),
+    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
+                          vars.ftkTermStructureHandle, Handle<Quote>(llfr),
+                          Handle<Quote>(vars.ufrRate), -1.0, vars.alpha)),
                       Error);
 }
 
