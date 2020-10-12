@@ -78,16 +78,16 @@ namespace regulatory_term_structure_test {
                 new IborIndex("FTK_IDX", floatingTenor, settlementDays, ccy, calendar,
                               businessConvention, false, dayCount, ftkTermStructureHandle));
 
-            /* 
+            /*
             Data source: https://fred.stlouisfed.org/
             Note that these rates are used as a proxy.
-            
-            In order to fully replicate the rates published by the Dutch Central Bank 
+
+            In order to fully replicate the rates published by the Dutch Central Bank
             (with the required accuracy) one needs to use Bloomberg CMPL BID Euribor 6m swap rates
             as stated in the documentation:
 
             https://www.toezicht.dnb.nl/binaries/50-234028.pdf
-            
+
             */
             Datum swapData[] = {{1, Years, -0.00315}, {2, Years, -0.00205}, {3, Years, -0.00144},
                                 {4, Years, -0.00068}, {5, Years, 0.00014},  {6, Years, 0.00103},
@@ -312,14 +312,42 @@ void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
                       Error);
 }
 
+void UltimateForwardTermStructureTest::testObservability() {
+    BOOST_TEST_MESSAGE("Testing observability of the UFR curve...");
+
+    using namespace regulatory_term_structure_test;
+
+    CommonVars vars;
+
+    ext::shared_ptr<SimpleQuote> llfr(new SimpleQuote(0.0125));
+    Handle<Quote> llfr_quote(llfr);
+    ext::shared_ptr<SimpleQuote> ufr(new SimpleQuote(0.02));
+    Handle<Quote> ufr_handle(ufr);
+    ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
+        vars.ftkTermStructureHandle, llfr_quote, ufr_handle, vars.fsp, vars.alpha));
+
+    Flag flag;
+    flag.registerWith(ufrTs);
+    llfr->setValue(0.012);
+    if (!flag.isUp())
+        BOOST_ERROR("Observer was not notified of LLFR change.");
+    flag.lower();
+    ufr->setValue(0.019);
+    if (!flag.isUp())
+        BOOST_ERROR("Observer was not notified of UFR change.");
+}
+
 test_suite* UltimateForwardTermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("UFR term structure tests");
 
     suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testDutchCentralBankRates));
     suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExtrapolatedForward));
-    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint));
-    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve));
-    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero));
+    suite->add(
+        QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint));
+    suite->add(
+        QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve));
+    suite->add(
+        QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero));
 
     return suite;
 }

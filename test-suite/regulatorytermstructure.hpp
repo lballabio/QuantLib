@@ -32,6 +32,7 @@ class UltimateForwardTermStructureTest {
     static void testZeroRateAtFirstSmoothingPoint();
     static void testThatInspectorsEqualToBaseCurve();
     static void testExceptionWhenFspLessOrEqualZero();
+    static void testObservability();
 
     static boost::unit_test_framework::test_suite* suite();
 };
