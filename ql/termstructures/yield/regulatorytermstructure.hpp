@@ -54,7 +54,16 @@ namespace QuantLib {
         \ingroup yieldtermstructures
 
         \test
-        - tbd
+        - the correctness of the returned zero rates is tested by
+          checking them against reference values obtained
+          from the official source.
+        - extrapolated forward is validated.
+        - rates on the cut-off point are checked against those
+          implied by the base curve.
+        - inspectors are tested against the base curve.
+        - incorrect input for cut-off point should raise an exception.
+        - observability against changes in the underlying term
+          structure and the additional components is checked.
     */
 
     class UltimateForwardTermStructure : public ZeroYieldStructure {
