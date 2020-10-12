@@ -348,6 +348,6 @@ test_suite* UltimateForwardTermStructureTest::suite() {
         QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve));
     suite->add(
         QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero));
-
+    suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testObservability));
     return suite;
 }
