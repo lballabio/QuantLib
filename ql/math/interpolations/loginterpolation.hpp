@@ -306,18 +306,18 @@ namespace QuantLib {
     
     class DefaultLogMixedLinearCubic : public LogMixedLinearCubic {
       public:
-        DefaultLogMixedLinearCubic(const Size n,
-                                   MixedInterpolation::Behavior behavior
-                                   = MixedInterpolation::ShareRanges)
+        explicit DefaultLogMixedLinearCubic(const Size n,
+                                            MixedInterpolation::Behavior behavior
+                                            = MixedInterpolation::ShareRanges)
         : LogMixedLinearCubic(n, behavior,
                               CubicInterpolation::Kruger) {}
     };
 
     class MonotonicLogMixedLinearCubic : public LogMixedLinearCubic {
       public:
-        MonotonicLogMixedLinearCubic(const Size n,
-                                   MixedInterpolation::Behavior behavior
-                                   = MixedInterpolation::ShareRanges)
+        explicit MonotonicLogMixedLinearCubic(const Size n,
+                                              MixedInterpolation::Behavior behavior
+                                              = MixedInterpolation::ShareRanges)
         : LogMixedLinearCubic(n, behavior,
                               CubicInterpolation::Spline, true,
                               CubicInterpolation::SecondDerivative, 0.0,
@@ -326,9 +326,9 @@ namespace QuantLib {
 
     class KrugerLogMixedLinearCubic: public LogMixedLinearCubic {
       public:
-        KrugerLogMixedLinearCubic(const Size n,
-                                  MixedInterpolation::Behavior behavior
-                                  = MixedInterpolation::ShareRanges)
+        explicit KrugerLogMixedLinearCubic(const Size n,
+                                           MixedInterpolation::Behavior behavior
+                                           = MixedInterpolation::ShareRanges)
         : LogMixedLinearCubic(n, behavior,
                               CubicInterpolation::Kruger, false,
                               CubicInterpolation::SecondDerivative, 0.0,
