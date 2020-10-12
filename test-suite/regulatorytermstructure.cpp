@@ -180,7 +180,8 @@ void UltimateForwardTermStructureTest::testDutchCentralBankRates() {
 
         if (std::fabs(actual - expected) > tolerance)
             BOOST_ERROR("unable to reproduce zero yield rate from the UFR curve\n"
-                        << std::setprecision(10) << "    calculated: " << actual << "\n"
+                        << std::setprecision(5) 
+                        << "    calculated: " << actual << "\n"
                         << "    expected:   " << expected << "\n"
                         << "    tenor:       " << p << "\n");
     }
@@ -217,7 +218,8 @@ void UltimateForwardTermStructureTest::testExtrapolatedForward() {
         Real tolerance = 1.0e-10;
         if (std::fabs(actual - expected) > tolerance)
             BOOST_ERROR("unable to replicate the forward rate from the UFR curve\n"
-                        << std::setprecision(10) << "    calculated: " << actual << "\n"
+                        << std::setprecision(5) 
+                        << "    calculated: " << actual << "\n"
                         << "    expected:   " << expected << "\n"
                         << "    tenor:       " << tenors[i] << "\n");
     }
@@ -243,8 +245,10 @@ void UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
     Real tolerance = 1.0e-10;
     if (std::fabs(actual - expected) > tolerance)
         BOOST_ERROR("unable to replicate the zero rate on the First Smoothing Point\n"
-                    << std::setprecision(10) << "    calculated: " << actual << "\n"
+                    << std::setprecision(5) 
+                    << "    calculated: " << actual << "\n"
                     << "    expected:   " << expected << "\n"
+                    << std::setprecision(0) 
                     << "    FSP:       " << vars.fsp << "\n");
 }
 
@@ -263,28 +267,28 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
 
     if (ufrTs->dayCounter() != vars.ftkTermStructureHandle->dayCounter())
         BOOST_ERROR("different day counter on the UFR curve than on the base curve\n"
-                    << std::setprecision(10) << "    UFR curve: " << ufrTs->dayCounter() << "\n"
+                    << "    UFR curve: " << ufrTs->dayCounter() << "\n"
                     << "    base curve:   " << vars.ftkTermStructureHandle->dayCounter() << "\n");
 
     if (ufrTs->calendar() != vars.ftkTermStructureHandle->calendar())
         BOOST_ERROR("different calendar on the UFR curve than on the base curve\n"
-                    << std::setprecision(10) << "    UFR curve: " << ufrTs->calendar() << "\n"
+                    << "    UFR curve: " << ufrTs->calendar() << "\n"
                     << "    base curve:   " << vars.ftkTermStructureHandle->calendar() << "\n");
 
     if (ufrTs->referenceDate() != vars.ftkTermStructureHandle->referenceDate())
         BOOST_ERROR("different reference date on the UFR curve than on the base curve\n"
-                    << std::setprecision(10) << "    UFR curve: " << ufrTs->referenceDate() << "\n"
+                    << "    UFR curve: " << ufrTs->referenceDate() << "\n"
                     << "    base curve:   " << vars.ftkTermStructureHandle->referenceDate()
                     << "\n");
 
     if (ufrTs->maxDate() != vars.ftkTermStructureHandle->maxDate())
         BOOST_ERROR("different max date on the UFR curve than on the base curve\n"
-                    << std::setprecision(10) << "    UFR curve: " << ufrTs->maxDate() << "\n"
+                    << "    UFR curve: " << ufrTs->maxDate() << "\n"
                     << "    base curve:   " << vars.ftkTermStructureHandle->maxDate() << "\n");
 
     if (ufrTs->maxTime() != vars.ftkTermStructureHandle->maxTime())
         BOOST_ERROR("different max time on the UFR curve than on the base curve\n"
-                    << std::setprecision(10) << "    UFR curve: " << ufrTs->maxTime() << "\n"
+                    << "    UFR curve: " << ufrTs->maxTime() << "\n"
                     << "    base curve:   " << vars.ftkTermStructureHandle->maxTime() << "\n");
 }
 
