@@ -269,11 +269,6 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
                     << "    UFR curve: " << ufrTs->dayCounter() << "\n"
                     << "    base curve:   " << vars.ftkTermStructureHandle->dayCounter() << "\n");
 
-    if (ufrTs->calendar() != vars.ftkTermStructureHandle->calendar())
-        BOOST_ERROR("different calendar on the UFR curve than on the base curve\n"
-                    << "    UFR curve: " << ufrTs->calendar() << "\n"
-                    << "    base curve:   " << vars.ftkTermStructureHandle->calendar() << "\n");
-
     if (ufrTs->referenceDate() != vars.ftkTermStructureHandle->referenceDate())
         BOOST_ERROR("different reference date on the UFR curve than on the base curve\n"
                     << "    UFR curve: " << ufrTs->referenceDate() << "\n"
