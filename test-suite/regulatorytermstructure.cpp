@@ -248,7 +248,6 @@ void UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
                     << std::setprecision(5) 
                     << "    calculated: " << actual << "\n"
                     << "    expected:   " << expected << "\n"
-                    << std::setprecision(0) 
                     << "    FSP:       " << vars.fsp << "\n");
 }
 
