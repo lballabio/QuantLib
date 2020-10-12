@@ -33,7 +33,7 @@ namespace QuantLib {
 
     /*! Dutch regulatory term structure for pension funds with a
         parametrized extrapolation mechanism designed for
-        discounting long date liabilities.
+        discounting long dated liabilities.
 
         Relevant documentation can be found on the Dutch Central
         Bank website:
