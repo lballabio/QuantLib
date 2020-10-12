@@ -163,6 +163,8 @@ void UltimateForwardTermStructureTest::testDutchCentralBankRates() {
         new UltimateForwardTermStructure(vars.ftkTermStructureHandle, Handle<Quote>(llfr),
                                          Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
+    // Official annually compounded zero rates published
+    // by the Dutch Central Bank: https://statistiek.dnb.nl/
     Datum expectedZeroes[] = {{10, Years, 0.00477}, {20, Years, 0.01004}, {30, Years, 0.01223},
                               {40, Years, 0.01433}, {50, Years, 0.01589}, {60, Years, 0.01702},
                               {70, Years, 0.01785}, {80, Years, 0.01849}, {90, Years, 0.01899},
@@ -272,8 +274,7 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
     if (ufrTs->referenceDate() != vars.ftkTermStructureHandle->referenceDate())
         BOOST_ERROR("different reference date on the UFR curve than on the base curve\n"
                     << "    UFR curve: " << ufrTs->referenceDate() << "\n"
-                    << "    base curve:   " << vars.ftkTermStructureHandle->referenceDate()
-                    << "\n");
+                    << "    base curve:   " << vars.ftkTermStructureHandle->referenceDate() << "\n");
 
     if (ufrTs->maxDate() != vars.ftkTermStructureHandle->maxDate())
         BOOST_ERROR("different max date on the UFR curve than on the base curve\n"
