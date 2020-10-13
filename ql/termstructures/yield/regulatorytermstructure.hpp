@@ -155,7 +155,7 @@ namespace QuantLib {
            i.e. the first smoothing point, the forward rate f is
            extrapolated as follows:
 
-           f(t,T_c,T) = UFR(t) + (LLFR(t) - UFR(t)) B(T-T_c),
+           f(t,T_c,T) = UFR(t) + (LLFR(t) - UFR(t)) * B(T-T_c),
 
            where:
            UFR(t) - Ultimate Forward Rate quote,
