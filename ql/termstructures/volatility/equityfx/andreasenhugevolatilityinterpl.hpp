@@ -33,7 +33,7 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 
-#include <boost/tuple/tuple.hpp>
+#include <ql/tuple.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -85,7 +85,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
         // returns min, max and average error in volatility units
-        boost::tuple<Real, Real, Real> calibrationError() const;
+        ext::tuple<Real, Real, Real> calibrationError() const;
 
         // returns the option price of the calibration type. In case
         // of CallPut it return the call option price
@@ -98,7 +98,7 @@ namespace QuantLib {
 
       private:
         typedef std::map<Time,
-            boost::tuple<
+            ext::tuple<
                 Real,
                 ext::shared_ptr<Array>,
                 ext::shared_ptr<Interpolation> > > TimeValueCacheType;

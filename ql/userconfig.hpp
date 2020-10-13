@@ -102,6 +102,13 @@
 //#    define QL_USE_STD_FUNCTION
 #endif
 
+/* Define this to use std::tuple instead of
+   boost::function and boost::bind.  This requires you to set your
+   compiler's standard to at least C++11. */
+#ifndef QL_USE_STD_TUPLE
+//#    define QL_USE_STD_TUPLE
+#endif
+
 /* Define this to enable the parallel unit test runner */
 #ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 //#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER

@@ -29,7 +29,7 @@
 #include <ql/functional.hpp>
 
 
-#include <boost/tuple/tuple.hpp>
+#include <ql/tuple.hpp>
 #include <iostream>
 #include <iomanip>
 

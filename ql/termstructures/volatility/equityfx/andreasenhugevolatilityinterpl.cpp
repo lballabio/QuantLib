@@ -492,12 +492,11 @@ namespace QuantLib {
         return rTS_;
     }
 
-    boost::tuple<Real, Real, Real>
+    ext::tuple<Real, Real, Real>
     AndreasenHugeVolatilityInterpl::calibrationError() const {
         calculate();
 
-        return boost::make_tuple<Real, Real, Real>(
-            minError_, maxError_, avgError_);
+        return ext::make_tuple(minError_, maxError_, avgError_);
     }
 
     Size AndreasenHugeVolatilityInterpl::getExerciseTimeIdx(Time t) const {
@@ -510,13 +509,13 @@ namespace QuantLib {
     Real AndreasenHugeVolatilityInterpl::getCacheValue(
         Real strike, const TimeValueCacheType::const_iterator& f) const {
 
-        const Real fwd = f->second.get<0>();
+        const Real fwd = ext::get<0>(f->second);
         const Real k = std::log(strike / fwd);
 
         const Real s = std::max(gridPoints_[1],
             std::min(*(gridPoints_.end()-2), k));
 
-        return (*(f->second.get<2>()))(s);
+        return (*(ext::get<2>(f->second)))(s);
     }
 
     Disposable<Array> AndreasenHugeVolatilityInterpl::getPriceSlice(
@@ -539,7 +538,7 @@ namespace QuantLib {
         const DiscountFactor df = rTS_->discount(t);
 
         if (f != priceCache_.end()) {
-            const Real fwd = f->second.get<0>();
+            const Real fwd = ext::get<0>(f->second);
 
             Real price = getCacheValue(strike, f);
 
@@ -555,7 +554,7 @@ namespace QuantLib {
         calculate();
 
 
-        const ext::shared_ptr<Array> prices(
+        ext::shared_ptr<Array> prices(
             ext::make_shared<Array>(gridPoints_));
 
         switch (calibrationType_) {
@@ -570,12 +569,9 @@ namespace QuantLib {
             QL_FAIL("unknown calibration type");
         }
 
-        const Real fwd = spot_->value()*qTS_->discount(t)/df;
+        Real fwd = spot_->value()*qTS_->discount(t)/df;
 
-        priceCache_[t] = boost::make_tuple<
-            Real,
-            ext::shared_ptr<Array>,
-            ext::shared_ptr<Interpolation> >(
+        priceCache_[t] = ext::make_tuple(
                 fwd, prices,
                 ext::make_shared<CubicNaturalSpline>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
@@ -626,7 +622,7 @@ namespace QuantLib {
 
         calculate();
 
-        const ext::shared_ptr<Array> localVol(
+        ext::shared_ptr<Array> localVol(
             ext::make_shared<Array>(gridPoints_.size()));
 
         switch (calibrationType_) {
@@ -649,12 +645,9 @@ namespace QuantLib {
             QL_FAIL("unknown calibration type");
         }
 
-        const Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
+        Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
 
-        localVolCache_[t] = boost::make_tuple<
-            Real,
-            ext::shared_ptr<Array>,
-            ext::shared_ptr<Interpolation> >(
+        localVolCache_[t] = ext::make_tuple(
                 fwd, localVol,
                 ext::make_shared<LinearInterpolation>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,

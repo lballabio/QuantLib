@@ -57,6 +57,7 @@ this_include_HEADERS = \
 	termstructure.hpp \
 	timegrid.hpp \
 	timeseries.hpp \
+	tuple.hpp \
 	types.hpp \
 	version.hpp \
 	volatilitymodel.hpp
