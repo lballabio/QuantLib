@@ -133,9 +133,7 @@ namespace QuantLib {
         return originalCurve_->referenceDate();
     }
 
-    inline Date UltimateForwardTermStructure::maxDate() const { return originalCurve_->maxDate(); }
-
-    inline Time UltimateForwardTermStructure::maxTime() const { return originalCurve_->maxTime(); }
+    inline Date UltimateForwardTermStructure::maxDate() const { return Date::maxDate(); }
 
     inline void UltimateForwardTermStructure::update() {
         if (!originalCurve_.empty()) {
