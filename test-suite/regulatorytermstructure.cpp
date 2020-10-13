@@ -82,8 +82,8 @@ namespace regulatory_term_structure_test {
                Note that these rates are used as a proxy.
 
                In order to fully replicate the rates published by the Dutch Central Bank
-               (with the required accuracy) one needs to use Bloomberg CMPL BID Euribor 6m swap rates
-               as stated in the documentation: https://www.toezicht.dnb.nl */
+               (with the required accuracy) one needs to use Bloomberg CMPL BID Euribor 6m swap
+               rates as stated in the documentation: https://www.toezicht.dnb.nl */
             Datum swapData[] = {{1, Years, -0.00315}, {2, Years, -0.00205}, {3, Years, -0.00144},
                                 {4, Years, -0.00068}, {5, Years, 0.00014},  {6, Years, 0.00103},
                                 {7, Years, 0.00194},  {8, Years, 0.00288},  {9, Years, 0.00381},
@@ -118,12 +118,10 @@ namespace regulatory_term_structure_test {
 
     ext::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, Time fsp) {
         DayCounter dc = ts->dayCounter();
-        Date ref = ts->referenceDate();
         Real omega = 8.0 / 15.0;
 
         LLFRWeight llfrWeights[] = {{25.0, 1.0}, {30.0, 0.5}, {40.0, 0.25}, {50.0, 0.125}};
         Size nWeights = LENGTH(llfrWeights);
-
         Rate llfr = 0.0;
         for (Size j = 0; j < nWeights; j++) {
             LLFRWeight w = llfrWeights[j];
@@ -132,14 +130,8 @@ namespace regulatory_term_structure_test {
         return ext::shared_ptr<Quote>(new SimpleQuote(omega * llfr));
     }
 
-    Rate calculateExtrapolatedForward(const ext::shared_ptr<YieldTermStructure>& ts,
-                                      Time t,
-                                      Time fsp,
-                                      Rate llfr,
-                                      Rate ufr,
-                                      Real alpha) {
+    Rate calculateExtrapolatedForward(Time t, Time fsp, Rate llfr, Rate ufr, Real alpha) {
         Time deltaT = t - fsp;
-        InterestRate baseRate = ts->zeroRate(fsp, Continuous, NoFrequency, true);
         Real beta = (1.0 - std::exp(-alpha * deltaT)) / (alpha * deltaT);
         return ufr + (llfr - ufr) * beta;
     }
@@ -209,7 +201,7 @@ void UltimateForwardTermStructureTest::testExtrapolatedForward() {
         Time t = ufrTs->timeFromReference(maturity);
 
         Rate actual = ufrTs->forwardRate(vars.fsp, t, Continuous, NoFrequency, true).rate();
-        Rate expected = calculateExtrapolatedForward(ufrTs, t, vars.fsp, llfr->value(),
+        Rate expected = calculateExtrapolatedForward(t, vars.fsp, llfr->value(),
                                                      vars.ufrRate->value(), vars.alpha);
 
         Real tolerance = 1.0e-10;
@@ -269,7 +261,8 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
     if (ufrTs->referenceDate() != vars.ftkTermStructureHandle->referenceDate())
         BOOST_ERROR("different reference date on the UFR curve than on the base curve\n"
                     << "    UFR curve: " << ufrTs->referenceDate() << "\n"
-                    << "    base curve:   " << vars.ftkTermStructureHandle->referenceDate() << "\n");
+                    << "    base curve:   " << vars.ftkTermStructureHandle->referenceDate()
+                    << "\n");
 
     if (ufrTs->maxDate() != vars.ftkTermStructureHandle->maxDate())
         BOOST_ERROR("different max date on the UFR curve than on the base curve\n"

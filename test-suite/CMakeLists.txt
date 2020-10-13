@@ -124,6 +124,7 @@ set(QuantLib-Test_SRC
     quantooption.cpp
     quotes.cpp
     rangeaccrual.cpp
+    regulatorytermstructure.cpp
     riskneutraldensitycalculator.cpp
     riskstats.cpp
     rngtraits.cpp
