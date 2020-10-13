@@ -265,13 +265,13 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
                     << "    UFR curve: " << ufrTs->referenceDate() << "\n"
                     << "    base curve:   " << vars.ftkCurveHandle->referenceDate() << "\n");
 
-    if (ufrTs->maxDate() != vars.ftkCurveHandle->maxDate())
-        BOOST_ERROR("different max date on the UFR curve than on the base curve\n"
+    if (ufrTs->maxDate() == vars.ftkCurveHandle->maxDate())
+        BOOST_ERROR("same max date on the UFR curve as on the base curve\n"
                     << "    UFR curve: " << ufrTs->maxDate() << "\n"
                     << "    base curve:   " << vars.ftkCurveHandle->maxDate() << "\n");
 
-    if (ufrTs->maxTime() != vars.ftkCurveHandle->maxTime())
-        BOOST_ERROR("different max time on the UFR curve than on the base curve\n"
+    if (ufrTs->maxTime() == vars.ftkCurveHandle->maxTime())
+        BOOST_ERROR("same max time on the UFR curve as on the base curve\n"
                     << "    UFR curve: " << ufrTs->maxTime() << "\n"
                     << "    base curve:   " << vars.ftkCurveHandle->maxTime() << "\n");
 }
