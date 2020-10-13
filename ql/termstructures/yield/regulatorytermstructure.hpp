@@ -71,7 +71,7 @@ namespace QuantLib {
         UltimateForwardTermStructure(const Handle<YieldTermStructure>&,
                                      const Handle<Quote>& lastLiquidForwardRate,
                                      const Handle<Quote>& ultimateForwardRate,
-                                     Time firstSmoothingPoint,
+                                     const Period& firstSmoothingPoint,
                                      Real alpha);
         //! \name YieldTermStructure interface
         //@{
@@ -94,7 +94,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> llfr_;
         Handle<Quote> ufr_;
-        Time fsp_;
+        Period fsp_;
         Real alpha_;
     };
 
@@ -104,11 +104,12 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& h,
         const Handle<Quote>& lastLiquidForwardRate,
         const Handle<Quote>& ultimateForwardRate,
-        Time firstSmoothingPoint,
+        const Period& firstSmoothingPoint,
         Real alpha)
     : originalCurve_(h), llfr_(lastLiquidForwardRate), ufr_(ultimateForwardRate),
       fsp_(firstSmoothingPoint), alpha_(alpha) {
-        QL_REQUIRE(fsp_ > 0.0, "time to first smoothing point must be positive");
+        QL_REQUIRE(fsp_.length() > 0,
+                   "first smoothing point must be a period with positive length");
         if (!originalCurve_.empty())
             enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);
@@ -150,7 +151,8 @@ namespace QuantLib {
     }
 
     inline Rate UltimateForwardTermStructure::zeroYieldImpl(Time t) const {
-        Time deltaT = t - fsp_;
+        Time cutOffTime = originalCurve_->timeFromReference(referenceDate() + fsp_);
+        Time deltaT = t - cutOffTime;
         /* If time to maturity (T) exceeds the cut-off point (T_c),
            i.e. the first smoothing point, the forward rate f is
            extrapolated as follows:
@@ -163,10 +165,10 @@ namespace QuantLib {
            B(t-T_c) = [1 - exp(-a * (T-T_c))] / [a * (T-T_c)],
            with a being the growth factor (alpha). */
         if (deltaT > 0.0) {
-            InterestRate baseRate = originalCurve_->zeroRate(fsp_, Continuous, NoFrequency);
+            InterestRate baseRate = originalCurve_->zeroRate(cutOffTime, Continuous, NoFrequency);
             Real beta = (1.0 - std::exp(-alpha_ * deltaT)) / (alpha_ * deltaT);
             Rate extrapolatedForward = ufr_->value() + (llfr_->value() - ufr_->value()) * beta;
-            return (fsp_ * baseRate + deltaT * extrapolatedForward) / t;
+            return (cutOffTime * baseRate + deltaT * extrapolatedForward) / t;
         }
         return originalCurve_->zeroRate(t, Continuous, NoFrequency);
     }
