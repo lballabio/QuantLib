@@ -474,7 +474,7 @@
     <ClCompile Include="fittedbonddiscountcurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="regulatorytermstructure.cpp">
+    <ClCompile Include="ultimateforwardtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -950,7 +950,7 @@
     <ClInclude Include="fittedbonddiscountcurve.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="regulatorytermstructure.hpp">
+    <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

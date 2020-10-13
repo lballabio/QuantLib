@@ -209,7 +209,7 @@
 #include "transformedgrid.hpp"
 #include "twoassetbarrieroption.hpp"
 #include "twoassetcorrelationoption.hpp"
-#include "regulatorytermstructure.hpp"
+#include "ultimateforwardtermstructure.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"

@@ -16,14 +16,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "regulatorytermstructure.hpp"
+#include "ultimateforwardtermstructure.hpp"
 #include "utilities.hpp"
 #include <ql/currencies/europe.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/termstructures/yield/regulatorytermstructure.hpp>
+#include <ql/termstructures/yield/ultimateforwardtermstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
@@ -31,7 +31,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace regulatory_term_structure_test {
+namespace ultimate_forward_term_structure_test {
 
     struct Datum {
         Integer n;
@@ -141,7 +141,7 @@ namespace regulatory_term_structure_test {
 void UltimateForwardTermStructureTest::testDutchCentralBankRates() {
     BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates...");
 
-    using namespace regulatory_term_structure_test;
+    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 
@@ -180,7 +180,7 @@ void UltimateForwardTermStructureTest::testDutchCentralBankRates() {
 void UltimateForwardTermStructureTest::testExtrapolatedForward() {
     BOOST_TEST_MESSAGE("Testing continuous forward rates in extrapolation region...");
 
-    using namespace regulatory_term_structure_test;
+    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 
@@ -219,7 +219,7 @@ void UltimateForwardTermStructureTest::testExtrapolatedForward() {
 void UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
     BOOST_TEST_MESSAGE("Testing zero rate on the First Smoothing Point...");
 
-    using namespace regulatory_term_structure_test;
+    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 
@@ -245,7 +245,7 @@ void UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
 void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
     BOOST_TEST_MESSAGE("Testing UFR curve inspectors...");
 
-    using namespace regulatory_term_structure_test;
+    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 
@@ -279,7 +279,7 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
 void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
     BOOST_TEST_MESSAGE("Testing exception when the First Smoothing Point less or equal zero...");
 
-    using namespace regulatory_term_structure_test;
+    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 
@@ -303,7 +303,7 @@ void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
 void UltimateForwardTermStructureTest::testObservability() {
     BOOST_TEST_MESSAGE("Testing observability of the UFR curve...");
 
-    using namespace regulatory_term_structure_test;
+    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 

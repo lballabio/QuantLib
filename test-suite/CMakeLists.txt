@@ -124,7 +124,6 @@ set(QuantLib-Test_SRC
     quantooption.cpp
     quotes.cpp
     rangeaccrual.cpp
-    regulatorytermstructure.cpp
     riskneutraldensitycalculator.cpp
     riskstats.cpp
     rngtraits.cpp
@@ -151,6 +150,7 @@ set(QuantLib-Test_SRC
     transformedgrid.cpp
     twoassetbarrieroption.cpp
     twoassetcorrelationoption.cpp
+    ultimateforwardtermstructure.cpp
     utilities.cpp
     variancegamma.cpp
     varianceoption.cpp

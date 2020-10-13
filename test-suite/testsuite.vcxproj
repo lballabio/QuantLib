@@ -757,7 +757,6 @@
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />
-    <ClCompile Include="regulatorytermstructure.cpp" />
     <ClCompile Include="riskneutraldensitycalculator.cpp" />
     <ClCompile Include="riskstats.cpp" />
     <ClCompile Include="rngtraits.cpp" />
@@ -784,6 +783,7 @@
     <ClCompile Include="transformedgrid.cpp" />
     <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="twoassetcorrelationoption.cpp" />
+    <ClCompile Include="ultimateforwardtermstructure.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="variancegamma.cpp" />
     <ClCompile Include="varianceoption.cpp" />
@@ -916,7 +916,6 @@
     <ClInclude Include="quantooption.hpp" />
     <ClInclude Include="quotes.hpp" />
     <ClInclude Include="rangeaccrual.hpp" />
-    <ClInclude Include="regulatorytermstructure.hpp" />
     <ClInclude Include="riskneutraldensitycalculator.hpp" />
     <ClInclude Include="riskstats.hpp" />
     <ClInclude Include="rngtraits.hpp" />
@@ -945,6 +944,7 @@
     <ClInclude Include="transformedgrid.hpp" />
     <ClInclude Include="twoassetbarrieroption.hpp" />
     <ClInclude Include="twoassetcorrelationoption.hpp" />
+    <ClInclude Include="ultimateforwardtermstructure.hpp" />
     <ClInclude Include="utilities.hpp" />
     <ClInclude Include="variancegamma.hpp" />
     <ClInclude Include="varianceoption.hpp" />

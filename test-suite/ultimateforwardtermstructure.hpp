@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_regulatory_term_structure_hpp
-#define quantlib_test_regulatory_term_structure_hpp
+#ifndef quantlib_test_ultimate_forward_term_structure_hpp
+#define quantlib_test_ultimate_forward_term_structure_hpp
 
 #include <boost/test/unit_test.hpp>
 
