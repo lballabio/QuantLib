@@ -497,9 +497,7 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
     }
 
     PiecewiseYieldCurve<Discount,LogCubic> curve(0, UnitedStates(), helpers, Actual365Fixed(),
-                                                 LogCubic(CubicInterpolation::Spline, true,
-                                                          CubicInterpolation::SecondDerivative, 0.0,
-                                                          CubicInterpolation::SecondDerivative, 0.0));
+                                                 MonotonicLogCubic());
 
     BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }
