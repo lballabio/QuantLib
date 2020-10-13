@@ -80,7 +80,6 @@ namespace QuantLib {
         Natural settlementDays() const;
         const Date& referenceDate() const;
         Date maxDate() const;
-        Time maxTime() const;
         //@}
         //! \name Observer interface
         //@{
