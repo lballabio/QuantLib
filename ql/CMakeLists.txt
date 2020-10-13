@@ -2251,6 +2251,7 @@ set(QuantLib_HDR
     time/weekday.hpp
     timegrid.hpp
     timeseries.hpp
+    tuple.hpp
     types.hpp
     userconfig.hpp
     utilities/all.hpp
