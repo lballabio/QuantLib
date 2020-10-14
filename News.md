@@ -1,109 +1,79 @@
-Changes for QuantLib 1.19:
+Changes for QuantLib 1.20:
 ==========================
 
-QuantLib 1.19 includes 40 pull requests from several contributors.
+QuantLib 1.20 includes 24 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/15?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/16?closed=1>.
 
 Portability
 -----------
 
 - Support for Visual C++ 2012 is being deprecated.  It will be dropped
-  around the end of 2020 or the beginning of 2021 in order to enable
-  use of C++11 features.
+  after the next release in order to enable use of C++11 features.
 
-- Avoided use in Makefiles of functions only available to GNU Make
-  (thanks to GitHub user `UnitedMarsupials` for the heads-up).
-
-Build
------
-
-- Automated builds on Travis and GitHub Actions were extended.  We now
-  have a build for Mac OS X, as well as a few builds that run a number
-  of checks on the code (including clang-tidy) and automatically open
-  pull requests with fixes.
-
-Term structures
----------------
-
-- Added options for iterative bootstrap to widen the search domain or
-  to keep the best result upon failure (thanks to Francis Duffy).
-
-- Added flat-extrapolation option to fitted bond curves (thanks to
-  Peter Caspers).
+- It is now possible to opt into using `std::tuple` instead of
+  `boost::tuple` when the compiler allows it.  The default is still to
+  use the Boost implementation.  The feature can be enabled by
+  uncommenting the `QL_USE_STD_TUPLE` macro in `ql/userconfig.hpp` on
+  Visual C++ or by passing the `--enable-std-tuple` switch to
+  `./configure` on other systems.  The `--enable-std-tuple` switch is
+  also implied by `--enable-std-classes`.  (Thanks to Joseph Wang.)
 
 Instruments
 -----------
 
-- Added finite-difference pricing engine for equity options under the
-  Cox-Ingersoll-Ross process (thanks to Lew Wei Hao).
+- Added mixing-factor parameter to Heston finite-differences barrier,
+  rebate and double-barrier engines (thanks to Jack Gillett).
 
-- Added Heston engine based on exponentially-fitted Laguerre
-  quadrature rule (thanks to Klaus Spanderen).
+- Added a few additional results to Black swaption engine and to
+  analytic European option engine (thanks to Peter Caspers and Marcin
+  Rybacki).
 
-- Added Monte Carlo pricing engines for lookback options (thanks to
-  Lew Wei Hao).
+- Improved calculation of spot date for vanilla swap around holidays
+  (thanks to Paul Giltinan).
 
-- Added Monte Carlo pricing engine for double-barrier options (thanks
-  to Lew Wei Hao).
+- Added ex-coupon feature to amortizing bonds, callable bonds and
+  convertible bonds.
 
-- Added analytic pricing engine for equity options under the
-  Vasicek model (thanks to Lew Wei Hao).
-
-- The `Bond::yield` method can now specify a guess and whether the
-  passed price is clean or dirty (thanks to Francois Botha).
-
-Models
-------
-
-- Improved grid scaling for FDM Heston SLV calibration, and fixed
-  drift and diffusion for Heston SLV process (thanks to Klaus
-  Spanderen and Peter Caspers).
-
-- Added mixing factor to Heston SLV process (thanks to Lew Wei Hao).
+- Added optional first-coupon day counter to fixed-rate bonds (thanks
+  to Jacob Lee-Howes).
 
 Math
 ----
 
-- Improved nodes/weights for the exponentially fitted Laguerre
-  quadrature rule and added sine and cosine quadratures (thanks to
-  Klaus Spanderen).
+- Added convenience classes `LogCubic` and `LogMixedLinearCubic`
+  hiding a few default parameters (thanks to Andrea Maffezzoli).
+
+Models
+------
+
+- Added control variate based on asymptotic expansion for the Heston
+  model (thanks to Klaus Spanderen).
 
 Date/time
 ---------
 
-- Improved performance of the Calendar class (thanks to Leonardo Arcari).
+- Added missing Hong Kong holiday (thanks to GitHub user `CarrieMY`).
 
-- Updated holidays for Indian and Russian calendars (thanks to Alexey
-  Indiryakov).
+- Added a couple of one-off closing days to the Romanian calendar.
 
-- Added missing All Souls Day holiday to Mexican calendar (thanks to
-  GitHub user `phil-zxx` for the heads-up).
+- Added a one-off holiday to South Korean calendar (thanks to GitHub
+  user `fayce66`).
 
-- Restored New Year's Eve holiday to Eurex calendar (thanks to Joshua
-  Engelman).
+- Added a missing holiday to Turkish calendar (thanks to Berat
+  Postalcioglu).
+
+Documentation
+-------------
+
+- Added basic documentation to optimization methods (thanks to GitHub
+  user `martinbrose`).
 
 Deprecated features
 -------------------
 
-- Features deprecate in version 1.15 were removed: constructors of
-  inflation swap helpers, inflation-based pricing engines and
-  inflation coupon pricers that didn't take a nominal term structure.
-
-- The constructor of `BMAIndex` taking a calendar was deprecated.
-
-- The constructors of several interest-rate term structures taking
-  jumps without a reference date were deprecated.
-
-- The `CurveDependentStepCondition` class and related typedefs were
-  deprecated.
-
-- The constructor of `BlackCalibrationHelper` taking an interest-rate
-  structure was deprecated.
-
-- The constructors of several inflation curves taking a nominal curve
-  were deprecated.  The nominal curve should now be passed to the used
-  coupon pricers.
-
+- Features deprecate in version 1.16 were removed: a constructor of
+  the `FdmOrnsteinUhlenbeckOp` class and a constructor of the
+  `SwaptionVolatilityMatrix` class.

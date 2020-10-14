@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2000-2018 StatPro Italia srl
 
@@ -18,7 +17,59 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.19 - July 2020</strong>
+    <strong>Release 1.20 - November 2020</strong>
+
+    PORTABILITY
+    - Support for Visual C++ 2012 is being deprecated.  It will be dropped
+      after the next release in order to enable use of C++11 features.
+    - It is now possible to opt into using `std::tuple` instead of
+      `boost::tuple` when the compiler allows it.  The default is still to
+      use the Boost implementation.  The feature can be enabled by
+      uncommenting the `QL_USE_STD_TUPLE` macro in `ql/userconfig.hpp` on
+      Visual C++ or by passing the `--enable-std-tuple` switch to
+      `./configure` on other systems.  The `--enable-std-tuple` switch is
+      also implied by `--enable-std-classes`.  (Thanks to Joseph Wang.)
+
+    INSTRUMENTS
+    - Added mixing-factor parameter to Heston finite-differences barrier,
+      rebate and double-barrier engines (thanks to GitHub user
+      `jackgillett101`).
+    - Added a few additional results to Black swaption engine and to
+      analytic European option engine (thanks to Peter Caspers and Marcin
+      Rybacki).
+    - Improved calculation of spot date for vanilla swap around holidays
+      (thanks to Paul Giltinan).
+    - Added ex-coupon feature to amortizing bonds, callable bonds and
+      convertible bonds.
+    - Added optional first-coupon day counter to fixed-rate bonds (thanks
+      to Jacob Lee-Howes).
+
+    MATH
+    - Added convenience classes `LogCubic` and `LogMixedLinearCubic`
+      hiding a few default parameters (thanks to Andrea Maffezzoli).
+
+    MODELS
+    - Added control variate based on asymptotic expansion for the Heston
+      model (thanks to Klaus Spanderen).
+
+    DATE/TIME
+    - Added missing Hong Kong holiday (thanks to GitHub user `CarrieMY`).
+    - Added a couple of one-off closing days to the Romanian calendar.
+    - Added a one-off holiday to South Korean calendar (thanks to GitHub
+      user `fayce66`).
+    - Added a missing holiday to Turkish calendar (thanks to Berat
+      Postalcioglu).
+
+    DOCUMENTATION
+    - Added basic documentation to optimization methods (thanks to GitHub
+      user `martinbrose`).
+
+    DEPRECATED FEATURES
+    - Features deprecate in version 1.16 were removed: a constructor of
+      the `FdmOrnsteinUhlenbeckOp` class and a constructor of the
+      `SwaptionVolatilityMatrix` class.
+
+    <strong>Release 1.19 - July 20th, 2020</strong>
 
     PORTABILITY
     - Support for Visual C++ 2012 is being deprecated.  It will be dropped
@@ -2476,7 +2527,7 @@
       std::min...
     - Added a tentative tracing facility to ease debugging.
     - Formatters deprecated in favor of output manipulators. A number
-      of data types can now be sent directly to output streams. 
+      of data types can now be sent directly to output streams.
     - Stream-based implementation of QL_REQUIRE, QL_TRACE and similar
       macros. Together with manipulators, this allows one to write
       simpler error messages, as in:
@@ -2721,40 +2772,40 @@
     - Modified MultiPath interface to remove drifts. They are now in
       the stochastic processes.
     - Preliminary implementation of Longstaff-Schwartz least-squares
-	- Monte Carlo pricer for European basket options
-	- Brownian-bridge bugs fixed
-	- StochasticProcess base class and derived classes (diffusion,
-	  jump-diffusion, etc.) have been created.
+    - Monte Carlo pricer for European basket options
+    - Brownian-bridge bugs fixed
+    - StochasticProcess base class and derived classes (diffusion,
+      jump-diffusion, etc.) have been created.
 
     PRICING ENGINES FRAMEWORK
     - Pricing engines now use Payoff and Exercise classes.
     - American basket options.
     - Binary barrier option replaced by vanilla option with digital payoff.
-	- Stulz engine for max and min basket calls and puts on two assets.
-	- American binary option added (a.k.a. one-touch, american digital,
-	  americal barrier, etc.) with different payoffs (cash/asset at
-	  hit/expiry, etc.)
-	- Added engine for Merton 1976 jump-diffusion process.
-	- Added Bjerksund and Stensland approximation for American option
+    - Stulz engine for max and min basket calls and puts on two assets.
+    - American binary option added (a.k.a. one-touch, american digital,
+      americal barrier, etc.) with different payoffs (cash/asset at
+      hit/expiry, etc.)
+    - Added engine for Merton 1976 jump-diffusion process.
+    - Added Bjerksund and Stensland approximation for American option
       (still unstable.)
-	- Added Barone-Adesi and Whaley approximation for American option.
-	- Improved Black formula engine with more greeks added.
-	- Discrete geometric asian option.
-	- Added Leisen-Reimer binomial tree.
+    - Added Barone-Adesi and Whaley approximation for American option.
+    - Improved Black formula engine with more greeks added.
+    - Discrete geometric asian option.
+    - Added Leisen-Reimer binomial tree.
 
     SHORT RATE MODELS
-	- Model renamed to ShortRateModel. A typedef is provided for backward
-	  compatibility--it will be removed in subsequent releases.
+    - Model renamed to ShortRateModel. A typedef is provided for backward
+      compatibility--it will be removed in subsequent releases.
 
     VOLATILITY FRAMEWORK
-	- bug fix for short time (0<=t<=Tmin) interpolation
+    - bug fix for short time (0<=t<=Tmin) interpolation
 
     OPTIMIZATION FRAMEWORK
-	- Method renamed to OptimizationMethod. A typedef is provided for
+    - Method renamed to OptimizationMethod. A typedef is provided for
       backward compatibility--it will be removed in subsequent releases.
 
     PATTERNS
-	- Composite pattern
+    - Composite pattern
 
     MATH
     - Improved cubic spline interpolation. It now handles end conditions
@@ -2766,35 +2817,35 @@
       for linear interpolator.
     - Singular value decomposition improved.
     - Added bivariate cumulative normal distribution.
-	- Added binomial coefficient calculation, binomial distribution,
-	  cumulative binomial distribution, and	Peizer-Pratt inversion (method 2.)
-	- Added beta functions.
-	- Added Poisson distribution and cumulative distribution.
-	- Added incomplete gamma functions.
-	- Added factorial calculation.
-	- Added rank-reduced square root and improved pseudo-square root
+    - Added binomial coefficient calculation, binomial distribution,
+      cumulative binomial distribution, and	Peizer-Pratt inversion (method 2.)
+    - Added beta functions.
+    - Added Poisson distribution and cumulative distribution.
+    - Added incomplete gamma functions.
+    - Added factorial calculation.
+    - Added rank-reduced square root and improved pseudo-square root
       of square symmetric matrices.
-	- Added Cholesky decomposition.
+    - Added Cholesky decomposition.
 
     TEST SUITE
     - Added test for cubic spline interpolation.
     - Added test for singular value decomposition.
     - Added test for two-asset baskets using the Stulz pricing engine.
-	- Added test for Monte Carlo American cash-at-hit options.
-	- Added test for jump-diffusion engine.
-	- Added test for American and European digital options.
+    - Added test for Monte Carlo American cash-at-hit options.
+    - Added test for jump-diffusion engine.
+    - Added test for American and European digital options.
 
     MISCELLANEA
     - Inner namespaces have been deprecated.
-	- Added frequency enumeration, including 'once'.
-	- MarketElement renamed to Quote.
+    - Added frequency enumeration, including 'once'.
+    - MarketElement renamed to Quote.
     - Handling strike=0.0 where possible.
     - More Payoff classes have been introduced: gap, asset-or-nothing,
       cash-or-nothing. Payoff is now extensively used.
     - Exercise class is now polymorphic. More derived classes have been
       introduced, and they are now extensively used.
     - Introduced QL_FAIL macro.
-	- Added calendar for Copenhagen
+    - Added calendar for Copenhagen
     - 14 April 2004 (election day) added to Johannesburg calendar as
       a one-off holiday.
     - Documentation generated with Doxygen 1.3.6.
@@ -2986,10 +3037,10 @@
       accrual period
 
     MISCELLANEA
-	- added/verified holidays of many calendars
-	- added new calendars
-	- added new currencies
-	- more date formatters
+    - added/verified holidays of many calendars
+    - added new calendars
+    - added new currencies
+    - more date formatters
     - added Period(std::string&)
     - it is now possible to advance a calandar using a Period
     - added LogLinear Interpolation
@@ -3025,7 +3076,7 @@
         VOLATILITY FRAMEWORK
         - early works on reorganization of vol structures
 
-    	YIELD TERM STRUCTURE
+        YIELD TERM STRUCTURE
         - new TermStructure class based on affine model
         - yield curves can be spreaded in term of zeros
          (ZeroSpreadedTermStructure) and forwards
