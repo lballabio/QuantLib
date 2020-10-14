@@ -285,15 +285,17 @@ void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
 
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
-    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
-                          vars.ftkCurveHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate),
-                          0 * Years, vars.alpha)),
-                      Error);
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<YieldTermStructure> ufrTsZeroPeriod(
+            new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
+                                             Handle<Quote>(vars.ufrRate), 0 * Years, vars.alpha)),
+        Error);
 
-    BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
-                          vars.ftkCurveHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate),
-                          -1 * Years, vars.alpha)),
-                      Error);
+    BOOST_CHECK_THROW(
+        ext::shared_ptr<YieldTermStructure> ufrTsNegativePeriod(
+            new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
+                                             Handle<Quote>(vars.ufrRate), -1 * Years, vars.alpha)),
+        Error);
 }
 
 void UltimateForwardTermStructureTest::testObservability() {
