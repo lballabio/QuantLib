@@ -285,10 +285,6 @@ void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
 
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
-        new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
-                                         Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
-
     BOOST_CHECK_THROW(ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
                           vars.ftkCurveHandle, Handle<Quote>(llfr), Handle<Quote>(vars.ufrRate),
                           0 * Years, vars.alpha)),
