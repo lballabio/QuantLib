@@ -246,7 +246,6 @@ namespace QuantLib {
             Spread correction = swap.spread() *
                 std::fabs(swap.floatingLegBPS()/swap.fixedLegBPS());
             strike -= correction;
-            atmForward -= correction;
             results_.additionalResults["spreadCorrection"] = correction;
         } else {
             results_.additionalResults["spreadCorrection"] = 0.0;
