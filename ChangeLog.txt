@@ -1,3 +1,37 @@
+commit 0f529415fdd734ffc6928cdeeb4bc20479e93df5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 24 Oct 2020 13:00:26 +0200
+
+    Set version to 1.20 final.
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit ecad7d57992038a3e462ed5c71d815c4d37e40c4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 15 Oct 2020 10:47:08 +0200
+
+    Add workflows for cmake build on Mac and Windows.
+
+ .github/workflows/cmake-macos.yml | 19 +++++++++++++++++++
+ .github/workflows/cmake-win.yml   | 21 +++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
+
+commit eaf9aa9fa1b166084962a153ced3ecdadf0ae6f8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 14 Oct 2020 17:52:02 +0200
+
+    Update changelog and news.
+
+ ChangeLog.txt           | 3499 ++++++++++++++---------------------------------
+ Contributors.txt        |  502 +++----
+ Docs/Makefile.am        |    2 +-
+ Docs/pages/authors.docs |  256 +---
+ Docs/pages/history.docs |  133 +-
+ News.md                 |  118 +-
+ 6 files changed, 1414 insertions(+), 3096 deletions(-)
+
 commit eb6fbd431ee68dde0f7815d0c363235511b7d01c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Wed, 14 Oct 2020 13:26:53 +0200
