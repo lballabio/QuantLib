@@ -70,7 +70,7 @@ jobs:
     - <<: *build-lib
       env:
         - INFO="gcc 10.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -106,6 +106,13 @@ jobs:
       env:
         - INFO="Clang 10"
           DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
+          CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+          CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    - <<: *build-lib
+      env:
+        - INFO="Clang 11"
+          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -218,7 +225,7 @@ jobs:
     - <<: *build-tests
       env:
         - INFO="gcc 10.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -254,6 +261,13 @@ jobs:
       env:
         - INFO="Clang 10"
           DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
+          CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+          CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    - <<: *build-tests
+      env:
+        - INFO="Clang 11"
+          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -372,7 +386,7 @@ jobs:
     - <<: *run-checks
       env:
         - INFO="gcc 10.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
@@ -408,6 +422,13 @@ jobs:
       env:
         - INFO="Clang 10"
           DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
+          CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
+          CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+    - <<: *run-checks
+      env:
+        - INFO="Clang 11"
+          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
