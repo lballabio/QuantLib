@@ -26,7 +26,7 @@ jobs:
       stage: Build library
       env:
         - INFO="gcc 4.8 (Boost 1.48)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:trusty
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:trusty
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror"
@@ -35,119 +35,119 @@ jobs:
     - <<: *build-lib
       env:
         - INFO="gcc 5.4 (Boost 1.66)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:xenial
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="gcc 6.3 (Boost 1.66)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:zesty
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="gcc 7.4 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:bionic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="gcc 8.3 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:cosmic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="gcc 9.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="gcc 10.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="Clang 6 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:bionic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="Clang 7 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:cosmic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="Clang 8 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:disco
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:disco
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="Clang 9"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="Clang 10"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:focal
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="Clang 11"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-lib
       env:
         - INFO="C++03 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     - <<: *build-lib
       env:
         - INFO="C++11 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++11"
     - <<: *build-lib
       env:
         - INFO="C++14 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
     - <<: *build-lib
       env:
         - INFO="C++17 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++17"
     - <<: *build-lib
       env:
         - INFO="Unity build enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-unity-build"
@@ -155,7 +155,7 @@ jobs:
     - <<: *build-lib
       env:
         - INFO="Intraday calculations enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-intraday"
@@ -163,7 +163,7 @@ jobs:
     - <<: *build-lib
       env:
         - INFO="Indexed coupons enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-indexed-coupons"
@@ -171,7 +171,7 @@ jobs:
     - <<: *build-lib
       env:
         - INFO="C++11 classes enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-std-classes"
@@ -181,7 +181,7 @@ jobs:
       stage: Build tests
       env:
         - INFO="gcc 4.8 (Boost 1.48)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:trusty
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:trusty
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror"
@@ -190,119 +190,119 @@ jobs:
     - <<: *build-tests
       env:
         - INFO="gcc 5.4 (Boost 1.66)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:xenial
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="gcc 6.3 (Boost 1.66)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:zesty
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="gcc 7.4 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:bionic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="gcc 8.3 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:cosmic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="gcc 9.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="gcc 10.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="Clang 6 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:bionic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="Clang 7 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:cosmic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="Clang 8 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:disco
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:disco
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="Clang 9"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="Clang 10"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:focal
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="Clang 11"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *build-tests
       env:
         - INFO="C++03 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     - <<: *build-tests
       env:
         - INFO="C++11 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++11"
     - <<: *build-tests
       env:
         - INFO="C++14 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
     - <<: *build-tests
       env:
         - INFO="C++17 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++17"
     - <<: *build-tests
       env:
         - INFO="Unity build enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-unity-build"
@@ -310,7 +310,7 @@ jobs:
     - <<: *build-tests
       env:
         - INFO="Intraday calculations enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-intraday"
@@ -318,7 +318,7 @@ jobs:
     - <<: *build-tests
       env:
         - INFO="Indexed coupons enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-indexed-coupons"
@@ -326,7 +326,7 @@ jobs:
     - <<: *build-tests
       env:
         - INFO="C++11 classes enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-std-classes"
@@ -337,7 +337,7 @@ jobs:
       stage: Run all checks
       env:
         - INFO="gcc 4.8 (Boost 1.48)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:trusty
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:trusty
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror"
@@ -351,119 +351,119 @@ jobs:
     - <<: *run-checks
       env:
         - INFO="gcc 5.4 (Boost 1.66)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:xenial
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:xenial
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="gcc 6.3 (Boost 1.66)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:zesty
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:zesty
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="gcc 7.4 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:bionic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="gcc 8.3 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:cosmic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="gcc 9.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="gcc 10.x"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="Clang 6 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:bionic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:bionic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="Clang 7 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:cosmic
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:cosmic
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="Clang 8 (Boost 1.72)"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:disco
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:disco
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="Clang 9"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="Clang 10"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:focal
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:focal
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="Clang 11"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:groovy
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:groovy
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache clang" CACHEDCXX="ccache clang++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
     - <<: *run-checks
       env:
         - INFO="C++03 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:eoan
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:eoan
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
     - <<: *run-checks
       env:
         - INFO="C++11 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++11"
     - <<: *run-checks
       env:
         - INFO="C++14 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++14"
     - <<: *run-checks
       env:
         - INFO="C++17 mode"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror -std=c++17"
     - <<: *run-checks
       env:
         - INFO="Unity build enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-unity-build"
@@ -471,7 +471,7 @@ jobs:
     - <<: *run-checks
       env:
         - INFO="Intraday calculations enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-intraday"
@@ -479,7 +479,7 @@ jobs:
     - <<: *run-checks
       env:
         - INFO="Indexed coupons enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-indexed-coupons"
@@ -487,7 +487,7 @@ jobs:
     - <<: *run-checks
       env:
         - INFO="C++11 classes enabled"
-          DOCKER_IMAGE=lballabio/quantlib-devenv:rolling
+          DOCKER_IMAGE=ghcr.io/lballabio/quantlib-devenv:rolling
           DOCKER_OPTS="--rm -ti -v ${HOME}/.ccache:/root/.ccache -v ${TRAVIS_BUILD_DIR}:/build -w /build"
           CACHEDCC="ccache gcc" CACHEDCXX="ccache g++"
           CONFIGURE_FLAGS="--enable-std-classes"
