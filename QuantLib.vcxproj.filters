@@ -4334,6 +4334,9 @@
     <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\ultimateforwardtermstructure.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">

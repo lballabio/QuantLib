@@ -148,6 +148,7 @@ QL_TEST_SRCS = \
 	tracing.cpp \
 	twoassetbarrieroption.cpp \
 	twoassetcorrelationoption.cpp \
+	ultimateforwardtermstructure.cpp \
 	utilities.cpp \
 	variancegamma.cpp \
 	varianceoption.cpp \
@@ -306,6 +307,7 @@ QL_TEST_HDRS = \
 	tracing.hpp \
 	twoassetbarrieroption.hpp \
 	twoassetcorrelationoption.hpp \
+	ultimateforwardtermstructure.hpp \
 	utilities.hpp \
 	variancegamma.hpp \
 	varianceoption.hpp \
