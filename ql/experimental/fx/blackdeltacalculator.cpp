@@ -179,6 +179,10 @@ namespace QuantLib {
         Real res=0.0;
 
         switch(atmT) {
+          case DeltaVolQuote::AtmSpot:
+            res=spot_;
+            break;
+
           case DeltaVolQuote::AtmDeltaNeutral:
             if(dt_==DeltaVolQuote::Spot || dt_==DeltaVolQuote::Fwd){
                 res=fExpPos_;
