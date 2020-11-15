@@ -62,7 +62,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCForwardEuropeanBSEngine {
       public:
-        MakeMCForwardEuropeanBSEngine(
+        explicit MakeMCForwardEuropeanBSEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
         // named parameters
         MakeMCForwardEuropeanBSEngine& withSteps(Size steps);

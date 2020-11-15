@@ -67,8 +67,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCForwardEuropeanHestonEngine {
       public:
-        MakeMCForwardEuropeanHestonEngine(
-            const ext::shared_ptr<P>& process);
+        explicit MakeMCForwardEuropeanHestonEngine(const ext::shared_ptr<P>& process);
         // named parameters
         MakeMCForwardEuropeanHestonEngine& withSteps(Size steps);
         MakeMCForwardEuropeanHestonEngine& withStepsPerYear(Size steps);
