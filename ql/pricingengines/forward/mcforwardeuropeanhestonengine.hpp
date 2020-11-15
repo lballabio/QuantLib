@@ -28,11 +28,11 @@ namespace QuantLib {
     /*! \ingroup forwardengines
         \test
         - Heston MC prices for a flat Heston process are
-		  compared to analytical BS prices with the same
-		  volatility for a range of moneynesses
-		- Heston MC prices for a forward-starting option
-		  resetting at  t=0 are compared to semi-analytical
-		  Heston prices for a range of moneynesses
+          compared to analytical BS prices with the same
+          volatility for a range of moneynesses
+        - Heston MC prices for a forward-starting option
+          resetting at  t=0 are compared to semi-analytical
+          Heston prices for a range of moneynesses
     */
     template <class RNG = PseudoRandom,
               class S = Statistics, class P = HestonProcess>
@@ -99,8 +99,8 @@ namespace QuantLib {
         Real operator()(const MultiPath& multiPath) const;
       private:
         Option::Type type_;
-	    Real moneyness_;
-		Size resetIndex_;
+        Real moneyness_;
+        Size resetIndex_;
         DiscountFactor discount_;
     };
 
@@ -108,7 +108,7 @@ namespace QuantLib {
     // inline definitions
 
     template <class RNG, class S, class P>
-	inline
+    inline
     MCForwardEuropeanHestonEngine<RNG,S,P>::MCForwardEuropeanHestonEngine(
              const ext::shared_ptr<P>& process,
              Size timeSteps,
@@ -132,14 +132,14 @@ namespace QuantLib {
 
 
     template <class RNG, class S, class P>
-	inline
+    inline
     ext::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
         MCForwardEuropeanHestonEngine<RNG,S,P>::pathPricer() const {
 
-		TimeGrid timeGrid = this->timeGrid();
+        TimeGrid timeGrid = this->timeGrid();
 
-		Time resetTime = this->process_->time(this->arguments_.resetDate);
-		Size resetIndex = timeGrid.closestIndex(resetTime);
+        Time resetTime = this->process_->time(this->arguments_.resetDate);
+        Size resetIndex = timeGrid.closestIndex(resetTime);
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(

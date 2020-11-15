@@ -87,7 +87,7 @@ namespace QuantLib {
 
 
     template<template <class> class MC, class RNG, class S>
-	inline MCForwardVanillaEngine<MC,RNG,S>::MCForwardVanillaEngine(
+    inline MCForwardVanillaEngine<MC,RNG,S>::MCForwardVanillaEngine(
              const ext::shared_ptr<StochasticProcess>& process,
              Size timeSteps,
              Size timeStepsPerYear,
@@ -120,7 +120,7 @@ namespace QuantLib {
 
 
     template <template <class> class MC, class RNG, class S>
-	inline TimeGrid MCForwardVanillaEngine<MC,RNG,S>::timeGrid() const {
+    inline TimeGrid MCForwardVanillaEngine<MC,RNG,S>::timeGrid() const {
 
         Date resetDate = arguments_.resetDate;
         Date lastExerciseDate = arguments_.exercise->lastDate();
@@ -128,7 +128,7 @@ namespace QuantLib {
         Time t1 = process_->time(resetDate);
         Time t2 = process_->time(lastExerciseDate);
 
-		Size totalSteps;
+        Size totalSteps = Null<Size>();
         if (this->timeSteps_ != Null<Size>()) {
             totalSteps = timeSteps_;
         } else if (this->timeStepsPerYear_ != Null<Size>()) {
@@ -144,7 +144,7 @@ namespace QuantLib {
 
 
     template<template <class> class MC, class RNG, class S>
-	inline Real MCForwardVanillaEngine<MC,RNG,S>::controlVariateValue() const {
+    inline Real MCForwardVanillaEngine<MC,RNG,S>::controlVariateValue() const {
 
         ext::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();

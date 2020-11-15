@@ -94,8 +94,8 @@ namespace QuantLib {
         Real operator()(const Path& path) const;
       private:
         Option::Type type_;
-	    Real moneyness_;
-		Size resetIndex_;
+        Real moneyness_;
+        Size resetIndex_;
         DiscountFactor discount_;
     };
 
@@ -103,7 +103,7 @@ namespace QuantLib {
     // inline definitions
 
     template <class RNG, class S>
-	inline
+    inline
     MCForwardEuropeanBSEngine<RNG,S>::MCForwardEuropeanBSEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps,
@@ -127,14 +127,14 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-	inline
+    inline
     ext::shared_ptr<typename MCForwardEuropeanBSEngine<RNG,S>::path_pricer_type>
         MCForwardEuropeanBSEngine<RNG,S>::pathPricer() const {
 
-		TimeGrid timeGrid = this->timeGrid();
+        TimeGrid timeGrid = this->timeGrid();
 
-		Time resetTime = this->process_->time(this->arguments_.resetDate);
-		Size resetIndex = timeGrid.closestIndex(resetTime);
+        Time resetTime = this->process_->time(this->arguments_.resetDate);
+        Size resetIndex = timeGrid.closestIndex(resetTime);
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(
