@@ -32,6 +32,8 @@ class ForwardOptionTest {
     static void testPerformanceValues();
     static void testPerformanceGreeks();
     static void testGreeksInitialization();
+    static void testMCPrices();
+    static void testHestonMCPrices();
     static boost::unit_test_framework::test_suite* suite();
 };
 

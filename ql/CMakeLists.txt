@@ -684,6 +684,8 @@ set(QuantLib_SRC
     pricingengines/credit/integralcdsengine.cpp
     pricingengines/credit/isdacdsengine.cpp
     pricingengines/credit/midpointcdsengine.cpp
+    pricingengines/forward/mcforwardeuropeanbsengine.cpp
+    pricingengines/forward/mcforwardeuropeanhestonengine.cpp
     pricingengines/greeks.cpp
     pricingengines/inflation/inflationcapfloorengines.cpp
     pricingengines/lookback/analyticcontinuousfixedlookback.cpp
@@ -1939,6 +1941,9 @@ set(QuantLib_HDR
     pricingengines/forward/all.hpp
     pricingengines/forward/forwardengine.hpp
     pricingengines/forward/forwardperformanceengine.hpp
+    pricingengines/forward/mcforwardeuropeanbsengine.hpp
+    pricingengines/forward/mcforwardeuropeanhestonengine.hpp
+    pricingengines/forward/mcforwardvanillaengine.hpp
     pricingengines/forward/mcvarianceswapengine.hpp
     pricingengines/forward/replicatingvarianceswapengine.hpp
     pricingengines/genericmodelengine.hpp
