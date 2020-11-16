@@ -45,15 +45,15 @@ namespace QuantLib {
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteArithmeticAPEngine
-        : public MCDiscreteAveragingAsianEngine<RNG,S> {
+        : public MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S> {
       public:
         typedef
-        typename MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type
+        typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::path_generator_type
             path_generator_type;
         typedef
-        typename MCDiscreteAveragingAsianEngine<RNG,S>::path_pricer_type
+        typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::stats_type
+        typedef typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
         MCDiscreteArithmeticAPEngine(
@@ -105,14 +105,14 @@ namespace QuantLib {
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed)
-    : MCDiscreteAveragingAsianEngine<RNG,S>(process,
-                                            brownianBridge,
-                                            antitheticVariate,
-                                            controlVariate,
-                                            requiredSamples,
-                                            requiredTolerance,
-                                            maxSamples,
-                                            seed) {}
+    : MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>(process,
+                                                          brownianBridge,
+                                                          antitheticVariate,
+                                                          controlVariate,
+                                                          requiredSamples,
+                                                          requiredTolerance,
+                                                          maxSamples,
+                                                          seed) {}
 
     template <class RNG, class S>
     inline
@@ -172,7 +172,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDiscreteArithmeticAPEngine {
       public:
-        MakeMCDiscreteArithmeticAPEngine(
+        explicit MakeMCDiscreteArithmeticAPEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
         // named parameters
         MakeMCDiscreteArithmeticAPEngine& withBrownianBridge(bool b = true);

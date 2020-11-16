@@ -49,17 +49,18 @@ namespace QuantLib {
 
         \ingroup asianengines
     */
-    template<class RNG = PseudoRandom, class S = Statistics>
+    template<template <class> class MC,
+             class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteAveragingAsianEngine :
                                 public DiscreteAveragingAsianOption::engine,
-                                public McSimulation<SingleVariate,RNG,S> {
+                                public McSimulation<MC,RNG,S> {
       public:
         typedef
-        typename McSimulation<SingleVariate,RNG,S>::path_generator_type
+        typename McSimulation<MC,RNG,S>::path_generator_type
             path_generator_type;
-        typedef typename McSimulation<SingleVariate,RNG,S>::path_pricer_type
+        typedef typename McSimulation<MC,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
+        typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
         MCDiscreteAveragingAsianEngine(
@@ -73,10 +74,9 @@ namespace QuantLib {
              BigNatural seed);
         void calculate() const {
             try {
-                McSimulation<SingleVariate,RNG,S>::calculate(
-                                                         requiredTolerance_,
-                                                         requiredSamples_,
-                                                         maxSamples_);
+                McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
+                                                  requiredSamples_,
+                                                  maxSamples_);
             } catch (detail::PastFixingsOnly&) {
                 // Ideally, here we could calculate the payoff (which
                 // is fully determine) and write it into the results.
@@ -121,9 +121,9 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class RNG, class S>
+    template<template <class> class MC, class RNG, class S>
     inline
-    MCDiscreteAveragingAsianEngine<RNG,S>::MCDiscreteAveragingAsianEngine(
+    MCDiscreteAveragingAsianEngine<MC,RNG,S>::MCDiscreteAveragingAsianEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              bool brownianBridge,
              bool antitheticVariate,
@@ -132,15 +132,15 @@ namespace QuantLib {
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed)
-    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, controlVariate),
+    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
       process_(process), requiredSamples_(requiredSamples),
       maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
         registerWith(process_);
     }
 
-    template <class RNG, class S>
-    inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
+    template <template <class> class MC, class RNG, class S>
+    inline TimeGrid MCDiscreteAveragingAsianEngine<MC,RNG,S>::timeGrid() const {
 
         Date referenceDate = process_->riskFreeRate()->referenceDate();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
@@ -161,9 +161,9 @@ namespace QuantLib {
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
     }
 
-    template<class RNG, class S>
+    template<template <class> class MC, class RNG, class S>
     inline
-    Real MCDiscreteAveragingAsianEngine<RNG,S>::controlVariateValue() const {
+    Real MCDiscreteAveragingAsianEngine<MC,RNG,S>::controlVariateValue() const {
 
         ext::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();
