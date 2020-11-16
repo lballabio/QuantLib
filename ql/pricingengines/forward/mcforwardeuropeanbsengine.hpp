@@ -119,7 +119,6 @@ namespace QuantLib {
                                                   timeStepsPerYear,
                                                   brownianBridge,
                                                   antitheticVariate,
-                                                  false,
                                                   requiredSamples,
                                                   requiredTolerance,
                                                   maxSamples,

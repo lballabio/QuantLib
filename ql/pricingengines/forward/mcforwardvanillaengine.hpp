@@ -49,7 +49,6 @@ namespace QuantLib {
              Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
@@ -76,7 +75,6 @@ namespace QuantLib {
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
-        Real controlVariateValue() const;
         // data members
         ext::shared_ptr<StochasticProcess> process_;
         Size timeSteps_, timeStepsPerYear_, requiredSamples_, maxSamples_;
@@ -93,12 +91,11 @@ namespace QuantLib {
              Size timeStepsPerYear,
              bool brownianBridge,
              bool antitheticVariate,
-             bool controlVariate,
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed)
-    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
+    : McSimulation<MC,RNG,S>(antitheticVariate, false),
       process_(process), timeSteps_(timeSteps),
       timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
       maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
@@ -140,29 +137,6 @@ namespace QuantLib {
         fixingTimes.push_back(t2);
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end(), totalSteps);
-    }
-
-
-    template<template <class> class MC, class RNG, class S>
-    inline Real MCForwardVanillaEngine<MC,RNG,S>::controlVariateValue() const {
-
-        ext::shared_ptr<PricingEngine> controlPE =
-                this->controlPricingEngine();
-            QL_REQUIRE(controlPE,
-                       "engine does not provide "
-                       "control variation pricing engine");
-
-            ForwardVanillaOption::arguments* controlArguments =
-                dynamic_cast<ForwardVanillaOption::arguments*>(
-                    controlPE->getArguments());
-            *controlArguments = arguments_;
-            controlPE->calculate();
-
-            const ForwardVanillaOption::results* controlResults =
-                dynamic_cast<const ForwardVanillaOption::results*>(
-                    controlPE->getResults());
-
-            return controlResults->value;
     }
 
 }
