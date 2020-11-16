@@ -268,7 +268,7 @@ namespace CdsTests {
             .withRule(rule);
     }
 
-    typedef map<pair<Date, Period>, pair<Date, Date>> InputData;
+    typedef map<pair<Date, Period>, pair<Date, Date> > InputData;
 
     void testCDSConventions(const InputData& inputs, DateGeneration::Rule rule) {
 
