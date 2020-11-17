@@ -120,13 +120,17 @@ namespace QuantLib {
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                this->process_);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         return ext::shared_ptr<typename
             MCDiscreteGeometricAPEngine<RNG,S>::path_pricer_type>(
                 new GeometricAPOPathPricer(
                     payoff->optionType(),
                     payoff->strike(),
-                    this->process_->riskFreeRate()->discount(
-                                                        exercise->lastDate()),
+                    process->riskFreeRate()->discount(exercise->lastDate()),
                     this->arguments_.runningAccumulator,
                     this->arguments_.pastFixings));
     }

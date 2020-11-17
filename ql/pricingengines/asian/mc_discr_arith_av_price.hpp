@@ -69,9 +69,12 @@ namespace QuantLib {
         ext::shared_ptr<path_pricer_type> pathPricer() const;
         ext::shared_ptr<path_pricer_type> controlPathPricer() const;
         ext::shared_ptr<PricingEngine> controlPricingEngine() const {
-            return ext::shared_ptr<PricingEngine>(
-                new AnalyticDiscreteGeometricAveragePriceAsianEngine(
-                                                             this->process_));
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+                ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                    this->process_);
+            QL_REQUIRE(process, "Black-Scholes process required");
+            return ext::shared_ptr<PricingEngine>(new
+                AnalyticDiscreteGeometricAveragePriceAsianEngine(process));
         }
     };
 
@@ -130,13 +133,17 @@ namespace QuantLib {
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                this->process_);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         return ext::shared_ptr<typename
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
                 new ArithmeticAPOPathPricer(
                     payoff->optionType(),
                     payoff->strike(),
-                    this->process_->riskFreeRate()->discount(
-                                                        exercise->lastDate()),
+                    process->riskFreeRate()->discount(exercise->lastDate()),
                     this->arguments_.runningAccumulator,
                     this->arguments_.pastFixings));
     }
@@ -157,6 +164,11 @@ namespace QuantLib {
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                this->process_);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         // for seasoned option the geometric strike might be rescaled
         // to obtain an equivalent arithmetic strike.
         // Any change applied here MUST be applied to the analytic engine too
@@ -165,8 +177,7 @@ namespace QuantLib {
             new GeometricAPOPathPricer(
               payoff->optionType(),
               payoff->strike(),
-              this->process_->riskFreeRate()->discount(
-                                                   this->timeGrid().back())));
+              process->riskFreeRate()->discount(this->timeGrid().back())));
     }
 
     template <class RNG = PseudoRandom, class S = Statistics>

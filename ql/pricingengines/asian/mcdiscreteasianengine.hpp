@@ -64,7 +64,7 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCDiscreteAveragingAsianEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<StochasticProcess>& process,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -111,7 +111,7 @@ namespace QuantLib {
         }
         Real controlVariateValue() const;
         // data members
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<StochasticProcess> process_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool brownianBridge_;
@@ -124,7 +124,7 @@ namespace QuantLib {
     template<template <class> class MC, class RNG, class S>
     inline
     MCDiscreteAveragingAsianEngine<MC,RNG,S>::MCDiscreteAveragingAsianEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<StochasticProcess>& process,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -142,14 +142,11 @@ namespace QuantLib {
     template <template <class> class MC, class RNG, class S>
     inline TimeGrid MCDiscreteAveragingAsianEngine<MC,RNG,S>::timeGrid() const {
 
-        Date referenceDate = process_->riskFreeRate()->referenceDate();
-        DayCounter voldc = process_->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
-            if (arguments_.fixingDates[i]>=referenceDate) {
-                Time t = voldc.yearFraction(referenceDate,
-                    arguments_.fixingDates[i]);
+            Time t = process_->time(arguments_.fixingDates[i]);
+            if (t>=0) {
                 fixingTimes.push_back(t);
             }
         }
