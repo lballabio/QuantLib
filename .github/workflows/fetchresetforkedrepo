@@ -1,0 +1,28 @@
+# Fetches and resets a forked quantlib repo to luigis master repo 
+name: git fetch reset quantlib fork
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # workflow accepts no Inputs
+
+jobs:
+  gitfetchreset:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the branch. In order for this to work you need to generate a personal accesss token with workflow rights in https://github.com/settings/tokens
+    # and add it under https://github.com/<yourgitname>/QuantLib/settings/secrets/actions/new having name ACTIONS_TOKEN
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.ACTIONS_TOKEN }}
+      
+    # fetch and reset from luigis master repo and afterwards push to forked repo
+    - name: git fetch reset
+      run: |
+        git remote add upstream https://github.com/lballabio/QuantLib.git
+        git fetch upstream master
+        git reset --hard upstream/master
+        git push --force origin master
