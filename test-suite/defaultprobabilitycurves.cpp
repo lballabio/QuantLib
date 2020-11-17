@@ -296,8 +296,8 @@ namespace {
 
         for (Size i=0; i<n.size(); i++) {
             Date protectionStart = today + settlementDays;
-            Date startDate = calendar.adjust(protectionStart, convention);
-            Date endDate = today + n[i]*Years;
+            Date startDate = protectionStart;
+            Date endDate = cdsMaturity(today, n[i] * Years, rule);
             Date upfrontDate = calendar.advance(today,
                                          upfrontSettlementDays,
                                          Days,
@@ -313,7 +313,7 @@ namespace {
                                   upfrontDate,
                                   ext::shared_ptr<Claim>(),
                                   Actual360(true),
-                                  true);
+                                  true, today);
             cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve, true)));
