@@ -179,10 +179,10 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = ext::make_shared<CreditDefaultSwap>(
+        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_);
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_));
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
