@@ -366,7 +366,7 @@ void ScheduleTest::testCDS2015ConventionGrid() {
     // either side. The tenors are selected tenors from the doc i.e. short quarterly tenors less than 1Y, 1Y and 5Y.
     InputData inputs = map_list_of
         (make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2016)))
-        (make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
+        (make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
         (make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
         (make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
         (make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
@@ -378,7 +378,7 @@ void ScheduleTest::testCDS2015ConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)))
         (make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)))
         (make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
-        (make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
+        (make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
         (make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
         (make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
         (make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
@@ -390,7 +390,7 @@ void ScheduleTest::testCDS2015ConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
+        (make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)))
         (make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
         (make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
         (make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
@@ -402,7 +402,7 @@ void ScheduleTest::testCDS2015ConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
         (make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
         (make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
+        (make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2017)))
         (make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
@@ -414,7 +414,7 @@ void ScheduleTest::testCDS2015ConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
         (make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
         (make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2020)))
-        (make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
+        (make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2021)))
         (make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
         (make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
         (make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2021)))
@@ -425,7 +425,7 @@ void ScheduleTest::testCDS2015ConventionGrid() {
         (make_pair(Date(19, Dec, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
         (make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2021)))
         (make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
+        (make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
         (make_pair(Date(21, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
         (make_pair(Date(19, Jun, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
         (make_pair(Date(20, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)))
@@ -450,7 +450,7 @@ void ScheduleTest::testCDSConventionGrid() {
     // either side. The tenors are selected tenors from the doc i.e. short quarterly tenors less than 1Y, 1Y and 5Y.
     InputData inputs = map_list_of
         (make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
-        (make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
+        (make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
         (make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
         (make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
         (make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
@@ -462,7 +462,7 @@ void ScheduleTest::testCDSConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
+        (make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
         (make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
         (make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
         (make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
@@ -474,7 +474,7 @@ void ScheduleTest::testCDSConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
         (make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
         (make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
+        (make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)))
         (make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
         (make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
         (make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
@@ -486,7 +486,7 @@ void ScheduleTest::testCDSConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
         (make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
         (make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
+        (make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2017)))
         (make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
         (make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)))
@@ -498,7 +498,7 @@ void ScheduleTest::testCDSConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)))
         (make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)))
         (make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2021)))
-        (make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
+        (make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2021)))
         (make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
         (make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
         (make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)))
@@ -510,7 +510,7 @@ void ScheduleTest::testCDSConventionGrid() {
         (make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)))
         (make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)))
         (make_pair(Date(19, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2016)))
-        (make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
+        (make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
         (make_pair(Date(21, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
         (make_pair(Date(19, Jun, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
         (make_pair(Date(20, Jun, 2016), 0 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
@@ -626,19 +626,38 @@ void ScheduleTest::testCDS2015ConventionSampleDates() {
     s = makeCdsSchedule(tradeDate, maturity, rule);
     check_dates(s, expDates);
 
-    // trade date = Sun 20 Sep 2015, roll.
+    // trade date = Sun 20 Sep 2015. Roll to new maturity. Trade date still before next coupon payment
+    // date of Mon 21 Sep 2015, so keep the first period from 22 Jun 2015 to 21 Sep 2015 in schedule.
     tradeDate = Date(20, Sep, 2015);
     maturity = cdsMaturity(tradeDate, tenor, rule);
     s = makeCdsSchedule(tradeDate, maturity, rule);
-    expDates.erase(expDates.begin());
     expDates.push_back(Date(20, Sep, 2016));
     expDates.push_back(Date(20, Dec, 2016));
     check_dates(s, expDates);
 
-    // trade date = Mon 21 Sep 2015, no change.
+    // trade date = Mon 21 Sep 2015, first period drops out of schedule.
     tradeDate = Date(21, Sep, 2015);
     maturity = cdsMaturity(tradeDate, tenor, rule);
     s = makeCdsSchedule(tradeDate, maturity, rule);
+    expDates.erase(expDates.begin());
+    check_dates(s, expDates);
+
+    // Another sample trade date, Sat 20 Jun 2009.
+    tradeDate = Date(20, Jun, 2009);
+    maturity = Date(20, Dec, 2009);
+    s = makeCdsSchedule(tradeDate, maturity, rule);
+    expDates = list_of(Date(20, Mar, 2009))(Date(22, Jun, 2009))(Date(21, Sep, 2009))(Date(20, Dec, 2009));
+    check_dates(s, expDates);
+
+    // Move forward to Sun 21 Jun 2009
+    tradeDate = Date(21, Jun, 2009);
+    s = makeCdsSchedule(tradeDate, maturity, rule);
+    check_dates(s, expDates);
+
+    // Move forward to Mon 22 Jun 2009
+    tradeDate = Date(22, Jun, 2009);
+    s = makeCdsSchedule(tradeDate, maturity, rule);
+    expDates.erase(expDates.begin());
     check_dates(s, expDates);
 }
 
@@ -665,18 +684,37 @@ void ScheduleTest::testCDSConventionSampleDates() {
     s = makeCdsSchedule(tradeDate, maturity, rule);
     check_dates(s, expDates);
 
-    // trade date = Sun 20 Sep 2015, roll.
+    // trade date = Sun 20 Sep 2015. Roll to new maturity. Trade date still before next coupon payment
+    // date of Mon 21 Sep 2015, so keep the first period from 22 Jun 2015 to 21 Sep 2015 in schedule.
     tradeDate = Date(20, Sep, 2015);
     maturity = cdsMaturity(tradeDate, tenor, rule);
     s = makeCdsSchedule(tradeDate, maturity, rule);
-    expDates.erase(expDates.begin());
     expDates.push_back(Date(20, Dec, 2016));
     check_dates(s, expDates);
 
-    // trade date = Mon 21 Sep 2015, no change.
+    // trade date = Mon 21 Sep 2015, first period drops out of schedule.
     tradeDate = Date(21, Sep, 2015);
     maturity = cdsMaturity(tradeDate, tenor, rule);
     s = makeCdsSchedule(tradeDate, maturity, rule);
+    expDates.erase(expDates.begin());
+    check_dates(s, expDates);
+
+    // Another sample trade date, Sat 20 Jun 2009.
+    tradeDate = Date(20, Jun, 2009);
+    maturity = Date(20, Dec, 2009);
+    s = makeCdsSchedule(tradeDate, maturity, rule);
+    expDates = list_of(Date(20, Mar, 2009))(Date(22, Jun, 2009))(Date(21, Sep, 2009))(Date(20, Dec, 2009));
+    check_dates(s, expDates);
+
+    // Move forward to Sun 21 Jun 2009
+    tradeDate = Date(21, Jun, 2009);
+    s = makeCdsSchedule(tradeDate, maturity, rule);
+    check_dates(s, expDates);
+
+    // Move forward to Mon 22 Jun 2009
+    tradeDate = Date(22, Jun, 2009);
+    s = makeCdsSchedule(tradeDate, maturity, rule);
+    expDates.erase(expDates.begin());
     check_dates(s, expDates);
 }
 

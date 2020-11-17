@@ -275,7 +275,12 @@ namespace QuantLib {
           case DateGeneration::Forward:
 
             if (*rule_ == DateGeneration::CDS || *rule_ == DateGeneration::CDS2015) {
-                dates_.push_back(previousTwentieth(effectiveDate, *rule_));
+                Date prev20th = previousTwentieth(effectiveDate, *rule_);
+                if (calendar_.adjust(prev20th, convention) > effectiveDate) {
+                    dates_.push_back(prev20th - 3 * Months);
+                    isRegular_.push_back(true);
+                }
+                dates_.push_back(prev20th);
             } else {
                 dates_.push_back(effectiveDate);
             }
@@ -307,7 +312,7 @@ namespace QuantLib {
                 }
                 if (next20th != effectiveDate) {
                     dates_.push_back(next20th);
-                    isRegular_.push_back(false);
+                    isRegular_.push_back(*rule_ == DateGeneration::CDS || *rule_ == DateGeneration::CDS2015);
                     seed = next20th;
                 }
             }
