@@ -52,7 +52,6 @@ namespace QuantLib {
              const ext::shared_ptr<P>& process,
              Size timeSteps,
              Size timeStepsPerYear,
-             bool brownianBridge,
              bool antitheticVariate,
              Size requiredSamples,
              Real requiredTolerance,
@@ -71,7 +70,6 @@ namespace QuantLib {
         // named parameters
         MakeMCForwardEuropeanHestonEngine& withSteps(Size steps);
         MakeMCForwardEuropeanHestonEngine& withStepsPerYear(Size steps);
-        MakeMCForwardEuropeanHestonEngine& withBrownianBridge(bool b = false);
         MakeMCForwardEuropeanHestonEngine& withSamples(Size samples);
         MakeMCForwardEuropeanHestonEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCForwardEuropeanHestonEngine& withMaxSamples(Size samples);
@@ -84,7 +82,6 @@ namespace QuantLib {
         bool antithetic_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        bool brownianBridge_;
         BigNatural seed_;
     };
 
@@ -112,7 +109,6 @@ namespace QuantLib {
              const ext::shared_ptr<P>& process,
              Size timeSteps,
              Size timeStepsPerYear,
-             bool brownianBridge,
              bool antitheticVariate,
              Size requiredSamples,
              Real requiredTolerance,
@@ -121,7 +117,7 @@ namespace QuantLib {
     : MCForwardVanillaEngine<MultiVariate,RNG,S>(process,
                                                  timeSteps,
                                                  timeStepsPerYear,
-                                                 brownianBridge,
+                                                 false,
                                                  antitheticVariate,
                                                  requiredSamples,
                                                  requiredTolerance,
@@ -169,7 +165,7 @@ namespace QuantLib {
              const ext::shared_ptr<P>& process)
     : process_(process), antithetic_(false), steps_(Null<Size>()),
       stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
+      tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>&
@@ -223,13 +219,6 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>&
-    MakeMCForwardEuropeanHestonEngine<RNG,S,P>::withBrownianBridge(bool b) {
-        brownianBridge_ = b;
-        return *this;
-    }
-
-    template <class RNG, class S, class P>
-    inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>&
     MakeMCForwardEuropeanHestonEngine<RNG,S,P>::withAntitheticVariate(bool b) {
         antithetic_ = b;
         return *this;
@@ -247,7 +236,6 @@ namespace QuantLib {
             MCForwardEuropeanHestonEngine<RNG,S,P>(process_,
                                                    steps_,
                                                    stepsPerYear_,
-                                                   brownianBridge_,
                                                    antithetic_,
                                                    samples_,
                                                    tolerance_,
