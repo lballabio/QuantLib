@@ -21,12 +21,17 @@
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/pricingengines/forward/forwardperformanceengine.hpp>
+#include <ql/pricingengines/forward/mcforwardeuropeanbsengine.hpp>
+#include <ql/pricingengines/forward/mcforwardeuropeanhestonengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/processes/hestonprocess.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 
@@ -506,6 +511,204 @@ void ForwardOptionTest::testGreeksInitialization() {
 
 
 
+void ForwardOptionTest::testMCPrices() {
+   BOOST_TEST_MESSAGE("Testing forward option MC prices...");
+
+   Real tolerance = 1e-4;
+
+   Size timeSteps = 100;
+   Size numberOfSamples = 65536;
+   Size mcSeed = 42;
+
+   Real q = 0.04;
+   Real r = 0.01;
+   Real sigma = 0.11;
+   Real s = 100;
+
+   DayCounter dc = Actual360();
+   SavedSettings backup;
+   Date today = Date::todaysDate();
+   Settings::instance().evaluationDate() = today;
+
+   ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
+   ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+   Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+   ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+   Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+   ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma));
+   Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+   ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+      new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+
+   ext::shared_ptr<PricingEngine> analyticEngine(
+                        new ForwardVanillaEngine<AnalyticEuropeanEngine>(stochProcess));
+
+   ext::shared_ptr<PricingEngine> mcEngine 
+      = MakeMCForwardEuropeanBSEngine<PseudoRandom>(stochProcess)
+            .withSteps(timeSteps)
+            .withSamples(numberOfSamples)
+            .withSeed(mcSeed);
+
+   Date exDate = today + 1*Years;
+   ext::shared_ptr<Exercise> exercise(
+                                 new EuropeanExercise(exDate));
+   Date reset = today + 6*Months;
+   ext::shared_ptr<StrikedTypePayoff> payoff(
+                        new PlainVanillaPayoff(Option::Call, 0.0));
+
+   Real moneyness[] = { 0.8, 0.9, 1.0, 1.1, 1.2 };
+
+   for (Size j=0; j<LENGTH(moneyness); j++) {
+
+      ForwardVanillaOption option(moneyness[j], reset, payoff, exercise);
+
+      option.setPricingEngine(analyticEngine);
+      Real analyticPrice = option.NPV();
+
+      option.setPricingEngine(mcEngine);
+      Real mcPrice = option.NPV();
+
+      Real error = relativeError(analyticPrice,mcPrice,s);
+      if (error>tolerance) {
+            REPORT_FAILURE("testMCPrices", payoff, exercise, s,
+                           q, r, today, sigma, moneyness[j], reset,
+                           analyticPrice, mcPrice, error, tolerance);
+      }
+   }
+
+}
+
+
+
+void ForwardOptionTest::testHestonMCPrices() {
+   BOOST_TEST_MESSAGE("Testing forward option Heston MC prices...");
+
+   Real tolerance = 1e-4;
+
+   Size timeSteps = 50;
+   Size numberOfSamples = 131072;
+   Size mcSeed = 42;
+
+   Real q = 0.04;
+   Real r = 0.01;
+   Real sigma_bs = 0.245;
+   Real s = 100;
+
+   // Test 1: Set up an equivalent flat Heston and compare to analytical BS pricing
+   Real v0 = sigma_bs * sigma_bs;
+   Real kappa = 1e-8;
+   Real theta = 0.08;
+   Real sigma = 1e-8;
+   Real rho = -0.93;
+
+   DayCounter dc = Actual360();
+   SavedSettings backup;
+   Date today = Date::todaysDate();
+   Settings::instance().evaluationDate() = today;
+
+   Date exDate = today + 1*Years;
+   ext::shared_ptr<Exercise> exercise(
+                                 new EuropeanExercise(exDate));
+   Date reset = today + 6*Months;
+   ext::shared_ptr<StrikedTypePayoff> payoff(
+                        new PlainVanillaPayoff(Option::Call, 0.0));
+
+   ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
+   ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+   Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+   ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+   Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+   ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma_bs));
+   Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+   ext::shared_ptr<BlackScholesMertonProcess> bsProcess(
+      new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+
+   ext::shared_ptr<PricingEngine> analyticEngine(
+      new ForwardVanillaEngine<AnalyticEuropeanEngine>(bsProcess));
+
+   ext::shared_ptr<HestonProcess> hestonProcess(
+      new HestonProcess(rTS, qTS, Handle<Quote>(spot), v0, kappa, theta, sigma, rho));
+
+   ext::shared_ptr<PricingEngine> mcEngine 
+      = MakeMCForwardEuropeanHestonEngine<LowDiscrepancy>(hestonProcess)
+            .withSteps(timeSteps)
+            .withSamples(numberOfSamples)
+            .withSeed(mcSeed);
+
+   Real moneyness[] = { 0.8, 0.9, 1.0, 1.1, 1.2 };
+
+   for (Size j=0; j<LENGTH(moneyness); j++) {
+
+      ForwardVanillaOption option(moneyness[j], reset, payoff, exercise);
+
+      option.setPricingEngine(analyticEngine);
+      Real analyticPrice = option.NPV();
+
+      option.setPricingEngine(mcEngine);
+      Real mcPrice = option.NPV();
+
+      Real error = relativeError(analyticPrice,mcPrice,s);
+      if (error>tolerance) {
+            REPORT_FAILURE("testHestonMCPrices", payoff, exercise, s,
+                           q, r, today, sigma_bs, moneyness[j], reset,
+                           analyticPrice, mcPrice, error, tolerance);
+      }
+   }
+
+
+   // Test 2: Using an arbitrary Heston model, check that prices match semi-analytical
+   // Heston prices when reset date is t=0
+   v0 = sigma_bs * sigma_bs;
+   kappa = 1.0;
+   theta = 0.08;
+   sigma = 0.39;
+   rho = -0.93;
+
+   reset = today;
+
+   ext::shared_ptr<HestonProcess> hestonProcessSmile(
+      new HestonProcess(rTS, qTS, Handle<Quote>(spot), v0, kappa, theta, sigma, rho));
+
+   ext::shared_ptr<HestonModel> hestonModel(ext::make_shared<HestonModel>(hestonProcessSmile));
+
+   ext::shared_ptr<PricingEngine> analyticHestonEngine(
+      ext::make_shared<AnalyticHestonEngine>(hestonModel, 96));
+
+   ext::shared_ptr<PricingEngine> mcEngineSmile
+      = MakeMCForwardEuropeanHestonEngine<LowDiscrepancy>(hestonProcessSmile)
+            .withSteps(timeSteps)
+            .withSamples(numberOfSamples)
+            .withSeed(mcSeed);
+
+   for (Size j=0; j<LENGTH(moneyness); j++) {
+
+      Real strike = s * moneyness[j];
+      ext::shared_ptr<StrikedTypePayoff> vanillaPayoff(
+                        new PlainVanillaPayoff(Option::Call, strike));
+
+      VanillaOption vanillaOption(vanillaPayoff, exercise);
+      ForwardVanillaOption forwardOption(moneyness[j], reset, payoff, exercise);
+
+      vanillaOption.setPricingEngine(analyticHestonEngine);
+      Real analyticPrice = vanillaOption.NPV();
+
+      forwardOption.setPricingEngine(mcEngineSmile);
+      Real mcPrice = forwardOption.NPV();
+
+      Real error = relativeError(analyticPrice,mcPrice,s);
+      if (error>tolerance) {
+            REPORT_FAILURE("testHestonMCPrices", vanillaPayoff, exercise, s,
+                           q, r, today, sigma_bs, moneyness[j], reset,
+                           analyticPrice, mcPrice, error, tolerance);
+      }
+   }
+
+}
+
+
+
 test_suite* ForwardOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Forward option tests");
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testValues));
@@ -513,6 +716,8 @@ test_suite* ForwardOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceGreeks));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeksInitialization));
+    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testMCPrices));
+    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonMCPrices));
 
     return suite;
 }
