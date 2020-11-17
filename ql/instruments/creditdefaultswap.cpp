@@ -118,7 +118,7 @@ namespace QuantLib {
 
         // Create the upfront payment, if one is provided.
         Real upfrontAmount = 0.0;
-        if (upfront_)
+        if (upfront_) // NOLINT(readability-implicit-bool-conversion)
             upfrontAmount = *upfront_ * notional_;
         upfrontPayment_ = ext::make_shared<SimpleCashFlow>(upfrontAmount, effectiveUpfrontDate);
 
