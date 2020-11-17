@@ -646,7 +646,8 @@ void ScheduleTest::testCDS2015ConventionSampleDates() {
     tradeDate = Date(20, Jun, 2009);
     maturity = Date(20, Dec, 2009);
     s = makeCdsSchedule(tradeDate, maturity, rule);
-    expDates = list_of(Date(20, Mar, 2009))(Date(22, Jun, 2009))(Date(21, Sep, 2009))(Date(20, Dec, 2009));
+    vector<Date> tmp = list_of(Date(20, Mar, 2009))(Date(22, Jun, 2009))(Date(21, Sep, 2009))(Date(20, Dec, 2009));
+    expDates.assign(tmp.begin(), tmp.end());
     check_dates(s, expDates);
 
     // Move forward to Sun 21 Jun 2009
