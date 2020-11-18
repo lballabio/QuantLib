@@ -28,7 +28,6 @@
 
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/utilities/null.hpp>
-#include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/period.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/errors.hpp>
