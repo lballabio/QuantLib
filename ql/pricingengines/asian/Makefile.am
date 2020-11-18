@@ -11,7 +11,8 @@ this_include_HEADERS = \
 	mc_discr_arith_av_price.hpp \
 	mc_discr_arith_av_strike.hpp \
 	mc_discr_geom_av_price.hpp \
-	mcdiscreteasianengine.hpp
+	mcdiscreteasianengine.hpp \
+	mcdiscreteasianenginebase.hpp
 
 cpp_files = \
 	analytic_cont_geom_av_price.cpp \

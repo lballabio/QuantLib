@@ -26,9 +26,10 @@
 #ifndef quantlib_mc_discrete_geometric_average_price_asian_engine_h
 #define quantlib_mc_discrete_geometric_average_price_asian_engine_h
 
-#include <ql/pricingengines/asian/mcdiscreteasianengine.hpp>
+#include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
@@ -41,15 +42,15 @@ namespace QuantLib {
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteGeometricAPEngine
-        : public MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S> {
+        : public MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S> {
       public:
         typedef
-        typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::path_generator_type
+        typename MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>::path_generator_type
             path_generator_type;
         typedef
-        typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::path_pricer_type
+        typename MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::stats_type
+        typedef typename MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
         MCDiscreteGeometricAPEngine(
@@ -93,14 +94,14 @@ namespace QuantLib {
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed)
-    : MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>(process,
-                                                          brownianBridge,
-                                                          antitheticVariate,
-                                                          false,
-                                                          requiredSamples,
-                                                          requiredTolerance,
-                                                          maxSamples,
-                                                          seed) {}
+    : MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>(process,
+                                                              brownianBridge,
+                                                              antitheticVariate,
+                                                              false,
+                                                              requiredSamples,
+                                                              requiredTolerance,
+                                                              maxSamples,
+                                                              seed) {}
 
 
 

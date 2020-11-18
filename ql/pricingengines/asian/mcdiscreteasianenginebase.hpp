@@ -23,41 +23,47 @@
     \brief Monte Carlo pricing engine for discrete average Asians
 */
 
-#ifndef quantlib_mcdiscreteasian_engine_hpp
-#define quantlib_mcdiscreteasian_engine_hpp
+#ifndef quantlib_mcdiscreteasian_engine_base_hpp
+#define quantlib_mcdiscreteasian_engine_base_hpp
 
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/instruments/asianoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
 
 namespace QuantLib {
 
 
+    namespace detail {
+
+        class PastFixingsOnly : public Error {
+          public:
+            PastFixingsOnly()
+            : Error("n/a", 0, "n/a",
+                    "all fixings are in the past") {}
+        };
+
+    }
+
     //! Pricing engine for discrete average Asians using Monte Carlo simulation
     /*! \warning control-variate calculation is disabled under VC++6.
-
         \ingroup asianengines
     */
 
-    /*! \deprecated Use MCDiscreteAveragingAsianEngineBase instead.
-                    Deprecated in version 1.21.
-    */
-    template<class RNG = PseudoRandom, class S = Statistics>
-    class QL_DEPRECATED MCDiscreteAveragingAsianEngine :
+    template<template <class> class MC,
+             class RNG = PseudoRandom, class S = Statistics>
+    class MCDiscreteAveragingAsianEngineBase :
                                 public DiscreteAveragingAsianOption::engine,
-                                public McSimulation<SingleVariate,RNG,S> {
+                                public McSimulation<MC,RNG,S> {
       public:
         typedef
-        typename McSimulation<SingleVariate,RNG,S>::path_generator_type
+        typename McSimulation<MC,RNG,S>::path_generator_type
             path_generator_type;
-        typedef typename McSimulation<SingleVariate,RNG,S>::path_pricer_type
+        typedef typename McSimulation<MC,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
+        typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDiscreteAveragingAsianEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        MCDiscreteAveragingAsianEngineBase(
+             const ext::shared_ptr<StochasticProcess>& process,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -67,10 +73,9 @@ namespace QuantLib {
              BigNatural seed);
         void calculate() const {
             try {
-                McSimulation<SingleVariate,RNG,S>::calculate(
-                                                         requiredTolerance_,
-                                                         requiredSamples_,
-                                                         maxSamples_);
+                McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
+                                                  requiredSamples_,
+                                                  maxSamples_);
             } catch (detail::PastFixingsOnly&) {
                 // Ideally, here we could calculate the payoff (which
                 // is fully determine) and write it into the results.
@@ -96,16 +101,17 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         ext::shared_ptr<path_generator_type> pathGenerator() const {
 
+            Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
-                RNG::make_sequence_generator(grid.size()-1,seed_);
+                RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
             return ext::shared_ptr<path_generator_type>(
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
         Real controlVariateValue() const;
         // data members
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<StochasticProcess> process_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool brownianBridge_;
@@ -115,10 +121,10 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class RNG, class S>
+    template<template <class> class MC, class RNG, class S>
     inline
-    MCDiscreteAveragingAsianEngine<RNG,S>::MCDiscreteAveragingAsianEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    MCDiscreteAveragingAsianEngineBase<MC,RNG,S>::MCDiscreteAveragingAsianEngineBase(
+             const ext::shared_ptr<StochasticProcess>& process,
              bool brownianBridge,
              bool antitheticVariate,
              bool controlVariate,
@@ -126,24 +132,21 @@ namespace QuantLib {
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed)
-    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, controlVariate),
+    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
       process_(process), requiredSamples_(requiredSamples),
       maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
         registerWith(process_);
     }
 
-    template <class RNG, class S>
-    inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
+    template <template <class> class MC, class RNG, class S>
+    inline TimeGrid MCDiscreteAveragingAsianEngineBase<MC,RNG,S>::timeGrid() const {
 
-        Date referenceDate = process_->riskFreeRate()->referenceDate();
-        DayCounter voldc = process_->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
-            if (arguments_.fixingDates[i]>=referenceDate) {
-                Time t = voldc.yearFraction(referenceDate,
-                    arguments_.fixingDates[i]);
+            Time t = process_->time(arguments_.fixingDates[i]);
+            if (t>=0) {
                 fixingTimes.push_back(t);
             }
         }
@@ -155,9 +158,9 @@ namespace QuantLib {
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
     }
 
-    template<class RNG, class S>
+    template<template <class> class MC, class RNG, class S>
     inline
-    Real MCDiscreteAveragingAsianEngine<RNG,S>::controlVariateValue() const {
+    Real MCDiscreteAveragingAsianEngineBase<MC,RNG,S>::controlVariateValue() const {
 
         ext::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();

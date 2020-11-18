@@ -27,6 +27,7 @@
 
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
@@ -45,15 +46,15 @@ namespace QuantLib {
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteArithmeticAPEngine
-        : public MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S> {
+        : public MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S> {
       public:
         typedef
-        typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::path_generator_type
+        typename MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>::path_generator_type
             path_generator_type;
         typedef
-        typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::path_pricer_type
+        typename MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>::stats_type
+        typedef typename MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
         MCDiscreteArithmeticAPEngine(
@@ -108,14 +109,14 @@ namespace QuantLib {
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed)
-    : MCDiscreteAveragingAsianEngine<SingleVariate,RNG,S>(process,
-                                                          brownianBridge,
-                                                          antitheticVariate,
-                                                          controlVariate,
-                                                          requiredSamples,
-                                                          requiredTolerance,
-                                                          maxSamples,
-                                                          seed) {}
+    : MCDiscreteAveragingAsianEngineBase<SingleVariate,RNG,S>(process,
+                                                              brownianBridge,
+                                                              antitheticVariate,
+                                                              controlVariate,
+                                                              requiredSamples,
+                                                              requiredTolerance,
+                                                              maxSamples,
+                                                              seed) {}
 
     template <class RNG, class S>
     inline
