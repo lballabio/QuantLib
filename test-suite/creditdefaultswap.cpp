@@ -736,11 +736,11 @@ void CreditDefaultSwapTest::testAccrualRebateAmounts() {
     // key is trade date and value is expected accrual
     typedef map<Date, Real> InputData;
     InputData inputs = map_list_of
-        //(Date(18, Mar, 2009), 24166.67)
-        //(Date(19, Mar, 2009), 0.00)
-        //(Date(20, Mar, 2009), 277.78)
-        //(Date(23, Mar, 2009), 1111.11)
-        //(Date(19, Jun, 2009), 25555.56)
+        (Date(18, Mar, 2009), 24166.67)
+        (Date(19, Mar, 2009), 0.00)
+        (Date(20, Mar, 2009), 277.78)
+        (Date(23, Mar, 2009), 1111.11)
+        (Date(19, Jun, 2009), 25555.56)
         (Date(20, Jun, 2009), 25833.33)
         (Date(21, Jun, 2009), 0.00)
         (Date(22, Jun, 2009), 277.78)
