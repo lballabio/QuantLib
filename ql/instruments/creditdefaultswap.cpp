@@ -431,7 +431,11 @@ namespace QuantLib {
             ->accrualEndDate();
     }
 
-    const ext::shared_ptr<CashFlow>& CreditDefaultSwap::accrualRebate() const {
+    const ext::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::upfrontPayment() const {
+        return upfrontPayment_;
+    }
+
+    const ext::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::accrualRebate() const {
         return accrualRebate_;
     }
 

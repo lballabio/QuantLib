@@ -27,7 +27,7 @@
 #define quantlib_credit_default_swap_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/cashflow.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/default.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/time/schedule.hpp>
@@ -184,7 +184,8 @@ namespace QuantLib {
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
         bool rebatesAccrual() const { return accrualRebate_ != NULL; }
-        const ext::shared_ptr<CashFlow>& accrualRebate() const;
+        const ext::shared_ptr<SimpleCashFlow>& upfrontPayment() const;
+        const ext::shared_ptr<SimpleCashFlow>& accrualRebate() const;
         const Date& tradeDate() const;
         Natural cashSettlementDays() const;
         //@}
@@ -285,8 +286,8 @@ namespace QuantLib {
         bool settlesAccrual_, paysAtDefaultTime_;
         ext::shared_ptr<Claim> claim_;
         Leg leg_;
-        ext::shared_ptr<CashFlow> upfrontPayment_;
-        ext::shared_ptr<CashFlow> accrualRebate_;
+        ext::shared_ptr<SimpleCashFlow> upfrontPayment_;
+        ext::shared_ptr<SimpleCashFlow> accrualRebate_;
         Date protectionStart_;
         Date tradeDate_;
         Natural cashSettlementDays_;
@@ -316,8 +317,8 @@ namespace QuantLib {
         Rate spread;
         Leg leg;
         // if not initialized by constructors means theres no flows.
-        ext::shared_ptr<CashFlow> upfrontPayment;
-        ext::shared_ptr<CashFlow> accrualRebate;
+        ext::shared_ptr<SimpleCashFlow> upfrontPayment;
+        ext::shared_ptr<SimpleCashFlow> accrualRebate;
         bool settlesAccrual;
         bool paysAtDefaultTime;
         ext::shared_ptr<Claim> claim;
