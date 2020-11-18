@@ -2343,6 +2343,9 @@
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianengine.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianenginebase.hpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\all.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>

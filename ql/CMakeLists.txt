@@ -1898,6 +1898,7 @@ set(QuantLib_HDR
     pricingengines/asian/mc_discr_arith_av_strike.hpp
     pricingengines/asian/mc_discr_geom_av_price.hpp
     pricingengines/asian/mcdiscreteasianengine.hpp
+    pricingengines/asian/mcdiscreteasianenginebase.hpp
     pricingengines/barrier/all.hpp
     pricingengines/barrier/analyticbarrierengine.hpp
     pricingengines/barrier/analyticbinarybarrierengine.hpp

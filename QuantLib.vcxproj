@@ -1458,6 +1458,7 @@
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_strike.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianengine.hpp" />
+    <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianenginebase.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\all.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp" />
