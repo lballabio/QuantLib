@@ -108,13 +108,17 @@ namespace QuantLib {
         static Real cleanPrice(const Bond& bond,
                                const YieldTermStructure& discountCurve,
                                Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
+                               const YieldTermStructure& discountCurve,
+                               Date settlementDate = Date());
         static Real bps(const Bond& bond,
                         const YieldTermStructure& discountCurve,
                         Date settlementDate = Date());
         static Rate atmRate(const Bond& bond,
                             const YieldTermStructure& discountCurve,
                             Date settlementDate = Date(),
-                            Real cleanPrice = Null<Real>());
+                            Real price = Null<Real>(),
+                            Bond::Price::Type priceType = Bond::Price::Clean);
         //@}
 
         //! \name Yield (a.k.a. Internal Rate of Return, i.e. IRR) functions
@@ -235,8 +239,29 @@ namespace QuantLib {
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
+                               const ext::shared_ptr<YieldTermStructure>& discount,
+                               Spread zSpread,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+
+        QL_DEPRECATED
         static Spread zSpread(const Bond& bond,
                               Real cleanPrice,
+                              const ext::shared_ptr<YieldTermStructure>&,
+                              const DayCounter& dayCounter,
+                              Compounding compounding,
+                              Frequency frequency,
+                              Date settlementDate = Date(),
+                              Real accuracy = 1.0e-10,
+                              Size maxIterations = 100,
+                              Rate guess = 0.0);
+
+        static Spread zSpread(const Bond& bond,
+                              Real price,
+                              Bond::Price::Type priceType,
                               const ext::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,
