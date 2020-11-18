@@ -111,10 +111,15 @@ namespace QuantLib {
         static Real bps(const Bond& bond,
                         const YieldTermStructure& discountCurve,
                         Date settlementDate = Date());
+        [[deprecated("Use the version with the Bond::Price argument")]]
         static Rate atmRate(const Bond& bond,
                             const YieldTermStructure& discountCurve,
                             Date settlementDate = Date(),
                             Real cleanPrice = Null<Real>());
+        static Rate atmRate(const Bond& bond,
+                            const YieldTermStructure& discountCurve,
+                            Date settlementDate = Date(),
+                            Bond::Price price = Null<Bond::Price>());
         //@}
 
         //! \name Yield (a.k.a. Internal Rate of Return, i.e. IRR) functions
@@ -259,8 +264,19 @@ namespace QuantLib {
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
+        [[deprecated("Use the version with the Bond::Price argument")]]
         static Spread zSpread(const Bond& bond,
                               Real cleanPrice,
+                              const ext::shared_ptr<YieldTermStructure>&,
+                              const DayCounter& dayCounter,
+                              Compounding compounding,
+                              Frequency frequency,
+                              Date settlementDate = Date(),
+                              Real accuracy = 1.0e-10,
+                              Size maxIterations = 100,
+                              Rate guess = 0.0);
+        static Spread zSpread(const Bond& bond,
+                              Bond::Price price,
                               const ext::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,

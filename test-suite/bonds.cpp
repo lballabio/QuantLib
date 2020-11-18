@@ -233,7 +233,7 @@ BOOST_AUTO_TEST_CASE(testAtmRate) {
                                        paymentConvention, redemption, issue);
 
                     bond.setPricingEngine(bondEngine);
-                    Real price = bond.cleanPrice();
+                    Bond::Price price(bond.cleanPrice(), Bond::Price::Clean);
                     Rate calculated =
                         BondFunctions::atmRate(bond, **disc, bond.settlementDate(), price);
 
@@ -245,8 +245,23 @@ BOOST_AUTO_TEST_CASE(testAtmRate) {
                                     "\n maturity:        " << maturity <<
                                     "\n coupon:          " << io::rate(coupon) <<
                                     "\n frequency:       " << frequency <<
-                                    "\n clean price:     " << price <<
-                                    "\n dirty price:     " << price + bond.accruedAmount() <<
+                                    "\n clean price:     " << price.amount() <<
+                                    "\n atm rate:        " << io::rate(calculated));
+                    }
+
+                    price = Bond::Price(bond.dirtyPrice(), Bond::Price::Dirty);
+                    calculated =
+                        BondFunctions::atmRate(bond, **disc, bond.settlementDate(), price);
+
+                    if (std::fabs(coupon - calculated) > tolerance) {
+                        BOOST_ERROR("\natm rate recalculation failed:"
+                                    "\n today:           " << vars.today <<
+                                    "\n settlement date: " << bond.settlementDate() <<
+                                    "\n issue:           " << issue <<
+                                    "\n maturity:        " << maturity <<
+                                    "\n coupon:          " << io::rate(coupon) <<
+                                    "\n frequency:       " << frequency <<
+                                    "\n dirty price:     " << price.amount() <<
                                     "\n atm rate:        " << io::rate(calculated));
                     }
                 }
@@ -300,8 +315,10 @@ BOOST_AUTO_TEST_CASE(testZspread) {
 
                         for (Real spread : spreads) {
 
-                            Real price = BondFunctions::cleanPrice(bond, *discountCurve, spread,
-                                                                   bondDayCount, n, frequency);
+                            Bond::Price price(BondFunctions::cleanPrice(bond, *discountCurve,
+                                                                        spread, bondDayCount, n,
+                                                                        frequency),
+                                              Bond::Price::Clean);
                             Spread calculated = BondFunctions::zSpread(
                                 bond, price, *discountCurve, bondDayCount, n, frequency, Date(),
                                 tolerance, maxEvaluations);
@@ -310,7 +327,7 @@ BOOST_AUTO_TEST_CASE(testZspread) {
                                 // the difference might not matter
                                 Real price2 = BondFunctions::cleanPrice(
                                     bond, *discountCurve, calculated, bondDayCount, n, frequency);
-                                if (std::fabs(price - price2) / price > tolerance) {
+                                if (std::fabs(price.amount() - price2) / price.amount() > tolerance) {
                                     BOOST_ERROR("\nZ-spread recalculation failed:"
                                                 "\n    issue:     " << issue <<
                                                 "\n    maturity:  " << maturity <<
@@ -319,9 +336,9 @@ BOOST_AUTO_TEST_CASE(testZspread) {
                                                 "\n    Z-spread:  " << io::rate(spread) <<
                                                     (n == Compounded ? " compounded" : " continuous") <<
                                                 std::setprecision(7) <<
-                                                "\n    price:     " << price <<
+                                                "\n    clean price:  " << price.amount() <<
                                                 "\n    Z-spread': " << io::rate(calculated) <<
-                                                "\n    price':    " << price2);
+                                                "\n    clean price': " << price2);
                                 }
                             }
                         }
@@ -377,6 +394,7 @@ BOOST_AUTO_TEST_CASE(testTheoretical) {
 
                     rate->setValue(m);
 
+                    // Test yield vs clean price
                     Real price =
                         BondFunctions::cleanPrice(bond, m, bondDayCount, Continuous, frequency);
                     Real calculatedPrice = bond.cleanPrice();
@@ -405,8 +423,41 @@ BOOST_AUTO_TEST_CASE(testTheoretical) {
                                     "\n    frequency: " << frequency <<
                                     "\n    yield:     " << io::rate(m) <<
                                     std::setprecision(7) <<
-                                    "\n    price:     " << price <<
+                                    "\n    clean price: " << price <<
                                     "\n    yield':    " << io::rate(calculatedYield));
+                    }
+
+                    // Test yield vs dirty price
+                    price =
+                        BondFunctions::dirtyPrice(bond, m, bondDayCount, Continuous, frequency);
+                    calculatedPrice = bond.dirtyPrice();
+
+                    if (std::fabs(price - calculatedPrice) > tolerance) {
+                        BOOST_ERROR("price calculation failed:" <<
+                                    "\n    issue:       " << issue <<
+                                    "\n    maturity:    " << maturity <<
+                                    "\n    coupon:      " << io::rate(coupon) <<
+                                    "\n    frequency:   " << frequency <<
+                                    "\n    yield:       " << io::rate(m) <<
+                                    std::setprecision(7) <<
+                                    "\n    expected:    " << price <<
+                                    "\n    calculated': " << calculatedPrice <<
+                                    "\n    error':      " << price - calculatedPrice);
+                    }
+
+                    calculatedYield = BondFunctions::yield(
+                        bond, Bond::Price(calculatedPrice, Bond::Price::Dirty), bondDayCount,
+                        Continuous, frequency, bond.settlementDate(), tolerance, maxEvaluations, 0.05);
+                    if (std::fabs(m - calculatedYield) > tolerance) {
+                        BOOST_ERROR("yield calculation failed:" <<
+                                    "\n    issue:       " << issue <<
+                                    "\n    maturity:    " << maturity <<
+                                    "\n    coupon:      " << io::rate(coupon) <<
+                                    "\n    frequency:   " << frequency <<
+                                    "\n    yield:       " << io::rate(m) <<
+                                    std::setprecision(7) <<
+                                    "\n    dirty price: " << price <<
+                                    "\n    yield':      " << io::rate(calculatedYield));
                     }
                 }
             }

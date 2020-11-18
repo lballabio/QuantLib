@@ -272,6 +272,12 @@ namespace QuantLib {
                                 const YieldTermStructure& discountCurve,
                                 Date settlement,
                                 Real cleanPrice) {
+        return atmRate(bond, discountCurve, settlement, Bond::Price(cleanPrice, Bond::Price::Clean));
+    }
+    Rate BondFunctions::atmRate(const Bond& bond,
+                                const YieldTermStructure& discountCurve,
+                                Date settlement,
+                                const Bond::Price price) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
@@ -279,15 +285,22 @@ namespace QuantLib {
                    "non tradable at " << settlement <<
                    " (maturity being " << bond.maturityDate() << ")");
 
-        Real dirtyPrice = cleanPrice==Null<Real>() ? Null<Real>() :
-                          cleanPrice + bond.accruedAmount(settlement);
-        Real currentNotional = bond.notional(settlement);
-        Real npv = dirtyPrice==Null<Real>() ? Null<Real>() :
-                                              dirtyPrice/100.0 * currentNotional;
+        if (price == Null<Bond::Price>())
+            return CashFlows::atmRate(bond.cashflows(), discountCurve,
+                                      false, settlement, settlement,
+                                      Null<Real>());
+        else {
+            Real dirtyPrice =
+                price.amount() +
+                (price.type() == Bond::Price::Clean ? bond.accruedAmount(settlement) : 0);
 
-        return CashFlows::atmRate(bond.cashflows(), discountCurve,
-                                  false, settlement, settlement,
-                                  npv);
+            Real currentNotional = bond.notional(settlement);
+            Real npv = dirtyPrice / 100.0 * currentNotional;
+
+            return CashFlows::atmRate(bond.cashflows(), discountCurve,
+                                      false, settlement, settlement,
+                                      npv);
+        }
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
@@ -516,6 +529,19 @@ namespace QuantLib {
                                   Real accuracy,
                                   Size maxIterations,
                                   Rate guess) {
+        return zSpread(bond, Bond::Price(cleanPrice, Bond::Price::Clean), d, dayCounter,
+                       compounding, frequency, settlement, accuracy, maxIterations, guess);
+    }
+    Spread BondFunctions::zSpread(const Bond& bond,
+                                  Bond::Price price,
+                                  const ext::shared_ptr<YieldTermStructure>& d,
+                                  const DayCounter& dayCounter,
+                                  Compounding compounding,
+                                  Frequency frequency,
+                                  Date settlement,
+                                  Real accuracy,
+                                  Size maxIterations,
+                                  Rate guess) {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
@@ -523,7 +549,10 @@ namespace QuantLib {
                    "non tradable at " << settlement <<
                    " (maturity being " << bond.maturityDate() << ")");
 
-        Real dirtyPrice = cleanPrice + bond.accruedAmount(settlement);
+        Real dirtyPrice =
+            price.amount() +
+            (price.type() == Bond::Price::Clean ? bond.accruedAmount(settlement) : 0);
+
         dirtyPrice /= 100.0 / bond.notional(settlement);
 
         return CashFlows::zSpread(bond.cashflows(),
@@ -533,5 +562,4 @@ namespace QuantLib {
                                   false, settlement, settlement,
                                   accuracy, maxIterations, guess);
     }
-
 }
