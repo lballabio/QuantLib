@@ -87,10 +87,15 @@ namespace QuantLib {
 
         QL_REQUIRE(!schedule.empty(), "CreditDefaultSwap needs a non-empty schedule.");
 
-        DateGeneration::Rule rule = schedule.rule();
-        QL_REQUIRE((protectionStart_ <= schedule[0])
-            || (rule == DateGeneration::CDS) || (rule == DateGeneration::CDS2015),
-            "protection can not start after accrual");
+        bool postBigBang = false;
+        if (schedule.hasRule()) {
+            DateGeneration::Rule rule = schedule.rule();
+            postBigBang = rule == DateGeneration::CDS || rule == DateGeneration::CDS2015;
+        }
+
+        if (!postBigBang) {
+            QL_REQUIRE(protectionStart_ <= schedule[0], "protection can not start after accrual");
+        }
 
         leg_ = FixedRateLeg(schedule)
             .withNotionals(notional_)
@@ -100,7 +105,7 @@ namespace QuantLib {
 
         // Deduce the trade date if not given.
         if (tradeDate_ == Date()) {
-            if (rule == DateGeneration::CDS2015 || rule == DateGeneration::CDS) {
+            if (postBigBang) {
                 tradeDate_ = protectionStart_;
             } else {
                 tradeDate_ = protectionStart_ - 1;
