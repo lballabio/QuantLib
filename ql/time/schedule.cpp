@@ -44,23 +44,6 @@ namespace QuantLib {
             return result;
         }
 
-        Date previousTwentieth(const Date& d, DateGeneration::Rule rule) {
-            Date result = Date(20, d.month(), d.year());
-            if (result > d)
-                result -= 1*Months;
-            if (rule == DateGeneration::TwentiethIMM ||
-                rule == DateGeneration::OldCDS ||
-                rule == DateGeneration::CDS ||
-                rule == DateGeneration::CDS2015) {
-                Month m = result.month();
-                if (m % 3 != 0) { // not a main IMM nmonth
-                    Integer skip = m%3;
-                    result -= skip*Months;
-                }
-            }
-            return result;
-        }
-
         bool allowsEndOfMonth(const Period& tenor) {
             return (tenor.units() == Months || tenor.units() == Years)
                 && tenor >= 1*Months;
@@ -670,33 +653,21 @@ namespace QuantLib {
                         rule_, endOfMonth_, firstDate_, nextToLastDate_);
     }
 
-    Date cdsMaturity(const Date& tradeDate, const Period& tenor, DateGeneration::Rule rule) {
-
-        QL_REQUIRE(rule == DateGeneration::CDS2015 || rule == DateGeneration::CDS || rule == DateGeneration::OldCDS,
-            "cdsMaturity should only be used with date generation rule CDS2015, CDS or OldCDS");
-
-        QL_REQUIRE(tenor.units() == Years || (tenor.units() == Months && tenor.length() % 3 == 0),
-            "cdsMaturity expects a tenor that is a multiple of 3 months.");
-
-        if (rule == DateGeneration::OldCDS) {
-            QL_REQUIRE(tenor != 0 * Months, "A tenor of 0M is not supported for OldCDS.");
-        }
-
-        Date anchorDate = previousTwentieth(tradeDate, rule);
-        if (rule == DateGeneration::CDS2015 && (anchorDate == Date(20, Dec, anchorDate.year()) ||
-            anchorDate == Date(20, Jun, anchorDate.year()))) {
-            if (tenor.length() == 0) {
-                return Null<Date>();
-            } else {
-                anchorDate -= 3 * Months;
+    Date previousTwentieth(const Date& d, DateGeneration::Rule rule) {
+        Date result = Date(20, d.month(), d.year());
+        if (result > d)
+            result -= 1 * Months;
+        if (rule == DateGeneration::TwentiethIMM ||
+            rule == DateGeneration::OldCDS ||
+            rule == DateGeneration::CDS ||
+            rule == DateGeneration::CDS2015) {
+            Month m = result.month();
+            if (m % 3 != 0) { // not a main IMM nmonth
+                Integer skip = m % 3;
+                result -= skip * Months;
             }
         }
-
-        Date maturity = anchorDate + tenor + 3 * Months;
-        QL_REQUIRE(maturity > tradeDate, "error calculating CDS maturity. Tenor is " << tenor << ", trade date is " <<
-            io::iso_date(tradeDate) << " generating a maturity of " << io::iso_date(maturity) << " <= trade date.");
-
-        return maturity;
+        return result;
     }
 
 }

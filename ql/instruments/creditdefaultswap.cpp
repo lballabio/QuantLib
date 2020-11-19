@@ -30,6 +30,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -475,6 +476,35 @@ namespace QuantLib {
         upfrontBPS = Null<Real>();
         upfrontNPV = Null<Real>();
         accrualRebateNPV = Null<Real>();
+    }
+
+    Date cdsMaturity(const Date& tradeDate, const Period& tenor, DateGeneration::Rule rule) {
+
+        QL_REQUIRE(rule == DateGeneration::CDS2015 || rule == DateGeneration::CDS || rule == DateGeneration::OldCDS,
+            "cdsMaturity should only be used with date generation rule CDS2015, CDS or OldCDS");
+
+        QL_REQUIRE(tenor.units() == Years || (tenor.units() == Months && tenor.length() % 3 == 0),
+            "cdsMaturity expects a tenor that is a multiple of 3 months.");
+
+        if (rule == DateGeneration::OldCDS) {
+            QL_REQUIRE(tenor != 0 * Months, "A tenor of 0M is not supported for OldCDS.");
+        }
+
+        Date anchorDate = previousTwentieth(tradeDate, rule);
+        if (rule == DateGeneration::CDS2015 && (anchorDate == Date(20, Dec, anchorDate.year()) ||
+            anchorDate == Date(20, Jun, anchorDate.year()))) {
+            if (tenor.length() == 0) {
+                return Null<Date>();
+            } else {
+                anchorDate -= 3 * Months;
+            }
+        }
+
+        Date maturity = anchorDate + tenor + 3 * Months;
+        QL_REQUIRE(maturity > tradeDate, "error calculating CDS maturity. Tenor is " << tenor << ", trade date is " <<
+            io::iso_date(tradeDate) << " generating a maturity of " << io::iso_date(maturity) << " <= trade date.");
+
+        return maturity;
     }
 
 }
