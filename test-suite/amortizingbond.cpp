@@ -37,9 +37,9 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 
 	Real rates[] = {0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12};
 	Real amounts[] = {0.277777778, 0.321639520, 0.369619473, 0.421604034,
-					  0.477415295, 0.536821623, 0.599550525, 
-					  0.665302495, 0.733764574, 0.804622617,
-					  0.877571570, 0.952323396, 1.028612597};
+		              0.477415295, 0.536821623, 0.599550525, 
+		              0.665302495, 0.733764574, 0.804622617,
+		              0.877571570, 0.952323396, 1.028612597};
 
 	Frequency freq = Monthly;
 
@@ -66,7 +66,7 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 			Real error = std::fabs(totalAmount-amounts[i]);
 			if (error > tolerance) {
 				BOOST_ERROR("\n" <<
-							" Rate: " << rates[i] <<
+					        " Rate: " << rates[i] <<
 							" " << k << "th cash flow " 
 							" Failed!" <<
 							" Expected Amount: " << amounts[i] <<
@@ -90,7 +90,7 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 	}
 }
 
-void AmortizingBondTest::testAmortizingFixedRateBond() {
+void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 	BOOST_TEST_MESSAGE("Testing Brazilian amortizing fixed rate bond...");
 
 	/*
@@ -158,7 +158,7 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 	Date issueDate(2, March, 2020);
 	Date maturityDate(2, March, 2025);
 
-	schedule = Schedule(issueDate,
+	Schedule schedule(issueDate,
 						maturityDate,
 						Period(Monthly),
 						Brazil(Brazil::Settlement),
@@ -183,23 +183,24 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 			);
 
 	const Real tolerance = 1.0e-6;
+	Real error;
 	Leg cashflows = risf11.cashflows();
 	for(Size k=0; k < cashflows.size() / 2; ++k) {
-		error = std::fabs(coupons[k]- cashflows[2*k]->amount());
+		error = std::fabs(expected_coupons[k]- cashflows[2*k]->amount());
 		if(error > tolerance) {
 			BOOST_ERROR("\n" <<
 				" " << k << "th cash flow " 
 				" Failed!" <<
-				" Expected Coupon: " << coupons[k] <<
+				" Expected Coupon: " << expected_coupons[k] <<
 				" Calculated Coupon: " << cashflows[2*k]->amount());
 		}
 
-		error = std::fabs(amortizations[k]- cashflows[2*k+1]->amount());
+		error = std::fabs(expected_amortizations[k]- cashflows[2*k+1]->amount());
 		if(error > tolerance) {
 			BOOST_ERROR("\n" <<
 				" " << k << "th cash flow " 
 				" Failed!" <<
-				" Expected Amortization: " << amortizations[k] <<
+				" Expected Amortization: " << expected_amortizations[k] <<
 				" Calculated Amortization: " << cashflows[2*k+1]->amount());
 		}
 
