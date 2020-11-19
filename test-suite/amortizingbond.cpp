@@ -154,7 +154,6 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 	};
 
 	Natural settlementDays = 0;
-	Real faceAmount = 1000.0;
 	Date issueDate(2, March, 2020);
 	Date maturityDate(2, March, 2025);
 
