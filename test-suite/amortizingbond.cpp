@@ -117,7 +117,7 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 		 66.66646137,  49.99984602,  33.33324734,  16.66662367
 	};
 
-	std::vector<Real> expected_amortizations{
+	Real expected_amortizations[] {
 		16.66700000, 16.66651102, 16.66629694, 16.66680337,
 		16.66653432, 16.66683675, 16.66710033, 16.66672548,
 		16.66685753, 16.66678695, 16.66665095, 16.66651761,
@@ -135,7 +135,7 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 		16.66661534, 16.66659867, 16.66662367, 16.66662367
 	};
 
-	std::vector<Real> expected_coupons{
+	Real expected_coupons[] {
 		5.97950399, 4.85474255, 5.27619136, 5.18522454,
 		5.33753111, 5.24221882, 4.91231709, 4.59116258,
 		4.73037674, 4.63940686, 4.54843737, 3.81920094,
