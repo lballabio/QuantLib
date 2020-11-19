@@ -99,7 +99,8 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 	* ISIN Code - BRRISFDBS005
 	* Fiduciary Agent URL - https://www.pentagonotrustee.com.br/Site/DetalhesEmissor?ativo=RISF11&aba=tab-5&tipo=undefined
 	*/
-	std::vector<Real> notionals{
+
+	static const Real arr[] = {
 		1000		, 983.33300000, 966.66648898, 950.00019204,
 		933.33338867, 916.66685434, 900.00001759, 883.33291726,
 		866.66619177, 849.99933423, 833.33254728, 816.66589633,
@@ -116,6 +117,7 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 		133.33295388, 116.66633464,  99.99973207,  83.33307672,
 		 66.66646137,  49.99984602,  33.33324734,  16.66662367
 	};
+	std::vector<Real> notionals (arr, arr + sizeof(arr) / sizeof(arr[0]) );
 
 	Real expected_amortizations[] = {
 		16.66700000, 16.66651102, 16.66629694, 16.66680337,
