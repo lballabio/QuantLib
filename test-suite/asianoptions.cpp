@@ -29,6 +29,7 @@
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
+#include <ql/pricingengines/asian/mc_discr_arith_av_price_heston.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
 #include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
@@ -684,6 +685,110 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     }
 
 }
+
+
+void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
+
+    BOOST_TEST_MESSAGE(
+           "Testing Monte Carlo discrete arithmetic average-price Asians in Heston model...");
+
+    // data from "A numerical method to price exotic path-dependent
+    // options on an underlying described by the Heston stochastic
+    // volatility model", Ballestra, Pacelli and Zirilli, Journal
+    // of Banking & Finance, 2007 (section 4 - Numerical Results)
+
+    // nb. for Heston, the volatility param below is ignored
+    DiscreteAverageData cases[] = {
+        { Option::Call, 120.0, 100.0, 0.0, 0.05, 1.0/12.0, 11.0/12.0, 12,
+          0.1, false, 22.50 }
+    };
+
+    struct DiscreteAverageData {
+        Option::Type type;
+        Real underlying;
+        Real strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Time first;
+        Time length;
+        Size fixings;
+        Volatility volatility;
+        bool controlVariate;
+        Real result;
+    };
+
+
+    Real vol = 0.3;
+    Real v0 = vol*vol;
+    Real kappa = 11.35;
+    Real theta = 0.022;
+    Real sigma = 0.618;
+    Real rho = -0.5;
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+
+    Average::Type averageType = Average::Arithmetic;
+    Real runningSum = 0.0;
+    Size pastFixings = 0;
+    for (Size l=0; l<LENGTH(cases); l++) {
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(cases[l].type, cases[l].strike));
+
+        Time dt = cases[l].length/(cases[l].fixings-1);
+        std::vector<Time> timeIncrements(cases[l].fixings);
+        std::vector<Date> fixingDates(cases[l].fixings);
+        timeIncrements[0] = cases[l].first;
+        fixingDates[0] = today + Integer(timeIncrements[0]*365.25);
+        for (Size i=1; i<cases[l].fixings; i++) {
+            timeIncrements[i] = i*dt + cases[l].first;
+            fixingDates[i] = today + Integer(timeIncrements[i]*365.25);
+        }
+        ext::shared_ptr<Exercise> exercise(new
+            EuropeanExercise(fixingDates[cases[l].fixings-1]));
+
+        spot ->setValue(cases[l].underlying);
+        qRate->setValue(cases[l].dividendYield);
+        rRate->setValue(cases[l].riskFreeRate);
+
+        ext::shared_ptr<HestonProcess> hestonProcess(new
+            HestonProcess(Handle<YieldTermStructure>(rTS),
+            Handle<YieldTermStructure>(qTS),
+            Handle<Quote>(spot),
+            v0, kappa, theta, sigma, rho));
+
+        ext::shared_ptr<PricingEngine> engine =
+            MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
+                .withSamples(32768);
+
+        DiscreteAveragingAsianOption option(averageType, runningSum,
+                                            pastFixings, fixingDates,
+                                            payoff, exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real expected = cases[l].result;
+        // Bounds given in paper, "22.48 to 22.52"
+        Real tolerance = 2.0e-2;
+
+        if (std::fabs(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                        fixingDates, payoff, exercise, spot->value(),
+                        qRate->value(), rRate->value(), today,
+                        vol, expected, calculated, tolerance);
+        }
+
+    }
+
+}
+
 
 
 void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
@@ -1454,6 +1559,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
     suite->add(QUANTLIB_TEST_CASE(
