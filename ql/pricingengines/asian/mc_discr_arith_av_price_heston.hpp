@@ -38,14 +38,9 @@ namespace QuantLib {
     class MCDiscreteArithmeticAPHestonEngine
         : public MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S> {
       public:
-        typedef
-        typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::path_generator_type
-            path_generator_type;
-        typedef
-        typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::path_pricer_type
-            path_pricer_type;
-        typedef typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::stats_type
-            stats_type;
+        typedef typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::path_generator_type path_generator_type;
+        typedef typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::path_pricer_type path_pricer_type;
+        typedef typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::stats_type stats_type;
         // constructor
         MCDiscreteArithmeticAPHestonEngine(
              const ext::shared_ptr<P>& process,
@@ -147,15 +142,12 @@ namespace QuantLib {
                     this->arguments_.pastFixings));
     }
 
-
     template <class RNG, class S, class P>
-    inline
-    MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::MakeMCDiscreteArithmeticAPHestonEngine(
+    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::MakeMCDiscreteArithmeticAPHestonEngine(
              const ext::shared_ptr<P>& process)
     : process_(process), antithetic_(false),
       samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
-
 
     template<class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
@@ -165,7 +157,6 @@ namespace QuantLib {
         samples_ = samples;
         return *this;
     }
-
 
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
@@ -180,14 +171,12 @@ namespace QuantLib {
         return *this;
     }
 
-
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
     MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::withMaxSamples(Size samples) {
         maxSamples_ = samples;
         return *this;
     }
-
 
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
@@ -196,7 +185,6 @@ namespace QuantLib {
         return *this;
     }
 
-
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
     MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::withAntitheticVariate(bool b) {
@@ -204,11 +192,8 @@ namespace QuantLib {
         return *this;
     }
 
-
     template <class RNG, class S, class P>
-    inline
-    MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>()
-                                                                      const {
+    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>() const {
         return ext::shared_ptr<PricingEngine>(new
             MCDiscreteArithmeticAPHestonEngine<RNG,S,P>(process_,
                                                         antithetic_,
@@ -217,8 +202,6 @@ namespace QuantLib {
                                                         maxSamples_,
                                                         seed_));
     }
-
-
 
 }
 
