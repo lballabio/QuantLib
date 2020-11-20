@@ -181,4 +181,38 @@ namespace QuantLib {
         addRedemptionsToCashflows();
     }
 
+    AmortizingFixedRateBond::AmortizingFixedRateBond(
+                                      Natural settlementDays,
+                                      const std::vector<Real>& notionals,
+                                      const Schedule& schedule,
+                                      const std::vector<InterestRate>& coupons,
+                                      BusinessDayConvention paymentConvention,
+                                      const Date& issueDate,
+                                      const Calendar& paymentCalendar,
+                                      const Period& exCouponPeriod,
+                                      const Calendar& exCouponCalendar,
+                                      const BusinessDayConvention exCouponConvention,
+                                      bool exCouponEndOfMonth)
+    : Bond(settlementDays,
+        paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
+        issueDate),
+      frequency_(schedule.tenor().frequency()),
+      dayCounter_(coupons[0].dayCounter()) {
+
+        maturityDate_ = schedule.endDate();
+
+        cashflows_ = FixedRateLeg(schedule)
+            .withNotionals(notionals)
+            .withCouponRates(coupons)
+            .withPaymentAdjustment(paymentConvention)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
+
+        addRedemptionsToCashflows();
+
+        QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+    }
+
 }
