@@ -2325,6 +2325,9 @@
     <ClInclude Include="ql\pricingengines\asian\analytic_cont_geom_av_price.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\asian\analytic_cont_geom_av_price_heston.hpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\asian\analytic_discr_geom_av_price.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
@@ -5546,6 +5549,9 @@
       <Filter>pricingengines</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\analytic_cont_geom_av_price.cpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\asian\analytic_cont_geom_av_price_heston.cpp">
       <Filter>pricingengines\asian</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\analytic_discr_geom_av_price.cpp">
