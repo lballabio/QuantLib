@@ -44,23 +44,6 @@ namespace QuantLib {
             return result;
         }
 
-        Date previousTwentieth(const Date& d, DateGeneration::Rule rule) {
-            Date result = Date(20, d.month(), d.year());
-            if (result > d)
-                result -= 1*Months;
-            if (rule == DateGeneration::TwentiethIMM ||
-                rule == DateGeneration::OldCDS ||
-                rule == DateGeneration::CDS ||
-                rule == DateGeneration::CDS2015) {
-                Month m = result.month();
-                if (m % 3 != 0) { // not a main IMM nmonth
-                    Integer skip = m%3;
-                    result -= skip*Months;
-                }
-            }
-            return result;
-        }
-
         bool allowsEndOfMonth(const Period& tenor) {
             return (tenor.units() == Months || tenor.units() == Years)
                 && tenor >= 1*Months;
@@ -275,7 +258,12 @@ namespace QuantLib {
           case DateGeneration::Forward:
 
             if (*rule_ == DateGeneration::CDS || *rule_ == DateGeneration::CDS2015) {
-                dates_.push_back(previousTwentieth(effectiveDate, *rule_));
+                Date prev20th = previousTwentieth(effectiveDate, *rule_);
+                if (calendar_.adjust(prev20th, convention) > effectiveDate) {
+                    dates_.push_back(prev20th - 3 * Months);
+                    isRegular_.push_back(true);
+                }
+                dates_.push_back(prev20th);
             } else {
                 dates_.push_back(effectiveDate);
             }
@@ -307,7 +295,7 @@ namespace QuantLib {
                 }
                 if (next20th != effectiveDate) {
                     dates_.push_back(next20th);
-                    isRegular_.push_back(false);
+                    isRegular_.push_back(*rule_ == DateGeneration::CDS || *rule_ == DateGeneration::CDS2015);
                     seed = next20th;
                 }
             }
@@ -315,11 +303,6 @@ namespace QuantLib {
             exitDate = terminationDate;
             if (nextToLastDate_ != Date())
                 exitDate = nextToLastDate_;
-            if(*rule_ == DateGeneration::CDS2015
-               && nextTwentieth(terminationDate, *rule_) == terminationDate
-               && terminationDate.month() %2 == 1) {
-                exitDate = nextTwentieth(terminationDate+1, *rule_);
-            }
             for (;;) {
                 Date temp = nullCalendar.advance(seed, periods*(*tenor_),
                                                  convention, *endOfMonth_);
@@ -348,16 +331,10 @@ namespace QuantLib {
                 if (*rule_ == DateGeneration::Twentieth ||
                     *rule_ == DateGeneration::TwentiethIMM ||
                     *rule_ == DateGeneration::OldCDS ||
-                    *rule_ == DateGeneration::CDS) {
+                    *rule_ == DateGeneration::CDS ||
+                    *rule_ == DateGeneration::CDS2015) {
                     dates_.push_back(nextTwentieth(terminationDate, *rule_));
                     isRegular_.push_back(true);
-                } else if(*rule_ == DateGeneration::CDS2015) {
-                    Date tentativeTerminationDate =
-                        nextTwentieth(terminationDate, *rule_);
-                    if(tentativeTerminationDate.month() %2 == 0) {
-                        dates_.push_back(tentativeTerminationDate);
-                        isRegular_.push_back(true);
-                    }
                 } else {
                     dates_.push_back(terminationDate);
                     isRegular_.push_back(false);
@@ -674,6 +651,23 @@ namespace QuantLib {
         return Schedule(effectiveDate_, terminationDate_, *tenor_, calendar,
                         convention, terminationDateConvention,
                         rule_, endOfMonth_, firstDate_, nextToLastDate_);
+    }
+
+    Date previousTwentieth(const Date& d, DateGeneration::Rule rule) {
+        Date result = Date(20, d.month(), d.year());
+        if (result > d)
+            result -= 1 * Months;
+        if (rule == DateGeneration::TwentiethIMM ||
+            rule == DateGeneration::OldCDS ||
+            rule == DateGeneration::CDS ||
+            rule == DateGeneration::CDS2015) {
+            Month m = result.month();
+            if (m % 3 != 0) { // not a main IMM nmonth
+                Integer skip = m % 3;
+                result -= skip * Months;
+            }
+        }
+        return result;
     }
 
 }
