@@ -71,8 +71,6 @@ namespace QuantLib {
 
         void calculate() const;
 
-        // TODO: MAKE PRIVATE BEFORE PUSHING vvv
-
         // The evolution probability function from t0 to tReset
         Real propagator(Time resetTime,
                         Real varReset) const;
@@ -81,24 +79,6 @@ namespace QuantLib {
         ext::shared_ptr<AnalyticHestonEngine> forwardChF(
                                             Handle<Quote>& spotReset,
                                             Real varReset) const;
-
-        // Integrate over characteristic function to generate P1, P2 (fall back on this
-        // when reset time is very close, to avoid numerical issues with tReset=0s)
-        std::pair<Real, Real> calculateP1P2(Time t,
-                                            Handle<Quote>& St,
-                                            Real K,
-                                            Real ratio,
-                                            Real phiRightLimit = 100) const;
-
-        // Integrate P1, P2 over te propagator function to calculate forward-start price
-        std::pair<Real, Real> calculateP1P2Hat(Time tenor,
-                                               Time resetTime,
-                                               Real K,
-                                               Real ratio,
-                                               Real phiRightLimit = 100,
-                                               Real nuRightLimit = 2.0) const;
-
-        //       TO HERE                     ^^^
 
       private:
         // Parameters for the internal chF generators
@@ -118,6 +98,23 @@ namespace QuantLib {
         // integrator should be non-adaptive as this can cause very long runtimes. Gaussian
         // Quadrature has been found to work well.
         GaussLegendreIntegration outerIntegrator_;
+
+        // Integrate over characteristic function to generate P1, P2 (fall back on this
+        // when reset time is very close, to avoid numerical issues with tReset=0s)
+        std::pair<Real, Real> calculateP1P2(Time t,
+                                            Handle<Quote>& St,
+                                            Real K,
+                                            Real ratio,
+                                            Real phiRightLimit = 100) const;
+
+        // Integrate P1, P2 over te propagator function to calculate forward-start price
+        std::pair<Real, Real> calculateP1P2Hat(Time tenor,
+                                               Time resetTime,
+                                               Real K,
+                                               Real ratio,
+                                               Real phiRightLimit = 100,
+                                               Real nuRightLimit = 2.0) const;
+
     };
 }
 

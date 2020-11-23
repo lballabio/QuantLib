@@ -33,7 +33,7 @@ namespace QuantLib {
                      Real logK,
                      Time tenor,
                      bool P1, // true for P1, false for P2
-                     Real phiRightLimit = 100) : engine_(engine), logK_(logK), tenor_(tenor), phiRightLimit_(phiRightLimit) {
+                     Real phiRightLimit = 100) : engine_(engine), logK_(logK), phiRightLimit_(phiRightLimit), tenor_(tenor) {
             i_ = std::complex<Real>(0.0, 1.0);
 
             // Only difference between P1 and P2 integral is the additional term in the chF evaluation
@@ -69,8 +69,8 @@ namespace QuantLib {
                         const AnalyticHestonForwardEuropeanEngine* const parent,
                         Real phiRightLimit,
                         Real nuRightLimit) : tenor_(tenor), resetTime_(resetTime),
-            s0_(s0), logK_(logK), P1_(P1), parent_(parent), phiRightLimit_(phiRightLimit),
-            nuRightLimit_(nuRightLimit), innerIntegrator_(128) {}
+            s0_(s0), P1_(P1), logK_(logK), phiRightLimit_(phiRightLimit),
+            nuRightLimit_(nuRightLimit), parent_(parent), innerIntegrator_(128) {}
         double operator()(double nu) const {
 
             // Rescale nu to [-1, 1]
