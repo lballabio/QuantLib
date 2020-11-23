@@ -243,7 +243,7 @@ namespace QuantLib {
         ext::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
 
         ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine(
-            new AnalyticHestonEngine(hestonModel));
+            new AnalyticHestonEngine(hestonModel, integrationOrder_));
 
         // Not sure how to pass only the chF, so just pass the whole thing for now!
         return analyticHestonEngine;
