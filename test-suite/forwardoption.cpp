@@ -735,11 +735,12 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
    for (Size j=0; j<2; j++) {
 
-      Real tolerance = 5e-4;
+      Real tolerance = 2e-4;
       Option::Type type = optionTypes[j];
 
       Size timeSteps = 50;
-      Size numberOfSamples = 32768;
+      Size numberOfSamples = 65536;
+      Size mcSeed = 42;
 
       Real q = 0.03;
       Real r = 0.005;
@@ -776,7 +777,8 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
       ext::shared_ptr<PricingEngine> mcEngine 
          = MakeMCForwardEuropeanHestonEngine<LowDiscrepancy>(hestonProcess)
                .withSteps(timeSteps)
-               .withSamples(numberOfSamples);
+               .withSamples(numberOfSamples)
+               .withSeed(mcSeed);
 
        ext::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticEngine(
            new AnalyticHestonForwardEuropeanEngine(hestonProcess));
