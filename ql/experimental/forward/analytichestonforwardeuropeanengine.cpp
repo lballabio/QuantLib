@@ -33,8 +33,8 @@ namespace QuantLib {
                      Real logK,
                      Time tenor,
                      bool P1, // true for P1, false for P2
-                     Real phiRightLimit = 100) : engine_(engine), logK_(logK), phiRightLimit_(phiRightLimit), tenor_(tenor) {
-            i_ = std::complex<Real>(0.0, 1.0);
+                     Real phiRightLimit = 100) : engine_(engine), logK_(logK),
+            phiRightLimit_(phiRightLimit), tenor_(tenor), i_(std::complex<Real>(0.0, 1.0)) {
 
             // Only difference between P1 and P2 integral is the additional term in the chF evaluation
             if (P1) {

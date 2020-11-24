@@ -29,10 +29,9 @@
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/math/modifiedbessel.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/exercise.hpp>
 #include <ql/quotes/simplequote.hpp>
-
-#include <ql/math/integrals/gaussianquadratures.hpp>
 
 namespace QuantLib {
 
@@ -65,9 +64,8 @@ namespace QuantLib {
     class AnalyticHestonForwardEuropeanEngine : public GenericEngine<ForwardOptionArguments<VanillaOption::arguments>,
                                                        VanillaOption::results> {
       public:
-        AnalyticHestonForwardEuropeanEngine(
-                        const ext::shared_ptr<HestonProcess>& process,
-                        Size integrationOrder = 144);
+        AnalyticHestonForwardEuropeanEngine(const ext::shared_ptr<HestonProcess>& process,
+                                            Size integrationOrder = 144);
 
         void calculate() const;
 
