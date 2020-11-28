@@ -143,6 +143,14 @@ jobs:
             cxxflags: "-O2 -g0 -std=c++11 -Wall -Wno-unknown-pragmas -Werror"
             configureflags: --enable-std-classes
             tests: true
+          - name: "Thread-safe observer enabled"
+            shortname: threadsafe
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            cxxflags: "-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+            configureflags: --enable-thread-safe-observer-pattern
+            tests: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v2
