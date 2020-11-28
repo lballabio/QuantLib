@@ -3060,6 +3060,12 @@
     <ClInclude Include="ql\experimental\futures\overnightindexfutureratehelper.hpp">
       <Filter>experimental\futures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\forward\all.hpp">
+      <Filter>experimental\futures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\forward\analytichestonforwardeuropeanengine.hpp">
+      <Filter>experimental\futures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\fx\all.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
@@ -7026,6 +7032,9 @@
     </ClCompile>
     <ClCompile Include="ql\math\integrals\exponentialintegrals.cpp">
       <Filter>math\integrals</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp">
+      <Filter>experimental\forward</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

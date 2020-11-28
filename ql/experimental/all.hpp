@@ -13,6 +13,7 @@
 #include <ql/experimental/credit/all.hpp>
 #include <ql/experimental/exoticoptions/all.hpp>
 #include <ql/experimental/finitedifferences/all.hpp>
+#include <ql/experimental/forward/all.hpp>
 #include <ql/experimental/futures/all.hpp>
 #include <ql/experimental/fx/all.hpp>
 #include <ql/experimental/inflation/all.hpp>

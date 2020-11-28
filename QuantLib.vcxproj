@@ -720,6 +720,8 @@
     <ClInclude Include="ql\experimental\finitedifferences\glued1dmesher.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\modtriplebandlinearop.hpp" />
     <ClInclude Include="ql\experimental\finitedifferences\vanillavppoption.hpp" />
+    <ClInclude Include="ql\experimental\forward\all.hpp" />
+    <ClInclude Include="ql\experimental\forward\analytichestonforwardeuropeanengine.hpp" />
     <ClInclude Include="ql\experimental\futures\all.hpp" />
     <ClInclude Include="ql\experimental\futures\overnightindexfuture.hpp" />
     <ClInclude Include="ql\experimental\futures\overnightindexfutureratehelper.hpp" />
@@ -2039,6 +2041,7 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\glued1dmesher.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\vanillavppoption.cpp" />
+    <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp" />
     <ClCompile Include="ql\experimental\futures\overnightindexfuture.cpp" />
     <ClCompile Include="ql\experimental\futures\overnightindexfutureratehelper.cpp" />
     <ClCompile Include="ql\experimental\fx\blackdeltacalculator.cpp" />

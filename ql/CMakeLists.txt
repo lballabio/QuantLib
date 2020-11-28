@@ -183,6 +183,7 @@ set(QuantLib_SRC
     experimental/finitedifferences/fdsimpleklugeextouvppengine.cpp
     experimental/finitedifferences/glued1dmesher.cpp
     experimental/finitedifferences/vanillavppoption.cpp
+    experimental/forward/analytichestonforwardeuropeanengine.cpp
     experimental/futures/overnightindexfuture.cpp
     experimental/futures/overnightindexfutureratehelper.cpp
     experimental/fx/blackdeltacalculator.cpp
@@ -1149,6 +1150,7 @@ set(QuantLib_HDR
     experimental/finitedifferences/glued1dmesher.hpp
     experimental/finitedifferences/modtriplebandlinearop.hpp
     experimental/finitedifferences/vanillavppoption.hpp
+    experimental/forward/analytichestonforwardeuropeanengine.hpp
     experimental/futures/all.hpp
     experimental/futures/overnightindexfuture.hpp
     experimental/futures/overnightindexfutureratehelper.hpp
