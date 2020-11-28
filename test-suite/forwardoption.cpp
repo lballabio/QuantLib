@@ -94,7 +94,7 @@ void ForwardOptionTest::testValues() {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -160,7 +160,7 @@ void ForwardOptionTest::testPerformanceValues() {
     };
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -235,8 +235,7 @@ namespace {
         Volatility vols[] = { 0.11, 0.50, 1.20 };
 
         DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
-        Settings::instance().evaluationDate() = today;
+        Date today = Settings::instance().evaluationDate();
 
         ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
         ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -406,8 +405,7 @@ void ForwardOptionTest::testGreeksInitialization() {
 
    DayCounter dc = Actual360();
    SavedSettings backup;
-   Date today = Date::todaysDate();
-   Settings::instance().evaluationDate() = today;
+   Date today = Settings::instance().evaluationDate();
 
    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
@@ -527,8 +525,7 @@ void ForwardOptionTest::testMCPrices() {
 
    DayCounter dc = Actual360();
    SavedSettings backup;
-   Date today = Date::todaysDate();
-   Settings::instance().evaluationDate() = today;
+   Date today = Settings::instance().evaluationDate();
 
    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
@@ -609,8 +606,7 @@ void ForwardOptionTest::testHestonMCPrices() {
 
       DayCounter dc = Actual360();
       SavedSettings backup;
-      Date today = Date::todaysDate();
-      Settings::instance().evaluationDate() = today;
+      Date today = Settings::instance().evaluationDate();
 
       Date exDate = today + 1*Years;
       ext::shared_ptr<Exercise> exercise(
@@ -735,11 +731,11 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
    for (Size j=0; j<2; j++) {
 
-      Real tolerance = 2e-4;
+      Real tolerance = 1e-4;
       Option::Type type = optionTypes[j];
 
       Size timeSteps = 50;
-      Size numberOfSamples = 65536;
+      Size numberOfSamples = 131072;
       Size mcSeed = 42;
 
       Real q = 0.03;
@@ -755,8 +751,7 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
       DayCounter dc = Actual360();
       SavedSettings backup;
-      Date today = Date::todaysDate();
-      Settings::instance().evaluationDate() = today;
+      Date today = Settings::instance().evaluationDate();
 
       Date exDate = today + 1*Years;
       ext::shared_ptr<Exercise> exercise(
@@ -775,7 +770,7 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
          new HestonProcess(rTS, qTS, Handle<Quote>(spot), v0, kappa, theta, sigma, rho));
 
       ext::shared_ptr<PricingEngine> mcEngine 
-         = MakeMCForwardEuropeanHestonEngine<LowDiscrepancy>(hestonProcess)
+         = MakeMCForwardEuropeanHestonEngine<PseudoRandom>(hestonProcess)
                .withSteps(timeSteps)
                .withSamples(numberOfSamples)
                .withSeed(mcSeed);
