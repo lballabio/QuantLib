@@ -541,8 +541,7 @@ namespace QuantLib {
     Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
         boost::lock_guard<boost::recursive_mutex> lock(mutex_);
 
-        if (h)  {
-            QL_REQUIRE(proxy_, "unregister called without a proxy");
+        if (h && proxy_)  {
             h->unregisterObserver(proxy_);
         }
 
