@@ -211,9 +211,9 @@ namespace QuantLib {
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>::MakeMCForwardEuropeanHestonEngine(
              const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), steps_(Null<Size>()),
+    : process_(process), antithetic_(false), controlVariate_(false), steps_(Null<Size>()),
       stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0), controlVariate_(false) {}
+      tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>&
