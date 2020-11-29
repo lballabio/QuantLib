@@ -143,6 +143,15 @@ jobs:
             cxxflags: "-O2 -g0 -std=c++11 -Wall -Wno-unknown-pragmas -Werror"
             configureflags: --enable-std-classes
             tests: true
+          - name: "Thread-safe observer enabled"
+            shortname: threadsafe
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            cxxflags: "-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
+            configureflags: --enable-thread-safe-observer-pattern
+            moreflags: -lboost_thread -lboost_system -pthread
+            tests: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v2
@@ -175,4 +184,4 @@ jobs:
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
         make install
-        ${{ matrix.cxx }} ${{ matrix.cxxflags }} test1.cpp test2.cpp -lQuantLib
+        ${{ matrix.cxx }} ${{ matrix.cxxflags }} test1.cpp test2.cpp -lQuantLib ${{ matrix.moreflags }}
