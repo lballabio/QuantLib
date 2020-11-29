@@ -52,7 +52,8 @@ namespace QuantLib {
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
-             BigNatural seed);
+             BigNatural seed,
+             bool controlVariate = false);
         void calculate() const {
             McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
                                               requiredSamples_,
@@ -65,6 +66,7 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const;
+        Real controlVariateValue() const;
         ext::shared_ptr<path_generator_type> pathGenerator() const {
 
             Size dimensions = process_->factors();
@@ -83,7 +85,6 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
-
     template<template <class> class MC, class RNG, class S>
     inline MCForwardVanillaEngine<MC,RNG,S>::MCForwardVanillaEngine(
              const ext::shared_ptr<StochasticProcess>& process,
@@ -94,8 +95,9 @@ namespace QuantLib {
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
-             BigNatural seed)
-    : McSimulation<MC,RNG,S>(antitheticVariate, false),
+             BigNatural seed,
+             bool controlVariate)
+    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
       process_(process), timeSteps_(timeSteps),
       timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
       maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
@@ -114,7 +116,6 @@ namespace QuantLib {
                    " not allowed");
         registerWith(process_);
     }
-
 
     template <template <class> class MC, class RNG, class S>
     inline TimeGrid MCForwardVanillaEngine<MC,RNG,S>::timeGrid() const {
@@ -139,6 +140,40 @@ namespace QuantLib {
         return TimeGrid(fixingTimes.begin(), fixingTimes.end(), totalSteps);
     }
 
+    template <template <class> class MC, class RNG, class S>
+    inline Real MCForwardVanillaEngine<MC,RNG,S>::controlVariateValue() const {
+
+        ext::shared_ptr<PricingEngine> controlPE =
+                this->controlPricingEngine();
+        QL_REQUIRE(controlPE, "engine does not provide "
+                              "control variation pricing engine");
+
+        // Create vanilla option arguments with the same payoff and expiry, but with
+        // strike-reset equal to initial spot*moneyness, price analytically
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(
+                this->arguments_.payoff);
+        QL_REQUIRE(payoff, "non-plain payoff given");
+
+        Real spot = this->process_->initialValues()[0];
+        Real moneyness = this->arguments_.moneyness;
+        Real strike = moneyness * spot;
+
+        ext::shared_ptr<StrikedTypePayoff> newPayoff(new
+            PlainVanillaPayoff(payoff->optionType(), strike));
+
+        VanillaOption::arguments* controlArguments =
+            dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
+
+        controlArguments->payoff = newPayoff;
+        controlArguments->exercise = this->arguments_.exercise;
+        controlPE->calculate();
+
+        const VanillaOption::results* controlResults =
+            dynamic_cast<const VanillaOption::results*>(controlPE->getResults());
+
+        return controlResults->value;
+    }
 }
 
 

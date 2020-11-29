@@ -21,11 +21,19 @@
 #define quantlib_mc_forward_european_heston_engine_hpp
 
 #include <ql/pricingengines/forward/mcforwardvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 
 namespace QuantLib {
 
-    /*! \ingroup forwardengines
+    /*! References:
+
+        Control Variate trade-off considerations discussed in pull request:
+        https://github.com/lballabio/QuantLib/pull/948
+
+        \ingroup forwardengines
+
         \test
         - Heston MC prices for a flat Heston process are
           compared to analytical BS prices with the same
@@ -56,9 +64,22 @@ namespace QuantLib {
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
-             BigNatural seed);
+             BigNatural seed,
+             bool controlVariate = false);
       protected:
         ext::shared_ptr<path_pricer_type> pathPricer() const;
+
+        // Use the vanilla option running from t=0 to t=expiryTime with an analytic Heston pricer
+        // as a control variate. Works well if resetTime small.
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+            ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
+            QL_REQUIRE(process, "Heston-like process required");
+
+            ext::shared_ptr<HestonModel> hestonModel(new HestonModel(process));
+            return ext::shared_ptr<PricingEngine>(new
+                AnalyticHestonEngine(hestonModel));
+        }
     };
 
 
@@ -75,11 +96,12 @@ namespace QuantLib {
         MakeMCForwardEuropeanHestonEngine& withMaxSamples(Size samples);
         MakeMCForwardEuropeanHestonEngine& withSeed(BigNatural seed);
         MakeMCForwardEuropeanHestonEngine& withAntitheticVariate(bool b = true);
+        MakeMCForwardEuropeanHestonEngine& withControlVariate(bool b = false);
         // conversion to pricing engine
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<P> process_;
-        bool antithetic_;
+        bool antithetic_, controlVariate_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
         BigNatural seed_;
@@ -104,8 +126,7 @@ namespace QuantLib {
     // inline definitions
 
     template <class RNG, class S, class P>
-    inline
-    MCForwardEuropeanHestonEngine<RNG,S,P>::MCForwardEuropeanHestonEngine(
+    inline MCForwardEuropeanHestonEngine<RNG,S,P>::MCForwardEuropeanHestonEngine(
              const ext::shared_ptr<P>& process,
              Size timeSteps,
              Size timeStepsPerYear,
@@ -113,7 +134,8 @@ namespace QuantLib {
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
-             BigNatural seed)
+             BigNatural seed,
+             bool controlVariate)
     : MCForwardVanillaEngine<MultiVariate,RNG,S>(process,
                                                  timeSteps,
                                                  timeStepsPerYear,
@@ -122,12 +144,12 @@ namespace QuantLib {
                                                  requiredSamples,
                                                  requiredTolerance,
                                                  maxSamples,
-                                                 seed) {}
+                                                 seed,
+                                                 controlVariate) {}
 
 
     template <class RNG, class S, class P>
-    inline
-    ext::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
+    inline ext::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
         MCForwardEuropeanHestonEngine<RNG,S,P>::pathPricer() const {
 
         TimeGrid timeGrid = this->timeGrid();
@@ -159,11 +181,43 @@ namespace QuantLib {
                                                    timeGrid.back())));
     }
 
+    template <class RNG, class S, class P>
+    inline ext::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
+        MCForwardEuropeanHestonEngine<RNG,S,P>::controlPathPricer() const {
+
+        // Control variate prices a vanilla option on the path, and compares to analytical Heston
+        // vanilla price. First entry in TimeGrid is 0, so use the existing path pricer reset at 0
+        Size resetIndex = 0;
+        TimeGrid timeGrid = this->timeGrid();
+
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+                this->arguments_.payoff);
+        QL_REQUIRE(payoff, "non-plain payoff given");
+
+        ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(
+                this->arguments_.exercise);
+        QL_REQUIRE(exercise, "wrong exercise given");
+
+        ext::shared_ptr<P> process =
+            ext::dynamic_pointer_cast<P>(this->process_);
+        QL_REQUIRE(process, "Heston like process required");
+
+        return ext::shared_ptr<typename
+            MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
+                new ForwardEuropeanHestonPathPricer(
+                                        payoff->optionType(),
+                                        this->arguments_.moneyness,
+                                        resetIndex,
+                                        process->riskFreeRate()->discount(
+                                                   timeGrid.back())));
+    }
 
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>::MakeMCForwardEuropeanHestonEngine(
              const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), steps_(Null<Size>()),
+    : process_(process), antithetic_(false), controlVariate_(false), steps_(Null<Size>()),
       stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
 
@@ -225,8 +279,14 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline
-    MakeMCForwardEuropeanHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>()
+    inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>&
+    MakeMCForwardEuropeanHestonEngine<RNG,S,P>::withControlVariate(bool b) {
+        controlVariate_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S, class P>
+    inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>()
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
@@ -240,9 +300,9 @@ namespace QuantLib {
                                                    samples_,
                                                    tolerance_,
                                                    maxSamples_,
-                                                   seed_));
+                                                   seed_,
+                                                   controlVariate_));
     }
-
 }
 
 
