@@ -27,7 +27,13 @@
 
 namespace QuantLib {
 
-    /*! \ingroup forwardengines
+    /*! References:
+
+        Control Variate trade-off considerations discussed in pull request:
+        https://github.com/lballabio/QuantLib/pull/948
+
+        \ingroup forwardengines
+
         \test
         - Heston MC prices for a flat Heston process are
           compared to analytical BS prices with the same
