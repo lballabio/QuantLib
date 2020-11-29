@@ -775,6 +775,13 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
                .withSamples(numberOfSamples)
                .withSeed(mcSeed);
 
+      ext::shared_ptr<PricingEngine> mcEngineCv
+         = MakeMCForwardEuropeanHestonEngine<PseudoRandom>(hestonProcess)
+               .withSteps(timeSteps)
+               .withSamples(numberOfSamples)
+               .withSeed(mcSeed)
+               .withControlVariate(true);
+
        ext::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticEngine(
            new AnalyticHestonForwardEuropeanEngine(hestonProcess));
 
@@ -789,12 +796,22 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
          option.setPricingEngine(mcEngine);
          Real mcPrice = option.NPV();
-
          Real error = relativeError(analyticPrice, mcPrice, s);
+
          if (error > tolerance) {
                REPORT_FAILURE("testHestonMCVsAnalyticPrices", payoff, exercise, s,
                               q, r, today, vol, moneyness[j], reset,
                               analyticPrice, mcPrice, error, tolerance);
+         }
+
+         option.setPricingEngine(mcEngineCv);
+         Real mcPriceCv = option.NPV();
+
+         Real errorCv = relativeError(analyticPrice, mcPriceCv, s);
+         if (errorCv > tolerance) {
+               REPORT_FAILURE("testHestonMCControlVariateVsAnalyticPrices", payoff, exercise, s,
+                              q, r, today, vol, moneyness[j], reset,
+                              analyticPrice, mcPrice, errorCv, tolerance);
          }
       }
    }
