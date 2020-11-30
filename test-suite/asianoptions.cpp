@@ -751,6 +751,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         ext::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
+                .withSteps(12)
                 .withSamples(32768);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,

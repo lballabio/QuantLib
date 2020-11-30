@@ -44,6 +44,8 @@ namespace QuantLib {
         // constructor
         MCDiscreteArithmeticAPHestonEngine(
              const ext::shared_ptr<P>& process,
+             Size timeSteps,
+             Size timeStepsPerYear,
              bool antitheticVariate,
              Size requiredSamples,
              Real requiredTolerance,
@@ -61,6 +63,8 @@ namespace QuantLib {
         explicit MakeMCDiscreteArithmeticAPHestonEngine(
             const ext::shared_ptr<P>& process);
         // named parameters
+        MakeMCDiscreteArithmeticAPHestonEngine& withSteps(Size steps);
+        MakeMCDiscreteArithmeticAPHestonEngine& withStepsPerYear(Size steps);
         MakeMCDiscreteArithmeticAPHestonEngine& withSamples(Size samples);
         MakeMCDiscreteArithmeticAPHestonEngine& withAbsoluteTolerance(Real tolerance);
         MakeMCDiscreteArithmeticAPHestonEngine& withMaxSamples(Size samples);
@@ -71,7 +75,7 @@ namespace QuantLib {
       private:
         ext::shared_ptr<P> process_;
         bool antithetic_;
-        Size samples_, maxSamples_;
+        Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
         BigNatural seed_;
     };
@@ -82,12 +86,14 @@ namespace QuantLib {
         ArithmeticAPOHestonPathPricer(Option::Type type,
                                       Real strike,
                                       DiscountFactor discount,
+                                      std::vector<Size> fixingIndices,
                                       Real runningSum = 0.0,
                                       Size pastFixings = 0);
         Real operator()(const MultiPath& multiPath) const;
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
+        std::vector<Size> fixingIndices_;
         Real runningSum_;
         Size pastFixings_;
     };
@@ -99,6 +105,8 @@ namespace QuantLib {
     inline
     MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::MCDiscreteArithmeticAPHestonEngine(
              const ext::shared_ptr<P>& process,
+             Size timeSteps,
+             Size timeStepsPerYear,
              bool antitheticVariate,
              Size requiredSamples,
              Real requiredTolerance,
@@ -111,12 +119,30 @@ namespace QuantLib {
                                                              requiredSamples,
                                                              requiredTolerance,
                                                              maxSamples,
-                                                             seed) {}
+                                                             seed,
+                                                             timeSteps,
+                                                             timeStepsPerYear) {
+        QL_REQUIRE(timeSteps != Null<Size>() || timeStepsPerYear != Null<Size>(),
+                   "Heston requires minimum number of time steps / time steps per year to be provided");
+        QL_REQUIRE(timeSteps == Null<Size>() || timeStepsPerYear == Null<Size>(),
+                   "both time steps and time steps per year were provided");
+        QL_REQUIRE(timeSteps != 0, "timeSteps must be positive, " << timeSteps << " not allowed");
+        QL_REQUIRE(timeStepsPerYear != 0,
+                   "timeStepsPerYear must be positive, " << timeStepsPerYear << " not allowed");
+    }
 
     template <class RNG, class S, class P>
     inline ext::shared_ptr<
             typename MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>
         MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::pathPricer() const {
+
+        // Keep track of the fixing indices, the path pricer will need to sum only these
+        TimeGrid timeGrid = this->timeGrid();
+        std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
+        std::vector<Size> fixingIndexes;
+        for (Size i=0; i<fixingTimes.size(); i++) {
+            fixingIndexes.push_back(timeGrid.closestIndex(fixingTimes[i]));
+        }
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(
@@ -138,6 +164,7 @@ namespace QuantLib {
                     payoff->optionType(),
                     payoff->strike(),
                     process->riskFreeRate()->discount(exercise->lastDate()),
+                    fixingIndexes,
                     this->arguments_.runningAccumulator,
                     this->arguments_.pastFixings));
     }
@@ -145,9 +172,27 @@ namespace QuantLib {
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::MakeMCDiscreteArithmeticAPHestonEngine(
              const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    : process_(process), antithetic_(false), steps_(Null<Size>()),
+      stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
+
+    template<class RNG, class S, class P>
+    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
+    MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::withSteps(Size steps) {
+        QL_REQUIRE(stepsPerYear_ == Null<Size>(),
+                   "number of steps per year already set");
+        steps_ = steps;
+        return *this;
+    }
+
+    template<class RNG, class S, class P>
+    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
+    MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::withStepsPerYear(Size steps) {
+        QL_REQUIRE(steps_ == Null<Size>(),
+                   "number of steps already set");
+        stepsPerYear_ = steps;
+        return *this;
+    }
 
     template<class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
@@ -194,8 +239,12 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>() const {
+        QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
+                   "number of steps not given");
         return ext::shared_ptr<PricingEngine>(new
             MCDiscreteArithmeticAPHestonEngine<RNG,S,P>(process_,
+                                                        steps_,
+                                                        stepsPerYear_,
                                                         antithetic_,
                                                         samples_,
                                                         tolerance_,
