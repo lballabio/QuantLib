@@ -65,6 +65,7 @@ namespace QuantLib {
         //@}
         //! \name Additional interface
         //@{
+        Size numberOfLegs() const;
         Date startDate() const;
         Date maturityDate() const;
         Real legBPS(Size j) const {
