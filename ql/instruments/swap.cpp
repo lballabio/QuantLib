@@ -139,6 +139,7 @@ namespace QuantLib {
         }
     }
 
+    Size Swap::numberOfLegs() const { return legs_.size(); }
 
     Date Swap::startDate() const {
         QL_REQUIRE(!legs_.empty(), "no legs given");
