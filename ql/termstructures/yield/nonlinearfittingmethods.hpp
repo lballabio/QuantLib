@@ -43,6 +43,13 @@ namespace QuantLib {
 
         \warning convergence may be slow
     */
+    /*
+        Edited David Sansom 21-Nov-20: Added the option of using a variable number of c_i parameters
+        and the ability to fix kappa and thus exclude it from the optimization.
+        If kappa is fixed at zero it is included in the optimization
+        Amended existing two constructors and added a third
+        Added members for number of c_i parameters and fixed kappa
+    */
     class ExponentialSplinesFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
@@ -52,18 +59,30 @@ namespace QuantLib {
                                       ext::shared_ptr<OptimizationMethod>(),
                                   const Array& l2 = Array(),
                                   Real minCutoffTime = 0.0,
-                                  Real maxCutoffTime = QL_MAX_REAL);
+                                  Real maxCutoffTime = QL_MAX_REAL,
+                                  Size numCoeffs = 9,
+                                  Real fixedKappa = QL_NULL_REAL);
         ExponentialSplinesFitting(bool constrainAtZero,
                                   const Array& weights,
                                   const Array& l2,
                                   Real minCutoffTime = 0.0,
-                                  Real maxCutoffTime = QL_MAX_REAL);
+                                  Real maxCutoffTime = QL_MAX_REAL,
+                                  Size numCoeffs = 9,
+                                  Real fixedKappa = QL_NULL_REAL);
+        ExponentialSplinesFitting(bool constrainAtZero, 
+                                  Size numCoeffs, 
+                                  Real fixedKappa, 
+                                  const Array& weights = Array() );
+
+
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
       private:
+        Natural numCoeffs_;
+        Real fixedKappa_;
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
     };
