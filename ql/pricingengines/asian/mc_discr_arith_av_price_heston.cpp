@@ -23,9 +23,10 @@ namespace QuantLib {
                                          Option::Type type,
                                          Real strike,
                                          DiscountFactor discount,
+                                         std::vector<Size> fixingIndices,
                                          Real runningSum,
                                          Size pastFixings)
-    : payoff_(type, strike), discount_(discount),
+    : payoff_(type, strike), discount_(discount), fixingIndices_(fixingIndices),
       runningSum_(runningSum), pastFixings_(pastFixings) {
         QL_REQUIRE(strike>=0.0,
             "strike less than zero not allowed");
@@ -36,16 +37,13 @@ namespace QuantLib {
         const Size n = multiPath.pathSize();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
-        Real sum;
-        Size fixings;
-        if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-            // include initial fixing
-            sum = std::accumulate(path.begin(),path.end(),runningSum_);
-            fixings = pastFixings_ + n;
-        } else {
-            sum = std::accumulate(path.begin()+1,path.end(),runningSum_);
-            fixings = pastFixings_ + n - 1;
+        Real sum = runningSum_;
+        Size fixings = pastFixings_ + fixingIndices_.size();
+
+        for (Size i=0; i<fixingIndices_.size(); i++) {
+            sum += path[fixingIndices_[i]];
         }
+
         Real averagePrice = sum/fixings;
         return discount_ * payoff_(averagePrice);
     }

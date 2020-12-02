@@ -28,6 +28,7 @@
 
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/instruments/asianoption.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
@@ -70,7 +71,10 @@ namespace QuantLib {
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
-             BigNatural seed);
+             BigNatural seed,
+             Size timeSteps = Null<Size>(),
+             Size timeStepsPerYear = Null<Size>()
+        );
         void calculate() const {
             try {
                 McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
@@ -95,6 +99,9 @@ namespace QuantLib {
             if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
+
+            // Allow inspection of the timeGrid via additional results
+            this->results_.additionalResults["TimeGrid"] = this->timeGrid();
         }
       protected:
         // McSimulation implementation
@@ -112,7 +119,7 @@ namespace QuantLib {
         Real controlVariateValue() const;
         // data members
         ext::shared_ptr<StochasticProcess> process_;
-        Size requiredSamples_, maxSamples_;
+        Size requiredSamples_, maxSamples_, timeSteps_, timeStepsPerYear_;
         Real requiredTolerance_;
         bool brownianBridge_;
         BigNatural seed_;
@@ -131,11 +138,13 @@ namespace QuantLib {
              Size requiredSamples,
              Real requiredTolerance,
              Size maxSamples,
-             BigNatural seed)
+             BigNatural seed,
+             Size timeSteps,
+             Size timeStepsPerYear)
     : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), requiredSamples_(requiredSamples),
-      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {
+      process_(process), requiredSamples_(requiredSamples), maxSamples_(maxSamples), 
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), 
+      requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
         registerWith(process_);
     }
 
@@ -154,6 +163,18 @@ namespace QuantLib {
         if (fixingTimes.empty() ||
             (fixingTimes.size() == 1 && fixingTimes.front() == 0.0))
             throw detail::PastFixingsOnly();
+
+        // Some models (eg. Heston) might request additional points in
+        // the time grid to improve the accuracy of the discretization
+        Date lastExerciseDate = this->arguments_.exercise->lastDate();
+        Time t = process_->time(lastExerciseDate);
+
+        if (this->timeSteps_ != Null<Size>()) {
+            return TimeGrid(fixingTimes.begin(), fixingTimes.end(), timeSteps_);
+        } else if (this->timeStepsPerYear_ != Null<Size>()) {
+            return TimeGrid(fixingTimes.begin(), fixingTimes.end(),
+                static_cast<Size>(this->timeStepsPerYear_*t));
+        }
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
     }
