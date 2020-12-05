@@ -66,11 +66,10 @@ namespace QuantLib {
     };
 
     AnalyticContinuousGeometricAveragePriceAsianHestonEngine::
-    AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process,
-            Size summationCutoff,
-            Real xiRightLimit) : process_(process), a3_(0.0), a4_(0.0), a5_(0.0), fLookupTable_(), 
-                                 summationCutoff_(summationCutoff), xiRightLimit_(xiRightLimit), integrator_(128) {
+        AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
+            const ext::shared_ptr<HestonProcess>& process, Size summationCutoff, Real xiRightLimit)
+    : process_(process), a3_(0.0), a4_(0.0), a5_(0.0), summationCutoff_(summationCutoff),
+      xiRightLimit_(xiRightLimit), integrator_(128) {
         registerWith(process_);
 
         v0_ = process_->v0();
