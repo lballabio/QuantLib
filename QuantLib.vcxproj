@@ -540,6 +540,8 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingcmsratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp" />
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
+    <ClInclude Include="ql\experimental\asian\all.hpp" />
+    <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\experimental\averageois\all.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp" />
@@ -1905,6 +1907,7 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp" />
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
+    <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp" />
     <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp" />
