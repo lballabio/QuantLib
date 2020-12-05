@@ -3330,6 +3330,12 @@
     <ClInclude Include="ql\experimental\mcbasket\pathpayoff.hpp">
       <Filter>experimental\mcbasket</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\asian\all.hpp">
+      <Filter>experimental\futures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp">
+      <Filter>experimental\futures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\ode\all.hpp">
       <Filter>math\ode</Filter>
     </ClInclude>
@@ -6277,6 +6283,9 @@
     <ClCompile Include="ql\experimental\mcbasket\pathmultiassetoption.cpp">
       <Filter>experimental\mcbasket</Filter>
     </ClCompile>
+    <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.pp">
+      <Filter>experimental\futures</Filter>
+    </ClInclude>
     <ClCompile Include="ql\termstructures\volatility\atmadjustedsmilesection.cpp">
       <Filter>termstructures\volatility</Filter>
     </ClCompile>
