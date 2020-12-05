@@ -64,7 +64,7 @@ namespace QuantLib {
     class AnalyticContinuousGeometricAveragePriceAsianHestonEngine
         : public ContinuousAveragingAsianOption::engine {
       public:
-        AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
+        explicit AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
             const ext::shared_ptr<HestonProcess>& process,
             Size summationCutoff = 50,
             Real xiRightLimit = 100.0);

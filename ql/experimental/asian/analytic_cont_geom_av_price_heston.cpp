@@ -34,10 +34,8 @@ namespace QuantLib {
                   Size cutoff,
                   Real K,
                   const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent,
-                  Real xiRightLimit) : t_(0.0), T_(T), K_(K), cutoff_(cutoff), parent_(parent),
-                                       xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {
-            logK_ = std::log(K);
-        }
+                  Real xiRightLimit) : t_(0.0), T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff), parent_(parent),
+                                       xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
 
         double operator()(double xi) const {
             double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
