@@ -76,7 +76,7 @@ namespace QuantLib {
 
       private:
         // Initial process params
-        Real v0_, rho_, kappa_, theta_, sigma_, logS0_;
+        Real v0_, rho_, kappa_, theta_, sigma_;
         Handle<YieldTermStructure> dividendYield_;
         Handle<YieldTermStructure> riskFreeRate_;
         Handle<Quote> s0_;
