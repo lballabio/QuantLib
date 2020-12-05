@@ -154,7 +154,7 @@ namespace QuantLib {
         return result;
     };
 
-    std::pair<std::complex<Real>, std::complex<Real>>
+    std::pair<std::complex<Real>, std::complex<Real> >
         AnalyticContinuousGeometricAveragePriceAsianHestonEngine::F_F_tilde(
             std::complex<Real> z1,
             std::complex<Real> z2,
@@ -172,7 +172,7 @@ namespace QuantLib {
             runningSum2 += (temp/tau)*std::complex<Real>(i, 0.0);
         }
 
-        std::pair<std::complex<Real>, std::complex<Real>> result(runningSum1, runningSum2);
+        std::pair<std::complex<Real>, std::complex<Real> > result(runningSum1, runningSum2);
 
         return result;
     };
@@ -191,8 +191,8 @@ namespace QuantLib {
         std::complex<Real> z4 = z4_f(s, w);
 
         // Clear the mutable lookup map before calling fLookupTable
-        fLookupTable_ = std::map<int, std::complex<Real>>();
-        std::pair<std::complex<Real>, std::complex<Real>> temp = F_F_tilde(z1, z2, z3, z4, tau, cutoff);
+        fLookupTable_ = std::map<int, std::complex<Real> >();
+        std::pair<std::complex<Real>, std::complex<Real> > temp = F_F_tilde(z1, z2, z3, z4, tau, cutoff);
 
         std::complex<Real> F, F_tilde;
         F = temp.first;
