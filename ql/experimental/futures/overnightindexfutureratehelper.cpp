@@ -27,13 +27,13 @@ namespace QuantLib {
 
         Date getValidSofrStart(Month month, Year year, Frequency freq) {
             return freq == Monthly ? 
-                UnitedStates(UnitedStates::Market::GovernmentBond).adjust(Date(1, month, year)) :
+                UnitedStates(UnitedStates::GovernmentBond).adjust(Date(1, month, year)) :
                 Date::nthWeekday(3, Wednesday, month, year);
         }
 
         Date getValidSofrEnd(Month month, Year year, Frequency freq) {
             if (freq == Monthly) {
-                Calendar dc = UnitedStates(UnitedStates::Market::GovernmentBond);
+                Calendar dc = UnitedStates(UnitedStates::GovernmentBond);
                 Date d = dc.endOfMonth(Date(1, month, year));
                 return dc.advance(d, 1*Days);
             } else {
