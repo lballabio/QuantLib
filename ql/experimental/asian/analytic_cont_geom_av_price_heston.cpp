@@ -167,7 +167,7 @@ namespace QuantLib {
         for (Size i=0; i<cutoff; i++) {
             temp = f(z1, z2, z3, z4, i, tau);
             runningSum1 += temp;
-            runningSum2 += (temp/tau)*std::complex<Real>(i, 0.0);
+            runningSum2 += temp*double(i)/tau;
         }
 
         std::pair<std::complex<Real>, std::complex<Real> > result(runningSum1, runningSum2);
