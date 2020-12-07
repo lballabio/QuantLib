@@ -1462,6 +1462,7 @@
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_price_heston.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_strike.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price.hpp" />
+    <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianengine.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianenginebase.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\all.hpp" />
@@ -2511,6 +2512,7 @@
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_price_heston.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_strike.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_geom_av_price.cpp" />
+    <ClCompile Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\discretizedbarrieroption.cpp" />
