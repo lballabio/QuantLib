@@ -61,14 +61,14 @@ namespace QuantLib {
                                   Real minCutoffTime = 0.0,
                                   Real maxCutoffTime = QL_MAX_REAL,
                                   Size numCoeffs = 9,
-                                  Real fixedKappa = QL_NULL_REAL);
+                                  Real fixedKappa = Null<Real>());
         ExponentialSplinesFitting(bool constrainAtZero,
                                   const Array& weights,
                                   const Array& l2,
                                   Real minCutoffTime = 0.0,
                                   Real maxCutoffTime = QL_MAX_REAL,
                                   Size numCoeffs = 9,
-                                  Real fixedKappa = QL_NULL_REAL);
+                                  Real fixedKappa = Null<Real>());
         ExponentialSplinesFitting(bool constrainAtZero, 
                                   Size numCoeffs, 
                                   Real fixedKappa, 

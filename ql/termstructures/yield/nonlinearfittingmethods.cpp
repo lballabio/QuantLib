@@ -72,7 +72,7 @@ namespace QuantLib {
     Size ExponentialSplinesFitting::size() const {
         Size N = constrainAtZero_ ? numCoeffs_ : numCoeffs_ + 1;
         
-        return (fixedKappa_ != QL_NULL_REAL) ? N-1 : N; //One fewer optimization parameters if kappa is fixed
+        return (fixedKappa_ != Null<Real>()) ? N-1 : N; //One fewer optimization parameters if kappa is fixed
     }
 
     DiscountFactor ExponentialSplinesFitting::discountFunction(const Array& x,
@@ -80,7 +80,7 @@ namespace QuantLib {
         DiscountFactor d = 0.0;
         Size N = size();
         //Use the interal fixedKappa_ member if non-zero, otherwise take kappa from the passed x[] array
-        Real kappa = (fixedKappa_ != QL_NULL_REAL) ? fixedKappa_: x[N-1];
+        Real kappa = (fixedKappa_ != Null<Real>()) ? fixedKappa_: x[N-1];
         Real coeff = 0;
 
         if (!constrainAtZero_) {
