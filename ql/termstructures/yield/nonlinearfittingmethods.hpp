@@ -41,14 +41,10 @@ namespace QuantLib {
         and A. Shapiro (2001): "Merrill Lynch Exponential Spline
         Model." Merrill Lynch Working Paper
 
+        \f$ \kappa \f$ can be passed a fixed value, in which case it
+        is excluded from optimization.
+
         \warning convergence may be slow
-    */
-    /*
-        Edited David Sansom 21-Nov-20: Added the option of using a variable number of c_i parameters
-        and the ability to fix kappa and thus exclude it from the optimization.
-        If kappa is fixed at zero it is included in the optimization
-        Amended existing two constructors and added a third
-        Added members for number of c_i parameters and fixed kappa
     */
     class ExponentialSplinesFitting
         : public FittedBondDiscountCurve::FittingMethod {
