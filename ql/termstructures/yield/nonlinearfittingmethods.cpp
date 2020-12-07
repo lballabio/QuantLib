@@ -39,8 +39,7 @@ namespace QuantLib {
           constrainAtZero, weights, optimizationMethod, l2, minCutoffTime, maxCutoffTime),
           numCoeffs_(numCoeffs), fixedKappa_(fixedKappa) 
     {
-        if (numCoeffs_ <= 0)
-            numCoeffs_ = 9;
+        QL_REQUIRE(size() > 0, "At least 1 unconstrained coefficient required");
     }
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(bool constrainAtZero,
@@ -51,8 +50,7 @@ namespace QuantLib {
                                                  minCutoffTime, maxCutoffTime),
           numCoeffs_(numCoeffs),fixedKappa_(fixedKappa) 
     {
-        if (numCoeffs_ <= 0) 
-            numCoeffs_ = 9;
+        QL_REQUIRE(size() > 0, "At least 1 unconstrained coefficient required");
     }
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(bool constrainAtZero,
@@ -62,8 +60,7 @@ namespace QuantLib {
     : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, ext::shared_ptr<OptimizationMethod>(), Array(),0.0,QL_MAX_REAL),
           numCoeffs_(numCoeffs), fixedKappa_(fixedKappa)
     {
-        if (numCoeffs_ <= 0)
-            numCoeffs_ = 9;
+        QL_REQUIRE(size() > 0, "At least 1 unconstrained coefficient required");
     }
 
     QL_UNIQUE_OR_AUTO_PTR<FittedBondDiscountCurve::FittingMethod>
