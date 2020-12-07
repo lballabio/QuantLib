@@ -32,48 +32,73 @@ namespace QuantLib {
         const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
         const Array& l2,
         const Real minCutoffTime,
-        const Real maxCutoffTime)
+        const Real maxCutoffTime,
+        const Size numCoeffs,
+        const Real fixedKappa)
     : FittedBondDiscountCurve::FittingMethod(
-          constrainAtZero, weights, optimizationMethod, l2, minCutoffTime, maxCutoffTime) {}
+          constrainAtZero, weights, optimizationMethod, l2, minCutoffTime, maxCutoffTime),
+          numCoeffs_(numCoeffs), fixedKappa_(fixedKappa) 
+    {
+        QL_REQUIRE(size() > 0, "At least 1 unconstrained coefficient required");
+    }
 
     ExponentialSplinesFitting::ExponentialSplinesFitting(bool constrainAtZero,
         const Array& weights,
-        const Array& l2, const Real minCutoffTime, const Real maxCutoffTime)
+        const Array& l2, const Real minCutoffTime, const Real maxCutoffTime,
+        const Size numCoeffs, const Real fixedKappa)
         : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, ext::shared_ptr<OptimizationMethod>(), l2,
-                                                 minCutoffTime, maxCutoffTime) {}
+                                                 minCutoffTime, maxCutoffTime),
+          numCoeffs_(numCoeffs),fixedKappa_(fixedKappa) 
+    {
+        QL_REQUIRE(size() > 0, "At least 1 unconstrained coefficient required");
+    }
+
+    ExponentialSplinesFitting::ExponentialSplinesFitting(bool constrainAtZero,
+                              const Size numCoeffs,
+                              const Real fixedKappa,
+                              const Array& weights )
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, ext::shared_ptr<OptimizationMethod>(), Array(),0.0,QL_MAX_REAL),
+          numCoeffs_(numCoeffs), fixedKappa_(fixedKappa)
+    {
+        QL_REQUIRE(size() > 0, "At least 1 unconstrained coefficient required");
+    }
 
     QL_UNIQUE_OR_AUTO_PTR<FittedBondDiscountCurve::FittingMethod>
     ExponentialSplinesFitting::clone() const {
         return QL_UNIQUE_OR_AUTO_PTR<FittedBondDiscountCurve::FittingMethod>(
-                                        new ExponentialSplinesFitting(*this));
+                                        new ExponentialSplinesFitting(*this)); 
     }
 
     Size ExponentialSplinesFitting::size() const {
-        return constrainAtZero_ ? 9 : 10;
+        Size N = constrainAtZero_ ? numCoeffs_ : numCoeffs_ + 1;
+        
+        return (fixedKappa_ != Null<Real>()) ? N-1 : N; //One fewer optimization parameters if kappa is fixed
     }
 
     DiscountFactor ExponentialSplinesFitting::discountFunction(const Array& x,
                                                                Time t) const {
         DiscountFactor d = 0.0;
         Size N = size();
-        Real kappa = x[N-1];
+        //Use the interal fixedKappa_ member if non-zero, otherwise take kappa from the passed x[] array
+        Real kappa = (fixedKappa_ != Null<Real>()) ? fixedKappa_: x[N-1];
         Real coeff = 0;
 
         if (!constrainAtZero_) {
-            for (Size i=0; i<N-1; ++i) {
-                d += x[i]* std::exp(-kappa * (i+1) * t);
+            for (Size i = 0; i < N - 1; ++i) {
+                d += x[i] * std::exp(-kappa * (i + 1) * t);
             }
         } else {
             //  notation:
             //  d(t) = coeff* exp(-kappa*1*t) + x[0]* exp(-kappa*2*t) +
             //  x[1]* exp(-kappa*3*t) + ..+ x[7]* exp(-kappa*9*t)
-            for (Size i=0; i<N-1; i++) {
-                d += x[i]* std::exp(-kappa * (i+2) * t);
+            for (Size i = 0; i < N - 1; i++) {
+                d += x[i] * std::exp(-kappa * (i + 2) * t);
                 coeff += x[i];
             }
-            coeff = 1.0- coeff;
+            coeff = 1.0 - coeff;
             d += coeff * std::exp(-kappa * t);
         }
+
         return d;
     }
 

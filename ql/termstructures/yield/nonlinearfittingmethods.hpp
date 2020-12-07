@@ -41,6 +41,9 @@ namespace QuantLib {
         and A. Shapiro (2001): "Merrill Lynch Exponential Spline
         Model." Merrill Lynch Working Paper
 
+        \f$ \kappa \f$ can be passed a fixed value, in which case it
+        is excluded from optimization.
+
         \warning convergence may be slow
     */
     class ExponentialSplinesFitting
@@ -52,18 +55,30 @@ namespace QuantLib {
                                       ext::shared_ptr<OptimizationMethod>(),
                                   const Array& l2 = Array(),
                                   Real minCutoffTime = 0.0,
-                                  Real maxCutoffTime = QL_MAX_REAL);
+                                  Real maxCutoffTime = QL_MAX_REAL,
+                                  Size numCoeffs = 9,
+                                  Real fixedKappa = Null<Real>());
         ExponentialSplinesFitting(bool constrainAtZero,
                                   const Array& weights,
                                   const Array& l2,
                                   Real minCutoffTime = 0.0,
-                                  Real maxCutoffTime = QL_MAX_REAL);
+                                  Real maxCutoffTime = QL_MAX_REAL,
+                                  Size numCoeffs = 9,
+                                  Real fixedKappa = Null<Real>());
+        ExponentialSplinesFitting(bool constrainAtZero, 
+                                  Size numCoeffs, 
+                                  Real fixedKappa, 
+                                  const Array& weights = Array() );
+
+
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
       private:
+        Natural numCoeffs_;
+        Real fixedKappa_;
         Size size() const;
         DiscountFactor discountFunction(const Array& x, Time t) const;
     };
