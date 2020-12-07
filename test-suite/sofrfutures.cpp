@@ -70,7 +70,18 @@ void SofrFuturesTest::testBootstrap() {
     };
 
     ext::shared_ptr<OvernightIndex> index = ext::make_shared<Sofr>();
-    index->addFixing(Date(17, October, 2018), 0.0217);
+    index->addFixing(Date(1, October, 2018), 0.0222);
+    index->addFixing(Date(2, October, 2018), 0.022);
+    index->addFixing(Date(3, October, 2018), 0.022);
+    index->addFixing(Date(4, October, 2018), 0.0218);
+    index->addFixing(Date(5, October, 2018), 0.0216);
+    index->addFixing(Date(9, October, 2018), 0.0215);
+    index->addFixing(Date(10, October, 2018), 0.0215);
+    index->addFixing(Date(11, October, 2018), 0.0217);
+    index->addFixing(Date(12, October, 2018), 0.0218);
+    index->addFixing(Date(15, October, 2018), 0.0221);
+    index->addFixing(Date(16, October, 2018), 0.0218);
+    index->addFixing(Date(17, October, 2018), 0.0218);
     index->addFixing(Date(18, October, 2018), 0.0219);
     index->addFixing(Date(19, October, 2018), 0.0219);
     index->addFixing(Date(22, October, 2018), 0.0218);
