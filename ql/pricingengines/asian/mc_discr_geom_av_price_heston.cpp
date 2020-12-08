@@ -22,12 +22,12 @@
 namespace QuantLib {
 
     GeometricAPOHestonPathPricer::GeometricAPOHestonPathPricer(
-                                         Option::Type type,
-                                         Real strike,
-                                         DiscountFactor discount,
-                                         std::vector<Size> fixingIndices,
-                                         Real runningProduct,
-                                         Size pastFixings)
+        Option::Type type,
+        Real strike,
+        DiscountFactor discount,
+        const std::vector<Size>& fixingIndices,
+        Real runningProduct,
+        Size pastFixings)
     : payoff_(type, strike), discount_(discount), fixingIndices_(fixingIndices),
       runningProduct_(runningProduct), pastFixings_(pastFixings) {
         QL_REQUIRE(strike>=0.0,
