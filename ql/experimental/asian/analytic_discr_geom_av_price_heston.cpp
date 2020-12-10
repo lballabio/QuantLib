@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     // A class to perform the integrations in Eqs (23) and (24)
-    class Integrand {
+    class AdgapIntegrand {
       private:
         Real t_, T_, K_, logK_;
         Size kStar_;
@@ -32,15 +32,15 @@ namespace QuantLib {
         std::complex<Real> i_;
 
       public:
-        Integrand(Real t,
-                  Real T,
-                  Size kStar,
-                  const std::vector<Time>& t_n,
-                  const std::vector<Time>& tauK,
-                  Real K,
-                  const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
-                  Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)), kStar_(kStar), t_n_(t_n),
-                  tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
+        AdgapIntegrand(Real t,
+                       Real T,
+                       Size kStar,
+                       const std::vector<Time>& t_n,
+                       const std::vector<Time>& tauK,
+                       Real K,
+                       const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
+                       Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)), kStar_(kStar), t_n_(t_n),
+            tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
 
         double operator()(double xi) const {
             double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
@@ -253,7 +253,8 @@ namespace QuantLib {
         // Calculate the two terms in eq (23) - Phi(1,0) is real (asian forward) but need to type convert
         Real term1 = 0.5 * (std::real(Phi(1,0, startTime, expiryTime, kStar, fixingTimes, tauK)) - strike);
 
-        Integrand integrand = Integrand(startTime, expiryTime, kStar, fixingTimes, tauK, strike, this, xiRightLimit_);
+        AdgapIntegrand integrand = AdgapIntegrand(startTime, expiryTime, kStar, fixingTimes,
+                                                  tauK, strike, this, xiRightLimit_);
         Real term2 = integrator_(integrand) / M_PI;
 
 
