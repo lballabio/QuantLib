@@ -519,7 +519,8 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 }
 
 
-void testDiscreteGeometricAveragePriceHeston(ext::shared_ptr<PricingEngine> engine, Real tol[]) {
+void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine>& engine,
+                                             const Real tol[]) {
 
     // data from "A Recursive Method for Discretely Monitored Geometric Asian Option
     // Prices", Kim, Kim, Kim & Wee, Bull. Korean Math. Soc. 53, 733-749, 2016
