@@ -64,36 +64,47 @@ namespace QuantLib {
         : public DiscreteAveragingAsianOption::engine {
       public:
         explicit AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process);
+            const ext::shared_ptr<HestonProcess>& process,
+            Real xiRightLimit = 100.0);
         void calculate() const;
 
         // Equation (21) - must be public so the integrand can access it.
-        std::complex<Real> Phi(std::complex<Real>& s,
-                               std::complex<Real>& w,
-                               Time t, Time T, Size kStar, std::vector<Time>& t_n, std::vector<Time>& tauK) const;
+        std::complex<Real> Phi(std::complex<Real> s,
+                               std::complex<Real> w,
+                               Time t, Time T, Size kStar,
+                               const std::vector<Time>& t_n,
+                               const std::vector<Time>& tauK) const;
 
       private:
         // Initial process params
-        Real v0_, rho_, kappa_, theta_, sigma_, logS0_, r0_;
+        Real v0_, rho_, kappa_, theta_, sigma_, logS0_;
         Handle<YieldTermStructure> dividendYield_;
         Handle<YieldTermStructure> riskFreeRate_;
         Handle<Quote> s0_;
 
         ext::shared_ptr<HestonProcess> process_;
 
-        // A lookup table for the reuslts of omega_tilde() to avoid repeated calls. The tuple elements
-        // need to support comparison, so the complex numbers are expressed as pairs of reals
-        // TODO: do Reals work for equality checks? Do we need to round them/cast to int ratio a/b?
-        mutable std::map<std::tuple<Size, Real, Real, Real, Real>,
-            std::complex<Real> > omegaTildeLookupTable_;
+        // A lookup table for the reuslts of omega_tilde() to avoid repeated calls for given Phi call
+        mutable std::map<Size, std::complex<Real> > omegaTildeLookupTable_;
+
+        // Cutoff parameter for integral in Eqs (23) and (24)
+        Size xiRightLimit_;
 
         // Integrator for equation (23) and (24)
         GaussLegendreIntegration integrator_;
+
+        // We need to set up several variables inside calculate as they depend on fixing times. Rather
+        // than pass them between a, omega, F etc. which makes for very messy method signatures, we
+        // make them mutable class properties instead.
+        mutable Real tr_t_;
+        mutable Real Tr_T_;
+        mutable std::vector<Real> tkr_tk_;
 
         // Equation (11)
         std::complex<Real> F(std::complex<Real>& z1,
                              std::complex<Real>& z2,
                              Time tau) const;
+
         std::complex<Real> F_tilde(std::complex<Real>& z1,
                                    std::complex<Real>& z2,
                                    Time tau) const;
@@ -111,12 +122,14 @@ namespace QuantLib {
         // Equation (16)
         std::complex<Real> a(std::complex<Real>& s,
                              std::complex<Real>& w,
-                             Time t, Time T, Size kStar, std::vector<Time>& t_n) const;
+                             Time t, Time T, Size kStar,
+                             const std::vector<Time>& t_n) const;
 
         // Equation (19)
         std::complex<Real> omega_tilde(std::complex<Real>& s,
                                        std::complex<Real>& w,
-                                       Size k, Size kStar, Size n, std::vector<Time>& tauK) const;
+                                       Size k, Size kStar, Size n,
+                                       const std::vector<Time>& tauK) const;
     };
 }
 

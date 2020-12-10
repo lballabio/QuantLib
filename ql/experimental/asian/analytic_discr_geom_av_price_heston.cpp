@@ -19,15 +19,44 @@
 
 #include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
 
-#include <iostream>
-#include <iomanip>
-
 namespace QuantLib {
+
+    // A class to perform the integrations in Eqs (23) and (24)
+    class Integrand {
+      private:
+        Real t_, T_, K_, logK_;
+        Size kStar_;
+        const std::vector<Time> t_n_, tauK_;
+        const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent_;
+        Real xiRightLimit_;
+        std::complex<Real> i_;
+
+      public:
+        Integrand(Real t,
+                  Real T,
+                  Size kStar,
+                  const std::vector<Time>& t_n,
+                  const std::vector<Time>& tauK,
+                  Real K,
+                  const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
+                  Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)), kStar_(kStar), t_n_(t_n),
+                  tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
+
+        double operator()(double xi) const {
+            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+
+            std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
+            std::complex<Real> inner2 = -K_*parent_->Phi(xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
+
+            return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
+        }
+    };
 
     AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::
         AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process)
-    : r0_(0.0), process_(process), integrator_(128) {
+            const ext::shared_ptr<HestonProcess>& process,
+            Real xiRightLimit)
+    : process_(process), xiRightLimit_(xiRightLimit), integrator_(128) {
         registerWith(process_);
 
         v0_ = process_->v0();
@@ -86,18 +115,21 @@ namespace QuantLib {
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::a(
             std::complex<Real>& s,
             std::complex<Real>& w,
-            Time t, Time T, Size kStar, std::vector<Time>& t_n) const {
+            Time t, Time T, Size kStar,
+            const std::vector<Time>& t_n) const {
         double kStar_ = double(kStar);
         double n_ = double(t_n.size());
-        Real temp = (r0_ - rho_*kappa_*theta_/sigma_);
+        Real temp = -rho_*kappa_*theta_/sigma_;
 
         Time summation = 0.0;
+        Real summation2 = 0.0;
         for (Size i=kStar+1; i<=t_n.size(); i++) {
-            summation += t_n[i];
+            summation += t_n[i-1];
+            summation2 += tkr_tk_[i-1];
         }
-
-        std::complex<Real> term1 = (s*(n_-kStar_)/n_ + w)*(logS0_ - rho_*v0_/sigma_ - t*temp);
-        std::complex<Real> term2 = temp*(s*summation/n_ + w*T);
+        // This is Eq (16) modified for non-constant rates
+        std::complex<Real> term1 = (s*(n_-kStar_)/n_ + w)*(logS0_ - rho_*v0_/sigma_ - t*temp - tr_t_);
+        std::complex<Real> term2 = temp*(s*summation/n_ + w*T) + w*Tr_T_ + summation2*s/n_;
 
         return term1 + term2;
     }
@@ -105,7 +137,8 @@ namespace QuantLib {
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::omega_tilde(
             std::complex<Real>& s,
             std::complex<Real>& w,
-            Size k, Size kStar, Size n, std::vector<Time>& tauK) const {
+            Size k, Size kStar, Size n,
+            const std::vector<Time>& tauK) const {
         std::complex<Real> omega_k = omega(s, w, k, kStar, n);
         if (k==n+1) {
             return omega_k;
@@ -113,13 +146,10 @@ namespace QuantLib {
             Time dTauk = tauK[k+1] - tauK[k];
             std::complex<Real> z_kp1 = z(s, w, k+1, n);
 
-            // omega_tilde calls itself recursivly, so use a lookup map to avoid exponential slowdown
+            // omega_tilde calls itself recursivly, use lookup map to avoid extreme slowdown when k large
             std::complex<Real> omega_kp1 = 0.0;
-            std::tuple<Size, Real, Real, Real, Real> location = 
-                std::tuple<Size, Real, Real, Real, Real>(k+1,
-                    std::real(s), std::imag(s), std::real(w), std::imag(w));
-            std::map<std::tuple<Size, Real, Real, Real, Real>,
-                std::complex<Real> >::const_iterator position = omegaTildeLookupTable_.find(location);
+
+            std::map<Size, std::complex<Real> >::const_iterator position = omegaTildeLookupTable_.find(k+1);
 
             if (position != omegaTildeLookupTable_.end()) {
                 std::complex<Real> value = position->second;
@@ -128,16 +158,26 @@ namespace QuantLib {
                 omega_kp1 = omega_tilde(s, w, k+1, kStar, n, tauK);
             }
 
-            std::complex<Real> ratio = F_tilde(z_kp1,omega_kp1,dTauk)/F_tilde(z_kp1,omega_kp1,dTauk);
+            std::complex<Real> ratio = F_tilde(z_kp1,omega_kp1,dTauk)/F(z_kp1,omega_kp1,dTauk);
+            std::complex<Real> result = omega_k + kappa_/pow(sigma_,2) - 2.0*ratio/pow(sigma_,2);
 
-            return omega_k + kappa_/pow(sigma_,2) - 0.5*ratio/pow(sigma_,2);
+            // Store this value in our mutable lookup map
+            omegaTildeLookupTable_[k] = result;
+
+            return result;
         }
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::Phi(
-            std::complex<Real>& s,
-            std::complex<Real>& w,
-            Time t, Time T, Size kStar, std::vector<Time>& t_n, std::vector<Time>& tauK) const {
+            std::complex<Real> s,
+            std::complex<Real> w,
+            Time t, Time T, Size kStar,
+            const std::vector<Time>& t_n,
+            const std::vector<Time>& tauK) const {
+
+        // Clear the mutable lookup map before evaluating Phi
+        omegaTildeLookupTable_ = std::map<Size, std::complex<Real> >();
+
         Size n = t_n.size();
         std::complex<Real> aTerm = a(s, w, t, T, kStar, t_n);
         std::complex<Real> omegaTerm = v0_*omega_tilde(s, w, kStar, kStar, n, tauK);
@@ -156,7 +196,6 @@ namespace QuantLib {
         return std::exp(aTerm + omegaTerm + term3 - term4);
 }
 
-
     void AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::calculate() const {
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "not a geometric average option");
@@ -173,6 +212,8 @@ namespace QuantLib {
         Time expiryTime = this->process_->time(exercise);
         QL_REQUIRE(expiryTime >= 0.0, "Expiry Date cannot be in the past");
 
+        Real expiryDcf = riskFreeRate_->discount(expiryTime);
+
         std::vector<Time> fixingTimes, tauK;
         for (Size i=0; i<arguments_.fixingDates.size(); i++) {
             fixingTimes.push_back(this->process_->time(arguments_.fixingDates[i]));
@@ -182,6 +223,7 @@ namespace QuantLib {
 
         // TODO: extend to cover seasoned options (discussed in paper)
         Time startTime = 0.0;
+
 
         Size kStar = 0;
         for (Size i=0; i<fixingTimes.size(); i++) {
@@ -197,21 +239,46 @@ namespace QuantLib {
         tauK.insert(tauK.begin(), startTime);
         tauK.push_back(expiryTime);
 
+        // Need the log of some discount factors to calculate the r-adjusted a factor (Eq 16)
+        tr_t_ = 0;
+        Tr_T_ = 0;
+        tkr_tk_ = std::vector<Real>();
+        tr_t_ = -std::log(riskFreeRate_->discount(startTime) / dividendYield_->discount(startTime));
+        Tr_T_ = -std::log(riskFreeRate_->discount(expiryTime) / dividendYield_->discount(expiryTime));
+        for (Size i=0; i<fixingTimes.size(); i++) {
+            tkr_tk_.push_back(-std::log(riskFreeRate_->discount(fixingTimes[i]) 
+                                        / dividendYield_->discount(fixingTimes[i])));
+        }
+
+        // Calculate the two terms in eq (23) - Phi(1,0) is real (asian forward) but need to type convert
+        Real term1 = 0.5 * (std::real(Phi(1,0, startTime, expiryTime, kStar, fixingTimes, tauK)) - strike);
+
+        Integrand integrand = Integrand(startTime, expiryTime, kStar, fixingTimes, tauK, strike, this, xiRightLimit_);
+        Real term2 = integrator_(integrand) / M_PI;
+
 
         // Apply the payoff functions
         Real value = 0.0;
         switch (payoff->optionType()){
             case Option::Call:
-                value = 100.0;
+                value = expiryDcf * (term1 + term2);
                 break;
             case Option::Put:
-                value = 100.0;
+                value = expiryDcf * (-term1 + term2);
                 break;
             default:
                 QL_FAIL("unknown option type");
             }
 
         results_.value = value;
+
+        results_.additionalResults["dcf"] = expiryDcf;
+        results_.additionalResults["s0"] = s0_->value();
+        results_.additionalResults["strike"] = strike;
+        results_.additionalResults["expiryTime"] = expiryTime;
+        results_.additionalResults["term1"] = term1;
+        results_.additionalResults["term2"] = term2;
+        results_.additionalResults["xiRightLimit"] = xiRightLimit_;
     }
 }
 
