@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2018 Roy Zywina
- Copyright (C) 2019 Eisuke Tani
+ Copyright (C) 2019, 2020 Eisuke Tani
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,13 +25,22 @@ namespace QuantLib {
 
     namespace {
 
-        Date getValidSofrStart(Month month, Year year) {
-            return Date::nthWeekday(3, Wednesday, month, year);
+        Date getValidSofrStart(Month month, Year year, Frequency freq) {
+            return freq == Monthly ? 
+                UnitedStates(UnitedStates::GovernmentBond).adjust(Date(1, month, year)) :
+                Date::nthWeekday(3, Wednesday, month, year);
         }
 
         Date getValidSofrEnd(Month month, Year year, Frequency freq) {
-            Date d = getValidSofrStart(month, year) + Period(freq);
-            return Date::nthWeekday(3, Wednesday, d.month(), d.year());
+            if (freq == Monthly) {
+                Calendar dc = UnitedStates(UnitedStates::GovernmentBond);
+                Date d = dc.endOfMonth(Date(1, month, year));
+                return dc.advance(d, 1*Days);
+            } else {
+                Date d = getValidSofrStart(month, year, freq) + Period(freq);
+                return Date::nthWeekday(3, Wednesday, d.month(), d.year());
+            }
+
         }
 
     }
@@ -91,7 +100,7 @@ namespace QuantLib {
         const Handle<Quote>& convexityAdjustment,
         const OvernightIndexFuture::NettingType subPeriodsNettingType)
     : OvernightIndexFutureRateHelper(price,
-                                     getValidSofrStart(referenceMonth, referenceYear),
+                                     getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
                                      getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
                                      overnightIndex,
                                      convexityAdjustment,
@@ -115,7 +124,7 @@ namespace QuantLib {
         const OvernightIndexFuture::NettingType subPeriodsNettingType)
     : OvernightIndexFutureRateHelper(
           Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
-          getValidSofrStart(referenceMonth, referenceYear),
+          getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
           getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
           overnightIndex,
           Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),

@@ -31,6 +31,7 @@ class ObservableTest {
     static void testAsyncGarbagCollector();
     static void testMultiThreadingGlobalSettings();
     static void testDeepUpdate();
+    static void testEmptyObserverList();
 
     static boost::unit_test_framework::test_suite* suite();
 };

@@ -150,6 +150,7 @@ set(QuantLib-Test_SRC
     transformedgrid.cpp
     twoassetbarrieroption.cpp
     twoassetcorrelationoption.cpp
+    ultimateforwardtermstructure.cpp
     utilities.cpp
     variancegamma.cpp
     varianceoption.cpp

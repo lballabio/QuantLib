@@ -20,7 +20,7 @@ int main() {
     )
 
     fd, fname = tempfile.mkstemp(suffix=".cpp", dir=".", text=True)
-    os.write(fd, main)
+    os.write(fd,  bytes(str(main).encode("utf-8")))
     os.close(fd)
 
     print("Checking %s" % header)

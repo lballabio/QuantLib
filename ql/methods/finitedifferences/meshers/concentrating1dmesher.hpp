@@ -29,7 +29,7 @@
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
 #include <ql/utilities/null.hpp>
 
-#include <boost/tuple/tuple.hpp>
+#include <ql/tuple.hpp>
 
 #include <utility>
 #include <vector>
@@ -47,7 +47,7 @@ namespace QuantLib {
 
         Concentrating1dMesher(
             Real start, Real end, Size size,
-            const std::vector<boost::tuple<Real, Real, bool> >& cPoints,
+            const std::vector<ext::tuple<Real, Real, bool> >& cPoints,
             Real tol = 1e-8);
     };
 }

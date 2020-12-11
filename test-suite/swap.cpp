@@ -321,6 +321,12 @@ void SwapTest::testCachedValue() {
 
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
 
+    if (swap->numberOfLegs() != 2)
+        BOOST_ERROR("failed to return correct number of legs:\n"
+                    << std::fixed << std::setprecision(12)
+                    << "    calculated: " << swap->numberOfLegs() << "\n"
+                    << "    expected:   " << 2);
+
     Real cachedNPV;  
     if (IborCoupon::usingAtParCoupons())
         cachedNPV = -5.872863313209;

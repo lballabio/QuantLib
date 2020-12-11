@@ -33,7 +33,6 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <boost/assign/std/vector.hpp>
-#include <boost/tuple/tuple.hpp>
 
 using namespace QuantLib;
 using namespace boost::assign;

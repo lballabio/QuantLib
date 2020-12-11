@@ -22,6 +22,7 @@ this_include_HEADERS = \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
     ratehelpers.hpp \
+    ultimateforwardtermstructure.hpp \
     zerocurve.hpp \
     zerospreadedtermstructure.hpp \
     zeroyieldstructure.hpp

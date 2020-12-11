@@ -38,6 +38,7 @@
 #include <ql/termstructure.hpp>
 #include <ql/timegrid.hpp>
 #include <ql/timeseries.hpp>
+#include <ql/tuple.hpp>
 #include <ql/types.hpp>
 #include <ql/volatilitymodel.hpp>
 

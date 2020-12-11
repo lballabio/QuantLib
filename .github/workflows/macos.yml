@@ -7,14 +7,24 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
-        brew install automake boost
+        brew install automake boost ccache
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/Library/Caches/ccache
+        key: macos-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
+        restore-keys: |
+          macos-build-${{ github.ref }}-${{ github.head_ref }}-
+          macos-build-${{ github.ref }}-
+          macos-build-refs/heads/master-
+          macos-build-
     - name: Build
       env:
-        CXXFLAGS: -O2 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9
+        CXXFLAGS: -O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9
         LDFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         ./autogen.sh
-        ./configure CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
+        ./configure CC="ccache clang" CXX="ccache clang++" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
         make -j 2
     - name: Run tests
       run: |

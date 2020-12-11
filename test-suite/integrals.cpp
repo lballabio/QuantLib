@@ -360,7 +360,7 @@ namespace integrals_test {
 }
 
 void IntegralTest::testExponentialIntegral() {
-    BOOST_TEST_MESSAGE("Testing Exponential integrals...");
+    BOOST_TEST_MESSAGE("Testing exponential integrals...");
 
     using namespace ExponentialIntegral;
 

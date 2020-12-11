@@ -151,7 +151,10 @@ namespace QuantLib {
         Date firstDate_, nextToLastDate_;
     };
 
-
+    /*! Helper function for returning the date on or before date \p d that is the 20th of the month and obeserves the 
+        given date generation \p rule if it is relevant.
+    */
+    Date previousTwentieth(const Date& d, DateGeneration::Rule rule);
 
     // inline definitions
 
