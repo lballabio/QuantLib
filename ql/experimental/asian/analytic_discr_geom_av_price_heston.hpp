@@ -88,7 +88,7 @@ namespace QuantLib {
         mutable std::map<Size, std::complex<Real> > omegaTildeLookupTable_;
 
         // Cutoff parameter for integral in Eqs (23) and (24)
-        Size xiRightLimit_;
+        Real xiRightLimit_;
 
         // Integrator for equation (23) and (24)
         GaussLegendreIntegration integrator_;
