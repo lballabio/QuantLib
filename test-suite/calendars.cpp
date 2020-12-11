@@ -1685,8 +1685,28 @@ void CalendarTest::testChinaSSE() {
     expectedHol.push_back(Date(7, October, 2020));
     expectedHol.push_back(Date(8, October, 2020));
 
+    // China Shanghai Securities Exchange holiday list in the year 2021
+    expectedHol.push_back(Date(1, Jan, 2021));
+    expectedHol.push_back(Date(11, Feb, 2021));
+    expectedHol.push_back(Date(12, Feb, 2021));
+    expectedHol.push_back(Date(15, Feb, 2021));
+    expectedHol.push_back(Date(16, Feb, 2021));
+    expectedHol.push_back(Date(17, Feb, 2021));
+    expectedHol.push_back(Date(5, April, 2021));
+    expectedHol.push_back(Date(3, May, 2021));
+    expectedHol.push_back(Date(4, May, 2021));
+    expectedHol.push_back(Date(5, May, 2021));
+    expectedHol.push_back(Date(14, June, 2021));
+    expectedHol.push_back(Date(20, September, 2021));
+    expectedHol.push_back(Date(21, September, 2021));
+    expectedHol.push_back(Date(1, October, 2021));
+    expectedHol.push_back(Date(4, October, 2021));
+    expectedHol.push_back(Date(5, October, 2021));
+    expectedHol.push_back(Date(6, October, 2021));
+    expectedHol.push_back(Date(7, October, 2021));
+
     Calendar c = China(China::SSE);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2020));
+    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2021));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -1757,9 +1777,19 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.push_back(Date(27, September, 2020));
     expectedWorkingWeekEnds.push_back(Date(10, October, 2020));
 
+    // China Inter Bank working weekends list in the year 2021
+    expectedWorkingWeekEnds.push_back(Date(7, Feb, 2021));
+    expectedWorkingWeekEnds.push_back(Date(20, Feb, 2021));
+    expectedWorkingWeekEnds.push_back(Date(25, April, 2021));
+    expectedWorkingWeekEnds.push_back(Date(8, May, 2021));
+    expectedWorkingWeekEnds.push_back(Date(18, September, 2021));
+    expectedWorkingWeekEnds.push_back(Date(26, September, 2021));
+    expectedWorkingWeekEnds.push_back(Date(9, October, 2021));
+
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2020);
+    Date end(31, Dec, 2021);
 
     Size k = 0;
 
