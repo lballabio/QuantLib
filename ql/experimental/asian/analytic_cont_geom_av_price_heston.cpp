@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    namespace {
+    namespace Acgap {
         class Integrand {
           private:
             Real t_, T_, K_, logK_;
@@ -246,7 +246,7 @@ namespace QuantLib {
         // Calculate the two terms in eq (29) - Phi(1,0) is real (asian forward) but need to type convert
         Real term1 = 0.5 * (std::real(Phi(1,0, T, t, summationCutoff_)) - strike);
 
-        Integrand integrand = Integrand(T, summationCutoff_, strike, this, xiRightLimit_);
+        Acgap::Integrand integrand = Acgap::Integrand(T, summationCutoff_, strike, this, xiRightLimit_);
         Real term2 = integrator_(integrand) / M_PI;
 
         // Apply the payoff functions

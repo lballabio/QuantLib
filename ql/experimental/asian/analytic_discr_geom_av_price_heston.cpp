@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    namespace {
+    namespace Adgap {
         // A class to perform the integrations in Eqs (23) and (24)
         class Integrand {
           private:
@@ -256,8 +256,8 @@ namespace QuantLib {
         // Calculate the two terms in eq (23) - Phi(1,0) is real (asian forward) but need to type convert
         Real term1 = 0.5 * (std::real(Phi(1,0, startTime, expiryTime, kStar, fixingTimes, tauK)) - strike);
 
-        Integrand integrand = Integrand(startTime, expiryTime, kStar, fixingTimes,
-                                        tauK, strike, this, xiRightLimit_);
+        Adgap::Integrand integrand = Adgap::Integrand(startTime, expiryTime, kStar, fixingTimes,
+                                                      tauK, strike, this, xiRightLimit_);
         Real term2 = integrator_(integrand) / M_PI;
 
 
