@@ -69,8 +69,8 @@ namespace QuantLib {
         void calculate() const;
 
         // Equation (21) - must be public so the integrand can access it.
-        std::complex<Real> Phi(std::complex<Real> s,
-                               std::complex<Real> w,
+        std::complex<Real> Phi(const std::complex<Real> s,
+                               const std::complex<Real> w,
                                Time t, Time T, Size kStar,
                                const std::vector<Time>& t_n,
                                const std::vector<Time>& tauK) const;
@@ -101,33 +101,33 @@ namespace QuantLib {
         mutable std::vector<Real> tkr_tk_;
 
         // Equation (11)
-        std::complex<Real> F(std::complex<Real>& z1,
-                             std::complex<Real>& z2,
+        std::complex<Real> F(const std::complex<Real>& z1,
+                             const std::complex<Real>& z2,
                              Time tau) const;
 
-        std::complex<Real> F_tilde(std::complex<Real>& z1,
-                                   std::complex<Real>& z2,
+        std::complex<Real> F_tilde(const std::complex<Real>& z1,
+                                   const std::complex<Real>& z2,
                                    Time tau) const;
 
         // Equation (14)
-        std::complex<Real> z(std::complex<Real>& s,
-                             std::complex<Real>& w,
+        std::complex<Real> z(const std::complex<Real>& s,
+                             const std::complex<Real>& w,
                              Size k, Size n) const;
 
         // Equation (15)
-        std::complex<Real> omega(std::complex<Real>& s,
-                                 std::complex<Real>& w,
+        std::complex<Real> omega(const std::complex<Real>& s,
+                                 const std::complex<Real>& w,
                                  Size k, Size kStar, Size n) const;
 
         // Equation (16)
-        std::complex<Real> a(std::complex<Real>& s,
-                             std::complex<Real>& w,
+        std::complex<Real> a(const std::complex<Real>& s,
+                             const std::complex<Real>& w,
                              Time t, Time T, Size kStar,
                              const std::vector<Time>& t_n) const;
 
         // Equation (19)
-        std::complex<Real> omega_tilde(std::complex<Real>& s,
-                                       std::complex<Real>& w,
+        std::complex<Real> omega_tilde(const std::complex<Real>& s,
+                                       const std::complex<Real>& w,
                                        Size k, Size kStar, Size n,
                                        const std::vector<Time>& tauK) const;
     };

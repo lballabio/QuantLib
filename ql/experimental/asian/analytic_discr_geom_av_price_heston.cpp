@@ -21,36 +21,39 @@
 
 namespace QuantLib {
 
-    // A class to perform the integrations in Eqs (23) and (24)
-    class AdgapIntegrand {
-      private:
-        Real t_, T_, K_, logK_;
-        Size kStar_;
-        const std::vector<Time> t_n_, tauK_;
-        const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent_;
-        Real xiRightLimit_;
-        std::complex<Real> i_;
+    namespace {
+        // A class to perform the integrations in Eqs (23) and (24)
+        class Integrand {
+          private:
+            Real t_, T_, K_, logK_;
+            Size kStar_;
+            const std::vector<Time> t_n_, tauK_;
+            const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent_;
+            Real xiRightLimit_;
+            std::complex<Real> i_;
 
-      public:
-        AdgapIntegrand(Real t,
-                       Real T,
-                       Size kStar,
-                       const std::vector<Time>& t_n,
-                       const std::vector<Time>& tauK,
-                       Real K,
-                       const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
-                       Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)), kStar_(kStar), t_n_(t_n),
-            tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
+          public:
+            Integrand(Real t,
+                      Real T,
+                      Size kStar,
+                      const std::vector<Time>& t_n,
+                      const std::vector<Time>& tauK,
+                      Real K,
+                      const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
+                      Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)), 
+                kStar_(kStar), t_n_(t_n), tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit),
+                i_(std::complex<Real>(0.0, 1.0)) {}
 
-        double operator()(double xi) const {
-            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+            double operator()(double xi) const {
+                double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
 
-            std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
-            std::complex<Real> inner2 = -K_*parent_->Phi(xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
+                std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
+                std::complex<Real> inner2 = -K_*parent_->Phi(xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
 
-            return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
-        }
-    };
+                return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
+            }
+        };
+    }
 
     AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::
         AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
@@ -72,8 +75,8 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::F(
-            std::complex<Real>& z1,
-            std::complex<Real>& z2,
+            const std::complex<Real>& z1,
+            const std::complex<Real>& z2,
             Time tau) const {
         std::complex<Real> temp = std::sqrt(kappa_*kappa_-2.0*z1*sigma_*sigma_);
         if (std::abs(kappa_*kappa_-2.0*sigma_*sigma_) < 1e-8) {
@@ -84,15 +87,15 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::F_tilde(
-            std::complex<Real>& z1,
-            std::complex<Real>& z2,
+            const std::complex<Real>& z1,
+            const std::complex<Real>& z2,
             Time tau) const {
         std::complex<Real> temp = std::sqrt(kappa_*kappa_ - 2.0*z1*sigma_*sigma_);
         return 0.5*temp*sinh(0.5*tau*temp) + 0.5*(kappa_ - z2*sigma_*sigma_)*cosh(0.5*tau*temp);
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::z(
-            std::complex<Real>& s, std::complex<Real>& w, Size k, Size n) const {
+            const std::complex<Real>& s, const std::complex<Real>& w, Size k, Size n) const {
         double k_ = double(k);
         double n_ = double(n);
         std::complex<Real> term1 = (2*rho_*kappa_ - sigma_)*((n_-k_+1)*s + n_*w)/(2*sigma_*n_);
@@ -102,7 +105,7 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::omega(
-            std::complex<Real>& s, std::complex<Real>& w, Size k, Size kStar, Size n) const {
+            const std::complex<Real>& s, const std::complex<Real>& w, Size k, Size kStar, Size n) const {
         if (k==kStar) {
             return 0;
         } else if (k==n+1) {
@@ -113,8 +116,8 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::a(
-            std::complex<Real>& s,
-            std::complex<Real>& w,
+            const std::complex<Real>& s,
+            const std::complex<Real>& w,
             Time t, Time T, Size kStar,
             const std::vector<Time>& t_n) const {
         double kStar_ = double(kStar);
@@ -135,8 +138,8 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::omega_tilde(
-            std::complex<Real>& s,
-            std::complex<Real>& w,
+            const std::complex<Real>& s,
+            const std::complex<Real>& w,
             Size k, Size kStar, Size n,
             const std::vector<Time>& tauK) const {
         std::complex<Real> omega_k = omega(s, w, k, kStar, n);
@@ -169,8 +172,8 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::Phi(
-            std::complex<Real> s,
-            std::complex<Real> w,
+            const std::complex<Real> s,
+            const std::complex<Real> w,
             Time t, Time T, Size kStar,
             const std::vector<Time>& t_n,
             const std::vector<Time>& tauK) const {
@@ -253,8 +256,8 @@ namespace QuantLib {
         // Calculate the two terms in eq (23) - Phi(1,0) is real (asian forward) but need to type convert
         Real term1 = 0.5 * (std::real(Phi(1,0, startTime, expiryTime, kStar, fixingTimes, tauK)) - strike);
 
-        AdgapIntegrand integrand = AdgapIntegrand(startTime, expiryTime, kStar, fixingTimes,
-                                                  tauK, strike, this, xiRightLimit_);
+        Integrand integrand = Integrand(startTime, expiryTime, kStar, fixingTimes,
+                                        tauK, strike, this, xiRightLimit_);
         Real term2 = integrator_(integrand) / M_PI;
 
 

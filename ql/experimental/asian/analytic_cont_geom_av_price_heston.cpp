@@ -21,28 +21,33 @@
 
 namespace QuantLib {
 
-    class Integrand {
-      private:
-        Real t_, T_, K_, logK_;
-        Size cutoff_;
-        const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent_;
-        Real xiRightLimit_;
-        std::complex<Real> i_;
+    namespace {
+        class Integrand {
+          private:
+            Real t_, T_, K_, logK_;
+            Size cutoff_;
+            const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent_;
+            Real xiRightLimit_;
+            std::complex<Real> i_;
 
-      public:
-        Integrand(Real T,
-                  Size cutoff,
-                  Real K,
-                  const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent,
-                  Real xiRightLimit) : t_(0.0), T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff), parent_(parent),
-                                       xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
+          public:
+            Integrand(Real T,
+                      Size cutoff,
+                      Real K,
+                      const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent,
+                      Real xiRightLimit) : t_(0.0), T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff),
+                parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
 
-        double operator()(double xi) const {
-            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
-            std::complex<Real> inner = parent_->Phi(1.0 + xiDash*i_, 0, T_, t_, cutoff_) - K_*parent_->Phi(xiDash*i_, 0, T_, t_, cutoff_);
-            return 0.5*xiRightLimit_*std::real(inner * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
-        }
-    };
+            double operator()(double xi) const {
+                double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+
+                std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, T_, t_, cutoff_);
+                std::complex<Real> inner2 = - K_*parent_->Phi(xiDash*i_, 0, T_, t_, cutoff_);
+
+                return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
+            }
+        };
+    }
 
     class DcfIntegrand {
       private:
@@ -89,29 +94,29 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticContinuousGeometricAveragePriceAsianHestonEngine::z1_f(
-            std::complex<Real> s, std::complex<Real> w, Real T) const {
+            const std::complex<Real>& s, const std::complex<Real>& w, Real T) const {
         return s*s*(1-rho_*rho_)/(2*T*T);
     }
 
     std::complex<Real> AnalyticContinuousGeometricAveragePriceAsianHestonEngine::z2_f(
-            std::complex<Real> s, std::complex<Real> w, Real T) const {
+            const std::complex<Real>& s, const std::complex<Real>& w, Real T) const {
         return s*(2*rho_*kappa_ - sigma_)/(2*sigma_*T) + s*w*(1-rho_*rho_)/T;
     }
 
     std::complex<Real> AnalyticContinuousGeometricAveragePriceAsianHestonEngine::z3_f(
-            std::complex<Real> s, std::complex<Real> w, Real T) const {
+            const std::complex<Real>& s, const std::complex<Real>& w, Real T) const {
         return s*rho_/(sigma_*T) + 0.5*w*(2*rho_*kappa_ - sigma_)/sigma_ + 0.5*w*w*(1-rho_*rho_);
     }
 
     std::complex<Real> AnalyticContinuousGeometricAveragePriceAsianHestonEngine::z4_f(
-            std::complex<Real> s, std::complex<Real> w) const {
+            const std::complex<Real>& s, const std::complex<Real>& w) const {
         return w*rho_/sigma_;
     }
 
-    std::complex<Real> AnalyticContinuousGeometricAveragePriceAsianHestonEngine::f(std::complex<Real> z1,
-                                                                                   std::complex<Real> z2,
-                                                                                   std::complex<Real> z3,
-                                                                                   std::complex<Real> z4,
+    std::complex<Real> AnalyticContinuousGeometricAveragePriceAsianHestonEngine::f(const std::complex<Real>& z1,
+                                                                                   const std::complex<Real>& z2,
+                                                                                   const std::complex<Real>& z3,
+                                                                                   const std::complex<Real>& z4,
                                                                                    int n, // Can't use Size here as n can be negative
                                                                                    Real tau) const {;
         std::complex<Real> result;
@@ -153,10 +158,10 @@ namespace QuantLib {
 
     std::pair<std::complex<Real>, std::complex<Real> >
         AnalyticContinuousGeometricAveragePriceAsianHestonEngine::F_F_tilde(
-            std::complex<Real> z1,
-            std::complex<Real> z2,
-            std::complex<Real> z3,
-            std::complex<Real> z4,
+            const std::complex<Real>& z1,
+            const std::complex<Real>& z2,
+            const std::complex<Real>& z3,
+            const std::complex<Real>& z4,
             Real tau,
             Size cutoff) const {
         std::complex<Real> temp = 0.0;
@@ -175,8 +180,8 @@ namespace QuantLib {
     };
 
     std::complex<Real> AnalyticContinuousGeometricAveragePriceAsianHestonEngine::Phi(
-            std::complex<Real> s,
-            std::complex<Real> w,
+            const std::complex<Real>& s,
+            const std::complex<Real>& w,
             Real T,
             Real t,
             Size cutoff) const {
