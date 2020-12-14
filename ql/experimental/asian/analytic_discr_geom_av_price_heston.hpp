@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2020 Jack Gillett
- 
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -92,6 +92,9 @@ namespace QuantLib {
 
         // Integrator for equation (23) and (24)
         GaussLegendreIntegration integrator_;
+
+        // Integrand
+        class Integrand;
 
         // We need to set up several variables inside calculate as they depend on fixing times. Rather
         // than pass them between a, omega, F etc. which makes for very messy method signatures, we

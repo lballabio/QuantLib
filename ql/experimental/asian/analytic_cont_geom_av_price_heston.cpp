@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2020 Jack Gillett
- 
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -21,35 +21,33 @@
 
 namespace QuantLib {
 
-    namespace Acgap {
-        class Integrand {
-          private:
-            Real t_, T_, K_, logK_;
-            Size cutoff_;
-            const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent_;
-            Real xiRightLimit_;
-            std::complex<Real> i_;
+    class AnalyticContinuousGeometricAveragePriceAsianHestonEngine::Integrand {
+      private:
+        Real t_, T_, K_, logK_;
+        Size cutoff_;
+        const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent_;
+        Real xiRightLimit_;
+        std::complex<Real> i_;
 
-          public:
-            Integrand(Real T,
-                      Size cutoff,
-                      Real K,
-                      const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent,
-                      Real xiRightLimit) : t_(0.0), T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff),
-                parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
+      public:
+        Integrand(Real T,
+                  Size cutoff,
+                  Real K,
+                  const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent,
+                  Real xiRightLimit) : t_(0.0), T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff),
+                                       parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
 
-            double operator()(double xi) const {
-                double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+        double operator()(double xi) const {
+            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
 
-                std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, T_, t_, cutoff_);
-                std::complex<Real> inner2 = - K_*parent_->Phi(xiDash*i_, 0, T_, t_, cutoff_);
+            std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, T_, t_, cutoff_);
+            std::complex<Real> inner2 = - K_*parent_->Phi(xiDash*i_, 0, T_, t_, cutoff_);
 
-                return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
-            }
-        };
-    }
+            return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
+        }
+    };
 
-    class DcfIntegrand {
+    class AnalyticContinuousGeometricAveragePriceAsianHestonEngine::DcfIntegrand {
       private:
         Real t_, T_, denominator_;
         const Handle<YieldTermStructure> riskFreeRate_;
@@ -58,7 +56,7 @@ namespace QuantLib {
         DcfIntegrand(Real t,
                      Real T,
                      const Handle<YieldTermStructure>& riskFreeRate,
-                     const Handle<YieldTermStructure>& dividendYield) : 
+                     const Handle<YieldTermStructure>& dividendYield) :
                 t_(t), T_(T), riskFreeRate_(riskFreeRate), dividendYield_(dividendYield) {
             denominator_ = std::log(riskFreeRate_->discount(t_)) - std::log(dividendYield_->discount(t_));
         }
@@ -69,6 +67,7 @@ namespace QuantLib {
                                + std::log(dividendYield_->discount(uDash)) + denominator_);
         }
     };
+
 
     AnalyticContinuousGeometricAveragePriceAsianHestonEngine::
         AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
@@ -246,7 +245,7 @@ namespace QuantLib {
         // Calculate the two terms in eq (29) - Phi(1,0) is real (asian forward) but need to type convert
         Real term1 = 0.5 * (std::real(Phi(1,0, T, t, summationCutoff_)) - strike);
 
-        Acgap::Integrand integrand = Acgap::Integrand(T, summationCutoff_, strike, this, xiRightLimit_);
+        Integrand integrand(T, summationCutoff_, strike, this, xiRightLimit_);
         Real term2 = integrator_(integrand) / M_PI;
 
         // Apply the payoff functions
@@ -283,4 +282,3 @@ namespace QuantLib {
         results_.additionalResults["a5"] = a5_;
     }
 }
-

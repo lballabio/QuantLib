@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2020 Jack Gillett
- 
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -21,39 +21,38 @@
 
 namespace QuantLib {
 
-    namespace Adgap {
-        // A class to perform the integrations in Eqs (23) and (24)
-        class Integrand {
-          private:
-            Real t_, T_, K_, logK_;
-            Size kStar_;
-            const std::vector<Time> t_n_, tauK_;
-            const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent_;
-            Real xiRightLimit_;
-            std::complex<Real> i_;
+    // A class to perform the integrations in Eqs (23) and (24)
+    class AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::Integrand {
+      private:
+        Real t_, T_, K_, logK_;
+        Size kStar_;
+        const std::vector<Time> t_n_, tauK_;
+        const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent_;
+        Real xiRightLimit_;
+        std::complex<Real> i_;
 
-          public:
-            Integrand(Real t,
-                      Real T,
-                      Size kStar,
-                      const std::vector<Time>& t_n,
-                      const std::vector<Time>& tauK,
-                      Real K,
-                      const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
-                      Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)), 
-                kStar_(kStar), t_n_(t_n), tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit),
-                i_(std::complex<Real>(0.0, 1.0)) {}
+      public:
+        Integrand(Real t,
+                  Real T,
+                  Size kStar,
+                  const std::vector<Time>& t_n,
+                  const std::vector<Time>& tauK,
+                  Real K,
+                  const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
+                  Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)),
+                                       kStar_(kStar), t_n_(t_n), tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit),
+                                       i_(std::complex<Real>(0.0, 1.0)) {}
 
-            double operator()(double xi) const {
-                double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+        double operator()(double xi) const {
+            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
 
-                std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
-                std::complex<Real> inner2 = -K_*parent_->Phi(xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
+            std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
+            std::complex<Real> inner2 = -K_*parent_->Phi(xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
 
-                return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
-            }
-        };
-    }
+            return 0.5*xiRightLimit_*std::real((inner1 + inner2) * std::exp(-xiDash*logK_*i_) / (xiDash*i_));
+        }
+    };
+
 
     AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::
         AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
@@ -249,15 +248,14 @@ namespace QuantLib {
         tr_t_ = -std::log(riskFreeRate_->discount(startTime) / dividendYield_->discount(startTime));
         Tr_T_ = -std::log(riskFreeRate_->discount(expiryTime) / dividendYield_->discount(expiryTime));
         for (Size i=0; i<fixingTimes.size(); i++) {
-            tkr_tk_.push_back(-std::log(riskFreeRate_->discount(fixingTimes[i]) 
+            tkr_tk_.push_back(-std::log(riskFreeRate_->discount(fixingTimes[i])
                                         / dividendYield_->discount(fixingTimes[i])));
         }
 
         // Calculate the two terms in eq (23) - Phi(1,0) is real (asian forward) but need to type convert
         Real term1 = 0.5 * (std::real(Phi(1,0, startTime, expiryTime, kStar, fixingTimes, tauK)) - strike);
 
-        Adgap::Integrand integrand = Adgap::Integrand(startTime, expiryTime, kStar, fixingTimes,
-                                                      tauK, strike, this, xiRightLimit_);
+        Integrand integrand(startTime, expiryTime, kStar, fixingTimes, tauK, strike, this, xiRightLimit_);
         Real term2 = integrator_(integrand) / M_PI;
 
 
@@ -285,4 +283,3 @@ namespace QuantLib {
         results_.additionalResults["xiRightLimit"] = xiRightLimit_;
     }
 }
-
