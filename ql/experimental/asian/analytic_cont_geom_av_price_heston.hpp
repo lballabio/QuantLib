@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2020 Jack Gillett
- 
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -72,7 +72,9 @@ namespace QuantLib {
 
         // Phi, defined in eq (25). Must be public so the integrand can access it (Could
         // use friend functions I think, but perhaps overkill?)
-        std::complex<Real> Phi(std::complex<Real> s, std::complex<Real> w, Real T, Real t = 0.0, Size cutoff = 50) const;
+        std::complex<Real> Phi(const std::complex<Real>& s,
+                               const std::complex<Real>& w,
+                               Real T, Real t = 0.0, Size cutoff = 50) const;
 
       private:
         // Initial process params
@@ -97,27 +99,30 @@ namespace QuantLib {
         // Integrator for equation (29)
         GaussLegendreIntegration integrator_;
 
+        // Integrands
+        class Integrand;
+        class DcfIntegrand;
 
         // Equations (13)
-        std::complex<Real> z1_f(std::complex<Real> s, std::complex<Real> w, Real T) const;
-        std::complex<Real> z2_f(std::complex<Real> s, std::complex<Real> w, Real T) const;
-        std::complex<Real> z3_f(std::complex<Real> s, std::complex<Real> w, Real T) const;
-        std::complex<Real> z4_f(std::complex<Real> s, std::complex<Real> w) const;
+        std::complex<Real> z1_f(const std::complex<Real>& s, const std::complex<Real>& w, Real T) const;
+        std::complex<Real> z2_f(const std::complex<Real>& s, const std::complex<Real>& w, Real T) const;
+        std::complex<Real> z3_f(const std::complex<Real>& s, const std::complex<Real>& w, Real T) const;
+        std::complex<Real> z4_f(const std::complex<Real>& s, const std::complex<Real>& w) const;
 
         // Equations (19), (20)
         std::pair<std::complex<Real>, std::complex<Real> > F_F_tilde(
-                                        std::complex<Real> z1,
-                                        std::complex<Real> z2,
-                                        std::complex<Real> z3,
-                                        std::complex<Real> z4,
+                                        const std::complex<Real>& z1,
+                                        const std::complex<Real>& z2,
+                                        const std::complex<Real>& z3,
+                                        const std::complex<Real>& z4,
                                         Real tau,
                                         Size cutoff = 50) const;
 
         // Equation (21)
-        std::complex<Real> f(std::complex<Real> z1,
-                             std::complex<Real> z2,
-                             std::complex<Real> z3,
-                             std::complex<Real> z4,
+        std::complex<Real> f(const std::complex<Real>& z1,
+                             const std::complex<Real>& z2,
+                             const std::complex<Real>& z3,
+                             const std::complex<Real>& z4,
                              int n,
                              Real tau) const;
     };
