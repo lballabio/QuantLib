@@ -69,9 +69,11 @@ namespace QuantLib {
         void calculate() const;
 
         // Equation (21) - must be public so the integrand can access it.
-        std::complex<Real> Phi(const std::complex<Real> s,
-                               const std::complex<Real> w,
-                               Time t, Time T, Size kStar,
+        std::complex<Real> Phi(std::complex<Real> s,
+                               std::complex<Real> w,
+                               Time t,
+                               Time T,
+                               Size kStar,
                                const std::vector<Time>& t_n,
                                const std::vector<Time>& tauK) const;
 
