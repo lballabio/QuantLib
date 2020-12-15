@@ -38,6 +38,9 @@ namespace QuantLib {
          can and does not guarantee to match an exact number of steps, the precise
          grid used can be found in results_.additionalResults["TimeGrid"]
 
+         Some performance metrics/graphs for the Control Variate are shown in the
+         pull request: https://github.com/lballabio/QuantLib/pull/966
+
          \ingroup asianengines
          \test the correctness of the returned value is tested by
                reproducing results available in literature.
