@@ -920,7 +920,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
                 .withSeed(42)
                 .withSteps(48)
-                .withSamples(pow(2, 13))
+                .withSamples(8192)
                 .withControlVariate(true);
 
         option.setPricingEngine(engine2);
