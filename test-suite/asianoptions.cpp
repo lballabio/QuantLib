@@ -895,6 +895,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         ext::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
+                .withSeed(42)
                 .withSamples(32768);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
@@ -917,6 +918,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         // Also test the control variate version of the pricer
         ext::shared_ptr<PricingEngine> engine2 =
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
+                .withSeed(42)
                 .withSteps(48)
                 .withSamples(pow(2, 13))
                 .withControlVariate(true);
@@ -969,13 +971,13 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
             .withSteps(360)
-            .withSamples(65536);
+            .withSamples(32768);
 
     ext::shared_ptr<PricingEngine> engine4 =
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
-            .withSeed(342)
+            .withSeed(42)
             .withSteps(360)
-            .withSamples(65536)
+            .withSamples(16384)
             .withControlVariate(true);
 
     std::vector<Date> fixingDates(120);
@@ -999,7 +1001,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         option.setPricingEngine(engine3);
         Real calculated = option.NPV();
-        Real tolerance = 2.0e-12;
+        Real tolerance = 5.0e-2;
 
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
@@ -1010,7 +1012,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         option.setPricingEngine(engine4);
         calculated = option.NPV();
-        tolerance = 2.0e-12;
+        tolerance = 3.0e-2;
 
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
