@@ -23,6 +23,8 @@
 #define quantlib_mc_discrete_arithmetic_average_price_asian_heston_engine_hpp
 
 #include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
+#include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/exercise.hpp>
 
@@ -57,9 +59,20 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed,
              Size timeSteps = Null<Size>(),
-             Size timeStepsPerYear = Null<Size>());
+             Size timeStepsPerYear = Null<Size>(),
+             bool controlVariate = false);
       protected:
         ext::shared_ptr<path_pricer_type> pathPricer() const;
+
+        // Use the experimental analytic geometric asian option as a control variate.
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+            ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
+            QL_REQUIRE(process, "Heston-like process required");
+
+            return ext::shared_ptr<PricingEngine>(new
+                AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(process));
+        }
     };
 
 
@@ -77,11 +90,12 @@ namespace QuantLib {
         MakeMCDiscreteArithmeticAPHestonEngine& withAntitheticVariate(bool b = true);
         MakeMCDiscreteArithmeticAPHestonEngine& withSteps(Size steps);
         MakeMCDiscreteArithmeticAPHestonEngine& withStepsPerYear(Size steps);
+        MakeMCDiscreteArithmeticAPHestonEngine& withControlVariate(bool b = false);
         // conversion to pricing engine
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<P> process_;
-        bool antithetic_;
+        bool antithetic_, controlVariate_;
         Size samples_, maxSamples_, steps_, stepsPerYear_;
         Real tolerance_;
         BigNatural seed_;
@@ -118,11 +132,12 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed,
              Size timeSteps,
-             Size timeStepsPerYear)
+             Size timeStepsPerYear,
+             bool controlVariate)
     : MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>(process,
                                                              false,
                                                              antitheticVariate,
-                                                             false,
+                                                             controlVariate,
                                                              requiredSamples,
                                                              requiredTolerance,
                                                              maxSamples,
@@ -172,10 +187,51 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
+    inline ext::shared_ptr<
+            typename MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>
+        MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::controlPathPricer() const {
+
+        // Keep track of the fixing indices, the path pricer will need to prod only these
+        TimeGrid timeGrid = this->timeGrid();
+        std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
+        std::vector<Size> fixingIndexes;
+        for (Size i=0; i<fixingTimes.size(); i++) {
+            fixingIndexes.push_back(timeGrid.closestIndex(fixingTimes[i]));
+        }
+
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+                this->arguments_.payoff);
+        QL_REQUIRE(payoff, "non-plain payoff given");
+
+        ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(
+                this->arguments_.exercise);
+        QL_REQUIRE(exercise, "wrong exercise given");
+
+        ext::shared_ptr<P> process =
+            ext::dynamic_pointer_cast<P>(this->process_);
+        QL_REQUIRE(process, "Heston like process required");
+
+        // TODO: Currently the analytic pricer does not support seasoned asian
+        // options (coming soon). Once that is available, we will be able to
+        // pass seasoning details to the path pricer (NB. NEED to pass them to
+        // the analytic pricer as well in that case).
+
+        return ext::shared_ptr<typename
+            MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>(
+                new GeometricAPOHestonPathPricer(
+                    payoff->optionType(),
+                    payoff->strike(),
+                    process->riskFreeRate()->discount(exercise->lastDate()),
+                    fixingIndexes));
+    }
+
+    template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::MakeMCDiscreteArithmeticAPHestonEngine(
              const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), steps_(Null<Size>()),
+    : process_(process), antithetic_(false), controlVariate_(false),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), steps_(Null<Size>()),
       stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
 
     template<class RNG, class S, class P>
@@ -239,6 +295,13 @@ namespace QuantLib {
         return *this;
     }
 
+    template<class RNG, class S, class P>
+    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&
+    MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::withControlVariate(bool b) {
+        controlVariate_ = b;
+        return *this;
+    }
+
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>() const {
         return ext::shared_ptr<PricingEngine>(new
@@ -249,7 +312,8 @@ namespace QuantLib {
                                                         maxSamples_,
                                                         seed_,
                                                         steps_,
-                                                        stepsPerYear_));
+                                                        stepsPerYear_,
+                                                        controlVariate_));
     }
 }
 

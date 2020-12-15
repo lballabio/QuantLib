@@ -199,8 +199,11 @@ namespace QuantLib {
 }
 
     void AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::calculate() const {
+        /* this engine cannot really check for the averageType==Geometric
+           since it can be used as control variate for the Arithmetic version
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "not a geometric average option");
+        */
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
