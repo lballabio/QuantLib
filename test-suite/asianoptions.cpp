@@ -865,6 +865,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
     Average::Type averageType = Average::Arithmetic;
     Real runningSum = 0.0;
     Size pastFixings = 0;
+
     for (Size l=0; l<LENGTH(cases); l++) {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(new
@@ -894,6 +895,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         ext::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
+                .withSeed(42)
                 .withSamples(32768);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
@@ -913,8 +915,112 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
                         vol, expected, calculated, tolerance);
         }
 
+        // Also test the control variate version of the pricer
+        ext::shared_ptr<PricingEngine> engine2 =
+            MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
+                .withSeed(42)
+                .withSteps(48)
+                .withSamples(8192)
+                .withControlVariate(true);
+
+        option.setPricingEngine(engine2);
+
+        Real calculatedCV = option.NPV();
+        Real expectedCV = cases[l].result;
+        tolerance = 2.50e-2;
+
+        if (std::fabs(calculatedCV-expectedCV) > tolerance) {
+            REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                        fixingDates, payoff, exercise, spot->value(),
+                        qRate->value(), rRate->value(), today,
+                        vol, expectedCV, calculatedCV, tolerance);
+        }
     }
 
+    // An additional dataset using the Heston parameters coming from "General lower 
+    // bounds for arithmetic Asian option prices", Applied Mathematical Finance 15(2)
+    // 123-149 (2008), by Albrecher, H., Mayer, P., and Schoutens, W. The numerical
+    // accuracy of prices given in Table 6 is low, but higher accuracy prices for the
+    // same parameters and options are reported by in "Pricing bounds and approximations
+    // for discrete arithmetic Asian options under time-changed Levy processes" by Zeng,
+    // P.P., and Kwok Y.K. (2013) in Table 4.
+    Real strikes[] = {60.0, 80.0, 100.0, 120.0, 140.0};
+    Real prices[] = {42.5990, 29.3698, 18.2360, 10.0565, 4.9609};
+
+    Real v02 = 0.0175;
+    Real kappa2 = 1.5768;
+    Real theta2 = 0.0398;
+    Real sigma2 = 0.5751;
+    Real rho2 = -0.5711;
+
+    DayCounter dc2 = Actual365Fixed();
+
+    ext::shared_ptr<SimpleQuote> spot2(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc2);
+    ext::shared_ptr<SimpleQuote> rRate2(new SimpleQuote(0.03));
+    ext::shared_ptr<YieldTermStructure> rTS2 = flatRate(today, rRate2, dc2);
+
+    ext::shared_ptr<HestonProcess> hestonProcess2(new
+        HestonProcess(Handle<YieldTermStructure>(rTS2),
+        Handle<YieldTermStructure>(qTS2),
+        Handle<Quote>(spot2),
+        v02, kappa2, theta2, sigma2, rho2));
+
+    ext::shared_ptr<PricingEngine> engine3 =
+        MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
+            .withSeed(42)
+            .withSteps(360)
+            .withSamples(32768);
+
+    ext::shared_ptr<PricingEngine> engine4 =
+        MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
+            .withSeed(42)
+            .withSteps(360)
+            .withSamples(16384)
+            .withControlVariate(true);
+
+    std::vector<Date> fixingDates(120);
+    for (Size i=1; i<=120; i++) {
+        fixingDates[i-1] = today + Period(i, Months);
+    }
+
+    ext::shared_ptr<Exercise> exercise(new
+        EuropeanExercise(fixingDates[119]));
+
+    for (Size i=0; i<5; i++) {
+        Real strike = strikes[i];
+        Real expected = prices[i];
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(Option::Call, strike));
+
+        DiscreteAveragingAsianOption option(averageType, runningSum,
+                                            pastFixings, fixingDates,
+                                            payoff, exercise);
+
+        option.setPricingEngine(engine3);
+        Real calculated = option.NPV();
+        Real tolerance = 5.0e-2;
+
+        if (std::fabs(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                        fixingDates, payoff, exercise, spot->value(),
+                        qRate2->value(), rRate2->value(), today,
+                        vol, expected, calculated, tolerance);
+        }
+
+        option.setPricingEngine(engine4);
+        calculated = option.NPV();
+        tolerance = 3.0e-2;
+
+        if (std::fabs(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                        fixingDates, payoff, exercise, spot->value(),
+                        qRate2->value(), rRate2->value(), today,
+                        vol, expected, calculated, tolerance);
+        }
+    }
 }
 
 
