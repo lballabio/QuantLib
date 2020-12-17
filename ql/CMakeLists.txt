@@ -973,6 +973,7 @@ set(QuantLib_HDR
     experimental/amortizingbonds/amortizingcmsratebond.hpp
     experimental/amortizingbonds/amortizingfixedratebond.hpp
     experimental/amortizingbonds/amortizingfloatingratebond.hpp
+    experimental/asian/all.hpp
     experimental/asian/analytic_cont_geom_av_price_heston.hpp
     experimental/asian/analytic_discr_geom_av_price_heston.hpp
     experimental/averageois/all.hpp
@@ -1155,6 +1156,7 @@ set(QuantLib_HDR
     experimental/finitedifferences/glued1dmesher.hpp
     experimental/finitedifferences/modtriplebandlinearop.hpp
     experimental/finitedifferences/vanillavppoption.hpp
+    experimental/forward/all.hpp
     experimental/forward/analytichestonforwardeuropeanengine.hpp
     experimental/futures/all.hpp
     experimental/futures/overnightindexfuture.hpp
