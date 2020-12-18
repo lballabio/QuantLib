@@ -542,7 +542,7 @@
     <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
     <ClInclude Include="ql\experimental\asian\all.hpp" />
     <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp" />
-    <ClInclude Include="ql\experimental\asian\analytic_cont_discr_av_price_heston.hpp" />
+    <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\experimental\averageois\all.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp" />
