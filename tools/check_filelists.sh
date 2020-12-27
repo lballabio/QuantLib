@@ -7,7 +7,7 @@
 # with 'make dist', not from a working copy.)
 
 find ql -name '*.[hc]pp' -or -name '*.[hc]' \
-| grep -v 'ql/config\.hpp' | grep -v 'ql/ad\.hpp' | sort > ql.ref.files
+| grep -v 'ql/config\.hpp' | sort > ql.ref.files
 find test-suite -name '*.[hc]pp' \
 | grep -v 'quantlibbenchmark' | grep -v '/main\.cpp' \
 | sort > test-suite.ref.files
@@ -28,11 +28,11 @@ grep -o -E 'Include=".*\.[hc]p*"' test-suite/testsuite.vcxproj \
 
 grep -o -E 'Include=".*\.[hc]p*"' QuantLib.vcxproj.filters \
 | awk -F'"' '{ print $2 }' | sed -e 's|\\|/|g' | sed -e 's|^./||' \
-| sort > ql.vcx.filters
+| sort > ql.vcx.filters.files
 
 grep -o -E 'Include=".*\.[hc]p*"' test-suite/testsuite.vcxproj.filters \
 | awk -F'"' '{ print $2 }' | sed -e 's|\\|/|g' | sed -e 's|^./||' \
-| sed -e 's|^|test-suite/|' | sort > test-suite.vcx.filters
+| sed -e 's|^|test-suite/|' | sort > test-suite.vcx.filters.files
 
 # same with CMakelists
 
@@ -45,22 +45,21 @@ grep -o -E '[a-zA-Z0-9_/\.]*\.cpp' test-suite/CMakeLists.txt \
 
 # write out differences...
 
-echo 'CMake:'
-diff -b ql.cmake.files ql.ref.files
-diff -b test-suite.cmake.files test-suite-cpp.ref.files
-echo
+diff -b ql.cmake.files ql.ref.files > ql.cmake.diff
+diff -b test-suite.cmake.files test-suite-cpp.ref.files > test-suite.cmake.diff
 
-echo 'Visual Studio:'
-echo 'project:'
-diff -b ql.vcx.files ql.ref.files
-diff -b test-suite.vcx.files test-suite.ref.files
-echo 'filters:'
-diff -b ql.vcx.filters ql.ref.files
-diff -b test-suite.vcx.filters test-suite.ref.files
+diff -b ql.vcx.files ql.ref.files > ql.vcx.diff
+diff -b test-suite.vcx.files test-suite.ref.files > test-suite.vcx.diff
+
+diff -b ql.vcx.filters.files ql.ref.files > ql.vcx.filters.diff
+diff -b test-suite.vcx.filters.files test-suite.ref.files > test-suite.vcx.filters.diff
+
+# ...process...
+./tools/check_filelists_diffs.py
+result=$?
 
 # ...and cleanup
-rm -f ql.ref.files test-suite.ref.files test-suite-cpp.ref.files
-rm -f ql.cmake.files test-suite.cmake.files
-rm -f ql.vcx.files test-suite.vcx.files
-rm -f ql.vcx.filters test-suite.vcx.filters
+rm -f ql.*.files test-suite.*.files test-suite-cpp.ref.files
+rm -f ql.*.diff test-suite.*.diff
 
+exit $result

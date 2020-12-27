@@ -73,6 +73,8 @@ namespace QuantLib {
       protected:
         struct Data;
         ext::shared_ptr<Data> data_;
+     private:
+        void checkNonEmpty() const;
     };
 
     struct Currency::Data {
@@ -112,35 +114,47 @@ namespace QuantLib {
 
     inline Currency::Currency() {}
 
+    inline void Currency::checkNonEmpty() const {
+        QL_REQUIRE(data_, "no currency data provided");
+    }
+
     inline const std::string& Currency::name() const {
+        checkNonEmpty();
         return data_->name;
     }
 
     inline const std::string& Currency::code() const {
+        checkNonEmpty();
         return data_->code;
     }
 
     inline Integer Currency::numericCode() const {
+        checkNonEmpty();
         return data_->numeric;
     }
 
     inline const std::string& Currency::symbol() const {
+        checkNonEmpty();
         return data_->symbol;
     }
 
     inline const std::string& Currency::fractionSymbol() const {
+        checkNonEmpty();
         return data_->fractionSymbol;
     }
 
     inline Integer Currency::fractionsPerUnit() const {
+        checkNonEmpty();
         return data_->fractionsPerUnit;
     }
 
     inline const Rounding& Currency::rounding() const {
+        checkNonEmpty();
         return data_->rounding;
     }
 
     inline std::string Currency::format() const {
+        checkNonEmpty();
         return data_->formatString;
     }
 
@@ -149,11 +163,13 @@ namespace QuantLib {
     }
 
     inline const Currency& Currency::triangulationCurrency() const {
+        checkNonEmpty();
         return data_->triangulated;
     }
 
     inline bool operator==(const Currency& c1, const Currency& c2) {
-        return c1.name() == c2.name();
+        return (c1.empty() && c2.empty()) ||
+               (!c1.empty() && !c2.empty() && c1.name() == c2.name());
     }
 
     inline bool operator!=(const Currency& c1, const Currency& c2) {

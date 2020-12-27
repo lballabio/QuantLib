@@ -48,6 +48,7 @@ set(QuantLib_SRC
     experimental/amortizingbonds/amortizingfixedratebond.cpp
     experimental/amortizingbonds/amortizingfloatingratebond.cpp
     experimental/asian/analytic_cont_geom_av_price_heston.cpp
+    experimental/asian/analytic_discr_geom_av_price_heston.cpp
     experimental/averageois/arithmeticaverageois.cpp
     experimental/averageois/arithmeticoisratehelper.cpp
     experimental/averageois/averageoiscouponpricer.cpp
@@ -972,7 +973,9 @@ set(QuantLib_HDR
     experimental/amortizingbonds/amortizingcmsratebond.hpp
     experimental/amortizingbonds/amortizingfixedratebond.hpp
     experimental/amortizingbonds/amortizingfloatingratebond.hpp
+    experimental/asian/all.hpp
     experimental/asian/analytic_cont_geom_av_price_heston.hpp
+    experimental/asian/analytic_discr_geom_av_price_heston.hpp
     experimental/averageois/all.hpp
     experimental/averageois/arithmeticaverageois.hpp
     experimental/averageois/arithmeticoisratehelper.hpp
@@ -1153,6 +1156,7 @@ set(QuantLib_HDR
     experimental/finitedifferences/glued1dmesher.hpp
     experimental/finitedifferences/modtriplebandlinearop.hpp
     experimental/finitedifferences/vanillavppoption.hpp
+    experimental/forward/all.hpp
     experimental/forward/analytichestonforwardeuropeanengine.hpp
     experimental/futures/all.hpp
     experimental/futures/overnightindexfuture.hpp

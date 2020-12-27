@@ -2334,6 +2334,9 @@
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_price.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_price_heston.hpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_strike.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
@@ -3334,6 +3337,9 @@
       <Filter>experimental\futures</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp">
+      <Filter>experimental\futures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp">
       <Filter>experimental\futures</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\ode\all.hpp">
@@ -5572,6 +5578,9 @@
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_price.cpp">
       <Filter>pricingengines\asian</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_price_heston.cpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_strike.cpp">
       <Filter>pricingengines\asian</Filter>
     </ClCompile>
@@ -6283,7 +6292,10 @@
     <ClCompile Include="ql\experimental\mcbasket\pathmultiassetoption.cpp">
       <Filter>experimental\mcbasket</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.pp">
+    <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp">
+      <Filter>experimental\futures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.cpp">
       <Filter>experimental\futures</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\atmadjustedsmilesection.cpp">
