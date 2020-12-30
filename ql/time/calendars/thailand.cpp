@@ -49,7 +49,7 @@ namespace QuantLib {
             // H.M. the Queen's Birthday
             || ((d == 12 || ((d==13 || d==14) && w==Monday)) && m == August)
             // H.M. King Bhumibol Adulyadej Memorial Day
-            || ((d == 3 || ((d==14 || d==15) && w==Monday)) && m == October && y >= 2017)
+            || ((d == 13 || ((d==14 || d==15) && w==Monday)) && m == October && y >= 2017)
             // H.M. King Bhumibol Adulyadej's Birthday
             || ((d == 5 || ((d==6 || d==7) && w==Monday)) && m == December)
             // Constitution Day
@@ -219,7 +219,14 @@ namespace QuantLib {
                 ))
             return false;
 
-        // 2017 is missing
+        if ((y == 2017) &&
+            (      (d == 13 && m == February)  // Makha Bucha Day
+                || (d == 10 && m == May)       // Wisakha Bucha Day
+                || (d == 10 && m == July)      // Asarnha Bucha Day
+                || (d == 23 && m == October)   // Chulalongkorn Day
+                || (d == 26 && m == October)   // Special Holiday
+                ))
+            return false;
 
         if ((y == 2018) &&
             (   (d==1 && m==March)    // Makha Bucha Day
