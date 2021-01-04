@@ -1,0 +1,16 @@
+name: Check doc generation
+on: [push, pull_request]
+jobs:
+  docs:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      run: |
+        sudo apt install -y doxygen graphviz libboost-dev
+        ./autogen.sh
+        ./configure
+    - name: Check
+      run: |
+        doxygen --version
+        make docs
