@@ -358,7 +358,7 @@ void ScheduleTest::testCDS2015ConventionGrid() {
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live
-    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc ...");
+    BOOST_TEST_MESSAGE("Testing CDS2015 convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -442,7 +442,7 @@ void ScheduleTest::testCDSConventionGrid() {
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2015 expected maturity dates.
-    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc ...");
+    BOOST_TEST_MESSAGE("Testing CDS convention against ISDA doc...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -532,7 +532,7 @@ void ScheduleTest::testOldCDSConventionGrid() {
 
     // Testing against section 11 of ISDA doc FAQs Amending when Single Name CDS roll to new on-the-run contracts
     // December 20, 2015 Go-Live. Amended the dates in the doc to the pre-2009 expected start and maturity dates.
-    BOOST_TEST_MESSAGE("Testing Old CDS convention ...");
+    BOOST_TEST_MESSAGE("Testing old CDS convention...");
 
     // Test inputs and expected outputs
     // The map key is a pair with 1st element equal to trade date and 2nd element equal to CDS tenor.
@@ -606,7 +606,7 @@ void ScheduleTest::testOldCDSConventionGrid() {
 
 void ScheduleTest::testCDS2015ConventionSampleDates() {
 
-    BOOST_TEST_MESSAGE("Testing all dates in sample CDS schedule(s) for rule CDS2015 ...");
+    BOOST_TEST_MESSAGE("Testing all dates in sample CDS schedule(s) for rule CDS2015...");
 
     using CdsTests::makeCdsSchedule;
 
@@ -665,7 +665,7 @@ void ScheduleTest::testCDS2015ConventionSampleDates() {
 
 void ScheduleTest::testCDSConventionSampleDates() {
 
-    BOOST_TEST_MESSAGE("Testing all dates in sample CDS schedule(s) for rule CDS ...");
+    BOOST_TEST_MESSAGE("Testing all dates in sample CDS schedule(s) for rule CDS...");
 
     using CdsTests::makeCdsSchedule;
 
@@ -723,7 +723,7 @@ void ScheduleTest::testCDSConventionSampleDates() {
 
 void ScheduleTest::testOldCDSConventionSampleDates() {
 
-    BOOST_TEST_MESSAGE("Testing all dates in sample CDS schedule(s) for rule OldCDS ...");
+    BOOST_TEST_MESSAGE("Testing all dates in sample CDS schedule(s) for rule OldCDS...");
 
     using CdsTests::makeCdsSchedule;
 
@@ -783,7 +783,7 @@ void ScheduleTest::testOldCDSConventionSampleDates() {
 
 void ScheduleTest::testCDS2015ZeroMonthsMatured() {
 
-    BOOST_TEST_MESSAGE("Testing 0M tenor for CDS2015 where matured ...");
+    BOOST_TEST_MESSAGE("Testing 0M tenor for CDS2015 where matured...");
 
     DateGeneration::Rule rule = DateGeneration::CDS2015;
     Period tenor(0, Months);

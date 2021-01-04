@@ -725,7 +725,7 @@ void ForwardOptionTest::testHestonMCPrices() {
 
 
 void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
-   BOOST_TEST_MESSAGE("Testing Heston Analytical vs MC prices...");
+   BOOST_TEST_MESSAGE("Testing Heston analytic vs MC prices...");
 
    Option::Type optionTypes[] = { Option::Call, Option::Put };
 
