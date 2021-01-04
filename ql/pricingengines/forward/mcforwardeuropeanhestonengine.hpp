@@ -13,8 +13,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcforwardvanillahestonengine.hpp
-    \brief Monte Carlo engine for forward-starting strike-reset vanilla options using Heston-like process
+/*! \file mcforwardeuropeanhestonengine.hpp
+    \brief Monte Carlo engine for forward-starting strike-reset European options using Heston-like process
 */
 
 #ifndef quantlib_mc_forward_european_heston_engine_hpp

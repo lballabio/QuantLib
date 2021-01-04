@@ -13,8 +13,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcforwardvanillabsengine.hpp
-    \brief Monte Carlo engine for forward-starting strike-reset vanilla options using BS process
+/*! \file mcforwardeuropeanbsengine.hpp
+    \brief Monte Carlo engine for forward-starting strike-reset European options using BS process
 */
 
 #ifndef quantlib_mc_forward_european_bs_engine_hpp
