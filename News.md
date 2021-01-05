@@ -1,79 +1,69 @@
-Changes for QuantLib 1.20:
+Changes for QuantLib 1.21:
 ==========================
 
-QuantLib 1.20 includes 24 pull requests from several contributors.
+QuantLib 1.21 includes 24 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/16?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/17?closed=1>.
 
 Portability
 -----------
 
-- Support for Visual C++ 2012 is being deprecated.  It will be dropped
-  after the next release in order to enable use of C++11 features.
-
-- It is now possible to opt into using `std::tuple` instead of
-  `boost::tuple` when the compiler allows it.  The default is still to
-  use the Boost implementation.  The feature can be enabled by
-  uncommenting the `QL_USE_STD_TUPLE` macro in `ql/userconfig.hpp` on
-  Visual C++ or by passing the `--enable-std-tuple` switch to
-  `./configure` on other systems.  The `--enable-std-tuple` switch is
-  also implied by `--enable-std-classes`.  (Thanks to Joseph Wang.)
+- As previously announced, this is the last release to support Visual
+  C++ 2012.  Starting from next release, VC++ 2013 or later will be
+  required in order to enable use of C++11 features.
 
 Instruments
 -----------
 
-- Added mixing-factor parameter to Heston finite-differences barrier,
-  rebate and double-barrier engines (thanks to Jack Gillett).
+- Improve date generation for CDS schedules under the post-big-bang
+  rules (thanks to Francis Duffy).
 
-- Added a few additional results to Black swaption engine and to
-  analytic European option engine (thanks to Peter Caspers and Marcin
-  Rybacki).
+- Amortizing fixed-rate bonds can now use a generic `InterestRate`
+  object (thanks to Piter Dias).
 
-- Improved calculation of spot date for vanilla swap around holidays
-  (thanks to Paul Giltinan).
+- Added Monte Carlo pricer for discrete-average arithmetic Asian
+  options under the Heston model (thanks to Jack Gillett).
 
-- Added ex-coupon feature to amortizing bonds, callable bonds and
-  convertible bonds.
+- Added analytic and Monte Carlo pricers for discrete-average
+  geometric Asian options under the Heston model (thanks to Jack
+  Gillett).  Together, they can also be used as a control variate in
+  Monte Carlo models for arithmetic Asian options.
 
-- Added optional first-coupon day counter to fixed-rate bonds (thanks
-  to Jacob Lee-Howes).
+- Added analytic pricer for continuous-average geometric Asian
+  options under the Heston model (thanks to Jack Gillett).
 
-Math
-----
+- Added analytic pricer for forward options under the Heston model
+  (thanks to Jack Gillett).
 
-- Added convenience classes `LogCubic` and `LogMixedLinearCubic`
-  hiding a few default parameters (thanks to Andrea Maffezzoli).
+- Added Monte Carlo pricers for forward options under the
+  Black-Scholes and the Heston models (thanks to Jack Gillett).
 
-Models
-------
+Term structures
+---------------
 
-- Added control variate based on asymptotic expansion for the Heston
-  model (thanks to Klaus Spanderen).
+- Added Dutch regulatory term structure, a.k.a. ultimate forward term
+  structure (thanks to Marcin Rybacki).
+
+- Generalized exponential spline fitting to an arbitrary number of
+  parameters; it is now also possible to fix kappa (thanks to David
+  Sansom).
+
+- Fixed averaging period for 1-month SOFR futures rate helper (thanks
+  to Eisuke Tani).
 
 Date/time
 ---------
 
-- Added missing Hong Kong holiday (thanks to GitHub user `CarrieMY`).
+- Fixed a bug and added 2017 holidays in Thailand calendar (thanks to
+  GitHub user `phil-zxx` for the heads-up).
 
-- Added a couple of one-off closing days to the Romanian calendar.
+- Updated Chinese calendar for 2021 (thanks to Cheng Li).
 
-- Added a one-off holiday to South Korean calendar (thanks to GitHub
-  user `fayce66`).
+- Updated Japanese calendar for 2021 (thanks to Eisuke Tani).
 
-- Added a missing holiday to Turkish calendar (thanks to Berat
-  Postalcioglu).
 
-Documentation
--------------
-
-- Added basic documentation to optimization methods (thanks to GitHub
-  user `martinbrose`).
-
-Deprecated features
--------------------
-
-- Features deprecate in version 1.16 were removed: a constructor of
-  the `FdmOrnsteinUhlenbeckOp` class and a constructor of the
-  `SwaptionVolatilityMatrix` class.
+Thanks go also to Francois Botha, Peter Caspers, Ralf Konrad, Matthias
+Siemering, Klaus Spanderen and Joseph Wang for smaller fixes,
+enhancements and bug reports.
