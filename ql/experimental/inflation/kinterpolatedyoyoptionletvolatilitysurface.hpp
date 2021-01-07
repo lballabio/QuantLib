@@ -57,7 +57,9 @@ namespace QuantLib {
             const ext::shared_ptr<YoYInflationCapFloorEngine>& pricer,
             const ext::shared_ptr<YoYOptionletStripper>& yoyOptionletStripper,
             Real slope,
-            const Interpolator1D& interpolator = Interpolator1D());
+            const Interpolator1D& interpolator = Interpolator1D(),
+            VolatilityType volType = ShiftedLognormal,
+            Real displacement = 0.0);
 
         virtual Real minStrike() const;
         virtual Real maxStrike() const;
@@ -101,10 +103,13 @@ namespace QuantLib {
          const ext::shared_ptr<YoYInflationCapFloorEngine> &pricer,
          const ext::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
          const Real slope,
-         const Interpolator1D &interpolator)
+         const Interpolator1D &interpolator,
+         VolatilityType volType,
+         Real displacement)
     : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,
                                     capFloorPrices->yoyIndex()->frequency(),
-                                    capFloorPrices->yoyIndex()->interpolated()),
+                                    capFloorPrices->yoyIndex()->interpolated(),
+                                    volType, displacement),
       capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(pricer),
       yoyOptionletStripper_(yoyOptionletStripper),
       factory1D_(interpolator), slope_(slope), lastDateisSet_(false) {
@@ -149,6 +154,9 @@ namespace QuantLib {
     Volatility KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>::
     volatilityImpl(const Date &d, Rate strike) const {
         updateSlice(d);
+        if (this->allowsExtrapolation()) {
+            this->tempKinterpolation_.enableExtrapolation();
+        }
         return tempKinterpolation_(strike);
     }
 

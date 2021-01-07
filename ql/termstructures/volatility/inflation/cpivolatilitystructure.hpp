@@ -65,6 +65,9 @@ namespace QuantLib {
                               Rate strike,
                               const Period &obsLag = Period(-1,Days),
                               bool extrapolate = false) const;
+        /*! Returns the volatility for a given time and strike rate. No adjustments
+          due to lags and interpolation are applied to the input time. */
+        Volatility volatility(const Time time, Rate strike) const;
 
         //! Returns the total integrated variance for a given exercise
         //! date and strike rate.
