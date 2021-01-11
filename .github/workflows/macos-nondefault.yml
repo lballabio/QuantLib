@@ -2,7 +2,11 @@ name: Mac OS build with non-default configuration
 on: workflow_dispatch
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-10.15, macos-11.0]
     steps:
     - uses: actions/checkout@v2
     - name: Setup
@@ -12,12 +16,12 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/Library/Caches/ccache
-        key: macos-nondef-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
+        key: ${{ matrix.os }}-nondef-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
         restore-keys: |
-          macos-nondef-build-${{ github.ref }}-${{ github.head_ref }}-
-          macos-nondef-build-${{ github.ref }}-
-          macos-nondef-build-refs/heads/master-
-          macos-nondef-build-
+          ${{ matrix.os }}-nondef-build-${{ github.ref }}-${{ github.head_ref }}-
+          ${{ matrix.os }}-nondef-build-${{ github.ref }}-
+          ${{ matrix.os }}-nondef-build-refs/heads/master-
+          ${{ matrix.os }}-nondef-build-
     - name: Build
       env:
         CXXFLAGS: -O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9
