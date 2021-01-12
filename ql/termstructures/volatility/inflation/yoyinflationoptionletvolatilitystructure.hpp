@@ -170,7 +170,6 @@ namespace QuantLib {
                                        VolatilityType volType = ShiftedLognormal,
                                        Real displacement = 0.0);
         //@}
-        virtual ~ConstantYoYOptionletVolatility() {}
 
         //! \name Limits
         //@{
@@ -193,16 +192,6 @@ namespace QuantLib {
                                        Rate maxStrike = 100.0, // +10,000%
                                        VolatilityType volType = ShiftedLognormal,
                                        Real displacement = 0.0);
-        //@}
-        virtual ~ConstantYoYOptionletVolatility() {}
-
-        //! \name Limits
-        //@{
-        virtual Date maxDate() const { return Date::maxDate(); }
-        //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const { return minStrike_; }
-        //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const { return maxStrike_; }
         //@}
 
     protected:
