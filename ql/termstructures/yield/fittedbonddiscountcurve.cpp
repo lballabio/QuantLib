@@ -133,7 +133,7 @@ namespace QuantLib {
     : constrainAtZero_(constrainAtZero), weights_(weights), l2_(l2),
       calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod),
       minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime),
-      errorCode_(EndCriteria::Type::None) {}
+      errorCode_(EndCriteria::None) {}
 
     void FittedBondDiscountCurve::FittingMethod::init() {
         // yield conventions
@@ -207,7 +207,7 @@ namespace QuantLib {
 
             numberOfIterations_ = 0;
             costValue_ = costFunction.value(solution_);
-            errorCode_ = EndCriteria::Type::None;
+            errorCode_ = EndCriteria::None;
 
             return;
         }
