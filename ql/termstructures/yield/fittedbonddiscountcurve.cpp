@@ -63,7 +63,6 @@ namespace QuantLib {
       guessSolution_(guess),
       bondHelpers_(bondHelpers),
       fittingMethod_(fittingMethod) {
-
         fittingMethod_->curve_ = this;
         setup();
     }
@@ -133,7 +132,8 @@ namespace QuantLib {
         const Real maxCutoffTime)
     : constrainAtZero_(constrainAtZero), weights_(weights), l2_(l2),
       calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod),
-      minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime) {}
+      minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime),
+      errorCode_(EndCriteria::Type::None) {}
 
     void FittedBondDiscountCurve::FittingMethod::init() {
         // yield conventions
@@ -207,6 +207,7 @@ namespace QuantLib {
 
             numberOfIterations_ = 0;
             costValue_ = costFunction.value(solution_);
+            errorCode_ = EndCriteria::Type::None;
 
             return;
         }
@@ -228,7 +229,7 @@ namespace QuantLib {
                                 functionEpsilon,
                                 gradientNormEpsilon);
 
-        optimization->minimize(problem,endCriteria);
+        errorCode_ = optimization->minimize(problem,endCriteria);
         solution_ = problem.currentValue();
 
         numberOfIterations_ = problem.functionEvaluation();
