@@ -131,9 +131,9 @@ namespace QuantLib {
         const Real minCutoffTime,
         const Real maxCutoffTime)
     : constrainAtZero_(constrainAtZero), weights_(weights), l2_(l2),
-      calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod),
-      minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime),
-      errorCode_(EndCriteria::None) {}
+      calculateWeights_(weights.empty()), errorCode_(EndCriteria::None),
+      optimizationMethod_(optimizationMethod),
+      minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime) {}
 
     void FittedBondDiscountCurve::FittingMethod::init() {
         // yield conventions
