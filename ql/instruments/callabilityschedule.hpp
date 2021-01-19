@@ -38,12 +38,6 @@ namespace QuantLib {
     //! %instrument callability
     class Callability : public Event {
       public:
-        //! amount to be paid upon callability
-        /*! \deprecated Use Bond::Price instead.
-                        Deprecated in version 1.17.
-        */
-        QL_DEPRECATED
-        typedef Bond::Price Price;
         //! type of the callability
         enum Type { Call, Put };
 
