@@ -68,11 +68,5 @@ namespace QuantLib {
         TripleBandLinearOp m_, mapX_;
     };
 
-    /*! \deprecated Renamed to FdmOrnsteinUhlenbeckOp.
-                    Deprecated in version 1.17.
-    */
-    QL_DEPRECATED
-    typedef FdmOrnsteinUhlenbeckOp FdmOrnsteinUhlenbackOp;
-
 }
 #endif
