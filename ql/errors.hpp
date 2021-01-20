@@ -62,8 +62,7 @@ namespace QuantLib {
 */
 #define MULTILINE_MACRO_BEGIN do {
 
-#if defined(BOOST_MSVC) && BOOST_MSVC >= 1500
-    /* __pragma is available from VC++9 */
+#if defined(BOOST_MSVC)
     #define MULTILINE_MACRO_END \
         __pragma(warning(push)) \
         __pragma(warning(disable:4127)) \
