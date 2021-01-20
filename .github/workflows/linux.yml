@@ -88,12 +88,6 @@ jobs:
             cxx: clang++
             cxxflags: "-O2 -g0 -Wall -Wno-unknown-pragmas -Wno-deprecated-declarations -Werror"
             tests: true
-          - name: "C++03 mode"
-            shortname: c++03
-            tag: eoan
-            cc: gcc
-            cxx: g++
-            cxxflags: "-O2 -g0 -Wall -Wno-unknown-pragmas -Werror -std=c++03"
           - name: "C++11 mode"
             shortname: c++11
             tag: rolling
