@@ -25,8 +25,8 @@
 #include <ql/userconfig.hpp>
 
 // first things first
-#if (_MSC_VER < 1600)
-#  error "versions of Visual C++ prior to VC++10 (2010) are no longer supported"
+#if (_MSC_VER < 1800)
+#  error "versions of Visual C++ prior to VC++12.0 (2013) are no longer supported"
 #endif
 
 /*******************************************
