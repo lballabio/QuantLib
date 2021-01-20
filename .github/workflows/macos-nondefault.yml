@@ -1,0 +1,34 @@
+name: Mac OS build with non-default configuration
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      run: |
+        brew install automake boost ccache
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/Library/Caches/ccache
+        key: macos-nondef-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
+        restore-keys: |
+          macos-nondef-build-${{ github.ref }}-${{ github.head_ref }}-
+          macos-nondef-build-${{ github.ref }}-
+          macos-nondef-build-refs/heads/master-
+          macos-nondef-build-
+    - name: Build
+      env:
+        CXXFLAGS: -O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9
+        LDFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
+      run: |
+        ./autogen.sh
+        ./configure --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday CC="ccache clang" CXX="ccache clang++" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
+        make -j 2
+    - name: Run tests
+      run: |
+        ./test-suite/quantlib-test-suite --log_level=message
+    - name: Run examples
+      run: |
+        make -C Examples check-examples
