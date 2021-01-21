@@ -154,7 +154,7 @@ namespace QuantLib {
     class ConstantYoYOptionletVolatility
     : public YoYOptionletVolatilitySurface {
     public:
-        //! \name Constructor
+        //! \name Constructors
         //@{
         //! calculate the reference date based on the global evaluation date
         ConstantYoYOptionletVolatility(Volatility v,
@@ -169,16 +169,7 @@ namespace QuantLib {
                                        Rate maxStrike = 100.0, // +10,000%
                                        VolatilityType volType = ShiftedLognormal,
                                        Real displacement = 0.0);
-        //@}
 
-        //! \name Limits
-        //@{
-        virtual Date maxDate() const { return Date::maxDate(); }
-        //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const { return minStrike_; }
-        //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const { return maxStrike_; }
-        //@}
         // costructor taking a quote
         ConstantYoYOptionletVolatility(const Handle<Quote>& v,
                                        Natural settlementDays,
@@ -194,6 +185,14 @@ namespace QuantLib {
                                        Real displacement = 0.0);
         //@}
 
+        //! \name Limits
+        //@{
+        virtual Date maxDate() const { return Date::maxDate(); }
+        //! the minimum strike for which the term structure can return vols
+        virtual Real minStrike() const { return minStrike_; }
+        //! the maximum strike for which the term structure can return vols
+        virtual Real maxStrike() const { return maxStrike_; }
+        //@}
     protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const;
