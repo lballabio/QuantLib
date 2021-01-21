@@ -124,7 +124,7 @@ namespace QuantLib {
         return volatility(maturityDate, strike, obsLag, extrapolate);
     }
 
-    Volatility YoYOptionletVolatilitySurface::volatility(const Time time, Rate strike) const {
+    Volatility YoYOptionletVolatilitySurface::volatility(Time time, Rate strike) const {
         return volatilityImpl(time, strike);
     }
 
@@ -216,8 +216,7 @@ namespace QuantLib {
                                     volType, displacement),
       volatility_(v), minStrike_(minStrike), maxStrike_(maxStrike) {}
 
-    Volatility ConstantYoYOptionletVolatility::volatilityImpl(const Time,
-                                                              Rate) const {
+    Volatility ConstantYoYOptionletVolatility::volatilityImpl(Time, Rate) const {
         return volatility_->value();
     }
 

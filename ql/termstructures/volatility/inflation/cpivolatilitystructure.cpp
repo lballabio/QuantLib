@@ -109,7 +109,7 @@ namespace QuantLib {
         return volatility(maturityDate, strike, obsLag, extrapolate);
     }
 
-    Volatility CPIVolatilitySurface::volatility(const Time time, Rate strike) const {
+    Volatility CPIVolatilitySurface::volatility(Time time, Rate strike) const {
         return volatilityImpl(time, strike);
     }
 
