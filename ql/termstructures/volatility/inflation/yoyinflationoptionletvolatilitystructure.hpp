@@ -72,7 +72,7 @@ namespace QuantLib {
                               bool extrapolate = false) const;
         /*! Returns the volatility for a given time and strike rate. No adjustments
           due to lags and interpolation are applied to the input time. */
-        Volatility volatility(const Time time, Rate strike) const;
+        Volatility volatility(Time time, Rate strike) const;
 
         //! Returns the volatility type
         virtual VolatilityType volatilityType() const { return volType_; }
