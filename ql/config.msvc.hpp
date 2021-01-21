@@ -49,7 +49,9 @@
 #define QL_PATCH_MSVC
 
 // prevent auto-link of Boost libs such as serialization
-#define BOOST_ALL_NO_LIB
+#ifndef BOOST_ALL_NO_LIB
+#    define BOOST_ALL_NO_LIB
+#endif
 
 // Compilation on the x64 platform throws a lot of warnings assigning
 // QuantLib::Size == size_t (64 bit) to QuantLib::Integer == int (32
