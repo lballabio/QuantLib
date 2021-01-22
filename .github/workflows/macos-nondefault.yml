@@ -28,7 +28,7 @@ jobs:
         LDFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         ./autogen.sh
-        ./configure --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday CC="ccache clang" CXX="ccache clang++" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
+        ./configure --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --enable-std-classes CC="ccache clang" CXX="ccache clang++" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
         make -j 2
     - name: Run tests
       run: |
