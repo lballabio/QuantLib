@@ -94,7 +94,11 @@ namespace QuantLib {
 
     template <class T>
     inline Clone<T>& Clone<T>::operator=(const T& t) {
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        ptr_ = t.clone();
+        #else
         ptr_.reset(t.clone().release());
+        #endif
         return *this;
     }
 

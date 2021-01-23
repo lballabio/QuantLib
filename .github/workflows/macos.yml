@@ -24,7 +24,7 @@ jobs:
           ${{ matrix.os }}-build-
     - name: Build
       env:
-        CXXFLAGS: -O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9
+        CXXFLAGS: -O2 -g0 -Wall -Werror -Wno-c++11-extensions -stdlib=libc++ -mmacosx-version-min=10.9
         LDFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         ./autogen.sh

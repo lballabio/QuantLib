@@ -27,9 +27,13 @@
 #include <ql/qldefines.hpp>
 
 #if defined(QL_USE_STD_UNIQUE_PTR)
-#define QL_UNIQUE_OR_AUTO_PTR std::unique_ptr
+#    define QL_UNIQUE_OR_AUTO_PTR std::unique_ptr
 #else
-#define QL_UNIQUE_OR_AUTO_PTR std::auto_ptr
+#    pragma message("Warning: using auto_ptr in QuantLib is now deprecated.")
+#    pragma message("    If you're using --disable-std-unique-ptr in your build")
+#    pragma message("    or if you undefined QL_USE_STD_UNIQUE_PTR in ql/userconfig.hpp,")
+#    pragma message("    please restore the default compilation options in the near future.")
+#    define QL_UNIQUE_OR_AUTO_PTR std::auto_ptr
 #endif
 
 
