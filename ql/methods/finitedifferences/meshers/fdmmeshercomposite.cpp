@@ -40,32 +40,31 @@ namespace QuantLib {
         }
 
         std::vector<T> build_vector(const T& m1, const T& m2) {
-            const std::vector<ext::shared_ptr<Fdm1dMesher> > retVal
+            std::vector<ext::shared_ptr<Fdm1dMesher> > retVal
                 = boost::assign::list_of(m1)(m2);
             return retVal;
         }
 
         std::vector<T> build_vector(const T& m1, const T& m2, const T& m3) {
-            const std::vector<ext::shared_ptr<Fdm1dMesher> > retVal
+            std::vector<ext::shared_ptr<Fdm1dMesher> > retVal
                 = boost::assign::list_of(m1)(m2)(m3);
             return retVal;
         }
 
         std::vector<T> build_vector(const T& m1, const T& m2,
                                     const T& m3, const T& m4) {
-            const std::vector<ext::shared_ptr<Fdm1dMesher> > retVal
+            std::vector<ext::shared_ptr<Fdm1dMesher> > retVal
                 = boost::assign::list_of(m1)(m2)(m3)(m4);
             return retVal;
         }
 
         ext::shared_ptr<FdmLinearOpLayout> getLayoutFromMeshers(
-            const std::vector<ext::shared_ptr<Fdm1dMesher> > & meshers) {
-                std::vector<Size> dim(meshers.size());
-                for (Size i=0; i < dim.size(); ++i) {
-                    dim[i] = meshers[i]->size();
-                }
-            return ext::make_shared<FdmLinearOpLayout>(
-                dim);
+                 const std::vector<ext::shared_ptr<Fdm1dMesher> > & meshers) {
+            std::vector<Size> dim(meshers.size());
+            for (Size i=0; i < dim.size(); ++i) {
+                dim[i] = meshers[i]->size();
+            }
+            return ext::make_shared<FdmLinearOpLayout>(dim);
         }
     }
 

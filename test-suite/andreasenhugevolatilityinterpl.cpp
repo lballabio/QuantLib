@@ -146,7 +146,7 @@ namespace andreasen_huge_volatility_interpl_test {
                 }
         }
 
-        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
+        CalibrationData data = { spot, rTS, qTS, calibrationSet };
 
         return data;
     }
@@ -314,7 +314,7 @@ namespace andreasen_huge_volatility_interpl_test {
             }
         }
 
-        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
+        CalibrationData data = { spot, rTS, qTS, calibrationSet };
 
         return data;
     }
@@ -348,7 +348,7 @@ namespace andreasen_huge_volatility_interpl_test {
                 ext::make_shared<SimpleQuote>(vol)));
         }
 
-        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
+        CalibrationData data = { spot, rTS, qTS, calibrationSet };
 
         return data;
     }

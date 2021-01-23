@@ -917,6 +917,7 @@ namespace QuantLib {
             QL_REQUIRE(recoveries_.size() == this->basket_->size(),
                 "Incompatible basket and recovery sizes.");
             // invalidate current calculations if any and notify observers
+            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
             LazyObject::update();
         }
         // This one and the buffer might be moved to the parent, only some
