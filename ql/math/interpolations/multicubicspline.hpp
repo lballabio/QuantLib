@@ -26,6 +26,7 @@
 
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
+#include <algorithm>
 #include <functional>
 #include <vector>
 
