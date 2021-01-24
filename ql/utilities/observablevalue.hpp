@@ -84,8 +84,10 @@ namespace QuantLib {
     template <class T>
     ObservableValue<T>&
     ObservableValue<T>::operator=(const ObservableValue<T>& t) {
-        value_ = t.value_;
-        observable_->notifyObservers();
+        if (this != &t) {
+            value_ = t.value_;
+            observable_->notifyObservers();
+        }
         return *this;
     }
 
