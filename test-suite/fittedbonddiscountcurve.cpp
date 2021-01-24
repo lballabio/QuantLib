@@ -157,6 +157,8 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
         bonds[i]->setPricingEngine(engine2);
         modelPrices2.push_back(bonds[i]->cleanPrice());
     }
+    BOOST_CHECK_EQUAL(curve1->fitResults().errorCode(), EndCriteria::MaxIterations);
+    BOOST_CHECK_EQUAL(curve2->fitResults().errorCode(), EndCriteria::MaxIterations);
 
     // the resulting cost values are similar for both approaches
     // i.e. the fit has a similar quality, I get for example:
@@ -184,8 +186,7 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
     for (Size i = 0; i < helpers.size(); ++i) {
         Real t = curve1->timeFromReference(helpers[i]->bond()->maturityDate());
         // Real marketYield = bonds[i]->yield(quotes[i], Actual365Fixed(), Continuous, NoFrequency);
-        // Real modelYield1 =
-            bonds[i]->yield(modelPrices1[i], Actual365Fixed(), Continuous, NoFrequency);
+        // Real modelYield1 = bonds[i]->yield(modelPrices1[i], Actual365Fixed(), Continuous, NoFrequency);
         Real modelYield2 =
             bonds[i]->yield(modelPrices2[i], Actual365Fixed(), Continuous, NoFrequency);
         // Real curveYield1 = curve1->zeroRate(t, Continuous).rate();
@@ -193,6 +194,7 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
         BOOST_CHECK_CLOSE(modelYield2, curveYield2, 1.0); // 1.0 percent relative tolerance
     }
+    
 }
 
 

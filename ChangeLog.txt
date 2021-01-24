@@ -1,3 +1,25 @@
+commit fb837f316c7e8803e40011c97dda90af6058688a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 17 Jan 2021 15:13:43 +0100
+
+    Set version to 1.21 final.
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 4cbe1d8e252d76838b1c765243a9b6b2c34da53b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 5 Jan 2021 15:58:26 +0100
+
+    Update changelog and news
+
+ ChangeLog.txt           | 2517 +++++++++++++++++++++++++++--------------------
+ Contributors.txt        |    2 +
+ Docs/pages/history.docs |   46 +-
+ News.md                 |   90 +-
+ 4 files changed, 1534 insertions(+), 1121 deletions(-)
+
 commit a630775c6df2472804c30f5ca034e6d09106fd44
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 5 Jan 2021 15:57:50 +0100

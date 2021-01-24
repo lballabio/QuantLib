@@ -142,6 +142,7 @@ namespace QuantLib {
             QL_REQUIRE(2 * this->basket_->size() == copula_->size(),
                 "Incompatible basket and model sizes.");
             // invalidate current calculations if any and notify observers
+            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
             LazyObject::update();
         }
         // Default probabilities for each name at the time of the maximun 

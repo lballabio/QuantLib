@@ -194,6 +194,8 @@ namespace QuantLib {
         Integer numberOfIterations() const;
         //! final value of cost function after optimization
         Real minimumCostValue() const;
+        //! error code of the optimization
+        EndCriteria::Type errorCode() const;
         //! clone of the current object
         #if defined(QL_USE_STD_UNIQUE_PTR)
         virtual std::unique_ptr<FittingMethod> clone() const = 0;
@@ -252,6 +254,8 @@ namespace QuantLib {
         Integer numberOfIterations_;
         // final value for the minimized cost function
         Real costValue_;
+        // error code returned by OptimizationMethod::minimize()
+        EndCriteria::Type errorCode_;
         // optimization method to be used, if none provided use Simplex
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
         // flat extrapolation of instantaneous forward before / after cutoff
@@ -298,6 +302,11 @@ namespace QuantLib {
     inline
     Real FittedBondDiscountCurve::FittingMethod::minimumCostValue() const {
         return costValue_;
+    }
+
+    inline 
+    EndCriteria::Type FittedBondDiscountCurve::FittingMethod::errorCode() const {
+        return errorCode_;
     }
 
     inline Array FittedBondDiscountCurve::FittingMethod::solution() const {

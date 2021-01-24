@@ -40,7 +40,7 @@ namespace QuantLib {
     }
 
     GMRESResult GMRES::solve(const Array& b, const Array& x0) const {
-        const GMRESResult result = solveImpl(b, x0);
+        GMRESResult result = solveImpl(b, x0);
 
         QL_REQUIRE(result.errors.back() < relTol_, "could not converge");
 

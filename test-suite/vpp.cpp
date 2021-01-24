@@ -548,7 +548,7 @@ namespace vpp_test {
             new ExtendedOrnsteinUhlenbeckProcess(kappa, volatility_u, u,
                                                  constant<Real, Real>(u)));
 
-        const ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
+        ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
             new KlugeExtOUProcess(rho, lnPowerProcess, lnGasProcess));
 
         return klugeOUProcess;
