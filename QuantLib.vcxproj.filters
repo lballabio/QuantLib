@@ -4370,6 +4370,9 @@
     <ClInclude Include="ql\termstructures\yield\ultimateforwardtermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\xccyratehelpers.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7054,8 +7057,9 @@
     <ClCompile Include="ql\math\integrals\exponentialintegrals.cpp">
       <Filter>math\integrals</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp">
-      <Filter>experimental\forward</Filter>
+    <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp" />
+    <ClCompile Include="ql\termstructures\yield\xccyratehelpers.cpp">
+      <Filter>termstructures\yield</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -30,14 +30,13 @@
 #ifndef quantlib_ratehelpers_hpp
 #define quantlib_ratehelpers_hpp
 
-#include <ql/termstructures/bootstraphelper.hpp>
-#include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/instruments/futures.hpp>
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/time/calendar.hpp>
-#include <ql/time/daycounter.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
-
+#include <ql/time/daycounter.hpp>
 #include <boost/optional.hpp>
 
 namespace QuantLib {
@@ -46,8 +45,7 @@ namespace QuantLib {
     class Quote;
 
     typedef BootstrapHelper<YieldTermStructure> RateHelper;
-    typedef RelativeDateBootstrapHelper<YieldTermStructure>
-                                                        RelativeDateRateHelper;
+    typedef RelativeDateBootstrapHelper<YieldTermStructure> RelativeDateRateHelper;
 
     //! Rate helper for bootstrapping over IborIndex futures prices
     class FuturesRateHelper : public RateHelper {
@@ -127,10 +125,8 @@ namespace QuantLib {
                           BusinessDayConvention convention,
                           bool endOfMonth,
                           const DayCounter& dayCounter);
-        DepositRateHelper(const Handle<Quote>& rate,
-                          const ext::shared_ptr<IborIndex>& iborIndex);
-        DepositRateHelper(Rate rate,
-                          const ext::shared_ptr<IborIndex>& iborIndex);
+        DepositRateHelper(const Handle<Quote>& rate, const ext::shared_ptr<IborIndex>& iborIndex);
+        DepositRateHelper(Rate rate, const ext::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -259,62 +255,62 @@ namespace QuantLib {
     /*! \todo use input SwapIndex to create the swap */
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
-        SwapRateHelper(const Handle<Quote>& rate,
-                       const ext::shared_ptr<SwapIndex>& swapIndex,
-                       const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days,
-                       // exogenous discounting curve
-                       const Handle<YieldTermStructure>& discountingCurve
-                                               = Handle<YieldTermStructure>(),
-                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date(),
-                       bool endOfMonth = false);
-        SwapRateHelper(const Handle<Quote>& rate,
-                       const Period& tenor,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       const ext::shared_ptr<IborIndex>& iborIndex,
-                       const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days,
-                       // exogenous discounting curve
-                       const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>(),
-                       Natural settlementDays = Null<Natural>(),
-                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date(),
-                       bool endOfMonth = false);
-        SwapRateHelper(Rate rate,
-                       const ext::shared_ptr<SwapIndex>& swapIndex,
-                       const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days,
-                       // exogenous discounting curve
-                       const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>(),
-                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date(),
-                       bool endOfMonth = false);
-        SwapRateHelper(Rate rate,
-                       const Period& tenor,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       const ext::shared_ptr<IborIndex>& iborIndex,
-                       const Handle<Quote>& spread = Handle<Quote>(),
-                       const Period& fwdStart = 0*Days,
-                       // exogenous discounting curve
-                       const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>(),
-                       Natural settlementDays = Null<Natural>(),
-                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                       Date customPillarDate = Date(),
-                       bool endOfMonth = false);
+        SwapRateHelper(
+            const Handle<Quote>& rate,
+            const ext::shared_ptr<SwapIndex>& swapIndex,
+            const Handle<Quote>& spread = Handle<Quote>(),
+            const Period& fwdStart = 0 * Days,
+            // exogenous discounting curve
+            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
+            Pillar::Choice pillar = Pillar::LastRelevantDate,
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
+        SwapRateHelper(
+            const Handle<Quote>& rate,
+            const Period& tenor,
+            const Calendar& calendar,
+            // fixed leg
+            Frequency fixedFrequency,
+            BusinessDayConvention fixedConvention,
+            const DayCounter& fixedDayCount,
+            // floating leg
+            const ext::shared_ptr<IborIndex>& iborIndex,
+            const Handle<Quote>& spread = Handle<Quote>(),
+            const Period& fwdStart = 0 * Days,
+            // exogenous discounting curve
+            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
+            Natural settlementDays = Null<Natural>(),
+            Pillar::Choice pillar = Pillar::LastRelevantDate,
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
+        SwapRateHelper(
+            Rate rate,
+            const ext::shared_ptr<SwapIndex>& swapIndex,
+            const Handle<Quote>& spread = Handle<Quote>(),
+            const Period& fwdStart = 0 * Days,
+            // exogenous discounting curve
+            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
+            Pillar::Choice pillar = Pillar::LastRelevantDate,
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
+        SwapRateHelper(
+            Rate rate,
+            const Period& tenor,
+            const Calendar& calendar,
+            // fixed leg
+            Frequency fixedFrequency,
+            BusinessDayConvention fixedConvention,
+            const DayCounter& fixedDayCount,
+            // floating leg
+            const ext::shared_ptr<IborIndex>& iborIndex,
+            const Handle<Quote>& spread = Handle<Quote>(),
+            const Period& fwdStart = 0 * Days,
+            // exogenous discounting curve
+            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
+            Natural settlementDays = Null<Natural>(),
+            Pillar::Choice pillar = Pillar::LastRelevantDate,
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const;
@@ -373,7 +369,7 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&);
         //@}
-    protected:
+      protected:
         void initializeDates();
         Period tenor_;
         Natural settlementDays_;
@@ -449,7 +445,8 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const { return conv_; }
         bool endOfMonth() const { return eom_; }
         bool isFxBaseCurrencyCollateralCurrency() const {
-                                return isFxBaseCurrencyCollateralCurrency_; }
+            return isFxBaseCurrencyCollateralCurrency_;
+        }
         Calendar tradingCalendar() const { return tradingCalendar_; }
         Calendar adjustmentCalendar() const { return jointCalendar_; }
         //@}
@@ -457,7 +454,7 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&);
         //@}
-    private:
+      private:
         void initializeDates();
         Handle<Quote> spot_;
         Period tenor_;
@@ -482,13 +479,9 @@ namespace QuantLib {
         return spread_.empty() ? 0.0 : spread_->value();
     }
 
-    inline ext::shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
-        return swap_;
-    }
+    inline ext::shared_ptr<VanillaSwap> SwapRateHelper::swap() const { return swap_; }
 
-    inline const Period& SwapRateHelper::forwardStart() const {
-        return fwdStart_;
-    }
+    inline const Period& SwapRateHelper::forwardStart() const { return fwdStart_; }
 
 }
 
