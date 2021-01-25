@@ -1564,17 +1564,12 @@
     <ClInclude Include="ql\pricingengines\vanilla\coshestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\discretizedvanillaoption.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fdamericanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdbatesvanillaengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fdbermudanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdcevvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdconditions.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fddividendamericanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fddividendengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fddividendeuropeanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fddividendshoutengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fdeuropeanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdmultiperiodengine.hpp" />

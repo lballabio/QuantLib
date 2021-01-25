@@ -109,6 +109,9 @@ namespace QuantLib {
         return volatility(maturityDate, strike, obsLag, extrapolate);
     }
 
+    Volatility CPIVolatilitySurface::volatility(Time time, Rate strike) const {
+        return volatilityImpl(time, strike);
+    }
 
     //! needed for total variance calculations
     Time CPIVolatilitySurface::timeFromBase(const Date& maturityDate,

@@ -97,8 +97,8 @@ namespace QuantLib {
             }
                 
             if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+                results_.errorEstimate =
+                    this->mcModel_->sampleAccumulator().errorEstimate();
 
             // Allow inspection of the timeGrid via additional results
             this->results_.additionalResults["TimeGrid"] = this->timeGrid();

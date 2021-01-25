@@ -2011,18 +2011,13 @@ set(QuantLib_HDR
     pricingengines/vanilla/coshestonengine.hpp
     pricingengines/vanilla/discretizedvanillaoption.hpp
     pricingengines/vanilla/exponentialfittinghestonengine.hpp
-    pricingengines/vanilla/fdamericanengine.hpp
     pricingengines/vanilla/fdbatesvanillaengine.hpp
-    pricingengines/vanilla/fdbermudanengine.hpp
     pricingengines/vanilla/fdblackscholesvanillaengine.hpp
     pricingengines/vanilla/fdcirvanillaengine.hpp
     pricingengines/vanilla/fdcevvanillaengine.hpp
     pricingengines/vanilla/fdconditions.hpp
-    pricingengines/vanilla/fddividendamericanengine.hpp
     pricingengines/vanilla/fddividendengine.hpp
-    pricingengines/vanilla/fddividendeuropeanengine.hpp
     pricingengines/vanilla/fddividendshoutengine.hpp
-    pricingengines/vanilla/fdeuropeanengine.hpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp
     pricingengines/vanilla/fdhestonvanillaengine.hpp
     pricingengines/vanilla/fdmultiperiodengine.hpp

@@ -151,7 +151,8 @@ namespace QuantLib {
     }
 
     void Observable::unregisterObserver(
-        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
+        const ext::shared_ptr<Observer::Proxy>& observerProxy,
+        bool disconnect) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.erase(observerProxy);
@@ -164,9 +165,11 @@ namespace QuantLib {
             }
         }
 
-        // signals2 needs boost::bind, std::bind does not work
-        sig_->disconnect(boost::bind(&Observer::Proxy::update,
-                             observerProxy.get()));
+        if (disconnect) {
+            // signals2 needs boost::bind, std::bind does not work
+            sig_->disconnect(boost::bind(&Observer::Proxy::update,
+                                 observerProxy.get()));
+        }
     }
 
     void Observable::notifyObservers() {
