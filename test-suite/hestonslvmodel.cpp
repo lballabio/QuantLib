@@ -1180,7 +1180,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     Matrix surface(ds.size(), ext::get<1>(smoothSurface).size());
     std::vector<Time> times(surface.columns());
 
-    const std::vector<Date> dates = ext::get<1>(smoothSurface);
+    const std::vector<Date>& dates = ext::get<1>(smoothSurface);
     ext::shared_ptr<Matrix> m = createLocalVolMatrixFromProcess(
         lvProcess, ds, dates, times);
 
