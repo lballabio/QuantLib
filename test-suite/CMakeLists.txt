@@ -348,7 +348,7 @@ set(BENCHMARK_FILES
     shortratemodels.cpp                 shortratemodels.hpp
 
     utilities.cpp                       utilities.hpp
-    swaptionvolstructuresutilities.hpp
+                                        swaptionvolstructuresutilities.hpp
 )
 
 if (USE_BOOST_DYNAMIC_LIBRARIES)
