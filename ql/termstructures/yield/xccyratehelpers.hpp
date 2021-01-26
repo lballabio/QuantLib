@@ -29,7 +29,15 @@
 namespace QuantLib {
     //! Rate helper for bootstrapping over XCCY basis swap rates
     /*! 
-    
+    Constant notional cross currency swap helper.
+    Unlike marked-to-market cross currency swaps, both notionals
+    expressed in base and quote currency remain constant throughout
+    the lifetime of the swap.
+
+    For more details see:
+    N. Moreni, A. Pallavicini (2015)
+    FX Modelling in Collateralized Markets: foreign measures, basis curves
+    and pricing formulae.
     */
     class XCCYBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
@@ -38,6 +46,7 @@ namespace QuantLib {
                                 Natural fixingDays,
                                 const Calendar& calendar,
                                 BusinessDayConvention convention,
+                                bool endOfMonth,
                                 const ext::shared_ptr<IborIndex>& baseCurrencyIndex,
                                 const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
                                 const Handle<YieldTermStructure>& collateralCurve,
@@ -59,6 +68,7 @@ namespace QuantLib {
                                                        Natural settlementDays,
                                                        const Calendar& calendar,
                                                        BusinessDayConvention convention,
+                                                       bool endOfMonth,
                                                        const ext::shared_ptr<IborIndex>& idx,
                                                        VanillaSwap::Type type,
                                                        Real notional = 1.0,
@@ -71,6 +81,7 @@ namespace QuantLib {
         Natural fixingDays_;
         Calendar calendar_;
         BusinessDayConvention convention_;
+        bool endOfMonth_;
         ext::shared_ptr<IborIndex> baseCcyIdx_;
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
 

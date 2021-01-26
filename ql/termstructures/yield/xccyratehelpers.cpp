@@ -31,16 +31,17 @@ namespace QuantLib {
         Natural fixingDays,
         const Calendar& calendar,
         BusinessDayConvention convention,
+        bool endOfMonth,
         const ext::shared_ptr<IborIndex>& baseCurrencyIndex,
         const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
         const Handle<YieldTermStructure>& collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg)
     : RelativeDateRateHelper(basis), tenor_(tenor), fixingDays_(fixingDays), calendar_(calendar),
-      convention_(convention), baseCcyIdx_(baseCurrencyIndex), quoteCcyIdx_(quoteCurrencyIndex),
-      collateralHandle_(collateralCurve),
-      isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-      isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg) {
+        convention_(convention), endOfMonth_(endOfMonth), baseCcyIdx_(baseCurrencyIndex), 
+        quoteCcyIdx_(quoteCurrencyIndex), collateralHandle_(collateralCurve),
+        isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
+        isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
         registerWith(collateralHandle_);
@@ -53,6 +54,7 @@ namespace QuantLib {
                                                                      Natural settlementDays,
                                                                      const Calendar& calendar,
                                                                      BusinessDayConvention convention,
+                                                                     bool endOfMonth,
                                                                      const ext::shared_ptr<IborIndex>& idx,
                                                                      VanillaSwap::Type type,
                                                                      Real notional,
@@ -66,9 +68,9 @@ namespace QuantLib {
                                 .from(earliestDate)
                                 .to(maturity)
                                 .withTenor(idx->tenor())
-                                .withCalendar(idx->fixingCalendar())
-                                .withConvention(idx->businessDayConvention())
-                                .endOfMonth(idx->endOfMonth())
+                                .withCalendar(calendar)
+                                .withConvention(convention)
+                                .endOfMonth(endOfMonth)
                                 .backwards();
 
         Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
@@ -80,10 +82,10 @@ namespace QuantLib {
     }
 
     void XCCYBasisSwapRateHelper::initializeDates() {
-        baseCcyLeg_ = initialiseXCCYLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                        convention_, baseCcyIdx_, VanillaSwap::Receiver);
+        baseCcyLeg_ = initialiseXCCYLeg(evaluationDate_, tenor_, fixingDays_, calendar_, 
+                                        convention_, endOfMonth_, baseCcyIdx_, VanillaSwap::Receiver);
         quoteCcyLeg_ = initialiseXCCYLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                         convention_, quoteCcyIdx_, VanillaSwap::Payer);
+                                         convention_, endOfMonth_, quoteCcyIdx_, VanillaSwap::Payer);
 
         earliestDate_ = std::min(baseCcyLeg_->startDate(), quoteCcyLeg_->startDate());
         latestDate_ = std::max(baseCcyLeg_->maturityDate(), quoteCcyLeg_->maturityDate());
