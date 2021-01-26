@@ -63,16 +63,16 @@ namespace QuantLib {
         //@}
         //! \name Static helper function
         //@{
-        static ext::shared_ptr<Swap> initialiseXCCYLeg(const Date& evaluationDate,
-                                                       const Period& tenor,
-                                                       Natural settlementDays,
-                                                       const Calendar& calendar,
-                                                       BusinessDayConvention convention,
-                                                       bool endOfMonth,
-                                                       const ext::shared_ptr<IborIndex>& idx,
-                                                       VanillaSwap::Type type,
-                                                       Real notional = 1.0,
-                                                       Spread basis = 0.0);
+        static ext::shared_ptr<Swap> proxyXCCYLeg(const Date& evaluationDate,
+                                                  const Period& tenor,
+                                                  Natural fixingDays,
+                                                  const Calendar& calendar,
+                                                  BusinessDayConvention convention,
+                                                  bool endOfMonth,
+                                                  const ext::shared_ptr<IborIndex>& idx,
+                                                  VanillaSwap::Type type,
+                                                  Real notional = 1.0,
+                                                  Spread basis = 0.0);
         //@}
       protected:
         void initializeDates();

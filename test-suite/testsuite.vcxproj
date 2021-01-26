@@ -790,6 +790,7 @@
     <ClCompile Include="varianceswaps.cpp" />
     <ClCompile Include="volatilitymodels.cpp" />
     <ClCompile Include="vpp.cpp" />
+    <ClCompile Include="xccyratehelpers.cpp" />
     <ClCompile Include="zabr.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
@@ -951,6 +952,7 @@
     <ClInclude Include="varianceswaps.hpp" />
     <ClInclude Include="volatilitymodels.hpp" />
     <ClInclude Include="vpp.hpp" />
+    <ClInclude Include="xccyratehelpers.hpp" />
     <ClInclude Include="zabr.hpp" />
   </ItemGroup>
   <ItemGroup>

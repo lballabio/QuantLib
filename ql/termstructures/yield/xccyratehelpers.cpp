@@ -49,19 +49,19 @@ namespace QuantLib {
         initializeDates();
     }
 
-    ext::shared_ptr<Swap> XCCYBasisSwapRateHelper::initialiseXCCYLeg(const Date& evaluationDate,
-                                                                     const Period& tenor,
-                                                                     Natural settlementDays,
-                                                                     const Calendar& calendar,
-                                                                     BusinessDayConvention convention,
-                                                                     bool endOfMonth,
-                                                                     const ext::shared_ptr<IborIndex>& idx,
-                                                                     VanillaSwap::Type type,
-                                                                     Real notional,
-                                                                     Spread basis) {
+    ext::shared_ptr<Swap> XCCYBasisSwapRateHelper::proxyXCCYLeg(const Date& evaluationDate,
+                                                                const Period& tenor,
+                                                                Natural fixingDays,
+                                                                const Calendar& calendar,
+                                                                BusinessDayConvention convention,
+                                                                bool endOfMonth,
+                                                                const ext::shared_ptr<IborIndex>& idx,
+                                                                VanillaSwap::Type type,
+                                                                Real notional,
+                                                                Spread basis) {
         bool isPayer = (type == VanillaSwap::Payer);
         Date referenceDate = calendar.adjust(evaluationDate);
-        Date earliestDate = calendar.advance(referenceDate, settlementDays * Days, convention);
+        Date earliestDate = calendar.advance(referenceDate, fixingDays * Days, convention);
         Date maturity = earliestDate + tenor;
 
         Schedule schedule = MakeSchedule()
@@ -82,10 +82,10 @@ namespace QuantLib {
     }
 
     void XCCYBasisSwapRateHelper::initializeDates() {
-        baseCcyLeg_ = initialiseXCCYLeg(evaluationDate_, tenor_, fixingDays_, calendar_, 
-                                        convention_, endOfMonth_, baseCcyIdx_, VanillaSwap::Receiver);
-        quoteCcyLeg_ = initialiseXCCYLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                         convention_, endOfMonth_, quoteCcyIdx_, VanillaSwap::Payer);
+        baseCcyLeg_ = XCCYBasisSwapRateHelper::proxyXCCYLeg(
+            evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, baseCcyIdx_, VanillaSwap::Receiver);
+        quoteCcyLeg_ = XCCYBasisSwapRateHelper::proxyXCCYLeg(
+            evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, quoteCcyIdx_, VanillaSwap::Payer);
 
         earliestDate_ = std::min(baseCcyLeg_->startDate(), quoteCcyLeg_->startDate());
         latestDate_ = std::max(baseCcyLeg_->maturityDate(), quoteCcyLeg_->maturityDate());
