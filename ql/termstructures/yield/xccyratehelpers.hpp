@@ -28,6 +28,9 @@
 
 namespace QuantLib {
     //! Rate helper for bootstrapping over XCCY basis swap rates
+    /*! 
+    
+    */
     class XCCYBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
         XCCYBasisSwapRateHelper(const Handle<Quote>& basis,
@@ -48,6 +51,18 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
+        //@}
+        //! \name Static helper function
+        //@{
+        static ext::shared_ptr<Swap> initialiseXCCYLeg(const Date& evaluationDate,
+                                                       const Period& tenor,
+                                                       Natural settlementDays,
+                                                       const Calendar& calendar,
+                                                       BusinessDayConvention convention,
+                                                       const ext::shared_ptr<IborIndex>& idx,
+                                                       VanillaSwap::Type type,
+                                                       Real notional = 1.0,
+                                                       Spread basis = 0.0);
         //@}
       protected:
         void initializeDates();

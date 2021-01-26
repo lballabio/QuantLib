@@ -17,10 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/xccyratehelpers.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/termstructures/yield/xccyratehelpers.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
@@ -48,15 +48,16 @@ namespace QuantLib {
         initializeDates();
     }
 
-    ext::shared_ptr<Swap> initialiseXCCYLeg(const Date& evaluationDate,
-                                            const Period& tenor,
-                                            Natural settlementDays,
-                                            const Calendar& calendar,
-                                            BusinessDayConvention convention,
-                                            const ext::shared_ptr<IborIndex>& idx,
-                                            bool isPayer,
-                                            Real notional = 1.0,
-                                            Spread basis = 0.0) {
+    ext::shared_ptr<Swap> XCCYBasisSwapRateHelper::initialiseXCCYLeg(const Date& evaluationDate,
+                                                                     const Period& tenor,
+                                                                     Natural settlementDays,
+                                                                     const Calendar& calendar,
+                                                                     BusinessDayConvention convention,
+                                                                     const ext::shared_ptr<IborIndex>& idx,
+                                                                     VanillaSwap::Type type,
+                                                                     Real notional,
+                                                                     Spread basis) {
+        bool isPayer = (type == VanillaSwap::Payer);
         Date referenceDate = calendar.adjust(evaluationDate);
         Date earliestDate = calendar.advance(referenceDate, settlementDays * Days, convention);
         Date maturity = earliestDate + tenor;
@@ -79,14 +80,10 @@ namespace QuantLib {
     }
 
     void XCCYBasisSwapRateHelper::initializeDates() {
-        bool isPayer = true;
-        bool isReceiver = !isPayer;
-
         baseCcyLeg_ = initialiseXCCYLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                        convention_, baseCcyIdx_, isReceiver);
-
+                                        convention_, baseCcyIdx_, VanillaSwap::Receiver);
         quoteCcyLeg_ = initialiseXCCYLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                         convention_, quoteCcyIdx_, isPayer);
+                                         convention_, quoteCcyIdx_, VanillaSwap::Payer);
 
         earliestDate_ = std::min(baseCcyLeg_->startDate(), quoteCcyLeg_->startDate());
         latestDate_ = std::max(baseCcyLeg_->maturityDate(), quoteCcyLeg_->maturityDate());
