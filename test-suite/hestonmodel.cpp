@@ -537,7 +537,7 @@ void HestonModelTest::testFdBarrierVsCached() {
     Handle<YieldTermStructure> rTS(flatRate(today, 0.08, dc));
     Handle<YieldTermStructure> qTS(flatRate(today, 0.04, dc));
 
-    Date exDate = today + Integer(0.5*360+0.5);
+    Date exDate = today + 180;
     ext::shared_ptr<Exercise> exercise(
         ext::make_shared<EuropeanExercise>(exDate));
 

@@ -391,7 +391,7 @@ void BarrierOptionTest::testHaugValues() {
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -1113,9 +1113,9 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::make_shared<PlainVanillaPayoff>(values[i].type,
-                                                   values[i].strike);
+                                                 values[i].strike);
 
-        Date exDate = today + Integer(values[i].t*365+0.5);
+        Date exDate = today + timeToDays(values[i].t, 365);
         ext::shared_ptr<Exercise> exercise =
             ext::make_shared<EuropeanExercise>(exDate);
 

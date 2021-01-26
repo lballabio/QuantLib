@@ -307,7 +307,7 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
                                         new AnalyticBarrierEngine(bsProcess));
     
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = todaysDate + Integer(values[i].t*365+0.5);
+        Date exDate = todaysDate + timeToDays(values[i].t, 365);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         ext::dynamic_pointer_cast<SimpleQuote>(spot .currentLink())

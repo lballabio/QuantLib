@@ -156,7 +156,7 @@ void BinaryOptionTest::testCashOrNothingHaugValues() {
         ext::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, values[i].cash));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate,
                                                                     true));
@@ -244,10 +244,8 @@ void BinaryOptionTest::testAssetOrNothingHaugValues() {
         ext::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
-        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
-                                                                    exDate,
-                                                                    true));
+        Date exDate = today + timeToDays(values[i].t);
+        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today, exDate, true));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);

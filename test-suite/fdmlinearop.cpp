@@ -1401,7 +1401,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
                              new CashOrNothingPayoff(Option::Put, 100, 10.0));
 
     Time maturity = 0.75;
-    Date exDate = today + Integer(maturity*360+0.5);
+    Date exDate = today + timeToDays(maturity);
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     ext::shared_ptr<BlackScholesMertonProcess> process(new

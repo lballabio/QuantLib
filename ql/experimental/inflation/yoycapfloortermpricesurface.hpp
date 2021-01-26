@@ -29,6 +29,7 @@
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/experimental/inflation/polynomial2Dspline.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -373,7 +374,7 @@ namespace QuantLib {
         for (Size i = 0; i < cfMaturities_.size(); i++) {
             Time t = cfMaturityTimes_[i];
             // determine the sum of discount factors
-            Size numYears = (Size)(t + 0.5);
+            Size numYears = (Size)std::lround(t);
             Real sumDiscount = 0.0;
             for (Size j=0; j<numYears; ++j)
                 sumDiscount += nominalTS_->discount(j + 1.0);
@@ -509,7 +510,7 @@ namespace QuantLib {
 
         // which yoy-swap points to use in building the yoy-fwd curve?
         // for now pick every year
-        Size nYears = (Size)(0.5+timeFromReference(referenceDate()+cfMaturities_.back()));
+        Size nYears = (Size)std::lround(timeFromReference(referenceDate()+cfMaturities_.back()));
 
         std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > YYhelpers;
         for (Size i=1; i<=nYears; i++) {

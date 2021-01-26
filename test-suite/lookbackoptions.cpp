@@ -144,7 +144,7 @@ void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -244,7 +244,7 @@ void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -354,7 +354,7 @@ void LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback() {
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -375,7 +375,7 @@ void LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback() {
         ext::shared_ptr<PricingEngine> engine(
                   new AnalyticContinuousPartialFloatingLookbackEngine(stochProcess));
 
-        Date lookbackEnd = today + Integer(values[i].t1*360+0.5);
+        Date lookbackEnd = today + timeToDays(values[i].t1);
         ContinuousPartialFloatingLookbackOption option(values[i].minmax,
                                                 values[i].l,
                                                 lookbackEnd,
@@ -465,7 +465,7 @@ void LookbackOptionTest::testAnalyticContinuousPartialFixedLookback() {
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -486,7 +486,7 @@ void LookbackOptionTest::testAnalyticContinuousPartialFixedLookback() {
         ext::shared_ptr<PricingEngine> engine(
                      new AnalyticContinuousPartialFixedLookbackEngine(stochProcess));
 
-        Date lookbackStart = today + Integer(values[i].t1*360+0.5);
+        Date lookbackStart = today + timeToDays(values[i].t1);
         ContinuousPartialFixedLookbackOption option(lookbackStart,
                                              payoff,
                                              exercise);
@@ -516,7 +516,7 @@ void LookbackOptionTest::testMonteCarloLookback() {
     Real t = 1;
     Real t1= 0.25;
 
-    Date exDate = today + Integer(t*360+0.5);
+    Date exDate = today + timeToDays(t);
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -550,7 +550,7 @@ void LookbackOptionTest::testMonteCarloLookback() {
          * Partial Fixed
          * **/
 
-        Date lookbackStart = today + Integer(t1*360+0.5);
+        Date lookbackStart = today + timeToDays(t1);
         ContinuousPartialFixedLookbackOption partialFixedLookback(lookbackStart,
                                                                   payoff,
                                                                   exercise);
@@ -614,7 +614,7 @@ void LookbackOptionTest::testMonteCarloLookback() {
          * **/
 
         Real lambda = 1;
-        Date lookbackEnd = today + Integer(t1*360+0.5);
+        Date lookbackEnd = today + timeToDays(t1);
 
         ext::shared_ptr<FloatingTypePayoff> floatingPayoff(new FloatingTypePayoff(type));
 

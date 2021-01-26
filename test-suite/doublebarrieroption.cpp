@@ -280,7 +280,7 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -464,7 +464,7 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
                 ext::make_shared<PlainVanillaPayoff>(values[i].type,
                                                        values[i].strike);
 
-            Date exDate = today + Integer(values[i].t*365+0.5);
+            Date exDate = today + timeToDays(values[i].t, 365);
             ext::shared_ptr<Exercise> exercise =
                 ext::make_shared<EuropeanExercise>(exDate);
 

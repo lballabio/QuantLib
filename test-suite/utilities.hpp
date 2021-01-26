@@ -38,6 +38,7 @@
 #include <string>
 #include <numeric>
 #include <iomanip>
+#include <cmath>
 
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
@@ -145,6 +146,11 @@ namespace QuantLib {
         Real I = h * (std::accumulate(f2.begin(),f2.end(),Real(0.0))
                       - 0.5*f2.front() - 0.5*f2.back());
         return std::sqrt(I);
+    }
+
+
+    inline Integer timeToDays(Time t, Integer daysPerYear = 360) {
+        return Integer(std::lround(t * daysPerYear));
     }
 
 

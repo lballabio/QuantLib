@@ -135,7 +135,7 @@ namespace QuantLib {
             Real prefactor = -0.5*sigma_*sigma_*tau*tau / (n*(n-1));
 
             // For each offset, look up the value in the map and only evaluate function if it's not there
-            for (Size offset=1; offset<5; offset++) {
+            for (int offset=1; offset<5; offset++) {
                 int location = n-offset;
                 std::map<int, std::complex<Real> >::const_iterator position = fLookupTable_.find(location);
                 if (position != fLookupTable_.end()) {

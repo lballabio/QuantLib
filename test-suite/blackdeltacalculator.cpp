@@ -36,11 +36,6 @@ using std::sqrt;
 
 namespace black_delta_calculator_test {
 
-    Integer timeToDays(Time t) {
-        // FLOATING_POINT_EXCEPTION
-        return Integer(t*360+0.5);
-    }
-
     struct DeltaData {
         Option::Type ot;
         DeltaVolQuote::DeltaType dt;
