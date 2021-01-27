@@ -74,7 +74,6 @@ namespace QuantLib {
                                 .backwards();
 
         Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
-        leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, earliestDate));
         Date lastPaymentDate = leg.back()->date();
         leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
 
@@ -108,15 +107,16 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
 
+        baseCcyLeg_->recalculate();
         Real npvBaseCcy = baseCcyLeg_->NPV();
+
+        quoteCcyLeg_->recalculate();
         Real npvQuoteCcy = quoteCcyLeg_->NPV();
 
         const Spread basisPoint = 1.0e-4;
-
-        Real sign = isBasisOnFxBaseCurrencyLeg_ ? -1.0 : 1.0;
         Real bps = isBasisOnFxBaseCurrencyLeg_ ? baseCcyLeg_->legBPS(0) : quoteCcyLeg_->legBPS(0);
 
-        return sign * (npvQuoteCcy + npvBaseCcy) / std::fabs(bps) * basisPoint;
+        return -(npvQuoteCcy + npvBaseCcy) / bps * basisPoint;
     }
 
     void XCCYBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {

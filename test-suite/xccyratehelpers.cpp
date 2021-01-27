@@ -53,11 +53,12 @@ namespace xccyratehelpers_test {
         ext::shared_ptr<IborIndex> baseCcyIdx;
         ext::shared_ptr<IborIndex> quoteCcyIdx;
 
-        RelinkableHandle<YieldTermStructure> baseCcyHandle;
-        RelinkableHandle<YieldTermStructure> quoteCcyHandle;
+        RelinkableHandle<YieldTermStructure> baseCcyIdxHandle;
+        RelinkableHandle<YieldTermStructure> quoteCcyIdxHandle;
         RelinkableHandle<YieldTermStructure> foreignCcyHandle;
 
         std::vector<Datum> basisData;
+        std::vector<ext::shared_ptr<RateHelper> > instruments;
 
         // cleanup
         SavedSettings backup;
@@ -91,12 +92,12 @@ namespace xccyratehelpers_test {
             
             ext::shared_ptr<Swap> baseCcyLegProxy = XCCYBasisSwapRateHelper::proxyXCCYLeg(
                 start, Period(q.n, q.units), settlementDays, calendar, businessConvention, false,
-                baseCcyIdx, VanillaSwap::Receiver, notional * fxSpot, q.basis * basisPoint);
+                baseCcyIdx, VanillaSwap::Receiver, notional, q.basis * basisPoint);
             legs.push_back(baseCcyLegProxy);
 
             ext::shared_ptr<Swap> quoteCcyLegProxy = XCCYBasisSwapRateHelper::proxyXCCYLeg(
                 start, Period(q.n, q.units), settlementDays, calendar, businessConvention, false,
-                quoteCcyIdx, VanillaSwap::Payer, notional);
+                quoteCcyIdx, VanillaSwap::Payer, notional * fxSpot);
             legs.push_back(quoteCcyLegProxy);
 
             return legs;
@@ -108,8 +109,8 @@ namespace xccyratehelpers_test {
             calendar = TARGET();
             dayCount = Actual365Fixed();
 
-            baseCcyIdx = ext::shared_ptr<IborIndex>(new Euribor3M(baseCcyHandle));
-            quoteCcyIdx = ext::shared_ptr<IborIndex>(new USDLibor(3 * Months, quoteCcyHandle));
+            baseCcyIdx = ext::shared_ptr<IborIndex>(new Euribor3M(baseCcyIdxHandle));
+            quoteCcyIdx = ext::shared_ptr<IborIndex>(new USDLibor(3 * Months, quoteCcyIdxHandle));
 
             /* Data source: 
                N. Moreni, A. Pallavicini (2015)
@@ -130,20 +131,19 @@ namespace xccyratehelpers_test {
             basisData.push_back({20, Years, -23.25});
             basisData.push_back({30, Years, -20.50});
 
-            today = calendar.adjust(Date(6, December, 2013));
+            today = calendar.adjust(Date(6, September, 2013));
             Settings::instance().evaluationDate() = today;
             settlement = calendar.advance(today, settlementDays, Days);
 
-            baseCcyHandle.linkTo(flatRate(settlement, 0.007, dayCount));
-            quoteCcyHandle.linkTo(flatRate(settlement, 0.015, dayCount));
+            baseCcyIdxHandle.linkTo(flatRate(settlement, 0.007, dayCount));
+            quoteCcyIdxHandle.linkTo(flatRate(settlement, 0.015, dayCount));
 
-            std::vector<ext::shared_ptr<RateHelper> > instruments;
             for (Size i = 0; i < basisData.size(); i++) {
-                instruments.push_back(xccyRateHelper(basisData[i], quoteCcyHandle, false, true));
+                instruments.push_back(xccyRateHelper(basisData[i], quoteCcyIdxHandle, false, true));
             }
 
             ext::shared_ptr<YieldTermStructure> foreignCcyCurve(
-                new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, dayCount));
+                new PiecewiseYieldCurve<Discount, LogLinear>(today, instruments, dayCount));
             foreignCcyCurve->enableExtrapolation();
             foreignCcyHandle.linkTo(foreignCcyCurve);
         }
@@ -157,19 +157,20 @@ void XCCYRateHelpersTest::test() {
 
     CommonVars vars;
 
-    Handle<YieldTermStructure> collateralHandle = vars.quoteCcyHandle;
+    Handle<YieldTermStructure> collateralHandle = vars.quoteCcyIdxHandle;
     ext::shared_ptr<DiscountingSwapEngine> quoteCcyLegEngine(
         new DiscountingSwapEngine(collateralHandle));
     ext::shared_ptr<DiscountingSwapEngine> baseCcyLegEngine(
         new DiscountingSwapEngine(vars.foreignCcyHandle));
 
-    Real tolerance = 1.0e-15;
+    Real tolerance = 1.0e-14;
 
     for (Size i = 0; i < vars.basisData.size(); ++i) {
         
         Datum quote = vars.basisData[i];
         std::vector<ext::shared_ptr<Swap> > xccySwapProxy = vars.proxyXccyBasisSwap(
             vars.today, quote, vars.fxSpot, false, true);
+        
         xccySwapProxy[0]->setPricingEngine(baseCcyLegEngine);
         xccySwapProxy[1]->setPricingEngine(quoteCcyLegEngine);
         
