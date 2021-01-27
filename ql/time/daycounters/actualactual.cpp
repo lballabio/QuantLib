@@ -19,6 +19,7 @@
 
 #include <ql/time/daycounters/actualactual.hpp>
 #include <algorithm>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -30,8 +31,8 @@ namespace QuantLib {
         Integer findCouponsPerYear(const T& impl,
                                    Date refStart, Date refEnd) {
             // This will only work for day counts longer than 15 days.
-            Integer months = Integer(0.5 + 12 * Real(impl.dayCount(refStart, refEnd))/365.0);
-            return (Integer)(0.5 + 12.0 / Real(months));
+            Integer months = (Integer)std::lround(12 * Real(impl.dayCount(refStart, refEnd))/365.0);
+            return (Integer)std::lround(12.0 / Real(months));
         }
 
         /* An ISMA day counter either needs a schedule or to have
@@ -172,7 +173,7 @@ namespace QuantLib {
 
         // estimate roughly the length in months of a period
         Integer months =
-            Integer(0.5+12*Real(refPeriodEnd-refPeriodStart)/365);
+            (Integer)std::lround(12*Real(refPeriodEnd-refPeriodStart)/365);
 
         // for short periods...
         if (months == 0) {

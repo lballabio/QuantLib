@@ -147,7 +147,7 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*365+0.5);
+        Date exDate = today + timeToDays(values[i].t, 365);
         std::vector<Date> dates(1);
         dates[0] = exDate;
 
@@ -253,8 +253,8 @@ void VarianceSwapTest::testMCVarianceSwap() {
     std::vector<Date> dates(2);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*365+0.5);
-        Date intermDate = today + Integer(values[i].t1*365+0.5);
+        Date exDate = today + timeToDays(values[i].t, 365);
+        Date intermDate = today + timeToDays(values[i].t1, 365);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         dates[0] = intermDate;
         dates[1] = exDate;

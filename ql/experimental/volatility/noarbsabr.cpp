@@ -237,7 +237,7 @@ Real D0Interpolator::operator()() const {
     Real tauL = (expiryTimeTmp - tauG_[tauInd - 1]) /
                 (tauG_[tauInd] - tauG_[tauInd - 1]);
 
-    int sigmaIInd =
+    Size sigmaIInd =
         sigmaIG_.size() -
         (std::upper_bound(sigmaIG_.rbegin(), sigmaIG_.rend(), sigmaI_) -
          sigmaIG_.rbegin());
@@ -246,13 +246,13 @@ Real D0Interpolator::operator()() const {
     Real sigmaIL = (sigmaI_ - sigmaIG_[sigmaIInd - 1]) /
                    (sigmaIG_[sigmaIInd] - sigmaIG_[sigmaIInd - 1]);
 
-    int rhoInd =
+    Size rhoInd =
         rhoG_.size() -
         (std::upper_bound(rhoG_.rbegin(), rhoG_.rend(), rho_) - rhoG_.rbegin());
     if (rhoInd == 0) {
         rhoInd++;
     }
-    if (rhoInd == static_cast<int>(rhoG_.size())) {
+    if (rhoInd == rhoG_.size()) {
         rhoInd--;
     }
     Real rhoL =

@@ -30,6 +30,7 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -121,7 +122,7 @@ namespace QuantLib {
                 Time periodEnd = *t;
                 if (periodEnd != 0.0) {
                     // the nearest integer, at least 1
-                    Size nSteps = std::max(Size((periodEnd - periodBegin)/dtMax+0.5), Size(1));
+                    Size nSteps = std::max(Size(std::lround((periodEnd - periodBegin)/dtMax)), Size(1));
                     Time dt = (periodEnd - periodBegin)/nSteps;
                     for (Size n=1; n<=nSteps; ++n)
                         times_.push_back(periodBegin + n*dt);

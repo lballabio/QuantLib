@@ -300,7 +300,7 @@ void JumpDiffusionTest::testMerton76() {
         ext::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -413,7 +413,7 @@ void JumpDiffusionTest::testGreeks() {
       for (Size jj3=0; jj3<LENGTH(jV); jj3++) {
         jumpVol->setValue(jV[jj3]);
         for (Size k=0; k<LENGTH(residualTimes); k++) {
-          Date exDate = today + Integer(residualTimes[k]*360+0.5);
+          Date exDate = today + timeToDays(residualTimes[k]);
           ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
           for (Size kk=0; kk<1; kk++) {
               // option to check

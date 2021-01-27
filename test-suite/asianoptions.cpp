@@ -368,7 +368,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360.0/futureFixings+0.5);
+    Integer dt = (Integer)std::lround(360.0/futureFixings);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -427,7 +427,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360.0/futureFixings+0.5);
+    Integer dt = (Integer)std::lround(360.0/futureFixings);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -493,7 +493,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360.0/futureFixings+0.5);
+    Integer dt = (Integer)std::lround(360.0/futureFixings);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -773,10 +773,10 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         std::vector<Time> timeIncrements(cases4[l].fixings);
         std::vector<Date> fixingDates(cases4[l].fixings);
         timeIncrements[0] = cases4[l].first;
-        fixingDates[0] = today + Integer(timeIncrements[0]*360+0.5);
+        fixingDates[0] = today + timeToDays(timeIncrements[0]);
         for (Size i=1; i<cases4[l].fixings; i++) {
             timeIncrements[i] = i*dt + cases4[l].first;
-            fixingDates[i] = today + Integer(timeIncrements[i]*360+0.5);
+            fixingDates[i] = today + timeToDays(timeIncrements[i]);
         }
         ext::shared_ptr<Exercise> exercise(new
             EuropeanExercise(fixingDates[cases4[l].fixings-1]));
@@ -1119,10 +1119,10 @@ void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
         std::vector<Time> timeIncrements(cases5[l].fixings);
         std::vector<Date> fixingDates(cases5[l].fixings);
         timeIncrements[0] = cases5[l].first;
-        fixingDates[0] = today + Integer(timeIncrements[0]*360+0.5);
+        fixingDates[0] = today + timeToDays(timeIncrements[0]);
         for (Size i=1; i<cases5[l].fixings; i++) {
             timeIncrements[i] = i*dt + cases5[l].first;
-            fixingDates[i] = today + Integer(timeIncrements[i]*360+0.5);
+            fixingDates[i] = today + timeToDays(timeIncrements[i]);
         }
         ext::shared_ptr<Exercise> exercise(new
             EuropeanExercise(fixingDates[cases5[l].fixings-1]));

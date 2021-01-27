@@ -77,10 +77,9 @@ namespace QuantLib {
                 if (!close(cPoint, start) && !close(cPoint, end)) {
                     const Real z0 = -c1 / (c2 - c1);
                     const Real u0 =
-                        std::max(
-                            std::min(static_cast<int>(z0 * (size - 1) + 0.5),
-                                static_cast<int>(size) - 2),
-                            1) /
+                        std::max(std::min(std::lround(z0 * (size - 1)),
+                                          static_cast<long>(size) - 2),
+                                 1L) /
                         ((Real)(size - 1));
                     u.push_back(u0);
                     z.push_back(z0);

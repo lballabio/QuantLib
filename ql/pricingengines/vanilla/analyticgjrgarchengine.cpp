@@ -25,6 +25,7 @@
 #include <ql/pricingengines/vanilla/analyticgjrgarchengine.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <cmath>
 
 using std::exp;
 using std::pow;
@@ -58,7 +59,7 @@ namespace QuantLib {
         QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
         const Real strikePrice = payoff->strike();
         const Real term = process->time(arguments_.exercise->lastDate());
-        Size T = Size(process->daysPerYear()*term+0.5);
+        Size T = Size(std::lround(process->daysPerYear()*term));
         Real r = -std::log(riskFreeDiscount/dividendDiscount)/(process->daysPerYear()*term);
         Real h1 = process->v0();
         Real b0 = process->omega();
