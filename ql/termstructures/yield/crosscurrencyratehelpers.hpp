@@ -91,12 +91,12 @@ namespace QuantLib {
         bool endOfMonth_;
         ext::shared_ptr<IborIndex> baseCcyIdx_;
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
-
-        ext::shared_ptr<Swap> baseCcyLeg_;
-        ext::shared_ptr<Swap> quoteCcyLeg_;
         Handle<YieldTermStructure> collateralHandle_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
+
+        ext::shared_ptr<Swap> baseCcyLeg_;
+        ext::shared_ptr<Swap> quoteCcyLeg_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
