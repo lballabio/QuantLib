@@ -90,12 +90,12 @@ namespace xccyratehelpers_test {
             const Real notional = 1.0;
             std::vector<ext::shared_ptr<Swap> > legs;
             
-            ext::shared_ptr<Swap> baseCcyLegProxy = CrossCurrencyBasisSwapRateHelper::proxyCrossCurrencyLeg(
+            ext::shared_ptr<Swap> baseCcyLegProxy = CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
                 start, Period(q.n, q.units), settlementDays, calendar, businessConvention, false,
                 baseCcyIdx, VanillaSwap::Receiver, notional, q.basis * basisPoint);
             legs.push_back(baseCcyLegProxy);
 
-            ext::shared_ptr<Swap> quoteCcyLegProxy = CrossCurrencyBasisSwapRateHelper::proxyCrossCurrencyLeg(
+            ext::shared_ptr<Swap> quoteCcyLegProxy = CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
                 start, Period(q.n, q.units), settlementDays, calendar, businessConvention, false,
                 quoteCcyIdx, VanillaSwap::Payer, notional * fxSpot);
             legs.push_back(quoteCcyLegProxy);

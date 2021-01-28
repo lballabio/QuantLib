@@ -25,6 +25,38 @@
 
 namespace QuantLib {
 
+    ext::shared_ptr<Swap>
+    CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(const Date& evaluationDate,
+                                                        const Period& tenor,
+                                                        Natural fixingDays,
+                                                        const Calendar& calendar,
+                                                        BusinessDayConvention convention,
+                                                        bool endOfMonth,
+                                                        const ext::shared_ptr<IborIndex>& idx,
+                                                        VanillaSwap::Type type,
+                                                        Real notional,
+                                                        Spread basis) {
+        bool isPayer = (type == VanillaSwap::Payer);
+        Date referenceDate = calendar.adjust(evaluationDate);
+        Date earliestDate = calendar.advance(referenceDate, fixingDays * Days, convention);
+        Date maturity = earliestDate + tenor;
+
+        Schedule schedule = MakeSchedule()
+                                .from(earliestDate)
+                                .to(maturity)
+                                .withTenor(idx->tenor())
+                                .withCalendar(calendar)
+                                .withConvention(convention)
+                                .endOfMonth(endOfMonth)
+                                .backwards();
+
+        Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
+        Date lastPaymentDate = leg.back()->date();
+        leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
+
+        return ext::make_shared<Swap>(std::vector<Leg>{leg}, std::vector<bool>{isPayer});
+    }
+
     CrossCurrencyBasisSwapRateHelper::CrossCurrencyBasisSwapRateHelper(
         const Handle<Quote>& basis,
         const Period& tenor,
@@ -38,10 +70,10 @@ namespace QuantLib {
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg)
     : RelativeDateRateHelper(basis), tenor_(tenor), fixingDays_(fixingDays), calendar_(calendar),
-        convention_(convention), endOfMonth_(endOfMonth), baseCcyIdx_(baseCurrencyIndex), 
-        quoteCcyIdx_(quoteCurrencyIndex), collateralHandle_(collateralCurve),
-        isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-        isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg) {
+      convention_(convention), endOfMonth_(endOfMonth), baseCcyIdx_(baseCurrencyIndex),
+      quoteCcyIdx_(quoteCurrencyIndex), collateralHandle_(collateralCurve),
+      isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
+      isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
         registerWith(collateralHandle_);
@@ -49,42 +81,13 @@ namespace QuantLib {
         initializeDates();
     }
 
-    ext::shared_ptr<Swap> CrossCurrencyBasisSwapRateHelper::proxyCrossCurrencyLeg(
-        const Date& evaluationDate,
-        const Period& tenor,
-        Natural fixingDays,
-        const Calendar& calendar,
-        BusinessDayConvention convention,
-        bool endOfMonth,
-        const ext::shared_ptr<IborIndex>& idx,
-        VanillaSwap::Type type,
-        Real notional,
-        Spread basis) {
-        bool isPayer = (type == VanillaSwap::Payer);
-        Date referenceDate = calendar.adjust(evaluationDate);
-        Date earliestDate = calendar.advance(referenceDate, fixingDays * Days, convention);
-        Date maturity = earliestDate + tenor;
-
-        Schedule schedule = MakeSchedule().from(earliestDate)
-                                          .to(maturity)
-                                          .withTenor(idx->tenor())
-                                          .withCalendar(calendar)
-                                          .withConvention(convention)
-                                          .endOfMonth(endOfMonth)
-                                          .backwards();
-
-        Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
-        Date lastPaymentDate = leg.back()->date();
-        leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
-
-        return ext::make_shared<Swap>(std::vector<Leg>{leg}, std::vector<bool>{isPayer});
-    }
-
     void CrossCurrencyBasisSwapRateHelper::initializeDates() {
-        baseCcyLeg_ = CrossCurrencyBasisSwapRateHelper::proxyCrossCurrencyLeg(
-            evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, baseCcyIdx_, VanillaSwap::Receiver);
-        quoteCcyLeg_ = CrossCurrencyBasisSwapRateHelper::proxyCrossCurrencyLeg(
-            evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, quoteCcyIdx_, VanillaSwap::Payer);
+        baseCcyLeg_ = CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
+            evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, baseCcyIdx_,
+            VanillaSwap::Receiver);
+        quoteCcyLeg_ = CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
+            evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, quoteCcyIdx_,
+            VanillaSwap::Payer);
 
         earliestDate_ = std::min(baseCcyLeg_->startDate(), quoteCcyLeg_->startDate());
         latestDate_ = std::max(baseCcyLeg_->maturityDate(), quoteCcyLeg_->maturityDate());
@@ -131,7 +134,8 @@ namespace QuantLib {
     }
 
     void CrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<CrossCurrencyBasisSwapRateHelper>* v1 = dynamic_cast<Visitor<CrossCurrencyBasisSwapRateHelper>*>(&v);
+        Visitor<CrossCurrencyBasisSwapRateHelper>* v1 =
+            dynamic_cast<Visitor<CrossCurrencyBasisSwapRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
