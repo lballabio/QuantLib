@@ -38,6 +38,7 @@ set(QuantLib-Test_SRC
     covariance.cpp
     creditdefaultswap.cpp
     creditriskplus.cpp
+    crosscurrencyratehelpers.cpp
     curvestates.cpp
     dates.cpp
     daycounters.cpp
