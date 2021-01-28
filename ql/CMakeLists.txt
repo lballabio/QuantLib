@@ -836,6 +836,7 @@ set(QuantLib_SRC
     termstructures/volatility/swaption/swaptionvolstructure.cpp
     termstructures/voltermstructure.cpp
     termstructures/yield/bondhelpers.cpp
+    termstructures/yield/crosscurrencyratehelpers.cpp
     termstructures/yield/fittedbonddiscountcurve.cpp
     termstructures/yield/flatforward.cpp
     termstructures/yield/forwardstructure.cpp
@@ -2174,6 +2175,7 @@ set(QuantLib_HDR
     termstructures/yield/bondhelpers.hpp
     termstructures/yield/bootstraptraits.hpp
     termstructures/yield/compositezeroyieldstructure.hpp
+    termstructures/yield/crosscurrencyratehelpers.hpp
     termstructures/yield/discountcurve.hpp
     termstructures/yield/drifttermstructure.hpp
     termstructures/yield/fittedbonddiscountcurve.hpp
