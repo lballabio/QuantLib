@@ -99,6 +99,7 @@
 #include "covariance.hpp"
 #include "creditdefaultswap.hpp"
 #include "creditriskplus.hpp"
+#include "crosscurrencyratehelpers.hpp"
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -215,7 +216,6 @@
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
-#include "xccyratehelpers.hpp"
 #include "zabr.hpp"
 
 #include <iostream>
@@ -394,6 +394,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());
     test->add(CreditDefaultSwapTest::suite());
+    test->add(CrossCurrencyRateHelpersTest::suite());
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite(speed));
     test->add(DayCounterTest::suite());
@@ -482,7 +483,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(UltimateForwardTermStructureTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
-    test->add(XCCYRateHelpersTest::suite());
 
     // tests for experimental classes
     test->add(AmortizingBondTest::suite());

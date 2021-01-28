@@ -4355,7 +4355,7 @@
     <ClInclude Include="ql\termstructures\yield\ultimateforwardtermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\yield\xccyratehelpers.hpp">
+    <ClInclude Include="ql\termstructures\yield\crosscurrencyratehelpers.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
   </ItemGroup>
@@ -7043,7 +7043,7 @@
       <Filter>math\integrals</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp" />
-    <ClCompile Include="ql\termstructures\yield\xccyratehelpers.cpp">
+    <ClCompile Include="ql\termstructures\yield\crosscurrencyratehelpers.cpp">
       <Filter>termstructures\yield</Filter>
     </ClCompile>
   </ItemGroup>

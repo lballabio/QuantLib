@@ -16,11 +16,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "xccyratehelpers.hpp"
+#include "crosscurrencyratehelpers.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
-#include <ql/termstructures/yield/xccyratehelpers.hpp>
+#include <ql/termstructures/yield/crosscurrencyratehelpers.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -68,7 +68,7 @@ namespace xccyratehelpers_test {
                                                    const Handle<YieldTermStructure> &collateralHandle,
                                                    bool isFxBaseCurrencyCollateralCurrency,
                                                    bool isBasisOnFxBaseCurrencyLeg) {
-            return ext::make_shared<XCCYBasisSwapRateHelper>(
+            return ext::make_shared<CrossCurrencyBasisSwapRateHelper>(
                 Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis * basisPoint)),
                 Period(q.n, q.units), 
                 settlementDays, 
@@ -90,12 +90,12 @@ namespace xccyratehelpers_test {
             const Real notional = 1.0;
             std::vector<ext::shared_ptr<Swap> > legs;
             
-            ext::shared_ptr<Swap> baseCcyLegProxy = XCCYBasisSwapRateHelper::proxyXCCYLeg(
+            ext::shared_ptr<Swap> baseCcyLegProxy = CrossCurrencyBasisSwapRateHelper::proxyCrossCurrencyLeg(
                 start, Period(q.n, q.units), settlementDays, calendar, businessConvention, false,
                 baseCcyIdx, VanillaSwap::Receiver, notional, q.basis * basisPoint);
             legs.push_back(baseCcyLegProxy);
 
-            ext::shared_ptr<Swap> quoteCcyLegProxy = XCCYBasisSwapRateHelper::proxyXCCYLeg(
+            ext::shared_ptr<Swap> quoteCcyLegProxy = CrossCurrencyBasisSwapRateHelper::proxyCrossCurrencyLeg(
                 start, Period(q.n, q.units), settlementDays, calendar, businessConvention, false,
                 quoteCcyIdx, VanillaSwap::Payer, notional * fxSpot);
             legs.push_back(quoteCcyLegProxy);
@@ -150,7 +150,7 @@ namespace xccyratehelpers_test {
     };
 }
 
-void XCCYRateHelpersTest::test() {
+void CrossCurrencyRateHelpersTest::test() {
     BOOST_TEST_MESSAGE("TBD...");
 
     using namespace xccyratehelpers_test;
@@ -189,9 +189,9 @@ void XCCYRateHelpersTest::test() {
     }
 }
 
-test_suite* XCCYRateHelpersTest::suite() {
+test_suite* CrossCurrencyRateHelpersTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("XCCY rate helpers tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&XCCYRateHelpersTest::test));
+    suite->add(QUANTLIB_TEST_CASE(&CrossCurrencyRateHelpersTest::test));
     return suite;
 }

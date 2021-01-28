@@ -477,7 +477,7 @@
     <ClCompile Include="ultimateforwardtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="xccyratehelpers.cpp">
+    <ClCompile Include="crosscurrencyratehelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -956,7 +956,7 @@
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xccyratehelpers.hpp">
+    <ClInclude Include="crosscurrencyratehelpers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

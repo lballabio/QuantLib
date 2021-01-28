@@ -1735,7 +1735,7 @@
     <ClInclude Include="ql\termstructures\yield\quantotermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\ratehelpers.hpp" />
     <ClInclude Include="ql\termstructures\yield\ultimateforwardtermstructure.hpp" />
-    <ClInclude Include="ql\termstructures\yield\xccyratehelpers.hpp" />
+    <ClInclude Include="ql\termstructures\yield\crosscurrencyratehelpers.hpp" />
     <ClInclude Include="ql\termstructures\yield\zerocurve.hpp" />
     <ClInclude Include="ql\termstructures\yield\zerospreadedtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\zeroyieldstructure.hpp" />
@@ -2691,7 +2691,7 @@
     <ClCompile Include="ql\termstructures\yield\nonlinearfittingmethods.cpp" />
     <ClCompile Include="ql\termstructures\yield\oisratehelper.cpp" />
     <ClCompile Include="ql\termstructures\yield\ratehelpers.cpp" />
-    <ClCompile Include="ql\termstructures\yield\xccyratehelpers.cpp" />
+    <ClCompile Include="ql\termstructures\yield\crosscurrencyratehelpers.cpp" />
     <ClCompile Include="ql\termstructures\yield\zeroyieldstructure.cpp" />
     <ClCompile Include="ql\termstructures\yieldtermstructure.cpp" />
     <ClCompile Include="ql\time\asx.cpp" />
