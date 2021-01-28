@@ -27,7 +27,10 @@
 
 class CrossCurrencyRateHelpersTest {
   public:
-    static void test();
+    static void testBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy();
+    static void testBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy();
+    static void testBasisSwapsWithCollateralAndBasisInBaseCcy();
+    static void testBasisSwapsWithCollateralAndBasisInQuoteCcy();
 
     static boost::unit_test_framework::test_suite* suite();
 };
