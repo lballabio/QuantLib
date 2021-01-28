@@ -94,11 +94,11 @@ namespace QuantLib {
 
         ext::shared_ptr<Swap> baseCcyLeg_;
         ext::shared_ptr<Swap> quoteCcyLeg_;
+        Handle<YieldTermStructure> collateralHandle_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
-        Handle<YieldTermStructure> collateralHandle_;
     };
 }
 
