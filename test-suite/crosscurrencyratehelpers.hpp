@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_xccyratehelpers_hpp
-#define quantlib_test_xccyratehelpers_hpp
+#ifndef quantlib_test_crosscurrencyratehelpers_hpp
+#define quantlib_test_crosscurrencyratehelpers_hpp
 
 #include <boost/test/unit_test.hpp>
 

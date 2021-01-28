@@ -31,7 +31,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace xccyratehelpers_test {
+namespace crosscurrencyratehelpers_test {
 
 	struct Datum {
         Integer n;
@@ -153,7 +153,7 @@ namespace xccyratehelpers_test {
 void CrossCurrencyRateHelpersTest::test() {
     BOOST_TEST_MESSAGE("TBD...");
 
-    using namespace xccyratehelpers_test;
+    using namespace crosscurrencyratehelpers_test;
 
     CommonVars vars;
 

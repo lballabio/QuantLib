@@ -21,8 +21,8 @@
     \brief FX and cross currency basis swaps rate helpers
 */
 
-#ifndef quantlib_xccyratehelpers_hpp
-#define quantlib_xccyratehelpers_hpp
+#ifndef quantlib_crosscurrencyratehelpers_hpp
+#define quantlib_crosscurrencyratehelpers_hpp
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 
