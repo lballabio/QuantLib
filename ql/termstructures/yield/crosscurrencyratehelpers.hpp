@@ -77,6 +77,11 @@ namespace QuantLib {
         Real impliedQuote() const;
         void setTermStructure(YieldTermStructure*);
         //@}
+        //! \name CrossCurrencyBasisSwapRateHelper inspectors
+        //@{
+        const Leg& baseCurrencyLeg() const;
+        const Leg& quoteCurrencyLeg() const;
+        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
@@ -100,6 +105,14 @@ namespace QuantLib {
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
+
+    inline const Leg& CrossCurrencyBasisSwapRateHelper::baseCurrencyLeg() const {
+        return baseCcyLeg_->leg(0);
+    }
+
+    inline const Leg& CrossCurrencyBasisSwapRateHelper::quoteCurrencyLeg() const {
+        return quoteCcyLeg_->leg(0);
+    }
 }
 
 #endif
