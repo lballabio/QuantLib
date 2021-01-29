@@ -42,8 +42,8 @@ namespace crosscurrencyratehelpers_test {
     };
 
     struct CommonVars {
-        const Real basisPoint = 1.0e-4;
-        const Real fxSpot = 1.25;
+        Real basisPoint;
+        Real fxSpot;
 
         Date today, settlement;
         Calendar calendar;
@@ -70,11 +70,12 @@ namespace crosscurrencyratehelpers_test {
                        const Handle<YieldTermStructure>& collateralHandle,
                        bool isFxBaseCurrencyCollateralCurrency,
                        bool isBasisOnFxBaseCurrencyLeg) const {
+            Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
+            Period tenor(q.n, q.units);
             return ext::make_shared<CrossCurrencyBasisSwapRateHelper>(
-                Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis * basisPoint)),
-                Period(q.n, q.units), settlementDays, calendar, businessConvention, endOfMonth,
-                baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
-                isBasisOnFxBaseCurrencyLeg);
+                quoteHandle, tenor, settlementDays, calendar, businessConvention,
+                endOfMonth, baseCcyIdx, quoteCcyIdx, collateralHandle,
+                isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg);
         }
 
         std::vector<ext::shared_ptr<Swap> >
@@ -130,6 +131,9 @@ namespace crosscurrencyratehelpers_test {
             calendar = TARGET();
             dayCount = Actual365Fixed();
             endOfMonth = false;
+
+            basisPoint = 1.0e-4;
+            fxSpot = 1.25;
 
             baseCcyIdx = ext::shared_ptr<IborIndex>(new Euribor3M(baseCcyIdxHandle));
             quoteCcyIdx = ext::shared_ptr<IborIndex>(new USDLibor(3 * Months, quoteCcyIdxHandle));
