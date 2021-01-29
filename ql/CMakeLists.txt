@@ -2290,10 +2290,10 @@ if(WIN32)
         # Windows needs to link static library (nothing is declared to export in QuantLib)
         message(FATAL_ERROR "You should build QuantLib in STATIC mode as nothing is exported from the library. Use BUILD_SHARED_LIBS=OFF")
     endif()
-    add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC})
+    add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC} ${QuantLib_HDR})
     set_property(TARGET ${QL_OUTPUT_NAME} PROPERTY PROJECT_LABEL "QuantLib")
 else()
-    add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC})
+    add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC} ${QuantLib_HDR})
 endif()
 set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME} PARENT_SCOPE)
 
@@ -2307,4 +2307,3 @@ install(TARGETS ${QL_OUTPUT_NAME}
         LIBRARY DESTINATION lib
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
         )
-

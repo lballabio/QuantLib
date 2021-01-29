@@ -160,11 +160,196 @@ set(QuantLib-Test_SRC
     zabr.cpp
 )
 
-set(BENCHMARK_FILES "main.cpp" "quantlibbenchmark.cpp" "americanoption.cpp" "asianoptions.cpp" "barrieroption.cpp"
-       "basketoption.cpp" "batesmodel.cpp" "convertiblebonds.cpp" "digitaloption.cpp" "dividendoption.cpp"
-       "europeanoption.cpp" "fdheston.cpp" "hestonmodel.cpp" "interpolations.cpp" "jumpdiffusion.cpp"
-       "marketmodel_smm.cpp" "marketmodel_cms.cpp" "lowdiscrepancysequences.cpp" "quantooption.cpp" "riskstats.cpp"
-       "shortratemodels.cpp" "utilities.cpp" "utilities.hpp" "swaptionvolstructuresutilities.hpp")
+# hpp files, this list is maintained manually
+
+set(QuantLib-Test_HDR
+    americanoption.hpp
+    amortizingbond.hpp
+    andreasenhugevolatilityinterpl.hpp
+    array.hpp
+    asianoptions.hpp
+    assetswap.hpp
+    autocovariances.hpp
+    barrieroption.hpp
+    basismodels.hpp
+    basketoption.hpp
+    batesmodel.hpp
+    bermudanswaption.hpp
+    binaryoption.hpp
+    blackdeltacalculator.hpp
+    blackformula.hpp
+    bonds.hpp
+    brownianbridge.hpp
+    businessdayconventions.hpp
+    calendars.hpp
+    callablebonds.hpp
+    capfloor.hpp
+    capflooredcoupon.hpp
+    cashflows.hpp
+    catbonds.hpp
+    cdo.hpp
+    cdsoption.hpp
+    chooseroption.hpp
+    cliquetoption.hpp
+    cms.hpp
+    cmsspread.hpp
+    commodityunitofmeasure.hpp
+    compiledboostversion.hpp
+    compoundoption.hpp
+    convertiblebonds.hpp
+    covariance.hpp
+    creditdefaultswap.hpp
+    creditriskplus.hpp
+    curvestates.hpp
+    dates.hpp
+    daycounters.hpp
+    defaultprobabilitycurves.hpp
+    digitalcoupon.hpp
+    digitaloption.hpp
+    distributions.hpp
+    dividendoption.hpp
+    doublebarrieroption.hpp
+    doublebinaryoption.hpp
+    europeanoption.hpp
+    everestoption.hpp
+    exchangerate.hpp
+    extendedtrees.hpp
+    extensibleoptions.hpp
+    fastfouriertransform.hpp
+    fdcev.hpp
+    fdcir.hpp
+    fdheston.hpp
+    fdmlinearop.hpp
+    fdsabr.hpp
+    fittedbonddiscountcurve.hpp
+    forwardoption.hpp
+    forwardrateagreement.hpp
+    functions.hpp
+    garch.hpp
+    gaussianquadratures.hpp
+    gjrgarchmodel.hpp
+    gsr.hpp
+    hestonmodel.hpp
+    hestonslvmodel.hpp
+    himalayaoption.hpp
+    hybridhestonhullwhiteprocess.hpp
+    indexes.hpp
+    inflation.hpp
+    inflationcapfloor.hpp
+    inflationcapflooredcoupon.hpp
+    inflationcpibond.hpp
+    inflationcpicapfloor.hpp
+    inflationcpiswap.hpp
+    inflationvolatility.hpp
+    instruments.hpp
+    integrals.hpp
+    interestrates.hpp
+    interpolations.hpp
+    jumpdiffusion.hpp
+    lazyobject.hpp
+    libormarketmodel.hpp
+    libormarketmodelprocess.hpp
+    linearleastsquaresregression.hpp
+    lookbackoptions.hpp
+    lowdiscrepancysequences.hpp
+    margrabeoption.hpp
+    marketmodel.hpp
+    marketmodel_cms.hpp
+    marketmodel_smm.hpp
+    marketmodel_smmcapletalphacalibration.hpp
+    marketmodel_smmcapletcalibration.hpp
+    marketmodel_smmcaplethomocalibration.hpp
+    markovfunctional.hpp
+    matrices.hpp
+    mclongstaffschwartzengine.hpp
+    mersennetwister.hpp
+    money.hpp
+    noarbsabr.hpp
+    normalclvmodel.hpp
+    nthorderderivativeop.hpp
+    nthtodefault.hpp
+    numericaldifferentiation.hpp
+    observable.hpp
+    ode.hpp
+    operators.hpp
+    optimizers.hpp
+    optionletstripper.hpp
+    overnightindexedswap.hpp
+    pagodaoption.hpp
+    paralleltestrunner.hpp
+    partialtimebarrieroption.hpp
+    pathgenerator.hpp
+    period.hpp
+    piecewiseyieldcurve.hpp
+    piecewisezerospreadedtermstructure.hpp
+    quantooption.hpp
+    quotes.hpp
+    rangeaccrual.hpp
+    riskneutraldensitycalculator.hpp
+    riskstats.hpp
+    rngtraits.hpp
+    rounding.hpp
+    sampledcurve.hpp
+    schedule.hpp
+    shortratemodels.hpp
+    sofrfutures.hpp
+    solvers.hpp
+    speedlevel.hpp
+    spreadoption.hpp
+    squarerootclvmodel.hpp
+    stats.hpp
+    swap.hpp
+    swapforwardmappings.hpp
+    swaption.hpp
+    swaptionvolatilitycube.hpp
+    swaptionvolatilitymatrix.hpp
+    swaptionvolstructuresutilities.hpp
+    swingoption.hpp
+    termstructures.hpp
+    timegrid.hpp
+    timeseries.hpp
+    tqreigendecomposition.hpp
+    tracing.hpp
+    transformedgrid.hpp
+    twoassetbarrieroption.hpp
+    twoassetcorrelationoption.hpp
+    ultimateforwardtermstructure.hpp
+    utilities.hpp
+    variancegamma.hpp
+    varianceoption.hpp
+    varianceswaps.hpp
+    volatilitymodels.hpp
+    vpp.hpp
+    zabr.hpp
+)
+
+set(BENCHMARK_FILES 
+    main.cpp 
+    quantlibbenchmark.cpp
+    
+    americanoption.cpp                  americanoption.hpp
+    asianoptions.cpp                    asianoptions.hpp
+    barrieroption.cpp                   barrieroption.hpp
+    basketoption.cpp                    basketoption.hpp
+    batesmodel.cpp                      batesmodel.hpp
+    convertiblebonds.cpp                convertiblebonds.hpp
+    digitaloption.cpp                   digitaloption.hpp
+    dividendoption.cpp                  dividendoption.hpp
+    europeanoption.cpp                  europeanoption.hpp
+    fdheston.cpp                        fdheston.hpp
+    hestonmodel.cpp                     hestonmodel.hpp
+    interpolations.cpp                  interpolations.hpp
+    jumpdiffusion.cpp                   jumpdiffusion.hpp
+    lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp
+    marketmodel_cms.cpp                 marketmodel_cms.hpp
+    marketmodel_smm.cpp                 marketmodel_smm.hpp
+    quantooption.cpp                    quantooption.hpp
+    riskstats.cpp                       riskstats.hpp
+    shortratemodels.cpp                 shortratemodels.hpp
+
+    utilities.cpp                       utilities.hpp
+                                        swaptionvolstructuresutilities.hpp
+)
 
 if (USE_BOOST_DYNAMIC_LIBRARIES)
     add_definitions(-DBOOST_TEST_DYN_LINK)
@@ -173,7 +358,7 @@ endif()
 find_package (Boost REQUIRED COMPONENTS unit_test_framework timer system OPTIONAL_COMPONENTS chrono)
 
 set (TEST quantlib-test-suite)
-add_executable (${TEST} ${QuantLib-Test_SRC})
+add_executable (${TEST} ${QuantLib-Test_SRC} ${QuantLib-Test_HDR})
 target_link_libraries (${TEST} ${QL_LINK_LIBRARY} ${Boost_LIBRARIES})
 set_property(TARGET ${TEST} PROPERTY PROJECT_LABEL "testsuite")
 

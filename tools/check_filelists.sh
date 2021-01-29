@@ -11,9 +11,6 @@ find ql -name '*.[hc]pp' -or -name '*.[hc]' \
 find test-suite -name '*.[hc]pp' \
 | grep -v 'quantlibbenchmark' | grep -v '/main\.cpp' \
 | sort > test-suite.ref.files
-find test-suite -name '*.cpp' \
-| grep -v 'quantlibbenchmark' \
-| sort > test-suite-cpp.ref.files
 
 # extract file names from VC++ projects and clean up so that they
 # have the same format as the reference lists.
@@ -39,14 +36,14 @@ grep -o -E 'Include=".*\.[hc]p*"' test-suite/testsuite.vcxproj.filters \
 grep -o -E '[a-zA-Z0-9_/\.]*\.[hc]p*' ql/CMakeLists.txt \
 | sed -e 's|^|ql/|' | sort > ql.cmake.files
 
-grep -o -E '[a-zA-Z0-9_/\.]*\.cpp' test-suite/CMakeLists.txt \
-| grep -v 'quantlibbenchmark' \
+grep -o -E '[a-zA-Z0-9_/\.]*\.[hc]pp' test-suite/CMakeLists.txt \
+| grep -v 'quantlibbenchmark' | grep -v 'main\.cpp' \
 | sed -e 's|^|test-suite/|' | sort -u > test-suite.cmake.files
 
 # write out differences...
 
 diff -b ql.cmake.files ql.ref.files > ql.cmake.diff
-diff -b test-suite.cmake.files test-suite-cpp.ref.files > test-suite.cmake.diff
+diff -b test-suite.cmake.files test-suite.ref.files > test-suite.cmake.diff
 
 diff -b ql.vcx.files ql.ref.files > ql.vcx.diff
 diff -b test-suite.vcx.files test-suite.ref.files > test-suite.vcx.diff
@@ -59,7 +56,7 @@ diff -b test-suite.vcx.filters.files test-suite.ref.files > test-suite.vcx.filte
 result=$?
 
 # ...and cleanup
-rm -f ql.*.files test-suite.*.files test-suite-cpp.ref.files
+rm -f ql.*.files test-suite.*.files
 rm -f ql.*.diff test-suite.*.diff
 
 exit $result
