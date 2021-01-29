@@ -47,7 +47,7 @@ namespace QuantLib {
         CrossCurrencyHelperFunctions(const CrossCurrencyHelperFunctions&);
 
       public:
-        static ext::shared_ptr<Swap> proxyCrossCurrencyLeg(const Date& evaluationDate,
+        static ext::shared_ptr<Swap> buildCrossCurrencyLeg(const Date& evaluationDate,
                                                            const Period& tenor,
                                                            Natural fixingDays,
                                                            const Calendar& calendar,

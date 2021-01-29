@@ -76,7 +76,7 @@ namespace crosscurrencyratehelpers_test {
         }
 
         std::vector<ext::shared_ptr<Swap> >
-        proxyXccyBasisSwap(const Date& start,
+        buildXccyBasisSwap(const Date& start,
                            const Datum& q,
                            Real fxSpot,
                            bool isFxBaseCurrencyCollateralCurrency,
@@ -88,19 +88,19 @@ namespace crosscurrencyratehelpers_test {
             Spread quoteCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? 0.0 : q.basis * basisPoint;
             
             std::vector<ext::shared_ptr<Swap> > legs;
-            ext::shared_ptr<Swap> baseCcyLegProxy =
-                CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
+            ext::shared_ptr<Swap> baseCcyLeg =
+                CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
                     start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
                     endOfMonth, baseCcyIdx, VanillaSwap::Receiver, baseCcyLegNotional,
                     baseCcyLegBasis);
-            legs.push_back(baseCcyLegProxy);
+            legs.push_back(baseCcyLeg);
 
-            ext::shared_ptr<Swap> quoteCcyLegProxy =
-                CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
+            ext::shared_ptr<Swap> quoteCcyLeg =
+                CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
                     start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
                     endOfMonth, quoteCcyIdx, VanillaSwap::Payer, quoteCcyLegNotional,
                     quoteCcyLegBasis);
-            legs.push_back(quoteCcyLegProxy);
+            legs.push_back(quoteCcyLeg);
 
             return legs;
         }
@@ -185,7 +185,7 @@ void testConstantNotionalCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurre
 
         Datum quote = vars.basisData[i];
         std::vector<ext::shared_ptr<Swap> > xccySwapProxy =
-            vars.proxyXccyBasisSwap(vars.today, quote, vars.fxSpot,
+            vars.buildXccyBasisSwap(vars.today, quote, vars.fxSpot,
                                     isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg);
 
         if (isFxBaseCurrencyCollateralCurrency) {

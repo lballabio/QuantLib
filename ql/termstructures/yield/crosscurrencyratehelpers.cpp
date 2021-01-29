@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     ext::shared_ptr<Swap>
-    CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(const Date& evaluationDate,
+    CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(const Date& evaluationDate,
                                                         const Period& tenor,
                                                         Natural fixingDays,
                                                         const Calendar& calendar,
@@ -54,7 +54,7 @@ namespace QuantLib {
         Date lastPaymentDate = leg.back()->date();
         leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
 
-        return ext::make_shared<Swap>(std::vector<Leg>{leg}, std::vector<bool>{isPayer});
+        return ext::make_shared<Swap>(std::vector<Leg>(1, leg), std::vector<bool>(1, isPayer));
     }
 
     CrossCurrencyBasisSwapRateHelper::CrossCurrencyBasisSwapRateHelper(
@@ -82,10 +82,10 @@ namespace QuantLib {
     }
 
     void CrossCurrencyBasisSwapRateHelper::initializeDates() {
-        baseCcyLeg_ = CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
+        baseCcyLeg_ = CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
             evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, baseCcyIdx_,
             VanillaSwap::Receiver);
-        quoteCcyLeg_ = CrossCurrencyHelperFunctions::proxyCrossCurrencyLeg(
+        quoteCcyLeg_ = CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
             evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, quoteCcyIdx_,
             VanillaSwap::Payer);
 
