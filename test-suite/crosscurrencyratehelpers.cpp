@@ -37,6 +37,8 @@ namespace crosscurrencyratehelpers_test {
         Integer n;
         TimeUnit units;
         Spread basis;
+
+        Datum(Integer n, TimeUnit units, Spread basis) : n(n), units(units), basis(basis) {}
     };
 
     struct CommonVars {
@@ -139,17 +141,17 @@ namespace crosscurrencyratehelpers_test {
 
                section 4.2.1, Table 2.
             */
-            basisData.push_back({1, Years, -14.5});
-            basisData.push_back({18, Months, -18.5});
-            basisData.push_back({2, Years, -20.5});
-            basisData.push_back({3, Years, -23.75});
-            basisData.push_back({4, Years, -25.5});
-            basisData.push_back({5, Years, -26.5});
-            basisData.push_back({7, Years, -26.75});
-            basisData.push_back({10, Years, -26.25});
-            basisData.push_back({15, Years, -24.75});
-            basisData.push_back({20, Years, -23.25});
-            basisData.push_back({30, Years, -20.50});
+            basisData.push_back(Datum(1, Years, -14.5));
+            basisData.push_back(Datum(18, Months, -18.5));
+            basisData.push_back(Datum(2, Years, -20.5));
+            basisData.push_back(Datum(3, Years, -23.75));
+            basisData.push_back(Datum(4, Years, -25.5));
+            basisData.push_back(Datum(5, Years, -26.5));
+            basisData.push_back(Datum(7, Years, -26.75));
+            basisData.push_back(Datum(10, Years, -26.25));
+            basisData.push_back(Datum(15, Years, -24.75));
+            basisData.push_back(Datum(20, Years, -23.25));
+            basisData.push_back(Datum(30, Years, -20.50));
 
             today = calendar.adjust(Date(6, September, 2013));
             Settings::instance().evaluationDate() = today;
