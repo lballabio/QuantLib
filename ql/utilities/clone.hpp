@@ -50,10 +50,10 @@ namespace QuantLib {
         #endif
         Clone(const T&);
         Clone(const Clone<T>&);
-        Clone(Clone<T>&&);
+        Clone(Clone<T>&&) noexcept;
         Clone<T>& operator=(const T&);
         Clone<T>& operator=(const Clone<T>&);
-        Clone<T>& operator=(Clone<T>&&);
+        Clone<T>& operator=(Clone<T>&&) noexcept;
         T& operator*() const;
         T* operator->() const;
         bool empty() const;
@@ -95,7 +95,7 @@ namespace QuantLib {
     : ptr_(t.empty() ? (T*)(0) : t->clone().release()) {}
 
     template <class T>
-    inline Clone<T>::Clone(Clone<T>&& t) {
+    inline Clone<T>::Clone(Clone<T>&& t) noexcept {
         swap(t);
     }
 
@@ -116,7 +116,7 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline Clone<T>& Clone<T>::operator=(Clone<T>&& t) {
+    inline Clone<T>& Clone<T>::operator=(Clone<T>&& t) noexcept {
         swap(t);
         return *this;
     }

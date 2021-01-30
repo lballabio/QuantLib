@@ -63,14 +63,14 @@ namespace QuantLib {
         */
         Array(Size size, Real value, Real increment);
         Array(const Array&);
-        Array(Array&&);
+        Array(Array&&) noexcept;
         Array(const Disposable<Array>&);
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
 
         Array& operator=(const Array&);
-        Array& operator=(Array&&);
+        Array& operator=(Array&&) noexcept;
         Array& operator=(const Disposable<Array>&);
 
         bool operator==(const Array&) const;
@@ -237,10 +237,7 @@ namespace QuantLib {
         std::copy(from.begin(),from.end(),begin());
     }
 
-    inline Array::Array(Array&& from)
-    : data_((Real*)nullptr), n_(0) {
-        swap(from);
-    }
+    inline Array::Array(Array&& from) noexcept : data_((Real*)nullptr), n_(0) { swap(from); }
 
     inline Array::Array(const Disposable<Array>& from)
     : data_((Real*)(0)), n_(0) {
@@ -299,7 +296,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline Array& Array::operator=(Array&& from) {
+    inline Array& Array::operator=(Array&& from) noexcept {
         swap(from);
         return *this;
     }
