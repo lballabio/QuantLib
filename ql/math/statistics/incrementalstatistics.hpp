@@ -30,11 +30,6 @@
 
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
-
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++11-extensions"
-#endif
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/count.hpp>
@@ -46,9 +41,6 @@
 #include <boost/accumulators/statistics/weighted_skewness.hpp>
 #include <boost/accumulators/statistics/weighted_kurtosis.hpp>
 #include <boost/accumulators/statistics/weighted_moment.hpp>
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
 
 namespace QuantLib {
 

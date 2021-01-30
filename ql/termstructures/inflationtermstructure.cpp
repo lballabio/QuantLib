@@ -194,7 +194,7 @@ namespace QuantLib {
 #endif
 #if defined(__clang__)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++11-extensions"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 #if defined(QL_PATCH_MSVC)
 #pragma warning(push)
@@ -340,7 +340,7 @@ namespace QuantLib {
 #endif
 #if defined(__clang__)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++11-extensions"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 #if defined(QL_PATCH_MSVC)
 #pragma warning(push)
