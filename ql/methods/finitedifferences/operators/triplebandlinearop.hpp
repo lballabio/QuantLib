@@ -40,10 +40,10 @@ namespace QuantLib {
                            const ext::shared_ptr<FdmMesher>& mesher);
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
-        TripleBandLinearOp(TripleBandLinearOp&& m);
+        TripleBandLinearOp(TripleBandLinearOp&& m) noexcept;
         TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
-        TripleBandLinearOp& operator=(TripleBandLinearOp&& m);
+        TripleBandLinearOp& operator=(TripleBandLinearOp&& m) noexcept;
         TripleBandLinearOp& operator=(const Disposable<TripleBandLinearOp>& m);
 
         Disposable<Array> apply(const Array& r) const;
@@ -79,9 +79,7 @@ namespace QuantLib {
     };
 
 
-    inline TripleBandLinearOp::TripleBandLinearOp(TripleBandLinearOp&& m) {
-        swap(m);
-    }
+    inline TripleBandLinearOp::TripleBandLinearOp(TripleBandLinearOp&& m) noexcept { swap(m); }
 
     inline TripleBandLinearOp& TripleBandLinearOp::operator=(const TripleBandLinearOp& m) {
         TripleBandLinearOp tmp(m);
@@ -89,11 +87,10 @@ namespace QuantLib {
         return *this;
     }
 
-    inline TripleBandLinearOp& TripleBandLinearOp::operator=(TripleBandLinearOp&& m) {
+    inline TripleBandLinearOp& TripleBandLinearOp::operator=(TripleBandLinearOp&& m) noexcept {
         swap(m);
         return *this;
     }
-
 }
 
 #endif
