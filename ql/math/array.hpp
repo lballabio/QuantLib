@@ -63,14 +63,14 @@ namespace QuantLib {
         */
         Array(Size size, Real value, Real increment);
         Array(const Array&);
-        Array(Array&&) noexcept;
+        Array(Array&&) QL_NOEXCEPT;
         Array(const Disposable<Array>&);
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
 
         Array& operator=(const Array&);
-        Array& operator=(Array&&) noexcept;
+        Array& operator=(Array&&) QL_NOEXCEPT;
         Array& operator=(const Disposable<Array>&);
 
         bool operator==(const Array&) const;
@@ -216,7 +216,8 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Array::Array(Size size) : data_(size != 0U ? new Real[size] : (Real*)(0)), n_(size) {}
+    inline Array::Array(Size size)
+    : data_(size != 0U ? new Real[size] : (Real*)(0)), n_(size) {}
 
     inline Array::Array(Size size, Real value)
     : data_(size != 0U ? new Real[size] : (Real*)(0)), n_(size) {
@@ -231,13 +232,16 @@ namespace QuantLib {
 
     inline Array::Array(const Array& from)
     : data_(from.n_ != 0U ? new Real[from.n_] : (Real*)(0)), n_(from.n_) {
-#if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
+        #if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
         if (n_)
         #endif
         std::copy(from.begin(),from.end(),begin());
     }
 
-    inline Array::Array(Array&& from) noexcept : data_((Real*)nullptr), n_(0) { swap(from); }
+    inline Array::Array(Array&& from) QL_NOEXCEPT
+    : data_((Real*)nullptr), n_(0) {
+        swap(from);
+    }
 
     inline Array::Array(const Disposable<Array>& from)
     : data_((Real*)(0)), n_(0) {
@@ -296,7 +300,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline Array& Array::operator=(Array&& from) noexcept {
+    inline Array& Array::operator=(Array&& from) QL_NOEXCEPT {
         swap(from);
         return *this;
     }

@@ -47,6 +47,9 @@
 
 // conditionally work around compiler glitches
 #define QL_PATCH_MSVC
+#if (_MSC_VER < 1900)
+#  define QL_PATCH_MSVC_2013
+#endif
 
 // prevent auto-link of Boost libs such as serialization
 #ifndef BOOST_ALL_NO_LIB
