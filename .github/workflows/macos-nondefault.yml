@@ -9,7 +9,7 @@ jobs:
         include:
           - os: [macos-10.15]
             shortname: default
-            cxxflags: "-Wno-c++11-extensions"
+            cxxflags: "-std=c++11"
           - os: [macos-10.15]
             shortname: stdclasses
             cxxflags: "-std=c++17"
