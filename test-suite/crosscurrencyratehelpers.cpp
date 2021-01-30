@@ -105,20 +105,16 @@ namespace crosscurrencyratehelpers_test {
 
             Spread baseCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? q.basis * basisPoint : 0.0;
             Spread quoteCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? 0.0 : q.basis * basisPoint;
-            
+
             std::vector<ext::shared_ptr<Swap> > legs;
-            ext::shared_ptr<Swap> baseCcyLeg =
-                CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
-                    start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
-                    endOfMonth, baseCcyIdx, VanillaSwap::Receiver, baseCcyLegNotional,
-                    baseCcyLegBasis);
+            ext::shared_ptr<Swap> baseCcyLeg = CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
+                start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
+                endOfMonth, baseCcyIdx, VanillaSwap::Receiver, baseCcyLegNotional, baseCcyLegBasis);
             legs.push_back(baseCcyLeg);
 
-            ext::shared_ptr<Swap> quoteCcyLeg =
-                CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
-                    start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
-                    endOfMonth, quoteCcyIdx, VanillaSwap::Payer, quoteCcyLegNotional,
-                    quoteCcyLegBasis);
+            ext::shared_ptr<Swap> quoteCcyLeg = CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
+                start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
+                endOfMonth, quoteCcyIdx, VanillaSwap::Payer, quoteCcyLegNotional, quoteCcyLegBasis);
             legs.push_back(quoteCcyLeg);
 
             return legs;
@@ -230,7 +226,7 @@ void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralInQuoteAndBasisIn
     bool isBasisOnFxBaseCurrencyLeg = true;
 
     testConstantNotionalCrossCurrencySwapsNPV(isFxBaseCurrencyCollateralCurrency,
-                                           isBasisOnFxBaseCurrencyLeg);
+                                              isBasisOnFxBaseCurrencyLeg);
 }
 
 void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy() {
@@ -241,7 +237,7 @@ void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralInBaseAndBasisInQ
     bool isBasisOnFxBaseCurrencyLeg = false;
 
     testConstantNotionalCrossCurrencySwapsNPV(isFxBaseCurrencyCollateralCurrency,
-                                           isBasisOnFxBaseCurrencyLeg);
+                                              isBasisOnFxBaseCurrencyLeg);
 }
 
 void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralAndBasisInBaseCcy() {
@@ -252,7 +248,7 @@ void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralAndBasisInBaseCcy
     bool isBasisOnFxBaseCurrencyLeg = true;
 
     testConstantNotionalCrossCurrencySwapsNPV(isFxBaseCurrencyCollateralCurrency,
-                                           isBasisOnFxBaseCurrencyLeg);
+                                              isBasisOnFxBaseCurrencyLeg);
 }
 
 void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralAndBasisInQuoteCcy() {
@@ -262,7 +258,7 @@ void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralAndBasisInQuoteCc
     bool isBasisOnFxBaseCurrencyLeg = false;
 
     testConstantNotionalCrossCurrencySwapsNPV(isFxBaseCurrencyCollateralCurrency,
-                                           isBasisOnFxBaseCurrencyLeg);
+                                              isBasisOnFxBaseCurrencyLeg);
 }
 
 test_suite* CrossCurrencyRateHelpersTest::suite() {
