@@ -51,6 +51,7 @@
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/functional.hpp>
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1284,7 +1285,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     std::vector<ext::shared_ptr<CalibrationHelper> > options;
 
     for (Size i=0; i < LENGTH(maturities); ++i) {
-        const Period maturity((int)(maturities[i]*12.0+0.5), Months);
+        const Period maturity((int)std::lround(maturities[i]*12.0), Months);
         ext::shared_ptr<Exercise> exercise(
                                         new EuropeanExercise(today + maturity));
 
@@ -1352,7 +1353,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
         engine->enableMultipleStrikesCaching(
                      std::vector<Real>(strikes, strikes + LENGTH(strikes)));
 
-        const Period maturity((int)(maturities[i]*12.0+0.5), Months);
+        const Period maturity((int)std::lround(maturities[i]*12.0), Months);
 
         for (Size j=0; j < LENGTH(strikes); ++j) {
             // multiple strikes engine works best if the first option

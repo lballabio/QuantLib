@@ -19,6 +19,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: clang-tidy-fixes-${{ github.ref }}
+        delete-branch: true
         commit-message: 'Automated fixes by clang-tidy'
         title: 'Automated fixes by clang-tidy'
         author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

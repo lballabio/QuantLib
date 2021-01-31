@@ -268,7 +268,7 @@ void QuantoOptionTest::testValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(values[i].type, values[i].strike));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -551,9 +551,9 @@ void QuantoOptionTest::testForwardValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*360+0.5);
+        Date reset = today + timeToDays(values[i].start);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -846,9 +846,9 @@ void QuantoOptionTest::testForwardPerformanceValues() {
         ext::shared_ptr<StrikedTypePayoff> payoff(
 //                               new PercentageStrikePayoff(values[i].type, values[i].moneyness));
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*360+0.5);
+        Date reset = today + timeToDays(values[i].start);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -928,7 +928,7 @@ void QuantoOptionTest::testBarrierValues()  {
         ext::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -1013,7 +1013,7 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
         ext::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -1210,7 +1210,7 @@ void QuantoOptionTest::testPDEOptionValues()  {
         const ext::shared_ptr<StrikedTypePayoff> payoff
             = ext::make_shared<PlainVanillaPayoff>(
                 values[i].type, strike);
-        const Date exDate = today + Integer(values[i].t*360+0.5);
+        const Date exDate = today + timeToDays(values[i].t);
         const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         VanillaOption option(payoff, exercise);

@@ -284,7 +284,7 @@ void BasketOptionTest::testEuroTwoValues() {
         ext::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot1 ->setValue(values[i].s1);
@@ -663,7 +663,7 @@ void BasketOptionTest::testTavellaValues() {
     ext::shared_ptr<PlainVanillaPayoff> payoff(new
         PlainVanillaPayoff(values[0].type, values[0].strike));
 
-    Date exDate = today + Integer(values[0].t*360+0.5);
+    Date exDate = today + timeToDays(values[0].t);
     ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
     spot1 ->setValue(values[0].s1);
@@ -828,7 +828,7 @@ void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) 
         ext::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
 
-        Date exDate = today + Integer(oneDataValues[i].t*360+0.5);
+        Date exDate = today + timeToDays(oneDataValues[i].t);
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,
                                                                   exDate));
 
@@ -916,7 +916,7 @@ void BasketOptionTest::testOddSamples() {
         ext::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,
                                                                   exDate));
 

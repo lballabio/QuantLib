@@ -159,7 +159,7 @@ void VarianceGammaTest::testVarianceGamma() {
         std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs;
         for (Size j=0; j<LENGTH(options); j++)
         {
-            Date exDate = today + Integer(options[j].t*360+0.5);
+            Date exDate = today + timeToDays(options[j].t);
             ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
             ext::shared_ptr<StrikedTypePayoff> payoff(new

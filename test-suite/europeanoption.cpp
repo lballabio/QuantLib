@@ -186,11 +186,6 @@ namespace european_option_test {
         return option;
     }
 
-    Integer timeToDays(Time t) {
-        // FLOATING_POINT_EXCEPTION
-        return Integer(t*360+0.5);
-    }
-
 }
 
 

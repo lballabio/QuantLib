@@ -117,9 +117,9 @@ void ForwardOptionTest::testValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*360+0.5);
+        Date reset = today + timeToDays(values[i].start);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -184,9 +184,9 @@ void ForwardOptionTest::testPerformanceValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*360+0.5);
+        Date reset = today + timeToDays(values[i].start);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);

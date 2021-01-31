@@ -188,7 +188,7 @@ void DoubleBinaryOptionTest::testHaugValues() {
         ext::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             Option::Call, 0, values[i].cash));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise;
         if (values[i].barrierType == DoubleBarrier::KIKO ||
             values[i].barrierType == DoubleBarrier::KOKI)

@@ -115,10 +115,6 @@ namespace {
         Real tol;
     };
 
-    Integer timeToDays(Time t) {
-        // FLOATING_POINT_EXCEPTION
-        return Integer(t*360+0.5);
-    }
 }
 
 void MargrabeOptionTest::testEuroExchangeTwoAssets() {
@@ -184,7 +180,7 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot1 ->setValue(values[i].s1);
@@ -545,7 +541,7 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
         spot1 ->setValue(values[i].s1);

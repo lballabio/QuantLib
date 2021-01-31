@@ -57,10 +57,6 @@ using namespace boost::unit_test_framework;
 
 namespace compound_option_test {
 
-    Integer timeToDays(Time t) {
-        return Integer(t*360+0.5);
-    }
-
     struct CompoundOptionData {
         Option::Type typeMother;
         Option::Type typeDaughter;

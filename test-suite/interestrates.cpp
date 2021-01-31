@@ -100,7 +100,7 @@ void InterestRateTest::testConversions() {
     for (Size i=0; i<LENGTH(cases); i++) {
         ir = InterestRate(cases[i].r, Actual360(),
                           cases[i].comp, cases[i].freq);
-        d2 = d1+Integer(360*cases[i].t+0.5)*Days;
+        d2 = d1 + timeToDays(cases[i].t);
         roundingPrecision = Rounding(cases[i].precision);
 
         // check that the compound factor is the inverse of the discount factor

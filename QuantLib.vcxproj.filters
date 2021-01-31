@@ -337,6 +337,12 @@
     <Filter Include="methods\finitedifferences\utilities">
       <UniqueIdentifier>{be723df5-2e58-41de-8071-8d2e2f62410a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\forward">
+      <UniqueIdentifier>{743389ec-4f1b-48ee-98f5-d46f4684b688}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="experimental\asian">
+      <UniqueIdentifier>{0abb3851-b409-4ea6-8e55-120d00a9fcdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ql\methods\all.hpp">
@@ -3048,12 +3054,6 @@
     <ClInclude Include="ql\experimental\futures\overnightindexfutureratehelper.hpp">
       <Filter>experimental\futures</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\forward\all.hpp">
-      <Filter>experimental\futures</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\forward\analytichestonforwardeuropeanengine.hpp">
-      <Filter>experimental\futures</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\fx\all.hpp">
       <Filter>experimental\fx</Filter>
     </ClInclude>
@@ -3317,15 +3317,6 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\mcbasket\pathpayoff.hpp">
       <Filter>experimental\mcbasket</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\asian\all.hpp">
-      <Filter>experimental\futures</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp">
-      <Filter>experimental\futures</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp">
-      <Filter>experimental\futures</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\ode\all.hpp">
       <Filter>math\ode</Filter>
@@ -4355,6 +4346,20 @@
     <ClInclude Include="ql\termstructures\yield\ultimateforwardtermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\forward\all.hpp">
+      <Filter>experimental\forward</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\forward\analytichestonforwardeuropeanengine.hpp">
+      <Filter>experimental\forward</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\asian\all.hpp">
+      <Filter>experimental\asian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp">
+      <Filter>experimental\asian</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp">
+      <Filter>experimental\asian</Filter>
     <ClInclude Include="ql\termstructures\yield\crosscurrencyratehelpers.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
@@ -6280,12 +6285,6 @@
     <ClCompile Include="ql\experimental\mcbasket\pathmultiassetoption.cpp">
       <Filter>experimental\mcbasket</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp">
-      <Filter>experimental\futures</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.cpp">
-      <Filter>experimental\futures</Filter>
-    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\atmadjustedsmilesection.cpp">
       <Filter>termstructures\volatility</Filter>
     </ClCompile>
@@ -7045,6 +7044,12 @@
     <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp" />
     <ClCompile Include="ql\termstructures\yield\crosscurrencyratehelpers.cpp">
       <Filter>termstructures\yield</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp">
+      <Filter>experimental\asian</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.cpp">
+      <Filter>experimental\asian</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

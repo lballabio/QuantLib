@@ -143,8 +143,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
-        // FLOATING_POINT_EXCEPTION
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -217,8 +216,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
-        //FLOATING_POINT_EXCEPTION
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(values[i].t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -348,8 +346,7 @@ void AmericanOptionTest::testJuValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(juValues[i].type, juValues[i].strike));
-        //FLOATING_POINT_EXCEPTION
-        Date exDate = today + Integer(juValues[i].t*360+0.5);
+        Date exDate = today + timeToDays(juValues[i].t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -404,7 +401,7 @@ void AmericanOptionTest::testFdValues() {
         ext::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(juValues[i].type, juValues[i].strike));
 
-        Date exDate = today + Integer(juValues[i].t*360+0.5);
+        Date exDate = today + timeToDays(juValues[i].t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 

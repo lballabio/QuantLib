@@ -35,7 +35,7 @@
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/schedule.hpp>
-
+#include <cmath>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -70,7 +70,7 @@ namespace day_counters_test {
         const DayCounter& dayCounter, Date start, Date end, Date refStart, Date refEnd) {
         Real referenceDayCount = Real(dayCounter.dayCount(refStart, refEnd));
         // guess how many coupon periods per year:
-        Integer couponsPerYear = (Integer)(0.5 + 365.0 / referenceDayCount);
+        Integer couponsPerYear = (Integer)std::lround(365.0 / referenceDayCount);
         // the above is good enough for annual or semi annual payments.
         return Real(dayCounter.dayCount(start, end))
             / (referenceDayCount*couponsPerYear);
