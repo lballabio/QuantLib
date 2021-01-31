@@ -195,4 +195,12 @@
 #endif
 
 
+// until we stop supporting Visual C++ 2013
+#if defined(QL_PATCH_MSVC_2013)
+#  define QL_NOEXCEPT
+#else
+#  define QL_NOEXCEPT noexcept
+#endif
+
+
 #endif

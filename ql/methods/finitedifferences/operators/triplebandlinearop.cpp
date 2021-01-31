@@ -87,13 +87,6 @@ namespace QuantLib {
     }
 
     TripleBandLinearOp& TripleBandLinearOp::operator=(
-        const TripleBandLinearOp& m) {
-        TripleBandLinearOp tmp(m);
-        swap(tmp);
-        return *this;
-    }
-
-    TripleBandLinearOp& TripleBandLinearOp::operator=(
         const Disposable<TripleBandLinearOp>& m) {
         swap(const_cast<Disposable<TripleBandLinearOp>&>(m));
         return *this;
