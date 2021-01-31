@@ -201,6 +201,7 @@ set(QuantLib-Test_HDR
     covariance.hpp
     creditdefaultswap.hpp
     creditriskplus.hpp
+    crosscurrencyratehelpers.hpp
     curvestates.hpp
     dates.hpp
     daycounters.hpp
