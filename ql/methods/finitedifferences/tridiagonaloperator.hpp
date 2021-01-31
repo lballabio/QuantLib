@@ -70,10 +70,14 @@ namespace QuantLib {
                             const Array& high);
         TridiagonalOperator(const TridiagonalOperator&) = default;
         TridiagonalOperator(TridiagonalOperator&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TridiagonalOperator(const Disposable<TridiagonalOperator>&);
+        #endif
         TridiagonalOperator& operator=(const TridiagonalOperator&);
         TridiagonalOperator& operator=(TridiagonalOperator&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TridiagonalOperator& operator=(const Disposable<TridiagonalOperator>&);
+        #endif
         //! \name Operator interface
         //@{
         //! apply operator to a given array
@@ -136,10 +140,12 @@ namespace QuantLib {
         swap(from);
     }
 
+    #ifdef QL_USE_DISPOSABLE
     inline TridiagonalOperator::TridiagonalOperator(
                                 const Disposable<TridiagonalOperator>& from) {
         swap(const_cast<Disposable<TridiagonalOperator>&>(from));
     }
+    #endif
 
     inline TridiagonalOperator& TridiagonalOperator::operator=(
                                 const TridiagonalOperator& from) {
@@ -154,11 +160,13 @@ namespace QuantLib {
         return *this;
     }
 
+    #ifdef QL_USE_DISPOSABLE
     inline TridiagonalOperator& TridiagonalOperator::operator=(
                                 const Disposable<TridiagonalOperator>& from) {
         swap(const_cast<Disposable<TridiagonalOperator>&>(from));
         return *this;
     }
+    #endif
 
     inline void TridiagonalOperator::setFirstRow(Real valB,
                                                  Real valC) {

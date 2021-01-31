@@ -81,6 +81,7 @@ namespace QuantLib {
     }
 
 
+    #ifdef QL_USE_DISPOSABLE
     TripleBandLinearOp::TripleBandLinearOp(
         const Disposable<TripleBandLinearOp>& from) {
         swap(const_cast<Disposable<TripleBandLinearOp>&>(from));
@@ -91,6 +92,7 @@ namespace QuantLib {
         swap(const_cast<Disposable<TripleBandLinearOp>&>(m));
         return *this;
     }
+    #endif
 
     void TripleBandLinearOp::swap(TripleBandLinearOp& m) {
         std::swap(mesher_, m.mesher_);

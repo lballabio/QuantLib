@@ -64,14 +64,18 @@ namespace QuantLib {
         Array(Size size, Real value, Real increment);
         Array(const Array&);
         Array(Array&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         Array(const Disposable<Array>&);
+        #endif
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
 
         Array& operator=(const Array&);
         Array& operator=(Array&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         Array& operator=(const Disposable<Array>&);
+        #endif
 
         bool operator==(const Array&) const;
         bool operator!=(const Array&) const;
@@ -243,10 +247,12 @@ namespace QuantLib {
         swap(from);
     }
 
+    #ifdef QL_USE_DISPOSABLE
     inline Array::Array(const Disposable<Array>& from)
     : data_((Real*)(0)), n_(0) {
         swap(const_cast<Disposable<Array>&>(from));
     }
+    #endif
 
     namespace detail {
 
@@ -305,10 +311,12 @@ namespace QuantLib {
         return *this;
     }
 
+    #ifdef QL_USE_DISPOSABLE
     inline Array& Array::operator=(const Disposable<Array>& from) {
         swap(const_cast<Disposable<Array>&>(from));
         return *this;
     }
+    #endif
 
     inline bool Array::operator==(const Array& to) const {
         return (n_ == to.n_) && std::equal(begin(), end(), to.begin());

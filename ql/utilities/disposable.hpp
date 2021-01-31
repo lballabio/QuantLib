@@ -28,6 +28,13 @@
 
 namespace QuantLib {
 
+    #ifndef QL_USE_DISPOSABLE
+
+    template <class T>
+    using Disposable = T;
+
+    #else
+
     //! generic disposable object with move semantics
     /*! This class can be used for returning a value by copy. It relies
         on the returned object exposing a <tt>swap(T\&)</tt> method through
@@ -86,6 +93,8 @@ namespace QuantLib {
         this->swap(const_cast<Disposable<T>&>(t));
         return *this;
     }
+
+    #endif
 
 }
 

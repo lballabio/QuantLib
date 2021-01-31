@@ -55,10 +55,14 @@ namespace QuantLib {
         Matrix(Size rows, Size columns, Iterator begin, Iterator end);
         Matrix(const Matrix&);
         Matrix(Matrix&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         Matrix(const Disposable<Matrix>&);
+        #endif
         Matrix& operator=(const Matrix&);
         Matrix& operator=(Matrix&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         Matrix& operator=(const Disposable<Matrix>&);
+        #endif
         //@}
 
         //! \name Algebraic operators
@@ -228,10 +232,12 @@ namespace QuantLib {
         swap(from);
     }
 
+    #ifdef QL_USE_DISPOSABLE
     inline Matrix::Matrix(const Disposable<Matrix>& from)
     : data_((Real*)(0)), rows_(0), columns_(0) {
         swap(const_cast<Disposable<Matrix>&>(from));
     }
+    #endif
 
     inline Matrix& Matrix::operator=(const Matrix& from) {
         // strong guarantee
@@ -245,10 +251,12 @@ namespace QuantLib {
         return *this;
     }
 
+    #ifdef QL_USE_DISPOSABLE
     inline Matrix& Matrix::operator=(const Disposable<Matrix>& from) {
         swap(const_cast<Disposable<Matrix>&>(from));
         return *this;
     }
+    #endif
 
     inline void Matrix::swap(Matrix& from) {
         using std::swap;
