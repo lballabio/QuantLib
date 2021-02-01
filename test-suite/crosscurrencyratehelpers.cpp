@@ -33,12 +33,12 @@ using namespace boost::unit_test_framework;
 
 namespace crosscurrencyratehelpers_test {
 
-    struct Datum {
+    struct XccyTestDatum {
         Integer n;
         TimeUnit units;
         Spread basis;
 
-        Datum(Integer n, TimeUnit units, Spread basis) : n(n), units(units), basis(basis) {}
+        XccyTestDatum(Integer n, TimeUnit units, Spread basis) : n(n), units(units), basis(basis) {}
     };
 
     struct CommonVars {
@@ -59,14 +59,14 @@ namespace crosscurrencyratehelpers_test {
         RelinkableHandle<YieldTermStructure> baseCcyIdxHandle;
         RelinkableHandle<YieldTermStructure> quoteCcyIdxHandle;
 
-        std::vector<Datum> basisData;
+        std::vector<XccyTestDatum> basisData;
 
         // cleanup
         SavedSettings backup;
         // utilities
 
         ext::shared_ptr<RateHelper>
-        constantNotionalXccyRateHelper(const Datum& q,
+        constantNotionalXccyRateHelper(const XccyTestDatum& q,
                                        const Handle<YieldTermStructure>& collateralHandle,
                                        bool isFxBaseCurrencyCollateralCurrency,
                                        bool isBasisOnFxBaseCurrencyLeg) const {
@@ -80,7 +80,7 @@ namespace crosscurrencyratehelpers_test {
         }
 
         std::vector<ext::shared_ptr<RateHelper> >
-        buildConstantNotionalXccyRateHelpers(std::vector<Datum> xccyData,
+        buildConstantNotionalXccyRateHelpers(std::vector<XccyTestDatum> xccyData,
                                              const Handle<YieldTermStructure>& collateralHandle,
                                              bool isFxBaseCurrencyCollateralCurrency,
                                              bool isBasisOnFxBaseCurrencyLeg) const {
@@ -96,7 +96,7 @@ namespace crosscurrencyratehelpers_test {
 
         std::vector<ext::shared_ptr<Swap> >
         buildXccyBasisSwap(const Date& start,
-                           const Datum& q,
+                           const XccyTestDatum& q,
                            Real fxSpot,
                            bool isFxBaseCurrencyCollateralCurrency,
                            bool isBasisOnFxBaseCurrencyLeg) const {
@@ -140,17 +140,17 @@ namespace crosscurrencyratehelpers_test {
 
                section 4.2.1, Table 2.
             */
-            basisData.push_back(Datum(1, Years, -14.5));
-            basisData.push_back(Datum(18, Months, -18.5));
-            basisData.push_back(Datum(2, Years, -20.5));
-            basisData.push_back(Datum(3, Years, -23.75));
-            basisData.push_back(Datum(4, Years, -25.5));
-            basisData.push_back(Datum(5, Years, -26.5));
-            basisData.push_back(Datum(7, Years, -26.75));
-            basisData.push_back(Datum(10, Years, -26.25));
-            basisData.push_back(Datum(15, Years, -24.75));
-            basisData.push_back(Datum(20, Years, -23.25));
-            basisData.push_back(Datum(30, Years, -20.50));
+            basisData.push_back(XccyTestDatum(1, Years, -14.5));
+            basisData.push_back(XccyTestDatum(18, Months, -18.5));
+            basisData.push_back(XccyTestDatum(2, Years, -20.5));
+            basisData.push_back(XccyTestDatum(3, Years, -23.75));
+            basisData.push_back(XccyTestDatum(4, Years, -25.5));
+            basisData.push_back(XccyTestDatum(5, Years, -26.5));
+            basisData.push_back(XccyTestDatum(7, Years, -26.75));
+            basisData.push_back(XccyTestDatum(10, Years, -26.25));
+            basisData.push_back(XccyTestDatum(15, Years, -24.75));
+            basisData.push_back(XccyTestDatum(20, Years, -23.25));
+            basisData.push_back(XccyTestDatum(30, Years, -20.50));
 
             today = calendar.adjust(Date(6, September, 2013));
             Settings::instance().evaluationDate() = today;
@@ -190,7 +190,7 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
 
     for (Size i = 0; i < vars.basisData.size(); ++i) {
 
-        Datum quote = vars.basisData[i];
+        XccyTestDatum quote = vars.basisData[i];
         std::vector<ext::shared_ptr<Swap> > xccySwapProxy =
             vars.buildXccyBasisSwap(vars.today, quote, vars.fxSpot,
                                     isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg);
