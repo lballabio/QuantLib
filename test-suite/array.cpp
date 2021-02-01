@@ -101,6 +101,8 @@ void ArrayTest::testConstruction() {
                         << "\n    copy:      " << a6[i]);
     }
 
+    #ifdef QL_USE_DISPOSABLE
+
     // creation of disposable array
     Array temp1(size, value);
     Disposable<Array> temp2(temp1);
@@ -162,6 +164,8 @@ void ArrayTest::testConstruction() {
                         << "\n    required:  " << value
                         << "\n    resulting: " << a9[i]);
     }
+
+    #endif
 
     // transform
     Array a10(5);

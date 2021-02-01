@@ -28,6 +28,18 @@
 
 namespace QuantLib {
 
+    #ifndef QL_USE_DISPOSABLE
+
+    template <class T>
+    using Disposable = T;
+
+    #else
+
+    #pragma message("Warning: enabling the old Disposable class template is deprecated.")
+    #pragma message("    If you're using --enable-disposable in your build")
+    #pragma message("    or if you defined QL_USE_DISPOSABLE in ql/userconfig.hpp,")
+    #pragma message("    please restore the default compilation options in the near future.")
+
     //! generic disposable object with move semantics
     /*! This class can be used for returning a value by copy. It relies
         on the returned object exposing a <tt>swap(T\&)</tt> method through
@@ -86,6 +98,8 @@ namespace QuantLib {
         this->swap(const_cast<Disposable<T>&>(t));
         return *this;
     }
+
+    #endif
 
 }
 

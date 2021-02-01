@@ -41,10 +41,14 @@ namespace QuantLib {
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
         TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
+        #endif
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
         TripleBandLinearOp& operator=(TripleBandLinearOp&& m) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TripleBandLinearOp& operator=(const Disposable<TripleBandLinearOp>& m);
+        #endif
 
         Disposable<Array> apply(const Array& r) const;
         Disposable<Array> solve_splitting(const Array& r, Real a,

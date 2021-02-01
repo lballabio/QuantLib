@@ -110,6 +110,7 @@ namespace QuantLib {
         std::copy(m.a22_.get(), m.a22_.get()+size, a22_.get());
     }
 
+    #ifdef QL_USE_DISPOSABLE
     NinePointLinearOp::NinePointLinearOp(
         const Disposable<NinePointLinearOp>& from) {
         swap(const_cast<Disposable<NinePointLinearOp>&>(from));
@@ -120,6 +121,7 @@ namespace QuantLib {
         swap(const_cast<Disposable<NinePointLinearOp>&>(m));
         return *this;
     }
+    #endif
 
     Disposable<Array> NinePointLinearOp::apply(const Array& u)
         const {
