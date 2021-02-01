@@ -71,9 +71,9 @@ namespace QuantLib {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0.0;
         }else if (tradingExCoupon(d)) {
-            return -1*nominal() * rate() *
-            dayCounter().yearFraction(accrualStartDate_,
-                                      std::min(d, accrualEndDate_),
+            return -nominal() * rate() *
+            dayCounter().yearFraction(d,
+                                      std::max(d, accrualEndDate_),
                                       refPeriodStart_,
                                       refPeriodEnd_);
         }
