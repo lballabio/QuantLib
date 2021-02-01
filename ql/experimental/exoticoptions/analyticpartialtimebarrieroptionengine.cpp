@@ -186,7 +186,7 @@ namespace QuantLib {
 
     Real AnalyticPartialTimeBarrierOptionEngine::CA(Integer eta) const {
         //Partial-Time-Start- OUT  Call Option calculation
-        Real b = riskFreeDiscount()-dividendYield();
+        Real b = riskFreeRate()-dividendYield();
         Real result;
         result = underlying()*std::exp((b-riskFreeRate())*residualTime());
         result *= (M(d1(),eta*e1(),eta*rho())-HS(underlying(),barrier(),2*(mu()+1))*M(f1(),eta*e3(),eta*rho()));
