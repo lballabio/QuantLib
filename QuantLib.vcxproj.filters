@@ -7041,7 +7041,9 @@
     <ClCompile Include="ql\math\integrals\exponentialintegrals.cpp">
       <Filter>math\integrals</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp" />
+    <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp">
+      <Filter>experimental\forward</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\yield\crosscurrencyratehelpers.cpp">
       <Filter>termstructures\yield</Filter>
     </ClCompile>
