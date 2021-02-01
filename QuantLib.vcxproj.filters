@@ -4360,6 +4360,7 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp">
       <Filter>experimental\asian</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\crosscurrencyratehelpers.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
