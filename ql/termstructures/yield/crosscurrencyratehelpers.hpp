@@ -39,26 +39,6 @@ namespace QuantLib {
     FX Modelling in Collateralized Markets: foreign measures, basis curves
     and pricing formulae.
     */
-
-    //! %Helper functions to generate cross currency legs.
-    class CrossCurrencyHelperFunctions {
-      private:
-        CrossCurrencyHelperFunctions();
-        CrossCurrencyHelperFunctions(const CrossCurrencyHelperFunctions&);
-
-      public:
-        static ext::shared_ptr<Swap> buildCrossCurrencyLeg(const Date& evaluationDate,
-                                                           const Period& tenor,
-                                                           Natural fixingDays,
-                                                           const Calendar& calendar,
-                                                           BusinessDayConvention convention,
-                                                           bool endOfMonth,
-                                                           const ext::shared_ptr<IborIndex>& idx,
-                                                           VanillaSwap::Type type,
-                                                           Real notional = 1.0,
-                                                           Spread basis = 0.0);
-    };
-
     class CrossCurrencyBasisSwapRateHelper : public RelativeDateRateHelper {
       public:
         CrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
@@ -85,6 +65,19 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&);
+        //@}
+        //! \name CrossCurrencyBasisSwapRateHelper utility functions.
+        //@{
+        static ext::shared_ptr<Swap> buildCrossCurrencyLeg(const Date& evaluationDate,
+                                                           const Period& tenor,
+                                                           Natural fixingDays,
+                                                           const Calendar& calendar,
+                                                           BusinessDayConvention convention,
+                                                           bool endOfMonth,
+                                                           const ext::shared_ptr<IborIndex>& idx,
+                                                           VanillaSwap::Type type,
+                                                           Real notional = 1.0,
+                                                           Spread basis = 0.0);
         //@}
       protected:
         void initializeDates();

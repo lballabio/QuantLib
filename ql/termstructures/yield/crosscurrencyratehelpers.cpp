@@ -26,16 +26,16 @@
 namespace QuantLib {
 
     ext::shared_ptr<Swap>
-    CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(const Date& evaluationDate,
-                                                        const Period& tenor,
-                                                        Natural fixingDays,
-                                                        const Calendar& calendar,
-                                                        BusinessDayConvention convention,
-                                                        bool endOfMonth,
-                                                        const ext::shared_ptr<IborIndex>& idx,
-                                                        VanillaSwap::Type type,
-                                                        Real notional,
-                                                        Spread basis) {
+    CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(const Date& evaluationDate,
+                                                            const Period& tenor,
+                                                            Natural fixingDays,
+                                                            const Calendar& calendar,
+                                                            BusinessDayConvention convention,
+                                                            bool endOfMonth,
+                                                            const ext::shared_ptr<IborIndex>& idx,
+                                                            VanillaSwap::Type type,
+                                                            Real notional,
+                                                            Spread basis) {
         bool isPayer = (type == VanillaSwap::Payer);
         Date referenceDate = calendar.adjust(evaluationDate);
         Date earliestDate = calendar.advance(referenceDate, fixingDays * Days, convention);
@@ -82,10 +82,10 @@ namespace QuantLib {
     }
 
     void CrossCurrencyBasisSwapRateHelper::initializeDates() {
-        baseCcyLeg_ = CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
+        baseCcyLeg_ = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
             evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, baseCcyIdx_,
             VanillaSwap::Receiver);
-        quoteCcyLeg_ = CrossCurrencyHelperFunctions::buildCrossCurrencyLeg(
+        quoteCcyLeg_ = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
             evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, quoteCcyIdx_,
             VanillaSwap::Payer);
 
