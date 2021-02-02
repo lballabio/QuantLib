@@ -38,6 +38,7 @@ QL_TEST_SRCS = \
 	covariance.cpp \
 	creditdefaultswap.cpp \
 	creditriskplus.cpp \
+	crosscurrencyratehelpers.cpp \
 	curvestates.cpp \
 	dates.cpp \
 	daycounters.cpp \
@@ -196,6 +197,7 @@ QL_TEST_HDRS = \
 	covariance.hpp \
 	creditdefaultswap.hpp \
 	creditriskplus.hpp \
+	crosscurrencyratehelpers.hpp \
 	curvestates.hpp \
 	dates.hpp \
 	daycounters.hpp \

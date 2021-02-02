@@ -228,6 +228,7 @@ set(QuantLib_SRC
     experimental/swaptions/haganirregularswaptionengine.cpp
     experimental/swaptions/irregularswap.cpp
     experimental/swaptions/irregularswaption.cpp
+    experimental/termstructures/crosscurrencyratehelpers.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
     experimental/variancegamma/fftengine.cpp
     experimental/variancegamma/fftvanillaengine.cpp
@@ -1234,6 +1235,7 @@ set(QuantLib_HDR
     experimental/swaptions/irregularswap.hpp
     experimental/swaptions/irregularswaption.hpp
     experimental/termstructures/all.hpp
+    experimental/termstructures/crosscurrencyratehelpers.hpp
     experimental/termstructures/multicurvesensitivities.hpp
     experimental/variancegamma/all.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
