@@ -17,10 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/termstructures/yield/crosscurrencyratehelpers.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {

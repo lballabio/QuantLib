@@ -7,7 +7,6 @@ this_include_HEADERS = \
     bondhelpers.hpp \
     bootstraptraits.hpp \
     compositezeroyieldstructure.hpp \
-    crosscurrencyratehelpers.hpp \
     discountcurve.hpp \
     drifttermstructure.hpp \
     fittedbonddiscountcurve.hpp \
@@ -30,7 +29,6 @@ this_include_HEADERS = \
 
 cpp_files = \
     bondhelpers.cpp \
-    crosscurrencyratehelpers.cpp \
     fittedbonddiscountcurve.cpp \
     flatforward.cpp \
     forwardstructure.cpp \

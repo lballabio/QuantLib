@@ -801,6 +801,7 @@
     <ClInclude Include="ql\experimental\swaptions\irregularswap.hpp" />
     <ClInclude Include="ql\experimental\swaptions\irregularswaption.hpp" />
     <ClInclude Include="ql\experimental\termstructures\all.hpp" />
+    <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp" />
     <ClInclude Include="ql\experimental\termstructures\multicurvesensitivities.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\all.hpp" />
     <ClInclude Include="ql\experimental\variancegamma\analyticvariancegammaengine.hpp" />
@@ -1735,7 +1736,6 @@
     <ClInclude Include="ql\termstructures\yield\quantotermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\ratehelpers.hpp" />
     <ClInclude Include="ql\termstructures\yield\ultimateforwardtermstructure.hpp" />
-    <ClInclude Include="ql\termstructures\yield\crosscurrencyratehelpers.hpp" />
     <ClInclude Include="ql\termstructures\yield\zerocurve.hpp" />
     <ClInclude Include="ql\termstructures\yield\zerospreadedtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\zeroyieldstructure.hpp" />
@@ -2086,6 +2086,7 @@
     <ClCompile Include="ql\experimental\swaptions\haganirregularswaptionengine.cpp" />
     <ClCompile Include="ql\experimental\swaptions\irregularswap.cpp" />
     <ClCompile Include="ql\experimental\swaptions\irregularswaption.cpp" />
+    <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\analyticvariancegammaengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftengine.cpp" />
     <ClCompile Include="ql\experimental\variancegamma\fftvanillaengine.cpp" />
@@ -2691,7 +2692,6 @@
     <ClCompile Include="ql\termstructures\yield\nonlinearfittingmethods.cpp" />
     <ClCompile Include="ql\termstructures\yield\oisratehelper.cpp" />
     <ClCompile Include="ql\termstructures\yield\ratehelpers.cpp" />
-    <ClCompile Include="ql\termstructures\yield\crosscurrencyratehelpers.cpp" />
     <ClCompile Include="ql\termstructures\yield\zeroyieldstructure.cpp" />
     <ClCompile Include="ql\termstructures\yieldtermstructure.cpp" />
     <ClCompile Include="ql\time\asx.cpp" />

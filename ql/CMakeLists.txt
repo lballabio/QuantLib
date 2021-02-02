@@ -228,6 +228,7 @@ set(QuantLib_SRC
     experimental/swaptions/haganirregularswaptionengine.cpp
     experimental/swaptions/irregularswap.cpp
     experimental/swaptions/irregularswaption.cpp
+    experimental/termstructures/crosscurrencyratehelpers.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
     experimental/variancegamma/fftengine.cpp
     experimental/variancegamma/fftvanillaengine.cpp
@@ -836,7 +837,6 @@ set(QuantLib_SRC
     termstructures/volatility/swaption/swaptionvolstructure.cpp
     termstructures/voltermstructure.cpp
     termstructures/yield/bondhelpers.cpp
-    termstructures/yield/crosscurrencyratehelpers.cpp
     termstructures/yield/fittedbonddiscountcurve.cpp
     termstructures/yield/flatforward.cpp
     termstructures/yield/forwardstructure.cpp
@@ -1235,6 +1235,7 @@ set(QuantLib_HDR
     experimental/swaptions/irregularswap.hpp
     experimental/swaptions/irregularswaption.hpp
     experimental/termstructures/all.hpp
+    experimental/termstructures/crosscurrencyratehelpers.hpp
     experimental/termstructures/multicurvesensitivities.hpp
     experimental/variancegamma/all.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
@@ -2175,7 +2176,6 @@ set(QuantLib_HDR
     termstructures/yield/bondhelpers.hpp
     termstructures/yield/bootstraptraits.hpp
     termstructures/yield/compositezeroyieldstructure.hpp
-    termstructures/yield/crosscurrencyratehelpers.hpp
     termstructures/yield/discountcurve.hpp
     termstructures/yield/drifttermstructure.hpp
     termstructures/yield/fittedbonddiscountcurve.hpp
