@@ -156,6 +156,7 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
+            QL_REQUIRE(nominal_ != 0.0, "Cannot determine fair rate for zero nominal.");
             VanillaSwap temp(type_, nominal_,
                              fixedSchedule,
                              0.0, // fixed rate
