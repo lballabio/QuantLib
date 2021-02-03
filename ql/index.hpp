@@ -27,9 +27,9 @@
 #ifndef quantlib_index_hpp
 #define quantlib_index_hpp
 
-#include <ql/time/calendar.hpp>
-#include <ql/math/comparison.hpp>
 #include <ql/indexes/indexmanager.hpp>
+#include <ql/math/comparison.hpp>
+#include <ql/time/calendar.hpp>
 
 namespace QuantLib {
 
@@ -58,8 +58,7 @@ namespace QuantLib {
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
         */
-        virtual Real fixing(const Date& fixingDate,
-                            bool forecastTodaysFixing = false) const = 0;
+        virtual Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const = 0;
         //! returns the fixing TimeSeries
         const TimeSeries<Real>& timeSeries() const {
             return IndexManager::instance().getHistory(name());
@@ -73,21 +72,19 @@ namespace QuantLib {
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
         */
-        virtual void addFixing(const Date& fixingDate,
-                               Real fixing,
-                               bool forceOverwrite = false);
+        virtual void addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite = false);
         //! stores historical fixings from a TimeSeries
         /*! the dates in the TimeSeries must be the actual calendar
             dates of the fixings; no settlement days must be used.
         */
-        void addFixings(const TimeSeries<Real>& t,
-                        bool forceOverwrite = false);
+        void addFixings(const TimeSeries<Real>& t, bool forceOverwrite = false);
         //! stores historical fixings at the given dates
         /*! the dates passed as arguments must be the actual calendar
             dates of the fixings; no settlement days must be used.
         */
         template <class DateIterator, class ValueIterator>
-        void addFixings(DateIterator dBegin, DateIterator dEnd,
+        void addFixings(DateIterator dBegin,
+                        DateIterator dEnd,
                         ValueIterator vBegin,
                         bool forceOverwrite = false) {
             checkNativeFixingsAllowed();
@@ -105,7 +102,7 @@ namespace QuantLib {
                 if (validFixing) {
                     if (missingFixing)
                         h[*(dBegin++)] = *(vBegin++);
-                    else if (close(currentValue,*(vBegin))) {
+                    else if (close(currentValue, *(vBegin))) {
                         ++dBegin;
                         ++vBegin;
                     } else {
@@ -120,18 +117,17 @@ namespace QuantLib {
                 }
             }
             IndexManager::instance().setHistory(tag, h);
-            QL_REQUIRE(noInvalidFixing,
-                       "At least one invalid fixing provided: " <<
-                       invalidDate.weekday() << " " << invalidDate <<
-                       ", " << invalidValue);
-            QL_REQUIRE(noDuplicatedFixing,
-                       "At least one duplicated fixing provided: " <<
-                       duplicatedDate << ", " << duplicatedValue <<
-                       " while " << h[duplicatedDate] <<
-                       " value is already present");
+            QL_REQUIRE(noInvalidFixing, "At least one invalid fixing provided: "
+                                            << invalidDate.weekday() << " " << invalidDate << ", "
+                                            << invalidValue);
+            QL_REQUIRE(noDuplicatedFixing, "At least one duplicated fixing provided: "
+                                               << duplicatedDate << ", " << duplicatedValue
+                                               << " while " << h[duplicatedDate]
+                                               << " value is already present");
         }
         //! clears all stored historical fixings
         void clearFixings();
+
       private:
         //! check if index allows for native fixings
         void checkNativeFixingsAllowed();
