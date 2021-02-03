@@ -156,7 +156,7 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            VanillaSwap temp(type_, nominal_,
+            VanillaSwap temp(type_, 100.00,
                              fixedSchedule,
                              0.0, // fixed rate
                              fixedDayCount,
