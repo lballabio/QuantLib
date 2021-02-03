@@ -5,6 +5,7 @@
  Copyright (C) 2005, 2007, 2008, 2017 StatPro Italia srl
  Copyright (C) 2009, 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
  Copyright (C) 2014 Bernd Lewerenz
+ Copyright (C) 2020, 2021 Jack Gillett
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -657,6 +658,95 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
     testDiscreteGeometricAveragePriceHeston(engine, tol);
 }
 
+
+void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
+
+    BOOST_TEST_MESSAGE("Testing Analytic vs MC for seasoned discrete geometric Asians under Heston...");
+
+    // 30-day options need wider tolerance due to uncertainty around what "weekly
+    // fixing" dates mean over a 30-day month!
+    Real tol[] =           {3.0e-2, 2.0e-2, 2.0e-2, 2.0e-2, 3.0e-2};
+    int days[] =           {30, 90, 180, 360, 720};
+    Real strikes[] =       {90, 100, 110};
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+
+    Handle<Quote> spot(ext::shared_ptr<Quote>(new SimpleQuote(100)));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+
+    Real v0 = 0.09;
+    Real kappa = 1.15;
+    Real theta = 0.0348;
+    Real sigma = 0.39;
+    Real rho = -0.64;
+
+    ext::shared_ptr<HestonProcess> hestonProcess(new
+        HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
+            spot, v0, kappa, theta, sigma, rho));
+
+    ext::shared_ptr<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine> analyticEngine(new
+        AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(hestonProcess));
+
+    ext::shared_ptr<PricingEngine> mcEngine =
+        MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
+        .withSamples(32767)
+        .withSeed(43);
+
+    Option::Type type(Option::Call);
+    Average::Type averageType = Average::Geometric;
+
+    for (Size i=0; i<LENGTH(strikes); i++) {
+        for (Size j=0; j<LENGTH(days); j++) {
+            for (Size k=0; k<2; k++) {
+                Real strike = strikes[i];
+                int day = days[j];
+
+                Size futureFixings = int(std::floor(day/30.0));
+                std::vector<Date> fixingDates(futureFixings);
+                Date expiryDate = today + day*Days;
+
+                for (int i=futureFixings-1; i>=0; i--) {
+                    fixingDates[i] = expiryDate - i * 30;
+                }
+
+                ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
+                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+
+                Real runningAccumulator = 1.0;
+                Size pastFixingsCount = 0.0;
+                if (k == 0) {
+                    runningAccumulator = 100.0;
+                    pastFixingsCount = 1.0;
+                } else {
+                    runningAccumulator = 95.0 * 100.0 * 105.0;
+                    pastFixingsCount = 3.0;
+                }
+
+                DiscreteAveragingAsianOption option(averageType, runningAccumulator, pastFixingsCount,
+                                                    fixingDates, payoff, europeanExercise);
+
+                option.setPricingEngine(analyticEngine);
+                Real analyticPrice = option.NPV();
+
+                option.setPricingEngine(mcEngine);
+                Real mcPrice = option.NPV();
+
+                Real tolerance = 0.04;
+                if (std::fabs(analyticPrice-mcPrice) > tolerance) {
+                    REPORT_FAILURE("value", averageType, runningAccumulator, pastFixingsCount,
+                               std::vector<Date>(), payoff, europeanExercise, spot->value(),
+                               qRate->value(), rRate->value(), today,
+                               std::sqrt(v0), analyticPrice, mcPrice, tolerance);
+                }
+            }
+        }
+    }
+
+}
 
 namespace {
 
@@ -1985,5 +2075,7 @@ test_suite* AsianOptionTest::experimental() {
         &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
     return suite;
 }
