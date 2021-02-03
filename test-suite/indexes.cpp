@@ -63,9 +63,54 @@ void IndexTest::testFixingObservability() {
         BOOST_FAIL("Observer was not notified of added BMA fixing");
 }
 
+void IndexTest::testFixingHasHistoricalFixing() {
+    BOOST_TEST_MESSAGE("Testing if index has historical fixings...");
+
+    auto testCase = [](const std::string& indexName, const bool& expected, const bool& testResult) {
+        if (expected != testResult) {
+            BOOST_FAIL("Historical fixing " << (testResult ? "" : "not ") << "found for "
+                                            << indexName << ".");
+        }
+    };
+
+    std::string name;
+    auto fixingFound = true;
+    auto fixingNotFound = false;
+
+    Date today = Date::todaysDate();
+
+    IndexManager::instance().clearHistories();
+
+    auto euribor3M = ext::make_shared<Euribor3M>();
+    auto euribor6M = ext::make_shared<Euribor6M>();
+    auto euribor6M_a = ext::make_shared<Euribor6M>();
+    euribor6M->addFixing(today, 0.01);
+
+    name = euribor3M->name();
+    testCase(name, fixingNotFound, euribor3M->hasHistoricalFixing(today));
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+
+    name = euribor6M->name();
+    testCase(name, fixingFound, euribor6M->hasHistoricalFixing(today));
+    testCase(name, fixingFound, euribor6M_a->hasHistoricalFixing(today));
+    testCase(name, fixingFound, IndexManager::instance().hasHistoricalFixing(name, today));
+
+    IndexManager::instance().clearHistories();
+
+    name = euribor3M->name();
+    testCase(name, fixingNotFound, euribor3M->hasHistoricalFixing(today));
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+
+    name = euribor6M->name();
+    testCase(name, fixingNotFound, euribor6M->hasHistoricalFixing(today));
+    testCase(name, fixingNotFound, euribor6M_a->hasHistoricalFixing(today));
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+}
+
 
 test_suite* IndexTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("index tests");
     suite->add(QUANTLIB_TEST_CASE(&IndexTest::testFixingObservability));
+    suite->add(QUANTLIB_TEST_CASE(&IndexTest::testFixingHasHistoricalFixing));
     return suite;
 }
