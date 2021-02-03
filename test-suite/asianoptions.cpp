@@ -665,7 +665,7 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
-    Real tol[] =           {3.0e-2, 2.0e-2, 2.0e-2, 2.0e-2, 3.0e-2};
+    Real tolerance = 0.04;
     int days[] =           {30, 90, 180, 360, 720};
     Real strikes[] =       {90, 100, 110};
 
@@ -735,7 +735,6 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
                 option.setPricingEngine(mcEngine);
                 Real mcPrice = option.NPV();
 
-                Real tolerance = 0.04;
                 if (std::fabs(analyticPrice-mcPrice) > tolerance) {
                     REPORT_FAILURE("value", averageType, runningAccumulator, pastFixingsCount,
                                std::vector<Date>(), payoff, europeanExercise, spot->value(),
