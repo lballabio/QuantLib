@@ -62,11 +62,8 @@ namespace QuantLib {
 
     bool IndexManager::hasHistoricalFixing(const std::string& name, const Date& fixingDate) const {
         auto const& indexIter = data_.find(to_upper_copy(name));
-        if (indexIter != data_.end()) {
-            return (*indexIter).second.value()[fixingDate] != Null<Real>();
-        } else {
-            return false;
-        }
+        return (indexIter != data_.end()) &&
+               ((*indexIter).second.value()[fixingDate] != Null<Real>());
     }
 
 }
