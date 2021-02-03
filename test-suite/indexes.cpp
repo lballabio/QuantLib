@@ -19,8 +19,8 @@
 
 #include "indexes.hpp"
 #include "utilities.hpp"
-#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/bmaindex.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -35,11 +35,11 @@ void IndexTest::testFixingObservability() {
     Flag f1;
     f1.registerWith(i1);
     f1.lower();
-    
+
     Flag f2;
     f2.registerWith(i2);
     f2.lower();
-    
+
     Date today = Date::todaysDate();
 
     ext::shared_ptr<Index> euribor = ext::make_shared<Euribor6M>();
@@ -69,4 +69,3 @@ test_suite* IndexTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IndexTest::testFixingObservability));
     return suite;
 }
-
