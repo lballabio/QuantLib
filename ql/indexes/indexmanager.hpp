@@ -54,6 +54,8 @@ namespace QuantLib {
         void clearHistory(const std::string& name);
         //! clears all stored fixings
         void clearHistories();
+        //! returns whether a specific historical fixing was stored for the index and date
+        bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
 
       private:
         typedef std::map<std::string, ObservableValue<TimeSeries<Real> > > history_map;

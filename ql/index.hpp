@@ -54,6 +54,8 @@ namespace QuantLib {
         virtual Calendar fixingCalendar() const = 0;
         //! returns TRUE if the fixing date is a valid one
         virtual bool isValidFixingDate(const Date& fixingDate) const = 0;
+        //! returns whether a historical fixing was stored for the given date
+        bool hasHistoricalFixing(const Date& fixingDate) const;
         //! returns the fixing at the given date
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
@@ -132,6 +134,10 @@ namespace QuantLib {
         //! check if index allows for native fixings
         void checkNativeFixingsAllowed();
     };
+
+    inline bool Index::hasHistoricalFixing(const Date& fixingDate) const {
+        return IndexManager::instance().hasHistoricalFixing(name(), fixingDate);
+    }
 
 }
 
