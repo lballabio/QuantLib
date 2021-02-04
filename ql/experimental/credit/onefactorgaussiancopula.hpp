@@ -44,17 +44,17 @@ namespace QuantLib {
         : OneFactorCopula (correlation, maximum, integrationSteps) {
             registerWith(correlation_);
         }
-        Real density (Real m) const;
-        Real cumulativeZ (Real z) const;
+        Real density(Real m) const override;
+        Real cumulativeZ(Real z) const override;
         /*! overrides the base class implementation based on table data */
-        Real cumulativeY (Real y) const;
+        Real cumulativeY(Real y) const override;
         Real testCumulativeY (Real y) const;
         /*! overrides the base class implementation based on table data */
-        Real inverseCumulativeY (Real p) const;
+        Real inverseCumulativeY(Real p) const override;
 
       private:
         // nothing to be done when correlation changes
-        void performCalculations () const {}
+        void performCalculations() const override {}
 
         NormalDistribution density_;
         CumulativeNormalDistribution cumulative_;

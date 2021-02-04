@@ -35,11 +35,13 @@ namespace QuantLib {
         DiscretizedCapFloor(const CapFloor::arguments& args,
                             const Date& referenceDate,
                             const DayCounter& dayCounter);
-        void reset(Size size);
-        std::vector<Time> mandatoryTimes() const;
+        void reset(Size size) override;
+        std::vector<Time> mandatoryTimes() const override;
+
       protected:
-        void preAdjustValuesImpl();
-        void postAdjustValuesImpl();
+        void preAdjustValuesImpl() override;
+        void postAdjustValuesImpl() override;
+
       private:
         CapFloor::arguments arguments_;
         std::vector<Time> startTimes_;

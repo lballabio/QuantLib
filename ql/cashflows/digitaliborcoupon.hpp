@@ -51,7 +51,7 @@ namespace QuantLib {
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 

@@ -49,9 +49,9 @@ namespace QuantLib {
                                    Size maxIntegrationIterations = 10000UL);
 
       // x=ln(S)
-      Real pdf(Real x, Time t) const;
-      Real cdf(Real x, Time t) const;
-      Real invcdf(Real q, Time t) const;
+      Real pdf(Real x, Time t) const override;
+      Real cdf(Real x, Time t) const override;
+      Real invcdf(Real q, Time t) const override;
 
     private:
         Real x_t(Real x, Time t) const;

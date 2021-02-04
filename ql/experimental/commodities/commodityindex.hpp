@@ -51,7 +51,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Inspectors
         //@{

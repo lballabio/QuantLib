@@ -54,7 +54,7 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed,
              bool controlVariate = false);
-        void calculate() const {
+        void calculate() const override {
             McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
                                               requiredSamples_,
                                               maxSamples_);
@@ -63,11 +63,12 @@ namespace QuantLib {
             this->results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        Real controlVariateValue() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        Real controlVariateValue() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();

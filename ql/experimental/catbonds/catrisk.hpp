@@ -73,8 +73,8 @@ namespace QuantLib {
                            Date eventsEnd,
                            Date start,
                            Date end);
-        virtual bool nextPath(std::vector<std::pair<Date, Real> > &path);
-      
+        bool nextPath(std::vector<std::pair<Date, Real> >& path) override;
+
       private:
         ext::shared_ptr<std::vector<std::pair<Date, Real> > > events_;
         Date eventsStart_;
@@ -92,7 +92,9 @@ namespace QuantLib {
                  Date eventsStart,
                  Date eventsEnd);
 
-        ext::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
+        ext::shared_ptr<CatSimulation> newSimulation(const Date& start,
+                                                     const Date& end) const override;
+
       private:
         ext::shared_ptr<std::vector<std::pair<Date, Real> > > events_; 
         Date eventsStart_;
@@ -106,9 +108,9 @@ namespace QuantLib {
                            Real maxLoss, 
                            Real lambda, 
                            Real alpha, 
-                           Real beta) ;    
+                           Real beta) ;
 
-        virtual bool nextPath(std::vector<std::pair<Date, Real> > &path);
+        bool nextPath(std::vector<std::pair<Date, Real> >& path) override;
         Real generateBeta();
     
       private:
@@ -130,7 +132,8 @@ namespace QuantLib {
                  Real mean, 
                  Real stdDev);
 
-        virtual ext::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const;
+        ext::shared_ptr<CatSimulation> newSimulation(const Date& start,
+                                                     const Date& end) const override;
 
       private:
         Real maxLoss_;

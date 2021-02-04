@@ -51,17 +51,17 @@ namespace QuantLib {
                 bool localVol = false,
                 Real illegalLocalVolOverwrite = -Null<Real>());
 
-        void calculate() const;
+          void calculate() const override;
 
-      private:
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> p1_;
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> p2_;
-        const Real correlation_;
-        const Size xGrid_, yGrid_, tGrid_;
-        const Size dampingSteps_;
-        const FdmSchemeDesc schemeDesc_;
-        const bool localVol_;
-        const Real illegalLocalVolOverwrite_;
+        private:
+          const ext::shared_ptr<GeneralizedBlackScholesProcess> p1_;
+          const ext::shared_ptr<GeneralizedBlackScholesProcess> p2_;
+          const Real correlation_;
+          const Size xGrid_, yGrid_, tGrid_;
+          const Size dampingSteps_;
+          const FdmSchemeDesc schemeDesc_;
+          const bool localVol_;
+          const Real illegalLocalVolOverwrite_;
     };
 }
 

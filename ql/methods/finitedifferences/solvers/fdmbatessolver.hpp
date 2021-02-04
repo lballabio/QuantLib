@@ -56,8 +56,8 @@ namespace QuantLib {
         Real gammaAt(Real s, Real v) const;
 
       protected:
-        void performCalculations() const;
-        
+        void performCalculations() const override;
+
       private:
         const Handle<BatesProcess> process_;
         const FdmSolverDesc solverDesc_;

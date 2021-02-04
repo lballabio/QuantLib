@@ -57,7 +57,7 @@ namespace QuantLib {
             const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
 
         Size nStates() const;
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
 
         virtual Real maxValue(const Array& states) const = 0;
 

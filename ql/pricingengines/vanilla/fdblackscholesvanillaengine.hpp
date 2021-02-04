@@ -65,7 +65,7 @@ namespace QuantLib {
             Real illegalLocalVolOverwrite = -Null<Real>(),
             CashDividendModel cashDividendModel = Spot);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;

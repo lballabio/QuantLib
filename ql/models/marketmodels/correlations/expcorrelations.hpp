@@ -55,11 +55,12 @@ namespace QuantLib {
                         Real beta = 0.2,
                         Real gamma = 1.0,
                         const std::vector<Time>& times = std::vector<Time>());
-        const std::vector<Time>& times() const;
-        const std::vector<Time>& rateTimes() const;
-        const std::vector<Matrix>& correlations() const;
-        Size numberOfRates() const;
-    private:
+        const std::vector<Time>& times() const override;
+        const std::vector<Time>& rateTimes() const override;
+        const std::vector<Matrix>& correlations() const override;
+        Size numberOfRates() const override;
+
+      private:
         Size numberOfRates_;
         Real longTermCorr_, beta_, gamma_;
         std::vector<Time> rateTimes_, times_;

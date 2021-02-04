@@ -129,7 +129,7 @@ namespace QuantLib {
         std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
         std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
 
-        void calculate() const;
+        void calculate() const override;
         Size numberOfEvaluations() const;
 
         static void doCalculation(Real riskFreeDiscount,

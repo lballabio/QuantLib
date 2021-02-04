@@ -39,12 +39,12 @@ namespace QuantLib {
                          Real sigma);
         //! \name StochasticProcess1D interface
         //@{
-        Real x0() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
-        Real expectation(Time t0, Real x0, Time dt) const;
-        Real stdDeviation(Time t0, Real x0, Time dt) const;
-        Real variance(Time t0, Real x0, Time dt) const;
+        Real x0() const override;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
+        Real expectation(Time t0, Real x0, Time dt) const override;
+        Real stdDeviation(Time t0, Real x0, Time dt) const override;
+        Real variance(Time t0, Real x0, Time dt) const override;
 
         Real a() const;
         Real sigma() const;
@@ -65,12 +65,12 @@ namespace QuantLib {
                                 Real sigma);
         //! \name StochasticProcess1D interface
         //@{
-        Real x0() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
-        Real expectation(Time t0, Real x0, Time dt) const;
-        Real stdDeviation(Time t0, Real x0, Time dt) const;
-        Real variance(Time t0, Real x0, Time dt) const;
+        Real x0() const override;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
+        Real expectation(Time t0, Real x0, Time dt) const override;
+        Real stdDeviation(Time t0, Real x0, Time dt) const override;
+        Real variance(Time t0, Real x0, Time dt) const override;
         //@}
 
         Real a() const;

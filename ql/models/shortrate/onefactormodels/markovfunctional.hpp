@@ -334,12 +334,12 @@ namespace QuantLib {
 
         const Array &volatility() const { return sigma_.params(); }
 
-        void calibrate(
-            const std::vector<ext::shared_ptr<CalibrationHelper> > &helpers,
-            OptimizationMethod &method, const EndCriteria &endCriteria,
-            const Constraint &constraint = Constraint(),
-            const std::vector<Real> &weights = std::vector<Real>(),
-            const std::vector<bool> &fixParameters = std::vector<bool>()) {
+        void calibrate(const std::vector<ext::shared_ptr<CalibrationHelper> >& helpers,
+                       OptimizationMethod& method,
+                       const EndCriteria& endCriteria,
+                       const Constraint& constraint = Constraint(),
+                       const std::vector<Real>& weights = std::vector<Real>(),
+                       const std::vector<bool>& fixParameters = std::vector<bool>()) override {
 
             CalibratedModel::calibrate(helpers, method, endCriteria, constraint, weights,
                                        fixParameters.empty() ? FixedFirstVolatility() :
@@ -351,12 +351,12 @@ namespace QuantLib {
         #pragma warning(push)
         #pragma warning(disable:4996)
         #endif
-        void calibrate(
-            const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helpers,
-            OptimizationMethod &method, const EndCriteria &endCriteria,
-            const Constraint &constraint = Constraint(),
-            const std::vector<Real> &weights = std::vector<Real>(),
-            const std::vector<bool> &fixParameters = std::vector<bool>()) {
+        void calibrate(const std::vector<ext::shared_ptr<BlackCalibrationHelper> >& helpers,
+                       OptimizationMethod& method,
+                       const EndCriteria& endCriteria,
+                       const Constraint& constraint = Constraint(),
+                       const std::vector<Real>& weights = std::vector<Real>(),
+                       const std::vector<bool>& fixParameters = std::vector<bool>()) override {
 
             std::vector<ext::shared_ptr<CalibrationHelper> > tmp(helpers.size());
             for (Size i=0; i<helpers.size(); ++i)
@@ -364,13 +364,11 @@ namespace QuantLib {
 
             calibrate(tmp, method, endCriteria, constraint, weights, fixParameters);
         }
-        #if defined(QL_PATCH_MSVC)
+#if defined(QL_PATCH_MSVC)
         #pragma warning(pop)
         #endif
 
-        void update() {
-            LazyObject::update();
-        }
+        void update() override { LazyObject::update(); }
 
         // returns the indices of the af region from the last smile update
         std::vector<std::pair<Size, Size> > arbitrageIndices() const {
@@ -386,11 +384,12 @@ namespace QuantLib {
         }
 
       protected:
-        Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const;
+        Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-        Real zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const;
+        Real
+        zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-        void generateArguments() {
+        void generateArguments() override {
             // if calculate triggers performCalculations, updateNumeraireTabulations
             // is called twice. If we can not check the lazy object status this seem
             // hard to avoid though.
@@ -399,7 +398,7 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        void performCalculations() const {
+        void performCalculations() const override {
             Gaussian1dModel::performCalculations();
             updateTimes();
             updateSmiles();

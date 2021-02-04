@@ -57,7 +57,7 @@ namespace QuantLib {
         ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const Handle<LocalVolTermStructure> localVol_;

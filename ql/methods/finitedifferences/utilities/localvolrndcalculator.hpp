@@ -66,18 +66,18 @@ namespace QuantLib {
 			Size maxIter = 10000,
 			Time gaussianStepSize = -Null<Time>());
 
-		Real pdf(Real x, Time t) const;
-		Real cdf(Real x, Time t) const;
-		Real invcdf(Real p, Time t) const;
+                Real pdf(Real x, Time t) const override;
+                Real cdf(Real x, Time t) const override;
+                Real invcdf(Real p, Time t) const override;
 
-		ext::shared_ptr<TimeGrid> timeGrid() const;
+                ext::shared_ptr<TimeGrid> timeGrid() const;
 		ext::shared_ptr<Fdm1dMesher> mesher(Time t) const;
 		Disposable<std::vector<Size> > rescaleTimeSteps() const;
 
 	  protected:
-		void performCalculations() const;
+            void performCalculations() const override;
 
-	  private:
+          private:
 		Real probabilityInterpolation(Size idx, Real x) const;
 		Disposable<Array> rescalePDF(const Array& x, const Array& p) const;
 

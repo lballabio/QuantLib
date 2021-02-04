@@ -27,7 +27,8 @@ namespace QuantLib {
         LookbackFixedPathPricer(Option::Type type,
                                 Real strike,
                                 DiscountFactor discount);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -39,7 +40,8 @@ namespace QuantLib {
                                        Option::Type type,
                                        Real strike,
                                        DiscountFactor discount);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         Time lookbackStart_;
         PlainVanillaPayoff payoff_;
@@ -50,7 +52,8 @@ namespace QuantLib {
       public:
         LookbackFloatingPathPricer(Option::Type type,
                                    DiscountFactor discount);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         FloatingTypePayoff payoff_;
         DiscountFactor discount_;
@@ -61,7 +64,8 @@ namespace QuantLib {
         LookbackPartialFloatingPathPricer(Time lookbackEnd,
                                           Option::Type type,
                                           DiscountFactor discount);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         Time lookbackEnd_;
         FloatingTypePayoff payoff_;

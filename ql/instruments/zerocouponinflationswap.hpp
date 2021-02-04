@@ -113,8 +113,8 @@ namespace QuantLib {
 
         //! \name Instrument interface
         //@{
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results* r) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results* r) const override;
         //@}
 
         //! \name Results
@@ -144,7 +144,7 @@ namespace QuantLib {
     class ZeroCouponInflationSwap::arguments : public Swap::arguments {
       public:
         Rate fixedRate;
-        void validate() const;
+        void validate() const override;
     };
 
 

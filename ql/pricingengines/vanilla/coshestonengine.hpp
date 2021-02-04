@@ -58,8 +58,8 @@ namespace QuantLib {
         explicit COSHestonEngine(const ext::shared_ptr<HestonModel>& model,
                                  Real L = 16, Size N=200);
 
-        void update();
-        void calculate() const;
+        void update() override;
+        void calculate() const override;
 
         // normalized characteristic function
         std::complex<Real> chF(Real u, Real t) const;

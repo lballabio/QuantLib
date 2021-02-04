@@ -52,8 +52,8 @@ namespace QuantLib {
           localisation_(std::distance(rateHelpersStart, rateHelpersEnd)),
           rateHelpersStart_(rateHelpersStart), rateHelpersEnd_(rateHelpersEnd) {}
 
-        Real value(const Array& x) const;
-        Disposable<Array> values(const Array& x) const;
+        Real value(const Array& x) const override;
+        Disposable<Array> values(const Array& x) const override;
 
       private:
         Curve* curve_;

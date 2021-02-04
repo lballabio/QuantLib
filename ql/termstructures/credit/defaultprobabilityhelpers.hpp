@@ -110,13 +110,14 @@ namespace QuantLib {
                   const DayCounter& lastPeriodDayCounter = DayCounter(),
                   bool rebatesAccrual = true,
                   CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
-        void setTermStructure(DefaultProbabilityTermStructure*);
+        void setTermStructure(DefaultProbabilityTermStructure*) override;
         ext::shared_ptr<CreditDefaultSwap> swap() const {
             return swap_;
         }
-      void update();
+        void update() override;
+
       protected:
-        void initializeDates();
+        void initializeDates() override;
         virtual void resetEngine() = 0;
         Period tenor_;
         Integer settlementDays_;
@@ -178,9 +179,10 @@ namespace QuantLib {
             const DayCounter& lastPeriodDayCounter = DayCounter(), // ISDA: Actual/360(inc)
             bool rebatesAccrual = true,                            // ISDA: true
             CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
-        Real impliedQuote() const;
+        Real impliedQuote() const override;
+
       private:
-        void resetEngine();
+        void resetEngine() override;
     };
 
     //! Upfront-quoted CDS hazard rate bootstrap helper.
@@ -225,10 +227,11 @@ namespace QuantLib {
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          bool rebatesAccrual = true,
                          CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
-        Real impliedQuote() const;
+        Real impliedQuote() const override;
+
       private:
-        void initializeDates();
-        void resetEngine();
+        void initializeDates() override;
+        void resetEngine() override;
         Natural upfrontSettlementDays_;
         Date upfrontDate_;
         Rate runningSpread_;

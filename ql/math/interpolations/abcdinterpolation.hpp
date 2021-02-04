@@ -99,7 +99,7 @@ namespace QuantLib {
               endCriteria_(endCriteria), optMethod_(optMethod),
               vegaWeighted_(vegaWeighted) { }
 
-            void update() {
+            void update() override {
                 std::vector<Real>::const_iterator x = this->xBegin_;
                 std::vector<Real>::const_iterator y = this->yBegin_;
                 std::vector<Real> times, blackVols;
@@ -125,18 +125,14 @@ namespace QuantLib {
                 maxError_ = abcdCalibrator_->maxError();
                 abcdEndCriteria_ = abcdCalibrator_->endCriteria();
             }
-            Real value(Real x) const {
+            Real value(Real x) const override {
                 QL_REQUIRE(x>=0.0, "time must be non negative: " <<
                                    x << " not allowed");
                 return abcdCalibrator_->value(x);
             }
-            Real primitive(Real) const {
-                QL_FAIL("Abcd primitive not implemented");
-            }
-            Real derivative(Real) const {
-                QL_FAIL("Abcd derivative not implemented");
-            }
-            Real secondDerivative(Real) const {
+            Real primitive(Real) const override { QL_FAIL("Abcd primitive not implemented"); }
+            Real derivative(Real) const override { QL_FAIL("Abcd derivative not implemented"); }
+            Real secondDerivative(Real) const override {
                 QL_FAIL("Abcd secondDerivative not implemented");
             }
             Real k(Time t) const {

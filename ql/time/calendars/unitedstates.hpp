@@ -132,33 +132,35 @@ namespace QuantLib {
       private:
         class SettlementImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "US settlement"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "US settlement"; }
+            bool isBusinessDay(const Date&) const override;
         };
         class LiborImpactImpl : public SettlementImpl {
           public:
-            std::string name() const { return "US with Libor impact"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "US with Libor impact"; }
+            bool isBusinessDay(const Date&) const override;
         };
         class NyseImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "New York stock exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "New York stock exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
         class GovernmentBondImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "US government bond market"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "US government bond market"; }
+            bool isBusinessDay(const Date&) const override;
         };
         class NercImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "North American Energy Reliability Council"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override {
+                return "North American Energy Reliability Council";
+            }
+            bool isBusinessDay(const Date&) const override;
         };
         class FederalReserveImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Federal Reserve Bankwire System"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Federal Reserve Bankwire System"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         //! US calendars

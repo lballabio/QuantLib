@@ -69,7 +69,7 @@ namespace QuantLib {
                         Natural settlementDays,
                         const Schedule& schedule,
                         Real redemption);
-        void performCalculations() const;
+        void performCalculations() const override;
         Real conversionRatio_;
         CallabilitySchedule callability_;
         DividendSchedule dividends_;
@@ -171,7 +171,8 @@ namespace QuantLib {
                Natural settlementDays,
                Real redemption);
 
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       private:
         const ConvertibleBond* bond_;
         Real conversionRatio_;
@@ -209,7 +210,7 @@ namespace QuantLib {
 
         Natural settlementDays;
         Real redemption;
-        void validate() const;
+        void validate() const override;
     };
 
     class ConvertibleBond::option::engine

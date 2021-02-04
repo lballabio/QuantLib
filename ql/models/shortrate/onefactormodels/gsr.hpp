@@ -137,18 +137,18 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     }
 
   protected:
-    Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const;
+    Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-    Real zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const;
+    Real zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-    void generateArguments() {
+    void generateArguments() override {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
         notifyObservers();
     }
 
-    void update();
+    void update() override;
 
-    void performCalculations() const {
+    void performCalculations() const override {
         Gaussian1dModel::performCalculations();
         updateTimes();
     }
@@ -173,12 +173,12 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
     struct VolatilityObserver : public Observer {
         explicit VolatilityObserver(Gsr *p) : p_(p) {}
-        void update() { p_->updateVolatility(); }
+        void update() override { p_->updateVolatility(); }
         Gsr *p_;
     };
     struct ReversionObserver : public Observer {
         explicit ReversionObserver(Gsr *p) : p_(p) {}
-        void update() { p_->updateReversion(); }
+        void update() override { p_->updateReversion(); }
         Gsr *p_;
     };
 

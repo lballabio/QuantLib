@@ -48,7 +48,8 @@ namespace QuantLib {
         PagodaOption(const std::vector<Date>& fixingDates,
                      Real roof,
                      Real fraction);
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         // arguments
         std::vector<Date> fixingDates_;
@@ -60,7 +61,7 @@ namespace QuantLib {
     class PagodaOption::arguments : public MultiAssetOption::arguments {
       public:
         arguments();
-        void validate() const;
+        void validate() const override;
         std::vector<Date> fixingDates;
         Real roof; Real fraction;
     };

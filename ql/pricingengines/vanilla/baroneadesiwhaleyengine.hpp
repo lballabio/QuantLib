@@ -47,7 +47,8 @@ namespace QuantLib {
             DiscountFactor dividendDiscount,
             Real variance,
             Real tolerance = 1e-6);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };

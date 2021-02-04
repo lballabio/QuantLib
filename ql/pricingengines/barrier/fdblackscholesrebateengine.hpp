@@ -47,7 +47,7 @@ namespace QuantLib {
                 bool localVol = false, 
                 Real illegalLocalVolOverwrite = -Null<Real>());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;

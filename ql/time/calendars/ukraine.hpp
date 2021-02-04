@@ -54,8 +54,8 @@ namespace QuantLib {
       private:
         class UseImpl : public Calendar::OrthodoxImpl {
           public:
-            std::string name() const { return "Ukrainian stock exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Ukrainian stock exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { USE    //!< Ukrainian stock exchange

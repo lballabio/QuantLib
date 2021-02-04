@@ -44,7 +44,8 @@ namespace QuantLib {
       public:
         ForwardPerformanceVanillaEngine(
                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
-        void calculate() const;
+        void calculate() const override;
+
       protected:
         void getOriginalResults() const;
     };

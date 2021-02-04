@@ -66,7 +66,7 @@ namespace QuantLib {
         explicit AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
             const ext::shared_ptr<HestonProcess>& process,
             Real xiRightLimit = 100.0);
-        void calculate() const;
+        void calculate() const override;
 
         // Equation (21) - must be public so the integrand can access it.
         std::complex<Real> Phi(std::complex<Real> s,

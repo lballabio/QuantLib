@@ -37,7 +37,7 @@ namespace QuantLib {
                                 const ext::shared_ptr<FdmMesher> & mesher,
                                 Size equityDirection);
 
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
 
       private:
         Array x_; // grid-equity values in physical units

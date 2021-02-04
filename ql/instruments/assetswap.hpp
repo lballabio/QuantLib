@@ -88,10 +88,11 @@ namespace QuantLib {
         const Leg& bondLeg() const { return legs_[0]; }
         const Leg& floatingLeg() const { return legs_[1]; }
         // other
-        void setupArguments(PricingEngine::arguments* args) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
         ext::shared_ptr<Bond> bond_;
         Real bondCleanPrice_, nonParRepayment_;
         Spread spread_;
@@ -115,7 +116,7 @@ namespace QuantLib {
         std::vector<Date> floatingFixingDates;
         std::vector<Date> floatingPayDates;
         std::vector<Spread> floatingSpreads;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from simple swap calculation
@@ -123,7 +124,7 @@ namespace QuantLib {
       public:
         Spread fairSpread;
         Real fairCleanPrice, fairNonParRepayment;
-        void reset();
+        void reset() override;
     };
 
 }

@@ -39,7 +39,7 @@ namespace QuantLib {
                          const ext::shared_ptr<Exercise>&);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
         //! \name greeks
         //@{
@@ -50,10 +50,11 @@ namespace QuantLib {
         Real rho() const;
         Real dividendRho() const;
         //@}
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       protected:
-        void setupExpired() const;
+        void setupExpired() const override;
         // results
         mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
@@ -63,7 +64,7 @@ namespace QuantLib {
     class MultiAssetOption::results : public Instrument::results,
                                       public Greeks {
       public:
-        void reset() {
+        void reset() override {
             Instrument::results::reset();
             Greeks::reset();
         }

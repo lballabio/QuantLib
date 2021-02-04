@@ -44,7 +44,7 @@ namespace QuantLib {
                   const Handle<Quote>& spread);
       private:
         // overload
-        Rate forecastFixing(const Date& fixingDate) const;
+        Rate forecastFixing(const Date& fixingDate) const override;
 
         Handle<Quote> gearing_;
         ext::shared_ptr<IborIndex> iborIndex_;

@@ -34,10 +34,10 @@ namespace QuantLib {
                        public virtual Observer {
       public:
         LazyObject();
-        virtual ~LazyObject() {}
+        ~LazyObject() override {}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         /*! \name Calculations
             These methods do not modify the structure of the object

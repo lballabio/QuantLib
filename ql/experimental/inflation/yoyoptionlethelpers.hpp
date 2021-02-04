@@ -47,8 +47,9 @@ namespace QuantLib {
                  const ext::shared_ptr<YoYInflationIndex>& index,
                  Rate strike, Size n,
                  const ext::shared_ptr<YoYInflationCapFloorEngine> &pricer);
-        void setTermStructure(YoYOptionletVolatilitySurface*);
-        Real impliedQuote() const;
+        void setTermStructure(YoYOptionletVolatilitySurface*) override;
+        Real impliedQuote() const override;
+
       protected:
         Real notional_; // get the price level right (e.g. bps = 10,000)
         YoYInflationCapFloor::Type capFloorType_;

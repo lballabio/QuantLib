@@ -43,7 +43,7 @@ namespace QuantLib {
                                 const DayCounter& dc = Actual365Fixed());
         BachelierCapFloorEngine(const Handle<YieldTermStructure>& discountCurve,
                                 const Handle<OptionletVolatilityStructure>& vol);
-        void calculate() const;
+        void calculate() const override;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<OptionletVolatilityStructure> volatility() { return vol_; }
       private:

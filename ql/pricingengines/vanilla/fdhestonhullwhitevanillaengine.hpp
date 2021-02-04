@@ -57,10 +57,10 @@ namespace QuantLib {
             bool controlVariate = true,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+        void calculate() const override;
 
         // multiple strikes caching engine
-        void update();
+        void update() override;
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
       private:

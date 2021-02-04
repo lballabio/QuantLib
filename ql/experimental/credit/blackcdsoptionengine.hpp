@@ -39,7 +39,7 @@ namespace QuantLib {
                              Real recoveryRate,
                              const Handle<YieldTermStructure>& termStructure,
                              const Handle<Quote>& vol);
-        void calculate() const;
+        void calculate() const override;
         Handle<YieldTermStructure> termStructure();
         Handle<Quote> volatility();
       private:

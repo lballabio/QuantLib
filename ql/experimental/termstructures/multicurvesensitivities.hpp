@@ -92,7 +92,7 @@ public:
 private:
   //! \name LazyObject interface
   //@{
-  void performCalculations() const;
+  void performCalculations() const override;
   //@}
   // methods
   std::vector< Real > allZeros() const;

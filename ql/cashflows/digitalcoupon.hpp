@@ -97,8 +97,8 @@ namespace QuantLib {
         //@}
         //! \name Coupon interface
         //@{
-        Rate rate() const;
-        Rate convexityAdjustment() const;
+        Rate rate() const override;
+        Rate convexityAdjustment() const override;
         //@}
         //@}
         //! \name Digital inspectors
@@ -124,14 +124,13 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
 
-        void setPricer(
-            const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override {
             if (pricer_ != 0)
                 unregisterWith(pricer_);
             pricer_ = pricer;

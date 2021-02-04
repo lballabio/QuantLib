@@ -71,7 +71,7 @@ namespace QuantLib {
             Frequency frequency = Annual);
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name other inspectors
         //@{
@@ -113,7 +113,7 @@ namespace QuantLib {
 
         //! \name ZeroYieldStructure implementation
         //@{
-        Rate zeroYieldImpl(Time t) const;
+        Rate zeroYieldImpl(Time t) const override;
         //@}
         mutable std::vector<Date> dates_;
       private:

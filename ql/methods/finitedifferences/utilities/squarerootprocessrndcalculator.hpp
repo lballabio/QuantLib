@@ -33,9 +33,9 @@ namespace QuantLib {
         SquareRootProcessRNDCalculator(
             Real v0, Real kappa, Real theta, Real sigma);
 
-        Real pdf(Real v, Time t) const;
-        Real cdf(Real v, Time t) const;
-        Real invcdf(Real q, Time t) const;
+        Real pdf(Real v, Time t) const override;
+        Real cdf(Real v, Time t) const override;
+        Real invcdf(Real q, Time t) const override;
 
         Real stationary_pdf(Real v) const;
         Real stationary_cdf(Real v) const;

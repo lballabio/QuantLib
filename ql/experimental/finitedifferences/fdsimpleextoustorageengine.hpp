@@ -48,7 +48,7 @@ namespace QuantLib {
           const ext::shared_ptr<Shape>& shape = ext::shared_ptr<Shape>(),
           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;

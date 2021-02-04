@@ -142,23 +142,23 @@ namespace QuantLib {
 
         //! \name Inflation interface
         //@{
-        Date baseDate() const;
-        Date maxDate() const;
+        Date baseDate() const override;
+        Date maxDate() const override;
         //@
         //! \name Inspectors
         //@{
-        const std::vector<Time>& times() const;
-        const std::vector<Date>& dates() const;
-        const std::vector<Real>& data() const;
-        std::vector<std::pair<Date, Real> > nodes() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Date>& dates() const override;
+        const std::vector<Real>& data() const override;
+        std::vector<std::pair<Date, Real> > nodes() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       private:
         // methods
-        void performCalculations() const;
+        void performCalculations() const override;
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;

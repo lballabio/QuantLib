@@ -101,8 +101,9 @@ namespace QuantLib {
                                                      Size matrixSize,
                                                      Size rank)
         : target_(target), f_(f), matrixSize_(matrixSize), rank_(rank) {}
-        Real value (const Array &x) const;
-        Disposable<Array> values (const Array &x) const;
+        Real value(const Array& x) const override;
+        Disposable<Array> values(const Array& x) const override;
+
       private:
         Matrix target_;
         ext::function<Disposable<Matrix>(const Array&, Size, Size)> f_;

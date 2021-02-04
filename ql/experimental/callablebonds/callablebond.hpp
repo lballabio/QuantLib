@@ -186,7 +186,7 @@ namespace QuantLib {
         //! componded rate added to the model. Currently only applied
         //! by the TreeCallableFixedRateBondEngine
         Real spread;
-        void validate() const;
+        void validate() const override;
     };
 
     //! results for a callable bond calculation
@@ -224,7 +224,7 @@ namespace QuantLib {
                               BusinessDayConvention exCouponConvention = Unadjusted,
                               bool exCouponEndOfMonth = false);
 
-        void setupArguments(PricingEngine::arguments* args) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
 
       private:
         //! accrued interest used internally, where includeToday = false

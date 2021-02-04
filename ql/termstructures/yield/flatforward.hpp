@@ -68,22 +68,22 @@ namespace QuantLib {
 
         //! \name TermStructure interface
         //@{
-        Date maxDate() const { return Date::maxDate(); }
+        Date maxDate() const override { return Date::maxDate(); }
         //@}
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       private:
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
 
         //! \name YieldTermStructure implementation
         //@{
-        DiscountFactor discountImpl(Time) const;
+        DiscountFactor discountImpl(Time) const override;
         //@}
 
         Handle<Quote> forward_;

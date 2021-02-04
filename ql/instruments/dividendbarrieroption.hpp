@@ -47,7 +47,8 @@ namespace QuantLib {
                         const std::vector<Date>& dividendDates,
                         const std::vector<Real>& dividends);
       protected:
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       private:
         DividendSchedule cashFlow_;
     };
@@ -58,7 +59,7 @@ namespace QuantLib {
       public:
         DividendSchedule cashFlow;
         arguments() {}
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Dividend-barrier-option %engine base class

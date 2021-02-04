@@ -42,7 +42,7 @@ namespace {
         : payoff_(payoff) {
         }
 
-        StateType state(const MultiPath& path, Size t) const {
+        StateType state(const MultiPath& path, Size t) const override {
             Array tmp(path.assetNumber());
             for (Size i=0; i<path.assetNumber(); ++i) {
                 tmp[i]=path[i][t];
@@ -51,12 +51,12 @@ namespace {
             return tmp;
         }
 
-        Real operator()(const MultiPath& path, Size t) const {
+        Real operator()(const MultiPath& path, Size t) const override {
             const Array tmp = state(path, t);
             return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
         }
 
-        std::vector<ext::function<Real(StateType)> > basisSystem() const {
+        std::vector<ext::function<Real(StateType)> > basisSystem() const override {
             return LsmBasisSystem::multiPathBasisSystem(2, 2,
                                                         LsmBasisSystem::Monomial);
         }
@@ -96,8 +96,7 @@ namespace {
         { }
 
       protected:
-        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
-        lsmPathPricer() const {
+        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override {
             ext::shared_ptr<StochasticProcessArray> processArray =
             ext::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
             QL_REQUIRE(processArray && processArray->size() > 0,

@@ -67,7 +67,7 @@ namespace QuantLib {
         explicit AnalyticHestonForwardEuropeanEngine(const ext::shared_ptr<HestonProcess>& process,
                                                      Size integrationOrder = 144);
 
-        void calculate() const;
+        void calculate() const override;
 
         // The evolution probability function from t0 to tReset
         Real propagator(Time resetTime,

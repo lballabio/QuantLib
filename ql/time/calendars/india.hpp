@@ -69,10 +69,8 @@ namespace QuantLib {
       private:
         class NseImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const {
-                return "National Stock Exchange of India";
-            }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "National Stock Exchange of India"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { NSE    //!< National Stock Exchange

@@ -106,17 +106,16 @@ namespace QuantLib {
             date) and maturity date of bond forward contract are
             considered income.
         */
-        Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve)
-            const;
+        Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve) const override;
 
         //!  NPV of underlying bond
-        Real spotValue() const;
+        Real spotValue() const override;
 
         //@}
 
       protected:
         ext::shared_ptr<FixedRateBond> fixedCouponBond_;
-        void performCalculations() const;
+        void performCalculations() const override;
     };
 
 }

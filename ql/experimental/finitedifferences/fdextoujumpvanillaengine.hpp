@@ -46,9 +46,9 @@ namespace QuantLib {
             Size tGrid = 50, Size xGrid = 200, Size yGrid = 50,
             const ext::shared_ptr<Shape>& shape = ext::shared_ptr<Shape>(),
             const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Hundsdorfer());
-    
-        void calculate() const;
-    
+
+        void calculate() const override;
+
       private:
         const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
         const ext::shared_ptr<YieldTermStructure> rTS_;

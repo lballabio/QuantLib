@@ -105,7 +105,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> isdaRateCurve() const { return discountCurve_; }
         Handle<DefaultProbabilityTermStructure> isdaCreditCurve() const { return probability_; }
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         Handle<DefaultProbabilityTermStructure> probability_;

@@ -47,16 +47,12 @@ namespace QuantLib {
                   ext::shared_ptr<discretization>(new EulerDiscretization));
         //! \name StochasticProcess1D interface
         //@{
-        Real x0() const;
-        Real drift(Time, Real) const {
-            QL_FAIL("not implemented"); }
-        Real diffusion(Time, Real) const {
-            QL_FAIL("not implemented"); }
-        Real apply(Real, Real) const {
-            QL_FAIL("not implemented");
-        }
+        Real x0() const override;
+        Real drift(Time, Real) const override { QL_FAIL("not implemented"); }
+        Real diffusion(Time, Real) const override { QL_FAIL("not implemented"); }
+        Real apply(Real, Real) const override { QL_FAIL("not implemented"); }
         //@}
-        Time time(const Date&) const;
+        Time time(const Date&) const override;
         //! \name Inspectors
         //@{
         const Handle<Quote>& stateVariable() const;

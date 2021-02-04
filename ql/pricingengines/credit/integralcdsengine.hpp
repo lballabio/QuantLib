@@ -36,7 +36,8 @@ namespace QuantLib {
                           Real recoveryRate,
                           const Handle<YieldTermStructure>& discountCurve,
                           const boost::optional<bool>& includeSettlementDateFlows = boost::none);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         Period integrationStep_;
         Handle<DefaultProbabilityTermStructure> probability_;

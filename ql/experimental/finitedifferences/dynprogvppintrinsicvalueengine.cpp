@@ -40,14 +40,15 @@ namespace QuantLib {
               fuelPrices_(fuelPrices),
               powerPrices_(powerPrices) {}
 
-            Real innerValue(const FdmLinearOpIterator&, Time t) {
+            Real innerValue(const FdmLinearOpIterator&, Time t) override {
                 Size i = (Size) t;
                 QL_REQUIRE(i < powerPrices_.size(), "invalid time");
                 return powerPrices_[i] - heatRate_*fuelPrices_[i];
             }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
+
           private:
             const Real heatRate_;
             const std::vector<Real>& fuelPrices_;
@@ -60,11 +61,12 @@ namespace QuantLib {
             explicit FuelPrice(const std::vector<Real>& fuelPrices)
             : fuelPrices_(fuelPrices) {}
 
-            Real innerValue(const FdmLinearOpIterator&, Time t) {
+            Real innerValue(const FdmLinearOpIterator&, Time t) override {
                 Size i = (Size) t;
                 QL_REQUIRE(i < fuelPrices_.size(), "invalid time");
-                return fuelPrices_[(Size) t]; }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+                return fuelPrices_[(Size) t];
+            }
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
 

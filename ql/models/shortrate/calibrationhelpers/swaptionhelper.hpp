@@ -80,15 +80,15 @@ namespace QuantLib {
                        VolatilityType type = ShiftedLognormal,
                        Real shift = 0.0);
 
-        virtual void addTimesTo(std::list<Time>& times) const;
-        virtual Real modelValue() const;
-        virtual Real blackPrice(Volatility volatility) const;
+        void addTimesTo(std::list<Time>& times) const override;
+        Real modelValue() const override;
+        Real blackPrice(Volatility volatility) const override;
 
         ext::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
         ext::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
 
       private:
-        void performCalculations() const;
+        void performCalculations() const override;
         mutable Date exerciseDate_, endDate_;
         const Period maturity_, length_, fixedLegTenor_;
         const ext::shared_ptr<IborIndex> index_;

@@ -62,7 +62,7 @@ namespace QuantLib {
 
         class VolatilityConstraint;
       protected:
-        void generateArguments();
+        void generateArguments() override;
         ext::shared_ptr<GJRGARCHProcess> process_;
     };
 }

@@ -60,19 +60,13 @@ namespace QuantLib {
                                 InterpolatorDefaultExtrapolation);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const {
-            return maxDate_;
-        }
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Date maxDate() const override { return maxDate_; }
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const {
-            return strikes_.front();
-        }
-        Real maxStrike() const {
-            return strikes_.back();
-        }
+        Real minStrike() const override { return strikes_.front(); }
+        Real maxStrike() const override { return strikes_.back(); }
         //@}
         //! \name Modifiers
         //@{
@@ -87,10 +81,11 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        virtual Real blackVarianceImpl(Time t, Real strike) const;
+        Real blackVarianceImpl(Time t, Real strike) const override;
+
       private:
         DayCounter dayCounter_;
         Date maxDate_;

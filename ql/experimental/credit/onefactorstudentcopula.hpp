@@ -56,12 +56,12 @@ namespace QuantLib {
                                 int nz, int nm,
                                 Real maximum = 10, Size integrationSteps = 200);
 
-        Real density (Real m) const;
-        Real cumulativeZ (Real z) const;
+        Real density(Real m) const override;
+        Real cumulativeZ(Real z) const override;
 
       private:
         //! Observer interface
-        void performCalculations () const;
+        void performCalculations() const override;
 
         StudentDistribution density_;              // density of M
         CumulativeStudentDistribution cumulative_; // cumulated density of Z
@@ -112,12 +112,12 @@ namespace QuantLib {
                                         Real maximum = 10,
                                         Size integrationSteps = 200);
 
-        Real density (Real m) const;
-        Real cumulativeZ (Real z) const;
+        Real density(Real m) const override;
+        Real cumulativeZ(Real z) const override;
 
       private:
         //! Observer interface
-        void performCalculations () const;
+        void performCalculations() const override;
 
         NormalDistribution density_;               // density of M
         CumulativeStudentDistribution cumulative_; // cumulated density of Z
@@ -165,12 +165,12 @@ namespace QuantLib {
                                         Real maximum = 10,
                                         Size integrationSteps = 200);
 
-        Real density (Real m) const;
-        Real cumulativeZ (Real z) const;
+        Real density(Real m) const override;
+        Real cumulativeZ(Real z) const override;
 
       private:
         //! Observer interface
-        void performCalculations () const;
+        void performCalculations() const override;
 
         StudentDistribution density_;              // density of M
         CumulativeNormalDistribution cumulative_;  // cumulated density of Z

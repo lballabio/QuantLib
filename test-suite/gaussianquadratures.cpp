@@ -276,16 +276,14 @@ namespace gaussian_quadratures_test {
     class MomentBasedGaussLaguerrePolynomial
             : public MomentBasedGaussianPolynomial<mp_float> {
       public:
-        mp_float moment(Size i) const {
+        mp_float moment(Size i) const override {
             if (i == 0)
                 return mp_float(1.0);
             else
                 return mp_float(i)*moment(i-1);
         }
 
-        Real w(Real x) const {
-            return std::exp(-x);
-        }
+        Real w(Real x) const override { return std::exp(-x); }
     };
 }
 

@@ -73,9 +73,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Real value(const Array& params, Time) const {
-                return params[0];
-            }
+            Real value(const Array& params, Time) const override { return params[0]; }
         };
       public:
         ConstantParameter(const Constraint& constraint)
@@ -103,9 +101,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Real value(const Array&, Time) const {
-                return 0.0;
-            }
+            Real value(const Array&, Time) const override { return 0.0; }
         };
       public:
         NullParameter()
@@ -128,7 +124,7 @@ namespace QuantLib {
             explicit Impl(const std::vector<Time>& times)
             : times_(times) {}
 
-            Real value(const Array& params, Time t) const {
+            Real value(const Array& params, Time t) const override {
                 Size size = times_.size();
                 for (Size i=0; i<size; i++) {
                     if (t<times_[i])
@@ -136,6 +132,7 @@ namespace QuantLib {
                 }
                 return params[size];
             }
+
           private:
             std::vector<Time> times_;
         };
@@ -169,7 +166,7 @@ namespace QuantLib {
                 times_.clear();
                 values_.clear();
             }
-            Real value(const Array&, Time t) const {
+            Real value(const Array&, Time t) const override {
                 std::vector<Time>::const_iterator result =
                     std::find(times_.begin(), times_.end(), t);
                 QL_REQUIRE(result!=times_.end(),

@@ -36,8 +36,8 @@ namespace {
               weights_(smileAndCms->weights_),
               calibrationType_(smileAndCms->calibrationType_) {};
 
-        Real value(const Array &x) const;
-        Disposable<Array> values(const Array &x) const;
+        Real value(const Array& x) const override;
+        Disposable<Array> values(const Array& x) const override;
 
       protected:
         Real switchErrorFunctionOnCalibrationType() const;
@@ -61,7 +61,7 @@ namespace {
               fixedMeanReversion_(fixedMeanReversion) {};
 
       private:
-        virtual void updateVolatilityCubeAndCmsMarket(const Array &x) const;
+        void updateVolatilityCubeAndCmsMarket(const Array& x) const override;
         Real fixedMeanReversion_;
     };
 
@@ -71,7 +71,7 @@ namespace {
             : ObjectiveFunction(smileAndCms) {};
 
       private:
-        virtual void updateVolatilityCubeAndCmsMarket(const Array &x) const;
+        void updateVolatilityCubeAndCmsMarket(const Array& x) const override;
     };
 
     class ObjectiveFunction4 : public ObjectiveFunction {
@@ -82,7 +82,7 @@ namespace {
               fixedMeanReversion_(fixedMeanReversion) {};
 
       private:
-        virtual void updateVolatilityCubeAndCmsMarket(const Array &x) const;
+        void updateVolatilityCubeAndCmsMarket(const Array& x) const override;
         Real fixedMeanReversion_;
     };
 
@@ -94,7 +94,7 @@ namespace {
               fixedMeanReversion_(fixedMeanReversion) {};
 
       private:
-        virtual void updateVolatilityCubeAndCmsMarket(const Array &x) const;
+        void updateVolatilityCubeAndCmsMarket(const Array& x) const override;
         Real fixedMeanReversion_;
     };
 
@@ -104,7 +104,7 @@ namespace {
             : ObjectiveFunction(smileAndCms) {};
 
       private:
-        virtual void updateVolatilityCubeAndCmsMarket(const Array &x) const;
+        void updateVolatilityCubeAndCmsMarket(const Array& x) const override;
     };
 
     //===========================================================================//

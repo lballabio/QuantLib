@@ -84,7 +84,7 @@ namespace QuantLib {
             registerWith(termStructure_);
         }
 
-        void performCalculations() const {
+        void performCalculations() const override {
             marketValue_ = blackPrice(volatility_->value());
         }
 
@@ -101,7 +101,7 @@ namespace QuantLib {
         virtual Real modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
-        Real calibrationError();
+        Real calibrationError() override;
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;
 

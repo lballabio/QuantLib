@@ -58,7 +58,7 @@ namespace QuantLib {
             const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name other inspectors
         //@{
@@ -89,8 +89,8 @@ namespace QuantLib {
             const Interpolator& interpolator = Interpolator());
         //! \name DefaultProbabilityTermStructure implementation
         //@{
-        Probability survivalProbabilityImpl(Time) const;
-        Real defaultDensityImpl(Time) const;
+        Probability survivalProbabilityImpl(Time) const override;
+        Real defaultDensityImpl(Time) const override;
         //@}
         mutable std::vector<Date> dates_;
     private:

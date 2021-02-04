@@ -47,15 +47,14 @@ namespace QuantLib {
                           const DayCounter& dayCounter);
         //! \name Index interface
         //@{
-        std::string name() const;
-        Calendar fixingCalendar() const;
-        bool isValidFixingDate(const Date& fixingDate) const;
-        Rate fixing(const Date& fixingDate,
-                    bool forecastTodaysFixing = false) const;
+        std::string name() const override;
+        Calendar fixingCalendar() const override;
+        bool isValidFixingDate(const Date& fixingDate) const override;
+        Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Inspectors
         //@{

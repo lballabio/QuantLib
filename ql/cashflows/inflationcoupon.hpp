@@ -61,15 +61,15 @@ namespace QuantLib {
 
         //! \name CashFlow interface
         //@{
-        Real amount() const { return rate() * accrualPeriod() * nominal(); }
+        Real amount() const override { return rate() * accrualPeriod() * nominal(); }
         //@}
 
         //! \name Coupon interface
         //@{
         Real price(const Handle<YieldTermStructure>& discountingCurve) const;
-        DayCounter dayCounter() const { return dayCounter_; }
-        Real accruedAmount(const Date&) const;
-        Rate rate() const;
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Real accruedAmount(const Date&) const override;
+        Rate rate() const override;
         //@}
 
         //! \name Inspectors
@@ -88,12 +88,12 @@ namespace QuantLib {
 
         //! \name Observer interface
         //@{
-        void update() { notifyObservers(); }
+        void update() override { notifyObservers(); }
         //@}
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
         void setPricer(const ext::shared_ptr<InflationCouponPricer>&);
         ext::shared_ptr<InflationCouponPricer> pricer() const;

@@ -37,8 +37,9 @@ namespace QuantLib {
       public:
         explicit FittingCost(
                        FittedBondDiscountCurve::FittingMethod* fittingMethod);
-        Real value(const Array& x) const;
-        Disposable<Array> values(const Array& x) const;
+        Real value(const Array& x) const override;
+        Disposable<Array> values(const Array& x) const override;
+
       private:
         FittedBondDiscountCurve::FittingMethod* fittingMethod_;
     };

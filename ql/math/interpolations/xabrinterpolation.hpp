@@ -129,7 +129,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             std::vector<Real>(xEnd - xBegin, 1.0 / (xEnd - xBegin));
     }
 
-    void update() {
+    void update() override {
 
         this->updateModelInstance();
 
@@ -231,15 +231,11 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         }
     }
 
-    Real value(Real x) const {
-        return this->modelInstance_->volatility(x);
-    }
+    Real value(Real x) const override { return this->modelInstance_->volatility(x); }
 
-    Real primitive(Real) const { QL_FAIL("XABR primitive not implemented"); }
-    Real derivative(Real) const { QL_FAIL("XABR derivative not implemented"); }
-    Real secondDerivative(Real) const {
-        QL_FAIL("XABR secondDerivative not implemented");
-    }
+    Real primitive(Real) const override { QL_FAIL("XABR primitive not implemented"); }
+    Real derivative(Real) const override { QL_FAIL("XABR derivative not implemented"); }
+    Real secondDerivative(Real) const override { QL_FAIL("XABR secondDerivative not implemented"); }
 
     // calculate total squared weighted difference (L2 norm)
     Real interpolationSquaredError() const {
@@ -289,7 +285,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
       public:
         explicit XABRError(XABRInterpolationImpl *xabr) : xabr_(xabr) {}
 
-        Real value(const Array &x) const {
+        Real value(const Array& x) const override {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
             for (Size i = 0; i < xabr_->params_.size(); ++i)
@@ -298,7 +294,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             return xabr_->interpolationSquaredError();
         }
 
-        Disposable<Array> values(const Array &x) const {
+        Disposable<Array> values(const Array& x) const override {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
             for (Size i = 0; i < xabr_->params_.size(); ++i)

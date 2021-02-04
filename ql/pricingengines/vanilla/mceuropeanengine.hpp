@@ -62,7 +62,7 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
     //! Monte Carlo European engine factory
@@ -96,7 +96,8 @@ namespace QuantLib {
         EuropeanPathPricer(Option::Type type,
                            Real strike,
                            DiscountFactor discount);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;

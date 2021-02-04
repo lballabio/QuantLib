@@ -42,7 +42,8 @@ namespace QuantLib {
                        Real secondStrike,
                        const ext::shared_ptr<StrikedTypePayoff>& payoff,
                        const ext::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         Real premium_;
         Date secondExpiryDate_;
@@ -55,7 +56,7 @@ namespace QuantLib {
         Date secondExpiryDate;
         Real secondStrike;
 
-        void validate() const;
+        void validate() const override;
     };
 
     class HolderExtensibleOption::engine

@@ -48,7 +48,7 @@ namespace QuantLib {
                     const Handle<YieldTermStructure>& receiveLegTermStructure,
                     const Handle<YieldTermStructure>& discountTermStructure);
 
-        bool isExpired() const;
+        bool isExpired() const override;
         Integer payReceive() const { return payReceive_; }
         const Money& fixedPrice() const { return fixedPrice_; }
         const UnitOfMeasure& fixedPriceUnitOfMeasure() const {
@@ -59,7 +59,7 @@ namespace QuantLib {
         }
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
         Integer payReceive_;
         Money fixedPrice_;

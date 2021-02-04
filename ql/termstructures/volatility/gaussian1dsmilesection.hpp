@@ -55,15 +55,14 @@ class Gaussian1dSmileSection : public SmileSection {
 
     // the minimum strike is zero only because we are
     // returning a lognormal section
-    Real minStrike() const { return 0.0; }
-    Real maxStrike() const { return QL_MAX_REAL; }
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return QL_MAX_REAL; }
 
-    Real atmLevel() const;
-    Real optionPrice(Rate strike, Option::Type = Option::Call,
-                     Real discount = 1.0) const;
+    Real atmLevel() const override;
+    Real optionPrice(Rate strike, Option::Type = Option::Call, Real discount = 1.0) const override;
 
   protected:
-    Real volatilityImpl(Rate strike) const;
+    Real volatilityImpl(Rate strike) const override;
 
   private:
     Real atm_, annuity_;

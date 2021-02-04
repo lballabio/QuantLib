@@ -155,7 +155,7 @@ class ReplicationPathPricer : public PathPricer<Path> {
 
     }
     // The value() method encapsulates the pricing code
-    Real operator()(const Path& path) const;
+    Real operator()(const Path& path) const override;
 
   private:
     Option::Type type_;

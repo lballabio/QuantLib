@@ -143,7 +143,7 @@ namespace QuantLib {
                 return (Real)type * npv;
             }
 
-            Real value(const Array &v) const {
+            Real value(const Array& v) const override {
                 Array vals = values(v);
                 Real res = 0.0;
                 for (Size i = 0; i < vals.size(); i++) {
@@ -152,7 +152,7 @@ namespace QuantLib {
                 return std::sqrt(res / vals.size());
             }
 
-            Disposable<Array> values(const Array &v) const {
+            Disposable<Array> values(const Array& v) const override {
                 // transformations
                 int type = type_; // start with same type as non standard
                                   // underlying (1 means payer, -1 receiver)

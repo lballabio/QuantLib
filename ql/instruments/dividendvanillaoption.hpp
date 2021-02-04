@@ -54,7 +54,8 @@ namespace QuantLib {
              Volatility minVol = 1.0e-7,
              Volatility maxVol = 4.0) const;
       protected:
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       private:
         DividendSchedule cashFlow_;
     };
@@ -65,7 +66,7 @@ namespace QuantLib {
       public:
         DividendSchedule cashFlow;
         arguments() {}
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Dividend-vanilla-option %engine base class

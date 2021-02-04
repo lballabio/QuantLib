@@ -99,12 +99,12 @@ namespace QuantLib {
         //@{
         //@}
         // other
-        void setupArguments(PricingEngine::arguments *args) const;
-        void fetchResults(const PricingEngine::results *) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
       private:
         void init();
-        void setupExpired() const;
+        void setupExpired() const override;
         VanillaSwap::Type type_;
         std::vector<Real> fixedNominal_, floatingNominal_;
         Schedule fixedSchedule_;
@@ -147,13 +147,13 @@ namespace QuantLib {
         std::vector<bool> fixedIsRedemptionFlow;
         std::vector<bool> floatingIsRedemptionFlow;
 
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from nonstandard swap calculation
     class NonstandardSwap::results : public Swap::results {
       public:
-        void reset();
+        void reset() override;
     };
 
     class NonstandardSwap::engine

@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         explicit AnalyticHolderExtensibleOptionEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        void calculate() const override;
 
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;

@@ -57,22 +57,22 @@ namespace QuantLib {
         //! \name FloatingRateCoupon interface
         //@{
         //! not applicable here; use fixingDates() instead
-        Date fixingDate() const;
+        Date fixingDate() const override;
         //! fixing dates of the rates to be averaged
         std::vector<Date> fixingDates() const;
 
         //! not applicable here; use indexFixings() instead
-        Rate indexFixing() const;
+        Rate indexFixing() const override;
         //! fixings of the underlying index to be averaged
         std::vector<Rate> indexFixings() const;
 
         //! not applicable here
-        Rate convexityAdjustment() const;
+        Rate convexityAdjustment() const override;
         //@}
 
         //! \name Visitability
         //@{
-        void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         Schedule fixingSchedule_;

@@ -62,7 +62,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
 
     private:
@@ -71,7 +71,7 @@ namespace QuantLib {
 
         Real gearing_;
         Spread spread_;
-        bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const;
+        bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
     };
 
     inline const ext::shared_ptr<YoYInflationIndex>&

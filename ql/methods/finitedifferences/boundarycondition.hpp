@@ -77,11 +77,12 @@ namespace QuantLib {
       public:
         NeumannBC(Real value, Side side);
         // interface
-        void applyBeforeApplying(TridiagonalOperator&) const;
-        void applyAfterApplying(Array&) const;
-        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const;
-        void applyAfterSolving(Array&) const;
-        void setTime(Time) {}
+        void applyBeforeApplying(TridiagonalOperator&) const override;
+        void applyAfterApplying(Array&) const override;
+        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const override;
+        void applyAfterSolving(Array&) const override;
+        void setTime(Time) override {}
+
       private:
         Real value_;
         Side side_;
@@ -96,11 +97,12 @@ namespace QuantLib {
       public:
         DirichletBC(Real value, Side side);
         // interface
-        void applyBeforeApplying(TridiagonalOperator&) const;
-        void applyAfterApplying(Array&) const;
-        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const;
-        void applyAfterSolving(Array&) const;
-        void setTime(Time) {}
+        void applyBeforeApplying(TridiagonalOperator&) const override;
+        void applyAfterApplying(Array&) const override;
+        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const override;
+        void applyAfterSolving(Array&) const override;
+        void setTime(Time) override {}
+
       private:
         Real value_;
         Side side_;

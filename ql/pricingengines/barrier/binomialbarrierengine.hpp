@@ -72,7 +72,8 @@ namespace QuantLib {
                maxTimeSteps_ = std::max( (Size)1000, timeSteps_*5);
             registerWith(process_);
         }
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;

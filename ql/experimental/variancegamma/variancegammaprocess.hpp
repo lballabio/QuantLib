@@ -55,9 +55,9 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& riskFreeRate,
             Real sigma, Real nu, Real theta);
 
-        Real x0() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
+        Real x0() const override;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
 
         Real sigma()     const { return sigma_; }
         Real nu() const { return nu_; }

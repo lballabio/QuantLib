@@ -35,7 +35,8 @@ namespace QuantLib {
         DiscretizedSwaption(const Swaption::arguments&,
                             const Date& referenceDate,
                             const DayCounter& dayCounter);
-        void reset(Size size);
+        void reset(Size size) override;
+
       private:
         Swaption::arguments arguments_;
         Time lastPayment_;

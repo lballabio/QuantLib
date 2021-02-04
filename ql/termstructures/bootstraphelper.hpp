@@ -63,7 +63,7 @@ namespace QuantLib {
       public:
         explicit BootstrapHelper(const Handle<Quote>& quote);
         explicit BootstrapHelper(Real quote);
-        virtual ~BootstrapHelper() {}
+        ~BootstrapHelper() override {}
         //! \name BootstrapHelper interface
         //@{
         const Handle<Quote>& quote() const { return quote_; }
@@ -107,7 +107,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        virtual void update();
+        void update() override;
         //@}
         //! \name Visitability
         //@{
@@ -131,7 +131,7 @@ namespace QuantLib {
         explicit RelativeDateBootstrapHelper(Real quote);
         //! \name Observer interface
         //@{
-        void update() {
+        void update() override {
             if (evaluationDate_ != Settings::instance().evaluationDate()) {
                 evaluationDate_ = Settings::instance().evaluationDate();
                 initializeDates();

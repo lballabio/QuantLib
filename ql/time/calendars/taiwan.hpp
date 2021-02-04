@@ -56,9 +56,9 @@ namespace QuantLib {
       private:
         class TsecImpl : public Calendar::Impl {
           public:
-            std::string name() const { return "Taiwan stock exchange"; }
-            bool isWeekend(Weekday) const;
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Taiwan stock exchange"; }
+            bool isWeekend(Weekday) const override;
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { TSEC    //!< Taiwan stock exchange

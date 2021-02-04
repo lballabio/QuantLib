@@ -34,12 +34,12 @@ namespace QuantLib {
         DiscretizedCallableFixedRateBond(const CallableBond::arguments&,
                                          const Date& referenceDate,
                                          const DayCounter& dayCounter);
-        void reset(Size size);
-        std::vector<Time> mandatoryTimes() const;
+        void reset(Size size) override;
+        std::vector<Time> mandatoryTimes() const override;
 
       protected:
-        void preAdjustValuesImpl();
-        void postAdjustValuesImpl();
+        void preAdjustValuesImpl() override;
+        void postAdjustValuesImpl() override;
 
       private:
         CallableBond::arguments arguments_;

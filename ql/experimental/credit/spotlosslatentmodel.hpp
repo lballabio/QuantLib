@@ -57,8 +57,8 @@ namespace QuantLib {
         ext::shared_ptr<LMIntegration> integration_;
     protected:
         //! access to integration:
-        const ext::shared_ptr<LMIntegration>& 
-            integration() const { return integration_; }
+      const ext::shared_ptr<LMIntegration>& integration() const override { return integration_; }
+
     private:
         typedef typename copulaPolicy::initTraits initTraits;
     public:

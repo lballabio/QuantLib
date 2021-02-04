@@ -76,7 +76,7 @@ namespace QuantLib {
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                  Linear::requiredPoints),
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {}
-            void update() {
+            void update() override {
                 primitiveConst_[0] = 0.0;
                 for (Size i=1; i<Size(this->xEnd_-this->xBegin_); ++i) {
                     Real dx = this->xBegin_[i]-this->xBegin_[i-1];
@@ -85,23 +85,22 @@ namespace QuantLib {
                         + dx*(this->yBegin_[i-1] +0.5*dx*s_[i-1]);
                 }
             }
-            Real value(Real x) const {
+            Real value(Real x) const override {
                 Size i = this->locate(x);
                 return this->yBegin_[i] + (x-this->xBegin_[i])*s_[i];
             }
-            Real primitive(Real x) const {
+            Real primitive(Real x) const override {
                 Size i = this->locate(x);
                 Real dx = x-this->xBegin_[i];
                 return primitiveConst_[i] +
                     dx*(this->yBegin_[i] + 0.5*dx*s_[i]);
             }
-            Real derivative(Real x) const {
+            Real derivative(Real x) const override {
                 Size i = this->locate(x);
                 return s_[i];
             }
-            Real secondDerivative(Real) const {
-                return 0.0;
-            }
+            Real secondDerivative(Real) const override { return 0.0; }
+
           private:
             std::vector<Real> primitiveConst_, s_;
         };

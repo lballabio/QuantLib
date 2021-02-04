@@ -75,7 +75,7 @@ namespace QuantLib {
              Size timeSteps = Null<Size>(),
              Size timeStepsPerYear = Null<Size>()
         );
-        void calculate() const {
+        void calculate() const override {
             try {
                 McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
                                                   requiredSamples_,
@@ -103,10 +103,11 @@ namespace QuantLib {
             // Allow inspection of the timeGrid via additional results
             this->results_.additionalResults["TimeGrid"] = this->timeGrid();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
@@ -116,7 +117,7 @@ namespace QuantLib {
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
-        Real controlVariateValue() const;
+        Real controlVariateValue() const override;
         // data members
         ext::shared_ptr<StochasticProcess> process_;
         Size requiredSamples_, maxSamples_, timeSteps_, timeStepsPerYear_;

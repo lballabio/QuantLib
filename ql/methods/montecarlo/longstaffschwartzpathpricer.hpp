@@ -58,7 +58,7 @@ namespace QuantLib {
             const ext::shared_ptr<EarlyExercisePathPricer<PathType> >& ,
             const ext::shared_ptr<YieldTermStructure>& termStructure);
 
-        Real operator()(const PathType& path) const;
+        Real operator()(const PathType& path) const override;
         virtual void calibrate();
 
         Real exerciseProbability() const;

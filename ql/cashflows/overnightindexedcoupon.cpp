@@ -35,11 +35,11 @@ namespace QuantLib {
 
         class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
           public:
-            void initialize(const FloatingRateCoupon& coupon) {
+            void initialize(const FloatingRateCoupon& coupon) override {
                 coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
-            Rate swapletRate() const {
+            Rate swapletRate() const override {
 
                 ext::shared_ptr<OvernightIndex> index =
                     ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
@@ -102,11 +102,12 @@ namespace QuantLib {
                 return coupon_->gearing() * rate + coupon_->spread();
             }
 
-            Real swapletPrice() const { QL_FAIL("swapletPrice not available");  }
-            Real capletPrice(Rate) const { QL_FAIL("capletPrice not available"); }
-            Rate capletRate(Rate) const { QL_FAIL("capletRate not available"); }
-            Real floorletPrice(Rate) const { QL_FAIL("floorletPrice not available"); }
-            Rate floorletRate(Rate) const { QL_FAIL("floorletRate not available"); }
+            Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
+            Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
+            Rate capletRate(Rate) const override { QL_FAIL("capletRate not available"); }
+            Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
+            Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
+
           protected:
             const OvernightIndexedCoupon* coupon_;
         };

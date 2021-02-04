@@ -54,20 +54,20 @@ namespace QuantLib {
                          const DayCounter& dayCounter);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const { return Date::maxDate(); }
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Date maxDate() const override { return Date::maxDate(); }
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const { return QL_MIN_REAL; }
-        Real maxStrike() const { return QL_MAX_REAL; }
+        Real minStrike() const override { return QL_MIN_REAL; }
+        Real maxStrike() const override { return QL_MAX_REAL; }
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
-        Volatility localVolImpl(Time, Real) const;
+        Volatility localVolImpl(Time, Real) const override;
         Handle<Quote> volatility_;
         DayCounter dayCounter_;
     };

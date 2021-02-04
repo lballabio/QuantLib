@@ -52,7 +52,7 @@ namespace QuantLib {
                                Size maxSamples,
                                BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
     //! Monte Carlo Heston European engine factory
@@ -85,7 +85,8 @@ namespace QuantLib {
         EuropeanHestonPathPricer(Option::Type type,
                                  Real strike,
                                  DiscountFactor discount);
-        Real operator()(const MultiPath& Multipath) const;
+        Real operator()(const MultiPath& Multipath) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;

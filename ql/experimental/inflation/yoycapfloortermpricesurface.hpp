@@ -167,29 +167,29 @@ namespace QuantLib {
 
         //! inflation term structure interface
         //@{
-        virtual Date maxDate() const {return yoy_->maxDate();}
-        virtual Date baseDate() const {return yoy_->baseDate();}
+        Date maxDate() const override { return yoy_->maxDate(); }
+        Date baseDate() const override { return yoy_->baseDate(); }
         //@}
-        virtual Natural fixingDays() const {return fixingDays_;}
+        Natural fixingDays() const override { return fixingDays_; }
 
         //! \name YoYCapFloorTermPriceSurface interface
         //@{
-        virtual std::pair<std::vector<Time>, std::vector<Rate> >
-        atmYoYSwapTimeRates() const { return atmYoYSwapTimeRates_; }
-        virtual std::pair<std::vector<Date>, std::vector<Rate> >
-        atmYoYSwapDateRates() const { return atmYoYSwapDateRates_; }
-        virtual ext::shared_ptr<YoYInflationTermStructure>
-        YoYTS() const { return yoy_; }
-        virtual Rate price(const Date& d, Rate k) const;
-        virtual Real floorPrice(const Date& d, Rate k) const;
-        virtual Real capPrice(const Date& d, Rate k) const;
-        virtual Rate atmYoYSwapRate(const Date &d,
-                                    bool extrapolate = true) const {
+        std::pair<std::vector<Time>, std::vector<Rate> > atmYoYSwapTimeRates() const override {
+            return atmYoYSwapTimeRates_;
+        }
+        std::pair<std::vector<Date>, std::vector<Rate> > atmYoYSwapDateRates() const override {
+            return atmYoYSwapDateRates_;
+        }
+        ext::shared_ptr<YoYInflationTermStructure> YoYTS() const override { return yoy_; }
+        Rate price(const Date& d, Rate k) const override;
+        Real floorPrice(const Date& d, Rate k) const override;
+        Real capPrice(const Date& d, Rate k) const override;
+        Rate atmYoYSwapRate(const Date& d, bool extrapolate = true) const override {
             return atmYoYSwapRateCurve_(timeFromReference(d),extrapolate);
         }
-        virtual Rate atmYoYRate(const Date &d,
-                                const Period &obsLag = Period(-1,Days),
-                                bool extrapolate = true) const {
+        Rate atmYoYRate(const Date& d,
+                        const Period& obsLag = Period(-1, Days),
+                        bool extrapolate = true) const override {
             // work in terms of maturity-of-instruments
             // so ask for rate with observation lag
             // Third parameter = force linear interpolation of yoy
@@ -199,7 +199,7 @@ namespace QuantLib {
 
         //! \name LazyObject interface
         //@{
-        void update();
+        void update() override;
         void performCalculations() const;
         //@}
 

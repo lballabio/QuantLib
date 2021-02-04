@@ -76,7 +76,7 @@ namespace QuantLib {
                            Real rhoSr, Real relTolerance, Size maxEvaluations);
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const override;
 
       private:
         class Fj_Helper;

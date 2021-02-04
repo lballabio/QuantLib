@@ -59,11 +59,11 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
         //! additional inspectors
         Date optionDateFromTime(Time optionTime) const;

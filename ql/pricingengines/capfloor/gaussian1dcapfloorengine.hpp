@@ -51,7 +51,7 @@ namespace QuantLib {
               extrapolatePayoff_(extrapolatePayoff),
               flatPayoffExtrapolation_(flatPayoffExtrapolation),
               discountCurve_(discountCurve) {}
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const int integrationPoints_;

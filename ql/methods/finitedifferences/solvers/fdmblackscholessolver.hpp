@@ -55,7 +55,7 @@ namespace QuantLib {
         Real thetaAt(Real s) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         Handle<GeneralizedBlackScholesProcess> process_;

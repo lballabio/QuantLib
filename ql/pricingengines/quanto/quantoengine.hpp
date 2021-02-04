@@ -54,7 +54,8 @@ namespace QuantLib {
                  const Handle<YieldTermStructure>& foreignRiskFreeRate,
                  const Handle<BlackVolTermStructure>& exchangeRateVolatility,
                  const Handle<Quote>& correlation);
-        void calculate() const;
+        void calculate() const override;
+
       protected:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Handle<YieldTermStructure> foreignRiskFreeRate_;

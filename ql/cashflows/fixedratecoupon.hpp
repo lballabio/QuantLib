@@ -62,18 +62,18 @@ namespace QuantLib {
         //@}
         //! \name CashFlow interface
         //@{
-        Real amount() const;
+        Real amount() const override;
         //@}
         //! \name Coupon interface
         //@{
-        Rate rate() const { return rate_; }
+        Rate rate() const override { return rate_; }
         InterestRate interestRate() const { return rate_; }
-        DayCounter dayCounter() const { return rate_.dayCounter(); }
-        Real accruedAmount(const Date&) const;
+        DayCounter dayCounter() const override { return rate_.dayCounter(); }
+        Real accruedAmount(const Date&) const override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         InterestRate rate_;

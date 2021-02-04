@@ -49,8 +49,8 @@ namespace QuantLib {
     public:
         FFTEngine(
             const ext::shared_ptr<StochasticProcess1D>&process, Real logStrikeSpacing);
-        void calculate() const;
-        void update();
+        void calculate() const override;
+        void update() override;
 
         void precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList);
         #if defined(QL_USE_STD_UNIQUE_PTR)

@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         explicit AnalyticCompoundOptionEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        void calculate() const override;
 
       private:
         CumulativeNormalDistribution N_;

@@ -59,7 +59,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         ext::shared_ptr<SwapIndex> swapIndex_;

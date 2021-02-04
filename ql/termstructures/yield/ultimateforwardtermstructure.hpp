@@ -75,19 +75,19 @@ namespace QuantLib {
                                      Real alpha);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
-        Date maxDate() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         //! returns the UFR extended zero yield rate
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time) const override;
         //@}
       private:
         Handle<YieldTermStructure> originalCurve_;
