@@ -717,13 +717,13 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
                 ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
 
                 Real runningAccumulator = 1.0;
-                Size pastFixingsCount = 0.0;
+                Size pastFixingsCount = 0;
                 if (k == 0) {
                     runningAccumulator = 100.0;
-                    pastFixingsCount = 1.0;
+                    pastFixingsCount = 1;
                 } else {
                     runningAccumulator = 95.0 * 100.0 * 105.0;
-                    pastFixingsCount = 3.0;
+                    pastFixingsCount = 3;
                 }
 
                 DiscreteAveragingAsianOption option(averageType, runningAccumulator, pastFixingsCount,
