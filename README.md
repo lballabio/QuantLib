@@ -1,7 +1,7 @@
 
 # QuantLib: the free/open-source library for quantitative finance
 
-[![Download](https://api.bintray.com/packages/quantlib/releases/QuantLib/images/download.svg)](https://bintray.com/quantlib/releases/QuantLib/_latestVersion)
+[![Download](https://img.shields.io/github/v/release/lballabio/QuantLib?label=Download&sort=semver)](https://github.com/lballabio/QuantLib/releases/latest)
 [![Licensed under the BSD 3-Clause License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](https://github.com/lballabio/QuantLib/blob/master/LICENSE.TXT)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1440997.svg)](https://doi.org/10.5281/zenodo.1440997)
 [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](#contributing)
