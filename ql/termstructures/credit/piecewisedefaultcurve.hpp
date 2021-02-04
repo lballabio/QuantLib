@@ -291,7 +291,9 @@ namespace QuantLib {
         // methods
         Probability survivalProbabilityImpl(Time) const;
         Real defaultDensityImpl(Time) const;
-        Real hazardRateImpl(Time) const;
+        Real hazardRateImpl(Time) const; // NOLINT(modernize-use-override)
+                                         // (sometimes this method is not virtual,
+                                         //  depending on the base class)
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
