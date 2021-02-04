@@ -19,12 +19,12 @@
 
 #include <ql/indexes/indexmanager.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 #include <boost/algorithm/string/case_conv.hpp>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
+#    pragma GCC diagnostic pop
 #endif
 
 using boost::algorithm::to_upper_copy;
@@ -36,36 +36,34 @@ namespace QuantLib {
         return data_.find(to_upper_copy(name)) != data_.end();
     }
 
-    const TimeSeries<Real>&
-    IndexManager::getHistory(const string& name) const {
+    const TimeSeries<Real>& IndexManager::getHistory(const string& name) const {
         return data_[to_upper_copy(name)].value();
     }
 
-    void IndexManager::setHistory(const string& name,
-                                  const TimeSeries<Real>& history) {
+    void IndexManager::setHistory(const string& name, const TimeSeries<Real>& history) {
         data_[to_upper_copy(name)] = history;
     }
 
-    ext::shared_ptr<Observable>
-    IndexManager::notifier(const string& name) const {
+    ext::shared_ptr<Observable> IndexManager::notifier(const string& name) const {
         return data_[to_upper_copy(name)];
     }
 
     std::vector<string> IndexManager::histories() const {
         std::vector<string> temp;
         temp.reserve(data_.size());
-        for (history_map::const_iterator i=data_.begin();
-             i!=data_.end(); ++i)
+        for (history_map::const_iterator i = data_.begin(); i != data_.end(); ++i)
             temp.push_back(i->first);
         return temp;
     }
 
-    void IndexManager::clearHistory(const string& name) {
-        data_.erase(to_upper_copy(name));
-    }
+    void IndexManager::clearHistory(const string& name) { data_.erase(to_upper_copy(name)); }
 
-    void IndexManager::clearHistories() {
-        data_.clear();
+    void IndexManager::clearHistories() { data_.clear(); }
+
+    bool IndexManager::hasHistoricalFixing(const std::string& name, const Date& fixingDate) const {
+        auto const& indexIter = data_.find(to_upper_copy(name));
+        return (indexIter != data_.end()) &&
+               ((*indexIter).second.value()[fixingDate] != Null<Real>());
     }
 
 }
