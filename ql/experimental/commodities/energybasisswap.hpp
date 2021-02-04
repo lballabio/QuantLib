@@ -58,7 +58,7 @@ namespace QuantLib {
         const CommodityUnitCost& basis() const { return basis_; }
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
         ext::shared_ptr<CommodityIndex> spreadIndex_;
         ext::shared_ptr<CommodityIndex> payIndex_;

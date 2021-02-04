@@ -57,7 +57,7 @@ namespace QuantLib {
                                               Time t0, const Array& x0,
                                               Time dt) const = 0;
         };
-        virtual ~StochasticProcess() {}
+        ~StochasticProcess() override {}
         //! \name Stochastic process interface
         //@{
         //! returns the number of dimensions of the stochastic process
@@ -144,7 +144,7 @@ namespace QuantLib {
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         StochasticProcess();
@@ -227,19 +227,15 @@ namespace QuantLib {
         ext::shared_ptr<discretization> discretization_;
       private:
         // StochasticProcess interface implementation
-        Size size() const;
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> expectation(Time t0, const Array& x0,
-                                      Time dt) const;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
-                                        Time dt) const;
-        Disposable<Matrix> covariance(Time t0, const Array& x0,
-                                      Time dt) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
-        Disposable<Array> apply(const Array& x0, const Array& dx) const;
+        Size size() const override;
+        Disposable<Array> initialValues() const override;
+        Disposable<Array> drift(Time t, const Array& x) const override;
+        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
+        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const override;
+        Disposable<Matrix> stdDeviation(Time t0, const Array& x0, Time dt) const override;
+        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
+        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+        Disposable<Array> apply(const Array& x0, const Array& dx) const override;
     };
 
 

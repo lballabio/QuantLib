@@ -131,19 +131,19 @@ namespace QuantLib {
         Real conditionalRecovery(Real latentVarSample, Size iName, 
             const Date& d) const;
     private:
-        void resetModel() {
-            /* Explore: might save recalculation if the basket is the same 
-            (some situations, like BC or control variates) in that case do not 
-            update, only reset the copula's basket.
-            */
-            copula_->resetBasket(this->basket_.currentLink());
+      void resetModel() override {
+          /* Explore: might save recalculation if the basket is the same
+          (some situations, like BC or control variates) in that case do not
+          update, only reset the copula's basket.
+          */
+          copula_->resetBasket(this->basket_.currentLink());
 
-            QL_REQUIRE(2 * this->basket_->size() == copula_->size(),
-                "Incompatible basket and model sizes.");
-            // invalidate current calculations if any and notify observers
-            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-            LazyObject::update();
-        }
+          QL_REQUIRE(2 * this->basket_->size() == copula_->size(),
+                     "Incompatible basket and model sizes.");
+          // invalidate current calculations if any and notify observers
+          // NOLINTNEXTLINE(bugprone-parent-virtual-call)
+          LazyObject::update();
+      }
         // Default probabilities for each name at the time of the maximun 
         //   horizon date. Cached for perf.
         mutable std::vector<Probability> horizonDefaultPs_;

@@ -31,9 +31,9 @@ namespace QuantLib {
 
         class IdenticalPayoff : public Payoff {
           public:
-            std::string name() const { return "IdenticalPayoff"; }
-            std::string description() const { return name(); }
-            Real operator()(Real price) const { return price; }
+            std::string name() const override { return "IdenticalPayoff"; }
+            std::string description() const override { return name(); }
+            Real operator()(Real price) const override { return price; }
         };
     }
 

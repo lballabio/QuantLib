@@ -42,30 +42,29 @@ namespace QuantLib {
         // All virtual methods of base classes must be forwarded
         //! \name VolatilityTermStructure interface
         //@{
-        BusinessDayConvention businessDayConvention() const;
-        Rate minStrike() const;
-        Rate maxStrike() const;
+        BusinessDayConvention businessDayConvention() const override;
+        Rate minStrike() const override;
+        Rate maxStrike() const override;
         //@}
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Date maxDate() const;
-        Time maxTime() const;
-        const Date& referenceDate() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        const Date& referenceDate() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
         //@}
-        VolatilityType volatilityType() const;
-        Real displacement() const;
+        VolatilityType volatilityType() const override;
+        Real displacement() const override;
 
       protected:
         // All virtual methods of base classes must be forwarded
         //! \name OptionletVolatilityStructure interface
         //@{
-        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
-        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const;
-        Volatility volatilityImpl(Time optionTime,
-                                  Rate strike) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const override;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const override;
+        Volatility volatilityImpl(Time optionTime, Rate strike) const override;
         //@}
       private:
         const Handle<OptionletVolatilityStructure> baseVol_;

@@ -54,7 +54,7 @@ namespace QuantLib {
             const Handle<SwaptionVolatilityStructure>&,
             const Handle<YieldTermStructure>& termStructure = Handle<YieldTermStructure>());
         //@}
-        void calculate() const;
+        void calculate() const override;
 
         //helper class
         class Basket {

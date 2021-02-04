@@ -72,11 +72,11 @@ namespace QuantLib {
         //! \name FloatingRateCoupon interface
         //@{
         //! the date when the coupon is fully determined
-        Date fixingDate() const { return fixingDates_.back(); }
+        Date fixingDate() const override { return fixingDates_.back(); }
         //@}
         //! \name Visitability
         //@{
-        void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         std::vector<Date> valueDates_, fixingDates_;

@@ -66,7 +66,7 @@ namespace QuantLib {
         BlackStyleSwaptionEngine(const Handle<YieldTermStructure>& discountCurve,
                                  const Handle<SwaptionVolatilityStructure>& vol,
                                  CashAnnuityModel model = DiscountCurve);
-        void calculate() const;
+        void calculate() const override;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<SwaptionVolatilityStructure> volatility() { return vol_; }
 

@@ -50,7 +50,7 @@ namespace QuantLib {
                                 bool adaptVanDelta = false,
                                 Real bsPriceWithSmile = 0.0);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const Handle<DeltaVolQuote> atmVol_;

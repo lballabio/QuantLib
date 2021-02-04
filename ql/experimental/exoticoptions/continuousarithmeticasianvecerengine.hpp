@@ -42,7 +42,8 @@ namespace QuantLib {
             Size assetSteps = 100,
             Real z_min = -1.0,
             Real z_max = 1.0);
-        void calculate() const;
+        void calculate() const override;
+
       protected:
         // Replication of average by holding this amount in assets
         Real cont_strategy(Time t, Time T1,Time T2,Real v, Real r) const; 

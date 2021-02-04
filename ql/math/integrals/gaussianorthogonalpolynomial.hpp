@@ -64,10 +64,10 @@ namespace QuantLib {
       public:
         explicit GaussLaguerrePolynomial(Real s = 0.0);
 
-        Real mu_0() const;
-        Real alpha(Size i) const;
-        Real beta(Size i) const;
-        Real w(Real x) const;
+        Real mu_0() const override;
+        Real alpha(Size i) const override;
+        Real beta(Size i) const override;
+        Real w(Real x) const override;
 
       private:
         const Real s_;
@@ -78,10 +78,10 @@ namespace QuantLib {
       public:
         explicit GaussHermitePolynomial(Real mu = 0.0);
 
-        Real mu_0()const;
-        Real alpha(Size i) const;
-        Real beta(Size i) const;
-        Real w(Real x) const;
+        Real mu_0() const override;
+        Real alpha(Size i) const override;
+        Real beta(Size i) const override;
+        Real w(Real x) const override;
 
       private:
         const Real mu_;
@@ -92,10 +92,10 @@ namespace QuantLib {
       public:
         explicit GaussJacobiPolynomial(Real alpha, Real beta);
 
-        Real mu_0() const;
-        Real alpha(Size i) const;
-        Real beta(Size i) const;
-        Real w(Real x) const;
+        Real mu_0() const override;
+        Real alpha(Size i) const override;
+        Real beta(Size i) const override;
+        Real w(Real x) const override;
 
       private:
         const Real alpha_;
@@ -129,10 +129,10 @@ namespace QuantLib {
     //! Gauss hyperbolic polynomial
     class GaussHyperbolicPolynomial : public GaussianOrthogonalPolynomial {
       public:
-        Real mu_0()const;
-        Real alpha(Size i) const;
-        Real beta(Size i) const;
-        Real w(Real x) const;
+        Real mu_0() const override;
+        Real alpha(Size i) const override;
+        Real beta(Size i) const override;
+        Real w(Real x) const override;
     };
 
 }

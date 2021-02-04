@@ -41,19 +41,20 @@ namespace QuantLib {
                   varianceOffset_(varianceOffset),
                   volTS_(volTS) { }
 
-            Real minStrike() const { return volTS_->minStrike(); }
-            Real maxStrike() const { return volTS_->maxStrike(); }
-            Date maxDate() const   { return volTS_->maxDate(); }
+            Real minStrike() const override { return volTS_->minStrike(); }
+            Real maxStrike() const override { return volTS_->maxStrike(); }
+            Date maxDate() const override { return volTS_->maxDate(); }
 
           protected:
-            Real blackVarianceImpl(Time t, Real strike) const {
+            Real blackVarianceImpl(Time t, Real strike) const override {
                 return volTS_->blackVariance(t, strike, true)+varianceOffset_;
             }
-            Volatility blackVolImpl(Time t, Real strike) const {
+            Volatility blackVolImpl(Time t, Real strike) const override {
                 Time nonZeroMaturity = (t==0.0 ? 0.00001 : t);
                 Real var = blackVarianceImpl(nonZeroMaturity, strike);
                 return std::sqrt(var/nonZeroMaturity);
             }
+
           private:
             const Real varianceOffset_;
             const Handle<BlackVolTermStructure> volTS_;

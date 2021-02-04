@@ -61,17 +61,16 @@ namespace QuantLib {
             VolatilityType volType = ShiftedLognormal,
             Real displacement = 0.0);
 
-        virtual Real minStrike() const;
-        virtual Real maxStrike() const;
-        virtual Date maxDate() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
+        Date maxDate() const override;
         std::pair<std::vector<Rate>, std::vector<Volatility> > Dslice(
                                                          const Date &d) const;
 
       protected:
         virtual Volatility volatilityImpl(const Date &d,
                                           Rate strike) const;
-        virtual Volatility volatilityImpl(Time length,
-                                          Rate strike) const;
+        Volatility volatilityImpl(Time length, Rate strike) const override;
         virtual void performCalculations() const;
 
         ext::shared_ptr<YoYCapFloorTermPriceSurface> capFloorPrices_;

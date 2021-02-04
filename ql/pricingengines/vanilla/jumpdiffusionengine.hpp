@@ -44,7 +44,8 @@ namespace QuantLib {
         JumpDiffusionEngine(const ext::shared_ptr<Merton76Process>&,
                             Real relativeAccuracy_ = 1e-4,
                             Size maxIterations = 100);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<Merton76Process> process_;
         Real relativeAccuracy_;

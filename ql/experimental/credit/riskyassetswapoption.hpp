@@ -37,8 +37,8 @@ namespace QuantLib {
                              Rate marketSpread,
                              Volatility spreadVolatility);
       private:
-        bool isExpired() const;
-        void performCalculations() const;
+        bool isExpired() const override;
+        void performCalculations() const override;
 
         ext::shared_ptr<RiskyAssetSwap> asw_;
         Date expiry_;

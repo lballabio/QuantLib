@@ -51,15 +51,16 @@ namespace QuantLib {
                     Real underlyingExchRateCorrelation);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
-        Date maxDate() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
         //@}
       protected:
         //! returns the zero yield as seen from the evaluation date
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time) const override;
+
       private:
         Handle<YieldTermStructure> underlyingDividendTS_, riskFreeTS_,
                                    foreignRiskFreeTS_;

@@ -47,37 +47,37 @@ namespace QuantLib {
                                               = Handle<YieldTermStructure>());
         //! \name RateHelper interface
         //@{
-        Real impliedQuote() const;
-        void setTermStructure(YieldTermStructure*);
-        //@}
-        //! \name inspectors
-        //@{
-        ext::shared_ptr<ArithmeticAverageOIS> swap() const { return swap_; }
-        //@}
-        //! \name Visitability
-        //@{
-        void accept(AcyclicVisitor&);
-        //@}
-    protected:
-        void initializeDates();
+          Real impliedQuote() const override;
+          void setTermStructure(YieldTermStructure*) override;
+          //@}
+          //! \name inspectors
+          //@{
+          ext::shared_ptr<ArithmeticAverageOIS> swap() const { return swap_; }
+          //@}
+          //! \name Visitability
+          //@{
+          void accept(AcyclicVisitor&) override;
+          //@}
+        protected:
+          void initializeDates() override;
 
-        Natural settlementDays_;
-        Period tenor_;
-        ext::shared_ptr<OvernightIndex> overnightIndex_;
+          Natural settlementDays_;
+          Period tenor_;
+          ext::shared_ptr<OvernightIndex> overnightIndex_;
 
-        ext::shared_ptr<ArithmeticAverageOIS> swap_;
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+          ext::shared_ptr<ArithmeticAverageOIS> swap_;
+          RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
-        Handle<YieldTermStructure> discountHandle_;
-        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+          Handle<YieldTermStructure> discountHandle_;
+          RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
 
-        Frequency fixedLegPaymentFrequency_;
-        Frequency overnightLegPaymentFrequency_;
-        Handle<Quote> spread_;
+          Frequency fixedLegPaymentFrequency_;
+          Frequency overnightLegPaymentFrequency_;
+          Handle<Quote> spread_;
 
-        Real mrs_;
-        Real vol_;
-        bool byApprox_;
+          Real mrs_;
+          Real vol_;
+          bool byApprox_;
  
     };
 

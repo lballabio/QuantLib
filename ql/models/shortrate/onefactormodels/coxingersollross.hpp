@@ -49,19 +49,19 @@ namespace QuantLib {
                          Real sigma = 0.1,
                          bool withFellerConstraint = true);
 
-        virtual Real discountBondOption(Option::Type type,
-                                        Real strike,
-                                        Time maturity,
-                                        Time bondMaturity) const;
+        Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+                                Time bondMaturity) const override;
 
-        virtual ext::shared_ptr<ShortRateDynamics> dynamics() const;
+        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
         class Dynamics;
       protected:
-        Real A(Time t, Time T) const;
-        Real B(Time t, Time T) const;
+        Real A(Time t, Time T) const override;
+        Real B(Time t, Time T) const override;
 
         Real theta() const { return theta_(0.0); }
         Real k() const { return k_(0.0); }
@@ -86,16 +86,12 @@ namespace QuantLib {
                 ext::shared_ptr<discretization>(new EulerDiscretization);
         }
 
-        Real x0() const {
-            return y0_;
-        }
-        Real drift(Time, Real y) const {
+        Real x0() const override { return y0_; }
+        Real drift(Time, Real y) const override {
             return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y
                 - 0.5*k_*y;
         }
-        Real diffusion(Time, Real) const {
-            return 0.5*sigma_;
-        }
+        Real diffusion(Time, Real) const override { return 0.5 * sigma_; }
 
       private:
         Real y0_, theta_, k_, sigma_;
@@ -120,12 +116,8 @@ namespace QuantLib {
         : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
                         new HelperProcess(theta, k, sigma, std::sqrt(x0)))) {}
 
-        virtual Real variable(Time, Rate r) const {
-            return std::sqrt(r);
-        }
-        virtual Real shortRate(Time, Real y) const {
-            return y*y;
-        }
+        Real variable(Time, Rate r) const override { return std::sqrt(r); }
+        Real shortRate(Time, Real y) const override { return y * y; }
     };
 
 }

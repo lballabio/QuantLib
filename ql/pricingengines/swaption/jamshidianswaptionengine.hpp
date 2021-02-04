@@ -58,7 +58,8 @@ namespace QuantLib {
           termStructure_(termStructure) {
             registerWith(termStructure_);
         }
-        void calculate() const;
+        void calculate() const override;
+
       private:
         Handle<YieldTermStructure> termStructure_;
         class rStarFinder;

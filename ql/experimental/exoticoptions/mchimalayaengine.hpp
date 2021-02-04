@@ -50,7 +50,7 @@ namespace QuantLib {
                          Size maxSamples,
                          BigNatural seed);
 
-        void calculate() const {
+        void calculate() const override {
             McSimulation<MultiVariate,RNG,S>::calculate(requiredTolerance_,
                                                         requiredSamples_,
                                                         maxSamples_);
@@ -60,10 +60,11 @@ namespace QuantLib {
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       private:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size numAssets = processes_->size();
 
@@ -75,7 +76,7 @@ namespace QuantLib {
                          new path_generator_type(processes_,
                                                  grid, gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // data members
         ext::shared_ptr<StochasticProcessArray> processes_;
@@ -115,7 +116,8 @@ namespace QuantLib {
       public:
         HimalayaMultiPathPricer(const ext::shared_ptr<Payoff>& payoff,
                                 DiscountFactor discount);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         ext::shared_ptr<Payoff> payoff_;
         DiscountFactor discount_;

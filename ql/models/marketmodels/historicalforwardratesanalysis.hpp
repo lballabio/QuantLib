@@ -219,11 +219,11 @@ namespace QuantLib {
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy);
         HistoricalForwardRatesAnalysisImpl(){};
-        const std::vector<Date>& skippedDates() const;
-        const std::vector<std::string>& skippedDatesErrorMessage() const;
-        const std::vector<Date>& failedDates() const;
-        const std::vector<std::string>& failedDatesErrorMessage() const;
-        const std::vector<Period>& fixingPeriods() const;
+        const std::vector<Date>& skippedDates() const override;
+        const std::vector<std::string>& skippedDatesErrorMessage() const override;
+        const std::vector<Date>& failedDates() const override;
+        const std::vector<std::string>& failedDatesErrorMessage() const override;
+        const std::vector<Period>& fixingPeriods() const override;
         //const ext::shared_ptr<SequenceStatistics>& stats() const;
       private:
         // calculated data

@@ -60,7 +60,7 @@ namespace QuantLib {
                 = ext::shared_ptr<LocalVolTermStructure>(),
             Real mixingFactor = 1.0);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;

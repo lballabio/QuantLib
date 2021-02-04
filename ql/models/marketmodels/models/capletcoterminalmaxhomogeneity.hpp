@@ -56,9 +56,8 @@ namespace QuantLib {
                                                              // root for each time step
 
       private:
-        Natural calibrationImpl_(Natural numberOfFactors, 
-                                 Natural maxIterations,
-                                 Real tolerance);
+        Natural
+        calibrationImpl_(Natural numberOfFactors, Natural maxIterations, Real tolerance) override;
         // input
         Real caplet0Swaption1Priority_;
         // results

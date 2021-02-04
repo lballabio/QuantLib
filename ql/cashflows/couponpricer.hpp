@@ -43,7 +43,7 @@ namespace QuantLib {
     class FloatingRateCouponPricer: public virtual Observer,
                                     public virtual Observable {
       public:
-        virtual ~FloatingRateCouponPricer() {}
+        ~FloatingRateCouponPricer() override {}
         //! \name required interface
         //@{
         virtual Real swapletPrice() const = 0;
@@ -56,7 +56,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update(){notifyObservers();}
+        void update() override { notifyObservers(); }
         //@}
     };
 
@@ -105,13 +105,13 @@ namespace QuantLib {
             }
             registerWith(correlation_);
         };
-        virtual void initialize(const FloatingRateCoupon& coupon);
-        Real swapletPrice() const;
-        Rate swapletRate() const;
-        Real capletPrice(Rate effectiveCap) const;
-        Rate capletRate(Rate effectiveCap) const;
-        Real floorletPrice(Rate effectiveFloor) const;
-        Rate floorletRate(Rate effectiveFloor) const;
+        void initialize(const FloatingRateCoupon& coupon) override;
+        Real swapletPrice() const override;
+        Rate swapletRate() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Rate capletRate(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
+        Rate floorletRate(Rate effectiveFloor) const override;
 
       protected:
         Real optionletPrice(Option::Type optionType,

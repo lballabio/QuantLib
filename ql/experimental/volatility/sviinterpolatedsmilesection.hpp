@@ -67,17 +67,17 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
     //@}
     //! \name LazyObject interface
     //@{
-    virtual void performCalculations() const;
-    virtual void update();
+    void performCalculations() const override;
+    void update() override;
     //@}
     //! \name SmileSection interface
     //@{
-    Real minStrike() const;
-    Real maxStrike() const;
-    Real atmLevel() const;
+    Real minStrike() const override;
+    Real maxStrike() const override;
+    Real atmLevel() const override;
     //@}
-    Real varianceImpl(Rate strike) const;
-    Volatility volatilityImpl(Rate strike) const;
+    Real varianceImpl(Rate strike) const override;
+    Volatility volatilityImpl(Rate strike) const override;
     //! \name Inspectors
     //@{
     Real a() const;

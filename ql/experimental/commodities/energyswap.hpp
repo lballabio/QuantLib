@@ -40,7 +40,7 @@ namespace QuantLib {
                    const CommodityType& commodityType,
                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
 
-        bool isExpired() const;
+        bool isExpired() const override;
         const Calendar& calendar() const { return calendar_; }
         const Currency& payCurrency() const { return payCurrency_; }
         const Currency& receiveCurrency() const { return receiveCurrency_; }
@@ -53,7 +53,7 @@ namespace QuantLib {
         }
 
         const CommodityType& commodityType() const;
-        Quantity quantity() const;
+        Quantity quantity() const override;
 
       protected:
         Calendar calendar_;

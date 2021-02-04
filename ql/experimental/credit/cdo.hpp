@@ -140,15 +140,15 @@ namespace QuantLib {
         std::vector<Real> nominals() { return nominals_; }
         Size size() { return basket_.size(); }
 
-        bool isExpired () const;
+        bool isExpired() const override;
         Rate fairPremium() const;
         Rate premiumValue () const;
         Rate protectionValue () const;
         Size error () const;
 
       private:
-        void setupExpired() const;
-        void performCalculations() const;
+        void setupExpired() const override;
+        void performCalculations() const override;
         Real expectedTrancheLoss (Date d) const;
 
         Real attachment_;

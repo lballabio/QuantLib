@@ -59,7 +59,7 @@ namespace {
         : coefficients_(coefficients),
           polynomialDegree_(coefficients.size()-1) {}
 
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
             Real y = 0;
             for (Size i=0; i<=polynomialDegree_; ++i)
@@ -67,7 +67,7 @@ namespace {
             return y;
         }
 
-        Disposable<Array> values(const Array& x) const{
+        Disposable<Array> values(const Array& x) const override {
             QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
             Array y(1);
             y[0] = value(x);
@@ -84,9 +84,9 @@ namespace {
     // in order to test nested optimizations
     class OptimizationBasedCostFunction : public CostFunction {
       public:
-        Real value(const Array&) const { return 1.0; }
+        Real value(const Array&) const override { return 1.0; }
 
-        Disposable<Array> values(const Array&) const{
+        Disposable<Array> values(const Array&) const override {
             // dummy nested optimization
             Array coefficients(3, 1.0);
             OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
@@ -374,22 +374,20 @@ namespace {
 
     class FirstDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
-            return DotProduct(x,x);
-        }
+        Real value(const Array& x) const override { return DotProduct(x, x); }
     };
 
     class SecondDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             return  100.0*(x[0]*x[0]-x[1])*(x[0]*x[0]-x[1])
                   + (1.0-x[0])*(1.0-x[0]);
         }
@@ -397,11 +395,11 @@ namespace {
 
     class ModThirdDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             Real fx = 0.0;
             for (Size i=0; i<x.size(); ++i) {
                 fx += std::floor(x[i])*std::floor(x[i]);
@@ -415,11 +413,11 @@ namespace {
         ModFourthDeJong()
         : uniformRng_(MersenneTwisterUniformRng(4711)) {
         }
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             Real fx = 0.0;
             for (Size i=0; i<x.size(); ++i) {
                 fx += (i+1.0)*pow(x[i],4.0) + uniformRng_.nextReal();
@@ -431,11 +429,11 @@ namespace {
 
     class Griewangk : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const{
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             Real fx = 0.0;
             for (Size i=0; i<x.size(); ++i) {
                 fx += x[i]*x[i]/4000.0;

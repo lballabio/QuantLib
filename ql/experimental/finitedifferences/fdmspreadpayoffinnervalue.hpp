@@ -39,14 +39,14 @@ namespace QuantLib {
           calc1_(calc1),
           calc2_(calc2) { }
 
-        Real innerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
             Array a(2);
             a[0] = calc1_->innerValue(iter, t);
             a[1] = calc2_->innerValue(iter, t);
 
             return (*payoff_)(a);
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
 

@@ -37,12 +37,12 @@ namespace QuantLib {
 
         //! \name InterestRateIndex interface
         //@{
-        Date maturityDate(const Date& valueDate) const {
+        Date maturityDate(const Date& valueDate) const override {
             QL_FAIL("SwapSpreadIndex does not provide a single maturity date");
         }
-        Rate forecastFixing(const Date& fixingDate) const;
-        Rate pastFixing(const Date& fixingDate) const;
-        bool allowsNativeFixings() { return false; }
+        Rate forecastFixing(const Date& fixingDate) const override;
+        Rate pastFixing(const Date& fixingDate) const override;
+        bool allowsNativeFixings() override { return false; }
         //@}
 
         //! \name Inspectors

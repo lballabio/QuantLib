@@ -41,8 +41,8 @@ namespace QuantLib {
                          Size nStarts = Null<Size>(),
                          Size nRunningHours = Null<Size>());
 
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
 
       private:
         const Real heatRate_;
@@ -56,7 +56,7 @@ namespace QuantLib {
         : public virtual MultiAssetOption::arguments {
       public:
         arguments() {}
-        void validate() const;
+        void validate() const override;
 
         Real heatRate;
         Real pMin, pMax;

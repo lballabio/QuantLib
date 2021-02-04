@@ -53,17 +53,17 @@ namespace QuantLib {
         //@}
         //! \name TermStructure interface
         //@{
-        Date maxDate() const { return Date::maxDate(); }
+        Date maxDate() const override { return Date::maxDate(); }
         //@}
       private:
         //! \name HazardRateStructure interface
         //@{
-        Rate hazardRateImpl(Time) const { return hazardRate_->value(); }
+        Rate hazardRateImpl(Time) const override { return hazardRate_->value(); }
         //@}
 
         //! \name DefaultProbabilityTermStructure interface
         //@{
-        Probability survivalProbabilityImpl(Time) const;
+        Probability survivalProbabilityImpl(Time) const override;
         //@}
 
         Handle<Quote> hazardRate_;

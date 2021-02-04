@@ -50,7 +50,8 @@ namespace QuantLib {
       protected:
         ext::shared_ptr<T> tree1_, tree2_;
         // smelly
-        Disposable<Array> grid(Time) const { QL_FAIL("not implemented"); }
+        Disposable<Array> grid(Time) const override { QL_FAIL("not implemented"); }
+
       private:
         Matrix m_;
         Real rho_;

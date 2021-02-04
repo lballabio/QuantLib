@@ -220,12 +220,8 @@ namespace QuantLib {
             explicit FdmSchemeWrapper(T* scheme)
             : scheme_(scheme) { }
 
-            void step(Array& a, Time t) {
-                scheme_->step(a, t);
-            }
-            void setStep(Time dt) {
-                scheme_->setStep(dt);
-            }
+            void step(Array& a, Time t) override { scheme_->step(a, t); }
+            void setStep(Time dt) override { scheme_->setStep(dt); }
 
           private:
             const boost::scoped_ptr<T> scheme_;

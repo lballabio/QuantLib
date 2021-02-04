@@ -80,7 +80,7 @@ namespace QuantLib {
                     BigNatural seed);
       protected:
         // McSimulation implementation
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
     //! Monte Carlo digital engine factory
@@ -117,7 +117,8 @@ namespace QuantLib {
                     const Handle<YieldTermStructure>& discountTS,
                     const ext::shared_ptr<StochasticProcess1D>& diffProcess,
                     const PseudoRandom::ursg_type& sequenceGen);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         ext::shared_ptr<CashOrNothingPayoff> payoff_;
         ext::shared_ptr<AmericanExercise> exercise_;

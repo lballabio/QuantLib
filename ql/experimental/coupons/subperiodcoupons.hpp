@@ -76,7 +76,7 @@ namespace QuantLib {
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
 
@@ -93,12 +93,12 @@ namespace QuantLib {
 
     class SubPeriodsPricer: public FloatingRateCouponPricer {
       public:
-        virtual Rate swapletRate() const;
-        virtual Real capletPrice(Rate effectiveCap) const;
-        virtual Rate capletRate(Rate effectiveCap) const;
-        virtual Real floorletPrice(Rate effectiveFloor) const;
-        virtual Rate floorletRate(Rate effectiveFloor) const;
-        void initialize(const FloatingRateCoupon& coupon);
+        Rate swapletRate() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Rate capletRate(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
+        Rate floorletRate(Rate effectiveFloor) const override;
+        void initialize(const FloatingRateCoupon& coupon) override;
 
       protected:
         const SubPeriodsCoupon* coupon_;
@@ -122,12 +122,12 @@ namespace QuantLib {
 
     class AveragingRatePricer: public SubPeriodsPricer {
       public:
-        Real swapletPrice() const;
+        Real swapletPrice() const override;
     };
 
     class CompoundingRatePricer: public SubPeriodsPricer {
       public:
-        Real swapletPrice() const;
+        Real swapletPrice() const override;
     };
 
 }

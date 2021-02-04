@@ -49,12 +49,12 @@ namespace QuantLib {
         //@}
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       private:
         Handle<Quote> element1_, element2_;

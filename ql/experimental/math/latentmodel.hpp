@@ -96,7 +96,7 @@ namespace QuantLib {
      // this class template always to be fully specialized:
      private:
          IntegrationBase() {}
-     virtual ~IntegrationBase() {} 
+         ~IntegrationBase() override {}
     };
     //@}
     
@@ -122,17 +122,15 @@ namespace QuantLib {
     public:
         IntegrationBase(Size dimension, Size order) 
         : GaussianQuadMultidimIntegrator(dimension, order) {}
-        Real integrate(const ext::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::integrate<Real>(f);
+        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+            return GaussianQuadMultidimIntegrator::integrate<Real>(f);
         }
         Disposable<std::vector<Real> > integrateV(
-            const ext::function<Disposable<std::vector<Real> >  (
-                const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::
-                    integrate<Disposable<std::vector<Real> > >(f);
+            const ext::function<Disposable<std::vector<Real> >(const std::vector<Real>& arg)>& f)
+            const override {
+            return GaussianQuadMultidimIntegrator::integrate<Disposable<std::vector<Real> > >(f);
         }
-        virtual ~IntegrationBase() {}
+        ~IntegrationBase() override {}
     };
 
     #endif
@@ -145,12 +143,11 @@ namespace QuantLib {
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
-        Real integrate(const ext::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return MultidimIntegral::operator ()(f, a_, b_);
+        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+            return MultidimIntegral::operator()(f, a_, b_);
         }
         // disposable vector version here....
-        virtual ~IntegrationBase() {}
+        ~IntegrationBase() override {}
         const std::vector<Real> a_, b_;
     };
 
@@ -288,15 +285,15 @@ namespace QuantLib {
         : public virtual Observer , public virtual Observable 
     {//observer if factors as quotes
     public:
-        void update();
-        //! \name Copula interface.
-        //@{
-        typedef copulaPolicyImpl copulaType;
-        /*! Cumulative probability of the \f$ Y_i \f$ modelled latent random 
-            variable to take a given value.
-        */
-        Probability cumulativeY(Real val, Size iVariable) const {
-            return copula_.cumulativeY(val, iVariable);
+      void update() override;
+      //! \name Copula interface.
+      //@{
+      typedef copulaPolicyImpl copulaType;
+      /*! Cumulative probability of the \f$ Y_i \f$ modelled latent random
+          variable to take a given value.
+      */
+      Probability cumulativeY(Real val, Size iVariable) const {
+          return copula_.cumulativeY(val, iVariable);
         }
         //! Cumulative distribution of Z, the idiosyncratic/error factors.
         Probability cumulativeZ(Real z) const {

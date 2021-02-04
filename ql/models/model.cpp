@@ -42,9 +42,9 @@ namespace QuantLib {
             : model_(model, null_deleter()), instruments_(h),
               weights_(weights), projection_(projection) {}
 
-        virtual ~CalibrationFunction() {}
+        ~CalibrationFunction() override {}
 
-        virtual Real value(const Array& params) const {
+        Real value(const Array& params) const override {
             model_->setParams(projection_.include(params));
             Real value = 0.0;
             for (Size i=0; i<instruments_.size(); i++) {
@@ -54,7 +54,7 @@ namespace QuantLib {
             return std::sqrt(value);
         }
 
-        virtual Disposable<Array> values(const Array& params) const {
+        Disposable<Array> values(const Array& params) const override {
             model_->setParams(projection_.include(params));
             Array values(instruments_.size());
             for (Size i=0; i<instruments_.size(); i++) {
@@ -64,7 +64,7 @@ namespace QuantLib {
             return values;
         }
 
-        virtual Real finiteDifferenceEpsilon() const { return 1e-6; }
+        Real finiteDifferenceEpsilon() const override { return 1e-6; }
 
       private:
         ext::shared_ptr<CalibratedModel> model_;

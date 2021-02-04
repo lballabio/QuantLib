@@ -230,12 +230,12 @@ namespace {
           b1_(b1), b2_(b2), b3_(b3), b4_(b4), b5_(b5),
           spot_(spot), rTS_(rTS), qTS_(qTS) {}
 
-        Date maxDate() const { return Date::maxDate(); }
-        Rate minStrike() const { return 0.0; }
-        Rate maxStrike() const { return QL_MAX_REAL; }
+        Date maxDate() const override { return Date::maxDate(); }
+        Rate minStrike() const override { return 0.0; }
+        Rate maxStrike() const override { return QL_MAX_REAL; }
 
       protected:
-        Volatility blackVolImpl(Time t, Real strike) const {
+        Volatility blackVolImpl(Time t, Real strike) const override {
             QL_REQUIRE(t >= 0.0, "t must be >= 0");
 
             if (t < QL_EPSILON)

@@ -68,12 +68,13 @@ namespace QuantLib {
                               Seniority seniority = NoSeniority,
                               Real recoveryRate = 0.4);
           public:
-            Date date() const;
+            Date date() const override;
             /*! Returns the recovery rate of a default event which has already
                 settled.
             */
             Real recoveryRate(Seniority sen) const;
-            void accept(AcyclicVisitor&);
+            void accept(AcyclicVisitor&) override;
+
           private:
             Date settlementDate_;
             //! Realized recovery rates
@@ -110,7 +111,7 @@ namespace QuantLib {
                      const Date& settleDate = Null<Date>(),
                      Real recoveryRate = 0.4);
 
-        Date date() const;
+        Date date() const override;
         bool isRestructuring() const { return eventType_.isRestructuring(); }
         bool isDefault() const { return !isRestructuring();}
         bool hasSettled() const {
@@ -162,7 +163,8 @@ namespace QuantLib {
         */
         virtual bool matchesDefaultKey(const DefaultProbKey& contractKey) const;
 
-        void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
+
       protected:
         Currency bondsCurrency_;
         Date defaultDate_;
@@ -212,8 +214,8 @@ namespace QuantLib {
                           const Date& settleDate,
                           Real recoveryRates);
         Real amountDefaulted() const {return defaultedAmount_;}
-        bool matchesEventType(
-            const ext::shared_ptr<DefaultType>& contractEvType) const;
+        bool matchesEventType(const ext::shared_ptr<DefaultType>& contractEvType) const override;
+
       private:
         Real defaultedAmount_;
     };
@@ -237,9 +239,7 @@ namespace QuantLib {
                         // means same for all
                         Real recoveryRates);
         //! This is a stronger than all event and will trigger all of them.
-        bool matchesEventType(const ext::shared_ptr<DefaultType>&) const {
-            return true;
-        }
+        bool matchesEventType(const ext::shared_ptr<DefaultType>&) const override { return true; }
     };
 
 }

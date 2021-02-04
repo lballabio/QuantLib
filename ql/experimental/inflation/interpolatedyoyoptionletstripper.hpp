@@ -46,20 +46,15 @@ namespace QuantLib {
 
         //! YoYOptionletStripper interface
         //@{
-        virtual void initialize(const ext::shared_ptr<YoYCapFloorTermPriceSurface>&,
-                                const ext::shared_ptr<YoYInflationCapFloorEngine>&,
-                                Real slope) const;
-        virtual Rate minStrike() const {
-            return YoYCapFloorTermPriceSurface_->strikes().front();
-        }
-        virtual Rate maxStrike() const {
-            return YoYCapFloorTermPriceSurface_->strikes().back();
-        }
-        virtual std::vector<Rate> strikes() const {
+        void initialize(const ext::shared_ptr<YoYCapFloorTermPriceSurface>&,
+                        const ext::shared_ptr<YoYInflationCapFloorEngine>&,
+                        Real slope) const override;
+        Rate minStrike() const override { return YoYCapFloorTermPriceSurface_->strikes().front(); }
+        Rate maxStrike() const override { return YoYCapFloorTermPriceSurface_->strikes().back(); }
+        std::vector<Rate> strikes() const override {
             return YoYCapFloorTermPriceSurface_->strikes();
         }
-        virtual std::pair<std::vector<Rate>, std::vector<Volatility> >
-        slice(const Date &d) const;
+        std::pair<std::vector<Rate>, std::vector<Volatility> > slice(const Date& d) const override;
         //@}
 
       protected:

@@ -47,9 +47,9 @@ namespace QuantLib {
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        
-        void calculate() const;
-        
+
+        void calculate() const override;
+
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;

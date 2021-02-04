@@ -50,7 +50,8 @@ namespace QuantLib {
              Real dk = 5.0,
              const std::vector<Real>& callStrikes = std::vector<Real>(),
              const std::vector<Real>& putStrikes = std::vector<Real>());
-        void calculate() const;
+        void calculate() const override;
+
       protected:
         // helper methods
         void computeOptionWeights(const std::vector<Real>&,

@@ -38,15 +38,15 @@ namespace QuantLib {
                        const Date& date);
         //! \name Event interface
         //@{
-        Date date() const { return date_; }
+        Date date() const override { return date_; }
         //@}
         //! \name CashFlow interface
         //@{
-        Real amount() const { return amount_; }
+        Real amount() const override { return amount_; }
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         Real amount_;
@@ -65,7 +65,7 @@ namespace QuantLib {
         : SimpleCashFlow(amount, date) {}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
@@ -80,7 +80,7 @@ namespace QuantLib {
         : SimpleCashFlow(amount, date) {}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 

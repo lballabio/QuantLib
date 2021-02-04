@@ -51,7 +51,8 @@ namespace QuantLib {
                      Real equityShortRateCorrelation,
                      const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                      const ext::shared_ptr<HullWhite>&);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         Real rho_;
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;

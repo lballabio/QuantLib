@@ -111,10 +111,11 @@ namespace QuantLib {
         Spread fairSpread() const;
         //@}
         // other
-        void setupArguments(PricingEngine::arguments* args) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
         Type type_;
         Real nominal_;
         Schedule fixedSchedule_;
@@ -149,7 +150,7 @@ namespace QuantLib {
         std::vector<Real> fixedCoupons;
         std::vector<Spread> floatingSpreads;
         std::vector<Real> floatingCoupons;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from simple swap calculation
@@ -157,7 +158,7 @@ namespace QuantLib {
       public:
         Rate fairRate;
         Spread fairSpread;
-        void reset();
+        void reset() override;
     };
 
     class VanillaSwap::engine : public GenericEngine<VanillaSwap::arguments,

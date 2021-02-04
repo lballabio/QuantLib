@@ -59,16 +59,16 @@ namespace QuantLib {
                                        const DayCounter& dc);
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
       protected:
-        Volatility volatilityImpl(Time,
-                                  Rate) const;
+        Volatility volatilityImpl(Time, Rate) const override;
+
       private:
         Handle<Quote> volatility_;
     };

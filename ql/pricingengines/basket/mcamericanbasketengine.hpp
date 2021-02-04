@@ -62,8 +62,7 @@ namespace QuantLib {
                                LsmBasisSystem::PolynomType
                                    polynomType = LsmBasisSystem::Monomial);
       protected:
-        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
-            lsmPathPricer() const;
+        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override;
 
       private:
         const Size polynomOrder_;
@@ -113,10 +112,10 @@ namespace QuantLib {
                                  LsmBasisSystem::PolynomType
                                  polynomType = LsmBasisSystem::Monomial);
 
-        Array state(const MultiPath& path, Size t) const;
-        Real operator()(const MultiPath& path, Size t) const;
+        Array state(const MultiPath& path, Size t) const override;
+        Real operator()(const MultiPath& path, Size t) const override;
 
-        std::vector<ext::function<Real(Array)> > basisSystem() const;
+        std::vector<ext::function<Real(Array)> > basisSystem() const override;
 
       protected:
         Real payoff(const Array& state) const;

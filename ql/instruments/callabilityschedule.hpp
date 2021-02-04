@@ -50,11 +50,11 @@ namespace QuantLib {
         Type type() const { return type_; }
         //! \name Event interface
         //@{
-        Date date() const { return date_; }
+        Date date() const override { return date_; }
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         boost::optional<Bond::Price> price_;

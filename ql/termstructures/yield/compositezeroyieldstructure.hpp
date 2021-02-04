@@ -41,20 +41,21 @@ namespace QuantLib {
 
           //! \name YieldTermStructure interface
           //@{
-          DayCounter dayCounter() const;
-          Calendar calendar() const;
-          Natural settlementDays() const;
-          const Date& referenceDate() const;
-          Date maxDate() const;
-          Time maxTime() const;
+          DayCounter dayCounter() const override;
+          Calendar calendar() const override;
+          Natural settlementDays() const override;
+          const Date& referenceDate() const override;
+          Date maxDate() const override;
+          Time maxTime() const override;
           //@}
           //! \name Observer interface
           //@{
-          void update();
+          void update() override;
           //@}
       protected:
         //! returns the composite zero yield rate
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time) const override;
+
       private:
         Handle<YieldTermStructure> curve1_;
         Handle<YieldTermStructure> curve2_;

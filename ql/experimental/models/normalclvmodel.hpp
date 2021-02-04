@@ -71,7 +71,7 @@ namespace QuantLib {
         ext::function<Real(Time, Real)> g() const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         class MappingFunction {

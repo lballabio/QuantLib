@@ -93,7 +93,7 @@ class SimpleQuote;
         const std::list<LogEntry>& logEntries() const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
         const Handle<LocalVolTermStructure> localVol_;
         const Handle<HestonModel> hestonModel_;

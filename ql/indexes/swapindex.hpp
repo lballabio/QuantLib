@@ -60,7 +60,7 @@ namespace QuantLib {
                   const Handle<YieldTermStructure>& discountingTermStructure);
         //! \name InterestRateIndex interface
         //@{
-        Date maturityDate(const Date& valueDate) const;
+        Date maturityDate(const Date& valueDate) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -90,7 +90,7 @@ namespace QuantLib {
                         const Period& tenor) const;
         // @}
       protected:
-        Rate forecastFixing(const Date& fixingDate) const;
+        Rate forecastFixing(const Date& fixingDate) const override;
         Period tenor_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Period fixedLegTenor_;

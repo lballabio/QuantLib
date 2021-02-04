@@ -78,13 +78,13 @@ namespace QuantLib {
       private:
         class SettlementImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Brazil"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Brazil"; }
+            bool isBusinessDay(const Date&) const override;
         };
         class ExchangeImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "BOVESPA"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "BOVESPA"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         //! Brazilian calendars

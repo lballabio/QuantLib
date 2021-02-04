@@ -44,8 +44,7 @@ namespace QuantLib {
         virtual ext::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Returns a two-dimensional trinomial tree
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
-
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
     };
 
     //! Class describing the dynamics of the two state variables

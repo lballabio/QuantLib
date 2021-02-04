@@ -65,11 +65,11 @@ namespace QuantLib {
              Size timeStepsPerYear = Null<Size>(),
              bool controlVariate = false);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // Use the experimental analytic geometric asian option as a control variate.
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
             ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
@@ -113,7 +113,8 @@ namespace QuantLib {
                                       const std::vector<Size>& fixingIndices,
                                       Real runningSum = 0.0,
                                       Size pastFixings = 0);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;

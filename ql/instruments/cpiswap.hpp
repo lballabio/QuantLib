@@ -129,11 +129,11 @@ namespace QuantLib {
         virtual const Leg& floatLeg() const;
 
         // other
-        void setupArguments(PricingEngine::arguments* args) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
 
         Type type_;
         Real nominal_;
@@ -172,7 +172,7 @@ namespace QuantLib {
         Type type;
         Real nominal;
 
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from swap calculation
@@ -180,7 +180,7 @@ namespace QuantLib {
     public:
         Rate fairRate;
         Spread fairSpread;
-        void reset();
+        void reset() override;
     };
 
     class CPISwap::engine : public GenericEngine<CPISwap::arguments,

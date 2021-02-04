@@ -43,8 +43,8 @@ namespace QuantLib {
                                                      zData) {
                 calculate();
             }
-            void calculate() {}
-            Real value(Real x, Real y) const {
+            void calculate() override {}
+            Real value(Real x, Real y) const override {
                 Size i = this->locateX(x), j = this->locateY(y);
 
                 Real z1 = this->zData_[j][i];

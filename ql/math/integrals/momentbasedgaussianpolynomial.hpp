@@ -50,9 +50,9 @@ namespace QuantLib {
       public:
         MomentBasedGaussianPolynomial();
 
-        Real mu_0() const;
-        Real alpha(Size i) const;
-        Real beta(Size i) const;
+        Real mu_0() const override;
+        Real alpha(Size i) const override;
+        Real beta(Size i) const override;
 
         virtual mp_real moment(Size i) const = 0;
 

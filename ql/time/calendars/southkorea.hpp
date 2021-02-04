@@ -77,14 +77,14 @@ namespace QuantLib {
       private:
         class SettlementImpl : public Calendar::Impl {
           public:
-            std::string name() const { return "South-Korean settlement"; }
-            bool isWeekend(Weekday) const;
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "South-Korean settlement"; }
+            bool isWeekend(Weekday) const override;
+            bool isBusinessDay(const Date&) const override;
         };
         class KrxImpl : public SettlementImpl {
           public:
-            std::string name() const { return "South-Korea exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "South-Korea exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { Settlement,  //!< Public holidays

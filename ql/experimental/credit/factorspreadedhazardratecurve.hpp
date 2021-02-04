@@ -43,15 +43,16 @@ namespace QuantLib {
                  const Handle<Quote>& spread);
         //! \name DefaultTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        const Date& referenceDate() const;
-        Date maxDate() const;
-        Time maxTime() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
         //@}
       protected:
-        Real hazardRateImpl(Time t) const;
-    private:
+        Real hazardRateImpl(Time t) const override;
+
+      private:
         Handle<DefaultProbabilityTermStructure> originalCurve_;
         Handle<Quote> spread_;
     };

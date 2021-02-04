@@ -192,21 +192,21 @@ namespace QuantLib {
                     const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
             : pricer_(pricer) {}
 
-            void visit(CashFlow& c);
-            void visit(Coupon& c);
-            void visit(FloatingRateCoupon& c);
-            void visit(CappedFlooredCoupon& c);
-            void visit(IborCoupon& c);
-            void visit(CappedFlooredIborCoupon& c);
-            void visit(DigitalIborCoupon& c);
-            void visit(CmsCoupon& c);
-            void visit(CmsSpreadCoupon& c);
-            void visit(CappedFlooredCmsCoupon& c);
-            void visit(CappedFlooredCmsSpreadCoupon& c);
-            void visit(DigitalCmsCoupon& c);
-            void visit(DigitalCmsSpreadCoupon& c);
-            void visit(RangeAccrualFloatersCoupon& c);
-            void visit(SubPeriodsCoupon& c);
+            void visit(CashFlow& c) override;
+            void visit(Coupon& c) override;
+            void visit(FloatingRateCoupon& c) override;
+            void visit(CappedFlooredCoupon& c) override;
+            void visit(IborCoupon& c) override;
+            void visit(CappedFlooredIborCoupon& c) override;
+            void visit(DigitalIborCoupon& c) override;
+            void visit(CmsCoupon& c) override;
+            void visit(CmsSpreadCoupon& c) override;
+            void visit(CappedFlooredCmsCoupon& c) override;
+            void visit(CappedFlooredCmsSpreadCoupon& c) override;
+            void visit(DigitalCmsCoupon& c) override;
+            void visit(DigitalCmsSpreadCoupon& c) override;
+            void visit(RangeAccrualFloatersCoupon& c) override;
+            void visit(SubPeriodsCoupon& c) override;
         };
 
         void PricerSetter::visit(CashFlow&) {

@@ -417,13 +417,13 @@ namespace QuantLib {
           public:
             explicit BPSCalculator(const YieldTermStructure& discountCurve)
             : discountCurve_(discountCurve), bps_(0.0), nonSensNPV_(0.0) {}
-            void visit(Coupon& c) {
+            void visit(Coupon& c) override {
                 Real bps = c.nominal() *
                            c.accrualPeriod() *
                            discountCurve_.discount(c.date());
                 bps_ += bps;
             }
-            void visit(CashFlow& cf) {
+            void visit(CashFlow& cf) override {
                 nonSensNPV_ += cf.amount() * 
                                discountCurve_.discount(cf.date());
             }

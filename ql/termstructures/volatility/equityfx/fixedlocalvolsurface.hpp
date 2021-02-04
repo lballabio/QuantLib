@@ -67,10 +67,10 @@ namespace QuantLib {
             Extrapolation upperExtrapolation = ConstantExtrapolation);
 
 
-        Date maxDate() const;
-        Time maxTime() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
         template <class Interpolator>
         void setInterpolation(const Interpolator& i = Interpolator()) {
@@ -83,7 +83,7 @@ namespace QuantLib {
         }
 
       protected:
-        Volatility localVolImpl(Time t, Real strike) const;
+        Volatility localVolImpl(Time t, Real strike) const override;
 
         const Date maxDate_;
         std::vector<Time> times_;

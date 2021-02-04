@@ -103,11 +103,11 @@ namespace QuantLib {
     public:
         LossDistBinomial (Size nBuckets, Real maximum)
             : nBuckets_(nBuckets), maximum_(maximum) {}
-        Distribution operator()(Size n, Real volume, Real probability) const; 
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
+        Distribution operator()(Size n, Real volume, Real probability) const;
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
         Real volume() const { return volume_; }
         Size size () const { return n_; }
         std::vector<Real> probability() const { return probability_; }
@@ -151,10 +151,10 @@ namespace QuantLib {
               n_(0), volume_(0.0) {}
         Distribution operator()(Real volume, 
                                 const std::vector<Real>& probabilities) const;
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
         Size size () const { return n_; }
         Real volume() const { return volume_; }
         std::vector<Real> probability() const { return probability_; }
@@ -186,11 +186,12 @@ namespace QuantLib {
         LossDistBucketing (Size nBuckets, Real maximum, 
                            Real epsilon = 1e-6)
             : nBuckets_(nBuckets), maximum_(maximum), epsilon_(epsilon) {}
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
-    private:
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
+
+      private:
         int locateTargetBucket (Real loss, Size i0 = 0) const;
 
         Size nBuckets_;
@@ -211,11 +212,12 @@ namespace QuantLib {
                             long seed = 42, Real epsilon = 1e-6)
             : nBuckets_(nBuckets), maximum_(maximum), 
               simulations_(simulations), seed_(seed), epsilon_(epsilon) {}
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
-    private:
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
+
+      private:
         Size nBuckets_;
         Real maximum_;
         Size simulations_;

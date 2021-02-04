@@ -53,10 +53,10 @@ namespace QuantLib {
                           BlackCalibrationHelper::CalibrationErrorType errorType =
                               BlackCalibrationHelper::RelativePriceError);
 
-        void addTimesTo(std::list<Time>&) const {}
-        void performCalculations() const;
-        Real modelValue() const;
-        Real blackPrice(Real volatility) const;
+        void addTimesTo(std::list<Time>&) const override {}
+        void performCalculations() const override;
+        Real modelValue() const override;
+        Real blackPrice(Real volatility) const override;
         Time maturity() const  { calculate(); return tau_; }
       private:
         const Period maturity_;

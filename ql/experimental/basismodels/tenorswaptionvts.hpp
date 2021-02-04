@@ -44,7 +44,7 @@ namespace QuantLib {
             Real lambda_;
             Real annuityScaling_;
             // implement transformation formula
-            virtual Volatility volatilityImpl(Rate strike) const;
+            Volatility volatilityImpl(Rate strike) const override;
 
           public:
             // constructor includes actual transformation details
@@ -53,13 +53,13 @@ namespace QuantLib {
                                       Time swapLength);
 
             // further SmileSection interface methods
-            virtual Real minStrike() const {
+            Real minStrike() const override {
                 return baseSmileSection_->minStrike() + swapRateTarg_ - swapRateBase_;
             }
-            virtual Real maxStrike() const {
+            Real maxStrike() const override {
                 return baseSmileSection_->maxStrike() + swapRateTarg_ - swapRateBase_;
             }
-            virtual Real atmLevel() const { return swapRateFinl_; }
+            Real atmLevel() const override { return swapRateFinl_; }
         };
 
         Handle<SwaptionVolatilityStructure> baseVTS_;
@@ -93,33 +93,33 @@ namespace QuantLib {
         // Termstructure interface
 
         //! the latest date for which the curve can return values
-        virtual Date maxDate() const { return baseVTS_->maxDate(); }
+        Date maxDate() const override { return baseVTS_->maxDate(); }
 
         // SwaptionVolatility interface
 
         //! the minimum strike for which the term structure can return vols
-        virtual Rate minStrike() const { return baseVTS_->minStrike(); }
+        Rate minStrike() const override { return baseVTS_->minStrike(); }
         //! the maximum strike for which the term structure can return vols
-        virtual Rate maxStrike() const { return baseVTS_->maxStrike(); }
+        Rate maxStrike() const override { return baseVTS_->maxStrike(); }
 
 
         // SwaptionVolatilityStructure interface
 
         //! the largest length for which the term structure can return vols
-        virtual const Period& maxSwapTenor() const { return baseVTS_->maxSwapTenor(); }
+        const Period& maxSwapTenor() const override { return baseVTS_->maxSwapTenor(); }
 
-        virtual ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
-                                                               Time swapLength) const {
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
+                                                       Time swapLength) const override {
             return ext::shared_ptr<SmileSection>(
                 new TenorSwaptionSmileSection(*this, optionTime, swapLength));
         }
 
-        virtual Volatility volatilityImpl(Time optionTime, Time swapLength, Rate strike) const {
+        Volatility volatilityImpl(Time optionTime, Time swapLength, Rate strike) const override {
             return smileSectionImpl(optionTime, swapLength)->volatility(strike, Normal, 0.0);
         }
 
         // the methodology is designed for normal volatilities
-        VolatilityType volatilityType() const { return Normal; }
+        VolatilityType volatilityType() const override { return Normal; }
     };
 
 }

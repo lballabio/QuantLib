@@ -854,7 +854,7 @@ namespace QuantLib {
             // if the object out passed in the constructor is destroyed
             // before this instance
             struct nopunct : std::numpunct<char> {
-                std::string do_grouping() const {return "";}
+                std::string do_grouping() const override { return ""; }
             };
             explicit FormatResetter(std::ostream &out)
                 : out_(&out), flags_(out.flags()), filler_(out.fill()),

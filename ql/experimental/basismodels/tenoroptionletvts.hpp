@@ -48,20 +48,20 @@ namespace QuantLib {
             Real fraRateTarg_;
             std::vector<Real> v_;
             // implement transformation formula
-            virtual Volatility volatilityImpl(Rate strike) const;
+            Volatility volatilityImpl(Rate strike) const override;
 
           public:
             // constructor includes actual transformation details
             TenorOptionletSmileSection(const TenorOptionletVTS& volTS, Time optionTime);
 
             // further SmileSection interface methods
-            virtual Real minStrike() const {
+            Real minStrike() const override {
                 return baseSmileSection_[0]->minStrike() + fraRateTarg_ - fraRateBase_[0];
             }
-            virtual Real maxStrike() const {
+            Real maxStrike() const override {
                 return baseSmileSection_[0]->maxStrike() + fraRateTarg_ - fraRateBase_[0];
             }
-            virtual Real atmLevel() const { return fraRateTarg_; }
+            Real atmLevel() const override { return fraRateTarg_; }
         };
 
         Handle<OptionletVolatilityStructure> baseVTS_;
@@ -88,7 +88,7 @@ namespace QuantLib {
             TwoParameterCorrelation(const ext::shared_ptr<Interpolation>& rhoInf,
                                     const ext::shared_ptr<Interpolation>& beta)
             : rhoInf_(rhoInf), beta_(beta) {}
-            Real operator()(const Time& start1, const Time& start2) const {
+            Real operator()(const Time& start1, const Time& start2) const override {
                 Real rhoInf = (*rhoInf_)(start1);
                 Real beta = (*beta_)(start1);
                 Real rho = rhoInf + (1.0 - rhoInf) * exp(-beta * fabs(start2 - start1));
@@ -105,27 +105,27 @@ namespace QuantLib {
         // Termstructure interface
 
         //! the latest date for which the curve can return values
-        virtual Date maxDate() const { return baseVTS_->maxDate(); }
+        Date maxDate() const override { return baseVTS_->maxDate(); }
 
         // VolatilityTermstructure interface
 
         //! implements the actual smile calculation in derived classes
-        virtual ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime) const {
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime) const override {
             return ext::shared_ptr<SmileSection>(new TenorOptionletSmileSection(*this, optionTime));
         }
         //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(Time optionTime, Rate strike) const {
+        Volatility volatilityImpl(Time optionTime, Rate strike) const override {
             return smileSection(optionTime)->volatility(strike);
         }
 
 
         //! the minimum strike for which the term structure can return vols
-        virtual Rate minStrike() const { return baseVTS_->minStrike(); }
+        Rate minStrike() const override { return baseVTS_->minStrike(); }
         //! the maximum strike for which the term structure can return vols
-        virtual Rate maxStrike() const { return baseVTS_->maxStrike(); }
+        Rate maxStrike() const override { return baseVTS_->maxStrike(); }
 
         // the methodology is designed for normal volatilities
-        VolatilityType volatilityType() const { return Normal; }
+        VolatilityType volatilityType() const override { return Normal; }
     };
 
     typedef TenorOptionletVTS::CorrelationStructure TenorOptionletVTSCorrelationStructure;

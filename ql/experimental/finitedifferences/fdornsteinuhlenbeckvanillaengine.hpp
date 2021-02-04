@@ -44,7 +44,7 @@ namespace QuantLib {
             Real epsilon = 0.0001,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<OrnsteinUhlenbeckProcess> process_;

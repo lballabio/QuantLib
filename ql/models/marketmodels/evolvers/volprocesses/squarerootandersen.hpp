@@ -44,17 +44,17 @@ namespace QuantLib
                              Real w2,
                              Real cutPoint = 1.5);
 
-          virtual Size variatesPerStep();
-          virtual Size numberSteps();
+          Size variatesPerStep() override;
+          Size numberSteps() override;
 
-          virtual void nextPath();
-          virtual Real nextstep(const std::vector<Real>& variates);
-          virtual Real stepSd() const ;
+          void nextPath() override;
+          Real nextstep(const std::vector<Real>& variates) override;
+          Real stepSd() const override;
 
-          virtual const std::vector<Real>& stateVariables() const;
-          virtual Size numberStateVariables() const;
-     
-      private:
+          const std::vector<Real>& stateVariables() const override;
+          Size numberStateVariables() const override;
+
+        private:
 
           void DoOneSubStep(Real& v, Real variate, Size j);
 

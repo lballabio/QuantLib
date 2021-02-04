@@ -48,7 +48,7 @@ namespace QuantLib {
                       Real rebate,
                       const ext::shared_ptr<StrikedTypePayoff>& payoff,
                       const ext::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
         /*! \warning see VanillaOption for notes on implied-volatility
                      calculation.
         */
@@ -73,7 +73,7 @@ namespace QuantLib {
         Barrier::Type barrierType;
         Real barrier;
         Real rebate;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Barrier-option %engine base class

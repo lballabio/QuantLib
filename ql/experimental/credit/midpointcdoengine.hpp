@@ -47,8 +47,9 @@ namespace QuantLib {
         explicit MidPointCDOEngine(
             const Handle<YieldTermStructure>& discountCurve)
         : discountCurve_(discountCurve) {}
-        void calculate() const;
-    protected:
+        void calculate() const override;
+
+      protected:
         Handle<YieldTermStructure> discountCurve_;
     };
 

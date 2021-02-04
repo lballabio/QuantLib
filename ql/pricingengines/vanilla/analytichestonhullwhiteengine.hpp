@@ -76,11 +76,11 @@ namespace QuantLib {
                         Real relTolerance, Size maxEvaluations);
 
 
-        void update();
-        void calculate() const;
+        void update() override;
+        void calculate() const override;
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const override;
 
         const ext::shared_ptr<HullWhite> hullWhiteModel_;
 

@@ -128,13 +128,13 @@ namespace QuantLib {
         //@{
         //@}
         // other
-        void setupArguments(PricingEngine::arguments *args) const;
-        void fetchResults(const PricingEngine::results *) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
       private:
         void init(boost::optional<BusinessDayConvention> paymentConvention1,
                   boost::optional<BusinessDayConvention> paymentConvention2);
-        void setupExpired() const;
+        void setupExpired() const override;
         VanillaSwap::Type type_;
         std::vector<Real> nominal1_, nominal2_;
         Schedule schedule1_, schedule2_;
@@ -169,13 +169,13 @@ namespace QuantLib {
 
         std::vector<bool> leg1IsRedemptionFlow, leg2IsRedemptionFlow;
 
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from float float swap calculation
     class FloatFloatSwap::results : public Swap::results {
       public:
-        void reset();
+        void reset() override;
     };
 
     class FloatFloatSwap::engine

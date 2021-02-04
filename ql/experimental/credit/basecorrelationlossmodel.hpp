@@ -111,40 +111,32 @@ namespace QuantLib {
         }
     private:
         // react to base correl surface notifications (quotes or reference date)
-        void update() {
-            setupModels();
-            // tell basket to notify instruments, etc, we are invalid
-            if(!basket_.empty()) basket_->notifyObservers();
-        }
+      void update() override {
+          setupModels();
+          // tell basket to notify instruments, etc, we are invalid
+          if (!basket_.empty())
+              basket_->notifyObservers();
+      }
 
         /* Update model caches after basket assignement. */
-        void resetModel() {
-            remainingNotional_ = basket_->remainingNotional();
-            attachRatio_ = basket_->remainingAttachmentAmount()
-                /remainingNotional_;
-            detachRatio_ = basket_->remainingDetachmentAmount()
-                /remainingNotional_;
+      void resetModel() override {
+          remainingNotional_ = basket_->remainingNotional();
+          attachRatio_ = basket_->remainingAttachmentAmount() / remainingNotional_;
+          detachRatio_ = basket_->remainingDetachmentAmount() / remainingNotional_;
 
-             basketAttach_ = ext::make_shared<Basket>(basket_->refDate(),basket_->remainingNames(), 
-                         basket_->remainingNotionals(), 
-                         basket_->pool(), 
-                         0.0,
-                         attachRatio_,
-                         basket_->claim()
-                         );
-             basketDetach_ = ext::make_shared<Basket>(basket_->refDate(),basket_->remainingNames(), 
-                         basket_->remainingNotionals(), 
-                         basket_->pool(),
-                         0.0,
-                         detachRatio_,
-                         basket_->claim()
-                         );
-             setupModels();
-        }
+          basketAttach_ = ext::make_shared<Basket>(basket_->refDate(), basket_->remainingNames(),
+                                                   basket_->remainingNotionals(), basket_->pool(),
+                                                   0.0, attachRatio_, basket_->claim());
+          basketDetach_ = ext::make_shared<Basket>(basket_->refDate(), basket_->remainingNames(),
+                                                   basket_->remainingNotionals(), basket_->pool(),
+                                                   0.0, detachRatio_, basket_->claim());
+          setupModels();
+      }
         /* Most of the statistics are not implemented, not impossible but
         the model is intended for pricing rather than ptfolio risk management.
         */
-        Real expectedTrancheLoss(const Date& d) const;
+      Real expectedTrancheLoss(const Date& d) const override;
+
     protected:
         /*! Sets up attach/detach models. Gets called on basket update. 
         To be specialized on the spacific model type.

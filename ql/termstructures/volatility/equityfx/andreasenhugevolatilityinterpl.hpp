@@ -94,7 +94,7 @@ namespace QuantLib {
         Volatility localVol(Time t, Real strike) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         typedef std::map<Time,

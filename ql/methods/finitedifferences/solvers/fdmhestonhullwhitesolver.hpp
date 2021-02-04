@@ -57,7 +57,7 @@ namespace QuantLib {
         Real gammaAt(Real s, Real v, Rate r, Real eps) const;
         
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const Handle<HestonProcess> hestonProcess_;  

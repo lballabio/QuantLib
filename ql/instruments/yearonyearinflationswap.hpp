@@ -96,12 +96,12 @@ namespace QuantLib {
         virtual const Leg& yoyLeg() const;
 
         // other
-        void setupArguments(PricingEngine::arguments* args) const;
-        void fetchResults(const PricingEngine::results*) const;
-        virtual ~YearOnYearInflationSwap() {}
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+        ~YearOnYearInflationSwap() override {}
 
-    private:
-        void setupExpired() const;
+      private:
+        void setupExpired() const override;
         Type type_;
         Real nominal_;
         Schedule fixedSchedule_;
@@ -138,7 +138,7 @@ namespace QuantLib {
         std::vector<Real> fixedCoupons;
         std::vector<Spread> yoySpreads;
         std::vector<Real> yoyCoupons;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from YoY swap calculation
@@ -146,7 +146,7 @@ namespace QuantLib {
     public:
         Rate fairRate;
         Spread fairSpread;
-        void reset();
+        void reset() override;
     };
 
     class YearOnYearInflationSwap::engine : public GenericEngine<YearOnYearInflationSwap::arguments,

@@ -37,19 +37,18 @@ namespace QuantLib {
             const ext::shared_ptr<FdmLinearOpLayout> & index,
             const std::vector<std::pair<Real, Real> > & boundaries);
 
-        Real dplus(const FdmLinearOpIterator&, Size direction) const {
+        Real dplus(const FdmLinearOpIterator&, Size direction) const override {
             return dx_[direction];
         }
-        Real dminus(const FdmLinearOpIterator&, Size direction) const {
+        Real dminus(const FdmLinearOpIterator&, Size direction) const override {
             return dx_[direction];
         }
 
-        Real location(const FdmLinearOpIterator& iter,
-                      Size direction) const {
+        Real location(const FdmLinearOpIterator& iter, Size direction) const override {
             return locations_[direction][iter.coordinates()[direction]];
         }
 
-        Disposable<Array> locations(Size direction) const;
+        Disposable<Array> locations(Size direction) const override;
 
       private:
         boost::scoped_array<Real> dx_;

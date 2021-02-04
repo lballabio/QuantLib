@@ -110,20 +110,20 @@ namespace QuantLib {
 
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Rate minStrike() const;
-        Rate maxStrike() const;
+        Rate minStrike() const override;
+        Rate maxStrike() const override;
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        const Period& maxSwapTenor() const;
+        const Period& maxSwapTenor() const override;
         //@}
         //! \name Other inspectors
         //@{
@@ -140,18 +140,17 @@ namespace QuantLib {
                                   interpolation_.locateX(swapLength));
         }
         //@}
-        VolatilityType volatilityType() const;
+        VolatilityType volatilityType() const override;
+
       protected:
         // defining the following method would break CMS test suite
         // to be further investigated
         //ext::shared_ptr<SmileSection> smileSectionImpl(const Date&,
         //                                                 const Period&) const;
-        ext::shared_ptr<SmileSection> smileSectionImpl(Time,
-                                                         Time) const;
-        Volatility volatilityImpl(Time optionTime,
-                                  Time swapLength,
-                                  Rate strike) const;
-        Real shiftImpl(Time optionTime, Time swapLength) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const override;
+        Volatility volatilityImpl(Time optionTime, Time swapLength, Rate strike) const override;
+        Real shiftImpl(Time optionTime, Time swapLength) const override;
+
       private:
         void checkInputs(Size volRows,
                          Size volsColumns,

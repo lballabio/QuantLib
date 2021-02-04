@@ -62,16 +62,16 @@ namespace QuantLib {
         //! Default constructor
         LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
-        virtual ~LeastSquareFunction() {}
+        ~LeastSquareFunction() override {}
 
         //! compute value of the least square function
-        virtual Real value(const Array& x) const;
-        virtual Disposable<Array> values(const Array&) const;
+        Real value(const Array& x) const override;
+        Disposable<Array> values(const Array&) const override;
         //! compute vector of derivatives of the least square function
-        virtual void gradient(Array& grad_f, const Array& x) const;
+        void gradient(Array& grad_f, const Array& x) const override;
         //! compute value and gradient of the least square function
-        virtual Real valueAndGradient(Array& grad_f,
-                                      const Array& x) const;
+        Real valueAndGradient(Array& grad_f, const Array& x) const override;
+
       protected:
         //! least square problem
         LeastSquareProblem &lsp_;

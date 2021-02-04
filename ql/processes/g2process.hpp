@@ -36,14 +36,13 @@ namespace QuantLib {
         G2Process(Real a, Real sigma, Real b, Real eta, Real rho);
         //! \name StochasticProcess interface
         //@{
-        Size size() const;
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
-                                        Time dt) const;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
+        Size size() const override;
+        Disposable<Array> initialValues() const override;
+        Disposable<Array> drift(Time t, const Array& x) const override;
+        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
+        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const override;
+        Disposable<Matrix> stdDeviation(Time t0, const Array& x0, Time dt) const override;
+        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
         //@}
         Real x0() const;
         Real y0() const;
@@ -65,14 +64,13 @@ namespace QuantLib {
         G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho);
         //! \name StochasticProcess interface
         //@{
-        Size size() const;
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
-                                        Time dt) const;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
+        Size size() const override;
+        Disposable<Array> initialValues() const override;
+        Disposable<Array> drift(Time t, const Array& x) const override;
+        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
+        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const override;
+        Disposable<Matrix> stdDeviation(Time t0, const Array& x0, Time dt) const override;
+        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
         //@}
       protected:
         Real x0_, y0_, a_, sigma_, b_, eta_, rho_;

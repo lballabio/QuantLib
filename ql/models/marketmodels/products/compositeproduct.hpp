@@ -38,10 +38,10 @@ namespace QuantLib {
         MarketModelComposite();
         //! \name MarketModelMultiProduct interface
         //@{
-        const EvolutionDescription& evolution() const;
-        std::vector<Size> suggestedNumeraires() const;
-        std::vector<Time> possibleCashFlowTimes() const;
-        void reset();
+        const EvolutionDescription& evolution() const override;
+        std::vector<Size> suggestedNumeraires() const override;
+        std::vector<Time> possibleCashFlowTimes() const override;
+        void reset() override;
         //@}
         //! \name Composite facilities
         //@{

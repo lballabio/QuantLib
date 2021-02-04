@@ -46,8 +46,9 @@ namespace QuantLib {
             const ext::shared_ptr<ZeroInflationIndex>& zii,
             const Handle<YieldTermStructure>& nominalTermStructure);
 
-        void setTermStructure(ZeroInflationTermStructure*);
-        Real impliedQuote() const;
+        void setTermStructure(ZeroInflationTermStructure*) override;
+        Real impliedQuote() const override;
+
       protected:
         Period swapObsLag_;
         Date maturity_;
@@ -73,8 +74,9 @@ namespace QuantLib {
                                       const ext::shared_ptr<YoYInflationIndex>& yii,
                                       const Handle<YieldTermStructure>& nominalTermStructure);
 
-        void setTermStructure(YoYInflationTermStructure*);
-        Real impliedQuote() const;
+        void setTermStructure(YoYInflationTermStructure*) override;
+        Real impliedQuote() const override;
+
       protected:
         Period swapObsLag_;
         Date maturity_;

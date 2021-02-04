@@ -62,7 +62,7 @@ namespace QuantLib {
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = DayCounter());
         //@}
-        virtual ~BlackVolTermStructure() {}
+        ~BlackVolTermStructure() override {}
         //! \name Black Volatility
         //@{
         //! spot volatility
@@ -156,13 +156,13 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         /*! Returns the variance for the given strike and date calculating it
             from the volatility.
         */
-        Real blackVarianceImpl(Time maturity, Real strike) const;
+        Real blackVarianceImpl(Time maturity, Real strike) const override;
     };
 
 
@@ -201,14 +201,13 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
         */
-        Volatility blackVolImpl(Time t,
-                                Real strike) const;
+        Volatility blackVolImpl(Time t, Real strike) const override;
     };
 
 

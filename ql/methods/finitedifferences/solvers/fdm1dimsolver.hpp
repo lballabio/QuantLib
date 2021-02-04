@@ -48,7 +48,7 @@ namespace QuantLib {
         Real derivativeXX(Real x) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const FdmSolverDesc solverDesc_;

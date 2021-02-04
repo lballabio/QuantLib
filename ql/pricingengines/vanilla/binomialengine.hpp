@@ -62,7 +62,8 @@ namespace QuantLib {
                        << timeSteps << " provided");
             registerWith(process_);
         }
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;

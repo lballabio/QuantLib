@@ -50,12 +50,13 @@ namespace QuantLib {
                              const Date& referenceDate);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        Date maxDate() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        Date maxDate() const override;
+
       protected:
-        DiscountFactor discountImpl(Time) const;
+        DiscountFactor discountImpl(Time) const override;
         //@}
       private:
         Handle<YieldTermStructure> originalCurve_;

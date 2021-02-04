@@ -125,7 +125,7 @@ namespace QuantLib {
     template <class array_type>
     class NullCondition : public StepCondition<array_type> {
       public:
-        void applyTo(array_type&, Time) const {}
+        void applyTo(array_type&, Time) const override {}
     };
 
 }

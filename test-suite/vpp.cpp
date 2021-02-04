@@ -463,7 +463,7 @@ namespace vpp_test {
             const ext::shared_ptr<Shape>& shape)
         : path_(path),
           shape_(shape) {}
-        Real innerValue(const FdmLinearOpIterator&, Time t) {
+        Real innerValue(const FdmLinearOpIterator&, Time t) override {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
                         "invalid time");
 
@@ -473,9 +473,10 @@ namespace vpp_test {
 
             return std::exp(path_[2][i] + f);
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
+
       private:
         const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
         const ext::shared_ptr<Shape> shape_;
@@ -495,7 +496,7 @@ namespace vpp_test {
           fuelShape_(fuelShape),
           powerShape_(powerShape) {}
 
-        Real innerValue(const FdmLinearOpIterator&, Time t) {
+        Real innerValue(const FdmLinearOpIterator&, Time t) override {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,
                         "invalid time");
 
@@ -510,9 +511,10 @@ namespace vpp_test {
             return std::exp(f + path_[0][i]+path_[1][i])
                     - heatRate_*std::exp(g + path_[2][i]);
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
+
       private:
         const Real heatRate_;
         const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;

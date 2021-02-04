@@ -71,25 +71,25 @@ namespace QuantLib {
 
         //! \name StochasticProcess1D interface
         //@{
-        Real x0() const;
+        Real x0() const override;
         /*! \todo revise extrapolation */
-        Real drift(Time t, Real x) const;
+        Real drift(Time t, Real x) const override;
         /*! \todo revise extrapolation */
-        Real diffusion(Time t, Real x) const;
-        Real apply(Real x0, Real dx) const;
+        Real diffusion(Time t, Real x) const override;
+        Real apply(Real x0, Real dx) const override;
         /*! \warning in general raises a "not implemented" exception.
                      It should be rewritten to return the expectation E(S)
                      of the process, not exp(E(log S)).
         */
-        Real expectation(Time t0, Real x0, Time dt) const;
-        Real stdDeviation(Time t0, Real x0, Time dt) const;
-        Real variance(Time t0, Real x0, Time dt) const;
-        Real evolve(Time t0, Real x0, Time dt, Real dw) const;
+        Real expectation(Time t0, Real x0, Time dt) const override;
+        Real stdDeviation(Time t0, Real x0, Time dt) const override;
+        Real variance(Time t0, Real x0, Time dt) const override;
+        Real evolve(Time t0, Real x0, Time dt, Real dw) const override;
         //@}
-        Time time(const Date&) const;
+        Time time(const Date&) const override;
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Inspectors
         //@{

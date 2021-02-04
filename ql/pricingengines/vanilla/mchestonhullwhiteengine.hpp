@@ -53,17 +53,17 @@ namespace QuantLib {
                Size maxSamples,
                BigNatural seed);
 
-        void calculate() const;
-        
+        void calculate() const override;
+
       protected:
         // just to avoid upcasting
         ext::shared_ptr<HybridHestonHullWhiteProcess> process_;
 
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
-        ext::shared_ptr<path_pricer_type>    controlPathPricer() const;
-        ext::shared_ptr<PricingEngine>       controlPricingEngine() const;
-        ext::shared_ptr<path_generator_type> controlPathGenerator() const;
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override;
+        ext::shared_ptr<path_generator_type> controlPathGenerator() const override;
     };
 
     //! Monte Carlo Heston/Hull-White engine factory
@@ -99,7 +99,7 @@ namespace QuantLib {
              const ext::shared_ptr<Payoff> & payoff,
              const ext::shared_ptr<HybridHestonHullWhiteProcess> & process);
 
-        Real operator()(const MultiPath& path) const;
+        Real operator()(const MultiPath& path) const override;
 
       private:
         Time exerciseTime_;

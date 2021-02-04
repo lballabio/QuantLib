@@ -77,12 +77,12 @@ namespace fd_heston_test {
           s0_(s0),
           alpha_(alpha) {}
 
-        Date maxDate() const   { return Date::maxDate(); }
-        Real minStrike() const { return 0.0; }
-        Real maxStrike() const { return std::numeric_limits<Real>::max(); }
+        Date maxDate() const override { return Date::maxDate(); }
+        Real minStrike() const override { return 0.0; }
+        Real maxStrike() const override { return std::numeric_limits<Real>::max(); }
 
       protected:
-        Volatility localVolImpl(Time t, Real s) const {
+        Volatility localVolImpl(Time t, Real s) const override {
             return alpha_*(square<Real>()(s0_ - s) + 25.0);
         }
 

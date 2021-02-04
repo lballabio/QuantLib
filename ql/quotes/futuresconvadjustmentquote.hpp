@@ -48,10 +48,10 @@ namespace QuantLib {
                                    const Handle<Quote>& meanReversion);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
-        void update();
+        void update() override;
         //! \name Inspectors
         //@{
         Real futuresValue() const { return futuresQuote_->value(); }

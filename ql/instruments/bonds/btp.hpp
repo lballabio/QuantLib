@@ -51,7 +51,7 @@ namespace QuantLib {
         //@{
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
-        Real accruedAmount(Date d = Date()) const;
+        Real accruedAmount(Date d = Date()) const override;
         //@}
     };
 
@@ -77,7 +77,7 @@ namespace QuantLib {
         //@{
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
-        Real accruedAmount(Date d = Date()) const;
+        Real accruedAmount(Date d = Date()) const override;
         //@}
         //! BTP yield given a (clean) price and settlement date
         /*! The default BTP conventions are used: Actual/Actual (ISMA),
@@ -106,7 +106,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update() { notifyObservers(); }
+        void update() override { notifyObservers(); }
         //@}
       private:
         std::vector<ext::shared_ptr<BTP> > btps_;
@@ -147,7 +147,7 @@ namespace QuantLib {
       protected:
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
       private:
         ext::shared_ptr<RendistatoBasket> basket_;
@@ -171,8 +171,9 @@ namespace QuantLib {
       public:
         RendistatoEquivalentSwapLengthQuote(
             const ext::shared_ptr<RendistatoCalculator>& r);
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
+
       private:
         ext::shared_ptr<RendistatoCalculator> r_;
     };
@@ -182,8 +183,9 @@ namespace QuantLib {
       public:
         RendistatoEquivalentSwapSpreadQuote(
             const ext::shared_ptr<RendistatoCalculator>& r);
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
+
       private:
         ext::shared_ptr<RendistatoCalculator> r_;
     };

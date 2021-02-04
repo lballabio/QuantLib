@@ -48,7 +48,7 @@ namespace QuantLib {
             const std::list<std::vector<Time> > & stoppingTimes,
             const Conditions & conditions);
 
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
         const std::vector<Time>& stoppingTimes() const;
         const Conditions& conditions() const;
 

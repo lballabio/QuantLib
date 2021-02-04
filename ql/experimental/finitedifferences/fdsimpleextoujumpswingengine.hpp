@@ -49,7 +49,7 @@ namespace QuantLib {
             const ext::shared_ptr<Shape>& shape = ext::shared_ptr<Shape>(),
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<ExtOUWithJumpsProcess> process_;

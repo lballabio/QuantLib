@@ -44,7 +44,7 @@ namespace QuantLib {
           mesher_(mesher),
           shape_ (shape) { }
 
-        Real innerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
             const Real x = mesher_->location(iter, 0);
             const Real y = mesher_->location(iter, 1);
 
@@ -55,7 +55,7 @@ namespace QuantLib {
             }
             return (*payoff_)(std::exp(f + x + y));
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
 

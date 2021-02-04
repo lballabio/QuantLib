@@ -117,9 +117,9 @@ namespace QuantLib {
         //! \name Limits
         //@{
         //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const = 0;
+        Real minStrike() const override = 0;
         //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const = 0;
+        Real maxStrike() const override = 0;
         //@}
       protected:
         virtual void checkRange(const Date&, Rate strike, bool extrapolate) const;

@@ -96,7 +96,7 @@ namespace QuantLib {
         }
       private:
         using base::calculate;
-        void calculate() const {
+        void calculate() const override {
             base::setupArguments(&(this->arguments_));
             base::calculate(&(this->results_));
         }

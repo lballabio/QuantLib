@@ -399,28 +399,24 @@ namespace {
           preconditioner_(SecondDerivativeOp(direction, mesher)
               .mult(Array(mesher->layout()->size(), vol2_))) { }
 
-        Size size() const { return 1; }
-        void setTime(Time t1, Time t2) { }
+        Size size() const override { return 1; }
+        void setTime(Time t1, Time t2) override {}
 
-        Disposable<Array> apply(const Array& r) const {
-            return vol2_*map_->apply(r);
-        }
+        Disposable<Array> apply(const Array& r) const override { return vol2_ * map_->apply(r); }
 
-        Disposable<Array> apply_mixed(const Array& r) const {
+        Disposable<Array> apply_mixed(const Array& r) const override {
             Array retVal(r.size(), 0.0);
             return retVal;
         }
 
-        Disposable<Array> apply_direction(
-            Size direction, const Array& r) const {
+        Disposable<Array> apply_direction(Size direction, const Array& r) const override {
             if (direction == direction_)
                 return apply(r);
             else
                 return apply_mixed(r);
         }
 
-        Disposable<Array> solve_splitting(
-            Size direction, const Array& r, Real dt) const {
+        Disposable<Array> solve_splitting(Size direction, const Array& r, Real dt) const override {
 
             using namespace ext::placeholders;
             if (direction == direction_) {
@@ -444,7 +440,7 @@ namespace {
             }
         }
 
-        Disposable<Array> preconditioner(const Array& r, Real dt) const  {
+        Disposable<Array> preconditioner(const Array& r, Real dt) const override {
             return preconditioner_.solve_splitting(r, dt, 1.0);
         }
 
@@ -593,7 +589,7 @@ namespace {
             const GridSetup& setup, const Array& strikes)
         : setup_(setup), strikes_(strikes) { }
 
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             const GridSetup g = {
                 x[0], x[1],
                 setup_.cellAvg, setup_.midPoint,

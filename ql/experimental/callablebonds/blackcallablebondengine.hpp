@@ -51,7 +51,8 @@ namespace QuantLib {
         BlackCallableFixedRateBondEngine(
              const Handle<CallableBondVolatilityStructure>& yieldVolStructure,
              const Handle<YieldTermStructure>& discountCurve);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         Handle<CallableBondVolatilityStructure> volatility_;
         Handle<YieldTermStructure> discountCurve_;

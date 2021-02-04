@@ -56,9 +56,9 @@ namespace QuantLib {
         bool fixedPayer() const { return fixedPayer_; }
 
       private:
-        void setupExpired() const;
-        bool isExpired() const;
-        void performCalculations() const;
+        void setupExpired() const override;
+        bool isExpired() const override;
+        void performCalculations() const override;
 
         Real fixedAnnuity() const;
         Real parCoupon() const;
@@ -101,11 +101,11 @@ namespace QuantLib {
                         Real recoveryRate,
                         const RelinkableHandle<YieldTermStructure>& yieldTS,
                         const Period& integrationStepSize = Period());
-        Real impliedQuote() const;
-        void setTermStructure(DefaultProbabilityTermStructure*);
+        Real impliedQuote() const override;
+        void setTermStructure(DefaultProbabilityTermStructure*) override;
 
       private:
-        void update();
+        void update() override;
         void initializeDates();
 
         Period tenor_;

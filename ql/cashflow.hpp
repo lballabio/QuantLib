@@ -37,18 +37,17 @@ namespace QuantLib {
     */
     class CashFlow : public Event {
       public:
-        virtual ~CashFlow() {}
+        ~CashFlow() override {}
         //! \name Event interface
         //@{
         //! \note This is inherited from the event class
-        virtual Date date() const = 0;
+        Date date() const override = 0;
         //! returns true if an event has already occurred before a date
         /*! overloads Event::hasOccurred in order to take
             Settings::includeTodaysCashflows in account
         */
-        bool hasOccurred(
-                    const Date& refDate = Date(),
-                    boost::optional<bool> includeRefDate = boost::none) const;
+        bool hasOccurred(const Date& refDate = Date(),
+                         boost::optional<bool> includeRefDate = boost::none) const override;
         //@}
         //! \name CashFlow interface
         //@{
@@ -65,7 +64,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 

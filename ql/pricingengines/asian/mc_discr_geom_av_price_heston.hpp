@@ -60,7 +60,7 @@ namespace QuantLib {
                                           Size timeSteps = Null<Size>(),
                                           Size timeStepsPerYear = Null<Size>());
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
 
@@ -96,7 +96,8 @@ namespace QuantLib {
                                      const std::vector<Size>& fixingIndices,
                                      Real runningProduct = 1.0,
                                      Size pastFixings = 0);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;

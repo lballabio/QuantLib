@@ -38,7 +38,7 @@ namespace QuantLib {
               public:
                 Impl (Real gammaLower, Real gammaUpper)
                 : gammaLower_(gammaLower), gammaUpper_(gammaUpper) {}
-                bool test(const Array &x) const {
+                bool test(const Array& x) const override {
                     QL_REQUIRE(x.size() >= 3, "size of parameters vector < 3");
                     return x[0] > 0 && x[1] >= 0 && x[2] >= 0
                         && x[1] + x[2] < gammaUpper_
@@ -55,10 +55,11 @@ namespace QuantLib {
         class Garch11CostFunction : public CostFunction {
           public:
             explicit Garch11CostFunction (const std::vector<Volatility> &);
-            virtual Real value(const Array& x) const;
-            virtual Disposable<Array> values(const Array& x) const;
-            virtual void gradient(Array& grad, const Array& x) const;
-            virtual Real valueAndGradient(Array& grad, const Array& x) const;
+            Real value(const Array& x) const override;
+            Disposable<Array> values(const Array& x) const override;
+            void gradient(Array& grad, const Array& x) const override;
+            Real valueAndGradient(Array& grad, const Array& x) const override;
+
           private:
             const std::vector<Volatility> &r2_;
         };
@@ -143,12 +144,13 @@ namespace QuantLib {
           public:
             FitAcfProblem(Real A2, const Array &acf,
                           const std::vector<std::size_t> &idx);
-            virtual Size size();
-            virtual void targetAndValue(const Array& x, Array& target,
-                                        Array& fct2fit);
-            virtual void targetValueAndGradient(const Array& x,
-                                                Matrix& grad_fct2fit,
-                                                Array& target, Array& fct2fit);
+            Size size() override;
+            void targetAndValue(const Array& x, Array& target, Array& fct2fit) override;
+            void targetValueAndGradient(const Array& x,
+                                        Matrix& grad_fct2fit,
+                                        Array& target,
+                                        Array& fct2fit) override;
+
           private:
             Real A2_;
             Array acf_;
@@ -212,7 +214,7 @@ namespace QuantLib {
               public:
                 Impl(Real gammaLower, Real gammaUpper)
                 : gammaLower_(gammaLower), gammaUpper_(gammaUpper) {}
-                bool test(const Array &x) const {
+                bool test(const Array& x) const override {
                     QL_REQUIRE(x.size() >= 2, "size of parameters vector < 2");
                     return x[0] >= gammaLower_ && x[0] < gammaUpper_
                         && x[1] >= 0 && x[1] <= x[0];

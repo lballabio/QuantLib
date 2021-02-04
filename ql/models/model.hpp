@@ -87,7 +87,7 @@ namespace QuantLib {
       public:
         CalibratedModel(Size nArguments);
 
-        void update() {
+        void update() override {
             generateArguments();
             notifyObservers();
         }
@@ -188,7 +188,7 @@ namespace QuantLib {
             explicit Impl(const std::vector<Parameter>& arguments)
             : arguments_(arguments) {}
 
-            bool test(const Array& params) const {
+            bool test(const Array& params) const override {
                 Size k=0;
                 for (Size i=0; i<arguments_.size(); i++) {
                     Size size = arguments_[i].size();
@@ -201,7 +201,7 @@ namespace QuantLib {
                 return true;
             }
 
-            Array upperBound(const Array &params) const {
+            Array upperBound(const Array& params) const override {
                 Size k = 0, k2 = 0;
                 Size totalSize = 0;
                 for (Size i = 0; i < arguments_.size(); i++) {
@@ -221,7 +221,7 @@ namespace QuantLib {
                 return result;
             }
 
-            Array lowerBound(const Array &params) const {
+            Array lowerBound(const Array& params) const override {
                 Size k = 0, k2 = 0;
                 Size totalSize = 0;
                 for (Size i = 0; i < arguments_.size(); i++) {

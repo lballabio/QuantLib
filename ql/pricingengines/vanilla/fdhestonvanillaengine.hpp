@@ -73,10 +73,10 @@ namespace QuantLib {
                                   ext::shared_ptr<LocalVolTermStructure>(),
                               Real mixingFactor = 1.0);
 
-        void calculate() const;
-        
+        void calculate() const override;
+
         // multiple strikes caching engine
-        void update();
+        void update() override;
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
         // helper method for Heston like engines

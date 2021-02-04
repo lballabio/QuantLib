@@ -59,7 +59,7 @@ namespace QuantLib {
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
         }
 
-        virtual void setupArguments(const PricingEngine::arguments* a) const {
+        void setupArguments(const PricingEngine::arguments* a) const override {
             FDVanillaEngine::setupArguments(a);
             const OneAssetOption::arguments *args =
                 dynamic_cast<const OneAssetOption::arguments*>(a);

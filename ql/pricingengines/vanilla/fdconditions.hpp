@@ -57,7 +57,7 @@ namespace QuantLib {
              bool timeDependent = false)
         : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
       protected:
-        void initializeStepCondition() const {
+        void initializeStepCondition() const override {
             Time residualTime = baseEngine::getResidualTime();
             Rate riskFreeRate = baseEngine::process_->riskFreeRate()
                 ->zeroRate(residualTime, Continuous);

@@ -133,7 +133,7 @@ namespace QuantLib {
         void raise() { up_ = true; }
         void lower() { up_ = false; }
         bool isUp() const { return up_; }
-        void update() { raise(); }
+        void update() override { raise(); }
     };
 
     template<class Iterator>

@@ -60,11 +60,11 @@ namespace QuantLib {
         //! \name FloatingRateCoupon interface
         //@{
         //! Implemented in order to manage the case of par coupon
-        Rate indexFixing() const;
+        Rate indexFixing() const override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         ext::shared_ptr<IborIndex> iborIndex_;

@@ -52,20 +52,20 @@ namespace QuantLib {
                                   const DayCounter& dc = DayCounter());
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
-        Date maxDate() const;
-        Time maxTime() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         //! returns the spreaded zero yield rate
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time) const override;
         //! returns the spreaded forward rate
         /* This method must disappear should the spread become a curve */
         Rate forwardImpl(Time) const;

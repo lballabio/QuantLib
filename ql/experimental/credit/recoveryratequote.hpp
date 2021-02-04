@@ -40,9 +40,9 @@ namespace QuantLib {
                           Seniority seniority = NoSeniority);
         //! \name Quote interface
         //@{
-        Real value() const;
+        Real value() const override;
         Seniority seniority() const;
-        bool isValid() const;
+        bool isValid() const override;
         //@}
         //! \name Modifiers
         //@{

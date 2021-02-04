@@ -44,7 +44,7 @@ namespace QuantLib {
         }
 
       protected:
-        Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
+        Rate adjustedFixing(Rate fixing = Null<Rate>()) const override;
 
       private:
         Handle<BlackVolTermStructure> fxRateBlackVolatility_;
