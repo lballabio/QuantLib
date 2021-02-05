@@ -61,15 +61,14 @@ namespace QuantLib {
         ExtOUWithJumpsProcess(
             const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
             Real Y0, Real beta, Real jumpIntensity, Real eta);
-        
-        Size size() const;
-        Size factors() const;
 
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        Size size() const override;
+        Size factors() const override;
+
+        Disposable<Array> initialValues() const override;
+        Disposable<Array> drift(Time t, const Array& x) const override;
+        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
+        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
                                  getExtendedOrnsteinUhlenbeckProcess() const;

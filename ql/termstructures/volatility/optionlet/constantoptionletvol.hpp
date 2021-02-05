@@ -65,21 +65,21 @@ namespace QuantLib {
                                     Real displacement = 0.0);
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
-        VolatilityType volatilityType() const;
-        Real displacement() const;
+        VolatilityType volatilityType() const override;
+        Real displacement() const override;
 
       protected:
-        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const;
-        ext::shared_ptr<SmileSection> smileSectionImpl(Time) const;
-        Volatility volatilityImpl(Time,
-                                  Rate) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const override;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time) const override;
+        Volatility volatilityImpl(Time, Rate) const override;
+
       private:
         Handle<Quote> volatility_;
         VolatilityType type_;

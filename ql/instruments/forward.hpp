@@ -76,7 +76,7 @@ namespace QuantLib {
         //! term structure that discounts the underlying's income cash flows
         Handle<YieldTermStructure> incomeDiscountCurve() const;
         //! returns whether the instrument is still tradable.
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
 
         //! returns spot value/price of an underlying financial instrument
@@ -119,7 +119,7 @@ namespace QuantLib {
                 const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>());
 
-        void performCalculations() const;
+        void performCalculations() const override;
         /*! derived classes must set this, typically via spotIncome() */
         mutable Real underlyingIncome_;
         /*! derived classes must set this, typically via spotValue() */
@@ -153,9 +153,9 @@ namespace QuantLib {
         Real strike() const { return strike_; };
         //! \name Payoff interface
         //@{
-        std::string name() const { return "Forward";}
-        std::string description() const;
-        Real operator()(Real price) const;
+        std::string name() const override { return "Forward"; }
+        std::string description() const override;
+        Real operator()(Real price) const override;
         //@}
       protected:
         Position::Type type_;

@@ -56,8 +56,8 @@ namespace QuantLib {
       private:
         class BmvImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Mexican stock exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Mexican stock exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { BMV    //!< Mexican stock exchange

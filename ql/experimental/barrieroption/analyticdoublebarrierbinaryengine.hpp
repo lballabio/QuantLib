@@ -52,7 +52,8 @@ namespace QuantLib {
       public:
         explicit AnalyticDoubleBarrierBinaryEngine(
                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };

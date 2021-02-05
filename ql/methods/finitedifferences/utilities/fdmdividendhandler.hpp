@@ -41,9 +41,9 @@ namespace QuantLib {
                            const Date& referenceDate,
                            const DayCounter& dayCounter,
                            Size equityDirection);
-        
-        void applyTo(Array& a, Time t) const;
- 
+
+        void applyTo(Array& a, Time t) const override;
+
         const std::vector<Time>& dividendTimes() const;
         const std::vector<Date>& dividendDates() const;
         const std::vector<Real>& dividends() const;

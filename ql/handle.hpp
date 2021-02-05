@@ -48,7 +48,8 @@ namespace QuantLib {
                         bool registerAsObserver);
             bool empty() const { return !h_; }
             const ext::shared_ptr<T>& currentLink() const { return h_; }
-            void update() { notifyObservers(); }
+            void update() override { notifyObservers(); }
+
           private:
             ext::shared_ptr<T> h_;
             bool isObserver_;

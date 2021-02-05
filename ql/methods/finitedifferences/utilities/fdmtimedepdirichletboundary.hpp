@@ -51,11 +51,11 @@ namespace QuantLib {
             const ext::function<Disposable<Array> (Real)>& valueOnBoundary,
             Size direction, Side side);
 
-        void setTime(Time);
-        void applyBeforeApplying(operator_type&) const {}
-        void applyBeforeSolving(operator_type&, array_type&) const {}
-        void applyAfterApplying(array_type&) const;
-        void applyAfterSolving(array_type&) const;
+        void setTime(Time) override;
+        void applyBeforeApplying(operator_type&) const override {}
+        void applyBeforeSolving(operator_type&, array_type&) const override {}
+        void applyAfterApplying(array_type&) const override;
+        void applyAfterSolving(array_type&) const override;
 
       private:
         const std::vector<Size> indices_;

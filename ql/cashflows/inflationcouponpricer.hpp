@@ -53,22 +53,22 @@ namespace QuantLib {
     class InflationCouponPricer: public virtual Observer,
                                  public virtual Observable {
     public:
-        virtual ~InflationCouponPricer() {}
-        //! \name Interface
-        //@{
-        virtual Real swapletPrice() const = 0;
-        virtual Rate swapletRate() const = 0;
-        virtual Real capletPrice(Rate effectiveCap) const = 0;
-        virtual Rate capletRate(Rate effectiveCap) const = 0;
-        virtual Real floorletPrice(Rate effectiveFloor) const = 0;
-        virtual Rate floorletRate(Rate effectiveFloor) const = 0;
-        virtual void initialize(const InflationCoupon&) = 0;
-        //@}
+      ~InflationCouponPricer() override {}
+      //! \name Interface
+      //@{
+      virtual Real swapletPrice() const = 0;
+      virtual Rate swapletRate() const = 0;
+      virtual Real capletPrice(Rate effectiveCap) const = 0;
+      virtual Rate capletRate(Rate effectiveCap) const = 0;
+      virtual Real floorletPrice(Rate effectiveFloor) const = 0;
+      virtual Rate floorletRate(Rate effectiveFloor) const = 0;
+      virtual void initialize(const InflationCoupon&) = 0;
+      //@}
 
-        //! \name Observer interface
-        //@{
-        virtual void update(){notifyObservers();}
-        //@}
+      //! \name Observer interface
+      //@{
+      void update() override { notifyObservers(); }
+      //@}
     protected:
         Handle<YieldTermStructure> rateCurve_;
         Date paymentDate_;
@@ -111,13 +111,13 @@ namespace QuantLib {
 
         //! \name InflationCouponPricer interface
         //@{
-        virtual Real swapletPrice() const;
-        virtual Rate swapletRate() const;
-        virtual Real capletPrice(Rate effectiveCap) const;
-        virtual Rate capletRate(Rate effectiveCap) const;
-        virtual Real floorletPrice(Rate effectiveFloor) const;
-        virtual Rate floorletRate(Rate effectiveFloor) const;
-        virtual void initialize(const InflationCoupon&);
+        Real swapletPrice() const override;
+        Rate swapletRate() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Rate capletRate(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
+        Rate floorletRate(Rate effectiveFloor) const override;
+        void initialize(const InflationCoupon&) override;
         //@}
 
       protected:
@@ -166,8 +166,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& nominalTermStructure)
         : YoYInflationCouponPricer(capletVol, nominalTermStructure) {}
       protected:
-        Real optionletPriceImp(Option::Type, Real strike,
-                               Real forward, Real stdDev) const;
+        Real optionletPriceImp(Option::Type, Real strike, Real forward, Real stdDev) const override;
     };
 
 
@@ -191,8 +190,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& nominalTermStructure)
         : YoYInflationCouponPricer(capletVol, nominalTermStructure) {}
       protected:
-        Real optionletPriceImp(Option::Type, Real strike,
-                               Real forward, Real stdDev) const;
+        Real optionletPriceImp(Option::Type, Real strike, Real forward, Real stdDev) const override;
     };
 
 
@@ -216,8 +214,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& nominalTermStructure)
         : YoYInflationCouponPricer(capletVol, nominalTermStructure) {}
       protected:
-        Real optionletPriceImp(Option::Type, Real strike,
-                               Real forward, Real stdDev) const;
+        Real optionletPriceImp(Option::Type, Real strike, Real forward, Real stdDev) const override;
     };
 
 }

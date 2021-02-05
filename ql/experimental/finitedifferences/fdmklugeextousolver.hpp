@@ -58,7 +58,7 @@ namespace QuantLib {
         }
 
       protected:
-        void performCalculations() const {
+        void performCalculations() const override {
             ext::shared_ptr<FdmLinearOpComposite>op(
                 new FdmKlugeExtOUOp(solverDesc_.mesher,
                                     klugeOUProcess_.currentLink(),

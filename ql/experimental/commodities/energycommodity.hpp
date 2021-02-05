@@ -93,8 +93,8 @@ namespace QuantLib {
         virtual Quantity quantity() const = 0;
         const CommodityType& commodityType() const;
 
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
       protected:
         static Real calculateFxConversionFactor(const Currency& fromCurrency,
@@ -119,7 +119,7 @@ namespace QuantLib {
       public:
         Currency currency;
         UnitOfMeasure unitOfMeasure;
-        void validate() const {}
+        void validate() const override {}
     };
 
     class EnergyCommodity::results : public Instrument::results {
@@ -127,9 +127,7 @@ namespace QuantLib {
         Real NPV;
         Currency currency;
         UnitOfMeasure unitOfMeasure;
-        void reset() {
-            Instrument::results::reset();
-        }
+        void reset() override { Instrument::results::reset(); }
     };
 
     class EnergyCommodity::engine

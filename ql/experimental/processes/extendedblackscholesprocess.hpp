@@ -45,9 +45,10 @@ namespace QuantLib {
             const ext::shared_ptr<discretization>& d =
                   ext::shared_ptr<discretization>(new EulerDiscretization),
             Discretization evolDisc = Milstein);
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
-        Real evolve(Time t0, Real x0, Time dt, Real dw) const;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
+        Real evolve(Time t0, Real x0, Time dt, Real dw) const override;
+
       private:
         const Discretization discretization_;
     };

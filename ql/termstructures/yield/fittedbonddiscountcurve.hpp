@@ -115,20 +115,20 @@ namespace QuantLib {
         //! total number of bonds used to fit the yield curve
         Size numberOfBonds() const;
         //! the latest date for which the curve can return values
-        Date maxDate() const;
+        Date maxDate() const override;
         //! class holding the results of the fit
         const FittingMethod& fitResults() const;
         //@}
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
 
       private:
         void setup();
-        void performCalculations() const;
-        DiscountFactor discountImpl(Time) const;
+        void performCalculations() const override;
+        DiscountFactor discountImpl(Time) const override;
         // target accuracy level to be used in the optimization routine
         Real accuracy_;
         // max number of evaluations to be used in the optimization routine

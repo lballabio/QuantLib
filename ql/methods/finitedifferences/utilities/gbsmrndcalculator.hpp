@@ -36,11 +36,11 @@ namespace QuantLib {
         explicit GBSMRNDCalculator(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 
-        Real pdf(Real s, Time t) const;
-        Real cdf(Real s, Time t) const;
-        Real invcdf(Real q, Time t) const;
+        Real pdf(Real s, Time t) const override;
+        Real cdf(Real s, Time t) const override;
+        Real invcdf(Real q, Time t) const override;
 
-    private:
+      private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 }

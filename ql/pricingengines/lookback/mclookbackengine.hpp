@@ -51,7 +51,7 @@ namespace QuantLib {
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed);
-        void calculate() const {
+        void calculate() const override {
             Real spot = process_->x0();
             QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
@@ -62,10 +62,11 @@ namespace QuantLib {
                 this->results_.errorEstimate =
                     this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
@@ -73,7 +74,7 @@ namespace QuantLib {
                          new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, timeStepsPerYear_;

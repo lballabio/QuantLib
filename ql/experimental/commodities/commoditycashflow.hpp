@@ -49,11 +49,11 @@ namespace QuantLib {
           finalized_(finalized) {}
         //! \name Event interface
         //@{
-        Date date() const { return date_; }
+        Date date() const override { return date_; }
         //@}
         //! \name CashFlow interface
         //@{
-        Real amount() const { return discountedAmount_.value(); }
+        Real amount() const override { return discountedAmount_.value(); }
         //@}
         const Currency& currency() const {
             return discountedAmount_.currency();
@@ -73,7 +73,7 @@ namespace QuantLib {
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         Date date_;

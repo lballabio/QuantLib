@@ -47,13 +47,13 @@ namespace QuantLib {
                 const std::vector<Spread>& displacements);
         //! \name MarketModel interface
         //@{
-        const std::vector<Rate>& initialRates() const;
-        const std::vector<Spread>& displacements() const;
-        const EvolutionDescription& evolution() const;
-        Size numberOfRates() const;
-        Size numberOfFactors() const;
-        Size numberOfSteps() const;
-        const Matrix& pseudoRoot(Size i) const;
+        const std::vector<Rate>& initialRates() const override;
+        const std::vector<Spread>& displacements() const override;
+        const EvolutionDescription& evolution() const override;
+        Size numberOfRates() const override;
+        Size numberOfFactors() const override;
+        Size numberOfSteps() const override;
+        const Matrix& pseudoRoot(Size i) const override;
         //@}
       private:
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;

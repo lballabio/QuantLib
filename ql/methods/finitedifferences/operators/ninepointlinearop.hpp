@@ -50,13 +50,13 @@ namespace QuantLib {
         NinePointLinearOp& operator=(const Disposable<NinePointLinearOp>& m);
         #endif
 
-        Disposable<Array> apply(const Array& r) const;
+        Disposable<Array> apply(const Array& r) const override;
         Disposable<NinePointLinearOp> mult(const Array& u) const;
 
         void swap(NinePointLinearOp& m);
 
 #if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<SparseMatrix> toMatrix() const;
+        Disposable<SparseMatrix> toMatrix() const override;
 #endif
 
       protected:

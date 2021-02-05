@@ -42,9 +42,9 @@ namespace QuantLib {
         class Impl : public Calendar::Impl {
           public:
             explicit Impl(const std::string& name = "");
-            std::string name() const;
-            bool isWeekend(Weekday) const;
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override;
+            bool isWeekend(Weekday) const override;
+            bool isBusinessDay(const Date&) const override;
             void addWeekend(Weekday);
           private:
             std::set<Weekday> weekend_;

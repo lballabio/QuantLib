@@ -244,7 +244,8 @@ namespace QuantLib {
         /*! Returns the loss amount at the requested date for which the 
         probability of lossing that amount or less is equal to the value passed.
         */
-        Real percentile(const Date& d, Probability percentile) const;
+      Real percentile(const Date& d, Probability percentile) const override;
+
     protected:
         /*! Conditional (on the mkt factor) prob of a loss fraction of
             the the tranched portfolio.
@@ -261,10 +262,10 @@ namespace QuantLib {
             Real loss, 
             const std::vector<Real>& mktFactor) const;
     public:
-        Probability probOverLoss(const Date& d, Real trancheLossFract) const;
+      Probability probOverLoss(const Date& d, Real trancheLossFract) const override;
 
-        Disposable<std::map<Real, Probability> > 
-            lossDistribution(const Date& d) const;
+      Disposable<std::map<Real, Probability> > lossDistribution(const Date& d) const override;
+
     protected:
         /*! 
             Probability of having losses in the portfolio due to default 
@@ -283,8 +284,9 @@ namespace QuantLib {
             const std::vector<Real>& mktFactor) const;
     public:
         Probability probOverPortfLoss(const Date& d, Real loss) const;
-        Real expectedTrancheLoss(const Date& d) const;
-    protected:
+        Real expectedTrancheLoss(const Date& d) const override;
+
+      protected:
         /*!
         Probability density of having losses in the total portfolio (untranched)
         due to default events equal to a given value on a given date conditional
@@ -323,9 +325,9 @@ namespace QuantLib {
             The passed loss is the loss amount level at which we want
             to request the sensitivity. Equivalent to a percentile.
         */
-        Disposable<std::vector<Real> > 
-            splitVaRLevel(const Date& date, Real loss) const;
-        Real expectedShortfall(const Date&d, Probability percentile) const;
+      Disposable<std::vector<Real> > splitVaRLevel(const Date& date, Real loss) const override;
+      Real expectedShortfall(const Date& d, Probability percentile) const override;
+
     protected:
         Real conditionalExpectedLoss(
             const std::vector<Real>& invUncondProbs,
@@ -334,7 +336,7 @@ namespace QuantLib {
             const std::vector<Real>& invUncondProbs,
             const std::vector<Real>& mktFactor) const;
 
-        void resetModel() {
+        void resetModel() override {
             remainingNotionals_ = basket_->remainingNotionals();
             remainingNotional_  = basket_->remainingNotional();
             attachRatio_ = std::min(basket_->remainingAttachmentAmount() 

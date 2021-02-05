@@ -49,9 +49,9 @@ namespace QuantLib {
                      Rate shift = 0.0);
         SmileSection() {}
 
-        virtual ~SmileSection() {}
+        ~SmileSection() override {}
 
-        virtual void update();
+        void update() override;
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
         Real variance(Rate strike) const;

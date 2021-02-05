@@ -45,20 +45,21 @@ namespace QuantLib {
                                 const Date& referenceDate);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return originalTS_->dayCounter(); }
-        Date maxDate() const;
+        DayCounter dayCounter() const override { return originalTS_->dayCounter(); }
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        virtual Real blackVarianceImpl(Time t, Real strike) const;
+        Real blackVarianceImpl(Time t, Real strike) const override;
+
       private:
         Handle<BlackVolTermStructure> originalTS_;
     };

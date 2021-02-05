@@ -88,7 +88,7 @@ namespace QuantLib {
                 registerWith(discountCurve_);
         }
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const int integrationPoints_;

@@ -53,7 +53,7 @@ namespace QuantLib {
         Real gammaXYat(Real x, Real y) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const Handle<GeneralizedBlackScholesProcess> p1_;

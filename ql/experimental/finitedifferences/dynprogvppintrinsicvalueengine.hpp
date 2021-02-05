@@ -42,7 +42,7 @@ namespace QuantLib {
             Real fuelCostAddon,
             const ext::shared_ptr<YieldTermStructure>& rTS);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const std::vector<Real> fuelPrices_;

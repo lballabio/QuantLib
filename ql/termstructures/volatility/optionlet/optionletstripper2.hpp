@@ -53,7 +53,7 @@ namespace QuantLib {
 
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
       private:
         std::vector<Volatility> spreadsVolImplied() const;

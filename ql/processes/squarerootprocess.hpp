@@ -47,9 +47,9 @@ namespace QuantLib {
                   ext::shared_ptr<discretization>(new EulerDiscretization));
         //! \name StochasticProcess interface
         //@{
-        Real x0() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
+        Real x0() const override;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
         //@}
 
         Real a() const { return speed_;  }

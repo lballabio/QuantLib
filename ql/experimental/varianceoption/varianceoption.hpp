@@ -47,7 +47,7 @@ namespace QuantLib {
                        const Date& maturityDate);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
         //! \name Inspectors
         //@{
@@ -56,7 +56,8 @@ namespace QuantLib {
         Real notional() const;
         ext::shared_ptr<Payoff> payoff() const;
         //@}
-        void setupArguments(PricingEngine::arguments* args) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+
       protected:
         // data members
         ext::shared_ptr<Payoff> payoff_;
@@ -69,7 +70,7 @@ namespace QuantLib {
     class VarianceOption::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() : notional(Null<Real>()) {}
-        void validate() const;
+        void validate() const override;
         ext::shared_ptr<Payoff> payoff;
         Real notional;
         Date startDate;

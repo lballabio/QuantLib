@@ -47,7 +47,8 @@ namespace QuantLib {
       public:
         AnalyticBarrierEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;

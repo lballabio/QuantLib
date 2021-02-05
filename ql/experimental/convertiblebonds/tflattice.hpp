@@ -53,8 +53,8 @@ namespace QuantLib {
                       Array& newValues,
                       Array& newConversionProbability,
                       Array& newSpreadAdjustedRate) const;
-        void rollback(DiscretizedAsset&, Time to) const;
-        void partialRollback(DiscretizedAsset&, Time to) const;
+        void rollback(DiscretizedAsset&, Time to) const override;
+        void partialRollback(DiscretizedAsset&, Time to) const override;
 
       private:
         Spread creditSpread_;

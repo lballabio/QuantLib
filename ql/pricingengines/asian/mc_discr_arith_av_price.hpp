@@ -67,9 +67,9 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
             ext::shared_ptr<GeneralizedBlackScholesProcess> process =
                 ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                     this->process_);
@@ -87,7 +87,8 @@ namespace QuantLib {
                                 DiscountFactor discount,
                                 Real runningSum = 0.0,
                                 Size pastFixings = 0);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;

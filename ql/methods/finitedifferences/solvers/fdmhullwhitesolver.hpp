@@ -43,7 +43,7 @@ namespace QuantLib {
         Real valueAt(Real r) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const Handle<HullWhite> model_;

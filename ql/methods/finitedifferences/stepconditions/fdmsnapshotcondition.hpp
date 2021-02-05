@@ -34,7 +34,7 @@ namespace QuantLib {
     public:
         explicit FdmSnapshotCondition(Time t);
 
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
         Time getTime() const;       
         const Array& getValues() const;
 

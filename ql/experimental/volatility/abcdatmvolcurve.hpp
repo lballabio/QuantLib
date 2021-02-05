@@ -62,17 +62,17 @@ namespace QuantLib {
         EndCriteria::Type endCriteria() const;
         //! \name TermStructure interface
         //@{
-        virtual Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name LazyObject interface
         //@{
-        void update();
-        void performCalculations() const;
+        void update() override;
+        void performCalculations() const override;
         //@}
         //! \name some inspectors
         //@{
@@ -83,15 +83,15 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         //! \name BlackAtmVolCurve interface
         //@{
         //! spot at-the-money variance calculation (k adjusted)
-        virtual Real atmVarianceImpl(Time t) const;
+        Real atmVarianceImpl(Time t) const override;
         //! spot at-the-money volatility calculation (k adjusted)
-        virtual Volatility atmVolImpl(Time t) const;
+        Volatility atmVolImpl(Time t) const override;
         //@}
       private:
         void checkInputs() const;

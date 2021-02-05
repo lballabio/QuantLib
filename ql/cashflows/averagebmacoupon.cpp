@@ -30,11 +30,11 @@ namespace QuantLib {
 
         class AverageBMACouponPricer : public FloatingRateCouponPricer {
           public:
-            void initialize(const FloatingRateCoupon& coupon) {
+            void initialize(const FloatingRateCoupon& coupon) override {
                 coupon_ = dynamic_cast<const AverageBMACoupon*>(&coupon);
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
-            Rate swapletRate() const {
+            Rate swapletRate() const override {
                 const std::vector<Date>& fixingDates = coupon_->fixingDates();
                 const ext::shared_ptr<InterestRateIndex>& index =
                     coupon_->index();
@@ -79,21 +79,12 @@ namespace QuantLib {
                 return coupon_->gearing()*avgBMA + coupon_->spread();
             }
 
-            Real swapletPrice() const {
-                QL_FAIL("not available");
-            }
-            Real capletPrice(Rate) const {
-                QL_FAIL("not available");
-            }
-            Rate capletRate(Rate) const {
-                QL_FAIL("not available");
-            }
-            Real floorletPrice(Rate) const {
-                QL_FAIL("not available");
-            }
-            Rate floorletRate(Rate) const {
-                QL_FAIL("not available");
-            }
+            Real swapletPrice() const override { QL_FAIL("not available"); }
+            Real capletPrice(Rate) const override { QL_FAIL("not available"); }
+            Rate capletRate(Rate) const override { QL_FAIL("not available"); }
+            Real floorletPrice(Rate) const override { QL_FAIL("not available"); }
+            Rate floorletRate(Rate) const override { QL_FAIL("not available"); }
+
           private:
             const AverageBMACoupon* coupon_;
         };

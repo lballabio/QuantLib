@@ -128,11 +128,12 @@ namespace QuantLib {
                 inverseCumulativeY(prob, iName), iName, mktFactors);
         }
     protected:
-        void update() {
-            if (basket_ != 0)
-                basket_->notifyObservers();
-            LatentModel<copulaPolicy>::update();
-        }
+      void update() override {
+          if (basket_ != 0)
+              basket_->notifyObservers();
+          LatentModel<copulaPolicy>::update();
+      }
+
     public:// open since users access it for performance on joint integrations.
 
         /*! Returns the probability of default of a given name conditional on
@@ -201,9 +202,9 @@ namespace QuantLib {
         Real conditionalProbAtLeastNEvents(Size n, const Date& date,
             const std::vector<Real>& mktFactors) const;
         //! access to integration:
-        const ext::shared_ptr<LMIntegration>& 
-            integration() const { return integration_; }
-    public:
+        const ext::shared_ptr<LMIntegration>& integration() const override { return integration_; }
+
+      public:
         /*! Computes the unconditional probability of default of a given name. 
         Trivial method for testing
         */

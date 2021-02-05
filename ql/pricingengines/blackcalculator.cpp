@@ -34,11 +34,11 @@ namespace QuantLib {
         BlackCalculator& black_;
       public:
         explicit Calculator(BlackCalculator& black) : black_(black) {}
-        void visit(Payoff&);
-        void visit(PlainVanillaPayoff&);
-        void visit(CashOrNothingPayoff&);
-        void visit(AssetOrNothingPayoff&);
-        void visit(GapPayoff&);
+        void visit(Payoff&) override;
+        void visit(PlainVanillaPayoff&) override;
+        void visit(CashOrNothingPayoff&) override;
+        void visit(AssetOrNothingPayoff&) override;
+        void visit(GapPayoff&) override;
     };
 
 

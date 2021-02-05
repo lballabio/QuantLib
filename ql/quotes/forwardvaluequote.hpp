@@ -38,10 +38,11 @@ namespace QuantLib {
                           const Date& fixingDate);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
-        void update();
+        void update() override;
+
       private:
         ext::shared_ptr<Index> index_;
         Date fixingDate_;

@@ -45,7 +45,7 @@ namespace QuantLib {
           public:
             AbcdError(AbcdCalibration* abcd) : abcd_(abcd) {}
 
-            Real value(const Array& x) const {
+            Real value(const Array& x) const override {
                 const Array y = abcd_->transformation_->direct(x);
                 abcd_->a_ = y[0];
                 abcd_->b_ = y[1];
@@ -53,7 +53,7 @@ namespace QuantLib {
                 abcd_->d_ = y[3];
                 return abcd_->error();
             }
-            Disposable<Array> values(const Array& x) const {
+            Disposable<Array> values(const Array& x) const override {
                 const Array y = abcd_->transformation_->direct(x);
                 abcd_->a_ = y[0];
                 abcd_->b_ = y[1];
@@ -61,6 +61,7 @@ namespace QuantLib {
                 abcd_->d_ = y[3];
                 return abcd_->errors();
             }
+
           private:
             AbcdCalibration* abcd_;
         };
@@ -69,9 +70,10 @@ namespace QuantLib {
           public:
             AbcdParametersTransformation() : y_(Array(4)) {}
             // to constrained <- from unconstrained
-            Array direct(const Array& x) const;
+            Array direct(const Array& x) const override;
             // to unconstrained <- from constrained
-            Array inverse(const Array& x) const;
+            Array inverse(const Array& x) const override;
+
           private:
             mutable Array y_;
         };

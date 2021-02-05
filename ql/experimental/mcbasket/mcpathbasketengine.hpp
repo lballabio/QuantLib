@@ -58,7 +58,7 @@ namespace QuantLib {
                            Size maxSamples,
                            BigNatural seed);
 
-        void calculate() const {
+        void calculate() const override {
             McSimulation<MultiVariate,RNG,S>::calculate(requiredTolerance_,
                                                         requiredSamples_,
                                                         maxSamples_);
@@ -93,7 +93,8 @@ namespace QuantLib {
                                     const std::vector<Size> & timePositions,
                                     const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
                                     const Array & discounts);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         ext::shared_ptr<PathPayoff> payoff_;
         std::vector<Size> timePositions_;

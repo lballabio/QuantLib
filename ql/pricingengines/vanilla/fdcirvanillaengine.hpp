@@ -55,7 +55,7 @@ namespace QuantLib {
             const FdmSchemeDesc& schemeDesc,
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
-        void calculate() const;
+        void calculate() const override;
 
         FdmSolverDesc getSolverDesc(Real equityScaleFactor) const;
 

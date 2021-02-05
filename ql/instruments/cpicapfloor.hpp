@@ -92,9 +92,9 @@ namespace QuantLib {
 
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results* r) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results* r) const override;
         //@}
 
     protected:
@@ -128,13 +128,13 @@ namespace QuantLib {
         Period observationLag;
         CPI::InterpolationType observationInterpolation;
 
-        void validate() const;
+        void validate() const override;
     };
 
 
     class CPICapFloor::results : public Instrument::results {
     public:
-        void reset();
+      void reset() override;
     };
 
 

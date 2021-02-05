@@ -48,7 +48,7 @@ namespace QuantLib {
         BlackCapFloorEngine(const Handle< YieldTermStructure > &discountCurve,
                             const Handle< OptionletVolatilityStructure > &vol,
                             Real displacement = Null< Real >());
-        void calculate() const;
+        void calculate() const override;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<OptionletVolatilityStructure> volatility() { return vol_; }
         Real displacement() const { return displacement_; }

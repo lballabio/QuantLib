@@ -276,9 +276,7 @@ namespace normal_clv_model_test {
         CLVModelPayoff(Option::Type type, Real strike, const ext::function<Real(Real)>& g)
         : PlainVanillaPayoff(type, strike), g_(g) {}
 
-        Real operator()(Real x) const {
-            return PlainVanillaPayoff::operator()(g_(x));
-        }
+        Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
       private:
         const ext::function<Real(Real)> g_;

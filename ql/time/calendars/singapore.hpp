@@ -60,8 +60,8 @@ namespace QuantLib {
       private:
         class SgxImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Singapore exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Singapore exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { SGX    //!< Singapore exchange

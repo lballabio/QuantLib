@@ -41,7 +41,7 @@ namespace QuantLib {
         Option(const ext::shared_ptr<Payoff>& payoff,
                const ext::shared_ptr<Exercise>& exercise)
         : payoff_(payoff), exercise_(exercise) {}
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
         ext::shared_ptr<Payoff> payoff() { return payoff_; }
         ext::shared_ptr<Exercise> exercise() { return exercise_; };
       protected:
@@ -57,7 +57,7 @@ namespace QuantLib {
     class Option::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() {}
-        void validate() const {
+        void validate() const override {
             QL_REQUIRE(payoff, "no payoff given");
             QL_REQUIRE(exercise, "no exercise given");
         }
@@ -68,10 +68,7 @@ namespace QuantLib {
     //! additional %option results
     class Greeks : public virtual PricingEngine::results {
       public:
-        void reset() {
-            delta =  gamma = theta = vega =
-                rho = dividendRho = Null<Real>();
-        }
+        void reset() override { delta = gamma = theta = vega = rho = dividendRho = Null<Real>(); }
         Real delta, gamma;
         Real theta;
         Real vega;
@@ -81,7 +78,7 @@ namespace QuantLib {
     //! more additional %option results
     class MoreGreeks : public virtual PricingEngine::results {
       public:
-        void reset() {
+        void reset() override {
             itmCashProbability = deltaForward = elasticity = thetaPerDay =
                 strikeSensitivity = Null<Real>();
         }

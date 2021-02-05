@@ -80,7 +80,7 @@ namespace QuantLib {
             Real andersenPiterbargEpsilon = 1e-8);
 
 
-        void calculate() const;
+        void calculate() const override;
         Size numberOfEvaluations() const;
 
         // normalized characteristic function

@@ -67,7 +67,7 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
         // calculate variance via Monte Carlo
-        void calculate() const {
+        void calculate() const override {
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
@@ -98,12 +98,13 @@ namespace QuantLib {
                 results_.errorEstimate = multiplier * varianceError;
             }
         }
+
       protected:
         // McSimulation implementation
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
-        TimeGrid timeGrid() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        TimeGrid timeGrid() const override;
 
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
 
@@ -156,7 +157,8 @@ namespace QuantLib {
         VariancePathPricer(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
         : process_(process) {}
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };

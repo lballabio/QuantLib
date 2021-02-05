@@ -36,7 +36,7 @@ namespace QuantLib {
           const ext::shared_ptr<CatRisk>& catRisk,
           const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
           const boost::optional<bool>& includeSettlementDateFlows = boost::none);
-      void calculate() const;
+      void calculate() const override;
       Handle<YieldTermStructure> discountCurve() const { return discountCurve_; }
     protected:
       Real cashFlowRiskyValue(const ext::shared_ptr<CashFlow>& cf,

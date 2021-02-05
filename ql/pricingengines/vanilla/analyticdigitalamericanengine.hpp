@@ -56,7 +56,7 @@ namespace QuantLib {
       public:
         AnalyticDigitalAmericanEngine(
                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
-        virtual void calculate() const;
+        void calculate() const override;
         virtual bool knock_in() const {
            return true;
         }
@@ -93,9 +93,7 @@ namespace QuantLib {
                     const ext::shared_ptr<GeneralizedBlackScholesProcess> 
                                  &engine):
         AnalyticDigitalAmericanEngine(engine) {}
-        virtual bool knock_in() const {
-           return false;
-        }
+        bool knock_in() const override { return false; }
     };
 
 }

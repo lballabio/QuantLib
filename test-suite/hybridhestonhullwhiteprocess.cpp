@@ -1196,12 +1196,13 @@ namespace hybrid_heston_hullwhite_process_test {
             explicit Impl(Real equityShortRateCorr)
             : equityShortRateCorr_(equityShortRateCorr) {}
 
-            bool test(const Array& params) const {
+            bool test(const Array& params) const override {
                 const Real rho = params[3];
 
                 return (  square<Real>()(rho)
                         + square<Real>()(equityShortRateCorr_) <= 1.0);
             }
+
           private:
             const Real equityShortRateCorr_;
         };

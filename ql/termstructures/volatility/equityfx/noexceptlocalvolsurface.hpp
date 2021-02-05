@@ -48,7 +48,7 @@ namespace QuantLib {
           illegalLocalVolOverwrite_(illegalLocalVolOverwrite) { }
 
       protected:
-        Volatility localVolImpl(Time t, Real s) const {
+        Volatility localVolImpl(Time t, Real s) const override {
             Volatility vol;
             try {
                 vol = LocalVolSurface::localVolImpl(t, s);

@@ -108,7 +108,8 @@ namespace QuantLib {
               Handle<DefaultProbabilityTermStructure>(),
           Real invstRecoveryRate = 0.999);
       //@}
-      void calculate() const;
+      void calculate() const override;
+
     private:
       Handle<PricingEngine> baseSwapEngine_;
       Handle<PricingEngine> swaptionletEngine_;

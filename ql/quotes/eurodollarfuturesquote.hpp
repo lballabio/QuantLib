@@ -44,11 +44,11 @@ namespace QuantLib {
                                             Natural maxIter = 100);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
         mutable Real impliedStdev_;
         Real strike_;
         Real accuracy_;

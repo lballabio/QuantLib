@@ -45,7 +45,7 @@ namespace QuantLib {
                       const FdmSchemeDesc& schemeDesc,
                       const ext::shared_ptr<FdmLinearOpComposite>& op);
 
-        void performCalculations() const;
+        void performCalculations() const override;
 
         Real interpolateAt(const std::vector<Real>& x) const;
         Real thetaAt(const std::vector<Real>& x) const;

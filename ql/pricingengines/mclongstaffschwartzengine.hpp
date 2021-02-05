@@ -85,15 +85,15 @@ namespace QuantLib {
             boost::optional<bool> antitheticVariateCalibration = boost::none,
             BigNatural seedCalibration = Null<Size>());
 
-        void calculate() const;
+        void calculate() const override;
 
       protected:
         virtual ext::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
                                                    lsmPathPricer() const = 0;
 
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const;
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override;
 
         ext::shared_ptr<StochasticProcess> process_;
         const Size timeSteps_;

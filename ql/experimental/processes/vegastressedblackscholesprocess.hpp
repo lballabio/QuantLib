@@ -46,7 +46,7 @@ namespace QuantLib {
                   ext::shared_ptr<discretization>(new EulerDiscretization));
         //! \name StochasticProcess1D interface
         //@{
-        Real diffusion(Time t, Real x) const;
+        Real diffusion(Time t, Real x) const override;
         //@}
         //! \name interface for vega stress test
         //@{

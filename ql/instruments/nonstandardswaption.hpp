@@ -52,8 +52,8 @@ namespace QuantLib {
 
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments *) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -88,7 +88,7 @@ namespace QuantLib {
         ext::shared_ptr<NonstandardSwap> swap;
         Settlement::Type settlementType;
         Settlement::Method settlementMethod;
-        void validate() const;
+        void validate() const override;
     };
 
     //! base class for nonstandard swaption engines

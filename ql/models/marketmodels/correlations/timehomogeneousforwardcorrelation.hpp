@@ -32,10 +32,10 @@ namespace QuantLib {
       public:
         TimeHomogeneousForwardCorrelation(const Matrix& fwdCorrelation,
                                           const std::vector<Time>& rateTimes);
-        const std::vector<Time>& times() const;
-        const std::vector<Time>& rateTimes() const;
-        const std::vector<Matrix>& correlations() const;
-        Size numberOfRates() const;
+        const std::vector<Time>& times() const override;
+        const std::vector<Time>& rateTimes() const override;
+        const std::vector<Matrix>& correlations() const override;
+        Size numberOfRates() const override;
         static std::vector<Matrix> evolvedMatrices(
                                         const Matrix& fwdCorrelation);
     private:

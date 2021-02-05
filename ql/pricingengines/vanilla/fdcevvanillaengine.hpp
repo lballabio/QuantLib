@@ -41,7 +41,7 @@ namespace QuantLib {
             Real scalingFactor = 1.0, Real eps = 1e-4,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const Real f0_, alpha_, beta_;

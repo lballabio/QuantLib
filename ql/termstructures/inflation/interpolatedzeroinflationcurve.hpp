@@ -70,8 +70,8 @@ namespace QuantLib {
 
         //! \name InflationTermStructure interface
         //@{
-        Date baseDate() const;
-        Date maxDate() const;
+        Date baseDate() const override;
+        Date maxDate() const override;
         //@}
 
         //! \name Inspectors
@@ -86,7 +86,7 @@ namespace QuantLib {
       protected:
         //! \name ZeroInflationTermStructure Interface
         //@{
-        Rate zeroRateImpl(Time t) const;
+        Rate zeroRateImpl(Time t) const override;
         //@}
         mutable std::vector<Date> dates_;
 

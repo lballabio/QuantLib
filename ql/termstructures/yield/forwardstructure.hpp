@@ -103,7 +103,7 @@ namespace QuantLib {
         /*! Returns the discount factor for the given date calculating it
             from the zero rate as \f$ d(t) = \exp \left( -z(t) t \right) \f$
         */
-        DiscountFactor discountImpl(Time) const;
+        DiscountFactor discountImpl(Time) const override;
         //@}
     };
 

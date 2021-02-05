@@ -74,7 +74,7 @@ namespace QuantLib {
                       const Calendar&,
                       const DayCounter& dc = DayCounter());
         //@}
-        virtual ~TermStructure() {}
+        ~TermStructure() override {}
         //! \name Dates and Time
         //@{
         //! the day counter used for date/time conversion
@@ -94,7 +94,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         //! date-range check

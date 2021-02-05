@@ -45,12 +45,12 @@ namespace QuantLib {
 
         //! \name RateHelper interface
         //@{
-        Real impliedQuote() const;
-        void setTermStructure(YieldTermStructure*);
+        Real impliedQuote() const override;
+        void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name Visitability
         //@{
-        void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
         Real convexityAdjustment() const;
       private:

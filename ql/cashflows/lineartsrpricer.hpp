@@ -170,15 +170,15 @@ namespace QuantLib {
                             ext::shared_ptr<Integrator>());
 
         /* */
-        virtual Real swapletPrice() const;
-        virtual Rate swapletRate() const;
-        virtual Real capletPrice(Rate effectiveCap) const;
-        virtual Rate capletRate(Rate effectiveCap) const;
-        virtual Real floorletPrice(Rate effectiveFloor) const;
-        virtual Rate floorletRate(Rate effectiveFloor) const;
+        Real swapletPrice() const override;
+        Rate swapletRate() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Rate capletRate(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
+        Rate floorletRate(Rate effectiveFloor) const override;
         /* */
-        Real meanReversion() const;
-        void setMeanReversion(const Handle<Quote> &meanReversion) {
+        Real meanReversion() const override;
+        void setMeanReversion(const Handle<Quote>& meanReversion) override {
             unregisterWith(meanReversion_);
             meanReversion_ = meanReversion;
             registerWith(meanReversion_);
@@ -220,7 +220,7 @@ namespace QuantLib {
             const Option::Type type_;
         };
 
-        void initialize(const FloatingRateCoupon &coupon);
+        void initialize(const FloatingRateCoupon& coupon) override;
         Real optionletPrice(Option::Type optionType, Real strike) const;
         Real strikeFromVegaRatio(Real ratio, Option::Type optionType,
                                  Real referenceStrike) const;

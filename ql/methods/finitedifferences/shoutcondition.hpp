@@ -56,8 +56,7 @@ namespace QuantLib {
         : resTime_(resTime), rate_(rate),
           impl_(new PayoffImpl(type, strike)) {}
 
-        void applyTo(Array& a,
-                     Time t) const {
+        void applyTo(Array& a, Time t) const override {
             DiscountFactor B = std::exp(-rate_ * (t - resTime_));
             //#pragma omp parallel for
             for (Size i = 0; i < a.size(); i++) {
@@ -90,9 +89,7 @@ namespace QuantLib {
             explicit ArrayImpl(const Array &a)
             : intrinsicValues_(a) {}
 
-            Real getValue(const Array&, int i) {
-                return intrinsicValues_[i];
-            }
+            Real getValue(const Array&, int i) override { return intrinsicValues_[i]; }
         };
 
         class PayoffImpl : public Impl {
@@ -102,9 +99,7 @@ namespace QuantLib {
             PayoffImpl(Option::Type type, Real strike)
             : payoff_(new PlainVanillaPayoff(type, strike)) {};
 
-            Real getValue(const Array &a, int i) {
-                return (*payoff_)(std::exp(a[i]));
-            }
+            Real getValue(const Array& a, int i) override { return (*payoff_)(std::exp(a[i])); }
         };
     };
 

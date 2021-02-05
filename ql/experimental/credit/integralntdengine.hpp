@@ -33,8 +33,9 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& discountCurve)
         : discountCurve_(discountCurve), 
           integrationStepSize_(integrationStep)  {}
-        void calculate() const;
-    protected:
+        void calculate() const override;
+
+      protected:
         Handle<YieldTermStructure> discountCurve_;
         Period integrationStepSize_;
     };

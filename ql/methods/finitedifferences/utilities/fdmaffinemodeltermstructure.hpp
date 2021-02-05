@@ -40,11 +40,11 @@ namespace QuantLib {
             const Date& modelReferenceDate,
             const ext::shared_ptr<AffineModel>& model);
 
-        Date maxDate() const;
+        Date maxDate() const override;
         void setVariable(const Array& r);
 
       protected:
-        DiscountFactor discountImpl(Time) const;
+        DiscountFactor discountImpl(Time) const override;
 
       private:
         Array r_;

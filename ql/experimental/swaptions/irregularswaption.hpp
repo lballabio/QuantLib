@@ -53,8 +53,8 @@ namespace QuantLib {
                           IrregularSettlement::Type delivery = IrregularSettlement::Physical);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -86,7 +86,7 @@ namespace QuantLib {
         arguments() : settlementType(IrregularSettlement::Physical) {}
         ext::shared_ptr<IrregularSwap> swap;
         IrregularSettlement::Type settlementType;
-        void validate() const;
+        void validate() const override;
     };
 
     //! base class for irregular-swaption engines

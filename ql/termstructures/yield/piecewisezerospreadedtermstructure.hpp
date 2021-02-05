@@ -57,16 +57,17 @@ namespace QuantLib {
                                    const Interpolator& factory = Interpolator());
       //! \name YieldTermStructure interface
       //@{
-      DayCounter dayCounter() const;
-      Natural settlementDays() const;
-      Calendar calendar() const;
-      const Date& referenceDate() const;
-      Date maxDate() const;
+      DayCounter dayCounter() const override;
+      Natural settlementDays() const override;
+      Calendar calendar() const override;
+      const Date& referenceDate() const override;
+      Date maxDate() const override;
       //@}
     protected:
       //! returns the spreaded zero yield rate
-      Rate zeroYieldImpl(Time) const;
-      void update();
+      Rate zeroYieldImpl(Time) const override;
+      void update() override;
+
     private:
       void updateInterpolation();
       Real calcSpread(Time t) const;

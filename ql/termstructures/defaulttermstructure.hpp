@@ -141,7 +141,7 @@ namespace QuantLib {
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         /*! \name Calculations

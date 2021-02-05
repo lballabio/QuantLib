@@ -169,8 +169,7 @@ namespace QuantLib {
         DifferentialEvolution(const Configuration& configuration = Configuration())
         : configuration_(configuration), rng_(configuration.seed) {}
 
-        virtual EndCriteria::Type minimize(Problem& p,
-                                           const EndCriteria& endCriteria);
+        EndCriteria::Type minimize(Problem& p, const EndCriteria& endCriteria) override;
 
         const Configuration& configuration() const {
             return configuration_;

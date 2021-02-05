@@ -65,16 +65,16 @@ namespace QuantLib {
                       Time maturity,
                       AtmType atmType);
 
-        void update();
+        void update() override;
 
-        Real value() const;
+        Real value() const override;
         Real delta() const;
         Time maturity() const;
 
         AtmType atmType()   const;
         DeltaType deltaType() const;
 
-        bool isValid()  const;
+        bool isValid() const override;
 
       private:
           Real delta_;

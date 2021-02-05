@@ -67,12 +67,12 @@ namespace QuantLib {
              BigNatural seed,
              bool controlVariate = false);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // Use the vanilla option running from t=0 to t=expiryTime with an analytic Heston pricer
         // as a control variate. Works well if resetTime small.
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
             ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
@@ -114,7 +114,8 @@ namespace QuantLib {
                                    Real moneyness,
                                    Size resetIndex,
                                    DiscountFactor discount);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         Option::Type type_;
         Real moneyness_;

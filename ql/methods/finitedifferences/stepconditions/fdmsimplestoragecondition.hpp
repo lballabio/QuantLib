@@ -39,15 +39,15 @@ namespace QuantLib {
                   const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
                   Real changeRate);
 
-        void applyTo(Array& a, Time t) const;
+          void applyTo(Array& a, Time t) const override;
 
-      private:
-        const std::vector<Time> exerciseTimes_;
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator_;
-        const Real changeRate_;
+        private:
+          const std::vector<Time> exerciseTimes_;
+          const ext::shared_ptr<FdmMesher> mesher_;
+          const ext::shared_ptr<FdmInnerValueCalculator> calculator_;
+          const Real changeRate_;
 
-        std::vector<Real> x_, y_;
+          std::vector<Real> x_, y_;
     };
 }
 #endif

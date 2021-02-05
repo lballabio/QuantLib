@@ -75,7 +75,8 @@ namespace QuantLib {
         AnalyticEuropeanEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              const Handle<YieldTermStructure>& discountCurve);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Handle<YieldTermStructure> discountCurve_;

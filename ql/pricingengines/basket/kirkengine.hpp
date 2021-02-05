@@ -46,7 +46,8 @@ namespace QuantLib {
             const ext::shared_ptr<BlackProcess>& process1,
             const ext::shared_ptr<BlackProcess>& process2,
             Real correlation);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<BlackProcess> process1_;
         ext::shared_ptr<BlackProcess> process2_;

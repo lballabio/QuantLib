@@ -37,10 +37,10 @@ namespace QuantLib {
       public:
         //! \name Payoff interface
         //@{
-        std::string name() const;
-        std::string description() const;
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override;
+        std::string description() const override;
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
@@ -51,7 +51,7 @@ namespace QuantLib {
         Option::Type optionType() const { return type_; };
         //! \name Payoff interface
         //@{
-        std::string description() const;
+        std::string description() const override;
         //@}
       protected:
         explicit TypePayoff(Option::Type type) : type_(type) {}
@@ -77,10 +77,10 @@ namespace QuantLib {
         FloatingTypePayoff(Option::Type type) : TypePayoff(type) {}
         //! \name Payoff interface
         //@{
-        std::string name() const { return "FloatingType";}
+        std::string name() const override { return "FloatingType"; }
         Real operator()(Real price, Real strike) const;
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
@@ -91,7 +91,7 @@ namespace QuantLib {
       public:
         //! \name Payoff interface
         //@{
-        std::string description() const;
+        std::string description() const override;
         //@}
         Real strike() const { return strike_; };
       protected:
@@ -109,9 +109,9 @@ namespace QuantLib {
         : StrikedTypePayoff(type, strike) {}
         //! \name Payoff interface
         //@{
-        std::string name() const { return "Vanilla";}
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override { return "Vanilla"; }
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
@@ -123,9 +123,9 @@ namespace QuantLib {
         : StrikedTypePayoff(type, moneyness) {}
         //! \name Payoff interface
         //@{
-        std::string name() const { return "PercentageStrike";}
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override { return "PercentageStrike"; }
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
@@ -142,9 +142,9 @@ namespace QuantLib {
         : StrikedTypePayoff(type, strike) {}
         //! \name Payoff interface
         //@{
-        std::string name() const { return "AssetOrNothing";}
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override { return "AssetOrNothing"; }
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
@@ -157,10 +157,10 @@ namespace QuantLib {
         : StrikedTypePayoff(type, strike), cashPayoff_(cashPayoff) {}
         //! \name Payoff interface
         //@{
-        std::string name() const { return "CashOrNothing";}
-        std::string description() const;
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override { return "CashOrNothing"; }
+        std::string description() const override;
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
         Real cashPayoff() const { return cashPayoff_;}
       protected:
@@ -183,10 +183,10 @@ namespace QuantLib {
         : StrikedTypePayoff(type, strike), secondStrike_(secondStrike) {}
         //! \name Payoff interface
         //@{
-        std::string name() const { return "Gap";}
-        std::string description() const;
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override { return "Gap"; }
+        std::string description() const override;
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
         Real secondStrike() const { return secondStrike_;}
       protected:
@@ -219,9 +219,9 @@ namespace QuantLib {
         }
         //! \name Payoff interface
         //@{
-        std::string name() const { return "SuperFund";}
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override { return "SuperFund"; }
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
         Real secondStrike() const { return secondStrike_;}
       protected:
@@ -243,10 +243,10 @@ namespace QuantLib {
 
         //! \name Payoff interface
         //@{
-        std::string name() const { return "SuperShare";}
-        std::string description() const;
-        Real operator()(Real price) const;
-        virtual void accept(AcyclicVisitor&);
+        std::string name() const override { return "SuperShare"; }
+        std::string description() const override;
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
         //@}
         Real secondStrike() const { return secondStrike_;}
         Real cashPayoff() const { return cashPayoff_;}

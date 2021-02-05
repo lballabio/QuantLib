@@ -47,7 +47,8 @@ namespace QuantLib {
         LatticeShortRateModelEngine(
                                const ext::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid);
-        void update();
+        void update() override;
+
       protected:
         TimeGrid timeGrid_;
         Size timeSteps_;

@@ -48,7 +48,7 @@ namespace QuantLib {
              Real requiredTolerance,
              Size maxSamples,
              BigNatural seed);
-        void calculate() const {
+        void calculate() const override {
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
@@ -57,10 +57,11 @@ namespace QuantLib {
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
@@ -69,7 +70,7 @@ namespace QuantLib {
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size requiredSamples_, maxSamples_;
@@ -109,7 +110,8 @@ namespace QuantLib {
         PerformanceOptionPathPricer(
                                 Option::Type type, Real strike,
                                 const std::vector<DiscountFactor>& discounts);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         Real strike_;
         Option::Type type_;

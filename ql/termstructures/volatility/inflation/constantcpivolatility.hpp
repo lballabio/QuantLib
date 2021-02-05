@@ -46,15 +46,15 @@ namespace QuantLib {
 
         //! \name Limits
         //@{
-        virtual Date maxDate() const { return Date::maxDate(); }
+        Date maxDate() const override { return Date::maxDate(); }
         //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const { return QL_MIN_REAL; }
+        Real minStrike() const override { return QL_MIN_REAL; }
         //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const { return QL_MAX_REAL; }
+        Real maxStrike() const override { return QL_MAX_REAL; }
         //@}
 
       private:
-        virtual Volatility volatilityImpl(Time length, Rate strike) const;
+        Volatility volatilityImpl(Time length, Rate strike) const override;
         Volatility volatility_;
     };
 

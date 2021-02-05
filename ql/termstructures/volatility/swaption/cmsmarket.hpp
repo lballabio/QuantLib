@@ -50,7 +50,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& discountingTS);
         //! \name LazyObject interface
         //@{
-        void update() { LazyObject::update();}
+        void update() override { LazyObject::update(); }
         //@}
         // called during calibration procedure
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
@@ -71,7 +71,7 @@ namespace QuantLib {
         Disposable<Array> weightedFwdNpvErrors(const Matrix& weights);
 
       private:
-        void performCalculations() const;
+        void performCalculations() const override;
         Real weightedMean(const Matrix& var, const Matrix& weights) const;
         Disposable<Array> weightedMeans(const Matrix& var, const Matrix& weights) const;
 

@@ -37,7 +37,8 @@ namespace QuantLib {
                 const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
                 const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
                 const Handle<Quote>& correlation);
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> p1_;
         ext::shared_ptr<GeneralizedBlackScholesProcess> p2_;

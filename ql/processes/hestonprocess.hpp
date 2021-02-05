@@ -62,15 +62,14 @@ namespace QuantLib {
                       Real theta, Real sigma, Real rho,
                       Discretization d = QuadraticExponentialMartingale);
 
-        Size size() const;
-        Size factors() const;
+        Size size() const override;
+        Size factors() const override;
 
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> apply(const Array& x0, const Array& dx) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        Disposable<Array> initialValues() const override;
+        Disposable<Array> drift(Time t, const Array& x) const override;
+        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
+        Disposable<Array> apply(const Array& x0, const Array& dx) const override;
+        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         Real v0()    const { return v0_; }
         Real rho()   const { return rho_; }
@@ -82,7 +81,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& dividendYield() const;
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
-        Time time(const Date&) const;
+        Time time(const Date&) const override;
 
         // probability densitiy function,
         // semi-analytical solution of the Fokker-Planck equation in x=ln(s)

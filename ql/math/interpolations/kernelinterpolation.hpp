@@ -45,11 +45,9 @@ namespace QuantLib {
               M_(xSize_,xSize_), alphaVec_(xSize_), yVec_(xSize_),
               kernel_(kernel) {}
 
-            void update() {
-                updateAlphaVec();
-            }
+            void update() override { updateAlphaVec(); }
 
-            Real value(Real x) const {
+            Real value(Real x) const override {
 
                 Real res=0.0;
 
@@ -60,17 +58,17 @@ namespace QuantLib {
                 return res/gammaFunc(x);
             }
 
-            Real primitive(Real) const {
+            Real primitive(Real) const override {
                 QL_FAIL("Primitive calculation not implemented "
                         "for kernel interpolation");
             }
 
-            Real derivative(Real) const {
+            Real derivative(Real) const override {
                 QL_FAIL("First derivative calculation not implemented "
                         "for kernel interpolation");
             }
 
-            Real secondDerivative(Real) const {
+            Real secondDerivative(Real) const override {
                 QL_FAIL("Second derivative calculation not implemented "
                         "for kernel interpolation");
             }

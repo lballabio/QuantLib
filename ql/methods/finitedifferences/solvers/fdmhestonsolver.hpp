@@ -64,8 +64,8 @@ namespace QuantLib {
         Real meanVarianceGammaAt(Real s, Real v) const;
 
       protected:
-        void performCalculations() const;
-        
+        void performCalculations() const override;
+
       private:
         const Handle<HestonProcess> process_;
         const FdmSolverDesc solverDesc_;

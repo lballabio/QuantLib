@@ -34,8 +34,8 @@ namespace QuantLib {
       public:
         GaussNonCentralChiSquaredPolynomial(Real nu, Real lambda);
 
-        Real w(Real x) const;
-        Real moment(Size i) const;
+        Real w(Real x) const override;
+        Real moment(Size i) const override;
 
       private:
         const Real nu_, lambda_;

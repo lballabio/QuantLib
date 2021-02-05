@@ -50,13 +50,12 @@ namespace QuantLib {
             See <https://www.theice.com/marketdata/reports/170>.
             @{
         */
-        Date valueDate(const Date& fixingDate) const;
-        Date maturityDate(const Date& valueDate) const;
+        Date valueDate(const Date& fixingDate) const override;
+        Date maturityDate(const Date& valueDate) const override;
         // @}
         //! \name Other methods
         //@{
-        ext::shared_ptr<IborIndex> clone(
-                                   const Handle<YieldTermStructure>& h) const;
+        ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
         // @}
         //! \name Other inspectors
         //@{

@@ -102,7 +102,7 @@ namespace {
           exerciseTimes_(exerciseTimes), mesher_(mesher) {
         }
 
-        void applyTo(Array& a, Time t) const {
+        void applyTo(Array& a, Time t) const override {
             std::vector<Time>::const_iterator iter
                 = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
 
@@ -131,10 +131,10 @@ namespace {
 
     class ExpressPayoff : public Payoff {
       public:
-        std::string name() const { return "ExpressPayoff";}
-        std::string description() const { return "ExpressPayoff";}
+        std::string name() const override { return "ExpressPayoff"; }
+        std::string description() const override { return "ExpressPayoff"; }
 
-        Real operator()(Real s) const {
+        Real operator()(Real s) const override {
             return  ((s >= 100.0) ? 108.0 : 100.0)
                   - ((s <= 75.0) ? 100.0 - s : 0.0);
         }

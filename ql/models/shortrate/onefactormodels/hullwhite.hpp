@@ -50,20 +50,20 @@ namespace QuantLib {
         HullWhite(const Handle<YieldTermStructure>& termStructure,
                   Real a = 0.1, Real sigma = 0.01);
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const;
+        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
 
         Real discountBondOption(Option::Type type,
                                 Real strike,
                                 Time maturity,
-                                Time bondMaturity) const;
+                                Time bondMaturity) const override;
 
-       Real discountBondOption(Option::Type type,
-                               Real strike,
-                               Time maturity,
-                               Time bondStart,
-                               Time bondMaturity) const;
+        Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+                                Time bondStart,
+                                Time bondMaturity) const override;
 
         /*! Futures convexity bias (i.e., the difference between
             futures implied rate and forward rate) calculated as in
@@ -86,9 +86,9 @@ namespace QuantLib {
         }
 
       protected:
-        void generateArguments();
+        void generateArguments() override;
 
-        Real A(Time t, Time T) const;
+        Real A(Time t, Time T) const override;
 
       private:
         class Dynamics;
@@ -115,12 +115,9 @@ namespace QuantLib {
                                      new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(fitting) {}
 
-        Real variable(Time t, Rate r) const {
-            return r - fitting_(t);
-        }
-        Real shortRate(Time t, Real x) const {
-            return x + fitting_(t);
-        }
+        Real variable(Time t, Rate r) const override { return r - fitting_(t); }
+        Real shortRate(Time t, Real x) const override { return x + fitting_(t); }
+
       private:
         Parameter fitting_;
     };
@@ -141,7 +138,7 @@ namespace QuantLib {
                  Real a, Real sigma)
             : termStructure_(termStructure), a_(a), sigma_(sigma) {}
 
-            Real value(const Array&, Time t) const {
+            Real value(const Array&, Time t) const override {
                 Rate forwardRate =
                     termStructure_->forwardRate(t, t, Continuous, NoFrequency);
                 Real temp = a_ < std::sqrt(QL_EPSILON) ?
@@ -149,6 +146,7 @@ namespace QuantLib {
                             sigma_*(1.0 - std::exp(-a_*t))/a_;
                 return (forwardRate + 0.5*temp*temp);
             }
+
           private:
             Handle<YieldTermStructure> termStructure_;
             Real a_, sigma_;

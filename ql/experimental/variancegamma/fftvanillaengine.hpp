@@ -41,15 +41,15 @@ namespace QuantLib {
             const ext::shared_ptr<GeneralizedBlackScholesProcess>&process,
             Real logStrikeSpacing = 0.001);
         #if defined(QL_USE_STD_UNIQUE_PTR)
-        virtual std::unique_ptr<FFTEngine> clone() const;
-        #else
+        std::unique_ptr<FFTEngine> clone() const override;
+#else
         virtual std::auto_ptr<FFTEngine> clone() const;
         #endif
     protected:
-        virtual void precalculateExpiry(Date d);
-        virtual std::complex<Real> complexFourierTransform(std::complex<Real> u) const;
-        virtual Real discountFactor(Date d) const;
-        virtual Real dividendYield(Date d) const;
+      void precalculateExpiry(Date d) override;
+      std::complex<Real> complexFourierTransform(std::complex<Real> u) const override;
+      Real discountFactor(Date d) const override;
+      Real dividendYield(Date d) const override;
 
     private:
         DiscountFactor dividendDiscount_;

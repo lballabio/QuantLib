@@ -36,17 +36,17 @@ namespace QuantLib {
         explicit AndreasenHugeLocalVolAdapter(
             const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
 
-        Date maxDate() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        Date maxDate() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
-        Calendar calendar() const;
-        DayCounter dayCounter() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
+        Calendar calendar() const override;
+        DayCounter dayCounter() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
 
       protected:
-        Volatility localVolImpl(Time t, Real strike) const;
+        Volatility localVolImpl(Time t, Real strike) const override;
 
       private:
         const ext::shared_ptr<AndreasenHugeVolatilityInterpl> localVol_;

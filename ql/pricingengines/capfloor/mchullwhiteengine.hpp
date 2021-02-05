@@ -39,7 +39,8 @@ namespace QuantLib {
             HullWhiteCapFloorPricer(const CapFloor::arguments&,
                                     const ext::shared_ptr<HullWhite>&,
                                     Time forwardMeasureTime);
-            Real operator()(const Path& path) const;
+            Real operator()(const Path& path) const override;
+
           private:
             CapFloor::arguments args_;
             ext::shared_ptr<HullWhite> model_;
@@ -83,7 +84,7 @@ namespace QuantLib {
             registerWith(model_);
         }
 
-        void calculate() const {
+        void calculate() const override {
             simulation::calculate(requiredTolerance_,
                                   requiredSamples_,
                                   maxSamples_);

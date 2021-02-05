@@ -61,12 +61,15 @@ namespace QuantLib {
         virtual ext::shared_ptr<SwaptionVolatilityMatrix>
             getSwaptionVolatilityMatrix() const;
 
-        DiscountFactor discount(Time t) const;
-        Real discountBond(Time now, Time maturity, Array factors) const;
-        Real discountBondOption(Option::Type type, Real strike,
-                                Time maturity, Time bondMaturity) const;
+        DiscountFactor discount(Time t) const override;
+        Real discountBond(Time now, Time maturity, Array factors) const override;
+        Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+                                Time bondMaturity) const override;
 
-        void setParams(const Array& params);
+        void setParams(const Array& params) override;
+
       protected:
         Disposable<Array> w_0(Size alpha, Size beta) const;
 

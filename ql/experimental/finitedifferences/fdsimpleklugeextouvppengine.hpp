@@ -52,7 +52,7 @@ namespace QuantLib {
             Size yGrid = 10, Size gGrid = 20,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<KlugeExtOUProcess> process_;

@@ -53,7 +53,7 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
                                 const DayCounter &dayCounter, const Interpolator &interpolator);
     //! \name TermStructure interface
     //@{
-    Date maxDate() const;
+    Date maxDate() const override;
     //@}
     //! \name other inspectors
     //@{
@@ -86,7 +86,7 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
                                          const Interpolator &interpolator = Interpolator());
     //! \name YieldTermStructure implementation
     //@{
-    DiscountFactor discountImpl(Time t) const;
+    DiscountFactor discountImpl(Time t) const override;
     //@}
     mutable std::vector<Date> dates_;
 

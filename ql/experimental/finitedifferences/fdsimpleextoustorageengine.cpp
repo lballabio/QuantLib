@@ -48,14 +48,15 @@ namespace QuantLib {
             explicit FdmStorageValue(const ext::shared_ptr<FdmMesher>& mesher)
             : mesher_(mesher) { }
 
-            Real innerValue(const FdmLinearOpIterator& iter, Time) {
+            Real innerValue(const FdmLinearOpIterator& iter, Time) override {
                 const Real s = std::exp(mesher_->location(iter, 0));
                 const Real v = mesher_->location(iter, 1);
                 return s*v;
             }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
+
           private:
             const ext::shared_ptr<FdmMesher> mesher_;
 

@@ -52,7 +52,8 @@ namespace QuantLib {
         CliquetOption(const ext::shared_ptr<PercentageStrikePayoff>&,
                       const ext::shared_ptr<EuropeanExercise>& maturity,
                       const std::vector<Date>& resetDates);
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       private:
         std::vector<Date> resetDates_;
     };
@@ -67,7 +68,7 @@ namespace QuantLib {
                       localFloor(Null<Real>()),
                       globalCap(Null<Real>()),
                       globalFloor(Null<Real>()) {}
-        void validate() const;
+        void validate() const override;
         Real accruedCoupon, lastFixing;
         Real localCap, localFloor, globalCap, globalFloor;
         std::vector<Date> resetDates;
