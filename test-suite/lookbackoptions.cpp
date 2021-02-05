@@ -680,7 +680,7 @@ void LookbackOptionTest::testMonteCarloLookback() {
 
 
 test_suite* LookbackOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Lookback option tests");
+    auto* suite = BOOST_TEST_SUITE("Lookback option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                 &LookbackOptionTest::testAnalyticContinuousFloatingLookback));

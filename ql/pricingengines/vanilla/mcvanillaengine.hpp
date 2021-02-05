@@ -135,18 +135,15 @@ namespace QuantLib {
                    "engine does not provide "
                    "control variation pricing engine");
 
-        typename Inst::arguments* controlArguments =
-                dynamic_cast<typename Inst::arguments*>(
-                                                   controlPE->getArguments());
+        auto* controlArguments = dynamic_cast<typename Inst::arguments*>(controlPE->getArguments());
 
         QL_REQUIRE(controlArguments, "engine is using inconsistent arguments");
 
         *controlArguments = this->arguments_;
         controlPE->calculate();
 
-        const typename Inst::results* controlResults =
-                dynamic_cast<const typename Inst::results*>(
-                                                     controlPE->getResults());
+        const auto* controlResults =
+            dynamic_cast<const typename Inst::results*>(controlPE->getResults());
         QL_REQUIRE(controlResults,
                    "engine returns an inconsistent result type");
 

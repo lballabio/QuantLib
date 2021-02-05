@@ -104,8 +104,7 @@ namespace QuantLib {
     }
 
     void ArithmeticOISRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<ArithmeticOISRateHelper>* v1 =
-            dynamic_cast<Visitor<ArithmeticOISRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<ArithmeticOISRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

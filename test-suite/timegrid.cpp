@@ -158,8 +158,8 @@ void TimeGridTest::testMandatoryTimes()
 
 test_suite* TimeGridTest::suite()
 {
-    test_suite* suite = BOOST_TEST_SUITE("Timegrid tests");
-    
+    auto* suite = BOOST_TEST_SUITE("Timegrid tests");
+
     suite->add(QUANTLIB_TEST_CASE(&TimeGridTest::testConstructorAdditionalSteps));
     suite->add(QUANTLIB_TEST_CASE(&TimeGridTest::testConstructorMandatorySteps));
     suite->add(QUANTLIB_TEST_CASE(&TimeGridTest::testConstructorEvenSteps));

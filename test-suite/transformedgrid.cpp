@@ -47,7 +47,7 @@ void TransformedGridTest::testConstruction() {
 }
 
 test_suite* TransformedGridTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("transformed grid");
+    auto* suite = BOOST_TEST_SUITE("transformed grid");
     suite->add(QUANTLIB_TEST_CASE(&TransformedGridTest::testConstruction));
     return suite;
 }

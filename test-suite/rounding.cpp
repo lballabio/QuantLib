@@ -166,7 +166,7 @@ void RoundingTest::testCeiling() {
 
 
 test_suite* RoundingTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Rounding tests");
+    auto* suite = BOOST_TEST_SUITE("Rounding tests");
     suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testClosest));
     suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testUp));
     suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testDown));

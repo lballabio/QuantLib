@@ -36,7 +36,7 @@ namespace QuantLib {
           index_(index) {}
 
     void CmsSpreadCoupon::accept(AcyclicVisitor &v) {
-        Visitor<CmsSpreadCoupon> *v1 = dynamic_cast<Visitor<CmsSpreadCoupon> *>(&v);
+        auto* v1 = dynamic_cast<Visitor<CmsSpreadCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

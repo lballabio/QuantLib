@@ -497,7 +497,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
 
 test_suite* LiborMarketModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Libor market model tests");
+    auto* suite = BOOST_TEST_SUITE("Libor market model tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                           &LiborMarketModelTest::testSimpleCovarianceModels));

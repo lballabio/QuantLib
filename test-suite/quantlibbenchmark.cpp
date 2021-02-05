@@ -329,7 +329,7 @@ test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("ShortRateModel::Swaps",
         &ShortRateModelTest::testSwaps, 454.73));
 
-    test_suite* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
+    auto* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
 
     for (std::list<Benchmark>::const_iterator iter = bm.begin();
          iter != bm.end(); ++iter) {

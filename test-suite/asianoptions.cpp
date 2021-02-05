@@ -369,7 +369,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = (Integer)std::lround(360.0/futureFixings);
+    auto dt = (Integer)std::lround(360.0 / futureFixings);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -428,7 +428,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = (Integer)std::lround(360.0/futureFixings);
+    auto dt = (Integer)std::lround(360.0 / futureFixings);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -494,7 +494,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = (Integer)std::lround(360.0/futureFixings);
+    auto dt = (Integer)std::lround(360.0 / futureFixings);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -2036,7 +2036,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston() {
 }
 
 test_suite* AsianOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
+    auto* suite = BOOST_TEST_SUITE("Asian option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
@@ -2067,7 +2067,7 @@ test_suite* AsianOptionTest::suite() {
 }
 
 test_suite* AsianOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Asian option experimental tests");
+    auto* suite = BOOST_TEST_SUITE("Asian option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testLevyEngine));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
     suite->add(QUANTLIB_TEST_CASE(

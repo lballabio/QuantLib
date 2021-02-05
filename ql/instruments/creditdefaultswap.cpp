@@ -198,8 +198,7 @@ namespace QuantLib {
 
 
     bool CreditDefaultSwap::isExpired() const {
-        for (Leg::const_reverse_iterator i = leg_.rbegin();
-                                         i != leg_.rend(); ++i) {
+        for (auto i = leg_.rbegin(); i != leg_.rend(); ++i) {
             if (!(*i)->hasOccurred())
                 return false;
         }
@@ -215,8 +214,7 @@ namespace QuantLib {
 
     void CreditDefaultSwap::setupArguments(
                                        PricingEngine::arguments* args) const {
-        CreditDefaultSwap::arguments* arguments =
-            dynamic_cast<CreditDefaultSwap::arguments*>(args);
+        auto* arguments = dynamic_cast<CreditDefaultSwap::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->side = side_;
@@ -238,8 +236,7 @@ namespace QuantLib {
                                       const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
 
-        const CreditDefaultSwap::results* results =
-            dynamic_cast<const CreditDefaultSwap::results*>(r);
+        const auto* results = dynamic_cast<const CreditDefaultSwap::results*>(r);
         QL_REQUIRE(results != 0, "wrong result type");
 
         fairSpread_ = results->fairSpread;
@@ -367,9 +364,7 @@ namespace QuantLib {
         }
 
         setupArguments(engine->getArguments());
-        const CreditDefaultSwap::results* results =
-            dynamic_cast<const CreditDefaultSwap::results*>(
-                engine->getResults());
+        const auto* results = dynamic_cast<const CreditDefaultSwap::results*>(engine->getResults());
 
         ObjectiveFunction f(targetNPV, *flatRate, *engine, results);
         //very close guess if targetNPV = 0.
@@ -410,9 +405,7 @@ namespace QuantLib {
         }
 
         setupArguments(engine->getArguments());
-        const CreditDefaultSwap::results* results =
-            dynamic_cast<const CreditDefaultSwap::results*>(
-                engine->getResults());
+        const auto* results = dynamic_cast<const CreditDefaultSwap::results*>(engine->getResults());
 
         ObjectiveFunction f(0., *flatRate, *engine, results);
         Rate guess = runningSpread_ / (1 - conventionalRecovery) * 365./360.;

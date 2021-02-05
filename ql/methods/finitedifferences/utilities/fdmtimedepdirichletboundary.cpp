@@ -66,8 +66,7 @@ namespace QuantLib {
                    "values on boundary size (" << values_.size()
                    << ") does not match hypersurface size ("
                    << indices_.size() << ")");
-        for (std::vector<Size>::const_iterator iter = indices_.begin();
-             iter != indices_.end(); ++iter) {
+        for (auto iter = indices_.begin(); iter != indices_.end(); ++iter) {
             a[*iter] = values_[iter - indices_.begin()];
         }
     }

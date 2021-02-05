@@ -522,7 +522,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
 }
 
 test_suite* PiecewiseZeroSpreadedTermStructureTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Interpolated piecewise zero spreaded yield curve tests");
+    auto* suite = BOOST_TEST_SUITE("Interpolated piecewise zero spreaded yield curve tests");
     suite->add(QUANTLIB_TEST_CASE(
         &PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft));
     suite->add(QUANTLIB_TEST_CASE(

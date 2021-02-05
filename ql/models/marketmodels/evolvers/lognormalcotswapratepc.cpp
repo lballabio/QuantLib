@@ -92,7 +92,7 @@ namespace QuantLib {
 
     void LogNormalCotSwapRatePc::setInitialState(const CurveState& cs) {
         // why??
-        const CoterminalSwapCurveState* cotcs = dynamic_cast<const CoterminalSwapCurveState*>(&cs);
+        const auto* cotcs = dynamic_cast<const CoterminalSwapCurveState*>(&cs);
         const std::vector<Real>& swapRates = cotcs->coterminalSwapRates();
         setCoterminalSwapRates(swapRates);
     }

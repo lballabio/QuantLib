@@ -60,8 +60,7 @@ namespace QuantLib {
 
     void UnitOfMeasureConversionManager::add(const UnitOfMeasureConversion& c) {
         // not fast, but hopefully we won't have a lot of entries.
-        for (list<UnitOfMeasureConversion>::iterator i = data_.begin();
-             i != data_.end(); ++i) {
+        for (auto i = data_.begin(); i != data_.end(); ++i) {
             if (matches(*i, c)) {
                 data_.erase(i);
                 break;
@@ -140,8 +139,7 @@ namespace QuantLib {
                                            const UnitOfMeasure& source,
                                            const UnitOfMeasure& target) const {
 
-        for (list<UnitOfMeasureConversion>::const_iterator i = data_.begin();
-             i != data_.end(); ++i) {
+        for (auto i = data_.begin(); i != data_.end(); ++i) {
             if (matches(*i, commodityType, source, target)) {
                 return *i;
             }
@@ -180,8 +178,7 @@ namespace QuantLib {
         // to avoid cycles.
         forbidden.push_back(source.code());
 
-        for (list<UnitOfMeasureConversion>::const_iterator i = data_.begin();
-             i != data_.end(); ++i) {
+        for (auto i = data_.begin(); i != data_.end(); ++i) {
             // we look for conversion data which involve our source unit...
             if (matches(*i, commodityType, source)) {
                 const UnitOfMeasure& other =

@@ -213,7 +213,7 @@ void OdeTest::testMatrixExponentialOfZero() {
 }
 
 test_suite* OdeTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("ode tests");
+    auto* suite = BOOST_TEST_SUITE("ode tests");
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testAdaptiveRungeKutta));
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponential));
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponentialOfZero));

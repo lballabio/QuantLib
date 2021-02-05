@@ -1507,7 +1507,7 @@ void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
 }
 
 test_suite* HybridHestonHullWhiteProcessTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
+    auto* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine));

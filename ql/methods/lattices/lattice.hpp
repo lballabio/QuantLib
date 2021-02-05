@@ -149,8 +149,8 @@ namespace QuantLib {
                    "cannot roll the asset back to" << to
                    << " (it is already at t = " << from << ")");
 
-        Integer iFrom = Integer(t_.index(from));
-        Integer iTo = Integer(t_.index(to));
+        auto iFrom = Integer(t_.index(from));
+        auto iTo = Integer(t_.index(to));
 
         for (Integer i=iFrom-1; i>=iTo; --i) {
             Array newValues(this->impl().size(i));

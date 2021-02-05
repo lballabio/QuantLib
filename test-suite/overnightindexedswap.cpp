@@ -504,7 +504,7 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
 
 
 test_suite* OvernightIndexedSwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Overnight-indexed swap tests");
+    auto* suite = BOOST_TEST_SUITE("Overnight-indexed swap tests");
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairRate));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairSpread));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testCachedValue));

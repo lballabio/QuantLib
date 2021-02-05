@@ -157,7 +157,7 @@ void ChooserOptionTest::testAnalyticComplexChooserEngine(){
 }
 
 test_suite* ChooserOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Chooser option tests");
+    auto* suite = BOOST_TEST_SUITE("Chooser option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &ChooserOptionTest::testAnalyticSimpleChooserEngine));

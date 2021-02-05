@@ -121,7 +121,7 @@ void PeriodTest::testWeeksDaysAlgebra() {
 }
 
 test_suite* PeriodTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Period tests");
+    auto* suite = BOOST_TEST_SUITE("Period tests");
     suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testYearsMonthsAlgebra));
     suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testWeeksDaysAlgebra));
     return suite;

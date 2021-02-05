@@ -3265,7 +3265,7 @@ void HestonModelTest::testAsymptoticControlVariate() {
 
 
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
+    auto* suite = BOOST_TEST_SUITE("Heston model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
@@ -3328,7 +3328,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
 }
 
 test_suite* HestonModelTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Heston model experimental tests");
+    auto* suite = BOOST_TEST_SUITE("Heston model experimental tests");
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testAnalyticPDFHestonEngine));
     return suite;

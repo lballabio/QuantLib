@@ -511,7 +511,7 @@ namespace QuantLib {
     }
 
     Date Schedule::nextDate(const Date& refDate) const {
-        std::vector<Date>::const_iterator res = lower_bound(refDate);
+        auto res = lower_bound(refDate);
         if (res!=dates_.end())
             return *res;
         else
@@ -519,7 +519,7 @@ namespace QuantLib {
     }
 
     Date Schedule::previousDate(const Date& refDate) const {
-        std::vector<Date>::const_iterator res = lower_bound(refDate);
+        auto res = lower_bound(refDate);
         if (res!=dates_.begin())
             return *(--res);
         else

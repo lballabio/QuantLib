@@ -179,8 +179,7 @@ namespace QuantLib {
 
     std::pair<Real,Real> UpperBoundEngine::singlePathValue(Size innerPaths) {
 
-        DecoratedHedge& callable =
-            dynamic_cast<DecoratedHedge&>(composite_.item(4));
+        auto& callable = dynamic_cast<DecoratedHedge&>(composite_.item(4));
         const ExerciseStrategy<CurveState>& strategy = callable.strategy();
 
 

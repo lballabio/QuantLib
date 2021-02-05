@@ -270,7 +270,7 @@ void CovarianceTest::testCovariance() {
 
 
 test_suite* CovarianceTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Covariance and correlation tests");
+    auto* suite = BOOST_TEST_SUITE("Covariance and correlation tests");
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testCovariance));
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testSalvagingMatrix));
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testRankReduction));

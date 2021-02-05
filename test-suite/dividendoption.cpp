@@ -1109,7 +1109,7 @@ void DividendOptionTest::testEscrowedDividendModel() {
 }
 
 test_suite* DividendOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Dividend European option tests");
+    auto* suite = BOOST_TEST_SUITE("Dividend European option tests");
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
     // Doesn't quite work.  Need to deal with date conventions
     //  suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));

@@ -38,7 +38,7 @@ namespace QuantLib {
     }
 
     void Event::accept(AcyclicVisitor& v) {
-        Visitor<Event>* v1 = dynamic_cast<Visitor<Event>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<Event>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

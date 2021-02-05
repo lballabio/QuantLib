@@ -820,7 +820,7 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
 
 test_suite* ForwardOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Forward option tests");
+    auto* suite = BOOST_TEST_SUITE("Forward option tests");
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceValues));

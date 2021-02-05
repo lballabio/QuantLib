@@ -34,8 +34,7 @@ namespace QuantLib {
                                        PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
 
-        WriterExtensibleOption::arguments* otherArguments =
-            dynamic_cast<WriterExtensibleOption::arguments*>(args);
+        auto* otherArguments = dynamic_cast<WriterExtensibleOption::arguments*>(args);
         QL_REQUIRE(otherArguments != 0, "wrong arguments type");
 
         otherArguments->payoff2 = payoff2_;

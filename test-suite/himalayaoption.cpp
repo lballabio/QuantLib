@@ -127,7 +127,7 @@ void HimalayaOptionTest::testCached() {
 
 
 test_suite* HimalayaOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Himalaya-option tests");
+    auto* suite = BOOST_TEST_SUITE("Himalaya-option tests");
     suite->add(QUANTLIB_TEST_CASE(&HimalayaOptionTest::testCached));
     return suite;
 }

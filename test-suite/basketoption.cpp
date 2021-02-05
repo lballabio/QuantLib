@@ -1086,7 +1086,7 @@ void BasketOptionTest::test2DPDEGreeks() {
 }
 
 test_suite* BasketOptionTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
+    auto* suite = BOOST_TEST_SUITE("Basket option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));

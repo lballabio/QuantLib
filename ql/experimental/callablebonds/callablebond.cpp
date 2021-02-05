@@ -228,8 +228,7 @@ namespace QuantLib {
 
    Real CallableBond::NPVSpreadHelper::operator()(Real x) const
    {
-       CallableBond::arguments* args=
-           dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
+       auto* args = dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
        // Pops the original value when function finishes
        RestoreVal<Spread> restorer(args->spread);
        args->spread=x;
@@ -436,8 +435,7 @@ namespace QuantLib {
 
         CallableBond::setupArguments(args);
 
-        CallableBond::arguments* arguments =
-            dynamic_cast<CallableBond::arguments*>(args);
+        auto* arguments = dynamic_cast<CallableBond::arguments*>(args);
 
         QL_REQUIRE(arguments != 0, "no arguments given");
 

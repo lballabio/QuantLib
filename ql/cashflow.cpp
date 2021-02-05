@@ -61,7 +61,7 @@ namespace QuantLib {
     }
 
     void CashFlow::accept(AcyclicVisitor& v) {
-        Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

@@ -1293,7 +1293,7 @@ void BarrierOptionTest::testDividendBarrierOption() {
 }
 
 test_suite* BarrierOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
+    auto* suite = BOOST_TEST_SUITE("Barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testParity));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
@@ -1306,7 +1306,7 @@ test_suite* BarrierOptionTest::suite() {
 }
 
 test_suite* BarrierOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Barrier option experimental tests");
+    auto* suite = BOOST_TEST_SUITE("Barrier option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
     suite->add(QUANTLIB_TEST_CASE(
                       &BarrierOptionTest::testVannaVolgaSimpleBarrierValues));

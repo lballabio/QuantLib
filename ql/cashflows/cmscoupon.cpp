@@ -45,7 +45,7 @@ namespace QuantLib {
       swapIndex_(swapIndex) {}
 
     void CmsCoupon::accept(AcyclicVisitor& v) {
-        Visitor<CmsCoupon>* v1 = dynamic_cast<Visitor<CmsCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<CmsCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

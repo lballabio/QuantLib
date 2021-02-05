@@ -1608,8 +1608,7 @@ void HestonSLVModelTest::testLocalVolsvSLVPropDensity() {
     const SquareRootProcessRNDCalculator squareRootRndCalculator(
         v0, kappa, theta, sigma);
 
-    for (std::list<HestonSLVFDMModel::LogEntry>::const_iterator iter
-             = logEntries.begin(); iter != logEntries.end(); ++iter) {
+    for (auto iter = logEntries.begin(); iter != logEntries.end(); ++iter) {
 
         const Time t = iter->t;
         if (t > 0.2) {
@@ -2609,8 +2608,7 @@ void HestonSLVModelTest::testDiffusionAndDriftSlvProcess() {
 }
 
 test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE(
-        "Heston Stochastic Local Volatility tests");
+    auto* suite = BOOST_TEST_SUITE("Heston Stochastic Local Volatility tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));

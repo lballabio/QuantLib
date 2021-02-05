@@ -337,7 +337,7 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
 }
 
 test_suite* LiborMarketModelProcessTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Libor market model process tests");
+    auto* suite = BOOST_TEST_SUITE("Libor market model process tests");
 
     suite->add(QUANTLIB_TEST_CASE(
          &LiborMarketModelProcessTest::testInitialisation));

@@ -149,7 +149,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                 weightsSum += this->weights_.back();
             }
             // weight normalization
-            std::vector<Real>::iterator w = this->weights_.begin();
+            auto w = this->weights_.begin();
             for (; w != this->weights_.end(); ++w)
                 *w /= weightsSum;
         }
@@ -242,7 +242,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         Real error, totalError = 0.0;
         I1 x = this->xBegin_;
         I2 y = this->yBegin_;
-        std::vector<Real>::const_iterator w = this->weights_.begin();
+        auto w = this->weights_.begin();
         for (; x != this->xEnd_; ++x, ++y, ++w) {
             error = (value(*x) - *y);
             totalError += error * error * (*w);
@@ -256,7 +256,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         I1 x = this->xBegin_;
         Array::iterator r = results.begin();
         I2 y = this->yBegin_;
-        std::vector<Real>::const_iterator w = this->weights_.begin();
+        auto w = this->weights_.begin();
         for (; x != this->xEnd_; ++x, ++r, ++w, ++y) {
             *r = (value(*x) - *y) * std::sqrt(*w);
         }

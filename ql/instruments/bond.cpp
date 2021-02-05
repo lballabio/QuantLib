@@ -127,9 +127,7 @@ namespace QuantLib {
         // date, since the first is null.  After the call to
         // lower_bound, *i is the earliest date which is greater or
         // equal than d.  Its index is greater or equal to 1.
-        std::vector<Date>::const_iterator i =
-            std::lower_bound(notionalSchedule_.begin()+1,
-                             notionalSchedule_.end(), d);
+        auto i = std::lower_bound(notionalSchedule_.begin() + 1, notionalSchedule_.end(), d);
         Size index = std::distance(notionalSchedule_.begin(), i);
 
         if (d < notionalSchedule_[index]) {
@@ -289,7 +287,7 @@ namespace QuantLib {
     }
 
     void Bond::setupArguments(PricingEngine::arguments* args) const {
-        Bond::arguments* arguments = dynamic_cast<Bond::arguments*>(args);
+        auto* arguments = dynamic_cast<Bond::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->settlementDate = settlementDate();
@@ -301,8 +299,7 @@ namespace QuantLib {
 
         Instrument::fetchResults(r);
 
-        const Bond::results* results =
-            dynamic_cast<const Bond::results*>(r);
+        const auto* results = dynamic_cast<const Bond::results*>(r);
         QL_ENSURE(results != 0, "wrong result type");
 
         settlementValue_ = results->settlementValue;

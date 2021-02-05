@@ -31,7 +31,7 @@ namespace QuantLib {
         Integer findCouponsPerYear(const T& impl,
                                    Date refStart, Date refEnd) {
             // This will only work for day counts longer than 15 days.
-            Integer months = (Integer)std::lround(12 * Real(impl.dayCount(refStart, refEnd))/365.0);
+            auto months = (Integer)std::lround(12 * Real(impl.dayCount(refStart, refEnd)) / 365.0);
             return (Integer)std::lround(12.0 / Real(months));
         }
 
@@ -172,8 +172,7 @@ namespace QuantLib {
                    << ", reference period end: " << refPeriodEnd);
 
         // estimate roughly the length in months of a period
-        Integer months =
-            (Integer)std::lround(12*Real(refPeriodEnd-refPeriodStart)/365);
+        auto months = (Integer)std::lround(12 * Real(refPeriodEnd - refPeriodStart) / 365);
 
         // for short periods...
         if (months == 0) {

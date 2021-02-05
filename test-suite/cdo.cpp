@@ -371,8 +371,8 @@ void CdoTest::testHW(unsigned dataSet) {
 
 
 test_suite* CdoTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("CDO tests");
-    #ifndef QL_PATCH_SOLARIS
+    auto* suite = BOOST_TEST_SUITE("CDO tests");
+#ifndef QL_PATCH_SOLARIS
     if (speed == Slow) {
         #define BOOST_PP_LOCAL_MACRO(n) \
             suite->add(QUANTLIB_TEST_CASE(ext::bind(&CdoTest::testHW, n)));

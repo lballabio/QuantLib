@@ -140,8 +140,7 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        CPISwap::arguments* arguments =
-        dynamic_cast<CPISwap::arguments*>(args);
+        auto* arguments = dynamic_cast<CPISwap::arguments*>(args);
 
         if (arguments == 0)
             return; // it's a swap engine...
@@ -189,7 +188,7 @@ namespace QuantLib {
 
         Swap::fetchResults(r);
 
-        const CPISwap::results* results = dynamic_cast<const CPISwap::results*>(r);
+        const auto* results = dynamic_cast<const CPISwap::results*>(r);
         if (results != 0) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;

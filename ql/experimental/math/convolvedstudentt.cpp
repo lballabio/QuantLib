@@ -68,9 +68,9 @@ namespace QuantLib {
             polyConvolved_ =
                 convolveVectorPolynomials(polyConvolved_, polynCharFnc_[i]);
           // trim possible zeros that might have arised:
-          std::vector<Real>::reverse_iterator it = polyConvolved_.rbegin();
-          while(it != polyConvolved_.rend()) {
-              if(*it == 0.) {
+        auto it = polyConvolved_.rbegin();
+        while (it != polyConvolved_.rend()) {
+            if (*it == 0.) {
                 polyConvolved_.pop_back();
                 it = polyConvolved_.rbegin();
               }else{

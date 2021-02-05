@@ -122,7 +122,7 @@ void NoArbSabrTest::testConsistencyWithHagan() {
 
 
 test_suite* NoArbSabrTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("NoArbSabrModel tests");
+    auto* suite = BOOST_TEST_SUITE("NoArbSabrModel tests");
     suite->add(QUANTLIB_TEST_CASE(&NoArbSabrTest::testAbsorptionMatrix));
     suite->add(QUANTLIB_TEST_CASE(&NoArbSabrTest::testConsistencyWithHagan));
     return suite;

@@ -74,8 +74,7 @@ namespace QuantLib {
     }
 
     void EquityFXVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<EquityFXVolSurface>* v1 =
-            dynamic_cast<Visitor<EquityFXVolSurface>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<EquityFXVolSurface>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

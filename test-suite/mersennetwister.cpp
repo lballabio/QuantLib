@@ -483,7 +483,7 @@ void MersenneTwisterTest::testValues() {
 
 
 test_suite* MersenneTwisterTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Mersenne twister tests");
+    auto* suite = BOOST_TEST_SUITE("Mersenne twister tests");
     suite->add(QUANTLIB_TEST_CASE(&MersenneTwisterTest::testValues));
     return suite;
 }

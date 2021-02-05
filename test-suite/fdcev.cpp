@@ -214,7 +214,7 @@ void FdCevTest::testFdmCevOp() {
 
 
 test_suite* FdCevTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference CEV tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference CEV tests");
 
 
     suite->add(QUANTLIB_TEST_CASE(&FdCevTest::testLocalMartingale));

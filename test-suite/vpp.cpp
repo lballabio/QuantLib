@@ -976,7 +976,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
 
 
 test_suite* VPPTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("VPP Test");
+    auto* suite = BOOST_TEST_SUITE("VPP Test");
 
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testGemanRoncoroniProcess));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testSimpleExtOUStorageEngine));

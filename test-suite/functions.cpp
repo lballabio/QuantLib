@@ -310,7 +310,7 @@ void FunctionsTest::testWeightedModifiedBesselFunctions() {
 }
 
 test_suite* FunctionsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Factorial tests");
+    auto* suite = BOOST_TEST_SUITE("Factorial tests");
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testFactorial));
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaFunction));
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaValues));

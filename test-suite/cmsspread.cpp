@@ -351,7 +351,7 @@ void CmsSpreadTest::testCouponPricing() {
 }
 
 test_suite* CmsSpreadTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CmsSpreadTest");
+    auto* suite = BOOST_TEST_SUITE("CmsSpreadTest");
     suite->add(QUANTLIB_TEST_CASE(&CmsSpreadTest::testFixings));
     suite->add(QUANTLIB_TEST_CASE(&CmsSpreadTest::testCouponPricing));
     return suite;
