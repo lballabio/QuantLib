@@ -100,8 +100,7 @@ namespace QuantLib {
     // inline definitions
 
     inline void BlackVarianceSurface::accept(AcyclicVisitor& v) {
-        Visitor<BlackVarianceSurface>* v1 =
-            dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

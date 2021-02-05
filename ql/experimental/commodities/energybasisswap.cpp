@@ -155,8 +155,7 @@ namespace QuantLib {
             Real totalQuantityAmount = 0;
 
             // price each period
-            for (PricingPeriods::const_iterator pi = pricingPeriods_.begin();
-                 pi != pricingPeriods_.end(); ++pi) {
+            for (auto pi = pricingPeriods_.begin(); pi != pricingPeriods_.end(); ++pi) {
                 const ext::shared_ptr<PricingPeriod>& pricingPeriod = *pi;
 
                 Integer periodDayCount = 0;
@@ -234,10 +233,9 @@ namespace QuantLib {
 
                 Real payLegValue = 0;
                 Real receiveLegValue = 0;
-                for (std::map<Date, EnergyDailyPosition>::iterator dpi =
-                         dailyPositions_.find(periodStartDate);
-                     dpi != dailyPositions_.end() &&
-                         dpi->first <= pricingPeriod->endDate(); ++dpi) {
+                for (auto dpi = dailyPositions_.find(periodStartDate);
+                     dpi != dailyPositions_.end() && dpi->first <= pricingPeriod->endDate();
+                     ++dpi) {
                     EnergyDailyPosition& dailyPosition = dpi->second;
                     dailyPosition.quantityAmount = avgDailyQuantityAmount;
                     dailyPosition.riskDelta =

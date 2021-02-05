@@ -144,7 +144,7 @@ void TwoAssetBarrierOptionTest::testHaugValues() {
 }
 
 test_suite* TwoAssetBarrierOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Two-asset barrier option tests");
+    auto* suite = BOOST_TEST_SUITE("Two-asset barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&TwoAssetBarrierOptionTest::testHaugValues));
     return suite;
 }

@@ -142,8 +142,7 @@ namespace QuantLib {
     }
 
     void IborCoupon::accept(AcyclicVisitor& v) {
-        Visitor<IborCoupon>* v1 =
-            dynamic_cast<Visitor<IborCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<IborCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

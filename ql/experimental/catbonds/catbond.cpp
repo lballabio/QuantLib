@@ -38,8 +38,7 @@ namespace QuantLib {
 
     void CatBond::setupArguments(PricingEngine::arguments* args) const {
 
-        CatBond::arguments* arguments =
-            dynamic_cast<CatBond::arguments*>(args);
+        auto* arguments = dynamic_cast<CatBond::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong arguments type");
 
         Bond::setupArguments(args);
@@ -51,8 +50,7 @@ namespace QuantLib {
     void CatBond::fetchResults(const PricingEngine::results* r) const {
         Bond::fetchResults(r);
 
-        const CatBond::results* results =
-            dynamic_cast<const CatBond::results*>(r);
+        const auto* results = dynamic_cast<const CatBond::results*>(r);
         QL_ENSURE(results != 0, "wrong result type");
 
         lossProbability_ = results->lossProbability;

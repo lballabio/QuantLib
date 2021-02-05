@@ -37,8 +37,7 @@ namespace QuantLib {
     void EverestOption::setupArguments(PricingEngine::arguments* args) const {
         MultiAssetOption::setupArguments(args);
 
-        EverestOption::arguments* arguments =
-            dynamic_cast<EverestOption::arguments*>(args);
+        auto* arguments = dynamic_cast<EverestOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->notional = notional_;
@@ -47,8 +46,7 @@ namespace QuantLib {
 
     void EverestOption::fetchResults(const PricingEngine::results* r) const {
         MultiAssetOption::fetchResults(r);
-        const EverestOption::results* results =
-            dynamic_cast<const EverestOption::results*>(r);
+        const auto* results = dynamic_cast<const EverestOption::results*>(r);
         QL_ENSURE(results != 0,
                   "no results returned from pricing engine");
         yield_ = results->yield;

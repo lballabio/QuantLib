@@ -163,14 +163,13 @@ namespace QuantLib {
         ext::shared_ptr<StrikedTypePayoff> newPayoff(new
             PlainVanillaPayoff(payoff->optionType(), strike));
 
-        VanillaOption::arguments* controlArguments =
-            dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
+        auto* controlArguments = dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
 
         controlArguments->payoff = newPayoff;
         controlArguments->exercise = this->arguments_.exercise;
         controlPE->calculate();
 
-        const VanillaOption::results* controlResults =
+        const auto* controlResults =
             dynamic_cast<const VanillaOption::results*>(controlPE->getResults());
 
         return controlResults->value;

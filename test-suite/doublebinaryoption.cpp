@@ -251,7 +251,7 @@ void DoubleBinaryOptionTest::testHaugValues() {
 
 
 test_suite* DoubleBinaryOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("DoubleBinary");
+    auto* suite = BOOST_TEST_SUITE("DoubleBinary");
     suite->add(QUANTLIB_TEST_CASE(&DoubleBinaryOptionTest::testHaugValues));
     return suite;
 }

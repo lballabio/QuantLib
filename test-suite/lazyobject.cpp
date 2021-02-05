@@ -81,7 +81,7 @@ void LazyObjectTest::testForwardingNotifications() {
 
 
 test_suite* LazyObjectTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("LazyObject tests");
+    auto* suite = BOOST_TEST_SUITE("LazyObject tests");
     suite->add(
         QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
     suite->add(

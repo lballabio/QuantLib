@@ -160,7 +160,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     for (Size j = firstAdditionalDate_; j < numberAdditionalDates_; ++j)
         dates.push_back(additionalDates[firstAdditionalDate_ + j]);
     std::sort(dates.begin(), dates.end());
-    std::vector<Date>::iterator it = std::unique(dates.begin(), dates.end());
+    auto it = std::unique(dates.begin(), dates.end());
     QL_REQUIRE(it == dates.end(), "duplicate dates among alive instruments and additional dates");
 
     // build times vector

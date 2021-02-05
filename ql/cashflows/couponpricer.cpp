@@ -48,7 +48,7 @@ namespace QuantLib {
         index_ = ext::dynamic_pointer_cast<IborIndex>(coupon.index());
         if (!index_) {
             // check if the coupon was right
-            const IborCoupon* c = dynamic_cast<const IborCoupon*>(&coupon);
+            const auto* c = dynamic_cast<const IborCoupon*>(&coupon);
             QL_REQUIRE(c, "IborCoupon required");
             // coupon was right, index is not
             QL_FAIL("IborIndex required");

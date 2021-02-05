@@ -451,7 +451,7 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
 
         for (Size j=0; j<=1; j++) {
 
-           DoubleBarrier::Type barrierType = static_cast<DoubleBarrier::Type>(j);
+            auto barrierType = static_cast<DoubleBarrier::Type>(j);
 
             spot->setValue(values[i].s);
             qRate->setValue(values[i].q);
@@ -669,7 +669,7 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 }
 
 test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("DoubleBarrier");
+    auto* suite = BOOST_TEST_SUITE("DoubleBarrier");
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
@@ -680,7 +680,7 @@ test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
 }
 
 test_suite* DoubleBarrierOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
+    auto* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
     suite->add(QUANTLIB_TEST_CASE(
                       &DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
     suite->add(QUANTLIB_TEST_CASE(

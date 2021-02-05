@@ -228,7 +228,7 @@ void InflationCPIBondTest::testCleanPrice() {
 
 
 test_suite* InflationCPIBondTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CPI bond tests");
+    auto* suite = BOOST_TEST_SUITE("CPI bond tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCleanPrice));
 

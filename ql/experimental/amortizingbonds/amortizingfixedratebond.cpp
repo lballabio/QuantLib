@@ -85,8 +85,8 @@ namespace QuantLib {
                 ((Real)superDays.first)/((Real)subDays.second);
             Real maxPeriodRatio =
                 ((Real)superDays.second)/((Real)subDays.first);
-            Integer lowRatio = static_cast<Integer>(std::floor(minPeriodRatio));
-            Integer highRatio = static_cast<Integer>(std::ceil(maxPeriodRatio));
+            auto lowRatio = static_cast<Integer>(std::floor(minPeriodRatio));
+            auto highRatio = static_cast<Integer>(std::ceil(maxPeriodRatio));
 
             try {
                 for(Integer i=lowRatio; i <= highRatio; ++i) {

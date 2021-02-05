@@ -756,7 +756,7 @@ void MatricesTest::testInitializers() {
 }
 
 test_suite* MatricesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
+    auto* suite = BOOST_TEST_SUITE("Matrix tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testOrthogonalProjection));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testEigenvectors));

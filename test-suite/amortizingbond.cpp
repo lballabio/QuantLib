@@ -210,10 +210,8 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 }
 
 test_suite* AmortizingBondTest::suite() {
-	test_suite* suite = BOOST_TEST_SUITE("Amortizing Bond tests");
-	suite->add(
-		QUANTLIB_TEST_CASE(&AmortizingBondTest::testAmortizingFixedRateBond));
-	suite->add(
-		QUANTLIB_TEST_CASE(&AmortizingBondTest::testBrazilianAmortizingFixedRateBond));
-	return suite;
+    auto* suite = BOOST_TEST_SUITE("Amortizing Bond tests");
+    suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testAmortizingFixedRateBond));
+    suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testBrazilianAmortizingFixedRateBond));
+    return suite;
 }

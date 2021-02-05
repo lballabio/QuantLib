@@ -122,7 +122,7 @@ void BusinessDayConventionTest::testConventions() {
 }
 
 test_suite* BusinessDayConventionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Business day convention tests");
+    auto* suite = BOOST_TEST_SUITE("Business day convention tests");
     suite->add(QUANTLIB_TEST_CASE(&BusinessDayConventionTest::testConventions));
     return suite;
 }

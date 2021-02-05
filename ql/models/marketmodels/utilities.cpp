@@ -39,8 +39,7 @@ namespace QuantLib {
 
         // ...sort and compact the vector mergedTimes...
         std::sort(allTimes.begin(), allTimes.end());
-        std::vector<Time>::iterator end = std::unique(allTimes.begin(),
-                                                      allTimes.end());
+        auto end = std::unique(allTimes.begin(), allTimes.end());
         //mergedTimes.clear(); // shouldn't be cleared?
         mergedTimes.insert(mergedTimes.end(),
                            allTimes.begin(), end);

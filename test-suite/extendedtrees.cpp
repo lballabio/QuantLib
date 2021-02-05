@@ -376,7 +376,7 @@ void ExtendedTreesTest::testJOSHIBinomialEngines() {
 }
 
 test_suite* ExtendedTreesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("European option extended trees tests");
+    auto* suite = BOOST_TEST_SUITE("European option extended trees tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testJRBinomialEngines));
     suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testCRRBinomialEngines));

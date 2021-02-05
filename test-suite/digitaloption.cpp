@@ -753,7 +753,7 @@ void DigitalOptionTest::testMCCashAtHit() {
 
 
 test_suite* DigitalOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Digital option tests");
+    auto* suite = BOOST_TEST_SUITE("Digital option tests");
     suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testCashOrNothingEuropeanValues));
     suite->add(QUANTLIB_TEST_CASE(

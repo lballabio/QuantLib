@@ -130,8 +130,7 @@ namespace QuantLib {
     }
 
     void YoYInflationCapFloor::setupArguments(PricingEngine::arguments* args) const {
-        YoYInflationCapFloor::arguments* arguments =
-        dynamic_cast<YoYInflationCapFloor::arguments*>(args);
+        auto* arguments = dynamic_cast<YoYInflationCapFloor::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         Size n = yoyLeg_.size();

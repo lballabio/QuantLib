@@ -80,8 +80,8 @@ namespace QuantLib {
                         nonZeros.push_back(jj);
                         nonZeroEntries.push_back(entry);
                     }
-                    std::set<Integer>::const_iterator iter=uBandSet.begin();
-                    std::set<Integer>::const_iterator end =uBandSet.end();
+                    auto iter = uBandSet.begin();
+                    auto end = uBandSet.end();
                     for (; iter != end; ++iter) {
                         const Real entry = U_(jj,jj+*iter);
                         if(entry > QL_EPSILON || entry < -1.0*QL_EPSILON) {

@@ -691,7 +691,7 @@ void CatBondTest::testCatBondWithGeneratedEventsProportional() {
 }
 
 test_suite* CatBondTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CatBond tests");
+    auto* suite = BOOST_TEST_SUITE("CatBond tests");
 
     suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testEventSetForWholeYears));
     suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testEventSetForIrregularPeriods));

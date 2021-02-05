@@ -4268,7 +4268,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 
 
 test_suite* AssetSwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("AssetSwap tests");
+    auto* suite = BOOST_TEST_SUITE("AssetSwap tests");
     suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testImpliedValue));
     suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMarketASWSpread));

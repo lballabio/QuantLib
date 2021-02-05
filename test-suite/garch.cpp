@@ -189,7 +189,7 @@ void GARCHTest::testCalculation() {
 }
 
 test_suite* GARCHTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("GARCH model tests");
+    auto* suite = BOOST_TEST_SUITE("GARCH model tests");
     suite->add(QUANTLIB_TEST_CASE(&GARCHTest::testCalibration));
     suite->add(QUANTLIB_TEST_CASE(&GARCHTest::testCalculation));
     return suite;

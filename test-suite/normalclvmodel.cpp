@@ -551,7 +551,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
 }
 
 test_suite* NormalCLVModelTest::experimental(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
+    auto* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testBSCumlativeDistributionFunction));

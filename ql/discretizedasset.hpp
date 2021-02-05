@@ -227,9 +227,8 @@ namespace QuantLib {
     inline std::vector<Time> DiscretizedOption::mandatoryTimes() const {
         std::vector<Time> times = underlying_->mandatoryTimes();
         // discard negative times...
-        std::vector<Time>::const_iterator i =
-            std::find_if(exerciseTimes_.begin(),exerciseTimes_.end(),
-                         greater_or_equal_to<Time>(0.0));
+        auto i = std::find_if(exerciseTimes_.begin(), exerciseTimes_.end(),
+                              greater_or_equal_to<Time>(0.0));
         // and add the positive ones
         times.insert(times.end(), i, exerciseTimes_.end());
         return times;

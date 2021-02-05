@@ -805,7 +805,7 @@ void RiskNeutralDensityCalculatorTest::testCEVCDF() {
 }
 
 test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
+    auto* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices));

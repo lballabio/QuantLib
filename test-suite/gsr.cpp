@@ -286,7 +286,7 @@ void GsrTest::testGsrModel() {
 }
 
 test_suite *GsrTest::suite() {
-    test_suite *suite = BOOST_TEST_SUITE("GSR model tests");
+    auto* suite = BOOST_TEST_SUITE("GSR model tests");
     suite->add(QUANTLIB_TEST_CASE(&GsrTest::testGsrProcess));
     suite->add(QUANTLIB_TEST_CASE(&GsrTest::testGsrModel));
     return suite;

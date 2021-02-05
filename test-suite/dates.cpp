@@ -479,7 +479,7 @@ void DateTest::canHash() {
 }
 
 test_suite* DateTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Date tests");
+    auto* suite = BOOST_TEST_SUITE("Date tests");
 
     suite->add(QUANTLIB_TEST_CASE(&DateTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&DateTest::ecbDates));

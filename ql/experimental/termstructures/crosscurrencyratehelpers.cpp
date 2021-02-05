@@ -134,8 +134,7 @@ namespace QuantLib {
     }
 
     void CrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<CrossCurrencyBasisSwapRateHelper>* v1 =
-            dynamic_cast<Visitor<CrossCurrencyBasisSwapRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<CrossCurrencyBasisSwapRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

@@ -127,7 +127,7 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
 
 
 test_suite* PartialTimeBarrierOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Partial-time barrier option tests");
+    auto* suite = BOOST_TEST_SUITE("Partial-time barrier option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                           &PartialTimeBarrierOptionTest::testAnalyticEngine));

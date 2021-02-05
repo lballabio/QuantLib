@@ -63,7 +63,7 @@ namespace QuantLib {
     };
 
     inline void Callability::accept(AcyclicVisitor& v){
-        Visitor<Callability>* v1 = dynamic_cast<Visitor<Callability>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<Callability>*>(&v);
         if(v1 != 0)
             v1->visit(*this);
         else

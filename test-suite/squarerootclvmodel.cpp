@@ -845,7 +845,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
 
  
 test_suite* SquareRootCLVModelTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("SquareRootCLVModel tests");
+    auto* suite = BOOST_TEST_SUITE("SquareRootCLVModel tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &SquareRootCLVModelTest::testSquareRootCLVVanillaPricing));

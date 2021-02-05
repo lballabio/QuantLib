@@ -1785,7 +1785,7 @@ void EuropeanOptionTest::testDouglasVsCrankNicolson() {
 }
 
 test_suite* EuropeanOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("European option tests");
+    auto* suite = BOOST_TEST_SUITE("European option tests");
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreekValues));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreeks));
@@ -1821,7 +1821,7 @@ test_suite* EuropeanOptionTest::suite() {
 }
 
 test_suite* EuropeanOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("European option experimental tests");
+    auto* suite = BOOST_TEST_SUITE("European option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testFFTEngines));
     return suite;
 }

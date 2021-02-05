@@ -579,7 +579,7 @@ void CallableBondTest::testCached() {
 }
 
 test_suite* CallableBondTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Convertible-bond tests");
+    auto* suite = BOOST_TEST_SUITE("Convertible-bond tests");
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testInterplay));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testObservability));

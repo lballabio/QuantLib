@@ -807,7 +807,7 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
 
 
 test_suite* RangeAccrualTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Range Accrual tests");
+    auto* suite = BOOST_TEST_SUITE("Range Accrual tests");
     suite->add(QUANTLIB_TEST_CASE(&RangeAccrualTest::testInfiniteRange));
     suite->add(QUANTLIB_TEST_CASE(
            &RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike));

@@ -59,7 +59,7 @@ namespace QuantLib {
         const ext::function<Real(Real)> emptyFct;
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
-            const Integer ix = Integer(iter.coordinates()[direction]);
+            const auto ix = Integer(iter.coordinates()[direction]);
             const Integer offset = std::max(0, hPoints - ix)
                 - std::max(0, hPoints - (nx-((isEven)? 0 : 1) - ix));
 

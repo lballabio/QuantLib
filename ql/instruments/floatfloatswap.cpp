@@ -326,13 +326,12 @@ namespace QuantLib {
             for (Size i = 0; i < legs_[0].size() - 1; i++) {
                 Real cap = nominal1_[i] - nominal1_[i + 1];
                 if (!close(cap, 0.0)) {
-                    std::vector<ext::shared_ptr<CashFlow> >::iterator it1 =
-                        legs_[0].begin();
+                    auto it1 = legs_[0].begin();
                     std::advance(it1, i + 1);
                     legs_[0].insert(
                         it1, ext::shared_ptr<CashFlow>(
                                  new Redemption(cap, legs_[0][i]->date())));
-                    std::vector<Real>::iterator it2 = nominal1_.begin();
+                    auto it2 = nominal1_.begin();
                     std::advance(it2, i + 1);
                     nominal1_.insert(it2, nominal1_[i]);
                     i++;
@@ -341,13 +340,12 @@ namespace QuantLib {
             for (Size i = 0; i < legs_[1].size() - 1; i++) {
                 Real cap = nominal2_[i] - nominal2_[i + 1];
                 if (!close(cap, 0.0)) {
-                    std::vector<ext::shared_ptr<CashFlow> >::iterator it1 =
-                        legs_[1].begin();
+                    auto it1 = legs_[1].begin();
                     std::advance(it1, i + 1);
                     legs_[1].insert(
                         it1, ext::shared_ptr<CashFlow>(
                                  new Redemption(cap, legs_[1][i]->date())));
-                    std::vector<Real>::iterator it2 = nominal2_.begin();
+                    auto it2 = nominal2_.begin();
                     std::advance(it2, i + 1);
                     nominal2_.insert(it2, nominal2_[i]);
                     i++;
@@ -388,8 +386,7 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        FloatFloatSwap::arguments *arguments =
-            dynamic_cast<FloatFloatSwap::arguments *>(args);
+        auto* arguments = dynamic_cast<FloatFloatSwap::arguments*>(args);
 
         if (arguments == 0)
             return; // swap engine ... // QL_REQUIRE(arguments != 0, "argument type does not match");

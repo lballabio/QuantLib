@@ -226,7 +226,7 @@ namespace QuantLib {
             registerWith(*i);
 
         const Leg& bondLeg = bond_->cashflows();
-        for (Leg::const_iterator i=bondLeg.begin(); i<bondLeg.end(); ++i) {
+        for (auto i = bondLeg.begin(); i < bondLeg.end(); ++i) {
             // whatever might be the choice for the discounting engine
             // bond flows on upfrontDate_ must be discarded
             bool upfrontDateBondFlows = false;
@@ -274,8 +274,7 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        AssetSwap::arguments* arguments =
-            dynamic_cast<AssetSwap::arguments*>(args);
+        auto* arguments = dynamic_cast<AssetSwap::arguments*>(args);
 
         if (arguments == 0) // it's a swap engine...
             return;
@@ -389,8 +388,7 @@ namespace QuantLib {
 
     void AssetSwap::fetchResults(const PricingEngine::results* r) const {
         Swap::fetchResults(r);
-        const AssetSwap::results* results =
-            dynamic_cast<const AssetSwap::results*>(r);
+        const auto* results = dynamic_cast<const AssetSwap::results*>(r);
         if (results != 0) {
             fairSpread_ = results->fairSpread;
             fairCleanPrice_= results->fairCleanPrice;

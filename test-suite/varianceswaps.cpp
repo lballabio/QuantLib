@@ -301,7 +301,7 @@ void VarianceSwapTest::testMCVarianceSwap() {
 }
 
 test_suite* VarianceSwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Variance swap tests");
+    auto* suite = BOOST_TEST_SUITE("Variance swap tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                              &VarianceSwapTest::testReplicatingVarianceSwap));

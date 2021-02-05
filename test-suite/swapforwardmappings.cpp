@@ -453,7 +453,7 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
 
 
 test_suite* SwapForwardMappingsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
+    auto* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
 
 
     suite->add(QUANTLIB_TEST_CASE(

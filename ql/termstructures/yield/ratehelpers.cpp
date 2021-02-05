@@ -280,8 +280,7 @@ namespace QuantLib {
     }
 
     void FuturesRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<FuturesRateHelper>* v1 =
-            dynamic_cast<Visitor<FuturesRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<FuturesRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -362,8 +361,7 @@ namespace QuantLib {
     }
 
     void DepositRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<DepositRateHelper>* v1 =
-            dynamic_cast<Visitor<DepositRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<DepositRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -671,8 +669,7 @@ namespace QuantLib {
     }
 
     void FraRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<FraRateHelper>* v1 =
-            dynamic_cast<Visitor<FraRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<FraRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -904,8 +901,7 @@ namespace QuantLib {
     }
 
     void SwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<SwapRateHelper>* v1 =
-            dynamic_cast<Visitor<SwapRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<SwapRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -1006,8 +1002,7 @@ namespace QuantLib {
     }
 
     void BMASwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<BMASwapRateHelper>* v1 =
-            dynamic_cast<Visitor<BMASwapRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<BMASwapRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -1089,8 +1084,7 @@ namespace QuantLib {
     }
 
     void FxSwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<FxSwapRateHelper>* v1 =
-            dynamic_cast<Visitor<FxSwapRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<FxSwapRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

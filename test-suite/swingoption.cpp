@@ -165,8 +165,7 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
     for (Real x=1e-12; x < 1.0; x*=10) {
         const Real v = mesher.jumpSizeDistribution(x);
 
-        std::vector<Real>::iterator iter
-            = std::lower_bound(path.begin(), path.end(), x);
+        auto iter = std::lower_bound(path.begin(), path.end(), x);
         const Real q = std::distance(path.begin(), iter)/Real(n);
         QL_REQUIRE(std::fabs(q - v) < relTol1
                    || ((v < threshold) && std::fabs(q-v) < relTol2),
@@ -601,7 +600,7 @@ void SwingOptionTest::testKlugeChFVanillaPricing() {
 }
 
 test_suite* SwingOptionTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Swing-Option Test");
+    auto* suite = BOOST_TEST_SUITE("Swing-Option Test");
 
     suite->add(QUANTLIB_TEST_CASE(
         &SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess));

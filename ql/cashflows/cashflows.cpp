@@ -231,9 +231,7 @@ namespace QuantLib {
     Real CashFlows::nominal(const Leg& leg,
                             bool includeSettlementDateFlows,
                             Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0.0;
 
         Date paymentDate = (*cf)->date();
@@ -248,9 +246,7 @@ namespace QuantLib {
     Date CashFlows::accrualStartDate(const Leg& leg,
                                      bool includeSettlementDateFlows,
                                      Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return Date();
 
         Date paymentDate = (*cf)->date();
@@ -265,9 +261,7 @@ namespace QuantLib {
     Date CashFlows::accrualEndDate(const Leg& leg,
                                    bool includeSettlementDateFlows,
                                    Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return Date();
 
         Date paymentDate = (*cf)->date();
@@ -282,9 +276,7 @@ namespace QuantLib {
     Date CashFlows::referencePeriodStart(const Leg& leg,
                                          bool includeSettlementDateFlows,
                                          Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return Date();
 
         Date paymentDate = (*cf)->date();
@@ -299,9 +291,7 @@ namespace QuantLib {
     Date CashFlows::referencePeriodEnd(const Leg& leg,
                                        bool includeSettlementDateFlows,
                                        Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return Date();
 
         Date paymentDate = (*cf)->date();
@@ -316,9 +306,7 @@ namespace QuantLib {
     Time CashFlows::accrualPeriod(const Leg& leg,
                                   bool includeSettlementDateFlows,
                                   Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0;
 
         Date paymentDate = (*cf)->date();
@@ -333,9 +321,7 @@ namespace QuantLib {
     Date::serial_type CashFlows::accrualDays(const Leg& leg,
                                              bool includeSettlementDateFlows,
                                              Date settlementDate) {
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0;
 
         Date paymentDate = (*cf)->date();
@@ -353,9 +339,7 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0;
 
         Date paymentDate = (*cf)->date();
@@ -373,9 +357,7 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0;
 
         Date paymentDate = (*cf)->date();
@@ -393,9 +375,7 @@ namespace QuantLib {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
 
-        Leg::const_iterator cf = nextCashFlow(leg,
-                                              includeSettlementDateFlows,
-                                              settlementDate);
+        auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0.0;
 
         Date paymentDate = (*cf)->date();

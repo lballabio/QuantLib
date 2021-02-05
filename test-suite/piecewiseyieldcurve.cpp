@@ -1508,7 +1508,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
 
 test_suite* PiecewiseYieldCurveTest::suite() {
 
-    test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
+    auto* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
 
     // unstable
     //suite->add(QUANTLIB_TEST_CASE(

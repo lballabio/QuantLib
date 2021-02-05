@@ -1751,7 +1751,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 }
 
 test_suite *MarkovFunctionalTest::suite(SpeedLevel speed) {
-    test_suite *suite = BOOST_TEST_SUITE("Markov functional model tests");
+    auto* suite = BOOST_TEST_SUITE("Markov functional model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testMfStateProcess));
     suite->add(QUANTLIB_TEST_CASE(

@@ -529,7 +529,7 @@ void JumpDiffusionTest::testGreeks() {
 
 
 test_suite* JumpDiffusionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Jump-diffusion tests");
+    auto* suite = BOOST_TEST_SUITE("Jump-diffusion tests");
     suite->add(QUANTLIB_TEST_CASE(&JumpDiffusionTest::testMerton76));
     suite->add(QUANTLIB_TEST_CASE(&JumpDiffusionTest::testGreeks));
     return suite;

@@ -30,8 +30,7 @@ namespace QuantLib {
     }
 
     void DefaultEvent::accept(AcyclicVisitor& v) {
-        Visitor<DefaultEvent>* v1 =
-            dynamic_cast<Visitor<DefaultEvent>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<DefaultEvent>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -44,8 +43,7 @@ namespace QuantLib {
     }
 
     void DefaultEvent::DefaultSettlement::accept(AcyclicVisitor& v) {
-        Visitor<DefaultEvent::DefaultSettlement>* v1 =
-            dynamic_cast<Visitor<DefaultEvent::DefaultSettlement>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<DefaultEvent::DefaultSettlement>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -67,8 +65,7 @@ namespace QuantLib {
         const Real recoveryRate)
     : settlementDate_(date), recoveryRates_(makeIsdaConvMap()) {
         if (seniority == NoSeniority) {
-            for (std::map<Seniority, Real>::iterator i=recoveryRates_.begin();
-                 i != recoveryRates_.end(); ++i) {
+            for (auto i = recoveryRates_.begin(); i != recoveryRates_.end(); ++i) {
                 i->second = recoveryRate;
             }
         } else {
@@ -81,8 +78,7 @@ namespace QuantLib {
         // expensive require cause called often...... fix me
         QL_REQUIRE(sen != NoSeniority,
             "NoSeniority is not valid for recovery rate request.");
-        std::map<Seniority, Real>::const_iterator itmatch =
-            recoveryRates_.find(sen);
+        auto itmatch = recoveryRates_.find(sen);
         if(itmatch != recoveryRates_.end()) {
             return itmatch->second;
         }else{
