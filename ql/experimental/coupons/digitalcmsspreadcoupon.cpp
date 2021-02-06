@@ -40,8 +40,7 @@ namespace QuantLib {
 
     void DigitalCmsSpreadCoupon::accept(AcyclicVisitor& v) {
         typedef DigitalCoupon super;
-        Visitor<DigitalCmsSpreadCoupon>* v1 =
-            dynamic_cast<Visitor<DigitalCmsSpreadCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<DigitalCmsSpreadCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

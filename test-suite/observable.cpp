@@ -323,7 +323,7 @@ void ObservableTest::testEmptyObserverList() {
 }
 
 test_suite* ObservableTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Observer tests");
+    auto* suite = BOOST_TEST_SUITE("Observer tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testObservableSettings));
 

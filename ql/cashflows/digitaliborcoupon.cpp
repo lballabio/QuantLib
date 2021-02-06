@@ -42,8 +42,7 @@ namespace QuantLib {
 
     void DigitalIborCoupon::accept(AcyclicVisitor& v) {
         typedef DigitalCoupon super;
-        Visitor<DigitalIborCoupon>* v1 =
-            dynamic_cast<Visitor<DigitalIborCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<DigitalIborCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

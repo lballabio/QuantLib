@@ -203,7 +203,7 @@ void CurveStatesTest::testCMSwapCurveState() {
 
 // --- Call the desired tests
 test_suite* CurveStatesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Curve States tests");
+    auto* suite = BOOST_TEST_SUITE("Curve States tests");
     //suite->add(QUANTLIB_TEST_CASE(&CurveStatesTest::testLMMCurveState));
     //suite->add(QUANTLIB_TEST_CASE(&CurveStatesTest::testCoterminalSwapCurveState));
     suite->add(QUANTLIB_TEST_CASE(&CurveStatesTest::testCMSwapCurveState));

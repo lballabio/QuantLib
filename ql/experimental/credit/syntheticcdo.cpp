@@ -140,8 +140,7 @@ namespace QuantLib {
     }
 
     void SyntheticCDO::setupArguments(PricingEngine::arguments* args) const {
-        SyntheticCDO::arguments* arguments
-            = dynamic_cast<SyntheticCDO::arguments*>(args);
+        auto* arguments = dynamic_cast<SyntheticCDO::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
         arguments->basket = basket_;
         arguments->side = side_;
@@ -157,8 +156,7 @@ namespace QuantLib {
     void SyntheticCDO::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
 
-        const SyntheticCDO::results* results
-            = dynamic_cast<const SyntheticCDO::results*>(r);
+        const auto* results = dynamic_cast<const SyntheticCDO::results*>(r);
         QL_REQUIRE(results != 0, "wrong result type");
 
         premiumValue_ = results->premiumValue;
@@ -242,8 +240,7 @@ namespace QuantLib {
 
         MidPointCDOEngine engineIC(discountCurve);
         setupArguments(engineIC.getArguments());
-        const SyntheticCDO::results* results = 
-            dynamic_cast<const SyntheticCDO::results*>(engineIC.getResults());
+        const auto* results = dynamic_cast<const SyntheticCDO::results*>(engineIC.getResults());
 
         // aviod recal of the basket on engine updates through the quote
         basket_->recalculate();

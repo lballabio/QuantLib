@@ -70,7 +70,7 @@ namespace day_counters_test {
         const DayCounter& dayCounter, Date start, Date end, Date refStart, Date refEnd) {
         Real referenceDayCount = Real(dayCounter.dayCount(refStart, refEnd));
         // guess how many coupon periods per year:
-        Integer couponsPerYear = (Integer)std::lround(365.0 / referenceDayCount);
+        auto couponsPerYear = (Integer)std::lround(365.0 / referenceDayCount);
         // the above is good enough for annual or semi annual payments.
         return Real(dayCounter.dayCount(start, end))
             / (referenceDayCount*couponsPerYear);
@@ -880,7 +880,7 @@ void DayCounterTest::testIntraday() {
 
 
 test_suite* DayCounterTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
+    auto* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
     suite->add(QUANTLIB_TEST_CASE(
                     &DayCounterTest::testActualActualWithSemiannualSchedule));

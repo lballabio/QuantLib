@@ -133,8 +133,7 @@ namespace QuantLib {
     }
 
     void OISRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<OISRateHelper>* v1 =
-            dynamic_cast<Visitor<OISRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<OISRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -199,8 +198,7 @@ namespace QuantLib {
     }
 
     void DatedOISRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<DatedOISRateHelper>* v1 =
-            dynamic_cast<Visitor<DatedOISRateHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<DatedOISRateHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

@@ -103,8 +103,7 @@ namespace {
         }
 
         void applyTo(Array& a, Time t) const override {
-            std::vector<Time>::const_iterator iter
-                = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
+            auto iter = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
 
             if (iter != exerciseTimes_.end()) {
                 Size index = std::distance(exerciseTimes_.begin(), iter);
@@ -1753,7 +1752,7 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
 }
 
 test_suite* FdmLinearOpTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("linear operator tests");
+    auto* suite = BOOST_TEST_SUITE("linear operator tests");
 
     suite->add(
         QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmLinearOpLayout));

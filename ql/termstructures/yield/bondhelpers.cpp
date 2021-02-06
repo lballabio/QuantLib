@@ -86,8 +86,7 @@ namespace QuantLib {
     }
 
     void BondHelper::accept(AcyclicVisitor& v) {
-        Visitor<BondHelper>* v1 =
-            dynamic_cast<Visitor<BondHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<BondHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -149,8 +148,7 @@ namespace QuantLib {
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
-        Visitor<FixedRateBondHelper>* v1 =
-            dynamic_cast<Visitor<FixedRateBondHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<FixedRateBondHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
@@ -220,8 +218,7 @@ namespace QuantLib {
     }
 
     void CPIBondHelper::accept(AcyclicVisitor& v) {
-        Visitor<CPIBondHelper>* v1 =
-            dynamic_cast<Visitor<CPIBondHelper>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<CPIBondHelper>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

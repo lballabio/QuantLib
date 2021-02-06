@@ -505,7 +505,7 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
 }
 
 test_suite* CashFlowsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
+    auto* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));

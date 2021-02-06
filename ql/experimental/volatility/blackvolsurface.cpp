@@ -49,8 +49,7 @@ namespace QuantLib {
     }
 
     void BlackVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<BlackVolSurface>* v1 =
-            dynamic_cast<Visitor<BlackVolSurface>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<BlackVolSurface>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

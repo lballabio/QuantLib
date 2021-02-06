@@ -375,7 +375,7 @@ void ExchangeRateTest::testSmartLookup() {
 }
 
 test_suite* ExchangeRateTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Exchange-rate tests");
+    auto* suite = BOOST_TEST_SUITE("Exchange-rate tests");
     suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDirect));
     suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDerived));
     suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDirectLookup));

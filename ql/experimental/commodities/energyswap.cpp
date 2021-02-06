@@ -40,8 +40,7 @@ namespace QuantLib {
 
     Quantity EnergySwap::quantity() const {
         Real totalQuantityAmount = 0;
-        for (PricingPeriods::const_iterator pi = pricingPeriods_.begin();
-             pi != pricingPeriods_.end(); ++pi) {
+        for (auto pi = pricingPeriods_.begin(); pi != pricingPeriods_.end(); ++pi) {
             totalQuantityAmount += (*pi)->quantity().amount();
         }
         return Quantity(pricingPeriods_[0]->quantity().commodityType(),

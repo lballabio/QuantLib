@@ -84,8 +84,7 @@ namespace QuantLib {
      }
 
     void RangeAccrualFloatersCoupon::accept(AcyclicVisitor& v) {
-        Visitor<RangeAccrualFloatersCoupon>* v1 =
-            dynamic_cast<Visitor<RangeAccrualFloatersCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<RangeAccrualFloatersCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

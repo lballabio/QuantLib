@@ -377,7 +377,7 @@ namespace QuantLib {
     Garch11::calculate(const time_series& quoteSeries,
                        Real alpha, Real beta, Real omega) {
         time_series retval;
-        const_iterator cur = quoteSeries.cbegin();
+        auto cur = quoteSeries.cbegin();
         Real u = cur->second;
         Real sigma2 = u*u;
         while (++cur != quoteSeries.end()) {
@@ -387,7 +387,7 @@ namespace QuantLib {
         }
         sigma2 = omega + alpha * u * u + beta * sigma2;
         --cur;
-        const_iterator prev = cur;
+        auto prev = cur;
         retval[cur->first + (cur->first - (--prev)->first) ] = std::sqrt(sigma2);
         return retval;
     }

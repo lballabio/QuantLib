@@ -99,8 +99,7 @@ void Gsr::update() {
 void Gsr::updateTimes() const {
     volsteptimes_.clear();
     int j = 0;
-    for (std::vector<Date>::const_iterator i = volstepdates_.begin();
-         i != volstepdates_.end(); ++i, ++j) {
+    for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
         volsteptimes_.push_back(termStructure()->timeFromReference(*i));
         volsteptimesArray_[j] = volsteptimes_[j];
         if (j == 0)

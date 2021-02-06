@@ -190,15 +190,13 @@ namespace QuantLib {
                        "engine does not provide "
                        "control variation pricing engine");
 
-            DiscreteAveragingAsianOption::arguments* controlArguments =
-                dynamic_cast<DiscreteAveragingAsianOption::arguments*>(
-                    controlPE->getArguments());
+            auto* controlArguments =
+                dynamic_cast<DiscreteAveragingAsianOption::arguments*>(controlPE->getArguments());
             *controlArguments = arguments_;
             controlPE->calculate();
 
-            const DiscreteAveragingAsianOption::results* controlResults =
-                dynamic_cast<const DiscreteAveragingAsianOption::results*>(
-                    controlPE->getResults());
+            const auto* controlResults =
+                dynamic_cast<const DiscreteAveragingAsianOption::results*>(controlPE->getResults());
 
             return controlResults->value;
     }

@@ -100,8 +100,8 @@ namespace QuantLib {
               vegaWeighted_(vegaWeighted) { }
 
             void update() override {
-                std::vector<Real>::const_iterator x = this->xBegin_;
-                std::vector<Real>::const_iterator y = this->yBegin_;
+                auto x = this->xBegin_;
+                auto y = this->yBegin_;
                 std::vector<Real> times, blackVols;
                 for ( ; x!=this->xEnd_; ++x, ++y) {
                     times.push_back(*x);

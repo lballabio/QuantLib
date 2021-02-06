@@ -199,7 +199,7 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
 
 
 test_suite* QuoteTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Quote tests");
+    auto* suite = BOOST_TEST_SUITE("Quote tests");
     suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testObservable));
     suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testObservableHandle));
     suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testDerived));

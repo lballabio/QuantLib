@@ -87,8 +87,7 @@ namespace QuantLib {
     }
 
     inline void ImpliedVolTermStructure::accept(AcyclicVisitor& v) {
-        Visitor<ImpliedVolTermStructure>* v1 =
-            dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

@@ -75,10 +75,10 @@ namespace QuantLib {
                              ) const
     {
         // to do: the set is ordered, see how to use it to speed this up
-        for(DefaultEventSet::const_iterator itev = events_.begin();
-            // am i really speeding things up with the date comp?
-            itev != events_.end(); // && (*itev)->date() > start;
-            ++itev) {
+        for (auto itev = events_.begin();
+             // am i really speeding things up with the date comp?
+             itev != events_.end(); // && (*itev)->date() > start;
+             ++itev) {
             if((*itev)->matchesDefaultKey(contractKey) &&
                 between(*itev, start, end, includeRefDate))
                 return *itev;
@@ -96,10 +96,10 @@ namespace QuantLib {
     {
         std::vector<ext::shared_ptr<DefaultEvent> > defaults;
         // to do: the set is ordered, see how to use it to speed this up
-        for(DefaultEventSet::const_iterator itev = events_.begin();
-            // am i really speeding things up with the date comp?
-            itev != events_.end(); // && (*itev)->date() > start;
-            ++itev) {
+        for (auto itev = events_.begin();
+             // am i really speeding things up with the date comp?
+             itev != events_.end(); // && (*itev)->date() > start;
+             ++itev) {
             if((*itev)->matchesDefaultKey(contractKey) &&
                 between(*itev, start, end, includeRefDate))
                 defaults.push_back(*itev);

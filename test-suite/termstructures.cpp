@@ -482,7 +482,7 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
 }
 
 test_suite* TermStructureTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Term structure tests");
+    auto* suite = BOOST_TEST_SUITE("Term structure tests");
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testReferenceChange));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImplied));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImpliedObs));

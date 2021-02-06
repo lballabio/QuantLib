@@ -58,8 +58,7 @@ namespace QuantLib {
 
 
     void CPICoupon::accept(AcyclicVisitor& v) {
-        Visitor<CPICoupon>* v1 =
-        dynamic_cast<Visitor<CPICoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<CPICoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

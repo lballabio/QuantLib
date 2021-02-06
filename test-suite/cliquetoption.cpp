@@ -372,7 +372,7 @@ void CliquetOptionTest::testMcPerformance() {
 
 
 test_suite* CliquetOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cliquet option tests");
+    auto* suite = BOOST_TEST_SUITE("Cliquet option tests");
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));

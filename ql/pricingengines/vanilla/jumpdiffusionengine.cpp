@@ -81,17 +81,15 @@ namespace QuantLib {
 
         AnalyticEuropeanEngine baseEngine(bsProcess);
 
-        VanillaOption::arguments* baseArguments =
-            dynamic_cast<VanillaOption::arguments*>(baseEngine.getArguments());
+        auto* baseArguments = dynamic_cast<VanillaOption::arguments*>(baseEngine.getArguments());
 
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
 
         baseArguments->validate();
 
-        const VanillaOption::results* baseResults =
-            dynamic_cast<const VanillaOption::results*>(
-                                                     baseEngine.getResults());
+        const auto* baseResults =
+            dynamic_cast<const VanillaOption::results*>(baseEngine.getResults());
 
         results_.value       = 0.0;
         results_.delta       = 0.0;

@@ -134,7 +134,7 @@ void SofrFuturesTest::testBootstrap() {
 
 
 test_suite* SofrFuturesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("SOFR futures tests");
+    auto* suite = BOOST_TEST_SUITE("SOFR futures tests");
 
     suite->add(QUANTLIB_TEST_CASE(&SofrFuturesTest::testBootstrap));
 

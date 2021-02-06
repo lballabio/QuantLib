@@ -756,7 +756,7 @@ void CreditDefaultSwapTest::testAccrualRebateAmounts() {
 }
 
 test_suite* CreditDefaultSwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Credit-default swap tests");
+    auto* suite = BOOST_TEST_SUITE("Credit-default swap tests");
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testCachedValue));
     suite->add(QUANTLIB_TEST_CASE(
                               &CreditDefaultSwapTest::testCachedMarketValue));

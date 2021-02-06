@@ -215,8 +215,7 @@ namespace QuantLib {
 
         OneAssetOption::setupArguments(args);
 
-        ConvertibleBond::option::arguments* moreArgs =
-            dynamic_cast<ConvertibleBond::option::arguments*>(args);
+        auto* moreArgs = dynamic_cast<ConvertibleBond::option::arguments*>(args);
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
 
         moreArgs->conversionRatio = conversionRatio_;

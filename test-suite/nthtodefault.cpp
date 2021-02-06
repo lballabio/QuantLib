@@ -389,8 +389,8 @@ void NthToDefaultTest::testStudent() {
 }
 
 test_suite* NthToDefaultTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Nth-to-default tests");
-    #ifndef QL_PATCH_SOLARIS
+    auto* suite = BOOST_TEST_SUITE("Nth-to-default tests");
+#ifndef QL_PATCH_SOLARIS
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGauss));
         suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testStudent));

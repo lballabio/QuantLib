@@ -697,7 +697,7 @@ void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
 #endif
 
 test_suite* NthOrderDerivativeOpTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
+    auto* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
 
 #ifndef QL_NO_UBLAS_SUPPORT
 

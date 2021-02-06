@@ -567,7 +567,7 @@ void AmericanOptionTest::testFdShoutGreeks() {
 }
 
 test_suite* AmericanOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("American option tests");
+    auto* suite = BOOST_TEST_SUITE("American option tests");
     suite->add(
         QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
     suite->add(

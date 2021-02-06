@@ -45,8 +45,7 @@ namespace QuantLib {
             << std::setw(14) << std::right << "delta"
             << std::setw(10) << std::right << "open" << std::endl;
 
-        for (EnergyDailyPositions::const_iterator i = dailyPositions.begin();
-             i != dailyPositions.end(); ++i) {
+        for (auto i = dailyPositions.begin(); i != dailyPositions.end(); ++i) {
             const EnergyDailyPosition& dailyPosition = i->second;
             out << std::setw(4) << io::iso_date(i->first) << "  "
                 << std::setw(12) << std::right << std::fixed
@@ -71,8 +70,7 @@ namespace QuantLib {
 
 
     void EnergyCommodity::setupArguments(PricingEngine::arguments* args) const {
-        EnergyCommodity::arguments* arguments =
-            dynamic_cast<EnergyCommodity::arguments*>(args);
+        auto* arguments = dynamic_cast<EnergyCommodity::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
         //arguments->legs = legs_;
         //arguments->payer = payer_;
@@ -80,8 +78,7 @@ namespace QuantLib {
 
     void EnergyCommodity::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
-        const EnergyCommodity::results* results =
-            dynamic_cast<const EnergyCommodity::results*>(r);
+        const auto* results = dynamic_cast<const EnergyCommodity::results*>(r);
         QL_REQUIRE(results != 0, "wrong result type");
     }
 

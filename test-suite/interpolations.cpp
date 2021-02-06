@@ -2447,7 +2447,7 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
 }
 
 test_suite* InterpolationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
+    auto* suite = BOOST_TEST_SUITE("Interpolation tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                         &InterpolationTest::testSplineOnGenericValues));

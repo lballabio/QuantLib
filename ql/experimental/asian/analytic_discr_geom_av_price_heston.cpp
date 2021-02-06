@@ -95,8 +95,8 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::z(
             const std::complex<Real>& s, const std::complex<Real>& w, Size k, Size n) const {
-        double k_ = double(k);
-        double n_ = double(n);
+        auto k_ = double(k);
+        auto n_ = double(n);
         std::complex<Real> term1 = (2*rho_*kappa_ - sigma_)*((n_-k_+1)*s + n_*w)/(2*sigma_*n_);
         std::complex<Real> term2 = (1-rho_*rho_)*pow(((n_-k_+1)*s + n_*w), 2)/(2*n_*n_);
 
@@ -119,8 +119,8 @@ namespace QuantLib {
             const std::complex<Real>& w,
             Time t, Time T, Size kStar,
             const std::vector<Time>& t_n) const {
-        double kStar_ = double(kStar);
-        double n_ = double(t_n.size());
+        auto kStar_ = double(kStar);
+        auto n_ = double(t_n.size());
         Real temp = -rho_*kappa_*theta_/sigma_;
 
         Time summation = 0.0;

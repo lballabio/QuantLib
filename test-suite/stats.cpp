@@ -390,7 +390,7 @@ void StatisticsTest::testIncrementalStatistics() {
 }
 
 test_suite* StatisticsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Statistics tests");
+    auto* suite = BOOST_TEST_SUITE("Statistics tests");
     suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testStatistics));
     suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testSequenceStatistics));
     suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testConvergenceStatistics));

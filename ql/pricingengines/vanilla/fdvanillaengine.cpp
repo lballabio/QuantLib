@@ -40,8 +40,7 @@ namespace QuantLib {
 
     void FDVanillaEngine::setupArguments(
                                     const PricingEngine::arguments* a) const {
-        const OneAssetOption::arguments * args =
-            dynamic_cast<const OneAssetOption::arguments *>(a);
+        const auto* args = dynamic_cast<const OneAssetOption::arguments*>(a);
         QL_REQUIRE(args, "incorrect argument type");
         exerciseDate_ = args->exercise->lastDate();
         payoff_ = args->payoff;

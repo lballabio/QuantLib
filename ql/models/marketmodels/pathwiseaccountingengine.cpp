@@ -107,7 +107,8 @@ namespace QuantLib {
 
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
-            std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
+            auto it =
+                std::upper_bound(evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
             if (it != evolutionTimes.begin())
                 --it;
             Size index = it - evolutionTimes.begin();
@@ -435,7 +436,8 @@ namespace QuantLib {
 
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
-            std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
+            auto it =
+                std::upper_bound(evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
             if (it != evolutionTimes.begin())
                 --it;
             Size index = it - evolutionTimes.begin();
@@ -833,7 +835,8 @@ namespace QuantLib {
 
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
-            std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
+            auto it =
+                std::upper_bound(evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
             if (it != evolutionTimes.begin())
                 --it;
             Size index = it - evolutionTimes.begin();

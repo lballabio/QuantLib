@@ -87,8 +87,7 @@ namespace QuantLib {
     // inline definitions
 
     inline void IndexedCashFlow::accept(AcyclicVisitor& v) {
-        Visitor<IndexedCashFlow>* v1 =
-        dynamic_cast<Visitor<IndexedCashFlow>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<IndexedCashFlow>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

@@ -4898,7 +4898,7 @@ void MarketModelTest::testCovariance() {
 
 // --- Call the desired tests
 test_suite* MarketModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
+    auto* suite = BOOST_TEST_SUITE("Market-model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testInverseFloater));
 

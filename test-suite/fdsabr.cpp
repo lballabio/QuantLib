@@ -531,7 +531,7 @@ void FdSabrTest::testBenchOpSabrCase() {
 }
 
 test_suite* FdSabrTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference SABR tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference SABR tests");
 
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrOp));
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrCevPricing));

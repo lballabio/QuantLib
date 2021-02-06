@@ -1038,7 +1038,7 @@ void InflationTest::testPeriod() {
 
 test_suite* InflationTest::suite() {
 
-    test_suite* suite = BOOST_TEST_SUITE("Inflation tests");
+    auto* suite = BOOST_TEST_SUITE("Inflation tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testPeriod));
 

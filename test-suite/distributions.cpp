@@ -762,7 +762,7 @@ void DistributionTest::testSankaranApproximation() {
 }
 
 test_suite* DistributionTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
+    auto* suite = BOOST_TEST_SUITE("Distribution tests");
 
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariate));

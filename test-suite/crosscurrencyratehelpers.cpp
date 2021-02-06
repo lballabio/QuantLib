@@ -266,7 +266,7 @@ void CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralAndBasisInQuoteCc
 }
 
 test_suite* CrossCurrencyRateHelpersTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cross currency rate helpers tests");
+    auto* suite = BOOST_TEST_SUITE("Cross currency rate helpers tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &CrossCurrencyRateHelpersTest::testBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy));

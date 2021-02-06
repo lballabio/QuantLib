@@ -1072,7 +1072,7 @@ void ScheduleTest::testTruncation() {
 }
 
 test_suite* ScheduleTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Schedule tests");
+    auto* suite = BOOST_TEST_SUITE("Schedule tests");
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDailySchedule));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testEndDateWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(

@@ -116,8 +116,7 @@ namespace QuantLib {
 
 
     inline void InflationCoupon::accept(AcyclicVisitor& v) {
-        Visitor<InflationCoupon>* v1 =
-        dynamic_cast<Visitor<InflationCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<InflationCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

@@ -199,7 +199,7 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
 
 test_suite* FittedBondDiscountCurveTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Fitted bond discount curve tests");
+    auto* suite = BOOST_TEST_SUITE("Fitted bond discount curve tests");
     suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testEvaluation));
     suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testFlatExtrapolation));
     return suite;

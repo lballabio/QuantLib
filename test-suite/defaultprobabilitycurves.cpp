@@ -559,7 +559,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
 
 
 test_suite* DefaultProbabilityCurveTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Default-probability curve tests");
+    auto* suite = BOOST_TEST_SUITE("Default-probability curve tests");
     suite->add(QUANTLIB_TEST_CASE(
                        &DefaultProbabilityCurveTest::testDefaultProbability));
     suite->add(QUANTLIB_TEST_CASE(

@@ -101,8 +101,7 @@ namespace QuantLib {
     void MarkovFunctional::updateTimes1() const {
         volsteptimes_.clear();
         int j = 0;
-        for (std::vector<Date>::const_iterator i = volstepdates_.begin();
-             i != volstepdates_.end(); ++i, ++j) {
+        for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
             volsteptimes_.push_back(termStructure()->timeFromReference(*i));
             volsteptimesArray_[j] = volsteptimes_[j];
             if (j == 0)
@@ -123,9 +122,7 @@ namespace QuantLib {
         times_.push_back(0.0);
         modelOutputs_.expiries_.clear();
         modelOutputs_.tenors_.clear();
-        for (std::map<Date, CalibrationPoint>::iterator k =
-                 calibrationPoints_.begin();
-             k != calibrationPoints_.end(); ++k) {
+        for (auto k = calibrationPoints_.begin(); k != calibrationPoints_.end(); ++k) {
             times_.push_back(termStructure()->timeFromReference(k->first));
             modelOutputs_.expiries_.push_back(k->first);
             modelOutputs_.tenors_.push_back(k->second.tenor_);
@@ -178,9 +175,8 @@ namespace QuantLib {
         do {
             Date numeraireKnown = numeraireDate_;
             done = true;
-            for (std::map<Date, CalibrationPoint>::reverse_iterator i =
-                     calibrationPoints_.rbegin();
-                 i != calibrationPoints_.rend() && done; ++i) {
+            for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend() && done;
+                 ++i) {
                 if (i->second.paymentDates_.back() > numeraireDate_) {
                     numeraireDate_ = i->second.paymentDates_.back();
                     numeraireKnown = i->second.paymentDates_.back();
@@ -312,9 +308,7 @@ namespace QuantLib {
 
         Size pointIndex = 0;
 
-        for (std::map<Date, CalibrationPoint>::reverse_iterator i =
-                 calibrationPoints_.rbegin();
-             i != calibrationPoints_.rend(); ++i) {
+        for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend(); ++i) {
 
             ext::shared_ptr<SmileSection> smileSection;
             if (i->second.isCaplet_) {
@@ -471,9 +465,7 @@ namespace QuantLib {
 
         int idx = times_.size() - 2;
 
-        for (std::map<Date, CalibrationPoint>::reverse_iterator
-                 i = calibrationPoints_.rbegin();
-             i != calibrationPoints_.rend(); ++i, --idx) {
+        for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend(); ++i, --idx) {
 
             ext::shared_ptr<CustomSmileSection> mfSec;
             if ((modelSettings_.adjustments_ & ModelSettings::CustomSmile) != 0) {
@@ -662,9 +654,7 @@ namespace QuantLib {
             modelOutputs_.marketRawCallPremium_.clear();
             modelOutputs_.marketRawPutPremium_.clear();
 
-            for (std::map<Date, CalibrationPoint>::iterator i =
-                     calibrationPoints_.begin();
-                 i != calibrationPoints_.end(); ++i) {
+            for (auto i = calibrationPoints_.begin(); i != calibrationPoints_.end(); ++i) {
                 modelOutputs_.atm_.push_back(i->second.atm_);
                 modelOutputs_.annuity_.push_back(i->second.annuity_);
                 ext::shared_ptr<SmileSection> sec = i->second.smileSection_;
@@ -930,8 +920,7 @@ namespace QuantLib {
             return out; // no trace information was collected so no output
         out << std::endl;
         out << "Messages:" << std::endl;
-        for (std::vector<std::string>::const_iterator i = m.messages_.begin();
-             i != m.messages_.end(); ++i)
+        for (auto i = m.messages_.begin(); i != m.messages_.end(); ++i)
             out << (*i) << std::endl;
         out << std::endl << std::setprecision(16);
         out << "Yield termstructure fit:" << std::endl;

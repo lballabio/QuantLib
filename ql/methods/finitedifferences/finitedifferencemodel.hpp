@@ -47,8 +47,7 @@ namespace QuantLib {
                                                           std::vector<Time>())
         : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
-            std::vector<Time>::iterator last =
-                std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
+            auto last = std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
             stoppingTimes_.erase(last, stoppingTimes_.end());
         }
         FiniteDifferenceModel(const Evolver& evolver,
@@ -56,8 +55,7 @@ namespace QuantLib {
                                                           std::vector<Time>())
         : evolver_(evolver), stoppingTimes_(stoppingTimes) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
-            std::vector<Time>::iterator last =
-                std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
+            auto last = std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
             stoppingTimes_.erase(last, stoppingTimes_.end());
         }
         // methods

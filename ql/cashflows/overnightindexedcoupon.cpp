@@ -205,8 +205,7 @@ namespace QuantLib {
     }
 
     void OvernightIndexedCoupon::accept(AcyclicVisitor& v) {
-        Visitor<OvernightIndexedCoupon>* v1 =
-            dynamic_cast<Visitor<OvernightIndexedCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<OvernightIndexedCoupon>*>(&v);
         if (v1 != 0) {
             v1->visit(*this);
         } else {

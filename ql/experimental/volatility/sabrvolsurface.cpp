@@ -121,7 +121,7 @@ namespace QuantLib {
     ext::shared_ptr<SmileSection>
     SabrVolSurface::smileSectionImpl(Time t) const {
 
-        BigInteger n = BigInteger(t*365.0);
+        auto n = BigInteger(t * 365.0);
         Date d = referenceDate()+n*Days;
         // interpolating on ref smile sections
         std::vector<Volatility> volSpreads = volatilitySpreads(d);
@@ -174,8 +174,7 @@ namespace QuantLib {
     }
 
     void SabrVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<SabrVolSurface>* v1 =
-            dynamic_cast<Visitor<SabrVolSurface>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<SabrVolSurface>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

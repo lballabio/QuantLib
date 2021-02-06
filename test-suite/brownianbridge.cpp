@@ -272,7 +272,7 @@ void BrownianBridgeTest::testPathGeneration() {
 }
 
 test_suite* BrownianBridgeTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Brownian bridge tests");
+    auto* suite = BOOST_TEST_SUITE("Brownian bridge tests");
     suite->add(QUANTLIB_TEST_CASE(&BrownianBridgeTest::testVariates));
     suite->add(QUANTLIB_TEST_CASE(&BrownianBridgeTest::testPathGeneration));
     return suite;

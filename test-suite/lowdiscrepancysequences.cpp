@@ -1093,7 +1093,7 @@ void LowDiscrepancyTest::testSobolSkipping() {
 
 
 test_suite* LowDiscrepancyTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+    auto* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
 
     suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomizedLattices));

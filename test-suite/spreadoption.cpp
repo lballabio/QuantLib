@@ -171,7 +171,7 @@ void SpreadOptionTest::testKirkEngine() {
 }
 
 test_suite* SpreadOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Spread option tests");
+    auto* suite = BOOST_TEST_SUITE("Spread option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&SpreadOptionTest::testKirkEngine));
 

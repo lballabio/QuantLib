@@ -682,7 +682,7 @@ void BlackDeltaCalculatorTest::testAtmCalcs(){
 
 
 test_suite* BlackDeltaCalculatorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Black delta calculator tests");
+    auto* suite = BOOST_TEST_SUITE("Black delta calculator tests");
     suite->add(QUANTLIB_TEST_CASE(&BlackDeltaCalculatorTest::testDeltaValues));
     suite->add(QUANTLIB_TEST_CASE(
                        &BlackDeltaCalculatorTest::testDeltaPriceConsistency));

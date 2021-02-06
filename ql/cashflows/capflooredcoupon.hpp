@@ -120,8 +120,7 @@ namespace QuantLib {
                        dayCounter, isInArrears, exCouponDate)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
-            Visitor<CappedFlooredIborCoupon>* v1 =
-                dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
+            auto* v1 = dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
             if (v1 != 0)
                 v1->visit(*this);
             else
@@ -153,8 +152,7 @@ namespace QuantLib {
                       dayCounter, isInArrears, exCouponDate)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
-            Visitor<CappedFlooredCmsCoupon>* v1 =
-                dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);
+            auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);
             if (v1 != 0)
                 v1->visit(*this);
             else

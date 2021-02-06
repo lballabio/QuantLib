@@ -599,7 +599,7 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
 }
 
 test_suite* MargrabeOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Exchange option tests");
+    auto* suite = BOOST_TEST_SUITE("Exchange option tests");
     suite->add(
         QUANTLIB_TEST_CASE(&MargrabeOptionTest::testEuroExchangeTwoAssets));
     suite->add(

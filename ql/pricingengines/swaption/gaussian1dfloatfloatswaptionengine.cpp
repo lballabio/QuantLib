@@ -124,16 +124,14 @@ namespace QuantLib {
                       arguments_.leg2FixingDates.end());
         std::sort(events.begin(), events.end());
 
-        std::vector<Date>::iterator it =
-            std::unique(events.begin(), events.end());
+        auto it = std::unique(events.begin(), events.end());
         events.resize(std::distance(events.begin(), it));
 
         // only events on or after expiry are of interest by definition of the
         // deal part that is exericsed into.
 
-        std::vector<Date>::iterator filit =
-            std::upper_bound(events.begin(), events.end(),
-                             expiry - (includeExerciseOnExpiry ? 1 : 0));
+        auto filit = std::upper_bound(events.begin(), events.end(),
+                                      expiry - (includeExerciseOnExpiry ? 1 : 0));
         events.erase(events.begin(), filit);
 
         int idx = events.size() - 1;
