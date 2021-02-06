@@ -80,7 +80,7 @@ namespace QuantLib {
 
     void OvernightIndexFutureRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<OvernightIndexFutureRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);

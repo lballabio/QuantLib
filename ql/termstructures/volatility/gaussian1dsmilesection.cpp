@@ -40,7 +40,7 @@ namespace QuantLib {
         annuity_ =
             model_->swapAnnuity(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0, swapIndex_);
 
-        if (engine_ == NULL) {
+        if (engine_ == nullptr) {
             engine_ = ext::make_shared<Gaussian1dSwaptionEngine>(
                 model_, 64, 7.0, true, false, swapIndex_->discountingTermStructure());
         }
@@ -64,7 +64,7 @@ Gaussian1dSmileSection::Gaussian1dSmileSection(
         iborIndex_->dayCounter().yearFraction(c.startDate(), c.maturityDate()) *
         model_->zerobond(c.maturityDate());
 
-    if (engine_ == NULL) {
+    if (engine_ == nullptr) {
         engine_ = ext::make_shared<Gaussian1dCapFloorEngine>(
             model_, 64, 7.0, true,
             false); // use model curve as discounting curve
@@ -76,7 +76,7 @@ Real Gaussian1dSmileSection::atmLevel() const { return atm_; }
 Real Gaussian1dSmileSection::optionPrice(Rate strike, Option::Type type,
                                          Real discount) const {
 
-    if (swapIndex_ != NULL) {
+    if (swapIndex_ != nullptr) {
         Swaption s = MakeSwaption(swapIndex_, fixingDate_, strike)
                          .withUnderlyingType(type == Option::Call
                                                  ? VanillaSwap::Payer

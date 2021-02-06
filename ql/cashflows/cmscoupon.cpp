@@ -46,7 +46,7 @@ namespace QuantLib {
 
     void CmsCoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CmsCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);

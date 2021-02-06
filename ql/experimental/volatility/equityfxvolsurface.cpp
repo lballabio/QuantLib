@@ -75,7 +75,7 @@ namespace QuantLib {
 
     void EquityFXVolSurface::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<EquityFXVolSurface>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             QL_FAIL("not a EquityFXVolSurface term structure visitor");

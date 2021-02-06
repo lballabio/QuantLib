@@ -54,7 +54,7 @@ namespace QuantLib {
         void reset(const Interpolation &interp) {
             ext::shared_ptr<InterpolationParameter::Impl> impl =
                 ext::dynamic_pointer_cast<InterpolationParameter::Impl>(impl_);
-            if (impl != 0)
+            if (impl != nullptr)
                 impl->reset(interp);
         }
     };

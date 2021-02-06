@@ -111,7 +111,7 @@ namespace QuantLib {
 
     void VanillaForwardPayoff::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<VanillaForwardPayoff>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             StrikedTypePayoff::accept(v);
@@ -132,7 +132,7 @@ namespace QuantLib {
     void VanillaSwingOption::setupArguments(
                             PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<VanillaSwingOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);

@@ -86,7 +86,7 @@ namespace QuantLib {
 
     void Swap::setupArguments(PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<Swap::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->legs = legs_;
         arguments->payer = payer_;
@@ -96,7 +96,7 @@ namespace QuantLib {
         Instrument::fetchResults(r);
 
         const auto* results = dynamic_cast<const Swap::results*>(r);
-        QL_REQUIRE(results != 0, "wrong result type");
+        QL_REQUIRE(results != nullptr, "wrong result type");
 
         if (!results->legNPV.empty()) {
             QL_REQUIRE(results->legNPV.size() == legNPV_.size(),
@@ -163,7 +163,7 @@ namespace QuantLib {
                 ext::shared_ptr<LazyObject> f =
                     ext::dynamic_pointer_cast<LazyObject>(
                         legs_[j][k]);
-                if (f != 0)
+                if (f != nullptr)
                     f->update();
             }
         }

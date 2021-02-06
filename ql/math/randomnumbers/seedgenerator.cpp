@@ -33,7 +33,7 @@ namespace QuantLib {
     void SeedGenerator::initialize() {
 
         // firstSeed is chosen based on clock() and used for the first rng
-        auto firstSeed = (unsigned long)(std::time(0));
+        auto firstSeed = (unsigned long)(std::time(nullptr));
         MersenneTwisterUniformRng first(firstSeed);
 
         // secondSeed is as random as it could be

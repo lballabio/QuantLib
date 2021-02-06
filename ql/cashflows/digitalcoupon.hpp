@@ -131,10 +131,10 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
 
         void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override {
-            if (pricer_ != 0)
+            if (pricer_ != nullptr)
                 unregisterWith(pricer_);
             pricer_ = pricer;
-            if (pricer_ != 0)
+            if (pricer_ != nullptr)
                 registerWith(pricer_);
             update();
             underlying_->setPricer(pricer);

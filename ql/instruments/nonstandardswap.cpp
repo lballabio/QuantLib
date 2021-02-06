@@ -223,7 +223,7 @@ namespace QuantLib {
 
         auto* arguments = dynamic_cast<NonstandardSwap::arguments*>(args);
 
-        if (arguments == 0)
+        if (arguments == nullptr)
             return; // swap engine ...
 
         arguments->type = type_;
@@ -242,7 +242,7 @@ namespace QuantLib {
         for (Size i = 0; i < fixedCoupons.size(); ++i) {
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
-            if (coupon != 0) {
+            if (coupon != nullptr) {
                 arguments->fixedPayDates[i] = coupon->date();
                 arguments->fixedResetDates[i] = coupon->accrualStartDate();
                 arguments->fixedCoupons[i] = coupon->amount();
@@ -282,7 +282,7 @@ namespace QuantLib {
         for (Size i = 0; i < floatingCoupons.size(); ++i) {
             ext::shared_ptr<IborCoupon> coupon =
                 ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
-            if (coupon != 0) {
+            if (coupon != nullptr) {
                 arguments->floatingResetDates[i] = coupon->accrualStartDate();
                 arguments->floatingPayDates[i] = coupon->date();
                 arguments->floatingFixingDates[i] = coupon->fixingDate();

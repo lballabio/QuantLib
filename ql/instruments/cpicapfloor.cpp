@@ -99,7 +99,7 @@ namespace QuantLib {
 
         // correct PricingEngine?
         auto* arguments = dynamic_cast<CPICapFloor::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type, not CPICapFloor::arguments*");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type, not CPICapFloor::arguments*");
 
         // data move
         arguments->type = type_;

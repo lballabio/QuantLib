@@ -91,7 +91,7 @@ namespace QuantLib {
 
     inline void Option::setupArguments(PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<Option::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff = payoff_;
         arguments->exercise = exercise_;

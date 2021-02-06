@@ -197,31 +197,29 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Matrix::Matrix()
-    : data_((Real*)(0)), rows_(0), columns_(0) {}
+    inline Matrix::Matrix() : data_((Real*)nullptr), rows_(0), columns_(0) {}
 
     inline Matrix::Matrix(Size rows, Size columns)
-    : data_(rows*columns > 0 ? new Real[rows*columns] : (Real*)(0)),
-      rows_(rows), columns_(columns) {}
+    : data_(rows * columns > 0 ? new Real[rows * columns] : (Real*)nullptr), rows_(rows),
+      columns_(columns) {}
 
     inline Matrix::Matrix(Size rows, Size columns, Real value)
-    : data_(rows*columns > 0 ? new Real[rows*columns] : (Real*)(0)),
-      rows_(rows), columns_(columns) {
+    : data_(rows * columns > 0 ? new Real[rows * columns] : (Real*)nullptr), rows_(rows),
+      columns_(columns) {
         std::fill(begin(),end(),value);
     }
 
     template <class Iterator>
-    inline Matrix::Matrix(Size rows, Size columns,
-                          Iterator begin, Iterator end)
-        : data_(rows * columns > 0 ? new Real[rows * columns] : (Real *)(0)),
-          rows_(rows), columns_(columns) {
+    inline Matrix::Matrix(Size rows, Size columns, Iterator begin, Iterator end)
+    : data_(rows * columns > 0 ? new Real[rows * columns] : (Real*)nullptr), rows_(rows),
+      columns_(columns) {
         std::copy(begin, end, this->begin());
     }
 
     inline Matrix::Matrix(const Matrix& from)
-    : data_(!from.empty() ? new Real[from.rows_*from.columns_] : (Real*)(0)),
+    : data_(!from.empty() ? new Real[from.rows_ * from.columns_] : (Real*)nullptr),
       rows_(from.rows_), columns_(from.columns_) {
-        #if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
+#if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
         if (!from.empty())
         #endif
         std::copy(from.begin(),from.end(),begin());

@@ -42,7 +42,7 @@ namespace QuantLib {
         OneAssetOption::setupArguments(args);
 
         auto* moreArgs = dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->averageType = averageType_;
         moreArgs->runningAccumulator = runningAccumulator_;
         moreArgs->pastFixings = pastFixings_;
@@ -90,7 +90,7 @@ namespace QuantLib {
         OneAssetOption::setupArguments(args);
 
         auto* moreArgs = dynamic_cast<ContinuousAveragingAsianOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->averageType = averageType_;
     }
 

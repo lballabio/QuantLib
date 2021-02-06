@@ -126,7 +126,7 @@ namespace QuantLib {
     }
 
     Real OISRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
         return swap_->fairRate();
@@ -134,7 +134,7 @@ namespace QuantLib {
 
     void OISRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<OISRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);
@@ -191,7 +191,7 @@ namespace QuantLib {
     }
 
     Real DatedOISRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->deepUpdate();
         return swap_->fairRate();
@@ -199,7 +199,7 @@ namespace QuantLib {
 
     void DatedOISRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<DatedOISRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);

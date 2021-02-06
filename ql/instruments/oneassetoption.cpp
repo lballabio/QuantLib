@@ -113,8 +113,7 @@ namespace QuantLib {
     void OneAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
         const auto* results = dynamic_cast<const Greeks*>(r);
-        QL_ENSURE(results != 0,
-                  "no greeks returned from pricing engine");
+        QL_ENSURE(results != nullptr, "no greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
            a) to decide in derived options what to do when null
@@ -131,8 +130,7 @@ namespace QuantLib {
         dividendRho_    = results->dividendRho;
 
         const auto* moreResults = dynamic_cast<const MoreGreeks*>(r);
-        QL_ENSURE(moreResults != 0,
-                  "no more greeks returned from pricing engine");
+        QL_ENSURE(moreResults != nullptr, "no more greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
            a) to decide in derived options what to do when null

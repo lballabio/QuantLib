@@ -62,7 +62,7 @@ namespace QuantLib {
         if (!couponDiscountCurve_.empty())
             registerWith(couponDiscountCurve_);
 
-        if (integrator_ == NULL)
+        if (integrator_ == nullptr)
             integrator_ =
                 ext::make_shared<GaussKronrodNonAdaptive>(1E-10, 5000, 1E-10);
     }

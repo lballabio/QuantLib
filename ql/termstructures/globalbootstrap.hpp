@@ -88,13 +88,13 @@ GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy)
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    const std::vector<ext::shared_ptr<typename Traits::helper> > &additionalHelpers,
-    const boost::function<std::vector<Date>()> &additionalDates,
-    const boost::function<Array()> &additionalErrors,
+    const std::vector<ext::shared_ptr<typename Traits::helper> >& additionalHelpers,
+    const boost::function<std::vector<Date>()>& additionalDates,
+    const boost::function<Array()>& additionalErrors,
     Real accuracy)
-    : ts_(0), accuracy_(accuracy), additionalHelpers_(additionalHelpers),
-      additionalDates_(additionalDates), additionalErrors_(additionalErrors),
-      initialized_(false), validCurve_(false) {}
+: ts_(nullptr), accuracy_(accuracy), additionalHelpers_(additionalHelpers),
+  additionalDates_(additionalDates), additionalErrors_(additionalErrors), initialized_(false),
+  validCurve_(false) {}
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
     ts_ = ts;
@@ -134,7 +134,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
     // skip expired additional dates
     std::vector<Date> additionalDates;
-    if (additionalDates_ != 0)
+    if (additionalDates_ != nullptr)
         additionalDates = additionalDates_();
     firstAdditionalDate_ = 0;
     if (!additionalDates.empty()) {
@@ -279,7 +279,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
                 result[i] = ts_->instruments_[firstHelper_ + i]->quote()->value() -
                             ts_->instruments_[firstHelper_ + i]->impliedQuote();
             }
-            if (additionalErrors_ != 0) {
+            if (additionalErrors_ != nullptr) {
                 Array tmp = additionalErrors_();
                 result.resize(numberHelpers_ + tmp.size());
                 for (Size i = 0; i < tmp.size(); ++i) {

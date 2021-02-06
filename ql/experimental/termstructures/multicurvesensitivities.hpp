@@ -73,7 +73,7 @@ public:
     for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
       ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
           ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
-      QL_REQUIRE(curve != NULL, "Couldn't cast curvename: " << it->first);
+      QL_REQUIRE(curve != nullptr, "Couldn't cast curvename: " << it->first);
       for (auto inst = curve->instruments_.begin(); inst != curve->instruments_.end(); ++inst) {
           allQuotes_.push_back((*inst)->quote());
           std::stringstream tmp;
