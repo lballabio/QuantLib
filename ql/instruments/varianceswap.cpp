@@ -45,7 +45,7 @@ namespace QuantLib {
 
     void VarianceSwap::setupArguments(PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<VarianceSwap::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->position = position_;
         arguments->strike = strike_;

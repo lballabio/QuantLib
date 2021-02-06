@@ -202,7 +202,7 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::setTime(Time t) {
-        if (timeSetter_ != 0)
+        if (timeSetter_ != nullptr)
             timeSetter_->setTime(t, *this);
     }
 

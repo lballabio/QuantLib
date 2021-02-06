@@ -233,12 +233,12 @@ namespace QuantLib {
         ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
             ext::dynamic_pointer_cast<SwapSpreadIndex>(index2_);
 
-        QL_REQUIRE(ibor1 != NULL || cms1 != NULL || cmsspread1 != NULL,
+        QL_REQUIRE(ibor1 != nullptr || cms1 != nullptr || cmsspread1 != nullptr,
                    "index1 must be ibor or cms or cms spread");
-        QL_REQUIRE(ibor2 != NULL || cms2 != NULL || cmsspread2 != NULL,
+        QL_REQUIRE(ibor2 != nullptr || cms2 != nullptr || cmsspread2 != nullptr,
                    "index2 must be ibor or cms");
 
-        if (ibor1 != 0) {
+        if (ibor1 != nullptr) {
             IborLeg leg(schedule1_, ibor1);
             leg = leg.withNotionals(nominal1_)
                       .withPaymentDayCounter(dayCount1_)
@@ -252,7 +252,7 @@ namespace QuantLib {
             legs_[0] = leg;
         }
 
-        if (ibor2 != 0) {
+        if (ibor2 != nullptr) {
             IborLeg leg(schedule2_, ibor2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
@@ -266,7 +266,7 @@ namespace QuantLib {
             legs_[1] = leg;
         }
 
-        if (cms1 != 0) {
+        if (cms1 != nullptr) {
             CmsLeg leg(schedule1_, cms1);
             leg = leg.withNotionals(nominal1_)
                       .withPaymentDayCounter(dayCount1_)
@@ -280,7 +280,7 @@ namespace QuantLib {
             legs_[0] = leg;
         }
 
-        if (cms2 != 0) {
+        if (cms2 != nullptr) {
             CmsLeg leg(schedule2_, cms2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
@@ -294,7 +294,7 @@ namespace QuantLib {
             legs_[1] = leg;
         }
 
-        if (cmsspread1 != 0) {
+        if (cmsspread1 != nullptr) {
             CmsSpreadLeg leg(schedule1_, cmsspread1);
             leg = leg.withNotionals(nominal1_)
                       .withPaymentDayCounter(dayCount1_)
@@ -308,7 +308,7 @@ namespace QuantLib {
             legs_[0] = leg;
         }
 
-        if (cmsspread2 != 0) {
+        if (cmsspread2 != nullptr) {
             CmsSpreadLeg leg(schedule2_, cmsspread2);
             leg = leg.withNotionals(nominal2_)
                       .withPaymentDayCounter(dayCount2_)
@@ -388,7 +388,7 @@ namespace QuantLib {
 
         auto* arguments = dynamic_cast<FloatFloatSwap::arguments*>(args);
 
-        if (arguments == 0)
+        if (arguments == nullptr)
             return; // swap engine ... // QL_REQUIRE(arguments != 0, "argument type does not match");
 
         arguments->type = type_;
@@ -428,7 +428,7 @@ namespace QuantLib {
         for (Size i = 0; i < leg1Coupons.size(); ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FloatingRateCoupon>(leg1Coupons[i]);
-            if (coupon != 0) {
+            if (coupon != nullptr) {
                 arguments->leg1AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg1PayDates[i] = coupon->date();
                 arguments->leg1ResetDates[i] = coupon->accrualStartDate();
@@ -444,7 +444,7 @@ namespace QuantLib {
                 ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
                     ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg1Coupons[i]);
-                if (cfcoupon != 0) {
+                if (cfcoupon != nullptr) {
                     arguments->leg1CappedRates[i] = cfcoupon->cap();
                     arguments->leg1FlooredRates[i] = cfcoupon->floor();
                 }
@@ -474,7 +474,7 @@ namespace QuantLib {
         for (Size i = 0; i < leg2Coupons.size(); ++i) {
             ext::shared_ptr<FloatingRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FloatingRateCoupon>(leg2Coupons[i]);
-            if (coupon != 0) {
+            if (coupon != nullptr) {
                 arguments->leg2AccrualTimes[i] = coupon->accrualPeriod();
                 arguments->leg2PayDates[i] = coupon->date();
                 arguments->leg2ResetDates[i] = coupon->accrualStartDate();
@@ -490,7 +490,7 @@ namespace QuantLib {
                 ext::shared_ptr<CappedFlooredCoupon> cfcoupon =
                     ext::dynamic_pointer_cast<CappedFlooredCoupon>(
                         leg2Coupons[i]);
-                if (cfcoupon != 0) {
+                if (cfcoupon != nullptr) {
                     arguments->leg2CappedRates[i] = cfcoupon->cap();
                     arguments->leg2FlooredRates[i] = cfcoupon->floor();
                 }
@@ -570,8 +570,8 @@ namespace QuantLib {
         QL_REQUIRE(nominal2.size() == leg2IsRedemptionFlow.size(),
                    "nominal2 size is different from redemption2 size");
 
-        QL_REQUIRE(index1 != NULL, "index1 is null");
-        QL_REQUIRE(index2 != NULL, "index2 is null");
+        QL_REQUIRE(index1 != nullptr, "index1 is null");
+        QL_REQUIRE(index2 != nullptr, "index2 is null");
     }
 
     void FloatFloatSwap::results::reset() { Swap::results::reset(); }

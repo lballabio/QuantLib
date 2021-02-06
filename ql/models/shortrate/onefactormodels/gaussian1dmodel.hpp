@@ -233,7 +233,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
 inline ext::shared_ptr<StochasticProcess1D> Gaussian1dModel::stateProcess() const {
 
-    QL_REQUIRE(stateProcess_ != NULL, "state process not set");
+    QL_REQUIRE(stateProcess_ != nullptr, "state process not set");
     return stateProcess_;
 }
 

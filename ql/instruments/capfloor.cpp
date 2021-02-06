@@ -210,7 +210,7 @@ namespace QuantLib {
 
     void CapFloor::setupArguments(PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<CapFloor::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         Size n = floatingLeg_.size();
 
@@ -274,7 +274,7 @@ namespace QuantLib {
             ext::shared_ptr<LazyObject> f =
                 ext::dynamic_pointer_cast<LazyObject>(
                     floatingLeg_[i]);
-            if (f != 0)
+            if (f != nullptr)
                 f->update();
         }
         update();

@@ -144,7 +144,7 @@ namespace QuantLib {
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Coupon::accept(v);

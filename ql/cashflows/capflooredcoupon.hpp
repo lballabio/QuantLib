@@ -121,7 +121,7 @@ namespace QuantLib {
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
-            if (v1 != 0)
+            if (v1 != nullptr)
                 v1->visit(*this);
             else
                 CappedFlooredCoupon::accept(v);
@@ -153,7 +153,7 @@ namespace QuantLib {
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);
-            if (v1 != 0)
+            if (v1 != nullptr)
                 v1->visit(*this);
             else
                 CappedFlooredCoupon::accept(v);

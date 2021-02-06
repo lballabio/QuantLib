@@ -210,7 +210,7 @@ namespace QuantLib {
                     swvol->shift(fixingDate_, index_->swapIndex2()->tenor());
             }
 
-            if (swcub == NULL) {
+            if (swcub == nullptr) {
                 // not a cube, just an atm surface given, so we can
                 // not easily convert volatilities and just forbid it
                 QL_REQUIRE(inheritedVolatilityType_,

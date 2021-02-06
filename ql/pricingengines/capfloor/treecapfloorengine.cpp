@@ -52,7 +52,7 @@ namespace QuantLib {
 
         ext::shared_ptr<TermStructureConsistentModel> tsmodel =
             ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
-        if (tsmodel != 0) {
+        if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
         } else {
@@ -63,7 +63,7 @@ namespace QuantLib {
         DiscretizedCapFloor capfloor(arguments_, referenceDate, dayCounter);
         ext::shared_ptr<Lattice> lattice;
 
-        if (lattice_ != 0) {
+        if (lattice_ != nullptr) {
             lattice = lattice_;
         } else {
             std::vector<Time> times = capfloor.mandatoryTimes();

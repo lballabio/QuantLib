@@ -33,7 +33,7 @@ namespace QuantLib {
                                        const ext::shared_ptr<LocalVolTermStructure>& localVol,
                                        Size direction)
     : mesher_(mesher), rTS_(rTS), qTS_(qTS), localVol_(localVol),
-      x_((localVol) != 0 ? Array(Exp(mesher->locations(direction))) : Array()),
+      x_((localVol) != nullptr ? Array(Exp(mesher->locations(direction))) : Array()),
       dxMap_(FirstDerivativeOp(direction, mesher)), dxxMap_(SecondDerivativeOp(direction, mesher)),
       mapT_(direction, mesher), direction_(direction) {}
 

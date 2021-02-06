@@ -60,8 +60,7 @@ namespace QuantLib {
                                       const PricingEngine::results* r) const {
         DoubleBarrierOption::fetchResults(r);
         const auto* quantoResults = dynamic_cast<const QuantoDoubleBarrierOption::results*>(r);
-        QL_ENSURE(quantoResults != 0,
-                  "no quanto results returned from pricing engine");
+        QL_ENSURE(quantoResults != nullptr, "no quanto results returned from pricing engine");
         qrho_    = quantoResults->qrho;
         qvega_   = quantoResults->qvega;
         qlambda_ = quantoResults->qlambda;

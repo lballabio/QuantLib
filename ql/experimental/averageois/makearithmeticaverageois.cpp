@@ -110,7 +110,7 @@ namespace QuantLib {
                                       overnightLegSchedule,
                                       overnightSpread_,
                                       mrs_, vol_, byApprox_);
-            if (engine_ == 0) {
+            if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
@@ -135,7 +135,7 @@ namespace QuantLib {
                                  overnightSpread_,
                                  mrs_, vol_, byApprox_));
 
-        if (engine_ == 0) {
+        if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                 overnightIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;

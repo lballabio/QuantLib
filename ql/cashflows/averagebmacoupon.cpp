@@ -153,7 +153,7 @@ namespace QuantLib {
 
     void AverageBMACoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<AverageBMACoupon>*>(&v);
-        if (v1 != 0) {
+        if (v1 != nullptr) {
             v1->visit(*this);
         } else {
             FloatingRateCoupon::accept(v);

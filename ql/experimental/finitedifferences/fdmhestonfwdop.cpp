@@ -121,7 +121,7 @@ namespace QuantLib {
     void FdmHestonFwdOp::setTime(Time t1, Time t2){
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
-        if (leverageFct_ != 0) {
+        if (leverageFct_ != nullptr) {
             L_ = getLeverageFctSlice(t1, t2);
             Array Lsquare = L_*L_;
             if (type_ == FdmSquareRootFwdOp::Plain) {
@@ -141,8 +141,7 @@ namespace QuantLib {
                     .add(dxMap_->mult(0.5*Exp(2.0*varianceValues_)).multR(Lsquare)),
                               Array());
             }
-        }
-        else {
+        } else {
             if (type_ == FdmSquareRootFwdOp::Plain) {
                 mapX_->axpyb( - r + q + rho_*mixedSigma_ + varianceValues_, *dxMap_,
                         *dxxMap_, Array());
@@ -157,12 +156,11 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmHestonFwdOp::apply(const Array& u) const {
-        if (leverageFct_ != 0) {
+        if (leverageFct_ != nullptr) {
             return mapX_->apply(u)
                     + mapY_->apply(u)
                     + correlation_->apply(L_*u);
-        } 
-        else {
+        } else {
             return mapX_->apply(u)
                     + mapY_->apply(u)
                     + correlation_->apply(u);
@@ -170,11 +168,9 @@ namespace QuantLib {
     }
 
     Disposable<Array> FdmHestonFwdOp::apply_mixed(const Array& u) const{
-        if (leverageFct_ != 0) {
+        if (leverageFct_ != nullptr) {
             return correlation_->apply(L_*u);
-        }
-        else
-        {
+        } else {
             return correlation_->apply(u);
         }
     }

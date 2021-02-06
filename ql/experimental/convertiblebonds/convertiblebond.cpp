@@ -216,7 +216,7 @@ namespace QuantLib {
         OneAssetOption::setupArguments(args);
 
         auto* moreArgs = dynamic_cast<ConvertibleBond::option::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
 
         moreArgs->conversionRatio = conversionRatio_;
 
@@ -243,7 +243,7 @@ namespace QuantLib {
                 ext::shared_ptr<SoftCallability> softCall =
                     ext::dynamic_pointer_cast<SoftCallability>(
                                                              callability_[i]);
-                if (softCall != 0)
+                if (softCall != nullptr)
                     moreArgs->callabilityTriggers.push_back(
                                                          softCall->trigger());
                 else

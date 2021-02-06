@@ -35,7 +35,7 @@ namespace QuantLib {
         OneAssetOption::setupArguments(args);
 
         auto* otherArguments = dynamic_cast<WriterExtensibleOption::arguments*>(args);
-        QL_REQUIRE(otherArguments != 0, "wrong arguments type");
+        QL_REQUIRE(otherArguments != nullptr, "wrong arguments type");
 
         otherArguments->payoff2 = payoff2_;
         otherArguments->exercise2 = exercise2_;

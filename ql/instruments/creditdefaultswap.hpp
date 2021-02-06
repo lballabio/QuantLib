@@ -183,7 +183,7 @@ namespace QuantLib {
         const Date& protectionStartDate() const;
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
-        bool rebatesAccrual() const { return accrualRebate_ != NULL; }
+        bool rebatesAccrual() const { return accrualRebate_ != nullptr; }
         const ext::shared_ptr<SimpleCashFlow>& upfrontPayment() const;
         const ext::shared_ptr<SimpleCashFlow>& accrualRebate() const;
         const Date& tradeDate() const;

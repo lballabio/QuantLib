@@ -149,7 +149,7 @@ namespace QuantLib {
 
         auto* arguments = dynamic_cast<Swaption::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->swap = swap_;
         arguments->settlementType = settlementType_;

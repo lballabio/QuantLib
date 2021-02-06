@@ -53,7 +53,7 @@ namespace QuantLib {
         ext::shared_ptr<TermStructureConsistentModel> tsmodel =
             ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         Handle<YieldTermStructure> discountCurve =
-            tsmodel != 0 ? tsmodel->termStructure() : termStructure_;
+            tsmodel != nullptr ? tsmodel->termStructure() : termStructure_;
 
         Date referenceDate = discountCurve->referenceDate();
         DayCounter dayCounter = discountCurve->dayCounter();
@@ -63,7 +63,7 @@ namespace QuantLib {
                                                       dayCounter);
         ext::shared_ptr<Lattice> lattice;
 
-        if (lattice_ != 0) {
+        if (lattice_ != nullptr) {
             lattice = lattice_;
         } else {
             std::vector<Time> times = callableBond.mandatoryTimes();

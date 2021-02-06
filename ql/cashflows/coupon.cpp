@@ -76,7 +76,7 @@ namespace QuantLib {
 
     void Coupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             CashFlow::accept(v);

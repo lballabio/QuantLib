@@ -46,7 +46,7 @@ namespace QuantLib {
 
     void YoYInflationCoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<YoYInflationCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             InflationCoupon::accept(v);

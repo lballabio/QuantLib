@@ -51,12 +51,11 @@ namespace QuantLib {
     }
 
     void FdmTimeDepDirichletBoundary::setTime(Time t) {
-        if (valueOnBoundary_ != 0) {
+        if (valueOnBoundary_ != nullptr) {
             std::fill(values_.begin(), values_.end(), valueOnBoundary_(t));
-        } else if (valuesOnBoundary_ != 0) {
+        } else if (valuesOnBoundary_ != nullptr) {
             values_ = valuesOnBoundary_(t);
-        }
-        else {
+        } else {
             QL_FAIL("no boundary values defined");
         }
     }

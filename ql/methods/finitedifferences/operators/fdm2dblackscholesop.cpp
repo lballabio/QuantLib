@@ -71,7 +71,7 @@ namespace QuantLib {
         opX_.setTime(t1, t2);
         opY_.setTime(t1, t2);
 
-        if (localVol1_ != 0) {
+        if (localVol1_ != nullptr) {
             const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
@@ -99,8 +99,7 @@ namespace QuantLib {
                 }
             }
             corrMapT_ = corrMapTemplate_.mult(vol1*vol2);
-        }
-        else {
+        } else {
             const Real vol1 = p1_
                     ->blackVolatility()->blackForwardVol(t1, t2, p1_->x0());
     
@@ -110,7 +109,7 @@ namespace QuantLib {
             corrMapT_ = corrMapTemplate_
                       .mult(Array(mesher_->layout()->size(), vol1*vol2));
         }
-        
+
         currentForwardRate_ = p1_->riskFreeRate()
                                  ->forwardRate(t1, t2, Continuous).rate();
     }

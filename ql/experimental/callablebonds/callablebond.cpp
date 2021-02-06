@@ -418,7 +418,7 @@ namespace QuantLib {
             if (!cashflows_[i]->hasOccurred(settlement,IncludeToday)) {
                 ext::shared_ptr<Coupon> coupon =
                     ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon != 0)
+                if (coupon != nullptr)
                     // !!!
                     return coupon->accruedAmount(settlement) /
                            notional(settlement) * 100.0;
@@ -437,7 +437,7 @@ namespace QuantLib {
 
         auto* arguments = dynamic_cast<CallableBond::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "no arguments given");
+        QL_REQUIRE(arguments != nullptr, "no arguments given");
 
         Date settlement = arguments->settlementDate;
 
