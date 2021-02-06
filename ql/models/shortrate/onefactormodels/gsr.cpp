@@ -93,7 +93,7 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
 void Gsr::update() {
     if (stateProcess_ != nullptr)
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
-	LazyObject::update();
+    LazyObject::update();
 }
 
 void Gsr::updateTimes() const {
