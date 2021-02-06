@@ -77,13 +77,16 @@ void IndexTest::testFixingHasHistoricalFixing() {
     auto fixingFound = true;
     auto fixingNotFound = false;
 
-    Date today = Date::todaysDate();
-
-    IndexManager::instance().clearHistories();
-
     auto euribor3M = ext::make_shared<Euribor3M>();
     auto euribor6M = ext::make_shared<Euribor6M>();
     auto euribor6M_a = ext::make_shared<Euribor6M>();
+
+    Date today = Settings::instance().evaluationDate();
+    while (!euribor6M->isValidFixingDate(today))
+        today--;
+
+    IndexManager::instance().clearHistories();
+
     euribor6M->addFixing(today, 0.01);
 
     name = euribor3M->name();
