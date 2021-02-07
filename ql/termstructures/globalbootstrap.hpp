@@ -31,8 +31,7 @@
 #include <ql/termstructures/bootstraperror.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/utilities/dataformatters.hpp>
-
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -60,8 +59,8 @@ template <class Curve> class GlobalBootstrap {
       Traits::minValueAfter(), Traits::maxValueAfter() in this class against them.
     */
     GlobalBootstrap(const std::vector<ext::shared_ptr<typename Traits::helper> > &additionalHelpers,
-                    const boost::function<std::vector<Date>()> &additionalDates,
-                    const boost::function<Array()> &additionalErrors,
+                    const ext::function<std::vector<Date>()> &additionalDates,
+                    const ext::function<Array()> &additionalErrors,
                     Real accuracy = Null<Real>());
     void setup(Curve *ts);
     void calculate() const;
@@ -71,8 +70,8 @@ template <class Curve> class GlobalBootstrap {
     Curve *ts_;
     Real accuracy_;
     mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
-    boost::function<std::vector<Date>()> additionalDates_;
-    boost::function<Array()> additionalErrors_;
+    ext::function<std::vector<Date>()> additionalDates_;
+    ext::function<Array()> additionalErrors_;
     mutable bool initialized_, validCurve_;
     mutable Size firstHelper_, numberHelpers_;
     mutable Size firstAdditionalHelper_, numberAdditionalHelpers_;
@@ -89,8 +88,8 @@ GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy)
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
     const std::vector<ext::shared_ptr<typename Traits::helper> >& additionalHelpers,
-    const boost::function<std::vector<Date>()>& additionalDates,
-    const boost::function<Array()>& additionalErrors,
+    const ext::function<std::vector<Date>()>& additionalDates,
+    const ext::function<Array()>& additionalErrors,
     Real accuracy)
 : ts_(nullptr), accuracy_(accuracy), additionalHelpers_(additionalHelpers),
   additionalDates_(additionalDates), additionalErrors_(additionalErrors), initialized_(false),
@@ -134,7 +133,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
     // skip expired additional dates
     std::vector<Date> additionalDates;
-    if (additionalDates_ != nullptr)
+    if (!(additionalDates_ == QL_NULL_FUNCTION))
         additionalDates = additionalDates_();
     firstAdditionalDate_ = 0;
     if (!additionalDates.empty()) {
@@ -247,7 +246,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
       public:
         TargetFunction(const Size firstHelper,
                        const Size numberHelpers,
-                       const boost::function<Array()>& additionalErrors,
+                       const ext::function<Array()>& additionalErrors,
                        Curve* ts,
                        const std::vector<Real>& lowerBounds,
                        const std::vector<Real>& upperBounds)
@@ -279,7 +278,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
                 result[i] = ts_->instruments_[firstHelper_ + i]->quote()->value() -
                             ts_->instruments_[firstHelper_ + i]->impliedQuote();
             }
-            if (additionalErrors_ != nullptr) {
+            if (!(additionalErrors_ == QL_NULL_FUNCTION)) {
                 Array tmp = additionalErrors_();
                 result.resize(numberHelpers_ + tmp.size());
                 for (Size i = 0; i < tmp.size(); ++i) {
@@ -292,7 +291,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
       private:
         Size firstHelper_, numberHelpers_;
-        boost::function<Array()> additionalErrors_;
+        ext::function<Array()> additionalErrors_;
         Curve *ts_;
         const std::vector<Real> lowerBounds_, upperBounds_;
     };
