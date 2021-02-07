@@ -20,28 +20,28 @@
 #ifndef quantlib_test_utilities_hpp
 #define quantlib_test_utilities_hpp
 
-#include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
-#include <ql/quote.hpp>
-#include <ql/patterns/observable.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/functional.hpp>
+#include <ql/instruments/payoffs.hpp>
+#include <ql/patterns/observable.hpp>
+#include <ql/quote.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <boost/test/unit_test.hpp>
 #if BOOST_VERSION < 105900
-#include <boost/test/floating_point_comparison.hpp>
+#    include <boost/test/floating_point_comparison.hpp>
 #else
-#include <boost/test/tools/floating_point_comparison.hpp>
+#    include <boost/test/tools/floating_point_comparison.hpp>
 #endif
-#include <vector>
-#include <string>
-#include <numeric>
-#include <iomanip>
 #include <cmath>
+#include <iomanip>
+#include <numeric>
+#include <string>
+#include <vector>
 
 // This makes it easier to use array literals (alas, no std::vector literals)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
+#define LENGTH(a) (sizeof(a) / sizeof(a[0]))
 
 #define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))
 
@@ -52,6 +52,7 @@ namespace QuantLib {
         // used to avoid no-assertion messages in Boost 1.35
         class quantlib_test_case {
             ext::function<void()> test_;
+
           public:
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}
@@ -62,17 +63,15 @@ namespace QuantLib {
                 Date after = Settings::instance().evaluationDate();
                 if (before != after)
                     BOOST_ERROR("Evaluation date not reset"
-                                << "\n  before: " << before
-                                << "\n  after:  " << after);
+                                << "\n  before: " << before << "\n  after:  " << after);
             }
-            #if BOOST_VERSION <= 105300
+#if BOOST_VERSION <= 105300
             // defined to avoid unused-variable warnings. It doesn't
             // work after Boost 1.53 because the functions were
             // overloaded and the address can't be resolved.
-            void _use_check(
-                    const void* = &boost::test_tools::check_is_close,
-                    const void* = &boost::test_tools::check_is_small) const {}
-            #endif
+            void _use_check(const void* = &boost::test_tools::check_is_close,
+                            const void* = &boost::test_tools::check_is_small) const {}
+#endif
         };
 
     }
@@ -82,52 +81,39 @@ namespace QuantLib {
 
 
     ext::shared_ptr<YieldTermStructure>
-    flatRate(const Date& today,
-             const ext::shared_ptr<Quote>& forward,
-             const DayCounter& dc);
+    flatRate(const Date& today, const ext::shared_ptr<Quote>& forward, const DayCounter& dc);
 
     ext::shared_ptr<YieldTermStructure>
-    flatRate(const Date& today,
-             Rate forward,
-             const DayCounter& dc);
+    flatRate(const Date& today, Rate forward, const DayCounter& dc);
 
-    ext::shared_ptr<YieldTermStructure>
-    flatRate(const ext::shared_ptr<Quote>& forward,
-             const DayCounter& dc);
+    ext::shared_ptr<YieldTermStructure> flatRate(const ext::shared_ptr<Quote>& forward,
+                                                 const DayCounter& dc);
 
-    ext::shared_ptr<YieldTermStructure>
-    flatRate(Rate forward,
-             const DayCounter& dc);
+    ext::shared_ptr<YieldTermStructure> flatRate(Rate forward, const DayCounter& dc);
 
 
     ext::shared_ptr<BlackVolTermStructure>
-    flatVol(const Date& today,
-            const ext::shared_ptr<Quote>& volatility,
-            const DayCounter& dc);
+    flatVol(const Date& today, const ext::shared_ptr<Quote>& volatility, const DayCounter& dc);
 
     ext::shared_ptr<BlackVolTermStructure>
-    flatVol(const Date& today,
-            Volatility volatility,
-            const DayCounter& dc);
+    flatVol(const Date& today, Volatility volatility, const DayCounter& dc);
 
-    ext::shared_ptr<BlackVolTermStructure>
-    flatVol(const ext::shared_ptr<Quote>& volatility,
-            const DayCounter& dc);
+    ext::shared_ptr<BlackVolTermStructure> flatVol(const ext::shared_ptr<Quote>& volatility,
+                                                   const DayCounter& dc);
 
-    ext::shared_ptr<BlackVolTermStructure>
-    flatVol(Volatility volatility,
-            const DayCounter& dc);
+    ext::shared_ptr<BlackVolTermStructure> flatVol(Volatility volatility, const DayCounter& dc);
 
 
     Real relativeError(Real x1, Real x2, Real reference);
 
-    //bool checkAbsError(Real x1, Real x2, Real tolerance){
+    // bool checkAbsError(Real x1, Real x2, Real tolerance){
     //    return std::fabs(x1 - x2) < tolerance;
     //};
 
     class Flag : public QuantLib::Observer {
       private:
         bool up_;
+
       public:
         Flag() : up_(false) {}
         void raise() { up_ = true; }
@@ -136,15 +122,14 @@ namespace QuantLib {
         void update() override { raise(); }
     };
 
-    template<class Iterator>
+    template <class Iterator>
     Real norm(const Iterator& begin, const Iterator& end, Real h) {
         // squared values
-        std::vector<Real> f2(end-begin);
-        std::transform(begin,end,begin,f2.begin(),
-                       std::multiplies<Real>());
+        std::vector<Real> f2(end - begin);
+        std::transform(begin, end, begin, f2.begin(), std::multiplies<Real>());
         // numeric integral of f^2
-        Real I = h * (std::accumulate(f2.begin(),f2.end(),Real(0.0))
-                      - 0.5*f2.front() - 0.5*f2.back());
+        Real I = h * (std::accumulate(f2.begin(), f2.end(), Real(0.0)) - 0.5 * f2.front() -
+                      0.5 * f2.back());
         return std::sqrt(I);
     }
 
@@ -185,7 +170,7 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out, const vector_streamer<T>& s) {
         out << "{ ";
         if (!s.v.empty()) {
-            for (size_t n=0; n<s.v.size()-1; ++n)
+            for (size_t n = 0; n < s.v.size() - 1; ++n)
                 out << s.v[n] << ", ";
             out << s.v.back();
         }

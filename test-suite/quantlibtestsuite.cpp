@@ -18,15 +18,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/types.hpp>
 #include <ql/settings.hpp>
+#include <ql/types.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/version.hpp>
 
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#include "paralleltestrunner.hpp"
+#    include "paralleltestrunner.hpp"
 #else
-#include <boost/test/unit_test.hpp>
+#    include <boost/test/unit_test.hpp>
 #endif
 
 #include <boost/timer/timer.hpp>
@@ -35,22 +35,22 @@
    for example) also #define _MSC_VER
 */
 #ifdef BOOST_MSVC
-#  include <ql/auto_link.hpp>
+#    include <ql/auto_link.hpp>
 
-#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#  define BOOST_LIB_NAME boost_unit_test_framework
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_timer
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_chrono
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
+#    ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#        define BOOST_LIB_NAME boost_unit_test_framework
+#        include <boost/config/auto_link.hpp>
+#        undef BOOST_LIB_NAME
+#        define BOOST_LIB_NAME boost_timer
+#        include <boost/config/auto_link.hpp>
+#        undef BOOST_LIB_NAME
+#        define BOOST_LIB_NAME boost_chrono
+#        include <boost/config/auto_link.hpp>
+#        undef BOOST_LIB_NAME
+#        define BOOST_LIB_NAME boost_system
+#        include <boost/config/auto_link.hpp>
+#        undef BOOST_LIB_NAME
+#    endif
 
 /* uncomment the following lines to unmask floating-point exceptions.
    See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
@@ -59,12 +59,9 @@
 //   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
 #endif
-#include "utilities.hpp"
-#include "speedlevel.hpp"
-
 #include "americanoption.hpp"
-#include "andreasenhugevolatilityinterpl.hpp"
 #include "amortizingbond.hpp"
+#include "andreasenhugevolatilityinterpl.hpp"
 #include "array.hpp"
 #include "asianoptions.hpp"
 #include "assetswap.hpp"
@@ -116,17 +113,17 @@
 #include "extendedtrees.hpp"
 #include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
-#include "fdheston.hpp"
-#include "fdcir.hpp"
-#include "fdmlinearop.hpp"
 #include "fdcev.hpp"
+#include "fdcir.hpp"
+#include "fdheston.hpp"
+#include "fdmlinearop.hpp"
 #include "fdsabr.hpp"
 #include "fittedbonddiscountcurve.hpp"
 #include "forwardoption.hpp"
 #include "forwardrateagreement.hpp"
 #include "functions.hpp"
-#include "gaussianquadratures.hpp"
 #include "garch.hpp"
+#include "gaussianquadratures.hpp"
 #include "gjrgarchmodel.hpp"
 #include "gsr.hpp"
 #include "hestonmodel.hpp"
@@ -154,11 +151,11 @@
 #include "lowdiscrepancysequences.hpp"
 #include "margrabeoption.hpp"
 #include "marketmodel.hpp"
+#include "marketmodel_cms.hpp"
+#include "marketmodel_smm.hpp"
 #include "marketmodel_smmcapletalphacalibration.hpp"
 #include "marketmodel_smmcapletcalibration.hpp"
 #include "marketmodel_smmcaplethomocalibration.hpp"
-#include "marketmodel_smm.hpp"
-#include "marketmodel_cms.hpp"
 #include "markovfunctional.hpp"
 #include "matrices.hpp"
 #include "mclongstaffschwartzengine.hpp"
@@ -193,15 +190,16 @@
 #include "shortratemodels.hpp"
 #include "sofrfutures.hpp"
 #include "solvers.hpp"
+#include "speedlevel.hpp"
 #include "spreadoption.hpp"
 #include "squarerootclvmodel.hpp"
-#include "swingoption.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swapforwardmappings.hpp"
 #include "swaption.hpp"
 #include "swaptionvolatilitycube.hpp"
 #include "swaptionvolatilitymatrix.hpp"
+#include "swingoption.hpp"
 #include "termstructures.hpp"
 #include "timegrid.hpp"
 #include "timeseries.hpp"
@@ -211,15 +209,15 @@
 #include "twoassetbarrieroption.hpp"
 #include "twoassetcorrelationoption.hpp"
 #include "ultimateforwardtermstructure.hpp"
+#include "utilities.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
 #include "zabr.hpp"
-
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 using namespace boost::unit_test_framework;
 
@@ -232,16 +230,15 @@ namespace {
         t.stop();
         std::cout << "\nTests completed in ";
         double seconds = t.elapsed().wall * 1e-9;
-        int hours = int(seconds/3600);
+        int hours = int(seconds / 3600);
         seconds -= hours * 3600;
-        int minutes = int(seconds/60);
+        int minutes = int(seconds / 60);
         seconds -= minutes * 60;
         if (hours > 0)
             std::cout << hours << " h ";
         if (hours > 0 || minutes > 0)
             std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
+        std::cout << std::fixed << std::setprecision(0) << seconds << " s\n" << std::endl;
     }
 
     void configure(QuantLib::Date evaluationDate) {
@@ -281,10 +278,9 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
         - 2016-02-29 causes two tests to fail.
     */
 
-    QuantLib::Date knownGoodDefault =
-        QuantLib::Date(16, QuantLib::September, 2015);
+    QuantLib::Date knownGoodDefault = QuantLib::Date(16, QuantLib::September, 2015);
 
-    for (int i=1; i<argc; ++i) {
+    for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "--date=today")
             return QuantLib::Date::todaysDate();
@@ -303,7 +299,7 @@ SpeedLevel speed_level(int argc, char** argv) {
         - passing nothing is the same as --slow
     */
 
-    for (int i=1; i<argc; ++i) {
+    for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "--slow")
             return Slow;
@@ -316,49 +312,45 @@ SpeedLevel speed_level(int argc, char** argv) {
 }
 
 
-test_suite* init_unit_test_suite(int, char* []) {
+test_suite* init_unit_test_suite(int, char*[]) {
 
     int argc = boost::unit_test::framework::master_test_suite().argc;
-    char **argv = boost::unit_test::framework::master_test_suite().argv;
+    char** argv = boost::unit_test::framework::master_test_suite().argv;
     configure(evaluation_date(argc, argv));
     SpeedLevel speed = speed_level(argc, argv);
 
     const QuantLib::Settings& settings = QuantLib::Settings::instance();
     std::ostringstream header;
-    header <<
-        " Testing "
-        #ifdef BOOST_MSVC
+    header << " Testing "
+#ifdef BOOST_MSVC
         QL_LIB_NAME
-        #else
-        "QuantLib " QL_VERSION
-        #endif
-        "\n  QL_EXTRA_SAFETY_CHECKS "
-        #ifdef QL_EXTRA_SAFETY_CHECKS
-        "  defined"
-        #else
-        "undefined"
-        #endif
-        "\n  QL_USE_INDEXED_COUPON "
-        #ifdef QL_USE_INDEXED_COUPON
-        "   defined"
-        #else
-        " undefined"
-        #endif
-        "\n"
+#else
+              "QuantLib " QL_VERSION
+#endif
+              "\n  QL_EXTRA_SAFETY_CHECKS "
+#ifdef QL_EXTRA_SAFETY_CHECKS
+              "  defined"
+#else
+              "undefined"
+#endif
+              "\n  QL_USE_INDEXED_COUPON "
+#ifdef QL_USE_INDEXED_COUPON
+              "   defined"
+#else
+              " undefined"
+#endif
+              "\n"
            << "evaluation date is " << settings.evaluationDate() << ",\n"
-           << (settings.includeReferenceDateEvents()
-               ? "reference date events are included,\n"
-               : "reference date events are excluded,\n")
+           << (settings.includeReferenceDateEvents() ? "reference date events are included,\n" :
+                                                       "reference date events are excluded,\n")
            << (settings.includeTodaysCashFlows() == boost::none ?
-               "" : (*settings.includeTodaysCashFlows() ?
-                     "today's cashflows are included,\n"
-                     : "today's cashflows are excluded,\n"))
-           << (settings.enforcesTodaysHistoricFixings()
-               ? "today's historic fixings are enforced."
-               : "today's historic fixings are not enforced.")
-           << "\nRunning "
-           << (speed == Faster ? "faster" :
-               (speed == Fast ?   "fast" : "all"))
+                   "" :
+                   (*settings.includeTodaysCashFlows() ? "today's cashflows are included,\n" :
+                                                         "today's cashflows are excluded,\n"))
+           << (settings.enforcesTodaysHistoricFixings() ?
+                   "today's historic fixings are enforced." :
+                   "today's historic fixings are not enforced.")
+           << "\nRunning " << (speed == Faster ? "faster" : (speed == Fast ? "fast" : "all"))
            << " tests.";
 
     std::string rule = std::string(41, '=');
