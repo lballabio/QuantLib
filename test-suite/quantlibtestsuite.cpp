@@ -291,12 +291,31 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
 }
 
 
+void testCase(int argc, char** argv) {
+    /*! Dead simple parser:
+        - passing --testcase=ArrayTest::testConstruction will run only
+          one single testcase 'ArrayTest::testConstruction'.
+          Any additional speed level provided will be ignored.
+    */
+
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg.substr(0, 11) == "--testcase=") {
+            std::string testcase = arg.substr(11);
+            QuantLib::RunSingleTestCase::instance().set(testcase);
+        }
+    }
+}
+
+
 SpeedLevel speed_level(int argc, char** argv) {
     /*! Again, dead simple parser:
         - passing --slow causes all tests to be run;
         - passing --fast causes most tests to be run, except the slowest;
         - passing --faster causes only the faster tests to be run;
         - passing nothing is the same as --slow
+
+        If a single test is provided, the SpeedLevel will be ignored.
     */
 
     for (int i = 1; i < argc; ++i) {
@@ -317,7 +336,12 @@ test_suite* init_unit_test_suite(int, char*[]) {
     int argc = boost::unit_test::framework::master_test_suite().argc;
     char** argv = boost::unit_test::framework::master_test_suite().argv;
     configure(evaluation_date(argc, argv));
-    SpeedLevel speed = speed_level(argc, argv);
+    testCase(argc, argv);
+
+    SpeedLevel speed = Slow;
+    if (!QuantLib::RunSingleTestCase::instance().isSet()) {
+        speed = speed_level(argc, argv);
+    }
 
     const QuantLib::Settings& settings = QuantLib::Settings::instance();
     std::ostringstream header;

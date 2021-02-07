@@ -45,7 +45,50 @@
 
 #define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))
 
+#define QUANTLIB_TEST_HEADER(M)                                                             \
+    bool runCurrentTestCase =                                                               \
+        QuantLib::RunSingleTestCase::instance().runCurrentTestCase(BOOST_CURRENT_FUNCTION); \
+    std::string message((M));                                                               \
+    message += (runCurrentTestCase ? " (Running)" : " (Skipping)");                         \
+    BOOST_TEST_MESSAGE(message);                                                            \
+    if (!runCurrentTestCase)                                                                \
+        return;
+
 namespace QuantLib {
+
+    class RunSingleTestCase : public Singleton<RunSingleTestCase> {
+        friend class Singleton<RunSingleTestCase>;
+        friend class RollbackChanges;
+
+      private:
+        RunSingleTestCase() {}
+
+      public:
+        bool isSet() const { return (bool)name_; }
+        void set(const std::string& testCase) { name_ = testCase; }
+
+        bool runCurrentTestCase(const std::string& boostCurrentFunction) const;
+
+        const std::string& name() const {
+            QL_REQUIRE(name_, "No test case provided.");
+            return *name_;
+        }
+
+      private:
+        boost::optional<std::string> name_;
+
+      public:
+        /*! The rollback of changes is needed to test 'RunSingleTestCase' itself within the
+         * testsuite. */
+        class RollbackChanges {
+          public:
+            RollbackChanges() : name_(RunSingleTestCase::instance().name_) {}
+            ~RollbackChanges() { RunSingleTestCase::instance().name_ = name_; }
+
+          private:
+            boost::optional<std::string> name_;
+        };
+    };
 
     namespace detail {
 
@@ -57,6 +100,7 @@ namespace QuantLib {
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}
             void operator()() const {
+                RunSingleTestCase::RollbackChanges rollbackChanges;
                 Date before = Settings::instance().evaluationDate();
                 BOOST_CHECK(true);
                 test_();
@@ -75,6 +119,7 @@ namespace QuantLib {
         };
 
     }
+
 
     std::string payoffTypeToString(const ext::shared_ptr<Payoff>&);
     std::string exerciseTypeToString(const ext::shared_ptr<Exercise>&);
