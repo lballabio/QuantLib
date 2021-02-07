@@ -566,6 +566,62 @@ void AmericanOptionTest::testFdShoutGreeks() {
     testFdGreeks<FDShoutEngine<CrankNicolson> >();
 }
 
+void AmericanOptionTest::testFDShoutNPV() {
+    BOOST_TEST_MESSAGE("Testing finite-differences shout option pricing...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual365Fixed();
+    const auto today = Date(4, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = Handle<Quote>(ext::make_shared<SimpleQuote>(100.0));
+    const auto q = Handle<YieldTermStructure>(flatRate(0.03, dc));
+    const auto r = Handle<YieldTermStructure>(flatRate(0.06, dc));
+
+    const auto volTS = Handle<BlackVolTermStructure>(flatVol(0.25, dc));
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            spot, q, r, volTS);
+
+    const auto maturityDate = today + Period(5, Years);
+
+    const Real strikes[] = { 105, 120, 80 };
+    const Option::Type optionTypes[] = { Option::Put, Option::Call };
+    const Real expected[] = {19.136, 28.211, 28.02, 22.515, 7.917, 40.785};
+
+    const auto engine = ext::make_shared<FdBlackScholesVanillaEngine>(
+        process, 400, 200);
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+        for (Size j=0; j < LENGTH(optionTypes); ++j) {
+            const Option::Type type = optionTypes[j];
+
+            auto option = VanillaOption(
+                ext::make_shared<PlainVanillaPayoff>(type, strike),
+                ext::make_shared<AmericanExercise>(maturityDate));
+
+            option.setPricingEngine(engine);
+
+            const Real expected_npv = expected[j + 2*i];
+            const Real tol = 2e-2;
+            const Real calculated = option.NPV();
+            const Real diff = std::fabs(calculated-expected_npv);
+
+            if (diff > tol) {
+                BOOST_FAIL("failed to reproduce known shout option price for "
+                        << "\n    strike:     " << strike
+                        << "\n    option type:" <<
+                            ((type == Option::Call)?"Call" : "Put")
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected_npv
+                        << "\n    difference: " << diff
+                        << "\n    tolerance:  " << tol);
+            }
+        }
+    }
+}
+
 test_suite* AmericanOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("American option tests");
     suite->add(
@@ -580,6 +636,7 @@ test_suite* AmericanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
     return suite;
 }
 
