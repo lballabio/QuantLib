@@ -94,7 +94,7 @@ namespace QuantLib {
           reAnnealSteps_(reAnnealSteps == 0 ? QL_MAX_INTEGER : reAnnealSteps),
           resetScheme_(resetScheme), resetSteps_(resetSteps == 0 ? QL_MAX_INTEGER : resetSteps),
           localOptimizer_(localOptimizer),
-          optimizeScheme_(localOptimizer != 0 ? optimizeScheme : NoLocalOptimize) {
+          optimizeScheme_(localOptimizer != nullptr ? optimizeScheme : NoLocalOptimize) {
             if (!localOptimizer)
                 localOptimizer.reset(new LevenbergMarquardt);
         }

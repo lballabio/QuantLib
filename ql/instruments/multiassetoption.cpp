@@ -79,7 +79,7 @@ namespace QuantLib {
     void MultiAssetOption::setupArguments(
                                        PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<MultiAssetOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff = payoff_;
         arguments->exercise = exercise_;
@@ -88,8 +88,7 @@ namespace QuantLib {
     void MultiAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
         const auto* results = dynamic_cast<const Greeks*>(r);
-        QL_ENSURE(results != 0,
-                  "no greeks returned from pricing engine");
+        QL_ENSURE(results != nullptr, "no greeks returned from pricing engine");
         delta_          = results->delta;
         gamma_          = results->gamma;
         theta_          = results->theta;

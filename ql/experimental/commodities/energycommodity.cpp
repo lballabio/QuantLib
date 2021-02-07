@@ -71,7 +71,7 @@ namespace QuantLib {
 
     void EnergyCommodity::setupArguments(PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<EnergyCommodity::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
         //arguments->legs = legs_;
         //arguments->payer = payer_;
     }
@@ -79,7 +79,7 @@ namespace QuantLib {
     void EnergyCommodity::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
         const auto* results = dynamic_cast<const EnergyCommodity::results*>(r);
-        QL_REQUIRE(results != 0, "wrong result type");
+        QL_REQUIRE(results != nullptr, "wrong result type");
     }
 
     EnergyCommodity::EnergyCommodity(
@@ -147,13 +147,13 @@ namespace QuantLib {
                                            Real totalQuantityValue,
                                            const Date& evaluationDate) const {
         secondaryCostAmounts_.clear();
-        if (secondaryCosts_ != 0) {
+        if (secondaryCosts_ != nullptr) {
             const Currency& baseCurrency =
                 CommoditySettings::instance().currency();
             try {
                 for (SecondaryCosts::const_iterator i = secondaryCosts_->begin();
                      i != secondaryCosts_->end(); ++i) {
-                    if (boost::any_cast<CommodityUnitCost>(&i->second) != 0) {
+                    if (boost::any_cast<CommodityUnitCost>(&i->second) != nullptr) {
                         Real value =
                             calculateUnitCost(
                                 commodityType,
@@ -161,7 +161,7 @@ namespace QuantLib {
                                 evaluationDate) * totalQuantityValue;
                         secondaryCostAmounts_[i->first] =
                             Money(baseCurrency, value);
-                    } else if (boost::any_cast<Money>(&i->second) != 0) {
+                    } else if (boost::any_cast<Money>(&i->second) != nullptr) {
                         const Money& amount = boost::any_cast<Money>(i->second);
                         Real fxConversionFactor =
                             calculateFxConversionFactor(amount.currency(),

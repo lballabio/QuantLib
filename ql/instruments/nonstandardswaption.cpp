@@ -55,7 +55,7 @@ namespace QuantLib {
 
         auto* arguments = dynamic_cast<NonstandardSwaption::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "argument types do not match");
+        QL_REQUIRE(arguments != nullptr, "argument types do not match");
 
         arguments->swap = swap_;
         arguments->exercise = exercise_;

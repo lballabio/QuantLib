@@ -232,32 +232,21 @@ namespace QuantLib {
     {
     }
 
-    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta,
-        Real sigma, Real v0, Real s0, Real rho,
-        ComplexLogFormula cpxLog,
-        Time term,
-        Real strike,
-        Real ratio,
-        Size j)
-        :
-        j_(j),
-        kappa_(kappa),
-        theta_(theta),
-        sigma_(sigma),
-        v0_(v0),
-        cpxLog_(cpxLog),
-        term_(term),
-        x_(std::log(s0)),
-        sx_(std::log(strike)),
-        dd_(x_-std::log(ratio)),
-        sigma2_(sigma_*sigma_),
-        rsigma_(rho*sigma_),
-        t0_(kappa - ((j== 1)? rho*sigma : 0)),
-        b_(0),
-        g_km1_(0),
-        engine_(0)
-    {
-    }
+    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa,
+                                               Real theta,
+                                               Real sigma,
+                                               Real v0,
+                                               Real s0,
+                                               Real rho,
+                                               ComplexLogFormula cpxLog,
+                                               Time term,
+                                               Real strike,
+                                               Real ratio,
+                                               Size j)
+    : j_(j), kappa_(kappa), theta_(theta), sigma_(sigma), v0_(v0), cpxLog_(cpxLog), term_(term),
+      x_(std::log(s0)), sx_(std::log(strike)), dd_(x_ - std::log(ratio)), sigma2_(sigma_ * sigma_),
+      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : 0)), b_(0), g_km1_(0),
+      engine_(nullptr) {}
 
 
     Real AnalyticHestonEngine::Fj_Helper::operator()(Real phi) const
@@ -270,7 +259,7 @@ namespace QuantLib {
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
         const std::complex<Real> addOnTerm =
-            engine_ != 0 ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
+            engine_ != nullptr ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
@@ -387,7 +376,7 @@ namespace QuantLib {
       freq_(std::log(fwd/strike)),
       cpxLog_(cpxLog),
       enginePtr_(enginePtr) {
-        QL_REQUIRE(enginePtr != 0, "pricing engine required");
+        QL_REQUIRE(enginePtr != nullptr, "pricing engine required");
 
         const Real v0    = enginePtr->model_->v0();
         const Real kappa = enginePtr->model_->kappa();
@@ -820,12 +809,11 @@ namespace QuantLib {
     }
 
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
-        if (integrator_ != 0) {
+        if (integrator_ != nullptr) {
             return integrator_->numberOfEvaluations();
-        } else if (gaussianQuadrature_ != 0) {
+        } else if (gaussianQuadrature_ != nullptr) {
             return gaussianQuadrature_->order();
-        }
-        else {
+        } else {
             QL_FAIL("neither Integrator nor GaussianQuadrature given");
         }
     }
@@ -857,14 +845,14 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-              if (maxBound != 0 && maxBound() != Null<Real>())
+              if (!(maxBound == QL_NULL_FUNCTION) && maxBound() != Null<Real>())
                   retVal = (*integrator_)(f, 0.0, maxBound());
               else
                   retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
               break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-              if (maxBound != 0 && maxBound() != Null<Real>())
+              if (!(maxBound == QL_NULL_FUNCTION) && maxBound() != Null<Real>())
                   retVal = (*integrator_)(f, 0.0, maxBound());
               else
                   retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);

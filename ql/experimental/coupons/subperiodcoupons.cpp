@@ -70,7 +70,7 @@ namespace QuantLib {
 
     void SubPeriodsCoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<SubPeriodsCoupon>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);

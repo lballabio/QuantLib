@@ -49,7 +49,7 @@ namespace QuantLib {
 
     void DoubleStickyRatchetPayoff::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<DoubleStickyRatchetPayoff>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Payoff::accept(v);

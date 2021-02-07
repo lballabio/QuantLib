@@ -185,7 +185,7 @@ namespace QuantLib {
         callCostFct_(callCostFct) { }
 
         Disposable<Array> values(const Array& sig) const override {
-            if ((putCostFct_ != 0) && (callCostFct_ != 0)) {
+            if ((putCostFct_ != nullptr) && (callCostFct_ != nullptr)) {
                 const Array pv = putCostFct_->values(sig);
                 const Array cv = callCostFct_->values(sig);
 
@@ -194,21 +194,21 @@ namespace QuantLib {
                 std::copy(cv.begin(), cv.end(), retVal.begin() + cv.size());
 
                 return retVal;
-            } else if (putCostFct_ != 0)
+            } else if (putCostFct_ != nullptr)
                 return putCostFct_->values(sig);
-            else if (callCostFct_ != 0)
+            else if (callCostFct_ != nullptr)
                 return callCostFct_->values(sig);
             else
                 QL_FAIL("internal error: cost function not set");
         }
 
         Disposable<Array> initialValues() const {
-            if ((putCostFct_ != 0) && (callCostFct_ != 0))
+            if ((putCostFct_ != nullptr) && (callCostFct_ != nullptr))
                 return 0.5*(  putCostFct_->initialValues()
                             + callCostFct_->initialValues());
-            else if (putCostFct_ != 0)
+            else if (putCostFct_ != nullptr)
                 return putCostFct_->initialValues();
-            else if (callCostFct_ != 0)
+            else if (callCostFct_ != nullptr)
                 return callCostFct_->initialValues();
             else
                 QL_FAIL("internal error: cost function not set");
@@ -460,9 +460,9 @@ namespace QuantLib {
             maxError_ = std::max(maxError_,
                 *std::max_element(vegaDiffs.begin(), vegaDiffs.end()));
 
-            if (putCostFct != 0)
+            if (putCostFct != nullptr)
                 npvPuts = putCostFct->solveFor(dT_[i], sig, npvPuts);
-            if (callCostFct != 0)
+            if (callCostFct != nullptr)
                 npvCalls= callCostFct->solveFor(dT_[i], sig, npvCalls);
         }
 

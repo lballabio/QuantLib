@@ -51,7 +51,7 @@ namespace QuantLib {
         virtual void executeIntermediateStep(Size step) const = 0;
         Real getDividendAmount(Size i) const {
             const auto* dividend = dynamic_cast<const Dividend*>(this->events_[i].get());
-            if (dividend != 0) {
+            if (dividend != nullptr) {
                 return dividend->amount();
             } else {
                 return 0.0;
@@ -210,7 +210,7 @@ namespace QuantLib {
         Real underlying = this->process_->stateVariable()->value();
         for (Size i=0; i<this->events_.size(); i++) {
             const auto* dividend = dynamic_cast<const Dividend*>(this->events_[i].get());
-            if (dividend == 0)
+            if (dividend == nullptr)
                 continue;
             if (this->getDividendTime(i) < 0.0) continue;
             underlying -= dividend->amount(underlying);
@@ -225,7 +225,7 @@ namespace QuantLib {
     void FDDividendEngineShiftScale<Scheme>::executeIntermediateStep(
                                                              Size step) const{
         const auto* dividend = dynamic_cast<const Dividend*>(this->events_[step].get());
-        if (dividend == 0)
+        if (dividend == nullptr)
             return;
         detail::DividendAdder adder(dividend);
         this->sMin_ = adder(this->sMin_);

@@ -107,7 +107,7 @@ namespace QuantLib {
     }
 
     Real CrossCurrencyBasisSwapRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
 
         baseCcyLeg_->recalculate();
@@ -135,7 +135,7 @@ namespace QuantLib {
 
     void CrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CrossCurrencyBasisSwapRateHelper>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);

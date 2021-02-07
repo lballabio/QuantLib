@@ -176,7 +176,7 @@ namespace QuantLib {
     }
 
     inline bool CommodityIndex::forwardCurveEmpty() const {
-        if (forwardCurve_ != 0)
+        if (forwardCurve_ != nullptr)
             return forwardCurve_->empty();
         return false;
     }

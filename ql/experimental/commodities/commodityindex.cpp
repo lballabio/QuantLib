@@ -42,7 +42,7 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
 
-        if (forwardCurve_ != 0)
+        if (forwardCurve_ != nullptr)
             // registerWith(forwardCurve_);
             forwardCurveUomConversionFactor_ =
                 CommodityPricingHelper::calculateUomConversionFactor(
@@ -55,7 +55,7 @@ namespace QuantLib {
         out << "[" << index.name_ << "] ("
             << index.currency_.code() << "/"
             << index.unitOfMeasure_.code() << ")";
-        if (index.forwardCurve_ != 0)
+        if (index.forwardCurve_ != nullptr)
             out << "; forward (" << (*index.forwardCurve_) << ")";
         return out;
     }

@@ -209,7 +209,7 @@ namespace QuantLib {
 
     inline std::pair<Observer::iterator, bool>
     Observer::registerWith(const ext::shared_ptr<Observable>& h) {
-        if (h != 0) {
+        if (h != nullptr) {
             h->registerObserver(this);
             return observables_.insert(h);
         }
@@ -218,7 +218,7 @@ namespace QuantLib {
 
     inline void
     Observer::registerWithObservables(const ext::shared_ptr<Observer> &o) {
-        if (o != 0) {
+        if (o != nullptr) {
             iterator i;
             for (i = o->observables_.begin(); i != o->observables_.end(); ++i)
                 registerWith(*i);
@@ -227,7 +227,7 @@ namespace QuantLib {
 
     inline
     Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
-        if (h != 0)
+        if (h != nullptr)
             h->unregisterObserver(this);
         return observables_.erase(h);
     }

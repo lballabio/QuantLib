@@ -30,7 +30,7 @@ namespace QuantLib {
                                       const Real y,
                                       const ext::shared_ptr<IborIndex>& iborIdx) const {
 
-        QL_REQUIRE(iborIdx != NULL, "no ibor index given");
+        QL_REQUIRE(iborIdx != nullptr, "no ibor index given");
 
         calculate();
 
@@ -57,7 +57,7 @@ Real Gaussian1dModel::swapRate(const Date& fixing,
                                const Real y,
                                const ext::shared_ptr<SwapIndex>& swapIdx) const {
 
-    QL_REQUIRE(swapIdx != NULL, "no swap index given");
+    QL_REQUIRE(swapIdx != nullptr, "no swap index given");
 
     calculate();
 
@@ -79,7 +79,7 @@ Real Gaussian1dModel::swapRate(const Date& fixing,
 
     ext::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
         ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
-    if (oisIdx != NULL) {
+    if (oisIdx != nullptr) {
         floatSched = sched;
     } else {
         floatSched = underlying->floatingSchedule();
@@ -117,7 +117,7 @@ Real Gaussian1dModel::swapAnnuity(const Date& fixing,
                                   const Real y,
                                   const ext::shared_ptr<SwapIndex>& swapIdx) const {
 
-    QL_REQUIRE(swapIdx != NULL, "no swap index given");
+    QL_REQUIRE(swapIdx != nullptr, "no swap index given");
 
     calculate();
 
@@ -252,7 +252,7 @@ Disposable<Array> Gaussian1dModel::yGrid(
 
     // we use that the standard deviation is independent of $x$ here !
 
-    QL_REQUIRE(stateProcess_ != NULL, "state process not set");
+    QL_REQUIRE(stateProcess_ != nullptr, "state process not set");
 
     Array result(2 * gridPoints + 1, 0.0);
 

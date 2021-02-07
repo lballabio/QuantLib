@@ -215,7 +215,7 @@ namespace QuantLib {
     void CreditDefaultSwap::setupArguments(
                                        PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<CreditDefaultSwap::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->side = side_;
         arguments->notional = notional_;
@@ -237,7 +237,7 @@ namespace QuantLib {
         Instrument::fetchResults(r);
 
         const auto* results = dynamic_cast<const CreditDefaultSwap::results*>(r);
-        QL_REQUIRE(results != 0, "wrong result type");
+        QL_REQUIRE(results != nullptr, "wrong result type");
 
         fairSpread_ = results->fairSpread;
         fairUpfront_ = results->fairUpfront;

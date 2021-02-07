@@ -28,7 +28,7 @@ namespace QuantLib {
         for (Size i=0; i<leg.size(); ++i) {
             ext::shared_ptr<InflationCoupon> c =
                 ext::dynamic_pointer_cast<InflationCoupon>(leg[i]);
-            if (c != 0)
+            if (c != nullptr)
                 c->setPricer(p);
         }
     }

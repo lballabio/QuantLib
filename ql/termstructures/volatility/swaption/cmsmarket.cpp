@@ -174,8 +174,7 @@ namespace QuantLib {
                 ext::shared_ptr<MeanRevertingPricer> p =
                     ext::dynamic_pointer_cast<MeanRevertingPricer>(
                         pricers_[j]);
-                QL_REQUIRE(p != NULL, "mean reverting pricer required at index "
-                                          << j);
+                QL_REQUIRE(p != nullptr, "mean reverting pricer required at index " << j);
                 p->setMeanReversion(meanReversionQuote);
             }
         }

@@ -92,7 +92,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmStepConditionComposite>& condition,
         const FdmSchemeDesc& schemeDesc)
     : map_(map), bcSet_(bcSet),
-      condition_((condition) != 0 ?
+      condition_((condition) != nullptr ?
                      condition :
                      ext::make_shared<FdmStepConditionComposite>(
                          std::list<std::vector<Time> >(), FdmStepConditionComposite::Conditions())),

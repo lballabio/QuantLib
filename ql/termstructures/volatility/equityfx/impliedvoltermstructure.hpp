@@ -88,7 +88,7 @@ namespace QuantLib {
 
     inline void ImpliedVolTermStructure::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVarianceTermStructure::accept(v);

@@ -90,10 +90,10 @@ Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
     initialize(T);
 }
 
-void Gsr::update() { 
-	if (stateProcess_ != NULL)
+void Gsr::update() {
+    if (stateProcess_ != nullptr)
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
-	LazyObject::update();
+    LazyObject::update();
 }
 
 void Gsr::updateTimes() const {
@@ -111,7 +111,7 @@ void Gsr::updateTimes() const {
                            << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                            << volsteptimes_[j] << "@" << j << ")");
     }
-    if (stateProcess_ != NULL)
+    if (stateProcess_ != nullptr)
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
 }
 

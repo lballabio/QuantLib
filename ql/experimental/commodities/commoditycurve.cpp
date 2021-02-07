@@ -98,7 +98,7 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out, const CommodityCurve& curve) {
         out << "[" << curve.name_ << "] (" << curve.currency_.code()
             << "/" << curve.unitOfMeasure_.code() << ")";
-        if (curve.basisOfCurve_ != 0)
+        if (curve.basisOfCurve_ != nullptr)
             out << "; basis to (" << (*curve.basisOfCurve_) << ")";
         return out;
     }

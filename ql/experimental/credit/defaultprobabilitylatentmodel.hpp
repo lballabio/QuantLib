@@ -129,7 +129,7 @@ namespace QuantLib {
         }
     protected:
       void update() override {
-          if (basket_ != 0)
+          if (basket_ != nullptr)
               basket_->notifyObservers();
           LatentModel<copulaPolicy>::update();
       }
