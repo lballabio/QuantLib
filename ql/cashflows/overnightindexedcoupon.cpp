@@ -23,6 +23,7 @@
 
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/experimental/averageois/averageoiscouponpricer.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/vectors.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -193,8 +194,20 @@ namespace QuantLib {
         for (Size i=0; i<n_; ++i)
             dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
 
-        setPricer(ext::shared_ptr<FloatingRateCouponPricer>(new
-                                            OvernightIndexedCouponPricer));
+        OvernightAveraging averagingMethod = overnightIndex->averagingMethod();
+
+        switch (averagingMethod) {
+            case OvernightAveraging::Simple:
+                setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
+                    new ArithmeticAveragedOvernightIndexedCouponPricer(telescopicValueDates)));
+                break;
+            case OvernightAveraging::Compound:
+                setPricer(
+                    ext::shared_ptr<FloatingRateCouponPricer>(new OvernightIndexedCouponPricer));
+                break;
+            default:
+                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
+        }
     }
 
     const vector<Rate>& OvernightIndexedCoupon::indexFixings() const {

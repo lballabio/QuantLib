@@ -85,6 +85,7 @@ namespace QuantLib {
         friend class IborCoupon;
     };
 
+    enum class OvernightAveraging { Simple, Compound };
 
     class OvernightIndex : public IborIndex {
       public:
@@ -93,10 +94,17 @@ namespace QuantLib {
                        const Currency& currency,
                        const Calendar& fixingCalendar,
                        const DayCounter& dayCounter,
-                       const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                       const Handle<YieldTermStructure>& h = Handle<YieldTermStructure>(),
+                       OvernightAveraging averagingMethod = OvernightAveraging::Compound);
         //! returns a copy of itself linked to a different forwarding curve
         ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+
+        //! \name Overnight Index Inspectors
+        //@{
+        OvernightAveraging averagingMethod() const { return averagingMethod_; }
+        //@}
+      private:
+        OvernightAveraging averagingMethod_;
     };
 
 
