@@ -26,7 +26,7 @@ using namespace boost::unit_test_framework;
 using namespace std;
 
 void AutocovariancesTest::testConvolutions() {
-    BOOST_TEST_MESSAGE("Testing convolutions...");
+    QUANTLIB_TEST_HEADER("Testing convolutions...");
     Array x(10, 1, 1);
     Array conv(6);
     convolutions(x.begin(), x.end(), conv.begin(), 5);
@@ -40,7 +40,7 @@ void AutocovariancesTest::testConvolutions() {
 }
 
 void AutocovariancesTest::testAutoCovariances() {
-    BOOST_TEST_MESSAGE("Testing auto-covariances...");
+    QUANTLIB_TEST_HEADER("Testing auto-covariances...");
     Array x(10, 1, 1);
     Array acovf(6);
     Real mean = autocovariances(x.begin(), x.end(), acovf.begin(), 5, false);
@@ -59,7 +59,7 @@ void AutocovariancesTest::testAutoCovariances() {
 }
 
 void AutocovariancesTest::testAutoCorrelations() {
-    BOOST_TEST_MESSAGE("Testing auto-correlations...");
+    QUANTLIB_TEST_HEADER("Testing auto-correlations...");
     Array x(10, 1, 1);
     Array acorf(6);
     Real mean = autocorrelations(x.begin(), x.end(), acorf.begin(), 5, true);

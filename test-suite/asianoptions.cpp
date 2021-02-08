@@ -92,7 +92,7 @@ namespace {
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
              "Testing analytic continuous geometric average-price Asians...");
 
     // data from "Option Pricing Formulas", Haug, pag.96-97
@@ -173,7 +173,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
        "Testing analytic continuous geometric average-price Asian greeks...");
 
     SavedSettings backup;
@@ -330,7 +330,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
                "Testing analytic discrete geometric average-price Asians...");
 
     // data from "Implementing Derivatives Model",
@@ -392,7 +392,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
               "Testing analytic discrete geometric average-strike Asians...");
 
     DayCounter dc = Actual360();
@@ -452,7 +452,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
 
 void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
             "Testing Monte Carlo discrete geometric average-price Asians...");
 
     // data from "Implementing Derivatives Model",
@@ -587,7 +587,7 @@ void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston() {
 
-    BOOST_TEST_MESSAGE("Testing analytic discrete geometric average-price Asians under Heston...");
+    QUANTLIB_TEST_HEADER("Testing analytic discrete geometric average-price Asians under Heston...");
 
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
@@ -623,7 +623,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston() {
 
 void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
 
-    BOOST_TEST_MESSAGE("Testing MC discrete geometric average-price Asians under Heston...");
+    QUANTLIB_TEST_HEADER("Testing MC discrete geometric average-price Asians under Heston...");
 
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
@@ -661,7 +661,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
 
 void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
-    BOOST_TEST_MESSAGE("Testing Analytic vs MC for seasoned discrete geometric Asians under Heston...");
+    QUANTLIB_TEST_HEADER("Testing Analytic vs MC for seasoned discrete geometric Asians under Heston...");
 
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
@@ -768,7 +768,7 @@ namespace {
 
 void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
            "Testing Monte Carlo discrete arithmetic average-price Asians...");
 
     // data from "Asian Option", Levy, 1997
@@ -921,7 +921,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
 void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
            "Testing Monte Carlo discrete arithmetic average-price Asians in Heston model...");
 
     // data from "A numerical method to price exotic path-dependent
@@ -1116,7 +1116,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
 void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
           "Testing Monte Carlo discrete arithmetic average-strike Asians...");
 
     // data from "Asian Option", Levy, 1997
@@ -1252,7 +1252,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
-    BOOST_TEST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
+    QUANTLIB_TEST_HEADER("Testing discrete-averaging geometric Asian greeks...");
 
     SavedSettings backup;
 
@@ -1416,7 +1416,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
 void AsianOptionTest::testPastFixings() {
 
-    BOOST_TEST_MESSAGE("Testing use of past fixings in Asian options...");
+    QUANTLIB_TEST_HEADER("Testing use of past fixings in Asian options...");
 
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
@@ -1555,7 +1555,7 @@ void AsianOptionTest::testPastFixings() {
 
 void AsianOptionTest::testAllFixingsInThePast() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Asian options with all fixing dates in the past...");
 
     DayCounter dc = Actual360();
@@ -1707,7 +1707,7 @@ namespace {
 
 void AsianOptionTest::testLevyEngine() {
 
-    BOOST_TEST_MESSAGE("Testing Levy engine for Asians options...");
+    QUANTLIB_TEST_HEADER("Testing Levy engine for Asians options...");
 
     // data from Haug, "Option Pricing Formulas", p.99-100
     ContinuousAverageData cases[] = {
@@ -1809,7 +1809,7 @@ namespace {
 }
 
 void AsianOptionTest::testVecerEngine() {
-    BOOST_TEST_MESSAGE("Testing Vecer engine for Asian options...");
+    QUANTLIB_TEST_HEADER("Testing Vecer engine for Asian options...");
 
     VecerData cases[] = {
         { 1.9, 0.05,   0.5,  2.0, 1, 0.193174, 1.0e-5 },
@@ -1868,7 +1868,7 @@ void AsianOptionTest::testVecerEngine() {
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston() {
 
-    BOOST_TEST_MESSAGE("Testing analytic continuous geometric Asians under Heston...");
+    QUANTLIB_TEST_HEADER("Testing analytic continuous geometric Asians under Heston...");
 
     // data from "Pricing of Geometric Asian Options under Heston's Stochastic
     // Volatility Model", Kim & Wee, Quantitative Finance, 14:10, 1795-1809, 2011

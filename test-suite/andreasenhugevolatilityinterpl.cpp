@@ -357,7 +357,7 @@ namespace andreasen_huge_volatility_interpl_test {
 
 void AndreasenHugeVolatilityInterplTest::testAndreasenHugePut() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge example with Put calibration...");
 
     using namespace andreasen_huge_volatility_interpl_test;
@@ -376,7 +376,7 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugePut() {
 
 void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge example with Call calibration...");
 
     using namespace andreasen_huge_volatility_interpl_test;
@@ -395,7 +395,7 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall() {
 
 void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge example with instantaneous "
          "Call and Put calibration...");
 
@@ -414,7 +414,7 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testLinearInterpolation() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge example with linear interpolation...");
 
     using namespace andreasen_huge_volatility_interpl_test;
@@ -432,7 +432,7 @@ void AndreasenHugeVolatilityInterplTest::testLinearInterpolation() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge example with piecewise constant interpolation...");
 
     using namespace andreasen_huge_volatility_interpl_test;
@@ -451,7 +451,7 @@ void AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation() {
 
 void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
 
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge volatility interpolation with "
         "time dependent interest rates and dividend yield...");
 
@@ -536,7 +536,7 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge volatility interpolation with "
         "a single option...");
 
@@ -599,7 +599,7 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge volatility interpolation gives "
         "arbitrage free prices...");
 
@@ -691,7 +691,7 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Barrier option pricing with Andreasen-Huge "
          "local volatility surface...");
 
@@ -847,7 +847,7 @@ namespace andreasen_huge_volatility_interpl_test {
 }
 
 void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Peter's and Fabien's SABR example...");
 
     // http://chasethedevil.github.io/post/andreasen-huge-extrapolation/
@@ -897,7 +897,7 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing different optimizer for Andreasen-Huge "
         "volatility interpolation...");
 
@@ -934,7 +934,7 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing that reference date of adapter surface moves along with "
         "evaluation date...");
 
@@ -1011,7 +1011,7 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
 }
 
 void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
         "Testing Andreasen-Huge example with flat volatility surface...");
 
     using namespace andreasen_huge_volatility_interpl_test;

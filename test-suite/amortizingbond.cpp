@@ -29,7 +29,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void AmortizingBondTest::testAmortizingFixedRateBond() {
-	BOOST_TEST_MESSAGE("Testing amortizing fixed rate bond...");
+	QUANTLIB_TEST_HEADER("Testing amortizing fixed rate bond...");
 
 	/*
 	* Following data is generated from Excel using function pmt with Nper = 360, PV = 100.0 
@@ -91,7 +91,7 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 }
 
 void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
-	BOOST_TEST_MESSAGE("Testing Brazilian amortizing fixed rate bond...");
+	QUANTLIB_TEST_HEADER("Testing Brazilian amortizing fixed rate bond...");
 
 	/*
 	* Following data is based on the following Brazilian onshore corporate bond code:

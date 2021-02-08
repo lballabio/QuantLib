@@ -34,7 +34,7 @@ namespace array_test {
 
 void ArrayTest::testConstruction() {
 
-    BOOST_TEST_MESSAGE("Testing array construction...");
+    QUANTLIB_TEST_HEADER("Testing array construction...");
 
     using namespace array_test;
 
@@ -185,7 +185,7 @@ void ArrayTest::testConstruction() {
 
 void ArrayTest::testArrayFunctions() {
 
-    BOOST_TEST_MESSAGE("Testing array functions...");
+    QUANTLIB_TEST_HEADER("Testing array functions...");
 
     Array a(5);
     for (Size i=0; i < a.size(); ++i) {
@@ -216,7 +216,7 @@ void ArrayTest::testArrayFunctions() {
 }
 
 void ArrayTest::testArrayResize() {
-    BOOST_TEST_MESSAGE("Testing array resize...");
+    QUANTLIB_TEST_HEADER("Testing array resize...");
 
     Array a(10,1.0,1.0);
 

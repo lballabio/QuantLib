@@ -74,7 +74,7 @@ namespace {
 
 void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
-    BOOST_TEST_MESSAGE("Testing Barone-Adesi and Whaley approximation "
+    QUANTLIB_TEST_HEADER("Testing Barone-Adesi and Whaley approximation "
                        "for American options...");
 
     /* The data below are from
@@ -178,7 +178,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
 void AmericanOptionTest::testBjerksundStenslandValues() {
 
-    BOOST_TEST_MESSAGE("Testing Bjerksund and Stensland approximation "
+    QUANTLIB_TEST_HEADER("Testing Bjerksund and Stensland approximation "
                        "for American options...");
 
     AmericanOptionData values[] = {
@@ -328,7 +328,7 @@ namespace {
 
 void AmericanOptionTest::testJuValues() {
 
-    BOOST_TEST_MESSAGE("Testing Ju approximation for American options...");
+    QUANTLIB_TEST_HEADER("Testing Ju approximation for American options...");
 
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
@@ -381,7 +381,7 @@ void AmericanOptionTest::testJuValues() {
 
 void AmericanOptionTest::testFdValues() {
 
-    BOOST_TEST_MESSAGE("Testing finite-difference engine "
+    QUANTLIB_TEST_HEADER("Testing finite-difference engine "
                        "for American options...");
 
     Date today = Date::todaysDate();
@@ -557,12 +557,12 @@ namespace {
 
 
 void AmericanOptionTest::testFdAmericanGreeks() {
-    BOOST_TEST_MESSAGE("Testing finite-differences American option greeks...");
+    QUANTLIB_TEST_HEADER("Testing finite-differences American option greeks...");
     testFdGreeks<FdBlackScholesVanillaEngine>();
 }
 
 void AmericanOptionTest::testFdShoutGreeks() {
-    BOOST_TEST_MESSAGE("Testing finite-differences shout option greeks...");
+    QUANTLIB_TEST_HEADER("Testing finite-differences shout option greeks...");
     testFdGreeks<FDShoutEngine<CrankNicolson> >();
 }
 

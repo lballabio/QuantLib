@@ -119,7 +119,7 @@ namespace asset_swap_test {
 }
 
 void AssetSwapTest::testConsistency() {
-    BOOST_TEST_MESSAGE(
+    QUANTLIB_TEST_HEADER(
                  "Testing consistency between fair price and fair spread...");
 
     using namespace asset_swap_test;
@@ -507,7 +507,7 @@ void AssetSwapTest::testConsistency() {
 
 void AssetSwapTest::testImpliedValue() {
 
-    BOOST_TEST_MESSAGE("Testing implied bond value against asset-swap fair"
+    QUANTLIB_TEST_HEADER("Testing implied bond value against asset-swap fair"
                        " price with null spread...");
 
     using namespace asset_swap_test;
@@ -877,7 +877,7 @@ void AssetSwapTest::testImpliedValue() {
 
 void AssetSwapTest::testMarketASWSpread() {
 
-    BOOST_TEST_MESSAGE("Testing relationship between market asset swap"
+    QUANTLIB_TEST_HEADER("Testing relationship between market asset swap"
                        " and par asset swap...");
 
     using namespace asset_swap_test;
@@ -1319,7 +1319,7 @@ void AssetSwapTest::testMarketASWSpread() {
 
 void AssetSwapTest::testZSpread() {
 
-    BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
+    QUANTLIB_TEST_HEADER("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
     using namespace asset_swap_test;
@@ -1641,7 +1641,7 @@ void AssetSwapTest::testZSpread() {
 
 void AssetSwapTest::testGenericBondImplied() {
 
-    BOOST_TEST_MESSAGE("Testing implied generic-bond value against"
+    QUANTLIB_TEST_HEADER("Testing implied generic-bond value against"
                        " asset-swap fair price with null spread...");
 
     using namespace asset_swap_test;
@@ -2034,7 +2034,7 @@ void AssetSwapTest::testGenericBondImplied() {
 
 void AssetSwapTest::testMASWWithGenericBond() {
 
-    BOOST_TEST_MESSAGE("Testing market asset swap against par asset swap "
+    QUANTLIB_TEST_HEADER("Testing market asset swap against par asset swap "
                        "with generic bond...");
 
     using namespace asset_swap_test;
@@ -2511,7 +2511,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
 void AssetSwapTest::testZSpreadWithGenericBond() {
 
-    BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
+    QUANTLIB_TEST_HEADER("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
     using namespace asset_swap_test;
@@ -2878,7 +2878,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
 
 void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
-    BOOST_TEST_MESSAGE("Testing clean and dirty prices for specialized bond"
+    QUANTLIB_TEST_HEADER("Testing clean and dirty prices for specialized bond"
                        " against equivalent generic bond...");
 
     using namespace asset_swap_test;
@@ -3439,7 +3439,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
 void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 
-    BOOST_TEST_MESSAGE("Testing asset-swap prices and spreads for specialized"
+    QUANTLIB_TEST_HEADER("Testing asset-swap prices and spreads for specialized"
                        " bond against equivalent generic bond...");
 
     using namespace asset_swap_test;
