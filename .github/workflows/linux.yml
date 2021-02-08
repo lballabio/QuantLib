@@ -167,6 +167,7 @@ jobs:
     - name: Run tests
       if: ${{ matrix.tests }}
       run: |
+        ./test-suite/quantlib-test-suite --log_level=message -- --testcase=AmericanOptionTest::testJuValues
         ./test-suite/quantlib-test-suite --log_level=message
     - name: Run examples
       if: ${{ matrix.tests }}

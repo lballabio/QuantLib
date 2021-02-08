@@ -36,6 +36,7 @@ jobs:
         make -j 2
     - name: Run tests
       run: |
+        ./test-suite/quantlib-test-suite --log_level=message -- --testcase=AmericanOptionTest::testJuValues
         ./test-suite/quantlib-test-suite --log_level=message
     - name: Run examples
       run: |

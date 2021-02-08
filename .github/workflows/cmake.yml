@@ -16,6 +16,7 @@ jobs:
         make -j 2
     - name: Test
       run: |
+        ./test-suite/quantlib-test-suite --log_level=message -- --testcase=AmericanOptionTest::testJuValues
         ./test-suite/quantlib-test-suite --log_level=message
   cmake-win:
     runs-on: windows-latest
@@ -36,6 +37,7 @@ jobs:
         cmake --build . --config Release
     - name: Test
       run: |
+        .\test-suite\Release\quantlib-test-suite --log_level=message -- --testcase=AmericanOptionTest::testJuValues
         .\test-suite\Release\quantlib-test-suite --log_level=message
   cmake-macos:
     runs-on: macos-latest
@@ -52,4 +54,5 @@ jobs:
         make -j 2
     - name: Test
       run: |
+        ./test-suite/quantlib-test-suite --log_level=message -- --testcase=AmericanOptionTest::testJuValues
         ./test-suite/quantlib-test-suite --log_level=message
