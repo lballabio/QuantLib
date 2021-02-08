@@ -40,8 +40,8 @@ namespace QuantLib {
             const ext::shared_ptr<FdmMesher>& mesher,
             Size direction);
 
-        Real innerValue(const FdmLinearOpIterator& iter, Time t);
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
+        Real innerValue(const FdmLinearOpIterator& iter, Time t) override;
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
 
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;

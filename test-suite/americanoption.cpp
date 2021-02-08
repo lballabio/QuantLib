@@ -27,7 +27,7 @@
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdshoutengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -481,7 +481,7 @@ namespace {
                                                           qTS, rTS, volTS));
 
                 ext::shared_ptr<PricingEngine> engine(
-                                                    new Engine(stochProcess));
+                     new Engine(stochProcess, 50));
 
                 VanillaOption option(payoff, exercise);
                 option.setPricingEngine(engine);
@@ -563,7 +563,7 @@ void AmericanOptionTest::testFdAmericanGreeks() {
 
 void AmericanOptionTest::testFdShoutGreeks() {
     BOOST_TEST_MESSAGE("Testing finite-differences shout option greeks...");
-    testFdGreeks<FDShoutEngine<CrankNicolson> >();
+    testFdGreeks<FdBlackScholesShoutEngine>();
 }
 
 void AmericanOptionTest::testFDShoutNPV() {
@@ -585,39 +585,42 @@ void AmericanOptionTest::testFDShoutNPV() {
 
     const auto maturityDate = today + Period(5, Years);
 
-    const Real strikes[] = { 105, 120, 80 };
-    const Option::Type optionTypes[] = { Option::Put, Option::Call };
-    const Real expected[] = {19.136, 28.211, 28.02, 22.515, 7.917, 40.785};
+    struct TestDescription { Real strike; Option::Type type; Real expected; };
 
-    const auto engine = ext::make_shared<FdBlackScholesVanillaEngine>(
+    const TestDescription testDescriptions[] = {
+            {105, Option::Put, 19.136},
+            {105, Option::Call, 28.211},
+            {120, Option::Put, 28.02},
+            {80, Option::Call, 40.785}
+    };
+
+    const auto engine = ext::make_shared<FdBlackScholesShoutEngine>(
         process, 400, 200);
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
-        const Real strike = strikes[i];
-        for (Size j=0; j < LENGTH(optionTypes); ++j) {
-            const Option::Type type = optionTypes[j];
+    for (const TestDescription& desc: testDescriptions) {
+        const Real strike = desc.strike;
+        const Option::Type type = desc.type;
 
-            auto option = VanillaOption(
-                ext::make_shared<PlainVanillaPayoff>(type, strike),
-                ext::make_shared<AmericanExercise>(maturityDate));
+        auto option = VanillaOption(
+            ext::make_shared<PlainVanillaPayoff>(type, strike),
+            ext::make_shared<AmericanExercise>(maturityDate));
 
-            option.setPricingEngine(engine);
+        option.setPricingEngine(engine);
 
-            const Real expected_npv = expected[j + 2*i];
-            const Real tol = 2e-2;
-            const Real calculated = option.NPV();
-            const Real diff = std::fabs(calculated-expected_npv);
+        const Real expected = desc.expected;
+        const Real tol = 2e-2;
+        const Real calculated = option.NPV();
+        const Real diff = std::fabs(calculated-expected);
 
-            if (diff > tol) {
-                BOOST_FAIL("failed to reproduce known shout option price for "
-                        << "\n    strike:     " << strike
-                        << "\n    option type:" <<
-                            ((type == Option::Call)?"Call" : "Put")
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected_npv
-                        << "\n    difference: " << diff
-                        << "\n    tolerance:  " << tol);
-            }
+        if (diff > tol) {
+            BOOST_FAIL("failed to reproduce known shout option price for "
+                    << "\n    strike:     " << strike
+                    << "\n    option type:" <<
+                        ((type == Option::Call)?"Call" : "Put")
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << "\n    difference: " << diff
+                    << "\n    tolerance:  " << tol);
         }
     }
 }

@@ -28,6 +28,7 @@ this_include_HEADERS = \
     juquadraticengine.hpp \
 	fdbatesvanillaengine.hpp \
 	fdblackscholesvanillaengine.hpp \
+	fdblackscholesshoutengine.hpp \
 	fdcevvanillaengine.hpp \
     fddividendengine.hpp \
     fddividendshoutengine.hpp \
@@ -73,6 +74,7 @@ cpp_files = \
     juquadraticengine.cpp \
 	fdbatesvanillaengine.cpp \
 	fdblackscholesvanillaengine.cpp \
+	fdblackscholesshoutengine.cpp \
 	fdcevvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdhestonvanillaengine.cpp \

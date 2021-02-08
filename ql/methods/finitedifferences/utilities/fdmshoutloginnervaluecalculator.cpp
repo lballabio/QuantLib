@@ -60,7 +60,7 @@ namespace QuantLib {
             t, maturity_, s_t)*std::sqrt(maturity_-t);
 
         const Real npv = blackFormula(
-                payoff_->optionType(), s_t, fwd, stdDev, df);
+            payoff_->optionType(), s_t, fwd, stdDev, df);
 
         const Real intrinsic = (payoff_->optionType() == Option::Call)
             ? s_t - payoff_->strike() : payoff_->strike() - s_t;
