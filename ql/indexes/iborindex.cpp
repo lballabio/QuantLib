@@ -91,7 +91,8 @@ namespace QuantLib {
                                                            currency(),
                                                            fixingCalendar(),
                                                            dayCounter(),
-                                                           h));
+                                                           h, 
+                                                           averagingMethod()));
     }
 
 }
