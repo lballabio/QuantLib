@@ -52,7 +52,7 @@ namespace QuantLib {
                                       VolatilityType volType = ShiftedLognormal,
                                       Real displacement = 0.0);
 
-        ~YoYOptionletVolatilitySurface() override {}
+        ~YoYOptionletVolatilitySurface() override = default;
 
         //! \name Volatility (only)
         //@{

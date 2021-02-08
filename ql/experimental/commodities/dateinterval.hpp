@@ -39,7 +39,7 @@ namespace QuantLib {
         Date startDate_;
         Date endDate_;
       public:
-        DateInterval()  {}
+        DateInterval() = default;
         DateInterval(const Date& startDate, const Date& endDate)
         : startDate_(startDate), endDate_(endDate) {
             QL_REQUIRE(endDate_ >= startDate_,

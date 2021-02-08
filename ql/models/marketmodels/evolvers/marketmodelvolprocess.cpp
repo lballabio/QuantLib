@@ -21,11 +21,8 @@
 namespace QuantLib 
 {
 
-    MarketModelVolProcess::MarketModelVolProcess()     
-    {}
+    MarketModelVolProcess::MarketModelVolProcess() = default;
 
-    MarketModelVolProcess::~MarketModelVolProcess()
-    {}
-
+    MarketModelVolProcess::~MarketModelVolProcess() = default;
 }
 

@@ -74,9 +74,9 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline Clone<T>::Clone() {}
+    inline Clone<T>::Clone() = default;
 
-    #if defined(QL_USE_STD_UNIQUE_PTR)
+#if defined(QL_USE_STD_UNIQUE_PTR)
     template <class T>
     inline Clone<T>::Clone(std::unique_ptr<T>&& p)
     : ptr_(std::move(p)) {}

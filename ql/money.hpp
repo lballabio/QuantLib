@@ -132,7 +132,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Money::Money() {}
+    inline Money::Money() = default;
 
     inline Money::Money(const Currency& currency, Decimal value)
     : value_(value), currency_(currency) {}

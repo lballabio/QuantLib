@@ -428,7 +428,8 @@ namespace QuantLib
     /*!    No reannealing is performed
     */
     struct ReannealingTrivial {
-        ReannealingTrivial() {};
+        ReannealingTrivial() = default;
+        ;
         inline void setProblem(Problem &P) {};
         inline void operator()(Array & steps, const Array &currentPoint,
             Real aCurrentValue, const Array & currTemp) const {};

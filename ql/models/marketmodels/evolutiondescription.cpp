@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    EvolutionDescription::EvolutionDescription() {}
+    EvolutionDescription::EvolutionDescription() = default;
 
     EvolutionDescription::EvolutionDescription(
                      const std::vector<Time>& rateTimes,

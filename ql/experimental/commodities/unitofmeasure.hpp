@@ -102,7 +102,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline UnitOfMeasure::UnitOfMeasure() {}
+    inline UnitOfMeasure::UnitOfMeasure() = default;
 
     inline const std::string& UnitOfMeasure::name() const {
         return data_->name;

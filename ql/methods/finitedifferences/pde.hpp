@@ -31,24 +31,23 @@
 namespace QuantLib {
     class PdeSecondOrderParabolic {
     public:
-        virtual ~PdeSecondOrderParabolic() {}
-        virtual Real diffusion(Time t, Real x) const = 0;
-        virtual Real drift(Time t, Real x) const = 0;
-        virtual Real discount(Time t, Real x) const = 0;
-        virtual void generateOperator(Time t,
-                                      const TransformedGrid &tg,
-                                      TridiagonalOperator &L) const {
-            for (Size i=1; i < tg.size() - 1; i++) {
-                Real sigma = diffusion(t, tg.grid(i));
-                Real nu = drift(t, tg.grid(i));
-                Real r = discount(t, tg.grid(i));
-                Real sigma2 = sigma * sigma;
+      virtual ~PdeSecondOrderParabolic() = default;
+      virtual Real diffusion(Time t, Real x) const = 0;
+      virtual Real drift(Time t, Real x) const = 0;
+      virtual Real discount(Time t, Real x) const = 0;
+      virtual void
+      generateOperator(Time t, const TransformedGrid& tg, TridiagonalOperator& L) const {
+          for (Size i = 1; i < tg.size() - 1; i++) {
+              Real sigma = diffusion(t, tg.grid(i));
+              Real nu = drift(t, tg.grid(i));
+              Real r = discount(t, tg.grid(i));
+              Real sigma2 = sigma * sigma;
 
-                Real pd = -(sigma2/tg.dxm(i)-nu)/ tg.dx(i);
-                Real pu = -(sigma2/tg.dxp(i)+nu)/ tg.dx(i);
-                Real pm = sigma2/(tg.dxm(i) * tg.dxp(i))+r;
-                L.setMidRow(i, pd,pm,pu);
-            }
+              Real pd = -(sigma2 / tg.dxm(i) - nu) / tg.dx(i);
+              Real pu = -(sigma2 / tg.dxp(i) + nu) / tg.dx(i);
+              Real pm = sigma2 / (tg.dxm(i) * tg.dxp(i)) + r;
+              L.setMidRow(i, pd, pm, pu);
+          }
         }
     };
 

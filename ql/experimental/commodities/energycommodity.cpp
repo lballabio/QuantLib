@@ -26,7 +26,7 @@
 namespace QuantLib {
 
 
-    EnergyDailyPosition::EnergyDailyPosition() {}
+    EnergyDailyPosition::EnergyDailyPosition() = default;
 
     EnergyDailyPosition::EnergyDailyPosition(const Date& date,
                                              Real payLegPrice,

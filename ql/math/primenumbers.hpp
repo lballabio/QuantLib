@@ -47,7 +47,7 @@ namespace QuantLib {
         //! Get and store one after another.
         static BigNatural get(Size absoluteIndex);
       private:
-        PrimeNumbers() {}
+        PrimeNumbers() = default;
         static BigNatural nextPrimeNumber();
         static std::vector<BigNatural> primeNumbers_;
     };

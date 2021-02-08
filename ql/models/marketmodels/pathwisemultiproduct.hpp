@@ -57,7 +57,7 @@ namespace QuantLib {
             Size timeIndex;
             std::vector<Real > amount;
         };
-        virtual ~MarketModelPathwiseMultiProduct() {}
+        virtual ~MarketModelPathwiseMultiProduct() = default;
 
         virtual std::vector<Size> suggestedNumeraires() const = 0;
         virtual const EvolutionDescription& evolution() const = 0;

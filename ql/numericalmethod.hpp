@@ -36,7 +36,7 @@ namespace QuantLib {
     class Lattice {
       public:
         explicit Lattice(const TimeGrid& timeGrid) : t_(timeGrid) {}
-        virtual ~Lattice() {}
+        virtual ~Lattice() = default;
 
         //!\name Inspectors
         //{

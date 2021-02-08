@@ -48,7 +48,7 @@ namespace QuantLib {
         /*! the automatically generated destructor would
             not have the throw specifier.
         */
-        ~Error() throw() override {}
+        ~Error() throw() override = default;
         //! returns the error message.
         const char* what() const throw() override;
 

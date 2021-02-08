@@ -37,7 +37,7 @@ namespace QuantLib {
         friend class Singleton<IndexManager>;
 
       private:
-        IndexManager() {}
+        IndexManager() = default;
 
       public:
         //! returns whether historical fixings were stored for the index

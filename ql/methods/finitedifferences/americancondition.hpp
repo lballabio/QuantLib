@@ -63,7 +63,7 @@ namespace QuantLib {
 
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual Real getValue(const Array &a,
                                   int i) = 0;
         };

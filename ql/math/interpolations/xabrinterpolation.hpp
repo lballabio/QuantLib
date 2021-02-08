@@ -76,7 +76,7 @@ template <typename Model> class XABRCoeffHolder {
         Model().defaultValues(params_, paramIsFixed_, forward_, t_, addParams_);
         updateModelInstance();
     }
-    virtual ~XABRCoeffHolder() {}
+    virtual ~XABRCoeffHolder() = default;
 
     void updateModelInstance() {
         modelInstance_ = Model().instance(t_, forward_, params_, addParams_);

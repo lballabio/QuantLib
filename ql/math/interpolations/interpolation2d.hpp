@@ -49,7 +49,7 @@ namespace QuantLib {
         //! abstract base class for 2-D interpolation implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual void calculate() = 0;
             virtual Real xMin() const = 0;
             virtual Real xMax() const = 0;
@@ -140,7 +140,7 @@ namespace QuantLib {
             const M& zData_;
         };
 
-        Interpolation2D() {}
+        Interpolation2D() = default;
         Real operator()(Real x, Real y,
                         bool allowExtrapolation = false) const {
             checkRange(x,y,allowExtrapolation);

@@ -33,7 +33,7 @@ namespace QuantLib {
 
     Settings::Settings()
 
-    {}
+        = default;
 
     void Settings::anchorEvaluationDate() {
         // set to today's date if not already set.

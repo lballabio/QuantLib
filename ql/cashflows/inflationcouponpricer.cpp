@@ -34,7 +34,7 @@ namespace QuantLib {
     }
 
 
-    YoYInflationCouponPricer::YoYInflationCouponPricer() {}
+    YoYInflationCouponPricer::YoYInflationCouponPricer() = default;
 
     YoYInflationCouponPricer::YoYInflationCouponPricer(
                        const Handle<YieldTermStructure>& nominalTermStructure)

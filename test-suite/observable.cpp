@@ -36,7 +36,7 @@ namespace {
 
     class UpdateCounter : public Observer {
       public:
-        UpdateCounter() {}
+        UpdateCounter() = default;
         void update() override { ++counter_; }
         Size counter() const { return counter_; }
 
@@ -308,8 +308,8 @@ void ObservableTest::testDeepUpdate() {
 namespace {
 	class DummyObserver : public Observer {
 	  public:
-		DummyObserver() {}
-                void update() override {}
+            DummyObserver() = default;
+            void update() override {}
         };
 }
 

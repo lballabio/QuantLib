@@ -36,7 +36,7 @@ namespace QuantLib {
     */
     class YoYOptionletStripper {
       public:
-        virtual ~YoYOptionletStripper() {}
+        virtual ~YoYOptionletStripper() = default;
 
         //! YoYOptionletStripper interface
         //@{

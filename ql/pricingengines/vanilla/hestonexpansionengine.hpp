@@ -67,7 +67,7 @@ namespace QuantLib {
     */
     class HestonExpansion {
       public:
-        virtual ~HestonExpansion() {}
+        virtual ~HestonExpansion() = default;
         virtual Real impliedVolatility(Real strike, Real forward) const = 0;
     };
 

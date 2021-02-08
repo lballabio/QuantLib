@@ -122,7 +122,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Quantity::Quantity() {}
+    inline Quantity::Quantity() = default;
 
     inline Quantity::Quantity(const CommodityType& commodityType,
                               const UnitOfMeasure& unitOfMeasure,

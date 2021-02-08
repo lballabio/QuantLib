@@ -38,7 +38,7 @@ namespace QuantLib {
         typedef Real argument_type;
         typedef Real result_type;
 
-        virtual ~Payoff() {}
+        virtual ~Payoff() = default;
         //! \name Payoff interface
         //@{
         /*! \warning This method is used for output and comparison between

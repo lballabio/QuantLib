@@ -56,7 +56,7 @@ namespace QuantLib {
         // argument basket:
         mutable RelinkableHandle<Basket> basket_;
 
-        DefaultLossModel() { }
+        DefaultLossModel() = default;
         //! \name Statistics
         //@{
         /* Non mandatory implementations, fails if client is not providing what 

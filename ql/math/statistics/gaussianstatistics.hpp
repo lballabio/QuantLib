@@ -40,7 +40,7 @@ namespace QuantLib {
     class GenericGaussianStatistics : public Stat {
       public:
         typedef typename Stat::value_type value_type;
-        GenericGaussianStatistics() {}
+        GenericGaussianStatistics() = default;
         explicit GenericGaussianStatistics(const Stat& s) : Stat(s) {}
         //! \name Gaussian risk measures
         //@{
@@ -117,7 +117,7 @@ namespace QuantLib {
         StatsHolder(Real mean,
                     Real standardDeviation)
                     : mean_(mean), standardDeviation_(standardDeviation) {}
-        ~StatsHolder() {}
+        ~StatsHolder() = default;
         Real mean() const { return mean_; }
         Real standardDeviation() const { return standardDeviation_; }
       private:

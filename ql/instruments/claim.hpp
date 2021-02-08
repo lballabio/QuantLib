@@ -31,7 +31,7 @@ namespace QuantLib {
     //! Claim associated to a default event
     class Claim : public Observable, public Observer {
       public:
-        ~Claim() override {}
+        ~Claim() override = default;
         virtual Real amount(const Date& defaultDate,
                             Real notional,
                             Real recoveryRate) const = 0;

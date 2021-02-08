@@ -63,7 +63,7 @@ namespace QuantLib {
                  bool endOfMonth,
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
-        Schedule() {}
+        Schedule() = default;
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }

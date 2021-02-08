@@ -206,7 +206,7 @@ namespace QuantLib {
             const Date& date, Real loss, Probability confInterval) const;
         //@}
     public:
-      ~RandomLM() override {}
+      ~RandomLM() override = default;
 
     private:
         BigNatural seed_;

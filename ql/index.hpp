@@ -43,7 +43,7 @@ namespace QuantLib {
     */
     class Index : public Observable {
       public:
-        ~Index() override {}
+        ~Index() override = default;
         //! Returns the name of the index.
         /*! \warning This method is used for output and comparison
                      between indexes. It is <b>not</b> meant to be

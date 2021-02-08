@@ -40,7 +40,7 @@ namespace QuantLib {
         const std::string& code() const;
         //@}
       protected:
-        Region() {}
+        Region() = default;
         struct Data;
         ext::shared_ptr<Data> data_;
     };

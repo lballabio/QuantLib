@@ -542,7 +542,7 @@ namespace QuantLib {
         return isRegular_;
     }
 
-    MakeSchedule::MakeSchedule() {}
+    MakeSchedule::MakeSchedule() = default;
 
     MakeSchedule& MakeSchedule::from(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;

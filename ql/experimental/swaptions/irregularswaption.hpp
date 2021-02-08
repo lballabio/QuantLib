@@ -83,7 +83,7 @@ namespace QuantLib {
     class IrregularSwaption::arguments : public IrregularSwap::arguments,
                                          public Option::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         ext::shared_ptr<IrregularSwap> swap;
         IrregularSettlement::Type settlementType = IrregularSettlement::Physical;
         void validate() const override;
