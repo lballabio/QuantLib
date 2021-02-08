@@ -103,7 +103,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v2.1.4
       with:
         path: ~/.ccache
         key: linux-nondef-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
