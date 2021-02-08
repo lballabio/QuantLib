@@ -45,17 +45,25 @@
 
 #define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))
 
-#define QUANTLIB_TEST_HEADER(M)                                                             \
-    bool runCurrentTestCase =                                                               \
-        QuantLib::RunSingleTestCase::instance().runCurrentTestCase(BOOST_CURRENT_FUNCTION); \
-    std::string message((M));                                                               \
-    message += (runCurrentTestCase ? " (Running)" : " (Skipping)");                         \
-    BOOST_TEST_MESSAGE(message);                                                            \
-    if (!runCurrentTestCase)                                                                \
-        return;
+#define QL_ENABLE_SINGLE_TEST_CASE
+
+#ifdef QL_ENABLE_SINGLE_TEST_CASE
+#    define QUANTLIB_TEST_HEADER(M)                                                             \
+        bool runCurrentTestCase =                                                               \
+            QuantLib::RunSingleTestCase::instance().runCurrentTestCase(BOOST_CURRENT_FUNCTION); \
+        std::string message((M));                                                               \
+        message += (runCurrentTestCase ? " (Running)" : " (Skipping)");                         \
+        BOOST_TEST_MESSAGE(message);                                                            \
+        if (!runCurrentTestCase)                                                                \
+            return;
+#else
+#    define QUANTLIB_TEST_HEADER(M) BOOST_TEST_MESSAGE(M);
+#endif // QL_ENABLE_SINGLE_TEST_CASE
+
 
 namespace QuantLib {
 
+#ifdef QL_ENABLE_SINGLE_TEST_CASE
     class RunSingleTestCase : public Singleton<RunSingleTestCase> {
         friend class Singleton<RunSingleTestCase>;
         friend class RollbackChanges;
@@ -67,7 +75,12 @@ namespace QuantLib {
         bool isSet() const { return (bool)name_; }
         void set(const std::string& testCase) { name_ = testCase; }
 
-        bool runCurrentTestCase(const std::string& boostCurrentFunction) const;
+        bool runCurrentTestCase(const std::string& boostCurrentFunction) const {
+            if (!name_)
+                return true;
+            else
+                return boostCurrentFunction.find(*name_ + "(") != std::string::npos;
+        }
 
         const std::string& name() const {
             QL_REQUIRE(name_, "No test case provided.");
@@ -89,6 +102,7 @@ namespace QuantLib {
             boost::optional<std::string> name_;
         };
     };
+#endif
 
     namespace detail {
 
@@ -100,7 +114,9 @@ namespace QuantLib {
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}
             void operator()() const {
+#ifdef QL_ENABLE_SINGLE_TEST_CASE
                 RunSingleTestCase::RollbackChanges rollbackChanges;
+#endif
                 Date before = Settings::instance().evaluationDate();
                 BOOST_CHECK(true);
                 test_();

@@ -301,12 +301,16 @@ void testCase(int argc, char** argv) {
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg.substr(0, 11) == "--testcase=") {
+#ifdef QL_ENABLE_SINGLE_TEST_CASE
             std::string testcase = arg.substr(11);
             QuantLib::RunSingleTestCase::instance().set(testcase);
+#else
+            QL_FAIL("The '--testcase' parameter is only allowed when compiled with "
+                    "QL_ENABLE_SINGLE_TEST_CASE.");
+#endif
         }
     }
 }
-
 
 SpeedLevel speed_level(int argc, char** argv) {
     /*! Again, dead simple parser:
@@ -336,12 +340,14 @@ test_suite* init_unit_test_suite(int, char*[]) {
     int argc = boost::unit_test::framework::master_test_suite().argc;
     char** argv = boost::unit_test::framework::master_test_suite().argv;
     configure(evaluation_date(argc, argv));
+
     testCase(argc, argv);
 
+#ifdef QL_ENABLE_SINGLE_TEST_CASE
     SpeedLevel speed = Slow;
-    if (!QuantLib::RunSingleTestCase::instance().isSet()) {
-        speed = speed_level(argc, argv);
-    }
+#else
+    SpeedLevel speed = speed_level(argc, argv);
+#endif
 
     const QuantLib::Settings& settings = QuantLib::Settings::instance();
     std::ostringstream header;
@@ -359,6 +365,12 @@ test_suite* init_unit_test_suite(int, char*[]) {
 #endif
               "\n  QL_USE_INDEXED_COUPON "
 #ifdef QL_USE_INDEXED_COUPON
+              "   defined"
+#else
+              " undefined"
+#endif
+              "\n  QL_ENABLE_SINGLE_TEST_CASE "
+#ifdef QL_ENABLE_SINGLE_TEST_CASE
               "   defined"
 #else
               " undefined"
