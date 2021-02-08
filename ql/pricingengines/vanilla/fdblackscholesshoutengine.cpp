@@ -63,7 +63,6 @@ namespace QuantLib {
             ext::make_shared<FdmShoutLogInnerValueCalculator>(
                 process_, maturity, payoff, mesher, 0);
 
-        // 3. Step conditions
         const auto conditions =
             FdmStepConditionComposite::vanillaComposite(
                 DividendSchedule(), arguments_.exercise, mesher,
