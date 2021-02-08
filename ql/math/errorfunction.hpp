@@ -38,7 +38,7 @@ namespace QuantLib {
         typedef Real argument_type;
         typedef Real result_type;
 
-        ErrorFunction() {}
+        ErrorFunction() = default;
         // function
         Real operator()(Real x) const;
       private:

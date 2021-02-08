@@ -209,7 +209,7 @@ namespace QuantLib {
 
         class FdmScheme {
           public:
-            virtual ~FdmScheme() {}
+            virtual ~FdmScheme() = default;
             virtual void step(Array& a, Time t) = 0;
             virtual void setStep(Time dt) = 0;
         };

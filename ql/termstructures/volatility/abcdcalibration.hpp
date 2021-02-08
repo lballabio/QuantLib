@@ -79,7 +79,8 @@ namespace QuantLib {
         };
 
       public:
-        AbcdCalibration() {};
+        AbcdCalibration() = default;
+        ;
         AbcdCalibration(
              const std::vector<Real>& t,
              const std::vector<Real>& blackVols,

@@ -70,7 +70,7 @@ namespace QuantLib {
         void clear();
 
         struct Entry {
-            Entry() {}
+            Entry() = default;
             Entry(const ExchangeRate& rate,
                   const Date& start, const Date& end)
             : rate(rate), startDate(start), endDate(end) {}

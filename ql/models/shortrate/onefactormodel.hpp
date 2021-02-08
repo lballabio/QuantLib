@@ -37,7 +37,7 @@ namespace QuantLib {
     class OneFactorModel : public ShortRateModel {
       public:
         explicit OneFactorModel(Size nArguments);
-        ~OneFactorModel() override {}
+        ~OneFactorModel() override = default;
 
         class ShortRateDynamics;
         class ShortRateTree;
@@ -55,7 +55,7 @@ namespace QuantLib {
         explicit ShortRateDynamics(
                         const ext::shared_ptr<StochasticProcess1D>& process)
         : process_(process) {}
-        virtual ~ShortRateDynamics() {}
+        virtual ~ShortRateDynamics() = default;
 
         //! Compute state variable from short rate
         virtual Real variable(Time t, Rate r) const = 0;

@@ -34,7 +34,7 @@ namespace QuantLib {
     class FdmLinearOp {
       public:
         typedef Array array_type;
-        virtual ~FdmLinearOp() { }
+        virtual ~FdmLinearOp() = default;
         virtual Disposable<array_type> apply(const array_type& r) const = 0;
 
 #if !defined(QL_NO_UBLAS_SUPPORT)

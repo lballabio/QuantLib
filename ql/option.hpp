@@ -56,7 +56,7 @@ namespace QuantLib {
     //! basic %option %arguments
     class Option::arguments : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         void validate() const override {
             QL_REQUIRE(payoff, "no payoff given");
             QL_REQUIRE(exercise, "no exercise given");

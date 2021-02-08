@@ -36,7 +36,7 @@ namespace QuantLib {
     namespace detail {
         class UpdatedYInterpolation {
           public:
-            virtual ~UpdatedYInterpolation() {}
+            virtual ~UpdatedYInterpolation() = default;
             virtual Real value(const Array& yValues, Real x) const = 0;
         };
 

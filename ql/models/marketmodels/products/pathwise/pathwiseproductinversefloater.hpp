@@ -54,7 +54,7 @@ class MarketModelPathwiseInverseFloater : public MarketModelPathwiseMultiProduct
                       const std::vector<Time>& paymentTimes,
                       bool payer = true);
 
-         ~MarketModelPathwiseInverseFloater() override {}
+         ~MarketModelPathwiseInverseFloater() override = default;
 
          std::vector<Size> suggestedNumeraires() const override;
          const EvolutionDescription& evolution() const override;

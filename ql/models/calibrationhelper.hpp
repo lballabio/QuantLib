@@ -38,7 +38,7 @@ namespace QuantLib {
     //! abstract base class for calibration helpers
     class CalibrationHelper {
       public:
-        virtual ~CalibrationHelper() {}
+        virtual ~CalibrationHelper() = default;
         //! returns the error resulting from the model valuation
         virtual Real calibrationError() = 0;
     };

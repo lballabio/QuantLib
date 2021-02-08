@@ -40,8 +40,8 @@ namespace QuantLib {
     /*! \todo add tests */
     class CashFlows {
       private:
-        CashFlows();
-        CashFlows(const CashFlows&);
+        CashFlows() = delete;
+        CashFlows(const CashFlows&) = delete;
 
         class IrrFinder {
           public:

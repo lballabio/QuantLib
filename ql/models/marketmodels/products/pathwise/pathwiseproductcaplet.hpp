@@ -51,7 +51,7 @@ namespace QuantLib {
                           const std::vector<Time>& paymentTimes,
                           const std::vector<Rate>& strikes);
 
-       ~MarketModelPathwiseMultiCaplet() override {}
+       ~MarketModelPathwiseMultiCaplet() override = default;
 
        std::vector<Size> suggestedNumeraires() const override;
        const EvolutionDescription& evolution() const override;
@@ -107,7 +107,7 @@ namespace QuantLib {
                                      const std::vector<Time>& paymentTimes,
                                      Rate strike);
 
-       ~MarketModelPathwiseMultiDeflatedCaplet() override {}
+       ~MarketModelPathwiseMultiDeflatedCaplet() override = default;
 
        std::vector<Size> suggestedNumeraires() const override;
        const EvolutionDescription& evolution() const override;
@@ -165,7 +165,7 @@ namespace QuantLib {
                           const std::vector<std::pair<Size,Size> >& startsAndEnds);
 
 
-       ~MarketModelPathwiseMultiDeflatedCap() override {}
+       ~MarketModelPathwiseMultiDeflatedCap() override = default;
 
        std::vector<Size> suggestedNumeraires() const override;
        const EvolutionDescription& evolution() const override;

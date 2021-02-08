@@ -146,7 +146,7 @@ public:
     explicit TestFunction(const RealFunc & f, const ArrayFunc & fs = ArrayFunc()) : f_(f), fs_(fs) {}
     explicit TestFunction(Real (*f)(const Array&), Disposable<Array> (*fs)(const Array&) = nullptr)
     : f_(f), fs_(fs) {}
-    ~TestFunction() override {}
+    ~TestFunction() override = default;
     Real value(const Array& x) const override { return f_(x); }
     Disposable<Array> values(const Array& x) const override {
         if(!fs_)

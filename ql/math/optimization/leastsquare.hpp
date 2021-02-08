@@ -37,7 +37,7 @@ namespace QuantLib {
     //! Base class for least square problem
     class LeastSquareProblem {
       public:
-        virtual ~LeastSquareProblem() {}
+        virtual ~LeastSquareProblem() = default;
         //! size of the problem ie size of target vector
         virtual Size size() = 0;
         //! compute the target vector and the values of the function to fit
@@ -62,7 +62,7 @@ namespace QuantLib {
         //! Default constructor
         LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
-        ~LeastSquareFunction() override {}
+        ~LeastSquareFunction() override = default;
 
         //! compute value of the least square function
         Real value(const Array& x) const override;
@@ -106,7 +106,7 @@ namespace QuantLib {
                              Size maxiter,
                              const ext::shared_ptr<OptimizationMethod>& om);
         //! Destructor
-        ~NonLinearLeastSquare() {}
+        ~NonLinearLeastSquare() = default;
 
         //! Solve least square problem using numerix solver
         Array& perform(LeastSquareProblem& lsProblem);

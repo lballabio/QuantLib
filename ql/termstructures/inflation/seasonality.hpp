@@ -75,7 +75,7 @@ namespace QuantLib {
           virtual bool isConsistent(const InflationTermStructure& iTS) const;
           //@}
 
-          virtual ~Seasonality() {}
+          virtual ~Seasonality() = default;
     };
 
     //! Multiplicative seasonality in the price index (CPI/RPI/HICP/etc).
@@ -157,7 +157,8 @@ namespace QuantLib {
             //@}
 
             //Destructor
-            ~MultiplicativePriceSeasonality() override{};
+            ~MultiplicativePriceSeasonality() override = default;
+            ;
 
           protected:
             virtual void validate() const;

@@ -191,7 +191,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    ~Gaussian1dModel() override {}
+    ~Gaussian1dModel() override = default;
 
     virtual Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const = 0;
 

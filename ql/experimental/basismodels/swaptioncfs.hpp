@@ -45,7 +45,8 @@ namespace QuantLib {
         IborLegCashFlows(const Leg& iborLeg,
                          const Handle<YieldTermStructure>& discountCurve,
                          bool contTenorSpread = true);
-        IborLegCashFlows(){}; // allow default constructor which does nothing
+        IborLegCashFlows() = default;
+        ; // allow default constructor which does nothing
     };
 
 
@@ -61,8 +62,9 @@ namespace QuantLib {
         SwapCashFlows(const ext::shared_ptr<VanillaSwap>& swap,
                       const Handle<YieldTermStructure>& discountCurve,
                       bool contTenorSpread = true);
-        SwapCashFlows(){}; // allow default constructor which does nothing
-                           // inspectors
+        SwapCashFlows() = default;
+        ; // allow default constructor which does nothing
+          // inspectors
         inline const Leg& fixedLeg() const { return fixedLeg_; }
         inline const std::vector<Real>& fixedTimes() const { return fixedTimes_; }
         inline const std::vector<Real>& fixedWeights() const { return fixedWeights_; }
@@ -79,7 +81,8 @@ namespace QuantLib {
         SwaptionCashFlows(const ext::shared_ptr<Swaption>& swaption,
                           const Handle<YieldTermStructure>& discountCurve,
                           bool contTenorSpread = true);
-        SwaptionCashFlows(){}; // allow default constructor which does nothing
+        SwaptionCashFlows() = default;
+        ; // allow default constructor which does nothing
         // inspectors
         inline ext::shared_ptr<Swaption> swaption() const { return swaption_; }
         inline const std::vector<Real>& exerciseTimes() const { return exerciseTimes_; }

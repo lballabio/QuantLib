@@ -125,7 +125,7 @@ namespace QuantLib {
     //! %Arguments for nonstandard swap calculation
     class NonstandardSwap::arguments : public Swap::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         VanillaSwap::Type type = VanillaSwap::Receiver;
         std::vector<Real> fixedNominal, floatingNominal;
 

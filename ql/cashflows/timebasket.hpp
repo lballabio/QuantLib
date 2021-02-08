@@ -37,7 +37,7 @@ namespace QuantLib {
         // this is needed for Visual C++ 6
         typedef std::map<Date,Real> super;
       public:
-        TimeBasket() {}
+        TimeBasket() = default;
         TimeBasket(const std::vector<Date>& dates,
                    const std::vector<Real>& values);
         //! \name Map interface

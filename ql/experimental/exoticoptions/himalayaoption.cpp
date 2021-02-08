@@ -40,7 +40,7 @@ namespace QuantLib {
         arguments->fixingDates = fixingDates_;
     }
 
-    HimalayaOption::arguments::arguments() {}
+    HimalayaOption::arguments::arguments() = default;
 
     void HimalayaOption::arguments::validate() const {
         MultiAssetOption::arguments::validate();

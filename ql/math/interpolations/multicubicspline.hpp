@@ -268,7 +268,8 @@ namespace QuantLib {
                 for(Size j = 0, dim = y_.size();  j < dim; ++j)
                     X(d_.second, d2_.second, y_[j], y2_[j], v_.second);
             }
-            ~n_cubic_spline(){}
+            ~n_cubic_spline() = default;
+
           private:
             const data &d_, &d2_;
             const data_table &y_;
@@ -327,7 +328,8 @@ namespace QuantLib {
                                   v1_.first.first, v2_.first.first,
                                   v_.first, v1_.first, v2_.first, r);
             }
-            ~n_cubic_splint(){}
+            ~n_cubic_splint() = default;
+
           private:
             const return_type &a_, &b_, &a2_, &b2_;
             const dimensions &i_;

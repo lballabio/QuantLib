@@ -84,7 +84,7 @@ namespace QuantLib {
     class NonstandardSwaption::arguments : public NonstandardSwap::arguments,
                                            public Option::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         ext::shared_ptr<NonstandardSwap> swap;
         Settlement::Type settlementType;
         Settlement::Method settlementMethod;

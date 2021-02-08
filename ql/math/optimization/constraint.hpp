@@ -35,7 +35,7 @@ namespace QuantLib {
         //! Base class for constraint implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             //! Tests if params satisfy the constraint
             virtual bool test(const Array& params) const = 0;
             //! Returns upper bound for given parameters

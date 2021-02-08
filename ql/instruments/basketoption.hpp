@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         explicit BasketPayoff(const ext::shared_ptr<Payoff> &p)
         : basePayoff_(p) {}
-        ~BasketPayoff() override {}
+        ~BasketPayoff() override = default;
         std::string name() const override { return basePayoff_->name(); }
         std::string description() const override { return basePayoff_->description(); }
         Real operator()(Real price) const override { return (*basePayoff_)(price); }

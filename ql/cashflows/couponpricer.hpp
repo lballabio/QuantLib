@@ -43,7 +43,7 @@ namespace QuantLib {
     class FloatingRateCouponPricer: public virtual Observer,
                                     public virtual Observable {
       public:
-        ~FloatingRateCouponPricer() override {}
+        ~FloatingRateCouponPricer() override = default;
         //! \name required interface
         //@{
         virtual Real swapletPrice() const = 0;
@@ -164,7 +164,7 @@ namespace QuantLib {
     public:
         virtual Real meanReversion() const = 0;
         virtual void setMeanReversion(const Handle<Quote>&) = 0;
-        virtual ~MeanRevertingPricer() {}
+        virtual ~MeanRevertingPricer() = default;
     };
 
     void setCouponPricer(const Leg& leg,

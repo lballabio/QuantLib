@@ -125,7 +125,7 @@ namespace QuantLib {
     class Swaption::arguments : public VanillaSwap::arguments,
                                 public Option::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         ext::shared_ptr<VanillaSwap> swap;
         Settlement::Type settlementType = Settlement::Physical;
         Settlement::Method settlementMethod;

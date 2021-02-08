@@ -49,7 +49,7 @@ namespace QuantLib {
     */
     class GaussianOrthogonalPolynomial {
       public:
-        virtual ~GaussianOrthogonalPolynomial() {}
+        virtual ~GaussianOrthogonalPolynomial() = default;
         virtual Real mu_0()        const = 0;
         virtual Real alpha(Size i) const = 0;
         virtual Real beta(Size i)  const = 0;

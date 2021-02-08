@@ -84,7 +84,7 @@ namespace QuantLib {
     //! %Arguments for irregular-swap calculation
     class IrregularSwap::arguments : public Swap::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         Type type = Receiver;
 
 

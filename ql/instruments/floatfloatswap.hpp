@@ -151,7 +151,7 @@ namespace QuantLib {
     //! %Arguments for float float swap calculation
     class FloatFloatSwap::arguments : public Swap::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         VanillaSwap::Type type = VanillaSwap::Receiver;
         std::vector<Real> nominal1, nominal2;
 

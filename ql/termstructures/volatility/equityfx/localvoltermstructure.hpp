@@ -60,7 +60,7 @@ namespace QuantLib {
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = DayCounter());
         //@}
-        ~LocalVolTermStructure() override {}
+        ~LocalVolTermStructure() override = default;
         //! \name Local Volatility
         //@{
         Volatility localVol(const Date& d,

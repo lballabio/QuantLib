@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    CPICouponPricer::CPICouponPricer() {}
+    CPICouponPricer::CPICouponPricer() = default;
 
     CPICouponPricer::CPICouponPricer(
                        const Handle<YieldTermStructure>& nominalTermStructure)

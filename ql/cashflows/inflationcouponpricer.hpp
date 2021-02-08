@@ -53,7 +53,7 @@ namespace QuantLib {
     class InflationCouponPricer: public virtual Observer,
                                  public virtual Observable {
     public:
-      ~InflationCouponPricer() override {}
+      ~InflationCouponPricer() override = default;
       //! \name Interface
       //@{
       virtual Real swapletPrice() const = 0;

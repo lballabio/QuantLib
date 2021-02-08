@@ -170,7 +170,7 @@ namespace QuantLib {
 
     class CallableBond::arguments : public Bond::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         std::vector<Date> couponDates;
         std::vector<Real> couponAmounts;
         //! redemption = face amount * redemption / 100.

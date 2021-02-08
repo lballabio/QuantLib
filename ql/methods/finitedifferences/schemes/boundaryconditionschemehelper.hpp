@@ -58,7 +58,7 @@ namespace QuantLib {
         }
 
       private:
-        BoundaryConditionSchemeHelper() {}
+        BoundaryConditionSchemeHelper() = default;
         const OperatorTraits<FdmLinearOp>::bc_set bcSet_;
     };
 }

@@ -67,7 +67,7 @@ namespace QuantLib {
         /*! Instances built through this constructor don't perform
             any rounding.
         */
-        Rounding() {}
+        Rounding() = default;
         explicit Rounding(Integer precision,
                           Type type = Closest,
                           Integer digit = 5)
