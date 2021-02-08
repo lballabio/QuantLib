@@ -90,9 +90,9 @@ namespace QuantLib {
             std::vector<Array> initialPopulation;
             Array upperBound, lowerBound;
 
-            Configuration()
-
-            {}
+            // Clang seems to have problems if we use '= default' here.
+            // NOLINTNEXTLINE(modernize-use-equals-default)
+            Configuration() {}
 
             Configuration& withBounds(bool b = true) {
                 applyBounds = b;
