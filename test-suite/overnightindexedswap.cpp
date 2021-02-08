@@ -26,7 +26,6 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -387,11 +386,12 @@ namespace overnight_indexed_swap_test {
             Rate error = std::fabs(expected - calculated);
 
             if (error > tolerance)
-                BOOST_FAIL("curve inconsistency:" << std::setprecision(10) << "\n swap length:     "
-                                                  << term << "\n quoted rate:     " << expected
-                                                  << "\n calculated rate: " << calculated
-                                                  << "\n error:           " << error
-                                                  << "\n tolerance:       " << tolerance);
+                BOOST_FAIL("curve inconsistency:" << std::setprecision(10) << 
+                            "\n swap length:     " << term << 
+                            "\n quoted rate:     " << expected << 
+                            "\n calculated rate: " << calculated << 
+                            "\n error:           " << error << 
+                            "\n tolerance:       " << tolerance);
         }
     } // testBootstrap(telescopicValueDates)
 } // anonymous namespace
