@@ -55,8 +55,8 @@ namespace QuantLib {
             void up() { depth_--; }
         private:
             std::ostream* out_;
-            bool enabled_;
-            Integer depth_;
+            bool enabled_ = false;
+            Integer depth_ = 0;
         };
 
     }

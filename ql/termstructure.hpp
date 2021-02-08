@@ -103,8 +103,8 @@ namespace QuantLib {
         //! time-range check
         void checkRange(Time t,
                         bool extrapolate) const;
-        bool moving_;
-        mutable bool updated_;
+        bool moving_ = false;
+        mutable bool updated_ = true;
         Calendar calendar_;
       private:
         mutable Date referenceDate_;

@@ -146,8 +146,8 @@ namespace QuantLib {
         boost::optional<Period> tenor_;
         boost::optional<BusinessDayConvention> convention_;
         boost::optional<BusinessDayConvention> terminationDateConvention_;
-        DateGeneration::Rule rule_;
-        bool endOfMonth_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
+        bool endOfMonth_ = false;
         Date firstDate_, nextToLastDate_;
     };
 

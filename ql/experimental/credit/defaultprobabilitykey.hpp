@@ -45,7 +45,8 @@ namespace QuantLib {
         //! Currency of the bond and protection leg payment.
         Currency obligationCurrency_;
         //! Reference bonds seniority.
-        Seniority seniority_;
+        Seniority seniority_ = NoSeniority;
+
       public:
         DefaultProbKey();
 

@@ -255,7 +255,7 @@ namespace QuantLib {
         // final value for the minimized cost function
         Real costValue_;
         // error code returned by OptimizationMethod::minimize()
-        EndCriteria::Type errorCode_;
+        EndCriteria::Type errorCode_ = EndCriteria::None;
         // optimization method to be used, if none provided use Simplex
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
         // flat extrapolation of instantaneous forward before / after cutoff

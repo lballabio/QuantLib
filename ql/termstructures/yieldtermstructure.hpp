@@ -182,7 +182,7 @@ namespace QuantLib {
         std::vector<Handle<Quote> > jumps_;
         std::vector<Date> jumpDates_;
         std::vector<Time> jumpTimes_;
-        Size nJumps_;
+        Size nJumps_ = 0;
         Date latestReference_;
     };
 
