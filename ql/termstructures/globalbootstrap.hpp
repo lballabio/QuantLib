@@ -72,7 +72,7 @@ template <class Curve> class GlobalBootstrap {
     mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
     ext::function<std::vector<Date>()> additionalDates_;
     ext::function<Array()> additionalErrors_;
-    mutable bool initialized_, validCurve_;
+    mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_, numberHelpers_;
     mutable Size firstAdditionalHelper_, numberAdditionalHelpers_;
     mutable Size firstAdditionalDate_, numberAdditionalDates_;
@@ -82,8 +82,7 @@ template <class Curve> class GlobalBootstrap {
 // template definitions
 
 template <class Curve>
-GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy)
-: ts_(0), accuracy_(accuracy), initialized_(false), validCurve_(false) {}
+GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy) : ts_(0), accuracy_(accuracy) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
@@ -92,8 +91,7 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
     const ext::function<Array()>& additionalErrors,
     Real accuracy)
 : ts_(nullptr), accuracy_(accuracy), additionalHelpers_(additionalHelpers),
-  additionalDates_(additionalDates), additionalErrors_(additionalErrors), initialized_(false),
-  validCurve_(false) {}
+  additionalDates_(additionalDates), additionalErrors_(additionalErrors) {}
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
     ts_ = ts;

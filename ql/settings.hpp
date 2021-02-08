@@ -109,9 +109,9 @@ namespace QuantLib {
         bool enforcesTodaysHistoricFixings() const;
       private:
         DateProxy evaluationDate_;
-        bool includeReferenceDateEvents_;
+        bool includeReferenceDateEvents_ = false;
         boost::optional<bool> includeTodaysCashFlows_;
-        bool enforcesTodaysHistoricFixings_;
+        bool enforcesTodaysHistoricFixings_ = false;
     };
 
 

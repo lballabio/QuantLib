@@ -26,9 +26,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        Tracing::Tracing()
-        : out_(&std::cerr), enabled_(false), depth_(0) {}
-
+        Tracing::Tracing() : out_(&std::cerr) {}
     }
 
 }

@@ -31,7 +31,7 @@ namespace QuantLib {
     //! base class for classes possibly allowing extrapolation
     class Extrapolator {
       public:
-        Extrapolator() : extrapolate_(false) {}
+        Extrapolator() {}
         virtual ~Extrapolator() {}
         //! \name modifiers
         //@{
@@ -46,7 +46,7 @@ namespace QuantLib {
         bool allowsExtrapolation() const { return extrapolate_; }
         //@}
       private:
-        bool extrapolate_;
+        bool extrapolate_ = false;
     };
 
 }

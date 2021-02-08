@@ -43,8 +43,7 @@ namespace QuantLib {
     */
     class Period {
       public:
-        Period()
-        : length_(0), units_(Days) {}
+        Period() {}
         Period(Integer n, TimeUnit units)
         : length_(n), units_(units) {}
         explicit Period(Frequency f);
@@ -56,8 +55,8 @@ namespace QuantLib {
         Period& operator/=(Integer);
         void normalize();
       private:
-        Integer length_;
-        TimeUnit units_;
+        Integer length_ = 0;
+        TimeUnit units_ = Days;
     };
 
     /*! \relates Period */

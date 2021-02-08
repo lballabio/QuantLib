@@ -542,8 +542,7 @@ namespace QuantLib {
         return isRegular_;
     }
 
-    MakeSchedule::MakeSchedule()
-    : rule_(DateGeneration::Backward), endOfMonth_(false) {}
+    MakeSchedule::MakeSchedule() {}
 
     MakeSchedule& MakeSchedule::from(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;

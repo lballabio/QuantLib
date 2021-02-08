@@ -29,8 +29,7 @@ namespace QuantLib {
         const Time dt = 0.0001;
     }
 
-    YieldTermStructure::YieldTermStructure(const DayCounter& dc)
-    : TermStructure(dc), nJumps_(0) {}
+    YieldTermStructure::YieldTermStructure(const DayCounter& dc) : TermStructure(dc) {}
 
     YieldTermStructure::YieldTermStructure(
                                     const DayCounter& dc,

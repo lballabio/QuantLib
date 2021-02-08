@@ -123,22 +123,21 @@ namespace QuantLib {
     //! %Arguments for YoY swap calculation
     class YearOnYearInflationSwap::arguments : public Swap::arguments {
     public:
-        arguments() : type(Receiver),
-        nominal(Null<Real>()) {}
-        Type type;
-        Real nominal;
+      arguments() : nominal(Null<Real>()) {}
+      Type type = Receiver;
+      Real nominal;
 
-        std::vector<Date> fixedResetDates;
-        std::vector<Date> fixedPayDates;
-        std::vector<Time> yoyAccrualTimes;
-        std::vector<Date> yoyResetDates;
-        std::vector<Date> yoyFixingDates;
-        std::vector<Date> yoyPayDates;
+      std::vector<Date> fixedResetDates;
+      std::vector<Date> fixedPayDates;
+      std::vector<Time> yoyAccrualTimes;
+      std::vector<Date> yoyResetDates;
+      std::vector<Date> yoyFixingDates;
+      std::vector<Date> yoyPayDates;
 
-        std::vector<Real> fixedCoupons;
-        std::vector<Spread> yoySpreads;
-        std::vector<Real> yoyCoupons;
-        void validate() const override;
+      std::vector<Real> fixedCoupons;
+      std::vector<Spread> yoySpreads;
+      std::vector<Real> yoyCoupons;
+      void validate() const override;
     };
 
     //! %Results from YoY swap calculation

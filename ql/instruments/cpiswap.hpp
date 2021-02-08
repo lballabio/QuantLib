@@ -167,12 +167,11 @@ namespace QuantLib {
     //! %Arguments for swap calculation
     class CPISwap::arguments : public Swap::arguments {
     public:
-        arguments() : type(Receiver),
-        nominal(Null<Real>()) {}
-        Type type;
-        Real nominal;
+      arguments() : nominal(Null<Real>()) {}
+      Type type = Receiver;
+      Real nominal;
 
-        void validate() const override;
+      void validate() const override;
     };
 
     //! %Results from swap calculation
