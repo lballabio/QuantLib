@@ -357,23 +357,23 @@ test_suite* init_unit_test_suite(int, char*[]) {
 #else
               "QuantLib " QL_VERSION
 #endif
-              "\n  QL_EXTRA_SAFETY_CHECKS "
+              "\n  QL_EXTRA_SAFETY_CHECKS     "
 #ifdef QL_EXTRA_SAFETY_CHECKS
               "  defined"
 #else
               "undefined"
 #endif
-              "\n  QL_USE_INDEXED_COUPON "
+              "\n  QL_USE_INDEXED_COUPON      "
 #ifdef QL_USE_INDEXED_COUPON
-              "   defined"
+              "  defined"
 #else
-              " undefined"
+              "undefined"
 #endif
               "\n  QL_ENABLE_SINGLE_TEST_CASE "
 #ifdef QL_ENABLE_SINGLE_TEST_CASE
-              "   defined"
+              "  defined"
 #else
-              " undefined"
+              "undefined"
 #endif
               "\n"
            << "evaluation date is " << settings.evaluationDate() << ",\n"

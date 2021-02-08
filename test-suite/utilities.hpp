@@ -48,13 +48,13 @@
 #define QL_ENABLE_SINGLE_TEST_CASE
 
 #ifdef QL_ENABLE_SINGLE_TEST_CASE
-#    define QUANTLIB_TEST_HEADER(M)                                                             \
-        bool runCurrentTestCase =                                                               \
-            QuantLib::RunSingleTestCase::instance().runCurrentTestCase(BOOST_CURRENT_FUNCTION); \
-        std::string message((M));                                                               \
-        message += (runCurrentTestCase ? " (Running)" : " (Skipping)");                         \
-        BOOST_TEST_MESSAGE(message);                                                            \
-        if (!runCurrentTestCase)                                                                \
+#    define QUANTLIB_TEST_HEADER(M)                                                    \
+        bool shouldRun =                                                               \
+            QuantLib::RunSingleTestCase::instance().shouldRun(BOOST_CURRENT_FUNCTION); \
+        std::string message((M));                                                      \
+        message += (shouldRun ? " (Running)" : " (Skipping)");                         \
+        BOOST_TEST_MESSAGE(message);                                                   \
+        if (!shouldRun)                                                                \
             return;
 #else
 #    define QUANTLIB_TEST_HEADER(M) BOOST_TEST_MESSAGE(M);
@@ -75,7 +75,7 @@ namespace QuantLib {
         bool isSet() const { return (bool)name_; }
         void set(const std::string& testCase) { name_ = testCase; }
 
-        bool runCurrentTestCase(const std::string& boostCurrentFunction) const {
+        bool shouldRun(const std::string& boostCurrentFunction) const {
             if (!name_)
                 return true;
             else
