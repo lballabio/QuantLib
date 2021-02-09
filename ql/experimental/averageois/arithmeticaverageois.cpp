@@ -84,7 +84,7 @@ namespace QuantLib {
             .withSpreads(spread_);
 
         ext::shared_ptr<FloatingRateCouponPricer> arithmeticPricer(
-            new ArithmeticAveragedOvernightIndexedCouponPricer(mrs_, vol_, byApprox_));
+                new ArithmeticAveragedOvernightIndexedCouponPricer(mrs_, vol_, byApprox_));
 
         for (Size i = 0; i < legs_[1].size(); i++) {
             ext::shared_ptr<OvernightIndexedCoupon> 
