@@ -43,7 +43,7 @@ namespace QuantLib {
             // Anniversary Day, Monday nearest January 22nd
             || ((d >= 19 && d <= 25) && w == Monday && m == January)
             // Waitangi Day. February 6th
-            || (d == 6 && m == February)
+            || (((d == 6) || ((d == 7 || d == 8) && w == Monday)) && m == February)
             // Good Friday
             || (dd == em-3)
             // Easter Monday
