@@ -28,6 +28,7 @@
 #define quantlib_overnight_indexed_swap_hpp
 
 #include <ql/instruments/swap.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
@@ -51,7 +52,8 @@ namespace QuantLib {
                              Natural paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
-                             bool telescopicValueDates = false);
+                             bool telescopicValueDates = false,
+                             OvernightAveraging averagingMethod = OvernightAveraging::Compound);
 
         OvernightIndexedSwap(Type type,
                              const std::vector<Real>& nominals,
@@ -63,7 +65,8 @@ namespace QuantLib {
                              Natural paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
-                             bool telescopicValueDates = false);
+                             bool telescopicValueDates = false,
+                             OvernightAveraging averagingMethod = OvernightAveraging::Compound);
 
         //! \name Inspectors
         //@{
@@ -71,7 +74,6 @@ namespace QuantLib {
         Real nominal() const;
         std::vector<Real> nominals() const { return nominals_; }
 
-        //const Schedule& schedule() { return schedule_; }
         Frequency paymentFrequency() { return paymentFrequency_; }
 
         Rate fixedRate() const { return fixedRate_; }
@@ -82,6 +84,8 @@ namespace QuantLib {
 
         const Leg& fixedLeg() const { return legs_[0]; }
         const Leg& overnightLeg() const { return legs_[1]; }
+
+        OvernightAveraging averagingMethod() const { return averagingMethod_; }
         //@}
 
         //! \name Results
@@ -112,6 +116,7 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
         bool telescopicValueDates_;
+        OvernightAveraging averagingMethod_;
     };
 
 

@@ -125,7 +125,8 @@ namespace QuantLib {
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
-                    bool telescopicValueDates)
+                    bool telescopicValueDates, 
+                    OvernightAveraging averagingMethod)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex->fixingDays(), overnightIndex,
                          gearing, spread,
@@ -194,8 +195,6 @@ namespace QuantLib {
         for (Size i=0; i<n_; ++i)
             dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
 
-        OvernightAveraging averagingMethod = overnightIndex->averagingMethod();
-
         switch (averagingMethod) {
             case OvernightAveraging::Simple:
                 setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
@@ -230,7 +229,8 @@ namespace QuantLib {
     OvernightLeg::OvernightLeg(const Schedule& schedule,
                                const ext::shared_ptr<OvernightIndex>& i)
     : schedule_(schedule), overnightIndex_(i), paymentCalendar_(schedule.calendar()),
-      paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false) {}
+      paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false),
+      averagingMethod_(OvernightAveraging::Compound) {}
 
     OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1, notional);
@@ -288,6 +288,11 @@ namespace QuantLib {
         return *this;
     }
 
+    OvernightLeg& OvernightLeg::withAveragingMethod(OvernightAveraging averagingMethod) {
+        averagingMethod_ = averagingMethod;
+        return *this;
+    }
+
     OvernightLeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
@@ -323,7 +328,8 @@ namespace QuantLib {
                                        detail::get(spreads_, i, 0.0),
                                        refStart, refEnd,
                                        paymentDayCounter_,
-                                       telescopicValueDates_)));
+                                       telescopicValueDates_, 
+                                       averagingMethod_)));
         }
         return cashflows;
     }

@@ -78,10 +78,9 @@ namespace QuantLib {
                                    const Currency& curr,
                                    const Calendar& fixCal,
                                    const DayCounter& dc,
-                                   const Handle<YieldTermStructure>& h,
-                                   OvernightAveraging averagingMethod)
-    : IborIndex(familyName, 1 * Days, settlementDays, curr, fixCal, Following, false, dc, h),
-      averagingMethod_(averagingMethod) {}
+                                   const Handle<YieldTermStructure>& h)
+   : IborIndex(familyName, 1*Days, settlementDays, curr,
+               fixCal, Following, false, dc, h) {}
 
     ext::shared_ptr<IborIndex> OvernightIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
@@ -91,8 +90,7 @@ namespace QuantLib {
                                                            currency(),
                                                            fixingCalendar(),
                                                            dayCounter(),
-                                                           h, 
-                                                           averagingMethod()));
+                                                           h));
     }
 
 }

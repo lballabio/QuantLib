@@ -39,7 +39,8 @@ namespace QuantLib {
                     const Period& forwardStart, 
                     const Spread overnightSpread,
                     Pillar::Choice pillar,
-                    Date customPillarDate)
+                    Date customPillarDate,
+                    OvernightAveraging averagingMethod)
     : RelativeDateRateHelper(fixedRate),
       pillarChoice_(pillar),
       settlementDays_(settlementDays), tenor_(tenor),
@@ -48,7 +49,8 @@ namespace QuantLib {
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
       paymentFrequency_(paymentFrequency),
       paymentCalendar_(paymentCalendar),
-      forwardStart_(forwardStart), overnightSpread_(overnightSpread) {
+      forwardStart_(forwardStart), overnightSpread_(overnightSpread), 
+      averagingMethod_(averagingMethod) {
         registerWith(overnightIndex_);
         registerWith(discountHandle_);
 
@@ -75,7 +77,8 @@ namespace QuantLib {
             .withPaymentAdjustment(paymentConvention_)
             .withPaymentFrequency(paymentFrequency_)
             .withPaymentCalendar(paymentCalendar_)
-            .withOvernightLegSpread(overnightSpread_);
+            .withOvernightLegSpread(overnightSpread_)
+            .withAveragingMethod(averagingMethod_);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
@@ -147,9 +150,11 @@ namespace QuantLib {
                     const Handle<Quote>& fixedRate,
                     const ext::shared_ptr<OvernightIndex>& overnightIndex,
                     const Handle<YieldTermStructure>& discount,
-                    bool telescopicValueDates)
+                    bool telescopicValueDates,
+                    OvernightAveraging averagingMethod)
         : RateHelper(fixedRate), discountHandle_(discount),
-          telescopicValueDates_(telescopicValueDates) {
+          telescopicValueDates_(telescopicValueDates), 
+          averagingMethod_(averagingMethod) {
 
         registerWith(overnightIndex);
         registerWith(discountHandle_);
@@ -167,7 +172,8 @@ namespace QuantLib {
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withEffectiveDate(startDate)
             .withTerminationDate(endDate)
-            .withTelescopicValueDates(telescopicValueDates_);
+            .withTelescopicValueDates(telescopicValueDates_)
+            .withAveragingMethod(averagingMethod_);
 
         earliestDate_ = swap_->startDate();
         Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),

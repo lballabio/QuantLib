@@ -37,10 +37,14 @@ namespace QuantLib {
                                          : public FloatingRateCouponPricer {
     public:
         ArithmeticAveragedOvernightIndexedCouponPricer(
-            bool byApprox = false, // TRUE to use Katsumi Takada approximation
             Real meanReversion = 0.03,
-            Real volatility = 0.00) // NO convexity adjustment by default
+            Real volatility = 0.00, // NO convexity adjustment by default
+            bool byApprox = false) // TRUE to use Katsumi Takada approximation
         : byApprox_(byApprox), mrs_(meanReversion), vol_(volatility) {}
+
+        ArithmeticAveragedOvernightIndexedCouponPricer(
+            bool byApprox = false)  // Simplified constructor assuming no convexity correction
+        : ArithmeticAveragedOvernightIndexedCouponPricer(0.03, 0.0, byApprox) {}
 
         void initialize(const FloatingRateCoupon& coupon) override;
         Rate swapletRate() const override;

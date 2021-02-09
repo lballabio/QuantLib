@@ -44,6 +44,9 @@ namespace QuantLib {
         rather by the OISRateHelper which is safe, since it reinitialises the
         instrument each time the evaluation date changes.
     */
+
+    enum class OvernightAveraging { Simple, Compound };
+
     class OvernightIndexedCoupon : public FloatingRateCoupon {
       public:
         OvernightIndexedCoupon(
@@ -57,7 +60,8 @@ namespace QuantLib {
                     const Date& refPeriodStart = Date(),
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
-                    bool telescopicValueDates = false);
+                    bool telescopicValueDates = false,
+                    OvernightAveraging averagingMethod = OvernightAveraging::Compound);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -102,6 +106,7 @@ namespace QuantLib {
         OvernightLeg& withSpreads(Spread spread);
         OvernightLeg& withSpreads(const std::vector<Spread>& spreads);
         OvernightLeg& withTelescopicValueDates(bool telescopicValueDates);
+        OvernightLeg& withAveragingMethod(OvernightAveraging averagingMethod);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -114,6 +119,7 @@ namespace QuantLib {
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         bool telescopicValueDates_;
+        OvernightAveraging averagingMethod_;
     };
 
 }
