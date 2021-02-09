@@ -375,7 +375,7 @@ namespace QuantLib {
     template <>
     class Null<Date> {
       public:
-        Null() {}
+        Null() = default;
         operator Date() const { return Date(); }
     };
 

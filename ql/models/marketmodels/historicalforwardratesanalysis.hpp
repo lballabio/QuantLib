@@ -194,7 +194,7 @@ namespace QuantLib {
 
     class HistoricalForwardRatesAnalysis {
       public:
-        virtual ~HistoricalForwardRatesAnalysis() {}
+        virtual ~HistoricalForwardRatesAnalysis() = default;
         virtual const std::vector<Date>& skippedDates() const = 0;
         virtual const std::vector<std::string>& skippedDatesErrorMessage() const = 0;
         virtual const std::vector<Date>& failedDates() const = 0;
@@ -218,7 +218,8 @@ namespace QuantLib {
                 const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy);
-        HistoricalForwardRatesAnalysisImpl(){};
+        HistoricalForwardRatesAnalysisImpl() = default;
+        ;
         const std::vector<Date>& skippedDates() const override;
         const std::vector<std::string>& skippedDatesErrorMessage() const override;
         const std::vector<Date>& failedDates() const override;

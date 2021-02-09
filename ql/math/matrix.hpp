@@ -144,7 +144,7 @@ namespace QuantLib {
         //@}
       private:
         boost::scoped_array<Real> data_;
-        Size rows_, columns_;
+        Size rows_ = 0, columns_ = 0;
     };
 
     // algebraic operators
@@ -197,7 +197,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Matrix::Matrix() : data_((Real*)nullptr), rows_(0), columns_(0) {}
+    inline Matrix::Matrix() : data_((Real*)nullptr) {}
 
     inline Matrix::Matrix(Size rows, Size columns)
     : data_(rows * columns > 0 ? new Real[rows * columns] : (Real*)nullptr), rows_(rows),

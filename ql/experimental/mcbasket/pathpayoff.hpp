@@ -35,7 +35,7 @@ namespace QuantLib {
     //! Abstract base class for path-dependent option payoffs
     class PathPayoff {
       public:
-        virtual ~PathPayoff() {}
+        virtual ~PathPayoff() = default;
         //! \name Payoff interface
         //@{
         /*! \warning This method is used for output and comparison between

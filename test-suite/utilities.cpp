@@ -124,7 +124,7 @@ namespace QuantLib {
     }
 
 
-    IndexHistoryCleaner::IndexHistoryCleaner() {}
+    IndexHistoryCleaner::IndexHistoryCleaner() = default;
 
     IndexHistoryCleaner::~IndexHistoryCleaner() {
         IndexManager::instance().clearHistories();

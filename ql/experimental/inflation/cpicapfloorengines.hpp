@@ -47,7 +47,7 @@ namespace QuantLib {
         void calculate() const override;
         virtual std::string name() const { return "InterpolatingCPICapFloorEngine"; }
 
-        ~InterpolatingCPICapFloorEngine() override {}
+        ~InterpolatingCPICapFloorEngine() override = default;
 
       protected:
         Handle<CPICapFloorTermPriceSurface> priceSurf_;

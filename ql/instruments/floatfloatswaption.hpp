@@ -80,7 +80,7 @@ namespace QuantLib {
     class FloatFloatSwaption::arguments : public FloatFloatSwap::arguments,
                                           public Option::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         ext::shared_ptr<FloatFloatSwap> swap;
         Settlement::Type settlementType;
         Settlement::Method settlementMethod;

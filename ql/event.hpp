@@ -39,7 +39,7 @@ namespace QuantLib {
     */
     class Event : public Observable {
       public:
-        ~Event() override {}
+        ~Event() override = default;
         //! \name Event interface
         //@{
         //! returns the date at which the event occurs

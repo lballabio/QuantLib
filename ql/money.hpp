@@ -79,7 +79,7 @@ namespace QuantLib {
         static Currency baseCurrency;
         //@}
       private:
-        Decimal value_;
+        Decimal value_ = 0.0;
         Currency currency_;
     };
 
@@ -132,8 +132,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Money::Money()
-    : value_(0.0) {}
+    inline Money::Money() = default;
 
     inline Money::Money(const Currency& currency, Decimal value)
     : value_(value), currency_(currency) {}

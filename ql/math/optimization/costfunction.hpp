@@ -34,7 +34,7 @@ namespace QuantLib {
     //!  Cost function abstract class for optimization problem
     class CostFunction {
       public:
-        virtual ~CostFunction() {}
+        virtual ~CostFunction() = default;
         //! method to overload to compute the cost function value in x
         virtual Real value(const Array& x) const {
             Array v = values(x);
@@ -99,7 +99,7 @@ namespace QuantLib {
 
     class ParametersTransformation {
       public:
-        virtual ~ParametersTransformation() {}
+        virtual ~ParametersTransformation() = default;
         virtual Array direct(const Array& x) const = 0;
         virtual Array inverse(const Array& x) const = 0;
     };

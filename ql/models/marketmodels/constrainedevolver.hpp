@@ -38,7 +38,7 @@ namespace QuantLib {
     */
     class ConstrainedEvolver : public MarketModelEvolver {
       public:
-        ~ConstrainedEvolver() override {}
+        ~ConstrainedEvolver() override = default;
         //! call once
         virtual void setConstraintType(
             const std::vector<Size>& startIndexOfSwapRate,

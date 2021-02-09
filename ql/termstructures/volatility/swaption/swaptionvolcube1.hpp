@@ -56,7 +56,7 @@ namespace QuantLib {
     class SwaptionVolCube1x : public SwaptionVolatilityCube {
         class Cube {
           public:
-            Cube() {}
+            Cube() = default;
             Cube(const std::vector<Date>& optionDates,
                  const std::vector<Period>& swapTenors,
                  const std::vector<Time>& optionTimes,
@@ -66,7 +66,7 @@ namespace QuantLib {
                  bool backwardFlat = false);
             Cube& operator=(const Cube& o);
             Cube(const Cube&);
-            virtual ~Cube() {}
+            virtual ~Cube() = default;
             void setElement(Size IndexOfLayer,
                             Size IndexOfRow,
                             Size IndexOfColumn,

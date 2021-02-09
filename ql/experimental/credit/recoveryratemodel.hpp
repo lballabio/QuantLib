@@ -44,7 +44,7 @@ namespace QuantLib {
             the requested seniority.
         */
         virtual bool appliesToSeniority(Seniority) const = 0;
-        ~RecoveryRateModel() override {}
+        ~RecoveryRateModel() override = default;
 
       protected:
         /*! Returns Null<Real> if unable to produce a recovery for

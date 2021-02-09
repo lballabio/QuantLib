@@ -39,8 +39,8 @@ namespace QuantLib {
     class CuriouslyRecurringTemplate {
       protected:
         // not meant to be instantiated as such
-        CuriouslyRecurringTemplate() {}
-        ~CuriouslyRecurringTemplate() {}
+        CuriouslyRecurringTemplate() = default;
+        ~CuriouslyRecurringTemplate() = default;
         // support for the curiously recurring template pattern
         Impl& impl() {
             return static_cast<Impl&>(*this);

@@ -82,7 +82,7 @@ namespace QuantLib {
       private:
         CommodityType commodityType_;
         UnitOfMeasure unitOfMeasure_;
-        Real amount_;
+        Real amount_ = 0.0;
     };
 
 
@@ -122,8 +122,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Quantity::Quantity()
-    : amount_(0.0) {}
+    inline Quantity::Quantity() = default;
 
     inline Quantity::Quantity(const CommodityType& commodityType,
                               const UnitOfMeasure& unitOfMeasure,

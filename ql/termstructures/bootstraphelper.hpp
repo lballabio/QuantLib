@@ -63,7 +63,7 @@ namespace QuantLib {
       public:
         explicit BootstrapHelper(const Handle<Quote>& quote);
         explicit BootstrapHelper(Real quote);
-        ~BootstrapHelper() override {}
+        ~BootstrapHelper() override = default;
         //! \name BootstrapHelper interface
         //@{
         const Handle<Quote>& quote() const { return quote_; }

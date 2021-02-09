@@ -62,7 +62,7 @@ namespace QuantLib {
                               BusinessDayConvention bdc = Following,
                               const DayCounter& dc = DayCounter());
         //@}
-        ~BlackVolTermStructure() override {}
+        ~BlackVolTermStructure() override = default;
         //! \name Black Volatility
         //@{
         //! spot volatility

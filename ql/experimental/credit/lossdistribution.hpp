@@ -36,35 +36,34 @@ namespace QuantLib {
     */ 
     class LossDist {
     public:
-        LossDist() {}
-        virtual ~LossDist() {}
+      LossDist() = default;
+      virtual ~LossDist() = default;
 
-        virtual Distribution operator()(const std::vector<Real>& volumes, 
-                             const std::vector<Real>& probabilities) const = 0;
-        virtual Size buckets () const = 0;
-        virtual Real maximum () const = 0;
+      virtual Distribution operator()(const std::vector<Real>& volumes,
+                                      const std::vector<Real>& probabilities) const = 0;
+      virtual Size buckets() const = 0;
+      virtual Real maximum() const = 0;
 
-        /*! Binomial probability of n defaults using prob[0]
-         */ 
-        static Real binomialProbabilityOfNEvents(int n, std::vector<Real>& p);
-  
-        /*! Binomial probability of at least n defaults using prob[0]
-         */ 
-        static Real binomialProbabilityOfAtLeastNEvents(int n, 
-                                                        std::vector<Real>& p);
-        /*! Probability of exactly n default events
-          Xiaofong Ma, "Numerical Methods for the Valuation of Synthetic
-          Collateralized Debt Obligations", PhD Thesis, 
-          Graduate Department of Computer Science, University of Toronto, 2007  
-          http://www.cs.toronto.edu/pub/reports/na/ma-07-phd.pdf (formula 2.1)
-        */
-        static std::vector<Real> probabilityOfNEvents(std::vector<Real>& p);
+      /*! Binomial probability of n defaults using prob[0]
+       */
+      static Real binomialProbabilityOfNEvents(int n, std::vector<Real>& p);
 
-        static Real probabilityOfNEvents(int n, std::vector<Real>& p);
-  
-        /*! Probability of at least n defaults
-         */ 
-        static Real probabilityOfAtLeastNEvents(int n, std::vector<Real>& p);
+      /*! Binomial probability of at least n defaults using prob[0]
+       */
+      static Real binomialProbabilityOfAtLeastNEvents(int n, std::vector<Real>& p);
+      /*! Probability of exactly n default events
+        Xiaofong Ma, "Numerical Methods for the Valuation of Synthetic
+        Collateralized Debt Obligations", PhD Thesis,
+        Graduate Department of Computer Science, University of Toronto, 2007
+        http://www.cs.toronto.edu/pub/reports/na/ma-07-phd.pdf (formula 2.1)
+      */
+      static std::vector<Real> probabilityOfNEvents(std::vector<Real>& p);
+
+      static Real probabilityOfNEvents(int n, std::vector<Real>& p);
+
+      /*! Probability of at least n defaults
+       */
+      static Real probabilityOfAtLeastNEvents(int n, std::vector<Real>& p);
     }; 
 
     //! Probability of N events 

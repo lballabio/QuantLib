@@ -145,7 +145,7 @@ namespace QuantLib {
         mutable std::vector<Real> polyConvolved_;
 
         // cached factor in the exponential of the characteristic function
-        mutable Real a_, a2_;
+        mutable Real a_ = 0., a2_;
     };
 
 

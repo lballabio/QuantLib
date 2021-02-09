@@ -25,7 +25,7 @@ namespace QuantLib {
 
     // base class
 
-    StochasticProcess::StochasticProcess() {}
+    StochasticProcess::StochasticProcess() = default;
 
     StochasticProcess::StochasticProcess(
                                 const ext::shared_ptr<discretization>& disc)
@@ -75,7 +75,7 @@ namespace QuantLib {
 
     // 1-D specialization
 
-    StochasticProcess1D::StochasticProcess1D() {}
+    StochasticProcess1D::StochasticProcess1D() = default;
 
     StochasticProcess1D::StochasticProcess1D(
                                 const ext::shared_ptr<discretization>& disc)

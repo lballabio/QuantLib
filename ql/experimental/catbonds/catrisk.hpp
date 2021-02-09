@@ -53,7 +53,7 @@ namespace QuantLib {
         : start_(start), end_(end) 
         {}
 
-        virtual ~CatSimulation(){}
+        virtual ~CatSimulation() = default;
         virtual bool nextPath(std::vector<std::pair<Date, Real> > &path) = 0;
       protected:
         Date start_;
@@ -62,7 +62,7 @@ namespace QuantLib {
 
     class CatRisk {
       public:
-        virtual ~CatRisk() {}
+        virtual ~CatRisk() = default;
         virtual ext::shared_ptr<CatSimulation> newSimulation(const Date& start, const Date& end) const = 0;
     };
 

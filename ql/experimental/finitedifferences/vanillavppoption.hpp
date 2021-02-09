@@ -55,7 +55,7 @@ namespace QuantLib {
     class VanillaVPPOption::arguments
         : public virtual MultiAssetOption::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         void validate() const override;
 
         Real heatRate;

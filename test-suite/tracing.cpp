@@ -30,7 +30,7 @@ namespace {
 
     class TestCaseCleaner {
       public:
-        TestCaseCleaner() {}
+        TestCaseCleaner() = default;
         ~TestCaseCleaner() {
             QL_TRACE_ON(std::cerr);
         }

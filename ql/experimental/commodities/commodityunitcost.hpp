@@ -31,7 +31,7 @@ namespace QuantLib {
 
     class CommodityUnitCost {
       public:
-        CommodityUnitCost() {}
+        CommodityUnitCost() = default;
         CommodityUnitCost(const Money& amount,
                           const UnitOfMeasure& unitOfMeasure) :
         amount_(amount), unitOfMeasure_(unitOfMeasure) {}

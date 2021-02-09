@@ -74,7 +74,7 @@ namespace QuantLib {
                       const Calendar&,
                       const DayCounter& dc = DayCounter());
         //@}
-        ~TermStructure() override {}
+        ~TermStructure() override = default;
         //! \name Dates and Time
         //@{
         //! the day counter used for date/time conversion
@@ -103,8 +103,8 @@ namespace QuantLib {
         //! time-range check
         void checkRange(Time t,
                         bool extrapolate) const;
-        bool moving_;
-        mutable bool updated_;
+        bool moving_ = false;
+        mutable bool updated_ = true;
         Calendar calendar_;
       private:
         mutable Date referenceDate_;

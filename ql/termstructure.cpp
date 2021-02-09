@@ -23,17 +23,12 @@
 namespace QuantLib {
 
     TermStructure::TermStructure(const DayCounter& dc)
-    : moving_(false),
-      updated_(true),
-      settlementDays_(Null<Natural>()),
-      dayCounter_(dc) {}
+    : settlementDays_(Null<Natural>()), dayCounter_(dc) {}
 
     TermStructure::TermStructure(const Date& referenceDate,
                                  const Calendar& cal,
                                  const DayCounter& dc)
-    : moving_(false), updated_(true), calendar_(cal),
-      referenceDate_(referenceDate),
-      settlementDays_(Null<Natural>()),
+    : calendar_(cal), referenceDate_(referenceDate), settlementDays_(Null<Natural>()),
       dayCounter_(dc) {}
 
     TermStructure::TermStructure(Natural settlementDays,

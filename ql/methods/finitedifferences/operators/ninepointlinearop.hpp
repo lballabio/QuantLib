@@ -60,7 +60,7 @@ namespace QuantLib {
 #endif
 
       protected:
-        NinePointLinearOp() {}
+        NinePointLinearOp() = default;
 
         Size d0_, d1_;
         boost::shared_array<Size> i00_, i10_, i20_;

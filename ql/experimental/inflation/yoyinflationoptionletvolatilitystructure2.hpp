@@ -62,7 +62,7 @@ namespace QuantLib {
                                                             Interpolator1D());
         //@}
 
-        ~InterpolatedYoYOptionletVolatilityCurve() override {}
+        ~InterpolatedYoYOptionletVolatilityCurve() override = default;
 
         //! \name Limits
         //@{

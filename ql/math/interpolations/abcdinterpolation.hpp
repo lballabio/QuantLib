@@ -70,7 +70,7 @@ namespace QuantLib {
 
                 AbcdMathFunction::validate(a, b, c, d);
             }
-            virtual ~AbcdCoeffHolder() {}
+            virtual ~AbcdCoeffHolder() = default;
             Real a_, b_, c_, d_;
             bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
             std::vector<Real> k_;

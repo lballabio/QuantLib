@@ -36,7 +36,7 @@ namespace QuantLib {
         //! Get and store one vector of coefficients after another.
         static const std::vector<BigNatural>& get(Size order);
       private:
-        PascalTriangle() {}
+        PascalTriangle() = default;
         static void nextOrder();
         static std::vector<std::vector<BigNatural> > coefficients_;
     };

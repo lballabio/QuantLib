@@ -60,8 +60,8 @@ namespace QuantLib {
 
       private:
         ObservableSettings()
-        : updatesEnabled_(true),
-          updatesDeferred_(false) {}
+
+            = default;
 
         void registerDeferredObservers(
             const boost::unordered_set<Observer*>& observers);
@@ -71,7 +71,7 @@ namespace QuantLib {
         typedef set_type::iterator iterator;
         set_type deferredObservers_;
 
-        bool updatesEnabled_,  updatesDeferred_;
+        bool updatesEnabled_ = true, updatesDeferred_ = false;
     };
 
     //! Object that notifies its changes to a set of observers
@@ -83,7 +83,7 @@ namespace QuantLib {
         Observable() : settings_(ObservableSettings::instance()) {}
         Observable(const Observable&);
         Observable& operator=(const Observable&);
-        virtual ~Observable() {}
+        virtual ~Observable() = default;
         /*! This method should be called at the end of non-const methods
             or when the programmer desires to notify any changes.
         */
@@ -104,7 +104,7 @@ namespace QuantLib {
         typedef set_type::iterator iterator;
 
         // constructors, assignment, destructor
-        Observer() {}
+        Observer() = default;
         Observer(const Observer&);
         Observer& operator=(const Observer&);
         virtual ~Observer();

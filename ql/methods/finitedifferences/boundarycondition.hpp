@@ -40,7 +40,7 @@ namespace QuantLib {
         //! \todo Generalize for n-dimensional conditions
         enum Side { None, Upper, Lower };
         // destructor
-        virtual ~BoundaryCondition() {}
+        virtual ~BoundaryCondition() = default;
         // interface
         /*! This method modifies an operator \f$ L \f$ before it is
             applied to an array \f$ u \f$ so that \f$ v = Lu \f$ will

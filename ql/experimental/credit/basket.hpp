@@ -52,7 +52,7 @@ namespace QuantLib {
      */
     class Basket : public LazyObject {
       public:
-        Basket() {}
+        Basket() = default;
         /*! Constructs a basket of simple collection of constant notional 
           positions subject to default risk only.
           

@@ -119,7 +119,7 @@ namespace QuantLib {
         //! encapsulation of time-setting logic
         class TimeSetter {
           public:
-            virtual ~TimeSetter() {}
+            virtual ~TimeSetter() = default;
             virtual void setTime(Time t,
                                  TridiagonalOperator& L) const = 0;
         };

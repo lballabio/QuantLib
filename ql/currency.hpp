@@ -112,7 +112,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Currency::Currency() {}
+    inline Currency::Currency() = default;
 
     inline void Currency::checkNonEmpty() const {
         QL_REQUIRE(data_, "no currency data provided");

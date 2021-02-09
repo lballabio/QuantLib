@@ -32,7 +32,7 @@ namespace QuantLib {
 
     class PiecewiseConstantVariance {
       public:
-        virtual ~PiecewiseConstantVariance() {}
+        virtual ~PiecewiseConstantVariance() = default;
         virtual const std::vector<Real>& variances() const = 0;
         virtual const std::vector<Volatility>& volatilities() const = 0;
         virtual const std::vector<Time>& rateTimes() const = 0;

@@ -63,7 +63,7 @@ namespace QuantLib {
                  bool endOfMonth,
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
-        Schedule() {}
+        Schedule() = default;
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }
@@ -146,8 +146,8 @@ namespace QuantLib {
         boost::optional<Period> tenor_;
         boost::optional<BusinessDayConvention> convention_;
         boost::optional<BusinessDayConvention> terminationDateConvention_;
-        DateGeneration::Rule rule_;
-        bool endOfMonth_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
+        bool endOfMonth_ = false;
         Date firstDate_, nextToLastDate_;
     };
 

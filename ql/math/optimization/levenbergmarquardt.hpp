@@ -72,7 +72,7 @@ namespace QuantLib {
         Problem* currentProblem_;
         Array initCostValues_;
         Matrix initJacobian_;
-        mutable Integer info_;
+        mutable Integer info_ = 0;
         const Real epsfcn_, xtol_, gtol_;
         bool useCostFunctionsJacobian_;
     };

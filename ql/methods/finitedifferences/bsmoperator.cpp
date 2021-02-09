@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    BSMOperator::BSMOperator() {}
+    BSMOperator::BSMOperator() = default;
 
     BSMOperator::BSMOperator(Size size, Real dx, Rate r,
                              Rate q, Volatility sigma)

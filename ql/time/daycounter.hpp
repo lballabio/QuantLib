@@ -45,7 +45,7 @@ namespace QuantLib {
         //! abstract base class for day counter implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual std::string name() const = 0;
             //! to be overloaded by more complex day counters
             virtual Date::serial_type dayCount(const Date& d1,
@@ -68,7 +68,7 @@ namespace QuantLib {
             implementation, which is therefore unusable except as a
             placeholder.
         */
-        DayCounter() {}
+        DayCounter() = default;
         //! \name DayCounter interface
         //@{
         //!  Returns whether or not the day counter is initialized

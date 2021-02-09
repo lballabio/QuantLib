@@ -27,6 +27,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
 
 namespace QuantLib {
+
     class BoundaryConditionSchemeHelper {
       public:
         typedef OperatorTraits<FdmLinearOp>::array_type array_type;
@@ -58,9 +59,10 @@ namespace QuantLib {
         }
 
       private:
-        BoundaryConditionSchemeHelper() {}
-        const OperatorTraits<FdmLinearOp>::bc_set bcSet_;
+        BoundaryConditionSchemeHelper() = default;
+        OperatorTraits<FdmLinearOp>::bc_set bcSet_;
     };
+
 }
 
 #endif

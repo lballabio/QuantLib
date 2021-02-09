@@ -163,7 +163,7 @@ namespace QuantLib {
 
         class SectionHelper {
           public:
-            virtual ~SectionHelper() {}
+            virtual ~SectionHelper() = default;
             virtual Real value(Real x) const = 0;
             virtual Real primitive(Real x) const = 0;
             virtual Real fNext() const = 0;

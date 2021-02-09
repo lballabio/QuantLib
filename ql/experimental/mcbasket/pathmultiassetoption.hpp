@@ -59,7 +59,7 @@ namespace QuantLib {
     class PathMultiAssetOption::arguments
         : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         void validate() const override;
 
         ext::shared_ptr<PathPayoff>        payoff;
