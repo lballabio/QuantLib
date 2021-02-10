@@ -84,7 +84,7 @@ namespace QuantLib {
     };
 
     template <class LDS, class PRS>
-    RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg, const PRS& prsg)
+    RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg, PRS prsg)
     : ldsg_(ldsg), pristineldsg_(ldsg), prsg_(std::move(prsg)), dimension_(ldsg_.dimension()),
       x(std::vector<Real>(dimension_), 1.0), randomizer_(std::vector<Real>(dimension_), 1.0) {
 

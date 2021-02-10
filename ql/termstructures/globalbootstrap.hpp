@@ -87,7 +87,7 @@ GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy) : ts_(0), accuracy_(accur
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    const std::vector<ext::shared_ptr<typename Traits::helper> >& additionalHelpers,
+    std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
     ext::function<std::vector<Date>()> additionalDates,
     ext::function<Array()> additionalErrors,
     Real accuracy)
