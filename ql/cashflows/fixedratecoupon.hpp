@@ -53,7 +53,7 @@ namespace QuantLib {
                         const Date& exCouponDate = Date());
         FixedRateCoupon(const Date& paymentDate,
                         Real nominal,
-                        const InterestRate& interestRate,
+                        InterestRate interestRate,
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),

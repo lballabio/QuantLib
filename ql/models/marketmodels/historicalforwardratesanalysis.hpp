@@ -27,15 +27,16 @@
 #ifndef quantlib_historical_forward_rates_analysis_hpp
 #define quantlib_historical_forward_rates_analysis_hpp
 
-#include <ql/math/matrix.hpp>
-#include <ql/time/calendar.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/time/calendar.hpp>
 #include <ql/time/date.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -207,17 +208,17 @@ namespace QuantLib {
     class HistoricalForwardRatesAnalysisImpl : public HistoricalForwardRatesAnalysis {
       public:
         HistoricalForwardRatesAnalysisImpl(
-                const ext::shared_ptr<SequenceStatistics>& stats,
-                const Date& startDate,
-                const Date& endDate,
-                const Period& step,
-                const ext::shared_ptr<InterestRateIndex>& fwdIndex,
-                const Period& initialGap,
-                const Period& horizon,
-                const std::vector<ext::shared_ptr<IborIndex> >& iborIndexes,
-                const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
-                const DayCounter& yieldCurveDayCounter,
-                Real yieldCurveAccuracy);
+            ext::shared_ptr<SequenceStatistics> stats,
+            const Date& startDate,
+            const Date& endDate,
+            const Period& step,
+            const ext::shared_ptr<InterestRateIndex>& fwdIndex,
+            const Period& initialGap,
+            const Period& horizon,
+            const std::vector<ext::shared_ptr<IborIndex> >& iborIndexes,
+            const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
+            const DayCounter& yieldCurveDayCounter,
+            Real yieldCurveAccuracy);
         HistoricalForwardRatesAnalysisImpl() = default;
         ;
         const std::vector<Date>& skippedDates() const override;
@@ -271,20 +272,20 @@ namespace QuantLib {
     //HistoricalForwardRatesAnalysis::stats() const {
     //    return stats_;
     //}
-    template<class Traits, class Interpolator>
+    template <class Traits, class Interpolator>
     HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::HistoricalForwardRatesAnalysisImpl(
-                const ext::shared_ptr<SequenceStatistics>& stats,
-                const Date& startDate,
-                const Date& endDate,
-                const Period& step,
-                const ext::shared_ptr<InterestRateIndex>& fwdIndex,
-                const Period& initialGap,
-                const Period& horizon,
-                const std::vector<ext::shared_ptr<IborIndex> >& iborIndexes,
-                const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
-                const DayCounter& yieldCurveDayCounter,
-                Real yieldCurveAccuracy)
-    : stats_(stats) {
+        ext::shared_ptr<SequenceStatistics> stats,
+        const Date& startDate,
+        const Date& endDate,
+        const Period& step,
+        const ext::shared_ptr<InterestRateIndex>& fwdIndex,
+        const Period& initialGap,
+        const Period& horizon,
+        const std::vector<ext::shared_ptr<IborIndex> >& iborIndexes,
+        const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
+        const DayCounter& yieldCurveDayCounter,
+        Real yieldCurveAccuracy)
+    : stats_(std::move(stats)) {
         historicalForwardRatesAnalysis<Traits,
                                        Interpolator>(
                     *stats_,
@@ -294,7 +295,7 @@ namespace QuantLib {
                     fwdIndex, initialGap, horizon,
                     iborIndexes, swapIndexes,
                     yieldCurveDayCounter, yieldCurveAccuracy);
-      }
+    }
 }
 
 #endif

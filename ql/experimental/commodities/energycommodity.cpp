@@ -17,11 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/commodities/energycommodity.hpp>
-#include <ql/experimental/commodities/commoditysettings.hpp>
-#include <ql/experimental/commodities/unitofmeasureconversionmanager.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
+#include <ql/experimental/commodities/commoditysettings.hpp>
+#include <ql/experimental/commodities/energycommodity.hpp>
+#include <ql/experimental/commodities/unitofmeasureconversionmanager.hpp>
 #include <iomanip>
+#include <utility>
 
 namespace QuantLib {
 
@@ -81,10 +82,9 @@ namespace QuantLib {
         QL_REQUIRE(results != nullptr, "wrong result type");
     }
 
-    EnergyCommodity::EnergyCommodity(
-                      const CommodityType& commodityType,
-                      const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
-    : Commodity(secondaryCosts), commodityType_(commodityType) {}
+    EnergyCommodity::EnergyCommodity(CommodityType commodityType,
+                                     const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
+    : Commodity(secondaryCosts), commodityType_(std::move(commodityType)) {}
 
     const CommodityType& EnergyCommodity::commodityType() const {
         return commodityType_;

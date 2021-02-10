@@ -20,21 +20,11 @@
 
 #include "riskneutraldensitycalculator.hpp"
 #include "utilities.hpp"
-
-#include <ql/timegrid.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/processes/hestonprocess.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/functional.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
-#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
@@ -42,8 +32,18 @@
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/timegrid.hpp>
 #include <ql/types.hpp>
-#include <ql/functional.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -220,15 +220,17 @@ namespace {
     // http://www.researchgate.net/publication/46493859_Implied_volatility_in_oil_markets
     class DumasParametricVolSurface : public BlackVolatilityTermStructure {
       public:
-        DumasParametricVolSurface(
-            Real b1, Real b2, Real b3, Real b4, Real b5,
-            const ext::shared_ptr<Quote>& spot,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            const ext::shared_ptr<YieldTermStructure>& qTS)
-        : BlackVolatilityTermStructure(
-              0, NullCalendar(), Following, rTS->dayCounter()),
-          b1_(b1), b2_(b2), b3_(b3), b4_(b4), b5_(b5),
-          spot_(spot), rTS_(rTS), qTS_(qTS) {}
+        DumasParametricVolSurface(Real b1,
+                                  Real b2,
+                                  Real b3,
+                                  Real b4,
+                                  Real b5,
+                                  ext::shared_ptr<Quote> spot,
+                                  const ext::shared_ptr<YieldTermStructure>& rTS,
+                                  ext::shared_ptr<YieldTermStructure> qTS)
+        : BlackVolatilityTermStructure(0, NullCalendar(), Following, rTS->dayCounter()), b1_(b1),
+          b2_(b2), b3_(b3), b4_(b4), b5_(b5), spot_(std::move(spot)), rTS_(rTS),
+          qTS_(std::move(qTS)) {}
 
         Date maxDate() const override { return Date::maxDate(); }
         Rate minStrike() const override { return 0.0; }
@@ -256,11 +258,10 @@ namespace {
 
     class ProbWeightedPayoff {
       public:
-        ProbWeightedPayoff(
-            Time t,
-            const ext::shared_ptr<Payoff>& payoff,
-            const ext::shared_ptr<RiskNeutralDensityCalculator>& calc)
-      : t_(t), payoff_(payoff), calc_(calc) {}
+        ProbWeightedPayoff(Time t,
+                           ext::shared_ptr<Payoff> payoff,
+                           ext::shared_ptr<RiskNeutralDensityCalculator> calc)
+        : t_(t), payoff_(std::move(payoff)), calc_(std::move(calc)) {}
 
         Real operator()(Real x) const {
             return calc_->pdf(x, t_) * (*payoff_)(std::exp(x));

@@ -25,6 +25,7 @@
 #define quantlib_sample_h
 
 #include <ql/types.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -34,8 +35,7 @@ namespace QuantLib {
     struct Sample {
       public:
         typedef T value_type;
-        Sample(const T& value, Real weight)
-        : value(value), weight(weight) {}
+        Sample(T value, Real weight) : value(std::move(value)), weight(weight) {}
         T value;
         Real weight;
     };

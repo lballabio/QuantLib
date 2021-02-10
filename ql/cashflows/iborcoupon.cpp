@@ -21,12 +21,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -150,15 +151,11 @@ namespace QuantLib {
     }
 
 
-
-    IborLeg::IborLeg(const Schedule& schedule,
-                     const ext::shared_ptr<IborIndex>& index)
-    : schedule_(schedule), index_(index),
-      paymentAdjustment_(Following),
-      paymentLag_(0), paymentCalendar_(Calendar()),
-      inArrears_(false), zeroPayments_(false),
-      exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), 
-	  exCouponAdjustment_(Unadjusted), exCouponEndOfMonth_(false) {}
+    IborLeg::IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
+    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
+      paymentLag_(0), paymentCalendar_(Calendar()), inArrears_(false), zeroPayments_(false),
+      exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), exCouponAdjustment_(Unadjusted),
+      exCouponEndOfMonth_(false) {}
 
     IborLeg& IborLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

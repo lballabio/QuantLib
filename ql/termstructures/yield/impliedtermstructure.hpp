@@ -26,6 +26,7 @@
 #define quantlib_implied_term_structure_hpp
 
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -46,8 +47,7 @@ namespace QuantLib {
     */
     class ImpliedTermStructure : public YieldTermStructure {
       public:
-        ImpliedTermStructure(const Handle<YieldTermStructure>&,
-                             const Date& referenceDate);
+        ImpliedTermStructure(Handle<YieldTermStructure>, const Date& referenceDate);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const override;
@@ -65,10 +65,9 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline ImpliedTermStructure::ImpliedTermStructure(
-                                          const Handle<YieldTermStructure>& h,
-                                          const Date& referenceDate)
-    : YieldTermStructure(referenceDate), originalCurve_(h) {
+    inline ImpliedTermStructure::ImpliedTermStructure(Handle<YieldTermStructure> h,
+                                                      const Date& referenceDate)
+    : YieldTermStructure(referenceDate), originalCurve_(std::move(h)) {
         registerWith(originalCurve_);
     }
 

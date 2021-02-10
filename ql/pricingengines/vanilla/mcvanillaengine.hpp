@@ -57,7 +57,7 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::result_type
             result_type;
         // constructor
-        MCVanillaEngine(const ext::shared_ptr<StochasticProcess>&,
+        MCVanillaEngine(ext::shared_ptr<StochasticProcess>,
                         Size timeSteps,
                         Size timeStepsPerYear,
                         bool brownianBridge,
@@ -93,22 +93,20 @@ namespace QuantLib {
     // template definitions
 
     template <template <class> class MC, class RNG, class S, class Inst>
-    inline MCVanillaEngine<MC,RNG,S,Inst>::MCVanillaEngine(
-                          const ext::shared_ptr<StochasticProcess>& process,
-                          Size timeSteps,
-                          Size timeStepsPerYear,
-                          bool brownianBridge,
-                          bool antitheticVariate,
-                          bool controlVariate,
-                          Size requiredSamples,
-                          Real requiredTolerance,
-                          Size maxSamples,
-                          BigNatural seed)
-    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), timeSteps_(timeSteps),
-      timeStepsPerYear_(timeStepsPerYear),
-      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
+    inline MCVanillaEngine<MC, RNG, S, Inst>::MCVanillaEngine(
+        ext::shared_ptr<StochasticProcess> process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        bool controlVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed)
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
+      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),

@@ -110,7 +110,7 @@ namespace QuantLib {
         ArithmeticAPOHestonPathPricer(Option::Type type,
                                       Real strike,
                                       DiscountFactor discount,
-                                      const std::vector<Size>& fixingIndices,
+                                      std::vector<Size> fixingIndices,
                                       Real runningSum = 0.0,
                                       Size pastFixings = 0);
         Real operator()(const MultiPath& multiPath) const override;

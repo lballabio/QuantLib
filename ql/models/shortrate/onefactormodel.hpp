@@ -25,9 +25,10 @@
 #ifndef quantlib_one_factor_model_hpp
 #define quantlib_one_factor_model_hpp
 
-#include <ql/models/model.hpp>
 #include <ql/methods/lattices/lattice1d.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
+#include <ql/models/model.hpp>
+#include <utility>
 
 namespace QuantLib {
     class StochasticProcess1D;
@@ -52,9 +53,8 @@ namespace QuantLib {
     //! Base class describing the short-rate dynamics
     class OneFactorModel::ShortRateDynamics {
       public:
-        explicit ShortRateDynamics(
-                        const ext::shared_ptr<StochasticProcess1D>& process)
-        : process_(process) {}
+        explicit ShortRateDynamics(ext::shared_ptr<StochasticProcess1D> process)
+        : process_(std::move(process)) {}
         virtual ~ShortRateDynamics() = default;
 
         //! Compute state variable from short rate
@@ -77,13 +77,12 @@ namespace QuantLib {
       public:
         //! Plain tree build-up from short-rate dynamics
         ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
-                      const ext::shared_ptr<ShortRateDynamics>& dynamics,
+                      ext::shared_ptr<ShortRateDynamics> dynamics,
                       const TimeGrid& timeGrid);
         //! Tree build-up + numerical fitting to term-structure
         ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
-                      const ext::shared_ptr<ShortRateDynamics>& dynamics,
-                      const ext::shared_ptr
-                          <TermStructureFittingParameter::NumericalImpl>& phi,
+                      ext::shared_ptr<ShortRateDynamics> dynamics,
+                      const ext::shared_ptr<TermStructureFittingParameter::NumericalImpl>& phi,
                       const TimeGrid& timeGrid);
 
         Size size(Size i) const {

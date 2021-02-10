@@ -327,8 +327,7 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream&, const iso_date_holder&);
 
         struct formatted_date_holder {
-            formatted_date_holder(const Date& d, const std::string& f)
-            : d(d), f(f) {}
+            formatted_date_holder(const Date& d, std::string f) : d(d), f(std::move(f)) {}
             Date d;
             std::string f;
         };

@@ -17,16 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticPartialTimeBarrierOptionEngine::AnalyticPartialTimeBarrierOptionEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

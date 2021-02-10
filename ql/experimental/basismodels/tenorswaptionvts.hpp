@@ -30,6 +30,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/date.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -75,20 +76,21 @@ namespace QuantLib {
       public:
         // constructor
         TenorSwaptionVTS(const Handle<SwaptionVolatilityStructure>& baseVTS,
-                         const Handle<YieldTermStructure>& discountCurve,
-                         const ext::shared_ptr<IborIndex>& baseIndex,
-                         const ext::shared_ptr<IborIndex>& targIndex,
+                         Handle<YieldTermStructure> discountCurve,
+                         ext::shared_ptr<IborIndex> baseIndex,
+                         ext::shared_ptr<IborIndex> targIndex,
                          const Period& baseFixedFreq,
                          const Period& targFixedFreq,
-                         const DayCounter& baseFixedDC,
-                         const DayCounter& targFixedDC)
+                         DayCounter baseFixedDC,
+                         DayCounter targFixedDC)
         : SwaptionVolatilityStructure(baseVTS->referenceDate(),
                                       baseVTS->calendar(),
                                       baseVTS->businessDayConvention(),
                                       baseVTS->dayCounter()),
-          baseVTS_(baseVTS), discountCurve_(discountCurve), baseIndex_(baseIndex),
-          targIndex_(targIndex), baseFixedFreq_(baseFixedFreq), targFixedFreq_(targFixedFreq),
-          baseFixedDC_(baseFixedDC), targFixedDC_(targFixedDC) {}
+          baseVTS_(baseVTS), discountCurve_(std::move(discountCurve)),
+          baseIndex_(std::move(baseIndex)), targIndex_(std::move(targIndex)),
+          baseFixedFreq_(baseFixedFreq), targFixedFreq_(targFixedFreq),
+          baseFixedDC_(std::move(baseFixedDC)), targFixedDC_(std::move(targFixedDC)) {}
 
         // Termstructure interface
 

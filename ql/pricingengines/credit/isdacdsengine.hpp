@@ -94,9 +94,9 @@ namespace QuantLib {
             provide the evaluation date's fixing.
         */
 
-        IsdaCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+        IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                       Real recoveryRate,
-                      const Handle<YieldTermStructure>& discountCurve,
+                      Handle<YieldTermStructure> discountCurve,
                       const boost::optional<bool>& includeSettlementDateFlows = boost::none,
                       NumericalFix numericalFix = Taylor,
                       AccrualBias accrualBias = HalfDayBias,

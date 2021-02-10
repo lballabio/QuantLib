@@ -43,7 +43,7 @@ namespace QuantLib {
                              const Date& valueDate,
                              const Date& maturityDate,
                              const Handle<YieldTermStructure>& discountCurve,
-                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                             Handle<Quote> convexityAdjustment = Handle<Quote>(),
                              NettingType subPeriodsNettingType = Compounding);
 
         //! returns spot value/price of an underlying financial instrument

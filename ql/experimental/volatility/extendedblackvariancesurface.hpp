@@ -41,16 +41,14 @@ namespace QuantLib {
         enum Extrapolation { ConstantExtrapolation,
                              InterpolatorDefaultExtrapolation };
         ExtendedBlackVarianceSurface(
-                              const Date& referenceDate,
-                              const Calendar& calendar,
-                              const std::vector<Date>& dates,
-                              const std::vector<Real>& strikes,
-                              const std::vector<Handle<Quote> >& volatilities,
-                              const DayCounter& dayCounter,
-                              Extrapolation lowerExtrapolation =
-                                             InterpolatorDefaultExtrapolation,
-                              Extrapolation upperExtrapolation =
-                                            InterpolatorDefaultExtrapolation);
+            const Date& referenceDate,
+            const Calendar& calendar,
+            const std::vector<Date>& dates,
+            std::vector<Real> strikes,
+            const std::vector<Handle<Quote> >& volatilities,
+            DayCounter dayCounter,
+            Extrapolation lowerExtrapolation = InterpolatorDefaultExtrapolation,
+            Extrapolation upperExtrapolation = InterpolatorDefaultExtrapolation);
         DayCounter dayCounter() const override { return dayCounter_; }
         Date maxDate() const override { return maxDate_; }
         Real minStrike() const override { return strikes_.front(); }

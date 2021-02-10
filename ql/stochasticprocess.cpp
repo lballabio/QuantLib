@@ -20,6 +20,7 @@
 */
 
 #include <ql/stochasticprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -27,9 +28,8 @@ namespace QuantLib {
 
     StochasticProcess::StochasticProcess() = default;
 
-    StochasticProcess::StochasticProcess(
-                                const ext::shared_ptr<discretization>& disc)
-    : discretization_(disc) {}
+    StochasticProcess::StochasticProcess(ext::shared_ptr<discretization> disc)
+    : discretization_(std::move(disc)) {}
 
     Size StochasticProcess::factors() const {
         return size();
@@ -77,9 +77,8 @@ namespace QuantLib {
 
     StochasticProcess1D::StochasticProcess1D() = default;
 
-    StochasticProcess1D::StochasticProcess1D(
-                                const ext::shared_ptr<discretization>& disc)
-    : discretization_(disc) {}
+    StochasticProcess1D::StochasticProcess1D(ext::shared_ptr<discretization> disc)
+    : discretization_(std::move(disc)) {}
 
     Real StochasticProcess1D::expectation(Time t0, Real x0, Time dt) const {
         return apply(x0, discretization_->drift(*this, t0, x0, dt));

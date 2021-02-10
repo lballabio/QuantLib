@@ -17,17 +17,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/cliquetoption.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/cliquetoption.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CliquetOption::CliquetOption(
-                   const ext::shared_ptr<PercentageStrikePayoff>& payoff,
-                   const ext::shared_ptr<EuropeanExercise>& maturity,
-                   const std::vector<Date>& resetDates)
-    : OneAssetOption(payoff,maturity),
-      resetDates_(resetDates) {}
+    CliquetOption::CliquetOption(const ext::shared_ptr<PercentageStrikePayoff>& payoff,
+                                 const ext::shared_ptr<EuropeanExercise>& maturity,
+                                 std::vector<Date> resetDates)
+    : OneAssetOption(payoff, maturity), resetDates_(std::move(resetDates)) {}
 
     void CliquetOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);

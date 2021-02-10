@@ -37,11 +37,11 @@ namespace QuantLib {
      */
     class MakeYoYInflationCapFloor {
       public:
-        MakeYoYInflationCapFloor(
-                        YoYInflationCapFloor::Type capFloorType,
-                        const ext::shared_ptr<YoYInflationIndex>& index,
-                        const Size& length, const Calendar& cal,
-                        const Period& observationLag);
+        MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
+                                 ext::shared_ptr<YoYInflationIndex> index,
+                                 const Size& length,
+                                 Calendar cal,
+                                 const Period& observationLag);
         MakeYoYInflationCapFloor& withNominal(Real n);
         MakeYoYInflationCapFloor& withEffectiveDate(const Date& effectiveDate);
         MakeYoYInflationCapFloor& withFirstCapletExcluded();

@@ -148,7 +148,7 @@ namespace QuantLib {
         //@}
       protected:
         StochasticProcess();
-        explicit StochasticProcess(const ext::shared_ptr<discretization>&);
+        explicit StochasticProcess(ext::shared_ptr<discretization>);
         ext::shared_ptr<discretization> discretization_;
     };
 
@@ -223,7 +223,7 @@ namespace QuantLib {
         //@}
       protected:
         StochasticProcess1D();
-        explicit StochasticProcess1D(const ext::shared_ptr<discretization>&);
+        explicit StochasticProcess1D(ext::shared_ptr<discretization>);
         ext::shared_ptr<discretization> discretization_;
       private:
         // StochasticProcess interface implementation

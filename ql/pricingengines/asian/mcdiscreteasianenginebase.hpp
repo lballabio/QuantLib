@@ -26,9 +26,10 @@
 #ifndef quantlib_mcdiscreteasian_engine_base_hpp
 #define quantlib_mcdiscreteasian_engine_base_hpp
 
-#include <ql/pricingengines/mcsimulation.hpp>
-#include <ql/instruments/asianoption.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/asianoption.hpp>
+#include <ql/pricingengines/mcsimulation.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -63,18 +64,16 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDiscreteAveragingAsianEngineBase(
-             const ext::shared_ptr<StochasticProcess>& process,
-             bool brownianBridge,
-             bool antitheticVariate,
-             bool controlVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed,
-             Size timeSteps = Null<Size>(),
-             Size timeStepsPerYear = Null<Size>()
-        );
+        MCDiscreteAveragingAsianEngineBase(ext::shared_ptr<StochasticProcess> process,
+                                           bool brownianBridge,
+                                           bool antitheticVariate,
+                                           bool controlVariate,
+                                           Size requiredSamples,
+                                           Real requiredTolerance,
+                                           Size maxSamples,
+                                           BigNatural seed,
+                                           Size timeSteps = Null<Size>(),
+                                           Size timeStepsPerYear = Null<Size>());
         void calculate() const override {
             try {
                 McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
@@ -129,23 +128,22 @@ namespace QuantLib {
 
     // template definitions
 
-    template<template <class> class MC, class RNG, class S>
-    inline
-    MCDiscreteAveragingAsianEngineBase<MC,RNG,S>::MCDiscreteAveragingAsianEngineBase(
-             const ext::shared_ptr<StochasticProcess>& process,
-             bool brownianBridge,
-             bool antitheticVariate,
-             bool controlVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed,
-             Size timeSteps,
-             Size timeStepsPerYear)
-    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), requiredSamples_(requiredSamples), maxSamples_(maxSamples), 
-      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), 
-      requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
+    template <template <class> class MC, class RNG, class S>
+    inline MCDiscreteAveragingAsianEngineBase<MC, RNG, S>::MCDiscreteAveragingAsianEngineBase(
+        ext::shared_ptr<StochasticProcess> process,
+        bool brownianBridge,
+        bool antitheticVariate,
+        bool controlVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed,
+        Size timeSteps,
+        Size timeStepsPerYear)
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
+      requiredSamples_(requiredSamples), maxSamples_(maxSamples), timeSteps_(timeSteps),
+      timeStepsPerYear_(timeStepsPerYear), requiredTolerance_(requiredTolerance),
+      brownianBridge_(brownianBridge), seed_(seed) {
         registerWith(process_);
     }
 

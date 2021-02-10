@@ -36,8 +36,8 @@ namespace QuantLib {
                                public LazyObject {
       public:
         ImpliedStdDevQuote(Option::Type optionType,
-                           const Handle<Quote>& forward,
-                           const Handle<Quote>& price,
+                           Handle<Quote> forward,
+                           Handle<Quote> price,
                            Real strike,
                            Real guess,
                            Real accuracy = 1.0e-6,

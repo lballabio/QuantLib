@@ -18,41 +18,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/instruments/yearonyearinflationswap.hpp>
-#include <ql/time/schedule.hpp>
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/indexes/inflationindex.hpp>
+#include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    YearOnYearInflationSwap::
-    YearOnYearInflationSwap(
-                            Type type,
-                            Real nominal,
-                            const Schedule& fixedSchedule,
-                            Rate fixedRate,
-                            const DayCounter& fixedDayCount,
-                            const Schedule& yoySchedule,
-                            const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
-                            const Period& observationLag,
-                            Spread spread,
-                            const DayCounter& yoyDayCount,
-                            const Calendar& paymentCalendar,
-                            BusinessDayConvention paymentConvention)
-    : Swap(2), type_(type), nominal_(nominal),
-    fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
-    fixedDayCount_(fixedDayCount),
-    yoySchedule_(yoySchedule), yoyIndex_(yoyIndex),
-    observationLag_(observationLag),
-    spread_(spread),
-    yoyDayCount_(yoyDayCount), paymentCalendar_(paymentCalendar),
-    paymentConvention_(paymentConvention)
-    {
+    YearOnYearInflationSwap::YearOnYearInflationSwap(Type type,
+                                                     Real nominal,
+                                                     Schedule fixedSchedule,
+                                                     Rate fixedRate,
+                                                     DayCounter fixedDayCount,
+                                                     Schedule yoySchedule,
+                                                     ext::shared_ptr<YoYInflationIndex> yoyIndex,
+                                                     const Period& observationLag,
+                                                     Spread spread,
+                                                     DayCounter yoyDayCount,
+                                                     Calendar paymentCalendar,
+                                                     BusinessDayConvention paymentConvention)
+    : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
+      yoySchedule_(std::move(yoySchedule)), yoyIndex_(std::move(yoyIndex)),
+      observationLag_(observationLag), spread_(spread), yoyDayCount_(std::move(yoyDayCount)),
+      paymentCalendar_(std::move(paymentCalendar)), paymentConvention_(paymentConvention) {
         // N.B. fixed leg gets its calendar from the schedule!
         Leg fixedLeg = FixedRateLeg(fixedSchedule_)
         .withNotionals(nominal_)

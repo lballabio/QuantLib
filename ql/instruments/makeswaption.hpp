@@ -43,11 +43,11 @@ namespace QuantLib {
     */
     class MakeSwaption {
       public:
-        MakeSwaption(const ext::shared_ptr<SwapIndex>& swapIndex,
+        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
                      const Period& optionTenor,
                      Rate strike = Null<Rate>());
 
-        MakeSwaption(const ext::shared_ptr<SwapIndex>& swapIndex,
+        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
                      const Date& fixingDate,
                      Rate strike = Null<Rate>());
 

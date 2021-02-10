@@ -22,6 +22,7 @@
 #include <ql/experimental/credit/recoveryratequote.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -88,18 +89,14 @@ namespace QuantLib {
 
     DefaultEvent::DefaultEvent(const Date& creditEventDate,
                                const DefaultType& atomicEvType,
-                               const Currency& curr,
+                               Currency curr,
                                Seniority bondsSen,
                                // Settlement information:
                                const Date& settleDate,
                                const std::map<Seniority, Real>& recoveryRates)
-    : bondsCurrency_(curr),
-      defaultDate_(creditEventDate),
-      eventType_(atomicEvType),
+    : bondsCurrency_(std::move(curr)), defaultDate_(creditEventDate), eventType_(atomicEvType),
       bondsSeniority_(bondsSen),
-      defSettlement_(settleDate,
-                     recoveryRates.empty() ? makeIsdaConvMap()
-                                           : recoveryRates) {
+      defSettlement_(settleDate, recoveryRates.empty() ? makeIsdaConvMap() : recoveryRates) {
         if(settleDate != Null<Date>()) {// has settled
             QL_REQUIRE(settleDate >= creditEventDate,
               "Settlement date should be after default date.");
@@ -110,16 +107,13 @@ namespace QuantLib {
 
     DefaultEvent::DefaultEvent(const Date& creditEventDate,
                                const DefaultType& atomicEvType,
-                               const Currency& curr,
+                               Currency curr,
                                Seniority bondsSen,
                                // Settlement information:
                                const Date& settleDate,
                                Real recoveryRate)
-    : bondsCurrency_(curr),
-      defaultDate_(creditEventDate),
-      eventType_(atomicEvType),
-      bondsSeniority_(bondsSen),
-      defSettlement_(settleDate, bondsSen, recoveryRate) {
+    : bondsCurrency_(std::move(curr)), defaultDate_(creditEventDate), eventType_(atomicEvType),
+      bondsSeniority_(bondsSen), defSettlement_(settleDate, bondsSen, recoveryRate) {
         if(settleDate != Null<Date>()) {
             QL_REQUIRE(settleDate >= creditEventDate,
             "Settlement date should be after default date.");

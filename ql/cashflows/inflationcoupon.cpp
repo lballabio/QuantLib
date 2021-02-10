@@ -17,31 +17,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
+#include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
 #include <ql/indexes/inflationindex.hpp>
-#include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    InflationCoupon::InflationCoupon(
-                                    const Date& paymentDate,
-                                    Real nominal,
-                                    const Date& startDate,
-                                    const Date& endDate,
-                                    Natural fixingDays,
-                                    const ext::shared_ptr<InflationIndex>& index,
-                                    const Period& observationLag,
-                                    const DayCounter& dayCounter,
-                                    const Date& refPeriodStart,
-                                    const Date& refPeriodEnd,
-                                    const Date& exCouponDate
-                                    )
-    : Coupon(paymentDate, nominal,
-             startDate, endDate, refPeriodStart,refPeriodEnd,exCouponDate),  // ref period is before lag
-      index_(index), observationLag_(observationLag), dayCounter_(dayCounter),
-      fixingDays_(fixingDays)
-    {
+    InflationCoupon::InflationCoupon(const Date& paymentDate,
+                                     Real nominal,
+                                     const Date& startDate,
+                                     const Date& endDate,
+                                     Natural fixingDays,
+                                     ext::shared_ptr<InflationIndex> index,
+                                     const Period& observationLag,
+                                     DayCounter dayCounter,
+                                     const Date& refPeriodStart,
+                                     const Date& refPeriodEnd,
+                                     const Date& exCouponDate)
+    : Coupon(paymentDate,
+             nominal,
+             startDate,
+             endDate,
+             refPeriodStart,
+             refPeriodEnd,
+             exCouponDate), // ref period is before lag
+      index_(std::move(index)), observationLag_(observationLag), dayCounter_(std::move(dayCounter)),
+      fixingDays_(fixingDays) {
         registerWith(index_);
         registerWith(Settings::instance().evaluationDate());
     }

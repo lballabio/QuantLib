@@ -36,19 +36,20 @@ namespace QuantLib {
         Real nominal,
         const Date& startDate, // start date of contract (only)
         const Date& maturity,  // this is pre-adjustment!
-        const Calendar& fixCalendar,
+        Calendar fixCalendar,
         BusinessDayConvention fixConvention,
-        const DayCounter& dayCounter,
+        DayCounter dayCounter,
         Rate fixedRate,
         const ext::shared_ptr<ZeroInflationIndex>& infIndex,
         const Period& observationLag,
         bool adjustInfObsDates,
-        const Calendar& infCalendar,
+        Calendar infCalendar,
         BusinessDayConvention infConvention)
     : Swap(2), type_(type), nominal_(nominal), startDate_(startDate), maturityDate_(maturity),
-      fixCalendar_(fixCalendar), fixConvention_(fixConvention), fixedRate_(fixedRate),
+      fixCalendar_(std::move(fixCalendar)), fixConvention_(fixConvention), fixedRate_(fixedRate),
       infIndex_(infIndex), observationLag_(observationLag), adjustInfObsDates_(adjustInfObsDates),
-      infCalendar_(infCalendar), infConvention_(infConvention), dayCounter_(dayCounter) {
+      infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
+      dayCounter_(std::move(dayCounter)) {
         // first check compatibility of index and swap definitions
         if (infIndex_->interpolated()) {
             Period pShift(infIndex_->frequency());
@@ -110,9 +111,7 @@ namespace QuantLib {
             default:
                 QL_FAIL("Unknown zero-inflation-swap type");
         }
-
     }
-
 
 
     void ZeroCouponInflationSwap::setupArguments(PricingEngine::arguments* args) const {

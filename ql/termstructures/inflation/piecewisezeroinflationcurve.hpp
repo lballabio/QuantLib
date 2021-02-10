@@ -26,9 +26,10 @@
 #ifndef quantlib_piecewise_zero_inflation_curve_hpp
 #define quantlib_piecewise_zero_inflation_curve_hpp
 
-#include <ql/termstructures/iterativebootstrap.hpp>
-#include <ql/termstructures/inflation/inflationtraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/termstructures/inflation/inflationtraits.hpp>
+#include <ql/termstructures/iterativebootstrap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -50,20 +51,25 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         PiecewiseZeroInflationCurve(
-               const Date& referenceDate,
-               const Calendar& calendar,
-               const DayCounter& dayCounter,
-               const Period& lag,
-               Frequency frequency,
-               bool indexIsInterpolated,
-               Rate baseZeroRate,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
-        : base_curve(referenceDate, calendar, dayCounter,
-                     lag, frequency, indexIsInterpolated, baseZeroRate, i),
-          instruments_(instruments), accuracy_(accuracy) {
+            const Date& referenceDate,
+            const Calendar& calendar,
+            const DayCounter& dayCounter,
+            const Period& lag,
+            Frequency frequency,
+            bool indexIsInterpolated,
+            Rate baseZeroRate,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            Real accuracy = 1.0e-12,
+            const Interpolator& i = Interpolator())
+        : base_curve(referenceDate,
+                     calendar,
+                     dayCounter,
+                     lag,
+                     frequency,
+                     indexIsInterpolated,
+                     baseZeroRate,
+                     i),
+          instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
 

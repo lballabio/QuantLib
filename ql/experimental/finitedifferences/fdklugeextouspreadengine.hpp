@@ -46,14 +46,15 @@ namespace QuantLib {
           typedef FdmExtOUJumpModelInnerValue::Shape PowerShape;
 
           FdKlugeExtOUSpreadEngine(
-              const ext::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
-              const ext::shared_ptr<YieldTermStructure>& rTS,
-              Size tGrid = 25, Size xGrid = 50, Size yGrid = 10, Size uGrid=25,
-              const ext::shared_ptr<GasShape>& gasShape
-                  = ext::shared_ptr<GasShape>(),
-              const ext::shared_ptr<PowerShape>& powerShape
-                  = ext::shared_ptr<PowerShape>(),
-              const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Hundsdorfer());
+              ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess,
+              ext::shared_ptr<YieldTermStructure> rTS,
+              Size tGrid = 25,
+              Size xGrid = 50,
+              Size yGrid = 10,
+              Size uGrid = 25,
+              ext::shared_ptr<GasShape> gasShape = ext::shared_ptr<GasShape>(),
+              ext::shared_ptr<PowerShape> powerShape = ext::shared_ptr<PowerShape>(),
+              const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
           void calculate() const override;
 

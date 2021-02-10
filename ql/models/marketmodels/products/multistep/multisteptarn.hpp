@@ -27,14 +27,14 @@ namespace QuantLib {
     class MultiStepTarn : public MultiProductMultiStep {
       public:
         MultiStepTarn(const std::vector<Time>& rateTimes,
-                         const std::vector<Real>& accruals,
-                         const std::vector<Real>& accrualsFloating,                         
-                         const std::vector<Time>& paymentTimes,
-                         const std::vector<Time>& paymentTimesFloating,
-                         Real totalCoupon,
-                         const std::vector<Real>& strikes,
-                         const std::vector<Real>& multipliers,
-                         const std::vector<Real>& floatingSpreads);
+                      const std::vector<Real>& accruals,
+                      const std::vector<Real>& accrualsFloating,
+                      const std::vector<Time>& paymentTimes,
+                      const std::vector<Time>& paymentTimesFloating,
+                      Real totalCoupon,
+                      const std::vector<Real>& strikes,
+                      std::vector<Real> multipliers,
+                      const std::vector<Real>& floatingSpreads);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const override;

@@ -33,9 +33,8 @@ namespace QuantLib {
 
     class JointStochasticProcess : public StochasticProcess {
       public:
-        JointStochasticProcess(
-            const std::vector<ext::shared_ptr<StochasticProcess> > & l,
-            Size factors = Null<Size>() );
+        JointStochasticProcess(std::vector<ext::shared_ptr<StochasticProcess> > l,
+                               Size factors = Null<Size>());
 
         Size size() const override;
         Size factors() const override;

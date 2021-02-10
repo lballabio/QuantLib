@@ -37,13 +37,13 @@ namespace QuantLib {
         ConstantCapFloorTermVolatility(Natural settlementDays,
                                        const Calendar& cal,
                                        BusinessDayConvention bdc,
-                                       const Handle<Quote>& volatility,
+                                       Handle<Quote> volatility,
                                        const DayCounter& dc);
         //! fixed reference date, floating market data
         ConstantCapFloorTermVolatility(const Date& referenceDate,
                                        const Calendar& cal,
                                        BusinessDayConvention bdc,
-                                       const Handle<Quote>& volatility,
+                                       Handle<Quote> volatility,
                                        const DayCounter& dc);
         //! floating reference date, fixed market data
         ConstantCapFloorTermVolatility(Natural settlementDays,

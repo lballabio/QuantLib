@@ -29,7 +29,7 @@ namespace QuantLib {
       public:
         //! \todo use Payoff
         NothingExerciseValue(const std::vector<Time>& rateTimes,
-                             const std::valarray<bool>& isExerciseTime = std::valarray<bool>());
+                             std::valarray<bool> isExerciseTime = std::valarray<bool>());
         Size numberOfExercises() const override;
         // including any time at which state should be updated
         const EvolutionDescription& evolution() const override;

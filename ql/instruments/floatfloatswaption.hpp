@@ -42,11 +42,10 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        FloatFloatSwaption(
-            const ext::shared_ptr<FloatFloatSwap>& swap,
-            const ext::shared_ptr<Exercise>& exercise,
-            Settlement::Type delivery = Settlement::Physical,
-            Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+        FloatFloatSwaption(ext::shared_ptr<FloatFloatSwap> swap,
+                           const ext::shared_ptr<Exercise>& exercise,
+                           Settlement::Type delivery = Settlement::Physical,
+                           Settlement::Method settlementMethod = Settlement::PhysicalOTC);
         //! \name Instrument interface
         //@{
         bool isExpired() const override;

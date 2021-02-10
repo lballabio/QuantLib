@@ -17,9 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/experimental/exoticoptions/analyticholderextensibleoptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 using std::pow;
 using std::log;
@@ -29,8 +30,8 @@ using std::sqrt;
 namespace QuantLib {
 
     AnalyticHolderExtensibleOptionEngine::AnalyticHolderExtensibleOptionEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

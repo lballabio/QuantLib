@@ -34,9 +34,8 @@ namespace QuantLib {
 
     class LfmCovarianceProxy : public LfmCovarianceParameterization {
       public:
-        LfmCovarianceProxy(
-                      const ext::shared_ptr<LmVolatilityModel>& volaModel,
-                      const ext::shared_ptr<LmCorrelationModel>& corrModel);
+        LfmCovarianceProxy(ext::shared_ptr<LmVolatilityModel> volaModel,
+                           const ext::shared_ptr<LmCorrelationModel>& corrModel);
 
         ext::shared_ptr<LmVolatilityModel>  volatilityModel() const;
         ext::shared_ptr<LmCorrelationModel> correlationModel() const;

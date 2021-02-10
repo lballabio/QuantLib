@@ -39,19 +39,19 @@ namespace QuantLib {
         friend class CommodityIndex;
       public:
         // constructor
-        CommodityCurve(const std::string& name,
-                       const CommodityType& commodityType,
-                       const Currency& currency,
-                       const UnitOfMeasure& unitOfMeasure,
+        CommodityCurve(std::string name,
+                       CommodityType commodityType,
+                       Currency currency,
+                       UnitOfMeasure unitOfMeasure,
                        const Calendar& calendar,
                        const std::vector<Date>& dates,
-                       const std::vector<Real>& prices,
+                       std::vector<Real> prices,
                        const DayCounter& dayCounter = Actual365Fixed());
 
-        CommodityCurve(const std::string& name,
-                       const CommodityType& commodityType,
-                       const Currency& currency,
-                       const UnitOfMeasure& unitOfMeasure,
+        CommodityCurve(std::string name,
+                       CommodityType commodityType,
+                       Currency currency,
+                       UnitOfMeasure unitOfMeasure,
                        const Calendar& calendar,
                        const DayCounter& dayCounter = Actual365Fixed());
 

@@ -20,9 +20,10 @@
 #ifndef onefactor_affine_survival_hpp
 #define onefactor_affine_survival_hpp
 
-#include <ql/termstructures/credit/hazardratestructure.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <ql/termstructures/credit/hazardratestructure.hpp>
+#include <utility>
 
 namespace QuantLib {
     
@@ -42,31 +43,31 @@ namespace QuantLib {
     public:
         // implement remaining constructors.....
       explicit OneFactorAffineSurvivalStructure(
-          const ext::shared_ptr<OneFactorAffineModel>& model,
+          ext::shared_ptr<OneFactorAffineModel> model,
           const DayCounter& dayCounter = DayCounter(),
           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
           const std::vector<Date>& jumpDates = std::vector<Date>())
-      : HazardRateStructure(dayCounter, jumps, jumpDates), model_(model) {}
+      : HazardRateStructure(dayCounter, jumps, jumpDates), model_(std::move(model)) {}
 
       OneFactorAffineSurvivalStructure(
-          const ext::shared_ptr<OneFactorAffineModel>& model,
+          ext::shared_ptr<OneFactorAffineModel> model,
           const Date& referenceDate,
           const Calendar& cal = Calendar(),
           const DayCounter& dayCounter = DayCounter(),
           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
           const std::vector<Date>& jumpDates = std::vector<Date>())
       : HazardRateStructure(referenceDate, Calendar(), dayCounter, jumps, jumpDates),
-        model_(model) {}
+        model_(std::move(model)) {}
 
       OneFactorAffineSurvivalStructure(
-          const ext::shared_ptr<OneFactorAffineModel>& model,
+          ext::shared_ptr<OneFactorAffineModel> model,
           Natural settlementDays,
           const Calendar& calendar,
           const DayCounter& dayCounter = DayCounter(),
           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
           const std::vector<Date>& jumpDates = std::vector<Date>())
-      : HazardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates), model_(model) {
-      }
+      : HazardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
+        model_(std::move(model)) {}
 
       //! \name TermStructure interface
       //@{

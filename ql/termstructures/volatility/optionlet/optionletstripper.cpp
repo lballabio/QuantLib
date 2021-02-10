@@ -19,20 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/optionlet/optionletstripper.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/termstructures/volatility/optionlet/optionletstripper.hpp>
+#include <utility>
 
 using std::vector;
 
 namespace QuantLib {
 
-OptionletStripper::OptionletStripper(
-    const ext::shared_ptr< CapFloorTermVolSurface > &termVolSurface,
-    const ext::shared_ptr< IborIndex > &iborIndex,
-    const Handle< YieldTermStructure > &discount, const VolatilityType type,
-    const Real displacement)
-    : termVolSurface_(termVolSurface), iborIndex_(iborIndex),
-      discount_(discount), nStrikes_(termVolSurface->strikes().size()),
+    OptionletStripper::OptionletStripper(
+        const ext::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+        ext::shared_ptr<IborIndex> iborIndex,
+        Handle<YieldTermStructure> discount,
+        const VolatilityType type,
+        const Real displacement)
+    : termVolSurface_(termVolSurface), iborIndex_(std::move(iborIndex)),
+      discount_(std::move(discount)), nStrikes_(termVolSurface->strikes().size()),
       volatilityType_(type), displacement_(displacement) {
 
         if (volatilityType_ == Normal) {

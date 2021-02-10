@@ -62,7 +62,7 @@ namespace QuantLib {
         LognormalCmsSpreadPricer(
             const ext::shared_ptr<CmsCouponPricer>& cmsPricer,
             const Handle<Quote>& correlation,
-            const Handle<YieldTermStructure>& couponDiscountCurve = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> couponDiscountCurve = Handle<YieldTermStructure>(),
             Size IntegrationPoints = 16,
             const boost::optional<VolatilityType>& volatilityType = boost::none,
             Real shift1 = Null<Real>(),

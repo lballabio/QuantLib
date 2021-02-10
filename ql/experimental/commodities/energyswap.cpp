@@ -19,19 +19,19 @@
 
 #include <ql/experimental/commodities/energyswap.hpp>
 #include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    EnergySwap::EnergySwap(
-                      const Calendar& calendar,
-                      const Currency& payCurrency,
-                      const Currency& receiveCurrency,
-                      const PricingPeriods& pricingPeriods,
-                      const CommodityType& commodityType,
-                      const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
-    : EnergyCommodity(commodityType, secondaryCosts),
-      calendar_(calendar), payCurrency_(payCurrency),
-      receiveCurrency_(receiveCurrency), pricingPeriods_(pricingPeriods) {}
+    EnergySwap::EnergySwap(Calendar calendar,
+                           Currency payCurrency,
+                           Currency receiveCurrency,
+                           PricingPeriods pricingPeriods,
+                           const CommodityType& commodityType,
+                           const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
+    : EnergyCommodity(commodityType, secondaryCosts), calendar_(std::move(calendar)),
+      payCurrency_(std::move(payCurrency)), receiveCurrency_(std::move(receiveCurrency)),
+      pricingPeriods_(std::move(pricingPeriods)) {}
 
     const CommodityType& EnergySwap::commodityType() const {
         QL_REQUIRE(!pricingPeriods_.empty(), "no pricing periods");

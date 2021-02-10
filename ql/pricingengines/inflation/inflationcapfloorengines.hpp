@@ -43,9 +43,9 @@ namespace QuantLib {
     */
     class YoYInflationCapFloorEngine : public YoYInflationCapFloor::engine {
       public:
-        YoYInflationCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
-                                   const Handle<YoYOptionletVolatilitySurface>& vol,
-                                   const Handle<YieldTermStructure>& nominalTermStructure);
+        YoYInflationCapFloorEngine(ext::shared_ptr<YoYInflationIndex>,
+                                   Handle<YoYOptionletVolatilitySurface> vol,
+                                   Handle<YieldTermStructure> nominalTermStructure);
 
         ext::shared_ptr<YoYInflationIndex> index() const { return index_;}
         Handle<YoYOptionletVolatilitySurface> volatility() const { return volatility_; }

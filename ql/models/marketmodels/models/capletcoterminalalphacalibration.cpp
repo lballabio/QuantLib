@@ -18,12 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/models/marketmodels/models/alphafinder.hpp>
 #include <ql/models/marketmodels/models/alphaformconcrete.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,11 +39,11 @@ namespace QuantLib {
         const std::vector<Real>& alphaMax,
         const std::vector<Real>& alphaMin,
         bool maximizeHomogeneity,
-        const ext::shared_ptr<AlphaForm>& parametricForm)
+        ext::shared_ptr<AlphaForm> parametricForm)
     : CTSMMCapletCalibration(
           evolution, corr, displacedSwapVariances, mktCapletVols, cs, displacement),
       alphaInitial_(alphaInitial), alphaMax_(alphaMax), alphaMin_(alphaMin),
-      maximizeHomogeneity_(maximizeHomogeneity), parametricForm_(parametricForm),
+      maximizeHomogeneity_(maximizeHomogeneity), parametricForm_(std::move(parametricForm)),
       alpha_(numberOfRates_), a_(numberOfRates_), b_(numberOfRates_) {
         if (!parametricForm_)
             parametricForm_ =
@@ -59,7 +60,6 @@ namespace QuantLib {
         QL_REQUIRE(numberOfRates_==alphaMin.size(),
             "mismatch between number of rates (" << numberOfRates_ <<
             ") and alphaMin (" << alphaMin.size() << ")");
-
     }
 
     Natural CTSMMCapletAlphaFormCalibration::capletAlphaFormCalibration(

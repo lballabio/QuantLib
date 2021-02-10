@@ -25,15 +25,16 @@
 #ifndef quantlib_basketgeneratingengine_hpp
 #define quantlib_basketgeneratingengine_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/math/optimization/costfunction.hpp>
-#include <ql/instruments/vanillaswap.hpp>
-#include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
-#include <ql/indexes/swapindex.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/indexes/swapindex.hpp>
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/math/optimization/costfunction.hpp>
+#include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/qldefines.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -69,18 +70,16 @@ namespace QuantLib {
                           CalibrationBasketType basketType = MaturityStrikeByDeltaGamma) const;
 
       protected:
+        BasketGeneratingEngine(const ext::shared_ptr<Gaussian1dModel>& model,
+                               Handle<Quote> oas,
+                               Handle<YieldTermStructure> discountCurve)
+        : onefactormodel_(model), oas_(std::move(oas)), discountCurve_(std::move(discountCurve)) {}
 
-        BasketGeneratingEngine(const ext::shared_ptr<Gaussian1dModel> &model,
-                               const Handle<Quote> &oas,
-                               const Handle<YieldTermStructure> &discountCurve)
-            : onefactormodel_(model), oas_(oas), discountCurve_(discountCurve) {
-        }
-
-        BasketGeneratingEngine(const Handle<Gaussian1dModel> &model,
-                               const Handle<Quote> &oas,
-                               const Handle<YieldTermStructure> &discountCurve)
-            : onefactormodel_(model), oas_(oas), discountCurve_(discountCurve) {
-        }
+        BasketGeneratingEngine(Handle<Gaussian1dModel> model,
+                               Handle<Quote> oas,
+                               Handle<YieldTermStructure> discountCurve)
+        : onefactormodel_(std::move(model)), oas_(std::move(oas)),
+          discountCurve_(std::move(discountCurve)) {}
 
         virtual ~BasketGeneratingEngine() = default;
 
@@ -104,15 +103,18 @@ namespace QuantLib {
         friend class MatchHelper;
         class MatchHelper : public CostFunction {
           public:
-            MatchHelper(const VanillaSwap::Type type, const Real npv,
-                        const Real delta, const Real gamma,
-                        const ext::shared_ptr<Gaussian1dModel> &model,
-                        const ext::shared_ptr<SwapIndex> &indexBase,
-                        const Date &expiry, const Real maxMaturity,
+            MatchHelper(const VanillaSwap::Type type,
+                        const Real npv,
+                        const Real delta,
+                        const Real gamma,
+                        ext::shared_ptr<Gaussian1dModel> model,
+                        ext::shared_ptr<SwapIndex> indexBase,
+                        const Date& expiry,
+                        const Real maxMaturity,
                         const Real h)
-                : type_(type), mdl_(model), indexBase_(indexBase),
-                  expiry_(expiry), maxMaturity_(maxMaturity), npv_(npv),
-                  delta_(delta), gamma_(gamma), h_(h) {}
+            : type_(type), mdl_(std::move(model)), indexBase_(std::move(indexBase)),
+              expiry_(expiry), maxMaturity_(maxMaturity), npv_(npv), delta_(delta), gamma_(gamma),
+              h_(h) {}
 
             Real NPV(const ext::shared_ptr<VanillaSwap>& swap,
                      Real fixedRate,

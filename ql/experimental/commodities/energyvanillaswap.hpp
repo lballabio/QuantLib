@@ -33,20 +33,19 @@ namespace QuantLib {
     //! Vanilla energy swap
     class EnergyVanillaSwap : public EnergySwap {
       public:
-        EnergyVanillaSwap(
-                    bool payer,
-                    const Calendar& calendar,
-                    const Money& fixedPrice,
-                    const UnitOfMeasure& fixedPriceUnitOfMeasure,
-                    const ext::shared_ptr<CommodityIndex>& index,
-                    const Currency& payCurrency,
-                    const Currency& receiveCurrency,
-                    const PricingPeriods& pricingPeriods,
-                    const CommodityType& commodityType,
-                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
-                    const Handle<YieldTermStructure>& payLegTermStructure,
-                    const Handle<YieldTermStructure>& receiveLegTermStructure,
-                    const Handle<YieldTermStructure>& discountTermStructure);
+        EnergyVanillaSwap(bool payer,
+                          const Calendar& calendar,
+                          Money fixedPrice,
+                          UnitOfMeasure fixedPriceUnitOfMeasure,
+                          ext::shared_ptr<CommodityIndex> index,
+                          const Currency& payCurrency,
+                          const Currency& receiveCurrency,
+                          const PricingPeriods& pricingPeriods,
+                          const CommodityType& commodityType,
+                          const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
+                          Handle<YieldTermStructure> payLegTermStructure,
+                          Handle<YieldTermStructure> receiveLegTermStructure,
+                          Handle<YieldTermStructure> discountTermStructure);
 
         bool isExpired() const override;
         Integer payReceive() const { return payReceive_; }

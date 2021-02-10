@@ -66,15 +66,15 @@ namespace QuantLib {
         class engine;
         CPICapFloor(Option::Type type,
                     Real nominal,
-                    const Date& startDate,   // start date of contract (only)
+                    const Date& startDate, // start date of contract (only)
                     Real baseCPI,
-                    const Date& maturity,    // this is pre-adjustment!
-                    const Calendar& fixCalendar,
+                    const Date& maturity, // this is pre-adjustment!
+                    Calendar fixCalendar,
                     BusinessDayConvention fixConvention,
-                    const Calendar& payCalendar,
+                    Calendar payCalendar,
                     BusinessDayConvention payConvention,
                     Rate strike,
-                    const Handle<ZeroInflationIndex> &infIndex,
+                    Handle<ZeroInflationIndex> infIndex,
                     const Period& observationLag,
                     CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 

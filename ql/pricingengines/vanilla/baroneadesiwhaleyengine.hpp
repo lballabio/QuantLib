@@ -39,8 +39,7 @@ namespace QuantLib {
     class BaroneAdesiWhaleyApproximationEngine
         : public VanillaOption::engine {
       public:
-        BaroneAdesiWhaleyApproximationEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+        BaroneAdesiWhaleyApproximationEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         static Real criticalPrice(
             const ext::shared_ptr<StrikedTypePayoff>& payoff,
             DiscountFactor riskFreeDiscount,

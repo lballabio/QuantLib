@@ -64,8 +64,7 @@ namespace QuantLib {
         : public DiscreteAveragingAsianOption::engine {
       public:
         explicit AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process,
-            Real xiRightLimit = 100.0);
+            ext::shared_ptr<HestonProcess> process, Real xiRightLimit = 100.0);
         void calculate() const override;
 
         // Equation (21) - must be public so the integrand can access it.

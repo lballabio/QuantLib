@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/forward/analytichestonforwardeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -90,11 +91,9 @@ namespace QuantLib {
     };
 
 
-
     AnalyticHestonForwardEuropeanEngine::AnalyticHestonForwardEuropeanEngine(
-                        const ext::shared_ptr<HestonProcess>& process,
-                        Size integrationOrder)
-    : process_(process), integrationOrder_(integrationOrder), outerIntegrator_(128) {
+        ext::shared_ptr<HestonProcess> process, Size integrationOrder)
+    : process_(std::move(process)), integrationOrder_(integrationOrder), outerIntegrator_(128) {
 
         v0_ = process_->v0();
         rho_ = process_->rho();

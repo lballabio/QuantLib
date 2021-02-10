@@ -82,7 +82,7 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        Swaption(const ext::shared_ptr<VanillaSwap>& swap,
+        Swaption(ext::shared_ptr<VanillaSwap> swap,
                  const ext::shared_ptr<Exercise>& exercise,
                  Settlement::Type delivery = Settlement::Physical,
                  Settlement::Method settlementMethod = Settlement::PhysicalOTC);

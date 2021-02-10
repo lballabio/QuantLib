@@ -100,14 +100,14 @@ namespace QuantLib {
         friend class Inertia;
         friend class Topology;
         ParticleSwarmOptimization(Size M,
-                                  const ext::shared_ptr<Topology>& topology,
-                                  const ext::shared_ptr<Inertia>& inertia,
+                                  ext::shared_ptr<Topology> topology,
+                                  ext::shared_ptr<Inertia> inertia,
                                   Real c1 = 2.05,
                                   Real c2 = 2.05,
                                   unsigned long seed = SeedGenerator::instance().get());
         explicit ParticleSwarmOptimization(Size M,
-                                           const ext::shared_ptr<Topology>& topology,
-                                           const ext::shared_ptr<Inertia>& inertia,
+                                           ext::shared_ptr<Topology> topology,
+                                           ext::shared_ptr<Inertia> inertia,
                                            Real omega,
                                            Real c1,
                                            Real c2,

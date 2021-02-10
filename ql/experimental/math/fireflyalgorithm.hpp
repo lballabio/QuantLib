@@ -93,8 +93,8 @@ namespace QuantLib {
         friend class RandomWalk;
         friend class Intensity;
         FireflyAlgorithm(Size M,
-                         const ext::shared_ptr<Intensity>& intensity,
-                         const ext::shared_ptr<RandomWalk>& randomWalk,
+                         ext::shared_ptr<Intensity> intensity,
+                         ext::shared_ptr<RandomWalk> randomWalk,
                          Size Mde = 0,
                          Real mutationFactor = 1.0,
                          Real crossoverFactor = 0.5,

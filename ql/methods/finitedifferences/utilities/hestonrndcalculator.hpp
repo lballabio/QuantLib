@@ -44,7 +44,7 @@ namespace QuantLib {
 
     class HestonRNDCalculator : public RiskNeutralDensityCalculator {
     public:
-      explicit HestonRNDCalculator(const ext::shared_ptr<HestonProcess>& hestonProcess,
+      explicit HestonRNDCalculator(ext::shared_ptr<HestonProcess> hestonProcess,
                                    Real integrationEps = 1e-6,
                                    Size maxIntegrationIterations = 10000UL);
 

@@ -69,8 +69,7 @@ namespace QuantLib {
     //! helper class building a sequence of capped/floored cms-rate coupons
     class CmsLeg {
       public:
-        CmsLeg(const Schedule& schedule,
-               const ext::shared_ptr<SwapIndex>& swapIndex);
+        CmsLeg(Schedule schedule, ext::shared_ptr<SwapIndex> swapIndex);
         CmsLeg& withNotionals(Real notional);
         CmsLeg& withNotionals(const std::vector<Real>& notionals);
         CmsLeg& withPaymentDayCounter(const DayCounter&);

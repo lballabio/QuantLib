@@ -21,17 +21,16 @@
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
 #endif
-#include <ql/math/optimization/differentialevolution.hpp>
-#include <ql/math/optimization/simulatedannealing.hpp>
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/functional.hpp>
-
-
+#include <ql/math/optimization/differentialevolution.hpp>
+#include <ql/math/optimization/simulatedannealing.hpp>
 #include <ql/tuple.hpp>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+#include <utility>
 
 using namespace QuantLib;
 
@@ -143,7 +142,8 @@ class TestFunction : public CostFunction {
 public:
     typedef ext::function<Real(const Array&)> RealFunc;
     typedef ext::function<Disposable<Array>(const Array&)> ArrayFunc;
-    explicit TestFunction(const RealFunc & f, const ArrayFunc & fs = ArrayFunc()) : f_(f), fs_(fs) {}
+    explicit TestFunction(RealFunc f, ArrayFunc fs = ArrayFunc())
+    : f_(std::move(f)), fs_(std::move(fs)) {}
     explicit TestFunction(Real (*f)(const Array&), Disposable<Array> (*fs)(const Array&) = nullptr)
     : f_(f), fs_(fs) {}
     ~TestFunction() override = default;

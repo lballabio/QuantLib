@@ -19,20 +19,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/assetswap.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/couponpricer.hpp>
+#include <ql/instruments/assetswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <utility>
 
 using std::vector;
 
 namespace QuantLib {
 
     AssetSwap::AssetSwap(bool parSwap,
-                         const ext::shared_ptr<Bond>& bond,
+                         ext::shared_ptr<Bond> bond,
                          Real bondCleanPrice,
                          Real nonParRepayment,
                          Real gearing,
@@ -41,9 +42,8 @@ namespace QuantLib {
                          const DayCounter& floatingDayCounter,
                          Date dealMaturity,
                          bool payBondCoupon)
-    : Swap(2), bond_(bond), bondCleanPrice_(bondCleanPrice),
-      nonParRepayment_(nonParRepayment), spread_(spread), parSwap_(parSwap)
-    {
+    : Swap(2), bond_(std::move(bond)), bondCleanPrice_(bondCleanPrice),
+      nonParRepayment_(nonParRepayment), spread_(spread), parSwap_(parSwap) {
         Schedule tempSch(bond_->settlementDate(),
                          bond_->maturityDate(),
                          iborIndex->tenor(),
@@ -162,16 +162,15 @@ namespace QuantLib {
     }
 
     AssetSwap::AssetSwap(bool payBondCoupon,
-                         const ext::shared_ptr<Bond>& bond,
+                         ext::shared_ptr<Bond> bond,
                          Real bondCleanPrice,
                          const ext::shared_ptr<IborIndex>& iborIndex,
                          Spread spread,
                          const Schedule& floatSchedule,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
-    : Swap(2), bond_(bond), bondCleanPrice_(bondCleanPrice),
-      nonParRepayment_(100), spread_(spread), parSwap_(parSwap)
-    {
+    : Swap(2), bond_(std::move(bond)), bondCleanPrice_(bondCleanPrice), nonParRepayment_(100),
+      spread_(spread), parSwap_(parSwap) {
         Schedule schedule = floatSchedule;
         if (floatSchedule.empty())
             schedule = Schedule(bond_->settlementDate(),

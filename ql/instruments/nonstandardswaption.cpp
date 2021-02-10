@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/nonstandardswaption.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/nonstandardswaption.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -33,12 +34,12 @@ namespace QuantLib {
         registerWith(swap_);
     }
 
-    NonstandardSwaption::NonstandardSwaption(
-        const ext::shared_ptr<NonstandardSwap>& swap,
-        const ext::shared_ptr<Exercise>& exercise, Settlement::Type delivery,
-        Settlement::Method settlementMethod)
-        : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
-          settlementType_(delivery), settlementMethod_(settlementMethod) {
+    NonstandardSwaption::NonstandardSwaption(ext::shared_ptr<NonstandardSwap> swap,
+                                             const ext::shared_ptr<Exercise>& exercise,
+                                             Settlement::Type delivery,
+                                             Settlement::Method settlementMethod)
+    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
+      settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
         registerWithObservables(swap_);
     }

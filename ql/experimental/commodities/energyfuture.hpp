@@ -33,9 +33,10 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class EnergyFuture : public EnergyCommodity {
       public:
-        EnergyFuture(Integer buySell, const Quantity& quantity,
-                     const CommodityUnitCost& tradePrice,
-                     const ext::shared_ptr<CommodityIndex>& index,
+        EnergyFuture(Integer buySell,
+                     Quantity quantity,
+                     CommodityUnitCost tradePrice,
+                     ext::shared_ptr<CommodityIndex> index,
                      const CommodityType& commodityType,
                      const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
         bool isExpired() const override;

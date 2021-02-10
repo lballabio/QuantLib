@@ -21,6 +21,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -32,12 +33,11 @@ namespace QuantLib {
                          BusinessDayConvention convention,
                          bool endOfMonth,
                          const DayCounter& dayCounter,
-                         const Handle<YieldTermStructure>& h)
-    : InterestRateIndex(familyName, tenor, settlementDays, currency,
-                        fixingCalendar, dayCounter),
-      convention_(convention), termStructure_(h), endOfMonth_(endOfMonth) {
+                         Handle<YieldTermStructure> h)
+    : InterestRateIndex(familyName, tenor, settlementDays, currency, fixingCalendar, dayCounter),
+      convention_(convention), termStructure_(std::move(h)), endOfMonth_(endOfMonth) {
         registerWith(termStructure_);
-      }
+    }
 
     Rate IborIndex::forecastFixing(const Date& fixingDate) const {
         Date d1 = valueDate(fixingDate);

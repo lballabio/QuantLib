@@ -26,8 +26,9 @@
 
 #include <ql/instrument.hpp>
 #include <ql/money.hpp>
-#include <vector>
 #include <iosfwd>
+#include <utility>
+#include <vector>
 
 namespace QuantLib {
 
@@ -46,10 +47,8 @@ namespace QuantLib {
         std::string error;
         std::string detail;
 
-        PricingError(Level errorLevel,
-                     const std::string& error,
-                     const std::string& detail)
-        : errorLevel(errorLevel), error(error), detail(detail) {}
+        PricingError(Level errorLevel, std::string error, std::string detail)
+        : errorLevel(errorLevel), error(std::move(error)), detail(std::move(detail)) {}
     };
 
     typedef std::vector<PricingError> PricingErrors;
@@ -62,8 +61,7 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class Commodity : public Instrument {
       public:
-        explicit Commodity(
-                     const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
+        explicit Commodity(ext::shared_ptr<SecondaryCosts> secondaryCosts);
         const ext::shared_ptr<SecondaryCosts>& secondaryCosts() const;
         const SecondaryCostAmounts& secondaryCostAmounts() const;
         const PricingErrors& pricingErrors() const;

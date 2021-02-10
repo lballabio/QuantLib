@@ -25,9 +25,10 @@
 #ifndef quantlib_blackconstantvol_hpp
 #define quantlib_blackconstantvol_hpp
 
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -44,7 +45,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter);
         BlackConstantVol(const Date& referenceDate,
                          const Calendar&,
-                         const Handle<Quote>& volatility,
+                         Handle<Quote> volatility,
                          const DayCounter& dayCounter);
         BlackConstantVol(Natural settlementDays,
                          const Calendar&,
@@ -52,7 +53,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter);
         BlackConstantVol(Natural settlementDays,
                          const Calendar&,
-                         const Handle<Quote>& volatility,
+                         Handle<Quote> volatility,
                          const DayCounter& dayCounter);
         //! \name TermStructure interface
         //@{
@@ -86,10 +87,10 @@ namespace QuantLib {
 
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               const Calendar& cal,
-                                              const Handle<Quote>& volatility,
+                                              Handle<Quote> volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(referenceDate, cal, Following, dc),
-      volatility_(volatility) {
+      volatility_(std::move(volatility)) {
         registerWith(volatility_);
     }
 
@@ -102,10 +103,10 @@ namespace QuantLib {
 
     inline BlackConstantVol::BlackConstantVol(Natural settlementDays,
                                               const Calendar& cal,
-                                              const Handle<Quote>& volatility,
+                                              Handle<Quote> volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(settlementDays, cal, Following, dc),
-      volatility_(volatility) {
+      volatility_(std::move(volatility)) {
         registerWith(volatility_);
     }
 

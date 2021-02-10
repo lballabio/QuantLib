@@ -27,6 +27,7 @@
 #define quantlib_hull_white_hpp
 
 #include <ql/models/shortrate/onefactormodels/vasicek.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -108,12 +109,10 @@ namespace QuantLib {
     */
     class HullWhite::Dynamics : public OneFactorModel::ShortRateDynamics {
       public:
-        Dynamics(const Parameter& fitting,
-                 Real a,
-                 Real sigma)
-        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
-                                     new OrnsteinUhlenbeckProcess(a, sigma))),
-          fitting_(fitting) {}
+        Dynamics(Parameter fitting, Real a, Real sigma)
+        : ShortRateDynamics(
+              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(a, sigma))),
+          fitting_(std::move(fitting)) {}
 
         Real variable(Time t, Rate r) const override { return r - fitting_(t); }
         Real shortRate(Time t, Real x) const override { return x + fitting_(t); }
@@ -134,9 +133,8 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const Handle<YieldTermStructure>& termStructure,
-                 Real a, Real sigma)
-            : termStructure_(termStructure), a_(a), sigma_(sigma) {}
+            Impl(Handle<YieldTermStructure> termStructure, Real a, Real sigma)
+            : termStructure_(std::move(termStructure)), a_(a), sigma_(sigma) {}
 
             Real value(const Array&, Time t) const override {
                 Rate forwardRate =

@@ -22,14 +22,15 @@
 #include "mclongstaffschwartzengine.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -38,9 +39,8 @@ namespace {
 
     class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
       public:
-        explicit AmericanMaxPathPricer(const ext::shared_ptr<Payoff>& payoff)
-        : payoff_(payoff) {
-        }
+        explicit AmericanMaxPathPricer(ext::shared_ptr<Payoff> payoff)
+        : payoff_(std::move(payoff)) {}
 
         StateType state(const MultiPath& path, Size t) const override {
             Array tmp(path.assetNumber());

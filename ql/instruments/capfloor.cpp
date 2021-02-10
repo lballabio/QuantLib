@@ -21,14 +21,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/capfloor.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
-#include <ql/math/solvers1d/newtonsafe.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/instruments/capfloor.hpp>
+#include <ql/math/solvers1d/newtonsafe.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -37,7 +38,7 @@ namespace QuantLib {
         class ImpliedCapVolHelper {
           public:
             ImpliedCapVolHelper(const CapFloor&,
-                                const Handle<YieldTermStructure>& discountCurve,
+                                Handle<YieldTermStructure> discountCurve,
                                 Real targetValue,
                                 Real displacement,
                                 VolatilityType type);
@@ -51,13 +52,12 @@ namespace QuantLib {
             const Instrument::results* results_;
         };
 
-        ImpliedCapVolHelper::ImpliedCapVolHelper(
-                              const CapFloor& cap,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Real targetValue,
-                              Real displacement,
-                              VolatilityType type)
-        : discountCurve_(discountCurve), targetValue_(targetValue),
+        ImpliedCapVolHelper::ImpliedCapVolHelper(const CapFloor& cap,
+                                                 Handle<YieldTermStructure> discountCurve,
+                                                 Real targetValue,
+                                                 Real displacement,
+                                                 VolatilityType type)
+        : discountCurve_(std::move(discountCurve)), targetValue_(targetValue),
           vol_(ext::make_shared<SimpleQuote>(-1.0)) {
 
             // vol_ is set an implausible value, so that calculation is forced
@@ -121,11 +121,11 @@ namespace QuantLib {
     }
 
     CapFloor::CapFloor(CapFloor::Type type,
-                       const Leg& floatingLeg,
-                       const std::vector<Rate>& capRates,
-                       const std::vector<Rate>& floorRates)
-    : type_(type), floatingLeg_(floatingLeg),
-      capRates_(capRates), floorRates_(floorRates) {
+                       Leg floatingLeg,
+                       std::vector<Rate> capRates,
+                       std::vector<Rate> floorRates)
+    : type_(type), floatingLeg_(std::move(floatingLeg)), capRates_(std::move(capRates)),
+      floorRates_(std::move(floorRates)) {
         if (type_ == Cap || type_ == Collar) {
             QL_REQUIRE(!capRates_.empty(), "no cap rates given");
             capRates_.reserve(floatingLeg_.size());
@@ -145,10 +145,8 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    CapFloor::CapFloor(CapFloor::Type type,
-                       const Leg& floatingLeg,
-                       const std::vector<Rate>& strikes)
-    : type_(type), floatingLeg_(floatingLeg) {
+    CapFloor::CapFloor(CapFloor::Type type, Leg floatingLeg, const std::vector<Rate>& strikes)
+    : type_(type), floatingLeg_(std::move(floatingLeg)) {
         QL_REQUIRE(!strikes.empty(), "no strikes given");
         if (type_ == Cap) {
             capRates_ = strikes;

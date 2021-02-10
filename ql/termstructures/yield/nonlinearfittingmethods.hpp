@@ -253,10 +253,10 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
-                            const Handle<YieldTermStructure>& discountCurve,
+                            Handle<YieldTermStructure> discountCurve,
                             Real minCutoffTime = 0.0,
                             Real maxCutoffTime = QL_MAX_REAL);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
+#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
 #else
         std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;

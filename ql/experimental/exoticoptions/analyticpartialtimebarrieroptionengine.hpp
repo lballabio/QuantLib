@@ -33,7 +33,7 @@ namespace QuantLib {
         : public PartialTimeBarrierOption::engine {
       public:
         explicit AnalyticPartialTimeBarrierOptionEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 
       private:

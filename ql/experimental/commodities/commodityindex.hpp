@@ -35,16 +35,15 @@ namespace QuantLib {
     class CommodityIndex : public Observable,
                            public Observer {
       public:
-        CommodityIndex(
-                const std::string& name,
-                const CommodityType& commodityType,
-                const Currency& currency,
-                const UnitOfMeasure& unitOfMeasure,
-                const Calendar& calendar,
-                Real lotQuantity,
-                const ext::shared_ptr<CommodityCurve>& forwardCurve,
-                const ext::shared_ptr<ExchangeContracts>& exchangeContracts,
-                int nearbyOffset);
+        CommodityIndex(const std::string& name,
+                       CommodityType commodityType,
+                       Currency currency,
+                       UnitOfMeasure unitOfMeasure,
+                       Calendar calendar,
+                       Real lotQuantity,
+                       ext::shared_ptr<CommodityCurve> forwardCurve,
+                       ext::shared_ptr<ExchangeContracts> exchangeContracts,
+                       int nearbyOffset);
         //! \name Index interface
         //@{
         std::string name() const;

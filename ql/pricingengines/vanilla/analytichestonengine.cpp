@@ -24,18 +24,18 @@
 */
 
 #include <ql/functional.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/math/integrals/kronrodintegral.hpp>
-#include <ql/math/integrals/trapezoidintegral.hpp>
-#include <ql/math/integrals/discreteintegrals.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/integrals/exponentialintegrals.hpp>
-
 #include <ql/instruments/payoffs.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/integrals/exponentialintegrals.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <utility>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -50,8 +50,7 @@ namespace QuantLib {
             const Real c_inf_;
             const ext::function<Real(Real)> f_;
           public:
-            integrand1(Real c_inf, const ext::function<Real(Real)>& f)
-            : c_inf_(c_inf), f_(f) {}
+            integrand1(Real c_inf, ext::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
             Real operator()(Real x) const {
                 if ((1.0-x)*c_inf_ > QL_EPSILON)
                     return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
@@ -65,8 +64,7 @@ namespace QuantLib {
             const Real c_inf_;
             const ext::function<Real(Real)> f_;
           public:
-            integrand2(Real c_inf, const ext::function<Real(Real)>& f)
-            : c_inf_(c_inf), f_(f) {}
+            integrand2(Real c_inf, ext::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
             Real operator()(Real x) const {
                 if (x*c_inf_ > QL_EPSILON) {
                     return f_(-std::log(x)/c_inf_)/(x*c_inf_);
@@ -714,17 +712,13 @@ namespace QuantLib {
     }
 
 
-    AnalyticHestonEngine::Integration::Integration(
-            Algorithm intAlgo,
-            const ext::shared_ptr<Integrator>& integrator)
-    : intAlgo_(intAlgo),
-      integrator_(integrator) { }
+    AnalyticHestonEngine::Integration::Integration(Algorithm intAlgo,
+                                                   ext::shared_ptr<Integrator> integrator)
+    : intAlgo_(intAlgo), integrator_(std::move(integrator)) {}
 
     AnalyticHestonEngine::Integration::Integration(
-            Algorithm intAlgo,
-            const ext::shared_ptr<GaussianQuadrature>& gaussianQuadrature)
-    : intAlgo_(intAlgo),
-      gaussianQuadrature_(gaussianQuadrature) { }
+        Algorithm intAlgo, ext::shared_ptr<GaussianQuadrature> gaussianQuadrature)
+    : intAlgo_(intAlgo), gaussianQuadrature_(std::move(gaussianQuadrature)) {}
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussLobatto(Real relTolerance,

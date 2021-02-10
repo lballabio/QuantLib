@@ -24,17 +24,18 @@
 
 #include <ql/mathconstants.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/cranknicolsonscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/trbdf2scheme.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -87,11 +88,11 @@ namespace QuantLib {
     }
 
     FdmBackwardSolver::FdmBackwardSolver(
-        const ext::shared_ptr<FdmLinearOpComposite>& map,
-        const FdmBoundaryConditionSet& bcSet,
+        ext::shared_ptr<FdmLinearOpComposite> map,
+        FdmBoundaryConditionSet bcSet,
         const ext::shared_ptr<FdmStepConditionComposite>& condition,
         const FdmSchemeDesc& schemeDesc)
-    : map_(map), bcSet_(bcSet),
+    : map_(std::move(map)), bcSet_(std::move(bcSet)),
       condition_((condition) != nullptr ?
                      condition :
                      ext::make_shared<FdmStepConditionComposite>(

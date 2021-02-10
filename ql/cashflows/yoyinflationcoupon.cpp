@@ -18,10 +18,11 @@
  */
 
 
-#include <ql/cashflows/inflationcouponpricer.hpp>
-#include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/inflationcoupon.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -60,15 +61,12 @@ namespace QuantLib {
     }
 
 
-
-    yoyInflationLeg::
-    yoyInflationLeg(const Schedule& schedule, const Calendar& paymentCalendar,
-                    const ext::shared_ptr<YoYInflationIndex>& index,
-                    const Period& observationLag)
-    : schedule_(schedule), index_(index),
-      observationLag_(observationLag),
-      paymentAdjustment_(ModifiedFollowing),
-      paymentCalendar_(paymentCalendar) {}
+    yoyInflationLeg::yoyInflationLeg(Schedule schedule,
+                                     Calendar paymentCalendar,
+                                     ext::shared_ptr<YoYInflationIndex> index,
+                                     const Period& observationLag)
+    : schedule_(std::move(schedule)), index_(std::move(index)), observationLag_(observationLag),
+      paymentAdjustment_(ModifiedFollowing), paymentCalendar_(std::move(paymentCalendar)) {}
 
 
     yoyInflationLeg& yoyInflationLeg::withNotionals(Real notional) {

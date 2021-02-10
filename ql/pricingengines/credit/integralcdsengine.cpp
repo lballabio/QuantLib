@@ -19,20 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/credit/integralcdsengine.hpp>
-#include <ql/instruments/claim.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/instruments/claim.hpp>
+#include <ql/pricingengines/credit/integralcdsengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     IntegralCdsEngine::IntegralCdsEngine(const Period& step,
-                                         const Handle<DefaultProbabilityTermStructure>& probability,
+                                         Handle<DefaultProbabilityTermStructure> probability,
                                          Real recoveryRate,
-                                         const Handle<YieldTermStructure>& discountCurve,
+                                         Handle<YieldTermStructure> discountCurve,
                                          const boost::optional<bool>& includeSettlementDateFlows)
-    : integrationStep_(step), probability_(probability), recoveryRate_(recoveryRate),
-      discountCurve_(discountCurve), includeSettlementDateFlows_(includeSettlementDateFlows) {
+    : integrationStep_(step), probability_(std::move(probability)), recoveryRate_(recoveryRate),
+      discountCurve_(std::move(discountCurve)),
+      includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(probability_);
         registerWith(discountCurve_);
     }

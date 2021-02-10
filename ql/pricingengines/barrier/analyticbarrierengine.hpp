@@ -45,8 +45,7 @@ namespace QuantLib {
     */
     class AnalyticBarrierEngine : public BarrierOption::engine {
       public:
-        AnalyticBarrierEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+        AnalyticBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 
       private:

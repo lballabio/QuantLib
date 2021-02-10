@@ -80,18 +80,21 @@ namespace QuantLib
     class RatePseudoRootJacobian
     {
     public:
-        RatePseudoRootJacobian(const Matrix& pseudoRoot,
-                                        Size aliveIndex, 
-                                        Size numeraire,
-                                        const std::vector<Time>& taus,
-                                        const std::vector<Matrix>& pseudoBumps,
-                                        const std::vector<Spread>& displacements);
+      RatePseudoRootJacobian(const Matrix& pseudoRoot,
+                             Size aliveIndex,
+                             Size numeraire,
+                             const std::vector<Time>& taus,
+                             const std::vector<Matrix>& pseudoBumps,
+                             std::vector<Spread> displacements);
 
-        void getBumps(const std::vector<Rate>& oldRates,
-            const std::vector<Real>& oneStepDFs, // redundant info but saves time to pass in since will have been needed elsewhere
-            const std::vector<Rate>& newRates,   // redundant info but saves time to pass in since will have been needed elsewhere
-            const std::vector<Real>& gaussians,
-            Matrix& B); // B as in page 95 of the GG paper, rows should be number rates long, one row for each bump
+      void getBumps(const std::vector<Rate>& oldRates,
+                    const std::vector<Real>& oneStepDFs, // redundant info but saves time to pass in
+                                                         // since will have been needed elsewhere
+                    const std::vector<Rate>& newRates,   // redundant info but saves time to pass in
+                                                         // since will have been needed elsewhere
+                    const std::vector<Real>& gaussians,
+                    Matrix& B); // B as in page 95 of the GG paper, rows should be number rates
+                                // long, one row for each bump
 
     private:
 
@@ -117,17 +120,21 @@ namespace QuantLib
     class RatePseudoRootJacobianAllElements
     {
     public:
-        RatePseudoRootJacobianAllElements(const Matrix& pseudoRoot,
-                                        Size aliveIndex, 
+      RatePseudoRootJacobianAllElements(const Matrix& pseudoRoot,
+                                        Size aliveIndex,
                                         Size numeraire,
                                         const std::vector<Time>& taus,
-                                        const std::vector<Spread>& displacements);
+                                        std::vector<Spread> displacements);
 
-        void getBumps(const std::vector<Rate>& oldRates,
-            const std::vector<Real>& oneStepDFs, // redundant info but saves time to pass in since will have been needed elsewhere
-            const std::vector<Rate>& newRates,   // redundant info but saves time to pass in since will have been needed elsewhere
-            const std::vector<Real>& gaussians,
-            std::vector<Matrix>& B); // one Matrix for each rate, the elements of the matrix are the derivatives of that rate with respect to each pseudo-root element
+      void getBumps(const std::vector<Rate>& oldRates,
+                    const std::vector<Real>& oneStepDFs, // redundant info but saves time to pass in
+                                                         // since will have been needed elsewhere
+                    const std::vector<Rate>& newRates,   // redundant info but saves time to pass in
+                                                         // since will have been needed elsewhere
+                    const std::vector<Real>& gaussians,
+                    std::vector<Matrix>&
+                        B); // one Matrix for each rate, the elements of the matrix are the
+                            // derivatives of that rate with respect to each pseudo-root element
 
     private:
 

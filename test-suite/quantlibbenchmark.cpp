@@ -95,10 +95,11 @@
 #include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer/timer.hpp>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <list>
 #include <string>
+#include <utility>
 
 /* PAPI code
 #include <stdio.h
@@ -203,9 +204,8 @@ namespace {
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(const std::string& name, fct_ptr f, double mflop)
-        : f_(f), name_(name), mflop_(mflop) {
-        }
+        Benchmark(std::string name, fct_ptr f, double mflop)
+        : f_(f), name_(std::move(name)), mflop_(mflop) {}
 
         test_case* getTestCase() const {
             #if BOOST_VERSION >= 105900

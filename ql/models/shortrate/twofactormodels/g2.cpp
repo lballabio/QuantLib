@@ -18,11 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/twofactormodels/g2.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/models/shortrate/twofactormodels/g2.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -108,14 +109,19 @@ namespace QuantLib {
 
     class G2::SwaptionPricingFunction {
       public:
-        SwaptionPricingFunction(Real a, Real sigma,
-                                Real b, Real eta, Real rho,
-                                Real w, Real start,
-                                const std::vector<Time>& payTimes,
-                                Rate fixedRate, const G2& model)
-        : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho), w_(w),
-          T_(start), t_(payTimes), rate_(fixedRate), size_(t_.size()),
-          A_(size_), Ba_(size_), Bb_(size_) {
+        SwaptionPricingFunction(Real a,
+                                Real sigma,
+                                Real b,
+                                Real eta,
+                                Real rho,
+                                Real w,
+                                Real start,
+                                std::vector<Time> payTimes,
+                                Rate fixedRate,
+                                const G2& model)
+        : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho), w_(w), T_(start),
+          t_(std::move(payTimes)), rate_(fixedRate), size_(t_.size()), A_(size_), Ba_(size_),
+          Bb_(size_) {
 
 
             sigmax_ = sigma_*std::sqrt(0.5*(1.0-std::exp(-2.0*a_*T_))/a_);
