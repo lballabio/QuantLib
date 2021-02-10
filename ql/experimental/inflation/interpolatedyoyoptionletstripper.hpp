@@ -24,13 +24,13 @@
 #ifndef quantlib_interpolated_yoy_optionlet_stripper_hpp
 #define quantlib_interpolated_yoy_optionlet_stripper_hpp
 
-#include <ql/instruments/makeyoyinflationcapfloor.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-
-#include <ql/experimental/inflation/yoyoptionletstripper.hpp>
+#include <ql/experimental/inflation/genericindexes.hpp>
 #include <ql/experimental/inflation/piecewiseyoyoptionletvolatility.hpp>
 #include <ql/experimental/inflation/yoyoptionlethelpers.hpp>
-#include <ql/experimental/inflation/genericindexes.hpp>
+#include <ql/experimental/inflation/yoyoptionletstripper.hpp>
+#include <ql/instruments/makeyoyinflationcapfloor.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -72,7 +72,7 @@ namespace QuantLib {
                               Natural fixingDays,
                               const ext::shared_ptr<YoYInflationIndex>& anIndex,
                               const ext::shared_ptr<YoYCapFloorTermPriceSurface>&,
-                              const ext::shared_ptr<YoYInflationCapFloorEngine>& p,
+                              ext::shared_ptr<YoYInflationCapFloorEngine> p,
                               Real priceToMatch);
             Real operator()(Volatility guess) const;
           protected:
@@ -103,12 +103,12 @@ namespace QuantLib {
         Natural fixingDays,
         const ext::shared_ptr<YoYInflationIndex>& anIndex,
         const ext::shared_ptr<YoYCapFloorTermPriceSurface>& surf,
-        const ext::shared_ptr<YoYInflationCapFloorEngine>& p,
+        ext::shared_ptr<YoYInflationCapFloorEngine> p,
         Real priceToMatch)
     : slope_(slope), K_(K), frequency_(anIndex->frequency()),
-      indexIsInterpolated_(anIndex->interpolated()),
-      tvec_(std::vector<Time>(2)), dvec_(std::vector<Date>(2)),
-      vvec_(std::vector<Volatility>(2)), priceToMatch_(priceToMatch), surf_(surf), p_(p) {
+      indexIsInterpolated_(anIndex->interpolated()), tvec_(std::vector<Time>(2)),
+      dvec_(std::vector<Date>(2)), vvec_(std::vector<Volatility>(2)), priceToMatch_(priceToMatch),
+      surf_(surf), p_(std::move(p)) {
 
         lag_ = surf_->observationLag();
         capfloor_ =

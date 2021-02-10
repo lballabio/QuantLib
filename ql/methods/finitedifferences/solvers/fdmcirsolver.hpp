@@ -41,9 +41,9 @@ namespace QuantLib {
 
     class FdmCIRSolver : public LazyObject {
       public:
-        FdmCIRSolver(const Handle<CoxIngersollRossProcess>& process,
-                     const Handle<GeneralizedBlackScholesProcess>& bsProcess,
-                     const FdmSolverDesc& solverDesc,
+        FdmCIRSolver(Handle<CoxIngersollRossProcess> process,
+                     Handle<GeneralizedBlackScholesProcess> bsProcess,
+                     FdmSolverDesc solverDesc,
                      const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
                      Real rho = 1.0,
                      Real strike = 1.0);

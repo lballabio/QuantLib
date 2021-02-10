@@ -55,20 +55,18 @@ namespace QuantLib {
         class results;
         class engine;
         YearOnYearInflationSwap(
-                    Type type,
-                    Real nominal,
-                    const Schedule& fixedSchedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDayCount,
-                    const Schedule& yoySchedule,
-                    const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
-                    const Period& observationLag,
-                    Spread spread,
-                    const DayCounter& yoyDayCount,
-                    const Calendar& paymentCalendar,    // inflation index does not have a calendar
-                    BusinessDayConvention paymentConvention =
-                        ModifiedFollowing
-                    );
+            Type type,
+            Real nominal,
+            Schedule fixedSchedule,
+            Rate fixedRate,
+            DayCounter fixedDayCount,
+            Schedule yoySchedule,
+            ext::shared_ptr<YoYInflationIndex> yoyIndex,
+            const Period& observationLag,
+            Spread spread,
+            DayCounter yoyDayCount,
+            Calendar paymentCalendar, // inflation index does not have a calendar
+            BusinessDayConvention paymentConvention = ModifiedFollowing);
         // results
         virtual Real fixedLegNPV() const;
         virtual Rate fairRate() const;

@@ -24,9 +24,10 @@
 #ifndef quantlib_finite_difference_model_hpp
 #define quantlib_finite_difference_model_hpp
 
-#include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
+#include <ql/methods/finitedifferences/stepcondition.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -43,17 +44,15 @@ namespace QuantLib {
         // constructors
         FiniteDifferenceModel(const operator_type& L,
                               const bc_set& bcs,
-                              const std::vector<Time>& stoppingTimes =
-                                                          std::vector<Time>())
-        : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {
+                              std::vector<Time> stoppingTimes = std::vector<Time>())
+        : evolver_(L, bcs), stoppingTimes_(std::move(stoppingTimes)) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
             auto last = std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
             stoppingTimes_.erase(last, stoppingTimes_.end());
         }
-        FiniteDifferenceModel(const Evolver& evolver,
-                              const std::vector<Time>& stoppingTimes =
-                                                          std::vector<Time>())
-        : evolver_(evolver), stoppingTimes_(stoppingTimes) {
+        FiniteDifferenceModel(Evolver evolver,
+                              std::vector<Time> stoppingTimes = std::vector<Time>())
+        : evolver_(std::move(evolver)), stoppingTimes_(std::move(stoppingTimes)) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
             auto last = std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
             stoppingTimes_.erase(last, stoppingTimes_.end());

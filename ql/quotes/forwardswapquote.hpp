@@ -35,8 +35,8 @@ namespace QuantLib {
     class ForwardSwapQuote : public Quote,
                              public LazyObject {
       public:
-        ForwardSwapQuote(const ext::shared_ptr<SwapIndex>& swapIndex,
-                         const Handle<Quote>& spread,
+        ForwardSwapQuote(ext::shared_ptr<SwapIndex> swapIndex,
+                         Handle<Quote> spread,
                          const Period& fwdStart);
         //! \name Quote interface
         //@{

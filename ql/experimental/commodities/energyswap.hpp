@@ -33,10 +33,10 @@ namespace QuantLib {
 
     class EnergySwap : public EnergyCommodity {
       public:
-        EnergySwap(const Calendar& calendar,
-                   const Currency& payCurrency,
-                   const Currency& receiveCurrency,
-                   const PricingPeriods& pricingPeriods,
+        EnergySwap(Calendar calendar,
+                   Currency payCurrency,
+                   Currency receiveCurrency,
+                   PricingPeriods pricingPeriods,
                    const CommodityType& commodityType,
                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
 

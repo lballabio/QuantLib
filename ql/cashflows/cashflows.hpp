@@ -47,7 +47,7 @@ namespace QuantLib {
           public:
             IrrFinder(const Leg& leg,
                       Real npv,
-                      const DayCounter& dayCounter,
+                      DayCounter dayCounter,
                       Compounding comp,
                       Frequency freq,
                       bool includeSettlementDateFlows,

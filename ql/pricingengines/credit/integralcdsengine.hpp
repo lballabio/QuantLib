@@ -32,9 +32,9 @@ namespace QuantLib {
     class IntegralCdsEngine : public CreditDefaultSwap::engine {
       public:
         IntegralCdsEngine(const Period& integrationStep,
-                          const Handle<DefaultProbabilityTermStructure>&,
+                          Handle<DefaultProbabilityTermStructure>,
                           Real recoveryRate,
-                          const Handle<YieldTermStructure>& discountCurve,
+                          Handle<YieldTermStructure> discountCurve,
                           const boost::optional<bool>& includeSettlementDateFlows = boost::none);
         void calculate() const override;
 

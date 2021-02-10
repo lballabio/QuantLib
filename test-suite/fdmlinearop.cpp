@@ -85,6 +85,7 @@
 #endif
 
 #include <numeric>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -93,14 +94,12 @@ namespace {
 
     class FdmHestonExpressCondition : public StepCondition<Array> {
       public:
-        FdmHestonExpressCondition(
-            const std::vector<Real>& redemptions,
-            const std::vector<Real>& triggerLevels,
-            const std::vector<Time>& exerciseTimes,
-            const ext::shared_ptr<FdmMesher> & mesher)
-        : redemptions_(redemptions), triggerLevels_(triggerLevels),
-          exerciseTimes_(exerciseTimes), mesher_(mesher) {
-        }
+        FdmHestonExpressCondition(std::vector<Real> redemptions,
+                                  std::vector<Real> triggerLevels,
+                                  std::vector<Time> exerciseTimes,
+                                  ext::shared_ptr<FdmMesher> mesher)
+        : redemptions_(std::move(redemptions)), triggerLevels_(std::move(triggerLevels)),
+          exerciseTimes_(std::move(exerciseTimes)), mesher_(std::move(mesher)) {}
 
         void applyTo(Array& a, Time t) const override {
             auto iter = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);

@@ -18,38 +18,36 @@
 */
 
 
-#include "utilities.hpp"
 #include "normalclvmodel.hpp"
-
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/instruments/impliedvolatility.hpp>
+#include "utilities.hpp"
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
+#include <ql/experimental/models/normalclvmodel.hpp>
+#include <ql/experimental/volatility/sabrvoltermstructure.hpp>
+#include <ql/functional.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
-#include <ql/math/statistics/statistics.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/forward/forwardengine.hpp>
-#include <ql/methods/montecarlo/pathgenerator.hpp>
-#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-
-#include <ql/experimental/models/normalclvmodel.hpp>
-#include <ql/experimental/volatility/sabrvoltermstructure.hpp>
+#include <ql/math/statistics/statistics.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/functional.hpp>
-
+#include <ql/methods/montecarlo/pathgenerator.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/forward/forwardengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <boost/assign/std/vector.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::assign;
@@ -273,8 +271,8 @@ void NormalCLVModelTest::testIllustrative1DExample() {
 namespace normal_clv_model_test {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
-        CLVModelPayoff(Option::Type type, Real strike, const ext::function<Real(Real)>& g)
-        : PlainVanillaPayoff(type, strike), g_(g) {}
+        CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+        : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
         Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 

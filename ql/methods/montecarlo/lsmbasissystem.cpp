@@ -23,11 +23,12 @@
 */
 // lsmbasissystem.hpp
 
+#include <ql/functional.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
-#include <ql/functional.hpp>
-#include <set>
 #include <numeric>
+#include <set>
+#include <utility>
 
 namespace QuantLib {
     namespace {
@@ -57,7 +58,7 @@ namespace QuantLib {
            to create [Array -> Real] functor */
         class MultiDimFct {
           public:
-            explicit MultiDimFct(const VF_R& b): b_(b) {
+            explicit MultiDimFct(VF_R b) : b_(std::move(b)) {
                 QL_REQUIRE(!b_.empty(), "zero size basis");
             }
             inline Real operator()(const Array& a) const {

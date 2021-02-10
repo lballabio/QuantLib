@@ -17,18 +17,18 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/exercise.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/math/fastfouriertransform.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <complex>
+#include <utility>
 
 namespace QuantLib {
 
-    FFTEngine::FFTEngine(
-        const ext::shared_ptr<StochasticProcess1D>& process, Real logStrikeSpacing)
-        : process_(process), lambda_(logStrikeSpacing) {
-            registerWith(process_);
+    FFTEngine::FFTEngine(ext::shared_ptr<StochasticProcess1D> process, Real logStrikeSpacing)
+    : process_(std::move(process)), lambda_(logStrikeSpacing) {
+        registerWith(process_);
     }
 
     void FFTEngine::calculate() const

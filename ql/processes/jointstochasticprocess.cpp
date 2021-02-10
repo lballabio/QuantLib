@@ -21,20 +21,17 @@
     \brief multi model process for hybrid products
 */
 
-#include <ql/math/matrixutilities/svd.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/svd.hpp>
 #include <ql/processes/jointstochasticprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     JointStochasticProcess::JointStochasticProcess(
-        const std::vector<ext::shared_ptr<StochasticProcess> > & l,
-        Size factors)
-    : l_      (l),
-      size_   (0),
-      factors_(factors),
-      modelFactors_(0) {
+        std::vector<ext::shared_ptr<StochasticProcess> > l, Size factors)
+    : l_(std::move(l)), size_(0), factors_(factors), modelFactors_(0) {
 
         for (const_iterator iter=l_.begin(); iter != l_.end(); ++iter) {
             registerWith(*iter);

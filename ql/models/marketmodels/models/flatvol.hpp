@@ -67,17 +67,17 @@ namespace QuantLib {
                                   public Observer {
       public:
         FlatVolFactory(Real longTermCorrelation,
-                              Real beta,
-                              // this is just to make it work---it
-                              // should be replaced with something
-                              // else (such as some kind of volatility
-                              // structure)
-                              const std::vector<Time>& times,
-                              const std::vector<Volatility>& vols,
-                              // this is OK
-                              const Handle<YieldTermStructure>& yieldCurve,
-                              // this might have a structure
-                              Spread displacement);
+                       Real beta,
+                       // this is just to make it work---it
+                       // should be replaced with something
+                       // else (such as some kind of volatility
+                       // structure)
+                       std::vector<Time> times,
+                       std::vector<Volatility> vols,
+                       // this is OK
+                       Handle<YieldTermStructure> yieldCurve,
+                       // this might have a structure
+                       Spread displacement);
         ext::shared_ptr<MarketModel> create(const EvolutionDescription&,
                                             Size numberOfFactors) const override;
         void update() override;

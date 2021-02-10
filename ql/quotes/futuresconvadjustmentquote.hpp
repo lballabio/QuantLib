@@ -38,14 +38,14 @@ namespace QuantLib {
       public:
         FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
                                    const Date& futuresDate,
-                                   const Handle<Quote>& futuresQuote,
-                                   const Handle<Quote>& volatility,
-                                   const Handle<Quote>& meanReversion);
+                                   Handle<Quote> futuresQuote,
+                                   Handle<Quote> volatility,
+                                   Handle<Quote> meanReversion);
         FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
                                    const std::string& immCode,
-                                   const Handle<Quote>& futuresQuote,
-                                   const Handle<Quote>& volatility,
-                                   const Handle<Quote>& meanReversion);
+                                   Handle<Quote> futuresQuote,
+                                   Handle<Quote> volatility,
+                                   Handle<Quote> meanReversion);
         //! \name Quote interface
         //@{
         Real value() const override;

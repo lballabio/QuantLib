@@ -19,10 +19,11 @@
 */
 
 #include <ql/experimental/credit/basket.hpp>
+#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <numeric>
+#include <utility>
 
 using namespace std;
 
@@ -30,14 +31,14 @@ namespace QuantLib {
 
     Basket::Basket(const Date& refDate,
                    const vector<string>& names,
-                   const vector<Real>& notionals,
-                   const ext::shared_ptr<Pool>& pool,
+                   vector<Real> notionals,
+                   ext::shared_ptr<Pool> pool,
                    Real attachment,
                    Real detachment,
-                   const ext::shared_ptr<Claim>& claim)
-    : notionals_(notionals), pool_(pool), claim_(claim), attachmentRatio_(attachment),
-      detachmentRatio_(detachment), basketNotional_(0.0), attachmentAmount_(0.0),
-      detachmentAmount_(0.0), trancheNotional_(0.0), refDate_(refDate) {
+                   ext::shared_ptr<Claim> claim)
+    : notionals_(std::move(notionals)), pool_(std::move(pool)), claim_(std::move(claim)),
+      attachmentRatio_(attachment), detachmentRatio_(detachment), basketNotional_(0.0),
+      attachmentAmount_(0.0), detachmentAmount_(0.0), trancheNotional_(0.0), refDate_(refDate) {
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
         QL_REQUIRE (attachmentRatio_ >= 0 &&
                     attachmentRatio_ <= detachmentRatio_ &&

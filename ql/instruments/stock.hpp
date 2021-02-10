@@ -33,7 +33,7 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class Stock : public Instrument {
       public:
-        Stock(const Handle<Quote>& quote);
+        Stock(Handle<Quote> quote);
         bool isExpired() const override { return false; }
 
       protected:

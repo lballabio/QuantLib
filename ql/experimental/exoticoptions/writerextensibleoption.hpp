@@ -41,11 +41,10 @@ namespace QuantLib {
           \param payoff2    The payoff of the extended option
           \param exercise2  The second exercise date
         */
-        WriterExtensibleOption(
-            const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
-            const ext::shared_ptr<Exercise>& exercise1,
-            const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
-            const ext::shared_ptr<Exercise>& exercise2);
+        WriterExtensibleOption(const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
+                               const ext::shared_ptr<Exercise>& exercise1,
+                               const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
+                               ext::shared_ptr<Exercise> exercise2);
         // inspectors
         ext::shared_ptr<Payoff> payoff2() { return payoff2_; }
         ext::shared_ptr<Exercise> exercise2() { return exercise2_; };

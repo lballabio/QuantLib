@@ -33,10 +33,9 @@ namespace QuantLib {
 
     class DiscretizedConvertible : public DiscretizedAsset {
       public:
-        DiscretizedConvertible(
-             const ConvertibleBond::option::arguments&,
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const TimeGrid& grid = TimeGrid());
+        DiscretizedConvertible(ConvertibleBond::option::arguments,
+                               ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                               const TimeGrid& grid = TimeGrid());
 
         void reset(Size size) override;
 

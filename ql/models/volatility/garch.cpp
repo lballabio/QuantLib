@@ -18,12 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/volatility/garch.hpp>
-#include <ql/math/optimization/leastsquare.hpp>
-#include <ql/math/optimization/simplex.hpp>
 #include <ql/math/autocovariance.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/math/optimization/leastsquare.hpp>
+#include <ql/math/optimization/simplex.hpp>
+#include <ql/models/volatility/garch.hpp>
 #include <boost/foreach.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -142,8 +143,7 @@ namespace QuantLib {
 
         class FitAcfProblem : public LeastSquareProblem {
           public:
-            FitAcfProblem(Real A2, const Array &acf,
-                          const std::vector<std::size_t> &idx);
+            FitAcfProblem(Real A2, Array acf, std::vector<std::size_t> idx);
             Size size() override;
             void targetAndValue(const Array& x, Array& target, Array& fct2fit) override;
             void targetValueAndGradient(const Array& x,
@@ -157,9 +157,8 @@ namespace QuantLib {
             std::vector<std::size_t> idx_;
         };
 
-        FitAcfProblem::FitAcfProblem(Real A2, const Array &acf,
-                                     const std::vector<std::size_t> &idx)
-        : A2_(A2), acf_(acf), idx_(idx) {}
+        FitAcfProblem::FitAcfProblem(Real A2, Array acf, std::vector<std::size_t> idx)
+        : A2_(A2), acf_(std::move(acf)), idx_(std::move(idx)) {}
 
         Size FitAcfProblem::size() { return idx_.size(); }
 

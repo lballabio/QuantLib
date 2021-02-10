@@ -32,16 +32,17 @@
 #ifndef ql_xabr_interpolation_hpp
 #define ql_xabr_interpolation_hpp
 
-#include <ql/utilities/null.hpp>
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/math/interpolation.hpp>
-#include <ql/math/optimization/method.hpp>
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/method.hpp>
+#include <ql/math/optimization/projectedcostfunction.hpp>
+#include <ql/math/optimization/simplex.hpp>
 #include <ql/math/randomnumbers/haltonrsg.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/utilities/null.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -49,15 +50,14 @@ namespace detail {
 
 template <typename Model> class XABRCoeffHolder {
   public:
-    XABRCoeffHolder(const Time t, const Real &forward,
+    XABRCoeffHolder(const Time t,
+                    const Real& forward,
                     const std::vector<Real>& params,
                     const std::vector<bool>& paramIsFixed,
-                    const std::vector<Real>& addParams)
-        : t_(t), forward_(forward), params_(params),
-          paramIsFixed_(paramIsFixed.size(), false),
-          weights_(std::vector<Real>()), error_(Null<Real>()),
-          maxError_(Null<Real>()), XABREndCriteria_(EndCriteria::None),
-          addParams_(addParams) {
+                    std::vector<Real> addParams)
+    : t_(t), forward_(forward), params_(params), paramIsFixed_(paramIsFixed.size(), false),
+      weights_(std::vector<Real>()), error_(Null<Real>()), maxError_(Null<Real>()),
+      XABREndCriteria_(EndCriteria::None), addParams_(std::move(addParams)) {
         QL_REQUIRE(t > 0.0, "expiry time must be positive: " << t
                                                              << " not allowed");
         QL_REQUIRE(params.size() == Model().dimension(),
@@ -102,19 +102,25 @@ template <class I1, class I2, typename Model>
 class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                               public XABRCoeffHolder<Model> {
   public:
-    XABRInterpolationImpl(
-        const I1 &xBegin, const I1 &xEnd, const I2 &yBegin, Time t,
-        const Real &forward, const std::vector<Real>& params,
-        const std::vector<bool>& paramIsFixed, bool vegaWeighted,
-        const ext::shared_ptr<EndCriteria> &endCriteria,
-        const ext::shared_ptr<OptimizationMethod> &optMethod,
-        const Real errorAccept, const bool useMaxError, const Size maxGuesses,
-        const std::vector<Real>& addParams = std::vector<Real>())
-        : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
-          XABRCoeffHolder<Model>(t, forward, params, paramIsFixed, addParams),
-          endCriteria_(endCriteria), optMethod_(optMethod),
-          errorAccept_(errorAccept), useMaxError_(useMaxError),
-          maxGuesses_(maxGuesses), vegaWeighted_(vegaWeighted) {
+    XABRInterpolationImpl(const I1& xBegin,
+                          const I1& xEnd,
+                          const I2& yBegin,
+                          Time t,
+                          const Real& forward,
+                          const std::vector<Real>& params,
+                          const std::vector<bool>& paramIsFixed,
+                          bool vegaWeighted,
+                          ext::shared_ptr<EndCriteria> endCriteria,
+                          ext::shared_ptr<OptimizationMethod> optMethod,
+                          const Real errorAccept,
+                          const bool useMaxError,
+                          const Size maxGuesses,
+                          const std::vector<Real>& addParams = std::vector<Real>())
+    : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
+      XABRCoeffHolder<Model>(t, forward, params, paramIsFixed, addParams),
+      endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
+      errorAccept_(errorAccept), useMaxError_(useMaxError), maxGuesses_(maxGuesses),
+      vegaWeighted_(vegaWeighted) {
         // if no optimization method or endCriteria is provided, we provide one
         if (!optMethod_)
             optMethod_ = ext::shared_ptr<OptimizationMethod>(

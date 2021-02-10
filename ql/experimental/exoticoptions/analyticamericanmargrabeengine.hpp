@@ -40,10 +40,9 @@ namespace QuantLib {
     */
     class AnalyticAmericanMargrabeEngine : public MargrabeOption::engine {
       public:
-        AnalyticAmericanMargrabeEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process2,
-            Real correlation);
+        AnalyticAmericanMargrabeEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                                       ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+                                       Real correlation);
         void calculate() const override;
 
       private:

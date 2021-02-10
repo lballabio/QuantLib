@@ -51,13 +51,11 @@ namespace QuantLib {
         BlackVarianceSurface(const Date& referenceDate,
                              const Calendar& cal,
                              const std::vector<Date>& dates,
-                             const std::vector<Real>& strikes,
+                             std::vector<Real> strikes,
                              const Matrix& blackVolMatrix,
-                             const DayCounter& dayCounter,
-                             Extrapolation lowerExtrapolation =
-                                InterpolatorDefaultExtrapolation,
-                             Extrapolation upperExtrapolation =
-                                InterpolatorDefaultExtrapolation);
+                             DayCounter dayCounter,
+                             Extrapolation lowerExtrapolation = InterpolatorDefaultExtrapolation,
+                             Extrapolation upperExtrapolation = InterpolatorDefaultExtrapolation);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const override { return dayCounter_; }

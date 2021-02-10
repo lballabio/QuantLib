@@ -25,6 +25,7 @@
 #define quantlib_extended_cox_ingersoll_ross_hpp
 
 #include <ql/models/shortrate/onefactormodels/coxingersollross.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -83,12 +84,8 @@ namespace QuantLib {
     class ExtendedCoxIngersollRoss::Dynamics
         : public CoxIngersollRoss::Dynamics {
       public:
-        Dynamics(const Parameter& phi,
-                 Real theta,
-                 Real k,
-                 Real sigma,
-                 Real x0)
-        : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
+        Dynamics(Parameter phi, Real theta, Real k, Real sigma, Real x0)
+        : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(std::move(phi)) {}
 
         Real variable(Time t, Rate r) const override { return std::sqrt(r - phi_(t)); }
         Real shortRate(Time t, Real y) const override { return y * y + phi_(t); }
@@ -112,10 +109,9 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const Handle<YieldTermStructure>& termStructure,
-                 Real theta, Real k, Real sigma, Real x0)
-            : termStructure_(termStructure),
-              theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
+            Impl(Handle<YieldTermStructure> termStructure, Real theta, Real k, Real sigma, Real x0)
+            : termStructure_(std::move(termStructure)), theta_(theta), k_(k), sigma_(sigma),
+              x0_(x0) {}
 
             Real value(const Array&, Time t) const override {
                 Rate forwardRate =

@@ -48,13 +48,13 @@ namespace QuantLib {
          give the previous period's value)
          and enables storage of the most recent uninterpolated value.
          */
-        InflationIndex(const std::string& familyName,
-                       const Region& region,
+        InflationIndex(std::string familyName,
+                       Region region,
                        bool revised,
                        bool interpolated,
                        Frequency frequency,
                        const Period& availabilitiyLag,
-                       const Currency& currency);
+                       Currency currency);
         //! \name Index interface
         //@{
         std::string name() const override;
@@ -134,15 +134,15 @@ namespace QuantLib {
     class ZeroInflationIndex : public InflationIndex {
       public:
         //! Always use the evaluation date as the reference date
-        ZeroInflationIndex(const std::string& familyName,
-                           const Region& region,
-                           bool revised,
-                           bool interpolated,
-                           Frequency frequency,
-                           const Period& availabilityLag,
-                           const Currency& currency,
-                           const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>());
+        ZeroInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            bool interpolated,
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<ZeroInflationTermStructure> ts = Handle<ZeroInflationTermStructure>());
 
         //! \name Index interface
         //@{
@@ -170,16 +170,16 @@ namespace QuantLib {
     */
     class YoYInflationIndex : public InflationIndex {
       public:
-        YoYInflationIndex(const std::string& familyName,
-                          const Region& region,
-                          bool revised,
-                          bool interpolated,
-                          bool ratio, // is this one a genuine index or a ratio?
-                          Frequency frequency,
-                          const Period& availabilityLag,
-                          const Currency& currency,
-                          const Handle<YoYInflationTermStructure>& ts =
-                                Handle<YoYInflationTermStructure>());
+        YoYInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            bool interpolated,
+            bool ratio, // is this one a genuine index or a ratio?
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<YoYInflationTermStructure> ts = Handle<YoYInflationTermStructure>());
         //! \name Index interface
         //@{
         /*! \warning the forecastTodaysFixing parameter (required by

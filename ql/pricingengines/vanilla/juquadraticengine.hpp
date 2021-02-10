@@ -52,8 +52,7 @@ namespace QuantLib {
     class JuQuadraticApproximationEngine
         : public VanillaOption::engine {
       public:
-        JuQuadraticApproximationEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+        JuQuadraticApproximationEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         void calculate() const override;
 
       private:

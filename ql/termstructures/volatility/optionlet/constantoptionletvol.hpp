@@ -36,18 +36,19 @@ namespace QuantLib {
     class ConstantOptionletVolatility : public OptionletVolatilityStructure {
       public:
         //! floating reference date, floating market data
-        ConstantOptionletVolatility(Natural settlementDays, const Calendar &cal,
+        ConstantOptionletVolatility(Natural settlementDays,
+                                    const Calendar& cal,
                                     BusinessDayConvention bdc,
-                                    const Handle< Quote > &volatility,
-                                    const DayCounter &dc,
+                                    Handle<Quote> volatility,
+                                    const DayCounter& dc,
                                     VolatilityType type = ShiftedLognormal,
                                     Real displacement = 0.0);
         //! fixed reference date, floating market data
-        ConstantOptionletVolatility(const Date &referenceDate,
-                                    const Calendar &cal,
+        ConstantOptionletVolatility(const Date& referenceDate,
+                                    const Calendar& cal,
                                     BusinessDayConvention bdc,
-                                    const Handle< Quote > &volatility,
-                                    const DayCounter &dc,
+                                    Handle<Quote> volatility,
+                                    const DayCounter& dc,
                                     VolatilityType type = ShiftedLognormal,
                                     Real displacement = 0.0);
         //! floating reference date, fixed market data

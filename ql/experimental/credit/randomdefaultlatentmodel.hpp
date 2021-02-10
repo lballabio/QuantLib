@@ -21,23 +21,21 @@
 #ifndef quantlib_randomdefault_latent_model_hpp
 #define quantlib_randomdefault_latent_model_hpp
 
-#include <ql/tuple.hpp>
+#include <ql/experimental/credit/basket.hpp>
+#include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <ql/experimental/credit/defaultlossmodel.hpp>
+#include <ql/experimental/math/gaussiancopulapolicy.hpp>
+#include <ql/experimental/math/latentmodel.hpp>
+#include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/beta.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/statistics/histogram.hpp>
 #include <ql/math/statistics/riskstatistics.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/randomnumbers/sobolrsg.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/experimental/credit/basket.hpp>
-#include <ql/experimental/credit/defaultlossmodel.hpp>
-
-#include <ql/experimental/math/latentmodel.hpp>
-#include <ql/experimental/credit/constantlosslatentmodel.hpp>
-
-#include <ql/experimental/math/gaussiancopulapolicy.hpp>
-#include <ql/experimental/math/tcopulapolicy.hpp>
-
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/tuple.hpp>
+#include <utility>
 
 /* Intended to replace
     ql\experimental\credit\randomdefaultmodel.Xpp
@@ -104,19 +102,16 @@ namespace QuantLib {
         typedef typename LatentModel<copulaPolicy>::template FactorSampler<USNG>
             copulaRNG_type;
     protected:
-        RandomLM(Size numFactors,
-            Size numLMVars,
-            const copulaPolicy& copula,
-            Size nSims,
-            BigNatural seed)
-        : seed_(seed), numFactors_(numFactors), numLMVars_(numLMVars),
-          nSims_(nSims), copula_(copula) {}
+      RandomLM(Size numFactors, Size numLMVars, copulaPolicy copula, Size nSims, BigNatural seed)
+      : seed_(seed), numFactors_(numFactors), numLMVars_(numLMVars), nSims_(nSims),
+        copula_(std::move(copula)) {}
 
-        void update() override {
-            simsBuffer_.clear();
-            // tell basket to notify instruments, etc, we are invalid
-            if(!basket_.empty()) basket_->notifyObservers();
-            LazyObject::update();
+      void update() override {
+          simsBuffer_.clear();
+          // tell basket to notify instruments, etc, we are invalid
+          if (!basket_.empty())
+              basket_->notifyObservers();
+          LazyObject::update();
         }
 
         void performCalculations() const override {

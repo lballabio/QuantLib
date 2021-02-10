@@ -18,16 +18,16 @@
 */
 
 #include <ql/experimental/exoticoptions/compoundoption.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CompoundOption::CompoundOption(
-                   const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
-                   const ext::shared_ptr<Exercise>& motherExercise,
-                   const ext::shared_ptr<StrikedTypePayoff>& daughterPayoff,
-                   const ext::shared_ptr<Exercise>& daughterExercise)
-    : OneAssetOption(motherPayoff, motherExercise),
-      daughterPayoff_(daughterPayoff), daughterExercise_(daughterExercise) {}
+    CompoundOption::CompoundOption(const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
+                                   const ext::shared_ptr<Exercise>& motherExercise,
+                                   ext::shared_ptr<StrikedTypePayoff> daughterPayoff,
+                                   ext::shared_ptr<Exercise> daughterExercise)
+    : OneAssetOption(motherPayoff, motherExercise), daughterPayoff_(std::move(daughterPayoff)),
+      daughterExercise_(std::move(daughterExercise)) {}
 
     void CompoundOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);

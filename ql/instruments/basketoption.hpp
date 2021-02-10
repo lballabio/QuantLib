@@ -26,9 +26,10 @@
 #ifndef quantlib_basket_option_hpp
 #define quantlib_basket_option_hpp
 
-#include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/multiassetoption.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/math/array.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,8 +37,7 @@ namespace QuantLib {
       private:
         ext::shared_ptr<Payoff> basePayoff_;
       public:
-        explicit BasketPayoff(const ext::shared_ptr<Payoff> &p)
-        : basePayoff_(p) {}
+        explicit BasketPayoff(ext::shared_ptr<Payoff> p) : basePayoff_(std::move(p)) {}
         ~BasketPayoff() override = default;
         std::string name() const override { return basePayoff_->name(); }
         std::string description() const override { return basePayoff_->description(); }
@@ -69,9 +69,8 @@ namespace QuantLib {
 
     class AverageBasketPayoff : public BasketPayoff {
       public:
-        AverageBasketPayoff(const ext::shared_ptr<Payoff> &p,
-                            const Array &a)
-        : BasketPayoff(p), weights_(a) {}
+        AverageBasketPayoff(const ext::shared_ptr<Payoff>& p, Array a)
+        : BasketPayoff(p), weights_(std::move(a)) {}
         AverageBasketPayoff(const ext::shared_ptr<Payoff> &p,
                             Size n)
         : BasketPayoff(p), weights_(n, 1.0/static_cast<Real>(n)) {}

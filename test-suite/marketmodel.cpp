@@ -148,8 +148,8 @@ namespace market_model_test {
 
     // a simple structure to store some data which will be used during tests
     struct SubProductExpectedValues {
-        explicit SubProductExpectedValues(const std::string& descr)
-        : description(descr), testBias(false) {}
+        explicit SubProductExpectedValues(std::string descr)
+        : description(std::move(descr)), testBias(false) {}
         std::string description;
         std::vector<Real> values;
         bool testBias;
@@ -4942,6 +4942,7 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
 
         #define BOOST_PP_LOCAL_LIMITS (0, 5)
         #include BOOST_PP_LOCAL_ITERATE()
+#include <utility>
     }
 
     if (speed == Slow) {

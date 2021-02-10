@@ -86,15 +86,15 @@ namespace QuantLib {
         Currency triangulated;
         std::string formatString;
 
-        Data(const std::string& name,
-             const std::string& code,
+        Data(std::string name,
+             std::string code,
              Integer numericCode,
-             const std::string& symbol,
-             const std::string& fractionSymbol,
+             std::string symbol,
+             std::string fractionSymbol,
              Integer fractionsPerUnit,
              const Rounding& rounding,
-             const std::string& formatString,
-             const Currency& triangulationCurrency = Currency());
+             std::string formatString,
+             Currency triangulationCurrency = Currency());
     };
 
     /*! \relates Currency */

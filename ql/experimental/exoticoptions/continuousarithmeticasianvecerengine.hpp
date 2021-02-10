@@ -35,8 +35,8 @@ namespace QuantLib {
         : public ContinuousAveragingAsianOption::engine {
       public:
         ContinuousArithmeticAsianVecerEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            const Handle<Quote>& currentAverage,
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+            Handle<Quote> currentAverage,
             Date startDate,
             Size timeSteps = 100,
             Size assetSteps = 100,

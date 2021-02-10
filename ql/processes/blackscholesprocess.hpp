@@ -53,21 +53,19 @@ namespace QuantLib {
     */
     class GeneralizedBlackScholesProcess : public StochasticProcess1D {
       public:
-        GeneralizedBlackScholesProcess(
-            const Handle<Quote>& x0,
-            const Handle<YieldTermStructure>& dividendTS,
-            const Handle<YieldTermStructure>& riskFreeTS,
-            const Handle<BlackVolTermStructure>& blackVolTS,
-            const ext::shared_ptr<discretization>& d =
-                  ext::shared_ptr<discretization>(new EulerDiscretization),
-            bool forceDiscretization = false);
+        GeneralizedBlackScholesProcess(Handle<Quote> x0,
+                                       Handle<YieldTermStructure> dividendTS,
+                                       Handle<YieldTermStructure> riskFreeTS,
+                                       Handle<BlackVolTermStructure> blackVolTS,
+                                       const ext::shared_ptr<discretization>& d =
+                                           ext::shared_ptr<discretization>(new EulerDiscretization),
+                                       bool forceDiscretization = false);
 
-        GeneralizedBlackScholesProcess(
-            const Handle<Quote>& x0,
-            const Handle<YieldTermStructure>& dividendTS,
-            const Handle<YieldTermStructure>& riskFreeTS,
-            const Handle<BlackVolTermStructure>& blackVolTS,
-            const Handle<LocalVolTermStructure>& localVolTS);
+        GeneralizedBlackScholesProcess(Handle<Quote> x0,
+                                       Handle<YieldTermStructure> dividendTS,
+                                       Handle<YieldTermStructure> riskFreeTS,
+                                       Handle<BlackVolTermStructure> blackVolTS,
+                                       Handle<LocalVolTermStructure> localVolTS);
 
         //! \name StochasticProcess1D interface
         //@{

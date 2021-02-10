@@ -26,6 +26,7 @@
 
 #include <ql/math/interpolation.hpp>
 #include <ql/time/date.hpp>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -40,10 +41,10 @@ namespace QuantLib {
       protected:
         //! \name Building
         //@{
-        InterpolatedCurve(const std::vector<Time>& times,
-                          const std::vector<Real>& data,
+        InterpolatedCurve(std::vector<Time> times,
+                          std::vector<Real> data,
                           const Interpolator& i = Interpolator())
-        : times_(times), data_(data), interpolator_(i) {}
+        : times_(std::move(times)), data_(std::move(data)), interpolator_(i) {}
 
         InterpolatedCurve(const std::vector<Time>& times,
                           const Interpolator& i = Interpolator())

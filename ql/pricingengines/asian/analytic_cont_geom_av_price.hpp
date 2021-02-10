@@ -50,7 +50,7 @@ namespace QuantLib {
         : public ContinuousAveragingAsianOption::engine {
       public:
         AnalyticContinuousGeometricAveragePriceAsianEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 
       private:

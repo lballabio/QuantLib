@@ -18,9 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/indexes/swapindex.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/indexes/swapindex.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,24 +30,20 @@ namespace QuantLib {
         const std::vector<Period>& optionTenors,
         const std::vector<Period>& swapTenors,
         const std::vector<Spread>& strikeSpreads,
-        const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-        const ext::shared_ptr<SwapIndex>& swapIndexBase,
-        const ext::shared_ptr<SwapIndex>& shortSwapIndexBase,
+        std::vector<std::vector<Handle<Quote> > > volSpreads,
+        ext::shared_ptr<SwapIndex> swapIndexBase,
+        ext::shared_ptr<SwapIndex> shortSwapIndexBase,
         bool vegaWeightedSmileFit)
-    : SwaptionVolatilityDiscrete(optionTenors, swapTenors, 0,
+    : SwaptionVolatilityDiscrete(optionTenors,
+                                 swapTenors,
+                                 0,
                                  atmVol->calendar(),
                                  atmVol->businessDayConvention(),
                                  atmVol->dayCounter()),
-      atmVol_(atmVol),
-      nStrikes_(strikeSpreads.size()),
-      strikeSpreads_(strikeSpreads),
-      localStrikes_(nStrikes_),
-      localSmile_(nStrikes_),
-      volSpreads_(volSpreads),
-      swapIndexBase_(swapIndexBase),
-      shortSwapIndexBase_(shortSwapIndexBase),
-      vegaWeightedSmileFit_(vegaWeightedSmileFit)
-    {
+      atmVol_(atmVol), nStrikes_(strikeSpreads.size()), strikeSpreads_(strikeSpreads),
+      localStrikes_(nStrikes_), localSmile_(nStrikes_), volSpreads_(std::move(volSpreads)),
+      swapIndexBase_(std::move(swapIndexBase)), shortSwapIndexBase_(std::move(shortSwapIndexBase)),
+      vegaWeightedSmileFit_(vegaWeightedSmileFit) {
         QL_REQUIRE(!atmVol_.empty(), "atm vol handle not linked to anything");
         for (Size i=1; i<nStrikes_; ++i)
             QL_REQUIRE(strikeSpreads_[i-1]<strikeSpreads_[i],

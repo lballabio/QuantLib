@@ -27,6 +27,7 @@
 #include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -35,7 +36,7 @@ namespace QuantLib {
         typedef ext::shared_ptr<OneFactorModel::ShortRateDynamics>
                                                                 argument_type;
         typedef TransformedGrid grid_type;
-        PdeShortRate(const argument_type& d) : dynamics_(d) {}
+        PdeShortRate(argument_type d) : dynamics_(std::move(d)) {}
         Real diffusion(Time t, Real x) const override {
             return dynamics_->process()->diffusion(t, x);
         }

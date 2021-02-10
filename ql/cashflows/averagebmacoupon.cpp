@@ -21,6 +21,7 @@
 #include <ql/cashflows/averagebmacoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/utilities/vectors.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -161,10 +162,8 @@ namespace QuantLib {
     }
 
 
-
-    AverageBMALeg::AverageBMALeg(const Schedule& schedule,
-                                 const ext::shared_ptr<BMAIndex>& index)
-    : schedule_(schedule), index_(index), paymentAdjustment_(Following) {}
+    AverageBMALeg::AverageBMALeg(Schedule schedule, ext::shared_ptr<BMAIndex> index)
+    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following) {}
 
     AverageBMALeg& AverageBMALeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

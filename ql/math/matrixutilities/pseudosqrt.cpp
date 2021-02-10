@@ -19,13 +19,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
-#include <ql/math/matrixutilities/choleskydecomposition.hpp>
-#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
-#include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/problem.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -79,12 +80,11 @@ namespace QuantLib {
             mutable Matrix currentRoot_, tempMatrix_, currentMatrix_;
           public:
             HypersphereCostFunction(const Matrix& targetMatrix,
-                                    const Array& targetVariance,
+                                    Array targetVariance,
                                     bool lowerDiagonal)
             : size_(targetMatrix.rows()), lowerDiagonal_(lowerDiagonal),
-              targetMatrix_(targetMatrix), targetVariance_(targetVariance),
-              currentRoot_(size_, size_), tempMatrix_(size_, size_),
-              currentMatrix_(size_, size_) {}
+              targetMatrix_(targetMatrix), targetVariance_(std::move(targetVariance)),
+              currentRoot_(size_, size_), tempMatrix_(size_, size_), currentMatrix_(size_, size_) {}
             Disposable<Array> values(const Array&) const override {
                 QL_FAIL("values method not implemented");
             }

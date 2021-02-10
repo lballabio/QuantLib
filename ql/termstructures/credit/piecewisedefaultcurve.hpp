@@ -27,11 +27,12 @@
 #ifndef quantlib_piecewise_default_curve_hpp
 #define quantlib_piecewise_default_curve_hpp
 
-#include <ql/termstructures/iterativebootstrap.hpp>
-#include <ql/termstructures/credit/probabilitytraits.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/credit/probabilitytraits.hpp>
+#include <ql/termstructures/iterativebootstrap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -64,16 +65,16 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         PiecewiseDefaultCurve(
-               const Date& referenceDate,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-               const std::vector<Date>& jumpDates = std::vector<Date>(),
-               const Interpolator& i = Interpolator(),
-               const bootstrap_type& bootstrap = bootstrap_type())
+            const Date& referenceDate,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const DayCounter& dayCounter,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& i = Interpolator(),
+            bootstrap_type bootstrap = bootstrap_type())
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(
@@ -88,16 +89,17 @@ namespace QuantLib {
           instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
-        PiecewiseDefaultCurve(
-               const Date& referenceDate,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const bootstrap_type& bootstrap)
-        : base_curve(referenceDate, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(),
+        PiecewiseDefaultCurve(const Date& referenceDate,
+                              std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                              const DayCounter& dayCounter,
+                              bootstrap_type bootstrap)
+        : base_curve(referenceDate,
+                     dayCounter,
+                     std::vector<Handle<Quote> >(),
+                     std::vector<Date>(),
                      Interpolator()),
-          instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
         /*! \deprecated Pass the accuracy inside the bootstrap object
@@ -139,17 +141,17 @@ namespace QuantLib {
         }
 
         PiecewiseDefaultCurve(
-               Natural settlementDays,
-               const Calendar& calendar,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-               const std::vector<Date>& jumpDates = std::vector<Date>(),
-               const Interpolator& i = Interpolator(),
-               const bootstrap_type& bootstrap = bootstrap_type())
+            Natural settlementDays,
+            const Calendar& calendar,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const DayCounter& dayCounter,
+            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            const std::vector<Date>& jumpDates = std::vector<Date>(),
+            const Interpolator& i = Interpolator(),
+            bootstrap_type bootstrap = bootstrap_type())
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
         PiecewiseDefaultCurve(

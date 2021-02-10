@@ -17,23 +17,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonhullwhitesolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmHestonHullWhiteSolver::FdmHestonHullWhiteSolver(
-        const Handle<HestonProcess>& hestonProcess,
-        const Handle<HullWhiteProcess>& hwProcess,
-        Rate corrEquityShortRate,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc)
-    : hestonProcess_(hestonProcess),
-      hwProcess_(hwProcess),
-      corrEquityShortRate_(corrEquityShortRate),
-      solverDesc_(solverDesc),
+    FdmHestonHullWhiteSolver::FdmHestonHullWhiteSolver(const Handle<HestonProcess>& hestonProcess,
+                                                       const Handle<HullWhiteProcess>& hwProcess,
+                                                       Rate corrEquityShortRate,
+                                                       FdmSolverDesc solverDesc,
+                                                       const FdmSchemeDesc& schemeDesc)
+    : hestonProcess_(hestonProcess), hwProcess_(hwProcess),
+      corrEquityShortRate_(corrEquityShortRate), solverDesc_(std::move(solverDesc)),
       schemeDesc_(schemeDesc) {
 
         registerWith(hestonProcess);

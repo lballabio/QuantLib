@@ -19,16 +19,17 @@
 */
 
 #include <ql/experimental/convertiblebonds/discretizedconvertible.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     DiscretizedConvertible::DiscretizedConvertible(
-             const ConvertibleBond::option::arguments& args,
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const TimeGrid& grid)
-    : arguments_(args), process_(process) {
+        ConvertibleBond::option::arguments args,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        const TimeGrid& grid)
+    : arguments_(std::move(args)), process_(std::move(process)) {
 
         dividendValues_ = Array(arguments_.dividends.size(), 0.0);
 

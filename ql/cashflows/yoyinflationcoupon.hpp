@@ -90,24 +90,25 @@ namespace QuantLib {
     //! payoff is: spread + gearing x index
     class yoyInflationLeg {
     public:
-        yoyInflationLeg(const Schedule& schedule, const Calendar& cal,
-                        const ext::shared_ptr<YoYInflationIndex>& index,
-                        const Period& observationLag);
-        yoyInflationLeg& withNotionals(Real notional);
-        yoyInflationLeg& withNotionals(const std::vector<Real>& notionals);
-        yoyInflationLeg& withPaymentDayCounter(const DayCounter&);
-        yoyInflationLeg& withPaymentAdjustment(BusinessDayConvention);
-        yoyInflationLeg& withFixingDays(Natural fixingDays);
-        yoyInflationLeg& withFixingDays(const std::vector<Natural>& fixingDays);
-        yoyInflationLeg& withGearings(Real gearing);
-        yoyInflationLeg& withGearings(const std::vector<Real>& gearings);
-        yoyInflationLeg& withSpreads(Spread spread);
-        yoyInflationLeg& withSpreads(const std::vector<Spread>& spreads);
-        yoyInflationLeg& withCaps(Rate cap);
-        yoyInflationLeg& withCaps(const std::vector<Rate>& caps);
-        yoyInflationLeg& withFloors(Rate floor);
-        yoyInflationLeg& withFloors(const std::vector<Rate>& floors);
-        operator Leg() const;
+      yoyInflationLeg(Schedule schedule,
+                      Calendar cal,
+                      ext::shared_ptr<YoYInflationIndex> index,
+                      const Period& observationLag);
+      yoyInflationLeg& withNotionals(Real notional);
+      yoyInflationLeg& withNotionals(const std::vector<Real>& notionals);
+      yoyInflationLeg& withPaymentDayCounter(const DayCounter&);
+      yoyInflationLeg& withPaymentAdjustment(BusinessDayConvention);
+      yoyInflationLeg& withFixingDays(Natural fixingDays);
+      yoyInflationLeg& withFixingDays(const std::vector<Natural>& fixingDays);
+      yoyInflationLeg& withGearings(Real gearing);
+      yoyInflationLeg& withGearings(const std::vector<Real>& gearings);
+      yoyInflationLeg& withSpreads(Spread spread);
+      yoyInflationLeg& withSpreads(const std::vector<Spread>& spreads);
+      yoyInflationLeg& withCaps(Rate cap);
+      yoyInflationLeg& withCaps(const std::vector<Rate>& caps);
+      yoyInflationLeg& withFloors(Rate floor);
+      yoyInflationLeg& withFloors(const std::vector<Rate>& floors);
+      operator Leg() const;
     private:
         Schedule schedule_;
         ext::shared_ptr<YoYInflationIndex> index_;

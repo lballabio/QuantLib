@@ -19,30 +19,30 @@
 
 #include "swingoption.hpp"
 #include "utilities.hpp"
-
-#include <ql/math/factorial.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/richardsonextrapolation.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/instruments/vanillaswingoption.hpp>
-#include <ql/math/randomnumbers/rngtraits.hpp>
-#include <ql/math/statistics/generalstatistics.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/montecarlo/multipathgenerator.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
 #include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/instruments/vanillaswingoption.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/factorial.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/montecarlo/multipathgenerator.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <utility>
 
 
 using namespace QuantLib;
@@ -445,10 +445,10 @@ namespace swing_option_test {
       public:
         typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
 
-        SwingPdePricing(const ext::shared_ptr<ExtOUWithJumpsProcess>& process,
-                        const ext::shared_ptr<VanillaOption>& option,
-                        const ext::shared_ptr<Shape>& shape)
-        : process_(process), option_(option), shape_(shape) {}
+        SwingPdePricing(ext::shared_ptr<ExtOUWithJumpsProcess> process,
+                        ext::shared_ptr<VanillaOption> option,
+                        ext::shared_ptr<Shape> shape)
+        : process_(std::move(process)), option_(std::move(option)), shape_(std::move(shape)) {}
 
         Real operator()(Real x) const {
             const ext::shared_ptr<YieldTermStructure> rTS(

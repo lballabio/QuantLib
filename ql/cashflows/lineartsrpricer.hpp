@@ -157,13 +157,12 @@ namespace QuantLib {
         };
 
 
-        LinearTsrPricer(const Handle<SwaptionVolatilityStructure> &swaptionVol,
-                        const Handle<Quote> &meanReversion,
-                        const Handle<YieldTermStructure> &couponDiscountCurve =
-                            Handle<YieldTermStructure>(),
-                        const Settings &settings = Settings(),
-                        const ext::shared_ptr<Integrator> &integrator =
-                            ext::shared_ptr<Integrator>());
+        LinearTsrPricer(
+            const Handle<SwaptionVolatilityStructure>& swaptionVol,
+            Handle<Quote> meanReversion,
+            Handle<YieldTermStructure> couponDiscountCurve = Handle<YieldTermStructure>(),
+            const Settings& settings = Settings(),
+            ext::shared_ptr<Integrator> integrator = ext::shared_ptr<Integrator>());
 
         /* */
         Real swapletPrice() const override;

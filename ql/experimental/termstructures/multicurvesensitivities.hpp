@@ -24,11 +24,12 @@
 #ifndef quantlib_multicurve_sensitivity_hpp
 #define quantlib_multicurve_sensitivity_hpp
 
-#include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/shared_ptr.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
 #include <iostream>
 #include <sstream>
+#include <utility>
 
 namespace {
     inline QuantLib::Real secondElement(const std::pair<QuantLib::Date, QuantLib::Real>& p) {
@@ -67,20 +68,21 @@ public:
   /*! @param curves std::map of string (curve name) and handle to piecewiseyieldcurve
   */
 
-  explicit MultiCurveSensitivities(const curvespec& curves) : curves_(curves) {
-    for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
-      registerWith((*it).second);
-    for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
-      ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
-          ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
-      QL_REQUIRE(curve != nullptr, "Couldn't cast curvename: " << it->first);
-      for (auto inst = curve->instruments_.begin(); inst != curve->instruments_.end(); ++inst) {
-          allQuotes_.push_back((*inst)->quote());
-          std::stringstream tmp;
-          tmp << QuantLib::io::iso_date((*inst)->latestRelevantDate());
-          headers_.push_back(it->first + "_" + tmp.str());
+  explicit MultiCurveSensitivities(curvespec curves) : curves_(std::move(curves)) {
+      for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
+          registerWith((*it).second);
+      for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
+          ext::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
+              ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
+                  it->second.currentLink());
+          QL_REQUIRE(curve != nullptr, "Couldn't cast curvename: " << it->first);
+          for (auto inst = curve->instruments_.begin(); inst != curve->instruments_.end(); ++inst) {
+              allQuotes_.push_back((*inst)->quote());
+              std::stringstream tmp;
+              tmp << QuantLib::io::iso_date((*inst)->latestRelevantDate());
+              headers_.push_back(it->first + "_" + tmp.str());
+          }
       }
-    }
   }
 
   Matrix sensitivities() const;

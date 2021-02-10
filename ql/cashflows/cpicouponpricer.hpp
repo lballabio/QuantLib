@@ -44,10 +44,10 @@ namespace QuantLib {
         QL_DEPRECATED
         CPICouponPricer();
 
-        explicit CPICouponPricer(const Handle<YieldTermStructure>& nominalTermStructure);
+        explicit CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure);
 
-        CPICouponPricer(const Handle<CPIVolatilitySurface>& capletVol,
-                        const Handle<YieldTermStructure>& nominalTermStructure);
+        CPICouponPricer(Handle<CPIVolatilitySurface> capletVol,
+                        Handle<YieldTermStructure> nominalTermStructure);
 
         virtual Handle<CPIVolatilitySurface> capletVolatility() const{
             return capletVol_;

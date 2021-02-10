@@ -326,7 +326,7 @@ namespace QuantLib {
     }
 
     SpreadFittingMethod::SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
-                                             const Handle<YieldTermStructure>& discountCurve,
+                                             Handle<YieldTermStructure> discountCurve,
                                              const Real minCutoffTime,
                                              const Real maxCutoffTime)
     : FittedBondDiscountCurve::FittingMethod(
@@ -336,7 +336,7 @@ namespace QuantLib {
           method != nullptr ? method->l2() : Array(),
           minCutoffTime,
           maxCutoffTime),
-      method_(method), discountingCurve_(discountCurve) {
+      method_(method), discountingCurve_(std::move(discountCurve)) {
         QL_REQUIRE(method, "Fitting method is empty");
         QL_REQUIRE(!discountingCurve_.empty(), "Discounting curve cannot be empty");
     }

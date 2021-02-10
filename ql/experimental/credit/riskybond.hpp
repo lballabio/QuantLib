@@ -49,32 +49,32 @@ namespace QuantLib {
             the issuer has survived, divide the npv by
             \f[(1-P_{def}(T_{npv}))\f]
         */
-        RiskyBond(const std::string& name,
-                  const Currency& ccy,
-                  Real recoveryRate,
-                  const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                  const Handle<YieldTermStructure>& yieldTS,
-                  Natural settlementDays = 0,
-                  const Calendar& calendar = Calendar());
-        ~RiskyBond() override = default;
-        virtual std::vector<ext::shared_ptr<CashFlow> > cashflows() const = 0;
-        std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
-        virtual Real notional(Date date = Date::minDate()) const = 0;
-        virtual Date effectiveDate() const = 0;
-        virtual Date maturityDate() const = 0;
-        virtual std::vector<ext::shared_ptr<CashFlow> > interestFlows() const = 0;
-        virtual std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const = 0;
-        Real riskfreeNPV() const;
-        Real totalFutureFlows() const;
-        std::string name() const;
-        Currency ccy() const;
-        Handle<YieldTermStructure> yieldTS() const;
-        Handle<DefaultProbabilityTermStructure> defaultTS() const;
-        Real recoveryRate() const;
-        //! \name Instrument interface
-        //@{
-        bool isExpired() const override;
-        //@}
+      RiskyBond(std::string name,
+                Currency ccy,
+                Real recoveryRate,
+                Handle<DefaultProbabilityTermStructure> defaultTS,
+                Handle<YieldTermStructure> yieldTS,
+                Natural settlementDays = 0,
+                Calendar calendar = Calendar());
+      ~RiskyBond() override = default;
+      virtual std::vector<ext::shared_ptr<CashFlow> > cashflows() const = 0;
+      std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
+      virtual Real notional(Date date = Date::minDate()) const = 0;
+      virtual Date effectiveDate() const = 0;
+      virtual Date maturityDate() const = 0;
+      virtual std::vector<ext::shared_ptr<CashFlow> > interestFlows() const = 0;
+      virtual std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const = 0;
+      Real riskfreeNPV() const;
+      Real totalFutureFlows() const;
+      std::string name() const;
+      Currency ccy() const;
+      Handle<YieldTermStructure> yieldTS() const;
+      Handle<DefaultProbabilityTermStructure> defaultTS() const;
+      Real recoveryRate() const;
+      //! \name Instrument interface
+      //@{
+      bool isExpired() const override;
+      //@}
     protected:
       void setupExpired() const override;
       void performCalculations() const override;
@@ -117,33 +117,33 @@ namespace QuantLib {
     */
     class RiskyFixedBond : public RiskyBond {
     public:
-        RiskyFixedBond(const std::string& name,
-                       const Currency& ccy,
-                       Real recoveryRate,
-                       const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                       const Schedule& schedule, 
-                       Real rate,
-                       const DayCounter& dayCounter,
-                       BusinessDayConvention paymentConvention,
-                       const std::vector<Real>& notionals,
-                       const Handle<YieldTermStructure>& yieldTS,
-                       Natural settlementDays = 0);
-        std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
-        Real notional(Date date = Date::minDate()) const override;
-        Date effectiveDate() const override;
-        Date maturityDate() const override;
-        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
-        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
+      RiskyFixedBond(const std::string& name,
+                     const Currency& ccy,
+                     Real recoveryRate,
+                     const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                     const Schedule& schedule,
+                     Real rate,
+                     DayCounter dayCounter,
+                     BusinessDayConvention paymentConvention,
+                     std::vector<Real> notionals,
+                     const Handle<YieldTermStructure>& yieldTS,
+                     Natural settlementDays = 0);
+      std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
+      Real notional(Date date = Date::minDate()) const override;
+      Date effectiveDate() const override;
+      Date maturityDate() const override;
+      std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
+      std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
 
-      private:
-        Schedule schedule_;
-        Real rate_;
-        DayCounter dayCounter_;
-        // BusinessDayConvention paymentConvention_;
-        std::vector<Real> notionals_;
-        std::vector<ext::shared_ptr<CashFlow> > leg_;
-        std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
-        std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
+    private:
+      Schedule schedule_;
+      Real rate_;
+      DayCounter dayCounter_;
+      // BusinessDayConvention paymentConvention_;
+      std::vector<Real> notionals_;
+      std::vector<ext::shared_ptr<CashFlow> > leg_;
+      std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
+      std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };
 
 
@@ -157,10 +157,10 @@ namespace QuantLib {
                         Real recoveryRate,
                         const Handle<DefaultProbabilityTermStructure>& defaultTS,
                         const Schedule& schedule,
-                        const ext::shared_ptr<IborIndex>& index,
+                        ext::shared_ptr<IborIndex> index,
                         Integer fixingDays,
                         Real spread,
-                        const std::vector<Real>& notionals,
+                        std::vector<Real> notionals,
                         const Handle<YieldTermStructure>& yieldTS,
                         Natural settlementDays = 0);
       std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;

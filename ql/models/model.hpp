@@ -26,11 +26,12 @@
 #ifndef quantlib_interest_rate_model_hpp
 #define quantlib_interest_rate_model_hpp
 
-#include <ql/option.hpp>
-#include <ql/methods/lattices/lattice.hpp>
-#include <ql/models/parameter.hpp>
-#include <ql/models/calibrationhelper.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
+#include <ql/methods/lattices/lattice.hpp>
+#include <ql/models/calibrationhelper.hpp>
+#include <ql/models/parameter.hpp>
+#include <ql/option.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -71,9 +72,8 @@ namespace QuantLib {
     */
     class TermStructureConsistentModel : public virtual Observable {
       public:
-        TermStructureConsistentModel(
-                              const Handle<YieldTermStructure>& termStructure)
-        : termStructure_(termStructure) {}
+        TermStructureConsistentModel(Handle<YieldTermStructure> termStructure)
+        : termStructure_(std::move(termStructure)) {}
         const Handle<YieldTermStructure>& termStructure() const {
             return termStructure_;
         }

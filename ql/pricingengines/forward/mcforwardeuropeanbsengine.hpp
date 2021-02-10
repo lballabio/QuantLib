@@ -22,6 +22,7 @@
 
 #include <ql/pricingengines/forward/mcforwardvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -63,7 +64,7 @@ namespace QuantLib {
     class MakeMCForwardEuropeanBSEngine {
       public:
         explicit MakeMCForwardEuropeanBSEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCForwardEuropeanBSEngine& withSteps(Size steps);
         MakeMCForwardEuropeanBSEngine& withStepsPerYear(Size steps);
@@ -163,12 +164,11 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCForwardEuropeanBSEngine<RNG,S>::MakeMCForwardEuropeanBSEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
-      brownianBridge_(false), seed_(0) {}
+    inline MakeMCForwardEuropeanBSEngine<RNG, S>::MakeMCForwardEuropeanBSEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), steps_(Null<Size>()),
+      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCForwardEuropeanBSEngine<RNG,S>&

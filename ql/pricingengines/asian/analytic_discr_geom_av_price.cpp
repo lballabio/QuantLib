@@ -19,19 +19,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/greeks.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/exercise.hpp>
 #include <numeric>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticDiscreteGeometricAveragePriceAsianEngine::
-    AnalyticDiscreteGeometricAveragePriceAsianEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        AnalyticDiscreteGeometricAveragePriceAsianEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

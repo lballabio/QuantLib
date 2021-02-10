@@ -26,8 +26,9 @@
 #ifndef quantlib_montecarlo_path_hpp
 #define quantlib_montecarlo_path_hpp
 
-#include <ql/timegrid.hpp>
 #include <ql/math/array.hpp>
+#include <ql/timegrid.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,8 +39,7 @@ namespace QuantLib {
     */
     class Path {
       public:
-        Path(const TimeGrid& timeGrid,
-             const Array& values = Array());
+        Path(TimeGrid timeGrid, Array values = Array());
         //! \name inspectors
         //@{
         bool empty() const;
@@ -79,8 +79,8 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Path::Path(const TimeGrid& timeGrid, const Array& values)
-    : timeGrid_(timeGrid), values_(values) {
+    inline Path::Path(TimeGrid timeGrid, Array values)
+    : timeGrid_(std::move(timeGrid)), values_(std::move(values)) {
         if (values_.empty())
             values_ = Array(timeGrid_.size());
         QL_REQUIRE(values_.size() == timeGrid_.size(),

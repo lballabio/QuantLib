@@ -32,10 +32,9 @@ namespace QuantLib {
     //! Kirk approximation for European spread option on futures
     class KirkSpreadOptionEngine : public SpreadOption::engine {
       public:
-        KirkSpreadOptionEngine(
-            const ext::shared_ptr<BlackProcess>& process1,
-            const ext::shared_ptr<BlackProcess>& process2,
-            const Handle<Quote>& correlation);
+        KirkSpreadOptionEngine(ext::shared_ptr<BlackProcess> process1,
+                               ext::shared_ptr<BlackProcess> process2,
+                               Handle<Quote> correlation);
         void calculate() const override;
 
       private:

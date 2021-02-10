@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/coupons/strippedcapflooredcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/experimental/coupons/strippedcapflooredcoupon.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -104,9 +105,8 @@ namespace QuantLib {
         underlying_->setPricer(pricer);
     }
 
-    StrippedCappedFlooredCouponLeg::StrippedCappedFlooredCouponLeg(
-        const Leg &underlyingLeg)
-        : underlyingLeg_(underlyingLeg) {}
+    StrippedCappedFlooredCouponLeg::StrippedCappedFlooredCouponLeg(Leg underlyingLeg)
+    : underlyingLeg_(std::move(underlyingLeg)) {}
 
     StrippedCappedFlooredCouponLeg::operator Leg() const {
         Leg resultLeg;

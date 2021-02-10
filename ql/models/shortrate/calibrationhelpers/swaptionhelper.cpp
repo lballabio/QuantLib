@@ -19,82 +19,80 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/indexes/iborindex.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/time/schedule.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
-    SwaptionHelper::SwaptionHelper(
-                              const Period& maturity,
-                              const Period& length,
-                              const Handle<Quote>& volatility,
-                              const ext::shared_ptr<IborIndex>& index,
-                              const Period& fixedLegTenor,
-                              const DayCounter& fixedLegDayCounter,
-                              const DayCounter& floatingLegDayCounter,
-                              const Handle<YieldTermStructure>& termStructure,
-                              BlackCalibrationHelper::CalibrationErrorType errorType,
-                              const Real strike, const Real nominal,
-                              const VolatilityType type, const Real shift)
-    : BlackCalibrationHelper(volatility, errorType, type, shift),
-      exerciseDate_(Null<Date>()), endDate_(Null<Date>()),
-      maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor),
-      index_(index), termStructure_(termStructure),
-      fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-      strike_(strike), nominal_(nominal)
-    {
+    SwaptionHelper::SwaptionHelper(const Period& maturity,
+                                   const Period& length,
+                                   const Handle<Quote>& volatility,
+                                   ext::shared_ptr<IborIndex> index,
+                                   const Period& fixedLegTenor,
+                                   DayCounter fixedLegDayCounter,
+                                   DayCounter floatingLegDayCounter,
+                                   Handle<YieldTermStructure> termStructure,
+                                   BlackCalibrationHelper::CalibrationErrorType errorType,
+                                   const Real strike,
+                                   const Real nominal,
+                                   const VolatilityType type,
+                                   const Real shift)
+    : BlackCalibrationHelper(volatility, errorType, type, shift), exerciseDate_(Null<Date>()),
+      endDate_(Null<Date>()), maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor),
+      index_(std::move(index)), termStructure_(std::move(termStructure)),
+      fixedLegDayCounter_(std::move(fixedLegDayCounter)),
+      floatingLegDayCounter_(std::move(floatingLegDayCounter)), strike_(strike), nominal_(nominal) {
         registerWith(index_);
         registerWith(termStructure_);
     }
 
-    SwaptionHelper::SwaptionHelper(
-                              const Date& exerciseDate,
-                              const Period& length,
-                              const Handle<Quote>& volatility,
-                              const ext::shared_ptr<IborIndex>& index,
-                              const Period& fixedLegTenor,
-                              const DayCounter& fixedLegDayCounter,
-                              const DayCounter& floatingLegDayCounter,
-                              const Handle<YieldTermStructure>& termStructure,
-                              BlackCalibrationHelper::CalibrationErrorType errorType,
-                              const Real strike, const Real nominal,
-                              const VolatilityType type, const Real shift)
-    : BlackCalibrationHelper(volatility, errorType, type, shift),
-      exerciseDate_(exerciseDate), endDate_(Null<Date>()),
-      maturity_(0*Days), length_(length), fixedLegTenor_(fixedLegTenor),
-      index_(index), termStructure_(termStructure),
-      fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-      strike_(strike), nominal_(nominal)
-    {
+    SwaptionHelper::SwaptionHelper(const Date& exerciseDate,
+                                   const Period& length,
+                                   const Handle<Quote>& volatility,
+                                   ext::shared_ptr<IborIndex> index,
+                                   const Period& fixedLegTenor,
+                                   DayCounter fixedLegDayCounter,
+                                   DayCounter floatingLegDayCounter,
+                                   Handle<YieldTermStructure> termStructure,
+                                   BlackCalibrationHelper::CalibrationErrorType errorType,
+                                   const Real strike,
+                                   const Real nominal,
+                                   const VolatilityType type,
+                                   const Real shift)
+    : BlackCalibrationHelper(volatility, errorType, type, shift), exerciseDate_(exerciseDate),
+      endDate_(Null<Date>()), maturity_(0 * Days), length_(length), fixedLegTenor_(fixedLegTenor),
+      index_(std::move(index)), termStructure_(std::move(termStructure)),
+      fixedLegDayCounter_(std::move(fixedLegDayCounter)),
+      floatingLegDayCounter_(std::move(floatingLegDayCounter)), strike_(strike), nominal_(nominal) {
         registerWith(index_);
         registerWith(termStructure_);
     }
 
-    SwaptionHelper::SwaptionHelper(
-                              const Date& exerciseDate,
-                              const Date& endDate,
-                              const Handle<Quote>& volatility,
-                              const ext::shared_ptr<IborIndex>& index,
-                              const Period& fixedLegTenor,
-                              const DayCounter& fixedLegDayCounter,
-                              const DayCounter& floatingLegDayCounter,
-                              const Handle<YieldTermStructure>& termStructure,
-                              BlackCalibrationHelper::CalibrationErrorType errorType,
-                              const Real strike, const Real nominal,
-                              const VolatilityType type, const Real shift)
-    : BlackCalibrationHelper(volatility, errorType, type, shift),
-      exerciseDate_(exerciseDate), endDate_(endDate),
-      maturity_(0*Days), length_(0*Days), fixedLegTenor_(fixedLegTenor),
-      index_(index), termStructure_(termStructure),
-      fixedLegDayCounter_(fixedLegDayCounter), floatingLegDayCounter_(floatingLegDayCounter),
-      strike_(strike), nominal_(nominal)
-    {
+    SwaptionHelper::SwaptionHelper(const Date& exerciseDate,
+                                   const Date& endDate,
+                                   const Handle<Quote>& volatility,
+                                   ext::shared_ptr<IborIndex> index,
+                                   const Period& fixedLegTenor,
+                                   DayCounter fixedLegDayCounter,
+                                   DayCounter floatingLegDayCounter,
+                                   Handle<YieldTermStructure> termStructure,
+                                   BlackCalibrationHelper::CalibrationErrorType errorType,
+                                   const Real strike,
+                                   const Real nominal,
+                                   const VolatilityType type,
+                                   const Real shift)
+    : BlackCalibrationHelper(volatility, errorType, type, shift), exerciseDate_(exerciseDate),
+      endDate_(endDate), maturity_(0 * Days), length_(0 * Days), fixedLegTenor_(fixedLegTenor),
+      index_(std::move(index)), termStructure_(std::move(termStructure)),
+      fixedLegDayCounter_(std::move(fixedLegDayCounter)),
+      floatingLegDayCounter_(std::move(floatingLegDayCounter)), strike_(strike), nominal_(nominal) {
         registerWith(index_);
         registerWith(termStructure_);
     }

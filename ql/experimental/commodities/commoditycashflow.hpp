@@ -34,17 +34,17 @@ namespace QuantLib {
     class CommodityCashFlow : public CashFlow {
       public:
         CommodityCashFlow(const Date& date,
-                          const Money& discountedAmount,
-                          const Money& undiscountedAmount,
-                          const Money& discountedPaymentAmount,
-                          const Money& undiscountedPaymentAmount,
+                          Money discountedAmount,
+                          Money undiscountedAmount,
+                          Money discountedPaymentAmount,
+                          Money undiscountedPaymentAmount,
                           Real discountFactor,
                           Real paymentDiscountFactor,
                           bool finalized)
-        : date_(date), discountedAmount_(discountedAmount),
-          undiscountedAmount_(undiscountedAmount),
-          discountedPaymentAmount_(discountedPaymentAmount),
-          undiscountedPaymentAmount_(undiscountedPaymentAmount),
+        : date_(date), discountedAmount_(std::move(discountedAmount)),
+          undiscountedAmount_(std::move(undiscountedAmount)),
+          discountedPaymentAmount_(std::move(discountedPaymentAmount)),
+          undiscountedPaymentAmount_(std::move(undiscountedPaymentAmount)),
           discountFactor_(discountFactor), paymentDiscountFactor_(paymentDiscountFactor),
           finalized_(finalized) {}
         //! \name Event interface

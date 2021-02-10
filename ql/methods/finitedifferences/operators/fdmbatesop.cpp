@@ -21,48 +21,44 @@
     \brief Bates linear operator
 */
 
-#include <ql/methods/finitedifferences/operators/fdmbatesop.hpp>
-#include <ql/processes/batesprocess.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <ql/methods/finitedifferences/operators/fdmbatesop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+#include <ql/processes/batesprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmBatesOp::FdmBatesOp(const ext::shared_ptr<FdmMesher>& mesher,
                            const ext::shared_ptr<BatesProcess>& batesProcess,
-                           const FdmBoundaryConditionSet& bcSet,
-                           const Size integroIntegrationOrder, 
+                           FdmBoundaryConditionSet bcSet,
+                           const Size integroIntegrationOrder,
                            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
-    : lambda_(batesProcess->lambda()), 
-      delta_ (batesProcess->delta()), 
-      nu_    (batesProcess->nu()),
-      m_(std::exp(nu_+0.5*delta_*delta_)-1.0),
-      gaussHermiteIntegration_(integroIntegrationOrder),
-      mesher_(mesher),
-      bcSet_(bcSet),
+    : lambda_(batesProcess->lambda()), delta_(batesProcess->delta()), nu_(batesProcess->nu()),
+      m_(std::exp(nu_ + 0.5 * delta_ * delta_) - 1.0),
+      gaussHermiteIntegration_(integroIntegrationOrder), mesher_(mesher), bcSet_(std::move(bcSet)),
       hestonOp_(new FdmHestonOp(
-        mesher,
-        ext::make_shared<HestonProcess>(
-          batesProcess->riskFreeRate(),
-          Handle<YieldTermStructure>(
-            ext::make_shared<ZeroSpreadedTermStructure>(
-                batesProcess->dividendYield(),
-                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(lambda_*m_))),
-                Continuous,
-                NoFrequency,
-                batesProcess->dividendYield()->dayCounter())),
-          batesProcess->s0(),
-          batesProcess->v0(),
-          batesProcess->kappa(),
-          batesProcess->theta(),
-          batesProcess->sigma(),
-          batesProcess->rho()),
-        quantoHelper)) {}
+          mesher,
+          ext::make_shared<HestonProcess>(
+              batesProcess->riskFreeRate(),
+              Handle<YieldTermStructure>(ext::make_shared<ZeroSpreadedTermStructure>(
+                  batesProcess->dividendYield(),
+                  Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(lambda_ * m_))),
+                  Continuous,
+                  NoFrequency,
+                  batesProcess->dividendYield()->dayCounter())),
+              batesProcess->s0(),
+              batesProcess->v0(),
+              batesProcess->kappa(),
+              batesProcess->theta(),
+              batesProcess->sigma(),
+              batesProcess->rho()),
+          quantoHelper)) {}
 
     FdmBatesOp::IntegroIntegrand::IntegroIntegrand(
                     const ext::shared_ptr<LinearInterpolation>& interpl,

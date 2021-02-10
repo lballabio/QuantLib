@@ -18,21 +18,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/math/distributions/poissondistribution.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/exercise.hpp>
+#include <ql/math/distributions/poissondistribution.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    JumpDiffusionEngine::JumpDiffusionEngine(
-        const ext::shared_ptr<Merton76Process>& process,
-        Real relativeAccuracy,
-        Size maxIterations)
-    : process_(process), relativeAccuracy_(relativeAccuracy),
+    JumpDiffusionEngine::JumpDiffusionEngine(ext::shared_ptr<Merton76Process> process,
+                                             Real relativeAccuracy,
+                                             Size maxIterations)
+    : process_(std::move(process)), relativeAccuracy_(relativeAccuracy),
       maxIterations_(maxIterations) {
         registerWith(process_);
     }

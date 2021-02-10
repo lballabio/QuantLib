@@ -26,6 +26,7 @@
 #define quantlib_optimization_constraint_h
 
 #include <ql/math/array.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -70,8 +71,7 @@ namespace QuantLib {
             return result;
         }
         Real update(Array& p, const Array& direction, Real beta) const;
-        Constraint(const ext::shared_ptr<Impl>& impl =
-                                                   ext::shared_ptr<Impl>());
+        Constraint(ext::shared_ptr<Impl> impl = ext::shared_ptr<Impl>());
     };
 
     //! No constraint
@@ -148,9 +148,7 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(const Constraint& c1,
-                 const Constraint& c2)
-            : c1_(c1), c2_(c2) {}
+            Impl(Constraint c1, Constraint c2) : c1_(std::move(c1)), c2_(std::move(c2)) {}
             bool test(const Array& params) const override {
                 return c1_.test(params) && c2_.test(params);
             }
@@ -187,8 +185,7 @@ namespace QuantLib {
       private:
         class Impl: public Constraint::Impl {
           public:
-            Impl(const Array& low, const Array& high) :
-                low_(low), high_(high) {
+            Impl(Array low, Array high) : low_(std::move(low)), high_(std::move(high)) {
                 QL_ENSURE(low_.size()==high_.size(),
                           "Upper and lower boundaries sizes are inconsistent.");
             }

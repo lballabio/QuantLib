@@ -20,6 +20,7 @@
 
 #include <ql/instruments/asianoption.hpp>
 #include <ql/time/date.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -27,12 +28,12 @@ namespace QuantLib {
         Average::Type averageType,
         Real runningAccumulator,
         Size pastFixings,
-        const std::vector<Date>& fixingDates,
+        std::vector<Date> fixingDates,
         const ext::shared_ptr<StrikedTypePayoff>& payoff,
         const ext::shared_ptr<Exercise>& exercise)
-    : OneAssetOption(payoff, exercise),
-      averageType_(averageType), runningAccumulator_(runningAccumulator),
-      pastFixings_(pastFixings), fixingDates_(fixingDates) {
+    : OneAssetOption(payoff, exercise), averageType_(averageType),
+      runningAccumulator_(runningAccumulator), pastFixings_(pastFixings),
+      fixingDates_(std::move(fixingDates)) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
     }
 

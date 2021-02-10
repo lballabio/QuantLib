@@ -26,6 +26,7 @@
 
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -73,10 +74,10 @@ namespace QuantLib {
     class BlackKarasinski::Dynamics
         : public BlackKarasinski::ShortRateDynamics {
       public:
-        Dynamics(const Parameter& fitting, Real alpha, Real sigma)
-        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
-                                 new OrnsteinUhlenbeckProcess(alpha, sigma))),
-          fitting_(fitting) {}
+        Dynamics(Parameter fitting, Real alpha, Real sigma)
+        : ShortRateDynamics(
+              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(alpha, sigma))),
+          fitting_(std::move(fitting)) {}
 
         Real variable(Time t, Rate r) const override { return std::log(r) - fitting_(t); }
 

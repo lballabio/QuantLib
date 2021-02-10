@@ -109,15 +109,14 @@ namespace QuantLib {
                                   const DayCounter& dayCounter);
         //@}
       protected:
-        Forward(const DayCounter& dayCounter,
-                const Calendar& calendar,
+        Forward(DayCounter dayCounter,
+                Calendar calendar,
                 BusinessDayConvention businessDayConvention,
                 Natural settlementDays,
-                const ext::shared_ptr<Payoff>& payoff,
+                ext::shared_ptr<Payoff> payoff,
                 const Date& valueDate,
                 const Date& maturityDate,
-                const Handle<YieldTermStructure>& discountCurve =
-                                                Handle<YieldTermStructure>());
+                Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
 
         void performCalculations() const override;
         /*! derived classes must set this, typically via spotIncome() */

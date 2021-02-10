@@ -16,17 +16,17 @@
 */
 
 #include <ql/pricingengines/asian/mc_discr_arith_av_price_heston.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    ArithmeticAPOHestonPathPricer::ArithmeticAPOHestonPathPricer(
-        Option::Type type,
-        Real strike,
-        DiscountFactor discount,
-        const std::vector<Size>& fixingIndices,
-        Real runningSum,
-        Size pastFixings)
-    : payoff_(type, strike), discount_(discount), fixingIndices_(fixingIndices),
+    ArithmeticAPOHestonPathPricer::ArithmeticAPOHestonPathPricer(Option::Type type,
+                                                                 Real strike,
+                                                                 DiscountFactor discount,
+                                                                 std::vector<Size> fixingIndices,
+                                                                 Real runningSum,
+                                                                 Size pastFixings)
+    : payoff_(type, strike), discount_(discount), fixingIndices_(std::move(fixingIndices)),
       runningSum_(runningSum), pastFixings_(pastFixings) {
         QL_REQUIRE(strike>=0.0,
             "strike less than zero not allowed");

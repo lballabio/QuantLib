@@ -19,12 +19,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
+#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
+#include <utility>
 
 using std::vector;
 
@@ -146,16 +147,14 @@ namespace QuantLib {
     }
 
 
-    FlatVolFactory::FlatVolFactory(
-                                Real longTermCorrelation,
-                                Real beta,
-                                const vector<Time>& times,
-                                const vector<Volatility>& vols,
-                                const Handle<YieldTermStructure>& yieldCurve,
-                                Spread displacement)
-    : longTermCorrelation_(longTermCorrelation), beta_(beta),
-      times_(times), vols_(vols), yieldCurve_(yieldCurve),
-      displacement_(displacement) {
+    FlatVolFactory::FlatVolFactory(Real longTermCorrelation,
+                                   Real beta,
+                                   vector<Time> times,
+                                   vector<Volatility> vols,
+                                   Handle<YieldTermStructure> yieldCurve,
+                                   Spread displacement)
+    : longTermCorrelation_(longTermCorrelation), beta_(beta), times_(std::move(times)),
+      vols_(std::move(vols)), yieldCurve_(std::move(yieldCurve)), displacement_(displacement) {
         volatility_ = LinearInterpolation(times_.begin(), times_.end(),
                                           vols_.begin());
         volatility_.update();

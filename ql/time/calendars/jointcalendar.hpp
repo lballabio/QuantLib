@@ -63,8 +63,7 @@ namespace QuantLib {
             Impl(const Calendar&, const Calendar&,
                  const Calendar&, const Calendar&,
                  JointCalendarRule);
-            Impl(const std::vector<Calendar>&,
-                 JointCalendarRule);
+            Impl(std::vector<Calendar>, JointCalendarRule);
             std::string name() const override;
             bool isWeekend(Weekday) const override;
             bool isBusinessDay(const Date&) const override;

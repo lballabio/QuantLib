@@ -35,13 +35,12 @@ namespace QuantLib {
     
     class FdmBatesOp : public FdmLinearOpComposite {
       public:
-        FdmBatesOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<BatesProcess>& batesProcess,
-            const FdmBoundaryConditionSet& bcSet,
-            Size integroIntegrationOrder,
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
-                                        = ext::shared_ptr<FdmQuantoHelper>());
+        FdmBatesOp(const ext::shared_ptr<FdmMesher>& mesher,
+                   const ext::shared_ptr<BatesProcess>& batesProcess,
+                   FdmBoundaryConditionSet bcSet,
+                   Size integroIntegrationOrder,
+                   const ext::shared_ptr<FdmQuantoHelper>& quantoHelper =
+                       ext::shared_ptr<FdmQuantoHelper>());
 
         Size size() const override;
         void setTime(Time t1, Time t2) override;

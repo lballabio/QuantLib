@@ -17,20 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/callability/parametricexerciseadapter.hpp>
-#include <ql/models/marketmodels/callability/marketmodelparametricexercise.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/auto_ptr.hpp>
+#include <ql/models/marketmodels/callability/marketmodelparametricexercise.hpp>
+#include <ql/models/marketmodels/callability/parametricexerciseadapter.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     ParametricExerciseAdapter::ParametricExerciseAdapter(
-                            const MarketModelParametricExercise& exercise,
-                            const std::vector<std::vector<Real> >& parameters)
-    : exercise_(exercise), parameters_(parameters),
-      currentStep_(0), currentExercise_(0),
-      isExerciseTime_(exercise.isExerciseTime()),
-      numberOfVariables_(exercise.numberOfVariables()) {
+        const MarketModelParametricExercise& exercise, std::vector<std::vector<Real> > parameters)
+    : exercise_(exercise), parameters_(std::move(parameters)), currentStep_(0), currentExercise_(0),
+      isExerciseTime_(exercise.isExerciseTime()), numberOfVariables_(exercise.numberOfVariables()) {
         std::vector<Time> evolutionTimes =
             exercise_->evolution().evolutionTimes();
         for (Size i=0; i<evolutionTimes.size(); ++i) {

@@ -79,10 +79,10 @@ namespace QuantLib {
         UnitOfMeasure triangulationUnitOfMeasure;
         Rounding rounding;
 
-        Data(const std::string& name,
-             const std::string& code,
+        Data(std::string name,
+             std::string code,
              UnitOfMeasure::Type unitType,
-             const UnitOfMeasure& triangulationUnitOfMeasure = UnitOfMeasure(),
+             UnitOfMeasure triangulationUnitOfMeasure = UnitOfMeasure(),
              const Rounding& rounding = Rounding(0));
     };
 

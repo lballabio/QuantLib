@@ -29,8 +29,8 @@ namespace QuantLib {
     class MultiStepSwap : public MultiProductMultiStep {
       public:
         MultiStepSwap(const std::vector<Time>& rateTimes,
-                      const std::vector<Real>& fixedAccruals,
-                      const std::vector<Real>& floatingAccruals,
+                      std::vector<Real> fixedAccruals,
+                      std::vector<Real> floatingAccruals,
                       const std::vector<Time>& paymentTimes,
                       Rate fixedRate,
                       bool payer = true);

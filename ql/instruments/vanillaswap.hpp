@@ -68,18 +68,16 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
-        VanillaSwap(
-            Type type,
-            Real nominal,
-            const Schedule& fixedSchedule,
-            Rate fixedRate,
-            const DayCounter& fixedDayCount,
-            const Schedule& floatSchedule,
-            const ext::shared_ptr<IborIndex>& iborIndex,
-            Spread spread,
-            const DayCounter& floatingDayCount,
-            boost::optional<BusinessDayConvention> paymentConvention =
-                                                                 boost::none);
+        VanillaSwap(Type type,
+                    Real nominal,
+                    Schedule fixedSchedule,
+                    Rate fixedRate,
+                    DayCounter fixedDayCount,
+                    Schedule floatSchedule,
+                    ext::shared_ptr<IborIndex> iborIndex,
+                    Spread spread,
+                    DayCounter floatingDayCount,
+                    boost::optional<BusinessDayConvention> paymentConvention = boost::none);
         //! \name Inspectors
         //@{
         Type type() const;

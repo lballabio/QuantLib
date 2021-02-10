@@ -29,8 +29,9 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 #include <boost/multi_array.hpp>
+#include <utility>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
+#    pragma GCC diagnostic pop
 #endif
 
 namespace QuantLib {
@@ -104,17 +105,18 @@ namespace QuantLib {
         }
     }
 
-    NumericalDifferentiation::NumericalDifferentiation(
-        const ext::function<Real(Real)>& f,
-        Size orderOfDerivative,    const Array& x_offsets)
-    : offsets_(x_offsets),
-      w_(calcWeights(offsets_, orderOfDerivative)), f_(f) { }
+    NumericalDifferentiation::NumericalDifferentiation(ext::function<Real(Real)> f,
+                                                       Size orderOfDerivative,
+                                                       Array x_offsets)
+    : offsets_(std::move(x_offsets)), w_(calcWeights(offsets_, orderOfDerivative)),
+      f_(std::move(f)) {}
 
 
-    NumericalDifferentiation::NumericalDifferentiation(
-        const ext::function<Real(Real)>& f,
-        Size orderOfDerivative,
-        Real stepSize, Size steps, Scheme scheme)
-    : offsets_(calcOffsets(stepSize, steps, scheme)),
-      w_(calcWeights(offsets_, orderOfDerivative)), f_(f) { }
+    NumericalDifferentiation::NumericalDifferentiation(ext::function<Real(Real)> f,
+                                                       Size orderOfDerivative,
+                                                       Real stepSize,
+                                                       Size steps,
+                                                       Scheme scheme)
+    : offsets_(calcOffsets(stepSize, steps, scheme)), w_(calcWeights(offsets_, orderOfDerivative)),
+      f_(std::move(f)) {}
 }

@@ -67,19 +67,20 @@ namespace QuantLib {
     */
     class CPICapFloorTermPriceSurface : public InflationTermStructure {
       public:
-        CPICapFloorTermPriceSurface(Real nominal,
-                                    Real baseRate,  // avoids an uncontrolled crash if index has no TS
-                                    const Period &observationLag,
-                                    const Calendar &cal, // calendar in index may not be useful
-                                    const BusinessDayConvention &bdc,
-                                    const DayCounter &dc,
-                                    const Handle<ZeroInflationIndex>& zii,
-                                    const Handle<YieldTermStructure>& yts,
-                                    const std::vector<Rate> &cStrikes,
-                                    const std::vector<Rate> &fStrikes,
-                                    const std::vector<Period> &cfMaturities,
-                                    const Matrix &cPrice,
-                                    const Matrix &fPrice);
+        CPICapFloorTermPriceSurface(
+            Real nominal,
+            Real baseRate, // avoids an uncontrolled crash if index has no TS
+            const Period& observationLag,
+            const Calendar& cal, // calendar in index may not be useful
+            const BusinessDayConvention& bdc,
+            const DayCounter& dc,
+            const Handle<ZeroInflationIndex>& zii,
+            Handle<YieldTermStructure> yts,
+            const std::vector<Rate>& cStrikes,
+            const std::vector<Rate>& fStrikes,
+            const std::vector<Period>& cfMaturities,
+            const Matrix& cPrice,
+            const Matrix& fPrice);
 
         //! \name InflationTermStructure interface
         //@{

@@ -38,8 +38,7 @@ namespace QuantLib {
     class AnalyticDividendEuropeanEngine
         : public DividendVanillaOption::engine {
       public:
-        AnalyticDividendEuropeanEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+        AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         void calculate() const override;
 
       private:

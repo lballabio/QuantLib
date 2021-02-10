@@ -34,10 +34,10 @@ namespace QuantLib {
                          const Period& fixedLegTenor,
                          BusinessDayConvention fixedLegConvention,
                          const DayCounter& fixedLegDayCounter,
-                         const ext::shared_ptr<IborIndex>& iborIndex)
+                         ext::shared_ptr<IborIndex> iborIndex)
     : InterestRateIndex(
           familyName, tenor, settlementDays, currency, fixingCalendar, fixedLegDayCounter),
-      tenor_(tenor), iborIndex_(iborIndex), fixedLegTenor_(fixedLegTenor),
+      tenor_(tenor), iborIndex_(std::move(iborIndex)), fixedLegTenor_(fixedLegTenor),
       fixedLegConvention_(fixedLegConvention), exogenousDiscount_(false),
       discount_(Handle<YieldTermStructure>()) {
         registerWith(iborIndex_);
@@ -51,12 +51,13 @@ namespace QuantLib {
                          const Period& fixedLegTenor,
                          BusinessDayConvention fixedLegConvention,
                          const DayCounter& fixedLegDayCounter,
-                         const ext::shared_ptr<IborIndex>& iborIndex,
-                         const Handle<YieldTermStructure>& discount)
+                         ext::shared_ptr<IborIndex> iborIndex,
+                         Handle<YieldTermStructure> discount)
     : InterestRateIndex(
           familyName, tenor, settlementDays, currency, fixingCalendar, fixedLegDayCounter),
-      tenor_(tenor), iborIndex_(iborIndex), fixedLegTenor_(fixedLegTenor),
-      fixedLegConvention_(fixedLegConvention), exogenousDiscount_(true), discount_(discount) {
+      tenor_(tenor), iborIndex_(std::move(iborIndex)), fixedLegTenor_(fixedLegTenor),
+      fixedLegConvention_(fixedLegConvention), exogenousDiscount_(true),
+      discount_(std::move(discount)) {
         registerWith(iborIndex_);
         registerWith(discount_);
     }

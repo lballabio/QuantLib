@@ -156,13 +156,11 @@ namespace QuantLib {
   class MarketModelPathwiseMultiDeflatedCap : public MarketModelPathwiseMultiProduct
     {
      public:
-
-       MarketModelPathwiseMultiDeflatedCap(
-                          const std::vector<Time>& rateTimes,
-                          const std::vector<Real>& accruals,
-                          const std::vector<Time>& paymentTimes,
-                          Rate strike,
-                          const std::vector<std::pair<Size,Size> >& startsAndEnds);
+       MarketModelPathwiseMultiDeflatedCap(const std::vector<Time>& rateTimes,
+                                           const std::vector<Real>& accruals,
+                                           const std::vector<Time>& paymentTimes,
+                                           Rate strike,
+                                           std::vector<std::pair<Size, Size> > startsAndEnds);
 
 
        ~MarketModelPathwiseMultiDeflatedCap() override = default;

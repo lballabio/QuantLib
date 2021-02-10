@@ -17,31 +17,27 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
-#include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/auto_ptr.hpp>
+#include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     MultiStepInverseFloater::MultiStepInverseFloater(const std::vector<Time>& rateTimes,
-        const std::vector<Real>& fixedAccruals,
-        const std::vector<Real>& floatingAccruals,
-        const std::vector<Real>& fixedStrikes,
-        const std::vector<Real>& fixedMultipliers, 
-        const std::vector<Real>& floatingSpreads,
-        const std::vector<Time>& paymentTimes,
-        bool payer)
-        : MultiProductMultiStep(rateTimes),
-        fixedAccruals_(fixedAccruals), 
-        floatingAccruals_(floatingAccruals),
-        fixedStrikes_(fixedStrikes),
-        fixedMultipliers_(fixedMultipliers),
-        floatingSpreads_(floatingSpreads),
-        paymentTimes_(paymentTimes),
-        multiplier_(payer ? -1.0 : 1.0), 
-        lastIndex_(rateTimes.size()-1)
-    {
+                                                     std::vector<Real> fixedAccruals,
+                                                     const std::vector<Real>& floatingAccruals,
+                                                     const std::vector<Real>& fixedStrikes,
+                                                     const std::vector<Real>& fixedMultipliers,
+                                                     const std::vector<Real>& floatingSpreads,
+                                                     const std::vector<Time>& paymentTimes,
+                                                     bool payer)
+    : MultiProductMultiStep(rateTimes), fixedAccruals_(std::move(fixedAccruals)),
+      floatingAccruals_(floatingAccruals), fixedStrikes_(fixedStrikes),
+      fixedMultipliers_(fixedMultipliers), floatingSpreads_(floatingSpreads),
+      paymentTimes_(paymentTimes), multiplier_(payer ? -1.0 : 1.0),
+      lastIndex_(rateTimes.size() - 1) {
         checkIncreasingTimes(paymentTimes);
         QL_REQUIRE(fixedAccruals_.size() == lastIndex_," Incorrect number of fixedAccruals given, should be " <<  lastIndex_ << " not " << fixedAccruals_.size() );
         QL_REQUIRE(floatingAccruals.size() == lastIndex_," Incorrect number of floatingAccruals given, should be " <<  lastIndex_ << " not " << floatingAccruals.size() );
@@ -49,8 +45,6 @@ namespace QuantLib {
         QL_REQUIRE(fixedMultipliers.size() == lastIndex_," Incorrect number of fixedMultipliers given, should be " <<  lastIndex_ << " not " << fixedMultipliers.size() );
         QL_REQUIRE(floatingSpreads.size() == lastIndex_," Incorrect number of floatingSpreads given, should be " <<  lastIndex_ << " not " << floatingSpreads.size() );
          QL_REQUIRE(paymentTimes.size() == lastIndex_," Incorrect number of paymentTimes given, should be " <<  lastIndex_ << " not " << paymentTimes.size() );
-
-
     }
 
     bool MultiStepInverseFloater::nextTimeStep(

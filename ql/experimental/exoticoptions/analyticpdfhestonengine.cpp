@@ -21,20 +21,19 @@
     \brief Analytic engine for arbitrary European payoffs under the Heston model
 */
 
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/functional.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(
-        const ext::shared_ptr<HestonModel>& model,
-        Real integrationEps_,
-        Size maxIntegrationIterations)
-    : maxIntegrationIterations_(maxIntegrationIterations),
-      integrationEps_(integrationEps_),
-      model_(model) {  }
+    AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(ext::shared_ptr<HestonModel> model,
+                                                     Real integrationEps_,
+                                                     Size maxIntegrationIterations)
+    : maxIntegrationIterations_(maxIntegrationIterations), integrationEps_(integrationEps_),
+      model_(std::move(model)) {}
 
     void AnalyticPDFHestonEngine::calculate() const {
         using namespace ext::placeholders;

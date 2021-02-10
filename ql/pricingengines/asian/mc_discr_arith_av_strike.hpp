@@ -24,9 +24,10 @@
 #ifndef quantlib_mc_discrete_arithmetic_average_strike_asian_engine_hpp
 #define quantlib_mc_discrete_arithmetic_average_strike_asian_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -131,7 +132,7 @@ namespace QuantLib {
     class MakeMCDiscreteArithmeticASEngine {
       public:
         explicit MakeMCDiscreteArithmeticASEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCDiscreteArithmeticASEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteArithmeticASEngine& withSamples(Size samples);
@@ -151,12 +152,10 @@ namespace QuantLib {
     };
 
     template <class RNG, class S>
-    inline
-    MakeMCDiscreteArithmeticASEngine<RNG,S>::MakeMCDiscreteArithmeticASEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
+    inline MakeMCDiscreteArithmeticASEngine<RNG, S>::MakeMCDiscreteArithmeticASEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticASEngine<RNG,S>&
