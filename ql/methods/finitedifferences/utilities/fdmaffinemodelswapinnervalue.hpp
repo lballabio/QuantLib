@@ -23,29 +23,28 @@
 #ifndef quantlib_fdm_affine_model_swap_inner_value_hpp
 #define quantlib_fdm_affine_model_swap_inner_value_hpp
 
+#include <ql/cashflows/coupon.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/vanillaswap.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp>
-#include <ql/cashflows/coupon.hpp>
-
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <map>
+#include <utility>
 
 namespace QuantLib {
 
     template <class ModelType>
     class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
       public:
-        FdmAffineModelSwapInnerValue(
-            const ext::shared_ptr<ModelType>& disModel,
-            const ext::shared_ptr<ModelType>& fwdModel,
-            const ext::shared_ptr<VanillaSwap>& swap,
-            const std::map<Time, Date>& exerciseDates,
-            const ext::shared_ptr<FdmMesher>& mesher,
-            Size direction);
+        FdmAffineModelSwapInnerValue(ext::shared_ptr<ModelType> disModel,
+                                     ext::shared_ptr<ModelType> fwdModel,
+                                     const ext::shared_ptr<VanillaSwap>& swap,
+                                     std::map<Time, Date> exerciseDates,
+                                     ext::shared_ptr<FdmMesher> mesher,
+                                     Size direction);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override;
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
@@ -66,32 +65,26 @@ namespace QuantLib {
         const Size direction_;
     };
 
-    template <class ModelType> inline
-    FdmAffineModelSwapInnerValue<ModelType>::FdmAffineModelSwapInnerValue(
-        const ext::shared_ptr<ModelType>& disModel,
-        const ext::shared_ptr<ModelType>& fwdModel,
+    template <class ModelType>
+    inline FdmAffineModelSwapInnerValue<ModelType>::FdmAffineModelSwapInnerValue(
+        ext::shared_ptr<ModelType> disModel,
+        ext::shared_ptr<ModelType> fwdModel,
         const ext::shared_ptr<VanillaSwap>& swap,
-        const std::map<Time, Date>& exerciseDates,
-        const ext::shared_ptr<FdmMesher>& mesher,
+        std::map<Time, Date> exerciseDates,
+        ext::shared_ptr<FdmMesher> mesher,
         Size direction)
-    : disModel_(disModel),
-      fwdModel_(fwdModel),
-      index_(swap->iborIndex()),
-      swap_(ext::shared_ptr<VanillaSwap>(
-          new VanillaSwap(swap->type(),
-                          swap->nominal(),
-                          swap->fixedSchedule(),
-                          swap->fixedRate(),
-                          swap->fixedDayCount(),
-                          swap->floatingSchedule(),
-                          swap->iborIndex()->clone(fwdTs_),
-                          swap->spread(),
-                          swap->floatingDayCount(),
-                          swap->paymentConvention()))),
-      exerciseDates_(exerciseDates),
-      mesher_(mesher),
-      direction_(direction) {
-    }
+    : disModel_(std::move(disModel)), fwdModel_(std::move(fwdModel)), index_(swap->iborIndex()),
+      swap_(ext::shared_ptr<VanillaSwap>(new VanillaSwap(swap->type(),
+                                                         swap->nominal(),
+                                                         swap->fixedSchedule(),
+                                                         swap->fixedRate(),
+                                                         swap->fixedDayCount(),
+                                                         swap->floatingSchedule(),
+                                                         swap->iborIndex()->clone(fwdTs_),
+                                                         swap->spread(),
+                                                         swap->floatingDayCount(),
+                                                         swap->paymentConvention()))),
+      exerciseDates_(std::move(exerciseDates)), mesher_(std::move(mesher)), direction_(direction) {}
 
     template <class ModelType> inline
     Real FdmAffineModelSwapInnerValue<ModelType>::innerValue(

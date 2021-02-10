@@ -24,9 +24,10 @@
 #ifndef quantlib_mc_discrete_geometric_average_price_asian_heston_engine_hpp
 #define quantlib_mc_discrete_geometric_average_price_asian_heston_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -68,8 +69,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCDiscreteGeometricAPHestonEngine {
       public:
-        explicit MakeMCDiscreteGeometricAPHestonEngine(
-            const ext::shared_ptr<P>& process);
+        explicit MakeMCDiscreteGeometricAPHestonEngine(ext::shared_ptr<P> process);
         // named parameters
         MakeMCDiscreteGeometricAPHestonEngine& withSamples(Size samples);
         MakeMCDiscreteGeometricAPHestonEngine& withAbsoluteTolerance(Real tolerance);
@@ -173,11 +173,11 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCDiscreteGeometricAPHestonEngine<RNG,S,P>::MakeMCDiscreteGeometricAPHestonEngine(
-             const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), steps_(Null<Size>()),
-      stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCDiscreteGeometricAPHestonEngine<RNG, S, P>::MakeMCDiscreteGeometricAPHestonEngine(
+        ext::shared_ptr<P> process)
+    : process_(std::move(process)), antithetic_(false), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
 
     template<class RNG, class S, class P>
     inline MakeMCDiscreteGeometricAPHestonEngine<RNG,S,P>&
