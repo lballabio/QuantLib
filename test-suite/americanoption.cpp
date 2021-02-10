@@ -27,7 +27,7 @@
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdshoutengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -481,7 +481,7 @@ namespace {
                                                           qTS, rTS, volTS));
 
                 ext::shared_ptr<PricingEngine> engine(
-                                                    new Engine(stochProcess));
+                     new Engine(stochProcess, 50));
 
                 VanillaOption option(payoff, exercise);
                 option.setPricingEngine(engine);
@@ -563,7 +563,66 @@ void AmericanOptionTest::testFdAmericanGreeks() {
 
 void AmericanOptionTest::testFdShoutGreeks() {
     BOOST_TEST_MESSAGE("Testing finite-differences shout option greeks...");
-    testFdGreeks<FDShoutEngine<CrankNicolson> >();
+    testFdGreeks<FdBlackScholesShoutEngine>();
+}
+
+void AmericanOptionTest::testFDShoutNPV() {
+    BOOST_TEST_MESSAGE("Testing finite-differences shout option pricing...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual365Fixed();
+    const auto today = Date(4, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = Handle<Quote>(ext::make_shared<SimpleQuote>(100.0));
+    const auto q = Handle<YieldTermStructure>(flatRate(0.03, dc));
+    const auto r = Handle<YieldTermStructure>(flatRate(0.06, dc));
+
+    const auto volTS = Handle<BlackVolTermStructure>(flatVol(0.25, dc));
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            spot, q, r, volTS);
+
+    const auto maturityDate = today + Period(5, Years);
+
+    struct TestDescription { Real strike; Option::Type type; Real expected; };
+
+    const TestDescription testDescriptions[] = {
+            {105, Option::Put, 19.136},
+            {105, Option::Call, 28.211},
+            {120, Option::Put, 28.02},
+            {80, Option::Call, 40.785}
+    };
+
+    const auto engine = ext::make_shared<FdBlackScholesShoutEngine>(
+        process, 400, 200);
+
+    for (const TestDescription& desc: testDescriptions) {
+        const Real strike = desc.strike;
+        const Option::Type type = desc.type;
+
+        auto option = VanillaOption(
+            ext::make_shared<PlainVanillaPayoff>(type, strike),
+            ext::make_shared<AmericanExercise>(maturityDate));
+
+        option.setPricingEngine(engine);
+
+        const Real expected = desc.expected;
+        const Real tol = 2e-2;
+        const Real calculated = option.NPV();
+        const Real diff = std::fabs(calculated-expected);
+
+        if (diff > tol) {
+            BOOST_FAIL("failed to reproduce known shout option price for "
+                    << "\n    strike:     " << strike
+                    << "\n    option type:" <<
+                        ((type == Option::Call)?"Call" : "Put")
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << "\n    difference: " << diff
+                    << "\n    tolerance:  " << tol);
+        }
+    }
 }
 
 test_suite* AmericanOptionTest::suite() {
@@ -580,6 +639,7 @@ test_suite* AmericanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
     return suite;
 }
 

@@ -36,9 +36,12 @@ namespace QuantLib {
 
         \test the correctness of the returned greeks is tested by
               reproducing numerical derivatives.
+
+        \deprecated Use FdBlackScholesShoutEngine instead.
+                    Deprecated in version 1.22.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDShoutEngine
+    class QL_DEPRECATED FDShoutEngine
         : public FDEngineAdapter<FDShoutCondition<
                                      FDStepConditionEngine<Scheme> >,
                                  OneAssetOption::engine> {

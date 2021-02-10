@@ -278,8 +278,6 @@ namespace QuantLib {
 test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
         &AmericanOptionTest::testFdAmericanGreeks, 518.31));
-    bm.push_back(Benchmark("AmericanOption::FdShoutGreeks",
-        &AmericanOptionTest::testFdShoutGreeks, 546.58));
     bm.push_back(Benchmark("AsianOption::MCArithmeticAveragePrice",
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13));
     bm.push_back(Benchmark("BarrierOption::BabsiriValues",
