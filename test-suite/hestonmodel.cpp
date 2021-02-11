@@ -1210,7 +1210,7 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
             AnalyticPTDHestonEngine::Integration::discreteTrapezoid(72))
     };
 
-    for (auto engine : engines) {
+    for (const auto& engine : engines) {
         for (const auto& option : options)
             ext::dynamic_pointer_cast<BlackCalibrationHelper>(option)->setPricingEngine(engine);
 

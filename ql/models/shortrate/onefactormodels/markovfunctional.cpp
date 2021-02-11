@@ -381,6 +381,7 @@ namespace QuantLib {
                         "for sabr calibration at least 4 points are needed (is "
                             << k.size() << ")");
                     std::vector<Real> v;
+                    v.reserve(k.size());
                     for (double j : k) {
                         v.push_back(i->second.rawSmileSection_->volatility(j));
                     }

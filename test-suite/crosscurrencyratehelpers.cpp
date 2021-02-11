@@ -80,11 +80,12 @@ namespace crosscurrencyratehelpers_test {
         }
 
         std::vector<ext::shared_ptr<RateHelper> >
-        buildConstantNotionalXccyRateHelpers(std::vector<XccyTestDatum> xccyData,
+        buildConstantNotionalXccyRateHelpers(const std::vector<XccyTestDatum>& xccyData,
                                              const Handle<YieldTermStructure>& collateralHandle,
                                              bool isFxBaseCurrencyCollateralCurrency,
                                              bool isBasisOnFxBaseCurrencyLeg) const {
             std::vector<ext::shared_ptr<RateHelper> > instruments;
+            instruments.reserve(xccyData.size());
             for (auto& i : xccyData) {
                 instruments.push_back(constantNotionalXccyRateHelper(
                     i, collateralHandle, isFxBaseCurrencyCollateralCurrency,

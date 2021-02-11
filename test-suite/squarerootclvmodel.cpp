@@ -558,6 +558,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
 
     // forward skew of the Heston-SLV model
     std::vector<Time> mandatoryTimes;
+    mandatoryTimes.reserve(calibrationDates.size());
     for (auto& calibrationDate : calibrationDates)
         mandatoryTimes.push_back(dc.yearFraction(todaysDate, calibrationDate));
 

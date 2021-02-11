@@ -104,6 +104,7 @@ struct CommonVars {
                 43956, 44321, 44686, 45051, 45418, 45782, 46147, 46512, 47609,
                 49436, 51263, 53087, 56739, 60392;
 
+            dates.reserve(datesTmp.size());
             for (int& it : datesTmp)
                 dates.push_back(Date(it));
 

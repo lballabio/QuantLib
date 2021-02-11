@@ -159,8 +159,8 @@ namespace QuantLib {
 
     void Swap::deepUpdate() {
         for (auto& leg : legs_) {
-            for (Size k = 0; k < leg.size(); ++k) {
-                ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(leg[k]);
+            for (auto& k : leg) {
+                ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(k);
                 if (f != nullptr)
                     f->update();
             }

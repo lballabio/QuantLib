@@ -329,6 +329,7 @@ namespace QuantLib {
         void setCouponPricersFirstMatching(const Leg& leg,
                                            const std::vector<ext::shared_ptr<FloatingRateCouponPricer> >& p) {
             std::vector<PricerSetter> setter;
+            setter.reserve(p.size());
             for (const auto& i : p) {
                 setter.push_back(PricerSetter(i));
             }

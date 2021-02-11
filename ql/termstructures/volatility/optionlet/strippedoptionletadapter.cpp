@@ -47,6 +47,7 @@ namespace QuantLib {
             optionletStripper_->optionletStrikes(
                 0); // strikes are the same for all times ?!
         std::vector< Real > stddevs;
+        stddevs.reserve(optionletStrikes.size());
         for (double optionletStrike : optionletStrikes) {
             stddevs.push_back(volatilityImpl(t, optionletStrike) * std::sqrt(t));
         }

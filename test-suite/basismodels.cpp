@@ -66,6 +66,7 @@ namespace {
                                       const Real spread = 0.0) {
         Date today = Settings::instance().evaluationDate();
         std::vector<Date> dates;
+        dates.reserve(terms.size());
         for (auto term : terms)
             dates.push_back(NullCalendar().advance(today, term, Unadjusted));
         std::vector<Real> ratesPlusSpread(rates);
@@ -111,6 +112,7 @@ namespace {
     Handle<OptionletVolatilityStructure> getOptionletTS() {
         Date today = Settings::instance().evaluationDate();
         std::vector<Date> dates;
+        dates.reserve(capletTerms.size());
         for (auto& capletTerm : capletTerms)
             dates.push_back(TARGET().advance(today, capletTerm, Following));
         // set up vol data manually
@@ -129,9 +131,8 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > capletVolQuotes;
         for (auto& capletVol : capletVols) {
             std::vector<Handle<Quote> > row;
-            for (Size j = 0; j < capletVol.size(); ++j)
-                row.push_back(
-                    RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(capletVol[j]))));
+            for (double j : capletVol)
+                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             capletVolQuotes.push_back(row);
         }
         Handle<YieldTermStructure> curve3m = getYTS(terms, proj3mRates);
@@ -164,9 +165,8 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > swaptionVolQuotes;
         for (auto& swaptionVol : swaptionVols) {
             std::vector<Handle<Quote> > row;
-            for (Size j = 0; j < swaptionVol.size(); ++j)
-                row.push_back(RelinkableHandle<Quote>(
-                    ext::shared_ptr<Quote>(new SimpleQuote(swaptionVol[j]))));
+            for (double j : swaptionVol)
+                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             swaptionVolQuotes.push_back(row);
         }
         ext::shared_ptr<SwaptionVolatilityStructure> tmp(

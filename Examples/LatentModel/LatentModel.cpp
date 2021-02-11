@@ -71,6 +71,7 @@ int main(int, char* []) {
             names.push_back(std::string("Acme") + 
                 boost::lexical_cast<std::string>(i));
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
+        defTS.reserve(hazardRates.size());
         for (double& hazardRate : hazardRates)
             defTS.push_back(Handle<DefaultProbabilityTermStructure>(
                 ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRate, Actual365Fixed())));

@@ -254,6 +254,7 @@ namespace QuantLib {
 
         const std::vector<Size>& alive = liveList(endDate);
         std::vector<std::string> calcBufferNames;
+        calcBufferNames.reserve(alive.size());
         for (unsigned long i : alive)
             calcBufferNames.push_back(pool_->names()[i]);
         return calcBufferNames;
@@ -267,6 +268,7 @@ namespace QuantLib {
 
         const std::vector<Size>& alive = liveList(endDate);
         vector<DefaultProbKey> defKeys;
+        defKeys.reserve(alive.size());
         for (unsigned long i : alive)
             defKeys.push_back(pool_->defaultKeys()[i]);
         return defKeys;

@@ -900,7 +900,7 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
         ext::make_shared<Simplex>(0.2)
     };
 
-    for (auto optimizationMethod : optimizationMethods) {
+    for (const auto& optimizationMethod : optimizationMethods) {
         const Real avgError = ext::get<2>(
             AndreasenHugeVolatilityInterpl(data.calibrationSet, data.spot, data.rTS, data.qTS,
                                            AndreasenHugeVolatilityInterpl::CubicSpline,

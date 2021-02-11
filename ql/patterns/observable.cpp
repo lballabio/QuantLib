@@ -34,7 +34,7 @@ namespace QuantLib {
             bool successful = true;
             std::string errMsg;
 
-            for (auto deferredObserver : deferredObservers_) {
+            for (auto* deferredObserver : deferredObservers_) {
                 try {
                     deferredObserver->update();
                 } catch (std::exception& e) {
@@ -61,7 +61,7 @@ namespace QuantLib {
         } else if (!observers_.empty()) {
             bool successful = true;
             std::string errMsg;
-            for (auto observer : observers_) {
+            for (auto* observer : observers_) {
                 try {
                     observer->update();
                 } catch (std::exception& e) {
