@@ -187,7 +187,8 @@ namespace QuantLib {
         Natural settlementDays,
         const Currency& currency,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
-        bool telescopicValueDates)
+        bool telescopicValueDates,
+        OvernightAveraging averagingMethod)
     : SwapIndex(familyName,
                 tenor,
                 settlementDays,
@@ -197,7 +198,9 @@ namespace QuantLib {
                 ModifiedFollowing,
                 overnightIndex->dayCounter(),
                 overnightIndex),
-      overnightIndex_(overnightIndex), telescopicValueDates_(telescopicValueDates) {}
+      overnightIndex_(overnightIndex), 
+      telescopicValueDates_(telescopicValueDates), 
+      averagingMethod_(averagingMethod) {}
 
 
     ext::shared_ptr<OvernightIndexedSwap>
@@ -211,7 +214,8 @@ namespace QuantLib {
             lastSwap_ = MakeOIS(tenor_, overnightIndex_, fixedRate)
                 .withEffectiveDate(valueDate(fixingDate))
                 .withFixedLegDayCount(dayCounter_)
-                .withTelescopicValueDates(telescopicValueDates_);
+                .withTelescopicValueDates(telescopicValueDates_)
+                .withAveragingMethod(averagingMethod_);
             lastFixingDate_ = fixingDate;
         }
         return lastSwap_;
