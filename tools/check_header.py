@@ -20,11 +20,11 @@ int main() {
     )
 
     fd, fname = tempfile.mkstemp(suffix=".cpp", dir=".", text=True)
-    os.write(fd,  bytes(str(main).encode("utf-8")))
+    os.write(fd, bytes(str(main).encode("utf-8")))
     os.close(fd)
 
     print("Checking %s" % header)
-    command = "g++ -c -Wno-unknown-pragmas -Wno-deprecated-declarations -I. %s -o /dev/null" % fname
+    command = "g++ -c -Wno-unknown-pragmas -Wall -Werror -I. %s -o /dev/null" % fname
     code = os.system(command)
     if code != 0:
         errors += 1
