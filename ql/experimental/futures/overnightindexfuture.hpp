@@ -43,7 +43,7 @@ namespace QuantLib {
                              const Date& maturityDate,
                              const Handle<YieldTermStructure>& discountCurve,
                              Handle<Quote> convexityAdjustment = Handle<Quote>(),
-                             OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
         //! returns spot value/price of an underlying financial instrument
         Real spotValue() const override;
@@ -60,7 +60,7 @@ namespace QuantLib {
         Real compoundedSpotValue() const;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Handle<Quote> convexityAdjustment_;
-        OvernightAveraging averagingMethod_;
+        OvernightAveraging::Type averagingMethod_;
     };
 
 }

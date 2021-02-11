@@ -141,7 +141,7 @@ namespace overnight_indexed_swap_test {
                  bool telescopicValueDates,
                  Date effectiveDate = Null<Date>(),
                  Natural paymentLag = 0,
-                 OvernightAveraging averagingMethod = OvernightAveraging::Compound) {
+                 OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound) {
             return MakeOIS(length, eoniaIndex, fixedRate, 0 * Days)
                 .withEffectiveDate(effectiveDate == Null<Date>() ? settlement : effectiveDate)
                 .withOvernightLegSpread(spread)
@@ -317,7 +317,7 @@ void OvernightIndexedSwapTest::testCachedValue() {
 
 namespace overnight_indexed_swap_test {
     void testBootstrap(bool telescopicValueDates,
-                       OvernightAveraging averagingMethod,
+                       OvernightAveraging::Type averagingMethod,
                        Real tolerance = 1.0e-8) {
 
     CommonVars vars;

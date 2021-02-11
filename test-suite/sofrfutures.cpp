@@ -36,7 +36,7 @@ namespace {
         Month month;
         Year year;
         Real price;
-        OvernightAveraging averagingMethod;
+        OvernightAveraging::Type averagingMethod;
     };
 
 }

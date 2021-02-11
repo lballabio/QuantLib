@@ -126,7 +126,7 @@ namespace QuantLib {
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
                     bool telescopicValueDates, 
-                    OvernightAveraging averagingMethod)
+                    OvernightAveraging::Type averagingMethod)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex->fixingDays(), overnightIndex,
                          gearing, spread,
@@ -286,7 +286,7 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withAveragingMethod(OvernightAveraging averagingMethod) {
+    OvernightLeg& OvernightLeg::withAveragingMethod(OvernightAveraging::Type averagingMethod) {
         averagingMethod_ = averagingMethod;
         return *this;
     }

@@ -53,7 +53,7 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
         OvernightIndexedSwap(Type type,
                              std::vector<Real> nominals,
@@ -66,7 +66,7 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
         //! \name Inspectors
         //@{
@@ -85,7 +85,7 @@ namespace QuantLib {
         const Leg& fixedLeg() const { return legs_[0]; }
         const Leg& overnightLeg() const { return legs_[1]; }
 
-        OvernightAveraging averagingMethod() const { return averagingMethod_; }
+        OvernightAveraging::Type averagingMethod() const { return averagingMethod_; }
         //@}
 
         //! \name Results
@@ -116,7 +116,7 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
         bool telescopicValueDates_;
-        OvernightAveraging averagingMethod_;
+        OvernightAveraging::Type averagingMethod_;
     };
 
 

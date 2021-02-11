@@ -31,7 +31,7 @@ namespace QuantLib {
         const Date& maturityDate,
         const Handle<YieldTermStructure>& discountCurve,
         Handle<Quote> convexityAdjustment,
-        OvernightAveraging averagingMethod)
+        OvernightAveraging::Type averagingMethod)
     : Forward(overnightIndex->dayCounter(),
               overnightIndex->fixingCalendar(),
               overnightIndex->businessDayConvention(),

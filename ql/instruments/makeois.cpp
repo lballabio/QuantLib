@@ -238,7 +238,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeOIS& MakeOIS::withAveragingMethod(OvernightAveraging averagingMethod) {
+    MakeOIS& MakeOIS::withAveragingMethod(OvernightAveraging::Type averagingMethod) {
         averagingMethod_ = averagingMethod;
         return *this;
     }
