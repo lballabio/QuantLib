@@ -44,11 +44,10 @@ namespace QuantLib {
         class arguments;
         class engine;
         NonstandardSwaption(const Swaption &fromSwaption);
-        NonstandardSwaption(
-            const ext::shared_ptr<NonstandardSwap>& swap,
-            const ext::shared_ptr<Exercise>& exercise,
-            Settlement::Type delivery = Settlement::Physical,
-            Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+        NonstandardSwaption(ext::shared_ptr<NonstandardSwap> swap,
+                            const ext::shared_ptr<Exercise>& exercise,
+                            Settlement::Type delivery = Settlement::Physical,
+                            Settlement::Method settlementMethod = Settlement::PhysicalOTC);
 
         //! \name Instrument interface
         //@{
@@ -84,7 +83,7 @@ namespace QuantLib {
     class NonstandardSwaption::arguments : public NonstandardSwap::arguments,
                                            public Option::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         ext::shared_ptr<NonstandardSwap> swap;
         Settlement::Type settlementType;
         Settlement::Method settlementMethod;

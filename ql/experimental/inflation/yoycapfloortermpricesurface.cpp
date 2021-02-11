@@ -18,27 +18,28 @@
 */
 
 #include <ql/experimental/inflation/yoycapfloortermpricesurface.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    YoYCapFloorTermPriceSurface::
-    YoYCapFloorTermPriceSurface(Natural fixingDays,
-                                const Period &lag,
-                                const ext::shared_ptr<YoYInflationIndex>& yii,
-                                Rate baseRate,
-                                const Handle<YieldTermStructure> &nominal,
-                                const DayCounter &dc,
-                                const Calendar &cal,
-                                const BusinessDayConvention &bdc,
-                                const std::vector<Rate> &cStrikes,
-                                const std::vector<Rate> &fStrikes,
-                                const std::vector<Period> &cfMaturities,
-                                const Matrix &cPrice,
-                                const Matrix &fPrice)
+    YoYCapFloorTermPriceSurface::YoYCapFloorTermPriceSurface(
+        Natural fixingDays,
+        const Period& lag,
+        const ext::shared_ptr<YoYInflationIndex>& yii,
+        Rate baseRate,
+        Handle<YieldTermStructure> nominal,
+        const DayCounter& dc,
+        const Calendar& cal,
+        const BusinessDayConvention& bdc,
+        const std::vector<Rate>& cStrikes,
+        const std::vector<Rate>& fStrikes,
+        const std::vector<Period>& cfMaturities,
+        const Matrix& cPrice,
+        const Matrix& fPrice)
     : InflationTermStructure(0, cal, baseRate, lag, yii->frequency(), yii->interpolated(), dc),
-      fixingDays_(fixingDays), bdc_(bdc), yoyIndex_(yii), nominalTS_(nominal),
-      cStrikes_(cStrikes), fStrikes_(fStrikes),
-      cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice) {
+      fixingDays_(fixingDays), bdc_(bdc), yoyIndex_(yii), nominalTS_(std::move(nominal)),
+      cStrikes_(cStrikes), fStrikes_(fStrikes), cfMaturities_(cfMaturities), cPrice_(cPrice),
+      fPrice_(fPrice) {
 
         // data consistency checking, enough data?
         QL_REQUIRE(fStrikes_.size() > 1, "not enough floor strikes");

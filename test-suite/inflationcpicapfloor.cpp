@@ -461,7 +461,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
 
 test_suite* InflationCPICapFloorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CPIswaption tests");
+    auto* suite = BOOST_TEST_SUITE("CPIswaption tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationCPICapFloorTest::cpicapfloorpricesurface));
     suite->add(QUANTLIB_TEST_CASE(&InflationCPICapFloorTest::cpicapfloorpricer));

@@ -22,20 +22,20 @@
 
 #include "matrices.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/math/moorepenroseinverse.hpp>
 #include <ql/math/initializers.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/math/matrixutilities/choleskydecomposition.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
-#include <ql/math/matrixutilities/svd.hpp>
-#include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/math/matrixutilities/basisincompleteordered.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
+#include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/qrdecomposition.hpp>
+#include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
-#include <ql/math/matrixutilities/qrdecomposition.hpp>
-#include <ql/math/matrixutilities/basisincompleteordered.hpp>
-#include <ql/experimental/math/moorepenroseinverse.hpp>
-
 #include <boost/math/special_functions/fpclassify.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -627,7 +627,7 @@ void MatricesTest::testMoorePenroseInverse() {
 namespace matrices_test {
     class MatrixMult {
       public:
-        explicit MatrixMult(const Matrix& m) : m_(m) {}
+        explicit MatrixMult(Matrix m) : m_(std::move(m)) {}
         Disposable<Array> operator()(const Array& x) const {
             Array retVal = m_*x;
             return retVal;
@@ -756,7 +756,7 @@ void MatricesTest::testInitializers() {
 }
 
 test_suite* MatricesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
+    auto* suite = BOOST_TEST_SUITE("Matrix tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testOrthogonalProjection));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testEigenvectors));

@@ -45,7 +45,7 @@ class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwis
                           const std::vector<Time>& rateTimes,
                           const std::vector<Rate>& strikes);
 
-       ~MarketModelPathwiseCoterminalSwaptionsDeflated() override {}
+       ~MarketModelPathwiseCoterminalSwaptionsDeflated() override = default;
 
        std::vector<Size> suggestedNumeraires() const override;
        const EvolutionDescription& evolution() const override;
@@ -96,7 +96,7 @@ class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketMod
                           const std::vector<Rate>& strikes,
                           Real bumpSize_);
 
-       ~MarketModelPathwiseCoterminalSwaptionsNumericalDeflated() override {}
+       ~MarketModelPathwiseCoterminalSwaptionsNumericalDeflated() override = default;
 
        std::vector<Size> suggestedNumeraires() const override;
        const EvolutionDescription& evolution() const override;

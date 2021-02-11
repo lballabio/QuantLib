@@ -428,8 +428,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg.front());
     ext::shared_ptr<FixedRateCoupon> lastCpn =
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg.back());
-    BOOST_REQUIRE(firstCpn != NULL);
-    BOOST_REQUIRE(lastCpn != NULL);
+    BOOST_REQUIRE(firstCpn != nullptr);
+    BOOST_REQUIRE(lastCpn != nullptr);
     BOOST_CHECK_EQUAL(firstCpn->referencePeriodStart(), Date(25, Mar, 2017));
     BOOST_CHECK_EQUAL(firstCpn->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpn->referencePeriodStart(), Date(25, Sep, 2020));
@@ -439,8 +439,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg2.front());
     ext::shared_ptr<FixedRateCoupon> lastCpn2 =
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg2.back());
-    BOOST_REQUIRE(firstCpn2 != NULL);
-    BOOST_REQUIRE(lastCpn2 != NULL);
+    BOOST_REQUIRE(firstCpn2 != nullptr);
+    BOOST_REQUIRE(lastCpn2 != nullptr);
     BOOST_CHECK_EQUAL(firstCpn2->referencePeriodStart(), Date(25, Mar, 2017));
     BOOST_CHECK_EQUAL(firstCpn2->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpn2->referencePeriodStart(), Date(25, Sep, 2020));
@@ -450,8 +450,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg3.front());
     ext::shared_ptr<FixedRateCoupon> lastCpn3 =
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg3.back());
-    BOOST_REQUIRE(firstCpn3 != NULL);
-    BOOST_REQUIRE(lastCpn3 != NULL);
+    BOOST_REQUIRE(firstCpn3 != nullptr);
+    BOOST_REQUIRE(lastCpn3 != nullptr);
     BOOST_CHECK_EQUAL(firstCpn3->referencePeriodStart(), Date(15, Sep, 2017));
     BOOST_CHECK_EQUAL(firstCpn3->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpn3->referencePeriodStart(), Date(25, Sep, 2020));
@@ -474,8 +474,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FloatingRateCoupon>(legf.front());
     ext::shared_ptr<FloatingRateCoupon> lastCpnF =
         ext::dynamic_pointer_cast<FloatingRateCoupon>(legf.back());
-    BOOST_REQUIRE(firstCpnF != NULL);
-    BOOST_REQUIRE(lastCpnF != NULL);
+    BOOST_REQUIRE(firstCpnF != nullptr);
+    BOOST_REQUIRE(lastCpnF != nullptr);
     BOOST_CHECK_EQUAL(firstCpnF->referencePeriodStart(), Date(25, Mar, 2017));
     BOOST_CHECK_EQUAL(firstCpnF->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpnF->referencePeriodStart(), Date(25, Sep, 2020));
@@ -485,8 +485,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FloatingRateCoupon>(legf2.front());
     ext::shared_ptr<FloatingRateCoupon> lastCpnF2 =
         ext::dynamic_pointer_cast<FloatingRateCoupon>(legf2.back());
-    BOOST_REQUIRE(firstCpnF2 != NULL);
-    BOOST_REQUIRE(lastCpnF2 != NULL);
+    BOOST_REQUIRE(firstCpnF2 != nullptr);
+    BOOST_REQUIRE(lastCpnF2 != nullptr);
     BOOST_CHECK_EQUAL(firstCpnF2->referencePeriodStart(), Date(25, Mar, 2017));
     BOOST_CHECK_EQUAL(firstCpnF2->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpnF2->referencePeriodStart(), Date(25, Sep, 2020));
@@ -496,8 +496,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FloatingRateCoupon>(legf3.front());
     ext::shared_ptr<FloatingRateCoupon> lastCpnF3 =
         ext::dynamic_pointer_cast<FloatingRateCoupon>(legf3.back());
-    BOOST_REQUIRE(firstCpnF3 != NULL);
-    BOOST_REQUIRE(lastCpnF3 != NULL);
+    BOOST_REQUIRE(firstCpnF3 != nullptr);
+    BOOST_REQUIRE(lastCpnF3 != nullptr);
     BOOST_CHECK_EQUAL(firstCpnF3->referencePeriodStart(), Date(15, Sep, 2017));
     BOOST_CHECK_EQUAL(firstCpnF3->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpnF3->referencePeriodStart(), Date(25, Sep, 2020));
@@ -505,7 +505,7 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
 }
 
 test_suite* CashFlowsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cash flows tests");
+    auto* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));

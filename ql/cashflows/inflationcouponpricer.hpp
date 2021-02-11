@@ -53,7 +53,7 @@ namespace QuantLib {
     class InflationCouponPricer: public virtual Observer,
                                  public virtual Observable {
     public:
-      ~InflationCouponPricer() override {}
+      ~InflationCouponPricer() override = default;
       //! \name Interface
       //@{
       virtual Real swapletPrice() const = 0;
@@ -91,12 +91,10 @@ namespace QuantLib {
         QL_DEPRECATED
         YoYInflationCouponPricer();
 
-        explicit YoYInflationCouponPricer(
-            const Handle<YieldTermStructure>& nominalTermStructure);
+        explicit YoYInflationCouponPricer(Handle<YieldTermStructure> nominalTermStructure);
 
-        YoYInflationCouponPricer(
-            const Handle<YoYOptionletVolatilitySurface>& capletVol,
-            const Handle<YieldTermStructure>& nominalTermStructure);
+        YoYInflationCouponPricer(Handle<YoYOptionletVolatilitySurface> capletVol,
+                                 Handle<YieldTermStructure> nominalTermStructure);
 
         virtual Handle<YoYOptionletVolatilitySurface> capletVolatility() const{
             return capletVol_;

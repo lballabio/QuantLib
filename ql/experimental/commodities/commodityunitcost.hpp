@@ -24,17 +24,17 @@
 #ifndef quantlib_commodity_unit_cost_hpp
 #define quantlib_commodity_unit_cost_hpp
 
-#include <ql/money.hpp>
 #include <ql/experimental/commodities/unitofmeasure.hpp>
+#include <ql/money.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     class CommodityUnitCost {
       public:
-        CommodityUnitCost() {}
-        CommodityUnitCost(const Money& amount,
-                          const UnitOfMeasure& unitOfMeasure) :
-        amount_(amount), unitOfMeasure_(unitOfMeasure) {}
+        CommodityUnitCost() = default;
+        CommodityUnitCost(Money amount, UnitOfMeasure unitOfMeasure)
+        : amount_(std::move(amount)), unitOfMeasure_(std::move(unitOfMeasure)) {}
 
         const Money& amount() const { return amount_; }
         const UnitOfMeasure& unitOfMeasure() const { return unitOfMeasure_; }

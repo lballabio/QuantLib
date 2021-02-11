@@ -35,7 +35,7 @@ namespace QuantLib {
     class LmCorrelationModel {
       public:
         LmCorrelationModel(Size size, Size nArguments);
-        virtual ~LmCorrelationModel() {}
+        virtual ~LmCorrelationModel() = default;
 
         virtual Size size() const;
         virtual Size factors() const;

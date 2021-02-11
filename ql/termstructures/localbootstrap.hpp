@@ -93,7 +93,7 @@ namespace QuantLib {
         void calculate() const;
 
       private:
-        mutable bool validCurve_;
+        mutable bool validCurve_ = false;
         Curve* ts_;
         Size localisation_;
         bool forcePositive_;
@@ -105,12 +105,9 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    LocalBootstrap<Curve>::LocalBootstrap(Size localisation,
-                                          bool forcePositive,
-                                          Real accuracy)
-    : validCurve_(false), ts_(0), localisation_(localisation),
-      forcePositive_(forcePositive), accuracy_(accuracy)
-    {}
+    LocalBootstrap<Curve>::LocalBootstrap(Size localisation, bool forcePositive, Real accuracy)
+    : ts_(nullptr), localisation_(localisation), forcePositive_(forcePositive),
+      accuracy_(accuracy) {}
 
     template <class Curve>
     void LocalBootstrap<Curve>::setup(Curve* ts) {

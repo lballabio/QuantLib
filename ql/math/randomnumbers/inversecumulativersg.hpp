@@ -26,6 +26,7 @@
 #define quantlib_inversecumulative_rsg_h
 
 #include <ql/methods/montecarlo/sample.hpp>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -56,9 +57,8 @@ namespace QuantLib {
     class InverseCumulativeRsg {
       public:
         typedef Sample<std::vector<Real> > sample_type;
-        explicit InverseCumulativeRsg(const USG& uniformSequenceGenerator);
-        InverseCumulativeRsg(const USG& uniformSequenceGenerator,
-                             const IC& inverseCumulative);
+        explicit InverseCumulativeRsg(USG uniformSequenceGenerator);
+        InverseCumulativeRsg(USG uniformSequenceGenerator, const IC& inverseCumulative);
         //! returns next sample from the inverse cumulative distribution
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const { return x_; }
@@ -71,18 +71,14 @@ namespace QuantLib {
     };
 
     template <class USG, class IC>
-    InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(const USG& usg)
-    : uniformSequenceGenerator_(usg),
-      dimension_(uniformSequenceGenerator_.dimension()),
-      x_(std::vector<Real> (dimension_), 1.0) {}
+    InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(USG usg)
+    : uniformSequenceGenerator_(std::move(usg)), dimension_(uniformSequenceGenerator_.dimension()),
+      x_(std::vector<Real>(dimension_), 1.0) {}
 
     template <class USG, class IC>
-    InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(const USG& usg,
-                                                        const IC& inverseCum)
-    : uniformSequenceGenerator_(usg),
-      dimension_(uniformSequenceGenerator_.dimension()),
-      x_(std::vector<Real> (dimension_), 1.0),
-      ICD_(inverseCum) {}
+    InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(USG usg, const IC& inverseCum)
+    : uniformSequenceGenerator_(std::move(usg)), dimension_(uniformSequenceGenerator_.dimension()),
+      x_(std::vector<Real>(dimension_), 1.0), ICD_(inverseCum) {}
 
     template <class USG, class IC>
     inline const typename InverseCumulativeRsg<USG, IC>::sample_type&

@@ -19,6 +19,7 @@
 
 #include <ql/experimental/catbonds/catrisk.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,13 +30,13 @@ namespace QuantLib {
     }
 
     EventSetSimulation::EventSetSimulation(
-        const ext::shared_ptr<std::vector<std::pair<Date, Real> > >& events,
+        ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
         Date eventsStart,
         Date eventsEnd,
         Date start,
         Date end)
-    : CatSimulation(start, end), events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd),
-      i_(0) {
+    : CatSimulation(start, end), events_(std::move(events)), eventsStart_(eventsStart),
+      eventsEnd_(eventsEnd), i_(0) {
         years_ = end_.year()-start_.year();
         if(eventsStart_.month()<start_.month() 
                             || (eventsStart_.month()==start_.month() 
@@ -71,10 +72,10 @@ namespace QuantLib {
         return true;
     }
 
-    EventSet::EventSet(const ext::shared_ptr<std::vector<std::pair<Date, Real> > >& events,
+    EventSet::EventSet(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
                        Date eventsStart,
                        Date eventsEnd)
-    : events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
+    : events_(std::move(events)), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
 
     ext::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
         return ext::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);

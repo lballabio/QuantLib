@@ -291,8 +291,7 @@ void assertBlackFormulaForwardDerivative(
     Real epsilon = 1.e-10;
     std::string type = optionType == Option::Call ? "Call" : "Put";
 
-    for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
-    {
+    for (auto it = strikes.begin(); it != strikes.end(); ++it) {
         Real strike = *it;
         Real delta = blackFormulaForwardDerivative(
             optionType, strike, forward, stdDev, discount, displacement);
@@ -384,8 +383,7 @@ void assertBachelierBlackFormulaForwardDerivative(
     Real epsilon = 1.e-10;
     std::string type = optionType == Option::Call ? "Call" : "Put";
 
-    for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
-    {
+    for (auto it = strikes.begin(); it != strikes.end(); ++it) {
         Real strike = *it;
         Real delta = bachelierBlackFormulaForwardDerivative(
             optionType, strike, forward, stdDev, discount);
@@ -461,7 +459,7 @@ void BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatil
 }
 
 test_suite* BlackFormulaTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Black formula tests");
+    auto* suite = BOOST_TEST_SUITE("Black formula tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &BlackFormulaTest::testBachelierImpliedVol));

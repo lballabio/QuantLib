@@ -43,7 +43,7 @@ namespace QuantLib {
             explicit CoefficientHolder(Size n)
             : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1),
               monotonicityAdjustments_(n) {}
-            virtual ~CoefficientHolder() {}
+            virtual ~CoefficientHolder() = default;
             Size n_;
             // P[i](x) = y[i] +
             //           a[i]*(x-x[i]) +

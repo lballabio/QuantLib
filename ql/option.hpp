@@ -25,6 +25,7 @@
 #define quantlib_option_hpp
 
 #include <ql/instrument.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,9 +39,8 @@ namespace QuantLib {
         enum Type { Put = -1,
                     Call = 1
         };
-        Option(const ext::shared_ptr<Payoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise)
-        : payoff_(payoff), exercise_(exercise) {}
+        Option(ext::shared_ptr<Payoff> payoff, ext::shared_ptr<Exercise> exercise)
+        : payoff_(std::move(payoff)), exercise_(std::move(exercise)) {}
         void setupArguments(PricingEngine::arguments*) const override;
         ext::shared_ptr<Payoff> payoff() { return payoff_; }
         ext::shared_ptr<Exercise> exercise() { return exercise_; };
@@ -56,7 +56,7 @@ namespace QuantLib {
     //! basic %option %arguments
     class Option::arguments : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         void validate() const override {
             QL_REQUIRE(payoff, "no payoff given");
             QL_REQUIRE(exercise, "no exercise given");
@@ -90,9 +90,8 @@ namespace QuantLib {
     // inline definitions
 
     inline void Option::setupArguments(PricingEngine::arguments* args) const {
-        Option::arguments* arguments =
-            dynamic_cast<Option::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<Option::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff = payoff_;
         arguments->exercise = exercise_;

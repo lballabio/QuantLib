@@ -261,8 +261,7 @@ void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
 
 
 test_suite* LinearLeastSquaresRegressionTest::suite() {
-    test_suite* suite =
-        BOOST_TEST_SUITE("linear least squares regression tests");
+    auto* suite = BOOST_TEST_SUITE("linear least squares regression tests");
     suite->add(QUANTLIB_TEST_CASE(
         &LinearLeastSquaresRegressionTest::testRegression));
     suite->add(QUANTLIB_TEST_CASE(

@@ -24,30 +24,31 @@
 
 #include "interpolations.hpp"
 #include "utilities.hpp"
-#include <ql/utilities/dataformatters.hpp>
-#include <ql/utilities/null.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
+#include <ql/math/bspline.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/interpolations/multicubicspline.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
+#include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/math/bspline.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/multicubicspline.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/kernelfunctions.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/richardsonextrapolation.hpp>
-#include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
-#include <boost/foreach.hpp>
+#include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
 #include <ql/tuple.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/utilities/null.hpp>
 #include <boost/assign/std/vector.hpp>
+#include <boost/foreach.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -173,7 +174,7 @@ namespace {
     template <class F>
     class errorFunction {
       public:
-        errorFunction(const F& f) : f_(f) {}
+        errorFunction(F f) : f_(std::move(f)) {}
         Real operator()(Real x) const {
             Real temp = f_(x)-std::exp(-x*x);
             return temp*temp;
@@ -2447,7 +2448,7 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
 }
 
 test_suite* InterpolationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
+    auto* suite = BOOST_TEST_SUITE("Interpolation tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                         &InterpolationTest::testSplineOnGenericValues));

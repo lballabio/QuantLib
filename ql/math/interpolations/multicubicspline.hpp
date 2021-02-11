@@ -28,6 +28,7 @@
 #include <ql/types.hpp>
 #include <algorithm>
 #include <functional>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -107,8 +108,7 @@ namespace QuantLib {
             : first(*i) {}
             Data<std::vector<Real>, EmptyArg>(const SplineGrid &v)
             : first(v[0]) {}
-            Data<std::vector<Real>, EmptyArg>(const std::vector<Real> &v)
-            : first(v) {}
+            Data<std::vector<Real>, EmptyArg>(std::vector<Real> v) : first(std::move(v)) {}
             void swap(Data<std::vector<Real>, EmptyArg> &d) {
                 first.swap(d.first);
             }
@@ -208,8 +208,7 @@ namespace QuantLib {
 
         template<> struct Point<base_data_table, EmptyRes> {
             typedef base_data_table data_type;
-            Point<base_data_table, EmptyRes>(const data_type& s)
-            : first(s) {}
+            Point<base_data_table, EmptyRes>(data_type s) : first(std::move(s)) {}
             Point<base_data_table, EmptyRes>(const SplineGrid::const_iterator &i)
             : first(i->size()) {}
             Point<base_data_table, EmptyRes>(const SplineGrid &grid)
@@ -268,7 +267,8 @@ namespace QuantLib {
                 for(Size j = 0, dim = y_.size();  j < dim; ++j)
                     X(d_.second, d2_.second, y_[j], y2_[j], v_.second);
             }
-            ~n_cubic_spline(){}
+            ~n_cubic_spline() = default;
+
           private:
             const data &d_, &d2_;
             const data_table &y_;
@@ -327,7 +327,8 @@ namespace QuantLib {
                                   v1_.first.first, v2_.first.first,
                                   v_.first, v1_.first, v2_.first, r);
             }
-            ~n_cubic_splint(){}
+            ~n_cubic_splint() = default;
+
           private:
             const return_type &a_, &b_, &a2_, &b2_;
             const dimensions &i_;

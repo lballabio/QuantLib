@@ -42,18 +42,18 @@ namespace QuantLib {
     class YoYCapFloorTermPriceSurface : public InflationTermStructure {
       public:
         YoYCapFloorTermPriceSurface(Natural fixingDays,
-                                    const Period &yyLag,
+                                    const Period& yyLag,
                                     const ext::shared_ptr<YoYInflationIndex>& yii,
                                     Rate baseRate,
-                                    const Handle<YieldTermStructure> &nominal,
-                                    const DayCounter &dc,
-                                    const Calendar &cal,
-                                    const BusinessDayConvention &bdc,
-                                    const std::vector<Rate> &cStrikes,
-                                    const std::vector<Rate> &fStrikes,
-                                    const std::vector<Period> &cfMaturities,
-                                    const Matrix &cPrice,
-                                    const Matrix &fPrice);
+                                    Handle<YieldTermStructure> nominal,
+                                    const DayCounter& dc,
+                                    const Calendar& cal,
+                                    const BusinessDayConvention& bdc,
+                                    const std::vector<Rate>& cStrikes,
+                                    const std::vector<Rate>& fStrikes,
+                                    const std::vector<Period>& cfMaturities,
+                                    const Matrix& cPrice,
+                                    const Matrix& fPrice);
 
         //-! inflation term structure interface
         //-@{

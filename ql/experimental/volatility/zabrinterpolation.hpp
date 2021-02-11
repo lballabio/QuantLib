@@ -24,10 +24,10 @@
 #ifndef quantlib_zabr_interpolation_hpp
 #define quantlib_zabr_interpolation_hpp
 
-#include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <ql/experimental/volatility/zabrsmilesection.hpp>
-
+#include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <boost/assign/list_of.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -182,17 +182,16 @@ template<class Evaluation> class Zabr {
          bool rhoIsFixed,
          bool gammaIsFixed,
          bool vegaWeighted = false,
-         const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
-         const ext::shared_ptr<OptimizationMethod>& optMethod =
-             ext::shared_ptr<OptimizationMethod>(),
+         ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+         ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
          const Real errorAccept = 0.0020,
          const bool useMaxError = false,
          const Size maxGuesses = 50)
     : t_(t), forward_(forward), alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
       alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed), nuIsFixed_(nuIsFixed),
       rhoIsFixed_(rhoIsFixed), gammaIsFixed_(gammaIsFixed), vegaWeighted_(vegaWeighted),
-      endCriteria_(endCriteria), optMethod_(optMethod), errorAccept_(errorAccept),
-      useMaxError_(useMaxError), maxGuesses_(maxGuesses) {}
+      endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
+      errorAccept_(errorAccept), useMaxError_(useMaxError), maxGuesses_(maxGuesses) {}
     template <class I1, class I2>
     Interpolation interpolate(const I1 &xBegin, const I1 &xEnd,
                               const I2 &yBegin) const {

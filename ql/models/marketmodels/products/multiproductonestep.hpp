@@ -33,7 +33,7 @@ namespace QuantLib {
     */
     class MultiProductOneStep : public MarketModelMultiProduct {
       public:
-        explicit MultiProductOneStep(const std::vector<Time>& rateTimes);
+        explicit MultiProductOneStep(std::vector<Time> rateTimes);
         //! \name MarketModelMultiProduct interface
         //@{
         const EvolutionDescription& evolution() const override;

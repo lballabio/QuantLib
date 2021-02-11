@@ -148,8 +148,8 @@ namespace market_model_test {
 
     // a simple structure to store some data which will be used during tests
     struct SubProductExpectedValues {
-        explicit SubProductExpectedValues(const std::string& descr)
-        : description(descr), testBias(false) {}
+        explicit SubProductExpectedValues(std::string descr)
+        : description(std::move(descr)), testBias(false) {}
         std::string description;
         std::vector<Real> values;
         bool testBias;
@@ -4655,39 +4655,36 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
                               Real trueValue =0.0;
                               Size evaluations =0;
 
-                              AnalyticHestonEngine::doCalculation(1.0, // no discounting
-                                             1.0 ,// no discounting
-                                             todaysForwards[i]+displacement,
-                                             todaysForwards[i]+displacement,
-                                             rateTimes[i],
-                                             kappa,
-                                             theta,
-                                             sigma,
-                                             v1,
-                                             rho,
-                                             *payoff,
-                                             AnalyticHestonEngine::Integration::gaussLaguerre(),
-//                                             AnalyticHestonEngine::Integration::gaussLobatto(1e-8, 1e-8),
-                                             AnalyticHestonEngine::Gatheral,
-                                             0,
-                                             trueValue,
-                                             evaluations);
+                              AnalyticHestonEngine::doCalculation(
+                                  1.0, // no discounting
+                                  1.0, // no discounting
+                                  todaysForwards[i] + displacement,
+                                  todaysForwards[i] + displacement, rateTimes[i], kappa, theta,
+                                  sigma, v1, rho, *payoff,
+                                  AnalyticHestonEngine::Integration::gaussLaguerre(),
+                                  //                                             AnalyticHestonEngine::Integration::gaussLobatto(1e-8,
+                                  //                                             1e-8),
+                                  AnalyticHestonEngine::Gatheral, nullptr, trueValue, evaluations);
 
 
-                                trueValue *= accruals[i]*todaysDiscounts[i+1];
+                              trueValue *= accruals[i] * todaysDiscounts[i + 1];
 
-                       //        trueValue =
-                      //                              BlackCalculator(displacedPayoffs[i],
-                      //                                                todaysForwards[i]+displacement,
-                      //                                             volatilities[i]*std::sqrt(rateTimes[i]),
-                     //                                              todaysDiscounts[i+1]*accruals[i]).value();
+                              //        trueValue =
+                              //                              BlackCalculator(displacedPayoffs[i],
+                              //                                                todaysForwards[i]+displacement,
+                              //                                             volatilities[i]*std::sqrt(rateTimes[i]),
+                              //                                              todaysDiscounts[i+1]*accruals[i]).value();
 
 
-                                Real error = results[i+ accruals.size()] - trueValue;
-                                Real errorSds = error/ errors[i];
+                              Real error = results[i + accruals.size()] - trueValue;
+                              Real errorSds = error / errors[i];
 
-                                if (fabs(errorSds) > 4)
-                                    BOOST_FAIL("error in sds: " << errorSds << " for caplet " << i << " in SV LMM test. True value:" << trueValue << ", actual value: " << results[i+ accruals.size()] << " , standard error " << errors[i]);
+                              if (fabs(errorSds) > 4)
+                                  BOOST_FAIL("error in sds: "
+                                             << errorSds << " for caplet " << i
+                                             << " in SV LMM test. True value:" << trueValue
+                                             << ", actual value: " << results[i + accruals.size()]
+                                             << " , standard error " << errors[i]);
 
 
 
@@ -4874,7 +4871,7 @@ void MarketModelTest::testCovariance() {
               default:
                 BOOST_FAIL("Unknown model " << modelNames[k]);
             }
-            if (model != 0) {
+            if (model != nullptr) {
                 for(Size i=0;i<evolTimes[l].size();i++) {
                     Matrix cov = model->covariance(i);
                     Real dt = evolTimes[l][i] - (i>0 ? evolTimes[l][i-1] : 0.0);
@@ -4898,7 +4895,7 @@ void MarketModelTest::testCovariance() {
 
 // --- Call the desired tests
 test_suite* MarketModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
+    auto* suite = BOOST_TEST_SUITE("Market-model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testInverseFloater));
 
@@ -4945,6 +4942,7 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
 
         #define BOOST_PP_LOCAL_LIMITS (0, 5)
         #include BOOST_PP_LOCAL_ITERATE()
+#include <utility>
     }
 
     if (speed == Slow) {

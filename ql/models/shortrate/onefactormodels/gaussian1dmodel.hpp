@@ -191,7 +191,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    ~Gaussian1dModel() override {}
+    ~Gaussian1dModel() override = default;
 
     virtual Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const = 0;
 
@@ -233,7 +233,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
 inline ext::shared_ptr<StochasticProcess1D> Gaussian1dModel::stateProcess() const {
 
-    QL_REQUIRE(stateProcess_ != NULL, "state process not set");
+    QL_REQUIRE(stateProcess_ != nullptr, "state process not set");
     return stateProcess_;
 }
 

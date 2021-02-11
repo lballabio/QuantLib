@@ -38,11 +38,10 @@ namespace QuantLib {
 
     class FdmOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
       public:
-        FdmOrnsteinUhlenbeckOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& p,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size direction = 0);
+        FdmOrnsteinUhlenbeckOp(const ext::shared_ptr<FdmMesher>& mesher,
+                               ext::shared_ptr<OrnsteinUhlenbeckProcess> p,
+                               ext::shared_ptr<YieldTermStructure> rTS,
+                               Size direction = 0);
 
         Size size() const override;
         void setTime(Time t1, Time t2) override;

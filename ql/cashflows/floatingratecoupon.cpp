@@ -22,33 +22,31 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/interestrateindex.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FloatingRateCoupon::FloatingRateCoupon(
-                            const Date& paymentDate,
-                            Real nominal,
-                            const Date& startDate,
-                            const Date& endDate,
-                            Natural fixingDays,
-                            const ext::shared_ptr<InterestRateIndex>& index,
-                            Real gearing,
-                            Spread spread,
-                            const Date& refPeriodStart,
-                            const Date& refPeriodEnd,
-                            const DayCounter& dayCounter,
-                            bool isInArrears,
-                            const Date& exCouponDate)
+    FloatingRateCoupon::FloatingRateCoupon(const Date& paymentDate,
+                                           Real nominal,
+                                           const Date& startDate,
+                                           const Date& endDate,
+                                           Natural fixingDays,
+                                           const ext::shared_ptr<InterestRateIndex>& index,
+                                           Real gearing,
+                                           Spread spread,
+                                           const Date& refPeriodStart,
+                                           const Date& refPeriodEnd,
+                                           DayCounter dayCounter,
+                                           bool isInArrears,
+                                           const Date& exCouponDate)
     : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd, exCouponDate),
-      index_(index), dayCounter_(dayCounter),
-      fixingDays_(fixingDays==Null<Natural>() ? index->fixingDays() : fixingDays),
-      gearing_(gearing), spread_(spread),
-      isInArrears_(isInArrears)
-    {
+      index_(index), dayCounter_(std::move(dayCounter)),
+      fixingDays_(fixingDays == Null<Natural>() ? index->fixingDays() : fixingDays),
+      gearing_(gearing), spread_(spread), isInArrears_(isInArrears) {
         QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
         if (dayCounter_.empty())
@@ -60,10 +58,10 @@ namespace QuantLib {
 
     void FloatingRateCoupon::setPricer(
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        if (pricer_ != 0)
+        if (pricer_ != nullptr)
             unregisterWith(pricer_);
         pricer_ = pricer;
-        if (pricer_ != 0)
+        if (pricer_ != nullptr)
             registerWith(pricer_);
         update();
     }

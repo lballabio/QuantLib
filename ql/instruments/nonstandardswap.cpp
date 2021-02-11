@@ -17,17 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/nonstandardswap.hpp>
-#include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/instruments/nonstandardswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -53,25 +54,29 @@ namespace QuantLib {
         init();
     }
 
-    NonstandardSwap::NonstandardSwap(
-        const VanillaSwap::Type type, const std::vector<Real> &fixedNominal,
-        const std::vector<Real> &floatingNominal, const Schedule &fixedSchedule,
-        const std::vector<Real> &fixedRate, const DayCounter &fixedDayCount,
-        const Schedule &floatingSchedule,
-        const ext::shared_ptr<IborIndex> &iborIndex, const Real gearing,
-        const Spread spread, const DayCounter &floatingDayCount,
-        const bool intermediateCapitalExchange, const bool finalCapitalExchange,
-        boost::optional<BusinessDayConvention> paymentConvention)
-        : Swap(2), type_(type), fixedNominal_(fixedNominal),
-          floatingNominal_(floatingNominal), fixedSchedule_(fixedSchedule),
-          fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
-          floatingSchedule_(floatingSchedule), iborIndex_(iborIndex),
-          spread_(std::vector<Real>(floatingNominal.size(), spread)),
-          gearing_(std::vector<Real>(floatingNominal.size(), gearing)),
-          singleSpreadAndGearing_(true),
-          floatingDayCount_(floatingDayCount),
-          intermediateCapitalExchange_(intermediateCapitalExchange),
-          finalCapitalExchange_(finalCapitalExchange) {
+    NonstandardSwap::NonstandardSwap(const VanillaSwap::Type type,
+                                     std::vector<Real> fixedNominal,
+                                     const std::vector<Real>& floatingNominal,
+                                     Schedule fixedSchedule,
+                                     std::vector<Real> fixedRate,
+                                     DayCounter fixedDayCount,
+                                     Schedule floatingSchedule,
+                                     ext::shared_ptr<IborIndex> iborIndex,
+                                     const Real gearing,
+                                     const Spread spread,
+                                     DayCounter floatingDayCount,
+                                     const bool intermediateCapitalExchange,
+                                     const bool finalCapitalExchange,
+                                     boost::optional<BusinessDayConvention> paymentConvention)
+    : Swap(2), type_(type), fixedNominal_(std::move(fixedNominal)),
+      floatingNominal_(floatingNominal), fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(std::move(fixedRate)), fixedDayCount_(std::move(fixedDayCount)),
+      floatingSchedule_(std::move(floatingSchedule)), iborIndex_(std::move(iborIndex)),
+      spread_(std::vector<Real>(floatingNominal.size(), spread)),
+      gearing_(std::vector<Real>(floatingNominal.size(), gearing)), singleSpreadAndGearing_(true),
+      floatingDayCount_(std::move(floatingDayCount)),
+      intermediateCapitalExchange_(intermediateCapitalExchange),
+      finalCapitalExchange_(finalCapitalExchange) {
 
         if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
@@ -80,24 +85,28 @@ namespace QuantLib {
         init();
     }
 
-    NonstandardSwap::NonstandardSwap(
-        const VanillaSwap::Type type, const std::vector<Real> &fixedNominal,
-        const std::vector<Real> &floatingNominal, const Schedule &fixedSchedule,
-        const std::vector<Real> &fixedRate, const DayCounter &fixedDayCount,
-        const Schedule &floatingSchedule,
-        const ext::shared_ptr<IborIndex> &iborIndex,
-        const std::vector<Real> &gearing, const std::vector<Spread> &spread,
-        const DayCounter &floatingDayCount,
-        const bool intermediateCapitalExchange, const bool finalCapitalExchange,
-        boost::optional<BusinessDayConvention> paymentConvention)
-        : Swap(2), type_(type), fixedNominal_(fixedNominal),
-          floatingNominal_(floatingNominal), fixedSchedule_(fixedSchedule),
-          fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
-          floatingSchedule_(floatingSchedule), iborIndex_(iborIndex),
-          spread_(spread), gearing_(gearing), singleSpreadAndGearing_(false),
-          floatingDayCount_(floatingDayCount),
-          intermediateCapitalExchange_(intermediateCapitalExchange),
-          finalCapitalExchange_(finalCapitalExchange) {
+    NonstandardSwap::NonstandardSwap(const VanillaSwap::Type type,
+                                     std::vector<Real> fixedNominal,
+                                     std::vector<Real> floatingNominal,
+                                     Schedule fixedSchedule,
+                                     std::vector<Real> fixedRate,
+                                     DayCounter fixedDayCount,
+                                     Schedule floatingSchedule,
+                                     ext::shared_ptr<IborIndex> iborIndex,
+                                     std::vector<Real> gearing,
+                                     std::vector<Spread> spread,
+                                     DayCounter floatingDayCount,
+                                     const bool intermediateCapitalExchange,
+                                     const bool finalCapitalExchange,
+                                     boost::optional<BusinessDayConvention> paymentConvention)
+    : Swap(2), type_(type), fixedNominal_(std::move(fixedNominal)),
+      floatingNominal_(std::move(floatingNominal)), fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(std::move(fixedRate)), fixedDayCount_(std::move(fixedDayCount)),
+      floatingSchedule_(std::move(floatingSchedule)), iborIndex_(std::move(iborIndex)),
+      spread_(std::move(spread)), gearing_(std::move(gearing)), singleSpreadAndGearing_(false),
+      floatingDayCount_(std::move(floatingDayCount)),
+      intermediateCapitalExchange_(intermediateCapitalExchange),
+      finalCapitalExchange_(finalCapitalExchange) {
 
         if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
@@ -160,16 +169,15 @@ namespace QuantLib {
             for (Size i = 0; i < legs_[0].size() - 1; i++) {
                 Real cap = fixedNominal_[i] - fixedNominal_[i + 1];
                 if (!close(cap, 0.0)) {
-                    std::vector<ext::shared_ptr<CashFlow> >::iterator it1 =
-                        legs_[0].begin();
+                    auto it1 = legs_[0].begin();
                     std::advance(it1, i + 1);
                     legs_[0].insert(
                         it1, ext::shared_ptr<CashFlow>(
                                  new Redemption(cap, legs_[0][i]->date())));
-                    std::vector<Real>::iterator it2 = fixedNominal_.begin();
+                    auto it2 = fixedNominal_.begin();
                     std::advance(it2, i + 1);
                     fixedNominal_.insert(it2, fixedNominal_[i]);
-                    std::vector<Real>::iterator it3 = fixedRate_.begin();
+                    auto it3 = fixedRate_.begin();
                     std::advance(it3, i + 1);
                     fixedRate_.insert(it3, 0.0);
                     i++;
@@ -178,13 +186,12 @@ namespace QuantLib {
             for (Size i = 0; i < legs_[1].size() - 1; i++) {
                 Real cap = floatingNominal_[i] - floatingNominal_[i + 1];
                 if (!close(cap, 0.0)) {
-                    std::vector<ext::shared_ptr<CashFlow> >::iterator it1 =
-                        legs_[1].begin();
+                    auto it1 = legs_[1].begin();
                     std::advance(it1, i + 1);
                     legs_[1].insert(
                         it1, ext::shared_ptr<CashFlow>(
                                  new Redemption(cap, legs_[1][i]->date())));
-                    std::vector<Real>::iterator it2 = floatingNominal_.begin();
+                    auto it2 = floatingNominal_.begin();
                     std::advance(it2, i + 1);
                     floatingNominal_.insert(it2, floatingNominal_[i]);
                     i++;
@@ -223,10 +230,9 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        NonstandardSwap::arguments *arguments =
-            dynamic_cast<NonstandardSwap::arguments *>(args);
+        auto* arguments = dynamic_cast<NonstandardSwap::arguments*>(args);
 
-        if (arguments == 0)
+        if (arguments == nullptr)
             return; // swap engine ...
 
         arguments->type = type_;
@@ -245,7 +251,7 @@ namespace QuantLib {
         for (Size i = 0; i < fixedCoupons.size(); ++i) {
             ext::shared_ptr<FixedRateCoupon> coupon =
                 ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
-            if (coupon != 0) {
+            if (coupon != nullptr) {
                 arguments->fixedPayDates[i] = coupon->date();
                 arguments->fixedResetDates[i] = coupon->accrualStartDate();
                 arguments->fixedCoupons[i] = coupon->amount();
@@ -285,7 +291,7 @@ namespace QuantLib {
         for (Size i = 0; i < floatingCoupons.size(); ++i) {
             ext::shared_ptr<IborCoupon> coupon =
                 ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
-            if (coupon != 0) {
+            if (coupon != nullptr) {
                 arguments->floatingResetDates[i] = coupon->accrualStartDate();
                 arguments->floatingPayDates[i] = coupon->date();
                 arguments->floatingFixingDates[i] = coupon->fixingDate();

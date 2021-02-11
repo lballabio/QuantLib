@@ -20,26 +20,29 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/pricingengines/barrier/fdblackscholesrebateengine.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesrebateengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdBlackScholesRebateEngine::FdBlackScholesRebateEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Size dampingSteps, 
-            const FdmSchemeDesc& schemeDesc,
-            bool localVol, Real illegalLocalVolOverwrite)
-    : process_(process), tGrid_(tGrid), xGrid_(xGrid),
-      dampingSteps_(dampingSteps), 
-      schemeDesc_(schemeDesc),
-      localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite){
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
+        const FdmSchemeDesc& schemeDesc,
+        bool localVol,
+        Real illegalLocalVolOverwrite)
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
 
         registerWith(process_);
     }

@@ -251,7 +251,7 @@ void VarianceGammaTest::testSingularityAtZero() {
 
 
 test_suite* VarianceGammaTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Variance Gamma tests");
+    auto* suite = BOOST_TEST_SUITE("Variance Gamma tests");
 
     suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testVarianceGamma));
     suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testSingularityAtZero));

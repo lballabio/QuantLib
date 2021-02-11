@@ -42,7 +42,7 @@ namespace QuantLib {
                              const Date& valueDate,
                              const Date& maturityDate,
                              const Handle<YieldTermStructure>& discountCurve,
-                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                             Handle<Quote> convexityAdjustment = Handle<Quote>(),
                              OvernightAveraging averagingMethod = OvernightAveraging::Compound);
 
         //! returns spot value/price of an underlying financial instrument

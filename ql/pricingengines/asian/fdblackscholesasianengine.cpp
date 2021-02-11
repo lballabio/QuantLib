@@ -18,27 +18,29 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmarithmeticaveragecondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
 
     FdBlackScholesAsianEngine::FdBlackScholesAsianEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size tGrid,
         Size xGrid,
         Size aGrid,
         const FdmSchemeDesc& schemeDesc)
-    : process_(process), tGrid_(tGrid), xGrid_(xGrid), aGrid_(aGrid), schemeDesc_(schemeDesc) {}
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), aGrid_(aGrid),
+      schemeDesc_(schemeDesc) {}
 
 
     void FdBlackScholesAsianEngine::calculate() const {

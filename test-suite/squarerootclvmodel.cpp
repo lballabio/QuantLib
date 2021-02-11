@@ -63,6 +63,7 @@
 #endif
 
 #include <set>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::assign;
@@ -72,8 +73,8 @@ using namespace boost::unit_test_framework;
 namespace square_root_clv_model {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
-        CLVModelPayoff(Option::Type type, Real strike, const ext::function<Real(Real)>& g)
-        : PlainVanillaPayoff(type, strike), g_(g) {}
+        CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+        : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
         Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
@@ -88,8 +89,8 @@ namespace square_root_clv_model {
         CLVModelPayoff payoff;
         chi_squared_type dist;
       public:
-        integrand(const CLVModelPayoff& payoff, const chi_squared_type& dist)
-        : payoff(payoff), dist(dist) {}
+        integrand(CLVModelPayoff payoff, const chi_squared_type& dist)
+        : payoff(std::move(payoff)), dist(dist) {}
         Real operator()(Real x) const {
             return payoff(x) * boost::math::pdf(dist, x);
         }
@@ -291,19 +292,14 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
 namespace square_root_clv_model {
     class SquareRootCLVCalibrationFunction : public CostFunction {
       public:
-        SquareRootCLVCalibrationFunction(
-            const Array& strikes,
-            const std::vector<Date>& resetDates,
-            const std::vector<Date>& maturityDates,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            const Array& refVols,
-            Size nScenarios = 10000)
-      : strikes_      (strikes),
-        resetDates_   (resetDates),
-        maturityDates_(maturityDates),
-        bsProcess_    (bsProcess),
-        refVols_      (refVols),
-        nScenarios_   (nScenarios) {
+        SquareRootCLVCalibrationFunction(Array strikes,
+                                         const std::vector<Date>& resetDates,
+                                         const std::vector<Date>& maturityDates,
+                                         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+                                         Array refVols,
+                                         Size nScenarios = 10000)
+        : strikes_(std::move(strikes)), resetDates_(resetDates), maturityDates_(maturityDates),
+          bsProcess_(std::move(bsProcess)), refVols_(std::move(refVols)), nScenarios_(nScenarios) {
             std::set<Date> c(resetDates.begin(), resetDates.end());
             c.insert(maturityDates.begin(), maturityDates.end());
             calibrationDates_.insert(
@@ -845,7 +841,7 @@ void SquareRootCLVModelTest::testForwardSkew() {
 
  
 test_suite* SquareRootCLVModelTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("SquareRootCLVModel tests");
+    auto* suite = BOOST_TEST_SUITE("SquareRootCLVModel tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &SquareRootCLVModelTest::testSquareRootCLVVanillaPricing));

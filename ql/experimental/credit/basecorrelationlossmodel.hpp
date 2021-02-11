@@ -29,9 +29,10 @@
 #include <ql/experimental/credit/basecorrelationstructure.hpp>
 
 // move these to the CPP (and the template spezs)
-#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/experimental/credit/binomiallossmodel.hpp>
+#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
 #include <ql/experimental/credit/inhomogeneouspooldef.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -93,22 +94,16 @@ namespace QuantLib {
     private:
         typedef typename BaseModel_T::copulaType::initTraits initTraits;
     public:
-        BaseCorrelationLossModel(
-            const Handle<BaseCorrelationTermStructure<Corr2DInt_T> >& correlTS,
-            const std::vector<Real>& recoveries,
-            const initTraits& traits = initTraits()
-            )
-        : localCorrelationAttach_(ext::make_shared<SimpleQuote>(
-            0.)),
-          localCorrelationDetach_(ext::make_shared<SimpleQuote>(
-            0.)),
-          recoveries_(recoveries),
-          correlTS_(correlTS),
-          copulaTraits_(traits)
-        { 
-            registerWith(correlTS);
-            registerWith(Settings::instance().evaluationDate());
-        }
+      BaseCorrelationLossModel(const Handle<BaseCorrelationTermStructure<Corr2DInt_T> >& correlTS,
+                               std::vector<Real> recoveries,
+                               const initTraits& traits = initTraits())
+      : localCorrelationAttach_(ext::make_shared<SimpleQuote>(0.)),
+        localCorrelationDetach_(ext::make_shared<SimpleQuote>(0.)),
+        recoveries_(std::move(recoveries)), correlTS_(correlTS), copulaTraits_(traits) {
+          registerWith(correlTS);
+          registerWith(Settings::instance().evaluationDate());
+      }
+
     private:
         // react to base correl surface notifications (quotes or reference date)
       void update() override {

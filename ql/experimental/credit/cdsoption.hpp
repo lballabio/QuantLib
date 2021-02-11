@@ -89,7 +89,7 @@ namespace QuantLib {
     class CdsOption::arguments : public CreditDefaultSwap::arguments,
                                  public Option::arguments {
       public:
-        arguments() {}
+        arguments() = default;
 
         ext::shared_ptr<CreditDefaultSwap> swap;
         bool knocksOut;

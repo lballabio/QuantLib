@@ -41,11 +41,13 @@ namespace QuantLib {
       public:
         // Constructor
         explicit FdBlackScholesRebateEngine(
-                const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-                bool localVol = false, 
-                Real illegalLocalVolOverwrite = -Null<Real>());
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+            bool localVol = false,
+            Real illegalLocalVolOverwrite = -Null<Real>());
 
         void calculate() const override;
 

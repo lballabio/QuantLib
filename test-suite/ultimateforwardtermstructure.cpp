@@ -324,7 +324,7 @@ void UltimateForwardTermStructureTest::testObservability() {
 }
 
 test_suite* UltimateForwardTermStructureTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("UFR term structure tests");
+    auto* suite = BOOST_TEST_SUITE("UFR term structure tests");
 
     suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testDutchCentralBankRates));
     suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExtrapolatedForward));

@@ -32,14 +32,14 @@ namespace QuantLib {
     /*! \ingroup patterns */
     class AcyclicVisitor {
       public:
-        virtual ~AcyclicVisitor() {}
+        virtual ~AcyclicVisitor() = default;
     };
 
     //! %Visitor for a specific class
     template <class T>
     class Visitor {
       public:
-        virtual ~Visitor() {}
+        virtual ~Visitor() = default;
         virtual void visit(T&) = 0;
     };
 

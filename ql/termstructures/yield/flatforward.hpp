@@ -39,7 +39,7 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         FlatForward(const Date& referenceDate,
-                    const Handle<Quote>& forward,
+                    Handle<Quote> forward,
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);
@@ -50,7 +50,7 @@ namespace QuantLib {
                     Frequency frequency = Annual);
         FlatForward(Natural settlementDays,
                     const Calendar& calendar,
-                    const Handle<Quote>& forward,
+                    Handle<Quote> forward,
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);

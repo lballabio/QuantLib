@@ -18,22 +18,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/exercise.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticEuropeanEngine::AnalyticEuropeanEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
     AnalyticEuropeanEngine::AnalyticEuropeanEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const Handle<YieldTermStructure>& discountCurve)
-    : process_(process), discountCurve_(discountCurve) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Handle<YieldTermStructure> discountCurve)
+    : process_(std::move(process)), discountCurve_(std::move(discountCurve)) {
         registerWith(process_);
         registerWith(discountCurve_);
     }

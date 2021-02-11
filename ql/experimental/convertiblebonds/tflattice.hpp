@@ -133,11 +133,10 @@ namespace QuantLib {
                    "cannot roll the asset back to" << to
                    << " (it is already at t = " << from << ")");
 
-        DiscretizedConvertible& convertible =
-            dynamic_cast<DiscretizedConvertible&>(asset);
+        auto& convertible = dynamic_cast<DiscretizedConvertible&>(asset);
 
-        Integer iFrom = Integer(this->t_.index(from));
-        Integer iTo = Integer(this->t_.index(to));
+        auto iFrom = Integer(this->t_.index(from));
+        auto iTo = Integer(this->t_.index(to));
 
         for (Integer i=iFrom-1; i>=iTo; --i) {
 

@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         //! \name Constructors
         //@{
-        TimeGrid() {}
+        TimeGrid() = default;
         //! Regularly spaced time-grid
         TimeGrid(Time end, Size steps);
         //! Time grid with mandatory time points
@@ -60,9 +60,8 @@ namespace QuantLib {
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            static_cast<bool (*)(Real, Real)>(close_enough));
+            auto e = std::unique(mandatoryTimes_.begin(), mandatoryTimes_.end(),
+                                 static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             if (mandatoryTimes_[0] > 0.0)
@@ -92,9 +91,8 @@ namespace QuantLib {
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            static_cast<bool (*)(Real, Real)>(close_enough));
+            auto e = std::unique(mandatoryTimes_.begin(), mandatoryTimes_.end(),
+                                 static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             Time last = mandatoryTimes_.back();

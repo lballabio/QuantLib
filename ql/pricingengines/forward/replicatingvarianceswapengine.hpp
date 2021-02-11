@@ -25,10 +25,11 @@
 #ifndef quantlib_replicating_varianceswap_engine_hpp
 #define quantlib_replicating_varianceswap_engine_hpp
 
-#include <ql/instruments/varianceswap.hpp>
-#include <ql/instruments/europeanoption.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/europeanoption.hpp>
+#include <ql/instruments/varianceswap.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -45,11 +46,10 @@ namespace QuantLib {
         typedef std::vector<std::pair<
                    ext::shared_ptr<StrikedTypePayoff>, Real> > weights_type;
         // constructor
-        ReplicatingVarianceSwapEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Real dk = 5.0,
-             const std::vector<Real>& callStrikes = std::vector<Real>(),
-             const std::vector<Real>& putStrikes = std::vector<Real>());
+        ReplicatingVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                                      Real dk = 5.0,
+                                      const std::vector<Real>& callStrikes = std::vector<Real>(),
+                                      const std::vector<Real>& putStrikes = std::vector<Real>());
         void calculate() const override;
 
       protected:
@@ -74,12 +74,11 @@ namespace QuantLib {
     // inline definitions
 
     inline ReplicatingVarianceSwapEngine::ReplicatingVarianceSwapEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Real dk,
-             const std::vector<Real>& callStrikes,
-             const std::vector<Real>& putStrikes)
-    : process_(process), dk_(dk),
-      callStrikes_(callStrikes), putStrikes_(putStrikes) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Real dk,
+        const std::vector<Real>& callStrikes,
+        const std::vector<Real>& putStrikes)
+    : process_(std::move(process)), dk_(dk), callStrikes_(callStrikes), putStrikes_(putStrikes) {
 
         QL_REQUIRE(process_, "no process given");
         QL_REQUIRE(!callStrikes.empty() && !putStrikes.empty(),
@@ -116,8 +115,7 @@ namespace QuantLib {
         }
 
         // remove duplicate strikes
-        std::vector<Real>::iterator last =
-            std::unique(strikes.begin(), strikes.end());
+        auto last = std::unique(strikes.begin(), strikes.end());
         strikes.erase(last, strikes.end());
 
         // compute weights
@@ -164,8 +162,7 @@ namespace QuantLib {
                                         new AnalyticEuropeanEngine(process_));
         Real optionsValue = 0.0;
 
-        for (weights_type::const_iterator i = optionWeights.begin();
-             i < optionWeights.end(); ++i) {
+        for (auto i = optionWeights.begin(); i < optionWeights.end(); ++i) {
             ext::shared_ptr<StrikedTypePayoff> payoff = i->first;
             EuropeanOption option(payoff, exercise);
             option.setPricingEngine(optionEngine);

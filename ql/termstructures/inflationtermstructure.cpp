@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/indexes/inflationindex.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -67,53 +68,48 @@ namespace QuantLib {
         setSeasonality(seasonality);
     }
 
-    InflationTermStructure::InflationTermStructure(
-                                        Rate baseRate,
-                                        const Period& observationLag,
-                                        Frequency frequency,
-                                        bool indexIsInterpolated,
-                                        const Handle<YieldTermStructure>& yTS,
-                                        const DayCounter& dayCounter,
-                                        const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(dayCounter),
-      observationLag_(observationLag), frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate), nominalTermStructure_(yTS) {
+    InflationTermStructure::InflationTermStructure(Rate baseRate,
+                                                   const Period& observationLag,
+                                                   Frequency frequency,
+                                                   bool indexIsInterpolated,
+                                                   Handle<YieldTermStructure> yTS,
+                                                   const DayCounter& dayCounter,
+                                                   const ext::shared_ptr<Seasonality>& seasonality)
+    : TermStructure(dayCounter), observationLag_(observationLag), frequency_(frequency),
+      indexIsInterpolated_(indexIsInterpolated), baseRate_(baseRate),
+      nominalTermStructure_(std::move(yTS)) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }
 
-    InflationTermStructure::InflationTermStructure(
-                                        const Date& referenceDate,
-                                        Rate baseRate,
-                                        const Period& observationLag,
-                                        Frequency frequency,
-                                        const bool indexIsInterpolated,
-                                        const Handle<YieldTermStructure>& yTS,
-                                        const Calendar& calendar,
-                                        const DayCounter& dayCounter,
-                                        const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(referenceDate, calendar, dayCounter),
-      observationLag_(observationLag),
-      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate), nominalTermStructure_(yTS) {
+    InflationTermStructure::InflationTermStructure(const Date& referenceDate,
+                                                   Rate baseRate,
+                                                   const Period& observationLag,
+                                                   Frequency frequency,
+                                                   const bool indexIsInterpolated,
+                                                   Handle<YieldTermStructure> yTS,
+                                                   const Calendar& calendar,
+                                                   const DayCounter& dayCounter,
+                                                   const ext::shared_ptr<Seasonality>& seasonality)
+    : TermStructure(referenceDate, calendar, dayCounter), observationLag_(observationLag),
+      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated), baseRate_(baseRate),
+      nominalTermStructure_(std::move(yTS)) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }
 
-    InflationTermStructure::InflationTermStructure(
-                                        Natural settlementDays,
-                                        const Calendar& calendar,
-                                        Rate baseRate,
-                                        const Period& observationLag,
-                                        Frequency frequency,
-                                        bool indexIsInterpolated,
-                                        const Handle<YieldTermStructure>& yTS,
-                                        const DayCounter &dayCounter,
-                                        const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(settlementDays, calendar, dayCounter),
-      observationLag_(observationLag),
-      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate), nominalTermStructure_(yTS) {
+    InflationTermStructure::InflationTermStructure(Natural settlementDays,
+                                                   const Calendar& calendar,
+                                                   Rate baseRate,
+                                                   const Period& observationLag,
+                                                   Frequency frequency,
+                                                   bool indexIsInterpolated,
+                                                   Handle<YieldTermStructure> yTS,
+                                                   const DayCounter& dayCounter,
+                                                   const ext::shared_ptr<Seasonality>& seasonality)
+    : TermStructure(settlementDays, calendar, dayCounter), observationLag_(observationLag),
+      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated), baseRate_(baseRate),
+      nominalTermStructure_(std::move(yTS)) {
         registerWith(nominalTermStructure_);
         setSeasonality(seasonality);
     }
@@ -123,7 +119,7 @@ namespace QuantLib {
                           const ext::shared_ptr<Seasonality>& seasonality) {
         // always reset, whether with null or new pointer
         seasonality_ = seasonality;
-        if (seasonality_ != 0) {
+        if (seasonality_ != nullptr) {
             QL_REQUIRE(seasonality_->isConsistent(*this),
                        "Seasonality inconsistent with "
                        "inflation term structure");

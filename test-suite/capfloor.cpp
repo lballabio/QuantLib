@@ -238,9 +238,7 @@ void CapFloorTest::testStrikeDependency() {
                 floor_values.push_back(floor->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it =
-                std::adjacent_find(cap_values.begin(),cap_values.end(),
-                                   std::less<Real>());
+            auto it = std::adjacent_find(cap_values.begin(), cap_values.end(), std::less<Real>());
             if (it != cap_values.end()) {
                 Size n = it - cap_values.begin();
                 BOOST_FAIL(
@@ -960,7 +958,7 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
 }
 
 test_suite* CapFloorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cap and floor tests");
+    auto* suite = BOOST_TEST_SUITE("Cap and floor tests");
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testStrikeDependency));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testConsistency));
     // FLOATING_POINT_EXCEPTION

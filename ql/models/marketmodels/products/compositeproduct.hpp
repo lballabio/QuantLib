@@ -73,7 +73,7 @@ namespace QuantLib {
         std::vector<Time> evolutionTimes_;
         EvolutionDescription evolution_;
         // working variables
-        bool finalized_;
+        bool finalized_ = false;
         Size currentIndex_;
         std::vector<Time> cashflowTimes_;
         std::vector<std::vector<Time> > allEvolutionTimes_;

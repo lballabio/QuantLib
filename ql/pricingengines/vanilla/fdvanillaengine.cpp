@@ -40,8 +40,7 @@ namespace QuantLib {
 
     void FDVanillaEngine::setupArguments(
                                     const PricingEngine::arguments* a) const {
-        const OneAssetOption::arguments * args =
-            dynamic_cast<const OneAssetOption::arguments *>(a);
+        const auto* args = dynamic_cast<const OneAssetOption::arguments*>(a);
         QL_REQUIRE(args, "incorrect argument type");
         exerciseDate_ = args->exercise->lastDate();
         payoff_ = args->payoff;
@@ -103,7 +102,7 @@ namespace QuantLib {
 
             ext::shared_ptr<StrikedTypePayoff> striked_payoff =
                 ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
-            Real K = striked_payoff != 0 ? striked_payoff->strike() : process_->x0();
+            Real K = striked_payoff != nullptr ? striked_payoff->strike() : process_->x0();
             Volatility sigma =
                 process_->blackVolatility()->blackVol(exerciseDate_, K);
 

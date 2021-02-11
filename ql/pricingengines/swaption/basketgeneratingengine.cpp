@@ -62,7 +62,7 @@ namespace QuantLib {
             Date expiry = exercise->date(i);
             Real rebate = 0.0;
             Date rebateDate = expiry;
-            if (rebEx != NULL) {
+            if (rebEx != nullptr) {
                 rebate = rebEx->rebate(i);
                 rebateDate = rebEx->rebatePaymentDate(i);
             }

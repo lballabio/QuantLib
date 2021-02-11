@@ -1078,8 +1078,7 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
 
 
 test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
-    test_suite* suite =
-        BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
+    auto* suite = BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));

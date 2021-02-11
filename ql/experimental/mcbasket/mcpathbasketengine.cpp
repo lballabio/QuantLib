@@ -18,15 +18,17 @@
 */
 
 #include <ql/experimental/mcbasket/mcpathbasketengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     EuropeanPathMultiPathPricer::EuropeanPathMultiPathPricer(
-                                       ext::shared_ptr<PathPayoff> & payoff,
-                                       const std::vector<Size> & timePositions,
-                                       const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
-                                       const Array & discounts)
-    :  payoff_(payoff), timePositions_(timePositions), forwardTermStructures_(forwardTermStructures), discounts_(discounts) {}
+        ext::shared_ptr<PathPayoff>& payoff,
+        std::vector<Size> timePositions,
+        std::vector<Handle<YieldTermStructure> > forwardTermStructures,
+        Array discounts)
+    : payoff_(payoff), timePositions_(std::move(timePositions)),
+      forwardTermStructures_(std::move(forwardTermStructures)), discounts_(std::move(discounts)) {}
 
     Real EuropeanPathMultiPathPricer::operator()(const MultiPath& multiPath)
                                                                        const {

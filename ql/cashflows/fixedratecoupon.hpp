@@ -53,7 +53,7 @@ namespace QuantLib {
                         const Date& exCouponDate = Date());
         FixedRateCoupon(const Date& paymentDate,
                         Real nominal,
-                        const InterestRate& interestRate,
+                        InterestRate interestRate,
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
@@ -122,9 +122,8 @@ namespace QuantLib {
     };
 
     inline void FixedRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<FixedRateCoupon>* v1 =
-            dynamic_cast<Visitor<FixedRateCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<FixedRateCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Coupon::accept(v);

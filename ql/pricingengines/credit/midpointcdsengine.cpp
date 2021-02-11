@@ -19,18 +19,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/credit/midpointcdsengine.hpp>
-#include <ql/instruments/claim.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/instruments/claim.hpp>
+#include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    MidPointCdsEngine::MidPointCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+    MidPointCdsEngine::MidPointCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                                          Real recoveryRate,
-                                         const Handle<YieldTermStructure>& discountCurve,
+                                         Handle<YieldTermStructure> discountCurve,
                                          const boost::optional<bool>& includeSettlementDateFlows)
-    : probability_(probability), recoveryRate_(recoveryRate), discountCurve_(discountCurve),
+    : probability_(std::move(probability)), recoveryRate_(recoveryRate),
+      discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(probability_);
         registerWith(discountCurve_);

@@ -21,25 +21,22 @@
     \brief Heston Fokker-Planck Green's function
 */
 
-#include <ql/math/functional.hpp>
-#include <ql/processes/hestonprocess.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
 #include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmHestonGreensFct::FdmHestonGreensFct(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<HestonProcess>& process,
-        FdmSquareRootFwdOp::TransformationType trafoType_,
-        const Real l0)
-    : l0_(l0),
-      mesher_(mesher),
-      process_(process),
-      trafoType_(trafoType_) { }
+    FdmHestonGreensFct::FdmHestonGreensFct(ext::shared_ptr<FdmMesher> mesher,
+                                           ext::shared_ptr<HestonProcess> process,
+                                           FdmSquareRootFwdOp::TransformationType trafoType_,
+                                           const Real l0)
+    : l0_(l0), mesher_(std::move(mesher)), process_(std::move(process)), trafoType_(trafoType_) {}
 
     Disposable<Array> FdmHestonGreensFct::get(Time t, Algorithm algorithm)
     const {

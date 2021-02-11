@@ -104,8 +104,7 @@ struct CommonVars {
                 43956, 44321, 44686, 45051, 45418, 45782, 46147, 46512, 47609,
                 49436, 51263, 53087, 56739, 60392;
 
-            for (std::vector< int >::iterator it = datesTmp.begin();
-                 it != datesTmp.end(); ++it)
+            for (auto it = datesTmp.begin(); it != datesTmp.end(); ++it)
                 dates.push_back(Date(*it));
 
             rates += -0.00292, -0.00292, -0.001441, -0.00117, -0.001204,
@@ -130,8 +129,7 @@ struct CommonVars {
                 49800, 50165, 50530, 50895, 51263, 51627, 51991, 52356, 52722,
                 53087, 54913, 56739, 60392, 64045;
 
-            for (std::vector< int >::iterator it = datesTmp.begin();
-                 it != datesTmp.end(); ++it)
+            for (auto it = datesTmp.begin(); it != datesTmp.end(); ++it)
                 dates.push_back(Date(*it));
 
             rates += 0.000649, 0.000649, 0.000684, 0.000717, 0.000745, 0.000872,
@@ -828,7 +826,7 @@ void OptionletStripperTest::testSwitchStrike() {
 }
 
 test_suite* OptionletStripperTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
+    auto* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
     suite->add(QUANTLIB_TEST_CASE(
                    &OptionletStripperTest::testFlatTermVolatilityStripping1));
     suite->add(QUANTLIB_TEST_CASE(

@@ -17,38 +17,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
-#include <ql/termstructures/volatility/smilesectionutils.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/termstructures/volatility/smilesection.hpp>
-#include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
-#include <ql/termstructures/volatility/kahalesmilesection.hpp>
+#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
 #include <ql/termstructures/volatility/atmadjustedsmilesection.hpp>
 #include <ql/termstructures/volatility/atmsmilesection.hpp>
+#include <ql/termstructures/volatility/kahalesmilesection.hpp>
+#include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/termstructures/volatility/smilesectionutils.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    MarkovFunctional::MarkovFunctional(
-        const Handle<YieldTermStructure> &termStructure, const Real reversion,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Real> &volatilities,
-        const Handle<SwaptionVolatilityStructure> &swaptionVol,
-        const std::vector<Date> &swaptionExpiries,
-        const std::vector<Period> &swaptionTenors,
-        const ext::shared_ptr<SwapIndex> &swapIndexBase,
-        const MarkovFunctional::ModelSettings &modelSettings)
-        : Gaussian1dModel(termStructure), CalibratedModel(1),
-          modelSettings_(modelSettings), capletCalibrated_(false),
-          reversion_(ConstantParameter(reversion, NoConstraint())),
-          sigma_(arguments_[0]), volstepdates_(volstepdates),
-          volatilities_(volatilities), swaptionVol_(swaptionVol),
-          capletVol_(Handle<OptionletVolatilityStructure>()),
-          swaptionExpiries_(swaptionExpiries),
-          capletExpiries_(std::vector<Date>()), swaptionTenors_(swaptionTenors),
-          swapIndexBase_(swapIndexBase),
-          iborIndex_(swapIndexBase->iborIndex()) {
+    MarkovFunctional::MarkovFunctional(const Handle<YieldTermStructure>& termStructure,
+                                       const Real reversion,
+                                       std::vector<Date> volstepdates,
+                                       std::vector<Real> volatilities,
+                                       const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                                       const std::vector<Date>& swaptionExpiries,
+                                       const std::vector<Period>& swaptionTenors,
+                                       const ext::shared_ptr<SwapIndex>& swapIndexBase,
+                                       MarkovFunctional::ModelSettings modelSettings)
+    : Gaussian1dModel(termStructure), CalibratedModel(1), modelSettings_(std::move(modelSettings)),
+      capletCalibrated_(false), reversion_(ConstantParameter(reversion, NoConstraint())),
+      sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
+      volatilities_(std::move(volatilities)), swaptionVol_(swaptionVol),
+      capletVol_(Handle<OptionletVolatilityStructure>()), swaptionExpiries_(swaptionExpiries),
+      capletExpiries_(std::vector<Date>()), swaptionTenors_(swaptionTenors),
+      swapIndexBase_(swapIndexBase), iborIndex_(swapIndexBase->iborIndex()) {
 
         QL_REQUIRE(swaptionExpiries.size() == swaptionTenors.size(),
                    "number of swaption expiries ("
@@ -65,23 +63,21 @@ namespace QuantLib {
         initialize();
     }
 
-    MarkovFunctional::MarkovFunctional(
-        const Handle<YieldTermStructure> &termStructure, const Real reversion,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Real> &volatilities,
-        const Handle<OptionletVolatilityStructure> &capletVol,
-        const std::vector<Date> &capletExpiries,
-        const ext::shared_ptr<IborIndex> &iborIndex,
-        const MarkovFunctional::ModelSettings &modelSettings)
-        : Gaussian1dModel(termStructure), CalibratedModel(1),
-          modelSettings_(modelSettings), capletCalibrated_(true),
-          reversion_(ConstantParameter(reversion, NoConstraint())),
-          sigma_(arguments_[0]), volstepdates_(volstepdates),
-          volatilities_(volatilities),
-          swaptionVol_(Handle<SwaptionVolatilityStructure>()),
-          capletVol_(capletVol), swaptionExpiries_(std::vector<Date>()),
-          capletExpiries_(capletExpiries),
-          swaptionTenors_(std::vector<Period>()), iborIndex_(iborIndex) {
+    MarkovFunctional::MarkovFunctional(const Handle<YieldTermStructure>& termStructure,
+                                       const Real reversion,
+                                       std::vector<Date> volstepdates,
+                                       std::vector<Real> volatilities,
+                                       const Handle<OptionletVolatilityStructure>& capletVol,
+                                       const std::vector<Date>& capletExpiries,
+                                       ext::shared_ptr<IborIndex> iborIndex,
+                                       MarkovFunctional::ModelSettings modelSettings)
+    : Gaussian1dModel(termStructure), CalibratedModel(1), modelSettings_(std::move(modelSettings)),
+      capletCalibrated_(true), reversion_(ConstantParameter(reversion, NoConstraint())),
+      sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
+      volatilities_(std::move(volatilities)), swaptionVol_(Handle<SwaptionVolatilityStructure>()),
+      capletVol_(capletVol), swaptionExpiries_(std::vector<Date>()),
+      capletExpiries_(capletExpiries), swaptionTenors_(std::vector<Period>()),
+      iborIndex_(std::move(iborIndex)) {
 
         QL_REQUIRE(!capletExpiries.empty(),
                    "need at least one caplet expiry to calibrate numeraire");
@@ -101,8 +97,7 @@ namespace QuantLib {
     void MarkovFunctional::updateTimes1() const {
         volsteptimes_.clear();
         int j = 0;
-        for (std::vector<Date>::const_iterator i = volstepdates_.begin();
-             i != volstepdates_.end(); ++i, ++j) {
+        for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
             volsteptimes_.push_back(termStructure()->timeFromReference(*i));
             volsteptimesArray_[j] = volsteptimes_[j];
             if (j == 0)
@@ -123,9 +118,7 @@ namespace QuantLib {
         times_.push_back(0.0);
         modelOutputs_.expiries_.clear();
         modelOutputs_.tenors_.clear();
-        for (std::map<Date, CalibrationPoint>::iterator k =
-                 calibrationPoints_.begin();
-             k != calibrationPoints_.end(); ++k) {
+        for (auto k = calibrationPoints_.begin(); k != calibrationPoints_.end(); ++k) {
             times_.push_back(termStructure()->timeFromReference(k->first));
             modelOutputs_.expiries_.push_back(k->first);
             modelOutputs_.tenors_.push_back(k->second.tenor_);
@@ -178,9 +171,8 @@ namespace QuantLib {
         do {
             Date numeraireKnown = numeraireDate_;
             done = true;
-            for (std::map<Date, CalibrationPoint>::reverse_iterator i =
-                     calibrationPoints_.rbegin();
-                 i != calibrationPoints_.rend() && done; ++i) {
+            for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend() && done;
+                 ++i) {
                 if (i->second.paymentDates_.back() > numeraireDate_) {
                     numeraireDate_ = i->second.paymentDates_.back();
                     numeraireKnown = i->second.paymentDates_.back();
@@ -312,9 +304,7 @@ namespace QuantLib {
 
         Size pointIndex = 0;
 
-        for (std::map<Date, CalibrationPoint>::reverse_iterator i =
-                 calibrationPoints_.rbegin();
-             i != calibrationPoints_.rend(); ++i) {
+        for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend(); ++i) {
 
             ext::shared_ptr<SmileSection> smileSection;
             if (i->second.isCaplet_) {
@@ -471,9 +461,7 @@ namespace QuantLib {
 
         int idx = times_.size() - 2;
 
-        for (std::map<Date, CalibrationPoint>::reverse_iterator
-                 i = calibrationPoints_.rbegin();
-             i != calibrationPoints_.rend(); ++i, --idx) {
+        for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend(); ++i, --idx) {
 
             ext::shared_ptr<CustomSmileSection> mfSec;
             if ((modelSettings_.adjustments_ & ModelSettings::CustomSmile) != 0) {
@@ -662,9 +650,7 @@ namespace QuantLib {
             modelOutputs_.marketRawCallPremium_.clear();
             modelOutputs_.marketRawPutPremium_.clear();
 
-            for (std::map<Date, CalibrationPoint>::iterator i =
-                     calibrationPoints_.begin();
-                 i != calibrationPoints_.end(); ++i) {
+            for (auto i = calibrationPoints_.begin(); i != calibrationPoints_.end(); ++i) {
                 modelOutputs_.atm_.push_back(i->second.atm_);
                 modelOutputs_.annuity_.push_back(i->second.annuity_);
                 ext::shared_ptr<SmileSection> sec = i->second.smileSection_;
@@ -930,8 +916,7 @@ namespace QuantLib {
             return out; // no trace information was collected so no output
         out << std::endl;
         out << "Messages:" << std::endl;
-        for (std::vector<std::string>::const_iterator i = m.messages_.begin();
-             i != m.messages_.end(); ++i)
+        for (auto i = m.messages_.begin(); i != m.messages_.end(); ++i)
             out << (*i) << std::endl;
         out << std::endl << std::setprecision(16);
         out << "Yield termstructure fit:" << std::endl;

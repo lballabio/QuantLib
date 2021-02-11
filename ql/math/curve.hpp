@@ -34,7 +34,7 @@ namespace QuantLib {
       public:
         typedef Real argument_type;
         typedef Real result_type;
-        virtual ~Curve() {}
+        virtual ~Curve() = default;
         virtual Real operator()(Real x) const = 0;
     };
 

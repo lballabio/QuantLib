@@ -75,22 +75,21 @@ namespace QuantLib {
                 bool subtractInflationNominal,
                 // float+spread leg
                 Spread spread,
-                const DayCounter& floatDayCount,
-                const Schedule& floatSchedule,
+                DayCounter floatDayCount,
+                Schedule floatSchedule,
                 const BusinessDayConvention& floatRoll,
                 Natural fixingDays,
-                const ext::shared_ptr<IborIndex>& floatIndex,
+                ext::shared_ptr<IborIndex> floatIndex,
                 // fixed x inflation leg
                 Rate fixedRate,
                 Real baseCPI,
-                const DayCounter& fixedDayCount,
-                const Schedule& fixedSchedule,
+                DayCounter fixedDayCount,
+                Schedule fixedSchedule,
                 const BusinessDayConvention& fixedRoll,
                 const Period& observationLag,
-                const ext::shared_ptr<ZeroInflationIndex>& fixedIndex,
+                ext::shared_ptr<ZeroInflationIndex> fixedIndex,
                 CPI::InterpolationType observationInterpolation = CPI::AsIndex,
-                Real inflationNominal = Null<Real>()
-                );
+                Real inflationNominal = Null<Real>());
 
         // results
         // float+spread
@@ -167,12 +166,11 @@ namespace QuantLib {
     //! %Arguments for swap calculation
     class CPISwap::arguments : public Swap::arguments {
     public:
-        arguments() : type(Receiver),
-        nominal(Null<Real>()) {}
-        Type type;
-        Real nominal;
+      arguments() : nominal(Null<Real>()) {}
+      Type type = Receiver;
+      Real nominal;
 
-        void validate() const override;
+      void validate() const override;
     };
 
     //! %Results from swap calculation

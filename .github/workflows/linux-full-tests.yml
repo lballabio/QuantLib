@@ -93,6 +93,12 @@ jobs:
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++17"
+          - name: "C++20 mode"
+            shortname: c++20
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            cxxflags: "-std=c++20"
           - name: "Unity build enabled"
             shortname: unity
             tag: rolling

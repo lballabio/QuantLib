@@ -36,9 +36,9 @@ namespace QuantLib {
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
         payer_[1] =  1.0;
-        for (Leg::iterator i = legs_[0].begin(); i!= legs_[0].end(); ++i)
+        for (auto i = legs_[0].begin(); i != legs_[0].end(); ++i)
             registerWith(*i);
-        for (Leg::iterator i = legs_[1].begin(); i!= legs_[1].end(); ++i)
+        for (auto i = legs_[1].begin(); i != legs_[1].end(); ++i)
             registerWith(*i);
     }
 
@@ -53,7 +53,7 @@ namespace QuantLib {
                    ") and legs (" << legs_.size() << ")");
         for (Size j=0; j<legs_.size(); ++j) {
             if (payer[j]) payer_[j]=-1.0;
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+            for (auto i = legs_[j].begin(); i != legs_[j].end(); ++i)
                 registerWith(*i);
         }
     }
@@ -85,8 +85,8 @@ namespace QuantLib {
     }
 
     void Swap::setupArguments(PricingEngine::arguments* args) const {
-        Swap::arguments* arguments = dynamic_cast<Swap::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<Swap::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->legs = legs_;
         arguments->payer = payer_;
@@ -95,8 +95,8 @@ namespace QuantLib {
     void Swap::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
 
-        const Swap::results* results = dynamic_cast<const Swap::results*>(r);
-        QL_REQUIRE(results != 0, "wrong result type");
+        const auto* results = dynamic_cast<const Swap::results*>(r);
+        QL_REQUIRE(results != nullptr, "wrong result type");
 
         if (!results->legNPV.empty()) {
             QL_REQUIRE(results->legNPV.size() == legNPV_.size(),
@@ -163,7 +163,7 @@ namespace QuantLib {
                 ext::shared_ptr<LazyObject> f =
                     ext::dynamic_pointer_cast<LazyObject>(
                         legs_[j][k]);
-                if (f != 0)
+                if (f != nullptr)
                     f->update();
             }
         }

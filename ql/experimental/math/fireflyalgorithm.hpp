@@ -93,8 +93,8 @@ namespace QuantLib {
         friend class RandomWalk;
         friend class Intensity;
         FireflyAlgorithm(Size M,
-                         const ext::shared_ptr<Intensity>& intensity,
-                         const ext::shared_ptr<RandomWalk>& randomWalk,
+                         ext::shared_ptr<Intensity> intensity,
+                         ext::shared_ptr<RandomWalk> randomWalk,
                          Size Mde = 0,
                          Real mutationFactor = 1.0,
                          Real crossoverFactor = 0.5,
@@ -120,9 +120,9 @@ namespace QuantLib {
     class FireflyAlgorithm::Intensity {
         friend class FireflyAlgorithm;
     public:
-        virtual ~Intensity() {}
-        //! find brightest firefly for each firefly
-        void findBrightest();
+      virtual ~Intensity() = default;
+      //! find brightest firefly for each firefly
+      void findBrightest();
     protected:
         Size Mfa_, N_;
         const std::vector<Array> *x_;
@@ -183,12 +183,12 @@ namespace QuantLib {
     class FireflyAlgorithm::RandomWalk {
         friend class FireflyAlgorithm;
     public:
-        virtual ~RandomWalk() {}
-        //! perform random walk
-        void walk() {
-            for (Size i = 0; i < Mfa_; i++) {
-                walkImpl((*xRW_)[(*values_)[i].second]);
-            }
+      virtual ~RandomWalk() = default;
+      //! perform random walk
+      void walk() {
+          for (Size i = 0; i < Mfa_; i++) {
+              walkImpl((*xRW_)[(*values_)[i].second]);
+          }
         }
     protected:
         Size Mfa_, N_;

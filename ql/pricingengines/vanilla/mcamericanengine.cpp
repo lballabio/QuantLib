@@ -21,22 +21,20 @@
     \brief Monte Carlo engine for vanilla american options
 */
 
-#include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/errors.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/instruments/payoffs.hpp>
 #include <ql/functional.hpp>
+#include <ql/instruments/payoffs.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/pricingengines/vanilla/mcamericanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AmericanPathPricer::AmericanPathPricer(
-        const ext::shared_ptr<Payoff>& payoff,
-        Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType)
-    : scalingValue_(1.0),
-      payoff_      (payoff),
-      v_           (LsmBasisSystem::pathBasisSystem(polynomOrder,
-                                                    polynomType)) {
+    AmericanPathPricer::AmericanPathPricer(ext::shared_ptr<Payoff> payoff,
+                                           Size polynomOrder,
+                                           LsmBasisSystem::PolynomType polynomType)
+    : scalingValue_(1.0), payoff_(std::move(payoff)),
+      v_(LsmBasisSystem::pathBasisSystem(polynomOrder, polynomType)) {
 
         QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
                    || polynomType == LsmBasisSystem::Laguerre
@@ -53,7 +51,7 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
-        if (strikePayoff != 0) {
+        if (strikePayoff != nullptr) {
             scalingValue_/=strikePayoff->strike();
         }
     }

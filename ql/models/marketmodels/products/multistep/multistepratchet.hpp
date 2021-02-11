@@ -27,7 +27,7 @@ namespace QuantLib {
     class MultiStepRatchet : public MultiProductMultiStep {
       public:
         MultiStepRatchet(const std::vector<Time>& rateTimes,
-                         const std::vector<Real>& accruals,
+                         std::vector<Real> accruals,
                          const std::vector<Time>& paymentTimes,
                          Real gearingOfFloor,
                          Real gearingOfFixing,

@@ -18,27 +18,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/credit/isdacdsengine.hpp>
-#include <ql/instruments/claim.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
-#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/instruments/claim.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/pricingengines/credit/isdacdsengine.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    IsdaCdsEngine::IsdaCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+    IsdaCdsEngine::IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                                  Real recoveryRate,
-                                 const Handle<YieldTermStructure>& discountCurve,
+                                 Handle<YieldTermStructure> discountCurve,
                                  const boost::optional<bool>& includeSettlementDateFlows,
                                  const NumericalFix numericalFix,
                                  const AccrualBias accrualBias,
                                  const ForwardsInCouponPeriod forwardsInCouponPeriod)
-    : probability_(probability), recoveryRate_(recoveryRate), discountCurve_(discountCurve),
+    : probability_(std::move(probability)), recoveryRate_(recoveryRate),
+      discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows), numericalFix_(numericalFix),
       accrualBias_(accrualBias), forwardsInCouponPeriod_(forwardsInCouponPeriod) {
 
@@ -91,8 +93,7 @@ namespace QuantLib {
                    "ISDA engine not compatible with non accrual paying CDS");
         QL_REQUIRE(arguments_.paysAtDefaultTime,
                    "ISDA engine not compatible with end period payment");
-        QL_REQUIRE(ext::dynamic_pointer_cast<FaceValueClaim>(
-                       arguments_.claim) != NULL,
+        QL_REQUIRE(ext::dynamic_pointer_cast<FaceValueClaim>(arguments_.claim) != nullptr,
                    "ISDA engine not compatible with non face value claim");
 
         Date maturity = arguments_.maturity;

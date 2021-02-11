@@ -82,8 +82,7 @@ namespace QuantLib {
     //! helper class building a sequence of average BMA coupons
     class AverageBMALeg {
       public:
-        AverageBMALeg(const Schedule& schedule,
-                      const ext::shared_ptr<BMAIndex>& index);
+        AverageBMALeg(Schedule schedule, ext::shared_ptr<BMAIndex> index);
         AverageBMALeg& withNotionals(Real notional);
         AverageBMALeg& withNotionals(const std::vector<Real>& notionals);
         AverageBMALeg& withPaymentDayCounter(const DayCounter&);

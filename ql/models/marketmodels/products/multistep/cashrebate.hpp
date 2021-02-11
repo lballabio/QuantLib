@@ -36,9 +36,9 @@ namespace QuantLib
     class MarketModelCashRebate : public MarketModelMultiProduct 
     {
       public:
-        MarketModelCashRebate(const EvolutionDescription& evolution,
+        MarketModelCashRebate(EvolutionDescription evolution,
                               const std::vector<Time>& paymentTimes,
-                              const Matrix& amounts,
+                              Matrix amounts,
                               Size numberOfProducts);
         //! \name MarketModelMultiProduct interface
         //@{

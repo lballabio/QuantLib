@@ -33,13 +33,19 @@ namespace QuantLib {
 
     class FdSabrVanillaEngine : public VanillaOption::engine {
       public:
-        FdSabrVanillaEngine(
-            Real f0, Real alpha, Real beta, Real nu, Real rho,
-            const Handle<YieldTermStructure>& rTS,
-            Size tGrid = 50, Size fGrid = 400, Size xGrid = 50,
-            Size dampingSteps = 0,
-            Real scalingFactor = 1.0, Real eps = 1e-4,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+        FdSabrVanillaEngine(Real f0,
+                            Real alpha,
+                            Real beta,
+                            Real nu,
+                            Real rho,
+                            Handle<YieldTermStructure> rTS,
+                            Size tGrid = 50,
+                            Size fGrid = 400,
+                            Size xGrid = 50,
+                            Size dampingSteps = 0,
+                            Real scalingFactor = 1.0,
+                            Real eps = 1e-4,
+                            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const override;
 

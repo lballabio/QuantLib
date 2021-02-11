@@ -25,6 +25,7 @@
 #define quantlib_k_interpolated_yoy_optionlet_volatility_surface_hpp
 
 #include <ql/experimental/inflation/yoyoptionletstripper.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -54,8 +55,8 @@ namespace QuantLib {
             const DayCounter& dc,
             const Period& lag,
             const ext::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
-            const ext::shared_ptr<YoYInflationCapFloorEngine>& pricer,
-            const ext::shared_ptr<YoYOptionletStripper>& yoyOptionletStripper,
+            ext::shared_ptr<YoYInflationCapFloorEngine> pricer,
+            ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper,
             Real slope,
             const Interpolator1D& interpolator = Interpolator1D(),
             VolatilityType volType = ShiftedLognormal,
@@ -90,28 +91,33 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class Interpolator1D>
+    template <class Interpolator1D>
     KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>::
-    KInterpolatedYoYOptionletVolatilitySurface(
-         const Natural settlementDays,
-         const Calendar& cal,
-         const BusinessDayConvention bdc,
-         const DayCounter& dc,
-         const Period &lag,
-         const ext::shared_ptr<YoYCapFloorTermPriceSurface> &capFloorPrices,
-         const ext::shared_ptr<YoYInflationCapFloorEngine> &pricer,
-         const ext::shared_ptr<YoYOptionletStripper> &yoyOptionletStripper,
-         const Real slope,
-         const Interpolator1D &interpolator,
-         VolatilityType volType,
-         Real displacement)
-    : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc, lag,
+        KInterpolatedYoYOptionletVolatilitySurface(
+            const Natural settlementDays,
+            const Calendar& cal,
+            const BusinessDayConvention bdc,
+            const DayCounter& dc,
+            const Period& lag,
+            const ext::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
+            ext::shared_ptr<YoYInflationCapFloorEngine> pricer,
+            ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper,
+            const Real slope,
+            const Interpolator1D& interpolator,
+            VolatilityType volType,
+            Real displacement)
+    : YoYOptionletVolatilitySurface(settlementDays,
+                                    cal,
+                                    bdc,
+                                    dc,
+                                    lag,
                                     capFloorPrices->yoyIndex()->frequency(),
                                     capFloorPrices->yoyIndex()->interpolated(),
-                                    volType, displacement),
-      capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(pricer),
-      yoyOptionletStripper_(yoyOptionletStripper),
-      factory1D_(interpolator), slope_(slope), lastDateisSet_(false) {
+                                    volType,
+                                    displacement),
+      capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(std::move(pricer)),
+      yoyOptionletStripper_(std::move(yoyOptionletStripper)), factory1D_(interpolator),
+      slope_(slope), lastDateisSet_(false) {
         performCalculations();
     }
 
@@ -173,8 +179,8 @@ namespace QuantLib {
     Volatility KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>::
     volatilityImpl(Time length,  Rate strike) const {
 
-        Natural years = (Natural)floor(length);
-        Natural days = (Natural)floor((length - years) * 365.0);
+        auto years = (Natural)floor(length);
+        auto days = (Natural)floor((length - years) * 365.0);
         Date d = referenceDate() + Period(years, Years) + Period(days, Days);
 
         return this->volatilityImpl(d, strike);

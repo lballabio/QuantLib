@@ -70,9 +70,8 @@ namespace QuantLib {
 
         MultiAssetOption::setupArguments(args);
 
-        VanillaVPPOption::arguments* arguments =
-            dynamic_cast<VanillaVPPOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<VanillaVPPOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->heatRate       = heatRate_;
         arguments->pMin           = pMin_;

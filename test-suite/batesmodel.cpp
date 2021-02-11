@@ -537,7 +537,7 @@ void BatesModelTest::testDAXCalibration() {
 }
 
 test_suite* BatesModelTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Bates model tests");
+    auto* suite = BOOST_TEST_SUITE("Bates model tests");
     suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
     suite->add(QUANTLIB_TEST_CASE(
                         &BatesModelTest::testAnalyticAndMcVsJumpDiffusion));

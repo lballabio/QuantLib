@@ -63,7 +63,7 @@ namespace QuantLib {
         //! abstract base class for calendar implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual std::string name() const = 0;
             virtual bool isBusinessDay(const Date&) const = 0;
             virtual bool isWeekend(Weekday) const = 0;
@@ -75,7 +75,7 @@ namespace QuantLib {
             implementation, which is therefore unusable except as a
             placeholder.
         */
-        Calendar() {}
+        Calendar() = default;
         //! \name Calendar interface
         //@{
         //!  Returns whether or not the calendar is initialized

@@ -18,18 +18,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/callability/upperboundengine.hpp>
+#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
+#include <ql/models/marketmodels/callability/exercisevalue.hpp>
+#include <ql/models/marketmodels/callability/upperboundengine.hpp>
+#include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/discounter.hpp>
+#include <ql/models/marketmodels/evolver.hpp>
+#include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
 #include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/multiproduct.hpp>
-#include <ql/models/marketmodels/discounter.hpp>
-#include <ql/models/marketmodels/evolver.hpp>
-#include <ql/models/marketmodels/callability/exercisevalue.hpp>
-#include <ql/auto_ptr.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace QuantLib {
 
@@ -106,20 +107,17 @@ namespace QuantLib {
     }
 
 
-
     UpperBoundEngine::UpperBoundEngine(
-                   const ext::shared_ptr<MarketModelEvolver>& evolver,
-                   const std::vector<ext::shared_ptr<MarketModelEvolver> >&
-                                                                 innerEvolvers,
-                   const MarketModelMultiProduct& underlying,
-                   const MarketModelExerciseValue& rebate,
-                   const MarketModelMultiProduct& hedge,
-                   const MarketModelExerciseValue& hedgeRebate,
-                   const ExerciseStrategy<CurveState>& hedgeStrategy,
-                   Real initialNumeraireValue)
-    : evolver_(evolver), innerEvolvers_(innerEvolvers),
-      composite_(MultiProductComposite()),
-      initialNumeraireValue_(initialNumeraireValue) {
+        ext::shared_ptr<MarketModelEvolver> evolver,
+        std::vector<ext::shared_ptr<MarketModelEvolver> > innerEvolvers,
+        const MarketModelMultiProduct& underlying,
+        const MarketModelExerciseValue& rebate,
+        const MarketModelMultiProduct& hedge,
+        const MarketModelExerciseValue& hedgeRebate,
+        const ExerciseStrategy<CurveState>& hedgeStrategy,
+        Real initialNumeraireValue)
+    : evolver_(std::move(evolver)), innerEvolvers_(std::move(innerEvolvers)),
+      composite_(MultiProductComposite()), initialNumeraireValue_(initialNumeraireValue) {
 
         composite_.add(underlying);
         composite_.add(ExerciseAdapter(rebate));
@@ -179,8 +177,7 @@ namespace QuantLib {
 
     std::pair<Real,Real> UpperBoundEngine::singlePathValue(Size innerPaths) {
 
-        DecoratedHedge& callable =
-            dynamic_cast<DecoratedHedge&>(composite_.item(4));
+        auto& callable = dynamic_cast<DecoratedHedge&>(composite_.item(4));
         const ExerciseStrategy<CurveState>& strategy = callable.strategy();
 
 

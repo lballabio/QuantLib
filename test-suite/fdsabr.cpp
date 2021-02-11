@@ -19,23 +19,21 @@
 
 #include "fdsabr.hpp"
 #include "utilities.hpp"
-
 #include <ql/functional.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/termstructures/volatility/sabr.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
+#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticcevengine.hpp>
 #include <ql/pricingengines/vanilla/fdsabrvanillaengine.hpp>
-
-#include <ql/math/richardsonextrapolation.hpp>
-#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
-#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
-
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/sabr.hpp>
 #include <boost/make_shared.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -43,12 +41,15 @@ using boost::unit_test_framework::test_suite;
 namespace {
     class SabrMonteCarloPricer {
       public:
-        SabrMonteCarloPricer(
-            Real f0, Time maturity,
-            const ext::shared_ptr<Payoff>& payoff,
-            Real alpha, Real beta, Real nu, Real rho)
-        : f0_(f0), maturity_(maturity), payoff_(payoff),
-          alpha_(alpha), beta_(beta), nu_(nu), rho_(rho) { }
+        SabrMonteCarloPricer(Real f0,
+                             Time maturity,
+                             ext::shared_ptr<Payoff> payoff,
+                             Real alpha,
+                             Real beta,
+                             Real nu,
+                             Real rho)
+        : f0_(f0), maturity_(maturity), payoff_(std::move(payoff)), alpha_(alpha), beta_(beta),
+          nu_(nu), rho_(rho) {}
 
         Real operator()(Real dt) const {
             const Size nSims = 64*1024;
@@ -531,7 +532,7 @@ void FdSabrTest::testBenchOpSabrCase() {
 }
 
 test_suite* FdSabrTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference SABR tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference SABR tests");
 
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrOp));
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrCevPricing));

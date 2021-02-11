@@ -20,22 +20,23 @@
 
 #include <ql/pricingengines/swap/discretizedswap.hpp>
 #include <ql/pricingengines/swap/treeswapengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
                                                  Size timeSteps,
-                                                 const Handle<YieldTermStructure>& termStructure)
+                                                 Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeSteps),
-      termStructure_(termStructure) {
+      termStructure_(std::move(termStructure)) {
         registerWith(termStructure_);
     }
 
     TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
                                                  const TimeGrid& timeGrid,
-                                                 const Handle<YieldTermStructure>& termStructure)
+                                                 Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeGrid),
-      termStructure_(termStructure) {
+      termStructure_(std::move(termStructure)) {
         registerWith(termStructure_);
     }
 
@@ -48,7 +49,7 @@ namespace QuantLib {
 
         ext::shared_ptr<TermStructureConsistentModel> tsmodel =
             ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
-        if (tsmodel != 0) {
+        if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
         } else {
@@ -60,7 +61,7 @@ namespace QuantLib {
         std::vector<Time> times = swap.mandatoryTimes();
 
         ext::shared_ptr<Lattice> lattice;
-        if (lattice_ != 0) {
+        if (lattice_ != nullptr) {
             lattice = lattice_;
         } else {
             TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);

@@ -49,7 +49,7 @@ namespace QuantLib {
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
                            const std::vector<Volatility>& blackVolCurve,
-                           const DayCounter& dayCounter,
+                           DayCounter dayCounter,
                            bool forceMonotoneVariance = true);
         //! \name TermStructure interface
         //@{
@@ -102,9 +102,8 @@ namespace QuantLib {
     }
 
     inline void BlackVarianceCurve::accept(AcyclicVisitor& v) {
-        Visitor<BlackVarianceCurve>* v1 =
-            dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVarianceTermStructure::accept(v);

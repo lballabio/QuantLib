@@ -104,7 +104,7 @@ namespace QuantLib {
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
-                          const ext::shared_ptr<Claim>& = ext::shared_ptr<Claim>(),
+                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -158,7 +158,7 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
-                          const ext::shared_ptr<Claim>& = ext::shared_ptr<Claim>(),
+                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -183,7 +183,7 @@ namespace QuantLib {
         const Date& protectionStartDate() const;
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
-        bool rebatesAccrual() const { return accrualRebate_ != NULL; }
+        bool rebatesAccrual() const { return accrualRebate_ != nullptr; }
         const ext::shared_ptr<SimpleCashFlow>& upfrontPayment() const;
         const ext::shared_ptr<SimpleCashFlow>& accrualRebate() const;
         const Date& tradeDate() const;

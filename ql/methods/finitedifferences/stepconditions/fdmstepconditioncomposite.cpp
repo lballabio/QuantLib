@@ -22,26 +22,23 @@
 
 #include <ql/exercise.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
-
+#include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <set>
+#include <utility>
 
 namespace QuantLib {
 
     FdmStepConditionComposite::FdmStepConditionComposite(
-        const std::list<std::vector<Time> > & stoppingTimes,
-        const Conditions & conditions)
-    : conditions_(conditions) {
+        const std::list<std::vector<Time> >& stoppingTimes, Conditions conditions)
+    : conditions_(std::move(conditions)) {
 
         std::set<Real> allStoppingTimes;
-        for (std::list<std::vector<Time> >::const_iterator
-             iter = stoppingTimes.begin(); iter != stoppingTimes.end();
-             ++iter) {
+        for (auto iter = stoppingTimes.begin(); iter != stoppingTimes.end(); ++iter) {
             allStoppingTimes.insert(iter->begin(), iter->end());
         }
         stoppingTimes_ = std::vector<Time>(allStoppingTimes.begin(),
@@ -58,8 +55,7 @@ namespace QuantLib {
     }
 
     void FdmStepConditionComposite::applyTo(Array& a, Time t) const {
-        for (Conditions::const_iterator iter = conditions_.begin();
-             iter != conditions_.end(); ++iter) {
+        for (auto iter = conditions_.begin(); iter != conditions_.end(); ++iter) {
             (*iter)->applyTo(a, t);
         }
     }

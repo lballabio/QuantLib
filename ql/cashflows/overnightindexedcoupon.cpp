@@ -21,12 +21,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/experimental/averageois/averageoiscouponpricer.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/vectors.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 using std::vector;
 
@@ -217,18 +217,16 @@ namespace QuantLib {
     }
 
     void OvernightIndexedCoupon::accept(AcyclicVisitor& v) {
-        Visitor<OvernightIndexedCoupon>* v1 =
-            dynamic_cast<Visitor<OvernightIndexedCoupon>*>(&v);
-        if (v1 != 0) {
+        auto* v1 = dynamic_cast<Visitor<OvernightIndexedCoupon>*>(&v);
+        if (v1 != nullptr) {
             v1->visit(*this);
         } else {
             FloatingRateCoupon::accept(v);
         }
     }
 
-    OvernightLeg::OvernightLeg(const Schedule& schedule,
-                               const ext::shared_ptr<OvernightIndex>& i)
-    : schedule_(schedule), overnightIndex_(i), paymentCalendar_(schedule.calendar()),
+    OvernightLeg::OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> i)
+    : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()),
       paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false),
       averagingMethod_(OvernightAveraging::Compound) {}
 

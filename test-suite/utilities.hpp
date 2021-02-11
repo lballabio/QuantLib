@@ -34,11 +34,12 @@
 #else
 #include <boost/test/tools/floating_point_comparison.hpp>
 #endif
-#include <vector>
-#include <string>
-#include <numeric>
-#include <iomanip>
 #include <cmath>
+#include <iomanip>
+#include <numeric>
+#include <string>
+#include <utility>
+#include <vector>
 
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
@@ -127,9 +128,10 @@ namespace QuantLib {
 
     class Flag : public QuantLib::Observer {
       private:
-        bool up_;
+        bool up_ = false;
+
       public:
-        Flag() : up_(false) {}
+        Flag() = default;
         void raise() { up_ = true; }
         void lower() { up_ = false; }
         bool isUp() const { return up_; }
@@ -172,7 +174,7 @@ namespace QuantLib {
 
     template <class T>
     struct vector_streamer {
-        explicit vector_streamer(const std::vector<T>& v) : v(v) {}
+        explicit vector_streamer(std::vector<T> v) : v(std::move(v)) {}
         std::vector<T> v;
     };
 

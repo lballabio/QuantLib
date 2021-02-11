@@ -62,7 +62,7 @@ namespace QuantLib {
                          BusinessDayConvention bdc = Following,
                          const DayCounter& dc = DayCounter());
         //@}
-        ~BlackAtmVolCurve() override {}
+        ~BlackAtmVolCurve() override = default;
         //! \name Black at-the-money spot volatility
         //@{
         //! spot at-the-money volatility

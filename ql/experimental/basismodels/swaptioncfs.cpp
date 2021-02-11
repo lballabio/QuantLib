@@ -109,7 +109,7 @@ namespace QuantLib {
             fixedWeights_.push_back(fixedLeg_[k]->amount());
         for (Size k = 0; k < fixedLeg_.size(); ++k) {
             ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(fixedLeg_[k]);
-            if (coupon != 0)
+            if (coupon != nullptr)
                 annuityWeights_.push_back(coupon->nominal() * coupon->accrualPeriod());
         }
     }

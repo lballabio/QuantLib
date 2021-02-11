@@ -93,7 +93,7 @@ void RngTraitsTest::testCustomPoisson() {
 
 
 test_suite* RngTraitsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("RNG traits tests");
+    auto* suite = BOOST_TEST_SUITE("RNG traits tests");
     suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testGaussian));
     suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testDefaultPoisson));
     suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testCustomPoisson));

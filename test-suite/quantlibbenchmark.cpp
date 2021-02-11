@@ -95,10 +95,11 @@
 #include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer/timer.hpp>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <list>
 #include <string>
+#include <utility>
 
 /* PAPI code
 #include <stdio.h
@@ -203,9 +204,8 @@ namespace {
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(const std::string& name, fct_ptr f, double mflop)
-        : f_(f), name_(name), mflop_(mflop) {
-        }
+        Benchmark(std::string name, fct_ptr f, double mflop)
+        : f_(f), name_(std::move(name)), mflop_(mflop) {}
 
         test_case* getTestCase() const {
             #if BOOST_VERSION >= 105900
@@ -278,8 +278,6 @@ namespace QuantLib {
 test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
         &AmericanOptionTest::testFdAmericanGreeks, 518.31));
-    bm.push_back(Benchmark("AmericanOption::FdShoutGreeks",
-        &AmericanOptionTest::testFdShoutGreeks, 546.58));
     bm.push_back(Benchmark("AsianOption::MCArithmeticAveragePrice",
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13));
     bm.push_back(Benchmark("BarrierOption::BabsiriValues",
@@ -329,7 +327,7 @@ test_suite* init_unit_test_suite(int, char*[]) {
     bm.push_back(Benchmark("ShortRateModel::Swaps",
         &ShortRateModelTest::testSwaps, 454.73));
 
-    test_suite* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
+    auto* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
 
     for (std::list<Benchmark>::const_iterator iter = bm.begin();
          iter != bm.end(); ++iter) {

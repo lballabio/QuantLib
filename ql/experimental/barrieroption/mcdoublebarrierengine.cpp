@@ -18,19 +18,19 @@
 */
 
 #include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    DoubleBarrierPathPricer::DoubleBarrierPathPricer(
-        DoubleBarrier::Type barrierType,
-        Real barrierLow,
-        Real barrierHigh,
-        Real rebate,
-        Option::Type type,
-        Real strike,
-        const std::vector<DiscountFactor>& discounts)
-        : barrierType_(barrierType), barrierLow_(barrierLow), barrierHigh_(barrierHigh),
-          rebate_(rebate), payoff_(type, strike), discounts_(discounts) {
+    DoubleBarrierPathPricer::DoubleBarrierPathPricer(DoubleBarrier::Type barrierType,
+                                                     Real barrierLow,
+                                                     Real barrierHigh,
+                                                     Real rebate,
+                                                     Option::Type type,
+                                                     Real strike,
+                                                     std::vector<DiscountFactor> discounts)
+    : barrierType_(barrierType), barrierLow_(barrierLow), barrierHigh_(barrierHigh),
+      rebate_(rebate), payoff_(type, strike), discounts_(std::move(discounts)) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
         QL_REQUIRE(barrierLow>0.0,

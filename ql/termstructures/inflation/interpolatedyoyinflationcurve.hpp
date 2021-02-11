@@ -50,10 +50,9 @@ namespace QuantLib {
                                       const Period& lag,
                                       Frequency frequency,
                                       bool indexIsInterpolated,
-                                      const std::vector<Date>& dates,
+                                      std::vector<Date> dates,
                                       const std::vector<Rate>& rates,
-                                      const Interpolator& interpolator
-                                                            = Interpolator());
+                                      const Interpolator& interpolator = Interpolator());
 
         /*! \deprecated Use the constructor not taking a yield
                         term structure.
@@ -67,10 +66,9 @@ namespace QuantLib {
                                       Frequency frequency,
                                       bool indexIsInterpolated,
                                       const Handle<YieldTermStructure>& yTS,
-                                      const std::vector<Date>& dates,
+                                      std::vector<Date> dates,
                                       const std::vector<Rate>& rates,
-                                      const Interpolator& interpolator
-                                                            = Interpolator());
+                                      const Interpolator& interpolator = Interpolator());
 
         //! \name InflationTermStructure interface
         //@{
@@ -132,20 +130,20 @@ namespace QuantLib {
     // template definitions
 
     template <class Interpolator>
-    InterpolatedYoYInflationCurve<Interpolator>::
-    InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                  const Calendar& calendar,
-                                  const DayCounter& dayCounter,
-                                  const Period& lag,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const std::vector<Date>& dates,
-                                  const std::vector<Rate>& rates,
-                                  const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, rates[0],
-                                lag, frequency, indexIsInterpolated),
+    InterpolatedYoYInflationCurve<Interpolator>::InterpolatedYoYInflationCurve(
+        const Date& referenceDate,
+        const Calendar& calendar,
+        const DayCounter& dayCounter,
+        const Period& lag,
+        Frequency frequency,
+        bool indexIsInterpolated,
+        std::vector<Date> dates,
+        const std::vector<Rate>& rates,
+        const Interpolator& interpolator)
+    : YoYInflationTermStructure(
+          referenceDate, calendar, dayCounter, rates[0], lag, frequency, indexIsInterpolated),
       InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
-      dates_(dates) {
+      dates_(std::move(dates)) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates: " << dates_.size());
 
@@ -189,21 +187,21 @@ namespace QuantLib {
     }
 
     template <class Interpolator>
-    InterpolatedYoYInflationCurve<Interpolator>::
-    InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                  const Calendar& calendar,
-                                  const DayCounter& dayCounter,
-                                  const Period& lag,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const Handle<YieldTermStructure>& yTS,
-                                  const std::vector<Date>& dates,
-                                  const std::vector<Rate>& rates,
-                                  const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, rates[0],
-                                lag, frequency, indexIsInterpolated,  yTS),
+    InterpolatedYoYInflationCurve<Interpolator>::InterpolatedYoYInflationCurve(
+        const Date& referenceDate,
+        const Calendar& calendar,
+        const DayCounter& dayCounter,
+        const Period& lag,
+        Frequency frequency,
+        bool indexIsInterpolated,
+        const Handle<YieldTermStructure>& yTS,
+        std::vector<Date> dates,
+        const std::vector<Rate>& rates,
+        const Interpolator& interpolator)
+    : YoYInflationTermStructure(
+          referenceDate, calendar, dayCounter, rates[0], lag, frequency, indexIsInterpolated, yTS),
       InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
-      dates_(dates) {
+      dates_(std::move(dates)) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates: " << dates_.size());
 

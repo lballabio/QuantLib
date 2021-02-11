@@ -129,7 +129,7 @@ namespace QuantLib {
         }
     protected:
       void update() override {
-          if (basket_ != 0)
+          if (basket_ != nullptr)
               basket_->notifyObservers();
           LatentModel<copulaPolicy>::update();
       }
@@ -305,8 +305,7 @@ namespace QuantLib {
             Size poolSize = basket_->size();//move to 'livesize'
             const ext::shared_ptr<Pool>& pool = basket_->pool();
 
-            BigNatural limit = 
-                static_cast<BigNatural>(std::pow(2., (int)(poolSize)));
+            auto limit = static_cast<BigNatural>(std::pow(2., (int)(poolSize)));
 
             // Precalc conditional probabilities
             std::vector<Probability> pDefCond;
@@ -317,10 +316,8 @@ namespace QuantLib {
                     defaultProbability(date), i, mktFactors));
 
             Probability probNEventsOrMore = 0.;
-            for(BigNatural mask = 
-                  static_cast<BigNatural>(std::pow(2., (int)(n))-1);
-                mask < limit; mask++) 
-            {
+            for (auto mask = static_cast<BigNatural>(std::pow(2., (int)(n)) - 1); mask < limit;
+                 mask++) {
                 // cheap permutations
                 boost::dynamic_bitset<> bsetMask(poolSize, mask);
                 if(bsetMask.count() >= n) {

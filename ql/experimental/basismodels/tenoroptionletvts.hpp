@@ -29,6 +29,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/time/dategenerationrule.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -75,7 +76,8 @@ namespace QuantLib {
           public:
             // return the correlation between two FRA rates starting at start1 and start2
             virtual Real operator()(const Time& start1, const Time& start2) const = 0;
-            virtual ~CorrelationStructure(){};
+            virtual ~CorrelationStructure() = default;
+            ;
         };
 
         // very basic choice for correlation structure
@@ -85,9 +87,9 @@ namespace QuantLib {
             ext::shared_ptr<Interpolation> beta_;
 
           public:
-            TwoParameterCorrelation(const ext::shared_ptr<Interpolation>& rhoInf,
-                                    const ext::shared_ptr<Interpolation>& beta)
-            : rhoInf_(rhoInf), beta_(beta) {}
+            TwoParameterCorrelation(ext::shared_ptr<Interpolation> rhoInf,
+                                    ext::shared_ptr<Interpolation> beta)
+            : rhoInf_(std::move(rhoInf)), beta_(std::move(beta)) {}
             Real operator()(const Time& start1, const Time& start2) const override {
                 Real rhoInf = (*rhoInf_)(start1);
                 Real beta = (*beta_)(start1);
@@ -98,9 +100,9 @@ namespace QuantLib {
 
         // constructor
         TenorOptionletVTS(const Handle<OptionletVolatilityStructure>& baseVTS,
-                          const ext::shared_ptr<IborIndex>& baseIndex,
-                          const ext::shared_ptr<IborIndex>& targIndex,
-                          const ext::shared_ptr<CorrelationStructure>& correlation);
+                          ext::shared_ptr<IborIndex> baseIndex,
+                          ext::shared_ptr<IborIndex> targIndex,
+                          ext::shared_ptr<CorrelationStructure> correlation);
 
         // Termstructure interface
 

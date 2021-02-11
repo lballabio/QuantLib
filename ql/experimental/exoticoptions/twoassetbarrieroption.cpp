@@ -33,9 +33,8 @@ namespace QuantLib {
     void TwoAssetBarrierOption::setupArguments(
                                        PricingEngine::arguments* args) const {
         Option::setupArguments(args);
-        TwoAssetBarrierOption::arguments* moreArgs =
-            dynamic_cast<TwoAssetBarrierOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<TwoAssetBarrierOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->barrierType = barrierType_;
         moreArgs->barrier = barrier_;
     }

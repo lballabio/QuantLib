@@ -127,10 +127,9 @@ namespace QuantLib {
       protected:
         CallableBond(Natural settlementDays,
                      const Schedule& schedule,
-                     const DayCounter& paymentDayCounter,
+                     DayCounter paymentDayCounter,
                      const Date& issueDate = Date(),
-                     const CallabilitySchedule& putCallSchedule
-                                                     = CallabilitySchedule());
+                     CallabilitySchedule putCallSchedule = CallabilitySchedule());
 
         DayCounter paymentDayCounter_;
         Frequency frequency_;
@@ -170,7 +169,7 @@ namespace QuantLib {
 
     class CallableBond::arguments : public Bond::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         std::vector<Date> couponDates;
         std::vector<Real> couponAmounts;
         //! redemption = face amount * redemption / 100.

@@ -214,8 +214,8 @@ namespace QuantLib {
         explicit TabulatedGaussLegendre(Size n = 20) { order(n); }
         template <class F>
         Real operator() (const F& f) const {
-            QL_ASSERT(w_!=0, "Null weights" );
-            QL_ASSERT(x_!=0, "Null abscissas");
+            QL_ASSERT(w_ != nullptr, "Null weights");
+            QL_ASSERT(x_ != nullptr, "Null abscissas");
             Size startIdx;
             Real val;
 

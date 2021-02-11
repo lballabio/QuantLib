@@ -20,10 +20,11 @@
 #ifndef quantlib_mc_forward_european_heston_engine_hpp
 #define quantlib_mc_forward_european_heston_engine_hpp
 
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/forward/mcforwardvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -87,7 +88,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCForwardEuropeanHestonEngine {
       public:
-        explicit MakeMCForwardEuropeanHestonEngine(const ext::shared_ptr<P>& process);
+        explicit MakeMCForwardEuropeanHestonEngine(ext::shared_ptr<P> process);
         // named parameters
         MakeMCForwardEuropeanHestonEngine& withSteps(Size steps);
         MakeMCForwardEuropeanHestonEngine& withStepsPerYear(Size steps);
@@ -216,11 +217,11 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>::MakeMCForwardEuropeanHestonEngine(
-             const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), controlVariate_(false), steps_(Null<Size>()),
-      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCForwardEuropeanHestonEngine<RNG, S, P>::MakeMCForwardEuropeanHestonEngine(
+        ext::shared_ptr<P> process)
+    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>&

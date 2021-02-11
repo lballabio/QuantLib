@@ -227,7 +227,7 @@ void OperatorTest::testBSMOperatorConsistency() {
 
 
 test_suite* OperatorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Operator tests");
+    auto* suite = BOOST_TEST_SUITE("Operator tests");
     suite->add(QUANTLIB_TEST_CASE(&OperatorTest::testTridiagonal));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&OperatorTest::testConsistency));

@@ -29,7 +29,7 @@ namespace QuantLib {
       public:
         TriggeredSwapExercise(const std::vector<Time>& rateTimes,
                               const std::vector<Time>& exerciseTimes,
-                              const std::vector<Rate>& strikes);
+                              std::vector<Rate> strikes);
 
         // NodeDataProvider interface
         Size numberOfExercises() const override;

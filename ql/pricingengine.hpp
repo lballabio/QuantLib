@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
-        ~PricingEngine() override {}
+        ~PricingEngine() override = default;
         virtual arguments* getArguments() const = 0;
         virtual const results* getResults() const = 0;
         virtual void reset() = 0;
@@ -44,13 +44,13 @@ namespace QuantLib {
 
     class PricingEngine::arguments {
       public:
-        virtual ~arguments() {}
+        virtual ~arguments() = default;
         virtual void validate() const = 0;
     };
 
     class PricingEngine::results {
       public:
-        virtual ~results() {}
+        virtual ~results() = default;
         virtual void reset() = 0;
     };
 

@@ -19,33 +19,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/vanillaswap.hpp>
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    VanillaSwap::VanillaSwap(
-                     Type type,
-                     Real nominal,
-                     const Schedule& fixedSchedule,
-                     Rate fixedRate,
-                     const DayCounter& fixedDayCount,
-                     const Schedule& floatSchedule,
-                     const ext::shared_ptr<IborIndex>& iborIndex,
-                     Spread spread,
-                     const DayCounter& floatingDayCount,
-                     boost::optional<BusinessDayConvention> paymentConvention)
-    : Swap(2), type_(type), nominal_(nominal),
-      fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
-      fixedDayCount_(fixedDayCount),
-      floatingSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread),
-      floatingDayCount_(floatingDayCount) {
+    VanillaSwap::VanillaSwap(Type type,
+                             Real nominal,
+                             Schedule fixedSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDayCount,
+                             Schedule floatSchedule,
+                             ext::shared_ptr<IborIndex> iborIndex,
+                             Spread spread,
+                             DayCounter floatingDayCount,
+                             boost::optional<BusinessDayConvention> paymentConvention)
+    : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
+      floatingSchedule_(std::move(floatSchedule)), iborIndex_(std::move(iborIndex)),
+      spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
 
         if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
@@ -83,10 +82,9 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        VanillaSwap::arguments* arguments =
-            dynamic_cast<VanillaSwap::arguments*>(args);
+        auto* arguments = dynamic_cast<VanillaSwap::arguments*>(args);
 
-        if (arguments == 0) // it's a swap engine...
+        if (arguments == nullptr) // it's a swap engine...
             return;
 
         arguments->type = type_;
@@ -183,9 +181,8 @@ namespace QuantLib {
 
         Swap::fetchResults(r);
 
-        const VanillaSwap::results* results =
-            dynamic_cast<const VanillaSwap::results*>(r);
-        if (results != 0) { // might be a swap engine, so no error is thrown
+        const auto* results = dynamic_cast<const VanillaSwap::results*>(r);
+        if (results != nullptr) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;
         } else {

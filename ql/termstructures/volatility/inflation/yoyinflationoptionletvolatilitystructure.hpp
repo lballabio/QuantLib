@@ -52,7 +52,7 @@ namespace QuantLib {
                                       VolatilityType volType = ShiftedLognormal,
                                       Real displacement = 0.0);
 
-        ~YoYOptionletVolatilitySurface() override {}
+        ~YoYOptionletVolatilitySurface() override = default;
 
         //! \name Volatility (only)
         //@{
@@ -171,12 +171,12 @@ namespace QuantLib {
                                        Real displacement = 0.0);
 
         // costructor taking a quote
-        ConstantYoYOptionletVolatility(const Handle<Quote>& v,
+        ConstantYoYOptionletVolatility(Handle<Quote> v,
                                        Natural settlementDays,
                                        const Calendar&,
                                        BusinessDayConvention bdc,
                                        const DayCounter& dc,
-                                       const Period &observationLag,
+                                       const Period& observationLag,
                                        Frequency frequency,
                                        bool indexIsInterpolated,
                                        Rate minStrike = -1.0,  // -100%

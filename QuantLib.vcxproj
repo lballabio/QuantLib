@@ -1255,6 +1255,7 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdminnervaluecalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmmesherintegral.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmquantohelper.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmshoutloginnervaluecalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\gbsmrndcalculator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.hpp" />
@@ -1566,6 +1567,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\discretizedvanillaoption.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdbatesvanillaengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesshoutengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdcevvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdconditions.hpp" />
@@ -2367,6 +2369,7 @@
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdminnervaluecalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmmesherintegral.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmquantohelper.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\utilities\fdmshoutloginnervaluecalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmtimedepdirichletboundary.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\gbsmrndcalculator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.cpp" />
@@ -2585,6 +2588,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\discretizedvanillaoption.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\exponentialfittinghestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdbatesvanillaengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\fdblackscholesshoutengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdblackscholesvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdcevvanillaengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.cpp" />

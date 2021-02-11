@@ -18,21 +18,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/callablebonds/callablebond.hpp>
-#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
+#include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     CallableBond::CallableBond(Natural settlementDays,
                                const Schedule& schedule,
-                               const DayCounter& paymentDayCounter,
+                               DayCounter paymentDayCounter,
                                const Date& issueDate,
-                               const CallabilitySchedule& putCallSchedule)
+                               CallabilitySchedule putCallSchedule)
     : Bond(settlementDays, schedule.calendar(), issueDate),
-      paymentDayCounter_(paymentDayCounter), putCallSchedule_(putCallSchedule) {
+      paymentDayCounter_(std::move(paymentDayCounter)),
+      putCallSchedule_(std::move(putCallSchedule)) {
 
         maturityDate_ = schedule.dates().back();
 
@@ -228,8 +230,7 @@ namespace QuantLib {
 
    Real CallableBond::NPVSpreadHelper::operator()(Real x) const
    {
-       CallableBond::arguments* args=
-           dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
+       auto* args = dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
        // Pops the original value when function finishes
        RestoreVal<Spread> restorer(args->spread);
        args->spread=x;
@@ -419,7 +420,7 @@ namespace QuantLib {
             if (!cashflows_[i]->hasOccurred(settlement,IncludeToday)) {
                 ext::shared_ptr<Coupon> coupon =
                     ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon != 0)
+                if (coupon != nullptr)
                     // !!!
                     return coupon->accruedAmount(settlement) /
                            notional(settlement) * 100.0;
@@ -436,10 +437,9 @@ namespace QuantLib {
 
         CallableBond::setupArguments(args);
 
-        CallableBond::arguments* arguments =
-            dynamic_cast<CallableBond::arguments*>(args);
+        auto* arguments = dynamic_cast<CallableBond::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "no arguments given");
+        QL_REQUIRE(arguments != nullptr, "no arguments given");
 
         Date settlement = arguments->settlementDate;
 

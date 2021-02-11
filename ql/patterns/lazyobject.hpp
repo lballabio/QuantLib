@@ -34,7 +34,7 @@ namespace QuantLib {
                        public virtual Observer {
       public:
         LazyObject();
-        ~LazyObject() override {}
+        ~LazyObject() override = default;
         //! \name Observer interface
         //@{
         void update() override;
@@ -106,14 +106,13 @@ namespace QuantLib {
         */
         virtual void performCalculations() const = 0;
         //@}
-        mutable bool calculated_, frozen_, alwaysForward_;
+        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = false;
     };
 
 
     // inline definitions
 
-    inline LazyObject::LazyObject()
-    : calculated_(false), frozen_(false), alwaysForward_(false) {}
+    inline LazyObject::LazyObject() = default;
 
     inline void LazyObject::update() {
         // forwards notifications only the first time

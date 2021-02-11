@@ -157,8 +157,7 @@ namespace QuantLib {
         QL_REQUIRE(end > start, "end must be larger than start");
 
         std::vector<Real> points, betas;
-        for (std::vector<ext::tuple<Real, Real, bool> >::const_iterator
-                iter = cPoints.begin(); iter != cPoints.end(); ++iter) {
+        for (auto iter = cPoints.begin(); iter != cPoints.end(); ++iter) {
             points.push_back(ext::get<0>(*iter));
             betas.push_back(square<Real>()(ext::get<1>(*iter)*(end-start)));
         }

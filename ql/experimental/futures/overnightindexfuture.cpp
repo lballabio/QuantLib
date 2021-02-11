@@ -20,6 +20,7 @@
 
 #include <ql/experimental/futures/overnightindexfuture.hpp>
 #include <ql/indexes/indexmanager.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,7 +30,7 @@ namespace QuantLib {
         const Date& valueDate,
         const Date& maturityDate,
         const Handle<YieldTermStructure>& discountCurve,
-        const Handle<Quote>& convexityAdjustment,
+        Handle<Quote> convexityAdjustment,
         OvernightAveraging averagingMethod)
     : Forward(overnightIndex->dayCounter(),
               overnightIndex->fixingCalendar(),
@@ -39,7 +40,7 @@ namespace QuantLib {
               valueDate,
               maturityDate,
               discountCurve),
-      overnightIndex_(overnightIndex), convexityAdjustment_(convexityAdjustment),
+      overnightIndex_(overnightIndex), convexityAdjustment_(std::move(convexityAdjustment)),
       averagingMethod_(averagingMethod) {}
 
     Real OvernightIndexFuture::averagedSpotValue() const {

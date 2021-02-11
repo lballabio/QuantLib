@@ -79,23 +79,22 @@ namespace QuantLib {
         };
 
       public:
-        AbcdCalibration() {};
+        AbcdCalibration() = default;
+        ;
         AbcdCalibration(
-             const std::vector<Real>& t,
-             const std::vector<Real>& blackVols,
-             Real aGuess = -0.06,
-             Real bGuess =  0.17,
-             Real cGuess =  0.54,
-             Real dGuess =  0.17,
-             bool aIsFixed = false,
-             bool bIsFixed = false,
-             bool cIsFixed = false,
-             bool dIsFixed = false,
-             bool vegaWeighted = false,
-             const ext::shared_ptr<EndCriteria>& endCriteria
-                      = ext::shared_ptr<EndCriteria>(),
-             const ext::shared_ptr<OptimizationMethod>& method
-                      = ext::shared_ptr<OptimizationMethod>());
+            const std::vector<Real>& t,
+            const std::vector<Real>& blackVols,
+            Real aGuess = -0.06,
+            Real bGuess = 0.17,
+            Real cGuess = 0.54,
+            Real dGuess = 0.17,
+            bool aIsFixed = false,
+            bool bIsFixed = false,
+            bool cIsFixed = false,
+            bool dIsFixed = false,
+            bool vegaWeighted = false,
+            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>());
         //! adjustment factors needed to match Black vols
         std::vector<Real> k(const std::vector<Real>& t,
                             const std::vector<Real>& blackVols) const;

@@ -39,12 +39,12 @@ namespace QuantLib {
     class InterestRateIndex : public Index,
                               public Observer {
       public:
-        InterestRateIndex(const std::string& familyName,
+        InterestRateIndex(std::string familyName,
                           const Period& tenor,
                           Natural settlementDays,
-                          const Currency& currency,
-                          const Calendar& fixingCalendar,
-                          const DayCounter& dayCounter);
+                          Currency currency,
+                          Calendar fixingCalendar,
+                          DayCounter dayCounter);
         //! \name Index interface
         //@{
         std::string name() const override;

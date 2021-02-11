@@ -280,7 +280,7 @@ void BinaryOptionTest::testAssetOrNothingHaugValues() {
 }
 
 test_suite* BinaryOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Binary");
+    auto* suite = BOOST_TEST_SUITE("Binary");
     suite->add(QUANTLIB_TEST_CASE(&BinaryOptionTest::testCashOrNothingHaugValues));
     suite->add(QUANTLIB_TEST_CASE(&BinaryOptionTest::testAssetOrNothingHaugValues));
     return suite;

@@ -40,14 +40,14 @@ namespace QuantLib {
     /*! \todo add tests */
     class CashFlows {
       private:
-        CashFlows();
-        CashFlows(const CashFlows&);
+        CashFlows() = delete;
+        CashFlows(const CashFlows&) = delete;
 
         class IrrFinder {
           public:
             IrrFinder(const Leg& leg,
                       Real npv,
-                      const DayCounter& dayCounter,
+                      DayCounter dayCounter,
                       Compounding comp,
                       Frequency freq,
                       bool includeSettlementDateFlows,

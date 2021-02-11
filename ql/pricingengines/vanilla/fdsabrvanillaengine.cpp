@@ -20,38 +20,39 @@
 /*! \file fdsabrvanillaengine.hpp */
 
 #include <ql/exercise.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmcev1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmsabrop.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdiscountdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/vanilla/fdsabrvanillaengine.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/pricingengines/vanilla/fdsabrvanillaengine.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmcev1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
-#include <ql/methods/finitedifferences/operators/fdmsabrop.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdiscountdirichletboundary.hpp>
-
-#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdSabrVanillaEngine::FdSabrVanillaEngine(
-        Real f0, Real alpha, Real beta, Real nu, Real rho,
-        const Handle<YieldTermStructure>& rTS,
-        Size tGrid, Size fGrid, Size xGrid,
-        Size dampingSteps, Real scalingFactor, Real eps,
-        const FdmSchemeDesc& schemeDesc)
-    : f0_(f0), alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-      rTS_(rTS),
-      tGrid_(tGrid),
-      fGrid_(fGrid),
-      xGrid_(xGrid),
-      dampingSteps_(dampingSteps),
-      scalingFactor_(scalingFactor),
-      eps_(eps),
-      schemeDesc_(schemeDesc) {
+    FdSabrVanillaEngine::FdSabrVanillaEngine(Real f0,
+                                             Real alpha,
+                                             Real beta,
+                                             Real nu,
+                                             Real rho,
+                                             Handle<YieldTermStructure> rTS,
+                                             Size tGrid,
+                                             Size fGrid,
+                                             Size xGrid,
+                                             Size dampingSteps,
+                                             Real scalingFactor,
+                                             Real eps,
+                                             const FdmSchemeDesc& schemeDesc)
+    : f0_(f0), alpha_(alpha), beta_(beta), nu_(nu), rho_(rho), rTS_(std::move(rTS)), tGrid_(tGrid),
+      fGrid_(fGrid), xGrid_(xGrid), dampingSteps_(dampingSteps), scalingFactor_(scalingFactor),
+      eps_(eps), schemeDesc_(schemeDesc) {
 
         validateSabrParameters(alpha, 0.5, nu, rho);
 

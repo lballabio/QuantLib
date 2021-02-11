@@ -351,7 +351,7 @@ void GaussianQuadraturesTest::testGaussLaguerreCosinePolynomial() {
 }
 
 test_suite* GaussianQuadraturesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
+    auto* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testJacobi));
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testLaguerre));
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testHermite));
@@ -366,8 +366,7 @@ test_suite* GaussianQuadraturesTest::suite() {
 }
 
 test_suite* GaussianQuadraturesTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE(
-        "Gaussian quadratures experimental tests");
+    auto* suite = BOOST_TEST_SUITE("Gaussian quadratures experimental tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &GaussianQuadraturesTest::testNonCentralChiSquared));

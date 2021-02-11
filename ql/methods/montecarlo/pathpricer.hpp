@@ -42,7 +42,7 @@ namespace QuantLib {
         typedef PathType argument_type;
         typedef ValueType result_type;
 
-        virtual ~PathPricer() {}
+        virtual ~PathPricer() = default;
         virtual ValueType operator()(const PathType& path) const=0;
     };
 

@@ -633,9 +633,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
+    auto* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
 
-    #if !defined(QL_NO_UBLAS_SUPPORT)
+#if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(QUANTLIB_TEST_CASE(
                      &MarketModelSmmCapletHomoCalibrationTest::testFunction));
     suite->add(QUANTLIB_TEST_CASE(

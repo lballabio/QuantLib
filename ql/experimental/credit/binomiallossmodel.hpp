@@ -20,14 +20,15 @@
 #ifndef quantlib_binomial_loss_model_hpp
 #define quantlib_binomial_loss_model_hpp
 
-#include <ql/handle.hpp>
 #include <ql/experimental/credit/basket.hpp>
-#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
-#include <ql/math/functional.hpp>
+#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/functional.hpp>
+#include <ql/handle.hpp>
+#include <ql/math/functional.hpp>
 #include <algorithm>
 #include <numeric>
+#include <utility>
 
 namespace QuantLib {
 
@@ -62,17 +63,16 @@ namespace QuantLib {
     class BinomialLossModel : public DefaultLossModel {
     public:
         typedef typename LLM::copulaType copulaType;
-        explicit BinomialLossModel(
-            const ext::shared_ptr<LLM>& copula)
-        : copula_(copula) { }
-    private:
-      void resetModel() override {
-          /* say there are defaults and these havent settled... and this is
-          the engine to compute them.... is this the wrong place?:*/
-          attachAmount_ = basket_->remainingAttachmentAmount();
-          detachAmount_ = basket_->remainingDetachmentAmount();
+        explicit BinomialLossModel(ext::shared_ptr<LLM> copula) : copula_(std::move(copula)) {}
 
-          copula_->resetBasket(basket_.currentLink()); // forces interface
+      private:
+        void resetModel() override {
+            /* say there are defaults and these havent settled... and this is
+            the engine to compute them.... is this the wrong place?:*/
+            attachAmount_ = basket_->remainingAttachmentAmount();
+            detachAmount_ = basket_->remainingDetachmentAmount();
+
+            copula_->resetBasket(basket_.currentLink()); // forces interface
       }
 
     protected:

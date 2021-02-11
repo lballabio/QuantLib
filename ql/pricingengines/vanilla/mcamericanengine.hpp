@@ -82,7 +82,7 @@ namespace QuantLib {
 
     class AmericanPathPricer : public EarlyExercisePathPricer<Path>  {
       public:
-        AmericanPathPricer(const ext::shared_ptr<Payoff>& payoff,
+        AmericanPathPricer(ext::shared_ptr<Payoff> payoff,
                            Size polynomOrder,
                            LsmBasisSystem::PolynomType polynomType);
 
@@ -105,8 +105,7 @@ namespace QuantLib {
               class RNG_Calibration = RNG>
     class MakeMCAmericanEngine {
       public:
-        MakeMCAmericanEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+        MakeMCAmericanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCAmericanEngine& withSteps(Size steps);
         MakeMCAmericanEngine& withStepsPerYear(Size steps);
@@ -250,30 +249,27 @@ namespace QuantLib {
                    "engine does not provide "
                    "control variation pricing engine");
 
-        VanillaOption::arguments* controlArguments =
-            dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
+        auto* controlArguments = dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
         *controlArguments = this->arguments_;
         controlArguments->exercise = ext::shared_ptr<Exercise>(
              new EuropeanExercise(this->arguments_.exercise->lastDate()));
 
         controlPE->calculate();
 
-        const VanillaOption::results* controlResults =
-            dynamic_cast<const VanillaOption::results*>(
-                                                     controlPE->getResults());
+        const auto* controlResults =
+            dynamic_cast<const VanillaOption::results*>(controlPE->getResults());
 
         return controlResults->value;
     }
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration>::MakeMCAmericanEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> &process)
-        : process_(process), antithetic_(false), controlVariate_(false),
-          steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-          samples_(Null<Size>()), maxSamples_(Null<Size>()),
-          calibrationSamples_(2048), tolerance_(Null<Real>()), seed_(0),
-          polynomOrder_(2), polynomType_(LsmBasisSystem::Monomial),
-          antitheticCalibration_(boost::none), seedCalibration_(Null<Size>()) {}
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), calibrationSamples_(2048), tolerance_(Null<Real>()), seed_(0),
+      polynomOrder_(2), polynomType_(LsmBasisSystem::Monomial), antitheticCalibration_(boost::none),
+      seedCalibration_(Null<Size>()) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &

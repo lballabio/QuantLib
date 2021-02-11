@@ -93,19 +93,18 @@ namespace QuantLib {
         */
         DefaultEvent(const Date& creditEventDate,
                      const DefaultType& atomicEvType,
-                     const Currency& curr,
+                     Currency curr,
                      Seniority bondsSen,
                      // Settlement information:
                      const Date& settleDate = Null<Date>(),
-                     const std::map<Seniority, Real>& recoveryRates =
-                                                                  rate_map());
+                     const std::map<Seniority, Real>& recoveryRates = rate_map());
         /*! Use NoSeniority to settle to all seniorities with that
             recovery. In that case the event is assumed to have
             affected all seniorities.
         */
         DefaultEvent(const Date& creditEventDate,
                      const DefaultType& atomicEvType,
-                     const Currency& curr,
+                     Currency curr,
                      Seniority bondsSen,
                      // Settlement information:
                      const Date& settleDate = Null<Date>(),

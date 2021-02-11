@@ -24,6 +24,7 @@
 #include <ql/pricingengines/vanilla/analyticbsmhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -62,13 +63,11 @@ namespace QuantLib {
     }
 
     AnalyticBSMHullWhiteEngine::AnalyticBSMHullWhiteEngine(
-             Real equityShortRateCorrelation,
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const ext::shared_ptr<HullWhite> & model)
-    : GenericModelEngine<HullWhite,
-                         VanillaOption::arguments,
-                         VanillaOption::results>(model),
-      rho_(equityShortRateCorrelation), process_(process) {
+        Real equityShortRateCorrelation,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        const ext::shared_ptr<HullWhite>& model)
+    : GenericModelEngine<HullWhite, VanillaOption::arguments, VanillaOption::results>(model),
+      rho_(equityShortRateCorrelation), process_(std::move(process)) {
         registerWith(process_);
     }
 

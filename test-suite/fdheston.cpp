@@ -1005,7 +1005,7 @@ void FdHestonTest::testSpuriousOscillations() {
 }
 
 test_suite* FdHestonTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
 
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonVarianceMesher));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));

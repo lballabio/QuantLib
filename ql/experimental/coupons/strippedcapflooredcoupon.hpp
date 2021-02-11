@@ -67,7 +67,7 @@ namespace QuantLib {
 
     class StrippedCappedFlooredCouponLeg {
       public:
-        explicit StrippedCappedFlooredCouponLeg(const Leg &underlyingLeg);
+        explicit StrippedCappedFlooredCouponLeg(Leg underlyingLeg);
         operator Leg() const;
       private:
         Leg underlyingLeg_;

@@ -54,7 +54,7 @@ namespace QuantLib {
                            Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
-                           const DayCounter& dayCounter = DayCounter(),
+                           DayCounter dayCounter = DayCounter(),
                            bool isInArrears = false,
                            const Date& exCouponDate = Date());
 
@@ -143,9 +143,8 @@ namespace QuantLib {
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<FloatingRateCoupon>* v1 =
-            dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Coupon::accept(v);

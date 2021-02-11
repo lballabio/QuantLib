@@ -17,41 +17,39 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmultistrikemesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdHestonHullWhiteVanillaEngine::FdHestonHullWhiteVanillaEngine(
-            const ext::shared_ptr<HestonModel>& hestonModel,
-            const ext::shared_ptr<HullWhiteProcess>& hwProcess,
-            Real corrEquityShortRate,
-            Size tGrid, Size xGrid, 
-            Size vGrid, Size rGrid,
-            Size dampingSteps,
-            bool controlVariate,
-            const FdmSchemeDesc& schemeDesc)
+        const ext::shared_ptr<HestonModel>& hestonModel,
+        ext::shared_ptr<HullWhiteProcess> hwProcess,
+        Real corrEquityShortRate,
+        Size tGrid,
+        Size xGrid,
+        Size vGrid,
+        Size rGrid,
+        Size dampingSteps,
+        bool controlVariate,
+        const FdmSchemeDesc& schemeDesc)
     : GenericModelEngine<HestonModel,
                          DividendVanillaOption::arguments,
                          DividendVanillaOption::results>(hestonModel),
-      hwProcess_(hwProcess),
-      corrEquityShortRate_(corrEquityShortRate),
-      tGrid_(tGrid), xGrid_(xGrid), 
-      vGrid_(vGrid), rGrid_(rGrid),
-      dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc),
-      controlVariate_(controlVariate) {
-    }
+      hwProcess_(std::move(hwProcess)), corrEquityShortRate_(corrEquityShortRate), tGrid_(tGrid),
+      xGrid_(xGrid), vGrid_(vGrid), rGrid_(rGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), controlVariate_(controlVariate) {}
 
     void FdHestonHullWhiteVanillaEngine::calculate() const {
   
@@ -68,7 +66,7 @@ namespace QuantLib {
                     ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                           cachedArgs2results_[i].first.payoff);
 
-                if ((p1 != 0) && p1->strike() == p2->strike() &&
+                if ((p1 != nullptr) && p1->strike() == p2->strike() &&
                     p1->optionType() == p2->optionType()) {
                     QL_REQUIRE(arguments_.cashFlow.empty(),
                                "multiple strikes engine does "

@@ -25,6 +25,7 @@
 #define quantlib_implied_vol_term_structure_hpp
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -41,8 +42,7 @@ namespace QuantLib {
     */
     class ImpliedVolTermStructure : public BlackVarianceTermStructure {
       public:
-        ImpliedVolTermStructure(const Handle<BlackVolTermStructure>& origTS,
-                                const Date& referenceDate);
+        ImpliedVolTermStructure(Handle<BlackVolTermStructure> origTS, const Date& referenceDate);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const override { return originalTS_->dayCounter(); }
@@ -68,9 +68,8 @@ namespace QuantLib {
     // inline definitions
 
     inline ImpliedVolTermStructure::ImpliedVolTermStructure(
-                              const Handle<BlackVolTermStructure>& originalTS,
-                              const Date& referenceDate)
-    : BlackVarianceTermStructure(referenceDate), originalTS_(originalTS) {
+        Handle<BlackVolTermStructure> originalTS, const Date& referenceDate)
+    : BlackVarianceTermStructure(referenceDate), originalTS_(std::move(originalTS)) {
         registerWith(originalTS_);
     }
 
@@ -87,9 +86,8 @@ namespace QuantLib {
     }
 
     inline void ImpliedVolTermStructure::accept(AcyclicVisitor& v) {
-        Visitor<ImpliedVolTermStructure>* v1 =
-            dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVarianceTermStructure::accept(v);

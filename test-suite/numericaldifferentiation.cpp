@@ -318,7 +318,7 @@ void NumericalDifferentiationTest::testCoefficientBasedOnVandermonde() {
 
 
 test_suite* NumericalDifferentiationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("NumericalDifferentiation tests");
+    auto* suite = BOOST_TEST_SUITE("NumericalDifferentiation tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &NumericalDifferentiationTest::testTabulatedCentralScheme));

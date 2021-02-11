@@ -42,10 +42,9 @@ namespace QuantLib {
     */
     class KirkEngine : public BasketOption::engine {
       public:
-        KirkEngine(
-            const ext::shared_ptr<BlackProcess>& process1,
-            const ext::shared_ptr<BlackProcess>& process2,
-            Real correlation);
+        KirkEngine(ext::shared_ptr<BlackProcess> process1,
+                   ext::shared_ptr<BlackProcess> process2,
+                   Real correlation);
         void calculate() const override;
 
       private:

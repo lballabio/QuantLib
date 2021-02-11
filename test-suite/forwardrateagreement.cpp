@@ -96,7 +96,7 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 }
 
 test_suite* ForwardRateAgreementTest::suite() {
-        test_suite* suite = BOOST_TEST_SUITE("forward rate agreement");
-        suite->add(QUANTLIB_TEST_CASE(&ForwardRateAgreementTest::testConstructionWithoutACurve));
-        return suite;
+    auto* suite = BOOST_TEST_SUITE("forward rate agreement");
+    suite->add(QUANTLIB_TEST_CASE(&ForwardRateAgreementTest::testConstructionWithoutACurve));
+    return suite;
 }

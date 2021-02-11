@@ -37,10 +37,10 @@ namespace QuantLib {
     struct EnergyDailyPosition {
         Date date;
         Real quantityAmount;
-        Real payLegPrice;
-        Real receiveLegPrice;
+        Real payLegPrice = 0;
+        Real receiveLegPrice = 0;
         Real riskDelta;
-        bool unrealized;
+        bool unrealized = false;
 
         EnergyDailyPosition();
         EnergyDailyPosition(const Date& date,
@@ -86,9 +86,8 @@ namespace QuantLib {
                                QuarterlySettlement,
                                YearlySettlement };
 
-        EnergyCommodity(
-                    const CommodityType& commodityType,
-                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
+        EnergyCommodity(CommodityType commodityType,
+                        const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
 
         virtual Quantity quantity() const = 0;
         const CommodityType& commodityType() const;

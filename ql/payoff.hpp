@@ -38,7 +38,7 @@ namespace QuantLib {
         typedef Real argument_type;
         typedef Real result_type;
 
-        virtual ~Payoff() {}
+        virtual ~Payoff() = default;
         //! \name Payoff interface
         //@{
         /*! \warning This method is used for output and comparison between
@@ -59,8 +59,8 @@ namespace QuantLib {
     // inline definitions
 
     inline void Payoff::accept(AcyclicVisitor& v) {
-        Visitor<Payoff>* v1 = dynamic_cast<Visitor<Payoff>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<Payoff>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             QL_FAIL("not a payoff visitor");

@@ -38,7 +38,7 @@ namespace QuantLib {
     class SpreadedOptionletVolatility : public OptionletVolatilityStructure {
       public:
         SpreadedOptionletVolatility(const Handle<OptionletVolatilityStructure>&,
-                                    const Handle<Quote>& spread);
+                                    Handle<Quote> spread);
         // All virtual methods of base classes must be forwarded
         //! \name VolatilityTermStructure interface
         //@{

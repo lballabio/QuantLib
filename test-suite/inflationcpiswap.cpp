@@ -326,7 +326,7 @@ void CPISwapTest::consistency() {
 
         ext::shared_ptr<CPICoupon>
         zic = ext::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
-        if (zic != 0) {
+        if (zic != nullptr) {
             if (zic->fixingDate() < (common.evaluationDate - Period(1,Months))) {
                 fixedIndex->addFixing(zic->fixingDate(), cpiFix[i],true);
             }
@@ -354,7 +354,7 @@ void CPISwapTest::consistency() {
 
         ext::shared_ptr<CPICoupon>
             zicV = ext::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
-        if (zicV != 0) {
+        if (zicV != nullptr) {
             Real diff = fabs( zicV->rate() - (fixedRate*(zicV->indexFixing()/baseCPI)) );
             QL_REQUIRE(diff<1e-8,"failed "<<i<<"th coupon reconstruction as "
                        << (fixedRate*(zicV->indexFixing()/baseCPI)) << " vs rate = "
@@ -505,7 +505,7 @@ void CPISwapTest::cpibondconsistency() {
 
         ext::shared_ptr<CPICoupon>
         zic = ext::dynamic_pointer_cast<CPICoupon>(zisV.cpiLeg()[i]);
-        if (zic != 0) {
+        if (zic != nullptr) {
             if (zic->fixingDate() < (common.evaluationDate - Period(1,Months))) {
                 fixedIndex->addFixing(zic->fixingDate(), cpiFix[i],true);
             }
@@ -543,7 +543,7 @@ void CPISwapTest::cpibondconsistency() {
 
 
 test_suite* CPISwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CPISwap tests");
+    auto* suite = BOOST_TEST_SUITE("CPISwap tests");
 
     suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::consistency));
     suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::zciisconsistency));

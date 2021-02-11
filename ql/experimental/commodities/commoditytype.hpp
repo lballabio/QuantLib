@@ -26,9 +26,10 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/shared_ptr.hpp>
-#include <map>
 #include <iosfwd>
+#include <map>
 #include <string>
+#include <utility>
 
 namespace QuantLib {
 
@@ -41,7 +42,7 @@ namespace QuantLib {
           and must be reassigned to a valid currency before being
           used.
         */
-        CommodityType() {}
+        CommodityType() = default;
         CommodityType(const std::string& code, const std::string& name);
         //! \name Inspectors
         //@{
@@ -64,9 +65,8 @@ namespace QuantLib {
         struct Data {
             std::string name, code;
 
-            Data(const std::string& name,
-                 const std::string& code)
-            : name(name), code(code) {}
+            Data(std::string name, std::string code)
+            : name(std::move(name)), code(std::move(code)) {}
         };
 
         static std::map<std::string, ext::shared_ptr<Data> > commodityTypes_;

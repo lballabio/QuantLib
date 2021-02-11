@@ -25,11 +25,12 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helper_h
 #define quantlib_interest_rate_modelling_calibration_helper_h
 
-#include <ql/quote.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/volatility/volatilitytype.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/quote.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <list>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,7 +39,7 @@ namespace QuantLib {
     //! abstract base class for calibration helpers
     class CalibrationHelper {
       public:
-        virtual ~CalibrationHelper() {}
+        virtual ~CalibrationHelper() = default;
         //! returns the error resulting from the model valuation
         virtual Real calibrationError() = 0;
     };
@@ -54,13 +55,11 @@ namespace QuantLib {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
-        BlackCalibrationHelper(const Handle<Quote>& volatility,
-                               CalibrationErrorType calibrationErrorType
-                                                         = RelativePriceError,
+        BlackCalibrationHelper(Handle<Quote> volatility,
+                               CalibrationErrorType calibrationErrorType = RelativePriceError,
                                const VolatilityType type = ShiftedLognormal,
                                const Real shift = 0.0)
-        : volatility_(volatility),
-          volatilityType_(type), shift_(shift),
+        : volatility_(std::move(volatility)), volatilityType_(type), shift_(shift),
           calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
         }
@@ -71,15 +70,13 @@ namespace QuantLib {
                         Deprecated in version 1.19.
         */
         QL_DEPRECATED
-        BlackCalibrationHelper(const Handle<Quote>& volatility,
-                               const Handle<YieldTermStructure>& termStructure,
-                               CalibrationErrorType calibrationErrorType
-                                                         = RelativePriceError,
+        BlackCalibrationHelper(Handle<Quote> volatility,
+                               Handle<YieldTermStructure> termStructure,
+                               CalibrationErrorType calibrationErrorType = RelativePriceError,
                                const VolatilityType type = ShiftedLognormal,
                                const Real shift = 0.0)
-        : volatility_(volatility), termStructure_(termStructure),
-          volatilityType_(type), shift_(shift),
-          calibrationErrorType_(calibrationErrorType) {
+        : volatility_(std::move(volatility)), termStructure_(std::move(termStructure)),
+          volatilityType_(type), shift_(shift), calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
             registerWith(termStructure_);
         }

@@ -471,7 +471,7 @@ void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
 }
 
 test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
+    auto* suite = BOOST_TEST_SUITE("Short-rate model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));

@@ -18,21 +18,20 @@
  */
 
 #include <ql/cashflows/cpicouponpricer.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CPICouponPricer::CPICouponPricer() {}
+    CPICouponPricer::CPICouponPricer() = default;
 
-    CPICouponPricer::CPICouponPricer(
-                       const Handle<YieldTermStructure>& nominalTermStructure)
-    : nominalTermStructure_(nominalTermStructure) {
+    CPICouponPricer::CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure)
+    : nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(nominalTermStructure_);
     }
 
-    CPICouponPricer::CPICouponPricer(
-                       const Handle<CPIVolatilitySurface>& capletVol,
-                       const Handle<YieldTermStructure>& nominalTermStructure)
-    : capletVol_(capletVol), nominalTermStructure_(nominalTermStructure) {
+    CPICouponPricer::CPICouponPricer(Handle<CPIVolatilitySurface> capletVol,
+                                     Handle<YieldTermStructure> nominalTermStructure)
+    : capletVol_(std::move(capletVol)), nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(capletVol_);
         registerWith(nominalTermStructure_);
     }

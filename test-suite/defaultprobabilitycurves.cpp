@@ -20,27 +20,28 @@
 
 #include "defaultprobabilitycurves.hpp"
 #include "utilities.hpp"
-#include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
+#include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/loginterpolation.hpp>
+#include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/credit/piecewisedefaultcurve.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
-#include <ql/instruments/creditdefaultswap.hpp>
-#include <ql/pricingengines/credit/midpointcdsengine.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <ql/math/interpolations/loginterpolation.hpp>
-#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <boost/assign/list_of.hpp>
 #include <iomanip>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
-#include <boost/assign/list_of.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -334,7 +335,7 @@ namespace {
     // Used to check that the exception message contains the expected message string, expMsg.
     struct ExpErrorPred {
 
-        explicit ExpErrorPred(const string& msg) : expMsg(msg) {}
+        explicit ExpErrorPred(string msg) : expMsg(std::move(msg)) {}
 
         bool operator()(const Error& ex) const {
             string errMsg(ex.what());
@@ -559,7 +560,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
 
 
 test_suite* DefaultProbabilityCurveTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Default-probability curve tests");
+    auto* suite = BOOST_TEST_SUITE("Default-probability curve tests");
     suite->add(QUANTLIB_TEST_CASE(
                        &DefaultProbabilityCurveTest::testDefaultProbability));
     suite->add(QUANTLIB_TEST_CASE(

@@ -139,7 +139,7 @@ namespace QuantLib {
         //! access to the unique instance
         static T& instance();
       protected:
-        Singleton() {}
+        Singleton() = default;
     };
 
     // static member definitions

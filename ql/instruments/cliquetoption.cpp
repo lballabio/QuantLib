@@ -17,25 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/cliquetoption.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/cliquetoption.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CliquetOption::CliquetOption(
-                   const ext::shared_ptr<PercentageStrikePayoff>& payoff,
-                   const ext::shared_ptr<EuropeanExercise>& maturity,
-                   const std::vector<Date>& resetDates)
-    : OneAssetOption(payoff,maturity),
-      resetDates_(resetDates) {}
+    CliquetOption::CliquetOption(const ext::shared_ptr<PercentageStrikePayoff>& payoff,
+                                 const ext::shared_ptr<EuropeanExercise>& maturity,
+                                 std::vector<Date> resetDates)
+    : OneAssetOption(payoff, maturity), resetDates_(std::move(resetDates)) {}
 
     void CliquetOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
         // set accrued coupon, last fixing, caps, floors
-        CliquetOption::arguments* moreArgs =
-            dynamic_cast<CliquetOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0,
-                   "wrong engine type");
+        auto* moreArgs = dynamic_cast<CliquetOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong engine type");
         moreArgs->resetDates = resetDates_;
     }
 

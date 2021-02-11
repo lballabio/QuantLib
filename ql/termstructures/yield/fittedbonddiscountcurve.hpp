@@ -86,28 +86,26 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! reference date based on current evaluation date
-        FittedBondDiscountCurve(
-                 Natural settlementDays,
-                 const Calendar& calendar,
-                 const std::vector<ext::shared_ptr<BondHelper> >& bonds,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy = 1.0e-10,
-                 Size maxEvaluations = 10000,
-                 const Array& guess = Array(),
-                 Real simplexLambda = 1.0,
-                 Size maxStationaryStateIterations = 100);
+        FittedBondDiscountCurve(Natural settlementDays,
+                                const Calendar& calendar,
+                                std::vector<ext::shared_ptr<BondHelper> > bonds,
+                                const DayCounter& dayCounter,
+                                const FittingMethod& fittingMethod,
+                                Real accuracy = 1.0e-10,
+                                Size maxEvaluations = 10000,
+                                Array guess = Array(),
+                                Real simplexLambda = 1.0,
+                                Size maxStationaryStateIterations = 100);
         //! curve reference date fixed for life of curve
-        FittedBondDiscountCurve(
-                 const Date &referenceDate,
-                 const std::vector<ext::shared_ptr<BondHelper> >& bonds,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy = 1.0e-10,
-                 Size maxEvaluations = 10000,
-                 const Array &guess = Array(),
-                 Real simplexLambda = 1.0,
-                 Size maxStationaryStateIterations = 100);
+        FittedBondDiscountCurve(const Date& referenceDate,
+                                std::vector<ext::shared_ptr<BondHelper> > bonds,
+                                const DayCounter& dayCounter,
+                                const FittingMethod& fittingMethod,
+                                Real accuracy = 1.0e-10,
+                                Size maxEvaluations = 10000,
+                                Array guess = Array(),
+                                Real simplexLambda = 1.0,
+                                Size maxStationaryStateIterations = 100);
         //@}
 
         //! \name Inspectors
@@ -185,7 +183,7 @@ namespace QuantLib {
         // internal class
         class FittingCost;
       public:
-        virtual ~FittingMethod() {}
+        virtual ~FittingMethod() = default;
         //! total number of coefficients to fit/solve for
         virtual Size size() const = 0;
         //! output array of results of optimization problem
@@ -216,9 +214,9 @@ namespace QuantLib {
         //! constructors
         FittingMethod(bool constrainAtZero = true,
                       const Array& weights = Array(),
-                      const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
+                      ext::shared_ptr<OptimizationMethod> optimizationMethod =
                           ext::shared_ptr<OptimizationMethod>(),
-                      const Array& l2 = Array(),
+                      Array l2 = Array(),
                       Real minCutoffTime = 0.0,
                       Real maxCutoffTime = QL_MAX_REAL);
         //! rerun every time instruments/referenceDate changes
@@ -255,7 +253,7 @@ namespace QuantLib {
         // final value for the minimized cost function
         Real costValue_;
         // error code returned by OptimizationMethod::minimize()
-        EndCriteria::Type errorCode_;
+        EndCriteria::Type errorCode_ = EndCriteria::None;
         // optimization method to be used, if none provided use Simplex
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
         // flat extrapolation of instantaneous forward before / after cutoff

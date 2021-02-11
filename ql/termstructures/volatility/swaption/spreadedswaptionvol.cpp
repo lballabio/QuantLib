@@ -18,21 +18,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
-#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
+#include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     SpreadedSwaptionVolatility::SpreadedSwaptionVolatility(
-                            const Handle<SwaptionVolatilityStructure>& baseVol,
-                            const Handle<Quote>& spread)
-    : SwaptionVolatilityStructure(baseVol->businessDayConvention(),
-                                  baseVol->dayCounter()),
-      baseVol_(baseVol), spread_(spread) {
-          enableExtrapolation(baseVol->allowsExtrapolation());
-          registerWith(baseVol_);
-          registerWith(spread_);
+        const Handle<SwaptionVolatilityStructure>& baseVol, Handle<Quote> spread)
+    : SwaptionVolatilityStructure(baseVol->businessDayConvention(), baseVol->dayCounter()),
+      baseVol_(baseVol), spread_(std::move(spread)) {
+        enableExtrapolation(baseVol->allowsExtrapolation());
+        registerWith(baseVol_);
+        registerWith(spread_);
     }
 
     ext::shared_ptr<SmileSection>

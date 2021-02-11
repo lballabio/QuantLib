@@ -17,29 +17,29 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
-#include <ql/models/marketmodels/discounter.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/discounter.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
+#include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace QuantLib {
 
-    PathwiseAccountingEngine::PathwiseAccountingEngine(const ext::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
+    PathwiseAccountingEngine::PathwiseAccountingEngine(
+        ext::shared_ptr<LogNormalFwdRateEuler> evolver, // method relies heavily on LMM Euler
         const Clone<MarketModelPathwiseMultiProduct>& product,
-        const ext::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
+        ext::shared_ptr<MarketModel> pseudoRootStructure, // we need pseudo-roots and displacements
         Real initialNumeraireValue)
-        : evolver_(evolver), product_(product),pseudoRootStructure_(pseudoRootStructure),
-        initialNumeraireValue_(initialNumeraireValue),
-        numberProducts_(product->numberOfProducts()),
-        doDeflation_(!product->alreadyDeflated()),
-        numerairesHeld_(product->numberOfProducts()),
-        numberCashFlowsThisStep_(product->numberOfProducts()),
-        cashFlowsGenerated_(product->numberOfProducts()) ,
-        deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates()+1)
-    {
+    : evolver_(std::move(evolver)), product_(product),
+      pseudoRootStructure_(std::move(pseudoRootStructure)),
+      initialNumeraireValue_(initialNumeraireValue), numberProducts_(product->numberOfProducts()),
+      doDeflation_(!product->alreadyDeflated()), numerairesHeld_(product->numberOfProducts()),
+      numberCashFlowsThisStep_(product->numberOfProducts()),
+      cashFlowsGenerated_(product->numberOfProducts()),
+      deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates() + 1) {
 
         numberRates_ = pseudoRootStructure_->numberOfRates();
         numberSteps_ = pseudoRootStructure_->numberOfSteps();
@@ -107,7 +107,8 @@ namespace QuantLib {
 
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
-            std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
+            auto it =
+                std::upper_bound(evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
             if (it != evolutionTimes.begin())
                 --it;
             Size index = it - evolutionTimes.begin();
@@ -323,24 +324,22 @@ namespace QuantLib {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     PathwiseVegasAccountingEngine::PathwiseVegasAccountingEngine(
-        const ext::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
+        ext::shared_ptr<LogNormalFwdRateEuler> evolver, // method relies heavily on LMM Euler
         const Clone<MarketModelPathwiseMultiProduct>& product,
-        const ext::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
+        ext::shared_ptr<MarketModel> pseudoRootStructure, // we need pseudo-roots and displacements
         const std::vector<std::vector<Matrix> >& vegaBumps,
         Real initialNumeraireValue)
-        : evolver_(evolver), product_(product),pseudoRootStructure_(pseudoRootStructure),
-        initialNumeraireValue_(initialNumeraireValue),
-        numberProducts_(product->numberOfProducts()),
-        doDeflation_(!product->alreadyDeflated()),
-        numerairesHeld_(product->numberOfProducts()),
-        numberCashFlowsThisStep_(product->numberOfProducts()),
-        cashFlowsGenerated_(product->numberOfProducts()),
-        stepsDiscounts_(pseudoRootStructure_->numberOfRates()+1),
-        vegasThisPath_(product->numberOfProducts(),vegaBumps[0].size()),
-        deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates()+1)
-    {
+    : evolver_(std::move(evolver)), product_(product),
+      pseudoRootStructure_(std::move(pseudoRootStructure)),
+      initialNumeraireValue_(initialNumeraireValue), numberProducts_(product->numberOfProducts()),
+      doDeflation_(!product->alreadyDeflated()), numerairesHeld_(product->numberOfProducts()),
+      numberCashFlowsThisStep_(product->numberOfProducts()),
+      cashFlowsGenerated_(product->numberOfProducts()),
+      stepsDiscounts_(pseudoRootStructure_->numberOfRates() + 1),
+      vegasThisPath_(product->numberOfProducts(), vegaBumps[0].size()),
+      deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates() + 1) {
 
         stepsDiscounts_[0]=1.0;
 
@@ -435,7 +434,8 @@ namespace QuantLib {
 
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
-            std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
+            auto it =
+                std::upper_bound(evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
             if (it != evolutionTimes.begin())
                 --it;
             Size index = it - evolutionTimes.begin();
@@ -713,27 +713,22 @@ namespace QuantLib {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     PathwiseVegasOuterAccountingEngine::PathwiseVegasOuterAccountingEngine(
-        const ext::shared_ptr<LogNormalFwdRateEuler>& evolver, // method relies heavily on LMM Euler
+        ext::shared_ptr<LogNormalFwdRateEuler> evolver, // method relies heavily on LMM Euler
         const Clone<MarketModelPathwiseMultiProduct>& product,
-        const ext::shared_ptr<MarketModel>& pseudoRootStructure, // we need pseudo-roots and displacements
+        ext::shared_ptr<MarketModel> pseudoRootStructure, // we need pseudo-roots and displacements
         const std::vector<std::vector<Matrix> >& vegaBumps,
         Real initialNumeraireValue)
-        : evolver_(evolver), 
-        product_(product),
-        pseudoRootStructure_(pseudoRootStructure),
-        vegaBumps_(vegaBumps),
-        initialNumeraireValue_(initialNumeraireValue),
-        numberProducts_(product->numberOfProducts()),
-        doDeflation_(!product->alreadyDeflated()),
-        numerairesHeld_(product->numberOfProducts()),
-        numberCashFlowsThisStep_(product->numberOfProducts()),
-        cashFlowsGenerated_(product->numberOfProducts()),
-        stepsDiscounts_(pseudoRootStructure_->numberOfRates()+1),
-        elementary_vegas_ThisPath_(product->numberOfProducts()),
-        deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates()+1)
-    {
+    : evolver_(std::move(evolver)), product_(product),
+      pseudoRootStructure_(std::move(pseudoRootStructure)), vegaBumps_(vegaBumps),
+      initialNumeraireValue_(initialNumeraireValue), numberProducts_(product->numberOfProducts()),
+      doDeflation_(!product->alreadyDeflated()), numerairesHeld_(product->numberOfProducts()),
+      numberCashFlowsThisStep_(product->numberOfProducts()),
+      cashFlowsGenerated_(product->numberOfProducts()),
+      stepsDiscounts_(pseudoRootStructure_->numberOfRates() + 1),
+      elementary_vegas_ThisPath_(product->numberOfProducts()),
+      deflatorAndDerivatives_(pseudoRootStructure_->numberOfRates() + 1) {
 
         stepsDiscounts_[0]=1.0;
 
@@ -833,7 +828,8 @@ namespace QuantLib {
 
         for (Size i=0; i < numberCashFlowTimes_; ++i)
         {
-            std::vector<Time>::const_iterator it = std::upper_bound( evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
+            auto it =
+                std::upper_bound(evolutionTimes.begin(), evolutionTimes.end(), cashFlowTimes[i]);
             if (it != evolutionTimes.begin())
                 --it;
             Size index = it - evolutionTimes.begin();

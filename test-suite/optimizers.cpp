@@ -551,7 +551,7 @@ void OptimizersTest::testDifferentialEvolution() {
 }
 
 test_suite* OptimizersTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
+    auto* suite = BOOST_TEST_SUITE("Optimizers tests");
 
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::test));
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::nestedOptimizationTest));

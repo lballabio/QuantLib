@@ -511,7 +511,7 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
 
 // --- Call the desired tests
 test_suite* MarketModelSmmTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("SMM Market-model tests");
+    auto* suite = BOOST_TEST_SUITE("SMM Market-model tests");
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(

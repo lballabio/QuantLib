@@ -17,23 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
+#include <ql/functional.hpp>
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
-#include <ql/functional.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    MethodOfLinesScheme::MethodOfLinesScheme(
-        const Real eps,
-        const Real relInitStepSize,
-        const ext::shared_ptr<FdmLinearOpComposite> & map,
-        const bc_set& bcSet)
-    : dt_(Null<Real>()),
-      eps_(eps),
-      relInitStepSize_(relInitStepSize),
-      map_(map),
-      bcSet_(bcSet) {
-    }
+    MethodOfLinesScheme::MethodOfLinesScheme(const Real eps,
+                                             const Real relInitStepSize,
+                                             ext::shared_ptr<FdmLinearOpComposite> map,
+                                             const bc_set& bcSet)
+    : dt_(Null<Real>()), eps_(eps), relInitStepSize_(relInitStepSize), map_(std::move(map)),
+      bcSet_(bcSet) {}
 
 
     Disposable<std::vector<Real> >

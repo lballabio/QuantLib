@@ -45,10 +45,12 @@ namespace QuantLib {
               long line,
               const std::string& functionName,
               const std::string& message = "");
+        #ifdef QL_PATCH_MSVC_2013
         /*! the automatically generated destructor would
             not have the throw specifier.
         */
         ~Error() throw() override {}
+        #endif
         //! returns the error message.
         const char* what() const throw() override;
 

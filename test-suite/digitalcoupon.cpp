@@ -1156,7 +1156,7 @@ void DigitalCouponTest::testReplicationType() {
 
 
 test_suite* DigitalCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Digital coupon tests");
+    auto* suite = BOOST_TEST_SUITE("Digital coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&DigitalCouponTest::testAssetOrNothing));
     suite->add(QUANTLIB_TEST_CASE(
                        &DigitalCouponTest::testAssetOrNothingDeepInTheMoney));

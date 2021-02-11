@@ -19,35 +19,34 @@
 */
 
 
-#include <ql/timegrid.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
+#include <ql/experimental/models/hestonslvfdmmodel.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
-#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
-#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
-#include <ql/experimental/models/hestonslvfdmmodel.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
-
-#include <boost/scoped_ptr.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
+#include <ql/timegrid.hpp>
 #include <boost/assign/std/vector.hpp>
-
+#include <boost/scoped_ptr.hpp>
 #include <functional>
+#include <utility>
 
 using namespace boost::assign;
 
@@ -209,7 +208,7 @@ namespace QuantLib {
 
         class FdmScheme {
           public:
-            virtual ~FdmScheme() {}
+            virtual ~FdmScheme() = default;
             virtual void step(Array& a, Time t) = 0;
             virtual void setStep(Time dt) = 0;
         };
@@ -263,21 +262,16 @@ namespace QuantLib {
         }
     }
 
-    HestonSLVFDMModel::HestonSLVFDMModel(
-        const Handle<LocalVolTermStructure>& localVol,
-        const Handle<HestonModel>& hestonModel,
-        const Date& endDate,
-        const HestonSLVFokkerPlanckFdmParams& params,
-        const bool logging,
-        const std::vector<Date>& mandatoryDates,
-        const Real mixingFactor)
-    : localVol_(localVol),
-      hestonModel_(hestonModel),
-      endDate_(endDate),
-      params_(params),
-      mandatoryDates_(mandatoryDates),
-      mixingFactor_(mixingFactor),
-      logging_(logging) {
+    HestonSLVFDMModel::HestonSLVFDMModel(Handle<LocalVolTermStructure> localVol,
+                                         Handle<HestonModel> hestonModel,
+                                         const Date& endDate,
+                                         HestonSLVFokkerPlanckFdmParams params,
+                                         const bool logging,
+                                         std::vector<Date> mandatoryDates,
+                                         const Real mixingFactor)
+    : localVol_(std::move(localVol)), hestonModel_(std::move(hestonModel)), endDate_(endDate),
+      params_(std::move(params)), mandatoryDates_(std::move(mandatoryDates)),
+      mixingFactor_(mixingFactor), logging_(logging) {
 
         registerWith(localVol_);
         registerWith(hestonModel_);

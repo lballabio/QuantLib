@@ -25,9 +25,10 @@
 #ifndef quantlib_fd_shout_condition_hpp
 #define quantlib_fd_shout_condition_hpp
 
-#include <ql/methods/finitedifferences/fdtypedefs.hpp>
 #include <ql/discretizedasset.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/methods/finitedifferences/fdtypedefs.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -77,7 +78,7 @@ namespace QuantLib {
 
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual Real getValue(const Array &a,
                                   int i) = 0;
         };
@@ -86,8 +87,7 @@ namespace QuantLib {
           private:
             Array intrinsicValues_;
           public:
-            explicit ArrayImpl(const Array &a)
-            : intrinsicValues_(a) {}
+            explicit ArrayImpl(Array a) : intrinsicValues_(std::move(a)) {}
 
             Real getValue(const Array&, int i) override { return intrinsicValues_[i]; }
         };

@@ -104,7 +104,7 @@ namespace QuantLib {
                                       overnightIndex_, overnightSpread_,
                                       paymentLag_, paymentAdjustment_,
                                       paymentCalendar_, telescopicValueDates_);
-            if (engine_ == 0) {
+            if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
@@ -129,7 +129,7 @@ namespace QuantLib {
                                  paymentCalendar_, telescopicValueDates_, 
                                  averagingMethod_));
 
-        if (engine_ == 0) {
+        if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                 overnightIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;

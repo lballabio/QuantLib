@@ -43,7 +43,7 @@ namespace QuantLib {
     //! Engine collecting cash flows along a market-model simulation
     class AccountingEngine {
       public:
-        AccountingEngine(const ext::shared_ptr<MarketModelEvolver>& evolver,
+        AccountingEngine(ext::shared_ptr<MarketModelEvolver> evolver,
                          const Clone<MarketModelMultiProduct>& product,
                          Real initialNumeraireValue);
         void multiplePathValues(SequenceStatisticsInc& stats,

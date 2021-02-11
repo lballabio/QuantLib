@@ -31,11 +31,11 @@ namespace QuantLib {
 
     class FdmArithmeticAverageCondition : public StepCondition<Array> {
       public:
-        FdmArithmeticAverageCondition(
-                                const std::vector<Time> & averageTimes,
-                                Real, Size pastFixings,
-                                const ext::shared_ptr<FdmMesher> & mesher,
-                                Size equityDirection);
+        FdmArithmeticAverageCondition(std::vector<Time> averageTimes,
+                                      Real,
+                                      Size pastFixings,
+                                      const ext::shared_ptr<FdmMesher>& mesher,
+                                      Size equityDirection);
 
         void applyTo(Array& a, Time t) const override;
 

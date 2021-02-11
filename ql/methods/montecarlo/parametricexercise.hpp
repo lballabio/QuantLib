@@ -28,7 +28,7 @@ namespace QuantLib {
 
     class ParametricExercise {
       public:
-        virtual ~ParametricExercise() {}
+        virtual ~ParametricExercise() = default;
         // possibly different for each exercise
         virtual std::vector<Size> numberOfVariables() const = 0;
         virtual std::vector<Size> numberOfParameters() const = 0;

@@ -88,27 +88,24 @@ namespace QuantLib {
     // inline definitions
 
     inline void SimpleCashFlow::accept(AcyclicVisitor& v) {
-        Visitor<SimpleCashFlow>* v1 =
-            dynamic_cast<Visitor<SimpleCashFlow>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<SimpleCashFlow>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             CashFlow::accept(v);
     }
 
     inline void Redemption::accept(AcyclicVisitor& v) {
-        Visitor<Redemption>* v1 =
-            dynamic_cast<Visitor<Redemption>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<Redemption>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             SimpleCashFlow::accept(v);
     }
 
     inline void AmortizingPayment::accept(AcyclicVisitor& v) {
-        Visitor<AmortizingPayment>* v1 =
-            dynamic_cast<Visitor<AmortizingPayment>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<AmortizingPayment>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             SimpleCashFlow::accept(v);

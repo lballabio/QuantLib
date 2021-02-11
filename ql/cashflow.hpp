@@ -37,7 +37,7 @@ namespace QuantLib {
     */
     class CashFlow : public Event {
       public:
-        ~CashFlow() override {}
+        ~CashFlow() override = default;
         //! \name Event interface
         //@{
         //! \note This is inherited from the event class

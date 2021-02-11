@@ -560,7 +560,7 @@ void SwaptionVolatilityCubeTest::testSabrParameters() {
 
 
 test_suite* SwaptionVolatilityCubeTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
+    auto* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
 
     // SwaptionVolCubeByLinear reproduces ATM vol with machine precision
     suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));

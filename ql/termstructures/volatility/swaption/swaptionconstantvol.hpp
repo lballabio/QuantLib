@@ -40,7 +40,7 @@ namespace QuantLib {
         ConstantSwaptionVolatility(Natural settlementDays,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
-                                   const Handle<Quote>& volatility,
+                                   Handle<Quote> volatility,
                                    const DayCounter& dc,
                                    VolatilityType type = ShiftedLognormal,
                                    Real shift = 0.0);
@@ -48,7 +48,7 @@ namespace QuantLib {
         ConstantSwaptionVolatility(const Date& referenceDate,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
-                                   const Handle<Quote>& volatility,
+                                   Handle<Quote> volatility,
                                    const DayCounter& dc,
                                    VolatilityType type = ShiftedLognormal,
                                    Real shift = 0.0);

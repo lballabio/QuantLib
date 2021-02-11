@@ -415,7 +415,7 @@ namespace QuantLib {
                     Real rebate = 0.0;
                     Real zSpreadDf = 1.0;
                     Date rebateDate = expiry0;
-                    if (rebatedExercise != NULL) {
+                    if (rebatedExercise != nullptr) {
                         rebate = rebatedExercise->rebate(idx);
                         rebateDate = rebatedExercise->rebatePaymentDate(idx);
                         zSpreadDf =

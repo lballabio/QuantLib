@@ -18,16 +18,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FlatHazardRate::FlatHazardRate(const Date& referenceDate,
-                                   const Handle<Quote>& hazardRate,
+                                   Handle<Quote> hazardRate,
                                    const DayCounter& dayCounter)
     : HazardRateStructure(referenceDate, Calendar(), dayCounter),
-      hazardRate_(hazardRate) {
+      hazardRate_(std::move(hazardRate)) {
         registerWith(hazardRate_);
     }
 
@@ -39,10 +40,10 @@ namespace QuantLib {
 
     FlatHazardRate::FlatHazardRate(Natural settlementDays,
                                    const Calendar& calendar,
-                                   const Handle<Quote>& hazardRate,
+                                   Handle<Quote> hazardRate,
                                    const DayCounter& dayCounter)
     : HazardRateStructure(settlementDays, calendar, dayCounter),
-      hazardRate_(hazardRate) {
+      hazardRate_(std::move(hazardRate)) {
         registerWith(hazardRate_);
     }
 

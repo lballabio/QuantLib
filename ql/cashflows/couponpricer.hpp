@@ -27,12 +27,13 @@
 #ifndef quantlib_coupon_pricer_hpp
 #define quantlib_coupon_pricer_hpp
 
-#include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
-#include <ql/indexes/iborindex.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/option.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -43,7 +44,7 @@ namespace QuantLib {
     class FloatingRateCouponPricer: public virtual Observer,
                                     public virtual Observable {
       public:
-        ~FloatingRateCouponPricer() override {}
+        ~FloatingRateCouponPricer() override = default;
         //! \name required interface
         //@{
         virtual Real swapletPrice() const = 0;
@@ -64,9 +65,8 @@ namespace QuantLib {
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
         explicit IborCouponPricer(
-            const Handle<OptionletVolatilityStructure>& v =
-                                       Handle<OptionletVolatilityStructure>())
-        : capletVol_(v) {
+            Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>())
+        : capletVol_(std::move(v)) {
             registerWith(capletVol_);
         }
 
@@ -96,9 +96,9 @@ namespace QuantLib {
         BlackIborCouponPricer(
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
-            const Handle<Quote>& correlation =
-                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))))
-        : IborCouponPricer(v), timingAdjustment_(timingAdjustment), correlation_(correlation) {
+            Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))))
+        : IborCouponPricer(v), timingAdjustment_(timingAdjustment),
+          correlation_(std::move(correlation)) {
             { // this additional scope seems required to avoid a misleading-indentation warning
                 QL_REQUIRE(timingAdjustment_ == Black76 || timingAdjustment_ == BivariateLognormal,
                            "unknown timing adjustment (code " << timingAdjustment_ << ")");
@@ -137,9 +137,8 @@ namespace QuantLib {
     class CmsCouponPricer : public FloatingRateCouponPricer {
       public:
         explicit CmsCouponPricer(
-            const Handle<SwaptionVolatilityStructure>& v =
-                                       Handle<SwaptionVolatilityStructure>())
-        : swaptionVol_(v) {
+            Handle<SwaptionVolatilityStructure> v = Handle<SwaptionVolatilityStructure>())
+        : swaptionVol_(std::move(v)) {
             registerWith(swaptionVol_);
         }
 
@@ -164,7 +163,7 @@ namespace QuantLib {
     public:
         virtual Real meanReversion() const = 0;
         virtual void setMeanReversion(const Handle<Quote>&) = 0;
-        virtual ~MeanRevertingPricer() {}
+        virtual ~MeanRevertingPricer() = default;
     };
 
     void setCouponPricer(const Leg& leg,

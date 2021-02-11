@@ -58,7 +58,7 @@ namespace QuantLib {
     class DividendBarrierOption::arguments : public BarrierOption::arguments {
       public:
         DividendSchedule cashFlow;
-        arguments() {}
+        arguments() = default;
         void validate() const override;
     };
 

@@ -25,19 +25,18 @@
  */
 
 
-#include <ql/time/daycounters/actualactual.hpp>
-
 #include <ql/experimental/inflation/cpicapfloorengines.hpp>
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
 
-    InterpolatingCPICapFloorEngine::InterpolatingCPICapFloorEngine
-    (const Handle<CPICapFloorTermPriceSurface> &priceSurf)
-    : priceSurf_(priceSurf)
-    {
+    InterpolatingCPICapFloorEngine::InterpolatingCPICapFloorEngine(
+        Handle<CPICapFloorTermPriceSurface> priceSurf)
+    : priceSurf_(std::move(priceSurf)) {
         registerWith(priceSurf_);
     }
 

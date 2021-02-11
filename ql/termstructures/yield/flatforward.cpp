@@ -18,18 +18,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FlatForward::FlatForward(const Date& referenceDate,
-                             const Handle<Quote>& forward,
+                             Handle<Quote> forward,
                              const DayCounter& dayCounter,
                              Compounding compounding,
                              Frequency frequency)
-    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
-      forward_(forward), compounding_(compounding), frequency_(frequency) {
+    : YieldTermStructure(referenceDate, Calendar(), dayCounter), forward_(std::move(forward)),
+      compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
     }
 
@@ -44,12 +45,12 @@ namespace QuantLib {
 
     FlatForward::FlatForward(Natural settlementDays,
                              const Calendar& calendar,
-                             const Handle<Quote>& forward,
+                             Handle<Quote> forward,
                              const DayCounter& dayCounter,
                              Compounding compounding,
                              Frequency frequency)
-    : YieldTermStructure(settlementDays, calendar, dayCounter),
-      forward_(forward), compounding_(compounding), frequency_(frequency) {
+    : YieldTermStructure(settlementDays, calendar, dayCounter), forward_(std::move(forward)),
+      compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
     }
 

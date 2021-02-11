@@ -40,9 +40,8 @@ namespace QuantLib {
 
         OneAssetOption::setupArguments(args);
 
-        BarrierOption::arguments* moreArgs =
-            dynamic_cast<BarrierOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<BarrierOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->barrierType = barrierType_;
         moreArgs->barrier = barrier_;
         moreArgs->rebate = rebate_;

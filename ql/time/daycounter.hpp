@@ -25,8 +25,9 @@
 #ifndef quantlib_day_counter_hpp
 #define quantlib_day_counter_hpp
 
-#include <ql/time/date.hpp>
 #include <ql/errors.hpp>
+#include <ql/time/date.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -45,7 +46,7 @@ namespace QuantLib {
         //! abstract base class for day counter implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual std::string name() const = 0;
             //! to be overloaded by more complex day counters
             virtual Date::serial_type dayCount(const Date& d1,
@@ -61,14 +62,14 @@ namespace QuantLib {
         /*! This constructor can be invoked by derived classes which
             define a given implementation.
         */
-        explicit DayCounter(const ext::shared_ptr<Impl>& impl)
-        : impl_(impl) {}
+        explicit DayCounter(ext::shared_ptr<Impl> impl) : impl_(std::move(impl)) {}
+
       public:
         /*! The default constructor returns a day counter with a null
             implementation, which is therefore unusable except as a
             placeholder.
         */
-        DayCounter() {}
+        DayCounter() = default;
         //! \name DayCounter interface
         //@{
         //!  Returns whether or not the day counter is initialized

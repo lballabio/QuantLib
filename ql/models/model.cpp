@@ -18,11 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/model.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/projection.hpp>
 #include <ql/math/optimization/projectedconstraint.hpp>
+#include <ql/math/optimization/projection.hpp>
+#include <ql/models/model.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <utility>
 
 using std::vector;
 
@@ -37,12 +38,12 @@ namespace QuantLib {
       public:
         CalibrationFunction(CalibratedModel* model,
                             const vector<ext::shared_ptr<CalibrationHelper> >& h,
-                            const vector<Real>& weights,
+                            vector<Real> weights,
                             const Projection& projection)
-            : model_(model, null_deleter()), instruments_(h),
-              weights_(weights), projection_(projection) {}
+        : model_(model, null_deleter()), instruments_(h), weights_(std::move(weights)),
+          projection_(projection) {}
 
-        ~CalibrationFunction() override {}
+        ~CalibrationFunction() override = default;
 
         Real value(const Array& params) const override {
             model_->setParams(projection_.include(params));

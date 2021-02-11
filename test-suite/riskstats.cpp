@@ -608,7 +608,7 @@ void RiskStatisticsTest::testResults() {
 
 
 test_suite* RiskStatisticsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Risk statistics tests");
+    auto* suite = BOOST_TEST_SUITE("Risk statistics tests");
     suite->add(QUANTLIB_TEST_CASE(&RiskStatisticsTest::testResults));
     return suite;
 }

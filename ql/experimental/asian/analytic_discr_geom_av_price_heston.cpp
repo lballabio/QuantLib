@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -35,13 +36,14 @@ namespace QuantLib {
         Integrand(Real t,
                   Real T,
                   Size kStar,
-                  const std::vector<Time>& t_n,
-                  const std::vector<Time>& tauK,
+                  std::vector<Time> t_n,
+                  std::vector<Time> tauK,
                   Real K,
                   const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
-                  Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)),
-                                       kStar_(kStar), t_n_(t_n), tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit),
-                                       i_(std::complex<Real>(0.0, 1.0)) {}
+                  Real xiRightLimit)
+        : t_(t), T_(T), K_(K), logK_(std::log(K)), kStar_(kStar), t_n_(std::move(t_n)),
+          tauK_(std::move(tauK)), parent_(parent), xiRightLimit_(xiRightLimit),
+          i_(std::complex<Real>(0.0, 1.0)) {}
 
         double operator()(double xi) const {
             double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
@@ -56,9 +58,8 @@ namespace QuantLib {
 
     AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::
         AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process,
-            Real xiRightLimit)
-    : process_(process), xiRightLimit_(xiRightLimit), integrator_(128) {
+            ext::shared_ptr<HestonProcess> process, Real xiRightLimit)
+    : process_(std::move(process)), xiRightLimit_(xiRightLimit), integrator_(128) {
         registerWith(process_);
 
         v0_ = process_->v0();
@@ -95,8 +96,8 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::z(
             const std::complex<Real>& s, const std::complex<Real>& w, Size k, Size n) const {
-        double k_ = double(k);
-        double n_ = double(n);
+        auto k_ = double(k);
+        auto n_ = double(n);
         std::complex<Real> term1 = (2*rho_*kappa_ - sigma_)*((n_-k_+1)*s + n_*w)/(2*sigma_*n_);
         std::complex<Real> term2 = (1-rho_*rho_)*pow(((n_-k_+1)*s + n_*w), 2)/(2*n_*n_);
 
@@ -119,8 +120,8 @@ namespace QuantLib {
             const std::complex<Real>& w,
             Time t, Time T, Size kStar,
             const std::vector<Time>& t_n) const {
-        double kStar_ = double(kStar);
-        double n_ = double(t_n.size());
+        auto kStar_ = double(kStar);
+        auto n_ = double(t_n.size());
         Real temp = -rho_*kappa_*theta_/sigma_;
 
         Time summation = 0.0;

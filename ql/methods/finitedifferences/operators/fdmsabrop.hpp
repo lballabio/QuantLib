@@ -44,11 +44,13 @@ namespace QuantLib {
 
     class FdmSabrOp : public FdmLinearOpComposite {
       public:
-
-        FdmSabrOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Real f0, Real alpha, Real beta, Real nu, Real rho);
+        FdmSabrOp(const ext::shared_ptr<FdmMesher>& mesher,
+                  ext::shared_ptr<YieldTermStructure> rTS,
+                  Real f0,
+                  Real alpha,
+                  Real beta,
+                  Real nu,
+                  Real rho);
 
         Size size() const override;
         void setTime(Time t1, Time t2) override;

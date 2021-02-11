@@ -131,7 +131,7 @@ void EverestOptionTest::testCached() {
 
 
 test_suite* EverestOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Everest-option tests");
+    auto* suite = BOOST_TEST_SUITE("Everest-option tests");
     suite->add(QUANTLIB_TEST_CASE(&EverestOptionTest::testCached));
     return suite;
 }

@@ -18,16 +18,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/quote.hpp>
 #include <ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp>
 #include <ql/termstructures/volatility/spreadedsmilesection.hpp>
-#include <ql/quote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     SpreadedOptionletVolatility::SpreadedOptionletVolatility(
-                        const Handle<OptionletVolatilityStructure>& baseVol,
-                        const Handle<Quote>& spread)
-    : baseVol_(baseVol), spread_(spread) {
+        const Handle<OptionletVolatilityStructure>& baseVol, Handle<Quote> spread)
+    : baseVol_(baseVol), spread_(std::move(spread)) {
         enableExtrapolation(baseVol->allowsExtrapolation());
         registerWith(baseVol_);
         registerWith(spread_);

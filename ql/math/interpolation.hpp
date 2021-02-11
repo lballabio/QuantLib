@@ -57,7 +57,7 @@ namespace QuantLib {
         //! abstract base class for interpolation implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual void update() = 0;
             virtual Real xMin() const = 0;
             virtual Real xMax() const = 0;
@@ -117,8 +117,8 @@ namespace QuantLib {
             I2 yBegin_;
         };
 
-        Interpolation() {}
-        ~Interpolation() override {}
+        Interpolation() = default;
+        ~Interpolation() override = default;
         bool empty() const { return !impl_; }
         Real operator()(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);

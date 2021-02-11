@@ -19,42 +19,42 @@
 
 #include "hestonmodel.hpp"
 #include "utilities.hpp"
+#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
-#include <ql/processes/hestonprocess.hpp>
-#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/optimization/differentialevolution.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
+#include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/models/equity/piecewisetimedependenthestonmodel.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-#include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
-#include <ql/pricingengines/vanilla/coshestonengine.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
+#include <ql/pricingengines/vanilla/coshestonengine.hpp>
 #include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
-#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
-#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/methods/montecarlo/pathgenerator.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/math/optimization/differentialevolution.hpp>
-#include <ql/time/period.hpp>
+#include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
-#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
-
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/period.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1867,10 +1867,8 @@ void HestonModelTest::testAllIntegrationMethods() {
 namespace {
     class LogCharacteristicFunction {
       public:
-        LogCharacteristicFunction(
-            Size n, Time t,
-            const ext::shared_ptr<COSHestonEngine>& engine)
-        : t_(t), alpha_(0.0, 1.0), engine_(engine) {
+        LogCharacteristicFunction(Size n, Time t, ext::shared_ptr<COSHestonEngine> engine)
+        : t_(t), alpha_(0.0, 1.0), engine_(std::move(engine)) {
             for (Size i=1; i < n; ++i, alpha_*=std::complex<Real>(0,1));
         }
 
@@ -3241,7 +3239,8 @@ void HestonModelTest::testAsymptoticControlVariate() {
             const ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine =
                 ext::dynamic_pointer_cast<AnalyticHestonEngine>(engine);
 
-            if ((analyticHestonEngine != 0) && analyticHestonEngine->numberOfEvaluations() > 5000) {
+            if ((analyticHestonEngine != nullptr) &&
+                analyticHestonEngine->numberOfEvaluations() > 5000) {
                 BOOST_ERROR("too many function valuation needed "
                         << "\n  moneyness      : " << moneyness
                         << "\n  evaluations    : "
@@ -3265,7 +3264,7 @@ void HestonModelTest::testAsymptoticControlVariate() {
 
 
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
+    auto* suite = BOOST_TEST_SUITE("Heston model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testBlackCalibration));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
@@ -3328,7 +3327,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
 }
 
 test_suite* HestonModelTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Heston model experimental tests");
+    auto* suite = BOOST_TEST_SUITE("Heston model experimental tests");
     suite->add(QUANTLIB_TEST_CASE(
         &HestonModelTest::testAnalyticPDFHestonEngine));
     return suite;

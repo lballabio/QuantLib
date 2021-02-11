@@ -40,7 +40,7 @@ namespace QuantLib {
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
             bool maximizeHomogeneity,
-            const ext::shared_ptr<AlphaForm>& parametricForm = ext::shared_ptr<AlphaForm>());
+            ext::shared_ptr<AlphaForm> parametricForm = ext::shared_ptr<AlphaForm>());
         // inspector
         const std::vector<Real>& alpha() const;
         // actual calibration function

@@ -18,16 +18,14 @@
 */
 
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AnalyticCapFloorEngine::AnalyticCapFloorEngine(
-                              const ext::shared_ptr<AffineModel>& model,
-                              const Handle<YieldTermStructure>& termStructure)
-    : GenericModelEngine<AffineModel,
-                         CapFloor::arguments,
-                         CapFloor::results >(model),
-      termStructure_(termStructure) {
+    AnalyticCapFloorEngine::AnalyticCapFloorEngine(const ext::shared_ptr<AffineModel>& model,
+                                                   Handle<YieldTermStructure> termStructure)
+    : GenericModelEngine<AffineModel, CapFloor::arguments, CapFloor::results>(model),
+      termStructure_(std::move(termStructure)) {
         registerWith(termStructure_);
     }
 
@@ -40,7 +38,7 @@ namespace QuantLib {
 
         ext::shared_ptr<TermStructureConsistentModel> tsmodel =
             ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
-        if (tsmodel != 0) {
+        if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
         } else {

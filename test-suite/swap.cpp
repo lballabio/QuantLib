@@ -181,9 +181,7 @@ void SwapTest::testRateDependency() {
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it =
-                std::adjacent_find(swap_values.begin(),swap_values.end(),
-                                   std::less<Real>());
+            auto it = std::adjacent_find(swap_values.begin(), swap_values.end(), std::less<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
                 BOOST_ERROR(
@@ -220,9 +218,8 @@ void SwapTest::testSpreadDependency() {
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it =
-                std::adjacent_find(swap_values.begin(),swap_values.end(),
-                                   std::greater<Real>());
+            auto it =
+                std::adjacent_find(swap_values.begin(), swap_values.end(), std::greater<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
                 BOOST_ERROR(
@@ -342,7 +339,7 @@ void SwapTest::testCachedValue() {
 
 
 test_suite* SwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Swap tests");
+    auto* suite = BOOST_TEST_SUITE("Swap tests");
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairRate));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairSpread));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testRateDependency));

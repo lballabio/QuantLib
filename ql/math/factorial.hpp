@@ -37,7 +37,7 @@ namespace QuantLib {
         static Real get(Natural n);
         static Real ln(Natural n);
       private:
-        Factorial() {}
+        Factorial() = default;
     };
 
 }

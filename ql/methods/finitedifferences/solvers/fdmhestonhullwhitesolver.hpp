@@ -38,12 +38,11 @@ namespace QuantLib {
 
     class FdmHestonHullWhiteSolver : public LazyObject {
       public:
-        FdmHestonHullWhiteSolver(
-            const Handle<HestonProcess>& hestonProcess,
-            const Handle<HullWhiteProcess>& hwProcess,
-            Rate corrEquityShortRate,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+        FdmHestonHullWhiteSolver(const Handle<HestonProcess>& hestonProcess,
+                                 const Handle<HullWhiteProcess>& hwProcess,
+                                 Rate corrEquityShortRate,
+                                 FdmSolverDesc solverDesc,
+                                 const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         Real valueAt(Real s, Real v, Rate r) const;
         Real thetaAt(Real s, Real v, Rate r) const;

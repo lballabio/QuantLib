@@ -49,7 +49,7 @@ class MarketModelPathwiseSwap : public MarketModelPathwiseMultiProduct
                           Real multiplier = 1.0 // easy way to swtich between payer and receiver
                           );
 
-       ~MarketModelPathwiseSwap() override {}
+       ~MarketModelPathwiseSwap() override = default;
 
        std::vector<Size> suggestedNumeraires() const override;
        const EvolutionDescription& evolution() const override;

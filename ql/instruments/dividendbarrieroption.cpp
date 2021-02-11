@@ -41,9 +41,8 @@ namespace QuantLib {
                                        PricingEngine::arguments* args) const {
         BarrierOption::setupArguments(args);
 
-        DividendBarrierOption::arguments* arguments =
-            dynamic_cast<DividendBarrierOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong engine type");
+        auto* arguments = dynamic_cast<DividendBarrierOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong engine type");
 
         arguments->cashFlow = cashFlow_;
     }

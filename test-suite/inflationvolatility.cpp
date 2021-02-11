@@ -417,8 +417,7 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
 
 
 boost::unit_test_framework::test_suite* InflationVolTest::suite() {
-    boost::unit_test_framework::test_suite* suite
-        = BOOST_TEST_SUITE("yoyOptionletStripper (yoy inflation vol) tests");
+    auto* suite = BOOST_TEST_SUITE("yoyOptionletStripper (yoy inflation vol) tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToATM));
     suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));

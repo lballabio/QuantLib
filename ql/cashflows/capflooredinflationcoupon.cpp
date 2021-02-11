@@ -80,16 +80,17 @@ namespace QuantLib {
             const ext::shared_ptr<YoYInflationCouponPricer>& pricer) {
 
         YoYInflationCoupon::setPricer(pricer);
-        if (underlying_ != 0)
+        if (underlying_ != nullptr)
             underlying_->setPricer(pricer);
     }
 
 
     Rate CappedFlooredYoYInflationCoupon::rate() const {
-        Rate swapletRate = underlying_ != 0 ? underlying_->rate() : YoYInflationCoupon::rate();
+        Rate swapletRate =
+            underlying_ != nullptr ? underlying_->rate() : YoYInflationCoupon::rate();
 
         if(isFloored_ || isCapped_) {
-            if (underlying_ != 0) {
+            if (underlying_ != nullptr) {
                 QL_REQUIRE(underlying_->pricer(), "pricer not set");
             } else {
                 QL_REQUIRE(pricer_, "pricer not set");
@@ -98,14 +99,15 @@ namespace QuantLib {
 
         Rate floorletRate = 0.;
         if(isFloored_) {
-            floorletRate = underlying_ != 0 ?
+            floorletRate = underlying_ != nullptr ?
                                underlying_->pricer()->floorletRate(effectiveFloor()) :
                                pricer()->floorletRate(effectiveFloor());
         }
         Rate capletRate = 0.;
         if(isCapped_) {
-            capletRate = underlying_ != 0 ? underlying_->pricer()->capletRate(effectiveCap()) :
-                                            pricer()->capletRate(effectiveCap());
+            capletRate = underlying_ != nullptr ?
+                             underlying_->pricer()->capletRate(effectiveCap()) :
+                             pricer()->capletRate(effectiveCap());
         }
 
         return swapletRate + floorletRate - capletRate;
@@ -147,10 +149,9 @@ namespace QuantLib {
 
     void CappedFlooredYoYInflationCoupon::accept(AcyclicVisitor& v) {
         typedef YoYInflationCoupon super;
-        Visitor<CappedFlooredYoYInflationCoupon>* v1 =
-            dynamic_cast<Visitor<CappedFlooredYoYInflationCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<CappedFlooredYoYInflationCoupon>*>(&v);
 
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             super::accept(v);

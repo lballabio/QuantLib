@@ -39,11 +39,9 @@ namespace QuantLib {
 
     class TwoDimensionalIntegral {
       public:
-        TwoDimensionalIntegral(const ext::shared_ptr<Integrator>& integratorX,
-                               const ext::shared_ptr<Integrator>& integratorY)
-        : integratorX_(integratorX),
-          integratorY_(integratorY) {
-        }
+        TwoDimensionalIntegral(ext::shared_ptr<Integrator> integratorX,
+                               ext::shared_ptr<Integrator> integratorY)
+        : integratorX_(std::move(integratorX)), integratorY_(std::move(integratorY)) {}
 
         Real operator()(const ext::function<Real (Real, Real)>& f,
                         const std::pair<Real, Real>& a,

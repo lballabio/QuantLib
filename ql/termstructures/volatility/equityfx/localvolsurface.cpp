@@ -17,10 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -45,29 +46,25 @@ namespace QuantLib {
         return blackTS_->maxStrike();
     }
 
-    LocalVolSurface::LocalVolSurface(
-                                 const Handle<BlackVolTermStructure>& blackTS,
-                                 const Handle<YieldTermStructure>& riskFreeTS,
-                                 const Handle<YieldTermStructure>& dividendTS,
-                                 const Handle<Quote>& underlying)
-    : LocalVolTermStructure(blackTS->businessDayConvention(),
-                            blackTS->dayCounter()),
-      blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
-      underlying_(underlying) {
+    LocalVolSurface::LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
+                                     Handle<YieldTermStructure> riskFreeTS,
+                                     Handle<YieldTermStructure> dividendTS,
+                                     Handle<Quote> underlying)
+    : LocalVolTermStructure(blackTS->businessDayConvention(), blackTS->dayCounter()),
+      blackTS_(blackTS), riskFreeTS_(std::move(riskFreeTS)), dividendTS_(std::move(dividendTS)),
+      underlying_(std::move(underlying)) {
         registerWith(blackTS_);
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
         registerWith(underlying_);
     }
 
-    LocalVolSurface::LocalVolSurface(
-                                 const Handle<BlackVolTermStructure>& blackTS,
-                                 const Handle<YieldTermStructure>& riskFreeTS,
-                                 const Handle<YieldTermStructure>& dividendTS,
-                                 Real underlying)
-    : LocalVolTermStructure(blackTS->businessDayConvention(),
-                            blackTS->dayCounter()),
-      blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
+    LocalVolSurface::LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
+                                     Handle<YieldTermStructure> riskFreeTS,
+                                     Handle<YieldTermStructure> dividendTS,
+                                     Real underlying)
+    : LocalVolTermStructure(blackTS->businessDayConvention(), blackTS->dayCounter()),
+      blackTS_(blackTS), riskFreeTS_(std::move(riskFreeTS)), dividendTS_(std::move(dividendTS)),
       underlying_(ext::shared_ptr<Quote>(new SimpleQuote(underlying))) {
         registerWith(blackTS_);
         registerWith(riskFreeTS_);
@@ -75,9 +72,8 @@ namespace QuantLib {
     }
 
     void LocalVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<LocalVolSurface>* v1 =
-            dynamic_cast<Visitor<LocalVolSurface>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<LocalVolSurface>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             LocalVolTermStructure::accept(v);

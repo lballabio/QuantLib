@@ -17,17 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace QuantLib {
 
     MonteCarloCatBondEngine::MonteCarloCatBondEngine(
-        const ext::shared_ptr<CatRisk>& catRisk,
-        const Handle<YieldTermStructure>& discountCurve,
+        ext::shared_ptr<CatRisk> catRisk,
+        Handle<YieldTermStructure> discountCurve,
         const boost::optional<bool>& includeSettlementDateFlows)
-    : catRisk_(catRisk), discountCurve_(discountCurve),
+    : catRisk_(std::move(catRisk)), discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
     }

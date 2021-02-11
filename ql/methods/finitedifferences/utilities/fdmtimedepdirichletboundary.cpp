@@ -25,38 +25,33 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmindicesonboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmtimedepdirichletboundary.hpp>
-
 #include <algorithm>
+#include <utility>
 
 namespace QuantLib {
 
     FdmTimeDepDirichletBoundary::FdmTimeDepDirichletBoundary(
         const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::function<Real (Real)>& valueOnBoundary,
-        Size direction, Side side)
-    : indices_(FdmIndicesOnBoundary(mesher->layout(),
-                                    direction, side).getIndices()),
-      valueOnBoundary_(valueOnBoundary),
-      values_(indices_.size()) {
-    }
+        ext::function<Real(Real)> valueOnBoundary,
+        Size direction,
+        Side side)
+    : indices_(FdmIndicesOnBoundary(mesher->layout(), direction, side).getIndices()),
+      valueOnBoundary_(std::move(valueOnBoundary)), values_(indices_.size()) {}
 
     FdmTimeDepDirichletBoundary::FdmTimeDepDirichletBoundary(
         const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::function<Disposable<Array> (Real)>& valuesOnBoundary,
-        Size direction, Side side)
-    : indices_(FdmIndicesOnBoundary(mesher->layout(),
-                                    direction, side).getIndices()),
-      valuesOnBoundary_(valuesOnBoundary),
-      values_(indices_.size()) {
-    }
+        ext::function<Disposable<Array>(Real)> valuesOnBoundary,
+        Size direction,
+        Side side)
+    : indices_(FdmIndicesOnBoundary(mesher->layout(), direction, side).getIndices()),
+      valuesOnBoundary_(std::move(valuesOnBoundary)), values_(indices_.size()) {}
 
     void FdmTimeDepDirichletBoundary::setTime(Time t) {
-        if (valueOnBoundary_ != 0) {
+        if (!(valueOnBoundary_ == QL_NULL_FUNCTION)) {
             std::fill(values_.begin(), values_.end(), valueOnBoundary_(t));
-        } else if (valuesOnBoundary_ != 0) {
+        } else if (!(valuesOnBoundary_ == QL_NULL_FUNCTION)) {
             values_ = valuesOnBoundary_(t);
-        }
-        else {
+        } else {
             QL_FAIL("no boundary values defined");
         }
     }
@@ -66,8 +61,7 @@ namespace QuantLib {
                    "values on boundary size (" << values_.size()
                    << ") does not match hypersurface size ("
                    << indices_.size() << ")");
-        for (std::vector<Size>::const_iterator iter = indices_.begin();
-             iter != indices_.end(); ++iter) {
+        for (auto iter = indices_.begin(); iter != indices_.end(); ++iter) {
             a[*iter] = values_[iter - indices_.begin()];
         }
     }

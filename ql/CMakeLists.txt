@@ -509,6 +509,7 @@ set(QuantLib_SRC
     methods/finitedifferences/utilities/fdmdividendhandler.cpp
     methods/finitedifferences/utilities/fdmindicesonboundary.cpp
     methods/finitedifferences/utilities/fdminnervaluecalculator.cpp
+    methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.cpp
     methods/finitedifferences/utilities/fdmmesherintegral.cpp
     methods/finitedifferences/utilities/fdmquantohelper.cpp
     methods/finitedifferences/utilities/fdmtimedepdirichletboundary.cpp
@@ -733,6 +734,7 @@ set(QuantLib_SRC
     pricingengines/vanilla/exponentialfittinghestonengine.cpp
     pricingengines/vanilla/fdbatesvanillaengine.cpp
     pricingengines/vanilla/fdblackscholesvanillaengine.cpp
+    pricingengines/vanilla/fdblackscholesshoutengine.cpp
     pricingengines/vanilla/fdcirvanillaengine.cpp
     pricingengines/vanilla/fdcevvanillaengine.cpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.cpp
@@ -1694,6 +1696,7 @@ set(QuantLib_HDR
     methods/finitedifferences/utilities/fdmdividendhandler.hpp
     methods/finitedifferences/utilities/fdmindicesonboundary.hpp
     methods/finitedifferences/utilities/fdminnervaluecalculator.hpp
+    methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.hpp
     methods/finitedifferences/utilities/fdmmesherintegral.hpp
     methods/finitedifferences/utilities/fdmquantohelper.hpp
     methods/finitedifferences/utilities/fdmtimedepdirichletboundary.hpp
@@ -2015,6 +2018,7 @@ set(QuantLib_HDR
     pricingengines/vanilla/exponentialfittinghestonengine.hpp
     pricingengines/vanilla/fdbatesvanillaengine.hpp
     pricingengines/vanilla/fdblackscholesvanillaengine.hpp
+    pricingengines/vanilla/fdblackscholesshoutengine.hpp
     pricingengines/vanilla/fdcirvanillaengine.hpp
     pricingengines/vanilla/fdcevvanillaengine.hpp
     pricingengines/vanilla/fdconditions.hpp

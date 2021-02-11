@@ -1742,7 +1742,7 @@ void BondTest::testThirty360BondWithSettlementOn31st(){
 }
 
 test_suite* BondTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Bond tests");
+    auto* suite = BOOST_TEST_SUITE("Bond tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testYield));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testAtmRate));

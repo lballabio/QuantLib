@@ -366,7 +366,7 @@ void CompoundOptionTest::testValues(){
 
 
 test_suite* CompoundOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Compound option tests");
+    auto* suite = BOOST_TEST_SUITE("Compound option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&CompoundOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&CompoundOptionTest::testPutCallParity));

@@ -201,7 +201,7 @@ void InterestRateTest::testConversions() {
 }
 
 test_suite* InterestRateTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Interest Rate tests");
+    auto* suite = BOOST_TEST_SUITE("Interest Rate tests");
     suite->add(QUANTLIB_TEST_CASE(&InterestRateTest::testConversions));
     return suite;
 }

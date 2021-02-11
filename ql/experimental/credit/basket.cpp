@@ -19,10 +19,11 @@
 */
 
 #include <ql/experimental/credit/basket.hpp>
+#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <numeric>
+#include <utility>
 
 using namespace std;
 
@@ -30,14 +31,14 @@ namespace QuantLib {
 
     Basket::Basket(const Date& refDate,
                    const vector<string>& names,
-                   const vector<Real>& notionals,
-                   const ext::shared_ptr<Pool>& pool,
+                   vector<Real> notionals,
+                   ext::shared_ptr<Pool> pool,
                    Real attachment,
                    Real detachment,
-                   const ext::shared_ptr<Claim>& claim)
-    : notionals_(notionals), pool_(pool), claim_(claim), attachmentRatio_(attachment),
-      detachmentRatio_(detachment), basketNotional_(0.0), attachmentAmount_(0.0),
-      detachmentAmount_(0.0), trancheNotional_(0.0), refDate_(refDate) {
+                   ext::shared_ptr<Claim> claim)
+    : notionals_(std::move(notionals)), pool_(std::move(pool)), claim_(std::move(claim)),
+      attachmentRatio_(attachment), detachmentRatio_(detachment), basketNotional_(0.0),
+      attachmentAmount_(0.0), detachmentAmount_(0.0), trancheNotional_(0.0), refDate_(refDate) {
         QL_REQUIRE(!notionals_.empty(), "notionals empty");
         QL_REQUIRE (attachmentRatio_ >= 0 &&
                     attachmentRatio_ <= detachmentRatio_ &&
@@ -72,10 +73,10 @@ namespace QuantLib {
     void Basket::setLossModel(
         const ext::shared_ptr<DefaultLossModel>& lossModel) {
 
-        if (lossModel_ != 0)
+        if (lossModel_ != nullptr)
             unregisterWith(lossModel_);
         lossModel_ = lossModel;
-        if (lossModel_ != 0) {
+        if (lossModel_ != nullptr) {
             //recovery quotes, defaults(once Issuer is observable)etc might 
             //  trigger us:
             registerWith(lossModel_);
@@ -122,7 +123,7 @@ namespace QuantLib {
             ext::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
-            if (credEvent != 0) {
+            if (credEvent != nullptr) {
                 /* \todo If the event has not settled one would need to 
                 introduce some model recovery rate (independently of a loss 
                 model) This remains to be done.
@@ -147,7 +148,7 @@ namespace QuantLib {
             ext::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
-            if (credEvent != 0) {
+            if (credEvent != nullptr) {
                 if(credEvent->hasSettled()) {
                     loss += claim_->amount(credEvent->date(),
                             //notionals_[i],
@@ -224,8 +225,7 @@ namespace QuantLib {
     requested ctpty......*/
     Real Basket::exposure(const std::string& name, const Date& d) const {
         //'this->names_' contains duplicates, contrary to 'pool->names'
-        std::vector<std::string>::const_iterator match =  
-            std::find(pool_->names().begin(), pool_->names().end(), name);
+        auto match = std::find(pool_->names().begin(), pool_->names().end(), name);
         QL_REQUIRE(match != pool_->names().end(), "Name not in basket.");
         Real totalNotional = 0.;
         do{

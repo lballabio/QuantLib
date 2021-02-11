@@ -18,11 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -30,15 +31,15 @@ namespace QuantLib {
         const Handle<Quote>& quote,
         const Period& swapObsLag,
         const Date& maturity,
-        const Calendar& calendar,
+        Calendar calendar,
         BusinessDayConvention paymentConvention,
-        const DayCounter& dayCounter,
-        const ext::shared_ptr<ZeroInflationIndex>& zii,
-        const Handle<YieldTermStructure>& nominalTermStructure)
-    : BootstrapHelper<ZeroInflationTermStructure>(quote),
-      swapObsLag_(swapObsLag), maturity_(maturity), calendar_(calendar),
-      paymentConvention_(paymentConvention), dayCounter_(dayCounter),
-      zii_(zii), nominalTermStructure_(nominalTermStructure) {
+        DayCounter dayCounter,
+        ext::shared_ptr<ZeroInflationIndex> zii,
+        Handle<YieldTermStructure> nominalTermStructure)
+    : BootstrapHelper<ZeroInflationTermStructure>(quote), swapObsLag_(swapObsLag),
+      maturity_(maturity), calendar_(std::move(calendar)), paymentConvention_(paymentConvention),
+      dayCounter_(std::move(dayCounter)), zii_(std::move(zii)),
+      nominalTermStructure_(std::move(nominalTermStructure)) {
 
         if (zii_->interpolated()) {
             // if interpolated then simple
@@ -122,15 +123,15 @@ namespace QuantLib {
         const Handle<Quote>& quote,
         const Period& swapObsLag,
         const Date& maturity,
-        const Calendar& calendar,
+        Calendar calendar,
         BusinessDayConvention paymentConvention,
-        const DayCounter& dayCounter,
-        const ext::shared_ptr<YoYInflationIndex>& yii,
-        const Handle<YieldTermStructure>& nominalTermStructure)
-    : BootstrapHelper<YoYInflationTermStructure>(quote),
-      swapObsLag_(swapObsLag), maturity_(maturity),
-      calendar_(calendar), paymentConvention_(paymentConvention),
-      dayCounter_(dayCounter), yii_(yii), nominalTermStructure_(nominalTermStructure) {
+        DayCounter dayCounter,
+        ext::shared_ptr<YoYInflationIndex> yii,
+        Handle<YieldTermStructure> nominalTermStructure)
+    : BootstrapHelper<YoYInflationTermStructure>(quote), swapObsLag_(swapObsLag),
+      maturity_(maturity), calendar_(std::move(calendar)), paymentConvention_(paymentConvention),
+      dayCounter_(std::move(dayCounter)), yii_(std::move(yii)),
+      nominalTermStructure_(std::move(nominalTermStructure)) {
 
         if (yii_->interpolated()) {
             // if interpolated then simple

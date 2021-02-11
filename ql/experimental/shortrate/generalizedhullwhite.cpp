@@ -19,11 +19,12 @@
 */
 
 #include <ql/experimental/shortrate/generalizedhullwhite.hpp>
-#include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <ql/methods/lattices/trinomialtree.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/methods/lattices/trinomialtree.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -48,15 +49,15 @@ namespace QuantLib {
     */
     class GeneralizedHullWhite::Helper {
       public:
-        Helper(const Size i, const Real xMin, const Real dx,
+        Helper(const Size i,
+               const Real xMin,
+               const Real dx,
                const Real discountBondPrice,
                const ext::shared_ptr<ShortRateTree>& tree,
-               const ext::function<Real(Real)>& fInv)
-        : size_(tree->size(i)),
-          dt_(tree->timeGrid().dt(i)),
-          xMin_(xMin), dx_(dx),
-          statePrices_(tree->statePrices(i)),
-          discountBondPrice_(discountBondPrice), fInverse_(fInv) {}
+               ext::function<Real(Real)> fInv)
+        : size_(tree->size(i)), dt_(tree->timeGrid().dt(i)), xMin_(xMin), dx_(dx),
+          statePrices_(tree->statePrices(i)), discountBondPrice_(discountBondPrice),
+          fInverse_(std::move(fInv)) {}
 
         Real operator()(const Real theta) const {
             Real value = discountBondPrice_;

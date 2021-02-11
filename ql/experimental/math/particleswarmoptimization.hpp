@@ -100,14 +100,14 @@ namespace QuantLib {
         friend class Inertia;
         friend class Topology;
         ParticleSwarmOptimization(Size M,
-                                  const ext::shared_ptr<Topology>& topology,
-                                  const ext::shared_ptr<Inertia>& inertia,
+                                  ext::shared_ptr<Topology> topology,
+                                  ext::shared_ptr<Inertia> inertia,
                                   Real c1 = 2.05,
                                   Real c2 = 2.05,
                                   unsigned long seed = SeedGenerator::instance().get());
         explicit ParticleSwarmOptimization(Size M,
-                                           const ext::shared_ptr<Topology>& topology,
-                                           const ext::shared_ptr<Inertia>& inertia,
+                                           ext::shared_ptr<Topology> topology,
+                                           ext::shared_ptr<Inertia> inertia,
                                            Real omega,
                                            Real c1,
                                            Real c2,
@@ -133,7 +133,7 @@ namespace QuantLib {
     class ParticleSwarmOptimization::Inertia {
         friend class ParticleSwarmOptimization;
       public:
-        virtual ~Inertia() {}
+        virtual ~Inertia() = default;
         //! initialize state for current problem
         virtual void setSize(Size M, Size N, Real c0, const EndCriteria &endCriteria) = 0;
         //! produce changes to PSO state for current iteration
@@ -324,7 +324,7 @@ namespace QuantLib {
     class ParticleSwarmOptimization::Topology {
         friend class ParticleSwarmOptimization;
       public:
-        virtual ~Topology() {}
+        virtual ~Topology() = default;
         //! initialize state for current problem
         virtual void setSize(Size M) = 0;
         //! produce changes to PSO state for current iteration

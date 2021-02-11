@@ -113,7 +113,7 @@ void FdCIRTest::testFdmCIRConvergence() {
 }
 
 test_suite* FdCIRTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference CIR tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference CIR tests");
 
     suite->add(QUANTLIB_TEST_CASE(&FdCIRTest::testFdmCIRConvergence));
 

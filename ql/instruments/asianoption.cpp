@@ -20,6 +20,7 @@
 
 #include <ql/instruments/asianoption.hpp>
 #include <ql/time/date.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -27,12 +28,12 @@ namespace QuantLib {
         Average::Type averageType,
         Real runningAccumulator,
         Size pastFixings,
-        const std::vector<Date>& fixingDates,
+        std::vector<Date> fixingDates,
         const ext::shared_ptr<StrikedTypePayoff>& payoff,
         const ext::shared_ptr<Exercise>& exercise)
-    : OneAssetOption(payoff, exercise),
-      averageType_(averageType), runningAccumulator_(runningAccumulator),
-      pastFixings_(pastFixings), fixingDates_(fixingDates) {
+    : OneAssetOption(payoff, exercise), averageType_(averageType),
+      runningAccumulator_(runningAccumulator), pastFixings_(pastFixings),
+      fixingDates_(std::move(fixingDates)) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
     }
 
@@ -41,9 +42,8 @@ namespace QuantLib {
 
         OneAssetOption::setupArguments(args);
 
-        DiscreteAveragingAsianOption::arguments* moreArgs =
-            dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->averageType = averageType_;
         moreArgs->runningAccumulator = runningAccumulator_;
         moreArgs->pastFixings = pastFixings_;
@@ -90,9 +90,8 @@ namespace QuantLib {
 
         OneAssetOption::setupArguments(args);
 
-        ContinuousAveragingAsianOption::arguments* moreArgs =
-            dynamic_cast<ContinuousAveragingAsianOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<ContinuousAveragingAsianOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->averageType = averageType_;
     }
 

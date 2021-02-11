@@ -48,7 +48,7 @@ namespace QuantLib {
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const ext::shared_ptr<IborIndex>& iborIndex);
+                  ext::shared_ptr<IborIndex> iborIndex);
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
@@ -57,8 +57,8 @@ namespace QuantLib {
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const ext::shared_ptr<IborIndex>& iborIndex,
-                  const Handle<YieldTermStructure>& discountingTermStructure);
+                  ext::shared_ptr<IborIndex> iborIndex,
+                  Handle<YieldTermStructure> discountingTermStructure);
         //! \name InterestRateIndex interface
         //@{
         Date maturityDate(const Date& valueDate) const override;

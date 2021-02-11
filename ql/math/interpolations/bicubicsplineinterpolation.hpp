@@ -34,7 +34,7 @@ namespace QuantLib {
 
         class BicubicSplineDerivatives {
           public:
-            virtual ~BicubicSplineDerivatives() {}
+            virtual ~BicubicSplineDerivatives() = default;
             virtual Real derivativeX(Real x, Real y) const = 0;
             virtual Real derivativeY(Real x, Real y) const = 0;
             virtual Real derivativeXY(Real x, Real y) const = 0;

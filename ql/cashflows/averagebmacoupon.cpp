@@ -21,6 +21,7 @@
 #include <ql/cashflows/averagebmacoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/utilities/vectors.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -112,7 +113,7 @@ namespace QuantLib {
                          refPeriodStart, refPeriodEnd, dayCounter, false)
     {
         Calendar cal = index->fixingCalendar();
-        Integer fixingDays = Integer(index->fixingDays());
+        auto fixingDays = Integer(index->fixingDays());
         fixingDays += bmaCutoffDays;
         Date fixingStart = cal.advance(startDate, -fixingDays*Days, Preceding);
 
@@ -152,9 +153,8 @@ namespace QuantLib {
     }
 
     void AverageBMACoupon::accept(AcyclicVisitor& v) {
-        Visitor<AverageBMACoupon>* v1 =
-            dynamic_cast<Visitor<AverageBMACoupon>*>(&v);
-        if (v1 != 0) {
+        auto* v1 = dynamic_cast<Visitor<AverageBMACoupon>*>(&v);
+        if (v1 != nullptr) {
             v1->visit(*this);
         } else {
             FloatingRateCoupon::accept(v);
@@ -162,10 +162,8 @@ namespace QuantLib {
     }
 
 
-
-    AverageBMALeg::AverageBMALeg(const Schedule& schedule,
-                                 const ext::shared_ptr<BMAIndex>& index)
-    : schedule_(schedule), index_(index), paymentAdjustment_(Following) {}
+    AverageBMALeg::AverageBMALeg(Schedule schedule, ext::shared_ptr<BMAIndex> index)
+    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following) {}
 
     AverageBMALeg& AverageBMALeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

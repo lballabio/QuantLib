@@ -112,7 +112,7 @@ void IndexTest::testFixingHasHistoricalFixing() {
 
 
 test_suite* IndexTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("index tests");
+    auto* suite = BOOST_TEST_SUITE("index tests");
     suite->add(QUANTLIB_TEST_CASE(&IndexTest::testFixingObservability));
     suite->add(QUANTLIB_TEST_CASE(&IndexTest::testFixingHasHistoricalFixing));
     return suite;

@@ -61,7 +61,7 @@ namespace QuantLib {
         class ObjectiveFunction {
           public:
             ObjectiveFunction(const ext::shared_ptr<OptionletStripper1>&,
-                              const ext::shared_ptr<CapFloor>&,
+                              ext::shared_ptr<CapFloor>,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;
           private:

@@ -26,6 +26,7 @@
 
 #include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -34,7 +35,7 @@ namespace QuantLib {
         typedef ext::shared_ptr<GeneralizedBlackScholesProcess>
                                                                 argument_type;
         typedef LogGrid grid_type;
-        PdeBSM(const argument_type & process) : process_(process) {};
+        PdeBSM(argument_type process) : process_(std::move(process)){};
         Real diffusion(Time t, Real x) const override { return process_->diffusion(t, x); }
         Real drift(Time t, Real x) const override { return process_->drift(t, x); }
         Real discount(Time t, Real) const override {

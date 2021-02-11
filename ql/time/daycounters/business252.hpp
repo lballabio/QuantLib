@@ -44,7 +44,7 @@ namespace QuantLib {
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
             Time
             yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override;
-            explicit Impl(const Calendar& c) : calendar_(c) {}
+            explicit Impl(Calendar c) : calendar_(std::move(c)) {}
         };
       public:
         Business252(const Calendar& c = Brazil())

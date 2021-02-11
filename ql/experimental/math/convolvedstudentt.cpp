@@ -36,13 +36,10 @@
 
 namespace QuantLib {
 
-    CumulativeBehrensFisher::CumulativeBehrensFisher(
-        const std::vector<Integer>& degreesFreedom,
-        const std::vector<Real>& factors
-        )
-    : degreesFreedom_(degreesFreedom), factors_(factors),
-      polyConvolved_(std::vector<Real>(1, 1.)), // value to start convolution
-      a_(0.)
+    CumulativeBehrensFisher::CumulativeBehrensFisher(const std::vector<Integer>& degreesFreedom,
+                                                     const std::vector<Real>& factors)
+    : degreesFreedom_(degreesFreedom), factors_(factors), polyConvolved_(std::vector<Real>(1, 1.))
+
     {
         QL_REQUIRE(degreesFreedom.size() == factors.size(),
             "Incompatible sizes in convolution.");
@@ -68,9 +65,9 @@ namespace QuantLib {
             polyConvolved_ =
                 convolveVectorPolynomials(polyConvolved_, polynCharFnc_[i]);
           // trim possible zeros that might have arised:
-          std::vector<Real>::reverse_iterator it = polyConvolved_.rbegin();
-          while(it != polyConvolved_.rend()) {
-              if(*it == 0.) {
+        auto it = polyConvolved_.rbegin();
+        while (it != polyConvolved_.rend()) {
+            if (*it == 0.) {
                 polyConvolved_.pop_back();
                 it = polyConvolved_.rbegin();
               }else{

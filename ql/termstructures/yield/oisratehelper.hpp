@@ -33,23 +33,22 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
     class OISRateHelper : public RelativeDateRateHelper {
       public:
-        OISRateHelper(
-            Natural settlementDays,
-            const Period& tenor, // swap maturity
-            const Handle<Quote>& fixedRate,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            // exogenous discounting curve
-            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
-            bool telescopicValueDates = false,
-            Natural paymentLag = 0,
-            BusinessDayConvention paymentConvention = Following,
-            Frequency paymentFrequency = Annual,
-            const Calendar& paymentCalendar = Calendar(),
-            const Period& forwardStart = 0 * Days,
-            Spread overnightSpread = 0.0,
-            Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date(), 
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+        OISRateHelper(Natural settlementDays,
+                      const Period& tenor, // swap maturity
+                      const Handle<Quote>& fixedRate,
+                      ext::shared_ptr<OvernightIndex> overnightIndex,
+                      // exogenous discounting curve
+                      Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+                      bool telescopicValueDates = false,
+                      Natural paymentLag = 0,
+                      BusinessDayConvention paymentConvention = Following,
+                      Frequency paymentFrequency = Annual,
+                      Calendar paymentCalendar = Calendar(),
+                      const Period& forwardStart = 0 * Days,
+                      Spread overnightSpread = 0.0,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date(), 
+                      OvernightAveraging averagingMethod = OvernightAveraging::Compound);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -91,15 +90,14 @@ namespace QuantLib {
     class DatedOISRateHelper : public RateHelper {
       public:
         DatedOISRateHelper(
-                    const Date& startDate,
-                    const Date& endDate,
-                    const Handle<Quote>& fixedRate,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                      // exogenous discounting curve
-                    const Handle<YieldTermStructure>& discountingCurve
-                                              = Handle<YieldTermStructure>(),
-                    bool telescopicValueDates = false,
-                    OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            const Date& startDate,
+            const Date& endDate,
+            const Handle<Quote>& fixedRate,
+            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            // exogenous discounting curve
+            Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+            bool telescopicValueDates = false,
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

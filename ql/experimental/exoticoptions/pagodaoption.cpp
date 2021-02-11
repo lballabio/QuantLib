@@ -35,9 +35,8 @@ namespace QuantLib {
     void PagodaOption::setupArguments(PricingEngine::arguments* args) const {
         MultiAssetOption::setupArguments(args);
 
-        PagodaOption::arguments* arguments =
-            dynamic_cast<PagodaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<PagodaOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->fixingDates = fixingDates_;
         arguments->roof = roof_;

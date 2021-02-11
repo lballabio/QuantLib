@@ -34,7 +34,7 @@ namespace QuantLib {
 
     class VanillaOptionPricer {
       public:
-        virtual ~VanillaOptionPricer() {}
+        virtual ~VanillaOptionPricer() = default;
         virtual Real operator()(Real strike,
                                 Option::Type optionType,
                                 Real deflator) const = 0;
@@ -61,7 +61,7 @@ namespace QuantLib {
 
     class GFunction {
       public:
-        virtual ~GFunction() {}
+        virtual ~GFunction() = default;
         virtual Real operator()(Real x) = 0;
         virtual Real firstDerivative(Real x) = 0;
         virtual Real secondDerivative(Real x) = 0;
@@ -84,7 +84,7 @@ namespace QuantLib {
         newGFunctionWithShifts(const CmsCoupon& coupon,
                                const Handle<Quote>& meanReversion);
       private:
-        GFunctionFactory();
+        GFunctionFactory() = delete;
 
         class GFunctionStandard : public GFunction {
           public:
@@ -155,21 +155,17 @@ namespace QuantLib {
                 Real Rs_;
                 mutable Real derivative_;
                 public:
-              virtual ~ObjectiveFunction() {}
-                ObjectiveFunction(const GFunctionWithShifts& o,
-                                  const Real Rs)
-                : o_(o), Rs_(Rs) {}
-                virtual Real operator()(const Real& x) const;
-                Real derivative (const Real& x) const;
-                void setSwapRateValue(Real x);
-                const GFunctionWithShifts& gFunctionWithShifts() const {
-                    return o_; }
+                  virtual ~ObjectiveFunction() = default;
+                  ObjectiveFunction(const GFunctionWithShifts& o, const Real Rs) : o_(o), Rs_(Rs) {}
+                  virtual Real operator()(const Real& x) const;
+                  Real derivative(const Real& x) const;
+                  void setSwapRateValue(Real x);
+                  const GFunctionWithShifts& gFunctionWithShifts() const { return o_; }
             };
 
             ext::shared_ptr<ObjectiveFunction> objectiveFunction_;
           public:
-            GFunctionWithShifts(const CmsCoupon& coupon,
-                                const Handle<Quote>& meanReversion);
+            GFunctionWithShifts(const CmsCoupon& coupon, Handle<Quote> meanReversion);
             Real operator()(Real x) override;
             Real firstDerivative(Real x) override;
             Real secondDerivative(Real x) override;
@@ -216,10 +212,9 @@ namespace QuantLib {
         };
 
       protected:
-        HaganPricer(
-                const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                GFunctionFactory::YieldCurveModel modelOfYieldCurve,
-                const Handle<Quote>& meanReversion);
+        HaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                    GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+                    Handle<Quote> meanReversion);
         void initialize(const FloatingRateCoupon& coupon) override;
 
         virtual Real optionletPrice(Option::Type optionType,
@@ -267,23 +262,22 @@ namespace QuantLib {
           public:
             typedef Real argument_type;
             typedef Real result_type;
-            virtual ~Function() {}
+            virtual ~Function() = default;
             virtual Real operator()(Real x) const = 0;
         };
 
         class ConundrumIntegrand : public Function {
             friend class NumericHaganPricer;
           public:
-            ConundrumIntegrand(
-                       const ext::shared_ptr<VanillaOptionPricer>& o,
-                       const ext::shared_ptr<YieldTermStructure>& rateCurve,
-                       const ext::shared_ptr<GFunction>& gFunction,
-                       Date fixingDate,
-                       Date paymentDate,
-                       Real annuity,
-                       Real forwardValue,
-                       Real strike,
-                       Option::Type optionType);
+            ConundrumIntegrand(ext::shared_ptr<VanillaOptionPricer> o,
+                               const ext::shared_ptr<YieldTermStructure>& rateCurve,
+                               ext::shared_ptr<GFunction> gFunction,
+                               Date fixingDate,
+                               Date paymentDate,
+                               Real annuity,
+                               Real forwardValue,
+                               Real strike,
+                               Option::Type optionType);
             Real operator()(Real x) const override;
 
           protected:

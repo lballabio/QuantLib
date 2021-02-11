@@ -55,20 +55,18 @@ namespace QuantLib {
         class results;
         class engine;
         YearOnYearInflationSwap(
-                    Type type,
-                    Real nominal,
-                    const Schedule& fixedSchedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDayCount,
-                    const Schedule& yoySchedule,
-                    const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
-                    const Period& observationLag,
-                    Spread spread,
-                    const DayCounter& yoyDayCount,
-                    const Calendar& paymentCalendar,    // inflation index does not have a calendar
-                    BusinessDayConvention paymentConvention =
-                        ModifiedFollowing
-                    );
+            Type type,
+            Real nominal,
+            Schedule fixedSchedule,
+            Rate fixedRate,
+            DayCounter fixedDayCount,
+            Schedule yoySchedule,
+            ext::shared_ptr<YoYInflationIndex> yoyIndex,
+            const Period& observationLag,
+            Spread spread,
+            DayCounter yoyDayCount,
+            Calendar paymentCalendar, // inflation index does not have a calendar
+            BusinessDayConvention paymentConvention = ModifiedFollowing);
         // results
         virtual Real fixedLegNPV() const;
         virtual Rate fairRate() const;
@@ -98,7 +96,7 @@ namespace QuantLib {
         // other
         void setupArguments(PricingEngine::arguments* args) const override;
         void fetchResults(const PricingEngine::results*) const override;
-        ~YearOnYearInflationSwap() override {}
+        ~YearOnYearInflationSwap() override = default;
 
       private:
         void setupExpired() const override;
@@ -123,22 +121,21 @@ namespace QuantLib {
     //! %Arguments for YoY swap calculation
     class YearOnYearInflationSwap::arguments : public Swap::arguments {
     public:
-        arguments() : type(Receiver),
-        nominal(Null<Real>()) {}
-        Type type;
-        Real nominal;
+      arguments() : nominal(Null<Real>()) {}
+      Type type = Receiver;
+      Real nominal;
 
-        std::vector<Date> fixedResetDates;
-        std::vector<Date> fixedPayDates;
-        std::vector<Time> yoyAccrualTimes;
-        std::vector<Date> yoyResetDates;
-        std::vector<Date> yoyFixingDates;
-        std::vector<Date> yoyPayDates;
+      std::vector<Date> fixedResetDates;
+      std::vector<Date> fixedPayDates;
+      std::vector<Time> yoyAccrualTimes;
+      std::vector<Date> yoyResetDates;
+      std::vector<Date> yoyFixingDates;
+      std::vector<Date> yoyPayDates;
 
-        std::vector<Real> fixedCoupons;
-        std::vector<Spread> yoySpreads;
-        std::vector<Real> yoyCoupons;
-        void validate() const override;
+      std::vector<Real> fixedCoupons;
+      std::vector<Spread> yoySpreads;
+      std::vector<Real> yoyCoupons;
+      void validate() const override;
     };
 
     //! %Results from YoY swap calculation

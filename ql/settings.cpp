@@ -32,8 +32,8 @@ namespace QuantLib {
     }
 
     Settings::Settings()
-    : includeReferenceDateEvents_(false),
-      enforcesTodaysHistoricFixings_(false) {}
+
+        = default;
 
     void Settings::anchorEvaluationDate() {
         // set to today's date if not already set.

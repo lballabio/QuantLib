@@ -74,9 +74,8 @@ namespace QuantLib {
     }
 
     void BlackAtmVolCurve::accept(AcyclicVisitor& v) {
-        Visitor<BlackAtmVolCurve>* v1 =
-            dynamic_cast<Visitor<BlackAtmVolCurve>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BlackAtmVolCurve>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             QL_FAIL("not a BlackAtmVolCurve visitor");

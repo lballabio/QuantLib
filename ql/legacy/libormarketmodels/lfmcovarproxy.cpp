@@ -18,17 +18,16 @@
 */
 
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
-#include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
+#include <utility>
 
 namespace QuantLib {
-    LfmCovarianceProxy::LfmCovarianceProxy(
-        const ext::shared_ptr<LmVolatilityModel>& volaModel,
-        const ext::shared_ptr<LmCorrelationModel>& corrModel)
+    LfmCovarianceProxy::LfmCovarianceProxy(ext::shared_ptr<LmVolatilityModel> volaModel,
+                                           const ext::shared_ptr<LmCorrelationModel>& corrModel)
 
     : LfmCovarianceParameterization(corrModel->size(), corrModel->factors()),
-      volaModel_(volaModel),
-      corrModel_(corrModel) {
+      volaModel_(std::move(volaModel)), corrModel_(corrModel) {
 
         QL_REQUIRE(volaModel_->size() == corrModel_->size(),
             "different size for the volatility (" << volaModel_->size() <<

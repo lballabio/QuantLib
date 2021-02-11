@@ -423,7 +423,7 @@ void BasismodelsTest::testTenorswaptionvts() {
 
 
 test_suite* BasismodelsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Basismodels tests");
+    auto* suite = BOOST_TEST_SUITE("Basismodels tests");
     suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsContCompSpread));
     suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsSimpleCompSpread));
     suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testTenoroptionletvts));

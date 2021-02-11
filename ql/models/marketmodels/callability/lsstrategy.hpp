@@ -32,13 +32,12 @@ namespace QuantLib {
     class LongstaffSchwartzExerciseStrategy
         : public ExerciseStrategy<CurveState> {
       public:
-        LongstaffSchwartzExerciseStrategy(
-                     const Clone<MarketModelBasisSystem>& basisSystem,
-                     const std::vector<std::vector<Real> >& basisCoefficients,
-                     const EvolutionDescription& evolution,
-                     const std::vector<Size>& numeraires,
-                     const Clone<MarketModelExerciseValue>& exercise,
-                     const Clone<MarketModelExerciseValue>& control);
+        LongstaffSchwartzExerciseStrategy(Clone<MarketModelBasisSystem> basisSystem,
+                                          std::vector<std::vector<Real> > basisCoefficients,
+                                          const EvolutionDescription& evolution,
+                                          const std::vector<Size>& numeraires,
+                                          Clone<MarketModelExerciseValue> exercise,
+                                          Clone<MarketModelExerciseValue> control);
         std::vector<Time> exerciseTimes() const override;
         std::vector<Time> relevantTimes() const override;
         void reset() override;

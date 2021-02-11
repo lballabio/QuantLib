@@ -105,7 +105,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline UnitOfMeasureConversion::UnitOfMeasureConversion() {}
+    inline UnitOfMeasureConversion::UnitOfMeasureConversion() = default;
 
     inline const CommodityType& UnitOfMeasureConversion::commodityType() const {
         return data_->commodityType;

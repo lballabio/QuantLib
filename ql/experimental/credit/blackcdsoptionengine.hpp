@@ -35,10 +35,10 @@ namespace QuantLib {
     */
     class BlackCdsOptionEngine : public CdsOption::engine {
       public:
-        BlackCdsOptionEngine(const Handle<DefaultProbabilityTermStructure>&,
+        BlackCdsOptionEngine(Handle<DefaultProbabilityTermStructure>,
                              Real recoveryRate,
-                             const Handle<YieldTermStructure>& termStructure,
-                             const Handle<Quote>& vol);
+                             Handle<YieldTermStructure> termStructure,
+                             Handle<Quote> vol);
         void calculate() const override;
         Handle<YieldTermStructure> termStructure();
         Handle<Quote> volatility();

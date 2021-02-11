@@ -26,6 +26,7 @@
 
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/gjrgarchprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -57,7 +58,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanGJRGARCHEngine {
       public:
-        MakeMCEuropeanGJRGARCHEngine(const ext::shared_ptr<GJRGARCHProcess>&);
+        MakeMCEuropeanGJRGARCHEngine(ext::shared_ptr<GJRGARCHProcess>);
         // named parameters
         MakeMCEuropeanGJRGARCHEngine& withSteps(Size steps);
         MakeMCEuropeanGJRGARCHEngine& withStepsPerYear(Size steps);
@@ -128,13 +129,11 @@ namespace QuantLib {
     }
 
 
-
     template <class RNG, class S>
-    inline MakeMCEuropeanGJRGARCHEngine<RNG,S>::MakeMCEuropeanGJRGARCHEngine(
-                              const ext::shared_ptr<GJRGARCHProcess>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+    inline MakeMCEuropeanGJRGARCHEngine<RNG, S>::MakeMCEuropeanGJRGARCHEngine(
+        ext::shared_ptr<GJRGARCHProcess> process)
+    : process_(std::move(process)), antithetic_(false), steps_(Null<Size>()),
+      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S>

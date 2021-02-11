@@ -17,28 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "utilities.hpp"
 #include "nthorderderivativeop.hpp"
-
+#include "utilities.hpp"
+#include <ql/functional.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/initializers.hpp>
-#include <ql/math/richardsonextrapolation.hpp>
-#include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/math/matrixutilities/bicgstab.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/nthorderderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/functional.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <numeric>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -459,11 +459,11 @@ namespace {
 
     class AvgPayoffFct {
       public:
-        AvgPayoffFct(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-                     Volatility vol, Time T, Real growthFactor)
-        : payoff_(payoff),
-          vol2_(0.5*vol*vol*T),
-          growthFactor_(growthFactor) { }
+        AvgPayoffFct(ext::shared_ptr<PlainVanillaPayoff> payoff,
+                     Volatility vol,
+                     Time T,
+                     Real growthFactor)
+        : payoff_(std::move(payoff)), vol2_(0.5 * vol * vol * T), growthFactor_(growthFactor) {}
 
         Real operator()(Real x) const {
             return (*payoff_)(std::exp(x - vol2_)*growthFactor_);
@@ -585,9 +585,8 @@ namespace {
 
     class FdmMispricingCostFunction : public CostFunction {
       public:
-        FdmMispricingCostFunction(
-            const GridSetup& setup, const Array& strikes)
-        : setup_(setup), strikes_(strikes) { }
+        FdmMispricingCostFunction(const GridSetup& setup, Array strikes)
+        : setup_(setup), strikes_(std::move(strikes)) {}
 
         Disposable<Array> values(const Array& x) const override {
             const GridSetup g = {
@@ -697,7 +696,7 @@ void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
 #endif
 
 test_suite* NthOrderDerivativeOpTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
+    auto* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
 
 #ifndef QL_NO_UBLAS_SUPPORT
 

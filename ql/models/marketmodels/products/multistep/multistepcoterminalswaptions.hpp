@@ -32,7 +32,7 @@ namespace QuantLib {
       public:
         MultiStepCoterminalSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& paymentTimes,
-                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >&);
+                                     std::vector<ext::shared_ptr<StrikedTypePayoff> >);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const override;

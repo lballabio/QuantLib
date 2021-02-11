@@ -17,26 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/processes/hestonprocess.hpp>
 #include <ql/methods/finitedifferences/operators/fdmcirop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmcirsolver.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmCIRSolver::FdmCIRSolver(
-        const Handle<CoxIngersollRossProcess>& cirProcess,
-        const Handle<GeneralizedBlackScholesProcess>& bsProcess,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc,
-        const Real rho,
-        const Real strike)
-    : bsProcess_(bsProcess),
-      cirProcess_(cirProcess),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      rho_(rho),
-      strike_(strike){
+    FdmCIRSolver::FdmCIRSolver(Handle<CoxIngersollRossProcess> cirProcess,
+                               Handle<GeneralizedBlackScholesProcess> bsProcess,
+                               FdmSolverDesc solverDesc,
+                               const FdmSchemeDesc& schemeDesc,
+                               const Real rho,
+                               const Real strike)
+    : bsProcess_(std::move(bsProcess)), cirProcess_(std::move(cirProcess)),
+      solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc), rho_(rho), strike_(strike) {
         registerWith(bsProcess_);
         registerWith(cirProcess_);
     }

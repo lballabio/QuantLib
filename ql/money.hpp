@@ -26,6 +26,7 @@
 #define quantlib_money_hpp
 
 #include <ql/currency.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,8 +39,8 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         Money();
-        Money(const Currency& currency, Decimal value);
-        Money(Decimal value, const Currency& currency);
+        Money(Currency currency, Decimal value);
+        Money(Decimal value, Currency currency);
         //@}
         //! \name Inspectors
         //@{
@@ -79,7 +80,7 @@ namespace QuantLib {
         static Currency baseCurrency;
         //@}
       private:
-        Decimal value_;
+        Decimal value_ = 0.0;
         Currency currency_;
     };
 
@@ -132,14 +133,13 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Money::Money()
-    : value_(0.0) {}
+    inline Money::Money() = default;
 
-    inline Money::Money(const Currency& currency, Decimal value)
-    : value_(value), currency_(currency) {}
+    inline Money::Money(Currency currency, Decimal value)
+    : value_(value), currency_(std::move(currency)) {}
 
-    inline Money::Money(Decimal value, const Currency& currency)
-    : value_(value), currency_(currency) {}
+    inline Money::Money(Decimal value, Currency currency)
+    : value_(value), currency_(std::move(currency)) {}
 
     inline const Currency& Money::currency() const {
         return currency_;

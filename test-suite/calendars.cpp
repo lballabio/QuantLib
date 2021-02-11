@@ -2120,8 +2120,7 @@ void CalendarTest::testDayLists() {
     std::vector<Date> holidays = germany.holidayList(firstDate, endDate, true);
     std::vector<Date> businessDays = germany.businessDayList(firstDate, endDate);
 
-    std::vector<Date>::iterator it_holidays = holidays.begin(),
-                                it_businessDays = businessDays.begin();
+    auto it_holidays = holidays.begin(), it_businessDays = businessDays.begin();
     for (Date d = firstDate; d < endDate; d++) {
         if (it_holidays != holidays.end() && it_businessDays != businessDays.end() &&
             d == *it_holidays && d == *it_businessDays) {
@@ -2139,7 +2138,7 @@ void CalendarTest::testDayLists() {
 }
 
 test_suite* CalendarTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
+    auto* suite = BOOST_TEST_SUITE("Calendar tests");
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBrazil));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testRussia));

@@ -43,7 +43,7 @@ namespace QuantLib {
                                DiscountFactor growth,
                                Real stdDev,
                                DiscountFactor discount);
-        ~BlackScholesCalculator() override {}
+        ~BlackScholesCalculator() override = default;
         /*! Sensitivity to change in the underlying spot price. */
         Real delta() const;
         /*! Sensitivity in percent to a percent change in the

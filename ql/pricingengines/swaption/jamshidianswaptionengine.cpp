@@ -18,8 +18,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,9 +30,10 @@ namespace QuantLib {
                     Real nominal,
                     Time maturity,
                     Time valueTime,
-                    const std::vector<Time>& fixedPayTimes,
+                    std::vector<Time> fixedPayTimes,
                     const std::vector<Real>& amounts)
-        : strike_(nominal), maturity_(maturity), valueTime_(valueTime), times_(fixedPayTimes), amounts_(amounts), model_(model) {}
+        : strike_(nominal), maturity_(maturity), valueTime_(valueTime),
+          times_(std::move(fixedPayTimes)), amounts_(amounts), model_(model) {}
 
         Real operator()(Rate x) const {
             Real value = strike_;
@@ -69,7 +71,7 @@ namespace QuantLib {
 
         ext::shared_ptr<TermStructureConsistentModel> tsmodel =
             ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
-        if (tsmodel != 0) {
+        if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
         } else {
