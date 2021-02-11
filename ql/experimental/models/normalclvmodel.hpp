@@ -47,13 +47,12 @@ namespace QuantLib {
 
     class NormalCLVModel : public LazyObject {
       public:
-        NormalCLVModel(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
-            const std::vector<Date>& maturityDates,
-            Size lagrangeOrder,
-            Real pMax = Null<Real>(),
-            Real pMin = Null<Real>());
+        NormalCLVModel(const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                       ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess,
+                       const std::vector<Date>& maturityDates,
+                       Size lagrangeOrder,
+                       Real pMax = Null<Real>(),
+                       Real pMin = Null<Real>());
 
         // cumulative distribution function of the BS process
         Real cdf(const Date& d, Real x) const;

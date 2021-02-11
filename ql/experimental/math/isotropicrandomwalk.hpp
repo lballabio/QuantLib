@@ -24,10 +24,11 @@
 #ifndef quantlib_isotropic_random_walk_hpp
 #define quantlib_isotropic_random_walk_hpp
 
-#include <ql/mathconstants.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/array.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/mathconstants.hpp>
 #include <boost/random/variate_generator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -44,11 +45,12 @@ namespace QuantLib {
     class IsotropicRandomWalk {
       public:
         typedef boost::variate_generator<Engine, Distribution> VariateGenerator;
-        IsotropicRandomWalk(const Engine& eng, Distribution dist, Size dim,
-                            const Array& weights = Array(), 
-                            unsigned long seed = 0) :
-            variate_(eng, dist), rng_(seed), 
-            weights_(weights), dim_(dim) {
+        IsotropicRandomWalk(const Engine& eng,
+                            Distribution dist,
+                            Size dim,
+                            Array weights = Array(),
+                            unsigned long seed = 0)
+        : variate_(eng, dist), rng_(seed), weights_(std::move(weights)), dim_(dim) {
             if (weights_.empty())
                 weights_ = Array(dim, 1.0);
             else

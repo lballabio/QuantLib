@@ -47,10 +47,9 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        AnalyticBSMHullWhiteEngine(
-                     Real equityShortRateCorrelation,
-                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
-                     const ext::shared_ptr<HullWhite>&);
+        AnalyticBSMHullWhiteEngine(Real equityShortRateCorrelation,
+                                   ext::shared_ptr<GeneralizedBlackScholesProcess>,
+                                   const ext::shared_ptr<HullWhite>&);
         void calculate() const override;
 
       private:

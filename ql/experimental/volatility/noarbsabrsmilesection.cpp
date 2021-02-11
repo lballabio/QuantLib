@@ -20,24 +20,26 @@
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
-NoArbSabrSmileSection::NoArbSabrSmileSection(
-    Time timeToExpiry, Rate forward, const std::vector<Real> &sabrParams,
-    Real shift)
-    : SmileSection(timeToExpiry, DayCounter()), forward_(forward),
-      params_(sabrParams), shift_(shift) {
-    init();
-}
+    NoArbSabrSmileSection::NoArbSabrSmileSection(Time timeToExpiry,
+                                                 Rate forward,
+                                                 std::vector<Real> sabrParams,
+                                                 Real shift)
+    : SmileSection(timeToExpiry, DayCounter()), forward_(forward), params_(std::move(sabrParams)),
+      shift_(shift) {
+        init();
+    }
 
-NoArbSabrSmileSection::NoArbSabrSmileSection(
-    const Date &d, Rate forward, const std::vector<Real> &sabrParams,
-    const DayCounter &dc, Real shift)
-    : SmileSection(d, dc, Date()), forward_(forward), params_(sabrParams), shift_(shift) {
-    init();
-}
+    NoArbSabrSmileSection::NoArbSabrSmileSection(
+        const Date& d, Rate forward, std::vector<Real> sabrParams, const DayCounter& dc, Real shift)
+    : SmileSection(d, dc, Date()), forward_(forward), params_(std::move(sabrParams)),
+      shift_(shift) {
+        init();
+    }
 
 void NoArbSabrSmileSection::init() {
     QL_REQUIRE(params_.size() >= 4,

@@ -18,21 +18,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/callablebonds/callablebond.hpp>
-#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
+#include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     CallableBond::CallableBond(Natural settlementDays,
                                const Schedule& schedule,
-                               const DayCounter& paymentDayCounter,
+                               DayCounter paymentDayCounter,
                                const Date& issueDate,
-                               const CallabilitySchedule& putCallSchedule)
+                               CallabilitySchedule putCallSchedule)
     : Bond(settlementDays, schedule.calendar(), issueDate),
-      paymentDayCounter_(paymentDayCounter), putCallSchedule_(putCallSchedule) {
+      paymentDayCounter_(std::move(paymentDayCounter)),
+      putCallSchedule_(std::move(putCallSchedule)) {
 
         maturityDate_ = schedule.dates().back();
 

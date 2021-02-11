@@ -35,13 +35,12 @@ namespace QuantLib {
 
     class FdmLocalVolFwdOp : public FdmLinearOpComposite {
       public:
-        FdmLocalVolFwdOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<Quote>& spot,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            const ext::shared_ptr<YieldTermStructure>& qTS,
-            const ext::shared_ptr<LocalVolTermStructure>& localVol,
-            Size direction = 0);
+        FdmLocalVolFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
+                         const ext::shared_ptr<Quote>& spot,
+                         ext::shared_ptr<YieldTermStructure> rTS,
+                         ext::shared_ptr<YieldTermStructure> qTS,
+                         const ext::shared_ptr<LocalVolTermStructure>& localVol,
+                         Size direction = 0);
 
         Size size() const override;
         void setTime(Time t1, Time t2) override;

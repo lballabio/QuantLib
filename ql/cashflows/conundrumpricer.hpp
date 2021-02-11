@@ -165,8 +165,7 @@ namespace QuantLib {
 
             ext::shared_ptr<ObjectiveFunction> objectiveFunction_;
           public:
-            GFunctionWithShifts(const CmsCoupon& coupon,
-                                const Handle<Quote>& meanReversion);
+            GFunctionWithShifts(const CmsCoupon& coupon, Handle<Quote> meanReversion);
             Real operator()(Real x) override;
             Real firstDerivative(Real x) override;
             Real secondDerivative(Real x) override;
@@ -213,10 +212,9 @@ namespace QuantLib {
         };
 
       protected:
-        HaganPricer(
-                const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                GFunctionFactory::YieldCurveModel modelOfYieldCurve,
-                const Handle<Quote>& meanReversion);
+        HaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                    GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+                    Handle<Quote> meanReversion);
         void initialize(const FloatingRateCoupon& coupon) override;
 
         virtual Real optionletPrice(Option::Type optionType,
@@ -271,16 +269,15 @@ namespace QuantLib {
         class ConundrumIntegrand : public Function {
             friend class NumericHaganPricer;
           public:
-            ConundrumIntegrand(
-                       const ext::shared_ptr<VanillaOptionPricer>& o,
-                       const ext::shared_ptr<YieldTermStructure>& rateCurve,
-                       const ext::shared_ptr<GFunction>& gFunction,
-                       Date fixingDate,
-                       Date paymentDate,
-                       Real annuity,
-                       Real forwardValue,
-                       Real strike,
-                       Option::Type optionType);
+            ConundrumIntegrand(ext::shared_ptr<VanillaOptionPricer> o,
+                               const ext::shared_ptr<YieldTermStructure>& rateCurve,
+                               ext::shared_ptr<GFunction> gFunction,
+                               Date fixingDate,
+                               Date paymentDate,
+                               Real annuity,
+                               Real forwardValue,
+                               Real strike,
+                               Option::Type optionType);
             Real operator()(Real x) const override;
 
           protected:

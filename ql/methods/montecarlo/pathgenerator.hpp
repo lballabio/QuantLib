@@ -28,6 +28,7 @@
 
 #include <ql/methods/montecarlo/brownianbridge.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
     class StochasticProcess;
@@ -48,11 +49,11 @@ namespace QuantLib {
         PathGenerator(const ext::shared_ptr<StochasticProcess>&,
                       Time length,
                       Size timeSteps,
-                      const GSG& generator,
+                      GSG generator,
                       bool brownianBridge);
         PathGenerator(const ext::shared_ptr<StochasticProcess>&,
-                      const TimeGrid& timeGrid,
-                      const GSG& generator,
+                      TimeGrid timeGrid,
+                      GSG generator,
                       bool brownianBridge);
         //! \name inspectors
         //@{
@@ -77,31 +78,29 @@ namespace QuantLib {
     // template definitions
 
     template <class GSG>
-    PathGenerator<GSG>::PathGenerator(
-                          const ext::shared_ptr<StochasticProcess>& process,
-                          Time length,
-                          Size timeSteps,
-                          const GSG& generator,
-                          bool brownianBridge)
-    : brownianBridge_(brownianBridge), generator_(generator),
+    PathGenerator<GSG>::PathGenerator(const ext::shared_ptr<StochasticProcess>& process,
+                                      Time length,
+                                      Size timeSteps,
+                                      GSG generator,
+                                      bool brownianBridge)
+    : brownianBridge_(brownianBridge), generator_(std::move(generator)),
       dimension_(generator_.dimension()), timeGrid_(length, timeSteps),
       process_(ext::dynamic_pointer_cast<StochasticProcess1D>(process)),
-      next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
+      next_(Path(timeGrid_), 1.0), temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeSteps,
                    "sequence generator dimensionality (" << dimension_
                    << ") != timeSteps (" << timeSteps << ")");
     }
 
     template <class GSG>
-    PathGenerator<GSG>::PathGenerator(
-                          const ext::shared_ptr<StochasticProcess>& process,
-                          const TimeGrid& timeGrid,
-                          const GSG& generator,
-                          bool brownianBridge)
-    : brownianBridge_(brownianBridge), generator_(generator),
-      dimension_(generator_.dimension()), timeGrid_(timeGrid),
+    PathGenerator<GSG>::PathGenerator(const ext::shared_ptr<StochasticProcess>& process,
+                                      TimeGrid timeGrid,
+                                      GSG generator,
+                                      bool brownianBridge)
+    : brownianBridge_(brownianBridge), generator_(std::move(generator)),
+      dimension_(generator_.dimension()), timeGrid_(std::move(timeGrid)),
       process_(ext::dynamic_pointer_cast<StochasticProcess1D>(process)),
-      next_(Path(timeGrid_),1.0), temp_(dimension_), bb_(timeGrid_) {
+      next_(Path(timeGrid_), 1.0), temp_(dimension_), bb_(timeGrid_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "sequence generator dimensionality (" << dimension_
                    << ") != timeSteps (" << timeGrid_.size()-1 << ")");

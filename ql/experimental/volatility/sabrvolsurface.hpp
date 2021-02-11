@@ -38,12 +38,11 @@ namespace QuantLib {
     */
     class SabrVolSurface : public InterestRateVolSurface {
       public:
-        SabrVolSurface(
-                const ext::shared_ptr<InterestRateIndex>&,
-                const Handle<BlackAtmVolCurve>&,
-                const std::vector<Period>& optionTenors,
-                const std::vector<Spread>& atmRateSpreads,
-                const std::vector<std::vector<Handle<Quote> > >& volSpreads);
+        SabrVolSurface(const ext::shared_ptr<InterestRateIndex>&,
+                       Handle<BlackAtmVolCurve>,
+                       const std::vector<Period>& optionTenors,
+                       std::vector<Spread> atmRateSpreads,
+                       std::vector<std::vector<Handle<Quote> > > volSpreads);
         //@}
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface

@@ -19,6 +19,7 @@
 */
 
 #include <ql/experimental/credit/issuer.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -32,21 +33,17 @@ namespace QuantLib {
         }
     }
 
-    Issuer::Issuer(const std::vector<std::pair<DefaultProbKey,
-                    Handle<DefaultProbabilityTermStructure> > >&
-                    probabilities,
-                   const DefaultEventSet& events
-        )
-    : probabilities_(probabilities), events_(events) { }
+    Issuer::Issuer(std::vector<std::pair<DefaultProbKey, Handle<DefaultProbabilityTermStructure> > >
+                       probabilities,
+                   DefaultEventSet events)
+    : probabilities_(std::move(probabilities)), events_(std::move(events)) {}
 
-    Issuer::Issuer(const std::vector<std::vector<
-                       ext::shared_ptr<DefaultType> > >& eventTypes,
+    Issuer::Issuer(const std::vector<std::vector<ext::shared_ptr<DefaultType> > >& eventTypes,
                    const std::vector<Currency>& currencies,
                    const std::vector<Seniority>& seniorities,
-                   const std::vector<Handle<
-                       DefaultProbabilityTermStructure> >& curves,
-                   const DefaultEventSet& events)
-    : events_(events) {
+                   const std::vector<Handle<DefaultProbabilityTermStructure> >& curves,
+                   DefaultEventSet events)
+    : events_(std::move(events)) {
         QL_REQUIRE((eventTypes.size() == curves.size()) &&
             (curves.size()== currencies.size()) &&
             (currencies.size() == seniorities.size()),

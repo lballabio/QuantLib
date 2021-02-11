@@ -21,9 +21,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/credit/hazardratestructure.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/functional.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/termstructures/credit/hazardratestructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -33,7 +34,7 @@ namespace QuantLib {
         struct remapper {
             F f;
             Time T;
-            remapper(const F& f, Time T) : f(f), T(T) {}
+            remapper(F f, Time T) : f(std::move(f)), T(T) {}
             // This remaps [-1,1] to [0,T]. No differential included.
             Real operator()(Real x) const {
                 const Real arg = (x+1.0)*T/2.0;

@@ -25,6 +25,7 @@
 #define quantlib_flatextrapolation2D_hpp
 
 #include <ql/math/interpolations/interpolation2d.hpp>
+#include <utility>
 
 namespace QuantLib {
     
@@ -41,8 +42,8 @@ namespace QuantLib {
       protected:
        class FlatExtrapolator2DImpl: public Interpolation2D::Impl{
           public:
-            FlatExtrapolator2DImpl(const ext::shared_ptr<Interpolation2D>& decoratedInterpolation)
-            : decoratedInterp_(decoratedInterpolation) {
+            FlatExtrapolator2DImpl(ext::shared_ptr<Interpolation2D> decoratedInterpolation)
+            : decoratedInterp_(std::move(decoratedInterpolation)) {
                 calculate();
             }
             Real xMin() const override { return decoratedInterp_->xMin(); }

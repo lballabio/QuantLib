@@ -54,7 +54,7 @@ namespace QuantLib {
                            Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
-                           const DayCounter& dayCounter = DayCounter(),
+                           DayCounter dayCounter = DayCounter(),
                            bool isInArrears = false,
                            const Date& exCouponDate = Date());
 

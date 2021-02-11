@@ -54,7 +54,7 @@ namespace QuantLib {
         class results;
 
         AssetSwap(bool payBondCoupon,
-                  const ext::shared_ptr<Bond>& bond,
+                  ext::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
                   const ext::shared_ptr<IborIndex>& iborIndex,
                   Spread spread,
@@ -63,7 +63,7 @@ namespace QuantLib {
                   bool parAssetSwap = true);
 
         AssetSwap(bool parAssetSwap,
-                  const ext::shared_ptr<Bond>& bond,
+                  ext::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
                   Real nonParRepayment,
                   Real gearing,

@@ -64,7 +64,7 @@ namespace QuantLib {
     class AnalyticHestonForwardEuropeanEngine : public GenericEngine<ForwardOptionArguments<VanillaOption::arguments>,
                                                        VanillaOption::results> {
       public:
-        explicit AnalyticHestonForwardEuropeanEngine(const ext::shared_ptr<HestonProcess>& process,
+        explicit AnalyticHestonForwardEuropeanEngine(ext::shared_ptr<HestonProcess> process,
                                                      Size integrationOrder = 144);
 
         void calculate() const override;

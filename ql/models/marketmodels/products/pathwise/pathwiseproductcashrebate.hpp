@@ -43,10 +43,10 @@ namespace QuantLib {
 
      {
       public:
-        MarketModelPathwiseCashRebate(const EvolutionDescription& evolution,
-                              const std::vector<Time>& paymentTimes,
-                              const Matrix& amounts,
-                              Size numberOfProducts);
+        MarketModelPathwiseCashRebate(EvolutionDescription evolution,
+                                      const std::vector<Time>& paymentTimes,
+                                      Matrix amounts,
+                                      Size numberOfProducts);
 
         std::vector<Size> suggestedNumeraires() const override;
         const EvolutionDescription& evolution() const override;

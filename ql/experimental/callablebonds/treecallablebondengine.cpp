@@ -17,29 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/onefactormodel.hpp>
-#include <ql/experimental/callablebonds/treecallablebondengine.hpp>
 #include <ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp>
+#include <ql/experimental/callablebonds/treecallablebondengine.hpp>
+#include <ql/models/shortrate/onefactormodel.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-                               const ext::shared_ptr<ShortRateModel>& model,
-                               const Size timeSteps,
-                               const Handle<YieldTermStructure>& termStructure)
-    : LatticeShortRateModelEngine<CallableBond::arguments,
-                                  CallableBond::results>(model, timeSteps),
-      termStructure_(termStructure) {
+        const ext::shared_ptr<ShortRateModel>& model,
+        const Size timeSteps,
+        Handle<YieldTermStructure> termStructure)
+    : LatticeShortRateModelEngine<CallableBond::arguments, CallableBond::results>(model, timeSteps),
+      termStructure_(std::move(termStructure)) {
         registerWith(termStructure_);
     }
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-                               const ext::shared_ptr<ShortRateModel>& model,
-                               const TimeGrid& timeGrid,
-                               const Handle<YieldTermStructure>& termStructure)
-    : LatticeShortRateModelEngine<CallableBond::arguments,
-                                  CallableBond::results>(model, timeGrid),
-      termStructure_(termStructure) {
+        const ext::shared_ptr<ShortRateModel>& model,
+        const TimeGrid& timeGrid,
+        Handle<YieldTermStructure> termStructure)
+    : LatticeShortRateModelEngine<CallableBond::arguments, CallableBond::results>(model, timeGrid),
+      termStructure_(std::move(termStructure)) {
         registerWith(termStructure_);
     }
 

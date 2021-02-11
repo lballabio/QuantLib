@@ -19,13 +19,12 @@
 */
 
 #include <ql/quotes/forwardvaluequote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    ForwardValueQuote::ForwardValueQuote(
-                            const ext::shared_ptr<Index>& index,
-                            const Date& fixingDate)
-    : index_(index), fixingDate_(fixingDate) {
+    ForwardValueQuote::ForwardValueQuote(ext::shared_ptr<Index> index, const Date& fixingDate)
+    : index_(std::move(index)), fixingDate_(fixingDate) {
         registerWith(index_);
     }
 

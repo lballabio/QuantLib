@@ -17,31 +17,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/commodities/energyvanillaswap.hpp>
 #include <ql/experimental/commodities/commoditysettings.hpp>
+#include <ql/experimental/commodities/energyvanillaswap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    EnergyVanillaSwap::EnergyVanillaSwap(
-                    bool payer, const Calendar& calendar,
-                    const Money& fixedPrice,
-                    const UnitOfMeasure& fixedPriceUnitOfMeasure,
-                    const ext::shared_ptr<CommodityIndex>& index,
-                    const Currency& payCurrency,
-                    const Currency& receiveCurrency,
-                    const PricingPeriods& pricingPeriods,
-                    const CommodityType& commodityType,
-                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
-                    const Handle<YieldTermStructure>& payLegTermStructure,
-                    const Handle<YieldTermStructure>& receiveLegTermStructure,
-                    const Handle<YieldTermStructure>& discountTermStructure)
-    : EnergySwap(calendar, payCurrency, receiveCurrency, pricingPeriods,
-                 commodityType, secondaryCosts),
-      payReceive_(payer ? 1 : 0), fixedPrice_(fixedPrice),
-      fixedPriceUnitOfMeasure_(fixedPriceUnitOfMeasure),
-      index_(index), payLegTermStructure_(payLegTermStructure),
-      receiveLegTermStructure_(receiveLegTermStructure),
-      discountTermStructure_(discountTermStructure) {
+    EnergyVanillaSwap::EnergyVanillaSwap(bool payer,
+                                         const Calendar& calendar,
+                                         Money fixedPrice,
+                                         UnitOfMeasure fixedPriceUnitOfMeasure,
+                                         ext::shared_ptr<CommodityIndex> index,
+                                         const Currency& payCurrency,
+                                         const Currency& receiveCurrency,
+                                         const PricingPeriods& pricingPeriods,
+                                         const CommodityType& commodityType,
+                                         const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
+                                         Handle<YieldTermStructure> payLegTermStructure,
+                                         Handle<YieldTermStructure> receiveLegTermStructure,
+                                         Handle<YieldTermStructure> discountTermStructure)
+    : EnergySwap(
+          calendar, payCurrency, receiveCurrency, pricingPeriods, commodityType, secondaryCosts),
+      payReceive_(payer ? 1 : 0), fixedPrice_(std::move(fixedPrice)),
+      fixedPriceUnitOfMeasure_(std::move(fixedPriceUnitOfMeasure)), index_(std::move(index)),
+      payLegTermStructure_(std::move(payLegTermStructure)),
+      receiveLegTermStructure_(std::move(receiveLegTermStructure)),
+      discountTermStructure_(std::move(discountTermStructure)) {
 
         QL_REQUIRE(!pricingPeriods_.empty(), "no pricing periods");
         registerWith(index_);

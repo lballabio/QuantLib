@@ -41,13 +41,12 @@ namespace QuantLib {
     //! set of CMS quotes
     class CmsMarket: public LazyObject{
       public:
-        CmsMarket(
-            const std::vector<Period>& swapLengths,
-            const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
-            const ext::shared_ptr<IborIndex>& iborIndex,
-            const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-            const std::vector<ext::shared_ptr<CmsCouponPricer> >& pricers,
-            const Handle<YieldTermStructure>& discountingTS);
+        CmsMarket(std::vector<Period> swapLengths,
+                  std::vector<ext::shared_ptr<SwapIndex> > swapIndexes,
+                  ext::shared_ptr<IborIndex> iborIndex,
+                  const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
+                  const std::vector<ext::shared_ptr<CmsCouponPricer> >& pricers,
+                  Handle<YieldTermStructure> discountingTS);
         //! \name LazyObject interface
         //@{
         void update() override { LazyObject::update(); }

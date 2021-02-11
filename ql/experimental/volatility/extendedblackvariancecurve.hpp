@@ -37,12 +37,11 @@ namespace QuantLib {
     */
     class ExtendedBlackVarianceCurve : public BlackVarianceTermStructure {
       public:
-        ExtendedBlackVarianceCurve(
-                              const Date& referenceDate,
-                              const std::vector<Date>& dates,
-                              const std::vector<Handle<Quote> >& volatilities,
-                              const DayCounter& dayCounter,
-                              bool forceMonotoneVariance = true);
+        ExtendedBlackVarianceCurve(const Date& referenceDate,
+                                   const std::vector<Date>& dates,
+                                   std::vector<Handle<Quote> > volatilities,
+                                   DayCounter dayCounter,
+                                   bool forceMonotoneVariance = true);
 
         DayCounter dayCounter() const override { return dayCounter_; }
         Date maxDate() const override;

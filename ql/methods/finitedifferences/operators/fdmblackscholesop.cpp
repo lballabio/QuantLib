@@ -19,38 +19,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmBlackScholesOp::FdmBlackScholesOp(
         const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
         Real strike,
         bool localVol,
         Real illegalLocalVolOverwrite,
         Size direction,
-        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
-    : mesher_(mesher),
-      rTS_   (bsProcess->riskFreeRate().currentLink()),
-      qTS_   (bsProcess->dividendYield().currentLink()),
-      volTS_ (bsProcess->blackVolatility().currentLink()),
-      localVol_((localVol) ? bsProcess->localVolatility().currentLink()
-                           : ext::shared_ptr<LocalVolTermStructure>()),
-      x_     ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
-      dxMap_ (FirstDerivativeOp(direction, mesher)),
-      dxxMap_(SecondDerivativeOp(direction, mesher)),
-      mapT_  (direction, mesher),
-      strike_(strike),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      direction_(direction),
-      quantoHelper_(quantoHelper) {
-    }
+        ext::shared_ptr<FdmQuantoHelper> quantoHelper)
+    : mesher_(mesher), rTS_(bsProcess->riskFreeRate().currentLink()),
+      qTS_(bsProcess->dividendYield().currentLink()),
+      volTS_(bsProcess->blackVolatility().currentLink()),
+      localVol_((localVol) ? bsProcess->localVolatility().currentLink() :
+                             ext::shared_ptr<LocalVolTermStructure>()),
+      x_((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
+      dxMap_(FirstDerivativeOp(direction, mesher)), dxxMap_(SecondDerivativeOp(direction, mesher)),
+      mapT_(direction, mesher), strike_(strike),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite), direction_(direction),
+      quantoHelper_(std::move(quantoHelper)) {}
 
     void FdmBlackScholesOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();

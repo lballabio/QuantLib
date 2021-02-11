@@ -45,18 +45,18 @@ namespace QuantLib {
             checked for plausibility in any sense. */
         Schedule(
             const std::vector<Date>&,
-            const Calendar& calendar = NullCalendar(),
+            Calendar calendar = NullCalendar(),
             BusinessDayConvention convention = Unadjusted,
             const boost::optional<BusinessDayConvention>& terminationDateConvention = boost::none,
             const boost::optional<Period>& tenor = boost::none,
             const boost::optional<DateGeneration::Rule>& rule = boost::none,
             const boost::optional<bool>& endOfMonth = boost::none,
-            const std::vector<bool>& isRegular = std::vector<bool>(0));
+            std::vector<bool> isRegular = std::vector<bool>(0));
         /*! rule based constructor */
         Schedule(Date effectiveDate,
                  const Date& terminationDate,
                  const Period& tenor,
-                 const Calendar& calendar,
+                 Calendar calendar,
                  BusinessDayConvention convention,
                  BusinessDayConvention terminationDateConvention,
                  DateGeneration::Rule rule,

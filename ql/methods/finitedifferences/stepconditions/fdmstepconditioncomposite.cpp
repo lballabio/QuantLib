@@ -22,21 +22,20 @@
 
 #include <ql/exercise.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
-
+#include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <set>
+#include <utility>
 
 namespace QuantLib {
 
     FdmStepConditionComposite::FdmStepConditionComposite(
-        const std::list<std::vector<Time> > & stoppingTimes,
-        const Conditions & conditions)
-    : conditions_(conditions) {
+        const std::list<std::vector<Time> >& stoppingTimes, Conditions conditions)
+    : conditions_(std::move(conditions)) {
 
         std::set<Real> allStoppingTimes;
         for (auto iter = stoppingTimes.begin(); iter != stoppingTimes.end(); ++iter) {

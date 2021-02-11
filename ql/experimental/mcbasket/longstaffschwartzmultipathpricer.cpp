@@ -17,9 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/generallinearleastsquares.hpp>
 #include <ql/experimental/mcbasket/longstaffschwartzmultipathpricer.hpp>
+#include <ql/math/generallinearleastsquares.hpp>
 #include <ql/utilities/tracing.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,21 +37,16 @@ namespace QuantLib {
 
     LongstaffSchwartzMultiPathPricer::LongstaffSchwartzMultiPathPricer(
         const ext::shared_ptr<PathPayoff>& payoff,
-        const std::vector<Size> & timePositions,
-        const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
-        const Array & discounts,
+        const std::vector<Size>& timePositions,
+        std::vector<Handle<YieldTermStructure> > forwardTermStructures,
+        Array discounts,
         Size polynomOrder,
         LsmBasisSystem::PolynomType polynomType)
-    : calibrationPhase_(true),
-      payoff_(payoff),
-      coeff_     (new Array[timePositions.size() - 1]),
-      lowerBounds_(new Real[timePositions.size()]),
-      timePositions_(timePositions),
-      forwardTermStructures_(forwardTermStructures),
-      dF_        (discounts),
-      v_         (LsmBasisSystem::multiPathBasisSystem(payoff->basisSystemDimension(),
-                                                       polynomOrder,
-                                                       polynomType)) {
+    : calibrationPhase_(true), payoff_(payoff), coeff_(new Array[timePositions.size() - 1]),
+      lowerBounds_(new Real[timePositions.size()]), timePositions_(timePositions),
+      forwardTermStructures_(std::move(forwardTermStructures)), dF_(std::move(discounts)),
+      v_(LsmBasisSystem::multiPathBasisSystem(
+          payoff->basisSystemDimension(), polynomOrder, polynomType)) {
         QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
                    || polynomType == LsmBasisSystem::Laguerre
                    || polynomType == LsmBasisSystem::Hermite

@@ -63,41 +63,44 @@ namespace QuantLib {
                         Deprecated in version 1.19.
         */
         QL_DEPRECATED
-        InflationTermStructure(Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               bool indexIsInterpolated,
-                               const Handle<YieldTermStructure>& yTS,
-                               const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        InflationTermStructure(
+            Rate baseRate,
+            const Period& observationLag,
+            Frequency frequency,
+            bool indexIsInterpolated,
+            Handle<YieldTermStructure> yTS,
+            const DayCounter& dayCounter = DayCounter(),
+            const ext::shared_ptr<Seasonality>& seasonality = ext::shared_ptr<Seasonality>());
         /*! \deprecated Use one of the constructors not taking a yield
                         term structure.
                         Deprecated in version 1.19.
         */
         QL_DEPRECATED
-        InflationTermStructure(const Date& referenceDate,
-                               Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               bool indexIsInterpolated,
-                               const Handle<YieldTermStructure>& yTS,
-                               const Calendar& calendar = Calendar(),
-                               const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        InflationTermStructure(
+            const Date& referenceDate,
+            Rate baseRate,
+            const Period& observationLag,
+            Frequency frequency,
+            bool indexIsInterpolated,
+            Handle<YieldTermStructure> yTS,
+            const Calendar& calendar = Calendar(),
+            const DayCounter& dayCounter = DayCounter(),
+            const ext::shared_ptr<Seasonality>& seasonality = ext::shared_ptr<Seasonality>());
         /*! \deprecated Use one of the constructors not taking a yield
                         term structure.
                         Deprecated in version 1.19.
         */
         QL_DEPRECATED
-        InflationTermStructure(Natural settlementDays,
-                               const Calendar& calendar,
-                               Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               bool indexIsInterpolated,
-                               const Handle<YieldTermStructure>& yTS,
-                               const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
+        InflationTermStructure(
+            Natural settlementDays,
+            const Calendar& calendar,
+            Rate baseRate,
+            const Period& observationLag,
+            Frequency frequency,
+            bool indexIsInterpolated,
+            Handle<YieldTermStructure> yTS,
+            const DayCounter& dayCounter = DayCounter(),
+            const ext::shared_ptr<Seasonality>& seasonality = ext::shared_ptr<Seasonality>());
         //@}
 
         //! \name Inflation interface

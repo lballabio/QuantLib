@@ -67,8 +67,8 @@ namespace QuantLib {
 
       protected:
         OptionletStripper(const ext::shared_ptr<CapFloorTermVolSurface>&,
-                          const ext::shared_ptr<IborIndex>& iborIndex_,
-                          const Handle<YieldTermStructure>& discount = Handle<YieldTermStructure>(),
+                          ext::shared_ptr<IborIndex> iborIndex_,
+                          Handle<YieldTermStructure> discount = Handle<YieldTermStructure>(),
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0);
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;

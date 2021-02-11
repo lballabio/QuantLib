@@ -25,13 +25,14 @@
 #ifndef quantlib_binomial_convertible_engine_hpp
 #define quantlib_binomial_convertible_engine_hpp
 
-#include <ql/experimental/convertiblebonds/discretizedconvertible.hpp>
 #include <ql/experimental/convertiblebonds/convertiblebond.hpp>
+#include <ql/experimental/convertiblebonds/discretizedconvertible.hpp>
 #include <ql/experimental/convertiblebonds/tflattice.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -44,10 +45,9 @@ namespace QuantLib {
     template <class T>
     class BinomialConvertibleEngine : public ConvertibleBond::option::engine {
       public:
-        BinomialConvertibleEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps)
-        : process_(process), timeSteps_(timeSteps) {
+        BinomialConvertibleEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                                  Size timeSteps)
+        : process_(std::move(process)), timeSteps_(timeSteps) {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
                        " not allowed");

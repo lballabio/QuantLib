@@ -35,17 +35,14 @@
 namespace QuantLib {
     SquareRootCLVModel::SquareRootCLVModel(
         const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-        const ext::shared_ptr<SquareRootProcess>& sqrtProcess,
-        const std::vector<Date>& maturityDates,
-        Size lagrangeOrder, Real pMax, Real pMin)
-    : pMax_         (pMax),
-      pMin_         (pMin),
-      bsProcess_    (bsProcess),
-      sqrtProcess_  (sqrtProcess),
-      maturityDates_(maturityDates),
-      lagrangeOrder_(lagrangeOrder),
-      rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)) {
-    }
+        ext::shared_ptr<SquareRootProcess> sqrtProcess,
+        std::vector<Date> maturityDates,
+        Size lagrangeOrder,
+        Real pMax,
+        Real pMin)
+    : pMax_(pMax), pMin_(pMin), bsProcess_(bsProcess), sqrtProcess_(std::move(sqrtProcess)),
+      maturityDates_(std::move(maturityDates)), lagrangeOrder_(lagrangeOrder),
+      rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)) {}
 
     Real SquareRootCLVModel::cdf(const Date& d, Real k) const {
         return rndCalculator_->cdf(k, bsProcess_->time(d));

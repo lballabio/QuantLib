@@ -58,13 +58,12 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        DiscreteAveragingAsianOption(
-                Average::Type averageType,
-                Real runningAccumulator,
-                Size pastFixings,
-                const std::vector<Date>& fixingDates,
-                const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                const ext::shared_ptr<Exercise>& exercise);
+        DiscreteAveragingAsianOption(Average::Type averageType,
+                                     Real runningAccumulator,
+                                     Size pastFixings,
+                                     std::vector<Date> fixingDates,
+                                     const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                                     const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:

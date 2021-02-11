@@ -18,15 +18,14 @@
 */
 
 #include <ql/legacy/libormarketmodels/lmfixedvolmodel.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    LmFixedVolatilityModel::LmFixedVolatilityModel(
-        const Array& volatilities,
-        const std::vector<Time>& startTimes)
-    : LmVolatilityModel(startTimes.size(), 0),
-      volatilities_    (volatilities),
-      startTimes_      (startTimes) {
+    LmFixedVolatilityModel::LmFixedVolatilityModel(Array volatilities,
+                                                   const std::vector<Time>& startTimes)
+    : LmVolatilityModel(startTimes.size(), 0), volatilities_(std::move(volatilities)),
+      startTimes_(startTimes) {
         QL_REQUIRE(startTimes_.size()>1, "too few dates");
         QL_REQUIRE(volatilities_.size() == startTimes_.size(),
                    "volatility array and fixing time array have to have "

@@ -25,13 +25,14 @@
 #ifndef quantlib_global_bootstrap_hpp
 #define quantlib_global_bootstrap_hpp
 
+#include <ql/functional.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/termstructures/bootstraperror.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/functional.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -58,9 +59,9 @@ template <class Curve> class GlobalBootstrap {
       in QL), it might fail for other traits - check the usage of Traits::updateGuess(), Traits::guess(),
       Traits::minValueAfter(), Traits::maxValueAfter() in this class against them.
     */
-    GlobalBootstrap(const std::vector<ext::shared_ptr<typename Traits::helper> > &additionalHelpers,
-                    const ext::function<std::vector<Date>()> &additionalDates,
-                    const ext::function<Array()> &additionalErrors,
+    GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+                    ext::function<std::vector<Date>()> additionalDates,
+                    ext::function<Array()> additionalErrors,
                     Real accuracy = Null<Real>());
     void setup(Curve *ts);
     void calculate() const;
@@ -86,12 +87,12 @@ GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy) : ts_(0), accuracy_(accur
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    const std::vector<ext::shared_ptr<typename Traits::helper> >& additionalHelpers,
-    const ext::function<std::vector<Date>()>& additionalDates,
-    const ext::function<Array()>& additionalErrors,
+    std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+    ext::function<std::vector<Date>()> additionalDates,
+    ext::function<Array()> additionalErrors,
     Real accuracy)
-: ts_(nullptr), accuracy_(accuracy), additionalHelpers_(additionalHelpers),
-  additionalDates_(additionalDates), additionalErrors_(additionalErrors) {}
+: ts_(nullptr), accuracy_(accuracy), additionalHelpers_(std::move(additionalHelpers)),
+  additionalDates_(std::move(additionalDates)), additionalErrors_(std::move(additionalErrors)) {}
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
     ts_ = ts;
@@ -244,13 +245,13 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
       public:
         TargetFunction(const Size firstHelper,
                        const Size numberHelpers,
-                       const ext::function<Array()>& additionalErrors,
+                       ext::function<Array()> additionalErrors,
                        Curve* ts,
-                       const std::vector<Real>& lowerBounds,
-                       const std::vector<Real>& upperBounds)
+                       std::vector<Real> lowerBounds,
+                       std::vector<Real> upperBounds)
         : firstHelper_(firstHelper), numberHelpers_(numberHelpers),
-          additionalErrors_(additionalErrors), ts_(ts), lowerBounds_(lowerBounds),
-          upperBounds_(upperBounds) {}
+          additionalErrors_(std::move(additionalErrors)), ts_(ts),
+          lowerBounds_(std::move(lowerBounds)), upperBounds_(std::move(upperBounds)) {}
 
         Real transformDirect(const Real x, const Size i) const {
             return (std::atan(x) + M_PI_2) / M_PI * (upperBounds_[i] - lowerBounds_[i]) + lowerBounds_[i];

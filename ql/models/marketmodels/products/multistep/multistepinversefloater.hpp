@@ -32,13 +32,13 @@ namespace QuantLib {
     class MultiStepInverseFloater : public MultiProductMultiStep {
       public:
         MultiStepInverseFloater(const std::vector<Time>& rateTimes,
-                      const std::vector<Real>& fixedAccruals,
-                      const std::vector<Real>& floatingAccruals,
-                      const std::vector<Real>& fixedStrikes,
-                      const std::vector<Real>& fixedMultipliers, 
-                      const std::vector<Real>& floatingSpreads,
-                      const std::vector<Time>& paymentTimes,
-                      bool payer = true);
+                                std::vector<Real> fixedAccruals,
+                                const std::vector<Real>& floatingAccruals,
+                                const std::vector<Real>& fixedStrikes,
+                                const std::vector<Real>& fixedMultipliers,
+                                const std::vector<Real>& floatingSpreads,
+                                const std::vector<Time>& paymentTimes,
+                                bool payer = true);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const override;

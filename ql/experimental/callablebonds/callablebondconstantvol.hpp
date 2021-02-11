@@ -37,18 +37,18 @@ namespace QuantLib {
       public:
         CallableBondConstantVolatility(const Date& referenceDate,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter);
+                                       DayCounter dayCounter);
         CallableBondConstantVolatility(const Date& referenceDate,
-                                       const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter);
+                                       Handle<Quote> volatility,
+                                       DayCounter dayCounter);
         CallableBondConstantVolatility(Natural settlementDays,
                                        const Calendar&,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter);
+                                       DayCounter dayCounter);
         CallableBondConstantVolatility(Natural settlementDays,
                                        const Calendar&,
-                                       const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter);
+                                       Handle<Quote> volatility,
+                                       DayCounter dayCounter);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const override { return dayCounter_; }

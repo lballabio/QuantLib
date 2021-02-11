@@ -22,14 +22,15 @@
     \brief Black volatility surface back by Heston model
 */
 
+#include <ql/functional.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-#include <ql/functional.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <limits>
+#include <utility>
 
 namespace QuantLib {
 
@@ -47,15 +48,13 @@ namespace QuantLib {
     HestonBlackVolSurface::HestonBlackVolSurface(
         const Handle<HestonModel>& hestonModel,
         const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula,
-        const AnalyticHestonEngine::Integration& integration)
-    : BlackVolTermStructure(
-          hestonModel->process()->riskFreeRate()->referenceDate(),
-          NullCalendar(),
-          Following,
-          hestonModel->process()->riskFreeRate()->dayCounter()),
-      hestonModel_(hestonModel),
-      cpxLogFormula_(cpxLogFormula),
-      integration_(integration) {
+        AnalyticHestonEngine::Integration integration)
+    : BlackVolTermStructure(hestonModel->process()->riskFreeRate()->referenceDate(),
+                            NullCalendar(),
+                            Following,
+                            hestonModel->process()->riskFreeRate()->dayCounter()),
+      hestonModel_(hestonModel), cpxLogFormula_(cpxLogFormula),
+      integration_(std::move(integration)) {
         registerWith(hestonModel_);
     }
 

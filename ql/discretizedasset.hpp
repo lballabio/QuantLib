@@ -25,10 +25,11 @@
 #ifndef quantlib_discretized_asset_hpp
 #define quantlib_discretized_asset_hpp
 
-#include <ql/numericalmethod.hpp>
+#include <ql/exercise.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/exercise.hpp>
+#include <ql/numericalmethod.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -156,12 +157,11 @@ namespace QuantLib {
     */
     class DiscretizedOption : public DiscretizedAsset {
       public:
-        DiscretizedOption(
-                      const ext::shared_ptr<DiscretizedAsset>& underlying,
-                      Exercise::Type exerciseType,
-                      const std::vector<Time>& exerciseTimes)
-        : underlying_(underlying), exerciseType_(exerciseType),
-          exerciseTimes_(exerciseTimes) {}
+        DiscretizedOption(ext::shared_ptr<DiscretizedAsset> underlying,
+                          Exercise::Type exerciseType,
+                          std::vector<Time> exerciseTimes)
+        : underlying_(std::move(underlying)), exerciseType_(exerciseType),
+          exerciseTimes_(std::move(exerciseTimes)) {}
         void reset(Size size) override;
         std::vector<Time> mandatoryTimes() const override;
 

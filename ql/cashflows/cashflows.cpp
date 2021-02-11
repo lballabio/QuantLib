@@ -22,13 +22,14 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -728,17 +729,15 @@ namespace QuantLib {
 
     CashFlows::IrrFinder::IrrFinder(const Leg& leg,
                                     Real npv,
-                                    const DayCounter& dayCounter,
+                                    DayCounter dayCounter,
                                     Compounding comp,
                                     Frequency freq,
                                     bool includeSettlementDateFlows,
                                     Date settlementDate,
                                     Date npvDate)
-    : leg_(leg), npv_(npv),
-      dayCounter_(dayCounter), compounding_(comp), frequency_(freq),
-      includeSettlementDateFlows_(includeSettlementDateFlows),
-      settlementDate_(settlementDate),
-      npvDate_(npvDate) {
+    : leg_(leg), npv_(npv), dayCounter_(std::move(dayCounter)), compounding_(comp),
+      frequency_(freq), includeSettlementDateFlows_(includeSettlementDateFlows),
+      settlementDate_(settlementDate), npvDate_(npvDate) {
 
         if (settlementDate_ == Date())
             settlementDate_ = Settings::instance().evaluationDate();

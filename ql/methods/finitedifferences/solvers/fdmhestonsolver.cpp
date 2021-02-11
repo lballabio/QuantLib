@@ -20,25 +20,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/processes/hestonprocess.hpp>
 #include <ql/methods/finitedifferences/operators/fdmhestonop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmHestonSolver::FdmHestonSolver(
-        const Handle<HestonProcess>& process,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc,
-        const Handle<FdmQuantoHelper>& quantoHelper,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-        const Real mixingFactor)
-    : process_(process),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      quantoHelper_(quantoHelper),
-      leverageFct_(leverageFct),
+    FdmHestonSolver::FdmHestonSolver(Handle<HestonProcess> process,
+                                     FdmSolverDesc solverDesc,
+                                     const FdmSchemeDesc& schemeDesc,
+                                     Handle<FdmQuantoHelper> quantoHelper,
+                                     ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                                     const Real mixingFactor)
+    : process_(std::move(process)), solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc),
+      quantoHelper_(std::move(quantoHelper)), leverageFct_(std::move(leverageFct)),
       mixingFactor_(mixingFactor) {
 
         registerWith(process_);

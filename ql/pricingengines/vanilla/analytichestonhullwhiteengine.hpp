@@ -65,15 +65,14 @@ namespace QuantLib {
     class AnalyticHestonHullWhiteEngine : public AnalyticHestonEngine {
       public:
         // see AnalticHestonEninge for usage of different constructors
-        AnalyticHestonHullWhiteEngine(
-                        const ext::shared_ptr<HestonModel>& hestonModel,
-                        const ext::shared_ptr<HullWhite>& hullWhiteModel,
-                        Size integrationOrder = 144);
+        AnalyticHestonHullWhiteEngine(const ext::shared_ptr<HestonModel>& hestonModel,
+                                      ext::shared_ptr<HullWhite> hullWhiteModel,
+                                      Size integrationOrder = 144);
 
-        AnalyticHestonHullWhiteEngine(
-                        const ext::shared_ptr<HestonModel>& model,
-                        const ext::shared_ptr<HullWhite>& hullWhiteModel,
-                        Real relTolerance, Size maxEvaluations);
+        AnalyticHestonHullWhiteEngine(const ext::shared_ptr<HestonModel>& model,
+                                      ext::shared_ptr<HullWhite> hullWhiteModel,
+                                      Real relTolerance,
+                                      Size maxEvaluations);
 
 
         void update() override;

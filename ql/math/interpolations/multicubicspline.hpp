@@ -28,6 +28,7 @@
 #include <ql/types.hpp>
 #include <algorithm>
 #include <functional>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -107,8 +108,7 @@ namespace QuantLib {
             : first(*i) {}
             Data<std::vector<Real>, EmptyArg>(const SplineGrid &v)
             : first(v[0]) {}
-            Data<std::vector<Real>, EmptyArg>(const std::vector<Real> &v)
-            : first(v) {}
+            Data<std::vector<Real>, EmptyArg>(std::vector<Real> v) : first(std::move(v)) {}
             void swap(Data<std::vector<Real>, EmptyArg> &d) {
                 first.swap(d.first);
             }
@@ -208,8 +208,7 @@ namespace QuantLib {
 
         template<> struct Point<base_data_table, EmptyRes> {
             typedef base_data_table data_type;
-            Point<base_data_table, EmptyRes>(const data_type& s)
-            : first(s) {}
+            Point<base_data_table, EmptyRes>(data_type s) : first(std::move(s)) {}
             Point<base_data_table, EmptyRes>(const SplineGrid::const_iterator &i)
             : first(i->size()) {}
             Point<base_data_table, EmptyRes>(const SplineGrid &grid)

@@ -28,8 +28,8 @@ namespace QuantLib {
     class MultiStepCoterminalSwaps : public MultiProductMultiStep {
       public:
         MultiStepCoterminalSwaps(const std::vector<Time>& rateTimes,
-                                 const std::vector<Real>& fixedAccruals,
-                                 const std::vector<Real>& floatingAccruals,
+                                 std::vector<Real> fixedAccruals,
+                                 std::vector<Real> floatingAccruals,
                                  const std::vector<Time>& paymentTimes,
                                  Real fixedRate);
         //! \name MarketModelMultiProduct interface

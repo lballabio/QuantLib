@@ -178,7 +178,7 @@ namespace QuantLib {
     class CPILeg {
       public:
         CPILeg(const Schedule& schedule,
-               const ext::shared_ptr<ZeroInflationIndex>& index,
+               ext::shared_ptr<ZeroInflationIndex> index,
                Real baseCPI,
                const Period& observationLag);
         CPILeg& withNotionals(Real notional);

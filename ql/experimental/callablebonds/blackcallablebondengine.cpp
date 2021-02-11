@@ -17,34 +17,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
-#include <ql/experimental/callablebonds/callablebondvolstructure.hpp>
-#include <ql/experimental/callablebonds/callablebondconstantvol.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
+#include <ql/experimental/callablebonds/callablebondconstantvol.hpp>
+#include <ql/experimental/callablebonds/callablebondvolstructure.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 using namespace std;
 
 namespace QuantLib {
 
     BlackCallableFixedRateBondEngine::BlackCallableFixedRateBondEngine(
-                              const Handle<Quote>& fwdYieldVol,
-                              const Handle<YieldTermStructure>& discountCurve)
+        const Handle<Quote>& fwdYieldVol, Handle<YieldTermStructure> discountCurve)
     : volatility_(ext::shared_ptr<CallableBondVolatilityStructure>(
-                      new CallableBondConstantVolatility(0, NullCalendar(),
-                                                         fwdYieldVol,
-                                                         Actual365Fixed()))),
-      discountCurve_(discountCurve) {
+          new CallableBondConstantVolatility(0, NullCalendar(), fwdYieldVol, Actual365Fixed()))),
+      discountCurve_(std::move(discountCurve)) {
         registerWith(volatility_);
         registerWith(discountCurve_);
     }
 
     //! no vol structures implemented yet besides constant volatility
     BlackCallableFixedRateBondEngine::BlackCallableFixedRateBondEngine(
-             const Handle<CallableBondVolatilityStructure>& yieldVolStructure,
-             const Handle<YieldTermStructure>& discountCurve)
-    : volatility_(yieldVolStructure), discountCurve_(discountCurve) {
+        Handle<CallableBondVolatilityStructure> yieldVolStructure,
+        Handle<YieldTermStructure> discountCurve)
+    : volatility_(std::move(yieldVolStructure)), discountCurve_(std::move(discountCurve)) {
         registerWith(volatility_);
         registerWith(discountCurve_);
     }

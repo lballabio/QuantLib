@@ -33,7 +33,7 @@ namespace QuantLib {
     class HestonSLVProcess : public StochasticProcess {
       public:
         HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
-                         const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+                         ext::shared_ptr<LocalVolTermStructure> leverageFct,
                          Real mixingFactor = 1.0);
 
         Size size() const override { return Size(2); }

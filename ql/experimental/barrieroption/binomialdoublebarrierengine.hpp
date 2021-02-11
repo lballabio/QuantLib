@@ -24,13 +24,14 @@
 #ifndef quantlib_binomial_double_barrier_engine_hpp
 #define quantlib_binomial_double_barrier_engine_hpp
 
+#include <ql/experimental/barrieroption/discretizeddoublebarrieroption.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/experimental/barrieroption/discretizeddoublebarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -48,10 +49,9 @@ namespace QuantLib {
     template <class T, class D = DiscretizedDoubleBarrierOption>
     class BinomialDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
-        BinomialDoubleBarrierEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps)
-        : process_(process), timeSteps_(timeSteps) {
+        BinomialDoubleBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                                    Size timeSteps)
+        : process_(std::move(process)), timeSteps_(timeSteps) {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
                        " not allowed");

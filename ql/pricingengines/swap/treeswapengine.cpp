@@ -20,22 +20,23 @@
 
 #include <ql/pricingengines/swap/discretizedswap.hpp>
 #include <ql/pricingengines/swap/treeswapengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
                                                  Size timeSteps,
-                                                 const Handle<YieldTermStructure>& termStructure)
+                                                 Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeSteps),
-      termStructure_(termStructure) {
+      termStructure_(std::move(termStructure)) {
         registerWith(termStructure_);
     }
 
     TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
                                                  const TimeGrid& timeGrid,
-                                                 const Handle<YieldTermStructure>& termStructure)
+                                                 Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeGrid),
-      termStructure_(termStructure) {
+      termStructure_(std::move(termStructure)) {
         registerWith(termStructure_);
     }
 

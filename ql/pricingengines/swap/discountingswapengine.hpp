@@ -34,7 +34,7 @@ namespace QuantLib {
     class DiscountingSwapEngine : public Swap::engine {
       public:
         DiscountingSwapEngine(
-            const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             const boost::optional<bool>& includeSettlementDateFlows = boost::none,
             Date settlementDate = Date(),
             Date npvDate = Date());

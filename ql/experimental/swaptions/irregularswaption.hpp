@@ -48,7 +48,7 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        IrregularSwaption(const ext::shared_ptr<IrregularSwap>& swap,
+        IrregularSwaption(ext::shared_ptr<IrregularSwap> swap,
                           const ext::shared_ptr<Exercise>& exercise,
                           IrregularSettlement::Type delivery = IrregularSettlement::Physical);
         //! \name Instrument interface

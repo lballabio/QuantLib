@@ -38,13 +38,14 @@ namespace QuantLib {
     */
     class StrippedOptionlet : public StrippedOptionletBase {
       public:
-        StrippedOptionlet(Natural settlementDays, const Calendar &calendar,
+        StrippedOptionlet(Natural settlementDays,
+                          const Calendar& calendar,
                           BusinessDayConvention bdc,
-                          const ext::shared_ptr< IborIndex > &iborIndex,
-                          const std::vector< Date > &optionletDates,
-                          const std::vector< Rate > &strikes,
-                          const std::vector< std::vector< Handle< Quote > > > &,
-                          const DayCounter &dc,
+                          ext::shared_ptr<IborIndex> iborIndex,
+                          const std::vector<Date>& optionletDates,
+                          const std::vector<Rate>& strikes,
+                          std::vector<std::vector<Handle<Quote> > >,
+                          DayCounter dc,
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0);
         //! \name StrippedOptionletBase interface

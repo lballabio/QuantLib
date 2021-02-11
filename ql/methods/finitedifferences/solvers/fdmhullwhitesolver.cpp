@@ -20,21 +20,19 @@
 /*! \file fdmhullwhitesolver.cpp
 */
 
-#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhullwhitesolver.hpp>
-#include <ql/methods/finitedifferences/operators/fdmhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmHullWhiteSolver::FdmHullWhiteSolver(
-        const Handle<HullWhite>& model,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc)
-    : model_(model),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc) {
+    FdmHullWhiteSolver::FdmHullWhiteSolver(Handle<HullWhite> model,
+                                           FdmSolverDesc solverDesc,
+                                           const FdmSchemeDesc& schemeDesc)
+    : model_(std::move(model)), solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc) {
         registerWith(model_);
     }
 

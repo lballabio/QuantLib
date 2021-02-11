@@ -22,22 +22,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/bond.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/instruments/bond.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    Bond::Bond(Natural settlementDays,
-               const Calendar& calendar,
-               const Date& issueDate,
-               const Leg& coupons)
-    : settlementDays_(settlementDays), calendar_(calendar),
-      cashflows_(coupons), issueDate_(issueDate) {
+    Bond::Bond(Natural settlementDays, Calendar calendar, const Date& issueDate, const Leg& coupons)
+    : settlementDays_(settlementDays), calendar_(std::move(calendar)), cashflows_(coupons),
+      issueDate_(issueDate) {
 
         if (!coupons.empty()) {
             std::sort(cashflows_.begin(), cashflows_.end(),
@@ -62,14 +60,13 @@ namespace QuantLib {
     }
 
     Bond::Bond(Natural settlementDays,
-               const Calendar& calendar,
+               Calendar calendar,
                Real faceAmount,
                const Date& maturityDate,
                const Date& issueDate,
                const Leg& cashflows)
-    : settlementDays_(settlementDays), calendar_(calendar),
-      cashflows_(cashflows), maturityDate_(maturityDate),
-      issueDate_(issueDate) {
+    : settlementDays_(settlementDays), calendar_(std::move(calendar)), cashflows_(cashflows),
+      maturityDate_(maturityDate), issueDate_(issueDate) {
 
         if (!cashflows.empty()) {
 

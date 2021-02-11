@@ -26,6 +26,7 @@
 
 #include <ql/quote.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -68,9 +69,9 @@ namespace QuantLib {
 
     class UltimateForwardTermStructure : public ZeroYieldStructure {
       public:
-        UltimateForwardTermStructure(const Handle<YieldTermStructure>&,
-                                     const Handle<Quote>& lastLiquidForwardRate,
-                                     const Handle<Quote>& ultimateForwardRate,
+        UltimateForwardTermStructure(Handle<YieldTermStructure>,
+                                     Handle<Quote> lastLiquidForwardRate,
+                                     Handle<Quote> ultimateForwardRate,
                                      const Period& firstSmoothingPoint,
                                      Real alpha);
         //! \name YieldTermStructure interface
@@ -100,13 +101,13 @@ namespace QuantLib {
     // inline definitions
 
     inline UltimateForwardTermStructure::UltimateForwardTermStructure(
-        const Handle<YieldTermStructure>& h,
-        const Handle<Quote>& lastLiquidForwardRate,
-        const Handle<Quote>& ultimateForwardRate,
+        Handle<YieldTermStructure> h,
+        Handle<Quote> lastLiquidForwardRate,
+        Handle<Quote> ultimateForwardRate,
         const Period& firstSmoothingPoint,
         Real alpha)
-    : originalCurve_(h), llfr_(lastLiquidForwardRate), ufr_(ultimateForwardRate),
-      fsp_(firstSmoothingPoint), alpha_(alpha) {
+    : originalCurve_(std::move(h)), llfr_(std::move(lastLiquidForwardRate)),
+      ufr_(std::move(ultimateForwardRate)), fsp_(firstSmoothingPoint), alpha_(alpha) {
         QL_REQUIRE(fsp_.length() > 0,
                    "first smoothing point must be a period with positive length");
         if (!originalCurve_.empty())

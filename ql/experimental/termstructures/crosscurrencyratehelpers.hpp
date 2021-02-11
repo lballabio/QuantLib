@@ -44,12 +44,12 @@ namespace QuantLib {
         CrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
                                          const Period& tenor,
                                          Natural fixingDays,
-                                         const Calendar& calendar,
+                                         Calendar calendar,
                                          BusinessDayConvention convention,
                                          bool endOfMonth,
-                                         const ext::shared_ptr<IborIndex>& baseCurrencyIndex,
-                                         const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
-                                         const Handle<YieldTermStructure>& collateralCurve,
+                                         ext::shared_ptr<IborIndex> baseCurrencyIndex,
+                                         ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+                                         Handle<YieldTermStructure> collateralCurve,
                                          bool isFxBaseCurrencyCollateralCurrency,
                                          bool isBasisOnFxBaseCurrencyLeg);
         //! \name RateHelper interface

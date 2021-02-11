@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -48,12 +49,10 @@ namespace QuantLib {
     }
 
 
-
-    DigitalCmsSpreadLeg::DigitalCmsSpreadLeg(const Schedule& schedule,
-                                 const ext::shared_ptr<SwapSpreadIndex>& index)
-    : schedule_(schedule), index_(index),
-      paymentAdjustment_(Following), inArrears_(false),
-      longCallOption_(Position::Long), callATM_(false),
+    DigitalCmsSpreadLeg::DigitalCmsSpreadLeg(Schedule schedule,
+                                             ext::shared_ptr<SwapSpreadIndex> index)
+    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
+      inArrears_(false), longCallOption_(Position::Long), callATM_(false),
       longPutOption_(Position::Long), putATM_(false) {}
 
     DigitalCmsSpreadLeg& DigitalCmsSpreadLeg::withNotionals(Real notional) {

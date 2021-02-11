@@ -44,7 +44,7 @@ namespace QuantLib {
         FdmHestonFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
                        const ext::shared_ptr<HestonProcess>& process,
                        FdmSquareRootFwdOp::TransformationType type = FdmSquareRootFwdOp::Plain,
-                       const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                       ext::shared_ptr<LocalVolTermStructure> leverageFct =
                            ext::shared_ptr<LocalVolTermStructure>(),
                        Real mixingFactor = 1.0);
 

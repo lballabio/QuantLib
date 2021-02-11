@@ -33,8 +33,7 @@ namespace QuantLib {
 
     class SpreadedSmileSection : public SmileSection {
       public:
-        SpreadedSmileSection(const ext::shared_ptr<SmileSection>&,
-                             const Handle<Quote>& spread);
+        SpreadedSmileSection(ext::shared_ptr<SmileSection>, Handle<Quote> spread);
         //! \name SmileSection interface
         //@{
         Real minStrike() const override;

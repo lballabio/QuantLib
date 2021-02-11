@@ -25,6 +25,7 @@
 #define quantlib_boundary_condition_scheme_helper_hpp
 
 #include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -33,9 +34,8 @@ namespace QuantLib {
         typedef OperatorTraits<FdmLinearOp>::array_type array_type;
         typedef OperatorTraits<FdmLinearOp>::operator_type operator_type;
 
-        explicit BoundaryConditionSchemeHelper(
-            const OperatorTraits<FdmLinearOp>::bc_set& bcSet)
-            : bcSet_(bcSet) {  }
+        explicit BoundaryConditionSchemeHelper(OperatorTraits<FdmLinearOp>::bc_set bcSet)
+        : bcSet_(std::move(bcSet)) {}
 
         void applyBeforeApplying(operator_type& op) const {
             for (Size i=0; i < bcSet_.size(); ++i)

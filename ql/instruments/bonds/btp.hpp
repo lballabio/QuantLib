@@ -94,7 +94,7 @@ namespace QuantLib {
       public:
         RendistatoBasket(const std::vector<ext::shared_ptr<BTP> >& btps,
                          const std::vector<Real>& outstandings,
-                         const std::vector<Handle<Quote> >& cleanPriceQuotes);
+                         std::vector<Handle<Quote> > cleanPriceQuotes);
         //! \name Inspectors
         //@{
         Size size() const { return n_;}
@@ -119,9 +119,9 @@ namespace QuantLib {
 
     class RendistatoCalculator : public LazyObject {
       public:
-        RendistatoCalculator(const ext::shared_ptr<RendistatoBasket>& basket,
-                             const ext::shared_ptr<Euribor>& euriborIndex,
-                             const Handle<YieldTermStructure>& discountCurve);
+        RendistatoCalculator(ext::shared_ptr<RendistatoBasket> basket,
+                             ext::shared_ptr<Euribor> euriborIndex,
+                             Handle<YieldTermStructure> discountCurve);
         //! \name Calculations
         //@{
         Rate yield() const;
@@ -169,8 +169,7 @@ namespace QuantLib {
     //! RendistatoCalculator equivalent swap lenth Quote adapter
     class RendistatoEquivalentSwapLengthQuote : public Quote {
       public:
-        RendistatoEquivalentSwapLengthQuote(
-            const ext::shared_ptr<RendistatoCalculator>& r);
+        RendistatoEquivalentSwapLengthQuote(ext::shared_ptr<RendistatoCalculator> r);
         Real value() const override;
         bool isValid() const override;
 
@@ -181,8 +180,7 @@ namespace QuantLib {
     //! RendistatoCalculator equivalent swap spread Quote adapter
     class RendistatoEquivalentSwapSpreadQuote : public Quote {
       public:
-        RendistatoEquivalentSwapSpreadQuote(
-            const ext::shared_ptr<RendistatoCalculator>& r);
+        RendistatoEquivalentSwapSpreadQuote(ext::shared_ptr<RendistatoCalculator> r);
         Real value() const override;
         bool isValid() const override;
 

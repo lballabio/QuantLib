@@ -18,23 +18,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    BlackVarianceSurface::BlackVarianceSurface(
-                                  const Date& referenceDate,
-                                  const Calendar& cal,
-                                  const std::vector<Date>& dates,
-                                  const std::vector<Real>& strikes,
-                                  const Matrix& blackVolMatrix,
-                                  const DayCounter& dayCounter,
-                                  BlackVarianceSurface::Extrapolation lowerEx,
-                                  BlackVarianceSurface::Extrapolation upperEx)
-    : BlackVarianceTermStructure(referenceDate, cal),
-      dayCounter_(dayCounter), maxDate_(dates.back()), strikes_(strikes),
-      lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
+    BlackVarianceSurface::BlackVarianceSurface(const Date& referenceDate,
+                                               const Calendar& cal,
+                                               const std::vector<Date>& dates,
+                                               std::vector<Real> strikes,
+                                               const Matrix& blackVolMatrix,
+                                               DayCounter dayCounter,
+                                               BlackVarianceSurface::Extrapolation lowerEx,
+                                               BlackVarianceSurface::Extrapolation upperEx)
+    : BlackVarianceTermStructure(referenceDate, cal), dayCounter_(std::move(dayCounter)),
+      maxDate_(dates.back()), strikes_(std::move(strikes)), lowerExtrapolation_(lowerEx),
+      upperExtrapolation_(upperEx) {
 
         QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
                    "mismatch between date vector and vol matrix colums");

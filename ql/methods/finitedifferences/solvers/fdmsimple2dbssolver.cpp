@@ -24,17 +24,15 @@
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmSimple2dBSSolver::FdmSimple2dBSSolver(
-        const Handle<GeneralizedBlackScholesProcess>& process,
-        Real strike,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      strike_(strike),
-      solverDesc_(solverDesc),
+    FdmSimple2dBSSolver::FdmSimple2dBSSolver(Handle<GeneralizedBlackScholesProcess> process,
+                                             Real strike,
+                                             FdmSolverDesc solverDesc,
+                                             const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), strike_(strike), solverDesc_(std::move(solverDesc)),
       schemeDesc_(schemeDesc) {
 
         registerWith(process_);

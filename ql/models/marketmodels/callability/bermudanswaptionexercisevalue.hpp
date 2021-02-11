@@ -33,7 +33,7 @@ namespace QuantLib {
     class BermudanSwaptionExerciseValue : public MarketModelExerciseValue {
       public:
         BermudanSwaptionExerciseValue(const std::vector<Time>& rateTimes,
-                                      const std::vector<ext::shared_ptr<Payoff> >&);
+                                      std::vector<ext::shared_ptr<Payoff> >);
         Size numberOfExercises() const override;
         // including any time at which state should be updated
         const EvolutionDescription& evolution() const override;

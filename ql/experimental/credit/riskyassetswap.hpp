@@ -37,14 +37,14 @@ namespace QuantLib {
       public:
         RiskyAssetSwap(bool fixedPayer,
                        Real nominal,
-                       const Schedule& fixedSchedule,
-                       const Schedule& floatSchedule,
-                       const DayCounter& fixedDayCounter,
-                       const DayCounter& floatDayCounter,
+                       Schedule fixedSchedule,
+                       Schedule floatSchedule,
+                       DayCounter fixedDayCounter,
+                       DayCounter floatDayCounter,
                        Rate spread,
                        Rate recoveryRate_,
-                       const Handle<YieldTermStructure>& yieldTS,
-                       const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                       Handle<YieldTermStructure> yieldTS,
+                       Handle<DefaultProbabilityTermStructure> defaultTS,
                        Rate coupon = Null<Rate>());
 
         Real fairSpread ();
@@ -91,13 +91,13 @@ namespace QuantLib {
         AssetSwapHelper(const Handle<Quote>& spread,
                         const Period& tenor,
                         Natural settlementDays,
-                        const Calendar& calendar,
+                        Calendar calendar,
                         const Period& fixedPeriod,
                         BusinessDayConvention fixedConvention,
-                        const DayCounter& fixedDayCount,
+                        DayCounter fixedDayCount,
                         const Period& floatPeriod,
                         BusinessDayConvention floatConvention,
-                        const DayCounter& floatDayCount,
+                        DayCounter floatDayCount,
                         Real recoveryRate,
                         const RelinkableHandle<YieldTermStructure>& yieldTS,
                         const Period& integrationStepSize = Period());

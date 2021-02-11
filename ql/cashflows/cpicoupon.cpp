@@ -18,13 +18,12 @@
  */
 
 
-
-#include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
-
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
+#include <ql/cashflows/inflationcoupon.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -148,18 +147,15 @@ namespace QuantLib {
     }
 
 
-    CPILeg::CPILeg(const Schedule& schedule, const ext::shared_ptr<ZeroInflationIndex>& index,
-                   const Real baseCPI, const Period& observationLag) :
-    schedule_(schedule), index_(index),
-    baseCPI_(baseCPI), observationLag_(observationLag),
-    paymentDayCounter_(Thirty360()),
-    paymentAdjustment_(ModifiedFollowing),
-    paymentCalendar_(schedule.calendar()),
-    fixingDays_(std::vector<Natural>(1,0)),
-    observationInterpolation_(CPI::AsIndex),
-    subtractInflationNominal_(true),
-    spreads_(std::vector<Real>(1,0))
-    {}
+    CPILeg::CPILeg(const Schedule& schedule,
+                   ext::shared_ptr<ZeroInflationIndex> index,
+                   const Real baseCPI,
+                   const Period& observationLag)
+    : schedule_(schedule), index_(std::move(index)), baseCPI_(baseCPI),
+      observationLag_(observationLag), paymentDayCounter_(Thirty360()),
+      paymentAdjustment_(ModifiedFollowing), paymentCalendar_(schedule.calendar()),
+      fixingDays_(std::vector<Natural>(1, 0)), observationInterpolation_(CPI::AsIndex),
+      subtractInflationNominal_(true), spreads_(std::vector<Real>(1, 0)) {}
 
 
     CPILeg& CPILeg::withObservationInterpolation(CPI::InterpolationType interp) {

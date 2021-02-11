@@ -18,19 +18,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     DiscountingSwapEngine::DiscountingSwapEngine(
-        const Handle<YieldTermStructure>& discountCurve,
+        Handle<YieldTermStructure> discountCurve,
         const boost::optional<bool>& includeSettlementDateFlows,
         Date settlementDate,
         Date npvDate)
-    : discountCurve_(discountCurve), includeSettlementDateFlows_(includeSettlementDateFlows),
-      settlementDate_(settlementDate), npvDate_(npvDate) {
+    : discountCurve_(std::move(discountCurve)),
+      includeSettlementDateFlows_(includeSettlementDateFlows), settlementDate_(settlementDate),
+      npvDate_(npvDate) {
         registerWith(discountCurve_);
     }
 

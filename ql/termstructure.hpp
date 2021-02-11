@@ -64,15 +64,13 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        explicit TermStructure(const DayCounter& dc = DayCounter());
+        explicit TermStructure(DayCounter dc = DayCounter());
         //! initialize with a fixed reference date
         explicit TermStructure(const Date& referenceDate,
-                               const Calendar& calendar = Calendar(),
-                               const DayCounter& dc = DayCounter());
+                               Calendar calendar = Calendar(),
+                               DayCounter dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        TermStructure(Natural settlementDays,
-                      const Calendar&,
-                      const DayCounter& dc = DayCounter());
+        TermStructure(Natural settlementDays, Calendar, DayCounter dc = DayCounter());
         //@}
         ~TermStructure() override = default;
         //! \name Dates and Time

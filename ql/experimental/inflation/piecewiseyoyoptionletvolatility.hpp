@@ -26,8 +26,9 @@
 #define quantlib_piecewise_yoy_optionlet_volatility_hpp
 
 #include <ql/experimental/inflation/yoyinflationoptionletvolatilitystructure2.hpp>
-#include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/termstructures/iterativebootstrap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -118,25 +119,31 @@ namespace QuantLib {
         typedef Interpolator interpolator_type;
 
         PiecewiseYoYOptionletVolatilityCurve(
-              Natural settlementDays,
-              const Calendar &cal,
-              BusinessDayConvention bdc,
-              const DayCounter& dc,
-              const Period &lag,
-              Frequency frequency,
-              bool indexIsInterpolated,
-              Rate minStrike,
-              Rate maxStrike,
-              Volatility baseYoYVolatility,
-              const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-              Real accuracy = 1.0e-12,
-              const Interpolator &interpolator = Interpolator())
-        : base_curve(settlementDays, cal, bdc, dc, lag,
-                     frequency, indexIsInterpolated,
-                     minStrike, maxStrike,
-                     baseYoYVolatility, interpolator),
-          instruments_(instruments), accuracy_(accuracy) {
+            Natural settlementDays,
+            const Calendar& cal,
+            BusinessDayConvention bdc,
+            const DayCounter& dc,
+            const Period& lag,
+            Frequency frequency,
+            bool indexIsInterpolated,
+            Rate minStrike,
+            Rate maxStrike,
+            Volatility baseYoYVolatility,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            Real accuracy = 1.0e-12,
+            const Interpolator& interpolator = Interpolator())
+        : base_curve(settlementDays,
+                     cal,
+                     bdc,
+                     dc,
+                     lag,
+                     frequency,
+                     indexIsInterpolated,
+                     minStrike,
+                     maxStrike,
+                     baseYoYVolatility,
+                     interpolator),
+          instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
 

@@ -55,10 +55,9 @@ namespace QuantLib {
 
     class KlugeExtOUProcess : public StochasticProcess {
       public:
-        KlugeExtOUProcess(
-            Real rho,
-            const ext::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU);
+        KlugeExtOUProcess(Real rho,
+                          ext::shared_ptr<ExtOUWithJumpsProcess> kluge,
+                          ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOU);
 
         Size size() const override;
         Size factors() const override;

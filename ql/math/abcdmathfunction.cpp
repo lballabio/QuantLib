@@ -22,6 +22,7 @@
 */
 
 #include <ql/math/abcdmathfunction.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -76,8 +77,7 @@ namespace QuantLib {
         initialize_();
     }
 
-    AbcdMathFunction::AbcdMathFunction(const std::vector<Real>& abcd)
-    : abcd_(abcd), dabcd_(4) {
+    AbcdMathFunction::AbcdMathFunction(std::vector<Real> abcd) : abcd_(std::move(abcd)), dabcd_(4) {
         a_=abcd_[0];
         b_=abcd_[1];
         c_=abcd_[2];

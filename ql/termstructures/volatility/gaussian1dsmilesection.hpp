@@ -41,13 +41,13 @@ namespace QuantLib {
 class Gaussian1dSmileSection : public SmileSection {
   public:
     Gaussian1dSmileSection(const Date& fixingDate,
-                           const ext::shared_ptr<SwapIndex>& swapIndex,
+                           ext::shared_ptr<SwapIndex> swapIndex,
                            const ext::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
                            const ext::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine =
                                ext::shared_ptr<Gaussian1dSwaptionEngine>());
     Gaussian1dSmileSection(const Date& fixingDate,
-                           const ext::shared_ptr<IborIndex>& swapIndex,
+                           ext::shared_ptr<IborIndex> swapIndex,
                            const ext::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
                            const ext::shared_ptr<Gaussian1dCapFloorEngine>& capEngine =

@@ -18,16 +18,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/functional.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/processes/hestonprocess.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
-#include <ql/functional.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <complex>
+#include <utility>
 
 namespace QuantLib {
 
@@ -107,13 +108,11 @@ namespace {
     }
 
 
-    HestonRNDCalculator::HestonRNDCalculator(
-        const ext::shared_ptr<HestonProcess>& hestonProcess,
-        Real integrationEps, Size maxIntegrationIterations)
-    : hestonProcess_(hestonProcess),
-      x0_(std::log(hestonProcess_->s0()->value())),
-      integrationEps_(integrationEps),
-      maxIntegrationIterations_(maxIntegrationIterations) { }
+    HestonRNDCalculator::HestonRNDCalculator(ext::shared_ptr<HestonProcess> hestonProcess,
+                                             Real integrationEps,
+                                             Size maxIntegrationIterations)
+    : hestonProcess_(std::move(hestonProcess)), x0_(std::log(hestonProcess_->s0()->value())),
+      integrationEps_(integrationEps), maxIntegrationIterations_(maxIntegrationIterations) {}
 
     Real HestonRNDCalculator::x_t(Real x, Time t) const {
         const DiscountFactor dr = hestonProcess_->riskFreeRate()->discount(t);

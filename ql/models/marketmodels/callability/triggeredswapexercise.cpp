@@ -17,20 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/callability/triggeredswapexercise.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/auto_ptr.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    TriggeredSwapExercise::TriggeredSwapExercise(
-                              const std::vector<Time>& rateTimes,
-                              const std::vector<Time>& exerciseTimes,
-                              const std::vector<Rate>& strikes)
-    : rateTimes_(rateTimes), exerciseTimes_(exerciseTimes),
-      strikes_(strikes), currentStep_(0), rateIndex_(exerciseTimes.size()),
-      evolution_(rateTimes, exerciseTimes) {
+    TriggeredSwapExercise::TriggeredSwapExercise(const std::vector<Time>& rateTimes,
+                                                 const std::vector<Time>& exerciseTimes,
+                                                 std::vector<Rate> strikes)
+    : rateTimes_(rateTimes), exerciseTimes_(exerciseTimes), strikes_(std::move(strikes)),
+      currentStep_(0), rateIndex_(exerciseTimes.size()), evolution_(rateTimes, exerciseTimes) {
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
             while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])

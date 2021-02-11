@@ -17,18 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
+#include <ql/instruments/payoffs.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticEuropeanMargrabeEngine::AnalyticEuropeanMargrabeEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process2,
-            Real correlation)
-    : process1_(process1), process2_(process2), rho_(correlation) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+        Real correlation)
+    : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
         registerWith(process2_);
     }

@@ -23,17 +23,16 @@
            Black-Scholes-Merton model with constant volatility
 */
 
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
-
+#include <ql/processes/blackscholesprocess.hpp>
 #include <cmath>
+#include <utility>
 
 namespace QuantLib {
 
-    BSMRNDCalculator::BSMRNDCalculator(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) { }
+    BSMRNDCalculator::BSMRNDCalculator(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {}
 
     std::pair<Real, Volatility>
     BSMRNDCalculator::distributionParams(Real x, Time t) const {

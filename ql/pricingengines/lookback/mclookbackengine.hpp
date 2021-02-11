@@ -28,6 +28,7 @@
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -41,16 +42,15 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::path_pricer_type
             path_pricer_type;
         // constructor
-        MCLookbackEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antithetic,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed);
+        MCLookbackEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                         Size timeSteps,
+                         Size timeStepsPerYear,
+                         bool brownianBridge,
+                         bool antithetic,
+                         Size requiredSamples,
+                         Real requiredTolerance,
+                         Size maxSamples,
+                         BigNatural seed);
         void calculate() const override {
             Real spot = process_->x0();
             QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
@@ -90,8 +90,7 @@ namespace QuantLib {
     template <class I, class RNG = PseudoRandom, class S = Statistics>
     class MakeMCLookbackEngine {
       public:
-        explicit MakeMCLookbackEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+        explicit MakeMCLookbackEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCLookbackEngine& withSteps(Size steps);
         MakeMCLookbackEngine& withStepsPerYear(Size steps);
@@ -115,21 +114,19 @@ namespace QuantLib {
     // template definitions
 
     template <class I, class RNG, class S>
-    inline MCLookbackEngine<I, RNG,S>::MCLookbackEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed)
-    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
-      process_(process), timeSteps_(timeSteps),
-      timeStepsPerYear_(timeStepsPerYear),
-      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
+    inline MCLookbackEngine<I, RNG, S>::MCLookbackEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed)
+    : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false), process_(std::move(process)),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
+      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
@@ -206,13 +203,11 @@ namespace QuantLib {
 
 
     template <class I, class RNG, class S>
-    inline MakeMCLookbackEngine<I,RNG,S>::MakeMCLookbackEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process),
-      brownianBridge_(false), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCLookbackEngine<I, RNG, S>::MakeMCLookbackEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
 
     template <class I, class RNG, class S>
     inline MakeMCLookbackEngine<I,RNG,S>&

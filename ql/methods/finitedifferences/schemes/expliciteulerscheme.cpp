@@ -20,13 +20,12 @@
  */
 
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
+#include <utility>
 
 namespace QuantLib {
-    ExplicitEulerScheme::ExplicitEulerScheme(
-        const ext::shared_ptr<FdmLinearOpComposite> & map,
-        const bc_set& bcSet) :
-        dt_(Null<Real>()), map_(map), bcSet_(bcSet) {
-    }
+    ExplicitEulerScheme::ExplicitEulerScheme(ext::shared_ptr<FdmLinearOpComposite> map,
+                                             const bc_set& bcSet)
+    : dt_(Null<Real>()), map_(std::move(map)), bcSet_(bcSet) {}
 
     void ExplicitEulerScheme::step(array_type& a, Time t) {
         step(a, t, 1.0);

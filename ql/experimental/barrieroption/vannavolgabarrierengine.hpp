@@ -41,12 +41,12 @@ namespace QuantLib {
       public:
 
         // Constructor
-        VannaVolgaBarrierEngine(const Handle<DeltaVolQuote>& atmVol,
-                                const Handle<DeltaVolQuote>& vol25Put,
-                                const Handle<DeltaVolQuote>& vol25Call,
-                                const Handle<Quote>& spotFX,
-                                const Handle<YieldTermStructure>& domesticTS,
-                                const Handle<YieldTermStructure>& foreignTS,
+        VannaVolgaBarrierEngine(Handle<DeltaVolQuote> atmVol,
+                                Handle<DeltaVolQuote> vol25Put,
+                                Handle<DeltaVolQuote> vol25Call,
+                                Handle<Quote> spotFX,
+                                Handle<YieldTermStructure> domesticTS,
+                                Handle<YieldTermStructure> foreignTS,
                                 bool adaptVanDelta = false,
                                 Real bsPriceWithSmile = 0.0);
 

@@ -69,8 +69,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanEngine {
       public:
-        MakeMCEuropeanEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+        MakeMCEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCEuropeanEngine& withSteps(Size steps);
         MakeMCEuropeanEngine& withStepsPerYear(Size steps);
@@ -155,11 +154,10 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+    inline MakeMCEuropeanEngine<RNG, S>::MakeMCEuropeanEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), steps_(Null<Size>()),
+      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>

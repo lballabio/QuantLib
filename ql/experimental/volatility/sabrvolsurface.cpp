@@ -18,27 +18,23 @@
 */
 
 #include <ql/experimental/volatility/sabrvolsurface.hpp>
-#include <ql/termstructures/volatility/smilesection.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    SabrVolSurface::SabrVolSurface(
-        const ext::shared_ptr<InterestRateIndex>& index,
-        const Handle<BlackAtmVolCurve>& atmCurve,
-        const std::vector<Period>& optionTenors,
-        const std::vector<Spread>& atmRateSpreads,
-        const std::vector<std::vector<Handle<Quote> > >& volSpreads)
-    : InterestRateVolSurface(index),
-      atmCurve_(atmCurve),
-      optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()),
-      optionDates_(optionTenors.size()),
-      atmRateSpreads_(atmRateSpreads),
-      volSpreads_(volSpreads) {
+    SabrVolSurface::SabrVolSurface(const ext::shared_ptr<InterestRateIndex>& index,
+                                   Handle<BlackAtmVolCurve> atmCurve,
+                                   const std::vector<Period>& optionTenors,
+                                   std::vector<Spread> atmRateSpreads,
+                                   std::vector<std::vector<Handle<Quote> > > volSpreads)
+    : InterestRateVolSurface(index), atmCurve_(std::move(atmCurve)), optionTenors_(optionTenors),
+      optionTimes_(optionTenors.size()), optionDates_(optionTenors.size()),
+      atmRateSpreads_(std::move(atmRateSpreads)), volSpreads_(std::move(volSpreads)) {
 
         checkInputs();
 

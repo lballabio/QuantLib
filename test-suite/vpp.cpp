@@ -19,40 +19,40 @@
 
 #include "vpp.hpp"
 #include "utilities.hpp"
-
-#include <ql/math/functional.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
+#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
+#include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
+#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
+#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
+#include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
+#include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
+#include <ql/experimental/finitedifferences/vanillavppoption.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/experimental/processes/gemanroncoroniprocess.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/instruments/basketoption.hpp>
-#include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/instruments/vanillastorageoption.hpp>
-#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/instruments/vanillaswingoption.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/generallinearleastsquares.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
-#include <ql/experimental/processes/gemanroncoroniprocess.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/processes/klugeextouprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/vanillavppoption.hpp>
-#include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
-#include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
-#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
-#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
-#include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
-#include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <deque>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -458,11 +458,9 @@ namespace vpp_test {
       public:
         typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
 
-        PathFuelPrice(
-            const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
-            const ext::shared_ptr<Shape>& shape)
-        : path_(path),
-          shape_(shape) {}
+        PathFuelPrice(const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
+                      ext::shared_ptr<Shape> shape)
+        : path_(path), shape_(std::move(shape)) {}
         Real innerValue(const FdmLinearOpIterator&, Time t) override {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
                         "invalid time");
@@ -486,15 +484,12 @@ namespace vpp_test {
       public:
         typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
 
-        PathSparkSpreadPrice(
-            Real heatRate,
-            const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
-            const ext::shared_ptr<Shape>& fuelShape,
-            const ext::shared_ptr<Shape>& powerShape)
-        : heatRate_(heatRate),
-          path_(path),
-          fuelShape_(fuelShape),
-          powerShape_(powerShape) {}
+        PathSparkSpreadPrice(Real heatRate,
+                             const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
+                             ext::shared_ptr<Shape> fuelShape,
+                             ext::shared_ptr<Shape> powerShape)
+        : heatRate_(heatRate), path_(path), fuelShape_(std::move(fuelShape)),
+          powerShape_(std::move(powerShape)) {}
 
         Real innerValue(const FdmLinearOpIterator&, Time t) override {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,

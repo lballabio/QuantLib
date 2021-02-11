@@ -21,20 +21,21 @@
     \brief
 */
 
-#include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/math/integrals/kronrodintegral.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/solvers1d/newton.hpp>
-#include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/indexes/swapindex.hpp>
-#include <ql/indexes/interestrateindex.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/instruments/vanillaswap.hpp>
+#include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/functional.hpp>
+#include <ql/indexes/interestrateindex.hpp>
+#include <ql/indexes/swapindex.hpp>
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/solvers1d/newton.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -67,15 +68,12 @@ namespace QuantLib {
 //===========================================================================//
 //                             HaganPricer                               //
 //===========================================================================//
-    HaganPricer::HaganPricer(
-                const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                GFunctionFactory::YieldCurveModel modelOfYieldCurve,
-                const Handle<Quote>& meanReversion)
-    : CmsCouponPricer(swaptionVol),
-      modelOfYieldCurve_(modelOfYieldCurve),
-      cutoffForCaplet_(2), cutoffForFloorlet_(0),
-      meanReversion_(meanReversion) {
-          registerWith(meanReversion_);
+    HaganPricer::HaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                             GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+                             Handle<Quote> meanReversion)
+    : CmsCouponPricer(swaptionVol), modelOfYieldCurve_(modelOfYieldCurve), cutoffForCaplet_(2),
+      cutoffForFloorlet_(0), meanReversion_(std::move(meanReversion)) {
+        registerWith(meanReversion_);
     }
 
     void HaganPricer::initialize(const FloatingRateCoupon& coupon){
@@ -226,7 +224,7 @@ namespace QuantLib {
 
         class Spy {
           public:
-            explicit Spy(const ext::function<Real(Real)>& f) : f_(f) {}
+            explicit Spy(ext::function<Real(Real)> f) : f_(std::move(f)) {}
             Real value(Real x){
                 abscissas.push_back(x);
                 Real value = f_(x);
@@ -394,19 +392,18 @@ namespace QuantLib {
 //===========================================================================//
 
     NumericHaganPricer::ConundrumIntegrand::ConundrumIntegrand(
-        const ext::shared_ptr<VanillaOptionPricer>& o,
+        ext::shared_ptr<VanillaOptionPricer> o,
         const ext::shared_ptr<YieldTermStructure>&,
-        const ext::shared_ptr<GFunction>& gFunction,
+        ext::shared_ptr<GFunction> gFunction,
         Date fixingDate,
         Date paymentDate,
         Real annuity,
         Real forwardValue,
         Real strike,
         Option::Type optionType)
-    : vanillaOptionPricer_(o), forwardValue_(forwardValue), annuity_(annuity),
-      fixingDate_(fixingDate), paymentDate_(paymentDate), strike_(strike),
-      optionType_(optionType),
-      gFunction_(gFunction) {}
+    : vanillaOptionPricer_(std::move(o)), forwardValue_(forwardValue), annuity_(annuity),
+      fixingDate_(fixingDate), paymentDate_(paymentDate), strike_(strike), optionType_(optionType),
+      gFunction_(std::move(gFunction)) {}
 
     void NumericHaganPricer::ConundrumIntegrand::setStrike(Real strike) {
         strike_ = strike;
@@ -668,11 +665,10 @@ namespace QuantLib {
 //                            GFunctionWithShifts                            //
 //===========================================================================//
 
-    GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(
-                    const CmsCoupon& coupon,
-                    const Handle<Quote>& meanReversion)
-    : meanReversion_(meanReversion), calibratedShift_(0.03),
-      tmpRs_(10000000.0), accuracy_( 1.0e-14) {
+    GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CmsCoupon& coupon,
+                                                               Handle<Quote> meanReversion)
+    : meanReversion_(std::move(meanReversion)), calibratedShift_(0.03), tmpRs_(10000000.0),
+      accuracy_(1.0e-14) {
 
         const ext::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
         const ext::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());

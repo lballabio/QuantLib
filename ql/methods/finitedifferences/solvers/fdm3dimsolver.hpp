@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         Fdm3DimSolver(const FdmSolverDesc& solverDesc,
                       const FdmSchemeDesc& schemeDesc,
-                      const ext::shared_ptr<FdmLinearOpComposite>& op);
+                      ext::shared_ptr<FdmLinearOpComposite> op);
 
         void performCalculations() const override;
 

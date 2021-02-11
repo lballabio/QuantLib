@@ -17,9 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/pathwisegreeks/vegabumpcluster.hpp>
 #include <ql/errors.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/pathwisegreeks/vegabumpcluster.hpp>
+#include <utility>
 #include <valarray>
 
 namespace QuantLib {
@@ -126,12 +127,12 @@ namespace QuantLib {
     }
 
 
-    VegaBumpCollection::VegaBumpCollection(const std::vector<VegaBumpCluster>& allBumps,  const ext::shared_ptr<MarketModel>& volStructure)
-        : allBumps_(allBumps), associatedVolStructure_(volStructure), checked_(false)
-    {
+    VegaBumpCollection::VegaBumpCollection(std::vector<VegaBumpCluster> allBumps,
+                                           ext::shared_ptr<MarketModel> volStructure)
+    : allBumps_(std::move(allBumps)), associatedVolStructure_(std::move(volStructure)),
+      checked_(false) {
         for (Size j=0; j < allBumps_.size(); ++j)
             QL_REQUIRE(allBumps_[j].isCompatible(associatedVolStructure_),"incompatible bumps passed to VegaBumpCollection");
-
     }
 
 

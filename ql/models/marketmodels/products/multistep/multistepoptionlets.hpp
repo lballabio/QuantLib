@@ -32,9 +32,9 @@ namespace QuantLib {
     class MultiStepOptionlets : public MultiProductMultiStep {
       public:
         MultiStepOptionlets(const std::vector<Time>& rateTimes,
-                            const std::vector<Real>& accruals,
+                            std::vector<Real> accruals,
                             const std::vector<Time>& paymentTimes,
-                            const std::vector<ext::shared_ptr<Payoff> >&);
+                            std::vector<ext::shared_ptr<Payoff> >);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const override;

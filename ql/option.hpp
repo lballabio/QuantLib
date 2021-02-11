@@ -25,6 +25,7 @@
 #define quantlib_option_hpp
 
 #include <ql/instrument.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,9 +39,8 @@ namespace QuantLib {
         enum Type { Put = -1,
                     Call = 1
         };
-        Option(const ext::shared_ptr<Payoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise)
-        : payoff_(payoff), exercise_(exercise) {}
+        Option(ext::shared_ptr<Payoff> payoff, ext::shared_ptr<Exercise> exercise)
+        : payoff_(std::move(payoff)), exercise_(std::move(exercise)) {}
         void setupArguments(PricingEngine::arguments*) const override;
         ext::shared_ptr<Payoff> payoff() { return payoff_; }
         ext::shared_ptr<Exercise> exercise() { return exercise_; };

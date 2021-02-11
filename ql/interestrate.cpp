@@ -19,8 +19,9 @@
 
 #include <ql/interestrate.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,11 +30,8 @@ namespace QuantLib {
     InterestRate::InterestRate()
     : r_(Null<Real>()) {}
 
-    InterestRate::InterestRate(Rate r,
-                               const DayCounter& dc,
-                               Compounding comp,
-                               Frequency freq)
-    : r_(r), dc_(dc), comp_(comp), freqMakesSense_(false) {
+    InterestRate::InterestRate(Rate r, DayCounter dc, Compounding comp, Frequency freq)
+    : r_(r), dc_(std::move(dc)), comp_(comp), freqMakesSense_(false) {
 
         if (comp_==Compounded || comp_==SimpleThenCompounded || comp_==CompoundedThenSimple) {
             freqMakesSense_ = true;

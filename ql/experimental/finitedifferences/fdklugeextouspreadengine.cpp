@@ -19,40 +19,37 @@
 
 
 #include <ql/exercise.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
+#include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
+#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/klugeextouprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
-#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdKlugeExtOUSpreadEngine::FdKlugeExtOUSpreadEngine(
-        const ext::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
-        Size tGrid, Size xGrid, Size yGrid, Size uGrid,
-        const ext::shared_ptr<GasShape>& gasShape,
-        const ext::shared_ptr<PowerShape>& powerShape,
+        ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        Size tGrid,
+        Size xGrid,
+        Size yGrid,
+        Size uGrid,
+        ext::shared_ptr<GasShape> gasShape,
+        ext::shared_ptr<PowerShape> powerShape,
         const FdmSchemeDesc& schemeDesc)
-    : klugeOUProcess_(klugeOUProcess),
-      rTS_  (rTS),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      yGrid_(yGrid),
-      uGrid_(uGrid),
-      gasShape_(gasShape),
-      powerShape_(powerShape),
-      schemeDesc_(schemeDesc) {
-    }
+    : klugeOUProcess_(std::move(klugeOUProcess)), rTS_(std::move(rTS)), tGrid_(tGrid),
+      xGrid_(xGrid), yGrid_(yGrid), uGrid_(uGrid), gasShape_(std::move(gasShape)),
+      powerShape_(std::move(powerShape)), schemeDesc_(schemeDesc) {}
 
     void FdKlugeExtOUSpreadEngine::calculate() const {
         // 1. Mesher

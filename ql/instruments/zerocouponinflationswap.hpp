@@ -70,16 +70,16 @@ namespace QuantLib {
         class engine;
         ZeroCouponInflationSwap(Type type,
                                 Real nominal,
-                                const Date& startDate,   // start date of contract (only)
-                                const Date& maturity,    // this is pre-adjustment!
-                                const Calendar& fixCalendar,
+                                const Date& startDate, // start date of contract (only)
+                                const Date& maturity,  // this is pre-adjustment!
+                                Calendar fixCalendar,
                                 BusinessDayConvention fixConvention,
-                                const DayCounter& dayCounter,
+                                DayCounter dayCounter,
                                 Rate fixedRate,
-                                const ext::shared_ptr<ZeroInflationIndex> &infIndex,
+                                const ext::shared_ptr<ZeroInflationIndex>& infIndex,
                                 const Period& observationLag,
                                 bool adjustInfObsDates = false,
-                                const Calendar& infCalendar = Calendar(),
+                                Calendar infCalendar = Calendar(),
                                 BusinessDayConvention infConvention = BusinessDayConvention());
 
         //! \name Inspectors

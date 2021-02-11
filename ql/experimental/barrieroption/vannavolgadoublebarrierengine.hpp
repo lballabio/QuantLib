@@ -24,17 +24,18 @@
 #ifndef quantlib_vanna_volga_double_barrier_engine_hpp
 #define quantlib_vanna_volga_double_barrier_engine_hpp
 
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
-#include <ql/experimental/fx/deltavolquote.hpp>
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
-#include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/experimental/fx/deltavolquote.hpp>
 #include <ql/math/matrix.hpp>
+#include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -49,18 +50,19 @@ namespace QuantLib {
                                   DoubleBarrierOption::results> {
          public:
            // Constructor
-           VannaVolgaDoubleBarrierEngine(const Handle<DeltaVolQuote>& atmVol,
-                                         const Handle<DeltaVolQuote>& vol25Put,
-                                         const Handle<DeltaVolQuote>& vol25Call,
-                                         const Handle<Quote>& spotFX,
-                                         const Handle<YieldTermStructure>& domesticTS,
-                                         const Handle<YieldTermStructure>& foreignTS,
+           VannaVolgaDoubleBarrierEngine(Handle<DeltaVolQuote> atmVol,
+                                         Handle<DeltaVolQuote> vol25Put,
+                                         Handle<DeltaVolQuote> vol25Call,
+                                         Handle<Quote> spotFX,
+                                         Handle<YieldTermStructure> domesticTS,
+                                         Handle<YieldTermStructure> foreignTS,
                                          const bool adaptVanDelta = false,
                                          const Real bsPriceWithSmile = 0.0,
                                          int series = 5)
            : GenericEngine<DoubleBarrierOption::arguments, DoubleBarrierOption::results>(),
-             atmVol_(atmVol), vol25Put_(vol25Put), vol25Call_(vol25Call), T_(atmVol_->maturity()),
-             spotFX_(spotFX), domesticTS_(domesticTS), foreignTS_(foreignTS),
+             atmVol_(std::move(atmVol)), vol25Put_(std::move(vol25Put)),
+             vol25Call_(std::move(vol25Call)), T_(atmVol_->maturity()), spotFX_(std::move(spotFX)),
+             domesticTS_(std::move(domesticTS)), foreignTS_(std::move(foreignTS)),
              adaptVanDelta_(adaptVanDelta), bsPriceWithSmile_(bsPriceWithSmile), series_(series) {
 
                QL_REQUIRE(vol25Put_->delta() == -0.25,
@@ -81,7 +83,7 @@ namespace QuantLib {
                registerWith(spotFX_);
                registerWith(domesticTS_);
                registerWith(foreignTS_);
-             }
+           }
 
              void calculate() const override {
 

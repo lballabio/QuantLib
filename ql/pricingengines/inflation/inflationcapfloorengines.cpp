@@ -18,19 +18,20 @@
  */
 
 
-#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
-#include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
+#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
 
     YoYInflationCapFloorEngine::YoYInflationCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>& index,
-                    const Handle<YoYOptionletVolatilitySurface>& volatility,
-                    const Handle<YieldTermStructure>& nominalTermStructure)
-    : index_(index), volatility_(volatility),
-      nominalTermStructure_(nominalTermStructure) {
+        ext::shared_ptr<YoYInflationIndex> index,
+        Handle<YoYOptionletVolatilitySurface> volatility,
+        Handle<YieldTermStructure> nominalTermStructure)
+    : index_(std::move(index)), volatility_(std::move(volatility)),
+      nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(index_);
         registerWith(volatility_);
         registerWith(nominalTermStructure_);

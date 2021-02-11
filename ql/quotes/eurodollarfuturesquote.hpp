@@ -35,9 +35,9 @@ namespace QuantLib {
     class EurodollarFuturesImpliedStdDevQuote : public Quote,
                                                 public LazyObject {
       public:
-        EurodollarFuturesImpliedStdDevQuote(const Handle<Quote>& forward,
-                                            const Handle<Quote>& callPrice,
-                                            const Handle<Quote>& putPrice,
+        EurodollarFuturesImpliedStdDevQuote(Handle<Quote> forward,
+                                            Handle<Quote> callPrice,
+                                            Handle<Quote> putPrice,
                                             Real strike,
                                             Real guess = .15,
                                             Real accuracy = 1.0e-6,

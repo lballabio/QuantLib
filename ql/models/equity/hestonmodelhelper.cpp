@@ -19,47 +19,43 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/instruments/payoffs.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
-    HestonModelHelper::HestonModelHelper(
-                            const Period& maturity,
-                            const Calendar& calendar,
-                            const Real s0,
-                            const Real strikePrice,
-                            const Handle<Quote>& volatility,
-                            const Handle<YieldTermStructure>& riskFreeRate,
-                            const Handle<YieldTermStructure>& dividendYield,
-                            BlackCalibrationHelper::CalibrationErrorType errorType)
-    : BlackCalibrationHelper(volatility, errorType),
-      maturity_(maturity), calendar_(calendar),
-      s0_(Handle<Quote>(ext::make_shared<SimpleQuote>(s0))),
-      strikePrice_(strikePrice), riskFreeRate_(riskFreeRate),
-      dividendYield_(dividendYield) {
+    HestonModelHelper::HestonModelHelper(const Period& maturity,
+                                         Calendar calendar,
+                                         const Real s0,
+                                         const Real strikePrice,
+                                         const Handle<Quote>& volatility,
+                                         const Handle<YieldTermStructure>& riskFreeRate,
+                                         const Handle<YieldTermStructure>& dividendYield,
+                                         BlackCalibrationHelper::CalibrationErrorType errorType)
+    : BlackCalibrationHelper(volatility, errorType), maturity_(maturity),
+      calendar_(std::move(calendar)), s0_(Handle<Quote>(ext::make_shared<SimpleQuote>(s0))),
+      strikePrice_(strikePrice), riskFreeRate_(riskFreeRate), dividendYield_(dividendYield) {
         registerWith(riskFreeRate);
         registerWith(dividendYield);
     }
 
-    HestonModelHelper::HestonModelHelper(
-                            const Period& maturity,
-                            const Calendar& calendar,
-                            const Handle<Quote>& s0,
-                            const Real strikePrice,
-                            const Handle<Quote>& volatility,
-                            const Handle<YieldTermStructure>& riskFreeRate,
-                            const Handle<YieldTermStructure>& dividendYield,
-                            BlackCalibrationHelper::CalibrationErrorType errorType)
-    : BlackCalibrationHelper(volatility, errorType),
-      maturity_(maturity), calendar_(calendar), s0_(s0),
-      strikePrice_(strikePrice), riskFreeRate_(riskFreeRate),
-      dividendYield_(dividendYield) {
+    HestonModelHelper::HestonModelHelper(const Period& maturity,
+                                         Calendar calendar,
+                                         const Handle<Quote>& s0,
+                                         const Real strikePrice,
+                                         const Handle<Quote>& volatility,
+                                         const Handle<YieldTermStructure>& riskFreeRate,
+                                         const Handle<YieldTermStructure>& dividendYield,
+                                         BlackCalibrationHelper::CalibrationErrorType errorType)
+    : BlackCalibrationHelper(volatility, errorType), maturity_(maturity),
+      calendar_(std::move(calendar)), s0_(s0), strikePrice_(strikePrice),
+      riskFreeRate_(riskFreeRate), dividendYield_(dividendYield) {
         registerWith(s0);
         registerWith(riskFreeRate);
         registerWith(dividendYield);

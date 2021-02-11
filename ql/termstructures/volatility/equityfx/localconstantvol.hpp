@@ -26,6 +26,7 @@
 
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,20 +39,18 @@ namespace QuantLib {
     */
     class LocalConstantVol : public LocalVolTermStructure {
       public:
+        LocalConstantVol(const Date& referenceDate, Volatility volatility, DayCounter dayCounter);
         LocalConstantVol(const Date& referenceDate,
-                         Volatility volatility,
-                         const DayCounter& dayCounter);
-        LocalConstantVol(const Date& referenceDate,
-                         const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter);
+                         Handle<Quote> volatility,
+                         DayCounter dayCounter);
         LocalConstantVol(Natural settlementDays,
                          const Calendar&,
                          Volatility volatility,
-                         const DayCounter& dayCounter);
+                         DayCounter dayCounter);
         LocalConstantVol(Natural settlementDays,
                          const Calendar&,
-                         const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter);
+                         Handle<Quote> volatility,
+                         DayCounter dayCounter);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const override { return dayCounter_; }
@@ -76,33 +75,33 @@ namespace QuantLib {
 
     inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
                                               Volatility volatility,
-                                              const DayCounter& dayCounter)
+                                              DayCounter dayCounter)
     : LocalVolTermStructure(referenceDate),
       volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
+      dayCounter_(std::move(dayCounter)) {}
 
     inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : LocalVolTermStructure(referenceDate), volatility_(volatility),
-      dayCounter_(dayCounter) {
+                                              Handle<Quote> volatility,
+                                              DayCounter dayCounter)
+    : LocalVolTermStructure(referenceDate), volatility_(std::move(volatility)),
+      dayCounter_(std::move(dayCounter)) {
         registerWith(volatility_);
     }
 
     inline LocalConstantVol::LocalConstantVol(Natural settlementDays,
                                               const Calendar& calendar,
                                               Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : LocalVolTermStructure(settlementDays,calendar),
+                                              DayCounter dayCounter)
+    : LocalVolTermStructure(settlementDays, calendar),
       volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
+      dayCounter_(std::move(dayCounter)) {}
 
     inline LocalConstantVol::LocalConstantVol(Natural settlementDays,
                                               const Calendar& calendar,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : LocalVolTermStructure(settlementDays,calendar), volatility_(volatility),
-      dayCounter_(dayCounter) {
+                                              Handle<Quote> volatility,
+                                              DayCounter dayCounter)
+    : LocalVolTermStructure(settlementDays, calendar), volatility_(std::move(volatility)),
+      dayCounter_(std::move(dayCounter)) {
         registerWith(volatility_);
     }
 
