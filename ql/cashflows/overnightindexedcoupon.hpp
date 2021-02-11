@@ -34,8 +34,24 @@
 
 namespace QuantLib {
 
+    //! overnight coupon averaging method
+    /*! It allows to configure how interest is accrued in the overnight coupon.
+    */
+    enum class OvernightAveraging { 
+        Simple,                 /*!< Under the simple convention the amount of 
+                                     interest is calculated by applying the daily
+                                     rate to the principal, and the payment due 
+                                     at the end of the period is the sum of those
+                                     amounts. */ 
+        Compound                /*!< Under the compound convention, the additional 
+                                     amount of interest owed each day is calculated
+                                     by applying the rate both to the principal
+                                     and the accumulated unpaid interest. */ 
+    };
+
     //! overnight coupon
-    /*! %Coupon paying the compounded interest due to daily overnight fixings.
+    /*! %Coupon paying the interest, depending on the averaging convention,
+        due to daily overnight fixings.
 
         \warning telescopicValueDates optimizes the schedule for calculation speed,
         but might fail to produce correct results if the coupon ages by more than
@@ -44,9 +60,6 @@ namespace QuantLib {
         rather by the OISRateHelper which is safe, since it reinitialises the
         instrument each time the evaluation date changes.
     */
-
-    enum class OvernightAveraging { Simple, Compound };
-
     class OvernightIndexedCoupon : public FloatingRateCoupon {
       public:
         OvernightIndexedCoupon(
