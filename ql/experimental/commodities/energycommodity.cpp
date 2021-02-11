@@ -45,21 +45,16 @@ namespace QuantLib {
             << std::setw(14) << std::right << "delta"
             << std::setw(10) << std::right << "open" << std::endl;
 
-        for (auto i = dailyPositions.begin(); i != dailyPositions.end(); ++i) {
-            const EnergyDailyPosition& dailyPosition = i->second;
-            out << std::setw(4) << io::iso_date(i->first) << "  "
-                << std::setw(12) << std::right << std::fixed
-                << std::setprecision(6) << dailyPosition.payLegPrice
-                << std::setw(12) << std::right << std::fixed
-                << std::setprecision(6) << dailyPosition.receiveLegPrice
-                << std::setw(10) << std::right << std::fixed
-                << std::setprecision(2) << dailyPosition.quantityAmount
-                << std::setw(14) << std::right << std::fixed
-                << std::setprecision(2) << dailyPosition.riskDelta
-                << std::setw(10) << std::right << std::fixed
-                << std::setprecision(2)
-                << (dailyPosition.unrealized ? dailyPosition.quantityAmount : 0)
-                << std::endl;
+        for (const auto& i : dailyPositions) {
+            const EnergyDailyPosition& dailyPosition = i.second;
+            out << std::setw(4) << io::iso_date(i.first) << "  " << std::setw(12) << std::right
+                << std::fixed << std::setprecision(6) << dailyPosition.payLegPrice << std::setw(12)
+                << std::right << std::fixed << std::setprecision(6) << dailyPosition.receiveLegPrice
+                << std::setw(10) << std::right << std::fixed << std::setprecision(2)
+                << dailyPosition.quantityAmount << std::setw(14) << std::right << std::fixed
+                << std::setprecision(2) << dailyPosition.riskDelta << std::setw(10) << std::right
+                << std::fixed << std::setprecision(2)
+                << (dailyPosition.unrealized ? dailyPosition.quantityAmount : 0) << std::endl;
         }
 
         return out;

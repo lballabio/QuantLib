@@ -93,10 +93,9 @@ void QuoteTest::testDerived() {
     ext::shared_ptr<Quote> me(new SimpleQuote(17.0));
     Handle<Quote> h(me);
 
-    for (Integer i=0; i<3; i++) {
-        DerivedQuote<unary_f> derived(h,funcs[i]);
-        Real x = derived.value(),
-             y = funcs[i](me->value());
+    for (auto& func : funcs) {
+        DerivedQuote<unary_f> derived(h, func);
+        Real x = derived.value(), y = func(me->value());
         if (std::fabs(x-y) > 1.0e-10)
             BOOST_FAIL("derived quote yields " << x << "\n"
                        << "function result is " << y);
@@ -114,10 +113,9 @@ void QuoteTest::testComposite() {
                              me2(new SimpleQuote(13.0));
     Handle<Quote> h1(me1), h2(me2);
 
-    for (Integer i=0; i<3; i++) {
-        CompositeQuote<binary_f> composite(h1,h2,funcs[i]);
-        Real x = composite.value(),
-             y = funcs[i](me1->value(),me2->value());
+    for (auto& func : funcs) {
+        CompositeQuote<binary_f> composite(h1, h2, func);
+        Real x = composite.value(), y = func(me1->value(), me2->value());
         if (std::fabs(x-y) > 1.0e-10)
             BOOST_FAIL("composite quote yields " << x << "\n"
                        << "function result is " << y);

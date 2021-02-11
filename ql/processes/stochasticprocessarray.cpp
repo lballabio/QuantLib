@@ -34,8 +34,8 @@ namespace QuantLib {
         QL_REQUIRE(correlation.rows() == processes.size(),
                    "mismatch between number of processes "
                    "and size of correlation matrix");
-        for (Size i=0; i<processes_.size(); i++)
-            registerWith(processes_[i]);
+        for (auto& processe : processes_)
+            registerWith(processe);
     }
 
     Size StochasticProcessArray::size() const {

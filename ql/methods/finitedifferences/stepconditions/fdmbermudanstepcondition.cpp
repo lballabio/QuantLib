@@ -33,9 +33,8 @@ namespace QuantLib {
     : mesher_(std::move(mesher)), calculator_(std::move(calculator)) {
 
         exerciseTimes_.reserve(exerciseDates.size());
-        for (auto iter = exerciseDates.begin(); iter != exerciseDates.end(); ++iter) {
-            exerciseTimes_.push_back(
-                             dayCounter.yearFraction(referenceDate, *iter));
+        for (auto exerciseDate : exerciseDates) {
+            exerciseTimes_.push_back(dayCounter.yearFraction(referenceDate, exerciseDate));
         }
     }
 

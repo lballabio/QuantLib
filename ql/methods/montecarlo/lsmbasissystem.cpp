@@ -76,10 +76,9 @@ namespace QuantLib {
 
         // check size and order of tuples
         void check_tuples(const VV& v, Size dim, Size order) {
-            for(Size i=0; i<v.size(); ++i) {
-                QL_REQUIRE(dim==v[i].size(), "wrong tuple size");
-                QL_REQUIRE(order == std::accumulate(v[i].begin(), v[i].end(), 0UL),
-                           "wrong tuple order");
+            for (const auto& i : v) {
+                QL_REQUIRE(dim == i.size(), "wrong tuple size");
+                QL_REQUIRE(order == std::accumulate(i.begin(), i.end(), 0UL), "wrong tuple order");
             }
         }
 
@@ -95,8 +94,8 @@ namespace QuantLib {
             std::vector<Size> x;
             for(Size i=0; i<dim; ++i) {
                 // increase i-th value in every tuple by 1
-                for(Size j=0; j<v.size(); ++j) {
-                    x = v[j];
+                for (const auto& j : v) {
+                    x = j;
                     x[i] += 1;
                     tuples.insert(x);
                 }
@@ -158,9 +157,9 @@ namespace QuantLib {
             tuples = next_order_tuples(tuples);
             // now we have all tuples of order i
             // for each tuple add the corresponding term
-            for(Size j=0; j<tuples.size(); ++j) {
+            for (auto& tuple : tuples) {
                 for(Size k=0; k<dim; ++k)
-                    term[k] = pathBasis[tuples[j][k]];
+                    term[k] = pathBasis[tuple[k]];
                 ret.push_back(MultiDimFct(term));
             }
         }

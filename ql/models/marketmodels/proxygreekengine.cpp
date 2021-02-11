@@ -86,8 +86,8 @@ namespace QuantLib {
         modifiedValues.resize(constrainedEvolvers_.size());
         for (Size i=0; i<modifiedValues.size(); ++i) {
             modifiedValues[i].resize(constrainedEvolvers_[i].size());
-            for (Size j=0; j<modifiedValues[i].size(); ++j)
-                modifiedValues[i][j].resize(N);
+            for (auto& j : modifiedValues[i])
+                j.resize(N);
         }
 
         std::vector<Real> results(N);

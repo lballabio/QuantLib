@@ -179,8 +179,8 @@ namespace QuantLib {
             //Increase steps
             k++;
             kStationary++;
-            for (Size i = 0; i < annealStep.size(); i++)
-                annealStep[i]++;
+            for (double& i : annealStep)
+                i++;
 
             //Reanneal if necessary
             if (kReAnneal == reAnnealSteps_) {

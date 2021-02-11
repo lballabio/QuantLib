@@ -40,9 +40,9 @@ namespace QuantLib {
     }
 
     void MarketModelComposite::reset() {
-        for (auto i = components_.begin(); i != components_.end(); ++i) {
-            i->product->reset();
-            i->done = false;
+        for (auto& component : components_) {
+            component.product->reset();
+            component.done = false;
         }
         currentIndex_ = 0;
     }

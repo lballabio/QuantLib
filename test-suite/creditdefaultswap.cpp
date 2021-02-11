@@ -677,46 +677,35 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
     size_t l = 0;
 
-    for(size_t i = 0; i < sizeof(termDates) / sizeof(Date); i++) {
-        for(size_t j = 0; j < 2; j++) {
-            for(size_t k = 0; k < 2; k++) {
+    for (auto termDate : termDates) {
+        for (double spread : spreads) {
+            for (double& recoverie : recoveries) {
 
-            ext::shared_ptr<CreditDefaultSwap> quotedTrade =
-                MakeCreditDefaultSwap(termDates[i], spreads[j])
-                .withNominal(10000000.);
+                ext::shared_ptr<CreditDefaultSwap> quotedTrade =
+                    MakeCreditDefaultSwap(termDate, spread).withNominal(10000000.);
 
-            Rate h = quotedTrade->impliedHazardRate(0.,
-                                                    discountCurve,
-                                                    Actual365Fixed(),
-                                                    recoveries[k],
-                                                    1e-10,
-                                                    CreditDefaultSwap::ISDA);
+                Rate h = quotedTrade->impliedHazardRate(0., discountCurve, Actual365Fixed(),
+                                                        recoverie, 1e-10, CreditDefaultSwap::ISDA);
 
-            probabilityCurve.linkTo(
-                ext::make_shared<FlatHazardRate>(
-                    0, WeekendsOnly(), h, Actual365Fixed())
-                );
+                probabilityCurve.linkTo(
+                    ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
-            ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-                probabilityCurve, recoveries[k], discountCurve,
-                boost::none, IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
-                IsdaCdsEngine::Piecewise);
+                ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
+                    probabilityCurve, recoverie, discountCurve, boost::none, IsdaCdsEngine::Taylor,
+                    IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
-            ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
-                MakeCreditDefaultSwap(termDates[i], 0.01)
-                .withNominal(10000000.)
-                .withPricingEngine(engine);
+                ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
+                    MakeCreditDefaultSwap(termDate, 0.01)
+                        .withNominal(10000000.)
+                        .withPricingEngine(engine);
 
-            BOOST_CHECK_CLOSE(conventionalTrade->notional() * conventionalTrade->fairUpfront(),
-                              markitValues[l],
-                              tolerance);
+                BOOST_CHECK_CLOSE(conventionalTrade->notional() * conventionalTrade->fairUpfront(),
+                                  markitValues[l], tolerance);
 
-            l++;
-
+                l++;
             }
         }
     }
-
 }
 
 void CreditDefaultSwapTest::testAccrualRebateAmounts() {

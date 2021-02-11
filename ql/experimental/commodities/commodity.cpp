@@ -47,14 +47,13 @@ namespace QuantLib {
         Real totalAmount = 0;
 
         out << "secondary costs" << std::endl;
-        for (auto i = secondaryCostAmounts.begin(); i != secondaryCostAmounts.end(); ++i) {
-            Real amount = i->second.value();
+        for (const auto& secondaryCostAmount : secondaryCostAmounts) {
+            Real amount = secondaryCostAmount.second.value();
             if (currencyCode.empty())
-                currencyCode = i->second.currency().code();
+                currencyCode = secondaryCostAmount.second.currency().code();
             totalAmount += amount;
-            out << std::setw(28) << std::left << i->first
-                << std::setw(12) << std::right << std::fixed
-                << std::setprecision(2) << amount << " " << currencyCode
+            out << std::setw(28) << std::left << secondaryCostAmount.first << std::setw(12)
+                << std::right << std::fixed << std::setprecision(2) << amount << " " << currencyCode
                 << std::endl;
         }
         out << std::setw(28) << std::left << "total"
@@ -89,8 +88,8 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out, const PricingErrors& errors) {
         if (!errors.empty()) {
             out << "*** pricing errors" << std::endl;
-            for (auto i = errors.begin(); i != errors.end(); ++i)
-                out << *i << std::endl;
+            for (const auto& error : errors)
+                out << error << std::endl;
         }
         return out;
     }

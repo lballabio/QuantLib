@@ -603,8 +603,8 @@ namespace QuantLib {
 
     Real GFunctionFactory::GFunctionExactYield::operator()(Real x) {
         Real product = 1.;
-        for(Size i=0; i<accruals_.size(); i++) {
-            product *= 1./(1.+ accruals_[i]*x);
+        for (double accrual : accruals_) {
+            product *= 1. / (1. + accrual * x);
         }
         return x*std::pow(1.+ accruals_[0]*x,-delta_)*(1./(1.-product));
     }
@@ -614,11 +614,11 @@ namespace QuantLib {
         Real derC = 0.;
         std::vector<Real> b;
         b.reserve(accruals_.size());
-        for (Size i=0; i<accruals_.size(); i++) {
-            Real temp = 1.0/(1.0+ accruals_[i]*x);
+        for (double accrual : accruals_) {
+            Real temp = 1.0 / (1.0 + accrual * x);
             b.push_back(temp);
             c *= temp;
-            derC += accruals_[i]*temp;
+            derC += accrual * temp;
         }
         c += 1.;
         c = 1./c;
@@ -636,12 +636,12 @@ namespace QuantLib {
         Real sumOfSquare = 0.;
         std::vector<Real> b;
         b.reserve(accruals_.size());
-        for(Size i=0; i<accruals_.size(); i++) {
-            Real temp = 1.0/(1.0+ accruals_[i]*x);
+        for (double accrual : accruals_) {
+            Real temp = 1.0 / (1.0 + accrual * x);
             b.push_back(temp);
             c *= temp;
-            sum += accruals_[i]*temp;
-            sumOfSquare += std::pow(accruals_[i]*temp, 2.0);
+            sum += accrual * temp;
+            sumOfSquare += std::pow(accrual * temp, 2.0);
         }
         c += 1.;
         c = 1./c;

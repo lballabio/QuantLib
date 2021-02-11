@@ -60,14 +60,13 @@ namespace QuantLib {
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
         Date d1 = effectiveDate();
-        for (Size i = 0; i < cf.size(); i++) {
-            Date d2 = cf[i]->date();
+        for (auto& i : cf) {
+            Date d2 = i->date();
             if (d2 > npvDate) {
                 d1 = max(npvDate , d1);
                 Date defaultDate = d1 + (d2-d1)/2;
 
-                Real coupon = cf[i]->amount()
-                    * defaultTS_->survivalProbability(d2);
+                Real coupon = i->amount() * defaultTS_->survivalProbability(d2);
                 Real recovery = notional(defaultDate) * recoveryRate_
                     * (defaultTS_->survivalProbability(d1)
                        -defaultTS_->survivalProbability(d2));
@@ -84,10 +83,10 @@ namespace QuantLib {
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         Real npv = 0;
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
-        for (Size i = 0; i < cf.size(); i++) {
-            Date d2 = cf[i]->date();
+        for (auto& i : cf) {
+            Date d2 = i->date();
             if (d2 > npvDate)
-                npv += cf[i]->amount() * yieldTS()->discount(d2);
+                npv += i->amount() * yieldTS()->discount(d2);
         }
         return npv;
     }
@@ -97,9 +96,9 @@ namespace QuantLib {
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         Real flow = 0;
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
-        for (Size i = 0; i < cf.size(); i++) {
-            if (cf[i]->date() > npvDate)
-                flow += cf[i]->amount();
+        for (auto& i : cf) {
+            if (i->date() > npvDate)
+                flow += i->amount();
         }
         return flow;
     }
@@ -110,14 +109,13 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         Date d1 = effectiveDate();
-        for (Size i = 0; i < cf.size(); i++) {
-            Date d2 = cf[i]->date();
+        for (auto& i : cf) {
+            Date d2 = i->date();
             if (d2 > npvDate) {
                 d1 = max(npvDate, d1);
                 Date defaultDate = d1 + (d2-d1)/2;
 
-                Real coupon = cf[i]->amount()
-                    * defaultTS_->survivalProbability(d2);
+                Real coupon = i->amount() * defaultTS_->survivalProbability(d2);
                 Real recovery = notional(defaultDate) * recoveryRate_
                     * (defaultTS_->survivalProbability(d1)
                        -defaultTS_->survivalProbability(d2));

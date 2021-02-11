@@ -43,12 +43,12 @@ namespace QuantLib {
     // Computes the size of the simplex
         Real computeSimplexSize (const std::vector<Array>& vertices) {
             Array center(vertices.front().size(),0);
-            for (Size i=0; i<vertices.size(); ++i)
-                center += vertices[i];
+            for (const auto& vertice : vertices)
+                center += vertice;
             center *=1/Real(vertices.size());
             Real result = 0;
-            for (Size i=0; i<vertices.size(); ++i) {
-                Array temp = vertices[i] - center;
+            for (const auto& vertice : vertices) {
+                Array temp = vertice - center;
                 result += Norm2(temp);
             }
             return result/Real(vertices.size());

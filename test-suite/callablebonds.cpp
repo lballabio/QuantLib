@@ -247,18 +247,16 @@ void CallableBondTest::testConsistency() {
 
     CallabilitySchedule callabilities;
     std::vector<Date> callabilityDates = vars.evenYears();
-    for (Size i=0; i<callabilityDates.size(); ++i) {
+    for (auto& callabilityDate : callabilityDates) {
         callabilities.push_back(ext::make_shared<Callability>(
-                         Bond::Price(110.0, Bond::Price::Clean),
-                         Callability::Call, callabilityDates[i]));
+            Bond::Price(110.0, Bond::Price::Clean), Callability::Call, callabilityDate));
     }
 
     CallabilitySchedule puttabilities;
     std::vector<Date> puttabilityDates = vars.oddYears();
-    for (Size i=0; i<puttabilityDates.size(); ++i) {
-        puttabilities.push_back(ext::make_shared<Callability>(
-                         Bond::Price(90.0, Bond::Price::Clean),
-                         Callability::Put, puttabilityDates[i]));
+    for (auto& puttabilityDate : puttabilityDates) {
+        puttabilities.push_back(ext::make_shared<Callability>(Bond::Price(90.0, Bond::Price::Clean),
+                                                              Callability::Put, puttabilityDate));
     }
 
     Size timeSteps = 240;
@@ -324,16 +322,14 @@ void CallableBondTest::testObservability() {
     CallabilitySchedule callabilities;
 
     std::vector<Date> callabilityDates = vars.evenYears();
-    for (Size i=0; i<callabilityDates.size(); ++i) {
+    for (auto& callabilityDate : callabilityDates) {
         callabilities.push_back(ext::make_shared<Callability>(
-                         Bond::Price(110.0, Bond::Price::Clean),
-                         Callability::Call, callabilityDates[i]));
+            Bond::Price(110.0, Bond::Price::Clean), Callability::Call, callabilityDate));
     }
     std::vector<Date> puttabilityDates = vars.oddYears();
-    for (Size i=0; i<puttabilityDates.size(); ++i) {
-        callabilities.push_back(ext::make_shared<Callability>(
-                         Bond::Price(90.0, Bond::Price::Clean),
-                         Callability::Put, puttabilityDates[i]));
+    for (auto& puttabilityDate : puttabilityDates) {
+        callabilities.push_back(ext::make_shared<Callability>(Bond::Price(90.0, Bond::Price::Clean),
+                                                              Callability::Put, puttabilityDate));
     }
 
     CallableZeroCouponBond bond(3, 100.0, vars.calendar,
@@ -434,16 +430,14 @@ void CallableBondTest::testDegenerate() {
     // out-of-the-money callability
 
     std::vector<Date> callabilityDates = vars.evenYears();
-    for (Size i=0; i<callabilityDates.size(); ++i) {
+    for (auto& callabilityDate : callabilityDates) {
         callabilities.push_back(ext::make_shared<Callability>(
-                         Bond::Price(10000.0, Bond::Price::Clean),
-                         Callability::Call, callabilityDates[i]));
+            Bond::Price(10000.0, Bond::Price::Clean), Callability::Call, callabilityDate));
     }
     std::vector<Date> puttabilityDates = vars.oddYears();
-    for (Size i=0; i<puttabilityDates.size(); ++i) {
-        callabilities.push_back(ext::make_shared<Callability>(
-                         Bond::Price(0.0, Bond::Price::Clean),
-                         Callability::Put, puttabilityDates[i]));
+    for (auto& puttabilityDate : puttabilityDates) {
+        callabilities.push_back(ext::make_shared<Callability>(Bond::Price(0.0, Bond::Price::Clean),
+                                                              Callability::Put, puttabilityDate));
     }
 
     bond1 = CallableZeroCouponBond(3, 100.0, vars.calendar,
@@ -504,20 +498,16 @@ void CallableBondTest::testCached() {
     CallabilitySchedule all_exercises;
 
     std::vector<Date> callabilityDates = vars.evenYears();
-    for (Size i=0; i<callabilityDates.size(); ++i) {
-        ext::shared_ptr<Callability> exercise =
-            ext::make_shared<Callability>(
-                         Bond::Price(110.0, Bond::Price::Clean),
-                         Callability::Call, callabilityDates[i]);
+    for (auto& callabilityDate : callabilityDates) {
+        ext::shared_ptr<Callability> exercise = ext::make_shared<Callability>(
+            Bond::Price(110.0, Bond::Price::Clean), Callability::Call, callabilityDate);
         callabilities.push_back(exercise);
         all_exercises.push_back(exercise);
     }
     std::vector<Date> puttabilityDates = vars.oddYears();
-    for (Size i=0; i<puttabilityDates.size(); ++i) {
-        ext::shared_ptr<Callability> exercise =
-            ext::make_shared<Callability>(
-                         Bond::Price(100.0, Bond::Price::Clean),
-                         Callability::Put, puttabilityDates[i]);
+    for (auto& puttabilityDate : puttabilityDates) {
+        ext::shared_ptr<Callability> exercise = ext::make_shared<Callability>(
+            Bond::Price(100.0, Bond::Price::Clean), Callability::Put, puttabilityDate);
         puttabilities.push_back(exercise);
         all_exercises.push_back(exercise);
     }

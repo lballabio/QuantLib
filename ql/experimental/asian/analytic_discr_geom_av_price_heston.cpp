@@ -235,8 +235,8 @@ namespace QuantLib {
 
         Time startTime = 0.0;
         std::vector<Time> fixingTimes, tauK;
-        for (Size i=0; i<arguments_.fixingDates.size(); i++) {
-            fixingTimes.push_back(this->process_->time(arguments_.fixingDates[i]));
+        for (auto& fixingDate : arguments_.fixingDates) {
+            fixingTimes.push_back(this->process_->time(fixingDate));
         }
         std::sort(fixingTimes.begin(), fixingTimes.end());
         tauK = fixingTimes;
@@ -262,12 +262,12 @@ namespace QuantLib {
         tkr_tk_ = std::vector<Real>();
         tr_t_ = -std::log(riskFreeRate_->discount(startTime) / dividendYield_->discount(startTime));
         Tr_T_ = -std::log(riskFreeRate_->discount(expiryTime) / dividendYield_->discount(expiryTime));
-        for (Size i=0; i<fixingTimes.size(); i++) {
-            if (fixingTimes[i] < 0) {
+        for (double fixingTime : fixingTimes) {
+            if (fixingTime < 0) {
                 tkr_tk_.push_back(1.0);
             } else {
-                tkr_tk_.push_back(-std::log(riskFreeRate_->discount(fixingTimes[i])
-                                            / dividendYield_->discount(fixingTimes[i])));
+                tkr_tk_.push_back(-std::log(riskFreeRate_->discount(fixingTime) /
+                                            dividendYield_->discount(fixingTime)));
             }
         }
 

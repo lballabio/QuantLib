@@ -635,13 +635,12 @@ namespace QuantLib {
         std::vector<Time> swapLengths(sparseParameters_.swapLengths());
         sparseSmiles_.clear();
 
-        for (Size j=0; j<optionTimes.size(); j++) {
+        for (double& optionTime : optionTimes) {
             std::vector<ext::shared_ptr<SmileSection> > tmp;
             Size n = swapLengths.size();
             tmp.reserve(n);
             for (Size k=0; k<n; ++k) {
-                tmp.push_back(smileSection(optionTimes[j], swapLengths[k],
-                                           sparseParameters_));
+                tmp.push_back(smileSection(optionTime, swapLengths[k], sparseParameters_));
             }
             sparseSmiles_.push_back(tmp);
         }

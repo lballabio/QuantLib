@@ -30,15 +30,13 @@ namespace QuantLib {
         QL_REQUIRE(surfaces_.size()>1, "at least 2 surfaces are needed");
 
         Date refDate = surfaces_[0]->referenceDate();
-        for (Size i=0; i<surfaces_.size(); ++i) {
-            QL_REQUIRE(surfaces_[i]->referenceDate() == refDate,
-                       "different reference dates");
+        for (auto& surface : surfaces_) {
+            QL_REQUIRE(surface->referenceDate() == refDate, "different reference dates");
             //curves_.push_back(surfaces_[i]);
         }
 
-        for (Size i=0; i<curves_.size(); ++i) {
-            QL_REQUIRE(curves_[i]->referenceDate() == refDate,
-                       "different reference dates");
+        for (auto& curve : curves_) {
+            QL_REQUIRE(curve->referenceDate() == refDate, "different reference dates");
         }
 
         // sort increasing index tenor

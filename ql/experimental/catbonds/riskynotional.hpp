@@ -103,13 +103,12 @@ namespace QuantLib {
             path.reset();
             Real losses = 0;
             Real previousNotional = 1;
-            for(size_t i=0; i<events.size(); ++i)
-            {
-                losses+=events[i].second;
+            for (const auto& event : events) {
+                losses += event.second;
                 if(losses>attachement_ && previousNotional>0)
                 {
                     previousNotional = std::max(0.0, (exhaustion_-losses)/(exhaustion_-attachement_));
-                    path.addReduction(paymentOffset_->paymentDate(events[i].first), previousNotional);
+                    path.addReduction(paymentOffset_->paymentDate(event.first), previousNotional);
                 }
             }
         }

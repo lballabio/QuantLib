@@ -77,10 +77,9 @@ namespace QuantLib {
 
             floatCFS.clear();
 
-            for (Size j = 0; j < floatLeg.size(); ++j) {
+            for (const auto& j : floatLeg) {
                 // retrieve ibor coupon from floating leg
-                ext::shared_ptr<IborCoupon> coupon =
-                    ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
+                ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(j);
                 QL_REQUIRE(coupon, "dynamic cast of float leg coupon failed.");
 
                 if (coupon->date() <= expiries_[i]) {
@@ -261,9 +260,9 @@ namespace QuantLib {
 
         floatCFS.clear();
 
-        for(Size j = 0; j < floatLeg.size(); ++j){
+        for (auto& j : floatLeg) {
             //retrieve ibor coupon from floating leg
-            ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
+            ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(j);
             QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
             ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
@@ -297,10 +296,9 @@ namespace QuantLib {
 
         fixedCFS.clear();
 
-        for(Size i = 0; i < fixedLeg.size(); ++i)  
-        {
+        for (auto& i : fixedLeg) {
             //retrieve fixed rate coupon from fixed leg
-            ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
+            ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(i);
             QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
 
             ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon> (

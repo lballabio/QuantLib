@@ -39,12 +39,12 @@ namespace QuantLib {
         QL_REQUIRE(!leg.empty(), "empty leg");
 
         Date d = Date::maxDate();
-        for (Size i=0; i<leg.size(); ++i) {
-            ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(leg[i]);
+        for (const auto& i : leg) {
+            ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
             if (c != nullptr)
                 d = std::min(d, c->accrualStartDate());
             else
-                d = std::min(d, leg[i]->date());
+                d = std::min(d, i->date());
         }
         return d;
     }
@@ -53,12 +53,12 @@ namespace QuantLib {
         QL_REQUIRE(!leg.empty(), "empty leg");
 
         Date d = Date::minDate();
-        for (Size i=0; i<leg.size(); ++i) {
-            ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(leg[i]);
+        for (const auto& i : leg) {
+            ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
             if (c != nullptr)
                 d = std::max(d, c->accrualEndDate());
             else
-                d = std::max(d, leg[i]->date());
+                d = std::max(d, i->date());
         }
         return d;
     }
@@ -434,12 +434,10 @@ namespace QuantLib {
             npvDate = settlementDate;
 
         Real totalNPV = 0.0;
-        for (Size i=0; i<leg.size(); ++i) {
-            if (!leg[i]->hasOccurred(settlementDate,
-                                     includeSettlementDateFlows) &&
-                !leg[i]->tradingExCoupon(settlementDate))
-                totalNPV += leg[i]->amount() *
-                            discountCurve.discount(leg[i]->date());
+        for (const auto& i : leg) {
+            if (!i->hasOccurred(settlementDate, includeSettlementDateFlows) &&
+                !i->tradingExCoupon(settlementDate))
+                totalNPV += i->amount() * discountCurve.discount(i->date());
         }
 
         return totalNPV/discountCurve.discount(npvDate);
@@ -460,11 +458,10 @@ namespace QuantLib {
             npvDate = settlementDate;
 
         BPSCalculator calc(discountCurve);
-        for (Size i=0; i<leg.size(); ++i) {
-            if (!leg[i]->hasOccurred(settlementDate,
-                                     includeSettlementDateFlows) &&
-                !leg[i]->tradingExCoupon(settlementDate))
-                leg[i]->accept(calc);
+        for (const auto& i : leg) {
+            if (!i->hasOccurred(settlementDate, includeSettlementDateFlows) &&
+                !i->tradingExCoupon(settlementDate))
+                i->accept(calc);
         }
         return basisPoint_*calc.bps()/discountCurve.discount(npvDate);
     }
@@ -483,13 +480,12 @@ namespace QuantLib {
             return;
         }
 
-        for (Size i=0; i<leg.size(); ++i) {
-            CashFlow& cf = *leg[i];
+        for (const auto& i : leg) {
+            CashFlow& cf = *i;
             if (!cf.hasOccurred(settlementDate,
                                 includeSettlementDateFlows) &&
                 !cf.tradingExCoupon(settlementDate)) {
-                ext::shared_ptr<Coupon> cp =
-                    ext::dynamic_pointer_cast<Coupon>(leg[i]);
+                ext::shared_ptr<Coupon> cp = ext::dynamic_pointer_cast<Coupon>(i);
                 Real df = discountCurve.discount(cf.date());
                 npv += cf.amount() * df;
                 if (cp != nullptr)
@@ -518,8 +514,8 @@ namespace QuantLib {
 
         Real npv = 0.0;
         BPSCalculator calc(discountCurve);
-        for (Size i=0; i<leg.size(); ++i) {
-            CashFlow& cf = *leg[i];
+        for (const auto& i : leg) {
+            CashFlow& cf = *i;
             if (!cf.hasOccurred(settlementDate,
                                 includeSettlementDateFlows) &&
                 !cf.tradingExCoupon(settlementDate)) {
@@ -613,22 +609,21 @@ namespace QuantLib {
             Time t = 0.0;
             Date lastDate = npvDate;
             const DayCounter& dc = y.dayCounter();
-            for (Size i=0; i<leg.size(); ++i) {
-                if (leg[i]->hasOccurred(settlementDate,
-                                        includeSettlementDateFlows))
+            for (const auto& i : leg) {
+                if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                     continue;
 
-                Real c = leg[i]->amount();
-                if (leg[i]->tradingExCoupon(settlementDate)) {
+                Real c = i->amount();
+                if (i->tradingExCoupon(settlementDate)) {
                     c = 0.0;
                 }
 
-                t += getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate);
+                t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
                 DiscountFactor B = y.discountFactor(t);
                 P += c * B;
                 dPdy += t * c * B;
-                
-                lastDate = leg[i]->date();
+
+                lastDate = i->date();
             }
             if (P == 0.0) // no cashflows
                 return 0.0;
@@ -656,17 +651,16 @@ namespace QuantLib {
             Natural N = y.frequency();
             Date lastDate = npvDate;
             const DayCounter& dc = y.dayCounter();
-            for (Size i=0; i<leg.size(); ++i) {
-                if (leg[i]->hasOccurred(settlementDate,
-                                        includeSettlementDateFlows))
+            for (const auto& i : leg) {
+                if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                     continue;
 
-                Real c = leg[i]->amount();
-                if (leg[i]->tradingExCoupon(settlementDate)) {
+                Real c = i->amount();
+                if (i->tradingExCoupon(settlementDate)) {
                     c = 0.0;
                 }
 
-                t += getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate);
+                t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
                 DiscountFactor B = y.discountFactor(t);
                 P += c * B;
                 switch (y.compounding()) {
@@ -695,7 +689,7 @@ namespace QuantLib {
                     QL_FAIL("unknown compounding convention (" <<
                             Integer(y.compounding()) << ")");
                 }
-                lastDate = leg[i]->date();
+                lastDate = i->date();
             }
 
             if (P == 0.0) // no cashflows
@@ -770,11 +764,10 @@ namespace QuantLib {
 
         Integer lastSign = sign(-npv_),
                 signChanges = 0;
-        for (Size i = 0; i < leg_.size(); ++i) {
-            if (!leg_[i]->hasOccurred(settlementDate_,
-                                      includeSettlementDateFlows_) &&
-                !leg_[i]->tradingExCoupon(settlementDate_)) {
-                Integer thisSign = sign(leg_[i]->amount());
+        for (const auto& i : leg_) {
+            if (!i->hasOccurred(settlementDate_, includeSettlementDateFlows_) &&
+                !i->tradingExCoupon(settlementDate_)) {
+                Integer thisSign = sign(i->amount());
                 if (lastSign * thisSign < 0) // sign change
                     signChanges++;
 
@@ -831,19 +824,18 @@ namespace QuantLib {
         DiscountFactor discount = 1.0;
         Date lastDate = npvDate;
         const DayCounter& dc = y.dayCounter();
-        for (Size i=0; i<leg.size(); ++i) {
-            if (leg[i]->hasOccurred(settlementDate,
-                                    includeSettlementDateFlows))
+        for (const auto& i : leg) {
+            if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                 continue;
 
-            Real amount = leg[i]->amount();
-            if (leg[i]->tradingExCoupon(settlementDate)) {
+            Real amount = i->amount();
+            if (i->tradingExCoupon(settlementDate)) {
                 amount = 0.0;
             }
 
-            DiscountFactor b = y.discountFactor(getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate));
+            DiscountFactor b = y.discountFactor(getStepwiseDiscountTime(i, dc, npvDate, lastDate));
             discount *= b;
-            lastDate = leg[i]->date();
+            lastDate = i->date();
 
             npv += amount * discount;
         }
@@ -991,17 +983,16 @@ namespace QuantLib {
         Rate r = y.rate();
         Natural N = y.frequency();
         Date lastDate = npvDate;
-        for (Size i=0; i<leg.size(); ++i) {
-            if (leg[i]->hasOccurred(settlementDate,
-                                        includeSettlementDateFlows))
+        for (const auto& i : leg) {
+            if (i->hasOccurred(settlementDate, includeSettlementDateFlows))
                 continue;
-            
-            Real c = leg[i]->amount();
-            if (leg[i]->tradingExCoupon(settlementDate)) {
+
+            Real c = i->amount();
+            if (i->tradingExCoupon(settlementDate)) {
                 c = 0.0;
             }
 
-            t += getStepwiseDiscountTime(leg[i], dc, npvDate, lastDate);
+            t += getStepwiseDiscountTime(i, dc, npvDate, lastDate);
             DiscountFactor B = y.discountFactor(t);
             P += c * B;
             switch (y.compounding()) {
@@ -1030,7 +1021,7 @@ namespace QuantLib {
                 QL_FAIL("unknown compounding convention (" <<
                         Integer(y.compounding()) << ")");
             }
-            lastDate = leg[i]->date();
+            lastDate = i->date();
         }
 
         if (P == 0.0)

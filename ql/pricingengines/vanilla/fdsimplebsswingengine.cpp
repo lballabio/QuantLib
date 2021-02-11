@@ -74,8 +74,8 @@ namespace QuantLib {
         
         // 3.1 Bermudan step conditions
         std::vector<Time> exerciseTimes;
-        for (Size i=0; i<arguments_.exercise->dates().size(); ++i) {
-            Time t = process_->time(arguments_.exercise->dates()[i]);
+        for (auto i : arguments_.exercise->dates()) {
+            Time t = process_->time(i);
             QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
             exerciseTimes.push_back(t);
         }

@@ -168,8 +168,8 @@ namespace QuantLib
         theBumps.resize(numberSteps);
        // recall that the bumps: We do the outermost vector by time step and inner one by which vega.
 
-        for (Size i=0; i < theBumps.size(); ++i)
-            theBumps[i].resize(numberRestrictedBumps);
+        for (auto& theBump : theBumps)
+            theBump.resize(numberRestrictedBumps);
 
         Matrix modelMatrix(numberRates, factors,0.0);
 

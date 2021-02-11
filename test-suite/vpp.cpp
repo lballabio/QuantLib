@@ -919,8 +919,8 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
     Array x(mesher->layout()->size());
 
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345UL));
-    for (Size i=0; i < x.size(); ++i) {
-        x[i] = rng.next().value;
+    for (double& i : x) {
+        i = rng.next().value;
     }
 
     const Real tol = 1e-9;

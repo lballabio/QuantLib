@@ -156,8 +156,8 @@ namespace QuantLib {
         // back to the start of their inflationPeriods
         // otherwise the time calculations will be inconsistent
         if (!indexIsInterpolated_) {
-            for (Size i = 0; i < dates_.size(); i++) {
-                dates_[i] = inflationPeriod(dates_[i], frequency).first;
+            for (auto& date : dates_) {
+                date = inflationPeriod(date, frequency).first;
             }
         }
 
@@ -217,8 +217,8 @@ namespace QuantLib {
         // back to the start of their inflationPeriods
         // otherwise the time calculations will be inconsistent
         if (!indexIsInterpolated_) {
-            for (Size i = 0; i < dates_.size(); i++) {
-                dates_[i] = inflationPeriod(dates_[i], frequency).first;
+            for (auto& date : dates_) {
+                date = inflationPeriod(date, frequency).first;
             }
         }
 

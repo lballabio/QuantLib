@@ -45,8 +45,8 @@ namespace QuantLib {
 
         // care must be taken not to overflow product
         Real maxValue = QL_MAX_REAL;
-        for (Size i=0; i<fixingIndices_.size(); i++) {
-            Real price = path[fixingIndices_[i]];
+        for (unsigned long fixingIndice : fixingIndices_) {
+            Real price = path[fixingIndice];
             if (product < maxValue/price) {
                 product *= price;
             } else {

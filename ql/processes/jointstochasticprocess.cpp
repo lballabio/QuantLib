@@ -33,19 +33,19 @@ namespace QuantLib {
         std::vector<ext::shared_ptr<StochasticProcess> > l, Size factors)
     : l_(std::move(l)), size_(0), factors_(factors), modelFactors_(0) {
 
-        for (const_iterator iter=l_.begin(); iter != l_.end(); ++iter) {
-            registerWith(*iter);
+        for (const auto& iter : l_) {
+            registerWith(iter);
         }
 
         vsize_.reserve   (l_.size()+1);
         vfactors_.reserve(l_.size()+1);
 
-        for (const_iterator iter = l_.begin(); iter != l_.end(); ++iter) {
+        for (const auto& iter : l_) {
             vsize_.push_back(size_);
-            size_ += (*iter)->size();
+            size_ += iter->size();
 
             vfactors_.push_back(modelFactors_);
-            modelFactors_ += (*iter)->factors();
+            modelFactors_ += iter->factors();
         }
 
         vsize_.push_back(size_);

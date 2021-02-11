@@ -70,8 +70,8 @@ namespace QuantLib {
         void addQuotes(const std::map<Date, Real>& quotes) {
             std::string tag = name();
             quotes_ = IndexManager::instance().getHistory(tag);
-            for (auto ii = quotes.begin(); ii != quotes.end(); ++ii) {
-                quotes_[ii->first] = ii->second;
+            for (auto quote : quotes) {
+                quotes_[quote.first] = quote.second;
             }
             IndexManager::instance().setHistory(tag, quotes_);
         }

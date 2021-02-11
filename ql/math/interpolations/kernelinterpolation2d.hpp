@@ -166,9 +166,8 @@ namespace QuantLib {
                 // I've chosen not to check determinant(M_)!=0 before solving
 
                 Array diffVec=Abs(M_*alphaVec_ - yVec_);
-                for (Size i=0; i<diffVec.size(); ++i) {
-                    QL_REQUIRE(diffVec[i]<invPrec_,
-                               "inversion failed in 2d kernel interpolation");
+                for (double i : diffVec) {
+                    QL_REQUIRE(i < invPrec_, "inversion failed in 2d kernel interpolation");
                 }
             }
 

@@ -34,10 +34,9 @@ namespace QuantLib {
             bool successful = true;
             std::string errMsg;
 
-            for (iterator i=deferredObservers_.begin();
-                i!=deferredObservers_.end(); ++i) {
+            for (auto deferredObserver : deferredObservers_) {
                 try {
-                    (*i)->update();
+                    deferredObserver->update();
                 } catch (std::exception& e) {
                     successful = false;
                     errMsg = e.what();
@@ -62,9 +61,9 @@ namespace QuantLib {
         } else if (!observers_.empty()) {
             bool successful = true;
             std::string errMsg;
-            for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
+            for (auto observer : observers_) {
                 try {
-                    (*i)->update();
+                    observer->update();
                 } catch (std::exception& e) {
                     // quite a dilemma. If we don't catch the exception,
                     // other observers will not receive the notification

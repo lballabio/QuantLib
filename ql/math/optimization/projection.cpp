@@ -34,8 +34,8 @@ namespace QuantLib {
 
         QL_REQUIRE(fixedParameters_.size() == fixParameters_.size(),
                    "fixedParameters_.size()!=parametersFreedoms_.size()");
-        for (Size i = 0; i < fixParameters_.size(); i++)
-            if (!fixParameters_[i])
+        for (auto&& fixParameter : fixParameters_)
+            if (!fixParameter)
                 numberOfFreeParameters_++;
         QL_REQUIRE(numberOfFreeParameters_ > 0, "numberOfFreeParameters==0");
     }

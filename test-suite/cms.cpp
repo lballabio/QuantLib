@@ -455,10 +455,10 @@ void CmsTest::testParity() {
                                         startDate, endDate,
                                         vars.iborIndex->dayCounter());
 
-        for (Size i=0; i<swaptionVols.size(); ++i) {
+        for (auto& swaptionVol : swaptionVols) {
             for (Size j=0; j<vars.yieldCurveModels.size(); ++j) {
-                vars.numericalPricers[j]->setSwaptionVolatility(swaptionVols[i]);
-                vars.analyticPricers[j]->setSwaptionVolatility(swaptionVols[i]);
+                vars.numericalPricers[j]->setSwaptionVolatility(swaptionVol);
+                vars.analyticPricers[j]->setSwaptionVolatility(swaptionVol);
                 std::vector<ext::shared_ptr<CmsCouponPricer> > pricers(2);
                 pricers[0] = vars.numericalPricers[j];
                 pricers[1] = vars.analyticPricers[j];

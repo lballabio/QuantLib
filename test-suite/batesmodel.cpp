@@ -47,8 +47,8 @@ namespace bates_model_test {
     Real getCalibrationError(
                std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
         Real sse = 0;
-        for (Size i = 0; i < options.size(); ++i) {
-            const Real diff = options[i]->calibrationError()*100.0;
+        for (auto& option : options) {
+            const Real diff = option->calibrationError() * 100.0;
             sse += diff*diff;
         }
         return sse;
@@ -315,22 +315,16 @@ void BatesModelTest::testAnalyticVsMCPricing() {
                                    new PlainVanillaPayoff(Option::Put, 100));
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    
-    for (Size i=0; i < LENGTH(hestonModels); ++i) { 
-        Handle<YieldTermStructure> riskFreeTS(flatRate(hestonModels[i].r, 
-                                                       dayCounter));
-        Handle<YieldTermStructure> dividendTS(flatRate(hestonModels[i].q, 
-                                                       dayCounter));
+
+    for (auto& hestonModel : hestonModels) {
+        Handle<YieldTermStructure> riskFreeTS(flatRate(hestonModel.r, dayCounter));
+        Handle<YieldTermStructure> dividendTS(flatRate(hestonModel.q, dayCounter));
         Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100)));
 
         ext::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
-                       riskFreeTS, dividendTS, s0,
-                       hestonModels[i].v0, 
-                       hestonModels[i].kappa, 
-                       hestonModels[i].theta, 
-                       hestonModels[i].sigma, 
-                       hestonModels[i].rho, 2.0, -0.2, 0.1));
-    
+            riskFreeTS, dividendTS, s0, hestonModel.v0, hestonModel.kappa, hestonModel.theta,
+            hestonModel.sigma, hestonModel.rho, 2.0, -0.2, 0.1));
+
         const Real mcTolerance = 0.5;
         ext::shared_ptr<PricingEngine> mcEngine =
                 MakeMCEuropeanHestonEngine<PseudoRandom>(batesProcess)
@@ -361,22 +355,18 @@ void BatesModelTest::testAnalyticVsMCPricing() {
         const Real mcError = std::fabs(calculated - expected);
         if (mcError > 3*mcTolerance) {
             BOOST_FAIL("failed to reproduce Monte-Carlo price for BatesEngine"
-                       << "\n    parameter:  " << hestonModels[i].name
-                       << std::fixed << std::setprecision(8)
-                       << "\n    calculated: " << calculated
-                       << "\n    expected:   " << expected
-                       << "\n    error: "      << mcError
+                       << "\n    parameter:  " << hestonModel.name << std::fixed
+                       << std::setprecision(8) << "\n    calculated: " << calculated
+                       << "\n    expected:   " << expected << "\n    error: " << mcError
                        << "\n    tolerance:  " << mcTolerance);
         }
         const Real fdTolerance = 0.2;
         const Real fdError = std::fabs(fdCalculated - expected);
         if (fdError > fdTolerance) {
             BOOST_FAIL("failed to reproduce PIDE price for BatesEngine"
-                       << "\n    parameter:  " << hestonModels[i].name
-                       << std::fixed << std::setprecision(8)
-                       << "\n    calculated: " << fdCalculated
-                       << "\n    expected:   " << expected
-                       << "\n    error: "      << fdError
+                       << "\n    parameter:  " << hestonModel.name << std::fixed
+                       << std::setprecision(8) << "\n    calculated: " << fdCalculated
+                       << "\n    expected:   " << expected << "\n    error: " << fdError
                        << "\n    tolerance:  " << fdTolerance);
         }
     }
@@ -524,8 +514,8 @@ void BatesModelTest::testDAXCalibration() {
 
     Real tolerance=0.1;
     for (Size i = 0; i < pricingEngines.size(); ++i) {
-        for (Size j = 0; j < options.size(); ++j) {
-            options[j]->setPricingEngine(pricingEngines[i]);
+        for (auto& option : options) {
+            option->setPricingEngine(pricingEngines[i]);
         }
 
         Real calculated = std::fabs(getCalibrationError(options));

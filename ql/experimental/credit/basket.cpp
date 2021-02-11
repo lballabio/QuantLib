@@ -59,10 +59,10 @@ namespace QuantLib {
         //   probability term structures for the defultKeys(eventType+
         //   currency+seniority) entering in this basket. This is not
         //   necessarily a problem.
-        for (Size i = 0; i < notionals_.size(); i++) {
-            basketNotional_ += notionals_[i];
-            attachmentAmount_ += notionals_[i] * attachmentRatio_;
-            detachmentAmount_ += notionals_[i] * detachmentRatio_;
+        for (double notional : notionals_) {
+            basketNotional_ += notional;
+            attachmentAmount_ += notional * attachmentRatio_;
+            detachmentAmount_ += notional * detachmentRatio_;
         }
         trancheNotional_ = detachmentAmount_ - attachmentAmount_;
     }
@@ -254,8 +254,8 @@ namespace QuantLib {
 
         const std::vector<Size>& alive = liveList(endDate);
         std::vector<std::string> calcBufferNames;
-        for(Size i=0; i<alive.size(); i++)
-            calcBufferNames.push_back(pool_->names()[alive[i]]);
+        for (unsigned long i : alive)
+            calcBufferNames.push_back(pool_->names()[i]);
         return calcBufferNames;
     }
 
@@ -267,8 +267,8 @@ namespace QuantLib {
 
         const std::vector<Size>& alive = liveList(endDate);
         vector<DefaultProbKey> defKeys;
-        for(Size i=0; i<alive.size(); i++)
-            defKeys.push_back(pool_->defaultKeys()[alive[i]]);
+        for (unsigned long i : alive)
+            defKeys.push_back(pool_->defaultKeys()[i]);
         return defKeys;
     }
 

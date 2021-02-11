@@ -150,8 +150,8 @@ namespace QuantLib {
 
     Disposable<Array> CalibratedModel::params() const {
         Size size=0;
-        for (Size i=0; i<arguments_.size(); ++i)
-            size += arguments_[i].size();
+        for (const auto& argument : arguments_)
+            size += argument.size();
         Array params(size);
         for (Size i=0, k=0; i<arguments_.size(); ++i) {
             for (Size j=0; j<arguments_[i].size(); ++j, ++k)
@@ -162,10 +162,10 @@ namespace QuantLib {
 
     void CalibratedModel::setParams(const Array& params) {
         Array::const_iterator p = params.begin();
-        for (Size i=0; i<arguments_.size(); ++i) {
-            for (Size j=0; j<arguments_[i].size(); ++j, ++p) {
+        for (auto& argument : arguments_) {
+            for (Size j = 0; j < argument.size(); ++j, ++p) {
                 QL_REQUIRE(p!=params.end(),"parameter array too small");
-                arguments_[i].setParam(j, *p);
+                argument.setParam(j, *p);
             }
         }
         QL_REQUIRE(p==params.end(),"parameter array too big!");

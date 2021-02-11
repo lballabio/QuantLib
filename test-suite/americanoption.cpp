@@ -139,18 +139,17 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
     Real tolerance = 3.0e-3;
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(values[i].type, values[i].strike));
-        Date exDate = today + timeToDays(values[i].t);
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
@@ -165,14 +164,12 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-values[i].result);
+        Real error = std::fabs(calculated - value.result);
         if (error > tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result,
-                           calculated, error, tolerance);
+            REPORT_FAILURE("value", payoff, exercise, value.s, value.q, value.r, today, value.v,
+                           value.result, calculated, error, tolerance);
         }
     }
-
 }
 
 
@@ -212,18 +209,17 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
     Real tolerance = 5.0e-5;
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(values[i].type, values[i].strike));
-        Date exDate = today + timeToDays(values[i].t);
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
@@ -238,14 +234,12 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-values[i].result);
+        Real error = std::fabs(calculated - value.result);
         if (error > tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result,
-                           calculated, error, tolerance);
+            REPORT_FAILURE("value", payoff, exercise, value.s, value.q, value.r, today, value.v,
+                           value.result, calculated, error, tolerance);
         }
     }
-
 }
 
 namespace {
@@ -342,18 +336,18 @@ void AmericanOptionTest::testJuValues() {
 
     Real tolerance = 1.0e-3;
 
-    for (Size i=0; i<LENGTH(juValues); i++) {
+    for (auto& juValue : juValues) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(juValues[i].type, juValues[i].strike));
-        Date exDate = today + timeToDays(juValues[i].t);
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+            new PlainVanillaPayoff(juValue.type, juValue.strike));
+        Date exDate = today + timeToDays(juValue.t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
-        spot ->setValue(juValues[i].s);
-        qRate->setValue(juValues[i].q);
-        rRate->setValue(juValues[i].r);
-        vol  ->setValue(juValues[i].v);
+        spot->setValue(juValue.s);
+        qRate->setValue(juValue.q);
+        rRate->setValue(juValue.r);
+        vol->setValue(juValue.v);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
@@ -368,12 +362,10 @@ void AmericanOptionTest::testJuValues() {
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-juValues[i].result);
+        Real error = std::fabs(calculated - juValue.result);
         if (error > tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, juValues[i].s,
-                           juValues[i].q, juValues[i].r, today,
-                           juValues[i].v, juValues[i].result,
-                           calculated, error, tolerance);
+            REPORT_FAILURE("value", payoff, exercise, juValue.s, juValue.q, juValue.r, today,
+                           juValue.v, juValue.result, calculated, error, tolerance);
         }
     }
 }
@@ -396,19 +388,19 @@ void AmericanOptionTest::testFdValues() {
 
     Real tolerance = 8.0e-2;
 
-    for (Size i=0; i<LENGTH(juValues); i++) {
+    for (auto& juValue : juValues) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(juValues[i].type, juValues[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+            new PlainVanillaPayoff(juValue.type, juValue.strike));
 
-        Date exDate = today + timeToDays(juValues[i].t);
+        Date exDate = today + timeToDays(juValue.t);
         ext::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
-        spot ->setValue(juValues[i].s);
-        qRate->setValue(juValues[i].q);
-        rRate->setValue(juValues[i].r);
-        vol  ->setValue(juValues[i].v);
+        spot->setValue(juValue.s);
+        qRate->setValue(juValue.q);
+        rRate->setValue(juValue.r);
+        vol->setValue(juValue.v);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
             ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
@@ -423,12 +415,10 @@ void AmericanOptionTest::testFdValues() {
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-juValues[i].result);
+        Real error = std::fabs(calculated - juValue.result);
         if (error > tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, juValues[i].s,
-                           juValues[i].q, juValues[i].r, today,
-                           juValues[i].v, juValues[i].result,
-                           calculated, error, tolerance);
+            REPORT_FAILURE("value", payoff, exercise, juValue.s, juValue.q, juValue.r, today,
+                           juValue.v, juValue.result, calculated, error, tolerance);
         }
     }
 }
@@ -468,88 +458,77 @@ namespace {
 
         ext::shared_ptr<StrikedTypePayoff> payoff;
 
-        for (Size i=0; i<LENGTH(types); i++) {
-          for (Size j=0; j<LENGTH(strikes); j++) {
-            for (Size k=0; k<LENGTH(years); k++) {
-                Date exDate = today + years[k]*Years;
-                ext::shared_ptr<Exercise> exercise(
-                                         new AmericanExercise(today, exDate));
-                ext::shared_ptr<StrikedTypePayoff> payoff(
-                                new PlainVanillaPayoff(types[i], strikes[j]));
-                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                            new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          qTS, rTS, volTS));
+        for (auto& type : types) {
+            for (double strike : strikes) {
+                for (int year : years) {
+                    Date exDate = today + year * Years;
+                    ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
+                    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                        new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-                ext::shared_ptr<PricingEngine> engine(
-                     new Engine(stochProcess, 50));
+                    ext::shared_ptr<PricingEngine> engine(new Engine(stochProcess, 50));
 
-                VanillaOption option(payoff, exercise);
-                option.setPricingEngine(engine);
+                    VanillaOption option(payoff, exercise);
+                    option.setPricingEngine(engine);
 
-                for (Size l=0; l<LENGTH(underlyings); l++) {
-                  for (Size m=0; m<LENGTH(qRates); m++) {
-                    for (Size n=0; n<LENGTH(rRates); n++) {
-                      for (Size p=0; p<LENGTH(vols); p++) {
-                        Real u = underlyings[l];
-                        Rate q = qRates[m],
-                             r = rRates[n];
-                        Volatility v = vols[p];
-                        spot->setValue(u);
-                        qRate->setValue(q);
-                        rRate->setValue(r);
-                        vol->setValue(v);
-                        //FLOATING_POINT_EXCEPTION
-                        Real value = option.NPV();
-                        calculated["delta"]  = option.delta();
-                        calculated["gamma"]  = option.gamma();
-                        //calculated["theta"]  = option.theta();
+                    for (double u : underlyings) {
+                        for (double m : qRates) {
+                            for (double n : rRates) {
+                                for (double v : vols) {
+                                    Rate q = m, r = n;
+                                    spot->setValue(u);
+                                    qRate->setValue(q);
+                                    rRate->setValue(r);
+                                    vol->setValue(v);
+                                    // FLOATING_POINT_EXCEPTION
+                                    Real value = option.NPV();
+                                    calculated["delta"] = option.delta();
+                                    calculated["gamma"] = option.gamma();
+                                    // calculated["theta"]  = option.theta();
 
-                        if (value > spot->value()*1.0e-5) {
-                            // perturb spot and get delta and gamma
-                            Real du = u*1.0e-4;
-                            spot->setValue(u+du);
-                            Real value_p = option.NPV(),
-                                 delta_p = option.delta();
-                            spot->setValue(u-du);
-                            Real value_m = option.NPV(),
-                                 delta_m = option.delta();
-                            spot->setValue(u);
-                            expected["delta"] = (value_p - value_m)/(2*du);
-                            expected["gamma"] = (delta_p - delta_m)/(2*du);
+                                    if (value > spot->value() * 1.0e-5) {
+                                        // perturb spot and get delta and gamma
+                                        Real du = u * 1.0e-4;
+                                        spot->setValue(u + du);
+                                        Real value_p = option.NPV(), delta_p = option.delta();
+                                        spot->setValue(u - du);
+                                        Real value_m = option.NPV(), delta_m = option.delta();
+                                        spot->setValue(u);
+                                        expected["delta"] = (value_p - value_m) / (2 * du);
+                                        expected["gamma"] = (delta_p - delta_m) / (2 * du);
 
-                            /*
-                            // perturb date and get theta
-                            Time dT = dc.yearFraction(today-1, today+1);
-                            Settings::instance().setEvaluationDate(today-1);
-                            value_m = option.NPV();
-                            Settings::instance().setEvaluationDate(today+1);
-                            value_p = option.NPV();
-                            Settings::instance().setEvaluationDate(today);
-                            expected["theta"] = (value_p - value_m)/dT;
-                            */
+                                        /*
+                                        // perturb date and get theta
+                                        Time dT = dc.yearFraction(today-1, today+1);
+                                        Settings::instance().setEvaluationDate(today-1);
+                                        value_m = option.NPV();
+                                        Settings::instance().setEvaluationDate(today+1);
+                                        value_p = option.NPV();
+                                        Settings::instance().setEvaluationDate(today);
+                                        expected["theta"] = (value_p - value_m)/dT;
+                                        */
 
-                            // compare
-                            std::map<std::string,Real>::iterator it;
-                            for (it = calculated.begin();
-                                 it != calculated.end(); ++it) {
-                                std::string greek = it->first;
-                                Real expct = expected  [greek],
-                                    calcl = calculated[greek],
-                                    tol   = tolerance [greek];
-                                Real error = relativeError(expct,calcl,u);
-                                if (error>tol) {
-                                    REPORT_FAILURE(greek, payoff, exercise,
-                                                   u, q, r, today, v,
-                                                   expct, calcl, error, tol);
+                                        // compare
+                                        std::map<std::string, Real>::iterator it;
+                                        for (it = calculated.begin(); it != calculated.end();
+                                             ++it) {
+                                            std::string greek = it->first;
+                                            Real expct = expected[greek], calcl = calculated[greek],
+                                                 tol = tolerance[greek];
+                                            Real error = relativeError(expct, calcl, u);
+                                            if (error > tol) {
+                                                REPORT_FAILURE(greek, payoff, exercise, u, q, r,
+                                                               today, v, expct, calcl, error, tol);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-                      }
                     }
-                  }
                 }
             }
-          }
         }
     }
 

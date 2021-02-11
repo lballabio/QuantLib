@@ -163,8 +163,8 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
     // build times vector
     times.clear();
-    for (Size j = 0; j < dates.size(); ++j)
-        times.push_back(ts_->timeFromReference(dates[j]));
+    for (auto& date : dates)
+        times.push_back(ts_->timeFromReference(date));
 
     // determine maxDate
     Date maxDate = firstDate;

@@ -143,8 +143,9 @@ namespace QuantLib {
         TimeGrid timeGrid = this->timeGrid();
         std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
         std::vector<Size> fixingIndexes;
-        for (Size i=0; i<fixingTimes.size(); i++) {
-            fixingIndexes.push_back(timeGrid.closestIndex(fixingTimes[i]));
+        fixingIndexes.reserve(fixingTimes.size());
+        for (double fixingTime : fixingTimes) {
+            fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =

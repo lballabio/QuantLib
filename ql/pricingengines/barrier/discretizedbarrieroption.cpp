@@ -71,12 +71,12 @@ namespace QuantLib {
                 stoppingTime = true;
             break;
           case Exercise::Bermudan:
-            for (Size i=0; i<stoppingTimes_.size(); i++) {
-                if (isOnTime(stoppingTimes_[i])) {
-                    stoppingTime = true;
-                    break;
-                }
-            }
+              for (double i : stoppingTimes_) {
+                  if (isOnTime(i)) {
+                      stoppingTime = true;
+                      break;
+                  }
+              }
             break;
           default:
             QL_FAIL("invalid option type");

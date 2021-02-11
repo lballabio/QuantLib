@@ -49,8 +49,8 @@ namespace QuantLib {
         : simulationData_(simulationData), exercise_(exercise),
           exerciseIndex_(exerciseIndex),
           parameters_(exercise.numberOfParameters()[exerciseIndex]) {
-            for (Size i=0; i<simulationData_.size(); ++i) {
-                if (simulationData_[i].isValid)
+            for (const auto& i : simulationData_) {
+                if (i.isValid)
                     return;
             }
             QL_FAIL("no valid paths");
@@ -61,15 +61,13 @@ namespace QuantLib {
                       parameters_.begin());
             Real sum = 0.0;
             Size n = 0;
-            for (Size i=0; i<simulationData_.size(); ++i) {
-                if (simulationData_[i].isValid) {
+            for (const auto& i : simulationData_) {
+                if (i.isValid) {
                     ++n;
-                    if (exercise_.exercise(exerciseIndex_,
-                                           parameters_,
-                                           simulationData_[i].values))
-                        sum += simulationData_[i].exerciseValue;
+                    if (exercise_.exercise(exerciseIndex_, parameters_, i.values))
+                        sum += i.exerciseValue;
                     else
-                        sum += simulationData_[i].cumulatedCashFlows;
+                        sum += i.cumulatedCashFlows;
                 }
             }
             return -sum/n;
@@ -129,8 +127,8 @@ namespace QuantLib {
 
         Real sum = 0.0;
         const std::vector<NodeData>& initialData = simulationData.front();
-        for (Size i=0; i<initialData.size(); ++i)
-            sum += initialData[i].cumulatedCashFlows;
+        for (const auto& i : initialData)
+            sum += i.cumulatedCashFlows;
         return sum/initialData.size();
     }
 

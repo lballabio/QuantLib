@@ -520,8 +520,8 @@ namespace {
 
                     const Real offset = (specialPoint - 0.5*d) - loc[i];
 
-                    for (Size l = 0; l < loc.size(); ++l)
-                        loc[l] += offset;
+                    for (double& l : loc)
+                        l += offset;
 
                     break;
                 }
