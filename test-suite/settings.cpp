@@ -32,8 +32,8 @@ void SettingsTest::testNotificationsOnDateChange() {
 
 #ifdef QL_HIGH_RESOLUTION_DATE
 
-    Date d1(11, February, 2021, 9, 17);
-    Date d2(11, February, 2021, 10, 21);
+    Date d1(11, February, 2021, 9, 17, 0);
+    Date d2(11, February, 2021, 10, 21, 0);
 
 #else
 
