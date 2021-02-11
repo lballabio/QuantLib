@@ -763,6 +763,7 @@
     <ClCompile Include="rounding.cpp" />
     <ClCompile Include="sampledcurve.cpp" />
     <ClCompile Include="schedule.cpp" />
+    <ClCompile Include="settings.cpp" />
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="solvers.cpp" />
@@ -923,6 +924,7 @@
     <ClInclude Include="rounding.hpp" />
     <ClInclude Include="sampledcurve.hpp" />
     <ClInclude Include="schedule.hpp" />
+    <ClInclude Include="settings.hpp" />
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="sofrfutures.hpp" />
     <ClInclude Include="solvers.hpp" />
