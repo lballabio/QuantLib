@@ -208,7 +208,6 @@ namespace inflation_cpi_capfloor_test {
                 { Date( 2, June, 2070), 3.757542 },
                 { Date( 3, June, 2080), 3.651379 }
             };
-            const Size nominalDataLength = 33-1;
 
             std::vector<Date> nomD;
             std::vector<Rate> nomR;
@@ -216,10 +215,8 @@ namespace inflation_cpi_capfloor_test {
                 nomD.push_back(i.date);
                 nomR.push_back(i.rate / 100.0);
             }
-            ext::shared_ptr<YieldTermStructure>   nominalTS
-            =   ext::make_shared<InterpolatedZeroCurve<Linear>
-            >(nomD,nomR,dcNominal);
-
+            ext::shared_ptr<YieldTermStructure> nominalTS =
+                ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
             nominalUK.linkTo(nominalTS);
 

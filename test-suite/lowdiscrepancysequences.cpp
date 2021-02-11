@@ -1058,7 +1058,7 @@ void LowDiscrepancyTest::testSobolSkipping() {
                                                SobolRsg::SobolLevitanLemieux };
 
     for (auto& integer : integers) {
-        for (unsigned long& j : dimensionality) {
+        for (Size& j : dimensionality) {
             for (unsigned long& k : skip) {
 
                 // extract n samples

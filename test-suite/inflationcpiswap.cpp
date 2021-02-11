@@ -187,7 +187,6 @@ namespace inflation_cpi_swap_test {
                 { Date(25, November, 2069), 3.72677 },
                 { Date(27, November, 2079), 3.63082 }
             };
-            const Size nominalDataLength = 30-1;
 
             std::vector<Date> nomD;
             std::vector<Rate> nomR;
@@ -196,9 +195,7 @@ namespace inflation_cpi_swap_test {
                 nomR.push_back(i.rate / 100.0);
             }
             ext::shared_ptr<YieldTermStructure> nominal =
-            ext::make_shared<InterpolatedZeroCurve<Linear>
-            >(nomD,nomR,dcNominal);
-
+                ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
             nominalTS.linkTo(nominal);
 

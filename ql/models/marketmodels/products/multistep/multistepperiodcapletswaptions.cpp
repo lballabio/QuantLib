@@ -75,7 +75,7 @@ namespace QuantLib {
                                                                genCashFlows)
     {
 
-        for (unsigned long& i : numberCashFlowsThisStep)
+        for (Size & i : numberCashFlowsThisStep)
             i = 0UL;
 
         if (currentIndex_ >= offset_ && (currentIndex_ - offset_) % period_ == 0) {
