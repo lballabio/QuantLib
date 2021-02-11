@@ -123,9 +123,8 @@ namespace QuantLib {
             }
             std::vector<Integer> leviiNonZeroEntries;
             leviiNonZeroEntries.reserve(levii.size());
-            for (Size i=0; i<levii.size(); ++i) {
-                const Integer entry = levii[i];
-                if(entry > QL_EPSILON || entry < -1.0*QL_EPSILON) {
+            for (int entry : levii) {
+                if (entry > QL_EPSILON || entry < -1.0 * QL_EPSILON) {
                     leviiNonZeroEntries.push_back(entry);
                 }
             }

@@ -118,10 +118,10 @@ namespace QuantLib {
         times_.push_back(0.0);
         modelOutputs_.expiries_.clear();
         modelOutputs_.tenors_.clear();
-        for (auto k = calibrationPoints_.begin(); k != calibrationPoints_.end(); ++k) {
-            times_.push_back(termStructure()->timeFromReference(k->first));
-            modelOutputs_.expiries_.push_back(k->first);
-            modelOutputs_.tenors_.push_back(k->second.tenor_);
+        for (auto& calibrationPoint : calibrationPoints_) {
+            times_.push_back(termStructure()->timeFromReference(calibrationPoint.first));
+            modelOutputs_.expiries_.push_back(calibrationPoint.first);
+            modelOutputs_.tenors_.push_back(calibrationPoint.second.tenor_);
         }
         times_.push_back(numeraireTime_);
         QL_REQUIRE(volatilities_.size() == volsteptimes_.size() + 1,
@@ -154,8 +154,8 @@ namespace QuantLib {
         updateTimes1();
 
         if (capletCalibrated_) {
-            for (std::vector<Date>::const_iterator i = capletExpiries_.begin(); i != capletExpiries_.end(); ++i) {
-                makeCapletCalibrationPoint(*i);
+            for (auto capletExpirie : capletExpiries_) {
+                makeCapletCalibrationPoint(capletExpirie);
             }
         } else {
             std::vector<Date>::const_iterator i;
@@ -381,9 +381,8 @@ namespace QuantLib {
                         "for sabr calibration at least 4 points are needed (is "
                             << k.size() << ")");
                     std::vector<Real> v;
-                    for (Size j = 0; j < k.size(); j++) {
-                        v.push_back(
-                            i->second.rawSmileSection_->volatility(k[j]));
+                    for (double j : k) {
+                        v.push_back(i->second.rawSmileSection_->volatility(j));
                     }
 
                     // TODO should we fix beta to avoid numerical instabilities
@@ -650,29 +649,27 @@ namespace QuantLib {
             modelOutputs_.marketRawCallPremium_.clear();
             modelOutputs_.marketRawPutPremium_.clear();
 
-            for (auto i = calibrationPoints_.begin(); i != calibrationPoints_.end(); ++i) {
-                modelOutputs_.atm_.push_back(i->second.atm_);
-                modelOutputs_.annuity_.push_back(i->second.annuity_);
-                ext::shared_ptr<SmileSection> sec = i->second.smileSection_;
-                ext::shared_ptr<SmileSection> rawSec =
-                    i->second.rawSmileSection_;
-                SmileSectionUtils ssutils(
-                    *sec, modelSettings_.smileMoneynessCheckpoints_,
-                    i->second.atm_);
+            for (auto& calibrationPoint : calibrationPoints_) {
+                modelOutputs_.atm_.push_back(calibrationPoint.second.atm_);
+                modelOutputs_.annuity_.push_back(calibrationPoint.second.annuity_);
+                ext::shared_ptr<SmileSection> sec = calibrationPoint.second.smileSection_;
+                ext::shared_ptr<SmileSection> rawSec = calibrationPoint.second.rawSmileSection_;
+                SmileSectionUtils ssutils(*sec, modelSettings_.smileMoneynessCheckpoints_,
+                                          calibrationPoint.second.atm_);
                 Real shift = sec->shift();
                 std::vector<Real> money = ssutils.moneyGrid();
                 std::vector<Real> strikes, marketCall, marketPut, modelCall,
                     modelPut, marketVega, marketRawCall, marketRawPut;
                 for (Size j = 0; j < money.size(); j++) {
-                    strikes.push_back(
-                        sec->volatilityType() == Normal
-                            ? i->second.atm_ + money[j]
-                            : money[j] * (i->second.atm_ + shift) - shift);
+                    strikes.push_back(sec->volatilityType() == Normal ?
+                                          calibrationPoint.second.atm_ + money[j] :
+                                          money[j] * (calibrationPoint.second.atm_ + shift) -
+                                              shift);
                     try {
                         marketRawCall.push_back(rawSec->optionPrice(
-                            strikes[j], Option::Call, i->second.annuity_));
+                            strikes[j], Option::Call, calibrationPoint.second.annuity_));
                         marketRawPut.push_back(rawSec->optionPrice(
-                            strikes[j], Option::Put, i->second.annuity_));
+                            strikes[j], Option::Put, calibrationPoint.second.annuity_));
                     }
                     catch (Error&) {
                         // the smile section might not be able to output an
@@ -680,26 +677,25 @@ namespace QuantLib {
                         marketRawCall.push_back(0.0);
                         marketRawPut.push_back(0.0);
                     }
-                    marketCall.push_back(sec->optionPrice(
-                        strikes[j], Option::Call, i->second.annuity_));
-                    marketPut.push_back(sec->optionPrice(
-                        strikes[j], Option::Put, i->second.annuity_));
+                    marketCall.push_back(sec->optionPrice(strikes[j], Option::Call,
+                                                          calibrationPoint.second.annuity_));
+                    marketPut.push_back(sec->optionPrice(strikes[j], Option::Put,
+                                                         calibrationPoint.second.annuity_));
                     modelCall.push_back(
-                        i->second.isCaplet_
-                            ? capletPriceInternal(Option::Call, i->first, strikes[j],
-                                             Null<Date>(), 0.0, true)
-                            : swaptionPriceInternal(Option::Call, i->first,
-                                               i->second.tenor_, strikes[j],
-                                               Null<Date>(), 0.0, true));
+                        calibrationPoint.second.isCaplet_ ?
+                            capletPriceInternal(Option::Call, calibrationPoint.first, strikes[j],
+                                                Null<Date>(), 0.0, true) :
+                            swaptionPriceInternal(Option::Call, calibrationPoint.first,
+                                                  calibrationPoint.second.tenor_, strikes[j],
+                                                  Null<Date>(), 0.0, true));
                     modelPut.push_back(
-                        i->second.isCaplet_
-                            ? capletPriceInternal(Option::Put, i->first, strikes[j],
-                                             Null<Date>(), 0.0, true)
-                            : swaptionPriceInternal(Option::Put, i->first,
-                                               i->second.tenor_, strikes[j],
-                                               Null<Date>(), 0.0, true));
-                    marketVega.push_back(
-                        sec->vega(strikes[j], i->second.annuity_));
+                        calibrationPoint.second.isCaplet_ ?
+                            capletPriceInternal(Option::Put, calibrationPoint.first, strikes[j],
+                                                Null<Date>(), 0.0, true) :
+                            swaptionPriceInternal(Option::Put, calibrationPoint.first,
+                                                  calibrationPoint.second.tenor_, strikes[j],
+                                                  Null<Date>(), 0.0, true));
+                    marketVega.push_back(sec->vega(strikes[j], calibrationPoint.second.annuity_));
                 }
                 modelOutputs_.smileStrikes_.push_back(strikes);
                 modelOutputs_.marketCallPremium_.push_back(marketCall);
@@ -916,8 +912,8 @@ namespace QuantLib {
             return out; // no trace information was collected so no output
         out << std::endl;
         out << "Messages:" << std::endl;
-        for (auto i = m.messages_.begin(); i != m.messages_.end(); ++i)
-            out << (*i) << std::endl;
+        for (const auto& message : m.messages_)
+            out << message << std::endl;
         out << std::endl << std::setprecision(16);
         out << "Yield termstructure fit:" << std::endl;
         out << "expiry;tenor;atm;annuity;digitalAdj;ytsAdj;marketzerorate;"

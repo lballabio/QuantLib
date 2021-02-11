@@ -212,9 +212,9 @@ namespace inflation_cpi_capfloor_test {
 
             std::vector<Date> nomD;
             std::vector<Rate> nomR;
-            for (Size i = 0; i < nominalDataLength; i++) {
-                nomD.push_back(nominalData[i].date);
-                nomR.push_back(nominalData[i].rate/100.0);
+            for (auto& i : nominalData) {
+                nomD.push_back(i.date);
+                nomR.push_back(i.rate / 100.0);
             }
             ext::shared_ptr<YieldTermStructure>   nominalTS
             =   ext::make_shared<InterpolatedZeroCurve<Linear>

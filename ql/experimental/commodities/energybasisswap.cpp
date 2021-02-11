@@ -155,9 +155,7 @@ namespace QuantLib {
             Real totalQuantityAmount = 0;
 
             // price each period
-            for (auto pi = pricingPeriods_.begin(); pi != pricingPeriods_.end(); ++pi) {
-                const ext::shared_ptr<PricingPeriod>& pricingPeriod = *pi;
-
+            for (const auto& pricingPeriod : pricingPeriods_) {
                 Integer periodDayCount = 0;
 
                 // get the index quotes

@@ -101,8 +101,8 @@ namespace QuantLib {
         // over all paths
         Statistics estimate;
         std::vector<NodeData>& estimatedData = simulationData[0];
-        for (Size j=0; j<estimatedData.size(); ++j)
-            estimate.add(estimatedData[j].cumulatedCashFlows);
+        for (auto& j : estimatedData)
+            estimate.add(j.cumulatedCashFlows);
 
         return estimate.mean();
     }

@@ -1304,87 +1304,84 @@ void InterpolationTest::testSabrInterpolation(){
     ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
-    for (Size j=0; j<methods_.size(); ++j) {
-      for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
-        for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
-          for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {
-            for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
-              for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
-                  // to meet the tough calibration tolerance we need to lower the default
-                  // error threshold for accepting a calibration (to be more specific, some
-                  // of the new test cases arising from fixing a subset of the model's
-                  // parameters do not calibrate with the desired error using the initial
-                  // guess (i.e. optimization runs into a local minimum) - then a series of
-                  // random start values for optimization is chosen until our tight custom
-                  // error threshold is satisfied.
-                  SABRInterpolation sabrInterpolation(
-                      strikes.begin(), strikes.end(), volatilities.begin(),
-                      expiry, forward, isAlphaFixed[k_a] ? initialAlpha : alphaGuess,
-                      isBetaFixed[k_b] ? initialBeta : betaGuess,
-                      isNuFixed[k_n] ? initialNu : nuGuess,
-                      isRhoFixed[k_r] ? initialRho : rhoGuess, isAlphaFixed[k_a],
-                      isBetaFixed[k_b], isNuFixed[k_n], isRhoFixed[k_r],
-                      vegaWeighted[i], endCriteria, methods_[j], 1E-10);
-                  sabrInterpolation.update();
+    for (auto& method : methods_) {
+        for (bool i : vegaWeighted) {
+            for (bool k_a : isAlphaFixed) {
+                for (bool k_b : isBetaFixed) {
+                    for (bool k_n : isNuFixed) {
+                        for (bool k_r : isRhoFixed) {
+                            // to meet the tough calibration tolerance we need to lower the default
+                            // error threshold for accepting a calibration (to be more specific,
+                            // some of the new test cases arising from fixing a subset of the
+                            // model's parameters do not calibrate with the desired error using the
+                            // initial guess (i.e. optimization runs into a local minimum) - then a
+                            // series of random start values for optimization is chosen until our
+                            // tight custom error threshold is satisfied.
+                            SABRInterpolation sabrInterpolation(
+                                strikes.begin(), strikes.end(), volatilities.begin(), expiry,
+                                forward, k_a ? initialAlpha : alphaGuess,
+                                k_b ? initialBeta : betaGuess, k_n ? initialNu : nuGuess,
+                                k_r ? initialRho : rhoGuess, k_a, k_b, k_n, k_r, i, endCriteria,
+                                method, 1E-10);
+                            sabrInterpolation.update();
 
-                // Recover SABR calibration parameters
-                bool failed = false;
-                Real calibratedAlpha = sabrInterpolation.alpha();
-                Real calibratedBeta = sabrInterpolation.beta();
-                Real calibratedNu = sabrInterpolation.nu();
-                Real calibratedRho = sabrInterpolation.rho();
-                Real error;
+                            // Recover SABR calibration parameters
+                            bool failed = false;
+                            Real calibratedAlpha = sabrInterpolation.alpha();
+                            Real calibratedBeta = sabrInterpolation.beta();
+                            Real calibratedNu = sabrInterpolation.nu();
+                            Real calibratedRho = sabrInterpolation.rho();
+                            Real error;
 
-                // compare results: alpha
-                error = std::fabs(initialAlpha-calibratedAlpha);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:" <<
-                                "\n    expected:        " << initialAlpha <<
-                                "\n    calibrated:      " << calibratedAlpha <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
-                // Beta
-                error = std::fabs(initialBeta-calibratedBeta);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:" <<
-                                "\n    expected:        " << initialBeta <<
-                                "\n    calibrated:      " << calibratedBeta <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
-                // Nu
-                error = std::fabs(initialNu-calibratedNu);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:" <<
-                                "\n    expected:        " << initialNu <<
-                                "\n    calibrated:      " << calibratedNu <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
-                // Rho
-                error = std::fabs(initialRho-calibratedRho);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:" <<
-                                "\n    expected:        " << initialRho <<
-                                "\n    calibrated:      " << calibratedRho <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
+                            // compare results: alpha
+                            error = std::fabs(initialAlpha - calibratedAlpha);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:"
+                                            << "\n    expected:        " << initialAlpha
+                                            << "\n    calibrated:      " << calibratedAlpha
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Beta
+                            error = std::fabs(initialBeta - calibratedBeta);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:"
+                                            << "\n    expected:        " << initialBeta
+                                            << "\n    calibrated:      " << calibratedBeta
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Nu
+                            error = std::fabs(initialNu - calibratedNu);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:"
+                                            << "\n    expected:        " << initialNu
+                                            << "\n    calibrated:      " << calibratedNu
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Rho
+                            error = std::fabs(initialRho - calibratedRho);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:"
+                                            << "\n    expected:        " << initialRho
+                                            << "\n    calibrated:      " << calibratedRho
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
 
-                if (failed)
-                    BOOST_FAIL("\nSabr calibration failure:" <<
-                               "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
-                               "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
-                               "\n    isNuFixed:       " << isNuFixed[k_n] <<
-                               "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
-                               "\n    vegaWeighted[i]: " << vegaWeighted[i]);
-
-              }
+                            if (failed)
+                                BOOST_FAIL("\nSabr calibration failure:"
+                                           << "\n    isAlphaFixed:    " << k_a
+                                           << "\n    isBetaFixed:     " << k_b
+                                           << "\n    isNuFixed:       " << k_n
+                                           << "\n    isRhoFixed:      " << k_r
+                                           << "\n    vegaWeighted[i]: " << i);
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
 }
 
@@ -1425,18 +1422,17 @@ void InterpolationTest::testKernelInterpolation() {
 
     // Check that y-values at knots are exactly the feeded y-values,
     // irrespective of kernel parameters
-    for (Size i=0; i<lambdaVec.size(); ++i) {
-        GaussianKernel myKernel(0,lambdaVec[i]);
+    for (double i : lambdaVec) {
+        GaussianKernel myKernel(0, i);
 
-        for (Size j=0; j<yd.size(); ++j) {
+        for (auto currY : yd) {
 
-            std::vector<Real> currY = yd[j];
-            KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
-                                  currY.begin(), myKernel
+            KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(), currY.begin(), myKernel
 #ifdef __FAST_MATH__
-                                  ,1e-6
+                                  ,
+                                  1e-6
 #endif
-                                  );
+            );
             f.update();
 
             for (Size dIt=0; dIt< deltaGrid.size(); ++dIt) {
@@ -1743,11 +1739,8 @@ void InterpolationTest::testUnknownRichardsonExtrapolation() {
             std::make_pair(4.0, 1.0), std::make_pair(4.0, 0.5)
     };
 
-    for (Size i=0; i < LENGTH(testCases); ++i) {
-        const std::pair<Real, Real> testCase = testCases[i];
-
-        const RichardsonExtrapolation extrap(
-            GF(testCase.first, testCase.second), stepSize);
+    for (auto testCase : testCases) {
+        const RichardsonExtrapolation extrap(GF(testCase.first, testCase.second), stepSize);
 
         const Real calculated = extrap(4.0, 2.0);
         const Real diff = std::fabs(M_PI - calculated);
@@ -1925,24 +1918,17 @@ void InterpolationTest::testNoArbSabrInterpolation(){
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
-        for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
-            for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
+        for (bool i : vegaWeighted) {
+            for (bool k_a : isAlphaFixed) {
                 for (Size k_b=0; k_b<1/*LENGTH(isBetaFixed)*/; ++k_b) { // keep beta fixed (all 4 params free is a problem for this kind of test)
-                    for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
-                        for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
+                    for (bool k_n : isNuFixed) {
+                        for (bool k_r : isRhoFixed) {
                             NoArbSabrInterpolation noarbSabrInterpolation(
-                                                                          strikes.begin(), strikes.end(),
-                                                                          volatilities.begin(), expiry, forward,
-                                                                          isAlphaFixed[k_a] ? initialAlpha
-                                                                          : alphaGuess,
-                                                                          isBetaFixed[k_b] ? initialBeta
-                                                                          : betaGuess,
-                                                                          isNuFixed[k_n] ? initialNu : nuGuess,
-                                                                          isRhoFixed[k_r] ? initialRho : rhoGuess,
-                                                                          isAlphaFixed[k_a], isBetaFixed[k_b],
-                                                                          isNuFixed[k_n], isRhoFixed[k_r],
-                                                                          vegaWeighted[i], endCriteria,
-                                                                          methods_[j], 1E-10);
+                                strikes.begin(), strikes.end(), volatilities.begin(), expiry,
+                                forward, k_a ? initialAlpha : alphaGuess,
+                                isBetaFixed[k_b] ? initialBeta : betaGuess,
+                                k_n ? initialNu : nuGuess, k_r ? initialRho : rhoGuess, k_a,
+                                isBetaFixed[k_b], k_n, k_r, i, endCriteria, methods_[j], 1E-10);
                             noarbSabrInterpolation.update();
 
                             // Recover SABR calibration parameters
@@ -1991,12 +1977,12 @@ void InterpolationTest::testNoArbSabrInterpolation(){
                             }
 
                             if (failed)
-                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:" <<
-                                           "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
-                                           "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
-                                           "\n    isNuFixed:       " << isNuFixed[k_n] <<
-                                           "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
-                                           "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:"
+                                                   << "\n    isAlphaFixed:    " << k_a
+                                                   << "\n    isBetaFixed:     " << isBetaFixed[k_b]
+                                                   << "\n    isNuFixed:       " << k_n
+                                                   << "\n    isRhoFixed:      " << k_r
+                                                   << "\n    vegaWeighted[i]: " << i);
                         }
                     }
                 }
@@ -2392,10 +2378,10 @@ void InterpolationTest::testBSplines() {
 
 
     const Real tol = 1e-10;
-    for (Size i=0; i < referenceValues.size(); ++i) {
-        const Natural idx = ext::get<0>(referenceValues[i]);
-        const Real x = ext::get<1>(referenceValues[i]);
-        const Real expected = ext::get<2>(referenceValues[i]);
+    for (auto& referenceValue : referenceValues) {
+        const Natural idx = ext::get<0>(referenceValue);
+        const Real x = ext::get<1>(referenceValue);
+        const Real expected = ext::get<2>(referenceValue);
 
         const Real calculated = bspline(idx, x);
 
@@ -2422,27 +2408,25 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
 
     const Real x[] = { -1.0, 1.0, 2.0, 3.0 };
 
-    for (Size i=0; i < LENGTH(x); ++i) {
-        const Real calculated = impl(x[i], true);
+    for (double i : x) {
+        const Real calculated = impl(i, true);
         const Real expected = values[0];
 
         if (!close_enough(calculated, expected)) {
             BOOST_FAIL("failed to reproduce a piecewise constant "
-                    "interpolation on a single point "
-                    << "\n   x         : " << x[i]
-                    << "\n   expected  : " << expected
-                    << "\n   calculated: " << calculated);
+                       "interpolation on a single point "
+                       << "\n   x         : " << i << "\n   expected  : " << expected
+                       << "\n   calculated: " << calculated);
         }
 
-        const Real expectedPrimitive = values[0]*(x[i] - knots[0]);
-        const Real calculatedPrimitive = impl.primitive(x[i], true);
+        const Real expectedPrimitive = values[0] * (i - knots[0]);
+        const Real calculatedPrimitive = impl.primitive(i, true);
 
         if (!close_enough(calculatedPrimitive, expectedPrimitive)) {
             BOOST_FAIL("failed to reproduce primitive on a piecewise constant "
-                    "interpolation for a single point "
-                    << "\n   x         : " << x[i]
-                    << "\n   expected  : " << expectedPrimitive
-                    << "\n   calculated: " << calculatedPrimitive);
+                       "interpolation for a single point "
+                       << "\n   x         : " << i << "\n   expected  : " << expectedPrimitive
+                       << "\n   calculated: " << calculatedPrimitive);
         }
     }
 }

@@ -77,14 +77,12 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
     const Time times[] = { 0.5, 1.0, 2.0 };
     const Real strikes[] = { 75.0, 100.0, 150.0 };
 
-    for (Size i=0; i < LENGTH(times); ++i) {
-        const Time t = times[i];
-        const Volatility stdDev = v*std::sqrt(t);
+    for (double t : times) {
+        const Volatility stdDev = v * std::sqrt(t);
         const DiscountFactor df = rTS->discount(t);
         const Real fwd = s0*qTS->discount(t)/df;
 
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            const Real strike = strikes[j];
+        for (double strike : strikes) {
             const Real xs = std::log(strike);
             const BlackCalculator blackCalc(
                 Option::Put, strike, fwd, stdDev, df);
@@ -163,11 +161,8 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
     const Real strikes[] = { 7.5, 10, 15 };
     const Real probs[] = { 1e-6, 0.01, 0.5, 0.99, 1.0-1e-6 };
 
-    for (Size i=0; i < LENGTH(times); ++i) {
-        const Time t = times[i];
-
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            const Real strike = strikes[j];
+    for (double t : times) {
+        for (double strike : strikes) {
             const Real xs = std::log(strike);
 
             const Real expectedPDF = bsm.pdf(xs, t);
@@ -196,8 +191,7 @@ void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
             }
         }
 
-        for (Size j=0; j < LENGTH(probs); ++j) {
-            const Real prob = probs[j];
+        for (double prob : probs) {
             const Real expectedInvCDF = bsm.invcdf(prob, t);
             const Real calculatedInvCDF = heston.invcdf(prob, t);
 
@@ -431,24 +425,19 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
         maturityDates, maturityDates + LENGTH(maturityDates));
 
 
-    for (Size i=0; i < maturities.size(); ++i) {
-        const Time expiry
-            = rTS->dayCounter().yearFraction(todaysDate, maturities[i]);
+    for (auto maturitie : maturities) {
+        const Time expiry = rTS->dayCounter().yearFraction(todaysDate, maturitie);
 
         const ext::shared_ptr<PricingEngine> engine(
             new FdBlackScholesVanillaEngine(
                 bsmProcess, std::max(Size(51), Size(expiry*101)),
                 201, 0, FdmSchemeDesc::Douglas(), true, b1));
 
-        const ext::shared_ptr<Exercise> exercise(
-            new EuropeanExercise(maturities[i]));
+        const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturitie));
 
-        for (Size k=0; k < LENGTH(strikes); ++k) {
-            const Real strike = strikes[k];
-            const ext::shared_ptr<StrikedTypePayoff> payoff(
-                new PlainVanillaPayoff(
-                    (strike > spot->value()) ? Option::Call : Option::Put
-                    , strike));
+        for (double strike : strikes) {
+            const ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(
+                (strike > spot->value()) ? Option::Call : Option::Put, strike));
 
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(engine);
@@ -492,15 +481,15 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
             { 1.0, 0.6, 0.1, 0.75 },
             { 0.005, 0.6, 0.1, 0.05 } };
 
-    for (Size i=0; i < LENGTH(params); ++i) {
-        const SquareRootProcessRNDCalculator rndCalculator(
-            params[i].v0, params[i].kappa, params[i].theta, params[i].sigma);
+    for (const auto& param : params) {
+        const SquareRootProcessRNDCalculator rndCalculator(param.v0, param.kappa, param.theta,
+                                                           param.sigma);
 
         const Time t = 0.75;
-        const Time tInfty = 60.0/params[i].kappa;
+        const Time tInfty = 60.0 / param.kappa;
 
         const Real tol = 1e-10;
-        for (Real v = 1e-5; v < 1.0; v+=(v < params[i].theta) ? 0.005 : 0.1) {
+        for (Real v = 1e-5; v < 1.0; v += (v < param.theta) ? 0.005 : 0.1) {
 
             const Real cdfCalculated = rndCalculator.cdf(v, t);
             const Real cdfExpected = GaussLobattoIntegral(10000, 0.01*tol)(
@@ -628,8 +617,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
 
     const Real strikes[] = { 85, 75, 90, 110, 125, 150 };
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
-        const Real strike = strikes[i];
+    for (double strike : strikes) {
         const Real logStrike = std::log(strike);
 
         const Real expected = hestonCalc.cdf(logStrike, maturity);
@@ -661,8 +649,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
         }
     }
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
-        const Real strike = strikes[i];
+    for (double strike : strikes) {
         const Real logStrike = std::log(strike);
 
         const Real expected = hestonCalc.pdf(logStrike, maturity)/strike;
@@ -696,9 +683,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     }
 
     const Real quantiles[] = { 0.05, 0.25, 0.5, 0.75, 0.95 };
-    for (Size i=0; i < LENGTH(quantiles); ++i) {
-        const Real quantile = quantiles[i];
-
+    for (double quantile : quantiles) {
         const Real expected = std::exp(hestonCalc.invcdf(quantile, maturity));
         const Real calculatedGBSM = gbsmCalc.invcdf(quantile, maturity);
 
@@ -746,9 +731,9 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
 
     const Real tol = 1e-4;
 
-    for (Size i=0; i < LENGTH(params); ++i) {
-        const Real alpha = params[i].first;
-        const Real beta = params[i].second;
+    for (const auto& param : params) {
+        const Real alpha = param.first;
+        const Real beta = param.second;
 
         const ext::shared_ptr<CEVRNDCalculator> calculator =
             ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);

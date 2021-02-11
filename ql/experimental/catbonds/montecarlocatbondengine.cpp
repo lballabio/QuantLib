@@ -118,11 +118,10 @@ namespace QuantLib {
                                           Date settlementDate, 
                                           const NotionalPath& notionalPath) const {
         Real totalNPV = 0.0;
-        for (Size i=0; i<arguments_.cashflows.size(); ++i) {
-            if (!arguments_.cashflows[i]->hasOccurred(settlementDate, 
-                                        includeSettlementDateFlows)) {
-                Real amount = cashFlowRiskyValue(arguments_.cashflows[i], notionalPath);
-                totalNPV += amount * discountCurve_->discount(arguments_.cashflows[i]->date());
+        for (auto& cashflow : arguments_.cashflows) {
+            if (!cashflow->hasOccurred(settlementDate, includeSettlementDateFlows)) {
+                Real amount = cashFlowRiskyValue(cashflow, notionalPath);
+                totalNPV += amount * discountCurve_->discount(cashflow->date());
             }
         }
         return totalNPV;

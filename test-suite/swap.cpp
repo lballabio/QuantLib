@@ -112,18 +112,15 @@ void SwapTest::testFairRate() {
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(spreads); j++) {
+    for (int& length : lengths) {
+        for (double spread : spreads) {
 
-            ext::shared_ptr<VanillaSwap> swap =
-                vars.makeSwap(lengths[i],0.0,spreads[j]);
-            swap = vars.makeSwap(lengths[i],swap->fairRate(),spreads[j]);
+            ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, 0.0, spread);
+            swap = vars.makeSwap(length, swap->fairRate(), spread);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_ERROR("recalculating with implied rate:\n"
-                            << std::setprecision(2)
-                            << "    length: " << lengths[i] << " years\n"
-                            << "    floating spread: "
-                            << io::rate(spreads[j]) << "\n"
+                            << std::setprecision(2) << "    length: " << length << " years\n"
+                            << "    floating spread: " << io::rate(spread) << "\n"
                             << "    swap value: " << swap->NPV());
             }
         }
@@ -142,17 +139,15 @@ void SwapTest::testFairSpread() {
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(rates); j++) {
+    for (int& length : lengths) {
+        for (double j : rates) {
 
-            ext::shared_ptr<VanillaSwap> swap =
-                vars.makeSwap(lengths[i],rates[j],0.0);
-            swap = vars.makeSwap(lengths[i],rates[j],swap->fairSpread());
+            ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, j, 0.0);
+            swap = vars.makeSwap(length, j, swap->fairSpread());
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_ERROR("recalculating with implied spread:\n"
-                            << std::setprecision(2)
-                            << "    length: " << lengths[i] << " years\n"
-                            << "    fixed rate: " << io::rate(rates[j]) << "\n"
+                            << std::setprecision(2) << "    length: " << length << " years\n"
+                            << "    fixed rate: " << io::rate(j) << "\n"
                             << "    swap value: " << swap->NPV());
             }
         }
@@ -171,26 +166,24 @@ void SwapTest::testRateDependency() {
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
     Rate rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(spreads); j++) {
+    for (int& length : lengths) {
+        for (double spread : spreads) {
             // store the results for different rates...
             std::vector<Real> swap_values;
-            for (Size k=0; k<LENGTH(rates); k++) {
-                ext::shared_ptr<VanillaSwap> swap =
-                    vars.makeSwap(lengths[i],rates[k],spreads[j]);
+            for (double rate : rates) {
+                ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, rate, spread);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
             auto it = std::adjacent_find(swap_values.begin(), swap_values.end(), std::less<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
-                BOOST_ERROR(
-                    "NPV is increasing with the fixed rate in a swap: \n"
-                    << "    length: " << lengths[i] << " years\n"
-                    << "    value:  " << swap_values[n]
-                    << " paying fixed rate: " << io::rate(rates[n]) << "\n"
-                    << "    value:  " << swap_values[n+1]
-                    << " paying fixed rate: " << io::rate(rates[n+1]));
+                BOOST_ERROR("NPV is increasing with the fixed rate in a swap: \n"
+                            << "    length: " << length << " years\n"
+                            << "    value:  " << swap_values[n]
+                            << " paying fixed rate: " << io::rate(rates[n]) << "\n"
+                            << "    value:  " << swap_values[n + 1]
+                            << " paying fixed rate: " << io::rate(rates[n + 1]));
             }
         }
     }
@@ -208,13 +201,12 @@ void SwapTest::testSpreadDependency() {
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
     Spread spreads[] = { -0.01, -0.002, -0.001, 0.0, 0.001, 0.002, 0.01 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(rates); j++) {
+    for (int& length : lengths) {
+        for (double j : rates) {
             // store the results for different spreads...
             std::vector<Real> swap_values;
-            for (Size k=0; k<LENGTH(spreads); k++) {
-                ext::shared_ptr<VanillaSwap> swap =
-                    vars.makeSwap(lengths[i],rates[j],spreads[k]);
+            for (double spread : spreads) {
+                ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, j, spread);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
@@ -222,13 +214,12 @@ void SwapTest::testSpreadDependency() {
                 std::adjacent_find(swap_values.begin(), swap_values.end(), std::greater<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
-                BOOST_ERROR(
-                    "NPV is decreasing with the floating spread in a swap: \n"
-                    << "    length: " << lengths[i] << " years\n"
-                    << "    value:  " << swap_values[n]
-                    << " receiving spread: " << io::rate(spreads[n]) << "\n"
-                    << "    value:  " << swap_values[n+1]
-                    << " receiving spread: " << io::rate(spreads[n+1]));
+                BOOST_ERROR("NPV is decreasing with the floating spread in a swap: \n"
+                            << "    length: " << length << " years\n"
+                            << "    value:  " << swap_values[n]
+                            << " receiving spread: " << io::rate(spreads[n]) << "\n"
+                            << "    value:  " << swap_values[n + 1]
+                            << " receiving spread: " << io::rate(spreads[n + 1]));
             }
         }
     }

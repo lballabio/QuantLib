@@ -40,10 +40,10 @@ namespace QuantLib {
         dividends_.reserve(schedule.size());
         dividendDates_.reserve(schedule.size());
         dividendTimes_.reserve(schedule.size());
-        for (auto iter = schedule.begin(); iter != schedule.end(); ++iter) {
-            dividends_.push_back((*iter)->amount());
-            dividendDates_.push_back((*iter)->date());
-            dividendTimes_.push_back(dayCounter.yearFraction(referenceDate, (*iter)->date()));
+        for (const auto& iter : schedule) {
+            dividends_.push_back(iter->amount());
+            dividendDates_.push_back(iter->date());
+            dividendTimes_.push_back(dayCounter.yearFraction(referenceDate, iter->date()));
         }
 
          Array tmp = mesher_->locations(equityDirection);

@@ -21,24 +21,24 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdBlackScholesShoutEngine::FdBlackScholesShoutEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-        Size tGrid, Size xGrid, Size dampingSteps,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
         const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      dampingSteps_(dampingSteps),
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc) {
 
         registerWith(process_);

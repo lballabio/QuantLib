@@ -58,8 +58,8 @@ namespace QuantLib {
 
         setInterpolation<Bilinear>();
 
-        for (Size j = 0; j < volatilities_.size(); j++)
-            registerWith(volatilities_[j]);
+        for (const auto& volatilitie : volatilities_)
+            registerWith(volatilitie);
     }
 
     void ExtendedBlackVarianceSurface::setVariances() {

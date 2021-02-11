@@ -83,28 +83,25 @@ namespace QuantLib {
             dividendSchedule = arguments_.cashFlow;
             break;
           case Escrowed:
-            for (DividendSchedule::const_iterator
-                    divIter = arguments_.cashFlow.begin();
-                 divIter != arguments_.cashFlow.end(); ++divIter) {
+              for (const auto& divIter : arguments_.cashFlow) {
 
-                const Date divDate = (*divIter)->date();
+                  const Date divDate = divIter->date();
 
-                if (divDate <= exerciseDate && divDate >= settlementDate) {
-                    const Real divAmount = (*divIter)->amount();
+                  if (divDate <= exerciseDate && divDate >= settlementDate) {
+                      const Real divAmount = divIter->amount();
 
-                    if (divAmount != 0.0) {
-                        QL_REQUIRE(arguments_.exercise->type()
-                                        == Exercise::European,
-                             "Escrowed dividend model expects an European option");
+                      if (divAmount != 0.0) {
+                          QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                                     "Escrowed dividend model expects an European option");
 
-                        const DiscountFactor discount =
-                            process_->riskFreeRate()->discount(divDate) /
-                            process_->dividendYield()->discount(divDate);
+                          const DiscountFactor discount =
+                              process_->riskFreeRate()->discount(divDate) /
+                              process_->dividendYield()->discount(divDate);
 
-                        spotAdjustment -= divAmount * discount;
-                    }
-                }
-            }
+                          spotAdjustment -= divAmount * discount;
+                      }
+                  }
+              }
 
             QL_REQUIRE(process_->x0() + spotAdjustment > 0.0,
                     "spot minus dividends becomes negative");

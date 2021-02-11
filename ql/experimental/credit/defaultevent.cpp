@@ -66,8 +66,8 @@ namespace QuantLib {
         const Real recoveryRate)
     : settlementDate_(date), recoveryRates_(makeIsdaConvMap()) {
         if (seniority == NoSeniority) {
-            for (auto i = recoveryRates_.begin(); i != recoveryRates_.end(); ++i) {
-                i->second = recoveryRate;
+            for (auto& i : recoveryRates_) {
+                i.second = recoveryRate;
             }
         } else {
             recoveryRates_[seniority] = recoveryRate;

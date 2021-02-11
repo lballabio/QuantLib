@@ -80,15 +80,11 @@ void ShortRateModelTest::testCachedHullWhite() {
                                          new JamshidianSwaptionEngine(model));
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
-    for (Size i=0; i<LENGTH(data); i++) {
-        ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
+    for (auto& i : data) {
+        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
         ext::shared_ptr<BlackCalibrationHelper> helper(
-                             new SwaptionHelper(Period(data[i].start, Years),
-                                                Period(data[i].length, Years),
-                                                Handle<Quote>(vol),
-                                                index,
-                                                Period(1, Years), Thirty360(),
-                                                Actual360(), termStructure));
+            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+                               index, Period(1, Years), Thirty360(), Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -159,15 +155,11 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
                                          new JamshidianSwaptionEngine(model));
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
-    for (Size i=0; i<LENGTH(data); i++) {
-        ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
+    for (auto& i : data) {
+        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
         ext::shared_ptr<BlackCalibrationHelper> helper(
-                             new SwaptionHelper(Period(data[i].start, Years),
-                                                Period(data[i].length, Years),
-                                                Handle<Quote>(vol),
-                                                index,
-                                                Period(1, Years), Thirty360(),
-                                                Actual360(), termStructure));
+            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+                               index, Period(1, Years), Thirty360(), Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -243,15 +235,11 @@ void ShortRateModelTest::testCachedHullWhite2() {
                                          new JamshidianSwaptionEngine(model));
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
-    for (Size i=0; i<LENGTH(data); i++) {
-        ext::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
+    for (auto& i : data) {
+        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
         ext::shared_ptr<BlackCalibrationHelper> helper(
-                             new SwaptionHelper(Period(data[i].start, Years),
-                                                Period(data[i].length, Years),
-                                                Handle<Quote>(vol),
-                                                index0,
-                                                Period(1, Years), Thirty360(),
-                                                Actual360(), termStructure));
+            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+                               index0, Period(1, Years), Thirty360(), Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -385,10 +373,9 @@ void ShortRateModelTest::testSwaps() {
             Schedule floatSchedule(startDate, maturity, Period(Semiannual),
                                    calendar, Following, Following,
                                    DateGeneration::Forward, false);
-            for (Size k=0; k<LENGTH(rates); k++) {
+            for (double rate : rates) {
 
-                VanillaSwap swap(VanillaSwap::Payer, 1000000.0,
-                                 fixedSchedule, rates[k], Thirty360(),
+                VanillaSwap swap(VanillaSwap::Payer, 1000000.0, fixedSchedule, rate, Thirty360(),
                                  floatSchedule, euribor, 0.0, Actual360());
                 swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                                    new DiscountingSwapEngine(termStructure)));

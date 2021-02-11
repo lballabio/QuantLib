@@ -1300,8 +1300,8 @@ void FdmLinearOpTest::testBiCGstab() {
 
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);
-    for (Size i=0; i < b.size(); ++i) {
-        b[i] = rng.next().value;
+    for (double& i : b) {
+        i = rng.next().value;
     }
 
     const Real tol = 1e-10;
@@ -1340,8 +1340,8 @@ void FdmLinearOpTest::testGMRES() {
     
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);
-    for (Size i=0; i < b.size(); ++i) {
-        b[i] = rng.next().value;
+    for (double& i : b) {
+        i = rng.next().value;
     }
 
     const Real tol = 1e-10;
@@ -1487,8 +1487,8 @@ void FdmLinearOpTest::testSpareMatrixReference() {
     std::vector<SparseMatrix> v(nMatrices, SparseMatrix(rows, columns));
     std::vector<SparseMatrixReference> refs;
 
-    for (Size i=0; i < v.size(); ++i) {
-        SparseMatrixReference m(v[i]);
+    for (auto& i : v) {
+        SparseMatrixReference m(i);
         for (Size j=0; j < nElements; ++j) {
             const Size row    = Size(rng.next().value*rows);
             const Size column = Size(rng.next().value*columns);

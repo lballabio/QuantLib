@@ -71,23 +71,19 @@ namespace QuantLib {
 
     std::vector<Time> DiscretizedSwap::mandatoryTimes() const {
         std::vector<Time> times;
-        for (Size i=0; i<fixedResetTimes_.size(); i++) {
-            Time t = fixedResetTimes_[i];
+        for (double t : fixedResetTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }
-        for (Size i=0; i<fixedPayTimes_.size(); i++) {
-            Time t = fixedPayTimes_[i];
+        for (double t : fixedPayTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }
-        for (Size i=0; i<floatingResetTimes_.size(); i++) {
-            Time t = floatingResetTimes_[i];
+        for (double t : floatingResetTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }
-        for (Size i=0; i<floatingPayTimes_.size(); i++) {
-            Time t = floatingPayTimes_[i];
+        for (double t : floatingPayTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }

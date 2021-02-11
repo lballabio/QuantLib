@@ -144,13 +144,10 @@ void FdSabrTest::testFdmSabrOp() {
             Handle<Quote>(ext::make_shared<SimpleQuote>(f0)),
             rTS, rTS, Handle<BlackVolTermStructure>(flatVol(0.2, dc)));
 
-    for (Size j=0; j < LENGTH(betas); ++j) {
-
-        const Real beta = betas[j];
+    for (double beta : betas) {
 
         const ext::shared_ptr<PricingEngine> pdeEngine =
-            ext::make_shared<FdSabrVanillaEngine>(
-                f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
+            ext::make_shared<FdSabrVanillaEngine>(f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
 
         optionPut.setPricingEngine(pdeEngine);
         const Real pdePut = optionPut.NPV();
@@ -232,20 +229,14 @@ void FdSabrTest::testFdmSabrCevPricing() {
 
     const Real tol = 5e-5;
 
-    for (Size i=0; i < LENGTH(optionTypes); ++i) {
-        const Option::Type optionType = optionTypes[i];
-
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            const Real strike = strikes[j];
-
+    for (auto optionType : optionTypes) {
+        for (double strike : strikes) {
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
                 ext::make_shared<PlainVanillaPayoff>(optionType, strike);
 
             VanillaOption option(payoff, exercise);
 
-            for (Size k=0; k < LENGTH(betas); ++k) {
-                const Real beta = betas[k];
-
+            for (double beta : betas) {
                 option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
                     f0, alpha, beta, nu, rho, rTS, 100, 400, 3));
 
@@ -305,14 +296,10 @@ void FdSabrTest::testFdmSabrVsVolApproximation() {
     const Option::Type optionTypes[] = {Option::Put, Option::Call};
 
     const Real tol = 2.5e-3;
-    for (Size i=0; i < LENGTH(optionTypes); ++i) {
-        const Option::Type optionType = optionTypes[i];
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            const Real strike = strikes[j];
-
-            VanillaOption option(
-                ext::make_shared<PlainVanillaPayoff>(optionType, strike),
-                ext::make_shared<EuropeanExercise>(maturityDate));
+    for (auto optionType : optionTypes) {
+        for (double strike : strikes) {
+            VanillaOption option(ext::make_shared<PlainVanillaPayoff>(optionType, strike),
+                                 ext::make_shared<EuropeanExercise>(maturityDate));
 
             option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
                 f0, alpha, beta, nu, rho, rTS, 25, 100, 50));

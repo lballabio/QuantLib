@@ -104,8 +104,8 @@ struct CommonVars {
                 43956, 44321, 44686, 45051, 45418, 45782, 46147, 46512, 47609,
                 49436, 51263, 53087, 56739, 60392;
 
-            for (auto it = datesTmp.begin(); it != datesTmp.end(); ++it)
-                dates.push_back(Date(*it));
+            for (int& it : datesTmp)
+                dates.push_back(Date(it));
 
             rates += -0.00292, -0.00292, -0.001441, -0.00117, -0.001204,
                 -0.001212, -0.001223, -0.001236, -0.001221, -0.001238,
@@ -129,8 +129,8 @@ struct CommonVars {
                 49800, 50165, 50530, 50895, 51263, 51627, 51991, 52356, 52722,
                 53087, 54913, 56739, 60392, 64045;
 
-            for (auto it = datesTmp.begin(); it != datesTmp.end(); ++it)
-                dates.push_back(Date(*it));
+            for (int& it : datesTmp)
+                dates.push_back(Date(it));
 
             rates += 0.000649, 0.000649, 0.000684, 0.000717, 0.000745, 0.000872,
                 0.000905, 0.000954, 0.001532, 0.002319, 0.003147, 0.003949,

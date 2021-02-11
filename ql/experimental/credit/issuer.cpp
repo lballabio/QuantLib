@@ -58,9 +58,9 @@ namespace QuantLib {
 
     const Handle<DefaultProbabilityTermStructure>&
         Issuer::defaultProbability(const DefaultProbKey& key) const {
-        for(Size i=0; i<probabilities_.size(); i++)
-            if(key == probabilities_[i].first)
-                return probabilities_[i].second;
+        for (const auto& probabilitie : probabilities_)
+            if (key == probabilitie.first)
+                return probabilitie.second;
         QL_FAIL("Probability curve not available.");
     }
 
@@ -72,13 +72,9 @@ namespace QuantLib {
                              ) const
     {
         // to do: the set is ordered, see how to use it to speed this up
-        for (auto itev = events_.begin();
-             // am i really speeding things up with the date comp?
-             itev != events_.end(); // && (*itev)->date() > start;
-             ++itev) {
-            if((*itev)->matchesDefaultKey(contractKey) &&
-                between(*itev, start, end, includeRefDate))
-                return *itev;
+        for (const auto& event : events_) {
+            if (event->matchesDefaultKey(contractKey) && between(event, start, end, includeRefDate))
+                return event;
         }
         return ext::shared_ptr<DefaultEvent>();
     }
@@ -93,13 +89,9 @@ namespace QuantLib {
     {
         std::vector<ext::shared_ptr<DefaultEvent> > defaults;
         // to do: the set is ordered, see how to use it to speed this up
-        for (auto itev = events_.begin();
-             // am i really speeding things up with the date comp?
-             itev != events_.end(); // && (*itev)->date() > start;
-             ++itev) {
-            if((*itev)->matchesDefaultKey(contractKey) &&
-                between(*itev, start, end, includeRefDate))
-                defaults.push_back(*itev);
+        for (const auto& event : events_) {
+            if (event->matchesDefaultKey(contractKey) && between(event, start, end, includeRefDate))
+                defaults.push_back(event);
         }
         return defaults;
     }

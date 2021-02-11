@@ -59,9 +59,8 @@ namespace QuantLib {
 
         std::vector<Time> gridTimes;
         gridTimes.reserve(mandatoryDates.size()+1);
-        for (Size i=0; i < mandatoryDates.size(); ++i) {
-            gridTimes.push_back(dc.yearFraction(refDate, mandatoryDates[i]));
-
+        for (auto mandatoryDate : mandatoryDates) {
+            gridTimes.push_back(dc.yearFraction(refDate, mandatoryDate));
         }
         gridTimes.push_back(dc.yearFraction(refDate, endDate));
 

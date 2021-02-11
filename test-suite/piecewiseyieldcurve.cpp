@@ -1044,8 +1044,8 @@ namespace piecewise_yield_curve_test {
             BOOST_ERROR("failed to link original and copied curve");
         }
 
-        for (Size i=0; i<vars.rates.size(); ++i) {
-            vars.rates[i]->setValue(vars.rates[i]->value() + 0.001);
+        for (auto& rate : vars.rates) {
+            rate->setValue(rate->value() + 0.001);
         }
 
         // now the original curve should have changed; the copied
@@ -1162,12 +1162,9 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     ext::shared_ptr<Euribor> euribor1m(new Euribor1M);
-    for (Size i=0; i<LENGTH(data); ++i) {
-        helpers.push_back(
-           ext::make_shared<SwapRateHelper>(data[i].rate,
-                                              Period(data[i].n, data[i].units),
-                                              TARGET(), Monthly, Unadjusted,
-                                              Thirty360(), euribor1m));
+    for (auto& i : data) {
+        helpers.push_back(ext::make_shared<SwapRateHelper>(
+            i.rate, Period(i.n, i.units), TARGET(), Monthly, Unadjusted, Thirty360(), euribor1m));
     }
 
     Date today = Date(12, October, 2017);
@@ -1189,8 +1186,8 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     h.linkTo(curve);
 
     ext::shared_ptr<Euribor1M> index = ext::make_shared<Euribor1M>(h);
-    for (Size i=0; i<LENGTH(data); i++) {
-        Period tenor = data[i].n*data[i].units;
+    for (auto& i : data) {
+        Period tenor = i.n * i.units;
 
         VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
             .withFixedLegDayCount(Thirty360())
@@ -1198,8 +1195,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
             .withFixedLegConvention(Unadjusted);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(h));
 
-        Rate expectedRate = data[i].rate,
-             estimatedRate = swap.fairRate();
+        Rate expectedRate = i.rate, estimatedRate = swap.fairRate();
         Spread error = std::fabs(expectedRate-estimatedRate);
         Real tolerance = 1.0e-9;
         if (error > tolerance) {
@@ -1255,12 +1251,9 @@ void PiecewiseYieldCurveTest::testLargeRates() {
     };
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (Size i=0; i<LENGTH(data); ++i) {
-        helpers.push_back(
-           ext::make_shared<DepositRateHelper>(data[i].rate,
-                                               Period(data[i].n, data[i].units),
-                                               0, WeekendsOnly(), Following,
-                                               false, Actual360()));
+    for (auto& i : data) {
+        helpers.push_back(ext::make_shared<DepositRateHelper>(
+            i.rate, Period(i.n, i.units), 0, WeekendsOnly(), Following, false, Actual360()));
     }
 
     Date today = Date(12, October, 2017);

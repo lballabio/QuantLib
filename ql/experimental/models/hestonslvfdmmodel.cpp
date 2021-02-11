@@ -339,9 +339,8 @@ namespace QuantLib {
             times.push_back(std::min(T, tIdx+=dt));
         }
 
-        for (Size i=0; i < mandatoryDates_.size(); ++i) {
-            times.push_back(
-                dc.yearFraction(referenceDate, mandatoryDates_[i]));
+        for (auto mandatoryDate : mandatoryDates_) {
+            times.push_back(dc.yearFraction(referenceDate, mandatoryDate));
         }
 
         const ext::shared_ptr<TimeGrid> timeGrid(

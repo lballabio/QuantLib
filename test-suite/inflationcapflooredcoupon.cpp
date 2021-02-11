@@ -714,22 +714,20 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
     // capped coupon = fwd - cap, and fwd = swap(0)
     // floored coupon = fwd + floor
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
-        for (Size i=0; i<LENGTH(lengths); i++) {
-            for (Size j=0; j<LENGTH(strikes); j++) {
-                for (Size k=0; k<LENGTH(vols); k++) {
+        for (int& length : lengths) {
+            for (double& strike : strikes) {
+                for (double vol : vols) {
 
-                    Leg leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
+                    Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 
-                    ext::shared_ptr<Instrument> cap
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Cap,
-                                           leg, strikes[j], vols[k], whichPricer);
+                    ext::shared_ptr<Instrument> cap = vars.makeYoYCapFloor(
+                        YoYInflationCapFloor::Cap, leg, strike, vol, whichPricer);
 
-                    ext::shared_ptr<Instrument> floor
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Floor,
-                                           leg, strikes[j], vols[k], whichPricer);
+                    ext::shared_ptr<Instrument> floor = vars.makeYoYCapFloor(
+                        YoYInflationCapFloor::Floor, leg, strike, vol, whichPricer);
 
                     Date from = vars.nominalTS->referenceDate();
-                    Date to = from+lengths[i]*Years;
+                    Date to = from + length * Years;
                     Schedule yoySchedule = MakeSchedule().from(from).to(to)
                     .withTenor(1*Years)
                     .withCalendar(UnitedKingdom())
@@ -754,30 +752,27 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     swap.setPricingEngine(sppe);
                     setCouponPricer(swap.yoyLeg(), ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
-                    Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from,
-                                                         lengths[i],
-                                                         std::vector<Rate>(lengths[i],strikes[j]),//cap
-                                                         std::vector<Rate>(),//floor
-                                                         vols[k],
-                                                         1.0,   // gearing
-                                                         0.0);// spread
+                    Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from, length,
+                                                         std::vector<Rate>(length, strike), // cap
+                                                         std::vector<Rate>(),               // floor
+                                                         vol,
+                                                         1.0,  // gearing
+                                                         0.0); // spread
 
-                    Leg leg3 = vars.makeYoYCapFlooredLeg(whichPricer, from,
-                                                         lengths[i],
-                                                         std::vector<Rate>(),// cap
-                                                         std::vector<Rate>(lengths[i],strikes[j]),//floor
-                                                         vols[k],
-                                                         1.0,   // gearing
-                                                         0.0);// spread
+                    Leg leg3 = vars.makeYoYCapFlooredLeg(whichPricer, from, length,
+                                                         std::vector<Rate>(),               // cap
+                                                         std::vector<Rate>(length, strike), // floor
+                                                         vol,
+                                                         1.0,  // gearing
+                                                         0.0); // spread
 
                     // N.B. nominals are 10e6
                     Real capped = CashFlows::npv(leg2,(**vars.nominalTS),false);
                     if ( fabs(capped - (swap.NPV() - cap->NPV())) > 1.0e-6) {
-                        BOOST_FAIL(
-                                   "capped coupon != swap(0) - cap:\n"
-                                   << "    length:      " << lengths[i] << " years\n"
-                                   << "    volatility:  " << io::volatility(vols[k]) << "\n"
-                                   << "    strike:      " << io::rate(strikes[j]) << "\n"
+                        BOOST_FAIL("capped coupon != swap(0) - cap:\n"
+                                   << "    length:      " << length << " years\n"
+                                   << "    volatility:  " << io::volatility(vol) << "\n"
+                                   << "    strike:      " << io::rate(strike) << "\n"
                                    << "    cap value:   " << cap->NPV() << "\n"
                                    << "    swap value:  " << swap.NPV() << "\n"
                                    << "   capped coupon " << capped);
@@ -787,16 +782,14 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     // N.B. nominals are 10e6
                     Real floored = CashFlows::npv(leg3,(**vars.nominalTS),false);
                     if ( fabs(floored - (swap.NPV() + floor->NPV())) > 1.0e-6) {
-                        BOOST_FAIL(
-                                   "floored coupon != swap(0) + floor :\n"
-                                   << "    length:      " << lengths[i] << " years\n"
-                                   << "    volatility:  " << io::volatility(vols[k]) << "\n"
-                                   << "    strike:      " << io::rate(strikes[j]) << "\n"
+                        BOOST_FAIL("floored coupon != swap(0) + floor :\n"
+                                   << "    length:      " << length << " years\n"
+                                   << "    volatility:  " << io::volatility(vol) << "\n"
+                                   << "    strike:      " << io::rate(strike) << "\n"
                                    << "    floor value: " << floor->NPV() << "\n"
                                    << "    swap value:  " << swap.NPV() << "\n"
                                    << "  floored coupon " << floored);
                     }
-
                 }
             }
         }

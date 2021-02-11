@@ -137,8 +137,8 @@ namespace QuantLib {
         Size n = curve_->bondHelpers_.size();
         costFunction_ = ext::make_shared<FittingCost>(this);
 
-        for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
-            curve_->bondHelpers_[i]->setTermStructure(curve_);
+        for (auto& bondHelper : curve_->bondHelpers_) {
+            bondHelper->setTermStructure(curve_);
         }
 
         if (calculateWeights_) {
@@ -242,8 +242,8 @@ namespace QuantLib {
                                                        const Array& x) const {
         Real squaredError = 0.0;
         Array vals = values(x);
-        for (Size i = 0; i<vals.size(); ++i) {
-            squaredError += vals[i];
+        for (double val : vals) {
+            squaredError += val;
         }
         return squaredError;
     }

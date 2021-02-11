@@ -43,8 +43,8 @@ namespace QuantLib {
     }
 
     bool CompositeInstrument::isExpired() const {
-        for (auto i = components_.begin(); i != components_.end(); ++i) {
-            if (!i->first->isExpired())
+        for (const auto& component : components_) {
+            if (!component.first->isExpired())
                 return false;
         }
         return true;
@@ -52,8 +52,8 @@ namespace QuantLib {
 
     void CompositeInstrument::performCalculations() const {
         NPV_ = 0.0;
-        for (auto i = components_.begin(); i != components_.end(); ++i) {
-            NPV_ += i->second * i->first->NPV();
+        for (const auto& component : components_) {
+            NPV_ += component.second * component.first->NPV();
         }
     }
 

@@ -106,8 +106,8 @@ namespace QuantLib {
     : SmileSection(timeToExpiry, dc, type, shift),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(std::move(strikes)),
       stdDevHandles_(stdDevHandles), atmLevel_(std::move(atmLevel)), vols_(stdDevHandles.size()) {
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
-            LazyObject::registerWith(stdDevHandles_[i]);
+        for (auto& stdDevHandle : stdDevHandles_)
+            LazyObject::registerWith(stdDevHandle);
         LazyObject::registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
@@ -155,8 +155,8 @@ namespace QuantLib {
     : SmileSection(d, dc, referenceDate, type, shift),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(std::move(strikes)),
       stdDevHandles_(stdDevHandles), atmLevel_(std::move(atmLevel)), vols_(stdDevHandles.size()) {
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
-            LazyObject::registerWith(stdDevHandles_[i]);
+        for (auto& stdDevHandle : stdDevHandles_)
+            LazyObject::registerWith(stdDevHandle);
         LazyObject::registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),

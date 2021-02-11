@@ -266,22 +266,22 @@ namespace QuantLib
           Size numberRates = taus_.size();
 
            QL_REQUIRE(B.size() == numberRates, "we need B.size() which is " << B.size() << " to equal numberRates which is "  << numberRates);
-           for (Size j=0; j < B.size(); ++j)
-                      QL_REQUIRE(B[j].columns() == factors_ && B[j].rows() == numberRates , "we need B[j].rows() which is " << B[j].rows() << " to equal numberRates which is "  << numberRates << 
-                      " and B[j].columns() which is " << B[j].columns() << " to be equal to factors which is " << factors_);
+           for (auto& j : B)
+               QL_REQUIRE(j.columns() == factors_ && j.rows() == numberRates,
+                          "we need B[j].rows() which is "
+                              << j.rows() << " to equal numberRates which is " << numberRates
+                              << " and B[j].columns() which is " << j.columns()
+                              << " to be equal to factors which is " << factors_);
 
 
+           for (Size j = aliveIndex_; j < numberRates; ++j)
+               ratios_[j] = (oldRates[j] + displacements_[j]) * discountRatios[j + 1];
 
+           for (Size f = 0; f < factors_; ++f) {
+               e_[aliveIndex_][f] = 0;
 
-        for (Size j=aliveIndex_; j < numberRates; ++j)
-            ratios_[j] = (oldRates[j] + displacements_[j])*discountRatios[j+1];
-
-        for (Size f=0; f < factors_; ++f)
-        {
-            e_[aliveIndex_][f] = 0;
-
-            for (Size j= aliveIndex_+1; j < numberRates; ++j)
-                e_[j][f] = e_[j-1][f] + ratios_[j-1]*pseudoRoot_[j-1][f];
+               for (Size j = aliveIndex_ + 1; j < numberRates; ++j)
+                   e_[j][f] = e_[j - 1][f] + ratios_[j - 1] * pseudoRoot_[j - 1][f];
         }
 
         // nullify B for rates that have already reset

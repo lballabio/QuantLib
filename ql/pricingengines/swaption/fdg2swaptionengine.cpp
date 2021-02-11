@@ -80,11 +80,11 @@ namespace QuantLib {
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();
         std::map<Time, Date> t2d;
 
-        for (Size i=0; i < exerciseDates.size(); ++i) {
-            const Time t = dc.yearFraction(referenceDate, exerciseDates[i]);
+        for (auto exerciseDate : exerciseDates) {
+            const Time t = dc.yearFraction(referenceDate, exerciseDate);
             QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
 
-            t2d[t] = exerciseDates[i];
+            t2d[t] = exerciseDate;
         }
 
         const Handle<YieldTermStructure> disTs = model_->termStructure();

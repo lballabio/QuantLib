@@ -157,7 +157,8 @@ void CatBondTest::testBetaRisk() {
     {
         BOOST_REQUIRE(simulation->nextPath(path));
         Real processValue = 0.0;
-        for(size_t j=0; j<path.size(); ++j) processValue+=path[j].second;
+        for (auto& j : path)
+            processValue += j.second;
         sum+=processValue;
         sumSquares+=processValue*processValue;
         poissonSum+=path.size();
