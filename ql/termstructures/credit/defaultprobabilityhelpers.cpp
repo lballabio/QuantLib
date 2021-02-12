@@ -24,6 +24,7 @@
 #include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <memory>
 #include <utility>
 
 namespace QuantLib {
@@ -184,10 +185,10 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
-            Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
-            dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_));
+        swap_ = ext::make_shared<CreditDefaultSwap>(
+            Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_, dayCounter_,
+            settlesAccrual_, paysAtDefaultTime_, protectionStart_, ext::shared_ptr<Claim>(),
+            lastPeriodDC_, rebatesAccrual_, evaluationDate_);
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
@@ -268,12 +269,10 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
-            Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
-            paymentConvention_, dayCounter_, settlesAccrual_,
-            paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_,
-            evaluationDate_));
+        swap_ = ext::make_shared<CreditDefaultSwap>(
+            Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_, paymentConvention_,
+            dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_, upfrontDate_,
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_);
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:

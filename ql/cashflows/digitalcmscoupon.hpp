@@ -26,28 +26,28 @@
 #ifndef quantlib_digital_cms_coupon_hpp
 #define quantlib_digital_cms_coupon_hpp
 
-#include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
+#include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/time/schedule.hpp>
+#include <memory>
 
 namespace QuantLib {
 
     //! Cms-rate coupon with digital digital call/put option
     class DigitalCmsCoupon : public DigitalCoupon {
       public:
-        DigitalCmsCoupon(
-            const ext::shared_ptr<CmsCoupon> &underlying,
-            Rate callStrike = Null<Rate>(),
-            Position::Type callPosition = Position::Long,
-            bool isCallATMIncluded = false,
-            Rate callDigitalPayoff = Null<Rate>(),
-            Rate putStrike = Null<Rate>(),
-            Position::Type putPosition = Position::Long,
-            bool isPutATMIncluded = false,
-            Rate putDigitalPayoff = Null<Rate>(),
-            const ext::shared_ptr<DigitalReplication> &replication =
-                ext::shared_ptr<DigitalReplication>(new DigitalReplication),
-            bool nakedOption = false);
+        DigitalCmsCoupon(const ext::shared_ptr<CmsCoupon>& underlying,
+                         Rate callStrike = Null<Rate>(),
+                         Position::Type callPosition = Position::Long,
+                         bool isCallATMIncluded = false,
+                         Rate callDigitalPayoff = Null<Rate>(),
+                         Rate putStrike = Null<Rate>(),
+                         Position::Type putPosition = Position::Long,
+                         bool isPutATMIncluded = false,
+                         Rate putDigitalPayoff = Null<Rate>(),
+                         const ext::shared_ptr<DigitalReplication>& replication =
+                             ext::make_shared<DigitalReplication>(),
+                         bool nakedOption = false);
 
         //! \name Visitability
         //@{
@@ -83,9 +83,8 @@ namespace QuantLib {
         DigitalCmsLeg& withPutATM(bool flag = true);
         DigitalCmsLeg& withPutPayoffs(Rate payoff);
         DigitalCmsLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
-        DigitalCmsLeg& withReplication(
-            const ext::shared_ptr<DigitalReplication> &replication =
-                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
+        DigitalCmsLeg& withReplication(const ext::shared_ptr<DigitalReplication>& replication =
+                                           ext::make_shared<DigitalReplication>());
         DigitalCmsLeg& withNakedOption(bool nakedOption = true);
 
         operator Leg() const;

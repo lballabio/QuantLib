@@ -27,6 +27,7 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <memory>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -72,11 +73,11 @@ namespace crosscurrencyratehelpers_test {
                                        bool isBasisOnFxBaseCurrencyLeg) const {
             Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
             Period tenor(q.n, q.units);
-            return ext::shared_ptr<CrossCurrencyBasisSwapRateHelper>(
-                new CrossCurrencyBasisSwapRateHelper(
-                    quoteHandle, tenor, settlementDays, calendar, businessConvention, endOfMonth,
-                    baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
-                    isBasisOnFxBaseCurrencyLeg));
+            return ext::make_shared<CrossCurrencyBasisSwapRateHelper>(
+
+                quoteHandle, tenor, settlementDays, calendar, businessConvention, endOfMonth,
+                baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+                isBasisOnFxBaseCurrencyLeg);
         }
 
         std::vector<ext::shared_ptr<RateHelper> >

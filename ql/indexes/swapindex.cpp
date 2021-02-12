@@ -21,6 +21,7 @@
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/time/schedule.hpp>
+#include <memory>
 #include <sstream>
 #include <utility>
 
@@ -113,73 +114,34 @@ namespace QuantLib {
     SwapIndex::clone(const Handle<YieldTermStructure>& forwarding) const {
 
         if (exogenousDiscount_)
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor(),
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex_->clone(forwarding),
-                          discount_));
+            return ext::make_shared<SwapIndex>(
+                familyName(), tenor(), fixingDays(), currency(), fixingCalendar(), fixedLegTenor(),
+                fixedLegConvention(), dayCounter(), iborIndex_->clone(forwarding), discount_);
         else
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor(),
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex_->clone(forwarding)));
+            return ext::make_shared<SwapIndex>(
+                familyName(), tenor(), fixingDays(), currency(), fixingCalendar(), fixedLegTenor(),
+                fixedLegConvention(), dayCounter(), iborIndex_->clone(forwarding));
     }
 
     ext::shared_ptr<SwapIndex>
     SwapIndex::clone(const Handle<YieldTermStructure>& forwarding,
                      const Handle<YieldTermStructure>& discounting) const {
-        return ext::shared_ptr<SwapIndex>(new
-             SwapIndex(familyName(),
-                       tenor(),
-                       fixingDays(),
-                       currency(),
-                       fixingCalendar(),
-                       fixedLegTenor(),
-                       fixedLegConvention(),
-                       dayCounter(),
-                       iborIndex_->clone(forwarding),
-                       discounting));
+        return ext::make_shared<SwapIndex>(
+            familyName(), tenor(), fixingDays(), currency(), fixingCalendar(), fixedLegTenor(),
+            fixedLegConvention(), dayCounter(), iborIndex_->clone(forwarding), discounting);
     }
 
     ext::shared_ptr<SwapIndex>
     SwapIndex::clone(const Period& tenor) const {
 
         if (exogenousDiscount_)
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor,
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex(),
-                          discountingTermStructure()));
+            return ext::make_shared<SwapIndex>(
+                familyName(), tenor, fixingDays(), currency(), fixingCalendar(), fixedLegTenor(),
+                fixedLegConvention(), dayCounter(), iborIndex(), discountingTermStructure());
         else
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
-                          tenor,
-                          fixingDays(),
-                          currency(),
-                          fixingCalendar(),
-                          fixedLegTenor(),
-                          fixedLegConvention(),
-                          dayCounter(),
-                          iborIndex()));
-
+            return ext::make_shared<SwapIndex>(familyName(), tenor, fixingDays(), currency(),
+                                               fixingCalendar(), fixedLegTenor(),
+                                               fixedLegConvention(), dayCounter(), iborIndex());
     }
 
     OvernightIndexedSwapIndex::OvernightIndexedSwapIndex(

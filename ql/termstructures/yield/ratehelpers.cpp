@@ -35,6 +35,7 @@
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <memory>
 #include <utility>
 
 namespace QuantLib {
@@ -943,15 +944,10 @@ namespace QuantLib {
                           .endOfMonth(iborIndex_->endOfMonth())
                           .backwards();
 
-        swap_ = ext::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
-                                                liborSchedule,
-                                                0.75, // arbitrary
-                                                0.0,
-                                                iborIndex_,
-                                                iborIndex_->dayCounter(),
-                                                bmaSchedule,
-                                                clonedIndex,
-                                                bmaDayCount_));
+        swap_ = ext::make_shared<BMASwap>(BMASwap::Payer, 100.0, liborSchedule,
+                                          0.75, // arbitrary
+                                          0.0, iborIndex_, iborIndex_->dayCounter(), bmaSchedule,
+                                          clonedIndex, bmaDayCount_);
         swap_->setPricingEngine(ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
 

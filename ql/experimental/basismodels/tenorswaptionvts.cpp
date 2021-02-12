@@ -22,13 +22,14 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 
-#include <ql/experimental/basismodels/tenorswaptionvts.hpp>
-#include <ql/experimental/basismodels/swaptioncfs.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/basismodels/swaptioncfs.hpp>
+#include <ql/experimental/basismodels/tenorswaptionvts.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/math/rounding.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/time/dategenerationrule.hpp>
+#include <memory>
 
 
 namespace QuantLib {
@@ -81,12 +82,12 @@ namespace QuantLib {
         swapRateTarg_ = targSwap->fairRate();
         swapRateFinl_ = finlSwap->fairRate();
         SwaptionCashFlows cfs(
-            ext::shared_ptr<Swaption>(new Swaption(
-                baseSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
+            ext::make_shared<Swaption>(
+                baseSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate))),
             volTS.discountCurve_);
         SwaptionCashFlows cf2(
-            ext::shared_ptr<Swaption>(new Swaption(
-                targSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
+            ext::make_shared<Swaption>(
+                targSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate))),
             volTS.discountCurve_);
         // calculate affine TSR model u and v
         // Sum tau_j   (fixed leg)

@@ -24,11 +24,12 @@
 #include "utilities.hpp"
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
-#include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
+#include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <memory>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -340,17 +341,10 @@ void SwaptionVolatilityCubeTest::testObservability() {
     std::string description;
     ext::shared_ptr<SwaptionVolCube1> volCube1_0, volCube1_1;
     // VolCube created before change of reference date
-    volCube1_0 = ext::shared_ptr<SwaptionVolCube1>(new SwaptionVolCube1(vars.atmVolMatrix,
-                                                                vars.cube.tenors.options,
-                                                                vars.cube.tenors.swaps,
-                                                                vars.cube.strikeSpreads,
-                                                                vars.cube.volSpreadsHandle,
-                                                                vars.swapIndexBase,
-                                                                vars.shortSwapIndexBase,
-                                                                vars.vegaWeighedSmileFit,
-                                                                parametersGuess,
-                                                                isParameterFixed,
-                                                                true));
+    volCube1_0 = ext::make_shared<SwaptionVolCube1>(
+        vars.atmVolMatrix, vars.cube.tenors.options, vars.cube.tenors.swaps,
+        vars.cube.strikeSpreads, vars.cube.volSpreadsHandle, vars.swapIndexBase,
+        vars.shortSwapIndexBase, vars.vegaWeighedSmileFit, parametersGuess, isParameterFixed, true);
 
     Date referenceDate = Settings::instance().evaluationDate();
     Settings::instance().evaluationDate() =
@@ -358,17 +352,10 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                           vars.conventions.optionBdc);
 
     // VolCube created after change of reference date
-    volCube1_1 = ext::shared_ptr<SwaptionVolCube1>(new SwaptionVolCube1(vars.atmVolMatrix,
-                                                                vars.cube.tenors.options,
-                                                                vars.cube.tenors.swaps,
-                                                                vars.cube.strikeSpreads,
-                                                                vars.cube.volSpreadsHandle,
-                                                                vars.swapIndexBase,
-                                                                vars.shortSwapIndexBase,
-                                                                vars.vegaWeighedSmileFit,
-                                                                parametersGuess,
-                                                                isParameterFixed,
-                                                                true));
+    volCube1_1 = ext::make_shared<SwaptionVolCube1>(
+        vars.atmVolMatrix, vars.cube.tenors.options, vars.cube.tenors.swaps,
+        vars.cube.strikeSpreads, vars.cube.volSpreadsHandle, vars.swapIndexBase,
+        vars.shortSwapIndexBase, vars.vegaWeighedSmileFit, parametersGuess, isParameterFixed, true);
     Rate dummyStrike = 0.03;
     for (Size i=0;i<vars.cube.tenors.options.size(); i++ ) {
         for (Size j=0; j<vars.cube.tenors.swaps.size(); j++) {

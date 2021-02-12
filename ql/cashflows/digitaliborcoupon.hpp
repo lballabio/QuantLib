@@ -29,25 +29,25 @@
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/time/schedule.hpp>
+#include <memory>
 
 namespace QuantLib {
 
     //! Ibor rate coupon with digital digital call/put option
     class DigitalIborCoupon : public DigitalCoupon {
       public:
-        DigitalIborCoupon(
-            const ext::shared_ptr<IborCoupon> &underlying,
-            Rate callStrike = Null<Rate>(),
-            Position::Type callPosition = Position::Long,
-            bool isCallATMIncluded = false,
-            Rate callDigitalPayoff = Null<Rate>(),
-            Rate putStrike = Null<Rate>(),
-            Position::Type putPosition = Position::Long,
-            bool isPutATMIncluded = false,
-            Rate putDigitalPayoff = Null<Rate>(),
-            const ext::shared_ptr<DigitalReplication> &replication =
-                ext::shared_ptr<DigitalReplication>(new DigitalReplication),
-            bool nakedOption =false);
+        DigitalIborCoupon(const ext::shared_ptr<IborCoupon>& underlying,
+                          Rate callStrike = Null<Rate>(),
+                          Position::Type callPosition = Position::Long,
+                          bool isCallATMIncluded = false,
+                          Rate callDigitalPayoff = Null<Rate>(),
+                          Rate putStrike = Null<Rate>(),
+                          Position::Type putPosition = Position::Long,
+                          bool isPutATMIncluded = false,
+                          Rate putDigitalPayoff = Null<Rate>(),
+                          const ext::shared_ptr<DigitalReplication>& replication =
+                              ext::make_shared<DigitalReplication>(),
+                          bool nakedOption = false);
 
         //! \name Visitability
         //@{
@@ -83,9 +83,8 @@ namespace QuantLib {
         DigitalIborLeg& withPutATM(bool flag = true);
         DigitalIborLeg& withPutPayoffs(Rate payoff);
         DigitalIborLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
-        DigitalIborLeg &withReplication(
-            const ext::shared_ptr<DigitalReplication> &replication =
-                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
+        DigitalIborLeg& withReplication(const ext::shared_ptr<DigitalReplication>& replication =
+                                            ext::make_shared<DigitalReplication>());
         DigitalIborLeg& withNakedOption(bool nakedOption = true);
 
         operator Leg() const;

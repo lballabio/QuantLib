@@ -20,24 +20,25 @@
 
 #include "batesmodel.hpp"
 #include "utilities.hpp"
-#include <ql/time/calendars/target.hpp>
-#include <ql/processes/batesprocess.hpp>
-#include <ql/processes/merton76process.hpp>
 #include <ql/instruments/europeanoption.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/pricingengines/vanilla/batesengine.hpp>
-#include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
-#include <ql/pricingengines/vanilla/fdbatesvanillaengine.hpp>
 #include <ql/models/equity/batesmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
-#include <ql/time/period.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/batesengine.hpp>
+#include <ql/pricingengines/vanilla/fdbatesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
+#include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
+#include <ql/processes/batesprocess.hpp>
+#include <ql/processes/merton76process.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/period.hpp>
+#include <memory>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -485,10 +486,9 @@ void BatesModelTest::testDAXCalibration() {
 
     //check pricing of derived engines
     std::vector<ext::shared_ptr<PricingEngine> > pricingEngines;
-    
-    process = ext::shared_ptr<BatesProcess>(
-        new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
-                         kappa, theta, sigma, rho, 1.0, -0.1, 0.1));
+
+    process = ext::make_shared<BatesProcess>(riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma,
+                                             rho, 1.0, -0.1, 0.1);
 
     pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDetJumpEngine(

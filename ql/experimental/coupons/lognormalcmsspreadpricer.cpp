@@ -25,6 +25,7 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
+#include <memory>
 #include <utility>
 
 
@@ -171,19 +172,17 @@ namespace QuantLib {
                                 << ") should be positive while gearing2 ("
                                 << gearing2_ << ") should be negative");
 
-        c1_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c1_ = ext::make_shared<CmsCoupon>(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
-            coupon_->accrualEndDate(), coupon_->fixingDays(),
-            index_->swapIndex1(), 1.0, 0.0, coupon_->referencePeriodStart(),
-            coupon_->referencePeriodEnd(), coupon_->dayCounter(),
-            coupon_->isInArrears()));
+            coupon_->accrualEndDate(), coupon_->fixingDays(), index_->swapIndex1(), 1.0, 0.0,
+            coupon_->referencePeriodStart(), coupon_->referencePeriodEnd(), coupon_->dayCounter(),
+            coupon_->isInArrears());
 
-        c2_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c2_ = ext::make_shared<CmsCoupon>(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
-            coupon_->accrualEndDate(), coupon_->fixingDays(),
-            index_->swapIndex2(), 1.0, 0.0, coupon_->referencePeriodStart(),
-            coupon_->referencePeriodEnd(), coupon_->dayCounter(),
-            coupon_->isInArrears()));
+            coupon_->accrualEndDate(), coupon_->fixingDays(), index_->swapIndex2(), 1.0, 0.0,
+            coupon_->referencePeriodStart(), coupon_->referencePeriodEnd(), coupon_->dayCounter(),
+            coupon_->isInArrears());
 
         c1_->setPricer(cmsPricer_);
         c2_->setPricer(cmsPricer_);

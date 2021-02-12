@@ -21,23 +21,24 @@
 
 #include "basketoption.hpp"
 #include "utilities.hpp"
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/daycounters/actual360.hpp>
+#include <ql/functional.hpp>
 #include <ql/instruments/basketoption.hpp>
-#include <ql/pricingengines/basket/stulzengine.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
-#include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
+#include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
+#include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-#include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/functional.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
+#include <memory>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -961,11 +962,9 @@ void BasketOptionTest::testLocalVolatilitySpreadOption() {
         ext::make_shared<GeneralizedBlackScholesProcess>(
             s1, dividendYield, riskFreeRate, vol1));
 
-    basketOption.setPricingEngine(
-        ext::shared_ptr<Fd2dBlackScholesVanillaEngine>(
-            new Fd2dBlackScholesVanillaEngine(
-                bs1, bs2, rho, 11, 11, 6, 0,
-                FdmSchemeDesc::Hundsdorfer(), true, 0.25)));
+    basketOption.setPricingEngine(ext::make_shared<Fd2dBlackScholesVanillaEngine>(
+
+        bs1, bs2, rho, 11, 11, 6, 0, FdmSchemeDesc::Hundsdorfer(), true, 0.25));
 
     const Real tolerance = 0.01;
     const Real expected = 2.561;

@@ -20,6 +20,7 @@
 #include <ql/event.hpp>
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <memory>
 #include <utility>
 
 namespace QuantLib {
@@ -248,17 +249,9 @@ namespace QuantLib {
                                floatConvention_, floatConvention_,
                                DateGeneration::Forward, false);
 
-        asw_ = ext::shared_ptr<RiskyAssetSwap>(
-                                      new RiskyAssetSwap(true,
-                                                         100.0,
-                                                         fixedSchedule,
-                                                         floatSchedule,
-                                                         fixedDayCount_,
-                                                         floatDayCount_,
-                                                         0.01,
-                                                         recoveryRate_,
-                                                         yieldTS_,
-                                                         probability_));
+        asw_ = ext::make_shared<RiskyAssetSwap>(true, 100.0, fixedSchedule, floatSchedule,
+                                                fixedDayCount_, floatDayCount_, 0.01, recoveryRate_,
+                                                yieldTS_, probability_);
     }
 
 }

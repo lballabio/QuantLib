@@ -17,14 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/swaption/basketgeneratingengine.hpp>
-#include <ql/rebatedexercise.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
+#include <ql/pricingengines/swaption/basketgeneratingengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/rebatedexercise.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <cmath>
+#include <memory>
 
 using std::exp;
 using std::fabs;
@@ -87,18 +88,16 @@ namespace QuantLib {
                     atmVol = sec->volatility(atmStrike);
                 Real shift = sec->shift();
 
-                helper = ext::shared_ptr<SwaptionHelper>(new SwaptionHelper(
+                helper = ext::make_shared<SwaptionHelper>(
                     expiry, underlyingLastDate(),
                     Handle<Quote>(ext::make_shared<SimpleQuote>(atmVol)),
-                    standardSwapBase->iborIndex(),
-                    standardSwapBase->fixedLegTenor(),
-                    standardSwapBase->dayCounter(),
-                    standardSwapBase->iborIndex()->dayCounter(),
-                    standardSwapBase->exogenousDiscount()
-                        ? standardSwapBase->discountingTermStructure()
-                        : standardSwapBase->forwardingTermStructure(),
+                    standardSwapBase->iborIndex(), standardSwapBase->fixedLegTenor(),
+                    standardSwapBase->dayCounter(), standardSwapBase->iborIndex()->dayCounter(),
+                    standardSwapBase->exogenousDiscount() ?
+                        standardSwapBase->discountingTermStructure() :
+                        standardSwapBase->forwardingTermStructure(),
                     BlackCalibrationHelper::RelativePriceError, Null<Real>(), 1.0,
-                    swaptionVolatility->volatilityType() ,shift));
+                    swaptionVolatility->volatilityType(), shift);
 
                 break;
             }
@@ -215,19 +214,15 @@ namespace QuantLib {
 
                 Real vol = sec->volatility(solution[2]);
 
-                helper = ext::shared_ptr<SwaptionHelper>(new SwaptionHelper(
-                    expiry, matPeriod,
-                    Handle<Quote>(ext::make_shared<SimpleQuote>(
-                                      vol)),
-                    standardSwapBase->iborIndex(),
-                    standardSwapBase->fixedLegTenor(),
-                    standardSwapBase->dayCounter(),
-                    standardSwapBase->iborIndex()->dayCounter(),
-                    standardSwapBase->exogenousDiscount()
-                        ? standardSwapBase->discountingTermStructure()
-                        : standardSwapBase->forwardingTermStructure(),
-                    BlackCalibrationHelper::RelativePriceError, solution[2],
-                    fabs(solution[0]), swaptionVolatility->volatilityType(), shift));
+                helper = ext::make_shared<SwaptionHelper>(
+                    expiry, matPeriod, Handle<Quote>(ext::make_shared<SimpleQuote>(vol)),
+                    standardSwapBase->iborIndex(), standardSwapBase->fixedLegTenor(),
+                    standardSwapBase->dayCounter(), standardSwapBase->iborIndex()->dayCounter(),
+                    standardSwapBase->exogenousDiscount() ?
+                        standardSwapBase->discountingTermStructure() :
+                        standardSwapBase->forwardingTermStructure(),
+                    BlackCalibrationHelper::RelativePriceError, solution[2], fabs(solution[0]),
+                    swaptionVolatility->volatilityType(), shift);
                 break;
             }
 

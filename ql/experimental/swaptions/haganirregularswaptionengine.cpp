@@ -30,6 +30,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <memory>
 #include <utility>
 
 namespace QuantLib {
@@ -83,11 +84,11 @@ namespace QuantLib {
                 QL_REQUIRE(coupon, "dynamic cast of float leg coupon failed.");
 
                 if (coupon->date() <= expiries_[i]) {
-                    ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon>(new IborCoupon(
+                    ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon>(
                         coupon->date(), 1.0, coupon->accrualStartDate(), coupon->accrualEndDate(),
                         coupon->fixingDays(), coupon->iborIndex(), 1.0, coupon->spread(),
                         coupon->referencePeriodStart(), coupon->referencePeriodEnd(),
-                        coupon->dayCounter(), coupon->isInArrears()));
+                        coupon->dayCounter(), coupon->isInArrears());
 
 
                     if (!newCpn->isInArrears())
@@ -265,19 +266,11 @@ namespace QuantLib {
             ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(j);
             QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
-            ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
-                new  IborCoupon(coupon->date(),
-                coupon->nominal(),
-                coupon->accrualStartDate(),
-                coupon->accrualEndDate(),
-                coupon->fixingDays(),
-                coupon->iborIndex(),
-                coupon->gearing(),
-                0.0,
-                coupon->referencePeriodStart(),
-                coupon->referencePeriodEnd(),
-                coupon->dayCounter(),
-                coupon->isInArrears())); 
+            ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon>(
+                coupon->date(), coupon->nominal(), coupon->accrualStartDate(),
+                coupon->accrualEndDate(), coupon->fixingDays(), coupon->iborIndex(),
+                coupon->gearing(), 0.0, coupon->referencePeriodStart(),
+                coupon->referencePeriodEnd(), coupon->dayCounter(), coupon->isInArrears());
 
 
             if (!newCpn->isInArrears())

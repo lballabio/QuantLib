@@ -27,25 +27,25 @@
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
 #include <ql/time/schedule.hpp>
+#include <memory>
 
 namespace QuantLib {
 
     //! Cms-spread-rate coupon with digital digital call/put option
     class DigitalCmsSpreadCoupon : public DigitalCoupon {
       public:
-        explicit DigitalCmsSpreadCoupon(
-            const ext::shared_ptr<CmsSpreadCoupon> &underlying,
-            Rate callStrike = Null<Rate>(),
-            Position::Type callPosition = Position::Long,
-            bool isCallATMIncluded = false,
-            Rate callDigitalPayoff = Null<Rate>(),
-            Rate putStrike = Null<Rate>(),
-            Position::Type putPosition = Position::Long,
-            bool isPutATMIncluded = false,
-            Rate putDigitalPayoff = Null<Rate>(),
-            const ext::shared_ptr<DigitalReplication> &replication =
-                ext::shared_ptr<DigitalReplication>(new DigitalReplication),
-            bool nakedOption = false);
+        explicit DigitalCmsSpreadCoupon(const ext::shared_ptr<CmsSpreadCoupon>& underlying,
+                                        Rate callStrike = Null<Rate>(),
+                                        Position::Type callPosition = Position::Long,
+                                        bool isCallATMIncluded = false,
+                                        Rate callDigitalPayoff = Null<Rate>(),
+                                        Rate putStrike = Null<Rate>(),
+                                        Position::Type putPosition = Position::Long,
+                                        bool isPutATMIncluded = false,
+                                        Rate putDigitalPayoff = Null<Rate>(),
+                                        const ext::shared_ptr<DigitalReplication>& replication =
+                                            ext::make_shared<DigitalReplication>(),
+                                        bool nakedOption = false);
 
         //! \name Visitability
         //@{
@@ -81,9 +81,9 @@ namespace QuantLib {
         DigitalCmsSpreadLeg& withPutATM(bool flag = true);
         DigitalCmsSpreadLeg& withPutPayoffs(Rate payoff);
         DigitalCmsSpreadLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
-        DigitalCmsSpreadLeg& withReplication(
-            const ext::shared_ptr<DigitalReplication> &replication =
-                ext::shared_ptr<DigitalReplication>(new DigitalReplication));
+        DigitalCmsSpreadLeg&
+        withReplication(const ext::shared_ptr<DigitalReplication>& replication =
+                            ext::make_shared<DigitalReplication>());
         DigitalCmsSpreadLeg& withNakedOption(bool nakedOption = true);
 
         operator Leg() const;

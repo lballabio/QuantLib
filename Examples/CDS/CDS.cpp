@@ -19,6 +19,7 @@
 */
 
 #include <ql/qldefines.hpp>
+#include <memory>
 #ifdef BOOST_MSVC
 #  include <ql/auto_link.hpp>
 #endif
@@ -358,12 +359,9 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
     // reference CDS
     Schedule sched( Date(22,September,2014), Date(20,December,2019), 3*Months,
             WeekendsOnly(), Following, Unadjusted, DateGeneration::CDS, false, Date(), Date() );
-    ext::shared_ptr<CreditDefaultSwap> trade =
-        ext::shared_ptr<CreditDefaultSwap>(
-            new CreditDefaultSwap(Protection::Buyer, 100000000.0, 0.01, sched,
-                                  Following, Actual360(), true, true,
-                                  Date(22,October,2014), ext::shared_ptr<Claim>(),
-                                  Actual360(true), true));
+    ext::shared_ptr<CreditDefaultSwap> trade = ext::make_shared<CreditDefaultSwap>(
+        Protection::Buyer, 100000000.0, 0.01, sched, Following, Actual360(), true, true,
+        Date(22, October, 2014), ext::shared_ptr<Claim>(), Actual360(true), true);
 
     ext::shared_ptr<FixedRateCoupon> cp = ext::dynamic_pointer_cast<FixedRateCoupon>(trade->coupons()[0]);
     std::cout << "first period = " << cp->accrualStartDate() << " to " << cp->accrualEndDate() <<

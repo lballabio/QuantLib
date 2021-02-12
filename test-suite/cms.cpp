@@ -22,23 +22,24 @@
 
 #include "cms.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/swap.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/conundrumpricer.hpp>
+#include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/swap/euriborswap.hpp>
-#include <ql/cashflows/capflooredcoupon.hpp>
-#include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/lineartsrpricer.hpp>
+#include <ql/instruments/makecms.hpp>
+#include <ql/instruments/swap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/instruments/makecms.hpp>
+#include <memory>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -226,19 +227,10 @@ namespace cms_test {
             // FIXME
             bool isAtmCalibrated = false;
 
-            SabrVolCube1 = Handle<SwaptionVolatilityStructure>(
-                ext::shared_ptr<SwaptionVolCube1>(new
-                    SwaptionVolCube1(atmVol,
-                                     optionTenors,
-                                     swapTenors,
-                                     strikeSpreads,
-                                     volSpreads,
-                                     swapIndexBase,
-                                     shortSwapIndexBase,
-                                     vegaWeightedSmileFit,
-                                     guess,
-                                     isParameterFixed,
-                                     isAtmCalibrated)));
+            SabrVolCube1 = Handle<SwaptionVolatilityStructure>(ext::make_shared<SwaptionVolCube1>(
+                atmVol, optionTenors, swapTenors, strikeSpreads, volSpreads, swapIndexBase,
+                shortSwapIndexBase, vegaWeightedSmileFit, guess, isParameterFixed,
+                isAtmCalibrated));
             SabrVolCube1->enableExtrapolation();
 
             yieldCurveModels.clear();

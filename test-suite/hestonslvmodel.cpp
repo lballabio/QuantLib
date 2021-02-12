@@ -20,78 +20,76 @@
 
 #include "hestonslvmodel.hpp"
 #include "utilities.hpp"
-
-#include <iomanip>
-
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
+#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
+#include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
+#include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
+#include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
+#include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
+#include <ql/experimental/models/hestonslvfdmmodel.hpp>
+#include <ql/experimental/models/hestonslvmcmodel.hpp>
+#include <ql/experimental/processes/hestonslvprocess.hpp>
+#include <ql/functional.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
-#include <ql/models/equity/hestonmodelhelper.hpp>
-#include <ql/processes/hestonprocess.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
-#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
-#include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
-#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
-#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
-#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
-#include <ql/pricingengines/forward/forwardengine.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
+#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
-#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
-#include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
-#include <ql/experimental/models/hestonslvfdmmodel.hpp>
-#include <ql/experimental/models/hestonslvmcmodel.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
-#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
-#include <ql/experimental/processes/hestonslvprocess.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/functional.hpp>
-
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/models/equity/hestonmodelhelper.hpp>
+#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
+#include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
+#include <ql/pricingengines/forward/forwardengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>
+#include <iomanip>
+#include <memory>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
@@ -1909,9 +1907,9 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
     const ext::shared_ptr<Exercise> exercise
         = ext::make_shared<EuropeanExercise>(exerciseDate);
 
-    const ext::shared_ptr<HestonProcess> mixingProcess
-        = ext::shared_ptr<HestonProcess>(new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
-                                                           HestonProcess::QuadraticExponentialMartingale));
+    const ext::shared_ptr<HestonProcess> mixingProcess =
+        ext::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
+                                        HestonProcess::QuadraticExponentialMartingale);
     const ext::shared_ptr<HestonModel> mixingModel
         = ext::make_shared<HestonModel>(mixingProcess);
 
