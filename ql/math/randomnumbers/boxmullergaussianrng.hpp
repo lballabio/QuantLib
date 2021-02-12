@@ -83,10 +83,10 @@ namespace QuantLib {
             weight_ = firstWeight_*secondWeight_;
 
             returnFirst_ = false;
-            return sample_type(firstValue_,weight_);
+            return {firstValue_, weight_};
         } else {
             returnFirst_ = true;
-            return sample_type(secondValue_,weight_);
+            return {secondValue_, weight_};
         }
     }
 
