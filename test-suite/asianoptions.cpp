@@ -1496,14 +1496,14 @@ void AsianOptionTest::testPastFixings() {
     Real price1a = option1a.NPV();
     Real price2a = option2a.NPV();
 
-    if (not close(price1, price1a)) {
+    if (std::fabs(price1 - price1a) > 1e-8) {
         BOOST_ERROR(
              "Unseasoned option prices do not match in old and new interface"
              << "\n  Old Interface: " << price1
              << "\n  New Interface: " << price1a);
     }
 
-    if (not close(price2, price2a)) {
+    if (std::fabs(price2 - price2a) > 1e-8) {
         BOOST_ERROR(
              "Seasoned option prices do not match in old and new interface"
              << "\n  Old Interface: " << price2
