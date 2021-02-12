@@ -203,8 +203,8 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (Size j = 0; j < beta.size(); ++j)
-                beta[j] = CmsMarketCalibration::betaTransformDirect(beta[j]);
+            for (double& j : beta)
+                j = CmsMarketCalibration::betaTransformDirect(j);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         Real meanReversion =
@@ -230,8 +230,8 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (Size j = 0; j < beta.size(); ++j)
-                beta[j] = CmsMarketCalibration::betaTransformDirect(beta[j]);
+            for (double& j : beta)
+                j = CmsMarketCalibration::betaTransformDirect(j);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
         cmsMarket_->reprice(volCube_, fixedMeanReversion_ == Null<Real>() ?

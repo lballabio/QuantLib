@@ -40,8 +40,8 @@ namespace QuantLib {
         Real sum = runningSum_;
         Size fixings = pastFixings_ + fixingIndices_.size();
 
-        for (Size i=0; i<fixingIndices_.size(); i++) {
-            sum += path[fixingIndices_[i]];
+        for (unsigned long fixingIndice : fixingIndices_) {
+            sum += path[fixingIndice];
         }
 
         Real averagePrice = sum/fixings;

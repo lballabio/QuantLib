@@ -188,8 +188,8 @@ namespace QuantLib {
 
     inline Observer::Observer(const Observer& o)
     : observables_(o.observables_) {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->registerObserver(this);
+        for (const auto& observable : observables_)
+            observable->registerObserver(this);
     }
 
     inline Observer& Observer::operator=(const Observer& o) {
@@ -203,8 +203,8 @@ namespace QuantLib {
     }
 
     inline Observer::~Observer() {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(this);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
     }
 
     inline std::pair<Observer::iterator, bool>
@@ -233,8 +233,8 @@ namespace QuantLib {
     }
 
     inline void Observer::unregisterWithAll() {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(this);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
         observables_.clear();
     }
 

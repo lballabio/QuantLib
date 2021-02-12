@@ -226,9 +226,12 @@ namespace inflation_volatility_test {
         cStrikesEU.clear();
         fStrikesEU.clear();
         cfMaturitiesEU.clear();
-        for(Size i = 0; i < ncStrikesEU; i++) cStrikesEU.push_back(capStrikesEU[i]);
-        for(Size i = 0; i < nfStrikesEU; i++) fStrikesEU.push_back(floorStrikesEU[i]);
-        for(Size i = 0; i < ncfMaturitiesEU; i++) cfMaturitiesEU.push_back(capMaturitiesEU[i]);
+        for (double& i : capStrikesEU)
+            cStrikesEU.push_back(i);
+        for (double& i : floorStrikesEU)
+            fStrikesEU.push_back(i);
+        for (auto& i : capMaturitiesEU)
+            cfMaturitiesEU.push_back(i);
         ext::shared_ptr<Matrix> tcPriceEU(new Matrix(ncStrikesEU, ncfMaturitiesEU));
         ext::shared_ptr<Matrix> tfPriceEU(new Matrix(nfStrikesEU, ncfMaturitiesEU));
         for(Size i = 0; i < ncStrikesEU; i++) {

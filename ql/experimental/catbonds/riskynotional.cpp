@@ -50,9 +50,9 @@ namespace QuantLib
     void DigitalNotionalRisk::updatePath(const std::vector<std::pair<Date, Real> >  &events, 
                                          NotionalPath &path) const {
         path.reset();
-        for(size_t i=0; i<events.size(); ++i) {
-            if(events[i].second>=threshold_) {
-                path.addReduction(paymentOffset_->paymentDate(events[i].first), Rate(0.0));
+        for (const auto& event : events) {
+            if (event.second >= threshold_) {
+                path.addReduction(paymentOffset_->paymentDate(event.first), Rate(0.0));
             }
         }
     }

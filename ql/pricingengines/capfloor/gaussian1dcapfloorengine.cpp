@@ -25,10 +25,8 @@ namespace QuantLib {
 
     void Gaussian1dCapFloorEngine::calculate() const {
 
-        for (Size i = 0; i < arguments_.spreads.size(); i++)
-            QL_REQUIRE(arguments_.spreads[i] == 0.0,
-                       "Non zero spreads (" << arguments_.spreads[i]
-                                            << ") are not allowed.");
+        for (double spread : arguments_.spreads)
+            QL_REQUIRE(spread == 0.0, "Non zero spreads (" << spread << ") are not allowed.");
 
         Size optionlets = arguments_.startDates.size();
         std::vector<Real> values(optionlets, 0.0);

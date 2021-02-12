@@ -163,8 +163,8 @@ int main(int, char* []) {
         };
 
         std::vector< ext::shared_ptr<SimpleQuote> > quote;
-        for (Size i=0; i<numberOfBonds; i++) {
-            ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(marketQuotes[i]));
+        for (double marketQuote : marketQuotes) {
+            ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(marketQuote));
             quote.push_back(cp);
         }
 

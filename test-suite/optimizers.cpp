@@ -213,8 +213,8 @@ namespace {
     Real maxDifference(const Array& a, const Array& b) {
         Array diff = a-b;
         Real maxDiff = 0.0;
-        for (Size i=0; i<diff.size(); ++i)
-            maxDiff = std::max(maxDiff, std::fabs(diff[i]));
+        for (double i : diff)
+            maxDiff = std::max(maxDiff, std::fabs(i));
         return maxDiff;
     }
 
@@ -401,8 +401,8 @@ namespace {
         }
         Real value(const Array& x) const override {
             Real fx = 0.0;
-            for (Size i=0; i<x.size(); ++i) {
-                fx += std::floor(x[i])*std::floor(x[i]);
+            for (double i : x) {
+                fx += std::floor(i) * std::floor(i);
             }
             return fx;
         }
@@ -435,8 +435,8 @@ namespace {
         }
         Real value(const Array& x) const override {
             Real fx = 0.0;
-            for (Size i=0; i<x.size(); ++i) {
-                fx += x[i]*x[i]/4000.0;
+            for (double i : x) {
+                fx += i * i / 4000.0;
             }
             Real p = 1.0;
             for (Size i=0; i<x.size(); ++i) {

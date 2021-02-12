@@ -93,8 +93,8 @@ namespace QuantLib {
         class Impl : public Constraint::Impl {
           public:
             bool test(const Array& params) const override {
-                for (Size i=0; i<params.size(); ++i) {
-                    if (params[i] <= 0.0)
+                for (double param : params) {
+                    if (param <= 0.0)
                         return false;
                 }
                 return true;
@@ -121,8 +121,8 @@ namespace QuantLib {
             Impl(Real low, Real high)
             : low_(low), high_(high) {}
             bool test(const Array& params) const override {
-                for (Size i=0; i<params.size(); i++) {
-                    if ((params[i] < low_) || (params[i] > high_))
+                for (double param : params) {
+                    if ((param < low_) || (param > high_))
                         return false;
                 }
                 return true;

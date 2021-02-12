@@ -114,102 +114,79 @@ void BondTest::testYield() {
     Rate yields[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
     Compounding compounding[] = { Compounded, Continuous };
 
-    for (Size i=0; i<LENGTH(issueMonths); i++) {
-      for (Size j=0; j<LENGTH(lengths); j++) {
-        for (Size k=0; k<LENGTH(coupons); k++) {
-          for (Size l=0; l<LENGTH(frequencies); l++) {
-            for (Size n=0; n<LENGTH(compounding); n++) {
+    for (int issueMonth : issueMonths) {
+        for (int length : lengths) {
+            for (double& coupon : coupons) {
+                for (auto& frequencie : frequencies) {
+                    for (auto& n : compounding) {
 
-              Date dated = vars.calendar.advance(vars.today,
-                                                 issueMonths[i], Months);
-              Date issue = dated;
-              Date maturity = vars.calendar.advance(issue,
-                                                    lengths[j], Years);
+                        Date dated = vars.calendar.advance(vars.today, issueMonth, Months);
+                        Date issue = dated;
+                        Date maturity = vars.calendar.advance(issue, length, Years);
 
-              Schedule sch(dated, maturity,
-                           Period(frequencies[l]), vars.calendar,
-                           accrualConvention, accrualConvention,
-                           DateGeneration::Backward, false);
+                        Schedule sch(dated, maturity, Period(frequencie), vars.calendar,
+                                     accrualConvention, accrualConvention, DateGeneration::Backward,
+                                     false);
 
-              FixedRateBond bond(settlementDays, vars.faceAmount, sch,
-                                 std::vector<Rate>(1, coupons[k]),
-                                 bondDayCount, paymentConvention,
-                                 redemption, issue);
+                        FixedRateBond bond(settlementDays, vars.faceAmount, sch,
+                                           std::vector<Rate>(1, coupon), bondDayCount,
+                                           paymentConvention, redemption, issue);
 
-              for (Size m=0; m<LENGTH(yields); m++) {
+                        for (double m : yields) {
 
-                Real price = BondFunctions::cleanPrice(bond, yields[m],
-                                                       bondDayCount,
-                                                       compounding[n],
-                                                       frequencies[l]);
+                            Real price =
+                                BondFunctions::cleanPrice(bond, m, bondDayCount, n, frequencie);
 
-                Rate calculated = BondFunctions::yield(bond, price,
-                                                       bondDayCount, compounding[n],
-                                                       frequencies[l],
-                                                       Date(),
-                                                       tolerance, maxEvaluations,
-                                                       0.05, Bond::Price::Clean);
+                            Rate calculated = BondFunctions::yield(
+                                bond, price, bondDayCount, n, frequencie, Date(), tolerance,
+                                maxEvaluations, 0.05, Bond::Price::Clean);
 
-                if (std::fabs(yields[m]-calculated) > tolerance) {
-                  // the difference might not matter
-                  Real price2 = BondFunctions::cleanPrice(bond, calculated,
-                                                          bondDayCount,
-                                                          compounding[n],
-                                                          frequencies[l]);
-                  if (std::fabs(price-price2)/price > tolerance) {
-                      BOOST_ERROR("\nyield recalculation failed:"
-                          "\n    issue:     " << issue <<
-                          "\n    maturity:  " << maturity <<
-                          "\n    coupon:    " << io::rate(coupons[k]) <<
-                          "\n    frequency: " << frequencies[l] <<
-                          "\n    yield:   " << io::rate(yields[m]) <<
-                          (compounding[n] == Compounded ?
-                                " compounded" : " continuous") <<
-                          std::setprecision(7) <<
-                          "\n    clean price:   " << price <<
-                          "\n    yield': " << io::rate(calculated) <<
-                          "\n    clean price': " << price2);
-                  }
+                            if (std::fabs(m - calculated) > tolerance) {
+                                // the difference might not matter
+                                Real price2 = BondFunctions::cleanPrice(
+                                    bond, calculated, bondDayCount, n, frequencie);
+                                if (std::fabs(price - price2) / price > tolerance) {
+                                    BOOST_ERROR("\nyield recalculation failed:"
+                                                "\n    issue:     "
+                                                << issue << "\n    maturity:  " << maturity
+                                                << "\n    coupon:    " << io::rate(coupon)
+                                                << "\n    frequency: " << frequencie
+                                                << "\n    yield:   " << io::rate(m)
+                                                << (n == Compounded ? " compounded" : " continuous")
+                                                << std::setprecision(7) << "\n    clean price:   "
+                                                << price << "\n    yield': " << io::rate(calculated)
+                                                << "\n    clean price': " << price2);
+                                }
+                            }
+
+                            price = BondFunctions::dirtyPrice(bond, m, bondDayCount, n, frequencie);
+
+                            calculated = BondFunctions::yield(
+                                bond, price, bondDayCount, n, frequencie, Date(), tolerance,
+                                maxEvaluations, 0.05, Bond::Price::Dirty);
+
+                            if (std::fabs(m - calculated) > tolerance) {
+                                // the difference might not matter
+                                Real price2 = BondFunctions::dirtyPrice(
+                                    bond, calculated, bondDayCount, n, frequencie);
+                                if (std::fabs(price - price2) / price > tolerance) {
+                                    BOOST_ERROR("\nyield recalculation failed:"
+                                                "\n    issue:     "
+                                                << issue << "\n    maturity:  " << maturity
+                                                << "\n    coupon:    " << io::rate(coupon)
+                                                << "\n    frequency: " << frequencie
+                                                << "\n    yield:   " << io::rate(m)
+                                                << (n == Compounded ? " compounded" : " continuous")
+                                                << std::setprecision(7) << "\n    dirty price:   "
+                                                << price << "\n    yield': " << io::rate(calculated)
+                                                << "\n    dirty price': " << price2);
+                                }
+                            }
+                        }
+                    }
                 }
-
-                price = BondFunctions::dirtyPrice(bond, yields[m],
-                                                  bondDayCount,
-                                                  compounding[n],
-                                                  frequencies[l]);
-
-                calculated = BondFunctions::yield(bond, price,
-                                                  bondDayCount, compounding[n],
-                                                  frequencies[l],
-                                                  Date(),
-                                                  tolerance, maxEvaluations,
-                                                  0.05, Bond::Price::Dirty);
-
-                if (std::fabs(yields[m]-calculated) > tolerance) {
-                  // the difference might not matter
-                  Real price2 = BondFunctions::dirtyPrice(bond, calculated,
-                                                          bondDayCount,
-                                                          compounding[n],
-                                                          frequencies[l]);
-                  if (std::fabs(price-price2)/price > tolerance) {
-                      BOOST_ERROR("\nyield recalculation failed:"
-                          "\n    issue:     " << issue <<
-                          "\n    maturity:  " << maturity <<
-                          "\n    coupon:    " << io::rate(coupons[k]) <<
-                          "\n    frequency: " << frequencies[l] <<
-                          "\n    yield:   " << io::rate(yields[m]) <<
-                          (compounding[n] == Compounded ?
-                                " compounded" : " continuous") <<
-                          std::setprecision(7) <<
-                          "\n    dirty price:   " << price <<
-                          "\n    yield': " << io::rate(calculated) <<
-                          "\n    dirty price': " << price2);
-                  }
-                }
-              }
             }
-          }
         }
-      }
     }
 }
 
@@ -235,48 +212,41 @@ void BondTest::testAtmRate() {
     Handle<YieldTermStructure> disc(flatRate(vars.today,0.03,Actual360()));
     ext::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(disc));
 
-    for (Size i=0; i<LENGTH(issueMonths); i++) {
-      for (Size j=0; j<LENGTH(lengths); j++) {
-        for (Size k=0; k<LENGTH(coupons); k++) {
-          for (Size l=0; l<LENGTH(frequencies); l++) {
-            Date dated = vars.calendar.advance(vars.today,
-                                               issueMonths[i], Months);
-            Date issue = dated;
-            Date maturity = vars.calendar.advance(issue,
-                                                  lengths[j], Years);
+    for (int issueMonth : issueMonths) {
+        for (int length : lengths) {
+            for (double& coupon : coupons) {
+                for (auto& frequencie : frequencies) {
+                    Date dated = vars.calendar.advance(vars.today, issueMonth, Months);
+                    Date issue = dated;
+                    Date maturity = vars.calendar.advance(issue, length, Years);
 
-            Schedule sch(dated, maturity,
-                         Period(frequencies[l]), vars.calendar,
-                         accrualConvention, accrualConvention,
-                         DateGeneration::Backward, false);
+                    Schedule sch(dated, maturity, Period(frequencie), vars.calendar,
+                                 accrualConvention, accrualConvention, DateGeneration::Backward,
+                                 false);
 
-            FixedRateBond bond(settlementDays, vars.faceAmount, sch,
-                             std::vector<Rate>(1, coupons[k]),
-                             bondDayCount, paymentConvention,
-                             redemption, issue);
+                    FixedRateBond bond(settlementDays, vars.faceAmount, sch,
+                                       std::vector<Rate>(1, coupon), bondDayCount,
+                                       paymentConvention, redemption, issue);
 
-            bond.setPricingEngine(bondEngine);
-            Real price = bond.cleanPrice();
-            Rate calculated = BondFunctions::atmRate(bond,
-                                                     **disc,
-                                                     bond.settlementDate(),
-                                                     price);
+                    bond.setPricingEngine(bondEngine);
+                    Real price = bond.cleanPrice();
+                    Rate calculated =
+                        BondFunctions::atmRate(bond, **disc, bond.settlementDate(), price);
 
-            if (std::fabs(coupons[k]-calculated) > tolerance) {
-                BOOST_ERROR("\natm rate recalculation failed:"
-                      "\n today:           " << vars.today <<
-                      "\n settlement date: " << bond.settlementDate() <<
-                      "\n issue:           " << issue <<
-                      "\n maturity:        " << maturity <<
-                      "\n coupon:          " << io::rate(coupons[k]) <<
-                      "\n frequency:       " << frequencies[l] <<
-                      "\n clean price:     " << price <<
-                      "\n dirty price:     " << price + bond.accruedAmount() <<
-                      "\n atm rate:        " << io::rate(calculated));
+                    if (std::fabs(coupon - calculated) > tolerance) {
+                        BOOST_ERROR("\natm rate recalculation failed:"
+                                    "\n today:           "
+                                    << vars.today << "\n settlement date: " << bond.settlementDate()
+                                    << "\n issue:           " << issue << "\n maturity:        "
+                                    << maturity << "\n coupon:          " << io::rate(coupon)
+                                    << "\n frequency:       " << frequencie
+                                    << "\n clean price:     " << price
+                                    << "\n dirty price:     " << price + bond.accruedAmount()
+                                    << "\n atm rate:        " << io::rate(calculated));
+                    }
+                }
             }
-          }
         }
-      }
     }
 }
 
@@ -307,71 +277,55 @@ void BondTest::testZspread() {
     Spread spreads[] = { -0.01, -0.005, 0.0, 0.005, 0.01 };
     Compounding compounding[] = { Compounded, Continuous };
 
-    for (Size i=0; i<LENGTH(issueMonths); i++) {
-      for (Size j=0; j<LENGTH(lengths); j++) {
-        for (Size k=0; k<LENGTH(coupons); k++) {
-          for (Size l=0; l<LENGTH(frequencies); l++) {
-            for (Size n=0; n<LENGTH(compounding); n++) {
+    for (int issueMonth : issueMonths) {
+        for (int length : lengths) {
+            for (double& coupon : coupons) {
+                for (auto& frequencie : frequencies) {
+                    for (auto& n : compounding) {
 
-              Date dated = vars.calendar.advance(vars.today,
-                                                 issueMonths[i], Months);
-              Date issue = dated;
-              Date maturity = vars.calendar.advance(issue,
-                                                    lengths[j], Years);
+                        Date dated = vars.calendar.advance(vars.today, issueMonth, Months);
+                        Date issue = dated;
+                        Date maturity = vars.calendar.advance(issue, length, Years);
 
-              Schedule sch(dated, maturity,
-                           Period(frequencies[l]), vars.calendar,
-                           accrualConvention, accrualConvention,
-                           DateGeneration::Backward, false);
+                        Schedule sch(dated, maturity, Period(frequencie), vars.calendar,
+                                     accrualConvention, accrualConvention, DateGeneration::Backward,
+                                     false);
 
-              FixedRateBond bond(settlementDays, vars.faceAmount, sch,
-                                 std::vector<Rate>(1, coupons[k]),
-                                 bondDayCount, paymentConvention,
-                                 redemption, issue);
+                        FixedRateBond bond(settlementDays, vars.faceAmount, sch,
+                                           std::vector<Rate>(1, coupon), bondDayCount,
+                                           paymentConvention, redemption, issue);
 
-              for (Size m=0; m<LENGTH(spreads); m++) {
+                        for (double spread : spreads) {
 
-                Real price = BondFunctions::cleanPrice(bond, *discountCurve,
-                                                   spreads[m],
-                                                   bondDayCount,
-                                                   compounding[n],
-                                                   frequencies[l]);
-                Spread calculated = BondFunctions::zSpread(bond, price,
-                                                           *discountCurve,
-                                                           bondDayCount,
-                                                           compounding[n],
-                                                           frequencies[l],
-                                                           Date(),
-                                                           tolerance,
-                                                           maxEvaluations);
+                            Real price = BondFunctions::cleanPrice(bond, *discountCurve, spread,
+                                                                   bondDayCount, n, frequencie);
+                            Spread calculated = BondFunctions::zSpread(
+                                bond, price, *discountCurve, bondDayCount, n, frequencie, Date(),
+                                tolerance, maxEvaluations);
 
-                if (std::fabs(spreads[m]-calculated) > tolerance) {
-                  // the difference might not matter
-                  Real price2 = BondFunctions::cleanPrice(bond, *discountCurve,
-                                                      calculated,
-                                                      bondDayCount,
-                                                      compounding[n],
-                                                      frequencies[l]);
-                  if (std::fabs(price-price2)/price > tolerance) {
-                      BOOST_ERROR("\nZ-spread recalculation failed:"
-                          "\n    issue:     " << issue <<
-                          "\n    maturity:  " << maturity <<
-                          "\n    coupon:    " << io::rate(coupons[k]) <<
-                          "\n    frequency: " << frequencies[l] <<
-                          "\n    Z-spread:  " << io::rate(spreads[m]) <<
-                          (compounding[n] == Compounded ?
-                                " compounded" : " continuous") <<
-                          std::setprecision(7) <<
-                          "\n    price:     " << price <<
-                          "\n    Z-spread': " << io::rate(calculated) <<
-                          "\n    price':    " << price2);
-                  }
+                            if (std::fabs(spread - calculated) > tolerance) {
+                                // the difference might not matter
+                                Real price2 = BondFunctions::cleanPrice(
+                                    bond, *discountCurve, calculated, bondDayCount, n, frequencie);
+                                if (std::fabs(price - price2) / price > tolerance) {
+                                    BOOST_ERROR("\nZ-spread recalculation failed:"
+                                                "\n    issue:     "
+                                                << issue << "\n    maturity:  " << maturity
+                                                << "\n    coupon:    " << io::rate(coupon)
+                                                << "\n    frequency: " << frequencie
+                                                << "\n    Z-spread:  " << io::rate(spread)
+                                                << (n == Compounded ? " compounded" : " continuous")
+                                                << std::setprecision(7)
+                                                << "\n    price:     " << price
+                                                << "\n    Z-spread': " << io::rate(calculated)
+                                                << "\n    price':    " << price2);
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
     }
 }
 
@@ -399,73 +353,61 @@ void BondTest::testTheoretical() {
 
     Rate yields[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
-    for (Size j=0; j<LENGTH(lengths); j++) {
-      for (Size k=0; k<LENGTH(coupons); k++) {
-        for (Size l=0; l<LENGTH(frequencies); l++) {
+    for (unsigned long length : lengths) {
+        for (double& coupon : coupons) {
+            for (auto& frequencie : frequencies) {
 
-            Date dated = vars.today;
-            Date issue = dated;
-            Date maturity = vars.calendar.advance(issue, lengths[j], Years);
+                Date dated = vars.today;
+                Date issue = dated;
+                Date maturity = vars.calendar.advance(issue, length, Years);
 
-            ext::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
-            Handle<YieldTermStructure> discountCurve(flatRate(vars.today,
-                                                              rate,
-                                                              bondDayCount));
+                ext::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
+                Handle<YieldTermStructure> discountCurve(flatRate(vars.today, rate, bondDayCount));
 
-            Schedule sch(dated, maturity,
-                         Period(frequencies[l]), vars.calendar,
-                         accrualConvention, accrualConvention,
-                         DateGeneration::Backward, false);
+                Schedule sch(dated, maturity, Period(frequencie), vars.calendar, accrualConvention,
+                             accrualConvention, DateGeneration::Backward, false);
 
-            FixedRateBond bond(settlementDays, vars.faceAmount, sch,
-                               std::vector<Rate>(1, coupons[k]),
-                               bondDayCount, paymentConvention,
-                               redemption, issue);
+                FixedRateBond bond(settlementDays, vars.faceAmount, sch,
+                                   std::vector<Rate>(1, coupon), bondDayCount, paymentConvention,
+                                   redemption, issue);
 
-            ext::shared_ptr<PricingEngine> bondEngine(
-                                    new DiscountingBondEngine(discountCurve));
-            bond.setPricingEngine(bondEngine);
+                ext::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(discountCurve));
+                bond.setPricingEngine(bondEngine);
 
-            for (Size m=0; m<LENGTH(yields); m++) {
+                for (double m : yields) {
 
-                rate->setValue(yields[m]);
+                    rate->setValue(m);
 
-                Real price = BondFunctions::cleanPrice(bond, yields[m],
-                                                 bondDayCount, Continuous,
-                                                 frequencies[l]);
-                Real calculatedPrice = bond.cleanPrice();
+                    Real price =
+                        BondFunctions::cleanPrice(bond, m, bondDayCount, Continuous, frequencie);
+                    Real calculatedPrice = bond.cleanPrice();
 
-                if (std::fabs(price-calculatedPrice) > tolerance) {
-                    BOOST_ERROR("price calculation failed:" <<
-                        "\n    issue:     " << issue <<
-                        "\n    maturity:  " << maturity <<
-                        "\n    coupon:    " << io::rate(coupons[k]) <<
-                        "\n    frequency: " << frequencies[l] <<
-                        "\n    yield:  " << io::rate(yields[m]) <<
-                        std::setprecision(7) <<
-                        "\n    expected:    " << price <<
-                        "\n    calculated': " << calculatedPrice <<
-                        "\n    error':      " << price-calculatedPrice);
-                }
+                    if (std::fabs(price - calculatedPrice) > tolerance) {
+                        BOOST_ERROR("price calculation failed:"
+                                    << "\n    issue:     " << issue << "\n    maturity:  "
+                                    << maturity << "\n    coupon:    " << io::rate(coupon)
+                                    << "\n    frequency: " << frequencie
+                                    << "\n    yield:  " << io::rate(m) << std::setprecision(7)
+                                    << "\n    expected:    " << price
+                                    << "\n    calculated': " << calculatedPrice
+                                    << "\n    error':      " << price - calculatedPrice);
+                    }
 
-                Rate calculatedYield = BondFunctions::yield(bond, calculatedPrice,
-                    bondDayCount, Continuous, frequencies[l],
-                    bond.settlementDate(),
-                    tolerance, maxEvaluations);
-                if (std::fabs(yields[m]-calculatedYield) > tolerance) {
-                    BOOST_ERROR("yield calculation failed:" <<
-                        "\n    issue:     " << issue <<
-                        "\n    maturity:  " << maturity <<
-                        "\n    coupon:    " << io::rate(coupons[k]) <<
-                        "\n    frequency: " << frequencies[l] <<
-                        "\n    yield:  " << io::rate(yields[m]) <<
-                        std::setprecision(7) <<
-                        "\n    price:  " << price <<
-                        "\n    yield': " << io::rate(calculatedYield));
+                    Rate calculatedYield = BondFunctions::yield(
+                        bond, calculatedPrice, bondDayCount, Continuous, frequencie,
+                        bond.settlementDate(), tolerance, maxEvaluations);
+                    if (std::fabs(m - calculatedYield) > tolerance) {
+                        BOOST_ERROR("yield calculation failed:"
+                                    << "\n    issue:     " << issue << "\n    maturity:  "
+                                    << maturity << "\n    coupon:    " << io::rate(coupon)
+                                    << "\n    frequency: " << frequencie
+                                    << "\n    yield:  " << io::rate(m) << std::setprecision(7)
+                                    << "\n    price:  " << price
+                                    << "\n    yield': " << io::rate(calculatedYield));
+                    }
                 }
             }
         }
-      }
     }
 }
 
@@ -1273,39 +1215,28 @@ void BondTest::testExCouponGilt() {
           5.8901860, 43.7239438 }
     };
 
-    for (Size i=0; i<LENGTH(cases); ++i) {
-        Real accrued = bond.accruedAmount(cases[i].settlementDate);
-        ASSERT_CLOSE("accrued amount", cases[i].settlementDate,
-                     accrued, cases[i].accruedAmount, 1e-6);
-        
-        Real npv = cases[i].testPrice + accrued;
-        ASSERT_CLOSE("NPV", cases[i].settlementDate,
-                     npv, cases[i].NPV, 1e-6);
+    for (auto& i : cases) {
+        Real accrued = bond.accruedAmount(i.settlementDate);
+        ASSERT_CLOSE("accrued amount", i.settlementDate, accrued, i.accruedAmount, 1e-6);
 
-        Rate yield = CashFlows::yield(leg, npv, dc, comp, freq,
-                                      false, cases[i].settlementDate);
-        ASSERT_CLOSE("yield", cases[i].settlementDate,
-                     yield, cases[i].yield, 1e-6);
+        Real npv = i.testPrice + accrued;
+        ASSERT_CLOSE("NPV", i.settlementDate, npv, i.NPV, 1e-6);
 
-        Time duration = CashFlows::duration(leg, yield, dc, comp, freq,
-                                            Duration::Modified, false,
-                                            cases[i].settlementDate);
-        ASSERT_CLOSE("duration", cases[i].settlementDate,
-                     duration, cases[i].duration, 1e-6);
+        Rate yield = CashFlows::yield(leg, npv, dc, comp, freq, false, i.settlementDate);
+        ASSERT_CLOSE("yield", i.settlementDate, yield, i.yield, 1e-6);
 
-        Real convexity = CashFlows::convexity(leg, yield, dc, comp, freq,
-                                              false, cases[i].settlementDate);
-        ASSERT_CLOSE("convexity", cases[i].settlementDate,
-                     convexity, cases[i].convexity, 1e-6);
+        Time duration = CashFlows::duration(leg, yield, dc, comp, freq, Duration::Modified, false,
+                                            i.settlementDate);
+        ASSERT_CLOSE("duration", i.settlementDate, duration, i.duration, 1e-6);
 
-        Real calcnpv = CashFlows::npv(leg, yield, dc, comp, freq,
-                                      false, cases[i].settlementDate);
-        ASSERT_CLOSE("NPV from yield", cases[i].settlementDate,
-                     calcnpv, cases[i].NPV, 1e-6);
-        
+        Real convexity = CashFlows::convexity(leg, yield, dc, comp, freq, false, i.settlementDate);
+        ASSERT_CLOSE("convexity", i.settlementDate, convexity, i.convexity, 1e-6);
+
+        Real calcnpv = CashFlows::npv(leg, yield, dc, comp, freq, false, i.settlementDate);
+        ASSERT_CLOSE("NPV from yield", i.settlementDate, calcnpv, i.NPV, 1e-6);
+
         Real calcprice = calcnpv - accrued;
-        ASSERT_CLOSE("price from yield", cases[i].settlementDate,
-                     calcprice, cases[i].testPrice, 1e-6);
+        ASSERT_CLOSE("price from yield", i.settlementDate, calcprice, i.testPrice, 1e-6);
     }
 }
 
@@ -1413,39 +1344,28 @@ void BondTest::testExCouponAustralianBond() {
           2.31732, 6.68407 }
     };
 
-    for (Size i=0; i<LENGTH(cases); ++i) {
-        Real accrued = bond.accruedAmount(cases[i].settlementDate);
-        ASSERT_CLOSE("accrued amount", cases[i].settlementDate,
-                     accrued, cases[i].accruedAmount, 1e-3);
-        
-        Real npv = cases[i].testPrice + accrued;
-        ASSERT_CLOSE("NPV", cases[i].settlementDate,
-                     npv, cases[i].NPV, 1e-3);
+    for (auto& i : cases) {
+        Real accrued = bond.accruedAmount(i.settlementDate);
+        ASSERT_CLOSE("accrued amount", i.settlementDate, accrued, i.accruedAmount, 1e-3);
 
-        Rate yield = CashFlows::yield(leg, npv, dc, comp, freq,
-                                      false, cases[i].settlementDate);
-        ASSERT_CLOSE("yield", cases[i].settlementDate,
-                     yield, cases[i].yield, 1e-5);
+        Real npv = i.testPrice + accrued;
+        ASSERT_CLOSE("NPV", i.settlementDate, npv, i.NPV, 1e-3);
 
-        Time duration = CashFlows::duration(leg, yield, dc, comp, freq,
-                                            Duration::Modified, false,
-                                            cases[i].settlementDate);
-        ASSERT_CLOSE("duration", cases[i].settlementDate,
-                     duration, cases[i].duration, 1e-5);
+        Rate yield = CashFlows::yield(leg, npv, dc, comp, freq, false, i.settlementDate);
+        ASSERT_CLOSE("yield", i.settlementDate, yield, i.yield, 1e-5);
 
-        Real convexity = CashFlows::convexity(leg, yield, dc, comp, freq,
-                                              false, cases[i].settlementDate);
-        ASSERT_CLOSE("convexity", cases[i].settlementDate,
-                     convexity, cases[i].convexity, 1e-4);
+        Time duration = CashFlows::duration(leg, yield, dc, comp, freq, Duration::Modified, false,
+                                            i.settlementDate);
+        ASSERT_CLOSE("duration", i.settlementDate, duration, i.duration, 1e-5);
 
-        Real calcnpv = CashFlows::npv(leg, yield, dc, comp, freq,
-                                      false, cases[i].settlementDate);
-        ASSERT_CLOSE("NPV from yield", cases[i].settlementDate,
-                     calcnpv, cases[i].NPV, 1e-3);
-        
+        Real convexity = CashFlows::convexity(leg, yield, dc, comp, freq, false, i.settlementDate);
+        ASSERT_CLOSE("convexity", i.settlementDate, convexity, i.convexity, 1e-4);
+
+        Real calcnpv = CashFlows::npv(leg, yield, dc, comp, freq, false, i.settlementDate);
+        ASSERT_CLOSE("NPV from yield", i.settlementDate, calcnpv, i.NPV, 1e-3);
+
         Real calcprice = calcnpv - accrued;
-        ASSERT_CLOSE("price from yield", cases[i].settlementDate,
-                     calcprice, cases[i].testPrice, 1e-3);
+        ASSERT_CLOSE("price from yield", i.settlementDate, calcprice, i.testPrice, 1e-3);
     }
 }
 

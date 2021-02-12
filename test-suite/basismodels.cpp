@@ -66,11 +66,12 @@ namespace {
                                       const Real spread = 0.0) {
         Date today = Settings::instance().evaluationDate();
         std::vector<Date> dates;
-        for (Size k = 0; k < terms.size(); ++k)
-            dates.push_back(NullCalendar().advance(today, terms[k], Unadjusted));
+        dates.reserve(terms.size());
+        for (auto term : terms)
+            dates.push_back(NullCalendar().advance(today, term, Unadjusted));
         std::vector<Real> ratesPlusSpread(rates);
-        for (Size k = 0; k < ratesPlusSpread.size(); ++k)
-            ratesPlusSpread[k] += spread;
+        for (double& k : ratesPlusSpread)
+            k += spread;
         ext::shared_ptr<YieldTermStructure> ts =
             ext::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
                 dates, ratesPlusSpread, Actual365Fixed(), NullCalendar()));
@@ -111,8 +112,9 @@ namespace {
     Handle<OptionletVolatilityStructure> getOptionletTS() {
         Date today = Settings::instance().evaluationDate();
         std::vector<Date> dates;
-        for (Size k = 0; k < capletTerms.size(); ++k)
-            dates.push_back(TARGET().advance(today, capletTerms[k], Following));
+        dates.reserve(capletTerms.size());
+        for (auto& capletTerm : capletTerms)
+            dates.push_back(TARGET().advance(today, capletTerm, Following));
         // set up vol data manually
         std::vector<std::vector<Real> > capletVols;
         capletVols.push_back(std::vector<Real>(cplRow01, cplRow01 + 8));
@@ -127,11 +129,11 @@ namespace {
         capletVols.push_back(std::vector<Real>(cplRow10, cplRow10 + 8));
         // create quotes
         std::vector<std::vector<Handle<Quote> > > capletVolQuotes;
-        for (Size i = 0; i < capletVols.size(); ++i) {
+        for (auto& capletVol : capletVols) {
             std::vector<Handle<Quote> > row;
-            for (Size j = 0; j < capletVols[i].size(); ++j)
-                row.push_back(RelinkableHandle<Quote>(
-                    ext::shared_ptr<Quote>(new SimpleQuote(capletVols[i][j]))));
+            row.reserve(capletVol.size());
+            for (double j : capletVol)
+                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             capletVolQuotes.push_back(row);
         }
         Handle<YieldTermStructure> curve3m = getYTS(terms, proj3mRates);
@@ -162,11 +164,11 @@ namespace {
         swaptionVols.push_back(std::vector<Real>(swtRow04, swtRow04 + 5));
         swaptionVols.push_back(std::vector<Real>(swtRow05, swtRow05 + 5));
         std::vector<std::vector<Handle<Quote> > > swaptionVolQuotes;
-        for (Size i = 0; i < swaptionVols.size(); ++i) {
+        for (auto& swaptionVol : swaptionVols) {
             std::vector<Handle<Quote> > row;
-            for (Size j = 0; j < swaptionVols[i].size(); ++j)
-                row.push_back(RelinkableHandle<Quote>(
-                    ext::shared_ptr<Quote>(new SimpleQuote(swaptionVols[i][j]))));
+            row.reserve(swaptionVol.size());
+            for (double j : swaptionVol)
+                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             swaptionVolQuotes.push_back(row);
         }
         ext::shared_ptr<SwaptionVolatilityStructure> tmp(
@@ -288,19 +290,19 @@ void BasismodelsTest::testTenoroptionletvts() {
         // now we can set up the new volTS and calculate volatilities
         ext::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
             new TenorOptionletVTS(optionletVTS3m, euribor3m, euribor6m, corr));
-        for (Size i = 0; i < capletTerms.size(); ++i) {
-            for (Size j = 0; j < capletStrikes.size(); ++j) {
-                Real vol3m = optionletVTS3m->volatility(capletTerms[i], capletStrikes[j], true);
-                Real vol6m = optionletVTS6m->volatility(capletTerms[i], capletStrikes[j], true);
+        for (auto& capletTerm : capletTerms) {
+            for (double& capletStrike : capletStrikes) {
+                Real vol3m = optionletVTS3m->volatility(capletTerm, capletStrike, true);
+                Real vol6m = optionletVTS6m->volatility(capletTerm, capletStrike, true);
                 Real vol6mShifted =
-                    optionletVTS6m->volatility(capletTerms[i], capletStrikes[j] + spread, true);
+                    optionletVTS6m->volatility(capletTerm, capletStrike + spread, true);
                 // De-correlation yields that larger tenor shifted vols are smaller then shorter
                 // tenor vols
                 if (vol6mShifted - vol3m >
                     0.0001) // we leave 1bp tolerance due to simplified spread calculation
                     BOOST_ERROR("Shifted 6m vol significantly larger then 3m vol at\n"
-                                << "expiry term: " << capletTerms[i]
-                                << ", strike: " << capletStrikes[j] << "\n"
+                                << "expiry term: " << capletTerm << ", strike: " << capletStrike
+                                << "\n"
                                 << "vol3m: " << vol3m << ", vol6m: " << vol6m
                                 << ", vol6mShifted: " << vol6mShifted << "\n");
             }
@@ -324,19 +326,19 @@ void BasismodelsTest::testTenoroptionletvts() {
         ext::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
             new TenorOptionletVTS(optionletVTS3m, euribor3m, euribor6m, corr));
         for (Size i = 0; i < capletTerms.size(); ++i) {
-            for (Size j = 0; j < capletStrikes.size(); ++j) {
-                Real vol3m = optionletVTS3m->volatility(capletTerms[i], capletStrikes[j], true);
-                Real vol6m = optionletVTS6m->volatility(capletTerms[i], capletStrikes[j], true);
+            for (double& capletStrike : capletStrikes) {
+                Real vol3m = optionletVTS3m->volatility(capletTerms[i], capletStrike, true);
+                Real vol6m = optionletVTS6m->volatility(capletTerms[i], capletStrike, true);
                 Real vol6mShifted =
-                    optionletVTS6m->volatility(capletTerms[i], capletStrikes[j] + spread, true);
+                    optionletVTS6m->volatility(capletTerms[i], capletStrike + spread, true);
                 // for perfect correlation shifted 6m vols should coincide with 3m vols
                 Real tol =
                     (i < 3) ? (0.001) :
                               (0.0001); // 10bp tol for smaller tenors and 1bp tol for larger tenors
                 if (fabs(vol6mShifted - vol3m) > tol)
                     BOOST_ERROR("Shifted 6m vol does not match 3m vol for perfect correlation at\n"
-                                << "expiry term: " << capletTerms[i]
-                                << ", strike: " << capletStrikes[j] << "\n"
+                                << "expiry term: " << capletTerms[i] << ", strike: " << capletStrike
+                                << "\n"
                                 << "vol3m: " << vol3m << ", vol6m: " << vol6m
                                 << ", vol6mShifted: " << vol6mShifted << "\n");
             }

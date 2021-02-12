@@ -82,15 +82,15 @@ namespace QuantLib {
         ext::shared_ptr<FloatingRateCouponPricer> arithmeticPricer(
                 new ArithmeticAveragedOvernightIndexedCouponPricer(mrs_, vol_, byApprox_));
 
-        for (Size i = 0; i < legs_[1].size(); i++) {
-            ext::shared_ptr<OvernightIndexedCoupon> 
-                c = ext::dynamic_pointer_cast<OvernightIndexedCoupon> (legs_[1][i]);
+        for (auto& i : legs_[1]) {
+            ext::shared_ptr<OvernightIndexedCoupon> c =
+                ext::dynamic_pointer_cast<OvernightIndexedCoupon>(i);
             c->setPricer(arithmeticPricer);
         }
 
         for (Size j=0; j<2; ++j) {
-            for (auto i = legs_[j].begin(); i != legs_[j].end(); ++i)
-                registerWith(*i);
+            for (auto& i : legs_[j])
+                registerWith(i);
         }
 
         switch (type_) {

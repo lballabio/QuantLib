@@ -47,9 +47,9 @@ namespace QuantLib {
             optionletStripper_->optionletStrikes(
                 0); // strikes are the same for all times ?!
         std::vector< Real > stddevs;
-        for (Size i = 0; i < optionletStrikes.size(); i++) {
-            stddevs.push_back(volatilityImpl(t, optionletStrikes[i]) *
-                              std::sqrt(t));
+        stddevs.reserve(optionletStrikes.size());
+        for (double optionletStrike : optionletStrikes) {
+            stddevs.push_back(volatilityImpl(t, optionletStrike) * std::sqrt(t));
         }
         // Extrapolation may be a problem with splines, but since minStrike()
         // and maxStrike() are set, we assume that no one will use stddevs for

@@ -36,10 +36,10 @@ namespace QuantLib {
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
         payer_[1] =  1.0;
-        for (auto i = legs_[0].begin(); i != legs_[0].end(); ++i)
-            registerWith(*i);
-        for (auto i = legs_[1].begin(); i != legs_[1].end(); ++i)
-            registerWith(*i);
+        for (auto& i : legs_[0])
+            registerWith(i);
+        for (auto& i : legs_[1])
+            registerWith(i);
     }
 
     Swap::Swap(const std::vector<Leg>& legs,
@@ -53,8 +53,8 @@ namespace QuantLib {
                    ") and legs (" << legs_.size() << ")");
         for (Size j=0; j<legs_.size(); ++j) {
             if (payer[j]) payer_[j]=-1.0;
-            for (auto i = legs_[j].begin(); i != legs_[j].end(); ++i)
-                registerWith(*i);
+            for (auto& i : legs_[j])
+                registerWith(i);
         }
     }
 
@@ -66,9 +66,9 @@ namespace QuantLib {
 
 
     bool Swap::isExpired() const {
-        for (Size j=0; j<legs_.size(); ++j) {
-            Leg::const_iterator i; 
-            for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
+        for (const auto& leg : legs_) {
+            Leg::const_iterator i;
+            for (i = leg.begin(); i != leg.end(); ++i)
                 if (!(*i)->hasOccurred())
                     return false;
         }
@@ -158,11 +158,9 @@ namespace QuantLib {
     }
 
     void Swap::deepUpdate() {
-        for (Size j = 0; j < legs_.size(); ++j) {
-            for (Size k = 0; k < legs_[j].size(); ++k) {
-                ext::shared_ptr<LazyObject> f =
-                    ext::dynamic_pointer_cast<LazyObject>(
-                        legs_[j][k]);
+        for (auto& leg : legs_) {
+            for (auto& k : leg) {
+                ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(k);
                 if (f != nullptr)
                     f->update();
             }

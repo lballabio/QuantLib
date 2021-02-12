@@ -190,12 +190,12 @@ namespace QuantLib {
 
             bool test(const Array& params) const override {
                 Size k=0;
-                for (Size i=0; i<arguments_.size(); i++) {
-                    Size size = arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    Size size = argument.size();
                     Array testParams(size);
                     for (Size j=0; j<size; j++, k++)
                         testParams[j] = params[k];
-                    if (!arguments_[i].testParams(testParams))
+                    if (!argument.testParams(testParams))
                         return false;
                 }
                 return true;
@@ -204,17 +204,16 @@ namespace QuantLib {
             Array upperBound(const Array& params) const override {
                 Size k = 0, k2 = 0;
                 Size totalSize = 0;
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    totalSize += arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    totalSize += argument.size();
                 }
                 Array result(totalSize);
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    Size size = arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    Size size = argument.size();
                     Array partialParams(size);
                     for (Size j = 0; j < size; j++, k++)
                         partialParams[j] = params[k];
-                    Array tmpBound =
-                        arguments_[i].constraint().upperBound(partialParams);
+                    Array tmpBound = argument.constraint().upperBound(partialParams);
                     for (Size j = 0; j < size; j++, k2++)
                         result[k2] = tmpBound[j];
                 }
@@ -224,17 +223,16 @@ namespace QuantLib {
             Array lowerBound(const Array& params) const override {
                 Size k = 0, k2 = 0;
                 Size totalSize = 0;
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    totalSize += arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    totalSize += argument.size();
                 }
                 Array result(totalSize);
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    Size size = arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    Size size = argument.size();
                     Array partialParams(size);
                     for (Size j = 0; j < size; j++, k++)
                         partialParams[j] = params[k];
-                    Array tmpBound =
-                        arguments_[i].constraint().lowerBound(partialParams);
+                    Array tmpBound = argument.constraint().lowerBound(partialParams);
                     for (Size j = 0; j < size; j++, k2++)
                         result[k2] = tmpBound[j];
                 }

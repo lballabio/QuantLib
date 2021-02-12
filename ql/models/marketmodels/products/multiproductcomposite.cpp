@@ -24,18 +24,16 @@ namespace QuantLib {
 
     Size MultiProductComposite::numberOfProducts() const {
         Size result = 0;
-        for (auto i = components_.begin(); i != components_.end(); ++i)
-            result += i->product->numberOfProducts();
+        for (const auto& component : components_)
+            result += component.product->numberOfProducts();
         return result;
     }
 
 
     Size MultiProductComposite::maxNumberOfCashFlowsPerProductPerStep() const {
         Size result = 0;
-        for (auto i = components_.begin(); i != components_.end(); ++i)
-            result = std::max(result,
-            i->product
-            ->maxNumberOfCashFlowsPerProductPerStep());
+        for (const auto& component : components_)
+            result = std::max(result, component.product->maxNumberOfCashFlowsPerProductPerStep());
         return result;
     }
 

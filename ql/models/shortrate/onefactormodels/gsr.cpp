@@ -170,11 +170,11 @@ void Gsr::initialize(Real T) {
     volatilityObserver_ = ext::make_shared<VolatilityObserver>(this);
     reversionObserver_ = ext::make_shared<ReversionObserver>(this);
 
-    for (Size i = 0; i < reversions_.size(); ++i)
-        reversionObserver_->registerWith(reversions_[i]);
+    for (auto& reversion : reversions_)
+        reversionObserver_->registerWith(reversion);
 
-    for (Size i = 0; i < volatilities_.size(); ++i)
-        volatilityObserver_->registerWith(volatilities_[i]);
+    for (auto& volatilitie : volatilities_)
+        volatilityObserver_->registerWith(volatilitie);
 }
 
 Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,

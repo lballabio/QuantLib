@@ -80,15 +80,15 @@ namespace QuantLib {
 
     inline TimeBasket& TimeBasket::operator+=(const TimeBasket& other) {
         super& self = *this;
-        for (auto j = other.begin(); j != other.end(); ++j)
-            self[j->first] += j->second;
+        for (auto j : other)
+            self[j.first] += j.second;
         return *this;
     }
 
     inline TimeBasket& TimeBasket::operator-=(const TimeBasket& other) {
         super& self = *this;
-        for (auto j = other.begin(); j != other.end(); ++j)
-            self[j->first] -= j->second;
+        for (auto j : other)
+            self[j.first] -= j.second;
         return *this;
     }
 

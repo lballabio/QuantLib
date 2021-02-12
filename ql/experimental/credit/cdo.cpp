@@ -53,8 +53,8 @@ namespace QuantLib {
 
         registerWith (yieldTS_);
         registerWith (copula_);
-        for (Size i = 0; i < basket_.size(); i++)
-            registerWith (basket_[i]);
+        for (auto& i : basket_)
+            registerWith(i);
 
         QL_REQUIRE (nominals_.size() <= basket_.size(),
                     "nominal vector size too large");

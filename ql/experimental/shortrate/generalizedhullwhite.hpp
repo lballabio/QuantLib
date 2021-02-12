@@ -189,10 +189,10 @@ namespace QuantLib {
 
             DayCounter dc = yieldtermStructure->dayCounter();
             Date ref = yieldtermStructure->referenceDate();
-            for (Size i=0;i<speedstructure.size();i++)
-                speedperiods_.push_back(dc.yearFraction(ref,speedstructure[i]));
-            for (Size i=0;i<volstructure.size();i++)
-                volperiods_.push_back(dc.yearFraction(ref,volstructure[i]));
+            for (auto i : speedstructure)
+                speedperiods_.push_back(dc.yearFraction(ref, i));
+            for (auto i : volstructure)
+                volperiods_.push_back(dc.yearFraction(ref, i));
 
             // interpolator x points to *periods_ vector, y points to
             // the internal Array in the parameter

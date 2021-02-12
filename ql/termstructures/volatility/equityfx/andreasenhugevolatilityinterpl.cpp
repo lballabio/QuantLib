@@ -240,10 +240,9 @@ namespace QuantLib {
         std::set<Date> expiries;
 
         calibrationSet_.reserve(calibrationSet.size());
-        for (Size i=0; i < calibrationSet.size(); ++i) {
+        for (const auto& i : calibrationSet) {
 
-            const ext::shared_ptr<Exercise> exercise =
-                calibrationSet[i].first->exercise();
+            const ext::shared_ptr<Exercise> exercise = i.first->exercise();
 
             QL_REQUIRE(exercise->type() == Exercise::European,
                     "European option required");
@@ -252,8 +251,7 @@ namespace QuantLib {
             expiries.insert(expiry);
 
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::dynamic_pointer_cast<PlainVanillaPayoff>(
-                    calibrationSet[i].first->payoff());
+                ext::dynamic_pointer_cast<PlainVanillaPayoff>(i.first->payoff());
 
             QL_REQUIRE(payoff, "plain vanilla payoff required");
 
@@ -261,12 +259,9 @@ namespace QuantLib {
             strikes.insert(strike);
 
             calibrationSet_.push_back(
-                std::make_pair(
-                    ext::make_shared<VanillaOption>(payoff, exercise),
-                    calibrationSet[i].second)
-            );
+                std::make_pair(ext::make_shared<VanillaOption>(payoff, exercise), i.second));
 
-            registerWith(calibrationSet[i].second);
+            registerWith(i.second);
         }
 
         strikes_.assign(strikes.begin(), strikes.end());

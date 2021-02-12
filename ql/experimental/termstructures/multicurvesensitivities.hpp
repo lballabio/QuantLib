@@ -76,10 +76,10 @@ public:
               ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
                   it->second.currentLink());
           QL_REQUIRE(curve != nullptr, "Couldn't cast curvename: " << it->first);
-          for (auto inst = curve->instruments_.begin(); inst != curve->instruments_.end(); ++inst) {
-              allQuotes_.push_back((*inst)->quote());
+          for (auto& instrument : curve->instruments_) {
+              allQuotes_.push_back(instrument->quote());
               std::stringstream tmp;
-              tmp << QuantLib::io::iso_date((*inst)->latestRelevantDate());
+              tmp << QuantLib::io::iso_date(instrument->latestRelevantDate());
               headers_.push_back(it->first + "_" + tmp.str());
           }
       }
@@ -108,10 +108,11 @@ private:
 inline void MultiCurveSensitivities::performCalculations() const {
   std::vector< Rate > sensiVector;
   origZeros_ = allZeros();
-  for (auto it = allQuotes_.begin(); it != allQuotes_.end(); ++it) {
+  for (const auto& allQuote : allQuotes_) {
       Rate bps = +1e-4;
-      Rate origQuote = (*it)->value();
-      ext::shared_ptr<SimpleQuote> q = ext::dynamic_pointer_cast<SimpleQuote>((*it).currentLink());
+      Rate origQuote = allQuote->value();
+      ext::shared_ptr<SimpleQuote> q =
+          ext::dynamic_pointer_cast<SimpleQuote>(allQuote.currentLink());
       q->setValue(origQuote + bps);
       try {
           std::vector<Rate> tmp(allZeros());
@@ -140,10 +141,10 @@ inline Matrix MultiCurveSensitivities::inverseSensitivities() const {
 
 inline std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const {
   std::vector< std::pair< Date, Real > > result;
-  for (auto it = curves_.begin(); it != curves_.end(); ++it) {
+  for (const auto& it : curves_) {
       ext::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
           ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
-              it->second.currentLink());
+              it.second.currentLink());
       result.reserve(result.size() + curve->nodes().size() - 1);
       for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1;
            p != curve->nodes().end(); ++p)

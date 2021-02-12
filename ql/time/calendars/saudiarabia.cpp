@@ -80,8 +80,8 @@ namespace QuantLib {
                                       (Date(20, July, 2021))
                                       (Date(10, July, 2022));
 
-            for (auto p = EidAlAdha.begin(); p != EidAlAdha.end(); ++p) {
-                if (d >= *p -1 && d <= *p + 4) {
+            for (auto& p : EidAlAdha) {
+                if (d >= p - 1 && d <= p + 4) {
                     return true;
                 }
             }
@@ -122,8 +122,8 @@ namespace QuantLib {
                                       (Date(26, Feb, 2028))
                                       (Date(14, Feb, 2029));
 
-            for (auto p = EidAlFitr.begin(); p != EidAlFitr.end(); ++p) {
-                if (d >= *p -1 && d <= *p + 4) {
+            for (auto& p : EidAlFitr) {
+                if (d >= p - 1 && d <= p + 4) {
                     return true;
                 }
             }

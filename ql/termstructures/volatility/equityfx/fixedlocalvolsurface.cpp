@@ -108,8 +108,8 @@ namespace QuantLib {
     void FixedLocalVolSurface::checkSurface() {
         QL_REQUIRE(times_.size()==localVolMatrix_->columns(),
                    "mismatch between date vector and vol matrix colums");
-        for (Size i=0; i < strikes_.size(); ++i) {
-            QL_REQUIRE(strikes_[i]->size() == localVolMatrix_->rows(),
+        for (const auto& strike : strikes_) {
+            QL_REQUIRE(strike->size() == localVolMatrix_->rows(),
                        "mismatch between money-strike vector and "
                        "vol matrix rows");
         }
@@ -119,10 +119,9 @@ namespace QuantLib {
                        "dates must be sorted unique!");
         }
 
-        for (Size i=0; i < strikes_.size(); ++i)
-            for (Size j=1; j<strikes_[i]->size(); j++) {
-                QL_REQUIRE((*strikes_[i])[j]>=(*strikes_[i])[j-1],
-                           "strikes must be sorted");
+        for (const auto& strike : strikes_)
+            for (Size j = 1; j < strike->size(); j++) {
+                QL_REQUIRE((*strike)[j] >= (*strike)[j - 1], "strikes must be sorted");
             }
     }
 

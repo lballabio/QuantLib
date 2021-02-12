@@ -97,9 +97,9 @@ void FdCIRTest::testFdmCIRConvergence() {
     Real expected = 4.275;
     Real tolerance = 0.0003;
 
-    for (Size l=0; l < LENGTH(schemes); ++l) {
-        ext::shared_ptr<PricingEngine> fdcirengine = MakeFdCIRVanillaEngine(cirProcess, bsmProcess, rho)
-            .withFdmSchemeDesc(schemes[l]);
+    for (const auto& scheme : schemes) {
+        ext::shared_ptr<PricingEngine> fdcirengine =
+            MakeFdCIRVanillaEngine(cirProcess, bsmProcess, rho).withFdmSchemeDesc(scheme);
         europeanOption.setPricingEngine(fdcirengine);
         Real calculated = europeanOption.NPV();
         if (std::fabs(expected - calculated) > tolerance) {
@@ -109,7 +109,6 @@ void FdCIRTest::testFdmCIRConvergence() {
                             << "\n    tolerance:  " << tolerance);
         }
     }
-
 }
 
 test_suite* FdCIRTest::suite(SpeedLevel speed) {

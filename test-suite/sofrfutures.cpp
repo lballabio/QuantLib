@@ -87,10 +87,10 @@ void SofrFuturesTest::testBootstrap() {
     index->addFixing(Date(25, October, 2018), 0.0219);
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (Size i = 0; i < LENGTH(sofrQuotes); i++) {
+    for (const auto& sofrQuote : sofrQuotes) {
         helpers.push_back(ext::make_shared<SofrFutureRateHelper>(
-            sofrQuotes[i].price, sofrQuotes[i].month, sofrQuotes[i].year,
-            sofrQuotes[i].freq, index, 0.0, sofrQuotes[i].averagingMethod));
+            sofrQuote.price, sofrQuote.month, sofrQuote.year, sofrQuote.freq,
+            index, 0.0, sofrQuote.averagingMethod));
     }
 
     ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =

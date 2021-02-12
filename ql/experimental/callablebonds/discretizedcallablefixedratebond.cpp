@@ -53,11 +53,10 @@ namespace QuantLib {
                                         args.callabilityDates[i]);
 
         // To avoid mispricing, we snap exercise dates to the closest coupon date.
-        for (Size i=0; i<callabilityTimes_.size(); i++) {
-            Time& exerciseTime = callabilityTimes_[i];
-            for (Size j=0; j<couponTimes_.size(); j++) {
-                if (withinNextWeek(exerciseTime, couponTimes_[j])) {
-                    exerciseTime = couponTimes_[j];
+        for (double& exerciseTime : callabilityTimes_) {
+            for (double couponTime : couponTimes_) {
+                if (withinNextWeek(exerciseTime, couponTime)) {
+                    exerciseTime = couponTime;
                     break;
                 }
             }

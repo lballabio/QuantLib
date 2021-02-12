@@ -75,13 +75,10 @@ namespace QuantLib {
           lossLevel_(lossLevel),
           trancheTimes_(tenors.size(), 0.) {
               checkTrancheTenors();
-               
-              for(Size i=0; i<tenors_.size(); i++)
+
+              for (auto& tenor : tenors_)
                   trancheDates_.push_back(
-                      calendar().advance(referenceDate(),
-                                         tenors_[i],
-                                         businessDayConvention())
-                                          );
+                      calendar().advance(referenceDate(), tenor, businessDayConvention()));
 
               initializeTrancheTimes();
               checkInputs(correlations_.rows(), correlations_.columns());

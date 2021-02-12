@@ -56,8 +56,8 @@ namespace QuantLib {
 
         LazyObject::registerWith(forward_);
         LazyObject::registerWith(atmVolatility_);
-        for (Size i = 0; i < volHandles_.size(); ++i)
-            LazyObject::registerWith(volHandles_[i]);
+        for (auto& volHandle : volHandles_)
+            LazyObject::registerWith(volHandle);
     }
 
     SabrInterpolatedSmileSection::SabrInterpolatedSmileSection(

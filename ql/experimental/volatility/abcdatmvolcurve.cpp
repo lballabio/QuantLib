@@ -76,8 +76,8 @@ namespace QuantLib {
 
     void AbcdAtmVolCurve::registerWithMarketData()
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
-            registerWith(volHandles_[i]);
+        for (auto& volHandle : volHandles_)
+            registerWith(volHandle);
     }
 
     void AbcdAtmVolCurve::interpolate()

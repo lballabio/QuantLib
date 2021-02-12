@@ -281,8 +281,8 @@ void CashFlowsTest::testExCouponDates() {
 
     // no ex-coupon dates
     Leg l1 = FixedRateLeg(schedule).withNotionals(100.0).withCouponRates(0.03, Actual360());
-    for (Size i = 0; i < l1.size(); ++i) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(l1[i]);
+    for (auto& i : l1) {
+        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
         if (c->exCouponDate() != Date()) {
             BOOST_ERROR("ex-coupon date found (none expected)");
         }
@@ -291,8 +291,8 @@ void CashFlowsTest::testExCouponDates() {
     // same for floating legs
     ext::shared_ptr<IborIndex> index(new Euribor3M);
     Leg l2 = IborLeg(schedule, index).withNotionals(100.0);
-    for (Size i = 0; i < l2.size(); ++i) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(l2[i]);
+    for (auto& i : l2) {
+        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
         if (c->exCouponDate() != Date()) {
             BOOST_ERROR("ex-coupon date found (none expected)");
         }
@@ -303,8 +303,8 @@ void CashFlowsTest::testExCouponDates() {
                  .withNotionals(100.0)
                  .withCouponRates(0.03, Actual360())
                  .withExCouponPeriod(Period(2, Days), NullCalendar(), Unadjusted, false);
-    for (Size i = 0; i < l5.size(); ++i) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(l5[i]);
+    for (auto& i : l5) {
+        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
         Date expected = c->accrualEndDate() - 2;
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected
@@ -315,8 +315,8 @@ void CashFlowsTest::testExCouponDates() {
     Leg l6 = IborLeg(schedule, index)
                  .withNotionals(100.0)
                  .withExCouponPeriod(Period(2, Days), NullCalendar(), Unadjusted, false);
-    for (Size i = 0; i < l6.size(); ++i) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(l6[i]);
+    for (auto& i : l6) {
+        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
         Date expected = c->accrualEndDate() - 2;
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected
@@ -329,8 +329,8 @@ void CashFlowsTest::testExCouponDates() {
                  .withNotionals(100.0)
                  .withCouponRates(0.03, Actual360())
                  .withExCouponPeriod(Period(2, Days), TARGET(), Preceding, false);
-    for (Size i = 0; i < l7.size(); ++i) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(l7[i]);
+    for (auto& i : l7) {
+        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
         Date expected = TARGET().advance(c->accrualEndDate(), -2, Days);
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected
@@ -341,8 +341,8 @@ void CashFlowsTest::testExCouponDates() {
     Leg l8 = IborLeg(schedule, index)
                  .withNotionals(100.0)
                  .withExCouponPeriod(Period(2, Days), TARGET(), Preceding, false);
-    for (Size i = 0; i < l8.size(); ++i) {
-        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(l8[i]);
+    for (auto& i : l8) {
+        ext::shared_ptr<Coupon> c = ext::dynamic_pointer_cast<Coupon>(i);
         Date expected = TARGET().advance(c->accrualEndDate(), -2, Days);
         if (c->exCouponDate() != expected) {
             BOOST_ERROR("ex-coupon date = " << c->exCouponDate() << " (" << expected

@@ -93,8 +93,8 @@ namespace QuantLib {
 
         // 3.1 Arithmetic average step conditions
         std::vector<Time> averageTimes;
-        for (Size i=0; i<arguments_.fixingDates.size(); ++i) {
-            Time t = process_->time(arguments_.fixingDates[i]);
+        for (auto& fixingDate : arguments_.fixingDates) {
+            Time t = process_->time(fixingDate);
             QL_REQUIRE(t >= 0, "Fixing dates must not contain past date");
             averageTimes.push_back(t);
         }

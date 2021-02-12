@@ -148,9 +148,9 @@ namespace QuantLib {
         // if the gearing is zero then the ibor leg will be set up with fixed
         // coupons which makes trouble here in this context. We therefore use
         // a dirty trick and enforce the gearing to be non zero.
-        for (Size i = 0; i < gearing_.size(); ++i) {
-            if (close(gearing_[i], 0.0))
-                gearing_[i] = QL_EPSILON;
+        for (double& i : gearing_) {
+            if (close(i, 0.0))
+                i = QL_EPSILON;
         }
 
         legs_[0] = FixedRateLeg(fixedSchedule_)

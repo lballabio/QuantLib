@@ -54,9 +54,8 @@ namespace QuantLib {
         }
 
         registerWith(Settings::instance().evaluationDate());
-        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end();
-             ++c)
-            registerWith(*c);
+        for (const auto& cashflow : cashflows_)
+            registerWith(cashflow);
     }
 
     Bond::Bond(Natural settlementDays,
@@ -96,9 +95,8 @@ namespace QuantLib {
         }
 
         registerWith(Settings::instance().evaluationDate());
-        for (Leg::const_iterator c = cashflows_.begin(); c != cashflows_.end();
-             ++c)
-            registerWith(*c);
+        for (const auto& cashflow : cashflows_)
+            registerWith(cashflow);
     }
 
     bool Bond::isExpired() const {
@@ -355,9 +353,8 @@ namespace QuantLib {
     }
 
     void Bond::deepUpdate() {
-        for (Size k = 0; k < cashflows_.size(); ++k) {
-            ext::shared_ptr<LazyObject> f =
-                ext::dynamic_pointer_cast<LazyObject>(cashflows_[k]);
+        for (auto& cashflow : cashflows_) {
+            ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(cashflow);
             if (f != nullptr)
                 f->update();
         }
@@ -370,9 +367,8 @@ namespace QuantLib {
 
         Date lastPaymentDate = Date();
         notionalSchedule_.push_back(Date());
-        for (Size i=0; i<cashflows_.size(); ++i) {
-            ext::shared_ptr<Coupon> coupon =
-                ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
+        for (auto& cashflow : cashflows_) {
+            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
             if (!coupon)
                 continue;
 

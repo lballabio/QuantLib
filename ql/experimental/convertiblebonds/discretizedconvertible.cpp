@@ -72,14 +72,14 @@ namespace QuantLib {
 
         if (!grid.empty()) {
             // adjust times to grid
-            for (Size i=0; i<stoppingTimes_.size(); i++)
-                stoppingTimes_[i] = grid.closestTime(stoppingTimes_[i]);
-            for (Size i=0; i<couponTimes_.size(); i++)
-                couponTimes_[i] = grid.closestTime(couponTimes_[i]);
-            for (Size i=0; i<callabilityTimes_.size(); i++)
-                callabilityTimes_[i] = grid.closestTime(callabilityTimes_[i]);
-            for (Size i=0; i<dividendTimes_.size(); i++)
-                dividendTimes_[i] = grid.closestTime(dividendTimes_[i]);
+            for (double& stoppingTime : stoppingTimes_)
+                stoppingTime = grid.closestTime(stoppingTime);
+            for (double& couponTime : couponTimes_)
+                couponTime = grid.closestTime(couponTime);
+            for (double& callabilityTime : callabilityTimes_)
+                callabilityTime = grid.closestTime(callabilityTime);
+            for (double& dividendTime : dividendTimes_)
+                dividendTime = grid.closestTime(dividendTime);
         }
     }
 
@@ -128,10 +128,10 @@ namespace QuantLib {
                 convertible = true;
             break;
           case Exercise::Bermudan:
-            for (Size i=0; i<stoppingTimes_.size(); ++i) {
-                if (isOnTime(stoppingTimes_[i]))
-                    convertible = true;
-            }
+              for (double stoppingTime : stoppingTimes_) {
+                  if (isOnTime(stoppingTime))
+                      convertible = true;
+              }
             break;
           default:
             QL_FAIL("invalid option type");
@@ -224,8 +224,8 @@ namespace QuantLib {
                 DiscountFactor dividendDiscount =
                     process_->riskFreeRate()->discount(dividendTime) /
                     process_->riskFreeRate()->discount(t);
-                for (Size j=0; j<grid.size(); j++)
-                    grid[j] += d->amount(grid[j])*dividendDiscount;
+                for (double& j : grid)
+                    j += d->amount(j) * dividendDiscount;
             }
         }
         return grid;

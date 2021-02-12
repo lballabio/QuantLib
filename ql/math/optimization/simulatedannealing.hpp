@@ -96,12 +96,12 @@ namespace QuantLib {
     Real SimulatedAnnealing<RNG>::simplexSize() { // this is taken from
                                                   // simplex.cpp
         Array center(vertices_.front().size(), 0);
-        for (Size i = 0; i < vertices_.size(); ++i)
-            center += vertices_[i];
+        for (auto& vertice : vertices_)
+            center += vertice;
         center *= 1 / Real(vertices_.size());
         Real result = 0;
-        for (Size i = 0; i < vertices_.size(); ++i) {
-            Array temp = vertices_[i] - center;
+        for (auto& vertice : vertices_) {
+            Array temp = vertice - center;
             result += Norm2(temp);
         }
         return result / Real(vertices_.size());

@@ -134,8 +134,8 @@ namespace QuantLib {
                                            IntervalPrice::Type t)  {
         std::vector<Real> returnval;
         returnval.reserve(ts.size());
-        for (auto i = ts.begin(); i != ts.end(); ++i) {
-            returnval.push_back(i->second.value(t));
+        for (const auto& i : ts) {
+            returnval.push_back(i.second.value(t));
         }
         return returnval;
     }

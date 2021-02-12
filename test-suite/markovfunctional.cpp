@@ -241,8 +241,8 @@ namespace {
         };
 
         q6m.reserve(10 + 15 + 35);
-        for (int i = 0; i < 10 + 15 + 35; i++) {
-            q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(q6mh[i])));
+        for (double i : q6mh) {
+            q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         }
 
         r6m.reserve(10);
@@ -292,15 +292,15 @@ namespace {
                             3 * Years,  4 * Years,  5 * Years,   6 * Years,
                             7 * Years,  8 * Years,  9 * Years,   10 * Years,
                             15 * Years, 20 * Years, 25 * Years,  30 * Years };
-        for (Size i = 0; i < 20; i++)
-            optionTenors.push_back(optTen[i]);
+        for (auto& i : optTen)
+            optionTenors.push_back(i);
 
         Period swpTen[] = { 1 * Years,  2 * Years,  3 * Years,  4 * Years,
                             5 * Years,  6 * Years,  7 * Years,  8 * Years,
                             9 * Years,  10 * Years, 15 * Years, 20 * Years,
                             25 * Years, 30 * Years };
-        for (Size i = 0; i < 14; i++)
-            swapTenors.push_back(swpTen[i]);
+        for (auto& i : swpTen)
+            swapTenors.push_back(i);
 
         double qSwAtmh[] = {
             1.81,  0.897, 0.819, 0.692, 0.551, 0.47,  0.416, 0.379, 0.357,
@@ -365,12 +365,12 @@ namespace {
         Real strksp[] = { -0.02,  -0.01,  -0.0050, -0.0025, 0.0,
                           0.0025, 0.0050, 0.01,    0.02 };
 
-        for (Size i = 0; i < 6; i++)
-            optionTenorsSmile.push_back(optTenSm[i]);
-        for (Size i = 0; i < 5; i++)
-            swapTenorsSmile.push_back(swpTenSm[i]);
-        for (Size i = 0; i < 9; i++)
-            strikeSpreads.push_back(strksp[i]);
+        for (auto& i : optTenSm)
+            optionTenorsSmile.push_back(i);
+        for (auto& i : swpTenSm)
+            swapTenorsSmile.push_back(i);
+        for (double& i : strksp)
+            strikeSpreads.push_back(i);
 
         std::vector<std::vector<Handle<Quote> > > qSwSmile;
 
@@ -682,10 +682,9 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     std::vector<Real> money;
     std::vector<Real> calls0;
 
-    for (Size i = 0; i < strikes.size(); i++) {
-        money.push_back(strikes[i] / atm);
-        calls0.push_back(blackFormula(Option::Call, strikes[i], atm,
-                                      0.50 * std::sqrt(t), 1.0, 0.0));
+    for (double strike : strikes) {
+        money.push_back(strike / atm);
+        calls0.push_back(blackFormula(Option::Call, strike, atm, 0.50 * std::sqrt(t), 1.0, 0.0));
     }
 
     std::vector<Real> stdDevs0 = impliedStdDevs(atm, strikes, calls0);
@@ -1256,11 +1255,11 @@ void MarkovFunctionalTest::testVanillaEngines() {
     c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.07));
     c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.10));
 
-    for (Size i = 0; i < c2.size(); i++) {
-        c2[i].setPricingEngine(blackCapFloorEngine2);
-        Real blackPrice = c2[i].NPV();
-        c2[i].setPricingEngine(mfCapFloorEngine2);
-        Real mfPrice = c2[i].NPV();
+    for (auto& i : c2) {
+        i.setPricingEngine(blackCapFloorEngine2);
+        Real blackPrice = i.NPV();
+        i.setPricingEngine(mfCapFloorEngine2);
+        Real mfPrice = i.NPV();
         if (fabs(blackPrice - mfPrice) > tol1)
             BOOST_ERROR(
                 "Basket 2 / flat termstructures: Cap/Floor premium market ("
@@ -1389,11 +1388,11 @@ void MarkovFunctionalTest::testVanillaEngines() {
     // c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.10));
     // //exclude because caplet stripper fails for this strike
 
-    for (Size i = 0; i < c4.size(); i++) {
-        c4[i].setPricingEngine(blackCapFloorEngine4);
-        Real blackPrice = c4[i].NPV();
-        c4[i].setPricingEngine(mfCapFloorEngine4);
-        Real mfPrice = c4[i].NPV();
+    for (auto& i : c4) {
+        i.setPricingEngine(blackCapFloorEngine4);
+        Real blackPrice = i.NPV();
+        i.setPricingEngine(mfCapFloorEngine4);
+        Real mfPrice = i.NPV();
         if (fabs(blackPrice - mfPrice) > tol1)
             BOOST_ERROR(
                 "Basket 2 / real termstructures: Cap/Floor premium market ("

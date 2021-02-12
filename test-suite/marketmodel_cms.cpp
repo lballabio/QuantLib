@@ -474,22 +474,19 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
                                     ExponentialCorrelationFlatVolatility,
                                     ExponentialCorrelationAbcdVolatility };
 
-    for (Size j=0; j<LENGTH(marketModels); j++) {
+    for (auto& j : marketModels) {
 
         Size testedFactors[] = { /*4, 8,*/ todaysForwards.size()};
-        for (Size m=0; m<LENGTH(testedFactors); ++m) {
-            Size factors = testedFactors[m];
-
+        for (unsigned long factors : testedFactors) {
             // Composite's ProductSuggested is the Terminal one
             MeasureType measures[] = { // ProductSuggested,
                                        Terminal,
                                       // MoneyMarketPlus,
                                        MoneyMarket};
-            for (Size k=0; k<LENGTH(measures); k++) {
-                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+            for (auto& measure : measures) {
+                std::vector<Size> numeraires = makeMeasure(product, measure);
 
-                ext::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                ext::shared_ptr<MarketModel> marketModel = makeMarketModel(evolution, factors, j);
 
                 EvolverType evolvers[] = { Pc/*, Ipc*/ };
 
@@ -505,12 +502,14 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
                                                          generatorFactory,
                                                          evolvers[i]);
                         std::ostringstream config;
-                        config <<
-                            marketModelTypeToString(marketModels[j]) << ", " <<
-                            factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
-                            measureTypeToString(measures[k]) << ", " <<
-                            evolverTypeToString(evolvers[i]) << ", " <<
-                            "MT BGF";
+                        config << marketModelTypeToString(j) << ", " << factors
+                               << (factors > 1 ?
+                                       (factors == todaysForwards.size() ? " (full) factors, " :
+                                                                           " factors, ") :
+                                       " factor,")
+                               << measureTypeToString(measure) << ", "
+                               << evolverTypeToString(evolvers[i]) << ", "
+                               << "MT BGF";
                         if (printReport_)
                             BOOST_TEST_MESSAGE("    " << config.str());
 

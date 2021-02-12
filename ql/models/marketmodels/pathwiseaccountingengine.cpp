@@ -66,8 +66,8 @@ namespace QuantLib {
             cashFlowsGenerated_[i].resize(
                 product_->maxNumberOfCashFlowsPerProductPerStep());
 
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                cashFlowsGenerated_[i][j].amount.resize(numberRates_+1);
+            for (auto& j : cashFlowsGenerated_[i])
+                j.amount.resize(numberRates_ + 1);
 
             numberCashFlowsThisIndex_[i].resize(product_->possibleCashFlowTimes().size());
 
@@ -92,9 +92,8 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes = product_->evolution().evolutionTimes();
         discounters_.reserve(cashFlowTimes.size());
 
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j],
-            rateTimes));
+        for (double cashFlowTime : cashFlowTimes)
+            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTime, rateTimes));
 
 
         // need to check that we are in money market measure
@@ -393,8 +392,8 @@ namespace QuantLib {
             cashFlowsGenerated_[i].resize(
                 product_->maxNumberOfCashFlowsPerProductPerStep());
 
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                cashFlowsGenerated_[i][j].amount.resize(numberRates_+1);
+            for (auto& j : cashFlowsGenerated_[i])
+                j.amount.resize(numberRates_ + 1);
 
             numberCashFlowsThisIndex_[i].resize(product_->possibleCashFlowTimes().size());
 
@@ -419,9 +418,8 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes = product_->evolution().evolutionTimes();
         discounters_.reserve(cashFlowTimes.size());
 
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j],
-            rateTimes));
+        for (double cashFlowTime : cashFlowTimes)
+            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTime, rateTimes));
 
 
         // need to check that we are in money market measure
@@ -787,8 +785,8 @@ namespace QuantLib {
             cashFlowsGenerated_[i].resize(
                 product_->maxNumberOfCashFlowsPerProductPerStep());
 
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                cashFlowsGenerated_[i][j].amount.resize(numberRates_+1);
+            for (auto& j : cashFlowsGenerated_[i])
+                j.amount.resize(numberRates_ + 1);
 
             numberCashFlowsThisIndex_[i].resize(product_->possibleCashFlowTimes().size());
 
@@ -813,9 +811,8 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes = product_->evolution().evolutionTimes();
         discounters_.reserve(cashFlowTimes.size());
 
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTimes[j],
-            rateTimes));
+        for (double cashFlowTime : cashFlowTimes)
+            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTime, rateTimes));
 
 
         // need to check that we are in money market measure

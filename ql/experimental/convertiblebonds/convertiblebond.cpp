@@ -258,10 +258,10 @@ namespace QuantLib {
 
         moreArgs->dividends.clear();
         moreArgs->dividendDates.clear();
-        for (Size i=0; i<dividends_.size(); i++) {
-            if (!dividends_[i]->hasOccurred(settlement, false)) {
-                moreArgs->dividends.push_back(dividends_[i]);
-                moreArgs->dividendDates.push_back(dividends_[i]->date());
+        for (const auto& dividend : dividends_) {
+            if (!dividend->hasOccurred(settlement, false)) {
+                moreArgs->dividends.push_back(dividend);
+                moreArgs->dividendDates.push_back(dividend->date());
             }
         }
 

@@ -90,8 +90,8 @@ namespace QuantLib {
             .withAveragingMethod(averagingMethod_);
 
         for (Size j=0; j<2; ++j) {
-            for (auto i = legs_[j].begin(); i != legs_[j].end(); ++i)
-                registerWith(*i);
+            for (auto& i : legs_[j])
+                registerWith(i);
         }
 
         switch (type_) {

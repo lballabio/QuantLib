@@ -131,8 +131,9 @@ namespace QuantLib {
                                            ext::shared_ptr<MarketModel> volStructure)
     : allBumps_(std::move(allBumps)), associatedVolStructure_(std::move(volStructure)),
       checked_(false) {
-        for (Size j=0; j < allBumps_.size(); ++j)
-            QL_REQUIRE(allBumps_[j].isCompatible(associatedVolStructure_),"incompatible bumps passed to VegaBumpCollection");
+        for (auto& allBump : allBumps_)
+            QL_REQUIRE(allBump.isCompatible(associatedVolStructure_),
+                       "incompatible bumps passed to VegaBumpCollection");
     }
 
 
@@ -159,13 +160,11 @@ namespace QuantLib {
         for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
 
-        for (Size k=0; k < allBumps_.size(); ++k)
-        {
-            for (Size f=allBumps_[k].factorBegin(); f <  allBumps_[k].factorEnd(); ++f)
-                for (Size r=allBumps_[k].rateBegin(); r <  allBumps_[k].rateEnd(); ++r)
-                    for (Size s= allBumps_[k].stepBegin(); s <  allBumps_[k].stepEnd(); ++s)
+        for (const auto& allBump : allBumps_) {
+            for (Size f = allBump.factorBegin(); f < allBump.factorEnd(); ++f)
+                for (Size r = allBump.rateBegin(); r < allBump.rateEnd(); ++r)
+                    for (Size s = allBump.stepBegin(); s < allBump.stepEnd(); ++s)
                         v[s][r][f] = true;
-
         }
 
         Size numberFailures =0;
@@ -202,17 +201,14 @@ namespace QuantLib {
 
         Size numberFailures=0;
 
-        for (Size k=0; k < allBumps_.size(); ++k)
-        {
-            for (Size f=allBumps_[k].factorBegin(); f <  allBumps_[k].factorEnd(); ++f)
-                for (Size r=allBumps_[k].rateBegin(); r <  allBumps_[k].rateEnd(); ++r)
-                    for (Size s= allBumps_[k].stepBegin(); s <  allBumps_[k].stepEnd(); ++s)
-                    {
+        for (const auto& allBump : allBumps_) {
+            for (Size f = allBump.factorBegin(); f < allBump.factorEnd(); ++f)
+                for (Size r = allBump.rateBegin(); r < allBump.rateEnd(); ++r)
+                    for (Size s = allBump.stepBegin(); s < allBump.stepEnd(); ++s) {
                         if (v[s][r][f])
                             ++numberFailures;
                         v[s][r][f] = true;
                     }
-
         }
 
         return numberFailures>0;
