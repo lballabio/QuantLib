@@ -40,9 +40,6 @@ namespace QuantLib {
     /*! \todo add tests */
     class CashFlows {
       private:
-        CashFlows() = delete;
-        CashFlows(const CashFlows&) = delete;
-
         class IrrFinder {
           public:
             IrrFinder(const Leg& leg,
@@ -68,6 +65,9 @@ namespace QuantLib {
             Date settlementDate_, npvDate_;
         };
       public:
+        CashFlows() = delete;
+        CashFlows(const CashFlows&) = delete;
+
         //! \name Date functions
         //@{
         static Date startDate(const Leg& leg);

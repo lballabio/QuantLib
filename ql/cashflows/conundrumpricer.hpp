@@ -74,6 +74,9 @@ namespace QuantLib {
                                ParallelShifts,
                                NonParallelShifts
         };
+
+        GFunctionFactory() = delete;
+
         static ext::shared_ptr<GFunction>
         newGFunctionStandard(Size q,
                              Real delta,
@@ -84,8 +87,6 @@ namespace QuantLib {
         newGFunctionWithShifts(const CmsCoupon& coupon,
                                const Handle<Quote>& meanReversion);
       private:
-        GFunctionFactory() = delete;
-
         class GFunctionStandard : public GFunction {
           public:
             GFunctionStandard(Size q,
