@@ -33,8 +33,49 @@ namespace QuantLib {
         const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise), averageType_(averageType),
       runningAccumulator_(runningAccumulator), pastFixings_(pastFixings),
-      fixingDates_(std::move(fixingDates)) {
+      fixingDates_(std::move(fixingDates)), allPastFixingsProvided_(false),
+      allPastFixings_(std::vector<Real>()) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
+
+        // Add a hard override to the runningAccumulator if pastFixings is 0
+        // (ie. the option is unseasoned)
+        if (pastFixings_ == 0) {
+            if (averageType == Average::Geometric) {
+                runningAccumulator_ = 1.0;
+            } else if (averageType == Average::Arithmetic) {
+                runningAccumulator_ = 0.0;
+            } else {
+                QL_FAIL("Unrecognised average type, must be Average::Arithmetic or Average::Geometric");
+            }
+        }
+    }
+
+    DiscreteAveragingAsianOption::DiscreteAveragingAsianOption(
+        Average::Type averageType,
+        std::vector<Date> fixingDates,
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise,
+        const std::vector<Real>& allPastFixings)
+    : OneAssetOption(payoff, exercise),
+      averageType_(averageType), fixingDates_(fixingDates),
+      allPastFixingsProvided_(true), allPastFixings_(allPastFixings) {
+        std::sort(fixingDates_.begin(), fixingDates_.end());
+        pastFixings_ = allPastFixings_.size();
+
+        if (averageType == Average::Geometric) {
+            runningAccumulator_ = 1.0;
+            for (Size i=0; i<pastFixings_; i++)
+                runningAccumulator_ *= allPastFixings_[i];
+
+        } else if (averageType == Average::Arithmetic) {
+            runningAccumulator_ = 0.0;
+            for (Size i=0; i<pastFixings_; i++)
+                runningAccumulator_ += allPastFixings_[i];
+
+        } else {
+            QL_FAIL("Unrecognised average type, must be Average::Arithmetic or Average::Geometric");
+        }
+
     }
 
     void DiscreteAveragingAsianOption::setupArguments(
@@ -48,6 +89,8 @@ namespace QuantLib {
         moreArgs->runningAccumulator = runningAccumulator_;
         moreArgs->pastFixings = pastFixings_;
         moreArgs->fixingDates = fixingDates_;
+        moreArgs->allPastFixingsProvided = allPastFixingsProvided_;
+        moreArgs->allPastFixings = allPastFixings_;
     }
 
     void DiscreteAveragingAsianOption::arguments::validate() const {

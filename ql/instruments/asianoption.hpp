@@ -64,6 +64,15 @@ namespace QuantLib {
                                      std::vector<Date> fixingDates,
                                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
                                      const ext::shared_ptr<Exercise>& exercise);
+
+        // Providing a constructor that takes past fixings as a vector of reals,
+        // defaulting to an empty vector representing an unseasoned option
+        DiscreteAveragingAsianOption(Average::Type averageType,
+                                     std::vector<Date> fixingDates,
+                                     const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                                     const ext::shared_ptr<Exercise>& exercise,
+                                     const std::vector<Real>& allPastFixings = std::vector<Real>());
+
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
@@ -71,6 +80,12 @@ namespace QuantLib {
         Real runningAccumulator_;
         Size pastFixings_;
         std::vector<Date> fixingDates_;
+
+        // For backwards compatibility with the traditional interface, we keep track of
+        // whether this option was initialised using the full array of seasoned fixings
+        // (even if empty) or if a pastFixings and a runningAccumulator was provided
+        bool allPastFixingsProvided_;
+        std::vector<Real> allPastFixings_;
     };
 
     //! Extra %arguments for single-asset discrete-average Asian option
@@ -79,12 +94,16 @@ namespace QuantLib {
       public:
         arguments() : averageType(Average::Type(-1)),
                       runningAccumulator(Null<Real>()),
-                      pastFixings(Null<Size>()) {}
+                      pastFixings(Null<Size>()),
+                      allPastFixingsProvided(false),
+                      allPastFixings(std::vector<Real>()) {}
         void validate() const override;
         Average::Type averageType;
         Real runningAccumulator;
         Size pastFixings;
         std::vector<Date> fixingDates;
+        std::vector<Real> allPastFixings;
+        bool allPastFixingsProvided;
     };
 
     //! Extra %arguments for single-asset continuous-average Asian option

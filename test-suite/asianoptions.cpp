@@ -1480,6 +1480,36 @@ void AsianOptionTest::testPastFixings() {
              << "\n  with fixings:    " << price2);
     }
 
+    // Test past-fixings-as-a-vector interface
+
+    std::vector<Real> allPastFixings = {spot->value() * 0.8, spot->value() * 0.8};
+
+    DiscreteAveragingAsianOption option1a(Average::Arithmetic, fixingDates1,
+                                          payoff, exercise);
+
+    DiscreteAveragingAsianOption option2a(Average::Arithmetic, fixingDates2,
+                                          payoff, exercise, allPastFixings);
+
+    option1a.setPricingEngine(engine);
+    option2a.setPricingEngine(engine);
+
+    Real price1a = option1a.NPV();
+    Real price2a = option2a.NPV();
+
+    if (not close(price1, price1a)) {
+        BOOST_ERROR(
+             "Unseasoned option prices do not match in old and new interface"
+             << "\n  Old Interface: " << price1
+             << "\n  New Interface: " << price1a);
+    }
+
+    if (not close(price2, price2a)) {
+        BOOST_ERROR(
+             "Seasoned option prices do not match in old and new interface"
+             << "\n  Old Interface: " << price2
+             << "\n  New Interface: " << price2a);
+    }
+
     // MC arithmetic average-strike
 
     engine =
