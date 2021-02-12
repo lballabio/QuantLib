@@ -34,8 +34,26 @@
 
 namespace QuantLib {
 
+    //! overnight coupon averaging method
+    /*! It allows to configure how interest is accrued in the overnight coupon.
+    */
+    struct OvernightAveraging {
+        enum Type {
+            Simple,  /*!< Under the simple convention the amount of
+                      interest is calculated by applying the daily
+                      rate to the principal, and the payment due
+                      at the end of the period is the sum of those
+                      amounts. */
+            Compound /*!< Under the compound convention, the additional
+                      amount of interest owed each day is calculated
+                      by applying the rate both to the principal
+                      and the accumulated unpaid interest. */
+        };
+    };
+
     //! overnight coupon
-    /*! %Coupon paying the compounded interest due to daily overnight fixings.
+    /*! %Coupon paying the interest, depending on the averaging convention,
+        due to daily overnight fixings.
 
         \warning telescopicValueDates optimizes the schedule for calculation speed,
         but might fail to produce correct results if the coupon ages by more than
@@ -57,7 +75,8 @@ namespace QuantLib {
                     const Date& refPeriodStart = Date(),
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
-                    bool telescopicValueDates = false);
+                    bool telescopicValueDates = false,
+                    OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -101,6 +120,7 @@ namespace QuantLib {
         OvernightLeg& withSpreads(Spread spread);
         OvernightLeg& withSpreads(const std::vector<Spread>& spreads);
         OvernightLeg& withTelescopicValueDates(bool telescopicValueDates);
+        OvernightLeg& withAveragingMethod(OvernightAveraging::Type averagingMethod);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -113,6 +133,7 @@ namespace QuantLib {
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         bool telescopicValueDates_;
+        OvernightAveraging::Type averagingMethod_;
     };
 
 }

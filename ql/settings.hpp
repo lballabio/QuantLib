@@ -138,7 +138,8 @@ namespace QuantLib {
     }
 
     inline Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
-        ObservableValue<Date>::operator=(d);
+        if (value() != d) // avoid notifications if the date doesn't actually change
+            ObservableValue<Date>::operator=(d);
         return *this;
     }
 

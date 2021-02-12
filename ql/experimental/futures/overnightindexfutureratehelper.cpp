@@ -53,12 +53,12 @@ namespace QuantLib {
         const Date& maturityDate,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment,
-        const OvernightIndexFuture::NettingType subPeriodsNettingType)
+        OvernightAveraging::Type averagingMethod)
     : RateHelper(price) {
         ext::shared_ptr<Payoff> payoff;
         future_ = ext::make_shared<OvernightIndexFuture>(
             overnightIndex, payoff, valueDate, maturityDate, termStructureHandle_,
-            convexityAdjustment, subPeriodsNettingType);
+            convexityAdjustment, averagingMethod);
         earliestDate_ = valueDate;
         latestDate_ = maturityDate;
     }
@@ -97,13 +97,13 @@ namespace QuantLib {
         Frequency referenceFreq,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment,
-        const OvernightIndexFuture::NettingType subPeriodsNettingType)
+        OvernightAveraging::Type averagingMethod)
     : OvernightIndexFutureRateHelper(price,
                                      getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
                                      getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
                                      overnightIndex,
                                      convexityAdjustment,
-                                     subPeriodsNettingType) {
+                                     averagingMethod) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
                    "only monthly and quarterly SOFR futures accepted");
         if (referenceFreq == Quarterly) {
@@ -120,14 +120,14 @@ namespace QuantLib {
         Frequency referenceFreq,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         Real convexityAdjustment,
-        const OvernightIndexFuture::NettingType subPeriodsNettingType)
+        OvernightAveraging::Type averagingMethod)
     : OvernightIndexFutureRateHelper(
           Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
           getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
           getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
           overnightIndex,
           Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
-          subPeriodsNettingType) {
+          averagingMethod) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
                    "only monthly and quarterly SOFR futures accepted");
         if (referenceFreq == Quarterly) {

@@ -47,7 +47,8 @@ namespace QuantLib {
                       const Period& forwardStart = 0 * Days,
                       Spread overnightSpread = 0.0,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date());
+                      Date customPillarDate = Date(), 
+                      OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -82,6 +83,7 @@ namespace QuantLib {
       Calendar paymentCalendar_;
       Period forwardStart_;
       Spread overnightSpread_;
+      OvernightAveraging::Type averagingMethod_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
@@ -94,7 +96,8 @@ namespace QuantLib {
             const ext::shared_ptr<OvernightIndex>& overnightIndex,
             // exogenous discounting curve
             Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
-            bool telescopicValueDates = false);
+            bool telescopicValueDates = false,
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -111,6 +114,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         bool telescopicValueDates_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+        OvernightAveraging::Type averagingMethod_;
     };
 
 }

@@ -31,7 +31,7 @@ namespace QuantLib {
         const Date& maturityDate,
         const Handle<YieldTermStructure>& discountCurve,
         Handle<Quote> convexityAdjustment,
-        const NettingType subPeriodsNettingType)
+        OvernightAveraging::Type averagingMethod)
     : Forward(overnightIndex->dayCounter(),
               overnightIndex->fixingCalendar(),
               overnightIndex->businessDayConvention(),
@@ -41,7 +41,7 @@ namespace QuantLib {
               maturityDate,
               discountCurve),
       overnightIndex_(overnightIndex), convexityAdjustment_(std::move(convexityAdjustment)),
-      subPeriodsNettingType_(subPeriodsNettingType) {}
+      averagingMethod_(averagingMethod) {}
 
     Real OvernightIndexFuture::averagedSpotValue() const {
         Date today = Settings::instance().evaluationDate();
@@ -106,16 +106,15 @@ namespace QuantLib {
     }
 
     Real OvernightIndexFuture::spotValue() const {
-        switch (subPeriodsNettingType_) {
-          case Averaging:
+        switch (averagingMethod_) {
+          case OvernightAveraging::Simple:
             underlyingSpotValue_ = averagedSpotValue();
             break;
-          case Compounding:
+          case OvernightAveraging::Compound:
             underlyingSpotValue_ = compoundedSpotValue();
             break;
           default:
-            QL_FAIL("unknown compounding convention ("
-                    << Integer(subPeriodsNettingType_) << ")");
+              QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
         }
         return underlyingSpotValue_;
     }
