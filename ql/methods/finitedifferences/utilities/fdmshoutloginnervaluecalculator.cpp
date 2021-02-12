@@ -22,24 +22,22 @@
 */
 
 #include <ql/instruments/payoffs.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmShoutLogInnerValueCalculator::FdmShoutLogInnerValueCalculator(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Time maturity,
-        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-        const ext::shared_ptr<FdmMesher>& mesher,
+        ext::shared_ptr<PlainVanillaPayoff> payoff,
+        ext::shared_ptr<FdmMesher> mesher,
         Size direction)
-    : process_(process),
-      maturity_(maturity),
-      payoff_(payoff),
-      mesher_(mesher),
-      direction_(direction) { }
+    : process_(std::move(process)), maturity_(maturity), payoff_(std::move(payoff)),
+      mesher_(std::move(mesher)), direction_(direction) {}
 
 
     Real FdmShoutLogInnerValueCalculator::innerValue(

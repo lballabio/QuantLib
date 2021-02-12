@@ -33,12 +33,11 @@ namespace QuantLib {
 
     class FdmShoutLogInnerValueCalculator: public FdmInnerValueCalculator {
       public:
-        FdmShoutLogInnerValueCalculator(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Time maturity,
-            const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-            const ext::shared_ptr<FdmMesher>& mesher,
-            Size direction);
+        FdmShoutLogInnerValueCalculator(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                                        Time maturity,
+                                        ext::shared_ptr<PlainVanillaPayoff> payoff,
+                                        ext::shared_ptr<FdmMesher> mesher,
+                                        Size direction);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override;
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
