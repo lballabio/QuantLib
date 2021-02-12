@@ -65,7 +65,7 @@ namespace QuantLib {
             gaussPoint  += sample.value;
             gaussWeight *= sample.weight;
         }
-        return sample_type(gaussPoint,gaussWeight);
+        return {gaussPoint, gaussWeight};
     }
 
 }

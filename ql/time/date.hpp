@@ -375,7 +375,7 @@ namespace QuantLib {
     class Null<Date> {
       public:
         Null() = default;
-        operator Date() const { return Date(); }
+        operator Date() const { return {}; }
     };
 
 
@@ -418,7 +418,7 @@ namespace QuantLib {
     inline Date Date::endOfMonth(const Date& d) {
         Month m = d.month();
         Year y = d.year();
-        return Date(monthLength(m, isLeap(y)), m, y);
+        return {monthLength(m, isLeap(y)), m, y};
     }
 
     inline bool Date::isEndOfMonth(const Date& d) {

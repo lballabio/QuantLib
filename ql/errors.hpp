@@ -52,7 +52,7 @@ namespace QuantLib {
         ~Error() throw() override {}
         #endif
         //! returns the error message.
-        const char* what() const throw() override;
+        const char* what() const QL_NOEXCEPT override;
 
       private:
         ext::shared_ptr<std::string> message_;

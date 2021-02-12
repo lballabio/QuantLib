@@ -162,7 +162,7 @@ namespace QuantLib {
             if (d > length)
                 d = length;
 
-            return Date(d, Month(m), y);
+            return {d, Month(m), y};
           }
           case Years: {
               Day d = date.dayOfMonth();
@@ -775,9 +775,7 @@ namespace QuantLib {
         if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
             return Date();
         std::tm *lt = std::localtime(&t);
-        return Date(Day(lt->tm_mday),
-                        Month(lt->tm_mon+1),
-                        Year(lt->tm_year+1900));
+        return {Day(lt->tm_mday), Month(lt->tm_mon + 1), Year(lt->tm_year + 1900)};
     }
 
     Date Date::nextWeekday(const Date& d, Weekday dayOfWeek) {
@@ -793,7 +791,7 @@ namespace QuantLib {
                    "no more than 5 weekday in a given (month, year)");
         Weekday first = Date(1, m, y).weekday();
         Size skip = nth - (dayOfWeek>=first ? 1 : 0);
-        return Date((1 + dayOfWeek + skip*7) - first, m, y);
+        return {(1 + dayOfWeek + skip * 7) - first, m, y};
     }
 
     // month formatting
