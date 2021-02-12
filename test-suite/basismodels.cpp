@@ -131,6 +131,7 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > capletVolQuotes;
         for (auto& capletVol : capletVols) {
             std::vector<Handle<Quote> > row;
+            row.reserve(capletVol.size());
             for (double j : capletVol)
                 row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             capletVolQuotes.push_back(row);
@@ -165,6 +166,7 @@ namespace {
         std::vector<std::vector<Handle<Quote> > > swaptionVolQuotes;
         for (auto& swaptionVol : swaptionVols) {
             std::vector<Handle<Quote> > row;
+            row.reserve(swaptionVol.size());
             for (double j : swaptionVol)
                 row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             swaptionVolQuotes.push_back(row);

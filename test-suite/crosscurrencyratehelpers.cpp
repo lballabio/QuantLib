@@ -86,7 +86,7 @@ namespace crosscurrencyratehelpers_test {
                                              bool isBasisOnFxBaseCurrencyLeg) const {
             std::vector<ext::shared_ptr<RateHelper> > instruments;
             instruments.reserve(xccyData.size());
-            for (auto& i : xccyData) {
+            for (const auto& i : xccyData) {
                 instruments.push_back(constantNotionalXccyRateHelper(
                     i, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                     isBasisOnFxBaseCurrencyLeg));
