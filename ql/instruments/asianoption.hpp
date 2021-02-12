@@ -102,8 +102,8 @@ namespace QuantLib {
         Real runningAccumulator;
         Size pastFixings;
         std::vector<Date> fixingDates;
-        std::vector<Real> allPastFixings;
         bool allPastFixingsProvided;
+        std::vector<Real> allPastFixings;
     };
 
     //! Extra %arguments for single-asset continuous-average Asian option
