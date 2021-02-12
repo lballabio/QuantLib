@@ -36,7 +36,7 @@ namespace {
         Month month;
         Year year;
         Real price;
-        OvernightIndexFuture::NettingType subPeriodsNettingType;
+        OvernightAveraging::Type averagingMethod;
     };
 
 }
@@ -51,22 +51,19 @@ void SofrFuturesTest::testBootstrap() {
     Settings::instance().evaluationDate() = today;
 
     const SofrQuotes sofrQuotes[] = {
-        {Monthly, Oct, 2018, 97.8175, OvernightIndexFuture::Averaging},
-        {Monthly, Nov, 2018, 97.770, OvernightIndexFuture::Averaging},
-        {Monthly, Dec, 2018, 97.685, OvernightIndexFuture::Averaging},
-        {Monthly, Jan, 2019, 97.595, OvernightIndexFuture::Averaging},
-        {Monthly, Feb, 2019, 97.590, OvernightIndexFuture::Averaging},
-        {Monthly, Mar, 2019, 97.525, OvernightIndexFuture::Averaging},
-        // removed due to overlap in bootstrap
-        // {Quarterly, Sep, 2018, 97.8175, OvernightIndexFuture::Compounding},
-        // {Quarterly, Dec, 2018, 97.600, OvernightIndexFuture::Compounding},
-        {Quarterly, Mar, 2019, 97.440, OvernightIndexFuture::Compounding},
-        {Quarterly, Jun, 2019, 97.295, OvernightIndexFuture::Compounding},
-        {Quarterly, Sep, 2019, 97.220, OvernightIndexFuture::Compounding},
-        {Quarterly, Dec, 2019, 97.170, OvernightIndexFuture::Compounding},
-        {Quarterly, Mar, 2020, 97.160, OvernightIndexFuture::Compounding},
-        {Quarterly, Jun, 2020, 97.165, OvernightIndexFuture::Compounding},
-        {Quarterly, Sep, 2020, 97.175, OvernightIndexFuture::Compounding},
+        {Monthly, Oct, 2018, 97.8175, OvernightAveraging::Simple},
+        {Monthly, Nov, 2018, 97.770, OvernightAveraging::Simple},
+        {Monthly, Dec, 2018, 97.685, OvernightAveraging::Simple},
+        {Monthly, Jan, 2019, 97.595, OvernightAveraging::Simple},
+        {Monthly, Feb, 2019, 97.590, OvernightAveraging::Simple},
+        {Monthly, Mar, 2019, 97.525, OvernightAveraging::Simple},
+        {Quarterly, Mar, 2019, 97.440, OvernightAveraging::Compound},
+        {Quarterly, Jun, 2019, 97.295, OvernightAveraging::Compound},
+        {Quarterly, Sep, 2019, 97.220, OvernightAveraging::Compound},
+        {Quarterly, Dec, 2019, 97.170, OvernightAveraging::Compound},
+        {Quarterly, Mar, 2020, 97.160, OvernightAveraging::Compound},
+        {Quarterly, Jun, 2020, 97.165, OvernightAveraging::Compound},
+        {Quarterly, Sep, 2020, 97.175, OvernightAveraging::Compound},
     };
 
     ext::shared_ptr<OvernightIndex> index = ext::make_shared<Sofr>();
@@ -93,7 +90,7 @@ void SofrFuturesTest::testBootstrap() {
     for (Size i = 0; i < LENGTH(sofrQuotes); i++) {
         helpers.push_back(ext::make_shared<SofrFutureRateHelper>(
             sofrQuotes[i].price, sofrQuotes[i].month, sofrQuotes[i].year,
-            sofrQuotes[i].freq, index));
+            sofrQuotes[i].freq, index, 0.0, sofrQuotes[i].averagingMethod));
     }
 
     ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =

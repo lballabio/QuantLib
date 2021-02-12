@@ -21,7 +21,6 @@
 */
 
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <utility>
 
@@ -37,13 +36,14 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates)
+                                               bool telescopicValueDates, 
+                                               OvernightAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
       paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
       fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      telescopicValueDates_(telescopicValueDates) {
+      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
         initialize(schedule);
     }
@@ -58,13 +58,14 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates)
+                                               bool telescopicValueDates, 
+                                               OvernightAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::move(nominals)),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
       paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
       fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      telescopicValueDates_(telescopicValueDates) {
+      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
         initialize(schedule);
     }
@@ -85,7 +86,8 @@ namespace QuantLib {
             .withTelescopicValueDates(telescopicValueDates_)
             .withPaymentLag(paymentLag_)
             .withPaymentAdjustment(paymentAdjustment_)
-            .withPaymentCalendar(paymentCalendar_);
+            .withPaymentCalendar(paymentCalendar_)
+            .withAveragingMethod(averagingMethod_);
 
         for (Size j=0; j<2; ++j) {
             for (auto i = legs_[j].begin(); i != legs_[j].end(); ++i)
