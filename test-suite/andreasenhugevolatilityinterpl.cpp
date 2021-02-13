@@ -124,15 +124,15 @@ namespace andreasen_huge_volatility_interpl_test {
             &raw[0][0], &raw[nStrikes-1][nMaturities]+1,
             not_zero<Real>()) - nStrikes);
 
-        for (Size i=0; i < LENGTH(raw); ++i) {
-            const Real strike = spot->value()*raw[i][0];
+        for (const auto & i : raw) {
+            const Real strike = spot->value()*i[0];
 
-            for (Size j=1; j < LENGTH(raw[i]); ++j)
-                if (raw[i][j] > QL_EPSILON) {
+            for (Size j=1; j < LENGTH(i); ++j) {
+                if (i[j] > QL_EPSILON) {
                     const Date maturity
                         = today + Period(Size(365*maturityTimes[j-1]), Days);
 
-                    const Volatility impliedVol = raw[i][j];
+                    const Volatility impliedVol = i[j];
 
                     calibrationSet.push_back(std::make_pair(
                         ext::make_shared<VanillaOption>(
@@ -144,6 +144,7 @@ namespace andreasen_huge_volatility_interpl_test {
                         ext::make_shared<SimpleQuote>(impliedVol))
                     );
                 }
+            }
         }
 
         CalibrationData data = { spot, rTS, qTS, calibrationSet };

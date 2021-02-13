@@ -137,25 +137,19 @@ namespace QuantLib {
 
     template <typename T>
     inline Period operator*(T n, TimeUnit units) {
-        return Period(Integer(n),units);
+        return {Integer(n), units};
     }
 
     template <typename T>
     inline Period operator*(TimeUnit units, T n) {
-        return Period(Integer(n),units);
+        return {Integer(n), units};
     }
 
-    inline Period operator-(const Period& p) {
-        return Period(-p.length(),p.units());
-    }
+    inline Period operator-(const Period& p) { return {-p.length(), p.units()}; }
 
-    inline Period operator*(Integer n, const Period& p) {
-        return Period(n*p.length(),p.units());
-    }
+    inline Period operator*(Integer n, const Period& p) { return {n * p.length(), p.units()}; }
 
-    inline Period operator*(const Period& p, Integer n) {
-        return Period(n*p.length(),p.units());
-    }
+    inline Period operator*(const Period& p, Integer n) { return {n * p.length(), p.units()}; }
 
     inline bool operator==(const Period& p1, const Period& p2) {
         return !(p1 < p2 || p2 < p1);

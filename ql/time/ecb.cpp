@@ -188,7 +188,7 @@ namespace QuantLib {
 
         QL_REQUIRE(i!=knownDates().end(),
                    "ECB dates after " << *(--knownDates().end()) << " are unknown");
-        return Date(*i);
+        return *i;
     }
 
     std::vector<Date> ECB::nextDates(const Date& date) {

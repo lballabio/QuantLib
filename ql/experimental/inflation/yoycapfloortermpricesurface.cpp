@@ -102,7 +102,7 @@ namespace QuantLib {
 
     Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
     {
-        return Date(referenceDate()+p);
+        return referenceDate() + p;
     }
 
     Real YoYCapFloorTermPriceSurface::price(const Period &d, const Rate k) const {

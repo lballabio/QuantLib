@@ -131,7 +131,7 @@ namespace QuantLib {
         { return QL_MAX_REAL; }
 
         //! Returns the parameters of the distribution
-        param_type param() const { return param_type(xm_, alpha_); }
+        param_type param() const { return {xm_, alpha_}; }
         //@}
         
         //! Sets the parameters of the distribution

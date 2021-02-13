@@ -105,7 +105,7 @@ namespace QuantLib {
                     " in '" << str << "'. Error:" << e.what());
         }
 
-        return Period(n, units);
+        return {n, units};
     }
 
     Date DateParser::parseFormatted(const std::string& str,
@@ -131,7 +131,7 @@ namespace QuantLib {
         Month month = static_cast<Month>(io::to_integer(str.substr(5, 2)));
         Integer day = io::to_integer(str.substr(8, 2));
 
-        return Date(day, month, year);
+        return {day, month, year};
     }
 
 }
