@@ -342,8 +342,8 @@ namespace {
             std::vector<Handle<Quote> > qSwAtmTmp;
             qSwAtmTmp.reserve(14);
             for (int j = 0; j < 14; j++) {
-                qSwAtmTmp.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-                    new SimpleQuote(qSwAtmh[i * 14 + j]))));
+                qSwAtmTmp.emplace_back(
+                    ext::shared_ptr<Quote>(new SimpleQuote(qSwAtmh[i * 14 + j])));
             }
             qSwAtm.push_back(qSwAtmTmp);
         }
@@ -420,8 +420,8 @@ namespace {
             std::vector<Handle<Quote> > qSwSmileTmp;
             qSwSmileTmp.reserve(9);
             for (int j = 0; j < 9; j++) {
-                qSwSmileTmp.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-                    new SimpleQuote(qSwSmileh[i * 9 + j]))));
+                qSwSmileTmp.emplace_back(
+                    ext::shared_ptr<Quote>(new SimpleQuote(qSwSmileh[i * 9 + j])));
             }
             qSwSmile.push_back(qSwSmileTmp);
         }
@@ -450,9 +450,8 @@ namespace {
             std::vector<Handle<Quote> > parameterGuessTmp;
             parameterGuessTmp.reserve(4);
             for (int j = 0; j < 4; j++) {
-                parameterGuessTmp.push_back(
-                    Handle<Quote>(ext::shared_ptr<Quote>(
-                        new SimpleQuote(qSwSmileh1[i * 4 + j]))));
+                parameterGuessTmp.emplace_back(
+                    ext::shared_ptr<Quote>(new SimpleQuote(qSwSmileh1[i * 4 + j])));
             }
             parameterGuess.push_back(parameterGuessTmp);
         }
@@ -1717,8 +1716,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
     for (Size i = 0; i < expiries.size(); i++) {
         europeanExercises.push_back(
             ext::shared_ptr<Exercise>(new EuropeanExercise(expiries[i])));
-        europeanSwaptions.push_back(
-            Swaption(underlyingCall, europeanExercises[i]));
+        europeanSwaptions.emplace_back(underlyingCall, europeanExercises[i]);
         europeanSwaptions.back().setPricingEngine(mfSwaptionEngine1);
     }
 

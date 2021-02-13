@@ -284,8 +284,8 @@ void ObservableTest::testDeepUpdate() {
     dates.push_back(refDate + 90);
     dates.push_back(refDate + 180);
     ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.20);
-    quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
-    quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
+    quotes.emplace_back(2, Handle<Quote>(q));
+    quotes.emplace_back(2, Handle<Quote>(q));
 
     ext::shared_ptr<StrippedOptionletAdapter> vol =
         ext::make_shared<StrippedOptionletAdapter>(ext::make_shared<StrippedOptionlet>(

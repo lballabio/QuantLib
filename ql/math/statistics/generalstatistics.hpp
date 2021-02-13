@@ -222,7 +222,7 @@ namespace QuantLib {
     /*! \pre weights must be positive or null */
     inline void GeneralStatistics::add(Real value, Real weight) {
         QL_REQUIRE(weight>=0.0, "negative weight not allowed");
-        samples_.push_back(std::make_pair(value,weight));
+        samples_.emplace_back(value, weight);
         sorted_ = false;
     }
 

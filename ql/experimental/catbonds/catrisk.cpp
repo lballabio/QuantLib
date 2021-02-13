@@ -110,7 +110,7 @@ namespace QuantLib {
             Date eventDate = start_ + days*Days;
             if(eventDate<=end_)
             {
-                path.push_back(std::pair<Date, Real> (eventDate, generateBeta()));
+                path.emplace_back(eventDate, generateBeta());
             }
             else break;
             eventFraction = exponential_();

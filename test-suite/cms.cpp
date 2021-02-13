@@ -75,18 +75,18 @@ namespace cms_test {
 
             // ATM Volatility structure
             std::vector<Period> atmOptionTenors;
-            atmOptionTenors.push_back(Period(1, Months));
-            atmOptionTenors.push_back(Period(6, Months));
-            atmOptionTenors.push_back(Period(1, Years));
-            atmOptionTenors.push_back(Period(5, Years));
-            atmOptionTenors.push_back(Period(10, Years));
-            atmOptionTenors.push_back(Period(30, Years));
+            atmOptionTenors.emplace_back(1, Months);
+            atmOptionTenors.emplace_back(6, Months);
+            atmOptionTenors.emplace_back(1, Years);
+            atmOptionTenors.emplace_back(5, Years);
+            atmOptionTenors.emplace_back(10, Years);
+            atmOptionTenors.emplace_back(30, Years);
 
             std::vector<Period> atmSwapTenors;
-            atmSwapTenors.push_back(Period(1, Years));
-            atmSwapTenors.push_back(Period(5, Years));
-            atmSwapTenors.push_back(Period(10, Years));
-            atmSwapTenors.push_back(Period(30, Years));
+            atmSwapTenors.emplace_back(1, Years);
+            atmSwapTenors.emplace_back(5, Years);
+            atmSwapTenors.emplace_back(10, Years);
+            atmSwapTenors.emplace_back(30, Years);
 
             Matrix m(atmOptionTenors.size(), atmSwapTenors.size());
             m[0][0]=0.1300; m[0][1]=0.1560; m[0][2]=0.1390; m[0][3]=0.1220;
@@ -107,14 +107,14 @@ namespace cms_test {
 
             // Vol cubes
             std::vector<Period> optionTenors;
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(30, Years));
+            optionTenors.emplace_back(1, Years);
+            optionTenors.emplace_back(10, Years);
+            optionTenors.emplace_back(30, Years);
 
             std::vector<Period> swapTenors;
-            swapTenors.push_back(Period(2, Years));
-            swapTenors.push_back(Period(10, Years));
-            swapTenors.push_back(Period(30, Years));
+            swapTenors.emplace_back(2, Years);
+            swapTenors.emplace_back(10, Years);
+            swapTenors.emplace_back(30, Years);
 
             std::vector<Spread> strikeSpreads;
             strikeSpreads.push_back(-0.020);

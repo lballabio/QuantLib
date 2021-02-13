@@ -423,8 +423,7 @@ namespace QuantLib {
                     i->second.smileSection_ =
                         modelSettings_.customSmileFactory_->smileSection(
                             i->second.rawSmileSection_, i->second.atm_);
-                    arbitrageIndices_.push_back(
-                        std::make_pair(Null<Size>(), Null<Size>()));
+                    arbitrageIndices_.emplace_back(Null<Size>(), Null<Size>());
                 } else { // no smile pretreatment
 
                     i->second.smileSection_ = i->second.rawSmileSection_;

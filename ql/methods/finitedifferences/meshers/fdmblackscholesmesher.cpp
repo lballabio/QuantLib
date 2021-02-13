@@ -52,13 +52,12 @@ namespace QuantLib {
         for (const auto& i : dividendSchedule) {
             const Time t = process->time(i->date());
             if (t <= maturity && t >= 0.0)
-                intermediateSteps.push_back(std::make_pair(process->time(i->date()), i->amount()));
+                intermediateSteps.emplace_back(process->time(i->date()), i->amount());
         }
 
         const Size intermediateTimeSteps = std::max<Size>(2, Size(24.0*maturity));
         for (Size i=0; i < intermediateTimeSteps; ++i)
-            intermediateSteps.push_back(
-                std::make_pair((i+1)*(maturity/intermediateTimeSteps), 0.0));
+            intermediateSteps.emplace_back((i + 1) * (maturity / intermediateTimeSteps), 0.0);
 
         std::sort(intermediateSteps.begin(), intermediateSteps.end());
 

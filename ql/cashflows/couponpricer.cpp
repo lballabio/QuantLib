@@ -331,7 +331,7 @@ namespace QuantLib {
             std::vector<PricerSetter> setter;
             setter.reserve(p.size());
             for (const auto& i : p) {
-                setter.push_back(PricerSetter(i));
+                setter.emplace_back(i);
             }
             for (const auto& i : leg) {
                 Size j = 0;

@@ -117,16 +117,16 @@ namespace {
             dates.push_back(TARGET().advance(today, capletTerm, Following));
         // set up vol data manually
         std::vector<std::vector<Real> > capletVols;
-        capletVols.push_back(std::vector<Real>(cplRow01, cplRow01 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow02, cplRow02 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow03, cplRow03 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow04, cplRow04 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow05, cplRow05 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow06, cplRow06 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow07, cplRow07 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow08, cplRow08 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow09, cplRow09 + 8));
-        capletVols.push_back(std::vector<Real>(cplRow10, cplRow10 + 8));
+        capletVols.emplace_back(cplRow01, cplRow01 + 8);
+        capletVols.emplace_back(cplRow02, cplRow02 + 8);
+        capletVols.emplace_back(cplRow03, cplRow03 + 8);
+        capletVols.emplace_back(cplRow04, cplRow04 + 8);
+        capletVols.emplace_back(cplRow05, cplRow05 + 8);
+        capletVols.emplace_back(cplRow06, cplRow06 + 8);
+        capletVols.emplace_back(cplRow07, cplRow07 + 8);
+        capletVols.emplace_back(cplRow08, cplRow08 + 8);
+        capletVols.emplace_back(cplRow09, cplRow09 + 8);
+        capletVols.emplace_back(cplRow10, cplRow10 + 8);
         // create quotes
         std::vector<std::vector<Handle<Quote> > > capletVolQuotes;
         for (auto& capletVol : capletVols) {
@@ -158,11 +158,11 @@ namespace {
 
     Handle<SwaptionVolatilityStructure> getSwaptionVTS() {
         std::vector<std::vector<Real> > swaptionVols;
-        swaptionVols.push_back(std::vector<Real>(swtRow01, swtRow01 + 5));
-        swaptionVols.push_back(std::vector<Real>(swtRow02, swtRow02 + 5));
-        swaptionVols.push_back(std::vector<Real>(swtRow03, swtRow03 + 5));
-        swaptionVols.push_back(std::vector<Real>(swtRow04, swtRow04 + 5));
-        swaptionVols.push_back(std::vector<Real>(swtRow05, swtRow05 + 5));
+        swaptionVols.emplace_back(swtRow01, swtRow01 + 5);
+        swaptionVols.emplace_back(swtRow02, swtRow02 + 5);
+        swaptionVols.emplace_back(swtRow03, swtRow03 + 5);
+        swaptionVols.emplace_back(swtRow04, swtRow04 + 5);
+        swaptionVols.emplace_back(swtRow05, swtRow05 + 5);
         std::vector<std::vector<Handle<Quote> > > swaptionVolQuotes;
         for (auto& swaptionVol : swaptionVols) {
             std::vector<Handle<Quote> > row;

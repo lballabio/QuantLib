@@ -366,23 +366,23 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     std::vector<Rate> rates;
 
     // First curve
-    dates.push_back(Date(10, Nov, 2017));
-    dates.push_back(Date(13, Nov, 2017));
-    dates.push_back(Date(12, Feb, 2018));
-    dates.push_back(Date(10, May, 2018));
-    dates.push_back(Date(10, Aug, 2018));
-    dates.push_back(Date(12, Nov, 2018));
-    dates.push_back(Date(21, Dec, 2018));
-    dates.push_back(Date(15, Jan, 2020));
-    dates.push_back(Date(31, Mar, 2021));
-    dates.push_back(Date(28, Feb, 2023));
-    dates.push_back(Date(21, Dec, 2026));
-    dates.push_back(Date(31, Jan, 2030));
-    dates.push_back(Date(28, Feb, 2031));
-    dates.push_back(Date(31, Mar, 2036));
-    dates.push_back(Date(28, Feb, 2041));
-    dates.push_back(Date(28, Feb, 2048));
-    dates.push_back(Date(31, Dec, 2141));
+    dates.emplace_back(10, Nov, 2017);
+    dates.emplace_back(13, Nov, 2017);
+    dates.emplace_back(12, Feb, 2018);
+    dates.emplace_back(10, May, 2018);
+    dates.emplace_back(10, Aug, 2018);
+    dates.emplace_back(12, Nov, 2018);
+    dates.emplace_back(21, Dec, 2018);
+    dates.emplace_back(15, Jan, 2020);
+    dates.emplace_back(31, Mar, 2021);
+    dates.emplace_back(28, Feb, 2023);
+    dates.emplace_back(21, Dec, 2026);
+    dates.emplace_back(31, Jan, 2030);
+    dates.emplace_back(28, Feb, 2031);
+    dates.emplace_back(31, Mar, 2036);
+    dates.emplace_back(28, Feb, 2041);
+    dates.emplace_back(28, Feb, 2048);
+    dates.emplace_back(31, Dec, 2141);
 
     rates.push_back(0.0655823213132524);
     rates.push_back(0.0655823213132524);
@@ -409,20 +409,20 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     dates.clear();
     rates.clear();
 
-    dates.push_back(Date(10, Nov, 2017));
-    dates.push_back(Date(13, Nov, 2017));
-    dates.push_back(Date(11, Dec, 2017));
-    dates.push_back(Date(12, Feb, 2018));
-    dates.push_back(Date(10, May, 2018));
-    dates.push_back(Date(31, Jan, 2022));
-    dates.push_back(Date(7, Dec, 2023));
-    dates.push_back(Date(31, Jan, 2025));
-    dates.push_back(Date(31, Mar, 2028));
-    dates.push_back(Date(7, Dec, 2033));
-    dates.push_back(Date(1, Feb, 2038));
-    dates.push_back(Date(2, Apr, 2046));
-    dates.push_back(Date(2, Jan, 2051));
-    dates.push_back(Date(31, Dec, 2141));
+    dates.emplace_back(10, Nov, 2017);
+    dates.emplace_back(13, Nov, 2017);
+    dates.emplace_back(11, Dec, 2017);
+    dates.emplace_back(12, Feb, 2018);
+    dates.emplace_back(10, May, 2018);
+    dates.emplace_back(31, Jan, 2022);
+    dates.emplace_back(7, Dec, 2023);
+    dates.emplace_back(31, Jan, 2025);
+    dates.emplace_back(31, Mar, 2028);
+    dates.emplace_back(7, Dec, 2033);
+    dates.emplace_back(1, Feb, 2038);
+    dates.emplace_back(2, Apr, 2046);
+    dates.emplace_back(2, Jan, 2051);
+    dates.emplace_back(31, Dec, 2141);
 
     rates.push_back(0.056656806197189);
     rates.push_back(0.056656806197189);
@@ -451,13 +451,13 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     dates.clear();
     rates.clear();
 
-    dates.push_back(Date(10, Nov, 2017));
-    dates.push_back(Date(15, Dec, 2017));
-    dates.push_back(Date(15, Jun, 2018));
-    dates.push_back(Date(15, Sep, 2029));
-    dates.push_back(Date(15, Sep, 2038));
-    dates.push_back(Date(15, Mar, 2046));
-    dates.push_back(Date(15, Dec, 2141));
+    dates.emplace_back(10, Nov, 2017);
+    dates.emplace_back(15, Dec, 2017);
+    dates.emplace_back(15, Jun, 2018);
+    dates.emplace_back(15, Sep, 2029);
+    dates.emplace_back(15, Sep, 2038);
+    dates.emplace_back(15, Mar, 2046);
+    dates.emplace_back(15, Dec, 2141);
 
     rates.push_back(0.00892551511527986);
     rates.push_back(0.0278755322562788);
