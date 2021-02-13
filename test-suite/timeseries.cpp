@@ -73,8 +73,8 @@ void TimeSeriesTest::testIntervalPrice() {
 
     std::vector<Date> date;
     std::vector<Real> open, close, high, low;
-    date.push_back(Date(25, March, 2005));
-    date.push_back(Date(29, March, 2005));
+    date.emplace_back(25, March, 2005);
+    date.emplace_back(29, March, 2005);
 
     open.push_back(1.3);
     open.push_back(2.3);
@@ -100,9 +100,9 @@ void TimeSeriesTest::testIterators() {
     std::vector<Date> dates;
     std::vector<Real> prices;
 
-    dates.push_back(Date(25, March, 2005));
-    dates.push_back(Date(29, March, 2005));
-    dates.push_back(Date(15, March, 2005));
+    dates.emplace_back(25, March, 2005);
+    dates.emplace_back(29, March, 2005);
+    dates.emplace_back(15, March, 2005);
 
     prices.push_back(25);
     prices.push_back(23);

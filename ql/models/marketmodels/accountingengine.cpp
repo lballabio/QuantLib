@@ -44,7 +44,7 @@ namespace QuantLib {
         const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
         discounters_.reserve(cashFlowTimes.size());
         for (double cashFlowTime : cashFlowTimes)
-            discounters_.push_back(MarketModelDiscounter(cashFlowTime, rateTimes));
+            discounters_.emplace_back(cashFlowTime, rateTimes);
     }
 
     Real AccountingEngine::singlePathValues(std::vector<Real>& values) {

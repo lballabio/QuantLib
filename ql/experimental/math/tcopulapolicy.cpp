@@ -32,7 +32,7 @@ namespace QuantLib {
             // require no T is of order 2 (finite variance)
             QL_REQUIRE(tOrder > 2, "Non finite variance T in latent model.");
 
-            distributions_.push_back(boost::math::students_t_distribution<>(tOrder));
+            distributions_.emplace_back(tOrder);
             // inverses T variaces used in normalization of the random factors
             // For low values of the T order this number is very close to zero 
             // and it enters the expressions dividing them, which introduces 
@@ -58,11 +58,8 @@ namespace QuantLib {
                 normFactorWeights.push_back(factorWeight[iFactor] * varianceFactors_[iFactor]);
             // idiosincratic term, all Z factors are assumed identical.
             normFactorWeights.push_back(idiosyncFctr * varianceFactors_.back());
-            latentVarsCumul_.push_back( 
-                CumulativeBehrensFisher(vals.tOrders, normFactorWeights));
-            latentVarsInverters_.push_back(
-                InverseCumulativeBehrensFisher(vals.tOrders, 
-                    normFactorWeights));
+            latentVarsCumul_.emplace_back(vals.tOrders, normFactorWeights);
+            latentVarsInverters_.emplace_back(vals.tOrders, normFactorWeights);
         }
     }
 

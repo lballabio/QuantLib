@@ -110,22 +110,52 @@ namespace range_accrual_test {
 
             // Yield Curve
             std::vector<Date> dates;
-            dates.push_back(Date(39147));    dates.push_back(Date(39148));    dates.push_back(Date(39151));
-            dates.push_back(Date(39153));    dates.push_back(Date(39159));    dates.push_back(Date(39166));
-            dates.push_back(Date(39183));    dates.push_back(Date(39294));    dates.push_back(Date(39384));
-            dates.push_back(Date(39474));    dates.push_back(Date(39567));    dates.push_back(Date(39658));
-            dates.push_back(Date(39748));    dates.push_back(Date(39839));    dates.push_back(Date(39931));
-            dates.push_back(Date(40250));    dates.push_back(Date(40614));    dates.push_back(Date(40978));
-            dates.push_back(Date(41344));    dates.push_back(Date(41709));    dates.push_back(Date(42074));
-            dates.push_back(Date(42441));    dates.push_back(Date(42805));    dates.push_back(Date(43170));
-            dates.push_back(Date(43535));    dates.push_back(Date(43900));    dates.push_back(Date(44268));
-            dates.push_back(Date(44632));    dates.push_back(Date(44996));    dates.push_back(Date(45361));
-            dates.push_back(Date(45727));    dates.push_back(Date(46092));    dates.push_back(Date(46459));
-            dates.push_back(Date(46823));    dates.push_back(Date(47188));    dates.push_back(Date(47553));
-            dates.push_back(Date(47918));    dates.push_back(Date(48283));    dates.push_back(Date(48650));
-            dates.push_back(Date(49014));    dates.push_back(Date(49379));    dates.push_back(Date(49744));
-            dates.push_back(Date(50110));    dates.push_back(Date(53762));    dates.push_back(Date(57415));
-            dates.push_back(Date(61068));
+            dates.emplace_back(39147);
+            dates.emplace_back(39148);
+            dates.emplace_back(39151);
+            dates.emplace_back(39153);
+            dates.emplace_back(39159);
+            dates.emplace_back(39166);
+            dates.emplace_back(39183);
+            dates.emplace_back(39294);
+            dates.emplace_back(39384);
+            dates.emplace_back(39474);
+            dates.emplace_back(39567);
+            dates.emplace_back(39658);
+            dates.emplace_back(39748);
+            dates.emplace_back(39839);
+            dates.emplace_back(39931);
+            dates.emplace_back(40250);
+            dates.emplace_back(40614);
+            dates.emplace_back(40978);
+            dates.emplace_back(41344);
+            dates.emplace_back(41709);
+            dates.emplace_back(42074);
+            dates.emplace_back(42441);
+            dates.emplace_back(42805);
+            dates.emplace_back(43170);
+            dates.emplace_back(43535);
+            dates.emplace_back(43900);
+            dates.emplace_back(44268);
+            dates.emplace_back(44632);
+            dates.emplace_back(44996);
+            dates.emplace_back(45361);
+            dates.emplace_back(45727);
+            dates.emplace_back(46092);
+            dates.emplace_back(46459);
+            dates.emplace_back(46823);
+            dates.emplace_back(47188);
+            dates.emplace_back(47553);
+            dates.emplace_back(47918);
+            dates.emplace_back(48283);
+            dates.emplace_back(48650);
+            dates.emplace_back(49014);
+            dates.emplace_back(49379);
+            dates.emplace_back(49744);
+            dates.emplace_back(50110);
+            dates.emplace_back(53762);
+            dates.emplace_back(57415);
+            dates.emplace_back(61068);
 
             std::vector<Rate> zeroRates;
             zeroRates.push_back(0.02676568527);    zeroRates.push_back(0.02676568527);
@@ -162,18 +192,18 @@ namespace range_accrual_test {
             optionBDC = Following;
 
             atmOptionTenors = std::vector<Period>();
-            atmOptionTenors.push_back(Period(1, Months));
-            atmOptionTenors.push_back(Period(6, Months));
-            atmOptionTenors.push_back(Period(1, Years));
-            atmOptionTenors.push_back(Period(5, Years));
-            atmOptionTenors.push_back(Period(10, Years));
-            atmOptionTenors.push_back(Period(30, Years));
+            atmOptionTenors.emplace_back(1, Months);
+            atmOptionTenors.emplace_back(6, Months);
+            atmOptionTenors.emplace_back(1, Years);
+            atmOptionTenors.emplace_back(5, Years);
+            atmOptionTenors.emplace_back(10, Years);
+            atmOptionTenors.emplace_back(30, Years);
 
             atmSwapTenors = std::vector<Period>();
-            atmSwapTenors.push_back(Period(1, Years));
-            atmSwapTenors.push_back(Period(5, Years));
-            atmSwapTenors.push_back(Period(10, Years));
-            atmSwapTenors.push_back(Period(30, Years));
+            atmSwapTenors.emplace_back(1, Years);
+            atmSwapTenors.emplace_back(5, Years);
+            atmSwapTenors.emplace_back(10, Years);
+            atmSwapTenors.emplace_back(30, Years);
 
             atmVolMatrix = Matrix(atmOptionTenors.size(), atmSwapTenors.size());
             //atmVolMatrix[0][0]=0.1300; atmVolMatrix[0][1]=0.1560; atmVolMatrix[0][2]=0.1390; atmVolMatrix[0][3]=0.1220;
@@ -196,14 +226,14 @@ namespace range_accrual_test {
 
             //swaptionvolcube
             optionTenors = std::vector<Period>();
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(30, Years));
+            optionTenors.emplace_back(1, Years);
+            optionTenors.emplace_back(10, Years);
+            optionTenors.emplace_back(30, Years);
 
             swapTenors = std::vector<Period>();
-            swapTenors.push_back(Period(2, Years));
-            swapTenors.push_back(Period(10, Years));
-            swapTenors.push_back(Period(30, Years));
+            swapTenors.emplace_back(2, Years);
+            swapTenors.emplace_back(10, Years);
+            swapTenors.emplace_back(30, Years);
 
             strikeSpreads = std::vector<Rate>();
             strikeSpreads.push_back(-0.020);

@@ -401,9 +401,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     std::vector<PiecewiseConstantAbcdVariance >
                                     swapVariances;
     for (Size i=0; i<numberBigRates; ++i) {
-        swapVariances.push_back(
-            PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
-                                          i, bigRateTimes));
+        swapVariances.emplace_back(a_, b_, c_, d_, i, bigRateTimes);
     }
 
     VolatilityInterpolationSpecifierabcd varianceInterpolator(period, offset, swapVariances, // these should be associated with the long rates

@@ -111,9 +111,8 @@ namespace QuantLib {
         }
 
         for (Size i=0; i < data_->s_.rows(); ++i) {
-            data_->interpl_.push_back(
-                LinearInterpolation(data_->t_.begin(), data_->t_.end(),
-                                    data_->s_.row_begin(i)));
+            data_->interpl_.emplace_back(data_->t_.begin(), data_->t_.end(),
+                                         data_->s_.row_begin(i));
         }
     }
 

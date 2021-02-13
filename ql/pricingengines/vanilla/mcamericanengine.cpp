@@ -46,7 +46,7 @@ namespace QuantLib {
         using namespace ext::placeholders;
 
         // the payoff gives an additional value
-        v_.push_back(ext::bind(&AmericanPathPricer::payoff, this, _1));
+        v_.emplace_back(ext::bind(&AmericanPathPricer::payoff, this, _1));
 
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);

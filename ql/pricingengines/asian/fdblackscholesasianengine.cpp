@@ -98,7 +98,7 @@ namespace QuantLib {
             QL_REQUIRE(t >= 0, "Fixing dates must not contain past date");
             averageTimes.push_back(t);
         }
-        stoppingTimes.push_back(std::vector<Time>(averageTimes));
+        stoppingTimes.emplace_back(averageTimes);
         stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
                 new FdmArithmeticAverageCondition(
                         averageTimes, arguments_.runningAccumulator,

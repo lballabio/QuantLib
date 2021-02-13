@@ -686,7 +686,7 @@ namespace QuantLib {
       nVariables_(factorWeights.size())
     {
         for (double factorWeight : factorWeights)
-            factorWeights_.push_back(std::vector<Real>(1, factorWeight));
+            factorWeights_.emplace_back(1, factorWeight);
         for (double factorWeight : factorWeights)
             idiosyncFctrs_.push_back(std::sqrt(1. - factorWeight * factorWeight));
         //convert row to column vector....

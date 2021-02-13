@@ -72,14 +72,12 @@ namespace QuantLib {
         std::vector<Time> rebateTimes = exercise_->possibleCashFlowTimes();
         rebateDiscounters_.reserve(rebateTimes.size());
         for (i=0; i<rebateTimes.size(); ++i)
-            rebateDiscounters_.push_back(
-                         MarketModelDiscounter(rebateTimes[i], rateTimes));
+            rebateDiscounters_.emplace_back(rebateTimes[i], rateTimes);
 
         std::vector<Time> controlTimes = control_->possibleCashFlowTimes();
         controlDiscounters_.reserve(controlTimes.size());
         for (i=0; i<controlTimes.size(); ++i)
-            controlDiscounters_.push_back(
-                         MarketModelDiscounter(controlTimes[i], rateTimes));
+            controlDiscounters_.emplace_back(controlTimes[i], rateTimes);
 
         std::vector<Size> basisSizes = basisSystem_->numberOfFunctions();
         basisValues_.resize(basisSystem_->numberOfExercises());

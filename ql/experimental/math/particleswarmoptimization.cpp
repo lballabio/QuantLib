@@ -71,11 +71,11 @@ namespace QuantLib {
         //Prepare containers
         for (Size i = 0; i < M_; i++) {
             const SobolRsg::sample_type::value_type &sample = sobol.nextSequence().value;
-            X_.push_back(Array(N_, 0.0));
+            X_.emplace_back(N_, 0.0);
             Array& x = X_.back();
-            V_.push_back(Array(N_, 0.0));
+            V_.emplace_back(N_, 0.0);
             Array& v = V_.back();
-            gBX_.push_back(Array(N_, 0.0));
+            gBX_.emplace_back(N_, 0.0);
             for (Size j = 0; j < N_; j++) {
                 //Assign X=lb+(ub-lb)*random
                 x[j] = lX_[j] + bounds[j] * sample[2 * j];

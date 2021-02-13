@@ -106,7 +106,7 @@ struct CommonVars {
 
             dates.reserve(datesTmp.size());
             for (int& it : datesTmp)
-                dates.push_back(Date(it));
+                dates.emplace_back(it);
 
             rates += -0.00292, -0.00292, -0.001441, -0.00117, -0.001204,
                 -0.001212, -0.001223, -0.001236, -0.001221, -0.001238,
@@ -131,7 +131,7 @@ struct CommonVars {
                 53087, 54913, 56739, 60392, 64045;
 
             for (int& it : datesTmp)
-                dates.push_back(Date(it));
+                dates.emplace_back(it);
 
             rates += 0.000649, 0.000649, 0.000684, 0.000717, 0.000745, 0.000872,
                 0.000905, 0.000954, 0.001532, 0.002319, 0.003147, 0.003949,
@@ -194,22 +194,22 @@ struct CommonVars {
 
           //atm cap volatility curve
           optionTenors = std::vector<Period>();
-          optionTenors.push_back(Period(1, Years));
-          optionTenors.push_back(Period(18, Months));
-          optionTenors.push_back(Period(2, Years));
-          optionTenors.push_back(Period(3, Years));
-          optionTenors.push_back(Period(4, Years));
-          optionTenors.push_back(Period(5, Years));
-          optionTenors.push_back(Period(6, Years));
-          optionTenors.push_back(Period(7, Years));
-          optionTenors.push_back(Period(8, Years));
-          optionTenors.push_back(Period(9, Years));
-          optionTenors.push_back(Period(10, Years));
-          optionTenors.push_back(Period(12, Years));
-          optionTenors.push_back(Period(15, Years));
-          optionTenors.push_back(Period(20, Years));
-          optionTenors.push_back(Period(25, Years));
-          optionTenors.push_back(Period(30, Years));
+          optionTenors.emplace_back(1, Years);
+          optionTenors.emplace_back(18, Months);
+          optionTenors.emplace_back(2, Years);
+          optionTenors.emplace_back(3, Years);
+          optionTenors.emplace_back(4, Years);
+          optionTenors.emplace_back(5, Years);
+          optionTenors.emplace_back(6, Years);
+          optionTenors.emplace_back(7, Years);
+          optionTenors.emplace_back(8, Years);
+          optionTenors.emplace_back(9, Years);
+          optionTenors.emplace_back(10, Years);
+          optionTenors.emplace_back(12, Years);
+          optionTenors.emplace_back(15, Years);
+          optionTenors.emplace_back(20, Years);
+          optionTenors.emplace_back(25, Years);
+          optionTenors.emplace_back(30, Years);
 
           //atm capfloor vols from mkt vol matrix using flat yield curve
           atmTermV = std::vector<Volatility>();
@@ -248,22 +248,22 @@ struct CommonVars {
 
             //cap volatility smile matrix
             optionTenors = std::vector<Period>();
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(18, Months));
-            optionTenors.push_back(Period(2, Years));
-            optionTenors.push_back(Period(3, Years));
-            optionTenors.push_back(Period(4, Years));
-            optionTenors.push_back(Period(5, Years));
-            optionTenors.push_back(Period(6, Years));
-            optionTenors.push_back(Period(7, Years));
-            optionTenors.push_back(Period(8, Years));
-            optionTenors.push_back(Period(9, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(12, Years));
-            optionTenors.push_back(Period(15, Years));
-            optionTenors.push_back(Period(20, Years));
-            optionTenors.push_back(Period(25, Years));
-            optionTenors.push_back(Period(30, Years));
+            optionTenors.emplace_back(1, Years);
+            optionTenors.emplace_back(18, Months);
+            optionTenors.emplace_back(2, Years);
+            optionTenors.emplace_back(3, Years);
+            optionTenors.emplace_back(4, Years);
+            optionTenors.emplace_back(5, Years);
+            optionTenors.emplace_back(6, Years);
+            optionTenors.emplace_back(7, Years);
+            optionTenors.emplace_back(8, Years);
+            optionTenors.emplace_back(9, Years);
+            optionTenors.emplace_back(10, Years);
+            optionTenors.emplace_back(12, Years);
+            optionTenors.emplace_back(15, Years);
+            optionTenors.emplace_back(20, Years);
+            optionTenors.emplace_back(25, Years);
+            optionTenors.emplace_back(30, Years);
 
             strikes = std::vector<Rate>();
             strikes.push_back(0.015);
@@ -309,22 +309,22 @@ struct CommonVars {
 
             // cap volatility smile matrix
             optionTenors = std::vector< Period >();
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(18, Months));
-            optionTenors.push_back(Period(2, Years));
-            optionTenors.push_back(Period(3, Years));
-            optionTenors.push_back(Period(4, Years));
-            optionTenors.push_back(Period(5, Years));
-            optionTenors.push_back(Period(6, Years));
-            optionTenors.push_back(Period(7, Years));
-            optionTenors.push_back(Period(8, Years));
-            optionTenors.push_back(Period(9, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(12, Years));
-            optionTenors.push_back(Period(15, Years));
-            optionTenors.push_back(Period(20, Years));
-            optionTenors.push_back(Period(25, Years));
-            optionTenors.push_back(Period(30, Years));
+            optionTenors.emplace_back(1, Years);
+            optionTenors.emplace_back(18, Months);
+            optionTenors.emplace_back(2, Years);
+            optionTenors.emplace_back(3, Years);
+            optionTenors.emplace_back(4, Years);
+            optionTenors.emplace_back(5, Years);
+            optionTenors.emplace_back(6, Years);
+            optionTenors.emplace_back(7, Years);
+            optionTenors.emplace_back(8, Years);
+            optionTenors.emplace_back(9, Years);
+            optionTenors.emplace_back(10, Years);
+            optionTenors.emplace_back(12, Years);
+            optionTenors.emplace_back(15, Years);
+            optionTenors.emplace_back(20, Years);
+            optionTenors.emplace_back(25, Years);
+            optionTenors.emplace_back(30, Years);
             // 16
 
             strikes = std::vector< Rate >();
