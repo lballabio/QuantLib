@@ -817,8 +817,7 @@ namespace QuantLib {
                 (12.*suma1*suma1*suma2 - 
                     6.*std::pow(suma1,4.)/suma0)/suma0)/suma0)/suma0;
         }
-        return ext::tuple<Real, Real, Real, Real>(deriv0, deriv2, 
-            deriv3, deriv4);
+        return {deriv0, deriv2, deriv3, deriv4};
     }
 
     template<class CP>
@@ -852,7 +851,7 @@ namespace QuantLib {
             //deriv1 += suma1 / suma0;
             deriv2 += suma2 / suma0 - std::pow(suma1 / suma0 , 2.);
         }
-        return ext::tuple<Real, Real>(deriv0, deriv2);
+        return {deriv0, deriv2};
     }
 
     // ----- Saddle point search ----------------------------------------------

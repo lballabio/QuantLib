@@ -194,11 +194,11 @@ namespace QuantLib {
     }
 
     std::pair<Real, Real> SmileSectionUtils::arbitragefreeRegion() const {
-        return std::pair<Real, Real>(k_[leftIndex_], k_[rightIndex_]);
+        return {k_[leftIndex_], k_[rightIndex_]};
     }
 
     std::pair<Size, Size> SmileSectionUtils::arbitragefreeIndices() const {
-        return std::pair<Size, Size>(leftIndex_, rightIndex_);
+        return {leftIndex_, rightIndex_};
     }
 
     bool SmileSectionUtils::af(const Size i0, const Size i,

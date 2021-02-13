@@ -75,11 +75,11 @@ private:
 };
 
 inline ArrayProxy operator<<(Array& a, const Real x) {
-    return ArrayProxy(a, x);
+    return {a, x};
 }
 
 inline MatrixProxy operator<<(Matrix& m, const Real x) {
-    return MatrixProxy(m, x);
+    return {m, x};
 }
 
 } // namespace initializers

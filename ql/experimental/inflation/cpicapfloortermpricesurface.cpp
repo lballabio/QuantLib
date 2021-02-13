@@ -110,7 +110,7 @@ namespace QuantLib {
 
     Date CPICapFloorTermPriceSurface::cpiOptionDateFromTenor(const Period& p) const
     {
-        return Date(calendar().adjust(referenceDate() + p, businessDayConvention()));
+        return calendar().adjust(referenceDate() + p, businessDayConvention());
     }
 
     
