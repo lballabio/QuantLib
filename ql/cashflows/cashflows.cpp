@@ -248,7 +248,8 @@ namespace QuantLib {
                                      bool includeSettlementDateFlows,
                                      Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
@@ -263,7 +264,8 @@ namespace QuantLib {
                                    bool includeSettlementDateFlows,
                                    Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
@@ -278,7 +280,8 @@ namespace QuantLib {
                                          bool includeSettlementDateFlows,
                                          Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
@@ -293,7 +296,8 @@ namespace QuantLib {
                                        bool includeSettlementDateFlows,
                                        Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {

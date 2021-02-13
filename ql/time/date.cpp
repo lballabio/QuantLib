@@ -176,7 +176,7 @@ namespace QuantLib {
               if (d == 29 && m == February && !isLeap(y))
                   d = 28;
 
-              return Date(d,m,y);
+              return {d, m, y};
           }
           default:
             QL_FAIL("undefined time units");
@@ -773,7 +773,7 @@ namespace QuantLib {
         std::time_t t;
 
         if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
-            return Date();
+            return {};
         std::tm *lt = std::localtime(&t);
         return {Day(lt->tm_mday), Month(lt->tm_mon + 1), Year(lt->tm_year + 1900)};
     }
