@@ -1118,7 +1118,7 @@ void addForwards(MultiProductComposite& product,
                      product.add(forwards);
 
                      // computing and storing expected values
-                     subProductExpectedValues.push_back(SubProductExpectedValues("Forward"));
+                     subProductExpectedValues.emplace_back("Forward");
                      subProductExpectedValues.back().errorThreshold = 2.50;
                      for (Size i=0; i<todaysForwards.size(); ++i) {
                          subProductExpectedValues.back().values.push_back(
@@ -1151,7 +1151,7 @@ void addOptionLets(MultiProductComposite& product,
                        product.add(optionlets);
 
                        // computing and storing expected values
-                       subProductExpectedValues.push_back(SubProductExpectedValues("Caplet"));
+                       subProductExpectedValues.emplace_back("Caplet");
                        subProductExpectedValues.back().errorThreshold = 2.50;
                        for (Size i=0; i<todaysForwards.size(); ++i) {
                            subProductExpectedValues.back().values.push_back(
@@ -1174,7 +1174,7 @@ void addCoinitialSwaps(MultiProductComposite& product,
                                paymentTimes, fixedRate);
                            product.add(multiStepCoinitialSwaps);
                            // computing and storing expected values
-                           subProductExpectedValues.push_back(SubProductExpectedValues("coinitial swap"));
+                           subProductExpectedValues.emplace_back("coinitial swap");
                            subProductExpectedValues.back().testBias = false;
                            subProductExpectedValues.back().errorThreshold = 2.32;
                            Real coinitialSwapValue = 0;
@@ -1204,7 +1204,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
                                         product.add(swaps);
                                         product.add(swaptions);
 
-                                        subProductExpectedValues.push_back(SubProductExpectedValues("coterminal swap"));
+                                        subProductExpectedValues.emplace_back("coterminal swap");
                                         subProductExpectedValues.back().testBias = false;
                                         subProductExpectedValues.back().errorThreshold = 2.32;
                                         LMMCurveState curveState(rateTimes);  // not the best way to detect errors in LMMCurveState...
@@ -1218,7 +1218,8 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
                                         // we clone the prooduct to be able to finalize it and call evolution function member on it
                                         MultiProductComposite productClone = product;
                                         productClone.finalize();
-                                        subProductExpectedValues.push_back(SubProductExpectedValues("coterminal swaption"));
+                                        subProductExpectedValues.emplace_back(
+                                            "coterminal swaption");
                                         subProductExpectedValues.back().testBias = false;
                                         subProductExpectedValues.back().errorThreshold = 2.32;
                                         const Spread displacement = 0;
@@ -2813,7 +2814,7 @@ void MarketModelTest::testPathwiseVegas()
 
             for (Size l = 0; l < evolution.numberOfSteps(); ++l)
             {
-                vegaBumps.push_back(std::vector<Matrix>());
+                vegaBumps.emplace_back();
                 for (Size k=0; k < evolution.numberOfRates(); k=k+bumpIncrement)
                 {
                     for (Size f=0; f < factorsToTest; ++f)
@@ -2855,37 +2856,20 @@ void MarketModelTest::testPathwiseVegas()
                 for (Size l=0; l < evolution.numberOfSteps(); ++l)
                 {
                     const Matrix& pseudoRoot = marketModel->pseudoRoot(l);
-                    testees.push_back(RatePseudoRootJacobian(pseudoRoot,
-                        evolution.firstAliveRate()[l],
-                        numeraires[l],
-                        evolution.rateTaus(),
-                        pseudoBumps,
-                        marketModel->displacements()
-                        ));
+                    testees.emplace_back(pseudoRoot, evolution.firstAliveRate()[l], numeraires[l],
+                                         evolution.rateTaus(), pseudoBumps,
+                                         marketModel->displacements());
 
-                      testees2.push_back(RatePseudoRootJacobianAllElements(pseudoRoot,
-                        evolution.firstAliveRate()[l],
-                        numeraires[l],
-                        evolution.rateTaus(),
-                        marketModel->displacements()
-                        ));
+                    testees2.emplace_back(pseudoRoot, evolution.firstAliveRate()[l], numeraires[l],
+                                          evolution.rateTaus(), marketModel->displacements());
 
 
-                    testers.push_back(RatePseudoRootJacobianNumerical(pseudoRoot,
-                        evolution.firstAliveRate()[l],
-                        numeraires[l],
-                        evolution.rateTaus(),
-                        pseudoBumps,
-                        marketModel->displacements()
-                        ));
-                    testersDown.push_back(RatePseudoRootJacobianNumerical(pseudoRoot,
-                        evolution.firstAliveRate()[l],
-                        numeraires[l],
-                        evolution.rateTaus(),
-                        pseudoBumpsDown,
-                        marketModel->displacements()
-                        ));
-
+                    testers.emplace_back(pseudoRoot, evolution.firstAliveRate()[l], numeraires[l],
+                                         evolution.rateTaus(), pseudoBumps,
+                                         marketModel->displacements());
+                    testersDown.emplace_back(pseudoRoot, evolution.firstAliveRate()[l],
+                                             numeraires[l], evolution.rateTaus(), pseudoBumpsDown,
+                                             marketModel->displacements());
                 }
 
 
@@ -4673,10 +4657,10 @@ void MarketModelTest::testCovariance() {
     evolTimes.push_back(evolTimes4);
 
     std::vector<std::string> evolNames;
-    evolNames.push_back("one evolution time");
-    evolNames.push_back("evolution times on rate fixings");
-    evolNames.push_back("evolution times on rate fixings and midpoints between fixings");
-    evolNames.push_back("irregular evolution times");
+    evolNames.emplace_back("one evolution time");
+    evolNames.emplace_back("evolution times on rate fixings");
+    evolNames.emplace_back("evolution times on rate fixings and midpoints between fixings");
+    evolNames.emplace_back("irregular evolution times");
 
     std::vector<Real> ks(n-1,1.0);
     std::vector<Real> displ(n-1,0.0);
@@ -4688,8 +4672,8 @@ void MarketModelTest::testCovariance() {
                           new TimeHomogeneousForwardCorrelation(c,rateTimes));
 
     std::vector<std::string> modelNames;
-    modelNames.push_back("FlatVol");
-    modelNames.push_back("AbcdVol");
+    modelNames.emplace_back("FlatVol");
+    modelNames.emplace_back("AbcdVol");
 
     for(Size k=0;k<modelNames.size();k++) {
         for(Size l=0;l<evolNames.size();l++) {

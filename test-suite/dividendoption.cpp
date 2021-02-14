@@ -995,8 +995,8 @@ void DividendOptionTest::testEscrowedDividendModel() {
         ext::make_shared<EuropeanExercise>(maturity));
 
     std::vector<Date> dividendDates;
-    dividendDates.push_back(Date(today + Period(3, Months)));
-    dividendDates.push_back(Date(today + Period(9, Months)));
+    dividendDates.emplace_back(today + Period(3, Months));
+    dividendDates.emplace_back(today + Period(9, Months));
 
     std::vector<Real> dividendAmounts;
     dividendAmounts.push_back(8.3);

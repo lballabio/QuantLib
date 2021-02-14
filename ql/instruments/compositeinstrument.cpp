@@ -23,7 +23,7 @@ namespace QuantLib {
 
     void CompositeInstrument::add(
            const ext::shared_ptr<Instrument>& instrument, Real multiplier) {
-        components_.push_back(std::make_pair(instrument,multiplier));
+        components_.emplace_back(instrument, multiplier);
         registerWith(instrument);
         update();
         // When we ask for the NPV of an expired composite, the

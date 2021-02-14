@@ -55,16 +55,16 @@ namespace QuantLib {
         //Prepare containers
         for (Size i = 0; i < M_; i++) {
             const SobolRsg::sample_type::value_type &sample = sobol.nextSequence().value;
-            x_.push_back(Array(N_, 0.0));
-            xI_.push_back(Array(N_, 0.0));
-            xRW_.push_back(Array(N_, 0.0));
+            x_.emplace_back(N_, 0.0);
+            xI_.emplace_back(N_, 0.0);
+            xRW_.emplace_back(N_, 0.0);
             Array& x = x_.back();
             for (Size j = 0; j < N_; j++) {
                 //Assign X=lb+(ub-lb)*random
                 x[j] = lX_[j] + bounds[j] * sample[j];
             }
             //Evaluate point
-            values_.push_back(std::make_pair(P.value(x), i));
+            values_.emplace_back(P.value(x), i);
         }
 
         //init intensity & randomWalk

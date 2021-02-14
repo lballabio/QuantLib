@@ -52,7 +52,7 @@ namespace QuantLib {
         for(Size i=0; i <eventTypes.size(); i++) {
             DefaultProbKey keytmp(eventTypes[i], currencies[i],
                 seniorities[i]);
-            probabilities_.push_back(std::make_pair(keytmp, curves[i]));
+            probabilities_.emplace_back(keytmp, curves[i]);
         }
     }
 

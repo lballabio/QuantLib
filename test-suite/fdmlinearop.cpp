@@ -227,9 +227,9 @@ void FdmLinearOpTest::testUniformGridMesher() {
 
     ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>(-5, 10));
-    boundaries.push_back(std::pair<Real, Real>( 5, 100));
-    boundaries.push_back(std::pair<Real, Real>( 10, 20));
+    boundaries.emplace_back(-5, 10);
+    boundaries.emplace_back(5, 100);
+    boundaries.emplace_back(10, 20);
 
     UniformGridMesher mesher(layout, boundaries);
 
@@ -258,9 +258,9 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>(-5, 5));
-    boundaries.push_back(std::pair<Real, Real>( 0, 10));
-    boundaries.push_back(std::pair<Real, Real>( 5, 15));
+    boundaries.emplace_back(-5, 5);
+    boundaries.emplace_back(0, 10);
+    boundaries.emplace_back(5, 15);
 
     ext::shared_ptr<FdmMesher> mesher(
                                  new UniformGridMesher(index, boundaries));
@@ -319,9 +319,9 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
-    boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
-    boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
+    boundaries.emplace_back(0, 0.5);
+    boundaries.emplace_back(0, 0.5);
+    boundaries.emplace_back(0, 0.5);
 
     ext::shared_ptr<FdmMesher> mesher(
                             new UniformGridMesher(index, boundaries));
@@ -585,9 +585,9 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
-    boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
-    boundaries.push_back(std::pair<Real, Real>( 0, 0.5));
+    boundaries.emplace_back(0, 0.5);
+    boundaries.emplace_back(0, 0.5);
+    boundaries.emplace_back(0, 0.5);
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
@@ -684,8 +684,8 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
     ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>( 0, 1.0));
-    boundaries.push_back(std::pair<Real, Real>( 0, 1.0));
+    boundaries.emplace_back(0, 1.0);
+    boundaries.emplace_back(0, 1.0);
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(layout, boundaries));
@@ -769,8 +769,8 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>( 3.8, 4.905274778));
-    boundaries.push_back(std::pair<Real, Real>( 0.000, 1.0));
+    boundaries.emplace_back(3.8, 4.905274778);
+    boundaries.emplace_back(0.000, 1.0);
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
@@ -863,8 +863,8 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>( 3.8, std::log(220.0)));
-    boundaries.push_back(std::pair<Real, Real>( 0.000, 1.0));
+    boundaries.emplace_back(3.8, std::log(220.0));
+    boundaries.emplace_back(0.000, 1.0);
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
@@ -942,8 +942,8 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
     std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.push_back(std::pair<Real, Real>(3.8, std::log(220.0)));
-    boundaries.push_back(std::pair<Real, Real>(0.000, 1.0));
+    boundaries.emplace_back(3.8, std::log(220.0));
+    boundaries.emplace_back(0.000, 1.0);
 
     ext::shared_ptr<FdmMesher> mesher(
                             new UniformGridMesher(index, boundaries));

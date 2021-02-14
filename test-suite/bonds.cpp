@@ -1416,7 +1416,7 @@ void BondTest::testBondFromScheduleWithDateVector()
     for (Size i = 0; i < schedule.size(); ++i) {
         Date d = schedule.date(i);
         if (d.month() == February && d.dayOfMonth() == 29)
-            dates.push_back(Date(28, February, d.year()));
+            dates.emplace_back(28, February, d.year());
         else
             dates.push_back(d);
     }

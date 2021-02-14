@@ -67,7 +67,7 @@ namespace QuantLib {
                               std::vector<Size>& numberCashFlowsThisStep,
                               std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override {
                 if (recording_)
-                    savedStates_.push_back(currentState);
+                    savedStates_.emplace_back(currentState);
                 return CallSpecifiedMultiProduct::nextTimeStep(
                                                      currentState,
                                                      numberCashFlowsThisStep,
@@ -160,8 +160,7 @@ namespace QuantLib {
         Size n =cashFlowTimes.size();
         discounters_.reserve(n);
         for (Size j=0; j<n; ++j)
-            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
-                                                         rateTimes));
+            discounters_.emplace_back(cashFlowTimes[j], rateTimes);
     }
 
 

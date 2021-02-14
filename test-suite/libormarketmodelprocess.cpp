@@ -42,8 +42,8 @@ namespace libor_market_model_process_test {
         DayCounter dayCounter = Actual360();
         std::vector<Date> dates;
         std::vector<Rate> rates;
-        dates.push_back(Date(4,September,2005));
-        dates.push_back(Date(4,September,2018));
+        dates.emplace_back(4, September, 2005);
+        dates.emplace_back(4, September, 2018);
         rates.push_back(0.01);
         rates.push_back(0.08);
 

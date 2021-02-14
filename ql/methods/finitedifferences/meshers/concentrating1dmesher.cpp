@@ -209,10 +209,10 @@ namespace QuantLib {
                                     odeSolution, _1, true), points[i]),
                     QL_EPSILON, x[j], 0.5/size);
 
-                w.push_back(std::make_pair(std::min(x[size-2], x[j]), e));
+                w.emplace_back(std::min(x[size - 2], x[j]), e);
             }
         }
-        w.push_back(std::make_pair(1.0, 1.0));
+        w.emplace_back(1.0, 1.0);
         std::sort(w.begin(), w.end());
         w.erase(std::unique(w.begin(), w.end(), equal_on_first), w.end());
 

@@ -1110,9 +1110,9 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
 
     const Real beta = 10.0;
     std::vector<ext::tuple<Real, Real, bool> > critPoints;
-    critPoints.push_back(ext::tuple<Real, Real, bool>(lowerBound, beta, true));
-    critPoints.push_back(ext::tuple<Real, Real, bool>(v0, beta/100, true));
-    critPoints.push_back(ext::tuple<Real, Real, bool>(upperBound, beta, true));
+    critPoints.emplace_back(lowerBound, beta, true);
+    critPoints.emplace_back(v0, beta / 100, true);
+    critPoints.emplace_back(upperBound, beta, true);
     const ext::shared_ptr<Fdm1dMesher> varianceMesher(
 		ext::make_shared<Concentrating1dMesher>(lowerBound, upperBound, vGrid, critPoints));
 

@@ -632,8 +632,8 @@ void ScheduleTest::testCDS2015ConventionSampleDates() {
     tradeDate = Date(20, Sep, 2015);
     maturity = cdsMaturity(tradeDate, tenor, rule);
     s = makeCdsSchedule(tradeDate, maturity, rule);
-    expDates.push_back(Date(20, Sep, 2016));
-    expDates.push_back(Date(20, Dec, 2016));
+    expDates.emplace_back(20, Sep, 2016);
+    expDates.emplace_back(20, Dec, 2016);
     check_dates(s, expDates);
 
     // trade date = Mon 21 Sep 2015, first period drops out of schedule.
@@ -691,7 +691,7 @@ void ScheduleTest::testCDSConventionSampleDates() {
     tradeDate = Date(20, Sep, 2015);
     maturity = cdsMaturity(tradeDate, tenor, rule);
     s = makeCdsSchedule(tradeDate, maturity, rule);
-    expDates.push_back(Date(20, Dec, 2016));
+    expDates.emplace_back(20, Dec, 2016);
     check_dates(s, expDates);
 
     // trade date = Mon 21 Sep 2015, first period drops out of schedule.
@@ -749,7 +749,7 @@ void ScheduleTest::testOldCDSConventionSampleDates() {
     expDates[0] = tradeDatePlusOne = Date(20, Sep, 2015);
     maturity = cdsMaturity(tradeDatePlusOne, tenor, rule);
     s = makeCdsSchedule(tradeDatePlusOne, maturity, rule);
-    expDates.push_back(Date(20, Dec, 2016));
+    expDates.emplace_back(20, Dec, 2016);
     check_dates(s, expDates);
 
     // trade date plus 1D = Mon 21 Sep 2015, no change.
@@ -808,10 +808,10 @@ void ScheduleTest::testDateConstructor() {
                        "possibly additional meta information...");
 
     std::vector<Date> dates;
-    dates.push_back(Date(16, May, 2015));
-    dates.push_back(Date(18, May, 2015));
-    dates.push_back(Date(18, May, 2016));
-    dates.push_back(Date(31, December, 2017));
+    dates.emplace_back(16, May, 2015);
+    dates.emplace_back(18, May, 2015);
+    dates.emplace_back(18, May, 2016);
+    dates.emplace_back(31, December, 2017);
 
     // schedule without any additional information
     Schedule schedule1(dates);
