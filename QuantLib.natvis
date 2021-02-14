@@ -10,18 +10,22 @@
     <Intrinsic Name="_e"          Expression="_c()-(1461*_d())/4"/>
     <Intrinsic Name="_m"          Expression="(5*_e()+2)/153"/>
     <Intrinsic Name="day"         Expression="_e()-((153*_m()+2)/5)+1"/>
+    <Intrinsic Name="day_tens"    Expression="day()/10"/>
+    <Intrinsic Name="day_units"   Expression="day()%10"/>
     <Intrinsic Name="month"       Expression="_m()+3-12*(_m()/10)"/>
+    <Intrinsic Name="month_tens"  Expression="month()/10"/>
+    <Intrinsic Name="month_units" Expression="month()%10"/>
     <Intrinsic Name="year"        Expression="100*_b()+_d()-4800+(_m()/10)"/>
-    <DisplayString>{year()}-{month()}-{day()}</DisplayString>
+    <DisplayString>{year()}-{month_tens()}{month_units()}-{day_tens()}{day_units()}</DisplayString>
     <Expand>
       <Synthetic Name="[year]">
         <DisplayString>{year()}</DisplayString>
       </Synthetic>
       <Synthetic Name="[month]">
-        <DisplayString>{month()}</DisplayString>
+        <DisplayString>{month_tens()}{month_units()}</DisplayString>
       </Synthetic>
       <Synthetic Name="[day]">
-        <DisplayString>{day()}</DisplayString>
+        <DisplayString>{day_tens()}{day_units()}</DisplayString>
       </Synthetic>
     </Expand>
   </Type>
