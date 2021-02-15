@@ -244,10 +244,8 @@ namespace QuantLib {
     //! Terminal level:
     template<>
     inline void GaussianQuadMultidimIntegrator::spawnFcts<1>() const {
-        integrationEntries_[0] =
-            [&](ext::function<Real (const std::vector<Real>&)> f, Real x) {
-                return scalarIntegrator<1>(f, x);
-            };
+        integrationEntries_[0] = [&](const ext::function<Real(const std::vector<Real>&)>& f,
+                                     Real x) { return scalarIntegrator<1>(f, x); };
         integrationEntriesVR_[0] =
             [&](const ext::function<detail::DispArray(const std::vector<Real>&)>& f, Real x) {
                 return vectorIntegratorVR<1>(f, x);
