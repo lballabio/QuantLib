@@ -596,7 +596,7 @@ namespace QuantLib {
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
-        Disposable<std::vector<Real> > integratedExpectedValue(
+        Disposable<std::vector<Real> > integratedExpectedValueV(
             // const ext::function<std::vector<Real>(
             const ext::function<Disposable<std::vector<Real> >(
                 const std::vector<Real>& v1)>& f ) const {

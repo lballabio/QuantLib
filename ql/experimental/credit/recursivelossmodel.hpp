@@ -198,7 +198,7 @@ namespace QuantLib {
 
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
-        return copula_->integratedExpectedValue(
+        return copula_->integratedExpectedValueV(
             ext::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
                 ext::bind(
                     &RecursiveLossModel::conditionalLossProb,

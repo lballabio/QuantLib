@@ -616,7 +616,7 @@ namespace QuantLib {
             invUncondProbs[i] = 
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
-        return copula_->integratedExpectedValue(
+        return copula_->integratedExpectedValueV(
             ext::function<Disposable<std::vector<Real> > (
                 const std::vector<Real>& v1)>(
                     ext::bind(

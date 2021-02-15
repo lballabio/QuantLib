@@ -89,7 +89,7 @@ namespace QuantLib {
                 invProbs[iName] = 
                     copula_->inverseCumulativeY(invProbs[iName], iName);
 
-            return copula_->integratedExpectedValue(
+            return copula_->integratedExpectedValueV(
                 [&](const std::vector<Real>& v1) {
                     return lossProbability(date, notionals, invProbs, v1);
                 });
