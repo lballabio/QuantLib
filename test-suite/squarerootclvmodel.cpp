@@ -84,18 +84,6 @@ namespace square_root_clv_model {
 
     typedef boost::math::non_central_chi_squared_distribution<Real>
         chi_squared_type;
-
-    class integrand {
-        CLVModelPayoff payoff;
-        chi_squared_type dist;
-      public:
-        integrand(CLVModelPayoff payoff, const chi_squared_type& dist)
-        : payoff(std::move(payoff)), dist(dist) {}
-        Real operator()(Real x) const {
-            return payoff(x) * boost::math::pdf(dist, x);
-        }
-    };
-
 }
 
 
@@ -166,7 +154,9 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
-        const ext::function<Real(Real)> f = integrand(clvModelPayoff, dist);
+        const ext::function<Real(Real)> f = [&](Real xi) {
+            return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
+        };
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-6)(
             f, x.front(), x.back()) * rTS->discount(maturity);
@@ -261,13 +251,13 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
                 rTS->discount(m)).value();
 
             const CLVModelPayoff clvModelPayoff(
-                optionType, strike,
-                ext::bind(g, t, ext::placeholders::_1));
+                optionType, strike, ext::bind(g, t, ext::placeholders::_1));
 
-            const ext::function<Real(Real)> f = integrand(clvModelPayoff, dist);
+            const ext::function<Real(Real)> f = [&](Real xi) {
+                return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
+            };
 
             const Array x = model.collocationPointsX(m);
-
             const Real calculated = GaussLobattoIntegral(1000, 1e-3)(
                 f, x.front(), x.back()) * rTS->discount(m);
 
