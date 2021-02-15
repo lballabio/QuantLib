@@ -21,7 +21,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functional.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/termstructures/credit/hazardratestructure.hpp>
 #include <utility>

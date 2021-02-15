@@ -88,7 +88,6 @@
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/functional.hpp>
 
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>

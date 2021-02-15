@@ -25,7 +25,6 @@
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/functional.hpp>
 #include <ql/handle.hpp>
-#include <ql/math/functional.hpp>
 #include <algorithm>
 #include <numeric>
 #include <utility>

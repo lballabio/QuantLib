@@ -21,8 +21,6 @@
 
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/modifiedbessel.hpp>
-#include <ql/functional.hpp>
-
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <boost/functional/hash.hpp>

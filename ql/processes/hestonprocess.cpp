@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functional.hpp>
 #include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>

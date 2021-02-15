@@ -21,9 +21,7 @@
 /*! \file lsmbasissystem.cpp
     \brief utility classes for longstaff schwartz early exercise Monte Carlo
 */
-// lsmbasissystem.hpp
 
-#include <ql/functional.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <numeric>

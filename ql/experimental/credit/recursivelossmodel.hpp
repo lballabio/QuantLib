@@ -22,7 +22,6 @@
 
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
-#include <ql/functional.hpp>
 #include <map>
 #include <algorithm>
 
@@ -160,17 +159,10 @@ namespace QuantLib {
             basket_->remainingProbabilities(date);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &RecursiveLossModel::expectedConditionalLoss,
-                    this,
-                    ext::cref(uncDefProb),
-                    _1)
-                )
-            );
+            [&](const std::vector<Real>& v1) {
+                return expectedConditionalLoss(uncDefProb, v1);
+            });
             */
-/**/
-        using namespace ext::placeholders;
 
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
@@ -179,34 +171,21 @@ namespace QuantLib {
            invProb.push_back(copula_->inverseCumulativeY(uncDefProb[i], i));
            ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &RecursiveLossModel::expectedConditionalLossInvP,
-                    this,
-                    ext::cref(invProb),
-                    _1)
-                )
-            );
-            
+            [&](const std::vector<Real>& v1) {
+                return expectedConditionalLossInvP(invProb, v1);
+            });
     }
 
     template<class CP>
     inline Disposable<std::vector<Real> > 
     RecursiveLossModel<CP>::lossProbability(const Date& date) const {
 
-        using namespace ext::placeholders;
-
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         return copula_->integratedExpectedValueV(
-            ext::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &RecursiveLossModel::conditionalLossProb,
-                    this,
-                    ext::cref(uncDefProb),
-                    _1)
-                )
-            );
+            [&](const std::vector<Real>& v1) {
+                return conditionalLossProb(uncDefProb, v1);
+            });
     }
 
     // -------------------------------------------------------------------

@@ -49,7 +49,6 @@
 #include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
-#include <ql/functional.hpp>
 
 #include <boost/assign/std/vector.hpp>
 

@@ -25,7 +25,6 @@
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
-// for template spezs
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
@@ -33,7 +32,6 @@
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
-#include <ql/functional.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp

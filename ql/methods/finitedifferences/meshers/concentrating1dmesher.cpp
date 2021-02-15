@@ -34,7 +34,6 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
-#include <ql/functional.hpp>
 #include <cmath>
 
 // asinh is missing in WIN32 (and possibly on other compilers)
