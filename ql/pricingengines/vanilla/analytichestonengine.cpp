@@ -25,7 +25,6 @@
 
 #include <ql/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/exponentialintegrals.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -633,9 +632,9 @@ namespace QuantLib {
             const Real epsilon = enginePtr->andersenPiterbargEpsilon_
                 *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
 
-            const ext::function<Real()> uM = ext::bind(
-                Integration::andersenPiterbargIntegrationLimit,
-                    c_inf, epsilon, v0, term);
+            const ext::function<Real()> uM = [&](){
+                return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
+            };
 
             AP_Helper cvHelper(term, fwdPrice, strikePrice,
                 (cpxLog == OptimalCV)
@@ -864,9 +863,7 @@ namespace QuantLib {
         Real maxBound) const {
 
         return AnalyticHestonEngine::Integration::calculate(
-            c_inf, f,
-            ext::bind(&constant<Real, Real>::operator(),
-                constant<Real, Real>(maxBound), 1.0));
+            c_inf, f, [=](){ return maxBound; });
     }
 
     Real AnalyticHestonEngine::Integration::andersenPiterbargIntegrationLimit(
