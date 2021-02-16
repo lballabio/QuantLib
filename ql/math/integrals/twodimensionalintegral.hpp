@@ -46,17 +46,14 @@ namespace QuantLib {
         Real operator()(const ext::function<Real (Real, Real)>& f,
                         const std::pair<Real, Real>& a,
                         const std::pair<Real, Real>& b) const {
-            using namespace ext::placeholders;
-            return (*integratorX_)(
-                 ext::bind(&TwoDimensionalIntegral::g, this, f, _1,
-                             a.second, b.second), a.first, b.first);
+            return (*integratorX_)([&](Real x) { return g(f, x, a.second, b.second); },
+                                   a.first, b.first);
         }
 
       private:
         Real g(const ext::function<Real (Real, Real)>& f,
                Real x, Real a, Real b) const {
-            using namespace ext::placeholders;
-            return (*integratorY_)(ext::bind(f, x, _1), a, b);
+            return (*integratorY_)([&](Real y) { return f(x, y); }, a, b);
         }
 
         const ext::shared_ptr<Integrator> integratorX_, integratorY_;

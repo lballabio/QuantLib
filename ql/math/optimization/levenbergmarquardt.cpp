@@ -86,8 +86,7 @@ namespace QuantLib {
             ext::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
         MINPACK::LmdifCostFunction lmdifJacFunction =
             useCostFunctionsJacobian_
-                ? ext::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3,
-                              _4, _5)
+                ? ext::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3, _4, _5)
                 : MINPACK::LmdifCostFunction();
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),
                        endCriteria.functionEpsilon(),
