@@ -284,7 +284,6 @@ namespace normal_clv_model_test {
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
-    using namespace ext::placeholders;
     using namespace normal_clv_model_test;
 
     SavedSettings backup;
@@ -362,8 +361,8 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     }
 
     VanillaOption fdmOption(
-         ext::make_shared<CLVModelPayoff>(
-             payoff->optionType(), payoff->strike(), ext::bind(g, t, _1)),
+         ext::make_shared<CLVModelPayoff>(payoff->optionType(), payoff->strike(),
+                                          [&](Real _x) { return g(t, _x); }),
          exercise);
 
     fdmOption.setPricingEngine(

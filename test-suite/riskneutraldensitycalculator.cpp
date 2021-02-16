@@ -20,7 +20,6 @@
 
 #include "riskneutraldensitycalculator.hpp"
 #include "utilities.hpp"
-#include <ql/functional.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
@@ -493,8 +492,7 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 
             const Real cdfCalculated = rndCalculator.cdf(v, t);
             const Real cdfExpected = GaussLobattoIntegral(10000, 0.01*tol)(
-                ext::bind(&SquareRootProcessRNDCalculator::pdf,
-                          &rndCalculator, ext::placeholders::_1, t), 0, v);
+                [&](Real _x) { return rndCalculator.pdf(_x, t); }, 0, v);
 
             if (std::fabs(cdfCalculated - cdfExpected) > tol) {
                 BOOST_FAIL("failed to calculate cdf"
@@ -741,8 +739,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
         const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-8)(
-            ext::bind(&CEVRNDCalculator::pdf, calculator, ext::placeholders::_1, t),
-                      std::max(QL_EPSILON, f0-ax), f0+ax) +
+            [&](Real _x) { return calculator->pdf(_x, t); }, std::max(QL_EPSILON, f0-ax), f0+ax) +
             calculator->massAtZero(t);
 
         if (std::fabs(calculated - 1.0) > tol) {

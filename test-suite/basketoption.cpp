@@ -36,8 +36,6 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/functional.hpp>
-#include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1066,15 +1064,12 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
 
     if (speed <= Fast) {
-        #define N_TEST_CASES 5
-        #define BOOST_PP_LOCAL_MACRO(n)                                \
-            suite->add(QUANTLIB_TEST_CASE(                             \
-                ext::bind(&BasketOptionTest::testOneDAmericanValues, \
-                    (n    *LENGTH(oneDataValues))/N_TEST_CASES,        \
-                    ((n+1)*LENGTH(oneDataValues))/N_TEST_CASES)));
-
-        #define BOOST_PP_LOCAL_LIMITS (0, N_TEST_CASES-1)
-        #include BOOST_PP_LOCAL_ITERATE()
+        // unrolled to get different test names
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 0,  5); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 5, 11); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(11, 17); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(17, 23); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(23, 29); }));
     }
 
     if (speed == Slow) {

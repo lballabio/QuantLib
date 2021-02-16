@@ -110,8 +110,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/products/multistep/multisteppathwisewrapper.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
-#include <boost/preprocessor/iteration/local.hpp>
-#include <ql/functional.hpp>
 #include <sstream>
 
 using namespace QuantLib;
@@ -4749,26 +4747,29 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
 
         setup();
 
-        MarketModelType marketModels[] = {
-            ExponentialCorrelationFlatVolatility,
-            ExponentialCorrelationAbcdVolatility
-        };
-
-        Size testedFactors[] = { 4, 8, todaysForwards.size() };
-        #define BOOST_PP_LOCAL_MACRO(n)                                 \
-            suite->add(QUANTLIB_TEST_CASE(                              \
-                ext::bind(&MarketModelTest::testCallableSwapAnderson, \
-                    marketModels[n/LENGTH(testedFactors)],              \
-                    testedFactors[n%LENGTH(testedFactors)])));
-
-        #define BOOST_PP_LOCAL_LIMITS (0, 5)
-        #include BOOST_PP_LOCAL_ITERATE()
-#include <utility>
+        // unrolled to get different test names
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationFlatVolatility, 4);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationFlatVolatility, 8);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationFlatVolatility, todaysForwards.size());
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationAbcdVolatility, 4);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationAbcdVolatility, 8);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationAbcdVolatility, todaysForwards.size());
+        }));
     }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarketModelTest::testAllMultiStepProducts));
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     }

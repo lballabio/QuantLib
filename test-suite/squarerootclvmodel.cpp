@@ -90,7 +90,6 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     BOOST_TEST_MESSAGE(
         "Testing vanilla option pricing with square-root kernel process...");
 
-    using namespace ext::placeholders;
     using namespace square_root_clv_model;
 
     SavedSettings backup;
@@ -249,8 +248,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
                 std::sqrt(sabrVol->blackVariance(m, strike)),
                 rTS->discount(m)).value();
 
-            const CLVModelPayoff clvModelPayoff(
-                optionType, strike, ext::bind(g, t, ext::placeholders::_1));
+            const CLVModelPayoff clvModelPayoff(optionType, strike, [&](Real x) { return g(t, x); });
 
             const ext::function<Real(Real)> f = [&](Real xi) {
                 return clvModelPayoff(xi) * boost::math::pdf(dist, xi);

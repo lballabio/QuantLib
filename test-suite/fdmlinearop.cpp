@@ -1284,19 +1284,17 @@ void FdmLinearOpTest::testBiCGstab() {
     BOOST_TEST_MESSAGE(
         "Testing bi-conjugated gradient stabilized algorithm...");
 
-    using namespace ext::placeholders;
-
     const Size n=41, m=21;
     const Real theta = 1.0;
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const ext::function<Disposable<Array>(const Array&)> matmult(
-                                                ext::bind(&axpy, a, _1));
+    const ext::function<Disposable<Array>(const Array&)> matmult
+        = [&](const Array& _x) { return axpy(a, _x); };
 
     SparseILUPreconditioner ilu(a, 4);
-    ext::function<Disposable<Array>(const Array&)> precond(
-         ext::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+    ext::function<Disposable<Array>(const Array&)> precond
+        = [&](const Array& _x) { return ilu.apply(_x); };
 
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);
@@ -1324,19 +1322,17 @@ void FdmLinearOpTest::testGMRES() {
 #if !defined(QL_NO_UBLAS_SUPPORT)
     BOOST_TEST_MESSAGE("Testing GMRES algorithm...");
 
-    using namespace ext::placeholders;
-
     const Size n=41, m=21;
     const Real theta = 1.0;
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const ext::function<Disposable<Array>(const Array&)> matmult(
-                                                ext::bind(&axpy, a, _1));
+    const ext::function<Disposable<Array>(const Array&)> matmult
+        = [&](const Array& _x) { return axpy(a, _x); };
     
     SparseILUPreconditioner ilu(a, 4);
-    ext::function<Disposable<Array>(const Array&)> precond(
-         ext::bind(&SparseILUPreconditioner::apply, &ilu, _1));
+    ext::function<Disposable<Array>(const Array&)> precond
+        = [&](const Array& _x) { return ilu.apply(_x); };
     
     Array b(n*m);
     MersenneTwisterUniformRng rng(1234);
