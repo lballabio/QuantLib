@@ -70,12 +70,14 @@ namespace QuantLib {
 
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
+        DividendSchedule emptyDividendSchedule = DividendSchedule();
+
         const auto mesher = ext::make_shared<FdmMesherComposite>(
             ext::make_shared<FdmBlackScholesMesher>(
                 xGrid_, process_, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.1),
-                arguments_.cashFlow,
+                emptyDividendSchedule,
                 ext::shared_ptr<FdmQuantoHelper>(),
                 divAdj));
 
@@ -85,7 +87,7 @@ namespace QuantLib {
 
         const auto conditions =
             FdmStepConditionComposite::vanillaComposite(
-                arguments_.cashFlow,
+                emptyDividendSchedule,
                 arguments_.exercise, mesher,
                 innerValuecalculator,
                 process_->riskFreeRate()->referenceDate(),

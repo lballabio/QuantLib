@@ -93,7 +93,6 @@ namespace QuantLib {
         Real a = loc;
         Real b = loc;
 
-
         a -= mesher_->dminus(iter, direction_)/2.0;
         b += mesher_->dplus(iter, direction_)/2.0;
 

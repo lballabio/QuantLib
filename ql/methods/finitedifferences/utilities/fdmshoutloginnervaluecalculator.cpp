@@ -56,14 +56,15 @@ namespace QuantLib {
             process_->riskFreeRate()->discount(maturity_)/
             process_->riskFreeRate()->discount(t);
 
+        Real spot = s_t - escrowedDividendAdj_->dividendAdjustment(t);
+
+
         const Real fwd = s_t*qf/df;
         const Volatility stdDev = process_->blackVolatility()->blackForwardVol(
             t, maturity_, s_t)*std::sqrt(maturity_-t);
 
         const Real npv = blackFormula(
             payoff_->optionType(), s_t, fwd, stdDev, df);
-
-        Real spot = s_t - escrowedDividendAdj_->dividendAdjustment(t);
 
         const Real intrinsic = (payoff_->optionType() == Option::Call)
             ? spot - payoff_->strike() : payoff_->strike() - spot;
