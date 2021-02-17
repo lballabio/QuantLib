@@ -21,6 +21,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
@@ -83,28 +84,21 @@ namespace QuantLib {
             dividendSchedule = arguments_.cashFlow;
             break;
           case Escrowed:
-              for (const auto& divIter : arguments_.cashFlow) {
-
-                  const Date divDate = divIter->date();
-
-                  if (divDate <= exerciseDate && divDate >= settlementDate) {
-                      const Real divAmount = divIter->amount();
-
-                      if (divAmount != 0.0) {
-                          QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                                     "Escrowed dividend model expects an European option");
-
-                          const DiscountFactor discount =
-                              process_->riskFreeRate()->discount(divDate) /
-                              process_->dividendYield()->discount(divDate);
-
-                          spotAdjustment -= divAmount * discount;
-                      }
-                  }
-              }
+            using namespace ext::placeholders;
+            spotAdjustment = EscrowedDividendAdjustment(
+                arguments_.cashFlow,
+                process_->riskFreeRate(),
+                process_->dividendYield(),
+                ext::bind(&GeneralizedBlackScholesProcess::time, process_, _1),
+                maturity).dividendAdjustment(process_->time(settlementDate));
 
             QL_REQUIRE(process_->x0() + spotAdjustment > 0.0,
                     "spot minus dividends becomes negative");
+
+            for (const auto& divIter : arguments_.cashFlow)
+                QL_REQUIRE(divIter->amount() == 0.0 ||
+                           arguments_.exercise->type() == Exercise::European,
+                    "Escrowed dividend model expects an European option");
             break;
           default:
               QL_FAIL("unknwon cash dividend model");

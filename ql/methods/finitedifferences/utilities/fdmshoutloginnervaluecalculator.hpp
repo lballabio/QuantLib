@@ -24,7 +24,9 @@
 #ifndef quantlib_fdm_shout_log_inner_value_calculator_hpp
 #define quantlib_fdm_shout_log_inner_value_calculator_hpp
 
+#include <ql/instruments/dividendschedule.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
 
 namespace QuantLib {
 
@@ -33,17 +35,20 @@ namespace QuantLib {
 
     class FdmShoutLogInnerValueCalculator: public FdmInnerValueCalculator {
       public:
-        FdmShoutLogInnerValueCalculator(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-                                        Time maturity,
-                                        ext::shared_ptr<PlainVanillaPayoff> payoff,
-                                        ext::shared_ptr<FdmMesher> mesher,
-                                        Size direction);
+        FdmShoutLogInnerValueCalculator(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+            ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
+            Time maturity,
+            ext::shared_ptr<PlainVanillaPayoff> payoff,
+            ext::shared_ptr<FdmMesher> mesher,
+            Size direction);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override;
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
 
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        const ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj_;
         const Time maturity_;
         const ext::shared_ptr<PlainVanillaPayoff> payoff_;
         const ext::shared_ptr<FdmMesher> mesher_;

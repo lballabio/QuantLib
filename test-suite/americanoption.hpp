@@ -36,6 +36,7 @@ class AmericanOptionTest {
     static void testFdAmericanGreeks();
     static void testFdShoutGreeks();
     static void testFDShoutNPV();
+    static void testZeroVolFDShoutNPV();
     static boost::unit_test_framework::test_suite* suite();
 };
 

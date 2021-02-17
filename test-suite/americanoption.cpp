@@ -604,6 +604,48 @@ void AmericanOptionTest::testFDShoutNPV() {
     }
 }
 
+void AmericanOptionTest::testZeroVolFDShoutNPV() {
+    BOOST_TEST_MESSAGE("Testing zero strike shout option pricing"
+            "with discrete dividends...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual365Fixed();
+    const auto today = Date(14, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = Handle<Quote>(ext::make_shared<SimpleQuote>(100.0));
+    const auto q = Handle<YieldTermStructure>(flatRate(0.00, dc));
+    const auto r = Handle<YieldTermStructure>(flatRate(0.0, dc));
+
+    const auto volTS = Handle<BlackVolTermStructure>(flatVol(1e-5, dc));
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            spot, q, r, volTS);
+
+   const auto maturityDate = today + Period(1, Years);
+
+   DividendVanillaOption option(
+       ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0),
+       ext::make_shared<AmericanExercise>(today, maturityDate),
+       std::vector<Date>{Date(1, May, 2021), Date(1, December, 2021)},
+       std::vector<Real>{0.0, 10.0}
+   );
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesVanillaEngine>(process, 50, 50));
+
+   const Real americanNPV = option.NPV();
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesShoutEngine>(process, 50, 50));
+
+   const Real shoutNPV = option.NPV();
+
+   std::cout << std::setprecision(18) << americanNPV << " "
+             <<  shoutNPV <<  " "
+             << dc.yearFraction(today, Date(1, December, 2021)) << std::endl;
+}
+
 test_suite* AmericanOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("American option tests");
     suite->add(
@@ -619,6 +661,7 @@ test_suite* AmericanOptionTest::suite() {
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
     return suite;
 }
 

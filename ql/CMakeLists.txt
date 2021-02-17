@@ -31,7 +31,7 @@ set(QuantLib_SRC
     cashflows/simplecashflow.cpp
     cashflows/timebasket.cpp
     cashflows/yoyinflationcoupon.cpp
-    currencies/africa.cpp
+    currencies/afric.cpp
     currencies/america.cpp
     currencies/asia.cpp
     currencies/crypto.cpp
@@ -502,6 +502,7 @@ set(QuantLib_SRC
     methods/finitedifferences/tridiagonaloperator.cpp
     methods/finitedifferences/utilities/bsmrndcalculator.cpp
     methods/finitedifferences/utilities/cevrndcalculator.cpp
+    methods/finitedifferences/utilities/escroweddividendadjustment.cpp
     methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.cpp
     methods/finitedifferences/utilities/fdmaffinemodeltermstructure.cpp
     methods/finitedifferences/utilities/fdmdirichletboundary.cpp
@@ -1688,6 +1689,7 @@ set(QuantLib_HDR
     methods/finitedifferences/utilities/all.hpp
     methods/finitedifferences/utilities/bsmrndcalculator.hpp
     methods/finitedifferences/utilities/cevrndcalculator.hpp
+    methods/finitedifferences/utilities/escroweddividendadjustment.hpp
     methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.hpp
     methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp
     methods/finitedifferences/utilities/fdmboundaryconditionset.hpp

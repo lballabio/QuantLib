@@ -3,6 +3,7 @@
 
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>

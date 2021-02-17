@@ -32,11 +32,14 @@ namespace QuantLib {
 
     FdmShoutLogInnerValueCalculator::FdmShoutLogInnerValueCalculator(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
         Time maturity,
         ext::shared_ptr<PlainVanillaPayoff> payoff,
         ext::shared_ptr<FdmMesher> mesher,
         Size direction)
-    : process_(std::move(process)), maturity_(maturity), payoff_(std::move(payoff)),
+    : process_(std::move(process)),
+      escrowedDividendAdj_(std::move(escrowedDividendAdj)),
+      maturity_(maturity), payoff_(std::move(payoff)),
       mesher_(std::move(mesher)), direction_(direction) {}
 
 
@@ -60,8 +63,10 @@ namespace QuantLib {
         const Real npv = blackFormula(
             payoff_->optionType(), s_t, fwd, stdDev, df);
 
+        Real spot = s_t - escrowedDividendAdj_->dividendAdjustment(t);
+
         const Real intrinsic = (payoff_->optionType() == Option::Call)
-            ? s_t - payoff_->strike() : payoff_->strike() - s_t;
+            ? spot - payoff_->strike() : payoff_->strike() - spot;
 
         return std::max(0.0, npv + intrinsic*df);
     }

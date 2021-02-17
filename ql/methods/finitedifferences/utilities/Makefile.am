@@ -6,6 +6,7 @@ this_include_HEADERS = \
 	all.hpp \
 	bsmrndcalculator.hpp \
     cevrndcalculator.hpp \
+    escroweddividendadjustment.hpp \
 	fdmaffinemodeltermstructure.hpp \
 	fdmaffinemodelswapinnervalue.hpp \
 	fdmboundaryconditionset.hpp \
@@ -27,6 +28,7 @@ this_include_HEADERS = \
 cpp_files = \
     bsmrndcalculator.cpp \
     cevrndcalculator.cpp \
+    escroweddividendadjustment.cpp \
 	fdmaffinemodeltermstructure.cpp \
 	fdmaffinemodelswapinnervalue.cpp \
 	fdmdirichletboundary.cpp \
