@@ -50,7 +50,6 @@
 #include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
-#include <ql/functional.hpp>
 #include <cmath>
 
 using namespace QuantLib;
@@ -628,8 +627,6 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     BOOST_TEST_MESSAGE("Testing the pricing of a callable equity product...");
 
-    using namespace ext::placeholders;
-
     SavedSettings backup;
 
     /*
@@ -671,8 +668,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
 
     std::vector<Time> times(maturity+1);
     std::transform(schedule.begin(), schedule.end(), times.begin(),
-                   ext::bind(&Actual365Fixed::yearFraction,
-                               dc, today, _1, Date(), Date()));
+                   [&](const Date& d) { return dc.yearFraction(today, d); });
 
     for (Size i=0; i<=maturity; ++i)
         times[i] = static_cast<Time>(i);

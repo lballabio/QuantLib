@@ -88,7 +88,6 @@
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/functional.hpp>
 
 #include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>
@@ -676,14 +675,10 @@ namespace {
         Time maturity, Real eps,
         const ext::shared_ptr<HestonModel>& model) {
 
-        using namespace ext::placeholders;
-
         const AnalyticPDFHestonEngine pdfEngine(model);
         const Real sInit = model->process()->s0()->value();
         const Real xMin = Brent().solve(
-            ext::bind(std::minus<Real>(),
-                ext::bind(&AnalyticPDFHestonEngine::cdf,
-                            &pdfEngine, _1, maturity), eps),
+                        [&](Real x){ return pdfEngine.cdf(x, maturity) - eps; },
                         sInit*1e-3, sInit, sInit*0.001, 1000*sInit);
 
         return xMin;

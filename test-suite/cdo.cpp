@@ -34,8 +34,6 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currencies/europe.hpp>
-#include <ql/functional.hpp>
-#include <boost/preprocessor/iteration/local.hpp>
 #include <iomanip>
 #include <iostream>
 
@@ -369,13 +367,15 @@ void CdoTest::testHW(unsigned dataSet) {
 
 test_suite* CdoTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("CDO tests");
-#ifndef QL_PATCH_SOLARIS
-    if (speed == Slow) {
-        #define BOOST_PP_LOCAL_MACRO(n) \
-            suite->add(QUANTLIB_TEST_CASE(ext::bind(&CdoTest::testHW, n)));
 
-        #define BOOST_PP_LOCAL_LIMITS (0, 4)
-        #include BOOST_PP_LOCAL_ITERATE()
+    #ifndef QL_PATCH_SOLARIS
+    if (speed == Slow) {
+        // unrolled to get different test names
+        suite->add(QUANTLIB_TEST_CASE([=](){ CdoTest::testHW(0); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ CdoTest::testHW(1); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ CdoTest::testHW(2); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ CdoTest::testHW(3); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ CdoTest::testHW(4); }));
     }
     #endif
     return suite;

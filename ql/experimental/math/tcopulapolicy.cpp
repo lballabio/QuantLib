@@ -18,7 +18,6 @@
 */
 
 #include <ql/experimental/math/tcopulapolicy.hpp>
-#include <ql/functional.hpp>
 #include <numeric>
 #include <algorithm>
 
@@ -73,17 +72,14 @@ namespace QuantLib {
             "Incompatible sample and latent model sizes");
     #endif
 
-        using namespace ext::placeholders;
-
         std::vector<Real> result(probs.size());
         Size indexSystemic = 0;
         std::transform(probs.begin(), probs.begin() + varianceFactors_.size()-1,
-            result.begin(), 
-            ext::bind(&TCopulaPolicy::inverseCumulativeDensity, 
-                                this, _1, indexSystemic++));
+                       result.begin(),
+                       [&](Probability p) { return inverseCumulativeDensity(p, indexSystemic++); });
         std::transform(probs.begin() + varianceFactors_.size()-1, probs.end(),
-            result.begin()+ varianceFactors_.size()-1,
-            ext::bind(&TCopulaPolicy::inverseCumulativeZ, this, _1));
+                       result.begin()+ varianceFactors_.size()-1,
+                       [&](Probability p) { return inverseCumulativeZ(p); });
         return result;
     }
 

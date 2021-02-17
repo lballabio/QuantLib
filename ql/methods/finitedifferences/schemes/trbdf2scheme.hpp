@@ -105,8 +105,6 @@ namespace QuantLib {
 
     template <class TrapezoidalScheme>
     inline void TrBDF2Scheme<TrapezoidalScheme>::step(array_type& fn, Time t) {
-        using namespace ext::placeholders;
-
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
 
         const Time intermediateTimeStep = dt_*alpha_;
@@ -125,12 +123,8 @@ namespace QuantLib {
             fn = map_->solve_splitting(0, f, -beta_);
         }
         else {
-            const ext::function<Disposable<Array>(const Array&)>
-                preconditioner(ext::bind(
-                    &FdmLinearOpComposite::preconditioner, map_, _1, -beta_));
-
-            const ext::function<Disposable<Array>(const Array&)> applyF(
-                ext::bind(&TrBDF2Scheme<TrapezoidalScheme>::apply, this, _1));
+            auto preconditioner = [&](const Array& _a){ return map_->preconditioner(_a, -beta_); };
+            auto applyF = [&](const Array& _a){ return apply(_a); };
 
             if (solverType_ == BiCGstab) {
                 const BiCGStabResult result =

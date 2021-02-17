@@ -43,7 +43,6 @@ namespace QuantLib {
     }
 
     void ImplicitEulerScheme::step(array_type& a, Time t, Real theta) {
-        using namespace ext::placeholders;
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
         map_->setTime(std::max(0.0, t-dt_), t);
         bcSet_.setTime(std::max(0.0, t-dt_));
@@ -54,12 +53,8 @@ namespace QuantLib {
             a = map_->solve_splitting(0, a, -theta*dt_);
         }
         else {
-            const ext::function<Disposable<Array>(const Array&)>
-                preconditioner(ext::bind(
-                    &FdmLinearOpComposite::preconditioner, map_, _1, -theta*dt_));
-
-            const ext::function<Disposable<Array>(const Array&)> applyF(
-                ext::bind(&ImplicitEulerScheme::apply, this, _1, theta));
+            auto preconditioner = [&](const Array& _a){ return map_->preconditioner(_a, -theta*dt_); };
+            auto applyF = [&](const Array& _a){ return apply(_a, theta); };
 
             if (solverType_ == BiCGstab) {
                 const BiCGStabResult result =
