@@ -31,7 +31,7 @@ set(QuantLib_SRC
     cashflows/simplecashflow.cpp
     cashflows/timebasket.cpp
     cashflows/yoyinflationcoupon.cpp
-    currencies/afric.cpp
+    currencies/africa.cpp
     currencies/america.cpp
     currencies/asia.cpp
     currencies/crypto.cpp
