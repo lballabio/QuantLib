@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functional.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
@@ -101,7 +100,7 @@ namespace {
                                                                /(1.0-gamma))));
             }
 
-            const HestonParams& p_;
+            const HestonParams p_;
             const Time t_;
             const Real x_, c_inf_;
         };
@@ -127,17 +126,15 @@ namespace {
             CpxPv_Helper(getHestonParams(hestonProcess_), x_t(x, t), t),
             0.0, 1.0)/M_TWOPI;
     }
-	
+
     Real HestonRNDCalculator::cdf(Real x, Time t) const {
-        using namespace ext::placeholders;
+        CpxPv_Helper helper(getHestonParams(hestonProcess_), x_t(x, t), t);
 
-        return GaussLobattoIntegral(
-            maxIntegrationIterations_, 0.1*integrationEps_)(
-            ext::bind(&CpxPv_Helper::p0,
-                CpxPv_Helper(getHestonParams(hestonProcess_), x_t(x,t),t),_1),
+        return GaussLobattoIntegral(maxIntegrationIterations_, 0.1*integrationEps_)(
+            [&](Real p_x){ return helper.p0(p_x); },
             0.0, 1.0)/M_TWOPI + 0.5;
-
     }
+
     Real HestonRNDCalculator::invcdf(Real p, Time t) const {
         const Real v0    = hestonProcess_->v0();
         const Real kappa = hestonProcess_->kappa();

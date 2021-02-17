@@ -22,7 +22,6 @@
     \brief local volatility risk neutral terminal density calculation
 */
 
-#include <ql/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -126,8 +125,6 @@ namespace QuantLib {
     }
 
     Real LocalVolRNDCalculator::cdf(Real x, Time t) const {
-        using namespace ext::placeholders;
-
         calculate();
 
         // get the left side of the integral
@@ -146,14 +143,15 @@ namespace QuantLib {
         // left or right hand integral
         if (x > 0.5*(xr+xl)) {
             while (pdf(xr, t) > 0.01*localVolProbEps_) xr*=1.1;
+
             return 1.0-GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
-                ext::bind(&LocalVolRNDCalculator::pdf, this, _1, t), x, xr);
+                [&](Real _x){ return pdf(_x, t); }, x, xr);
         }
         else {
             while (pdf(xl, t) > 0.01*localVolProbEps_) xl*=0.9;
 
             return GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
-                ext::bind(&LocalVolRNDCalculator::pdf, this, _1, t), xl, x);
+                [&](Real _x){ return pdf(_x, t); }, xl, x);
         }
     }
 
