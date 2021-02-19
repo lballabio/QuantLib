@@ -176,43 +176,45 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
     Date evalDate = Settings::instance().evaluationDate();
     Calendar calendar = UnitedStates();
 
-    std::vector<Date> discountDates;
-    discountDates.push_back(evalDate);
-    discountDates.push_back(calendar.advance(evalDate, 1, Weeks,  ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 1, Months, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 2, Months, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 3, Months, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 6, Months, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate,12, Months, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 2, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 3, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 4, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 5, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 6, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 7, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 8, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate, 9, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate,10, Years, ModifiedFollowing));
-    discountDates.push_back(calendar.advance(evalDate,15, Years, ModifiedFollowing));
-
-    std::vector<DiscountFactor> dfs;
-    dfs.push_back(1.0);
-    dfs.push_back(0.9990151375768731);
-    dfs.push_back(0.99570502636871183);
-    dfs.push_back(0.99118260474528685);
-    dfs.push_back(0.98661167950906203);
-    dfs.push_back(0.9732592953359388 );
-    dfs.push_back(0.94724424481038083);
-    dfs.push_back(0.89844996737120875  );
-    dfs.push_back(0.85216647839921411  );
-    dfs.push_back(0.80775477692556874  );
-    dfs.push_back(0.76517289234200347  );
-    dfs.push_back(0.72401019553182933  );
-    dfs.push_back(0.68503909569219212  );
-    dfs.push_back(0.64797499814013748  );
-    dfs.push_back(0.61263171936255534  );
-    dfs.push_back(0.5791942350748791   );
-    dfs.push_back(0.43518868769953606  );
+    std::vector<Date> discountDates = {
+        evalDate,
+        calendar.advance(evalDate, 1, Weeks,  ModifiedFollowing),
+        calendar.advance(evalDate, 1, Months, ModifiedFollowing),
+        calendar.advance(evalDate, 2, Months, ModifiedFollowing),
+        calendar.advance(evalDate, 3, Months, ModifiedFollowing),
+        calendar.advance(evalDate, 6, Months, ModifiedFollowing),
+        calendar.advance(evalDate,12, Months, ModifiedFollowing),
+        calendar.advance(evalDate, 2, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 3, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 4, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 5, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 6, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 7, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 8, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 9, Years, ModifiedFollowing),
+        calendar.advance(evalDate,10, Years, ModifiedFollowing),
+        calendar.advance(evalDate,15, Years, ModifiedFollowing)
+    };
+    
+    std::vector<DiscountFactor> dfs = {
+        1.0,
+        0.9990151375768731,
+        0.99570502636871183,
+        0.99118260474528685,
+        0.98661167950906203,
+        0.9732592953359388,
+        0.94724424481038083,
+        0.89844996737120875,
+        0.85216647839921411,
+        0.80775477692556874,
+        0.76517289234200347,
+        0.72401019553182933,
+        0.68503909569219212,
+        0.64797499814013748,
+        0.61263171936255534,
+        0.5791942350748791,
+        0.43518868769953606
+    };
 
     const DayCounter& curveDayCounter=Actual360();
 
@@ -222,27 +224,29 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
             new DiscountCurve(discountDates, dfs, curveDayCounter)));
 
     DayCounter dayCounter = Thirty360();
-    std::vector<Date> dates;
-    dates.push_back(evalDate);
-    dates.push_back(calendar.advance(evalDate, 6, Months, ModifiedFollowing));
-    dates.push_back(calendar.advance(evalDate, 1, Years, ModifiedFollowing));
-    dates.push_back(calendar.advance(evalDate, 2, Years, ModifiedFollowing));
-    dates.push_back(calendar.advance(evalDate, 3, Years, ModifiedFollowing));
-    dates.push_back(calendar.advance(evalDate, 4, Years, ModifiedFollowing));
-    dates.push_back(calendar.advance(evalDate, 5, Years, ModifiedFollowing));
-    dates.push_back(calendar.advance(evalDate, 7, Years, ModifiedFollowing));
-    dates.push_back(calendar.advance(evalDate,10, Years, ModifiedFollowing));
+    std::vector<Date> dates = {
+        evalDate,
+        calendar.advance(evalDate, 6, Months, ModifiedFollowing),
+        calendar.advance(evalDate, 1, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 2, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 3, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 4, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 5, Years, ModifiedFollowing),
+        calendar.advance(evalDate, 7, Years, ModifiedFollowing),
+        calendar.advance(evalDate,10, Years, ModifiedFollowing)
+    };
 
-    std::vector<Probability> defaultProbabilities;
-    defaultProbabilities.push_back(0.0000);
-    defaultProbabilities.push_back(0.0047);
-    defaultProbabilities.push_back(0.0093);
-    defaultProbabilities.push_back(0.0286);
-    defaultProbabilities.push_back(0.0619);
-    defaultProbabilities.push_back(0.0953);
-    defaultProbabilities.push_back(0.1508);
-    defaultProbabilities.push_back(0.2288);
-    defaultProbabilities.push_back(0.3666);
+    std::vector<Probability> defaultProbabilities = {
+        0.0000,
+        0.0047,
+        0.0093,
+        0.0286,
+        0.0619,
+        0.0953,
+        0.1508,
+        0.2288,
+        0.3666
+    };
 
     std::vector<Real> hazardRates;
     hazardRates.push_back(0.0);

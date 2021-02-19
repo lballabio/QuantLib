@@ -323,9 +323,7 @@ void BasketOptionTest::testEuroTwoValues() {
                 QL_FAIL("unknown basket type");
         }
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(p1);
-        procs.push_back(p2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = { p1, p2 };
 
         Matrix correlationMatrix(2, 2, value.rho);
         for (Integer j=0; j < 2; j++) {
@@ -521,10 +519,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS3)));
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(stochProcess1);
-        procs.push_back(stochProcess2);
-        procs.push_back(stochProcess3);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs
+            = {stochProcess1, stochProcess2, stochProcess3 };
 
         Matrix correlation(3, 3, value.rho);
         for (Integer j=0; j < 3; j++) {
@@ -658,10 +654,9 @@ void BasketOptionTest::testTavellaValues() {
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS3)));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-    procs.push_back(stochProcess1);
-    procs.push_back(stochProcess2);
-    procs.push_back(stochProcess3);
+    std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1,
+                                                                stochProcess2,
+                                                                stochProcess3};
 
     Matrix correlation(3,3, 0.0);
     for (Integer j=0; j < 3; j++) {
@@ -775,8 +770,7 @@ void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) 
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS1)));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-    procs.push_back(stochProcess1);
+    std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1};
 
     Matrix correlation(1, 1, 1.0);
 
@@ -863,8 +857,7 @@ void BasketOptionTest::testOddSamples() {
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS1)));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-    procs.push_back(stochProcess1);
+    std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1};
 
     Matrix correlation(1, 1, 1.0);
 

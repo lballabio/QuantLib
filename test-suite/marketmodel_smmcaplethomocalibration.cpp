@@ -73,9 +73,6 @@ using namespace boost::unit_test_framework;
 using std::fabs;
 using std::sqrt;
 
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
-
 namespace market_model_smm_caplet_homo_calibration_test {
 
     Date todaysDate_, startDate_, endDate_;

@@ -1011,10 +1011,10 @@ namespace {
             dates.push_back(date);
         }
 
-        Real tmp[] = { 2.222222222, 11.11111111, 44.44444444, 75.55555556, 80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
-                       102.2222222, 106.6666667, 111.1111111, 115.5555556, 120, 124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667
-             };
-        const std::vector<Real> surfaceStrikes(tmp, tmp+LENGTH(tmp));
+        const std::vector<Real> surfaceStrikes = {
+            2.222222222, 11.11111111, 44.44444444, 75.55555556, 80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
+            102.2222222, 106.6666667, 111.1111111, 115.5555556, 120, 124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667
+        };
 
         Volatility v[] =
           { 1.015873, 1.015873, 0.915873, 0.89729, 0.796493, 0.730914, 0.631335, 0.568895,
@@ -1104,10 +1104,9 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Real lowerBound = rnd.stationary_invcdf(0.01);
 
     const Real beta = 10.0;
-    std::vector<ext::tuple<Real, Real, bool> > critPoints;
-    critPoints.emplace_back(lowerBound, beta, true);
-    critPoints.emplace_back(v0, beta / 100, true);
-    critPoints.emplace_back(upperBound, beta, true);
+    std::vector<ext::tuple<Real, Real, bool>> critPoints = {{lowerBound, beta, true},
+                                                            {v0, beta/100, true},
+                                                            {upperBound, beta, true}};
     const ext::shared_ptr<Fdm1dMesher> varianceMesher(
 		ext::make_shared<Concentrating1dMesher>(lowerBound, upperBound, vGrid, critPoints));
 
@@ -1155,24 +1154,22 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Time dt = (maturity-eT)/tGrid;
 
 
-    Real denseStrikes[] =
+    const std::vector<Real> denseStrikes =
         { 2.222222222, 11.11111111, 20, 25, 30, 35, 40,
           44.44444444, 50, 55, 60, 65, 70, 75.55555556,
           80, 84.44444444, 88.88888889, 93.33333333, 97.77777778, 100,
           102.2222222, 106.6666667, 111.1111111, 115.5555556, 120,
           124.4444444, 166.6666667, 222.2222222, 444.4444444, 666.6666667 };
 
-    const std::vector<Real> ds(denseStrikes, denseStrikes+LENGTH(denseStrikes));
-
-    Matrix surface(ds.size(), ext::get<1>(smoothSurface).size());
+    Matrix surface(denseStrikes.size(), ext::get<1>(smoothSurface).size());
     std::vector<Time> times(surface.columns());
 
     const std::vector<Date>& dates = ext::get<1>(smoothSurface);
     ext::shared_ptr<Matrix> m = createLocalVolMatrixFromProcess(
-        lvProcess, ds, dates, times);
+        lvProcess, denseStrikes, dates, times);
 
     const ext::shared_ptr<FixedLocalVolSurface> leverage(
-		ext::make_shared<FixedLocalVolSurface>(todaysDate, dates, ds, m, dc));
+		ext::make_shared<FixedLocalVolSurface>(todaysDate, dates, denseStrikes, m, dc));
 
     const ext::shared_ptr<PricingEngine> lvEngine(
 		ext::make_shared<AnalyticEuropeanEngine>(lvProcess));
@@ -2151,9 +2148,7 @@ void HestonSLVModelTest::testForwardSkewSLV() {
     const Date resetDate = todaysDate + Period(12, Months);
     const Time resetTime = dc.yearFraction(todaysDate, resetDate);
     const Time maturityTime = dc.yearFraction(todaysDate, maturityDate);
-    std::vector<Time> mandatoryTimes;
-    mandatoryTimes.push_back(resetTime);
-    mandatoryTimes.push_back(maturityTime);
+    std::vector<Time> mandatoryTimes = {resetTime, maturityTime};
 
     const Size tSteps = 100;
     const TimeGrid grid(mandatoryTimes.begin(), mandatoryTimes.end(), tSteps);
@@ -2164,13 +2159,12 @@ void HestonSLVModelTest::testForwardSkewSLV() {
 
     const Size factors = mcSlvProcess->factors();
 
-    std::vector<ext::shared_ptr<MultiPathGenerator<rsg_type> > > pathGen;
-    pathGen.push_back(
+    std::vector<ext::shared_ptr<MultiPathGenerator<rsg_type> > > pathGen = {
         ext::make_shared<MultiPathGenerator<rsg_type> >(
-            mcSlvProcess, grid, rsg_type(factors, tSteps), false));
-    pathGen.push_back(
+            mcSlvProcess, grid, rsg_type(factors, tSteps), false),
         ext::make_shared<MultiPathGenerator<rsg_type> >(
-            fdmSlvProcess, grid, rsg_type(factors, tSteps), false));
+            fdmSlvProcess, grid, rsg_type(factors, tSteps), false)
+    };
 
     const Real strikes[] = {
         0.5, 0.7, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0

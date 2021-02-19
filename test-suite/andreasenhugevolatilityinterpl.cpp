@@ -147,9 +147,7 @@ namespace andreasen_huge_volatility_interpl_test {
             }
         }
 
-        CalibrationData data = { spot, rTS, qTS, calibrationSet };
-
-        return data;
+        return { spot, rTS, qTS, calibrationSet };
     }
 
     void testAndreasenHugeVolatilityInterpolation(
@@ -346,9 +344,7 @@ namespace andreasen_huge_volatility_interpl_test {
                 ext::make_shared<SimpleQuote>(vol)));
         }
 
-        CalibrationData data = { spot, rTS, qTS, calibrationSet };
-
-        return data;
+        return { spot, rTS, qTS, calibrationSet };
     }
 }
 
@@ -1030,8 +1026,8 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
         const Time t = rTS->timeFromReference(expiry);
         const Real fwd = spot->value() / rTS->discount(t) * qTS->discount(t);
 
-        for (double moneynes : moneyness) {
-            const Real strike = fwd * moneynes;
+        for (double m : moneyness) {
+            const Real strike = fwd * m;
             const Real mn = std::log(fwd/strike)/std::sqrt(t);
 
             if (std::fabs(mn) < 3.72*vol->value()) {

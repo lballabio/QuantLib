@@ -188,14 +188,13 @@ namespace {
 
 
     std::vector<NamedOptimizationMethod> makeOptimizationMethods(
-                             OptimizationMethodType optimizationMethodTypes[],
-                             Size optimizationMethodNb,
+                             const std::vector<OptimizationMethodType>& optimizationMethodTypes,
                              Real simplexLambda,
                              Real levenbergMarquardtEpsfcn,
                              Real levenbergMarquardtXtol,
                              Real levenbergMarquardtGtol) {
         std::vector<NamedOptimizationMethod> results;
-        for (Size i=0; i<optimizationMethodNb; ++i) {
+        for (Size i=0; i<optimizationMethodTypes.size(); ++i) {
             NamedOptimizationMethod namedOptimizationMethod;
             namedOptimizationMethod.optimizationMethod = makeOptimizationMethod(
                 optimizationMethodTypes[i],
@@ -249,7 +248,7 @@ namespace {
                             rootEpsilons_.back(), functionEpsilons_.back(),
                             gradientNormEpsilons_.back()));
         // Set optimization methods for optimizer
-        OptimizationMethodType optimizationMethodTypes[] = {
+        std::vector<OptimizationMethodType> optimizationMethodTypes = {
             simplex, levenbergMarquardt, levenbergMarquardt2, conjugateGradient,
             bfgs //, steepestDescent
         };
@@ -258,7 +257,7 @@ namespace {
         Real levenbergMarquardtXtol   = 1.0e-8;     //
         Real levenbergMarquardtGtol   = 1.0e-8;     //
         optimizationMethods_.push_back(makeOptimizationMethods(
-            optimizationMethodTypes, LENGTH(optimizationMethodTypes),
+            optimizationMethodTypes,
             simplexLambda, levenbergMarquardtEpsfcn, levenbergMarquardtXtol,
             levenbergMarquardtGtol));
         // Set expected results for optimizer
@@ -485,47 +484,53 @@ void OptimizersTest::testDifferentialEvolution() {
         .withSeed(3242);
     DifferentialEvolution deOptim2(conf2);
 
-    std::vector<DifferentialEvolution > diffEvolOptimisers;
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim2);
+    std::vector<DifferentialEvolution > diffEvolOptimisers = {
+        deOptim,
+        deOptim,
+        deOptim,
+        deOptim,
+        deOptim2
+    };
 
-    std::vector<ext::shared_ptr<CostFunction> > costFunctions;
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new FirstDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new SecondDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new ModThirdDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new ModFourthDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new Griewangk));
+    std::vector<ext::shared_ptr<CostFunction> > costFunctions = {
+        ext::shared_ptr<CostFunction>(new FirstDeJong),
+        ext::shared_ptr<CostFunction>(new SecondDeJong),
+        ext::shared_ptr<CostFunction>(new ModThirdDeJong),
+        ext::shared_ptr<CostFunction>(new ModFourthDeJong),
+        ext::shared_ptr<CostFunction>(new Griewangk)
+    };
 
-    std::vector<BoundaryConstraint> constraints;
-    constraints.emplace_back(-10.0, 10.0);
-    constraints.emplace_back(-10.0, 10.0);
-    constraints.emplace_back(-10.0, 10.0);
-    constraints.emplace_back(-10.0, 10.0);
-    constraints.emplace_back(-600.0, 600.0);
+    std::vector<BoundaryConstraint> constraints = {
+        {-10.0, 10.0},
+        {-10.0, 10.0},
+        {-10.0, 10.0},
+        {-10.0, 10.0},
+        {-600.0, 600.0}
+    };
 
-    std::vector<Array> initialValues;
-    initialValues.emplace_back(3, 5.0);
-    initialValues.emplace_back(2, 5.0);
-    initialValues.emplace_back(5, 5.0);
-    initialValues.emplace_back(30, 5.0);
-    initialValues.emplace_back(10, 100.0);
+    std::vector<Array> initialValues = {
+        Array(3, 5.0),
+        Array(2, 5.0),
+        Array(5, 5.0),
+        Array(30, 5.0),
+        Array(10, 100.0)
+    };
 
-    std::vector<EndCriteria> endCriteria;
-    endCriteria.emplace_back(100, 10, 1e-10, 1e-8, Null<Real>());
-    endCriteria.emplace_back(100, 10, 1e-10, 1e-8, Null<Real>());
-    endCriteria.emplace_back(100, 10, 1e-10, 1e-8, Null<Real>());
-    endCriteria.emplace_back(500, 100, 1e-10, 1e-8, Null<Real>());
-    endCriteria.emplace_back(1000, 800, 1e-12, 1e-10, Null<Real>());
+    std::vector<EndCriteria> endCriteria = {
+        {100, 10, 1e-10, 1e-8, Null<Real>()},
+        {100, 10, 1e-10, 1e-8, Null<Real>()},
+        {100, 10, 1e-10, 1e-8, Null<Real>()},
+        {500, 100, 1e-10, 1e-8, Null<Real>()},
+        {1000, 800, 1e-12, 1e-10, Null<Real>()}
+    };
 
-    std::vector<Real> minima;
-    minima.push_back(0.0);
-    minima.push_back(0.0);
-    minima.push_back(0.0);
-    minima.push_back(10.9639796558);
-    minima.push_back(0.0);
+    std::vector<Real> minima = {
+        0.0,
+        0.0,
+        0.0,
+        10.9639796558,
+        0.0
+    };
 
     for (Size i = 0; i < costFunctions.size(); ++i) {
         Problem problem(*costFunctions[i], constraints[i], initialValues[i]);

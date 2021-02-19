@@ -807,11 +807,10 @@ void ScheduleTest::testDateConstructor() {
     BOOST_TEST_MESSAGE("Testing the constructor taking a vector of dates and "
                        "possibly additional meta information...");
 
-    std::vector<Date> dates;
-    dates.emplace_back(16, May, 2015);
-    dates.emplace_back(18, May, 2015);
-    dates.emplace_back(18, May, 2016);
-    dates.emplace_back(31, December, 2017);
+    std::vector<Date> dates = {Date(16, May, 2015),
+                               Date(18, May, 2015),
+                               Date(18, May, 2016),
+                               Date(31, December, 2017)};
 
     // schedule without any additional information
     Schedule schedule1(dates);
@@ -831,10 +830,7 @@ void ScheduleTest::testDateConstructor() {
                     << ", expected unadjusted");
 
     // schedule with metadata
-    std::vector<bool> regular;
-    regular.push_back(false);
-    regular.push_back(true);
-    regular.push_back(false);
+    std::vector<bool> regular = {false, true, false};
     Schedule schedule2(dates, TARGET(), Following, ModifiedPreceding, 1 * Years,
                        DateGeneration::Backward, true, regular);
     for (Size i = 1; i < dates.size(); ++i)

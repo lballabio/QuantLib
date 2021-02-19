@@ -578,22 +578,23 @@ void DayCounterTest::testBusiness252() {
 
     BOOST_TEST_MESSAGE("Testing business/252 day counter...");
 
-    std::vector<Date> testDates;
-    testDates.emplace_back(1, February, 2002);
-    testDates.emplace_back(4, February, 2002);
-    testDates.emplace_back(16, May, 2003);
-    testDates.emplace_back(17, December, 2003);
-    testDates.emplace_back(17, December, 2004);
-    testDates.emplace_back(19, December, 2005);
-    testDates.emplace_back(2, January, 2006);
-    testDates.emplace_back(13, March, 2006);
-    testDates.emplace_back(15, May, 2006);
-    testDates.emplace_back(17, March, 2006);
-    testDates.emplace_back(15, May, 2006);
-    testDates.emplace_back(26, July, 2006);
-    testDates.emplace_back(28, June, 2007);
-    testDates.emplace_back(16, September, 2009);
-    testDates.emplace_back(26, July, 2016);
+    std::vector<Date> testDates = {
+        Date(1, February, 2002),
+        Date(4, February, 2002),
+        Date(16, May, 2003),
+        Date(17, December, 2003),
+        Date(17, December, 2004),
+        Date(19, December, 2005),
+        Date(2, January, 2006),
+        Date(13, March, 2006),
+        Date(15, May, 2006),
+        Date(17, March, 2006),
+        Date(15, May, 2006),
+        Date(26, July, 2006),
+        Date(28, June, 2007),
+        Date(16, September, 2009),
+        Date(26, July, 2016)
+    };
 
     Time expected[] = {
         0.0039682539683,
@@ -920,9 +921,7 @@ void DayCounterTest::testIntraday() {
     const DayCounter dayCounters[]
         = { ActualActual(), Actual365Fixed(), Actual360() };
 
-    for (Size i=0; i < LENGTH(dayCounters); ++i) {
-        const DayCounter dc = dayCounters[i];
-
+    for (DayCounter dc : dayCounters) {
         const Time expected = ((12*60 + 34)*60 + 17 + 0.231298)
                              * dc.yearFraction(d1, d1+1)/86400
                              + dc.yearFraction(d1, d1+2);

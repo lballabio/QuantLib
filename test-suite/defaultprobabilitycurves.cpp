@@ -160,17 +160,8 @@ namespace {
 
         Integer settlementDays = 1;
 
-        std::vector<Real> quote;
-        quote.push_back(0.005);
-        quote.push_back(0.006);
-        quote.push_back(0.007);
-        quote.push_back(0.009);
-
-        std::vector<Integer> n;
-        n.push_back(1);
-        n.push_back(2);
-        n.push_back(3);
-        n.push_back(5);
+        std::vector<Real> quote = {0.005, 0.006, 0.007, 0.009};
+        std::vector<Integer> n = {1, 2, 3, 5};
 
         Frequency frequency = Quarterly;
         BusinessDayConvention convention = Following;
@@ -244,17 +235,8 @@ namespace {
 
         Integer settlementDays = 1;
 
-        std::vector<Real> quote;
-        quote.push_back(0.01);
-        quote.push_back(0.02);
-        quote.push_back(0.04);
-        quote.push_back(0.06);
-
-        std::vector<Integer> n;
-        n.push_back(2);
-        n.push_back(3);
-        n.push_back(5);
-        n.push_back(7);
+        std::vector<Real> quote = {0.01, 0.02, 0.04, 0.06};
+        std::vector<Integer> n = {2, 3, 5, 7};
 
         Rate fixedRate = 0.05;
         Frequency frequency = Quarterly;

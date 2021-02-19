@@ -1300,9 +1300,8 @@ void EuropeanOptionTest::testLocalVolatility() {
 
     const ext::shared_ptr<Quote> s0(new SimpleQuote(4500.00));
     
-    Real tmp[] = { 100 ,500 ,2000,3400,3600,3800,4000,4200,4400,4500,
-                   4600,4800,5000,5200,5400,5600,7500,10000,20000,30000 };
-    const std::vector<Real> strikes(tmp, tmp+LENGTH(tmp));
+    const std::vector<Real> strikes = { 100 ,500 ,2000,3400,3600,3800,4000,4200,4400,4500,
+                                        4600,4800,5000,5200,5400,5600,7500,10000,20000,30000 };
     
     Volatility v[] =
       { 1.015873, 1.015873, 1.015873, 0.89729, 0.796493, 0.730914, 0.631335, 0.568895,
@@ -1596,14 +1595,16 @@ void EuropeanOptionTest::testPDESchemes() {
     }
 
     // make sure that Douglas and Crank-Nicolson are giving the same result
-    const Size idxDouglas = std::distance(engines,
-        std::find(engines, engines + LENGTH(engines),
-            std::make_pair(douglas, std::string("Douglas"))));
+    const Size idxDouglas =
+        std::distance(std::begin(engines),
+                      std::find(std::begin(engines), std::end(engines),
+                                std::make_pair(douglas, std::string("Douglas"))));
     const Real douglasNPV = dividendPrices[idxDouglas];
 
-    const Size idxCrankNicolson = std::distance(engines,
-        std::find(engines, engines + LENGTH(engines),
-            std::make_pair(crankNicolson, std::string("Crank-Nicolson"))));
+    const Size idxCrankNicolson =
+        std::distance(std::begin(engines),
+                      std::find(std::begin(engines), std::end(engines),
+                                std::make_pair(crankNicolson, std::string("Crank-Nicolson"))));
     const Real crankNicolsonNPV = dividendPrices[idxCrankNicolson];
 
     const Real schemeTol = 1e-12;
