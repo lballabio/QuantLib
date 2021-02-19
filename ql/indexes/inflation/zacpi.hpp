@@ -24,8 +24,8 @@
 #ifndef quantlib_zacpi_hpp
 #define quantlib_zacpi_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/africa.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
@@ -33,8 +33,7 @@ namespace QuantLib {
     class ZACPI : public ZeroInflationIndex {
       public:
         ZACPI(bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts =
-                    Handle<ZeroInflationTermStructure>())
+              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              ZARegion(),
                              false,
@@ -50,8 +49,7 @@ namespace QuantLib {
     class YYZACPI : public YoYInflationIndex {
       public:
         YYZACPI(bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts =
-                        Handle<YoYInflationTermStructure>())
+                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             ZARegion(),
                             false,
@@ -68,8 +66,7 @@ namespace QuantLib {
     class YYZACPIr : public YoYInflationIndex {
       public:
         YYZACPIr(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                        Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             ZARegion(),
                             false,

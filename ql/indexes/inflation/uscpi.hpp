@@ -24,17 +24,16 @@
 #ifndef quantlib_uscpi_hpp
 #define quantlib_uscpi_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/america.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
     //! US CPI index
     class USCPI : public ZeroInflationIndex {
-    public:
+      public:
         USCPI(bool interpolated,
-               const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
+              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              USRegion(),
                              false,
@@ -48,10 +47,9 @@ namespace QuantLib {
 
     //! Genuine year-on-year US CPI (i.e. not a ratio of US CPI)
     class YYUSCPI : public YoYInflationIndex {
-    public:
+      public:
         YYUSCPI(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             USRegion(),
                             false,
@@ -66,10 +64,9 @@ namespace QuantLib {
 
     //! Fake year-on-year US CPI (i.e. a ratio of US CPI)
     class YYUSCPIr : public YoYInflationIndex {
-    public:
+      public:
         YYUSCPIr(bool interpolated,
-                  const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             USRegion(),
                             false,

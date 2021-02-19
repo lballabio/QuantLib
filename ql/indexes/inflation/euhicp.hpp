@@ -25,8 +25,8 @@
 #ifndef quantlib_euhicp_hpp
 #define quantlib_euhicp_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
@@ -34,8 +34,7 @@ namespace QuantLib {
     class EUHICP : public ZeroInflationIndex {
       public:
         EUHICP(bool interpolated,
-               const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>())
+               const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICP",
                              EURegion(),
                              false,
@@ -49,9 +48,9 @@ namespace QuantLib {
     //! EU HICPXT index
     class EUHICPXT : public ZeroInflationIndex {
       public:
-        EUHICPXT(bool interpolated,
-                 const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>())
+        EUHICPXT(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICPXT",
                              EURegion(),
                              false,
@@ -67,8 +66,7 @@ namespace QuantLib {
     class YYEUHICP : public YoYInflationIndex {
       public:
         YYEUHICP(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
                             EURegion(),
                             false,
@@ -83,9 +81,9 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICPXT
     class YYEUHICPXT : public YoYInflationIndex {
       public:
-        YYEUHICPXT(bool interpolated,
-                   const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+        YYEUHICPXT(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICPXT",
                             EURegion(),
                             false,
@@ -102,8 +100,7 @@ namespace QuantLib {
     class YYEUHICPr : public YoYInflationIndex {
       public:
         YYEUHICPr(bool interpolated,
-                  const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+                  const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_HICP",
                             EURegion(),
                             false,

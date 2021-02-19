@@ -24,11 +24,11 @@
 #ifndef quantlib_inflation_index_hpp
 #define quantlib_inflation_index_hpp
 
+#include <ql/currency.hpp>
+#include <ql/handle.hpp>
 #include <ql/index.hpp>
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
-#include <ql/currency.hpp>
-#include <ql/handle.hpp>
 
 namespace QuantLib {
 
@@ -125,6 +125,7 @@ namespace QuantLib {
         Frequency frequency_;
         Period availabilityLag_;
         Currency currency_;
+
       private:
         std::string name_;
     };
@@ -154,8 +155,8 @@ namespace QuantLib {
         //! \name Other methods
         //@{
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
-        ext::shared_ptr<ZeroInflationIndex> clone(
-                           const Handle<ZeroInflationTermStructure>& h) const;
+        ext::shared_ptr<ZeroInflationIndex>
+        clone(const Handle<ZeroInflationTermStructure>& h) const;
         //@}
       private:
         bool needsForecast(const Date& fixingDate) const;
@@ -193,8 +194,7 @@ namespace QuantLib {
         bool ratio() const;
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
 
-        ext::shared_ptr<YoYInflationIndex> clone(
-                            const Handle<YoYInflationTermStructure>& h) const;
+        ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
         //@}
       private:
         Rate forecastFixing(const Date& fixingDate) const;
@@ -204,53 +204,32 @@ namespace QuantLib {
 
     // inline
 
-    inline std::string InflationIndex::name() const {
-        return name_;
-    }
+    inline std::string InflationIndex::name() const { return name_; }
 
-    inline void InflationIndex::update() {
-        notifyObservers();
-    }
+    inline void InflationIndex::update() { notifyObservers(); }
 
-    inline std::string InflationIndex::familyName() const {
-        return familyName_;
-    }
+    inline std::string InflationIndex::familyName() const { return familyName_; }
 
-    inline Region InflationIndex::region() const {
-        return region_;
-    }
+    inline Region InflationIndex::region() const { return region_; }
 
-    inline bool InflationIndex::revised() const {
-        return revised_;
-    }
+    inline bool InflationIndex::revised() const { return revised_; }
 
-    inline bool InflationIndex::interpolated() const {
-        return interpolated_;
-    }
+    inline bool InflationIndex::interpolated() const { return interpolated_; }
 
-    inline Frequency InflationIndex::frequency() const {
-        return frequency_;
-    }
+    inline Frequency InflationIndex::frequency() const { return frequency_; }
 
-    inline Period InflationIndex::availabilityLag() const {
-        return availabilityLag_;
-    }
+    inline Period InflationIndex::availabilityLag() const { return availabilityLag_; }
 
-    inline Currency InflationIndex::currency() const {
-        return currency_;
-    }
+    inline Currency InflationIndex::currency() const { return currency_; }
 
     inline Handle<ZeroInflationTermStructure>
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
     }
 
-    inline bool YoYInflationIndex::ratio() const {
-        return ratio_;
-    }
+    inline bool YoYInflationIndex::ratio() const { return ratio_; }
 
-    inline Handle<YoYInflationTermStructure>
-    YoYInflationIndex::yoyInflationTermStructure() const {
+    inline Handle<YoYInflationTermStructure> YoYInflationIndex::yoyInflationTermStructure() const {
         return yoyInflation_;
     }
 }

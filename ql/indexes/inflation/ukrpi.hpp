@@ -24,8 +24,8 @@
 #ifndef quantlib_ukrpi_hpp
 #define quantlib_ukrpi_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
@@ -33,8 +33,7 @@ namespace QuantLib {
     class UKRPI : public ZeroInflationIndex {
       public:
         UKRPI(bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts =
-                    Handle<ZeroInflationTermStructure>())
+              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("RPI",
                              UKRegion(),
                              false,
@@ -50,8 +49,7 @@ namespace QuantLib {
     class YYUKRPI : public YoYInflationIndex {
       public:
         YYUKRPI(bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts =
-                        Handle<YoYInflationTermStructure>())
+                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_RPI",
                             UKRegion(),
                             false,
@@ -68,8 +66,7 @@ namespace QuantLib {
     class YYUKRPIr : public YoYInflationIndex {
       public:
         YYUKRPIr(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                        Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_RPI",
                             UKRegion(),
                             false,

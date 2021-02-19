@@ -24,8 +24,8 @@
 #ifndef quantlib_frhicp_hpp
 #define quantlib_frhicp_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
@@ -33,8 +33,7 @@ namespace QuantLib {
     class FRHICP : public ZeroInflationIndex {
       public:
         FRHICP(bool interpolated,
-               const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
+               const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICP",
                              FranceRegion(),
                              false,
@@ -50,8 +49,7 @@ namespace QuantLib {
     class YYFRHICP : public YoYInflationIndex {
       public:
         YYFRHICP(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
                             FranceRegion(),
                             false,
@@ -68,8 +66,7 @@ namespace QuantLib {
     class YYFRHICPr : public YoYInflationIndex {
       public:
         YYFRHICPr(bool interpolated,
-                  const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                  const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_HICP",
                             FranceRegion(),
                             false,
@@ -84,4 +81,3 @@ namespace QuantLib {
 }
 
 #endif
-

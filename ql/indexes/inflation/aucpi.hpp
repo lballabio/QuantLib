@@ -24,8 +24,8 @@
 #ifndef quantlib_aucpi_hpp
 #define quantlib_aucpi_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/oceania.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
@@ -35,8 +35,7 @@ namespace QuantLib {
         AUCPI(Frequency frequency,
               bool revised,
               bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
+              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              AustraliaRegion(),
                              revised,
@@ -54,8 +53,7 @@ namespace QuantLib {
         YYAUCPI(Frequency frequency,
                 bool revised,
                 bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             AustraliaRegion(),
                             revised,
@@ -73,8 +71,7 @@ namespace QuantLib {
         YYAUCPIr(Frequency frequency,
                  bool revised,
                  bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             AustraliaRegion(),
                             revised,
@@ -89,4 +86,3 @@ namespace QuantLib {
 }
 
 #endif
-
