@@ -32,8 +32,10 @@ namespace QuantLib {
     //! South African Comsumer Price Inflation Index
     class ZACPI : public ZeroInflationIndex {
       public:
-        ZACPI(bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        explicit ZACPI(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              ZARegion(),
                              false,
@@ -48,8 +50,10 @@ namespace QuantLib {
     //! Genuine year-on-year South African CPI (i.e. not a ratio of ZA CPI)
     class YYZACPI : public YoYInflationIndex {
       public:
-        YYZACPI(bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        explicit YYZACPI(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             ZARegion(),
                             false,
@@ -65,8 +69,10 @@ namespace QuantLib {
     //! Fake year-on-year South African CPI (i.e. a ratio of ZA CPI)
     class YYZACPIr : public YoYInflationIndex {
       public:
-        YYZACPIr(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        explicit YYZACPIr(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             ZARegion(),
                             false,

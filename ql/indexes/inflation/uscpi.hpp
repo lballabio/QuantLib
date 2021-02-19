@@ -32,8 +32,10 @@ namespace QuantLib {
     //! US CPI index
     class USCPI : public ZeroInflationIndex {
       public:
-        USCPI(bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        explicit USCPI(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("CPI",
                              USRegion(),
                              false,
@@ -48,8 +50,10 @@ namespace QuantLib {
     //! Genuine year-on-year US CPI (i.e. not a ratio of US CPI)
     class YYUSCPI : public YoYInflationIndex {
       public:
-        YYUSCPI(bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        explicit YYUSCPI(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             USRegion(),
                             false,
@@ -65,8 +69,10 @@ namespace QuantLib {
     //! Fake year-on-year US CPI (i.e. a ratio of US CPI)
     class YYUSCPIr : public YoYInflationIndex {
       public:
-        YYUSCPIr(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        explicit YYUSCPIr(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             USRegion(),
                             false,

@@ -30,6 +30,14 @@
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 
+#define QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES                          \
+    /*! \deprecated The use of interpolated is not a feature of the index but \
+     *              of the coupons etc. using the index.                      \
+     *              Use the other constructor instead.                        \
+     *              Deprecated in version 1.22. */                            \
+    QL_DEPRECATED
+
+
 namespace QuantLib {
 
     class ZeroInflationTermStructure;
@@ -48,6 +56,7 @@ namespace QuantLib {
          give the previous period's value)
          and enables storage of the most recent uninterpolated value.
          */
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         InflationIndex(std::string familyName,
                        Region region,
                        bool revised,
@@ -103,6 +112,7 @@ namespace QuantLib {
             extrapolated values are constant within each period taking
             the mid-period extrapolated value.
         */
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         bool interpolated() const;
         Frequency frequency() const;
         /*! The availability lag describes when the index is
@@ -121,7 +131,7 @@ namespace QuantLib {
         std::string familyName_;
         Region region_;
         bool revised_;
-        bool interpolated_;
+        bool interpolated_ = false;
         Frequency frequency_;
         Period availabilityLag_;
         Currency currency_;
@@ -135,6 +145,7 @@ namespace QuantLib {
     class ZeroInflationIndex : public InflationIndex {
       public:
         //! Always use the evaluation date as the reference date
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         ZeroInflationIndex(
             const std::string& familyName,
             const Region& region,
@@ -171,6 +182,7 @@ namespace QuantLib {
     */
     class YoYInflationIndex : public InflationIndex {
       public:
+        QL_DEPRECATED
         YoYInflationIndex(
             const std::string& familyName,
             const Region& region,

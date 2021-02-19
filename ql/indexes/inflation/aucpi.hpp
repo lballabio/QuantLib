@@ -32,6 +32,7 @@ namespace QuantLib {
     //! AU CPI index (either quarterly or annual)
     class AUCPI : public ZeroInflationIndex {
       public:
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         AUCPI(Frequency frequency,
               bool revised,
               bool interpolated,
@@ -50,6 +51,7 @@ namespace QuantLib {
     //! Genuine year-on-year AU CPI (i.e. not a ratio)
     class YYAUCPI : public YoYInflationIndex {
       public:
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         YYAUCPI(Frequency frequency,
                 bool revised,
                 bool interpolated,
@@ -68,6 +70,7 @@ namespace QuantLib {
     //! Fake year-on-year AUCPI (i.e. a ratio)
     class YYAUCPIr : public YoYInflationIndex {
       public:
+        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         YYAUCPIr(Frequency frequency,
                  bool revised,
                  bool interpolated,
