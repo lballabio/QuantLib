@@ -45,8 +45,6 @@
 #include <ql/tuple.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/assign/std/vector.hpp>
-#include <boost/foreach.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <utility>
 
@@ -1857,8 +1855,7 @@ void InterpolationTest::testNoArbSabrInterpolation(){
     Real initialRho = 0.01;
     // calculate SABR vols and compare with input vols
     NoArbSabrSmileSection noarbSabr(expiry, forward,
-                                    boost::assign::list_of(initialAlpha)(
-                                        initialBeta)(initialNu)(initialRho));
+                                    {initialAlpha, initialBeta, initialNu, initialRho});
     for (Size i = 0; i < strikes.size(); i++) {
         Real calculatedVol = noarbSabr.volatility(strikes[i]);
         if (std::fabs(volatilities[i]-calculatedVol) > tolerance)
@@ -1974,10 +1971,8 @@ void InterpolationTest::testSabrSingleCases() {
     // case #1
     // this fails with an exception thrown in 1.4, fixed in 1.5
 
-    using namespace boost::assign;
-    std::vector<Real> strikes, vols;
-    strikes += 0.01, 0.01125, 0.0125, 0.01375, 0.0150;
-    vols += 0.1667, 0.2020, 0.2785, 0.3279, 0.3727;
+    std::vector<Real> strikes = { 0.01, 0.01125, 0.0125, 0.01375, 0.0150 };
+    std::vector<Real> vols = { 0.1667, 0.2020, 0.2785, 0.3279, 0.3727 };
 
     Real tte = 0.3833;
     Real forward = 0.011025;
@@ -2330,10 +2325,7 @@ void InterpolationTest::testBSplines() {
     // reference values have been generate with the R package splines2
     // https://cran.r-project.org/web/packages/splines2/splines2.pdf
 
-    using namespace boost::assign;
-
-    std::vector<Real> knots;
-    knots += -1.0, 0.5, 0.75, 1.2, 3.0, 4.0, 5.0;
+    std::vector<Real> knots = { -1.0, 0.5, 0.75, 1.2, 3.0, 4.0, 5.0 };
 
     const Natural p = 2;
     const BSpline bspline(p, knots.size()-p-2, knots);

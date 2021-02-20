@@ -20,7 +20,6 @@
 
 #include "utilities.hpp"
 #include "squarerootclvmodel.hpp"
-
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -42,15 +41,12 @@
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
-
 #include <ql/experimental/models/squarerootclvmodel.hpp>
 #include <ql/experimental/models/hestonslvfdmmodel.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
-
-#include <boost/assign/std/vector.hpp>
 
 #if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
 #pragma GCC diagnostic push
@@ -65,7 +61,6 @@
 #include <utility>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using namespace boost::unit_test_framework;
 
 

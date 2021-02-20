@@ -51,7 +51,6 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/assign/list_of.hpp>
 #include <iomanip>
 #include <map>
 #include <string>
@@ -60,8 +59,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::assign::list_of;
-using boost::assign::map_list_of;
 using std::map;
 using std::vector;
 using std::string;
@@ -1408,56 +1405,59 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     Actual365Fixed tsDayCounter;
 
     // USD discount curve built out of FedFunds OIS swaps.
-    vector<Date> usdCurveDates = list_of
-        (Date(25, Sep, 2019))
-        (Date(26, Sep, 2019))
-        (Date(8, Oct, 2019))
-        (Date(16, Oct, 2019))
-        (Date(22, Oct, 2019))
-        (Date(30, Oct, 2019))
-        (Date(2, Dec, 2019))
-        (Date(31, Dec, 2019))
-        (Date(29, Jan, 2020))
-        (Date(2, Mar, 2020))
-        (Date(31, Mar, 2020))
-        (Date(29, Apr, 2020))
-        (Date(29, May, 2020))
-        (Date(1, Jul, 2020))
-        (Date(29, Jul, 2020))
-        (Date(31, Aug, 2020))
-        (Date(30, Sep, 2020));
+    vector<Date> usdCurveDates = {
+        Date(25, Sep, 2019),
+        Date(26, Sep, 2019),
+        Date(8, Oct, 2019),
+        Date(16, Oct, 2019),
+        Date(22, Oct, 2019),
+        Date(30, Oct, 2019),
+        Date(2, Dec, 2019),
+        Date(31, Dec, 2019),
+        Date(29, Jan, 2020),
+        Date(2, Mar, 2020),
+        Date(31, Mar, 2020),
+        Date(29, Apr, 2020),
+        Date(29, May, 2020),
+        Date(1, Jul, 2020),
+        Date(29, Jul, 2020),
+        Date(31, Aug, 2020),
+        Date(30, Sep, 2020)
+    };
 
-    vector<DiscountFactor> usdCurveDfs = list_of
-        (1.000000000)
-        (0.999940837)
-        (0.999309357)
-        (0.998894646)
-        (0.998574816)
-        (0.998162528)
-        (0.996552511)
-        (0.995197584)
-        (0.993915264)
-        (0.992530008)
-        (0.991329696)
-        (0.990179606)
-        (0.989005698)
-        (0.987751691)
-        (0.986703371)
-        (0.985495036)
-        (0.984413446);
+    vector<DiscountFactor> usdCurveDfs = {
+        1.000000000,
+        0.999940837,
+        0.999309357,
+        0.998894646,
+        0.998574816,
+        0.998162528,
+        0.996552511,
+        0.995197584,
+        0.993915264,
+        0.992530008,
+        0.991329696,
+        0.990179606,
+        0.989005698,
+        0.987751691,
+        0.986703371,
+        0.985495036,
+        0.984413446
+    };
 
     Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear> >(
         usdCurveDates, usdCurveDfs, tsDayCounter));
 
     // USD/ARS forward points
     Handle<Quote> arsSpot(ext::make_shared<SimpleQuote>(56.881));
-    map<Period, Real> arsFwdPoints = map_list_of
-        (1 * Months, 8.5157)
-        (2 * Months, 12.7180)
-        (3 * Months, 17.8310)
-        (6 * Months, 30.3680)
-        (9 * Months, 45.5520)
-        (1 * Years, 60.7370);
+    map<Period, Real> arsFwdPoints = {
+        {1 * Months, 8.5157},
+        {2 * Months, 12.7180},
+        {3 * Months, 17.8310},
+        {6 * Months, 30.3680},
+        {9 * Months, 45.5520},
+        {1 * Years, 60.7370}
+    };
 
     // Create the FX swap rate helpers for the ARS in USD curve.
     vector<ext::shared_ptr<RateHelper> > instruments;

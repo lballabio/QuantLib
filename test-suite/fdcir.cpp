@@ -32,10 +32,8 @@
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 void FdCIRTest::testFdmCIRConvergence() {

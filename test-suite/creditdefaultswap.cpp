@@ -39,16 +39,12 @@
 #include <ql/currencies/america.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
 #include <map>
-
 #include <iomanip>
 #include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::assign::map_list_of;
 using std::map;
 
 void CreditDefaultSwapTest::testCachedValue() {
@@ -728,19 +724,20 @@ void CreditDefaultSwapTest::testAccrualRebateAmounts() {
 
     // key is trade date and value is expected accrual
     typedef map<Date, Real> InputData;
-    InputData inputs = map_list_of
-        (Date(18, Mar, 2009), 24166.67)
-        (Date(19, Mar, 2009), 0.00)
-        (Date(20, Mar, 2009), 277.78)
-        (Date(23, Mar, 2009), 1111.11)
-        (Date(19, Jun, 2009), 25555.56)
-        (Date(20, Jun, 2009), 25833.33)
-        (Date(21, Jun, 2009), 0.00)
-        (Date(22, Jun, 2009), 277.78)
-        (Date(18, Jun, 2014), 25277.78)
-        (Date(19, Jun, 2014), 25555.56);
+    InputData inputs = {
+        {Date(18, Mar, 2009), 24166.67},
+        {Date(19, Mar, 2009), 0.00},
+        {Date(20, Mar, 2009), 277.78},
+        {Date(23, Mar, 2009), 1111.11},
+        {Date(19, Jun, 2009), 25555.56},
+        {Date(20, Jun, 2009), 25833.33},
+        {Date(21, Jun, 2009), 0.00},
+        {Date(22, Jun, 2009), 277.78},
+        {Date(18, Jun, 2014), 25277.78},
+        {Date(19, Jun, 2014), 25555.56}
+    };
 
-    BOOST_FOREACH(const InputData::value_type& input, inputs) {
+    for (auto& input: inputs) {
         Settings::instance().evaluationDate() = input.first;
         CreditDefaultSwap cds = MakeCreditDefaultSwap(maturity, spread)
             .withNominal(notional);

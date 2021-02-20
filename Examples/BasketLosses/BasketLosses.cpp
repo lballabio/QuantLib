@@ -32,16 +32,12 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/currencies/europe.hpp>
-
-#include <boost/assign/std/vector.hpp>
-
 #include <iostream>
 #include <iomanip>
 #include <string>
 
 using namespace std;
 using namespace QuantLib;
-using namespace boost::assign;
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
@@ -67,11 +63,9 @@ int main(int, char* []) {
                         SET UP BASKET PORTFOLIO
         -------------------------------------------------------------- */
         // build curves and issuers into a basket of ten names
-        std::vector<Real> hazardRates;
-        hazardRates += 
-        //  0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;        
-            0.001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09;        
-        //  0.01,  0.01,  0.01,  0.01, 0.01,  0.01,  0.01,  0.01,  0.01,  0.01;        
+        std::vector<Real> hazardRates = {
+            0.001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09
+        };
         std::vector<std::string> names;
         for(Size i=0; i<hazardRates.size(); i++)
             names.push_back(std::string("Acme") + 

@@ -20,9 +20,6 @@
 
 #include "hestonslvmodel.hpp"
 #include "utilities.hpp"
-
-#include <iomanip>
-
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
@@ -88,9 +85,9 @@
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
-
-#include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/gamma.hpp>
+#include <iomanip>
+
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
@@ -102,7 +99,6 @@
 #endif
 
 using namespace QuantLib;
-using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 namespace {
@@ -702,10 +698,10 @@ namespace {
         const Date todaysDate = Date(28, Dec, 2014);
         Settings::instance().evaluationDate() = todaysDate;
 
-        std::vector<Period> maturities;
-        maturities+=Period(1, Months),
-                    Period(3, Months), Period(6, Months), Period(9, Months),
-                    Period(1, Years), Period(2, Years), Period(3, Years);
+        std::vector<Period> maturities = {
+            Period(1, Months), Period(3, Months), Period(6, Months), Period(9, Months),
+            Period(1, Years), Period(2, Years), Period(3, Years)
+        };
 
         const Date maturityDate = todaysDate + maturities.back();
         const Time maturity = dc.yearFraction(todaysDate, maturityDate);
@@ -754,9 +750,11 @@ namespace {
             const Real v0Density = 10.0;
             const Real upperBoundDensity = 100;
             const Real lowerBoundDensity = 1.0;
-            cPoints += ext::make_tuple(lowerBound, lowerBoundDensity, false),
-                       ext::make_tuple(v0Center, v0Density, true),
-                       ext::make_tuple(upperBound, upperBoundDensity, false);
+            cPoints = {
+                {lowerBound, lowerBoundDensity, false},
+                {v0Center, v0Density, true},
+                {upperBound, upperBoundDensity, false}
+            };
           }
         break;
         case FdmSquareRootFwdOp::Plain:
@@ -767,8 +765,10 @@ namespace {
             const Real v0Center = v0;
             const Real v0Density = 0.1;
             const Real lowerBoundDensity = 0.0001;
-            cPoints += ext::make_tuple(lowerBound, lowerBoundDensity, false),
-                       ext::make_tuple(v0Center, v0Density, true);
+            cPoints = {
+                {lowerBound, lowerBoundDensity, false},
+                {v0Center, v0Density, true}
+            };
           }
         break;
         case FdmSquareRootFwdOp::Power:
@@ -779,8 +779,10 @@ namespace {
             const Real v0Center = v0;
             const Real v0Density = 1.0;
             const Real lowerBoundDensity = 0.005;
-            cPoints += ext::make_tuple(lowerBound, lowerBoundDensity, false),
-                       ext::make_tuple(v0Center, v0Density, true);
+            cPoints = {
+                {lowerBound, lowerBoundDensity, false},
+                {v0Center, v0Density, true}
+            };
           }
         break;
         default:

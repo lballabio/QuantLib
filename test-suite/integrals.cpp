@@ -35,10 +35,8 @@
 #include <ql/math/integrals/twodimensionalintegral.hpp>
 #include <ql/experimental/math/piecewisefunction.hpp>
 #include <ql/experimental/math/piecewiseintegral.hpp>
-#include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 namespace integrals_test {
@@ -325,8 +323,8 @@ void IntegralTest::testPiecewiseIntegral() {
 
     using namespace integrals_test;
 
-    x += 1.0, 2.0, 3.0, 4.0, 5.0;
-    y += 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
+    x = { 1.0, 2.0, 3.0, 4.0, 5.0 };
+    y = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
     ext::shared_ptr<Integrator> segment =
         ext::make_shared<SegmentIntegral>(1);
     ext::shared_ptr<Integrator> piecewise =

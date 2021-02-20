@@ -25,16 +25,12 @@
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
-#include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
 #include <map>
 #include <vector>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-using boost::assign::map_list_of;
-using boost::assign::list_of;
 using std::make_pair;
 using std::map;
 using std::pair;
@@ -274,7 +270,7 @@ namespace CdsTests {
     void testCDSConventions(const InputData& inputs, DateGeneration::Rule rule) {
 
         // Test the generated start and end date against the expected start and end date.
-        BOOST_FOREACH(const InputData::value_type& input, inputs) {
+        for (auto& input : inputs) {
 
             Date from = input.first.first;
             Period tenor = input.first.second;
@@ -365,73 +361,74 @@ void ScheduleTest::testCDS2015ConventionGrid() {
     // The map value is a pair with 1st and 2nd element equal to expected start and end date respectively.
     // The trade dates are from the transition dates in the doc i.e. 20th Mar, Jun, Sep and Dec in 2016 and a day 
     // either side. The tenors are selected tenors from the doc i.e. short quarterly tenors less than 1Y, 1Y and 5Y.
-    InputData inputs = map_list_of
-        (make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2016)))
-        (make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
-        (make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(21, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(19, Sep, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Dec, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
-        (make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Sep, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Dec, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Sep, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Dec, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Sep, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(21, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(19, Dec, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2020)))
-        (make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2021)))
-        (make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(21, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(19, Sep, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(20, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(21, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(19, Dec, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
-        (make_pair(Date(21, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
-        (make_pair(Date(19, Jun, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
-        (make_pair(Date(20, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Dec, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)));
+    InputData inputs = {
+        { make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(21, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(19, Sep, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Sep, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2020)) },
+        { make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2021)) },
+        { make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(21, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(19, Sep, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(20, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(21, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(19, Dec, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)) },
+        { make_pair(Date(20, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Dec, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)) }
+    };
 
     CdsTests::testCDSConventions(inputs, DateGeneration::CDS2015);
 }
@@ -449,79 +446,80 @@ void ScheduleTest::testCDSConventionGrid() {
     // The map value is a pair with 1st and 2nd element equal to expected start and end date respectively.
     // The trade dates are from the transition dates in the doc i.e. 20th Mar, Jun, Sep and Dec in 2016 and a day 
     // either side. The tenors are selected tenors from the doc i.e. short quarterly tenors less than 1Y, 1Y and 5Y.
-    InputData inputs = map_list_of
-        (make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
-        (make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
-        (make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Sep, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Dec, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Sep, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Dec, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Sep, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Dec, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Sep, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(20, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(21, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(19, Dec, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)))
-        (make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)))
-        (make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2021)))
-        (make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2021)))
-        (make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)))
-        (make_pair(Date(21, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)))
-        (make_pair(Date(19, Sep, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)))
-        (make_pair(Date(20, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(21, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(19, Dec, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)))
-        (make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)))
-        (make_pair(Date(19, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2016)))
-        (make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)))
-        (make_pair(Date(21, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
-        (make_pair(Date(19, Jun, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)))
-        (make_pair(Date(20, Jun, 2016), 0 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(21, Jun, 2016), 0 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(19, Sep, 2016), 0 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Dec, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Dec, 2016), 0 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Dec, 2016), 0 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)));
+    InputData inputs = {
+        { make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Sep, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)) },
+        { make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)) },
+        { make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2021)) },
+        { make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2021)) },
+        { make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)) },
+        { make_pair(Date(21, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)) },
+        { make_pair(Date(19, Sep, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)) },
+        { make_pair(Date(20, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(21, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(19, Dec, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)) },
+        { make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)) },
+        { make_pair(Date(19, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Mar, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 0 * Months), make_pair(Date(21, Dec, 2015), Date(20, Jun, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 0 * Months), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2016)) },
+        { make_pair(Date(20, Jun, 2016), 0 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(21, Jun, 2016), 0 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(19, Sep, 2016), 0 * Months), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Sep, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Dec, 2016), 0 * Months), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Dec, 2016), 0 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 0 * Months), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2017)) }
+    };
 
     CdsTests::testCDSConventions(inputs, DateGeneration::CDS);
 }
@@ -539,67 +537,68 @@ void ScheduleTest::testOldCDSConventionGrid() {
     // The map value is a pair with 1st and 2nd element equal to expected start and end date respectively.
     // The trade dates are from the transition dates in the doc i.e. 20th Mar, Jun, Sep and Dec in 2016 and a day 
     // either side. The tenors are selected tenors from the doc i.e. short quarterly tenors less than 1Y, 1Y and 5Y.
-    InputData inputs = map_list_of
-        (make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(19, Mar, 2016), Date(20, Jun, 2016)))
-        (make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(20, Mar, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(19, Jun, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Jun, 2016), 3 * Months), make_pair(Date(21, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Sep, 2016), 3 * Months), make_pair(Date(19, Sep, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Sep, 2016), 3 * Months), make_pair(Date(21, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Dec, 2016), 3 * Months), make_pair(Date(19, Dec, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(21, Dec, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(19, Mar, 2016), Date(20, Sep, 2016)))
-        (make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(20, Mar, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(19, Jun, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Jun, 2016), 6 * Months), make_pair(Date(21, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Sep, 2016), 6 * Months), make_pair(Date(19, Sep, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Sep, 2016), 6 * Months), make_pair(Date(21, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Dec, 2016), 6 * Months), make_pair(Date(19, Dec, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(21, Dec, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(19, Mar, 2016), Date(20, Dec, 2016)))
-        (make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(20, Mar, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(19, Jun, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Jun, 2016), 9 * Months), make_pair(Date(21, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Sep, 2016), 9 * Months), make_pair(Date(19, Sep, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Sep, 2016), 9 * Months), make_pair(Date(21, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Dec, 2016), 9 * Months), make_pair(Date(19, Dec, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(21, Dec, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(19, Mar, 2016), Date(20, Mar, 2017)))
-        (make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(20, Mar, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(19, Jun, 2016), Date(20, Jun, 2017)))
-        (make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(21, Jun, 2016), 1 * Years), make_pair(Date(21, Jun, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(19, Sep, 2016), 1 * Years), make_pair(Date(19, Sep, 2016), Date(20, Sep, 2017)))
-        (make_pair(Date(20, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(21, Sep, 2016), 1 * Years), make_pair(Date(21, Sep, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(19, Dec, 2016), 1 * Years), make_pair(Date(19, Dec, 2016), Date(20, Dec, 2017)))
-        (make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)))
-        (make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(21, Dec, 2016), Date(20, Mar, 2018)))
-        (make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(19, Mar, 2016), Date(20, Mar, 2021)))
-        (make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(20, Mar, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(19, Jun, 2016), Date(20, Jun, 2021)))
-        (make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)))
-        (make_pair(Date(21, Jun, 2016), 5 * Years), make_pair(Date(21, Jun, 2016), Date(20, Sep, 2021)))
-        (make_pair(Date(19, Sep, 2016), 5 * Years), make_pair(Date(19, Sep, 2016), Date(20, Sep, 2021)))
-        (make_pair(Date(20, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(21, Sep, 2016), 5 * Years), make_pair(Date(21, Sep, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(19, Dec, 2016), 5 * Years), make_pair(Date(19, Dec, 2016), Date(20, Dec, 2021)))
-        (make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)))
-        (make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(21, Dec, 2016), Date(20, Mar, 2022)));
+    InputData inputs = {
+        { make_pair(Date(19, Mar, 2016), 3 * Months), make_pair(Date(19, Mar, 2016), Date(20, Jun, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 3 * Months), make_pair(Date(20, Mar, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 3 * Months), make_pair(Date(21, Mar, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 3 * Months), make_pair(Date(19, Jun, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Jun, 2016), 3 * Months), make_pair(Date(20, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Jun, 2016), 3 * Months), make_pair(Date(21, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Sep, 2016), 3 * Months), make_pair(Date(19, Sep, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Sep, 2016), 3 * Months), make_pair(Date(20, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 3 * Months), make_pair(Date(21, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 3 * Months), make_pair(Date(19, Dec, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 3 * Months), make_pair(Date(20, Dec, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 3 * Months), make_pair(Date(21, Dec, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 6 * Months), make_pair(Date(19, Mar, 2016), Date(20, Sep, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 6 * Months), make_pair(Date(20, Mar, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(21, Mar, 2016), 6 * Months), make_pair(Date(21, Mar, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(19, Jun, 2016), 6 * Months), make_pair(Date(19, Jun, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Jun, 2016), 6 * Months), make_pair(Date(20, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 6 * Months), make_pair(Date(21, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 6 * Months), make_pair(Date(19, Sep, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 6 * Months), make_pair(Date(20, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 6 * Months), make_pair(Date(21, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 6 * Months), make_pair(Date(19, Dec, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 6 * Months), make_pair(Date(20, Dec, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 6 * Months), make_pair(Date(21, Dec, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 9 * Months), make_pair(Date(19, Mar, 2016), Date(20, Dec, 2016)) },
+        { make_pair(Date(20, Mar, 2016), 9 * Months), make_pair(Date(20, Mar, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(21, Mar, 2016), 9 * Months), make_pair(Date(21, Mar, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(19, Jun, 2016), 9 * Months), make_pair(Date(19, Jun, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Jun, 2016), 9 * Months), make_pair(Date(20, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 9 * Months), make_pair(Date(21, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 9 * Months), make_pair(Date(19, Sep, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 9 * Months), make_pair(Date(20, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 9 * Months), make_pair(Date(21, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 9 * Months), make_pair(Date(19, Dec, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 9 * Months), make_pair(Date(20, Dec, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(21, Dec, 2016), 9 * Months), make_pair(Date(21, Dec, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(19, Mar, 2016), 1 * Years), make_pair(Date(19, Mar, 2016), Date(20, Mar, 2017)) },
+        { make_pair(Date(20, Mar, 2016), 1 * Years), make_pair(Date(20, Mar, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(21, Mar, 2016), 1 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(19, Jun, 2016), 1 * Years), make_pair(Date(19, Jun, 2016), Date(20, Jun, 2017)) },
+        { make_pair(Date(20, Jun, 2016), 1 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(21, Jun, 2016), 1 * Years), make_pair(Date(21, Jun, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(19, Sep, 2016), 1 * Years), make_pair(Date(19, Sep, 2016), Date(20, Sep, 2017)) },
+        { make_pair(Date(20, Sep, 2016), 1 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(21, Sep, 2016), 1 * Years), make_pair(Date(21, Sep, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(19, Dec, 2016), 1 * Years), make_pair(Date(19, Dec, 2016), Date(20, Dec, 2017)) },
+        { make_pair(Date(20, Dec, 2016), 1 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2018)) },
+        { make_pair(Date(21, Dec, 2016), 1 * Years), make_pair(Date(21, Dec, 2016), Date(20, Mar, 2018)) },
+        { make_pair(Date(19, Mar, 2016), 5 * Years), make_pair(Date(19, Mar, 2016), Date(20, Mar, 2021)) },
+        { make_pair(Date(20, Mar, 2016), 5 * Years), make_pair(Date(20, Mar, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(21, Mar, 2016), 5 * Years), make_pair(Date(21, Mar, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(19, Jun, 2016), 5 * Years), make_pair(Date(19, Jun, 2016), Date(20, Jun, 2021)) },
+        { make_pair(Date(20, Jun, 2016), 5 * Years), make_pair(Date(20, Jun, 2016), Date(20, Sep, 2021)) },
+        { make_pair(Date(21, Jun, 2016), 5 * Years), make_pair(Date(21, Jun, 2016), Date(20, Sep, 2021)) },
+        { make_pair(Date(19, Sep, 2016), 5 * Years), make_pair(Date(19, Sep, 2016), Date(20, Sep, 2021)) },
+        { make_pair(Date(20, Sep, 2016), 5 * Years), make_pair(Date(20, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(21, Sep, 2016), 5 * Years), make_pair(Date(21, Sep, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(19, Dec, 2016), 5 * Years), make_pair(Date(19, Dec, 2016), Date(20, Dec, 2021)) },
+        { make_pair(Date(20, Dec, 2016), 5 * Years), make_pair(Date(20, Dec, 2016), Date(20, Mar, 2022)) },
+        { make_pair(Date(21, Dec, 2016), 5 * Years), make_pair(Date(21, Dec, 2016), Date(20, Mar, 2022)) }
+    };
 
     CdsTests::testCDSConventions(inputs, DateGeneration::OldCDS);
 }
@@ -617,8 +616,10 @@ void ScheduleTest::testCDS2015ConventionSampleDates() {
     Date tradeDate(18, Sep, 2015);
     Date maturity = cdsMaturity(tradeDate, tenor, rule);
     Schedule s = makeCdsSchedule(tradeDate, maturity, rule);
-    vector<Date> expDates = list_of(Date(22, Jun, 2015))(Date(21, Sep, 2015))(Date(21, Dec, 2015))
-        (Date(21, Mar, 2016))(Date(20, Jun, 2016));
+    vector<Date> expDates = {
+        Date(22, Jun, 2015), Date(21, Sep, 2015), Date(21, Dec, 2015),
+        Date(21, Mar, 2016), Date(20, Jun, 2016)
+    };
     check_dates(s, expDates);
 
     // trade date = Sat 19 Sep 2015, no change.
@@ -647,7 +648,9 @@ void ScheduleTest::testCDS2015ConventionSampleDates() {
     tradeDate = Date(20, Jun, 2009);
     maturity = Date(20, Dec, 2009);
     s = makeCdsSchedule(tradeDate, maturity, rule);
-    vector<Date> tmp = list_of(Date(20, Mar, 2009))(Date(22, Jun, 2009))(Date(21, Sep, 2009))(Date(20, Dec, 2009));
+    vector<Date> tmp = {
+        Date(20, Mar, 2009), Date(22, Jun, 2009), Date(21, Sep, 2009), Date(20, Dec, 2009)
+    };
     expDates.assign(tmp.begin(), tmp.end());
     check_dates(s, expDates);
 
@@ -676,8 +679,10 @@ void ScheduleTest::testCDSConventionSampleDates() {
     Date tradeDate(18, Sep, 2015);
     Date maturity = cdsMaturity(tradeDate, tenor, rule);
     Schedule s = makeCdsSchedule(tradeDate, maturity, rule);
-    vector<Date> expDates = list_of(Date(22, Jun, 2015))(Date(21, Sep, 2015))(Date(21, Dec, 2015))
-        (Date(21, Mar, 2016))(Date(20, Jun, 2016))(Date(20, Sep, 2016));
+    vector<Date> expDates = {
+        Date(22, Jun, 2015), Date(21, Sep, 2015), Date(21, Dec, 2015),
+        Date(21, Mar, 2016), Date(20, Jun, 2016), Date(20, Sep, 2016)
+    };
     check_dates(s, expDates);
 
     // trade date = Sat 19 Sep 2015, no change.
@@ -705,7 +710,7 @@ void ScheduleTest::testCDSConventionSampleDates() {
     tradeDate = Date(20, Jun, 2009);
     maturity = Date(20, Dec, 2009);
     s = makeCdsSchedule(tradeDate, maturity, rule);
-    vector<Date> tmp = list_of(Date(20, Mar, 2009))(Date(22, Jun, 2009))(Date(21, Sep, 2009))(Date(20, Dec, 2009));
+    vector<Date> tmp = { Date(20, Mar, 2009), Date(22, Jun, 2009), Date(21, Sep, 2009), Date(20, Dec, 2009) };
     expDates.assign(tmp.begin(), tmp.end());
     check_dates(s, expDates);
 
@@ -734,8 +739,10 @@ void ScheduleTest::testOldCDSConventionSampleDates() {
     Date tradeDatePlusOne(18, Sep, 2015);
     Date maturity = cdsMaturity(tradeDatePlusOne, tenor, rule);
     Schedule s = makeCdsSchedule(tradeDatePlusOne, maturity, rule);
-    vector<Date> expDates = list_of(Date(18, Sep, 2015))(Date(21, Dec, 2015))
-        (Date(21, Mar, 2016))(Date(20, Jun, 2016))(Date(20, Sep, 2016));
+    vector<Date> expDates = {
+        Date(18, Sep, 2015), Date(21, Dec, 2015),
+        Date(21, Mar, 2016), Date(20, Jun, 2016), Date(20, Sep, 2016)
+    };
     check_dates(s, expDates);
 
     // trade date plus 1D = Sat 19 Sep 2015, no change.
@@ -789,16 +796,17 @@ void ScheduleTest::testCDS2015ZeroMonthsMatured() {
     Period tenor(0, Months);
 
     // Move through selected trade dates from 20 Dec 2015 to 20 Dec 2016 checking that the 0M CDS is matured.
-    vector<Date> inputs = list_of
-        (Date(20, Dec, 2015))
-        (Date(15, Feb, 2016))
-        (Date(19, Mar, 2016))
-        (Date(20, Jun, 2016))
-        (Date(15, Aug, 2016))
-        (Date(19, Sep, 2016))
-        (Date(20, Dec, 2016));
+    vector<Date> inputs = {
+        Date(20, Dec, 2015),
+        Date(15, Feb, 2016),
+        Date(19, Mar, 2016),
+        Date(20, Jun, 2016),
+        Date(15, Aug, 2016),
+        Date(19, Sep, 2016),
+        Date(20, Dec, 2016)
+    };
 
-    BOOST_FOREACH(const Date& input, inputs) {
+    for (const Date& input: inputs) {
         BOOST_CHECK_EQUAL(cdsMaturity(input, tenor, rule), Null<Date>());
     }
 }

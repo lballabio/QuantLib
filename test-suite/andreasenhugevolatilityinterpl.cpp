@@ -19,7 +19,6 @@
 
 #include "andreasenhugevolatilityinterpl.hpp"
 #include "utilities.hpp"
-
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
@@ -40,8 +39,6 @@
 #include <ql/termstructures/volatility/equityfx/andreasenhugelocalvoladapter.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityadapter.hpp>
-
-#include <boost/assign/std/vector.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace QuantLib;
@@ -459,16 +456,19 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
     const Date today = data.rTS->referenceDate();
     Settings::instance().evaluationDate() = today;
 
-    using namespace boost::assign;
-    std::vector<Real> r, q;
-    r += 0.0167, 0.023, 0.03234, 0.034, 0.038, 0.042, 0.047, 0.053;
-    q += 0.01, 0.011, 0.013, 0.014, 0.02, 0.025, 0.067, 0.072;
+    std::vector<Real> r = { 0.0167, 0.023, 0.03234, 0.034, 0.038, 0.042, 0.047, 0.053 };
+    std::vector<Real> q = { 0.01, 0.011, 0.013, 0.014, 0.02, 0.025, 0.067, 0.072 };
 
-    std::vector<Date> dates;
-    dates += today,                     today + Period(41, Days),
-             today + Period(75, Days),  today + Period(165, Days),
-             today + Period(256, Days), today + Period(345, Days),
-             today + Period(524, Days), today + Period(2190, Days);
+    std::vector<Date> dates = {
+        today,
+        today + Period(41, Days),
+        today + Period(75, Days),
+        today + Period(165, Days),
+        today + Period(256, Days),
+        today + Period(345, Days),
+        today + Period(524, Days),
+        today + Period(2190, Days)
+    };
 
     const Handle<YieldTermStructure> rTS(
         ext::make_shared<ZeroCurve>(dates, r, dc));
@@ -824,9 +824,7 @@ namespace andreasen_huge_volatility_interpl_test {
 
         const CalibrationData data = { spot, rTS, qTS, calibrationSet};
 
-        using namespace boost::assign;
-        std::vector<Real> parameter;
-        parameter += alpha, beta, nu, rho, forward, maturity;
+        std::vector<Real> parameter = { alpha, beta, nu, rho, forward, maturity };
 
         return std::make_pair(data, parameter);
     }
