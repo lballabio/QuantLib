@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007, 2009 Chris Kenyon
+ Copyright (C) 2007 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,14 +37,14 @@ namespace QuantLib {
         explicit ZACPI(
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex("CPI",
-                             ZARegion(),
-                             false,
-                             interpolated,
-                             Monthly,
-                             Period(1, Months),
-                             ZARCurrency(),
-                             ts) {}
+        : ZACPI(ts) {
+            interpolated_ = interpolated;
+        }
+
+        explicit ZACPI(
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : ZeroInflationIndex(
+              "CPI", ZARegion(), false, Monthly, Period(1, Months), ZARCurrency(), ts) {}
     };
 
 
@@ -54,15 +55,14 @@ namespace QuantLib {
         explicit YYZACPI(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex("YY_CPI",
-                            ZARegion(),
-                            false,
-                            interpolated,
-                            false,
-                            Monthly,
-                            Period(1, Months),
-                            ZARCurrency(),
-                            ts) {}
+        : YYZACPI(ts) {
+            interpolated_ = interpolated;
+        }
+
+        explicit YYZACPI(
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        : YoYInflationIndex(
+              "YY_CPI", ZARegion(), false, false, Monthly, Period(1, Months), ZARCurrency(), ts) {}
     };
 
 
@@ -73,15 +73,14 @@ namespace QuantLib {
         explicit YYZACPIr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex("YYR_CPI",
-                            ZARegion(),
-                            false,
-                            interpolated,
-                            true,
-                            Monthly,
-                            Period(1, Months),
-                            ZARCurrency(),
-                            ts) {}
+        : YYZACPIr(ts) {
+            interpolated_ = interpolated;
+        }
+
+        explicit YYZACPIr(
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        : YoYInflationIndex(
+              "YYR_CPI", ZARegion(), false, true, Monthly, Period(1, Months), ZARCurrency(), ts) {}
     };
 
 }
