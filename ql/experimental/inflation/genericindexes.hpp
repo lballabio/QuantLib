@@ -67,7 +67,7 @@ namespace QuantLib {
     //! Genuine year-on-year Generic CPI (i.e. not a ratio)
     class YYGenericCPI : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         YYGenericCPI(
             Frequency frequency,
             bool revised,
@@ -91,7 +91,7 @@ namespace QuantLib {
     //! Fake year-on-year GenericCPI (i.e. a ratio)
     class YYGenericCPIr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         YYGenericCPIr(
             Frequency frequency,
             bool revised,

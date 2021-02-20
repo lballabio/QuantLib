@@ -79,7 +79,7 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
     class YYEUHICP : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYEUHICP(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
@@ -96,7 +96,7 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICPXT
     class YYEUHICPXT : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYEUHICPXT(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
@@ -120,7 +120,7 @@ namespace QuantLib {
     //! Fake year-on-year EU HICP (i.e. a ratio of EU HICP)
     class YYEUHICPr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYEUHICPr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())

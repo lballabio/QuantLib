@@ -38,6 +38,10 @@
      *              Deprecated in version 1.22. */                            \
     // QL_DEPRECATED
 
+#define QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES                                              \
+    /* Deprecation postponed for now. This enables us to deprecate the YoY indexes seperately. */ \
+    // QL_DEPRECATED
+
 
 namespace QuantLib {
 
@@ -203,7 +207,7 @@ namespace QuantLib {
     */
     class YoYInflationIndex : public InflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         YoYInflationIndex(
             const std::string& familyName,
             const Region& region,

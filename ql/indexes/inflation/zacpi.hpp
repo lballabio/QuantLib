@@ -51,7 +51,7 @@ namespace QuantLib {
     //! Genuine year-on-year South African CPI (i.e. not a ratio of ZA CPI)
     class YYZACPI : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYZACPI(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
@@ -69,7 +69,7 @@ namespace QuantLib {
     //! Fake year-on-year South African CPI (i.e. a ratio of ZA CPI)
     class YYZACPIr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYZACPIr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
