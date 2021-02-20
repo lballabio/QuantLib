@@ -33,7 +33,7 @@ namespace QuantLib {
     //! FR HICP index
     class FRHICP : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit FRHICP(
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
@@ -51,7 +51,7 @@ namespace QuantLib {
     //! Genuine year-on-year FR HICP (i.e. not a ratio)
     class YYFRHICP : public YoYInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit YYFRHICP(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
@@ -75,7 +75,7 @@ namespace QuantLib {
     //! Fake year-on-year FR HICP (i.e. a ratio)
     class YYFRHICPr : public YoYInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit YYFRHICPr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())

@@ -34,7 +34,7 @@ namespace QuantLib {
     //! EU HICP index
     class EUHICP : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit EUHICP(
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
@@ -56,7 +56,7 @@ namespace QuantLib {
     //! EU HICPXT index
     class EUHICPXT : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit EUHICPXT(
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
@@ -79,7 +79,7 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
     class YYEUHICP : public YoYInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit YYEUHICP(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
@@ -96,7 +96,7 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICPXT
     class YYEUHICPXT : public YoYInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit YYEUHICPXT(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
@@ -120,7 +120,7 @@ namespace QuantLib {
     //! Fake year-on-year EU HICP (i.e. a ratio of EU HICP)
     class YYEUHICPr : public YoYInflationIndex {
       public:
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         explicit YYEUHICPr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())

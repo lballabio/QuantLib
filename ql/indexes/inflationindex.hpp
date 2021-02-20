@@ -31,7 +31,7 @@
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 
-#define QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES                          \
+#define QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES                    \
     /*! \deprecated The use of interpolated is not a feature of the index but \
      *              of the coupons etc. using the index.                      \
      *              Use the other constructor instead.                        \
@@ -57,7 +57,7 @@ namespace QuantLib {
          give the previous period's value)
          and enables storage of the most recent uninterpolated value.
          */
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         InflationIndex(std::string familyName,
                        Region region,
                        bool revised,
@@ -123,7 +123,7 @@ namespace QuantLib {
         */
 
         // postpone the deprecation to avoid compile errors and warnings for a while...
-        /* QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES  */
+        /* QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES  */
         bool interpolated() const;
         Frequency frequency() const;
         /*! The availability lag describes when the index is
@@ -156,7 +156,7 @@ namespace QuantLib {
     class ZeroInflationIndex : public InflationIndex {
       public:
         //! Always use the evaluation date as the reference date
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         ZeroInflationIndex(
             const std::string& familyName,
             const Region& region,
