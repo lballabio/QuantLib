@@ -32,8 +32,7 @@ namespace QuantLib {
     class GenericRegion : public Region {
       public:
         GenericRegion() {
-            static ext::shared_ptr<Data> GENERICdata(
-                                               new Data("Generic","GENERIC"));
+            static ext::shared_ptr<Data> GENERICdata(new Data("Generic", "GENERIC"));
             data_ = GENERICdata;
         }
     };
@@ -42,67 +41,46 @@ namespace QuantLib {
     //! Generic CPI index
     class GenericCPI : public ZeroInflationIndex {
       public:
-        GenericCPI(Frequency frequency,
-                   bool revised,
-                   bool interpolated,
-                   const Period &lag,
-                   const Currency &ccy,
-                   const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex("CPI",
-                             GenericRegion(),
-                             revised,
-                             interpolated,
-                             frequency,
-                             lag,
-                             ccy,
-                             ts) {}
+        GenericCPI(
+            Frequency frequency,
+            bool revised,
+            bool interpolated,
+            const Period& lag,
+            const Currency& ccy,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : ZeroInflationIndex(
+              "CPI", GenericRegion(), revised, interpolated, frequency, lag, ccy, ts) {}
     };
 
 
     //! Genuine year-on-year Generic CPI (i.e. not a ratio)
     class YYGenericCPI : public YoYInflationIndex {
       public:
-        YYGenericCPI(Frequency frequency,
-                     bool revised,
-                     bool interpolated,
-                     const Period &lag,
-                     const Currency &ccy,
-                     const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex("YY_CPI",
-                            GenericRegion(),
-                            revised,
-                            interpolated,
-                            false,
-                            frequency,
-                            lag,
-                            ccy,
-                            ts) {}
+        YYGenericCPI(
+            Frequency frequency,
+            bool revised,
+            bool interpolated,
+            const Period& lag,
+            const Currency& ccy,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        : YoYInflationIndex(
+              "YY_CPI", GenericRegion(), revised, interpolated, false, frequency, lag, ccy, ts) {}
     };
 
     //! Fake year-on-year GenericCPI (i.e. a ratio)
     class YYGenericCPIr : public YoYInflationIndex {
       public:
-        YYGenericCPIr(Frequency frequency,
-                      bool revised,
-                      bool interpolated,
-                      const Period &lag,
-                      const Currency &ccy,
-                      const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex("YYR_CPI",
-                            GenericRegion(),
-                            revised,
-                            interpolated,
-                            true,
-                            frequency,
-                            lag,
-                            ccy,
-                            ts) {}
+        YYGenericCPIr(
+            Frequency frequency,
+            bool revised,
+            bool interpolated,
+            const Period& lag,
+            const Currency& ccy,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+        : YoYInflationIndex(
+              "YYR_CPI", GenericRegion(), revised, interpolated, true, frequency, lag, ccy, ts) {}
     };
 
 }
 
 #endif
-
