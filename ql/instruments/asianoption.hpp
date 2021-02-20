@@ -99,16 +99,12 @@ namespace QuantLib {
       public:
         arguments() : averageType(Average::Type(-1)),
                       runningAccumulator(Null<Real>()),
-                      pastFixings(Null<Size>()),
-                      allPastFixingsProvided(false),
-                      allPastFixings(std::vector<Real>()) {}
+                      pastFixings(Null<Size>()) {}
         void validate() const override;
         Average::Type averageType;
         Real runningAccumulator;
         Size pastFixings;
         std::vector<Date> fixingDates;
-        bool allPastFixingsProvided;
-        std::vector<Real> allPastFixings;
     };
 
     //! Extra %arguments for single-asset continuous-average Asian option
