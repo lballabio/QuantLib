@@ -36,7 +36,7 @@
      *              of the coupons etc. using the index.                      \
      *              Use the other constructor instead.                        \
      *              Deprecated in version 1.22. */                            \
-    QL_DEPRECATED
+    // QL_DEPRECATED
 
 
 namespace QuantLib {
