@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2007 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,6 +65,14 @@ namespace QuantLib {
                        Frequency frequency,
                        const Period& availabilitiyLag,
                        Currency currency);
+
+        InflationIndex(std::string familyName,
+                       Region region,
+                       bool revised,
+                       Frequency frequency,
+                       const Period& availabilitiyLag,
+                       Currency currency);
+
         //! \name Index interface
         //@{
         std::string name() const override;
@@ -112,7 +121,9 @@ namespace QuantLib {
             extrapolated values are constant within each period taking
             the mid-period extrapolated value.
         */
-        QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+
+        // postpone the deprecation to avoid compile errors and warnings for a while...
+        /* QL_DEPRECATED_INTERPOLATED_INFLATION_INDEXES  */
         bool interpolated() const;
         Frequency frequency() const;
         /*! The availability lag describes when the index is
@@ -156,6 +167,16 @@ namespace QuantLib {
             const Currency& currency,
             Handle<ZeroInflationTermStructure> ts = Handle<ZeroInflationTermStructure>());
 
+        //! Always use the evaluation date as the reference date
+        ZeroInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<ZeroInflationTermStructure> ts = Handle<ZeroInflationTermStructure>());
+
         //! \name Index interface
         //@{
         /*! \warning the forecastTodaysFixing parameter (required by
@@ -188,6 +209,16 @@ namespace QuantLib {
             const Region& region,
             bool revised,
             bool interpolated,
+            bool ratio, // is this one a genuine index or a ratio?
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<YoYInflationTermStructure> ts = Handle<YoYInflationTermStructure>());
+
+        YoYInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
             bool ratio, // is this one a genuine index or a ratio?
             Frequency frequency,
             const Period& availabilityLag,

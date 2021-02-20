@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2007 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,9 +32,18 @@ namespace QuantLib {
                                    Frequency frequency,
                                    const Period& availabilityLag,
                                    Currency currency)
+    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency) {
+        interpolated_ = interpolated;
+    }
+
+    InflationIndex::InflationIndex(std::string familyName,
+                                   Region region,
+                                   bool revised,
+                                   Frequency frequency,
+                                   const Period& availabilityLag,
+                                   Currency currency)
     : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
-      interpolated_(interpolated), frequency_(frequency), availabilityLag_(availabilityLag),
-      currency_(std::move(currency)) {
+      frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)) {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
@@ -67,8 +77,19 @@ namespace QuantLib {
                                            const Period& availabilityLag,
                                            const Currency& currency,
                                            Handle<ZeroInflationTermStructure> zeroInflation)
-    : InflationIndex(
-          familyName, region, revised, interpolated, frequency, availabilityLag, currency),
+    : ZeroInflationIndex(
+          familyName, region, revised, frequency, availabilityLag, currency, zeroInflation) {
+        interpolated_ = interpolated;
+    }
+
+    ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
+                                           const Region& region,
+                                           bool revised,
+                                           Frequency frequency,
+                                           const Period& availabilityLag,
+                                           const Currency& currency,
+                                           Handle<ZeroInflationTermStructure> zeroInflation)
+    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       zeroInflation_(std::move(zeroInflation)) {
         registerWith(zeroInflation_);
     }
@@ -177,8 +198,12 @@ namespace QuantLib {
 
     ext::shared_ptr<ZeroInflationIndex>
     ZeroInflationIndex::clone(const Handle<ZeroInflationTermStructure>& h) const {
-        return ext::make_shared<ZeroInflationIndex>(familyName_, region_, revised_, interpolated_,
-                                                    frequency_, availabilityLag_, currency_, h);
+        /* using the new constructor and set interpolated to avoid the deprecated warning and
+         * error...  */
+        auto clonedIndex = ext::make_shared<ZeroInflationIndex>(
+            familyName_, region_, revised_, frequency_, availabilityLag_, currency_, h);
+        clonedIndex->interpolated_ = interpolated_;
+        return clonedIndex;
     }
 
     // these still need to be fixed to latest versions
@@ -192,8 +217,21 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : InflationIndex(
-          familyName, region, revised, interpolated, frequency, availabilityLag, currency),
+    : YoYInflationIndex(
+          familyName, region, revised, ratio, frequency, availabilityLag, currency, yoyInflation) {
+        interpolated_ = interpolated;
+    }
+
+
+    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
+                                         const Region& region,
+                                         bool revised,
+                                         bool ratio,
+                                         Frequency frequency,
+                                         const Period& availabilityLag,
+                                         const Currency& currency,
+                                         Handle<YoYInflationTermStructure> yoyInflation)
+    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
         registerWith(yoyInflation_);
     }
@@ -315,9 +353,12 @@ namespace QuantLib {
 
     ext::shared_ptr<YoYInflationIndex>
     YoYInflationIndex::clone(const Handle<YoYInflationTermStructure>& h) const {
-        return ext::make_shared<YoYInflationIndex>(familyName_, region_, revised_, interpolated_,
-                                                   ratio_, frequency_, availabilityLag_, currency_,
-                                                   h);
+        /* using the new constructor and set interpolated to avoid the deprecated warning and
+         * error...  */
+        auto clonedIndex = ext::make_shared<YoYInflationIndex>(
+            familyName_, region_, revised_, ratio_, frequency_, availabilityLag_, currency_, h);
+        clonedIndex->interpolated_ = interpolated_;
+        return clonedIndex;
     }
 
 }
