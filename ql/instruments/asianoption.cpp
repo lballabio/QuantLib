@@ -21,6 +21,7 @@
 #include <ql/instruments/asianoption.hpp>
 #include <ql/time/date.hpp>
 #include <utility>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
@@ -57,40 +58,63 @@ namespace QuantLib {
         const ext::shared_ptr<Exercise>& exercise,
         const std::vector<Real>& allPastFixings)
     : OneAssetOption(payoff, exercise),
-      averageType_(averageType), fixingDates_(fixingDates),
-      allPastFixingsProvided_(true), allPastFixings_(allPastFixings) {
+      averageType_(averageType), runningAccumulator_(0.0), pastFixings_(0),
+      fixingDates_(fixingDates), allPastFixingsProvided_(true),
+      allPastFixings_(allPastFixings) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
-        pastFixings_ = allPastFixings_.size();
-
-        if (averageType == Average::Geometric) {
-            runningAccumulator_ = 1.0;
-            for (Size i=0; i<pastFixings_; i++)
-                runningAccumulator_ *= allPastFixings_[i];
-
-        } else if (averageType == Average::Arithmetic) {
-            runningAccumulator_ = 0.0;
-            for (Size i=0; i<pastFixings_; i++)
-                runningAccumulator_ += allPastFixings_[i];
-
-        } else {
-            QL_FAIL("Unrecognised average type, must be Average::Arithmetic or Average::Geometric");
-        }
-
     }
 
     void DiscreteAveragingAsianOption::setupArguments(
                                        PricingEngine::arguments* args) const {
+
+        Real runningAccumulator = runningAccumulator_;
+        Size pastFixings = pastFixings_;
+        std::vector<Date> fixingDates = fixingDates_;
+
+        // If the option was initialised with a list of fixings, before pricing we
+        // compare the evaluation date to the fixing dates, and set up the pastFixings,
+        // fixingDates, and runningAccumulator accordingly
+        if (allPastFixingsProvided_) {
+            std::vector<Date> futureFixingDates = std::vector<Date>();
+            Date today = Settings::instance().evaluationDate();
+
+            pastFixings = 0;
+            for (Size i=0; i<fixingDates_.size(); i++) {
+                if (fixingDates_[i] < today) {
+                    pastFixings += 1;
+                } else {
+                    futureFixingDates.push_back(fixingDates_[i]);
+                }
+            }
+            fixingDates = futureFixingDates;
+
+            if (pastFixings > allPastFixings_.size())
+                QL_FAIL("Not enough past fixings have been provided for the required historical fixing dates");
+
+            if (averageType_ == Average::Geometric) {
+                runningAccumulator = 1.0;
+                for (Size i=0; i<pastFixings; i++)
+                    runningAccumulator *= allPastFixings_[i];
+
+            } else if (averageType_ == Average::Arithmetic) {
+                runningAccumulator = 0.0;
+                for (Size i=0; i<pastFixings; i++)
+                    runningAccumulator += allPastFixings_[i];
+
+            } else {
+                QL_FAIL("Unrecognised average type, must be Average::Arithmetic or Average::Geometric");
+            }
+
+        }
 
         OneAssetOption::setupArguments(args);
 
         auto* moreArgs = dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
         QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->averageType = averageType_;
-        moreArgs->runningAccumulator = runningAccumulator_;
-        moreArgs->pastFixings = pastFixings_;
-        moreArgs->fixingDates = fixingDates_;
-        moreArgs->allPastFixingsProvided = allPastFixingsProvided_;
-        moreArgs->allPastFixings = allPastFixings_;
+        moreArgs->runningAccumulator = runningAccumulator;
+        moreArgs->pastFixings = pastFixings;
+        moreArgs->fixingDates = fixingDates;
     }
 
     void DiscreteAveragingAsianOption::arguments::validate() const {

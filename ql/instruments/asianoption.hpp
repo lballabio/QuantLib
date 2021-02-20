@@ -65,8 +65,13 @@ namespace QuantLib {
                                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
                                      const ext::shared_ptr<Exercise>& exercise);
 
-        // Providing a constructor that takes past fixings as a vector of reals,
-        // defaulting to an empty vector representing an unseasoned option
+        // Providing a constructor that takes fixings as a vector of reals, defaulting to an empty
+        // vector representing an unseasoned option. This interface works slightly differently to
+        // the previous interface:
+        //    - This constructor expects ALL fixingDates to be provided, including those in the past
+        //    - It will compare to evaluation date before pricing to determine which are historic
+        //    - It will take the first N values from allPastFixings and ignore the remainder
+        //    - If not enogh fixings are provided for this date, it will raise an error
         DiscreteAveragingAsianOption(Average::Type averageType,
                                      std::vector<Date> fixingDates,
                                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
