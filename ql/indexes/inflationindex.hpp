@@ -203,7 +203,7 @@ namespace QuantLib {
     */
     class YoYInflationIndex : public InflationIndex {
       public:
-        QL_DEPRECATED
+        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
         YoYInflationIndex(
             const std::string& familyName,
             const Region& region,
