@@ -51,36 +51,36 @@ namespace QuantLib {
     //! Genuine year-on-year South African CPI (i.e. not a ratio of ZA CPI)
     class YYZACPI : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYZACPI(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYZACPI(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYZACPI(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YY_CPI", ZARegion(), false, false, Monthly, Period(1, Months), ZARCurrency(), ts) {}
+        : YoYInflationIndex("YY_CPI",
+                            ZARegion(),
+                            false,
+                            interpolated,
+                            false,
+                            Monthly,
+                            Period(1, Months),
+                            ZARCurrency(),
+                            ts) {}
     };
 
 
     //! Fake year-on-year South African CPI (i.e. a ratio of ZA CPI)
     class YYZACPIr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYZACPIr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYZACPIr(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYZACPIr(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YYR_CPI", ZARegion(), false, true, Monthly, Period(1, Months), ZARCurrency(), ts) {}
+        : YoYInflationIndex("YYR_CPI",
+                            ZARegion(),
+                            false,
+                            interpolated,
+                            true,
+                            Monthly,
+                            Period(1, Months),
+                            ZARCurrency(),
+                            ts) {}
     };
 
 }

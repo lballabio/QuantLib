@@ -79,36 +79,30 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
     class YYEUHICP : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYEUHICP(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYEUHICP(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYEUHICP(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YY_HICP", EURegion(), false, false, Monthly, Period(1, Months), EURCurrency(), ts) {}
+        : YoYInflationIndex("YY_HICP",
+                            EURegion(),
+                            false,
+                            interpolated,
+                            false,
+                            Monthly,
+                            Period(1, Months),
+                            EURCurrency(),
+                            ts) {}
     };
 
     //! Genuine year-on-year EU HICPXT
     class YYEUHICPXT : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYEUHICPXT(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYEUHICPXT(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYEUHICPXT(
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICPXT",
                             EURegion(),
                             false,
+                            interpolated,
                             false,
                             Monthly,
                             Period(1, Months),
@@ -120,18 +114,18 @@ namespace QuantLib {
     //! Fake year-on-year EU HICP (i.e. a ratio of EU HICP)
     class YYEUHICPr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYEUHICPr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYEUHICPr(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYEUHICPr(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YYR_HICP", EURegion(), false, true, Monthly, Period(1, Months), EURCurrency(), ts) {}
+        : YoYInflationIndex("YYR_HICP",
+                            EURegion(),
+                            false,
+                            interpolated,
+                            true,
+                            Monthly,
+                            Period(1, Months),
+                            EURCurrency(),
+                            ts) {}
     };
 
 }

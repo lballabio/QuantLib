@@ -67,7 +67,6 @@ namespace QuantLib {
     //! Genuine year-on-year Generic CPI (i.e. not a ratio)
     class YYGenericCPI : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         YYGenericCPI(
             Frequency frequency,
             bool revised,
@@ -75,23 +74,13 @@ namespace QuantLib {
             const Period& lag,
             const Currency& ccy,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYGenericCPI(frequency, revised, lag, ccy, ts) {
-            interpolated_ = interpolated;
-        }
-
-        YYGenericCPI(
-            Frequency frequency,
-            bool revised,
-            const Period& lag,
-            const Currency& ccy,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex("YY_CPI", GenericRegion(), revised, false, frequency, lag, ccy, ts) {}
+        : YoYInflationIndex(
+              "YY_CPI", GenericRegion(), revised, interpolated, false, frequency, lag, ccy, ts) {}
     };
 
     //! Fake year-on-year GenericCPI (i.e. a ratio)
     class YYGenericCPIr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         YYGenericCPIr(
             Frequency frequency,
             bool revised,
@@ -99,17 +88,8 @@ namespace QuantLib {
             const Period& lag,
             const Currency& ccy,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYGenericCPIr(frequency, revised, lag, ccy, ts) {
-            interpolated_ = interpolated;
-        }
-
-        YYGenericCPIr(
-            Frequency frequency,
-            bool revised,
-            const Period& lag,
-            const Currency& ccy,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex("YYR_CPI", GenericRegion(), revised, true, frequency, lag, ccy, ts) {}
+        : YoYInflationIndex(
+              "YYR_CPI", GenericRegion(), revised, interpolated, true, frequency, lag, ccy, ts) {}
     };
 
 }

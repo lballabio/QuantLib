@@ -51,36 +51,36 @@ namespace QuantLib {
     //! Genuine year-on-year UK RPI (i.e. not a ratio of UK RPI)
     class YYUKRPI : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYUKRPI(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYUKRPI(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYUKRPI(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YY_RPI", UKRegion(), false, false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
+        : YoYInflationIndex("YY_RPI",
+                            UKRegion(),
+                            false,
+                            interpolated,
+                            false,
+                            Monthly,
+                            Period(1, Months),
+                            GBPCurrency(),
+                            ts) {}
     };
 
 
     //! Fake year-on-year UK RPI (i.e. a ratio of UK RPI)
     class YYUKRPIr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYUKRPIr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYUKRPIr(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYUKRPIr(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YYR_RPI", UKRegion(), false, true, Monthly, Period(1, Months), GBPCurrency(), ts) {}
+        : YoYInflationIndex("YYR_RPI",
+                            UKRegion(),
+                            false,
+                            interpolated,
+                            true,
+                            Monthly,
+                            Period(1, Months),
+                            GBPCurrency(),
+                            ts) {}
     };
 
 }

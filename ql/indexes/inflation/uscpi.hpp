@@ -56,36 +56,36 @@ namespace QuantLib {
     //! Genuine year-on-year US CPI (i.e. not a ratio of US CPI)
     class YYUSCPI : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYUSCPI(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYUSCPI(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYUSCPI(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YY_CPI", USRegion(), false, false, Monthly, Period(1, Months), USDCurrency(), ts) {}
+        : YoYInflationIndex("YY_CPI",
+                            USRegion(),
+                            false,
+                            interpolated,
+                            false,
+                            Monthly,
+                            Period(1, Months),
+                            USDCurrency(),
+                            ts) {}
     };
 
 
     //! Fake year-on-year US CPI (i.e. a ratio of US CPI)
     class YYUSCPIr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         explicit YYUSCPIr(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYUSCPIr(ts) {
-            interpolated_ = interpolated;
-        }
-
-        explicit YYUSCPIr(
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YYR_CPI", USRegion(), false, true, Monthly, Period(1, Months), USDCurrency(), ts) {}
+        : YoYInflationIndex("YYR_CPI",
+                            USRegion(),
+                            false,
+                            interpolated,
+                            true,
+                            Monthly,
+                            Period(1, Months),
+                            USDCurrency(),
+                            ts) {}
     };
 
 }

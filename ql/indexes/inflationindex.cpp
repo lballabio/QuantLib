@@ -227,28 +227,9 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(familyName,
-                        region,
-                        revised,
-                        ratio,
-                        frequency,
-                        availabilityLag,
-                        currency,
-                        std::move(yoyInflation)) {
-        interpolated_ = interpolated;
-    }
-
-
-    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
-                                         const Region& region,
-                                         bool revised,
-                                         bool ratio,
-                                         Frequency frequency,
-                                         const Period& availabilityLag,
-                                         const Currency& currency,
-                                         Handle<YoYInflationTermStructure> yoyInflation)
     : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
+        interpolated_ = interpolated;
         registerWith(yoyInflation_);
     }
 
@@ -369,12 +350,9 @@ namespace QuantLib {
 
     ext::shared_ptr<YoYInflationIndex>
     YoYInflationIndex::clone(const Handle<YoYInflationTermStructure>& h) const {
-        /* using the new constructor and set interpolated to avoid the deprecated warning and
-         * error...  */
-        auto clonedIndex = ext::make_shared<YoYInflationIndex>(
-            familyName_, region_, revised_, ratio_, frequency_, availabilityLag_, currency_, h);
-        clonedIndex->interpolated_ = interpolated_;
-        return clonedIndex;
+        return ext::make_shared<YoYInflationIndex>(familyName_, region_, revised_, interpolated_,
+                                                   ratio_, frequency_, availabilityLag_, currency_,
+                                                   h);
     }
 
 }

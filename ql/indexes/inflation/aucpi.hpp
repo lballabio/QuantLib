@@ -53,21 +53,14 @@ namespace QuantLib {
     //! Genuine year-on-year AU CPI (i.e. not a ratio)
     class YYAUCPI : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         YYAUCPI(Frequency frequency,
                 bool revised,
                 bool interpolated,
                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYAUCPI(frequency, revised, ts) {
-            interpolated_ = interpolated;
-        }
-
-        YYAUCPI(Frequency frequency,
-                bool revised,
-                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             AustraliaRegion(),
                             revised,
+                            interpolated,
                             false,
                             frequency,
                             Period(2, Months),
@@ -79,21 +72,14 @@ namespace QuantLib {
     //! Fake year-on-year AUCPI (i.e. a ratio)
     class YYAUCPIr : public YoYInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_YOY_INDEXES
         YYAUCPIr(Frequency frequency,
                  bool revised,
                  bool interpolated,
                  const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YYAUCPIr(frequency, revised, ts) {
-            interpolated_ = interpolated;
-        }
-
-        YYAUCPIr(Frequency frequency,
-                 bool revised,
-                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             AustraliaRegion(),
                             revised,
+                            interpolated,
                             true,
                             frequency,
                             Period(2, Months),
