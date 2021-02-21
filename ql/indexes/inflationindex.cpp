@@ -32,7 +32,12 @@ namespace QuantLib {
                                    Frequency frequency,
                                    const Period& availabilityLag,
                                    Currency currency)
-    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency) {
+    : InflationIndex(std::move(familyName),
+                     std::move(region),
+                     revised,
+                     frequency,
+                     availabilityLag,
+                     std::move(currency)) {
         interpolated_ = interpolated;
     }
 
@@ -77,8 +82,13 @@ namespace QuantLib {
                                            const Period& availabilityLag,
                                            const Currency& currency,
                                            Handle<ZeroInflationTermStructure> zeroInflation)
-    : ZeroInflationIndex(
-          familyName, region, revised, frequency, availabilityLag, currency, zeroInflation) {
+    : ZeroInflationIndex(familyName,
+                         region,
+                         revised,
+                         frequency,
+                         availabilityLag,
+                         currency,
+                         std::move(zeroInflation)) {
         interpolated_ = interpolated;
     }
 
@@ -217,8 +227,14 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(
-          familyName, region, revised, ratio, frequency, availabilityLag, currency, yoyInflation) {
+    : YoYInflationIndex(familyName,
+                        region,
+                        revised,
+                        ratio,
+                        frequency,
+                        availabilityLag,
+                        currency,
+                        std::move(yoyInflation)) {
         interpolated_ = interpolated;
     }
 
