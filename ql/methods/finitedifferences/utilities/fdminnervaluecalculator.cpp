@@ -90,11 +90,8 @@ namespace QuantLib {
             return innerValue(iter, t);
 
         const Real loc = mesher_->location(iter,direction_);
-        Real a = loc;
-        Real b = loc;
-
-        a -= mesher_->dminus(iter, direction_)/2.0;
-        b += mesher_->dplus(iter, direction_)/2.0;
+        const Real a = loc - mesher_->dminus(iter, direction_)/2.0;
+        const Real b = loc + mesher_->dplus(iter, direction_)/2.0;
 
         mapped_payoff f(*payoff_, gridMapping_);
 

@@ -70,7 +70,7 @@ namespace QuantLib {
 
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
-        DividendSchedule emptyDividendSchedule = DividendSchedule();
+        const DividendSchedule emptyDividendSchedule;
 
         const auto mesher = ext::make_shared<FdmMesherComposite>(
             ext::make_shared<FdmBlackScholesMesher>(
@@ -85,6 +85,11 @@ namespace QuantLib {
             ext::make_shared<FdmShoutLogInnerValueCalculator>(
                 process_, escrowedDividendAdj, maturity, payoff, mesher, 0);
 
+        DividendSchedule zeroDividendSchedule = DividendSchedule();
+        for (const auto& cf: arguments_.cashFlow)
+            zeroDividendSchedule.push_back(
+                ext::make_shared<FixedDividend>(0.0, cf->date()));
+
         const auto conditions =
             FdmStepConditionComposite::vanillaComposite(
                 emptyDividendSchedule,
@@ -93,9 +98,22 @@ namespace QuantLib {
                 process_->riskFreeRate()->referenceDate(),
                 process_->riskFreeRate()->dayCounter());
 
+        std::vector<Time> stoppingTimes = conditions->stoppingTimes();
+
+        for (const auto& cf: arguments_.cashFlow) {
+            const Time t = process_->time(cf->date());
+            stoppingTimes.push_back(t);
+            stoppingTimes.push_back(std::min(maturity, t+1e-5));
+        }
+
+        const auto final_conditions = ext::make_shared<FdmStepConditionComposite>(
+            std::list<std::vector<Time> >{stoppingTimes},
+            conditions->conditions());
+
+
         const FdmSolverDesc solverDesc = {
             mesher, FdmBoundaryConditionSet(),
-            conditions, innerValuecalculator,
+            final_conditions, innerValuecalculator,
             maturity, tGrid_, dampingSteps_ };
 
         const auto solver =
