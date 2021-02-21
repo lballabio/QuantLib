@@ -604,9 +604,9 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     
     const Real tol = 0.01;
     const Real gammaTol = 0.001;
-    const Real npvExpected   =  7.365075;
-    const Real deltaExpected = -0.396678;
-    const Real gammaExpected =  0.027681;
+    const Real npvExpected   =  7.38216;
+    const Real deltaExpected = -0.397902;
+    const Real gammaExpected =  0.027747;
         
     if (std::fabs(option.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
