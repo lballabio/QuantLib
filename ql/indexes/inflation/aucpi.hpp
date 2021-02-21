@@ -33,7 +33,7 @@ namespace QuantLib {
     //! AU CPI index (either quarterly or annual)
     class AUCPI : public ZeroInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_DEPRECATED_III_CONSTRUCTOR
         AUCPI(Frequency frequency,
               bool revised,
               bool interpolated,

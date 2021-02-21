@@ -42,7 +42,7 @@ namespace QuantLib {
     //! Generic CPI index
     class GenericCPI : public ZeroInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_DEPRECATED_III_CONSTRUCTOR
         GenericCPI(
             Frequency frequency,
             bool revised,

@@ -34,7 +34,7 @@ namespace QuantLib {
     //! EU HICP index
     class EUHICP : public ZeroInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_DEPRECATED_III_CONSTRUCTOR
         explicit EUHICP(
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
@@ -56,7 +56,7 @@ namespace QuantLib {
     //! EU HICPXT index
     class EUHICPXT : public ZeroInflationIndex {
       public:
-        QL_TO_BE_DEPRECATED_INTERPOLATED_INFLATION_INDEXES
+        QL_DEPRECATED_III_CONSTRUCTOR
         explicit EUHICPXT(
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
