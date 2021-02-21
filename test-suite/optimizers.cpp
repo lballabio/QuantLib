@@ -194,16 +194,12 @@ namespace {
                              Real levenbergMarquardtXtol,
                              Real levenbergMarquardtGtol) {
         std::vector<NamedOptimizationMethod> results;
-        for (Size i=0; i<optimizationMethodTypes.size(); ++i) {
+        for (auto optimizationMethodType : optimizationMethodTypes) {
             NamedOptimizationMethod namedOptimizationMethod;
             namedOptimizationMethod.optimizationMethod = makeOptimizationMethod(
-                optimizationMethodTypes[i],
-                simplexLambda,
-                levenbergMarquardtEpsfcn,
-                levenbergMarquardtXtol,
-                levenbergMarquardtGtol);
-            namedOptimizationMethod.name
-                = optimizationMethodTypeToString(optimizationMethodTypes[i]);
+                optimizationMethodType, simplexLambda, levenbergMarquardtEpsfcn,
+                levenbergMarquardtXtol, levenbergMarquardtGtol);
+            namedOptimizationMethod.name = optimizationMethodTypeToString(optimizationMethodType);
             results.push_back(namedOptimizationMethod);
         }
         return results;

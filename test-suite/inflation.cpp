@@ -73,13 +73,14 @@ namespace inflation_test {
     }
 
     template <class T, class U, class I>
-    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-            const std::vector<Datum> iiData,
-            const ext::shared_ptr<I> &ii, const Period &observationLag,
-            const Calendar &calendar,
-            const BusinessDayConvention &bdc,
-            const DayCounter &dc,
-            const Handle<YieldTermStructure>& yTS) {
+    std::vector<ext::shared_ptr<BootstrapHelper<T> > >
+    makeHelpers(const std::vector<Datum>& iiData,
+                const ext::shared_ptr<I>& ii,
+                const Period& observationLag,
+                const Calendar& calendar,
+                const BusinessDayConvention& bdc,
+                const DayCounter& dc,
+                const Handle<YieldTermStructure>& yTS) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Datum datum : iiData) {

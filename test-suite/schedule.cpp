@@ -270,7 +270,7 @@ namespace CdsTests {
     void testCDSConventions(const InputData& inputs, DateGeneration::Rule rule) {
 
         // Test the generated start and end date against the expected start and end date.
-        for (auto& input : inputs) {
+        for (const auto& input : inputs) {
 
             Date from = input.first.first;
             Period tenor = input.first.second;
@@ -287,7 +287,6 @@ namespace CdsTests {
             BOOST_CHECK_EQUAL(start, expStart);
             BOOST_CHECK_EQUAL(end, expEnd);
         }
-
     }
 }
 
