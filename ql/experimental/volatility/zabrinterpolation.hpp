@@ -26,7 +26,6 @@
 
 #include <ql/experimental/volatility/zabrsmilesection.hpp>
 #include <ql/math/interpolations/xabrinterpolation.hpp>
-#include <boost/assign/list_of.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -140,9 +139,8 @@ template <class Evaluation> class ZabrInterpolation : public Interpolation {
                 I1, I2,
                 detail::ZabrSpecs<Evaluation> >(
                 xBegin, xEnd, yBegin, t, forward,
-                boost::assign::list_of(alpha)(beta)(nu)(rho)(gamma),
-                boost::assign::list_of(alphaIsFixed)(betaIsFixed)(nuIsFixed)(
-                    rhoIsFixed)(gammaIsFixed),
+                {alpha, beta, nu, rho, gamma},
+                {alphaIsFixed, betaIsFixed, nuIsFixed, rhoIsFixed, gammaIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
             coeffs_ = ext::dynamic_pointer_cast<detail::XABRCoeffHolder<

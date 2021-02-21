@@ -134,11 +134,12 @@ void NthToDefaultTest::testGauss() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates;
-    gridDates.push_back (asofDate);
-    gridDates.push_back (TARGET().advance (asofDate, Period (1, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
+    vector<Date> gridDates = {
+        asofDate,
+        TARGET().advance (asofDate, Period (1, Years)),
+        TARGET().advance (asofDate, Period (5, Years)),
+        TARGET().advance (asofDate, Period (7, Years))
+    };
 
     ext::shared_ptr<YieldTermStructure> yieldPtr (
                                    new FlatForward (asofDate, rate, dc, cmp));
@@ -280,11 +281,12 @@ void NthToDefaultTest::testStudent() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates;
-    gridDates.push_back (asofDate);
-    gridDates.push_back (TARGET().advance (asofDate, Period (1, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
+    vector<Date> gridDates {
+        asofDate,
+        TARGET().advance (asofDate, Period (1, Years)),
+        TARGET().advance (asofDate, Period (5, Years)),
+        TARGET().advance (asofDate, Period (7, Years))
+    };
 
     ext::shared_ptr<YieldTermStructure> yieldPtr (
                                 new FlatForward (asofDate, rate, dc, cmp));

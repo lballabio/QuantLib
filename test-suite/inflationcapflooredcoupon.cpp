@@ -66,7 +66,7 @@ namespace inflation_capfloored_coupon_test {
 
     template <class T, class U, class I>
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-                        Datum iiData[], Size N,
+                        const std::vector<Datum>& iiData,
                         const ext::shared_ptr<I> &ii, const Period &observationLag,
                         const Calendar &calendar,
                         const BusinessDayConvention &bdc,
@@ -74,10 +74,10 @@ namespace inflation_capfloored_coupon_test {
                         const Handle<YieldTermStructure>& discountCurve) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Size i=0; i<N; i++) {
-            Date maturity = iiData[i].date;
+        for (Datum datum : iiData) {
+            Date maturity = datum.date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
-                            new SimpleQuote(iiData[i].rate/100.0)));
+                            new SimpleQuote(datum.rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                             quote, observationLag, maturity,
                             calendar, bdc, dc, ii, discountCurve));
@@ -162,7 +162,7 @@ namespace inflation_capfloored_coupon_test {
             // now build the YoY inflation curve
             Period observationLag = Period(2,Months);
 
-            Datum yyData[] = {
+            std::vector<Datum> yyData = {
                 { Date(13, August, 2008), 2.95 },
                 { Date(13, August, 2009), 2.95 },
                 { Date(13, August, 2010), 2.93 },
@@ -183,7 +183,7 @@ namespace inflation_capfloored_coupon_test {
             // now build the helpers ...
             std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
-            YoYInflationIndex>(yyData, LENGTH(yyData), iir,
+            YoYInflationIndex>(yyData, iir,
                                observationLag,
                                calendar, convention, dc,
                                Handle<YieldTermStructure>(nominalTS));

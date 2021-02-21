@@ -64,7 +64,7 @@ namespace inflation_capfloor_test {
 
     template <class T, class U, class I>
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-                 Datum iiData[], Size N,
+                 const std::vector<Datum>& iiData,
                  const ext::shared_ptr<I> &ii, const Period &observationLag,
                  const Calendar &calendar,
                  const BusinessDayConvention &bdc,
@@ -72,10 +72,10 @@ namespace inflation_capfloor_test {
                  const Handle<YieldTermStructure>& discountCurve) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Size i=0; i<N; i++) {
-            Date maturity = iiData[i].date;
+        for (Datum datum : iiData) {
+            Date maturity = datum.date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
-                    new SimpleQuote(iiData[i].rate/100.0)));
+                    new SimpleQuote(datum.rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                     quote, observationLag, maturity,
                     calendar, bdc, dc, ii, discountCurve));
@@ -153,7 +153,7 @@ namespace inflation_capfloor_test {
             // now build the YoY inflation curve
             Period observationLag = Period(2,Months);
 
-            Datum yyData[] = {
+            std::vector<Datum> yyData = {
                 { Date(13, August, 2008), 2.95 },
                 { Date(13, August, 2009), 2.95 },
                 { Date(13, August, 2010), 2.93 },
@@ -174,7 +174,7 @@ namespace inflation_capfloor_test {
             // now build the helpers ...
             std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
-            YoYInflationIndex>(yyData, LENGTH(yyData), iir,
+            YoYInflationIndex>(yyData, iir,
                                observationLag,
                                calendar, convention, dc,
                                Handle<YieldTermStructure>(nominalTS));
@@ -291,19 +291,19 @@ void InflationCapFloorTest::testConsistency() {
 
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
         for (int& length : lengths) {
-            for (Size j = 0; j < LENGTH(cap_rates); j++) {
+            for (double& cap_rate : cap_rates) {
                 for (double& floor_rate : floor_rates) {
                     for (double vol : vols) {
 
                         Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 
                         ext::shared_ptr<YoYInflationCapFloor> cap = vars.makeYoYCapFloor(
-                            YoYInflationCapFloor::Cap, leg, cap_rates[j], vol, whichPricer);
+                            YoYInflationCapFloor::Cap, leg, cap_rate, vol, whichPricer);
 
                         ext::shared_ptr<YoYInflationCapFloor> floor = vars.makeYoYCapFloor(
                             YoYInflationCapFloor::Floor, leg, floor_rate, vol, whichPricer);
 
-                        YoYInflationCollar collar(leg, std::vector<Rate>(1, cap_rates[j]),
+                        YoYInflationCollar collar(leg, std::vector<Rate>(1, cap_rate),
                                                   std::vector<Rate>(1, floor_rate));
                         collar.setPricingEngine(vars.makeEngine(vol, whichPricer));
 
@@ -312,7 +312,7 @@ void InflationCapFloorTest::testConsistency() {
                                        << "    length:       " << length << " years\n"
                                        << "    volatility:   " << io::volatility(vol) << "\n"
                                        << "    cap value:    " << cap->NPV()
-                                       << " at strike: " << io::rate(cap_rates[j]) << "\n"
+                                       << " at strike: " << io::rate(cap_rate) << "\n"
                                        << "    floor value:  " << floor->NPV()
                                        << " at strike: " << io::rate(floor_rate) << "\n"
                                        << "    collar value: " << collar.NPV());
@@ -332,7 +332,7 @@ void InflationCapFloorTest::testConsistency() {
                                            << "    length:       " << length << " years\n"
                                            << "    volatility:   " << io::volatility(vol) << "\n"
                                            << "    cap value:    " << cap->NPV()
-                                           << " at strike: " << io::rate(cap_rates[j]) << "\n"
+                                           << " at strike: " << io::rate(cap_rate) << "\n"
                                            << "    sum of caplets value:  " << capletsNPV
                                            << " at strike (first): "
                                            << io::rate(caplets[0]->capRates()[0]) << "\n");
@@ -351,7 +351,7 @@ void InflationCapFloorTest::testConsistency() {
                                            << "    length:       " << length << " years\n"
                                            << "    volatility:   " << io::volatility(vol) << "\n"
                                            << "    cap value:    " << floor->NPV()
-                                           << " at strike: " << io::rate(floor_rates[j]) << "\n"
+                                           << " at strike: " << io::rate(floor_rate) << "\n"
                                            << "    sum of floorlets value:  " << floorletsNPV
                                            << " at strike (first): "
                                            << io::rate(floorlets[0]->floorRates()[0]) << "\n");
@@ -366,12 +366,12 @@ void InflationCapFloorTest::testConsistency() {
                             }
 
                             if (std::fabs(collar.NPV() - collarletsNPV) > 1e-6) {
-                                BOOST_FAIL("sum of collarlet NPVs does not equal floor NPV:\n"
+                                BOOST_FAIL("sum of collarlet NPVs does not equal collar NPV:\n"
                                            << "    length:       " << length << " years\n"
                                            << "    volatility:   " << io::volatility(vol) << "\n"
                                            << "    cap value:    " << collar.NPV()
-                                           << " at strike floor: " << io::rate(floor_rates[j])
-                                           << " at strike cap: " << io::rate(cap_rates[j]) << "\n"
+                                           << " at strike floor: " << io::rate(floor_rate)
+                                           << " at strike cap: " << io::rate(cap_rate) << "\n"
                                            << "    sum of collarlets value:  " << collarletsNPV
                                            << " at strike floor (first): "
                                            << io::rate(collarlets[0]->floorRates()[0])

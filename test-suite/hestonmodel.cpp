@@ -158,14 +158,8 @@ void HestonModelTest::testBlackCalibration() {
     Handle<YieldTermStructure> riskFreeTS(flatRate(0.04, dayCounter));
     Handle<YieldTermStructure> dividendTS(flatRate(0.50, dayCounter));
 
-    std::vector<Period> optionMaturities;
-    optionMaturities.emplace_back(1, Months);
-    optionMaturities.emplace_back(2, Months);
-    optionMaturities.emplace_back(3, Months);
-    optionMaturities.emplace_back(6, Months);
-    optionMaturities.emplace_back(9, Months);
-    optionMaturities.emplace_back(1, Years);
-    optionMaturities.emplace_back(2, Years);
+    std::vector<Period> optionMaturities = {1 * Months, 2 * Months, 3 * Months, 6 * Months,
+                                            9 * Months, 1 * Years,  2 * Years};
 
     std::vector<ext::shared_ptr<CalibrationHelper> > options;
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
@@ -895,13 +889,13 @@ void HestonModelTest::testDifferentIntegrals() {
     const HestonParameter highVolOfVol  = { 0.07, 1.0, 0.04, 5.0, -0.75 };
     const HestonParameter kappaEqSigRho = { 0.07, 0.4, 0.04, 0.5, 0.8 };
 
-    std::vector<HestonParameter> params;
-    params.push_back(equityfx);
-    params.push_back(highCorr);
-    params.push_back(lowVolOfVol);
-    params.push_back(highVolOfVol);
-    params.push_back(kappaEqSigRho);
-
+    std::vector<HestonParameter> params = {
+        equityfx,
+        highCorr,
+        lowVolOfVol,
+        highVolOfVol,
+        kappaEqSigRho
+    };
     const Real tol[] = { 1e-3, 1e-3, 0.2, 0.01, 1e-3 };
 
     for (std::vector<HestonParameter>::const_iterator iter = params.begin();
@@ -1019,14 +1013,12 @@ void HestonModelTest::testMultipleStrikesEngine() {
         ext::make_shared<HestonProcess>(
                      riskFreeTS, dividendTS, s0, 0.16, 2.5, 0.09, 0.8, -0.8));
     ext::shared_ptr<HestonModel> model(
-        ext::make_shared<HestonModel>(process));
+		ext::make_shared<HestonModel>(process));
 
-    std::vector<Real> strikes;
-    strikes.push_back(1.0);  strikes.push_back(0.5);
-    strikes.push_back(0.75); strikes.push_back(1.5); strikes.push_back(2.0);
+    std::vector<Real> strikes = {1.0, 0.5, 0.75, 1.5, 2.0};
 
     ext::shared_ptr<FdHestonVanillaEngine> singleStrikeEngine(
-        ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50));
+		ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50));
     ext::shared_ptr<FdHestonVanillaEngine> multiStrikeEngine(
         ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50));
     multiStrikeEngine->enableMultipleStrikesCaching(strikes);
@@ -1092,22 +1084,17 @@ void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
     ext::shared_ptr<StrikedTypePayoff> payoff(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, 1.0));
     ext::shared_ptr<Exercise> exercise(
-        ext::make_shared<EuropeanExercise>(exerciseDate));
+		ext::make_shared<EuropeanExercise>(exerciseDate));
 
-    std::vector<Date> dates; 
-    dates.push_back(settlementDate);
-    dates.emplace_back(01, January, 2007);
-    std::vector<Rate> irates;
-    irates.push_back(0.0); irates.push_back(0.2);
+    std::vector<Date> dates = {settlementDate, {1, January, 2007}};
+    std::vector<Rate> irates = {0.0, 0.2};
     Handle<YieldTermStructure> riskFreeTS(
-        ext::make_shared<ZeroCurve>(dates, irates, dayCounter));
+		ext::make_shared<ZeroCurve>(dates, irates, dayCounter));
 
-    std::vector<Rate> qrates;
-    qrates.push_back(0.0); qrates.push_back(0.3);
+    std::vector<Rate> qrates = {0.0, 0.3};
     Handle<YieldTermStructure> dividendTS(
-        ext::make_shared<ZeroCurve>(dates, qrates, dayCounter));
+		ext::make_shared<ZeroCurve>(dates, qrates, dayCounter));
     
-
     const Real v0 = 0.1;
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
 
@@ -1176,9 +1163,7 @@ void HestonModelTest::testDAXCalibrationOfTimeDependentModel() {
 
     const std::vector<ext::shared_ptr<CalibrationHelper> >& options = marketData.options;
 
-    std::vector<Time> modelTimes;
-    modelTimes.push_back(0.25);
-    modelTimes.push_back(10.0);
+    std::vector<Time> modelTimes = {0.25, 10.0};
     const TimeGrid modelGrid(modelTimes.begin(), modelTimes.end());
 
     const Real v0=0.1;
@@ -2474,10 +2459,7 @@ void HestonModelTest::testPiecewiseTimeDependentComparison() {
 
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
-    std::vector<Time> modelTimes;
-    modelTimes.push_back(0.25);
-    modelTimes.push_back(0.75);
-    modelTimes.push_back(10.0);
+    std::vector<Time> modelTimes = {0.25, 0.75, 10.0};
     const TimeGrid modelGrid(modelTimes.begin(), modelTimes.end());
 
     const Real v0 = 0.1;
@@ -2609,10 +2591,7 @@ void HestonModelTest::testPiecewiseTimeDependentChFAsymtotic() {
     const Time maturity = dc.yearFraction(settlementDate, maturityDate);
     const Handle<YieldTermStructure> rTS(flatRate(0.0, dc));
 
-    std::vector<Time> modelTimes;
-    modelTimes.push_back(0.01);
-    modelTimes.push_back(0.5);
-    modelTimes.push_back(2.0);
+    std::vector<Time> modelTimes = {0.01, 0.5, 2.0};
 
     const TimeGrid modelGrid(modelTimes.begin(), modelTimes.end());
 

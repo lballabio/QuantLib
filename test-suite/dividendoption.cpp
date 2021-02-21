@@ -174,12 +174,8 @@ void DividendOptionTest::testEuropeanKnownValue() {
     Date exDate = today + 6*Months;
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-    std::vector<Date> dividendDates;
-    std::vector<Real> dividends;
-    dividendDates.push_back(today + 2*Months);
-    dividends.push_back(0.50);
-    dividendDates.push_back(today + 5*Months);
-    dividends.push_back(0.50);
+    std::vector<Date> dividendDates = {today + 2*Months, today + 5*Months};
+    std::vector<Real> dividends = {0.50, 0.50};
 
     ext::shared_ptr<StrikedTypePayoff> payoff(
             new PlainVanillaPayoff(Option::Call, 40.0));
@@ -251,10 +247,8 @@ void DividendOptionTest::testEuropeanStartLimit() {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-                std::vector<Date> dividendDates;
-                std::vector<Real> dividends;
-                dividendDates.push_back(today);
-                dividends.push_back(dividendValue);
+                std::vector<Date> dividendDates = {today};
+                std::vector<Real> dividends = {dividendValue};
 
                 ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
 
@@ -335,10 +329,8 @@ void DividendOptionTest::testEuropeanEndLimit() {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-                std::vector<Date> dividendDates;
-                std::vector<Real> dividends;
-                dividendDates.push_back(exercise->lastDate());
-                dividends.push_back(dividendValue);
+                std::vector<Date> dividendDates = {exercise->lastDate()};
+                std::vector<Real> dividends = {dividendValue};
 
                 ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
 
@@ -994,13 +986,8 @@ void DividendOptionTest::testEscrowedDividendModel() {
     const ext::shared_ptr<Exercise> exercise(
         ext::make_shared<EuropeanExercise>(maturity));
 
-    std::vector<Date> dividendDates;
-    dividendDates.emplace_back(today + Period(3, Months));
-    dividendDates.emplace_back(today + Period(9, Months));
-
-    std::vector<Real> dividendAmounts;
-    dividendAmounts.push_back(8.3);
-    dividendAmounts.push_back(6.8);
+    std::vector<Date> dividendDates = {today + Period(3, Months), today + Period(9, Months)};
+    std::vector<Real> dividendAmounts = {8.3, 6.8};
 
     DividendVanillaOption option(
         payoff, exercise, dividendDates, dividendAmounts);

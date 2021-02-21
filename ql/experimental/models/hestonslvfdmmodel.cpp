@@ -43,12 +43,9 @@
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/timegrid.hpp>
-#include <boost/assign/std/vector.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <functional>
 #include <utility>
-
-using namespace boost::assign;
 
 namespace QuantLib {
 
@@ -83,10 +80,11 @@ namespace QuantLib {
 
                     const Real v0Center = std::log(v0);
 
-                    cPoints +=
-                        ext::make_tuple(lowerBound, lowerBoundDensity, false),
-                        ext::make_tuple(v0Center, v0Density, true),
-                        ext::make_tuple(upperBound, upperBoundDensity, false);
+                    cPoints = {
+                        {lowerBound, lowerBoundDensity, false},
+                        {v0Center, v0Density, true},
+                        {upperBound, upperBoundDensity, false}
+                    };
 
                     return ext::make_shared<Concentrating1dMesher>(
                         lowerBound, upperBound, vGrid, cPoints, 1e-8);
@@ -96,10 +94,11 @@ namespace QuantLib {
                   {
                       const Real v0Center = v0;
 
-                      cPoints +=
-                          ext::make_tuple(lowerBound, lowerBoundDensity, false),
-                          ext::make_tuple(v0Center, v0Density, true),
-                          ext::make_tuple(upperBound, upperBoundDensity, false);
+                      cPoints = {
+                          {lowerBound, lowerBoundDensity, false},
+                          {v0Center, v0Density, true},
+                          {upperBound, upperBoundDensity, false}
+                      };
 
                       return ext::make_shared<Concentrating1dMesher>(
                           lowerBound, upperBound, vGrid, cPoints, 1e-8);
@@ -109,10 +108,11 @@ namespace QuantLib {
                 {
                     const Real v0Center = v0;
 
-                    cPoints +=
-                        ext::make_tuple(lowerBound, lowerBoundDensity, false),
-                        ext::make_tuple(v0Center, v0Density, true),
-                        ext::make_tuple(upperBound, upperBoundDensity, false);
+                    cPoints = {
+                        {lowerBound, lowerBoundDensity, false},
+                        {v0Center, v0Density, true},
+                        {upperBound, upperBoundDensity, false}
+                    };
 
                     return ext::make_shared<Concentrating1dMesher>(
                         lowerBound, upperBound, vGrid, cPoints, 1e-8);

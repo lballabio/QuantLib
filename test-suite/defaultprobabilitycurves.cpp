@@ -36,7 +36,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/assign/list_of.hpp>
 #include <iomanip>
 #include <map>
 #include <string>
@@ -45,8 +44,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::assign::list_of;
-using boost::assign::map_list_of;
 using std::map;
 using std::vector;
 using std::string;
@@ -160,17 +157,8 @@ namespace {
 
         Integer settlementDays = 1;
 
-        std::vector<Real> quote;
-        quote.push_back(0.005);
-        quote.push_back(0.006);
-        quote.push_back(0.007);
-        quote.push_back(0.009);
-
-        std::vector<Integer> n;
-        n.push_back(1);
-        n.push_back(2);
-        n.push_back(3);
-        n.push_back(5);
+        std::vector<Real> quote = {0.005, 0.006, 0.007, 0.009};
+        std::vector<Integer> n = {1, 2, 3, 5};
 
         Frequency frequency = Quarterly;
         BusinessDayConvention convention = Following;
@@ -244,17 +232,8 @@ namespace {
 
         Integer settlementDays = 1;
 
-        std::vector<Real> quote;
-        quote.push_back(0.01);
-        quote.push_back(0.02);
-        quote.push_back(0.04);
-        quote.push_back(0.06);
-
-        std::vector<Integer> n;
-        n.push_back(2);
-        n.push_back(3);
-        n.push_back(5);
-        n.push_back(7);
+        std::vector<Real> quote = {0.01, 0.02, 0.04, 0.06};
+        std::vector<Integer> n = {2, 3, 5, 7};
 
         Rate fixedRate = 0.05;
         Frequency frequency = Quarterly;
@@ -444,73 +423,76 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     Actual365Fixed tsDayCounter;
 
     // USD discount curve built out of FedFunds OIS swaps.
-    vector<Date> usdCurveDates = list_of
-        (Date(1, Apr, 2020))
-        (Date(2, Apr, 2020))
-        (Date(14, Apr, 2020))
-        (Date(21, Apr, 2020))
-        (Date(28, Apr, 2020))
-        (Date(6, May, 2020))
-        (Date(5, Jun, 2020))
-        (Date(7, Jul, 2020))
-        (Date(5, Aug, 2020))
-        (Date(8, Sep, 2020))
-        (Date(7, Oct, 2020))
-        (Date(5, Nov, 2020))
-        (Date(7, Dec, 2020))
-        (Date(6, Jan, 2021))
-        (Date(5, Feb, 2021))
-        (Date(5, Mar, 2021))
-        (Date(7, Apr, 2021))
-        (Date(4, Apr, 2022))
-        (Date(3, Apr, 2023))
-        (Date(3, Apr, 2024))
-        (Date(3, Apr, 2025))
-        (Date(5, Apr, 2027))
-        (Date(3, Apr, 2030))
-        (Date(3, Apr, 2035))
-        (Date(3, Apr, 2040))
-        (Date(4, Apr, 2050));
+    vector<Date> usdCurveDates = {
+        Date(1, Apr, 2020),
+        Date(2, Apr, 2020),
+        Date(14, Apr, 2020),
+        Date(21, Apr, 2020),
+        Date(28, Apr, 2020),
+        Date(6, May, 2020),
+        Date(5, Jun, 2020),
+        Date(7, Jul, 2020),
+        Date(5, Aug, 2020),
+        Date(8, Sep, 2020),
+        Date(7, Oct, 2020),
+        Date(5, Nov, 2020),
+        Date(7, Dec, 2020),
+        Date(6, Jan, 2021),
+        Date(5, Feb, 2021),
+        Date(5, Mar, 2021),
+        Date(7, Apr, 2021),
+        Date(4, Apr, 2022),
+        Date(3, Apr, 2023),
+        Date(3, Apr, 2024),
+        Date(3, Apr, 2025),
+        Date(5, Apr, 2027),
+        Date(3, Apr, 2030),
+        Date(3, Apr, 2035),
+        Date(3, Apr, 2040),
+        Date(4, Apr, 2050)
+    };
 
-    vector<DiscountFactor> usdCurveDfs = list_of
-        (1.000000000)
-        (0.999955835)
-        (0.999931070)
-        (0.999914629)
-        (0.999902799)
-        (0.999887990)
-        (0.999825782)
-        (0.999764392)
-        (0.999709076)
-        (0.999647785)
-        (0.999594638)
-        (0.999536198)
-        (0.999483093)
-        (0.999419291)
-        (0.999379417)
-        (0.999324981)
-        (0.999262356)
-        (0.999575101)
-        (0.996135441)
-        (0.995228348)
-        (0.989366687)
-        (0.979271200)
-        (0.961150726)
-        (0.926265361)
-        (0.891640651)
-        (0.839314063);
+    vector<DiscountFactor> usdCurveDfs = {
+        1.000000000,
+        0.999955835,
+        0.999931070,
+        0.999914629,
+        0.999902799,
+        0.999887990,
+        0.999825782,
+        0.999764392,
+        0.999709076,
+        0.999647785,
+        0.999594638,
+        0.999536198,
+        0.999483093,
+        0.999419291,
+        0.999379417,
+        0.999324981,
+        0.999262356,
+        0.999575101,
+        0.996135441,
+        0.995228348,
+        0.989366687,
+        0.979271200,
+        0.961150726,
+        0.926265361,
+        0.891640651,
+        0.839314063
+    };
 
     Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear> >(
         usdCurveDates, usdCurveDfs, tsDayCounter));
 
     // CDS spreads
-    map<Period, Rate> cdsSpreads = map_list_of
-        (6 * Months, 2.957980250)
-        (1 * Years, 3.076933100)
-        (2 * Years, 2.944524520)
-        (3 * Years, 2.844498960)
-        (4 * Years, 2.769234420)
-        (5 * Years, 2.713474100);
+    map<Period, Rate> cdsSpreads = {
+        {6 * Months, 2.957980250},
+        {1 * Years, 3.076933100},
+        {2 * Years, 2.944524520},
+        {3 * Years, 2.844498960},
+        {4 * Years, 2.769234420},
+        {5 * Years, 2.713474100}
+    };
     Real recoveryRate = 0.035;
 
     // Conventions

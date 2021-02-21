@@ -19,9 +19,6 @@
 
 #include "zabr.hpp"
 #include "utilities.hpp"
-
-#include <boost/assign/list_of.hpp>
-
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/experimental/volatility/zabrsmilesection.hpp>
 
@@ -40,22 +37,22 @@ void ZabrTest::testConsistency() {
     Real forward = 0.03;
 
     SabrSmileSection sabr(tau, forward,
-                          boost::assign::list_of(alpha)(beta)(nu)(rho));
+                          {alpha, beta, nu, rho});
 
-    ZabrSmileSection<ZabrShortMaturityLognormal> zabr0(
-        tau, forward, boost::assign::list_of(alpha)(beta)(nu)(rho)(1.0));
+    ZabrSmileSection<ZabrShortMaturityLognormal> zabr0(tau, forward,
+                                                       {alpha, beta, nu, rho, 1.0});
 
-    ZabrSmileSection<ZabrShortMaturityNormal> zabr1(
-        tau, forward, boost::assign::list_of(alpha)(beta)(nu)(rho)(1.0));
+    ZabrSmileSection<ZabrShortMaturityNormal> zabr1(tau, forward,
+                                                    {alpha, beta, nu, rho, 1.0});
 
-    ZabrSmileSection<ZabrLocalVolatility> zabr2(
-        tau, forward, boost::assign::list_of(alpha)(beta)(nu)(rho)(1.0));
+    ZabrSmileSection<ZabrLocalVolatility> zabr2(tau, forward,
+                                                {alpha, beta, nu, rho, 1.0});
 
     // for full finite prices reduce the number of intermediate points here
     // below the recommended value to speed up the test
-    ZabrSmileSection<ZabrFullFd> zabr3(
-        tau, forward, boost::assign::list_of(alpha)(beta)(nu)(rho)(1.0),
-        std::vector<Real>(), 2);
+    ZabrSmileSection<ZabrFullFd> zabr3(tau, forward,
+                                       {alpha, beta, nu, rho, 1.0},
+                                       std::vector<Real>(), 2);
 
     Real k = 0.0001;
     while (k <= 0.70) {

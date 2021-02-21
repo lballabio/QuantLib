@@ -40,12 +40,8 @@ namespace libor_market_model_process_test {
 
     ext::shared_ptr<IborIndex> makeIndex() {
         DayCounter dayCounter = Actual360();
-        std::vector<Date> dates;
-        std::vector<Rate> rates;
-        dates.emplace_back(4, September, 2005);
-        dates.emplace_back(4, September, 2018);
-        rates.push_back(0.01);
-        rates.push_back(0.08);
+        std::vector<Date> dates = {{4,September,2005}, {4,September,2018}};
+        std::vector<Rate> rates = {0.01, 0.08};
 
         RelinkableHandle<YieldTermStructure> termStructure(
                       ext::shared_ptr<YieldTermStructure>(
