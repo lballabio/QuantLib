@@ -136,9 +136,9 @@ namespace QuantLib {
             the mid-period extrapolated value.
         */
 
-        // postpone the deprecation to avoid compile errors and warnings for a while...
         QL_DEPRECATED_III_INTERPOLATED_METHOD
         bool interpolated() const;
+
         Frequency frequency() const;
         /*! The availability lag describes when the index is
             <i>available</i>, not how it is used.  Specifically the
@@ -264,7 +264,9 @@ namespace QuantLib {
 
     inline bool InflationIndex::revised() const { return revised_; }
 
-    inline bool InflationIndex::interpolated() const { return interpolated_; }
+    /* no longer inlining to avoid the deprecated warnings for interpolated_ where
+     * InflationIndex::interpolated(); is called. */
+    // inline bool InflationIndex::interpolated() const { return interpolated_; }
 
     inline Frequency InflationIndex::frequency() const { return frequency_; }
 
@@ -276,8 +278,6 @@ namespace QuantLib {
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
     }
-
-    inline bool YoYInflationIndex::interpolated() const { return interpolated_; }
 
     inline bool YoYInflationIndex::ratio() const { return ratio_; }
 

@@ -60,6 +60,8 @@ namespace QuantLib {
         return c;
     }
 
+    bool InflationIndex::interpolated() const { return interpolated_; }
+
     void InflationIndex::addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite) {
 
         std::pair<Date, Date> lim = inflationPeriod(fixingDate, frequency_);
@@ -185,7 +187,7 @@ namespace QuantLib {
                                                  << " index fixing at base date is not available");
         Real baseFixing = fixing(baseDate);
         Date effectiveFixingDate;
-        if (interpolated()) {
+        if (interpolated_) {
             effectiveFixingDate = fixingDate;
         } else {
             // start of period is the convention
@@ -233,6 +235,7 @@ namespace QuantLib {
         registerWith(yoyInflation_);
     }
 
+    bool YoYInflationIndex::interpolated() const { return interpolated_; }
 
     Rate YoYInflationIndex::fixing(const Date& fixingDate, bool /*forecastTodaysFixing*/) const {
 
