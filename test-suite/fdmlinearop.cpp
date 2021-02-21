@@ -149,8 +149,7 @@ void FdmLinearOpTest::testFdmLinearOpLayout() {
 
     BOOST_TEST_MESSAGE("Testing indexing of a linear operator...");
 
-    Size dims[] = {5,7,8};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {5,7,8};
 
     FdmLinearOpLayout layout = FdmLinearOpLayout(dim);
 
@@ -222,14 +221,10 @@ void FdmLinearOpTest::testUniformGridMesher() {
 
     BOOST_TEST_MESSAGE("Testing uniform grid mesher...");
 
-    Size dims[] = {5,7,8};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {5,7,8};
 
     ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(-5, 10);
-    boundaries.emplace_back(5, 100);
-    boundaries.emplace_back(10, 20);
+    std::vector<std::pair<Real, Real> > boundaries = {{-5, 10}, {5, 100}, {10, 20}};
 
     UniformGridMesher mesher(layout, boundaries);
 
@@ -252,15 +247,11 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
 
     BOOST_TEST_MESSAGE("Testing application of first-derivatives map...");
 
-    Size dims[] = {400, 100, 50};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {400, 100, 50};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(-5, 5);
-    boundaries.emplace_back(0, 10);
-    boundaries.emplace_back(5, 15);
+    std::vector<std::pair<Real, Real> > boundaries = {{-5, 5}, {0, 10}, { 5, 15}};
 
     ext::shared_ptr<FdmMesher> mesher(
                                  new UniformGridMesher(index, boundaries));
@@ -276,12 +267,12 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
     }
 
     Array t = map.apply(r);
-    const Real dz = (boundaries[2].second-boundaries[2].first)/(dims[2]-1);
+    const Real dz = (boundaries[2].second-boundaries[2].first)/(dim[2]-1);
     for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
         const Size z = iter.coordinates()[2];
 
         const Size z0 = (z > 0) ? z-1 : 1;
-        const Size z2 = (z < dims[2]-1) ? z+1 : dims[2]-2;
+        const Size z2 = (z < dim[2]-1) ? z+1 : dim[2]-2;
         const Real lz0 = boundaries[2].first + z0*dz;
         const Real lz2 = boundaries[2].first + z2*dz;
 
@@ -313,19 +304,14 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
 
     BOOST_TEST_MESSAGE("Testing application of second-derivatives map...");
 
-    Size dims[] = {50, 50, 50};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {50, 50, 50};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(0, 0.5);
-    boundaries.emplace_back(0, 0.5);
-    boundaries.emplace_back(0, 0.5);
+    std::vector<std::pair<Real, Real> > boundaries = {{0, 0.5}, {0, 0.5}, {0, 0.5}};
 
     ext::shared_ptr<FdmMesher> mesher(
                             new UniformGridMesher(index, boundaries));
-
     Array r(mesher->layout()->size());
     const FdmLinearOpIterator endIter = index->end();
 
@@ -347,7 +333,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
         const Real z = mesher->location(iter, 2);
 
         Real d = -std::sin(x)*std::cos(y)*std::exp(z);
-        if (iter.coordinates()[0] == 0 || iter.coordinates()[0] == dims[0]-1) {
+        if (iter.coordinates()[0] == 0 || iter.coordinates()[0] == dim[0]-1) {
             d = 0;
         }
 
@@ -365,7 +351,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
         const Real z = mesher->location(iter, 2);
 
         Real d = -std::sin(x)*std::cos(y)*std::exp(z);
-        if (iter.coordinates()[1] == 0 || iter.coordinates()[1] == dims[1]-1) {
+        if (iter.coordinates()[1] == 0 || iter.coordinates()[1] == dim[1]-1) {
             d = 0;
         }
 
@@ -383,7 +369,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
         const Real z = mesher->location(iter, 2);
 
         Real d = std::sin(x)*std::cos(y)*std::exp(z);
-        if (iter.coordinates()[2] == 0 || iter.coordinates()[2] == dims[2]-1) {
+        if (iter.coordinates()[2] == 0 || iter.coordinates()[2] == dim[2]-1) {
             d = 0;
         }
 
@@ -579,15 +565,11 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
     BOOST_TEST_MESSAGE(
         "Testing application of second-order mixed-derivatives map...");
 
-    Size dims[] = {50, 50, 50};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {50, 50, 50};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(0, 0.5);
-    boundaries.emplace_back(0, 0.5);
-    boundaries.emplace_back(0, 0.5);
+    std::vector<std::pair<Real, Real> > boundaries = {{0, 0.5}, {0, 0.5}, {0, 0.5}};
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
@@ -678,14 +660,11 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
 
     BOOST_TEST_MESSAGE("Testing triple-band map solution...");
 
-    Size dims[] = {100, 400};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {100, 400};
 
     ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(0, 1.0);
-    boundaries.emplace_back(0, 1.0);
+    std::vector<std::pair<Real, Real> > boundaries = {{0, 1.0}, {0, 1.0}};
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(layout, boundaries));
@@ -763,14 +742,11 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
 
     SavedSettings backup;
 
-    Size dims[] = {200, 100};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {200, 100};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(3.8, 4.905274778);
-    boundaries.emplace_back(0.000, 1.0);
+    std::vector<std::pair<Real, Real> > boundaries = {{3.8, 4.905274778}, {0.0, 1.0}};
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
@@ -796,20 +772,20 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
         rhs[iter.index()]=std::max(std::exp(mesher->location(iter,0))-100, 0.0);
     }
 
-    FdmBoundaryConditionSet bcSet;
-    bcSet.push_back(ext::make_shared<FdmDirichletBoundary>(
-        mesher, 0.0, 0,
-                                 FdmDirichletBoundary::Upper));
+    FdmBoundaryConditionSet bcSet = {
+        ext::make_shared<FdmDirichletBoundary>(mesher, 0.0, 0,
+                                               FdmDirichletBoundary::Upper)
+    };
 
     const Real theta=0.5+std::sqrt(3.0)/6.;
     HundsdorferScheme hsEvolver(theta, 0.5, hestonOp, bcSet);
     FiniteDifferenceModel<HundsdorferScheme> hsModel(hsEvolver);
     hsModel.rollback(rhs, 1.0, 0.0, 50);
 
-    Matrix ret(dims[0], dims[1]);
-    for (Size i=0; i < dims[0]; ++i)
-        for (Size j=0; j < dims[1]; ++j)
-            ret[i][j] = rhs[i+j*dims[0]];
+    Matrix ret(dim[0], dim[1]);
+    for (Size i=0; i < dim[0]; ++i)
+        for (Size j=0; j < dim[1]; ++j)
+            ret[i][j] = rhs[i+j*dim[0]];
 
     std::vector<Real> tx, ty;
     for (FdmLinearOpIterator iter = mesher->layout()->begin();
@@ -857,14 +833,11 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 
     SavedSettings backup;
 
-    Size dims[] = {200, 100};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {200, 100};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(3.8, std::log(220.0));
-    boundaries.emplace_back(0.000, 1.0);
+    std::vector<std::pair<Real, Real> > boundaries = {{3.8, std::log(220.0)}, {0.0, 1.0}};
 
     ext::shared_ptr<FdmMesher> mesher(
         new UniformGridMesher(index, boundaries));
@@ -900,10 +873,10 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
     FiniteDifferenceModel<HundsdorferScheme> hsModel(hsEvolver);
     hsModel.rollback(rhs, 1.0, 0.0, 50, condition);
 
-    Matrix ret(dims[0], dims[1]);
-    for (Size i=0; i < dims[0]; ++i)
-        for (Size j=0; j < dims[1]; ++j)
-            ret[i][j] = rhs[i+j*dims[0]];
+    Matrix ret(dim[0], dim[1]);
+    for (Size i=0; i < dim[0]; ++i)
+        for (Size j=0; j < dim[1]; ++j)
+            ret[i][j] = rhs[i+j*dim[0]];
 
     std::vector<Real> tx, ty;
     for (FdmLinearOpIterator iter = mesher->layout()->begin();
@@ -936,14 +909,11 @@ void FdmLinearOpTest::testFdmHestonExpress() {
 
     SavedSettings backup;
 
-    Size dims[] = {200, 100};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {200, 100};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
 
-    std::vector<std::pair<Real, Real> > boundaries;
-    boundaries.emplace_back(3.8, std::log(220.0));
-    boundaries.emplace_back(0.000, 1.0);
+    std::vector<std::pair<Real, Real> > boundaries = {{3.8, std::log(220.0)}, {0.0, 1.0}};
 
     ext::shared_ptr<FdmMesher> mesher(
                             new UniformGridMesher(index, boundaries));
@@ -978,13 +948,13 @@ void FdmLinearOpTest::testFdmHestonExpress() {
         new FdmHestonExpressCondition(redemptions, triggerLevels,
                                       exerciseTimes, mesher));
 
-    std::list<std::vector<Time> > stoppingTimes;
-    stoppingTimes.push_back(exerciseTimes);
-    stoppingTimes.push_back(dividendCondition->dividendTimes());
+    std::list<std::vector<Time>> stoppingTimes = {
+        exerciseTimes, dividendCondition->dividendTimes()
+    };
 
-    std::list<ext::shared_ptr<StepCondition<Array> > > conditions;
-    conditions.push_back(expressCondition);
-    conditions.push_back(dividendCondition);
+    std::list<ext::shared_ptr<StepCondition<Array>>> conditions = {
+        expressCondition, dividendCondition
+    };
 
     ext::shared_ptr<FdmStepConditionComposite> condition(
         new FdmStepConditionComposite(stoppingTimes, conditions));
@@ -1074,14 +1044,15 @@ namespace {
 
         ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
-        std::vector<ext::shared_ptr<Fdm1dMesher> > mesher1d;
-        mesher1d.push_back(ext::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(std::log(22.0), std::log(440.0), dim[0])));
-        mesher1d.push_back(ext::shared_ptr<Fdm1dMesher>(
+        std::vector<ext::shared_ptr<Fdm1dMesher> > mesher1d = {
+            ext::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(std::log(22.0), std::log(440.0), dim[0])),
+            ext::shared_ptr<Fdm1dMesher>(
                 new FdmHestonVarianceMesher(dim[1], process->hestonProcess(),
-                                            maturity)));
-        mesher1d.push_back(ext::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(-0.15, 0.15, dim[2])));
+                                            maturity)),
+            ext::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(-0.15, 0.15, dim[2]))
+        };
 
         const ext::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(mesher1d));
@@ -1124,8 +1095,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     Date exerciseDate(28, March, 2012);
     const Time maturity = Actual365Fixed().yearFraction(today, exerciseDate);
 
-    Size dims[] = {51, 31, 31};
-    const std::vector<Size> dim(dims, dims+LENGTH(dims));
+    const std::vector<Size> dim = {51, 31, 31};
 
     ext::shared_ptr<HybridHestonHullWhiteProcess> jointProcess
                                             = createHestonHullWhite(maturity);
@@ -1692,11 +1662,10 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
     const Date secondDivDate = today + Period(11, Months);
     const Real secondDivAmount = 5.0;
 
-    DividendSchedule divSchedule;
-    divSchedule.push_back(
-        ext::make_shared<FixedDividend>(firstDivAmount, firstDivDate));
-    divSchedule.push_back(
-        ext::make_shared<FixedDividend>(secondDivAmount, secondDivDate));
+    DividendSchedule divSchedule = {
+        ext::make_shared<FixedDividend>(firstDivAmount, firstDivDate),
+        ext::make_shared<FixedDividend>(secondDivAmount, secondDivDate)
+    };
 
     const Size size = 5;
     const Time maturity = 1.0;

@@ -203,9 +203,7 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(stochProcess1);
-        procs.push_back(stochProcess2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1, stochProcess2};
 
         Matrix correlationMatrix(2, 2, value.rho);
         for (Integer j=0; j < 2; j++) {
@@ -342,9 +340,7 @@ void MargrabeOptionTest::testGreeks() {
             Handle<Quote>(spot2), Handle<YieldTermStructure>(qTS2), Handle<YieldTermStructure>(rTS),
             Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(stochProcess1);
-        procs.push_back(stochProcess2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1, stochProcess2};
 
         // The correlation -0.5 can be different real between -1 and 1 for more tests
         Real correlation = -0.5;
@@ -527,9 +523,7 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(stochProcess1);
-        procs.push_back(stochProcess2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1,stochProcess2};
 
         Matrix correlationMatrix(2, 2, value.rho);
         for (Integer j=0; j < 2; j++) {

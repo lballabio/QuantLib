@@ -39,10 +39,6 @@
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 
-#ifndef LENGTH
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-#endif
-
 #include <iostream>
 
 

@@ -41,7 +41,7 @@
 #include <utility>
 #include <vector>
 
-// This makes it easier to use array literals (alas, no std::vector literals)
+// This makes it easier to use array literals (for new code, use std::vector though)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 #define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))

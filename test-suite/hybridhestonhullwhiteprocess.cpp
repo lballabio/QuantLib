@@ -1006,12 +1006,13 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
     Date today(27, December, 2004);
     Settings::instance().evaluationDate() = today;
 
+
     Real maturity = 5.0;
     Real equityIrCorr = -0.4;
-    Real strikes[] = {75,85,90,95,100,105,110,115,120,125,130,140,150};
+    std::vector<Real> strikes = {75,85,90,95,100,105,110,115,120,125,130,140,150};
     Size listOfTimeStepsPerYear[] = { 20 };
 
-    HestonModelData hestonModelData
+    HestonModelData hestonModelData 
         = { "BSM-HW Model", 0.09, 1.0, 0.09, QL_EPSILON, 0.0, 0.04, 0.03 };
     HullWhiteModelData hwModelData = hullWhiteModels[0];
     bool controlVariate[] = { true, false };
@@ -1049,8 +1050,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                 ext::shared_ptr<FdHestonHullWhiteVanillaEngine> fdEngine(
                     new FdHestonHullWhiteVanillaEngine(hestonModel, hwProcess, equityIrCorr, tSteps,
                                                        400, 2, 10, 0, i, scheme.schemeDesc));
-                fdEngine->enableMultipleStrikesCaching(
-                    std::vector<Real>(strikes, strikes + LENGTH(strikes)));
+                fdEngine->enableMultipleStrikesCaching(strikes);
 
                 Real avgPriceDiff = 0.0;
                 for (double& strike : strikes) {
@@ -1063,7 +1063,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                     option->setPricingEngine(fdEngine);
                     Real calculated = option->NPV();
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
+                        += std::fabs(expected-calculated)/strikes.size(); // NOLINT(bugprone-integer-division)
                 }
 
                 if (i && tolWithCV[l] < avgPriceDiff) {
@@ -1095,7 +1095,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
     Settings::instance().evaluationDate() = today;
 
     Real maturity=1.0;
-    Real strikes[] = {75,85,90,95,100,105,110,115,120,125,130,140,150};
+    std::vector<Real> strikes = {75,85,90,95,100,105,110,115,120,125,130,140,150};
     Size listOfTimeStepsPerYear[] = { 40 };
 
     const Real tol[] = { 0.02, 0.02, 0.02, 0.02, 0.05 };
@@ -1116,8 +1116,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                     new FdHestonVanillaEngine(
                         hestonModel, tSteps, 200, 40, 0,
                         schemes[i].schemeDesc));
-                fdEngine->enableMultipleStrikesCaching(
-                    std::vector<Real>(strikes, strikes + LENGTH(strikes)));
+                fdEngine->enableMultipleStrikesCaching(strikes);
 
                 for (double& strike : strikes) {
                     VanillaOptionData optionData = {strike, maturity, Option::Call};
@@ -1130,7 +1129,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                     Real calculated = option->NPV();
 
                     avgPriceDiff
-                        +=std::fabs(expected-calculated)/LENGTH(strikes); // NOLINT(bugprone-integer-division)
+                        += std::fabs(expected-calculated)/strikes.size(); // NOLINT(bugprone-integer-division)
                 }
 
                 if (avgPriceDiff > tol[i]) {
@@ -1225,12 +1224,13 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     const ext::shared_ptr<HestonModel> fdmHestonModel
                                             (new HestonModel(hestonProcess));
 
+
     const Real equityShortRateCorr = -0.5;
 
-    const Real strikes[]    = { 50, 75, 90, 100, 110, 125, 150, 200 };
-    const Time maturities[] = { 1/12., 3/12., 0.5, 1.0, 2.0, 3.0, 5.0, 7.5, 10};
-
-    const Volatility vol[] = {
+    std::vector<Real> strikes    = { 50, 75, 90, 100, 110, 125, 150, 200 };
+    std::vector<Time> maturities = { 1/12., 3/12., 0.5, 1.0, 2.0, 3.0, 5.0, 7.5, 10};
+    
+    std::vector<Volatility> vol = {
         0.482627,0.407617,0.366682,0.340110,0.314266,0.280241,0.252471,0.325552,
         0.464811,0.393336,0.354664,0.329758,0.305668,0.273563,0.244024,0.244886,
         0.441864,0.375618,0.340464,0.318249,0.297127,0.268839,0.237972,0.225553,
@@ -1244,20 +1244,19 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
 
     std::vector<ext::shared_ptr<CalibrationHelper> > options;
 
-    for (Size i=0; i < LENGTH(maturities); ++i) {
+    for (Size i=0; i < maturities.size(); ++i) {
         const Period maturity((int)std::lround(maturities[i]*12.0), Months);
         ext::shared_ptr<Exercise> exercise(
                                         new EuropeanExercise(today + maturity));
 
-        for (Size j=0; j < LENGTH(strikes); ++j) {
+        for (Size j=0; j < strikes.size(); ++j) {
             ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(
                 strikes[j] * rTS->discount(maturities[i]) >=
                         s0->value() * qTS->discount(maturities[i])
                     ? Option::Call
                     : Option::Put,
                 strikes[j]));
-            RelinkableHandle<Quote> v(ext::shared_ptr<Quote>(
-                                   new SimpleQuote(vol[i*LENGTH(strikes)+j])));
+            RelinkableHandle<Quote> v(ext::shared_ptr<Quote>(new SimpleQuote(vol[i*strikes.size()+j])));
 
             ext::shared_ptr<BlackCalibrationHelper> helper(
                 new HestonModelHelper(maturity, calendar, s0,
@@ -1272,7 +1271,6 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
             ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
                 QuantLib::detail::ImpliedVolatilityHelper::clone(
                     ext::make_shared<GeneralizedBlackScholesProcess>(
-
                             s0, qTS, rTS, Handle<BlackVolTermStructure>(
                                                     flatVol(v->value(), dc))),
                         volQuote);
@@ -1303,29 +1301,27 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     options.clear();
     fdmHestonModel->setParams(analyticHestonModel->params());
 
-    for (Size i=0; i < LENGTH(maturities); ++i) {
+    for (Size i=0; i < maturities.size(); ++i) {
         const Size tGrid = static_cast<Size>(std::max(5.0, maturities[i]*5.0));
         ext::shared_ptr<FdHestonHullWhiteVanillaEngine> engine(
             new FdHestonHullWhiteVanillaEngine(fdmHestonModel, hwProcess,
                                                equityShortRateCorr,
                                                tGrid, 45, 11, 5, 0, true));
 
-        engine->enableMultipleStrikesCaching(
-                     std::vector<Real>(strikes, strikes + LENGTH(strikes)));
+        engine->enableMultipleStrikesCaching(strikes);
 
         const Period maturity((int)std::lround(maturities[i]*12.0), Months);
 
-        for (Size j=0; j < LENGTH(strikes); ++j) {
+        for (Size j=0; j < strikes.size(); ++j) {
             // multiple strikes engine works best if the first option
             // per maturity has the average strike (because the first option
             // is priced first during the calibration and the first pricing
             // is used to calculate the prices for all strikes
-            const Size js = (j + (LENGTH(strikes)-1)/2) % LENGTH(strikes);
+            const Size js = (j + (strikes.size()-1)/2) % strikes.size();
 
             ext::shared_ptr<StrikedTypePayoff> payoff(
                              new PlainVanillaPayoff(Option::Call, strikes[js]));
-            Handle<Quote> v(ext::shared_ptr<Quote>(
-                                   new SimpleQuote(vol[i*LENGTH(strikes)+js])));
+            Handle<Quote> v(ext::shared_ptr<Quote>(new SimpleQuote(vol[i*strikes.size()+js])));
             ext::shared_ptr<BlackCalibrationHelper> helper(
                 new HestonModelHelper(maturity, calendar, s0,
                                       strikes[js], v, rTS, qTS,
@@ -1354,22 +1350,19 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
                  << "\n   v0 expected  : " << expected_v0
                  << "\n   relatove tol : " << relTol);
     }
-    if (std::fabs(fdmHestonModel->theta() - expected_theta)/expected_theta
-                                                                    > relTol) {
+    if (std::fabs(fdmHestonModel->theta() - expected_theta)/expected_theta > relTol) {
          BOOST_ERROR("Failed to reproduce Heston-Hull-White model"
                  << "\n   theta calculated: " << fdmHestonModel->theta()
                  << "\n   theta expected  : " << expected_theta
                  << "\n   relatove tol    : " << relTol);
     }
-    if (std::fabs(fdmHestonModel->kappa() - expected_kappa)/expected_kappa
-                                                                    > relTol) {
+    if (std::fabs(fdmHestonModel->kappa() - expected_kappa)/expected_kappa > relTol) {
         BOOST_ERROR("Failed to reproduce Heston-Hull-White model"
                 << "\n   kappa calculated: " << fdmHestonModel->kappa()
                 << "\n   kappa expected  : " << expected_kappa
                 << "\n   relatove tol    : " << relTol);
     }
-    if (std::fabs(fdmHestonModel->sigma() - expected_sigma)/expected_sigma
-                                                                    > relTol) {
+    if (std::fabs(fdmHestonModel->sigma() - expected_sigma)/expected_sigma > relTol) {
        BOOST_ERROR("Failed to reproduce Heston-Hull-White model"
                << "\n   sigma calculated: " << fdmHestonModel->sigma()
                << "\n   sigma expected  : " << expected_sigma

@@ -62,19 +62,7 @@ namespace {
 void BrownianBridgeTest::testVariates() {
     BOOST_TEST_MESSAGE("Testing Brownian-bridge variates...");
 
-    std::vector<Time> times;
-    times.push_back(0.1);
-    times.push_back(0.2);
-    times.push_back(0.3);
-    times.push_back(0.4);
-    times.push_back(0.5);
-    times.push_back(0.6);
-    times.push_back(0.7);
-    times.push_back(0.8);
-    times.push_back(0.9);
-    times.push_back(1.0);
-    times.push_back(2.0);
-    times.push_back(5.0);
+    std::vector<Time> times = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 5.0};
 
     Size N = times.size();
 
@@ -179,22 +167,7 @@ void BrownianBridgeTest::testVariates() {
 void BrownianBridgeTest::testPathGeneration() {
     BOOST_TEST_MESSAGE("Testing Brownian-bridge path generation...");
 
-    std::vector<Time> times;
-    times.push_back(0.1);
-    times.push_back(0.2);
-    times.push_back(0.3);
-    times.push_back(0.4);
-    times.push_back(0.5);
-    times.push_back(0.6);
-    times.push_back(0.7);
-    times.push_back(0.8);
-    times.push_back(0.9);
-    times.push_back(1.0);
-    times.push_back(2.0);
-    times.push_back(5.0);
-    times.push_back(7.0);
-    times.push_back(9.0);
-    times.push_back(10.0);
+    std::vector<Time> times = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 5.0, 7.0, 9.0, 10.0};
 
     TimeGrid grid(times.begin(), times.end());
 
