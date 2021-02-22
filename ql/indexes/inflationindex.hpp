@@ -43,7 +43,7 @@
 #elif defined(__GNUC__)
 #    define QL_DEPRECATED_SKIP_WARNING_BEGIN                            \
         _Pragma("GCC diagnostic push")                                  \
-        _Pragma("GCC diagnostic warning \"-Wdeprecated-declarations\"")
+        _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 
 #    define QL_DEPRECATED_SKIP_WARNING_END \
         _Pragma("GCC diagnostic pop")
@@ -51,7 +51,7 @@
 #elif defined(__clang__)
 #    define QL_DEPRECATED_SKIP_WARNING_BEGIN                              \
         _Pragma("clang diagnostic push")                                  \
-        _Pragma("clang diagnostic warning \"-Wdeprecated-declarations\"")
+        _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
 
 #    define QL_DEPRECATED_SKIP_WARNING_END \
         _Pragma("clang diagnostic pop")
