@@ -698,32 +698,7 @@ void MatricesTest::testIterativeSolvers() {
 }
 
 void MatricesTest::testInitializers() {
-    BOOST_TEST_MESSAGE("Testing matrix and array initializers...");
-
-    Array a1(0);
-    BOOST_CHECK_THROW({ a1 << 1.0; }, QuantLib::Error);
-
-    Array a2(1);
-    BOOST_CHECK_NO_THROW({ a2 << 1.0; });
-    // the macro doesn't work on VC++ when the code contains commas
-    try {
-        a2 << 1.0, 2.0;
-        QL_FAIL("failed to throw the expected exception");
-    } catch(QuantLib::Error&) {}
-
-    Array a3(1);
-    a3 << 1.0;
-    BOOST_REQUIRE(a3.size() == 1);
-    BOOST_CHECK_EQUAL(a3[0], 1.0);
-
-    Array a4(5);
-    a4 << 1.0, 2.2, 3.3, 4.4, 5.5;
-    BOOST_REQUIRE(a4.size() == 5);
-    BOOST_CHECK_EQUAL(a4[0], 1.0);
-    BOOST_CHECK_EQUAL(a4[1], 2.2);
-    BOOST_CHECK_EQUAL(a4[2], 3.3);
-    BOOST_CHECK_EQUAL(a4[3], 4.4);
-    BOOST_CHECK_EQUAL(a4[4], 5.5);
+    BOOST_TEST_MESSAGE("Testing matrix initializers...");
 
     Matrix m1(0, 0);
     BOOST_CHECK_THROW({ m1 << 1.0; }, QuantLib::Error);

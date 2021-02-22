@@ -31,7 +31,10 @@ namespace QuantLib {
 
 namespace initializers {
 
-class ArrayProxy {
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+class QL_DEPRECATED ArrayProxy {
 public:
     ArrayProxy& operator,(const Real x) {
         QL_REQUIRE(a_.size() > idx_,
@@ -74,9 +77,36 @@ private:
     Matrix& m_;
 };
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
+
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+QL_DEPRECATED
 inline ArrayProxy operator<<(Array& a, const Real x) {
     return {a, x};
 }
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 inline MatrixProxy operator<<(Matrix& m, const Real x) {
     return {m, x};
