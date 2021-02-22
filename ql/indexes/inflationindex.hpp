@@ -31,12 +31,53 @@
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 
+// clang-format off
+#if defined(BOOST_MSVC)
+#    define QL_DEPRECATED_SKIP_WARNING_BEGIN \
+        __pragma(warning(push))              \
+        __pragma(warning(disable : 4996))
+
+#    define QL_DEPRECATED_SKIP_WARNING_END \
+        __pragma(warning(pop))
+
+#elif defined(__GNUC__)
+#    define QL_DEPRECATED_SKIP_WARNING_BEGIN                            \
+        _Pragma("GCC diagnostic push")                                  \
+        _Pragma("GCC diagnostic warning \"-Wdeprecated-declarations\"")
+
+#    define QL_DEPRECATED_SKIP_WARNING_END \
+        _Pragma("GCC diagnostic pop")
+
+#elif defined(__clang__)
+#    define QL_DEPRECATED_SKIP_WARNING_BEGIN                              \
+        _Pragma("clang diagnostic push")                                  \
+        _Pragma("clang diagnostic warning \"-Wdeprecated-declarations\"")
+
+#    define QL_DEPRECATED_SKIP_WARNING_END \
+        _Pragma("clang diagnostic pop")
+#endif
+// clang-format on
+
+#define QL_DEPRECATED_SKIP_WARNING(CODE) \
+    QL_DEPRECATED_SKIP_WARNING_BEGIN     \
+    do {                                 \
+        CODE;                            \
+    } while (false);                     \
+    QL_DEPRECATED_SKIP_WARNING_END
+
 #define QL_DEPRECATED_III_CONSTRUCTOR                                         \
     /*! \deprecated The use of interpolated is not a feature of the index but \
      *              of the coupons etc. using the index.                      \
      *              Use the other constructor instead.                        \
      *              Deprecated in version 1.22. */                            \
-    // QL_DEPRECATED
+    QL_DEPRECATED
+
+#define QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN \
+    /**/                                                 \
+    // QL_DEPRECATED_SKIP_WARNING_BEGIN
+#define QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END \
+    /**/                                               \
+    // QL_DEPRECATED_SKIP_WARNING_END
 
 #define QL_DEPRECATED_III_INTERPOLATED_METHOD                                 \
     /*! \deprecated The use of interpolated is not a feature of the index but \
