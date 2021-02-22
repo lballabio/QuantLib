@@ -60,10 +60,9 @@
 
 #define QL_DEPRECATED_SKIP_WARNING(CODE) \
     QL_DEPRECATED_SKIP_WARNING_BEGIN     \
-    do {                                 \
-        CODE;                            \
-    } while (false);                     \
+    CODE;                                \
     QL_DEPRECATED_SKIP_WARNING_END
+
 
 #define QL_DEPRECATED_III_CONSTRUCTOR                                         \
     /*! \deprecated The use of interpolated is not a feature of the index but \
