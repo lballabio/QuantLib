@@ -36,6 +36,10 @@ namespace initializers {
 */
 class QL_DEPRECATED ArrayProxy {
 public:
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     ArrayProxy& operator,(const Real x) {
         QL_REQUIRE(a_.size() > idx_,
                    "ArrayProxy: too many initializers, array has size "
@@ -53,6 +57,9 @@ private:
     friend ArrayProxy operator<<(Array&, Real);
     Size idx_;
     Array& a_;
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 };
 
 /*! \deprecated Use initializer lists instead.
@@ -60,6 +67,10 @@ private:
 */
 class QL_DEPRECATED MatrixProxy {
 public:
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     MatrixProxy& operator,(const Real x) {
         QL_REQUIRE(m_.rows() * m_.columns() > idx_,
                    "MatrixProxy: too many initializers, matrix has size "
@@ -78,6 +89,9 @@ private:
     friend MatrixProxy operator<<(Matrix&, Real);
     Size idx_;
     Matrix& m_;
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 };
 
 #if defined(__GNUC__)
