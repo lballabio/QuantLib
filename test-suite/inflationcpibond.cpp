@@ -109,7 +109,9 @@ namespace inflation_cpi_bond_test {
                                        .withConvention(ModifiedFollowing);
 
             bool interp = false;
-            ii = QL_DEPRECATED_SKIP_WARNING(ext::make_shared<UKRPI>(interp, cpiTS));
+            QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
+            ii = ext::make_shared<UKRPI>(interp, cpiTS);
+            QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
 
             Real fixData[] = {206.1, 207.3, 208.0, 208.9, 209.7, 210.9, 209.8, 211.4, 212.1,
                               214.0, 215.1, 216.8, 216.5, 217.2, 218.4, 217.7, 216,   212.9,

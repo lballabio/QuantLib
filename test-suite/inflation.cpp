@@ -223,7 +223,9 @@ void InflationTest::testZeroIndex() {
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
-    QL_DEPRECATED_SKIP_WARNING(EUHICP euhicp(true));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
+    EUHICP euhicp(true);
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
     if (euhicp.name() != "EU HICP" || euhicp.frequency() != Monthly || euhicp.revised() ||
         !euhicp.interpolated() || euhicp.availabilityLag() != 1 * Months) {
         BOOST_ERROR("wrong EU HICP data (" << euhicp.name() << ", " << euhicp.frequency() << ", "
@@ -231,7 +233,9 @@ void InflationTest::testZeroIndex() {
                                            << ", " << euhicp.availabilityLag() << ")");
     }
 
-    QL_DEPRECATED_SKIP_WARNING(UKRPI ukrpi(false));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
+    UKRPI ukrpi(false);
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
     if (ukrpi.name() != "UK RPI" || ukrpi.frequency() != Monthly || ukrpi.revised() ||
         ukrpi.interpolated() || ukrpi.availabilityLag() != 1 * Months) {
         BOOST_ERROR("wrong UK RPI data (" << ukrpi.name() << ", " << ukrpi.frequency() << ", "
@@ -261,7 +265,9 @@ void InflationTest::testZeroIndex() {
                       200.4, 201.1, 202.7, 201.6, 203.1, 204.4, 205.4, 206.2, 207.3, 206.1};
 
     bool interp = false;
-    QL_DEPRECATED_SKIP_WARNING(ext::shared_ptr<UKRPI> iir(new UKRPI(interp)));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
+    ext::shared_ptr<UKRPI> iir(new UKRPI(interp));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
     for (Size i = 0; i < LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -318,7 +324,9 @@ void InflationTest::testZeroTermStructure() {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     bool interp = false;
-    QL_DEPRECATED_SKIP_WARNING(ext::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz)));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
+    ext::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
     for (Size i = 0; i < LENGTH(fixData); i++) {
         iiUKRPI->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -452,7 +460,10 @@ void InflationTest::testZeroTermStructure() {
     // UKRPI (to save making another term structure)
 
     bool interpYES = true;
-    QL_DEPRECATED_SKIP_WARNING(ext::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz)));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
+    ext::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
+
     for (Size i = 0; i < LENGTH(fixData); i++) {
         iiUKRPIyes->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -558,7 +569,9 @@ void InflationTest::testZeroIndexFutureFixing() {
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
-    QL_DEPRECATED_SKIP_WARNING(EUHICP euhicp(false));
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
+    EUHICP euhicp(false);
+    QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
 
     Date sample_date = Date(1, December, 2013);
     Real sample_fixing = 117.48;

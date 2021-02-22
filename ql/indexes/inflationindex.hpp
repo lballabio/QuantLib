@@ -58,12 +58,6 @@
 #endif
 // clang-format on
 
-#define QL_DEPRECATED_SKIP_WARNING(CODE) \
-    QL_DEPRECATED_SKIP_WARNING_BEGIN     \
-    CODE;                                \
-    QL_DEPRECATED_SKIP_WARNING_END
-
-
 #define QL_DEPRECATED_III_CONSTRUCTOR                                         \
     /*! \deprecated The use of interpolated is not a feature of the index but \
      *              of the coupons etc. using the index.                      \
@@ -73,10 +67,11 @@
 
 #define QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN \
     /**/                                                 \
-    // QL_DEPRECATED_SKIP_WARNING_BEGIN
+    QL_DEPRECATED_SKIP_WARNING_BEGIN
+
 #define QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END \
     /**/                                               \
-    // QL_DEPRECATED_SKIP_WARNING_END
+    QL_DEPRECATED_SKIP_WARNING_END
 
 #define QL_DEPRECATED_III_INTERPOLATED_METHOD                                 \
     /*! \deprecated The use of interpolated is not a feature of the index but \
