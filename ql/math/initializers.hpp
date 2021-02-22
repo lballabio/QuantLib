@@ -55,7 +55,10 @@ private:
     Array& a_;
 };
 
-class MatrixProxy {
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+class QL_DEPRECATED MatrixProxy {
 public:
     MatrixProxy& operator,(const Real x) {
         QL_REQUIRE(m_.rows() * m_.columns() > idx_,
@@ -98,6 +101,14 @@ inline ArrayProxy operator<<(Array& a, const Real x) {
     return {a, x};
 }
 
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+QL_DEPRECATED
+inline MatrixProxy operator<<(Matrix& m, const Real x) {
+    return {m, x};
+}
+
 #if defined(QL_PATCH_MSVC)
 #pragma warning(pop)
 #endif
@@ -107,10 +118,6 @@ inline ArrayProxy operator<<(Array& a, const Real x) {
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
-
-inline MatrixProxy operator<<(Matrix& m, const Real x) {
-    return {m, x};
-}
 
 } // namespace initializers
 
