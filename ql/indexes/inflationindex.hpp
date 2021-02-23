@@ -42,7 +42,7 @@
         __pragma(warning(pop))
 
 #elif defined(__GNUC__)
-#    define QL_DEPRECATED_DISABLE_WARNING                            \
+#    define QL_DEPRECATED_DISABLE_WARNING                               \
         _Pragma("GCC diagnostic push")                                  \
         _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 
@@ -50,7 +50,7 @@
         _Pragma("GCC diagnostic pop")
 
 #elif defined(__clang__)
-#    define QL_DEPRECATED_DISABLE_WARNING                              \
+#    define QL_DEPRECATED_DISABLE_WARNING                                 \
         _Pragma("clang diagnostic push")                                  \
         _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
 
@@ -90,7 +90,15 @@
      *              of the coupons etc. using the index.                      \
      *              Use the other constructor instead.                        \
      *              Deprecated in version 1.22. */                            \
-    // QL_DEPRECATED
+    QL_DEPRECATED
+
+#define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER \
+    /**/                                                      \
+    QL_DEPRECATED_DISABLE_WARNING
+
+#define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER \
+    /**/                                                     \
+    QL_DEPRECATED_ENABLE_WARNING
 
 
 namespace QuantLib {
@@ -304,9 +312,12 @@ namespace QuantLib {
 
     inline bool InflationIndex::revised() const { return revised_; }
 
-    /* no longer inlining to avoid the deprecated warnings for interpolated_ where
-     * InflationIndex::interpolated(); is called. */
-    // inline bool InflationIndex::interpolated() const { return interpolated_; }
+    inline bool InflationIndex::interpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        return interpolated_;
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+    }
+
 
     inline Frequency InflationIndex::frequency() const { return frequency_; }
 
@@ -317,6 +328,12 @@ namespace QuantLib {
     inline Handle<ZeroInflationTermStructure>
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
+    }
+
+    inline bool YoYInflationIndex::interpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        return interpolated_;
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
     }
 
     inline bool YoYInflationIndex::ratio() const { return ratio_; }

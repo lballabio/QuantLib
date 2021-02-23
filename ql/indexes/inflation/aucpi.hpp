@@ -39,7 +39,9 @@ namespace QuantLib {
               bool interpolated,
               const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : AUCPI(frequency, revised, ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
             interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
         }
 
         AUCPI(Frequency frequency,

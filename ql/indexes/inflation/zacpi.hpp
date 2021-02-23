@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! South African Comsumer Price Inflation Index
+    //! South African Consumer Price Inflation Index
     class ZACPI : public ZeroInflationIndex {
       public:
         QL_DEPRECATED_III_CONSTRUCTOR
@@ -38,7 +38,9 @@ namespace QuantLib {
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZACPI(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
             interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
         }
 
         explicit ZACPI(
