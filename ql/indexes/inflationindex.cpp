@@ -247,10 +247,7 @@ namespace QuantLib {
                                          Handle<YoYInflationTermStructure> yoyInflation)
     : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
         interpolated_ = interpolated;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-
         registerWith(yoyInflation_);
     }
 

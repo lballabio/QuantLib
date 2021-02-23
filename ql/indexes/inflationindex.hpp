@@ -303,6 +303,10 @@ namespace QuantLib {
         ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
         //@}
 
+      protected:
+        // Override the deprecation above
+        bool interpolated_;
+
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
@@ -339,11 +343,7 @@ namespace QuantLib {
         return zeroInflation_;
     }
 
-    inline bool YoYInflationIndex::interpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-        return interpolated_;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-    }
+    inline bool YoYInflationIndex::interpolated() const { return interpolated_; }
 
     inline bool YoYInflationIndex::ratio() const { return ratio_; }
 
