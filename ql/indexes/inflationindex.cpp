@@ -51,6 +51,10 @@ namespace QuantLib {
                                    Currency currency)
     : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
       frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)) {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        interpolated_ = false;
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));

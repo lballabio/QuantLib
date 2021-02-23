@@ -217,7 +217,7 @@ namespace QuantLib {
         Currency currency_;
 
         QL_DEPRECATED_III_INTERPOLATED_MEMBER
-        bool interpolated_ = false;
+        bool interpolated_;
 
       private:
         std::string name_;
