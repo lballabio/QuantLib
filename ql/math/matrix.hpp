@@ -28,6 +28,7 @@
 
 #include <ql/math/array.hpp>
 #include <ql/utilities/steppingiterator.hpp>
+#include <initializer_list>
 
 namespace QuantLib {
 
@@ -58,6 +59,8 @@ namespace QuantLib {
         #ifdef QL_USE_DISPOSABLE
         Matrix(const Disposable<Matrix>&);
         #endif
+        Matrix(std::initializer_list<std::initializer_list<Real>>);
+
         Matrix& operator=(const Matrix&);
         Matrix& operator=(Matrix&&) QL_NOEXCEPT;
         #ifdef QL_USE_DISPOSABLE
@@ -219,7 +222,7 @@ namespace QuantLib {
     inline Matrix::Matrix(const Matrix& from)
     : data_(!from.empty() ? new Real[from.rows_ * from.columns_] : (Real*)nullptr),
       rows_(from.rows_), columns_(from.columns_) {
-#if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
+        #if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
         if (!from.empty())
         #endif
         std::copy(from.begin(),from.end(),begin());
@@ -236,6 +239,21 @@ namespace QuantLib {
         swap(const_cast<Disposable<Matrix>&>(from));
     }
     #endif
+
+    inline Matrix::Matrix(std::initializer_list<std::initializer_list<Real>> data)
+    : data_(data.size() == 0 || data.begin()->size() == 0 ?
+            (Real*)nullptr : new Real[data.size() * data.begin()->size()]),
+      rows_(data.size()), columns_(data.size() == 0 ? 0 : data.begin()->size()) {
+        Size i=0;
+        for (const auto& row : data) {
+            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            QL_REQUIRE(row.size() == columns_,
+                       "a matrix needs the same number of elements for each row");
+            #endif
+            std::copy(row.begin(), row.end(), row_begin(i));
+            ++i;
+        }
+    }
 
     inline Matrix& Matrix::operator=(const Matrix& from) {
         // strong guarantee

@@ -609,15 +609,13 @@ void NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing() {
 
     SavedSettings backup;
 
-    Array strikes(8);
-    strikes << 50, 75, 90, 100, 110, 125, 150, 200;
+    Array strikes = { 50, 75, 90, 100, 110, 125, 150, 200 };
 
     const GridSetup initSetup = {
         5.2, 0.1, true, false, 5, 31, 51, FdmSchemeDesc::Douglas()
     };
 
-    Array initialValues(2);
-    initialValues << initSetup.alpha, initSetup.density;
+    Array initialValues = { initSetup.alpha, initSetup.density };
 
     FdmMispricingCostFunction costFct(initSetup, strikes);
     NoConstraint noConstraint;
@@ -652,8 +650,7 @@ void NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing() {
 namespace {
     Real priceQuality(Real h) {
 
-        Array strikes(1);
-        strikes << 100;
+        Array strikes = { 100 };
 
         const Size yGrid = Size(1/h);
         const GridSetup setup = {
