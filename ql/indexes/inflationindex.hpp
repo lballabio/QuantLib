@@ -31,30 +31,35 @@
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 
+// skip warnings temporarily when using deprecated features
 // clang-format off
 #if defined(BOOST_MSVC)
-#    define QL_DEPRECATED_SKIP_WARNING_BEGIN \
-        __pragma(warning(push))              \
+#    define QL_DEPRECATED_DISABLE_WARNING \
+        __pragma(warning(push))           \
         __pragma(warning(disable : 4996))
 
-#    define QL_DEPRECATED_SKIP_WARNING_END \
+#    define QL_DEPRECATED_ENABLE_WARNING \
         __pragma(warning(pop))
 
 #elif defined(__GNUC__)
-#    define QL_DEPRECATED_SKIP_WARNING_BEGIN                            \
+#    define QL_DEPRECATED_DISABLE_WARNING                            \
         _Pragma("GCC diagnostic push")                                  \
         _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 
-#    define QL_DEPRECATED_SKIP_WARNING_END \
+#    define QL_DEPRECATED_ENABLE_WARNING \
         _Pragma("GCC diagnostic pop")
 
 #elif defined(__clang__)
-#    define QL_DEPRECATED_SKIP_WARNING_BEGIN                              \
+#    define QL_DEPRECATED_DISABLE_WARNING                              \
         _Pragma("clang diagnostic push")                                  \
         _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
 
-#    define QL_DEPRECATED_SKIP_WARNING_END \
+#    define QL_DEPRECATED_ENABLE_WARNING \
         _Pragma("clang diagnostic pop")
+#else
+// we don't know how to enable it, just define the macro away
+#   define QL_DEPRECATED_DISABLE_WARNING
+#   define QL_DEPRECATED_ENABLE_WARNING
 #endif
 // clang-format on
 
@@ -65,13 +70,13 @@
      *              Deprecated in version 1.22. */                            \
     QL_DEPRECATED
 
-#define QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN \
-    /**/                                                 \
-    QL_DEPRECATED_SKIP_WARNING_BEGIN
+#define QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR \
+    /**/                                              \
+    QL_DEPRECATED_DISABLE_WARNING
 
-#define QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END \
-    /**/                                               \
-    QL_DEPRECATED_SKIP_WARNING_END
+#define QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR \
+    /**/                                             \
+    QL_DEPRECATED_ENABLE_WARNING
 
 #define QL_DEPRECATED_III_INTERPOLATED_METHOD                                 \
     /*! \deprecated The use of interpolated is not a feature of the index but \
