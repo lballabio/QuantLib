@@ -128,8 +128,7 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
     // observed as a real calibration outcome given the default guess. The setup was more
     // elaborate though and we do not aim to replicate that here.
 
-    Array guess(4);
-    guess << 0.0317, 5.0, -3.6796, 24.1703;
+    Array guess = { 0.0317, 5.0, -3.6796, 24.1703 };
 
     // build the fitted bond curves
 

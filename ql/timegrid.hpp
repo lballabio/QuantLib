@@ -132,6 +132,10 @@ namespace QuantLib {
             std::adjacent_difference(times_.begin()+1,times_.end(),
                                      std::back_inserter(dt_));
         }
+        TimeGrid(std::initializer_list<Time> times)
+        : TimeGrid(times.begin(), times.end()) {}
+        TimeGrid(std::initializer_list<Time> times, Size steps)
+        : TimeGrid(times.begin(), times.end(), steps) {}
         //@}
         //! \name Time grid interface
         //@{

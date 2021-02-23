@@ -28,8 +28,8 @@ using namespace boost::unit_test_framework;
 void TimeGridTest::testConstructorAdditionalSteps()
 {
     BOOST_TEST_MESSAGE("Testing TimeGrid construction with additional steps...");
-    std::vector<Time> test_times = {1.0, 2.0, 4.0};
-    const TimeGrid tg(test_times.begin(), test_times.end(), 8);
+
+    const TimeGrid tg = {{1.0, 2.0, 4.0}, 8};
 
     // Expect 8 evenly sized steps over the interval [0, 4].
     std::vector<Time> expected_times = {0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0};
@@ -41,13 +41,15 @@ void TimeGridTest::testConstructorAdditionalSteps()
 void TimeGridTest::testConstructorMandatorySteps()
 {
     BOOST_TEST_MESSAGE("Testing TimeGrid construction with only mandatory points...");
-    std::vector<Time> test_times = {0.0, 1.0, 2.0, 4.0};
-    const TimeGrid tg(test_times.begin(), test_times.end());
+
+    const TimeGrid tg = {0.0, 1.0, 2.0, 4.0};
 
     // Time grid must include all times from passed iterator.
     // Further no additional times can be added.
+    std::vector<Time> expected_times = {0.0, 1.0, 2.0, 4.0};
+
     BOOST_CHECK_EQUAL_COLLECTIONS(
-        tg.begin(), tg.end(), test_times.begin(), test_times.end());
+        tg.begin(), tg.end(), expected_times.begin(), expected_times.end());
 }
 
 void TimeGridTest::testConstructorEvenSteps()
@@ -57,6 +59,7 @@ void TimeGridTest::testConstructorEvenSteps()
     Time end_time = 10;
     Size steps = 5;
     const TimeGrid tg(end_time, steps);
+
     std::vector<Time> expected_times = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0};
     
     BOOST_CHECK_EQUAL_COLLECTIONS(
@@ -76,9 +79,7 @@ void TimeGridTest::testConstructorEmptyIterator()
 
 void TimeGridTest::testConstructorNegativeValuesInIterator()
 {
-    BOOST_TEST_MESSAGE(
-        "Testing that the TimeGrid constructor raises an error for negative time values..."
-    );
+    BOOST_TEST_MESSAGE("Testing that the TimeGrid constructor raises an error for negative time values...");
     
     std::vector<Time> times = {-3.0, 1.0, 4.0, 5.0};
     BOOST_CHECK_THROW(const TimeGrid tg(times.begin(), times.end()), Error);
@@ -87,8 +88,8 @@ void TimeGridTest::testConstructorNegativeValuesInIterator()
 void TimeGridTest::testClosestIndex()
 {
     BOOST_TEST_MESSAGE("Testing that the returned index is closest to the requested time...");
-    std::vector<Time> test_times = {1.0, 2.0, 5.0};
-    const TimeGrid tg(test_times.begin(), test_times.end());
+
+    const TimeGrid tg = {1.0, 2.0, 5.0};
     const Size expected_index = 3;
     
     QL_ASSERT(tg.closestIndex(4) == expected_index,
@@ -99,8 +100,7 @@ void TimeGridTest::testClosestIndex()
 void TimeGridTest::testClosestTime()
 {
     BOOST_TEST_MESSAGE("Testing that the returned time matches the requested index...");
-    std::vector<Time> test_times = {1.0, 2.0, 5.0};
-    const TimeGrid tg(test_times.begin(), test_times.end());
+    const TimeGrid tg = {1.0, 2.0, 5.0};
     const Size expected_time = 5;
     
     QL_ASSERT(tg.closestTime(4) == expected_time,

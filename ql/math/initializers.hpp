@@ -31,8 +31,15 @@ namespace QuantLib {
 
 namespace initializers {
 
-class ArrayProxy {
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+class QL_DEPRECATED ArrayProxy {
 public:
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     ArrayProxy& operator,(const Real x) {
         QL_REQUIRE(a_.size() > idx_,
                    "ArrayProxy: too many initializers, array has size "
@@ -50,10 +57,20 @@ private:
     friend ArrayProxy operator<<(Array&, Real);
     Size idx_;
     Array& a_;
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 };
 
-class MatrixProxy {
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+class QL_DEPRECATED MatrixProxy {
 public:
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     MatrixProxy& operator,(const Real x) {
         QL_REQUIRE(m_.rows() * m_.columns() > idx_,
                    "MatrixProxy: too many initializers, matrix has size "
@@ -72,15 +89,49 @@ private:
     friend MatrixProxy operator<<(Matrix&, Real);
     Size idx_;
     Matrix& m_;
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 };
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#if defined(QL_PATCH_MSVC)
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
+
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+QL_DEPRECATED
 inline ArrayProxy operator<<(Array& a, const Real x) {
     return {a, x};
 }
 
+/*! \deprecated Use initializer lists instead.
+                Deprecated in version 1.22.
+*/
+QL_DEPRECATED
 inline MatrixProxy operator<<(Matrix& m, const Real x) {
     return {m, x};
 }
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 } // namespace initializers
 

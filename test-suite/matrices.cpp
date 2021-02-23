@@ -698,55 +698,24 @@ void MatricesTest::testIterativeSolvers() {
 }
 
 void MatricesTest::testInitializers() {
-    BOOST_TEST_MESSAGE("Testing matrix and array initializers...");
+    BOOST_TEST_MESSAGE("Testing matrix initializers...");
 
-    Array a1(0);
-    BOOST_CHECK_THROW({ a1 << 1.0; }, QuantLib::Error);
+    Matrix m1 = {};
+    BOOST_REQUIRE(m1.rows() == 0);
+    BOOST_REQUIRE(m1.columns() == 0);
 
-    Array a2(1);
-    BOOST_CHECK_NO_THROW({ a2 << 1.0; });
-    // the macro doesn't work on VC++ when the code contains commas
-    try {
-        a2 << 1.0, 2.0;
-        QL_FAIL("failed to throw the expected exception");
-    } catch(QuantLib::Error&) {}
-
-    Array a3(1);
-    a3 << 1.0;
-    BOOST_REQUIRE(a3.size() == 1);
-    BOOST_CHECK_EQUAL(a3[0], 1.0);
-
-    Array a4(5);
-    a4 << 1.0, 2.2, 3.3, 4.4, 5.5;
-    BOOST_REQUIRE(a4.size() == 5);
-    BOOST_CHECK_EQUAL(a4[0], 1.0);
-    BOOST_CHECK_EQUAL(a4[1], 2.2);
-    BOOST_CHECK_EQUAL(a4[2], 3.3);
-    BOOST_CHECK_EQUAL(a4[3], 4.4);
-    BOOST_CHECK_EQUAL(a4[4], 5.5);
-
-    Matrix m1(0, 0);
-    BOOST_CHECK_THROW({ m1 << 1.0; }, QuantLib::Error);
-
-    Matrix m2(2, 2);
-    m2 << 1.0, 2.0,
-          3.0, 4.0;
-    // see above
-    try {
-        m2 << 1.0, 2.0, 3.0,
-              4.0, 5.0, 6.0,
-              7.0, 8.0, 9.0;
-    } catch (QuantLib::Error&) {}
-
-    Matrix m3(2,2);
-    m3 << 1.0, 2.0,
-          3.0, 4.0;
-    BOOST_REQUIRE(m3.rows() == 2);
-    BOOST_REQUIRE(m3.columns() == 2);
-    BOOST_CHECK_EQUAL(m3(0, 0), 1.0);
-    BOOST_CHECK_EQUAL(m3(0, 1), 2.0);
-    BOOST_CHECK_EQUAL(m3(1, 0), 3.0);
-    BOOST_CHECK_EQUAL(m3(1, 1), 4.0);
+    Matrix m2 = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0}
+    };
+    BOOST_REQUIRE(m2.rows() == 2);
+    BOOST_REQUIRE(m2.columns() == 3);
+    BOOST_CHECK_EQUAL(m2(0, 0), 1.0);
+    BOOST_CHECK_EQUAL(m2(0, 1), 2.0);
+    BOOST_CHECK_EQUAL(m2(0, 2), 3.0);
+    BOOST_CHECK_EQUAL(m2(1, 0), 4.0);
+    BOOST_CHECK_EQUAL(m2(1, 1), 5.0);
+    BOOST_CHECK_EQUAL(m2(1, 2), 6.0);
 }
 
 test_suite* MatricesTest::suite() {
