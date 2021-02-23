@@ -41,6 +41,9 @@ namespace QuantLib {
 
         Real dividendAdjustment(Time t) const;
 
+        const Handle<YieldTermStructure>& riskFreeRate() const;
+        const Handle<YieldTermStructure>& dividendYield() const;
+
       private:
         const DividendSchedule dividendSchedule_;
         const Handle<YieldTermStructure> rTS_, qTS_;

@@ -83,7 +83,8 @@ namespace QuantLib {
 
         const auto innerValuecalculator =
             ext::make_shared<FdmShoutLogInnerValueCalculator>(
-                process_, escrowedDividendAdj, maturity, payoff, mesher, 0);
+                process_->blackVolatility(),
+                escrowedDividendAdj, maturity, payoff, mesher, 0);
 
         DividendSchedule zeroDividendSchedule = DividendSchedule();
         for (const auto& cf: arguments_.cashFlow)

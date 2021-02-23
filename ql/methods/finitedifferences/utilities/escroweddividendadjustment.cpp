@@ -48,4 +48,14 @@ namespace QuantLib {
 
         return divAdj;
     }
+
+    const Handle<YieldTermStructure>&
+    EscrowedDividendAdjustment::riskFreeRate() const {
+        return rTS_;
+    }
+
+    const Handle<YieldTermStructure>&
+    EscrowedDividendAdjustment::dividendYield() const {
+        return qTS_;
+    }
 }

@@ -508,6 +508,7 @@ set(QuantLib_SRC
     methods/finitedifferences/utilities/fdmdirichletboundary.cpp
     methods/finitedifferences/utilities/fdmdiscountdirichletboundary.cpp
     methods/finitedifferences/utilities/fdmdividendhandler.cpp
+    methods/finitedifferences/utilities/fdmescrowedloginnervaluecalculator.cpp
     methods/finitedifferences/utilities/fdmindicesonboundary.cpp
     methods/finitedifferences/utilities/fdminnervaluecalculator.cpp
     methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.cpp
@@ -1696,6 +1697,7 @@ set(QuantLib_HDR
     methods/finitedifferences/utilities/fdmdirichletboundary.hpp
     methods/finitedifferences/utilities/fdmdiscountdirichletboundary.hpp
     methods/finitedifferences/utilities/fdmdividendhandler.hpp
+    methods/finitedifferences/utilities/fdmescrowedloginnervaluecalculator.hpp
     methods/finitedifferences/utilities/fdmindicesonboundary.hpp
     methods/finitedifferences/utilities/fdminnervaluecalculator.hpp
     methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.hpp
