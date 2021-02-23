@@ -85,6 +85,14 @@
      *              Deprecated in version 1.22. */                            \
     // QL_DEPRECATED
 
+#define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD \
+    /**/                                                      \
+    QL_DEPRECATED_DISABLE_WARNING
+
+#define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD \
+    /**/                                                     \
+    QL_DEPRECATED_ENABLE_WARNING
+
 #define QL_DEPRECATED_III_INTERPOLATED_MEMBER                                 \
     /*! \deprecated The use of interpolated is not a feature of the index but \
      *              of the coupons etc. using the index.                      \
@@ -294,6 +302,7 @@ namespace QuantLib {
 
         ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
         //@}
+
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
