@@ -43,6 +43,10 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
     }
 
+#if defined(__GNUC__)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     InflationIndex::InflationIndex(std::string familyName,
                                    Region region,
                                    bool revised,
@@ -50,11 +54,11 @@ namespace QuantLib {
                                    const Period& availabilityLag,
                                    Currency currency)
     : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
-      frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)) {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-        interpolated_ = false;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-
+      frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)),
+      interpolated_(false) {
+#if defined(__GNUC__)
+#    pragma GCC diagnostic pop
+#endif
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
