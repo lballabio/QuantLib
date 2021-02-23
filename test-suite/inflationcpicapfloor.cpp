@@ -164,9 +164,9 @@ namespace inflation_cpi_capfloor_test {
             bool interp =
                 false; // this MUST be false because the observation lag is only 2 months
                        // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_BEGIN
-            ii = ext::make_shared<UKRPI>(interp, hcpi);
-            QL_DEPRECATED_III_CONSTRUCTOR_SKIP_WARNING_END
+            QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
+            QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
             for (Size i = 0; i < rpiSchedule.size(); i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i],
                               true); // force overwrite in case multiple use
