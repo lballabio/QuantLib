@@ -24,19 +24,34 @@
 #ifndef quantlib_cpicoupon_hpp
 #define quantlib_cpicoupon_hpp
 
-#include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/indexedcashflow.hpp>
+#include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/time/schedule.hpp>
+
+
+/* When the deprecated 'bool InflationIndex::interpolated() const;' will be removed 'CPI::AsIndex'
+ * is redundant as the index will always return 'CPI::Flat' fixings. So 'CPI::AsIndex' can be
+ * removed from the library.
+ *
+ * However user code might still rely on 'CPI::AsIndex'. So this macro definition has to move to
+ * 'configura.ac' and 'userconfig.hpp' to reenable it.
+ *
+ * For the time being it is here to easily test the impact of the removal in advance and find code
+ * that rely on it. */
+#define QL_ENABLE_CPI_ASINDEX
+
 
 namespace QuantLib {
 
     struct CPI {
         //! when you observe an index, how do you interpolate between fixings?
         enum InterpolationType {
-            AsIndex,   //!< same interpolation as index
-            Flat,      //!< flat from previous fixing
-            Linear     //!< linearly between bracketing fixings
+#ifdef QL_ENABLE_CPI_ASINDEX
+            AsIndex, //!< same interpolation as index
+#endif
+            Flat,  //!< flat from previous fixing
+            Linear //!< linearly between bracketing fixings
         };
     };
 
@@ -116,7 +131,7 @@ namespace QuantLib {
         bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
         // use to calculate for fixing date, allows change of
         // interpolation w.r.t. index.  Can also be used ahead of time
-        Rate indexFixing(const Date &) const;
+        Rate indexFixing(const Date&) const;
     };
 
 
@@ -133,11 +148,9 @@ namespace QuantLib {
                     bool growthOnly = false,
                     CPI::InterpolationType interpolation = CPI::AsIndex,
                     const Frequency& frequency = QuantLib::NoFrequency)
-        : IndexedCashFlow(notional, index, baseDate, fixingDate,
-                          paymentDate, growthOnly),
-          baseFixing_(baseFixing), interpolation_(interpolation),
-          frequency_(frequency) {
-            QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
+        : IndexedCashFlow(notional, index, baseDate, fixingDate, paymentDate, growthOnly),
+          baseFixing_(baseFixing), interpolation_(interpolation), frequency_(frequency) {
+            QL_REQUIRE(std::fabs(baseFixing_) > 1e-16,
                        "|baseFixing|<1e-16, future divide-by-zero error");
             if (interpolation_ != CPI::AsIndex) {
                 QL_REQUIRE(frequency_ != QuantLib::NoFrequency,
@@ -152,9 +165,7 @@ namespace QuantLib {
         Date baseDate() const override;
 
         //! do you want linear/constant/as-index interpolation of future data?
-        virtual CPI::InterpolationType interpolation() const {
-            return interpolation_;
-        }
+        virtual CPI::InterpolationType interpolation() const { return interpolation_; }
         virtual Frequency frequency() const { return frequency_; }
 
         //! redefined to use baseFixing() and interpolation
@@ -199,9 +210,9 @@ namespace QuantLib {
         CPILeg& withFloors(Rate floor);
         CPILeg& withFloors(const std::vector<Rate>& floors);
         CPILeg& withExCouponPeriod(const Period&,
-                                         const Calendar&,
-                                         BusinessDayConvention,
-                                         bool endOfMonth = false);
+                                   const Calendar&,
+                                   BusinessDayConvention,
+                                   bool endOfMonth = false);
         operator Leg() const;
 
       private:
@@ -210,7 +221,7 @@ namespace QuantLib {
         Real baseCPI_;
         Period observationLag_;
         std::vector<Real> notionals_;
-        std::vector<Real> fixedRates_;  // aka gearing
+        std::vector<Real> fixedRates_; // aka gearing
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
         Calendar paymentCalendar_;
@@ -228,25 +239,15 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Real CPICoupon::fixedRate() const {
-        return fixedRate_;
-    }
+    inline Real CPICoupon::fixedRate() const { return fixedRate_; }
 
-    inline Real CPICoupon::spread() const {
-        return spread_;
-    }
+    inline Real CPICoupon::spread() const { return spread_; }
 
-    inline Rate CPICoupon::adjustedFixing() const {
-        return (rate()-spread())/fixedRate();
-    }
+    inline Rate CPICoupon::adjustedFixing() const { return (rate() - spread()) / fixedRate(); }
 
-    inline Rate CPICoupon::indexFixing() const {
-        return indexFixing(fixingDate());
-    }
+    inline Rate CPICoupon::indexFixing() const { return indexFixing(fixingDate()); }
 
-    inline Rate CPICoupon::baseCPI() const {
-        return baseCPI_;
-    }
+    inline Rate CPICoupon::baseCPI() const { return baseCPI_; }
 
     inline CPI::InterpolationType CPICoupon::observationInterpolation() const {
         return observationInterpolation_;
