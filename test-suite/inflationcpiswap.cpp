@@ -79,6 +79,8 @@ namespace inflation_cpi_swap_test {
     struct CommonVars {
         // common data
 
+        QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
         Size length;
         Date startDate;
         Real volatility;
@@ -149,7 +151,7 @@ namespace inflation_cpi_swap_test {
             // link from cpi index to cpi TS
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = ext::make_shared<UKRPI>(interp, hcpi);
+            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -252,6 +254,8 @@ namespace inflation_cpi_swap_test {
             // make sure that the index has the latest zero inflation term structure
             hcpi.linkTo(pCPIts);
         }
+    
+        QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
     };
 
 }
@@ -547,4 +551,3 @@ test_suite* CPISwapTest::suite() {
 
     return suite;
 }
-

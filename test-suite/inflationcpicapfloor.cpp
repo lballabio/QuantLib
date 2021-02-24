@@ -86,6 +86,9 @@ namespace inflation_cpi_capfloor_test {
 
 
     struct CommonVars {
+
+        QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
         // common data
 
         Size length;
@@ -167,7 +170,7 @@ namespace inflation_cpi_capfloor_test {
             // link from cpi index to cpi TS
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = ext::make_shared<UKRPI>(interp, hcpi);
+            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -317,6 +320,8 @@ namespace inflation_cpi_capfloor_test {
                 }
             }
         }
+    
+        QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
     };
 
 }
@@ -465,4 +470,3 @@ test_suite* InflationCPICapFloorTest::suite() {
 
     return suite;
 }
-
