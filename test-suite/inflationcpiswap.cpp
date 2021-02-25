@@ -61,6 +61,8 @@ namespace inflation_cpi_swap_test {
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
+        QL_DEPRECATED_DISABLE_WARNING
+
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
@@ -73,6 +75,8 @@ namespace inflation_cpi_swap_test {
         }
 
         return instruments;
+
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 
