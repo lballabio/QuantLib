@@ -30,31 +30,7 @@
 #include <ql/time/schedule.hpp>
 
 
-/* When the deprecated 'bool InflationIndex::interpolated() const;' will be removed 'CPI::AsIndex'
- * is redundant as the index will always return 'CPI::Flat' fixings. So 'CPI::AsIndex' can be
- * removed from the library.
- *
- * However user code might still rely on 'CPI::AsIndex'. So this macro definition has to move to
- * 'configura.ac' and 'userconfig.hpp' to reenable it.
- *
- * For the time being it is here to easily test the impact of the removal in advance and find code
- * that rely on it. */
-#define QL_ENABLE_CPI_ASINDEX
-
-
 namespace QuantLib {
-
-    struct CPI {
-        //! when you observe an index, how do you interpolate between fixings?
-        enum InterpolationType {
-#ifdef QL_ENABLE_CPI_ASINDEX
-            AsIndex, //!< same interpolation as index
-#endif
-            Flat,  //!< flat from previous fixing
-            Linear //!< linearly between bracketing fixings
-        };
-    };
-
 
     class CPICouponPricer;
 
