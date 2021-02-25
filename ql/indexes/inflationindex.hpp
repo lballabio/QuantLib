@@ -291,6 +291,22 @@ namespace QuantLib {
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };
 
+
+    namespace detail {
+        // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
+        // CPI::InterpolationType.
+        CPI::InterpolationType
+        effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                   const CPI::InterpolationType& type = CPI::AsIndex);
+
+
+        // checks whether the combination of index and CPI::InterpolationType results effectively
+        // in CPI::Linear
+        bool isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+                            const CPI::InterpolationType& type = CPI::AsIndex);
+    }
+
+
     //! Base class for year-on-year inflation indices.
     /*! These may be genuine indices published on, say, Bloomberg, or
         "fake" indices that are defined as the ratio of an index at
@@ -364,6 +380,11 @@ namespace QuantLib {
     inline Handle<ZeroInflationTermStructure>
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
+    }
+
+    inline bool detail::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                       const CPI::InterpolationType& type) {
+        return detail::effectiveInterpolationType(index, type) == CPI::Linear;
     }
 
     inline bool YoYInflationIndex::interpolated() const { return interpolated_; }

@@ -84,6 +84,7 @@ namespace QuantLib {
         Index::addFixings(dates.begin(), dates.end(), rates.begin(), forceOverwrite);
     }
 
+
     ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
                                            const Region& region,
                                            bool revised,
@@ -237,6 +238,20 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
         return clonedIndex;
     }
+
+
+    CPI::InterpolationType
+    detail::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                       const CPI::InterpolationType& type) {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
+        if (type == CPI::AsIndex) {
+            return index->interpolated() ? CPI::Linear : CPI::Flat;
+        } else {
+            return type;
+        }
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
+    }
+
 
     // these still need to be fixed to latest versions
 

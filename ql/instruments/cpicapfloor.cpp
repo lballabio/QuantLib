@@ -54,24 +54,19 @@ namespace QuantLib {
         QL_REQUIRE(fixCalendar_ != Calendar(), "CPICapFloor: fixing calendar may not be null.");
         QL_REQUIRE(payCalendar_ != Calendar(), "CPICapFloor: payment calendar may not be null.");
 
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
-        if (observationInterpolation_ == CPI::Flat ||
-            (observationInterpolation_ == CPI::AsIndex && !infIndex_->interpolated())) {
+        if (detail::isInterpolated(infIndex_.currentLink(), observationInterpolation_)) {
             QL_REQUIRE(
                 observationLag_ >= infIndex_->availabilityLag(),
                 "CPIcapfloor's observationLag must be at least availabilityLag of inflation index: "
                     << "when the observation is effectively flat" << observationLag_ << " vs "
                     << infIndex_->availabilityLag());
-        }
-        if (observationInterpolation_ == CPI::Linear ||
-            (observationInterpolation_ == CPI::AsIndex && infIndex_->interpolated())) {
+        } else {
             QL_REQUIRE(observationLag_ > infIndex_->availabilityLag(),
                        "CPIcapfloor's observationLag must be greater than availabilityLag of "
                        "inflation index: "
                            << "when the observation is effectively linear" << observationLag_
                            << " vs " << infIndex_->availabilityLag());
         }
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
     }
 
 
