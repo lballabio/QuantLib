@@ -71,6 +71,8 @@ namespace inflation_capfloor_test {
                  const DayCounter &dc,
                  const Handle<YieldTermStructure>& discountCurve) {
 
+        QL_DEPRECATED_DISABLE_WARNING
+
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Datum datum : iiData) {
             Date maturity = datum.date;
@@ -83,6 +85,8 @@ namespace inflation_capfloor_test {
         }
 
         return instruments;
+
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 
@@ -549,5 +553,3 @@ test_suite* InflationCapFloorTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testCachedValue));
     return suite;
 }
-
-
