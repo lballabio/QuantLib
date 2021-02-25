@@ -82,6 +82,8 @@ namespace inflation_test {
                 const DayCounter& dc,
                 const Handle<YieldTermStructure>& yTS) {
 
+        QL_DEPRECATED_DISABLE_WARNING
+
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Datum datum : iiData) {
             Date maturity = datum.date;
@@ -94,6 +96,8 @@ namespace inflation_test {
         }
 
         return instruments;
+
+        QL_DEPRECATED_ENABLE_WARNING
     }
 }
 
