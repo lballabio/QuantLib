@@ -63,6 +63,8 @@ namespace inflation_cpi_capfloor_test {
 
     template <class T, class U, class I>
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+        QL_DEPRECATED_DISABLE_WARNING
+        
         Datum iiData[], Size N,
         const ext::shared_ptr<I> &ii, const Period &observationLag,
         const Calendar &calendar,
@@ -82,6 +84,8 @@ namespace inflation_cpi_capfloor_test {
         }
 
         return instruments;
+        
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 
