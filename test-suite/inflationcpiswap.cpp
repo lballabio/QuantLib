@@ -387,6 +387,8 @@ void CPISwapTest::consistency() {
 void CPISwapTest::zciisconsistency() {
     BOOST_TEST_MESSAGE("Checking CPI swap against zero-coupon inflation swap...");
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     using namespace inflation_cpi_swap_test;
 
     CommonVars common;
@@ -439,6 +441,8 @@ void CPISwapTest::zciisconsistency() {
     }
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

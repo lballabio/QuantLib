@@ -78,6 +78,7 @@
     /**/                                             \
     QL_DEPRECATED_ENABLE_WARNING
 
+
 #define QL_DEPRECATED_III_INTERPOLATED_METHOD                                 \
     /*! \deprecated The use of interpolated is not a feature of the index but \
      *              of the coupons etc. using the index.                      \
@@ -92,6 +93,7 @@
 #define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD \
     /**/                                                     \
     QL_DEPRECATED_ENABLE_WARNING
+
 
 #define QL_DEPRECATED_III_INTERPOLATED_MEMBER                                 \
     /*! \deprecated The use of interpolated is not a feature of the index but \
