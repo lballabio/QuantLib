@@ -54,7 +54,7 @@ namespace QuantLib {
         QL_REQUIRE(fixCalendar_ != Calendar(), "CPICapFloor: fixing calendar may not be null.");
         QL_REQUIRE(payCalendar_ != Calendar(), "CPICapFloor: payment calendar may not be null.");
 
-        if (detail::isInterpolated(infIndex_.currentLink(), observationInterpolation_)) {
+        if (detail::CPI::isInterpolated(infIndex_.currentLink(), observationInterpolation_)) {
             QL_REQUIRE(
                 observationLag_ >= infIndex_->availabilityLag(),
                 "CPIcapfloor's observationLag must be at least availabilityLag of inflation index: "

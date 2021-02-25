@@ -280,7 +280,7 @@ namespace QuantLib {
               bdc,
               dc,
               zii,
-              detail::effectiveInterpolationType(zii.currentLink()),
+              detail::CPI::effectiveInterpolationType(zii.currentLink()),
               yts,
               cStrikes,
               fStrikes,

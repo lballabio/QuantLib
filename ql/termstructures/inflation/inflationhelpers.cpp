@@ -43,7 +43,7 @@ namespace QuantLib {
                                     paymentConvention,
                                     dayCounter,
                                     zii,
-                                    detail::effectiveInterpolationType(zii),
+                                    detail::CPI::effectiveInterpolationType(zii),
                                     nominalTermStructure) {}
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(

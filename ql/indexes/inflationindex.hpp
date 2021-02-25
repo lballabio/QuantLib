@@ -295,19 +295,21 @@ namespace QuantLib {
 
 
     namespace detail {
-        // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
-        // CPI::InterpolationType.
-        CPI::InterpolationType
-        effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                   const CPI::InterpolationType& type = CPI::AsIndex);
+        namespace CPI {
+            // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
+            // CPI::InterpolationType.
+            QuantLib::CPI::InterpolationType effectiveInterpolationType(
+                const ext::shared_ptr<ZeroInflationIndex>& index,
+                const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
 
 
-        // checks whether the combination of index and CPI::InterpolationType results effectively
-        // in CPI::Linear
-        bool isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                            const CPI::InterpolationType& type = CPI::AsIndex);
+            // checks whether the combination of index and CPI::InterpolationType results
+            // effectively in CPI::Linear
+            bool
+            isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+                           const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
+        }
     }
-
 
     //! Base class for year-on-year inflation indices.
     /*! These may be genuine indices published on, say, Bloomberg, or
@@ -384,9 +386,9 @@ namespace QuantLib {
         return zeroInflation_;
     }
 
-    inline bool detail::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                       const CPI::InterpolationType& type) {
-        return detail::effectiveInterpolationType(index, type) == CPI::Linear;
+    inline bool detail::CPI::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
+        return detail::CPI::effectiveInterpolationType(index, type) == QuantLib::CPI::Linear;
     }
 
     inline bool YoYInflationIndex::interpolated() const { return interpolated_; }

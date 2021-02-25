@@ -83,7 +83,7 @@ namespace QuantLib {
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
         // first check compatibility of index and swap definitions
-        if (detail::isInterpolated(infIndex_, observationInterpolation_)) {
+        if (detail::CPI::isInterpolated(infIndex_, observationInterpolation_)) {
             Period pShift(infIndex_->frequency());
             QL_REQUIRE(observationLag_ - pShift > infIndex_->availabilityLag(),
                        "inconsistency between swap observation of index "
@@ -114,7 +114,8 @@ namespace QuantLib {
         Date infPayDate = infCalendar_.adjust(maturity, infConvention_);
         Date fixedPayDate = fixCalendar_.adjust(maturity, fixConvention_);
 
-        bool indexIsInterpolated = detail::isInterpolated(infIndex_, observationInterpolation_);
+        bool indexIsInterpolated =
+            detail::CPI::isInterpolated(infIndex_, observationInterpolation_);
 
         // At this point the index may not be able to forecast
         // i.e. do not want to force the existence of an inflation
@@ -175,7 +176,8 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
         QL_REQUIRE(icf, "failed to downcast to IndexedCashFlow in ::fairRate()");
 
-        bool indexIsInterpolated = detail::isInterpolated(infIndex_, observationInterpolation_);
+        bool indexIsInterpolated =
+            detail::CPI::isInterpolated(infIndex_, observationInterpolation_);
 
         // +1 because the IndexedCashFlow has growthOnly=true
         Real growth = icf->amount() / icf->notional() + 1.0;

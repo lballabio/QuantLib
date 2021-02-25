@@ -241,11 +241,11 @@ namespace QuantLib {
 
 
     CPI::InterpolationType
-    detail::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                       const CPI::InterpolationType& type) {
+    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
         QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
-        if (type == CPI::AsIndex) {
-            return index->interpolated() ? CPI::Linear : CPI::Flat;
+        if (type == QuantLib::CPI::AsIndex) {
+            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
         } else {
             return type;
         }
