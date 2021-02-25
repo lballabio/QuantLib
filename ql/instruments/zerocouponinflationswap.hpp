@@ -67,6 +67,13 @@ namespace QuantLib {
         enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class engine;
+
+        /*! \deprecated The 'ZeroInflationIndex::interpolated();' has been deprecated, therefore the
+                        'CPI::InterpolationType' must be provided. Use the other constructor
+                        instead.
+                        Deprecated in version 1.22.
+         */
+        QL_DEPRECATED
         ZeroCouponInflationSwap(Type type,
                                 Real nominal,
                                 const Date& startDate, // start date of contract (only)
@@ -77,6 +84,21 @@ namespace QuantLib {
                                 Rate fixedRate,
                                 const ext::shared_ptr<ZeroInflationIndex>& infIndex,
                                 const Period& observationLag,
+                                bool adjustInfObsDates = false,
+                                Calendar infCalendar = Calendar(),
+                                BusinessDayConvention infConvention = BusinessDayConvention());
+
+        ZeroCouponInflationSwap(Type type,
+                                Real nominal,
+                                const Date& startDate, // start date of contract (only)
+                                const Date& maturity,  // this is pre-adjustment!
+                                Calendar fixCalendar,
+                                BusinessDayConvention fixConvention,
+                                DayCounter dayCounter,
+                                Rate fixedRate,
+                                const ext::shared_ptr<ZeroInflationIndex>& infIndex,
+                                const Period& observationLag,
+                                CPI::InterpolationType observationInterpolation,
                                 bool adjustInfObsDates = false,
                                 Calendar infCalendar = Calendar(),
                                 BusinessDayConvention infConvention = BusinessDayConvention());
@@ -95,6 +117,9 @@ namespace QuantLib {
         Rate fixedRate() const { return fixedRate_; }
         ext::shared_ptr<ZeroInflationIndex> inflationIndex() const { return infIndex_; }
         Period observationLag() const { return observationLag_; }
+        CPI::InterpolationType observationInterpolation() const {
+            return observationInterpolation_;
+        }
         bool adjustObservationDates() const { return adjustInfObsDates_; }
         Calendar inflationCalendar() const { return infCalendar_; }
         BusinessDayConvention inflationConvention() const { return infConvention_; }
@@ -126,6 +151,7 @@ namespace QuantLib {
         Rate fixedRate_;
         ext::shared_ptr<ZeroInflationIndex> infIndex_;
         Period observationLag_;
+        CPI::InterpolationType observationInterpolation_;
         bool adjustInfObsDates_;
         Calendar infCalendar_;
         BusinessDayConvention infConvention_;

@@ -45,13 +45,45 @@ namespace QuantLib {
         bool adjustInfObsDates,
         Calendar infCalendar,
         BusinessDayConvention infConvention)
+    : ZeroCouponInflationSwap(type,
+                              nominal,
+                              startDate,
+                              maturity,
+                              fixCalendar,
+                              fixConvention,
+                              dayCounter,
+                              fixedRate,
+                              infIndex,
+                              observationLag,
+                              CPI::AsIndex,
+                              adjustInfObsDates,
+                              infCalendar,
+                              infConvention) {}
+
+
+    ZeroCouponInflationSwap::ZeroCouponInflationSwap(
+        Type type,
+        Real nominal,
+        const Date& startDate, // start date of contract (only)
+        const Date& maturity,  // this is pre-adjustment!
+        Calendar fixCalendar,
+        BusinessDayConvention fixConvention,
+        DayCounter dayCounter,
+        Rate fixedRate,
+        const ext::shared_ptr<ZeroInflationIndex>& infIndex,
+        const Period& observationLag,
+        CPI::InterpolationType observationInterpolation,
+        bool adjustInfObsDates,
+        Calendar infCalendar,
+        BusinessDayConvention infConvention)
     : Swap(2), type_(type), nominal_(nominal), startDate_(startDate), maturityDate_(maturity),
       fixCalendar_(std::move(fixCalendar)), fixConvention_(fixConvention), fixedRate_(fixedRate),
-      infIndex_(infIndex), observationLag_(observationLag), adjustInfObsDates_(adjustInfObsDates),
+      infIndex_(infIndex), observationLag_(observationLag),
+      observationInterpolation_(observationInterpolation), adjustInfObsDates_(adjustInfObsDates),
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
         // first check compatibility of index and swap definitions
-        if (infIndex_->interpolated()) {
+        if (detail::isInterpolated(infIndex_, observationInterpolation_)) {
             Period pShift(infIndex_->frequency());
             QL_REQUIRE(observationLag_ - pShift > infIndex_->availabilityLag(),
                        "inconsistency between swap observation of index "
@@ -82,11 +114,13 @@ namespace QuantLib {
         Date infPayDate = infCalendar_.adjust(maturity, infConvention_);
         Date fixedPayDate = fixCalendar_.adjust(maturity, fixConvention_);
 
+        bool indexIsInterpolated = detail::isInterpolated(infIndex_, observationInterpolation_);
+
         // At this point the index may not be able to forecast
         // i.e. do not want to force the existence of an inflation
         // term structure before allowing users to create instruments.
-        Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
-                                       dayCounter_, baseDate_, obsDate_);
+        Real T = inflationYearFraction(infIndex_->frequency(), indexIsInterpolated, dayCounter_,
+                                       baseDate_, obsDate_);
         // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
         Real fixedAmount = nominal * (std::pow(1.0 + fixedRate, T) - 1.0);
 
@@ -141,10 +175,12 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
         QL_REQUIRE(icf, "failed to downcast to IndexedCashFlow in ::fairRate()");
 
+        bool indexIsInterpolated = detail::isInterpolated(infIndex_, observationInterpolation_);
+
         // +1 because the IndexedCashFlow has growthOnly=true
         Real growth = icf->amount() / icf->notional() + 1.0;
-        Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
-                                       dayCounter_, baseDate_, obsDate_);
+        Real T = inflationYearFraction(infIndex_->frequency(), indexIsInterpolated, dayCounter_,
+                                       baseDate_, obsDate_);
 
         return std::pow(growth, 1.0 / T) - 1.0;
 
