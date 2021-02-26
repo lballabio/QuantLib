@@ -3,7 +3,6 @@
 /*
  Copyright (C) 2007, 2009 Chris Kenyon
  Copyright (C) 2009 StatPro Italia srl
- Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +28,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
+
 
 
 namespace QuantLib {
@@ -68,13 +68,6 @@ namespace QuantLib {
         enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class engine;
-
-        /*! \deprecated The 'ZeroInflationIndex::interpolated();' has been deprecated, therefore the
-                        'CPI::InterpolationType' must be provided. Use the other constructor
-                        instead.
-                        Deprecated in version 1.22.
-         */
-        QL_DEPRECATED
         ZeroCouponInflationSwap(Type type,
                                 Real nominal,
                                 const Date& startDate, // start date of contract (only)
@@ -84,21 +77,6 @@ namespace QuantLib {
                                 DayCounter dayCounter,
                                 Rate fixedRate,
                                 const ext::shared_ptr<ZeroInflationIndex>& infIndex,
-                                const Period& observationLag,
-                                bool adjustInfObsDates = false,
-                                Calendar infCalendar = Calendar(),
-                                BusinessDayConvention infConvention = BusinessDayConvention());
-
-        ZeroCouponInflationSwap(Type type,
-                                Real nominal,
-                                const Date& startDate, // start date of contract (only)
-                                const Date& maturity,  // this is pre-adjustment!
-                                Calendar fixCalendar,
-                                BusinessDayConvention fixConvention,
-                                DayCounter dayCounter,
-                                Rate fixedRate,
-                                const ext::shared_ptr<ZeroInflationIndex>& infIndex,
-                                bool useInterpolatedFixings,
                                 const Period& observationLag,
                                 bool adjustInfObsDates = false,
                                 Calendar infCalendar = Calendar(),
@@ -112,16 +90,21 @@ namespace QuantLib {
         Date startDate() const { return startDate_; }
         Date maturityDate() const { return maturityDate_; }
         Calendar fixedCalendar() const { return fixCalendar_; }
-        BusinessDayConvention fixedConvention() const { return fixConvention_; }
+        BusinessDayConvention fixedConvention() const {
+            return fixConvention_;
+        }
         DayCounter dayCounter() const { return dayCounter_; }
         //! \f$ K \f$ in the above formula.
         Rate fixedRate() const { return fixedRate_; }
-        ext::shared_ptr<ZeroInflationIndex> inflationIndex() const { return infIndex_; }
+        ext::shared_ptr<ZeroInflationIndex> inflationIndex() const {
+            return infIndex_;
+        }
         Period observationLag() const { return observationLag_; }
-        bool useInterpolatedFixings() const { return useInterpolatedFixings_; }
         bool adjustObservationDates() const { return adjustInfObsDates_; }
         Calendar inflationCalendar() const { return infCalendar_; }
-        BusinessDayConvention inflationConvention() const { return infConvention_; }
+        BusinessDayConvention inflationConvention() const {
+            return infConvention_;
+        }
         //! just one cashflow (that is not a coupon) in each leg
         const Leg& fixedLeg() const;
         //! just one cashflow (that is not a coupon) in each leg
@@ -150,7 +133,6 @@ namespace QuantLib {
         Rate fixedRate_;
         ext::shared_ptr<ZeroInflationIndex> infIndex_;
         Period observationLag_;
-        bool useInterpolatedFixings_;
         bool adjustInfObsDates_;
         Calendar infCalendar_;
         BusinessDayConvention infConvention_;
@@ -167,7 +149,8 @@ namespace QuantLib {
 
 
     class ZeroCouponInflationSwap::engine
-    : public GenericEngine<ZeroCouponInflationSwap::arguments, ZeroCouponInflationSwap::results> {};
+    : public GenericEngine<ZeroCouponInflationSwap::arguments,
+    ZeroCouponInflationSwap::results> {};
 
 }
 
