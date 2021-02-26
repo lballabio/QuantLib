@@ -49,7 +49,7 @@ def check(filename, max_time, action):
 
 errors = check("faster.xml", 3.0, "moved out of the 'Faster' section")
 errors |= check("fast.xml", 8.0, "moved out of the 'Fast' section")
-errors |= check("all.xml", 30.0, "made to run under 30 seconds")
+errors |= check("all.xml", 30.0, "kept under 30 seconds")
 
 if errors:
     sys.exit(1)

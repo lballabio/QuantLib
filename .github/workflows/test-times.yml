@@ -28,6 +28,11 @@ jobs:
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,faster.xml:HRF,message -- --faster
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,fast.xml:HRF,message -- --fast
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,all.xml:HRF,message
+    - name: Save test times
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-reports
+        path: ./all.xml
     - name: Check test times
       run: |
         python ./tools/check_test_times.py
