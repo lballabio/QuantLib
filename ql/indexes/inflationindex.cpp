@@ -56,13 +56,13 @@ namespace QuantLib {
     : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
       frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)),
       interpolated_(false) {
-#if defined(__GNUC__)
-#    pragma GCC diagnostic pop
-#endif
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
     }
+#if defined(__GNUC__)
+#    pragma GCC diagnostic pop
+#endif
 
 
     Calendar InflationIndex::fixingCalendar() const {
