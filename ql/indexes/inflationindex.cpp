@@ -239,20 +239,6 @@ namespace QuantLib {
         return clonedIndex;
     }
 
-
-    CPI::InterpolationType
-    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                            const QuantLib::CPI::InterpolationType& type) {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
-        if (type == QuantLib::CPI::AsIndex) {
-            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
-        } else {
-            return type;
-        }
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
-    }
-
-
     // these still need to be fixed to latest versions
 
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,

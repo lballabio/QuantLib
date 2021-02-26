@@ -226,29 +226,6 @@ namespace QuantLib {
     };
 
 
-    /* When the deprecated 'bool InflationIndex::interpolated() const;' will be removed
-     * 'CPI::AsIndex' is redundant as the index will always return 'CPI::Flat' fixings. So
-     * 'CPI::AsIndex' can be removed from the library.
-     *
-     * However user code might still rely on 'CPI::AsIndex'. So this macro definition has to move to
-     * 'configura.ac' and 'userconfig.hpp' to reenable it.
-     *
-     * For the time being it is here to easily test the impact of the removal in advance and find
-     * code that rely on it. */
-#define QL_ENABLE_CPI_ASINDEX
-
-    struct CPI {
-        //! when you observe an index, how do you interpolate between fixings?
-        enum InterpolationType {
-#ifdef QL_ENABLE_CPI_ASINDEX
-            AsIndex, //!< same interpolation as index
-#endif
-            Flat,  //!< flat from previous fixing
-            Linear //!< linearly between bracketing fixings
-        };
-    };
-
-
     //! Base class for zero inflation indices.
     class ZeroInflationIndex : public InflationIndex {
       public:
@@ -293,23 +270,6 @@ namespace QuantLib {
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };
 
-
-    namespace detail {
-        namespace CPI {
-            // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
-            // CPI::InterpolationType.
-            QuantLib::CPI::InterpolationType effectiveInterpolationType(
-                const ext::shared_ptr<ZeroInflationIndex>& index,
-                const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
-
-
-            // checks whether the combination of index and CPI::InterpolationType results
-            // effectively in CPI::Linear
-            bool
-            isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                           const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
-        }
-    }
 
     //! Base class for year-on-year inflation indices.
     /*! These may be genuine indices published on, say, Bloomberg, or
@@ -384,11 +344,6 @@ namespace QuantLib {
     inline Handle<ZeroInflationTermStructure>
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
-    }
-
-    inline bool detail::CPI::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                            const QuantLib::CPI::InterpolationType& type) {
-        return detail::CPI::effectiveInterpolationType(index, type) == QuantLib::CPI::Linear;
     }
 
     inline bool YoYInflationIndex::interpolated() const { return interpolated_; }
