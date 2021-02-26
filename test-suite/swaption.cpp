@@ -1008,26 +1008,21 @@ void SwaptionTest::testSwaptionDeltaInBachelierModel() {
     checkSwaptionDelta<BachelierSwaptionEngine>(true);
 }
 
-test_suite* SwaptionTest::suite() {
+test_suite* SwaptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Swaption tests");
-    // FLOATING_POINT_EXCEPTION
+
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testCashSettledSwaptions));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testStrikeDependency));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSpreadDependency));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSpreadTreatment));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testCachedValue));
-    // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testImpliedVolatility));
-
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testVega));
-
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSwaptionDeltaInBlackModel));
     suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSwaptionDeltaInBachelierModel));   
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testImpliedVolatility));
+    };
 
     return suite;
 }

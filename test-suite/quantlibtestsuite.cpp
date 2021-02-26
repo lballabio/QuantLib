@@ -473,7 +473,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(StatisticsTest::suite());
     test->add(SwapTest::suite());
     test->add(SwapForwardMappingsTest::suite());
-    test->add(SwaptionTest::suite());
+    test->add(SwaptionTest::suite(speed));
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
