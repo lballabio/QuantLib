@@ -59,7 +59,7 @@ namespace QuantLib {
             BusinessDayConvention paymentConvention,
             DayCounter dayCounter,
             ext::shared_ptr<ZeroInflationIndex> zii,
-            CPI::InterpolationType observationInterpolation,
+            bool useInterpolatedFixings,
             Handle<YieldTermStructure> nominalTermStructure);
 
         void setTermStructure(ZeroInflationTermStructure*) override;
@@ -72,7 +72,7 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention_;
         DayCounter dayCounter_;
         ext::shared_ptr<ZeroInflationIndex> zii_;
-        CPI::InterpolationType observationInterpolation_;
+        bool useInterpolatedFixings_;
         ext::shared_ptr<ZeroCouponInflationSwap> zciis_;
         Handle<YieldTermStructure> nominalTermStructure_;
     };

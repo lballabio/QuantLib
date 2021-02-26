@@ -25,7 +25,6 @@
 #ifndef quantlib_xxxzciis_hpp
 #define quantlib_xxxzciis_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
@@ -98,8 +97,8 @@ namespace QuantLib {
                                 DayCounter dayCounter,
                                 Rate fixedRate,
                                 const ext::shared_ptr<ZeroInflationIndex>& infIndex,
+                                bool useInterpolatedFixings,
                                 const Period& observationLag,
-                                CPI::InterpolationType observationInterpolation,
                                 bool adjustInfObsDates = false,
                                 Calendar infCalendar = Calendar(),
                                 BusinessDayConvention infConvention = BusinessDayConvention());
@@ -118,9 +117,7 @@ namespace QuantLib {
         Rate fixedRate() const { return fixedRate_; }
         ext::shared_ptr<ZeroInflationIndex> inflationIndex() const { return infIndex_; }
         Period observationLag() const { return observationLag_; }
-        CPI::InterpolationType observationInterpolation() const {
-            return observationInterpolation_;
-        }
+        bool useInterpolatedFixings() const { return useInterpolatedFixings_; }
         bool adjustObservationDates() const { return adjustInfObsDates_; }
         Calendar inflationCalendar() const { return infCalendar_; }
         BusinessDayConvention inflationConvention() const { return infConvention_; }
@@ -152,7 +149,7 @@ namespace QuantLib {
         Rate fixedRate_;
         ext::shared_ptr<ZeroInflationIndex> infIndex_;
         Period observationLag_;
-        CPI::InterpolationType observationInterpolation_;
+        bool useInterpolatedFixings_;
         bool adjustInfObsDates_;
         Calendar infCalendar_;
         BusinessDayConvention infConvention_;

@@ -27,6 +27,7 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
         const Period& swapObsLag,
@@ -43,8 +44,9 @@ namespace QuantLib {
                                     paymentConvention,
                                     dayCounter,
                                     zii,
-                                    detail::CPI::effectiveInterpolationType(zii),
+                                    zii->interpolated(),
                                     nominalTermStructure) {}
+    QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
@@ -54,15 +56,15 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention,
         DayCounter dayCounter,
         ext::shared_ptr<ZeroInflationIndex> zii,
-        CPI::InterpolationType observationInterpolation,
+        bool useInterpolatedFixings,
         Handle<YieldTermStructure> nominalTermStructure)
     : BootstrapHelper<ZeroInflationTermStructure>(quote), swapObsLag_(swapObsLag),
       maturity_(maturity), calendar_(std::move(calendar)), paymentConvention_(paymentConvention),
       dayCounter_(std::move(dayCounter)), zii_(std::move(zii)),
-      observationInterpolation_(observationInterpolation),
+      useInterpolatedFixings_(useInterpolatedFixings),
       nominalTermStructure_(std::move(nominalTermStructure)) {
 
-        if (observationInterpolation_ == CPI::Linear) {
+        if (useInterpolatedFixings_) {
             // if interpolated then simple
             earliestDate_ = maturity_ - swapObsLag_;
             latestDate_ = maturity_ - swapObsLag_;
@@ -81,7 +83,7 @@ namespace QuantLib {
         // check that the observation lag of the swap
         // is compatible with the availability lag of the index AND
         // it's interpolation (assuming the start day is spot)
-        if (observationInterpolation_ == CPI::Linear) {
+        if (useInterpolatedFixings_) {
             Period pShift(zii_->frequency());
             QL_REQUIRE(swapObsLag_ - pShift > zii_->availabilityLag(),
                        "inconsistency between swap observation of index "
@@ -128,7 +130,7 @@ namespace QuantLib {
         zciis_.reset(new ZeroCouponInflationSwap(ZeroCouponInflationSwap::Payer, nominal, start,
                                                  maturity_, calendar_, paymentConvention_,
                                                  dayCounter_, K, // fixed side & fixed rate
-                                                 new_zii, swapObsLag_, observationInterpolation_));
+                                                 new_zii, useInterpolatedFixings_, swapObsLag_));
         // Because very simple instrument only takes
         // standard discounting swap engine.
         zciis_->setPricingEngine(
