@@ -1683,21 +1683,16 @@ test_suite *MarkovFunctionalTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Markov functional model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testMfStateProcess));
-    suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testKahaleSmileSection));
-    suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testBermudanSwaption));
+    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testKahaleSmileSection));
+    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
+        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
     }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarkovFunctionalTest::testVanillaEngines));
+        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testCalibrationOneInstrumentSet));
+        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testVanillaEngines));
     }
 
     return suite;

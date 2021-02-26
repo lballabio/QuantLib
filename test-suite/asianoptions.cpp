@@ -1984,46 +1984,41 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston() {
 
 }
 
-test_suite* AsianOptionTest::suite() {
+test_suite* AsianOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Asian option tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testPastFixings));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAllFixingsInThePast));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testPastFixings));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAllFixingsInThePast));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston));
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
+    }
 
     return suite;
 }
 
-test_suite* AsianOptionTest::experimental() {
+test_suite* AsianOptionTest::experimental(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Asian option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testLevyEngine));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
+    }
+
     return suite;
 }

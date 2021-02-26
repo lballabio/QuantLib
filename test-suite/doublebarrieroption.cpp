@@ -638,18 +638,19 @@ test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("DoubleBarrier");
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &DoubleBarrierOptionTest::testEuropeanHaugValues));
+        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
     }
 
     return suite;
 }
 
-test_suite* DoubleBarrierOptionTest::experimental() {
+test_suite* DoubleBarrierOptionTest::experimental(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
-    suite->add(QUANTLIB_TEST_CASE(
-                      &DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
+    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
+    }
+
     return suite;
 }

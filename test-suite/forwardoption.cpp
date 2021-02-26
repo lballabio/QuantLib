@@ -787,16 +787,23 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
 
 
-test_suite* ForwardOptionTest::suite() {
+test_suite* ForwardOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Forward option tests");
+
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceGreeks));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeksInitialization));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testMCPrices));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonMCPrices));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonAnalyticalVsMCPrices));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testMCPrices));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonAnalyticalVsMCPrices));
+        suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonMCPrices));
+    }
 
     return suite;
 }
