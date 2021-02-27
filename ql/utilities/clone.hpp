@@ -36,7 +36,7 @@ namespace QuantLib {
     //! cloning proxy to an underlying object
     /*! When copied, this class will make a clone of its underlying
         object, which must provide a <tt>clone()</tt> method returning
-        a std::auto_ptr (or a std::unique_ptr, depending on your
+        a std::unique_ptr (or a std::unique_ptr, depending on your
         configuration) to a newly-allocated instance.
     */
     template <class T>
@@ -46,7 +46,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         Clone(std::unique_ptr<T>&&);
         #else
-        Clone(std::auto_ptr<T>);
+        Clone(std::unique_ptr<T>);
         #endif
         Clone(const T&);
         Clone(const Clone<T>&);
@@ -82,7 +82,7 @@ namespace QuantLib {
     : ptr_(std::move(p)) {}
     #else
     template <class T>
-    inline Clone<T>::Clone(std::auto_ptr<T> p)
+    inline Clone<T>::Clone(std::unique_ptr<T> p)
     : ptr_(p) {}
     #endif
 

@@ -74,7 +74,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
 #else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
       private:
         Natural numCoeffs_;
@@ -110,7 +110,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
 #else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
       private:
         Size size() const override;
@@ -146,7 +146,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
 #else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
       private:
         Size size() const override;
@@ -195,7 +195,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
 #else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
       private:
         Size size() const override;
@@ -237,7 +237,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
 #else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
       private:
         Size size() const override;
@@ -259,7 +259,7 @@ namespace QuantLib {
 #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
 #else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
         #endif
     protected:
       void init() override;

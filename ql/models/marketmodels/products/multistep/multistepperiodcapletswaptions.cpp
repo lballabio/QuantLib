@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepperiodcapletswaptions.hpp>
@@ -131,9 +131,9 @@ namespace QuantLib {
     return terminate;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelMultiProduct>
     MultiStepPeriodCapletSwaptions::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelMultiProduct>(
                                          new MultiStepPeriodCapletSwaptions(*this));
     }
 

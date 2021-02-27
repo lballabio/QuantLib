@@ -17,7 +17,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
@@ -92,10 +92,10 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiCaplet::clone() const 
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>(
                                    new MarketModelPathwiseMultiCaplet(*this));
     }
 
@@ -240,10 +240,10 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiDeflatedCaplet::clone() const 
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>(
                            new MarketModelPathwiseMultiDeflatedCaplet(*this));
     }
 
@@ -375,10 +375,10 @@ namespace QuantLib {
         return done;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiDeflatedCap::clone() const
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>(
                               new MarketModelPathwiseMultiDeflatedCap(*this));
     }
 

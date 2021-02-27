@@ -22,7 +22,7 @@
 */
 
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 
 namespace QuantLib {
 
@@ -196,8 +196,8 @@ namespace QuantLib {
         return cmSwapRates_;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<CurveState> LMMCurveState::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<CurveState>(new LMMCurveState(*this));
+    QL_UNIQUE_OR_unique_ptr<CurveState> LMMCurveState::clone() const {
+        return QL_UNIQUE_OR_unique_ptr<CurveState>(new LMMCurveState(*this));
     }
 
 }

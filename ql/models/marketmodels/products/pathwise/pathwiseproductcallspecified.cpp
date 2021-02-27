@@ -17,7 +17,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcallspecified.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcashrebate.hpp>
@@ -155,9 +155,9 @@ namespace QuantLib {
         return done || currentIndex_ == evolution_.evolutionTimes().size();
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>
     CallSpecifiedPathwiseMultiProduct::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>(
             new CallSpecifiedPathwiseMultiProduct(*this));
     }
 

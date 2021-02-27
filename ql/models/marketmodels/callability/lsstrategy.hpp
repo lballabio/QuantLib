@@ -46,7 +46,7 @@ namespace QuantLib {
 #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<ExerciseStrategy<CurveState> > clone() const override;
 #else
-        std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
+        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const;
         #endif
       private:
         Clone<MarketModelBasisSystem> basisSystem_;

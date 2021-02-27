@@ -43,7 +43,7 @@ namespace QuantLib {
 #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<MarketModelMultiProduct> clone() const override;
 #else
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::unique_ptr<MarketModelMultiProduct> clone() const;
         #endif
         //@}
       private:

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
 #include <ql/models/marketmodels/products/multistep/cashrebate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -169,10 +169,10 @@ namespace QuantLib {
         return done || currentIndex_ == evolution_.evolutionTimes().size();
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelMultiProduct>
     CallSpecifiedMultiProduct::clone() const 
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelMultiProduct>(
                                         new CallSpecifiedMultiProduct(*this));
     }
 

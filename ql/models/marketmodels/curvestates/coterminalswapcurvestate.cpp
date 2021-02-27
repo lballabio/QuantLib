@@ -20,7 +20,7 @@
 */
 
 #include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 
 namespace QuantLib {
 
@@ -141,9 +141,9 @@ namespace QuantLib {
         return cmSwapRates_;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<CurveState>
+    QL_UNIQUE_OR_unique_ptr<CurveState>
     CoterminalSwapCurveState::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<CurveState>(
+        return QL_UNIQUE_OR_unique_ptr<CurveState>(
                                          new CoterminalSwapCurveState(*this));
     }
 

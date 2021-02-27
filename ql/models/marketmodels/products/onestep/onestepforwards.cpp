@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -51,9 +51,9 @@ namespace QuantLib {
         return true;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelMultiProduct>
     OneStepForwards::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelMultiProduct>(
                                                   new OneStepForwards(*this));
     }
 

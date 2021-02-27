@@ -39,7 +39,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         virtual std::unique_ptr<ExerciseStrategy<State> > clone() const = 0;
         #else
-        virtual std::auto_ptr<ExerciseStrategy<State> > clone() const = 0;
+        virtual std::unique_ptr<ExerciseStrategy<State> > clone() const = 0;
         #endif
     };
 

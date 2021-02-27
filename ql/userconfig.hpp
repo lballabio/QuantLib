@@ -88,7 +88,7 @@
 //#    define QL_USE_STD_SHARED_PTR
 #endif
 
-/* Undefine this to use std::auto_ptr instead of std::unique_ptr. */
+/* Undefine this to use std::unique_ptr instead of std::unique_ptr. */
 #ifndef QL_USE_STD_UNIQUE_PTR
 #    define QL_USE_STD_UNIQUE_PTR
 #endif

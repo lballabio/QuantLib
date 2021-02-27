@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcashrebate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -106,10 +106,10 @@ namespace QuantLib
         return true;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseCashRebate::clone() const 
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelPathwiseMultiProduct>(
                                     new MarketModelPathwiseCashRebate(*this));
     }
 

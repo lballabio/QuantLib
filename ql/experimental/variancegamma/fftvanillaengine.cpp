@@ -20,7 +20,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/variancegamma/fftvanillaengine.hpp>
 #include <ql/exercise.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <complex>
 
 namespace QuantLib {
@@ -31,11 +31,11 @@ namespace QuantLib {
     {
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<FFTEngine> FFTVanillaEngine::clone() const
+    QL_UNIQUE_OR_unique_ptr<FFTEngine> FFTVanillaEngine::clone() const
     {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process =
             ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(process_);
-        return QL_UNIQUE_OR_AUTO_PTR<FFTEngine>(
+        return QL_UNIQUE_OR_unique_ptr<FFTEngine>(
                                       new FFTVanillaEngine(process, lambda_));
     }
 

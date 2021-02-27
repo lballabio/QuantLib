@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/errors.hpp>
 #include <ql/models/marketmodels/callability/nothingexercisevalue.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -85,9 +85,9 @@ namespace QuantLib {
          return cf_;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>
+    QL_UNIQUE_OR_unique_ptr<MarketModelExerciseValue>
     NothingExerciseValue::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelExerciseValue>(
                                              new NothingExerciseValue(*this));
     }
 

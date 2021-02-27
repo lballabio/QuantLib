@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/models/marketmodels/callability/bermudanswaptionexercisevalue.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -79,9 +79,9 @@ namespace QuantLib {
          return cf_;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>
+    QL_UNIQUE_OR_unique_ptr<MarketModelExerciseValue>
     BermudanSwaptionExerciseValue::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelExerciseValue>(
+        return QL_UNIQUE_OR_unique_ptr<MarketModelExerciseValue>(
                                     new BermudanSwaptionExerciseValue(*this));
     }
 

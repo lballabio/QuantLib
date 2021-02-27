@@ -60,7 +60,7 @@ namespace QuantLib
 #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const override;
 #else
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
+        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
         #endif
 
         bool alreadyDeflated() const override;

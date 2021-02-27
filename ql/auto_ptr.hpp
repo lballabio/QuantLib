@@ -17,23 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file auto_ptr.hpp
-    \brief Facilities to switch from auto_ptr to unique_ptr
+/*! \file unique_ptr.hpp
+    \brief Facilities to switch from unique_ptr to unique_ptr
 */
 
-#ifndef quantlib_auto_ptr_hpp
-#define quantlib_auto_ptr_hpp
+#ifndef quantlib_unique_ptr_hpp
+#define quantlib_unique_ptr_hpp
 
 #include <ql/qldefines.hpp>
 
 #if defined(QL_USE_STD_UNIQUE_PTR)
-#    define QL_UNIQUE_OR_AUTO_PTR std::unique_ptr
+#    define QL_UNIQUE_OR_unique_ptr std::unique_ptr
 #else
-#    pragma message("Warning: using auto_ptr in QuantLib is now deprecated.")
+#    pragma message("Warning: using unique_ptr in QuantLib is now deprecated.")
 #    pragma message("    If you're using --disable-std-unique-ptr in your build")
 #    pragma message("    or if you undefined QL_USE_STD_UNIQUE_PTR in ql/userconfig.hpp,")
 #    pragma message("    please restore the default compilation options in the near future.")
-#    define QL_UNIQUE_OR_AUTO_PTR std::auto_ptr
+#    define QL_UNIQUE_OR_unique_ptr std::unique_ptr
 #endif
 
 

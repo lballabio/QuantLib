@@ -43,7 +43,7 @@ namespace QuantLib {
         #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FFTEngine> clone() const override;
 #else
-        virtual std::auto_ptr<FFTEngine> clone() const;
+        virtual std::unique_ptr<FFTEngine> clone() const;
         #endif
     protected:
       void precalculateExpiry(Date d) override;

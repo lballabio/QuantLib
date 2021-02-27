@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
+#include <ql/unique_ptr.hpp>
 #include <ql/models/marketmodels/callability/lsstrategy.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/discounter.hpp>
@@ -155,9 +155,9 @@ namespace QuantLib {
         ++currentIndex_;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >
+    QL_UNIQUE_OR_unique_ptr<ExerciseStrategy<CurveState> >
     LongstaffSchwartzExerciseStrategy::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >(
+        return QL_UNIQUE_OR_unique_ptr<ExerciseStrategy<CurveState> >(
                                 new LongstaffSchwartzExerciseStrategy(*this));
     }
 
